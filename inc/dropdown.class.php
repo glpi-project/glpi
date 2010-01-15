@@ -191,9 +191,6 @@ class Dropdown {
       return $params['rand'];
    }
 
-
-
-
    /**
     * Get the value of a dropdown
     *
@@ -345,7 +342,7 @@ class Dropdown {
    static function dropdownTypes($name,$value=0,$types=array(),$used=array()) {
       global $CFG_GLPI;
 
-      $options=array(0=>'----');
+      $options=array(''=>'----');
       if (count($types)) {
          foreach ($types as $type) {
             if (class_exists($type)) {
@@ -355,7 +352,7 @@ class Dropdown {
          }
          asort($options);
       }
-      Dropdown::showFromArray($name,$options,array('value'  => $value,'used'  => $used));
+      return Dropdown::showFromArray($name,$options,array('value'  => $value,'used'  => $used));
    }
 
 

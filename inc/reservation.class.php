@@ -40,6 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// Reservation class
 class Reservation extends CommonDBTM {
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][17];
+   }
+
    function pre_deleteItem($ID) {
       global $CFG_GLPI;
 
@@ -102,7 +108,7 @@ class Reservation extends CommonDBTM {
       if (isset($input['_ok']) && !$input['_ok']) {
          return false;
       }
- 
+
       // set new date.
       $this->fields["reservationitems_id"] = $input["reservationitems_id"];
       $this->fields["begin"] = $input["begin"];
@@ -297,11 +303,11 @@ class Reservation extends CommonDBTM {
    */
    static function showCalendar($ID="") {
       global $LANG, $CFG_GLPI;
-   
+
       if (!haveRight("reservation_helpdesk","1")) {
          return false;
       }
-   
+
       if (!isset($_GET["mois_courant"])) {
          $mois_courant=strftime("%m");
       } else {
@@ -312,7 +318,7 @@ class Reservation extends CommonDBTM {
       } else {
          $annee_courante=$_GET["annee_courante"];
       }
-   
+
       $mois_suivant=$mois_courant+1;
       $mois_precedent=$mois_courant-1;
       $annee_suivante=$annee_courante;
@@ -321,17 +327,17 @@ class Reservation extends CommonDBTM {
          $mois_precedent=12;
          $annee_precedente--;
       }
-   
+
       if ($mois_suivant==13){
          $mois_suivant=1;
          $annee_suivante++;
       }
-   
+
       $str_suivant="?reservationitems_id=$ID&amp;mois_courant=$mois_suivant&amp;".
                   "annee_courante=$annee_suivante";
       $str_precedent="?reservationitems_id=$ID&amp;mois_courant=$mois_precedent&amp;".
                      "annee_courante=$annee_precedente";
-   
+
       if (!empty($ID)) {
          $m=new ReservationItem;
          $m->getFromDB($ID);
@@ -351,19 +357,19 @@ class Reservation extends CommonDBTM {
                $name=$item->getName();
             }
          }
-   
+
          $all="<a href='reservation.php?reservationitems_id=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
       } else {
          $type="";
          $name=$LANG['reservation'][25];
          $all="&nbsp;";
       }
-   
+
       echo "<div class='center'><table class='tab_glpi'><tr><td>";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td>";
       echo "<td><strong><span class='icon_consol'>".$type." - ".$name."</span></strong></td></tr>";
       echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div>\n";
-   
+
       // Check bisextile years
       if (($annee_courante%4)==0) {
          $fev=29;
@@ -371,14 +377,14 @@ class Reservation extends CommonDBTM {
          $fev=28;
       }
       $nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
-   
+
       // Datas used to put right informations in columns
       $jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
       if ($jour_debut_mois==0) {
          $jour_debut_mois=7;
       }
       $jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
-   
+
       echo "<div class='center'>";
       echo "<table class='tab_glpi'><tr><td><a href=\"reservation.php".$str_precedent."\">";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".
@@ -389,17 +395,17 @@ class Reservation extends CommonDBTM {
             $LANG['buttons'][11]."'></a></td></tr></table>\n";
       // test
       echo "<table width='90%' class='tab_glpi'><tr><td class='top' width='100px'>";
-   
+
       echo "<table><tr><td width='100px' class='top'>";
-   
+
       // today date
       $today=getdate(time());
       $mois=$today["mon"];
       $annee=$today["year"];
-   
+
       $annee_avant = $annee_courante - 1;
       $annee_apres = $annee_courante + 1;
-   
+
       echo "<div class='calendrier_mois'>";
       echo "<div class='center'><strong>$annee_avant</strong></div>";
       for ($i=$mois_courant; $i < 13; $i++) {
@@ -426,7 +432,7 @@ class Reservation extends CommonDBTM {
       echo "</div>";
       echo "</td></tr></table>";
       echo "</td><td class='top' width='100%'>";
-   
+
       // test
       echo "<table width='100%' class='tab_cadre'><tr>";
       echo "<th width='14%'>".$LANG['calendarD'][1]."</th>";
@@ -438,12 +444,12 @@ class Reservation extends CommonDBTM {
       echo "<th width='14%'>".$LANG['calendarD'][0]."</th>";
       echo "</tr>\n";
       echo "<tr class='tab_bg_3' >";
-   
+
       // Insert blank cell before the first day of the month
       for ($i=1;$i<$jour_debut_mois;$i++) {
          echo "<td class='calendrier_case_white'>&nbsp;</td>";
       }
-   
+
       // voici le remplissage proprement dit
       if ($mois_courant<10&&strlen($mois_courant)==1) {
          $mois_courant="0".$mois_courant;
@@ -457,7 +463,7 @@ class Reservation extends CommonDBTM {
          echo "<td class='top' height='100px'>";
          echo "<table class='center' width='100%'><tr><td class='center'>";
          echo "<span class='calendrier_jour'>".$i."</span></td></tr>\n";
-   
+
          if (!empty($ID)) {
             echo "<tr><td class='center'>";
             echo "<a href=\"reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
@@ -469,7 +475,7 @@ class Reservation extends CommonDBTM {
          Reservation::displayReservationDay($ID,$annee_courante."-".$mois_courant."-".$ii);
          echo "</td></tr></table>\n";
          echo "</td>";
-   
+
          // il ne faut pas oublie d'aller a la ligne suivante en fin de semaine
          if (($i+$jour_debut_mois)%7==1) {
             echo "</tr>\n";
@@ -478,20 +484,20 @@ class Reservation extends CommonDBTM {
             }
          }
       }
-   
+
       // on recommence pour finir le tableau proprement pour les m�es raisons
       if ($jour_fin_mois!=0) {
          for ($i=0;$i<7-$jour_fin_mois;$i++) {
             echo "<td class='calendrier_case_white'>&nbsp;</td>";
          }
       }
-   
+
       echo "</tr></table>\n";
       echo "</td></tr></table></div>\n";
    }
 
    /**
-   * Display for reservation 
+   * Display for reservation
    *
    * @param $ID ID of the reservation (empty for create new)
    * @param $items reservation items ID for creation process
@@ -499,16 +505,16 @@ class Reservation extends CommonDBTM {
    */
    function showForm($ID, $items=array(),$date='') {
       global $LANG;
-   
+
       if (!haveRight("reservation_helpdesk","1")) {
          return false;
       }
       if (count($items)==0) {
          return false;
       }
-   
+
       $resa= new Reservation;
-   
+
       if (!empty($ID)) {
          if (!$resa->getFromDB($ID)) {
             return false;
@@ -521,18 +527,18 @@ class Reservation extends CommonDBTM {
          $resa->fields["begin"]=$date." 12:00:00";
          $resa->fields["end"]=$date." 13:00:00";
       }
-   
+
       echo "<div class='center'><form method='post' name=form action='reservation.form.php'>";
-   
+
       if (!empty($ID)) {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
       echo "<table class='tab_cadre'>";
       echo "<tr><th colspan='2'>".$LANG['reservation'][9]."</th></tr>\n";
-   
+
       // Add Hardware name
       $r=new ReservationItem;
-   
+
       echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4]."&nbsp;:</td>";
       echo "<td>";
       foreach ($items as $itemID) {
@@ -549,7 +555,7 @@ class Reservation extends CommonDBTM {
                $item = NULL;
             }
          }
-   
+
          echo "<strong>$type - $name</strong><br>";
          echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
       }
@@ -557,7 +563,7 @@ class Reservation extends CommonDBTM {
       if (!haveRight("reservation_central","w")
          || is_null($item)
          || !haveAccessToEntity($item->fields["entities_id"])) {
-   
+
          echo "<input type='hidden' name='users_id' value='".$_SESSION["glpiID"]."'>";
       } else {
          echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31]."&nbsp;:</td>";
@@ -576,11 +582,11 @@ class Reservation extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:</td><td>";
       showDateTimeFormItem("begin",$resa->fields["begin"],-1,false);
       echo "</td></tr>\n";
-   
+
       echo "<tr class='tab_bg_2'><td>".$LANG['search'][9]."&nbsp;:</td><td>";
       showDateTimeFormItem("end",$resa->fields["end"],-1,false);
       echo "</td></tr>\n";
-   
+
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][27]."&nbsp;:</td>";
          echo "<td>";
@@ -592,11 +598,11 @@ class Reservation extends CommonDBTM {
          echo $LANG['reservation'][30];
          echo "</td></tr>\n";
       }
-   
+
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
-   
+
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' class='top center'>";
@@ -616,20 +622,20 @@ class Reservation extends CommonDBTM {
 
 
    /**
-   * Display for reservation 
+   * Display for reservation
    *
    * @param $ID ID a the reservation item (empty to show all)
    * @param $date date to display
    */
    static function displayReservationDay($ID,$date) {
       global $DB;
-   
+
       if (!empty($ID)) {
          Reservation::displayReservationsForAnItem($ID,$date);
       } else {
          $debut=$date." 00:00:00";
          $fin=$date." 23:59:59";
-   
+
          $query = "SELECT DISTINCT `glpi_reservationitems`.`id`
                   FROM `glpi_reservationitems`
                   INNER JOIN `glpi_reservations`
@@ -639,7 +645,7 @@ class Reservation extends CommonDBTM {
                         AND '".$fin."' > `begin`
                   ORDER BY `begin`";
          $result=$DB->query($query);
-   
+
          if ($DB->numrows($result)>0) {
             $m=new ReservationItem;
             while ($data=$DB->fetch_array($result)) {
@@ -648,20 +654,20 @@ class Reservation extends CommonDBTM {
                   continue;
                }
                $item = new $m->fields["itemtype"]();
-   
+
                if ($item->getFromDB($m->fields["items_id"])
                   && haveAccessToEntity($item->fields["entities_id"])) {
-   
+
                   $typename=$item->getTypeName();
                   if ($m->fields["itemtype"] == 'Peripheral') {
                      if (isset($item->fields["peripheraltypes_id"])
                         && $item->fields["peripheraltypes_id"]!=0) {
-   
+
                         $typename=Dropdown::getDropdownName("glpi_peripheraltypes",
                                                 $item->fields["peripheraltypes_id"]);
                      }
                   }
-   
+
                   list($annee,$mois,$jour)=explode("-",$date);
                   echo "<tr class='tab_bg_1'><td>";
                   echo "<a href='reservation.php?reservationitems_id=".$data['id'].
@@ -677,28 +683,28 @@ class Reservation extends CommonDBTM {
    }
 
    /**
-   * Display a reservation 
+   * Display a reservation
    *
    * @param $ID ID a the reservation item
    * @param $date date to display
-   */   
+   */
    static function displayReservationsForAnItem($ID,$date) {
       global $DB,$LANG;
-   
+
       $users_id=$_SESSION["glpiID"];
       $resa = new Reservation();
       $user=new User;
       list($year,$month,$day)=explode("-",$date);
       $debut=$date." 00:00:00";
       $fin=$date." 23:59:59";
-   
+
       $query = "SELECT *
                FROM `glpi_reservations`
                WHERE '$debut' < `end`
                      AND '$fin' > `begin`
                      AND `reservationitems_id` = '$ID'
                ORDER BY `begin`";
-   
+
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
             echo "<table width='100%'>";
@@ -706,19 +712,19 @@ class Reservation extends CommonDBTM {
                echo "<tr>";
                $user->getFromDB($row["users_id"]);
                $display="";
-   
+
                if ($debut>$row['begin']) {
                   $heure_debut="00:00";
                } else {
                   $heure_debut=get_hour_from_sql($row['begin']);
                }
-   
+
                if ($fin<$row['end']) {
                   $heure_fin="24:00";
                } else {
                   $heure_fin=get_hour_from_sql($row['end']);
                }
-   
+
                if (strcmp($heure_debut,"00:00")==0 && strcmp($heure_fin,"24:00")==0) {
                   $display=$LANG['planning'][5];
                } else if (strcmp($heure_debut,"00:00")==0) {
@@ -728,7 +734,7 @@ class Reservation extends CommonDBTM {
                } else {
                   $display=$heure_debut."-".$heure_fin;
                }
-   
+
                $rand=mt_rand();
                $modif=$modif_end="";
                if ($resa->can($row['id'],"w")) {
@@ -739,7 +745,7 @@ class Reservation extends CommonDBTM {
                }
                $comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"]).
                         "</div>";
-   
+
                echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><strong>".
                formatUserName($user->fields["id"],$user->fields["name"],$user->fields["realname"],
                               $user->fields["firstname"]);
@@ -754,27 +760,27 @@ class Reservation extends CommonDBTM {
 
 
    /**
-   * Display reservations for an item 
+   * Display reservations for an item
    *
    * @param $ID ID a the item
    * @param $itemtype item type
-   */   
+   */
    static function showForItem($itemtype,$ID) {
       global $DB,$LANG,$CFG_GLPI;
-   
+
       $resaID=0;
       if (!haveRight("reservation_central","r")) {
          return false;
       }
-   
+
       echo "<div class='center'>";
       ReservationItem::showActivationFormForItem($itemtype,$ID);
       echo "<br>";
-   
+
       $ri=new ReservationItem;
       if ($ri->getFromDBbyItem($itemtype,$ID)) {
          $now=$_SESSION["glpi_currenttime"];
-   
+
          // Print reservation in progress
          $query = "SELECT *
                   FROM `glpi_reservations`
@@ -782,7 +788,7 @@ class Reservation extends CommonDBTM {
                         AND `reservationitems_id` = '".$ri->fields['id']."'
                   ORDER BY `begin`";
          $result=$DB->query($query);
-   
+
          echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".$ri->fields['id']."' >".
@@ -818,7 +824,7 @@ class Reservation extends CommonDBTM {
          }
          echo "</table>\n";
          echo "<br>";
-   
+
          // Print old reservations
          $query = "SELECT *
                   FROM `glpi_reservations`
@@ -826,7 +832,7 @@ class Reservation extends CommonDBTM {
                         AND `reservationitems_id` = '".$ri->fields['id']."'
                   ORDER BY `begin` DESC";
          $result=$DB->query($query);
-   
+
          echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".$ri->fields['id']."' >".
@@ -835,7 +841,7 @@ class Reservation extends CommonDBTM {
             echo $LANG['reservation'][36];
          }
          echo "</th></tr>\n";
-   
+
          if ($DB->numrows($result)==0) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
@@ -868,24 +874,24 @@ class Reservation extends CommonDBTM {
       }
       echo "</div>\n";
    }
-   
+
    /**
-   * Display reservations for an user 
+   * Display reservations for an user
    *
    * @param $ID ID a the user
-   */   
+   */
    static function showForUser($ID) {
       global $DB,$LANG,$CFG_GLPI;
-   
+
       $resaID=0;
-   
+
       if (!haveRight("reservation_central","r")) {
          return false;
       }
-   
+
       echo "<div class='center'>";
       $now=$_SESSION["glpi_currenttime"];
-   
+
       // Print reservation in progress
       $query = "SELECT *
                FROM `glpi_reservations`
@@ -893,7 +899,7 @@ class Reservation extends CommonDBTM {
                      AND `users_id` = '$ID'
                ORDER BY `begin`";
       $result=$DB->query($query);
-   
+
       $ri=new ReservationItem();
       echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
       if ($DB->numrows($result)==0) {
@@ -934,7 +940,7 @@ class Reservation extends CommonDBTM {
       }
       echo "</table>\n";
       echo "<br>";
-   
+
       // Print old reservations
       $query = "SELECT *
                FROM `glpi_reservations`
@@ -942,7 +948,7 @@ class Reservation extends CommonDBTM {
                      AND `users_id` = '$ID'
                ORDER BY `begin` DESC";
       $result=$DB->query($query);
-   
+
       echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>\n";
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";

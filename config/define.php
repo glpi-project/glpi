@@ -630,6 +630,10 @@ $CFG_GLPI["netport_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE,
 $CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, OCSNG_TYPE, PROFILE_TYPE);
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, 'CronTask');
+
+$CFG_GLPI["notificationtemplates_types"] = array('Reservation', 'Ticket', 'CartridgeItem',
+                                                 'ConsumableItem');
+
 /*
 $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
       'glpi_consumableitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',

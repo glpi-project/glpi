@@ -794,14 +794,37 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       }
    }
 
+
+   if (haveRight("config","w") || haveRight("notification","r")) {
+
+      $menu['config']['content']['mailing']['title']=$LANG['setup'][704];
+      $menu['config']['content']['mailing']['page']='/front/setup.notification.php';
+
+      $menu['config']['content']['mailing']['options']['notification']['title']=$LANG['setup'][704];
+      $menu['config']['content']['mailing']['options']['notification']['page']='/front/notification.php';
+      if (haveRight("config","w") || haveRight("notification","w")) {
+         $menu['config']['content']['mailing']['options']['notification']['links']['add']='/front/notification.form.php';
+      }
+      $menu['config']['content']['mailing']['options']['notification']['links']['search']='/front/notification.php';
+   }
+
    if (haveRight("config","w")) {
+
       $menu['config']['content']['config']['title']=$LANG['setup'][703];
       $menu['config']['content']['config']['page']='/front/config.form.php';
+
       $menu['config']['content']['crontask']['title']=$LANG['crontask'][0];
       $menu['config']['content']['crontask']['page']='/front/crontask.php';
       $menu['config']['content']['crontask']['links']['search']="/front/crontask.php";
-      $menu['config']['content']['mailing']['title']=$LANG['setup'][704];
-      $menu['config']['content']['mailing']['page']='/front/notification.php';
+
+     $menu['config']['content']['mailing']['options']['config']['title']=$LANG['setup'][240];
+     $menu['config']['content']['mailing']['options']['config']['page']='/front/notification.php';
+
+      $menu['config']['content']['mailing']['options']['notificationtemplate']['title']=$LANG['mailing'][113];
+      $menu['config']['content']['mailing']['options']['notificationtemplate']['page']='/front/notificationtemplate.php';
+      $menu['config']['content']['mailing']['options']['notificationtemplate']['links']['add']='/front/notificationtemplate.form.php';
+      $menu['config']['content']['mailing']['options']['notificationtemplate']['links']['search']='/front/notificationtemplate.php';
+
       $menu['config']['content']['extauth']['title']=$LANG['login'][10];
       $menu['config']['content']['extauth']['page']='/front/setup.auth.php';
       $menu['config']['content']['extauth']['options']['ldap']['title']=$LANG['login'][2];

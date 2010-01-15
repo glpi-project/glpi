@@ -1,8 +1,6 @@
 <?php
-
-
 /*
- * @version $Id$
+ * @version $Id: mailing.class.php 10038 2010-01-05 13:34:15Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -35,14 +33,51 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
 
-checkRight("notification",'r');
+require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 
-commonHeader($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
+/**
+ *  glpi_phpmailer class extends
+ */
+class glpi_phpmailer extends phpmailer {
 
-Search::show('Notification');
+   /// Set default variables for all new objects
+   var $WordWrap = 80;
+   /// Defaut charset
+   var $CharSet ="utf-8";
 
-commonFooter();
+   /**
+    * Constructor
+   **/
+   function __construct() {
+      global $CFG_GLPI;
+
+      // Comes from config
+      $this->SetLanguage("en", GLPI_PHPMAILER_DIR . "/language/");
+
+      if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
+         $this->Mailer = "smtp";
+         $this->Host = $CFG_GLPI['smtp_host'];
+         if ($CFG_GLPI['smtp_username'] != '') {
+            $this->SMTPAuth  = true;
+            $this->Username  = $CFG_GLPI['smtp_username'];
+            $this->Password  =  $CFG_GLPI['smtp_password'];
+         }
+         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
+            $this->SMTPSecure = "ssl";
+         }
+         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS){
+            $this->SMTPSecure = "tls";
+         }
+      }
+      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+         $this->do_debug = 3;
+      }
+   }
+
+}
+
 ?>

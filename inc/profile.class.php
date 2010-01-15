@@ -912,6 +912,13 @@ class Profile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("check_update",$this->fields["check_update"],1,1,0);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['setup'][704]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("notification",$this->fields["notification"],1,1,1);
+      echo "</td>";
+      echo "<td colspan='4'>";
+      echo "</td></tr>\n";
+
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";

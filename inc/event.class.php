@@ -121,7 +121,7 @@ class Event extends CommonDBTM {
                          'cartridges'  => $LANG['log'][7],
                          'peripherals' => $LANG['log'][8],
                          'consumables' => $LANG['log'][9],
-                         'ticket'      => $LANG['log'][10], 
+                         'ticket'      => $LANG['log'][10],
                          'contacts'    => $LANG['log'][11],
                          'enterprises' => $LANG['log'][12],
                          'documents'   => $LANG['log'][13],
@@ -142,6 +142,8 @@ class Event extends CommonDBTM {
                          'rules'       => $LANG['log'][65],
                          'reminder'    => $LANG['log'][81],
                          'transfers'   => $LANG['transfer'][1],
+                         'notifications'=> $LANG['setup'][704],
+                         'notificationtemplates'=> $LANG['mailing'][113],
                          'budget'      => $LANG['financial'][87]);
 
       $logService=array('inventory'    => $LANG['Menu'][38],
@@ -155,6 +157,7 @@ class Event extends CommonDBTM {
                         'reservation'  => $LANG['log'][58],
                         'cron'         => $LANG['log'][59],
                         'document'     => $LANG['Menu'][27],
+                        'notification'=> $LANG['setup'][704],
                         'plugin'       => $LANG['common'][29]);
 
       return array($logItemtype,$logService);
