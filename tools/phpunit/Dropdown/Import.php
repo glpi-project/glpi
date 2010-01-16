@@ -444,10 +444,10 @@ class Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('softwarecategories_id_ondelete', $CFG_GLPI, "Fail: no softwarecategories_id_ondelete");
 
       $idcat[0] = Dropdown::import('SoftwareCategory', array('name'=>'Trashed'));
-      $this->assertGreaterThan (0,$idcat[0],"Fail: can't create SoftwareCategory");
+      $this->assertGreaterThan(0,$idcat[0],"Fail: can't create SoftwareCategory");
 
       $idcat[1] = Dropdown::import('SoftwareCategory', array('name'=>'OpenSource'));
-      $this->assertGreaterThan (0,$idcat[1],"Fail: can't create SoftwareCategory");
+      $this->assertGreaterThan(0,$idcat[1],"Fail: can't create SoftwareCategory");
 
       $rule = new RuleSoftwareCategory();
       $crit = new RuleCriteria();
