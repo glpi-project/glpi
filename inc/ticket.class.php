@@ -3036,4 +3036,4 @@ class Ticket extends CommonDBTM {
    return $profiles;
    }
 }
-?>;
+?>
