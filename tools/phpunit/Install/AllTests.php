@@ -78,6 +78,9 @@ define("POWER_DEVICE",12);
       // Update to 0.80
       $res = update0723to080(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs` SET `version` = ' 0.80', language='fr_FR',founded_new_version='' ;";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
    }
 
    public function testInstall() {
