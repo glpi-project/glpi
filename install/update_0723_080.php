@@ -35,12 +35,23 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.72.3 to 0.80
-
-function update0723to080() {
+/**
+ * Update from 0.72.3 to 0.80
+ *
+ * @param $output string for format
+ *       HTML (default) for standard upgrade
+ *       empty = no ouput for PHPUnit
+ *
+ * @return bool for success (will die for most error)
+ */
+function update0723to080($output='HTML') {
 	global $DB, $LANG;
 
-	echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
+   $result = true;
+
+   if ($output) {
+      echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
+   }
    displayMigrationMessage("080"); // Start
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : rename tables'); // Updating schema
@@ -199,8 +210,10 @@ function update0723to080() {
                   $query="DROP TABLE `backup_".$new_table."`";
                   $DB->query($query) or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
                }
-               echo "<p><b>$new_table table already exists. ";
-               echo "A backup have been done to backup_$new_table.</b></p>";
+               if ($output) {
+                  echo "<p><b>$new_table table already exists. ";
+                  echo "A backup have been done to backup_$new_table.</b></p>";
+               }
                $backup_tables=true;
                $query="RENAME TABLE `$new_table` TO `backup_$new_table`";
                $DB->query($query) or die("0.80 backup table $new_table " . $LANG['update'][90] . $DB->error());
@@ -217,7 +230,7 @@ function update0723to080() {
 
       }
    }
-   if ($backup_tables) {
+   if ($backup_tables && $output) {
       echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
    }
 
@@ -645,7 +658,10 @@ function update0723to080() {
 
                $changes[$table][]="CHANGE COLUMN `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment";
             } else {
-               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+               $result = false;
+               if ($output) {
+                  echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+               }
             }
             // If do index : delete old one / create new one
             if ($doindex) {
@@ -878,7 +894,10 @@ function update0723to080() {
             $changes[$table][]="CHANGE `$oldname` `$newname` TINYINT( 1 ) $NULL $default";
 
          } else {
-            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            $result = false;
+            if ($output) {
+               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            }
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -946,7 +965,10 @@ function update0723to080() {
             $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` $type NULL DEFAULT NULL  ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
-            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            $result = false;
+            if ($output) {
+               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            }
          }
       }
    }
@@ -1035,7 +1057,10 @@ function update0723to080() {
             $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` VARCHAR( 255 ) NULL $default  ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
-            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            $result = false;
+            if ($output) {
+               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            }
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -1100,7 +1125,10 @@ function update0723to080() {
             $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` CHAR( $length ) NULL $default $addcomment ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
-            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            $result = false;
+            if ($output) {
+               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            }
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -1270,7 +1298,10 @@ function update0723to080() {
             $changes[$table][]="CHANGE `$oldname` `$newname` INT( 11 ) $NULL $default $addcomment";
 
          } else {
-            echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            $result = false;
+            if ($output) {
+              echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            }
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -2968,5 +2999,7 @@ function update0723to080() {
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
+
+   return $result;
 }
 ?>
