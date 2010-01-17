@@ -49,38 +49,6 @@ class Alert extends CommonDBTM {
       return $input;
    }
 
-   /**
-    * Retrieve an item from the database
-    *
-    *@param $ID ID of the item to get
-    *@param $type ID of the type to get
-    *@return true if succeed else false
-    *
-   **/
-   function getFromDBForDevice ($type,$ID) {
-      global $DB;
-
-      // Make new database object and fill variables
-      if (empty($ID)) {
-         return false;
-      }
-
-      $query = "SELECT *
-                FROM `".$this->getTable()."`
-                WHERE `itemtype` = '$type'
-                      AND `items_id` = '$ID'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)==1) {
-            $this->fields = $DB->fetch_assoc($result);
-            return true;
-         } else {
-            return false;
-         }
-      } else {
-         return false;
-      }
-   }
 
    /**
     * Clear all alerts of an alert type for an item
