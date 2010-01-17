@@ -27,7 +27,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
-class CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
+class Framework_CommonDBTM_DeleteRestore extends PHPUnit_Framework_TestCase {
 
    /**
     * Check delete / purge on a pinter

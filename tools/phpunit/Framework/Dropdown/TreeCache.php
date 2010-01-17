@@ -27,7 +27,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
-class Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
+class Framework_Dropdown_TreeCache extends PHPUnit_Framework_TestCase {
 
    /**
     * sons / ancestors for Entity

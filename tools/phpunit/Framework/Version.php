@@ -27,15 +27,24 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
-require_once 'CanCheck.php';
-require_once 'DeleteRestore.php';
 
-class CommonDBTM_AllTests {
-   public static function suite() {
-      $suite = new PHPUnit_Framework_TestSuite('CommonDBTM_CanCheck');
-      $suite->addTestSuite('CommonDBTM_DeleteRestore');
+class Framework_Version extends PHPUnit_Framework_TestCase {
 
-      return $suite;
+   public function testVersion() {
+      global $CFG_GLPI;
+
+      $this->assertEquals('0.80', GLPI_VERSION, "Bad version in source page");
+      $this->assertEquals(GLPI_VERSION, $CFG_GLPI['version'], "Bad version in config");
+   }
+
+   public function testLogin() {
+
+      $auth = new Auth();
+      $res = $auth->Login('stupid_login_which_doesnt_exists', 'stupid_password');
+      $this->assertFalse($res, "Bad login accepted");
+
+      $res = $auth->Login('glpi', 'glpi');
+      $this->assertTrue($res, "Good login refused");
    }
 }
 ?>
