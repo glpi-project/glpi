@@ -30,10 +30,10 @@
 require_once 'Import.php';
 require_once 'TreeCache.php';
 
-class Dropdown_AllTests {
+class Framework_Dropdown_AllTests {
    public static function suite() {
-      $suite = new PHPUnit_Framework_TestSuite('Dropdown_Import');
-      $suite->addTestSuite('Dropdown_TreeCache');
+      $suite = new PHPUnit_Framework_TestSuite('Framework_Dropdown_Import');
+      $suite->addTestSuite('Framework_Dropdown_TreeCache');
       return $suite;
    }
 }

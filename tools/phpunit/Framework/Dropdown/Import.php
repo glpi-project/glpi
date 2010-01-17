@@ -27,7 +27,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
-class Dropdown_Import extends PHPUnit_Framework_TestCase {
+class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
    /**
     * Import of CommonDropdown - without dictionary

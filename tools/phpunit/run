@@ -39,7 +39,13 @@ define('GLPI_CONFIG_DIR','$PWD');
 EOF
 fi
 
-phpunit AllTests
+if [ $# -gt 1 ]; then
+   echo "running $*" 
+   phpunit $*
+else
+   echo "running Framework AllTests"
+   phpunit --verbose Framework/AllTests.php
+fi
 
 if [ -f ${conf}old ]
 then

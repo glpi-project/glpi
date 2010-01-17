@@ -27,17 +27,14 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
+require_once 'CanCheck.php';
+require_once 'DeleteRestore.php';
 
-require_once 'System/AllTests.php';
-require_once 'Install/AllTests.php';
-require_once 'Framework/AllTests.php';
-
-class AllTests {
+class Framework_CommonDBTM_AllTests {
    public static function suite() {
-      $suite = new PHPUnit_Framework_TestSuite('GLPI');
-      $suite->addTest(System_AllTests::suite());
-      $suite->addTest(Install_AllTests::suite());
-      $suite->addTest(Framework_AllTests::suite());
+      $suite = new PHPUnit_Framework_TestSuite('Framework_CommonDBTM_CanCheck');
+      $suite->addTestSuite('Framework_CommonDBTM_DeleteRestore');
+
       return $suite;
    }
 }

@@ -47,7 +47,7 @@
 function update0723to080($output='HTML') {
 	global $DB, $LANG;
 
-   $result = true;
+   $updateresult = true;
 
    if ($output) {
       echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
@@ -658,7 +658,7 @@ function update0723to080($output='HTML') {
 
                $changes[$table][]="CHANGE COLUMN `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '$default_value' $addcomment";
             } else {
-               $result = false;
+               $updateresult = false;
                if ($output) {
                   echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
                }
@@ -894,7 +894,7 @@ function update0723to080($output='HTML') {
             $changes[$table][]="CHANGE `$oldname` `$newname` TINYINT( 1 ) $NULL $default";
 
          } else {
-            $result = false;
+            $updateresult = false;
             if ($output) {
                echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
             }
@@ -965,7 +965,7 @@ function update0723to080($output='HTML') {
             $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` $type NULL DEFAULT NULL  ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
-            $result = false;
+            $updateresult = false;
             if ($output) {
                echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
             }
@@ -1057,7 +1057,7 @@ function update0723to080($output='HTML') {
             $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` VARCHAR( 255 ) NULL $default  ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
-            $result = false;
+            $updateresult = false;
             if ($output) {
                echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
             }
@@ -1125,7 +1125,7 @@ function update0723to080($output='HTML') {
             $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` CHAR( $length ) NULL $default $addcomment ";
             $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
          } else {
-            $result = false;
+            $updateresult = false;
             if ($output) {
                echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
             }
@@ -1298,7 +1298,7 @@ function update0723to080($output='HTML') {
             $changes[$table][]="CHANGE `$oldname` `$newname` INT( 11 ) $NULL $default $addcomment";
 
          } else {
-            $result = false;
+            $updateresult = false;
             if ($output) {
               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
             }
@@ -3000,6 +3000,6 @@ function update0723to080($output='HTML') {
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 
-   return $result;
+   return $updateresult;
 }
 ?>
