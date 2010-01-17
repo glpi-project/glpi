@@ -298,19 +298,17 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Restore item = set deleted flag to 0
    *
-   *@param $ID ID of the item
-   *
    *@return true if succeed else false
    *
    **/
-   function restoreInDB($ID) {
+   function restoreInDB() {
       global $DB,$CFG_GLPI;
 
       if ($this->maybeDeleted()) {
          $query = "UPDATE `".
                    $this->getTable()."`
                    SET `is_deleted`='0'
-                   WHERE `id` = '$ID'";
+                   WHERE `id` = '".$this->fields['id']."'";
          if ($result = $DB->query($query)) {
             return true;
          } else {
@@ -988,7 +986,7 @@ class CommonDBTM extends CommonGLPI {
       $this->input = $input;
       doHook("pre_item_restore",$this);
 
-      if ($this->restoreInDB($this->input["id"])) {
+      if ($this->restoreInDB()) {
          $this->addMessageOnRestoreAction();
          if ($this->dohistory && $history) {
             $changes[0] = 0;
