@@ -276,6 +276,7 @@ $LANG['common'][87]="Nouvelle fiche";
 $LANG['common'][88]="Identifiant interne du serveur (ID)";
 $LANG['common'][89]="Non installé";
 $LANG['common'][90]="Objet";
+$LANG['common'][91]="Cet élément est dépendant d'un autre. La modification de cet attribut est interdit.";
 
 $LANG['computers'][0]="Volume";
 $LANG['computers'][1]="Pourcentage libre";

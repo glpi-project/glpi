@@ -48,8 +48,6 @@ class CommonDBTM extends CommonGLPI {
 
    /// Forward entity datas to linked items
    protected $forward_entity_to=array();
-   /// Disable entity update display : set to false when forward entity to is set to disable recursive update
-   protected $entity_update_display = true;
 
    /// Table name cache : set dynamically calling getTable
    protected $table="";
@@ -1407,7 +1405,12 @@ class CommonDBTM extends CommonGLPI {
             echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][86];
             $image="/pics/lock.png";
-         } else if (!$this->entity_update_display || !$this->canUnrecurs()) {
+         // CommonDBChild : entity data is get or copy from parent 
+         } else if ( $this instanceof CommonDBChild) {
+            echo Dropdown::getYesNo($this->fields["is_recursive"]);
+            $comment=$LANG['common'][91];
+            $image="/pics/lock.png";
+         } else if ( !$this->canUnrecurs()) {
             echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][84];
             $image="/pics/lock.png";
