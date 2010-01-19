@@ -75,7 +75,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             Infocom::showForItem($monitor);
             Contract::showAssociated($monitor);
             Document::showAssociated($monitor,$_POST["withtemplate"]);
-            showJobListForItem('Monitor',$_POST["id"]);
+            Ticket::showListForItem('Monitor',$_POST["id"]);
             Link::showForItem('Monitor',$_POST["id"]);
             Plugin::displayAction($monitor,$_REQUEST['glpi_tab']);
             break;
@@ -90,7 +90,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem('Monitor',$_POST["id"]);
+            Ticket::showListForItem('Monitor',$_POST["id"]);
             break;
 
          case 7 :

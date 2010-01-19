@@ -84,7 +84,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Infocom::showForItem($phone);
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
-            showJobListForItem('Phone',$_POST["id"]);
+            Ticket::showListForItem('Phone',$_POST["id"]);
             Link::showForItem('Phone',$_POST["id"]);
             Plugin::displayAction($phone, $_REQUEST['glpi_tab']);
             break;
@@ -99,7 +99,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            showJobListForItem('Phone',$_POST["id"]);
+            Ticket::showListForItem('Phone',$_POST["id"]);
             break;
 
          case 7 :

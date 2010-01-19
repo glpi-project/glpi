@@ -78,7 +78,7 @@ if (!empty($_POST["withtemplate"])) {
          Infocom::showForItem($netdevice);
          Contract::showAssociated($netdevice);
          Document::showAssociated($netdevice,$_POST["withtemplate"]);
-         showJobListForItem('NetworkEquipment',$_POST["id"]);
+         Ticket::showListForItem('NetworkEquipment',$_POST["id"]);
          Link::showForItem('NetworkEquipment',$_POST["id"]);
          Plugin::displayAction($netdevice,$_REQUEST['glpi_tab']);
          break;
@@ -93,7 +93,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 6 :
-         showJobListForItem('NetworkEquipment',$_POST["id"]);
+         Ticket::showListForItem('NetworkEquipment',$_POST["id"]);
          break;
 
       case 7 :
