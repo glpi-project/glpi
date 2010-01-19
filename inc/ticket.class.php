@@ -1521,15 +1521,60 @@ class Ticket extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
+      $tab[1]['table']         = 'glpi_tickets';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = 'Ticket';
+
       $tab[2]['table']     = 'glpi_tickets';
-      $tab[2]['field']     = 'status';
-      $tab[2]['linkfield'] = 'status';
-      $tab[2]['name']      = $LANG['joblist'][0];
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[12]['table']     = 'glpi_tickets';
+      $tab[12]['field']     = 'status';
+      $tab[12]['linkfield'] = 'status';
+      $tab[12]['name']      = $LANG['joblist'][0];
+      $tab[12]['searchtype']= 'equals';
+
+      $tab[10]['table']     = 'glpi_tickets';
+      $tab[10]['field']     = 'urgency';
+      $tab[10]['linkfield'] = 'urgency';
+      $tab[10]['name']      = $LANG['joblist'][29];
+      $tab[10]['searchtype']= 'equals';
+
+      $tab[11]['table']     = 'glpi_tickets';
+      $tab[11]['field']     = 'impact';
+      $tab[11]['linkfield'] = 'impact';
+      $tab[11]['name']      = $LANG['joblist'][30];
+      $tab[11]['searchtype']= 'equals';
 
       $tab[3]['table']     = 'glpi_tickets';
       $tab[3]['field']     = 'priority';
       $tab[3]['linkfield'] = 'priority';
       $tab[3]['name']      = $LANG['joblist'][2];
+      $tab[3]['searchtype']= 'equals';
+
+
+      $tab[15]['table']     = 'glpi_tickets';
+      $tab[15]['field']     = 'date';
+      $tab[15]['linkfield'] = '';
+      $tab[15]['name']      = $LANG['reports'][60];
+      $tab[15]['datatype'] = 'datetime';
+
+      $tab[16]['table']     = 'glpi_tickets';
+      $tab[16]['field']     = 'closedate';
+      $tab[16]['linkfield'] = '';
+      $tab[16]['name']      = $LANG['reports'][61];
+      $tab[16]['datatype'] = 'datetime';
+
+      $tab[19]['table']     = 'glpi_tickets';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype'] = 'datetime';
 
       $tab[4]['table']     = 'glpi_users';
       $tab[4]['field']     = 'name';
@@ -1566,15 +1611,6 @@ class Ticket extends CommonDBTM {
       $tab[9]['linkfield'] = 'requesttypes_id';
       $tab[9]['name']      = $LANG['job'][44];
 
-      $tab[10]['table']     = 'glpi_tickets';
-      $tab[10]['field']     = 'urgency';
-      $tab[10]['linkfield'] = 'urgency';
-      $tab[10]['name']      = $LANG['joblist'][29];
-
-      $tab[11]['table']     = 'glpi_tickets';
-      $tab[11]['field']     = 'impact';
-      $tab[11]['linkfield'] = 'impact';
-      $tab[11]['name']      = $LANG['joblist'][30];
 
       return $tab;
    }
@@ -1613,7 +1649,7 @@ class Ticket extends CommonDBTM {
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
       if ($complete) {
-         echo "<option value='0' ".($value==1?" selected ":"").">".$LANG['common'][66]."</option>";
+         echo "<option value='0' ".($value==0?" selected ":"").">".$LANG['common'][66]."</option>";
          echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
                 $LANG['help'][3]."</option>";
          echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
@@ -1673,25 +1709,42 @@ class Ticket extends CommonDBTM {
     *
     * @param $name select name
     * @param $value default value
+    * @param $complete see also at least selection
     *
     * @return string id of the select
     */
-   static function dropdownUrgency($name, $value=0) {
+   static function dropdownUrgency($name, $value=0, $complete=false) {
       global $LANG, $CFG_GLPI;
 
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
-      if ($CFG_GLPI['urgency_mask'] & (1<<5)) {
+
+      if ($complete) {
+         echo "<option value='0' ".($value==0?" selected ":"").">".$LANG['common'][66]."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][42]."</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][43]."</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][44]."</option>";
+         echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][45]."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][46]."</option>";
+      }
+
+
+      if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<5))) {
          echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][42]."</option>";
       }
-      if ($CFG_GLPI['urgency_mask'] & (1<<4)) {
+      if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<4))) {
          echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][43]."</option>";
       }
       echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][44]."</option>";
-      if ($CFG_GLPI['urgency_mask'] & (1<<2)) {
+      if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<2))) {
          echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][45]."</option>";
       }
-      if ($CFG_GLPI['urgency_mask'] & (1<<1)) {
+      if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<1))) {
          echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][46]."</option>";
       }
       echo "</select>";
@@ -1726,29 +1779,47 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-    * Dropdown of ticket Impact
-    *
-    * @param $name select name
-    * @param $value default value
-    *
-    * @return string id of the select
-    */
-   static function dropdownImpact($name, $value=0) {
+   * Dropdown of ticket Impact
+   *
+   * @param $name select name
+   * @param $value default value
+   * @param $complete see also at least selection (major included)
+   *
+   * @return string id of the select
+   */
+   static function dropdownImpact($name, $value=0, $complete=false) {
       global $LANG, $CFG_GLPI;
 
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
-      if ($CFG_GLPI['impact_mask'] & (1<<5)) {
+
+
+      if ($complete) {
+         echo "<option value='0' ".($value==0?" selected ":"").">".$LANG['common'][66]."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][47]."</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][48]."</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][49]."</option>";
+         echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][50]."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".
+                $LANG['help'][51]."</option>";
+      }
+
+
+      if ($complete || ($CFG_GLPI['impact_mask'] & (1<<5))) {
          echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][47]."</option>";
       }
-      if ($CFG_GLPI['impact_mask'] & (1<<4)) {
+      if ($complete || ($CFG_GLPI['impact_mask'] & (1<<4))) {
          echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][48]."</option>";
       }
       echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][49]."</option>";
-      if ($CFG_GLPI['impact_mask'] & (1<<2)) {
+      if ($complete || ($CFG_GLPI['impact_mask'] & (1<<2))) {
          echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][50]."</option>";
       }
-      if ($CFG_GLPI['impact_mask'] & (1<<1)) {
+      if ($complete || ($CFG_GLPI['impact_mask'] & (1<<1))) {
          echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][51]."</option>";
       }
       echo "</select>";

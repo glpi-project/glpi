@@ -57,7 +57,7 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
                                 $_GET["knowbaseitemcategories_id"], $_GET["is_faq"]);
          break;
 
-      case 'Ticket' :
+/*      case 'Ticket' :
          showTrackingList($_SERVER['PHP_SELF'], $_GET["start"], $_GET["sort"], $_GET["order"],
                           $_GET["status"], $_GET["tosearch"], $_GET["search"], $_GET["users_id"],
                           $_GET["group"], $_GET["showfollowups"], $_GET["ticketcategories_id"],
@@ -67,7 +67,7 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
                           $_GET["date1"], $_GET["date2"], $_GET["only_computers"], $_GET["enddate1"],
                           $_GET["enddate2"], $_GET["datemod1"], $_GET["datemod2"]);
          break;
-
+*/
       case 'Stat' :
          if (isset($_GET["item_type_param"])) {
             $params = unserialize(stripslashes($_GET["item_type_param"]));

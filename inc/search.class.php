@@ -1740,6 +1740,16 @@ class Search {
             }
             break;
 
+         case "glpi_groups.name" :
+            if ($itemtype != 'Group') {
+               $linkfield="";
+               if (!empty($searchopt[$ID]["linkfield"])) {
+                  $linkfield="_".$searchopt[$ID]["linkfield"];
+               }
+               return "`$table$linkfield$addtable`.`$field` AS ".$NAME."_$num, ";
+            }
+            break;
+
          case "glpi_contracts.expire_notice" : // ajout jmd
             return "`$table$addtable`.`begin_date` AS ".$NAME."_$num,
                   `$table$addtable`.`duration` AS ".$NAME."_".$num."_2,
@@ -2073,6 +2083,23 @@ class Search {
             }
             break;
 
+         case "glpi_groups.name" :
+            $linkfield="";
+            if (!empty($searchopt[$ID]["linkfield"])) {
+               $linkfield = "_".$searchopt[$ID]["linkfield"];
+
+               if ($meta && getTableForItemType($itemtype)!=$inittable) {
+                  $table = $inittable;
+                  $linkfield .= "_".$itemtype;
+               }
+            }
+            if ($searchtype=='equals') {
+               return " $link `$table$linkfield`.`id`".$SEARCH;
+            } else {
+               return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
+            }
+            break;
+
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
                return "$link (".makeTextCriteria("`glpi_computers_devicenetworkcards`.`specificity`",$val,$nott,'').
@@ -2197,6 +2224,38 @@ class Search {
             }
             return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
             break;
+         case "glpi_tickets.status" :
+            $tocheck=array('new'=>array('new'),
+                           'notold'=>array('new','plan','assign','waiting'),
+                           'old'=>array('solved','closed'),
+                           'process'=>array('plan','assign'),
+                           'waiting'=>array('waiting'),
+                           'solved'=>array('solved'),
+                           'closed'=>array('closed'),
+                           'assign'=>array('assign'),
+                           'plan'=>array('plan'),);
+            if (isset($tocheck[$val])) {
+               foreach ($tocheck[$val] as $key=>$nval) {
+                  $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
+               }
+               return $link.'('.implode(' OR ',$tocheck[$val]).')';
+            } else {
+               return " AND 0=1 "; // Bad search
+            }
+            break;
+         case "glpi_tickets.priority" :
+         case "glpi_tickets.impact" :
+         case "glpi_tickets.urgency" :
+            if ($val>0) {
+               return $link." `$table`.`$field` = '$val'";
+            }
+            if ($val<0) {
+               return $link." `$table`.`$field` >= '".abs($val)."'";
+            }
+            // Show all
+            return $link." `$table`.`$field` >= '0' ";
+            break;
+
 
       }
 
@@ -2374,7 +2433,7 @@ class Search {
       $nt = $new_table;
 
       // Multiple link possibilies case
-      if ($new_table=="glpi_users") {
+      if ($new_table=="glpi_users" || $new_table=="glpi_groups" ) {
          $nt .= "_".$linkfield;
          $AS .= " AS ".$nt;
       }
@@ -2480,7 +2539,7 @@ class Search {
                            ON (`glpi_contacts_suppliers`.`suppliers_id` = `$nt`.`id` ".
                               getEntitiesRestrictRequest("AND","glpi_suppliers",'','',true).") ";
             }
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`suppliers_id` = `$nt`.`id`) ";
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
          case "glpi_contacts" :
             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_contacts_suppliers",
@@ -3168,6 +3227,18 @@ class Search {
                return $plug['plugin'];
             }
             return '';
+         case 'glpi_tickets.status':
+            $status=Ticket::getStatus($data[$NAME.$num]);
+            return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
+                        alt='$status' title='$status'><br>$status";
+         case 'glpi_tickets.priority':
+            return "<span width='100%' height='100%' style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\">".Ticket::getPriorityName($data[$NAME.$num]).'</span>';
+
+         case 'glpi_tickets.urgency':
+            return Ticket::getUrgencyName($data[$NAME.$num]);
+         case 'glpi_tickets.impact':
+            return Ticket::getImpactName($data[$NAME.$num]);
+
       }
 
 
@@ -3861,16 +3932,38 @@ class Search {
                        'searchopt' => array());
 
       if (isset($searchopt[$field_num])) {
-         $action['searchopt']=$searchopt[$field_num];
+         $actions['searchopt']=$searchopt[$field_num];
+
+         // Force search type
+         if (isset($actions['searchopt']['searchtype'])) {
+            // Reset search option
+            $actions=array();
+            $actions['searchopt']=$searchopt[$field_num];
+            if (!is_array($actions['searchopt']['searchtype'])){
+               $actions['searchopt']['searchtype']=array($actions['searchopt']['searchtype']);
+            }
+            foreach ($actions['searchopt']['searchtype'] as $searchtype) {
+               switch ($searchtype) {
+                  case "equals" :
+                     $actions['equals'] = $LANG['rulesengine'][0];
+                     break;
+                  case "contains" :
+                     $actions['contains'] = $LANG['search'][2];
+                     break;
+               }
+            }
+            return $actions;
+         }
+
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
                return array('equals'=>$LANG['rulesengine'][0],
                         'searchopt'=>$searchopt[$field_num]);
             case 'name' :
             case 'completename' :
-               return array('contains'=>$LANG['search'][2],
-                           'equals'=>$LANG['rulesengine'][0],
-                           'searchopt'=>$searchopt[$field_num]);
+               return array('contains' => $LANG['search'][2],
+                           'equals'    => $LANG['rulesengine'][0],
+                           'searchopt' => $searchopt[$field_num]);
          }
      }
 

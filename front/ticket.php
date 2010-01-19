@@ -41,6 +41,7 @@ checkCentralAccess();
 
 commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 
+/*
 if (isset($_GET['reset']) && $_GET['reset'] == "reset_before") {
    unset($_SESSION['tickets_id']);
    unset($_GET['reset']);
@@ -246,6 +247,10 @@ if (!haveRight("show_all_ticket","1") && !haveRight("show_assign_ticket",'1')) {
                        $_GET["datemod2"],$_GET["users_id_recipient"]);
    }
 }
+*/
+
+Search::show('Ticket');
+
 
 commonFooter();
 

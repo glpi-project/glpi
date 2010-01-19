@@ -57,6 +57,23 @@ if (isset($_REQUEST['searchtype'])) {
         if (isset($searchopt['field'])) {
             //echo $searchopt['field'];
             switch ($searchopt['field']) {
+               case "status" :
+                  Ticket::dropdownStatus($inputname,$_REQUEST['value'],1);
+                  $display=true;
+                  break;
+               case "priority" :
+                  Ticket::dropdownPriority($inputname,$_REQUEST['value'],true,true);
+                  $display=true;
+                  break;
+               case "impact" :
+                  Ticket::dropdownImpact($inputname,$_REQUEST['value'],true);
+                  $display=true;
+                  break;
+               case "urgency" :
+                  Ticket::dropdownUrgency($inputname,$_REQUEST['value'],true);
+                  $display=true;
+                  break;
+   
                case "name":
                case "completename":
                   if ($searchopt['table']=='glpi_users') {
