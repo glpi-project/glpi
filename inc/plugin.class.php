@@ -242,7 +242,7 @@ class Plugin extends CommonDBTM {
                $checking = $pluglist;
                foreach ($checking as $check) {
                   if (isset($check['directory']) && $check['directory'] == $data['oldname']) {
-                     $this->clean($check['id']);
+                     $this->delete(array('id'=>$check['id']));
                   }
                }
             } else {
