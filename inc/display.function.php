@@ -1845,7 +1845,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
       Ticket::dropdownUrgency("urgency",$urgency);
       echo "</td></tr>";
    }
-   if (isAuthorMailingActivatedForHelpdesk()) {
+   if (NotificationMail::isAuthorMailingActivatedForHelpdesk()) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][8]."&nbsp;:</td>";
       echo "<td>";

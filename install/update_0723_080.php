@@ -2753,6 +2753,7 @@ function update0723to080($output='HTML') {
                  `content_html` TEXT NOT NULL ,
                  `comment` TEXT NOT NULL ,
                  `itemtype` VARCHAR( 255 ) NOT NULL,
+                 `date_mod` DATETIME NULL ,
                  PRIMARY KEY ( `ID` )
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_notificationtemplates" . $LANG['update'][90] . $DB->error());
@@ -2770,6 +2771,7 @@ function update0723to080($output='HTML') {
                   `content` TEXT NOT NULL ,
                   `comment` TEXT NOT NULL ,
                   `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                 `date_mod` DATETIME NULL ,
                   PRIMARY KEY ( `id` )
                   ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
       $DB->query($query) or die("0.80 create glpi_notifications" . $LANG['update'][90] . $DB->error());
@@ -2792,6 +2794,34 @@ function update0723to080($output='HTML') {
 
       $query = "UPDATE `glpi_profiles` SET `notification`='w' WHERE `name` IN ('super-admin','admin')";
       $DB->query($query) or die("0.80 add notification write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_entitynotifications')) {
+      $query = "CREATE TABLE `glpi_entitynotifications` (
+                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                  `entities_id` INT( 11 ) NOT NULL DEFAULT '0',
+                  `mailing_signature` TEXT NOT NULL ,
+                  `cartridges_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
+                  `consumables_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
+                  `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                  `admin_email` VARCHAR( 255 ) NOT NULL ,
+                  `admin_reply` VARCHAR( 255 ) NOT NULL ,
+                  PRIMARY KEY ( `id` )
+                  ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
+      $DB->query($query) or die("0.80 create glpi_entitynotifications" . $LANG['update'][90] . $DB->error());
+
+      $query = "INSERT INTO `glpi_entitynotifications` (`entities_id`, `admin_email`, `admin_reply`)
+                SELECT `entities_id`, `admin_email`, `admin_reply`
+                FROM `glpi_entitydatas`";
+      $DB->query($query) or die("0.80 move admin_email, admin_reply in glpi_entitynotifications" . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_entitydatas` DROP `admin_email`, DROP `admin_reply`;";
+       $DB->query($query) or die("0.80 delete admin_email, admin_reply in glpi_entitydatas" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (TableExists('glpi_mailsettings')) {
+      $query = "RENAME TABLE `glpi_mailingsettings`  TO `glpi_notificationmailsettings` ;";
+      $DB->query($query) or die("0.80 rename glpi_mailingsettings to glpi_notificationmailsettings" . $LANG['update'][90] . $DB->error());
    }
 
    // Migrate infocoms entity information
@@ -3042,7 +3072,7 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 add comment to glpi_transfers" .
                                  $LANG['update'][90] . $DB->error());
    }
-   // Change search pref : date_mod 
+   // Change search pref : date_mod
    $ADDTODISPLAYPREF['Transfer']=array(19);
 
    // Convert events
@@ -3055,7 +3085,8 @@ function update0723to080($output='HTML') {
       $DB->query($query2) or die("0.80 update events data " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("080", $LANG['update'][142] . ' - ticket bookmarks'); 
+   displayMigrationMessage("080", $LANG['update'][142] . ' - ticket bookmarks');
+
    $query="SELECT * FROM `glpi_bookmarks`
             WHERE `itemtype`='Ticket' AND `type`='".BOOKMARK_SEARCH."';";
    if ($result = $DB->query($query)) {
@@ -3286,11 +3317,11 @@ function update0723to080($output='HTML') {
 
 
 
-   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences'); 
+   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    // Add search values for tickets
    $ADDTODISPLAYPREF['Ticket']=array(12,19,15,3,4,5,7);
-   
+
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
 

@@ -265,7 +265,7 @@ class Auth {
                $sslattributes[$key] = $val;
             }
             if (isset($sslattributes[$CFG_GLPI["x509_email_field"]])
-                && isValidEmail($sslattributes[$CFG_GLPI["x509_email_field"]])
+                && NotificationMail::isValidEmail($sslattributes[$CFG_GLPI["x509_email_field"]])
                 && isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])) {
                $this->user->fields['name'] = $sslattributes[$CFG_GLPI["x509_email_field"]];
 

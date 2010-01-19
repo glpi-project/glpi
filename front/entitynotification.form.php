@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: setup.auth.php 9584 2009-12-08 20:36:44Z moyo $
+ * @version $Id: entitydata.form.php 10109 2010-01-12 08:33:45Z remi $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -28,34 +28,30 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("notification","r");
 
-commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
+$data = new EntityNotification;
 
-echo "<table class='tab_cadre'>";
-echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
+if (isset($_POST["add"])) {
+   $data->check(-1,'w',$_POST);
 
-if (haveRight("config","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationmailsetting.php'>" . $LANG['setup'][240] .
-         "</a></td></tr>";
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationtemplate.php'>" .$LANG['mailing'][113] .
-         "</a></td> </tr>";
+   if ($data->add($_POST)) {
+      Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["update"])) {
+   $data->check($_POST["entities_id"],'w');
+
+   if ($data->update($_POST)) {
+      Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 }
-if (haveRight("notification","r")) {
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
-         "</a></td></tr>";
-}
-echo "</table>";
-
-commonFooter();
+displayErrorAndDie("lost");
 
 ?>

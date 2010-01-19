@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: setup.auth.php 9584 2009-12-08 20:36:44Z moyo $
+ * @version $Id: notification.class.php 10030 2010-01-05 11:11:22Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -28,34 +28,25 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file:
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-checkRight("notification","r");
-
-commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
-
-if (haveRight("config","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationmailsetting.php'>" . $LANG['setup'][240] .
-         "</a></td></tr>";
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationtemplate.php'>" .$LANG['mailing'][113] .
-         "</a></td> </tr>";
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
 }
-if (haveRight("notification","r")) {
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
-         "</a></td></tr>";
+
+// Class NotificationTarget
+class NotificationTargetDBConnection extends NotificationTarget {
+
+   function getEmails($notifications_id,$itemtype,$data,$options=array()) {
+      //Look for all targets whose type is USER_MAILING
+      switch ($data['type']) {
+
+         case USER_MAILING_TYPE:
+            switch ($data['items_id']) {
+               //Send to glpi's global admin (as defined in the mailing configuration)
+               case ADMIN_MAILING :
+                  $notificationtarget->getAdminEmail($notifications_id);
+               break;
+            }
+      }
+   }
 }
-echo "</table>";
-
-commonFooter();
-
 ?>

@@ -1896,11 +1896,13 @@ class Search {
          case 'glpi_crontasks.description' :
             return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.", ";
             break;
+         case 'glpi_notifications.event' :
+            return " `glpi_notifications`.`itemtype` AS `itemtype`, `glpi_notifications`.`event` AS ".$NAME."_".$num.", ";
+            break;
          case 'glpi_tickets.name' :
             return "`$table$addtable`.`$field` AS ".$NAME."_$num,
                         `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
                         `$table$addtable`.`content` AS ".$NAME."_".$num."_3, ";
-
       }
 
       //// Default cases
@@ -3247,7 +3249,12 @@ class Search {
 
          case 'glpi_notifications.mode' :
                return Notification::getMode($data[$NAME.$num]);
-
+         case 'glpi_notifications.event' :
+               if (class_exists($data['itemtype'])) {
+                  $item = new $data['itemtype'] ();
+                  $events = $item->getEvents();
+                  return $events[$data[$NAME.$num]];
+               }
          case 'glpi_crontasks.description' :
             $tmp = new CronTask();
             return $tmp->getDescription($data['id']);
@@ -3466,6 +3473,14 @@ class Search {
                else {
                   return "";
                }
+            case "language":
+               if (isset($CFG_GLPI['languages'][$data[$NAME.$num]])) {
+                  return $CFG_GLPI['languages'][$data[$NAME.$num]][0];
+               }
+               else {
+                  return $LANG['setup'][46];
+               }
+            break;
          }
       }
 

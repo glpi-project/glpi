@@ -74,7 +74,7 @@ echo "From : $from\n";
 echo "To : $dest\n";
 echo "Date : $dat\n";
 
-$mmail=new glpi_phpmailer();
+$mmail=new NotificationMail();
 $mmail->From=$from;
 $mmail->FromName="GLPI test";
 $mmail->isHTML(true);

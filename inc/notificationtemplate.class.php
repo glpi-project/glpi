@@ -35,6 +35,9 @@ if (!defined('GLPI_ROOT')){
 // Class Notification
 class NotificationTemplate extends CommonDBTM {
 
+   // From CommonDBTM
+   public $dohistory = true;
+
    static function getTypeName() {
       global $LANG;
 
@@ -45,6 +48,9 @@ class NotificationTemplate extends CommonDBTM {
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
+      if ($ID > 0) {
+         $tabs[12]=$LANG['title'][38];
+      }
 
       return $tabs;
    }
@@ -76,6 +82,27 @@ class NotificationTemplate extends CommonDBTM {
       }
       $this->showTabs($ID,'');
       $this->showFormHeader($target,$ID,'',2);
+
+     //echo "<div id='contenukb'>";
+      echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
+             "/lib/tiny_mce/tiny_mce.js'></script>";
+      echo "<script language='javascript' type='text/javascript''>";
+      echo "tinyMCE.init({
+         language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
+         mode : 'exact',
+         elements: 'content_html',
+         plugins : 'table,directionality,paste,safari,searchreplace',
+         theme : 'advanced',
+         entity_encoding : 'numeric', ";
+         // directionality + search replace plugin
+      echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
+      echo "theme_advanced_toolbar_location : 'top',
+         theme_advanced_toolbar_align : 'left',
+         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
+         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
+         theme_advanced_buttons3 : ''});";
+      echo "</script>";
+
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
       echo "<td>";
@@ -121,7 +148,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $this->showFormButtons($ID,'',2);
       echo "<div id='tabcontent'></div>";
-      //echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
    function getSearchOptions() {
@@ -143,23 +170,35 @@ class NotificationTemplate extends CommonDBTM {
       $tab[2]['name']          = $LANG['mailing'][114];
       $tab[2]['datatype']      = 'bool';
 
+      $tab[3]['table']         = 'glpi_notificationtemplates';
+      $tab[3]['field']         = 'language';
+      $tab[3]['linkfield']     = '';
+      $tab[3]['name']          = $LANG['setup'][41];
+      $tab[3]['datatype']      = 'language';
+
+      $tab[4]['table']         = 'glpi_notificationtemplates';
+      $tab[4]['field']         = 'itemtype';
+      $tab[4]['linkfield']     = '';
+      $tab[4]['name']          = $LANG['common'][17];
+      $tab[4]['datatype']      = 'itemtypename';
+
+
       return $tab;
    }
 
    function prepareInputForAdd($input) {
-      //TODO clean HTML
+      return NotificationTemplate::cleanContentHtml($input);
+   }
+
+   static function cleanContentHtml($input) {
       if (!$input['content_text']) {
-         $input['content_text'] = $input['content_html'];
+         $input['content_text'] = html_clean(unclean_cross_side_scripting_deep($input['content_html']));
       }
       return $input;
    }
 
    function prepareInputForUpdate($input) {
-      //TODO clean HTML
-      if (!$input['content_text']) {
-         $input['content_text'] = $input['content_html'];
-      }
-      return $input;
+      return NotificationTemplate::cleanContentHtml($input);
    }
 
    /**

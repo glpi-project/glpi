@@ -42,7 +42,8 @@ header_nocache();
 checkRight("notification",'r');
 
 if ($_POST['id'] > 0) {
-   $target =new NotificationTarget;
+   $target =new NotificationTarget($_SESSION['glpiactive_entity']);
+   $notification = new Notification;
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $target->showForm($_POST['target'], $_POST["id"]);
@@ -50,6 +51,10 @@ if ($_POST['id'] > 0) {
          break;
       case 2 :
          $target->showForm($_POST['target'], $_POST["id"]);
+         break;
+      case 12 :
+            $notification->getFromDB($_POST["id"]);
+            Log::showForItem($notification);
          break;
       default :
          if (!Plugin::displayAction($target, $_REQUEST['glpi_tab'])) {

@@ -35,6 +35,27 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTarget extends CommonDBTM {
 
+   // From CommonDBTM
+   public $dohistory = true;
+
+   //Array to store emails by notification
+   var $targets = array();
+
+   var $entity = '';
+
+   //Object which raises the notification event
+   var $obj = null;
+
+   function __construct($entity='', $object = null) {
+      if (!$entity == '') {
+         $this->entity = $_SESSION['glpiactive_entity'];
+      }
+      else {
+         $this->entity = $entity;
+      }
+      $this->obj = $object;
+   }
+
    static function getTypeName() {
       global $LANG;
 
@@ -262,6 +283,77 @@ class NotificationTarget extends CommonDBTM {
             }
          }
    }
-}
 
+   /**
+    * Add new mail with lang to current email array
+    *
+    * @param $mail : new email to add
+    * @param $lang used with this email - default to config language
+    *
+    */
+   function addToEmailList($notifications_id, $mail,$lang='') {
+      global $CFG_GLPI;
+
+      $new_mail=trim($mail);
+      $new_lang=trim($lang);
+      if (!empty($new_mail)) {
+         if (isValidEmail($new_mail) && !isset($emails[$new_mail])) {
+            $this->target[$notifications_id][$new_mail] = (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang);
+         }
+      }
+   }
+
+   /**
+    * Get GLPI's global administrator email
+    */
+   function getAdminEmail($notifications_id) {
+      global $CFG_GLPI;
+      $this->addToEmailList($notifications_id,$CFG_GLPI["admin_email"]);
+   }
+
+   /**
+    * Get entity admin email
+    */
+   function getEntityAdminEmail($notifications_id) {
+      global $DB;
+
+      foreach ($DB->request('glpi_entitydatas',
+                            array('entities_id'=>$this->entity)) as $data) {
+         $this->addToEmailList($notifications_id,$data["email"]);
+      }
+   }
+
+   function getUsersEmailsByGroup($notifications_id,$group_id) {
+      global $DB;
+      $query="SELECT `glpi_users`.`email` AS email, `glpi_users`.`language` AS lang
+              FROM `glpi_groups_users`
+              INNER JOIN `glpi_users`
+                      ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`)
+                          WHERE `glpi_groups_users`.`groups_id`='".$group_id."'";
+      foreach ($DB->request($query) as $data) {
+         $this->addToEmailList($notifications_id,$data['email'], $data['lang']);
+      }
+   }
+
+   static function getByNotificationIdAndEntity($notifications_id, $itemtype,$options=array()) {
+      global $DB,$CFG_GLPI;
+
+      $classname = 'NotificationTarget'.$itemtype;
+      if (class_exists($classname)) {
+         $notificationtarget = new $classname ();
+
+         foreach ($DB->request($this->table,
+                               array('notifications_id' => $notifications_id)) as $target) {
+            $notificationtarget->getEmails($notifications_id,$itemtype,$target,$options);
+         }
+      }
+      return $notificationtarget;
+   }
+
+   static function getDistinctUserSql() {
+      return "SELECT DISTINCT `glpi_users`.`email` AS email,
+                               `glpi_users`.`language` AS lang ";
+   }
+
+}
 ?>
