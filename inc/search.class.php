@@ -1248,7 +1248,7 @@ class Search {
 
             case 'Ticket' :
                if (haveRight("show_all_ticket","1")) {
-                  $linked = array_keys(getAllTypesForHelpdesk());
+                  $linked = array_keys(Ticket::getAllTypesForHelpdesk());
                }
                break;
 
@@ -3378,7 +3378,7 @@ class Search {
                return timestampToString($data[$NAME.$num]);
 
             case "realtime" :
-               return getRealtime($data[$NAME.$num]);
+               return Ticket::getRealtime($data[$NAME.$num]);
 
             case "date_delay" :
                $split = explode('$$$$',$data[$NAME.$num]);

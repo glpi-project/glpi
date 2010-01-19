@@ -52,7 +52,7 @@ class RuleTicketCollection extends RuleCollection {
    }
 
    function preProcessPreviewResults($output) {
-      return showPreviewAssignAction($output);
+      return Ticket::showPreviewAssignAction($output);
    }
 
 }

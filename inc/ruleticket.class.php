@@ -128,7 +128,7 @@ class RuleTicket extends Rule {
    }
 
    function preProcessPreviewResults($output) {
-      return showPreviewAssignAction($output);
+      return Ticket::showPreviewAssignAction($output);
    }
 
 }
