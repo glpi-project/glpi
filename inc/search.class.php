@@ -1124,24 +1124,20 @@ class Search {
          echo "<tr><td class='right'>";
          // First line display add / delete images for normal and meta search items
          if ($i==0) {
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count=".
-                  "1&amp;itemtype=$itemtype'>";
+            echo "<a href='$target?add_search_count=1'>";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".
                   $LANG['search'][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             if ($_SESSION["glpisearchcount"][$itemtype]>1) {
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count=".
-                     "1&amp;itemtype=$itemtype'>";
+               echo "<a href='$target?delete_search_count=1'>";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".
                      $LANG['search'][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             }
             if (isset($names[$itemtype])) {
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count2=".
-                     "1&amp;itemtype=$itemtype'>";
+               echo "<a href='$target?add_search_count2=1'>";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".
                      $LANG['search'][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count2=".
-                        "1&amp;itemtype=$itemtype'>";
+                  echo "<a href='$target?delete_search_count2=1'>";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".
                         $LANG['search'][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                }
@@ -1370,8 +1366,7 @@ class Search {
          Dropdown::showYesNo("is_deleted",$p['is_deleted']);
          echo '&nbsp;&nbsp;';
       }
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=".
-            "reset_search&amp;itemtype=$itemtype' >";
+      echo "<a href='$target?reset=reset' >";
       echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
       Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
@@ -3215,8 +3210,16 @@ class Search {
 
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
-               $out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=".
-                     "reset_before&status=all&itemtype=$itemtype&items_id=".$data['id']."\">";
+
+               $options['itemtype2'][0]  = $itemtype;
+               $options['field2'][0]      = 2;
+               $options['searchtype2'][0] = 'equals';
+               $options['contains2'][0]   = $data['id'];
+               $options['link2'][0]        = 'AND';
+
+               $options['reset']='reset';
+
+               $out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">";
                $out .= $data[$NAME.$num];
                $out .= "</a>";
             } else {
@@ -3517,6 +3520,27 @@ class Search {
    static function manageGetValues($itemtype,$usesession=true,$save=true) {
       global $_GET,$DB;
 
+
+      if (isset($_GET["add_search_count"])) {
+         $_SESSION["glpisearchcount"][$itemtype]++;
+         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+      }
+
+      if (isset($_GET["delete_search_count"])) {
+         $_SESSION["glpisearchcount"][$itemtype]--;
+         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+      }
+
+      if (isset($_GET["add_search_count2"])) {
+         $_SESSION["glpisearchcount2"][$itemtype]++;
+         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+      }
+
+      if (isset($_GET["delete_search_count2"])) {
+         $_SESSION["glpisearchcount2"][$itemtype]--;
+         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+      }
+
       $tab=array();
 
       $default_values["start"]=0;
@@ -3551,8 +3575,9 @@ class Search {
             }
          }
       }
+
       if ($usesession
-         && (isset($_GET["reset_before"]) || (isset($_GET["reset"]) && $_GET["reset"]="reset_before"))) {
+         && isset($_GET["reset"])) {
 
          if (isset($_SESSION['glpisearch'][$itemtype])) {
             unset($_SESSION['glpisearch'][$itemtype]);
@@ -3566,10 +3591,14 @@ class Search {
          // Bookmark use
          if (isset($_GET["glpisearchcount"])) {
             $_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
+         } else if (isset($_GET["field"])){
+            $_SESSION["glpisearchcount"][$itemtype]=count($_GET["field"]);
          }
          // Bookmark use
          if (isset($_GET["glpisearchcount2"])) {
             $_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
+         } else if (isset($_GET["field2"])){
+            $_SESSION["glpisearchcount2"][$itemtype]=count($_GET["field2"]);
          }
       }
 
