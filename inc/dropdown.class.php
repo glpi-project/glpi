@@ -52,6 +52,7 @@ class Dropdown {
    *    - used : array / Already used items ID: not to display in dropdown (default empty)
    *    - auto_submit : boolean / preselected value (default 0)
    *    - rand : integer / already computed rand value
+   *    - condition : string / aditional SQL condition to limit display
    *    - displaywith : array / array of field to display with request 
    *
    *
@@ -778,7 +779,7 @@ class Dropdown {
                         'myname'          => $myname,
                         'entity_restrict' => $entity_restrict);
          if ($onlyglobal) {
-            $params['onlyglobal']=1;
+            $params['condition']="`is_global`='1'";
          }
          ajaxUpdateItemOnSelectEvent("itemtype$rand","show_$myname$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
