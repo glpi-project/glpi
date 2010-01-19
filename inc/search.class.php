@@ -2257,7 +2257,9 @@ class Search {
                }
                return $link.'('.implode(' OR ',$tocheck[$val]).')';
             } else {
-               return " AND 0=1 "; // Bad search
+               if ($tocheck!='all') {
+                  return " $link 0=1 "; //  Bad search
+               }
             }
             break;
          case "glpi_tickets.priority" :
