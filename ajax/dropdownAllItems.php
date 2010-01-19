@@ -71,8 +71,8 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    if (isset($_POST['entity_restrict'])) {
       $paramsallitems['entity_restrict']=$_POST['entity_restrict'];
    }
-   if (isset($_POST['onlyglobal'])) {
-      $paramsallitems['onlyglobal']=$_POST['onlyglobal'];
+   if (isset($_POST['condition'])) {
+      $paramsallitems['condition']=$_POST['condition'];
    }
 
    $default="--<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
