@@ -91,8 +91,10 @@ class ComputerDisk extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
+         $comp=new Computer();
+         $comp->getFromDB($computers_id);
          // Create item
-         $input=array('computers_id'=>$computers_id);
+         $input=array('entities_id'=>$comp->getEntityID());
          $this->check(-1,'w',$input);
       }
 

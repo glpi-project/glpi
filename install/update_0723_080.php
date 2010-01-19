@@ -2837,34 +2837,34 @@ function update0723to080($output='HTML') {
 
                $itemtable=getTableForItemType($data['itemtype']);
                $do_recursive=false;
-               if (FieldExists($itemtable,'is_recurisve')) {
+               if (FieldExists($itemtable,'is_recursive')) {
                   $do_recursive=true;
                }
                foreach ($entities as $entID => $val) {
                   if ($do_recursive) {
-                     // Non recurisve ones
-                     $query3="UPDATE glpi_infocoms
-                              SET entities_id=$entID, is_recursive=0
-                              WHERE itemtype='".$data['itemtype']."'
-                                 AND items_id IN (SELECT id FROM $itemtable
-                                 WHERE entities_id=$entID AND is_recursive=0)";
+                     // Non recursive ones
+                     $query3="UPDATE `glpi_infocoms`
+                              SET `entities_id`=$entID, `is_recursive`=0
+                              WHERE `itemtype`='".$data['itemtype']."'
+                                 AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                                 WHERE `entities_id`=$entID AND `is_recursive`=0)";
                      $DB->query($query3) or die("0.80 update entities_id and is_recursive=0
                            in glpi_infocoms for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
 
-                     // Recurisve ones
-                     $query3="UPDATE glpi_infocoms
-                              SET entities_id=$entID, is_recursive=1
-                              WHERE itemtype='".$data['itemtype']."'
-                                 AND items_id IN (SELECT id FROM $itemtable
-                                 WHERE entities_id=$entID AND is_recursive=1)";
+                     // Recursive ones
+                     $query3="UPDATE `glpi_infocoms`
+                              SET `entities_id`=$entID, `is_recursive`=1
+                              WHERE `itemtype`='".$data['itemtype']."'
+                                 AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                                 WHERE `entities_id`=$entID AND `is_recursive`=1)";
                      $DB->query($query3) or die("0.80 update entities_id and is_recursive=1
                            in glpi_infocoms for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
                   } else {
-                     $query3="UPDATE glpi_infocoms
-                              SET entities_id=$entID
-                              WHERE itemtype='".$data['itemtype']."'
-                                 AND items_id IN (SELECT id FROM $itemtable
-                                 WHERE entities_id=$entID)";
+                     $query3="UPDATE `glpi_infocoms`
+                              SET `entities_id`=$entID
+                              WHERE `itemtype`='".$data['itemtype']."'
+                                 AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                                 WHERE `entities_id`=$entID)";
                      $DB->query($query3) or die("0.80 update entities_id in glpi_infocoms
                            for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
 
@@ -2876,8 +2876,10 @@ function update0723to080($output='HTML') {
       }
    }
 
-   // Migrate consumable and cartridge entity information
-   $items=array('glpi_cartridges' => 'glpi_cartridgeitems','glpi_consumables'=> 'glpi_consumableitems');
+   // Migrate consumable and cartridge and computerdisks entity information
+   $items=array('glpi_cartridges' => 'glpi_cartridgeitems',
+               'glpi_consumables'=> 'glpi_consumableitems',
+               'glpi_computerdisks'=> 'glpi_computers');
    foreach ($items as $linkitem => $sourceitem) {
       if (!FieldExists($linkitem,'entities_id')) {
          displayMigrationMessage("080", $LANG['update'][141].' - '.$linkitem); // Updating schema
@@ -2892,11 +2894,43 @@ function update0723to080($output='HTML') {
 
          foreach ($entities as $entID => $val) {
             $query3="UPDATE $linkitem
-                     SET entities_id=$entID
+                     SET `entities_id`='$entID'
                      WHERE ".getForeignKeyFieldForTable($sourceitem)." IN
-                        (SELECT id FROM $sourceitem WHERE entities_id=$entID )";
+                        (SELECT `id` FROM $sourceitem WHERE `entities_id`='$entID' )";
             $DB->query($query3) or die("0.80 update entities_id in $linkitem ". $LANG['update'][90] . $DB->error());
          }
+      }
+   }
+
+   // Migrate softwareversions entity information
+   if (!FieldExists('glpi_softwareversions','entities_id')) {
+      displayMigrationMessage("080", $LANG['update'][141].' - glpi_softwareversions'); // Updating schema
+
+      $query = "ALTER TABLE `glpi_softwareversions` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
+                        ADD INDEX `entities_id` ( `entities_id` ), ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`";
+      $DB->query($query) or die("0.80 add entities_id in glpi_softwareversion ". $LANG['update'][90] . $DB->error());
+
+
+      $entities=getAllDatasFromTable('glpi_entities');
+      $entities[0]="Root";
+
+      foreach ($entities as $entID => $val) {
+         // Non recursive ones
+         $query3="UPDATE `glpi_softwareversions`
+                  SET `entities_id`=$entID, `is_recursive`=0
+                  WHERE `softwares_id` IN (SELECT `id` FROM `glpi_softwares`
+                     WHERE `entities_id`=$entID AND `is_recursive`=0)";
+         $DB->query($query3) or die("0.80 update entities_id and is_recursive=0
+               in glpi_softwareversions for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
+
+         // Recursive ones
+         $query3="UPDATE `glpi_softwareversions`
+                  SET `entities_id`=$entID, `is_recursive`=1
+                  WHERE `softwares_id` IN (SELECT `id` FROM `glpi_softwares`
+                     WHERE `entities_id`=$entID AND `is_recursive`=1)";
+         $DB->query($query3) or die("0.80 update entities_id and is_recursive=1
+               in glpi_softwareversions for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
+
       }
    }
 

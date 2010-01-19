@@ -1,4 +1,4 @@
-#GLPI Dump database on 2010-01-18 15:32
+#GLPI Dump database on 2010-01-18 15:57
 
 ### Dump table glpi_alerts
 
@@ -237,6 +237,7 @@ CREATE TABLE `glpi_cartridges_printermodels` (
 DROP TABLE IF EXISTS `glpi_computerdisks`;
 CREATE TABLE `glpi_computerdisks` (
   `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL default '0',
   `computers_id` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `device` varchar(255) collate utf8_unicode_ci default NULL,
@@ -251,7 +252,8 @@ CREATE TABLE `glpi_computerdisks` (
   KEY `totalsize` (`totalsize`),
   KEY `freesize` (`freesize`),
   KEY `computers_id` (`computers_id`),
-  KEY `filesystems_id` (`filesystems_id`)
+  KEY `filesystems_id` (`filesystems_id`),
+  KEY `entities_id` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1471,7 +1473,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-10-04 21:30:45','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2010-01-18 15:32:49','login','3','glpi connexion de l\'IP: 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2010-01-18 15:57:49','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -3121,6 +3123,8 @@ CREATE TABLE `glpi_softwares` (
 DROP TABLE IF EXISTS `glpi_softwareversions`;
 CREATE TABLE `glpi_softwareversions` (
   `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL default '0',
+  `is_recursive` tinyint(1) NOT NULL default '0',
   `softwares_id` int(11) NOT NULL default '0',
   `states_id` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
@@ -3128,7 +3132,8 @@ CREATE TABLE `glpi_softwareversions` (
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `softwares_id` (`softwares_id`),
-  KEY `states_id` (`states_id`)
+  KEY `states_id` (`states_id`),
+  KEY `entities_id` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3478,7 +3483,7 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-01-18 15:32:49','2010-01-18 15:32:49','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','41ece51526515624ff89973668497d00','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-01-18 15:57:49','2010-01-18 15:57:49','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);

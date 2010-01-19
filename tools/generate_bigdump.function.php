@@ -1257,7 +1257,7 @@ function generate_entity($ID_entity){
 		for ($j=1;$j<=$nb_disk;$j++){
 			$totalsize=mt_rand(10000,1000000);
 			$freesize=mt_rand(0,$totalsize);
-			$query="INSERT INTO glpi_computerdisks VALUES (NULL,'$compID','disk $j','/dev/disk$j','/mnt/disk$j','".mt_rand(1,10)."','$totalsize','$freesize')";
+			$query="INSERT INTO glpi_computerdisks VALUES (NULL,'$ID_entity','$compID','disk $j','/dev/disk$j','/mnt/disk$j','".mt_rand(1,10)."','$totalsize','$freesize')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 
@@ -1456,7 +1456,7 @@ function generate_entity($ID_entity){
 			if (isset($items[$i])) {
 				$version=$items[$i][mt_rand(1,count($items[$i])-1)];
 			} else $version="$j.0";
-			$query="INSERT INTO glpi_softwareversions VALUES (NULL, $softID, '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','$version','comment $version')";
+			$query="INSERT INTO glpi_softwareversions VALUES (NULL, '$ID_entity','$recursive', $softID, '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','$version','comment $version')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$versID=$DB->insert_id();
 			$val3=mt_rand(1,$MAX['softwareinstall']);
