@@ -237,8 +237,17 @@ class Plugin extends CommonDBTM {
       }
       if (count($file_plugins)) {
          foreach ($file_plugins as $plug => $data) {
-            $data=$data;
-            $data['state']=self::NOTINSTALLED;
+            if (isset($data['oldname'])) {
+               $data['state']=self::NOTUPDATED;
+               $checking = $pluglist;
+               foreach ($checking as $check) {
+                  if (isset($check['directory']) && $check['directory'] == $data['oldname']) {
+                     $this->clean($check['id']);
+                  }
+               }
+            } else {
+               $data['state']=self::NOTINSTALLED;
+            }
             $data['directory']=$plug;
             $this->add($data);
          }
