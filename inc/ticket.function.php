@@ -1121,10 +1121,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
    echo "<td class='center' colspan='2'>";
    $elts = array('name'                   => $LANG['common'][57],
                  'content'                => $LANG['joblist'][6],
-                 'followup'               => $LANG['Menu'][5],
+                 'followup'               => $LANG['job'][9],
                  'name_content'           => $LANG['common'][57]." / ".$LANG['joblist'][6],
                  'name_content_followup'  => $LANG['common'][57]." / ".$LANG['joblist'][6]." / ".
-                                             $LANG['Menu'][5],
+                                             $LANG['job'][9],
                  'id'                     => "ID");
    echo "<select name='tosearch'>";
    foreach ($elts as $key => $val) {
