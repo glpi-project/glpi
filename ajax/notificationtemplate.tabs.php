@@ -1,6 +1,7 @@
 <?php
+
 /*
- * @version $Id: setup.auth.php 9584 2009-12-08 20:36:44Z moyo $
+ * @version $Id: notification.tabs.php 10159 2010-01-15 13:49:03Z walid $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -33,29 +34,28 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-checkRight("notification","r");
+checkRight("config",'r');
 
-commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
-
-if (haveRight("config","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationmailsetting.php'>" . $LANG['setup'][240] .
-         "</a></td></tr>";
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationtemplate.php'>" .$LANG['mailing'][113] .
-         "</a></td> </tr>";
+if ($_POST['id'] > 0) {
+   $template =new NotificationTemplate();
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         break;
+      case 12 :
+            $template->getFromDB($_POST["id"]);
+            Log::showForItem($template);
+         break;
+      default :
+         if (!Plugin::displayAction($template, $_REQUEST['glpi_tab'])) {
+         }
+   }
 }
-if (haveRight("notification","r")) {
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
-         "</a></td></tr>";
-}
-echo "</table>";
 
-commonFooter();
+ajaxFooter();
 
 ?>

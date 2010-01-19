@@ -1521,6 +1521,8 @@ $LANG['setup'][42]="Types de matériels réseau";
 $LANG['setup'][43]="Types d'imprimantes";
 $LANG['setup'][44]="Types de moniteurs";
 $LANG['setup'][45]="Types de boitiers";
+$LANG['setup'][46]="Valeur par défaut";
+
 $LANG['setup'][62]="Sélectionnez la catégorie à configurer";
 $LANG['setup'][63]="Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs éléments.";
 $LANG['setup'][64]="Si vous confirmez la suppression, les éléments utilisant cet intitulé se verront attribuer un champs NULL";
@@ -1764,6 +1766,8 @@ $LANG['setup'][651]="SMTP";
 $LANG['setup'][652]="SMTP+SSL";
 $LANG['setup'][653]="SMTP+TLS";
 
+$LANG['setup'][660]="Serveur mail";
+
 
 $LANG['setup'][703]="Générale";
 $LANG['setup'][704]="Notifications";
@@ -1773,6 +1777,7 @@ $LANG['setup'][721]="Informations sur le système, l'installation et la configur
 $LANG['setup'][722]="A copier/coller lors d'une demande d'assistance";
 
 $LANG['setup'][730]="Configuration des notifications";
+$LANG['setup'][731]="Valeur de la configuration générale";
 
 //MySQL Replicate
 $LANG['setup'][800]="Réplicat MySQL";
@@ -1784,7 +1789,7 @@ $LANG['setup'][806]="Durée maximum de désynchronisation (en minutes)";
 $LANG['setup'][807]="La base de donnée esclave est désynchronisée. L'écart est de : ";
 $LANG['setup'][808]="Base de données esclave désynchronisée !";
 $LANG['setup'][809]="Réplicat MySQL : lecture seule";
-
+$LANG['setup'][810]="Désynchronisation du réplicat MySQL";
 
 $LANG['software'][1]="Version d'achat";
 $LANG['software'][2]="Version d'utilisation";

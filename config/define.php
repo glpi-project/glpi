@@ -632,8 +632,9 @@ $CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, O
 $CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, 'CronTask');
 
 $CFG_GLPI["notificationtemplates_types"] = array('Reservation', 'Ticket', 'CartridgeItem',
-                                                 'ConsumableItem');
+                                                 'ConsumableItem','DBConnection');
 
+$CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
 /*
 $CFG_GLPI["specif_entities_tables"] = array('glpi_budgets','glpi_cartridgeitems','glpi_computers',
       'glpi_consumableitems','glpi_contacts','glpi_contracts','glpi_documents','glpi_groups',

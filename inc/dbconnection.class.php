@@ -38,6 +38,12 @@ if (!defined('GLPI_ROOT')){
  */
 class DBConnection {
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][800];
+   }
+
    /**
     * Create slave DB configuration file
     * @param host the slave DB host
@@ -248,14 +254,16 @@ class DBConnection {
          $task->setVolume($diff);
 
          if ($diff > ($task->fields['param']*60)) {
-
+            //Raise event if replicate is not synchronized
+            NotificationEvent::raiseEvent('desynchronization','DBConnection',0,$this);
+            /*
             $msg = $LANG['setup'][807] . " " . timestampToString($diff);
             $task->log($msg);
 
             // Send notification if mail configured
             if (!empty($CFG_GLPI["dbreplicate_email"])
-                && isValidEmail($CFG_GLPI["dbreplicate_email"])) {
-               $mmail = new glpi_phpmailer();
+                && NotificationMail::isValidEmail($CFG_GLPI["dbreplicate_email"])) {
+               $mmail = new NotificationMail();
                $mmail->From = $CFG_GLPI["admin_email"];
                $mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
                $mmail->FromName = $CFG_GLPI["dbreplicate_email"];
@@ -267,7 +275,7 @@ class DBConnection {
                if ($mmail->Send()) {
                   $task->log("Mail send to ".$CFG_GLPI["dbreplicate_email"]);
                }
-            }
+            }*/
          }
          return 1;
       }
@@ -308,5 +316,17 @@ class DBConnection {
       $input['state'] = ($enable?1:0);
       $cron->update($input);
    }
+
+   function getNotficationTargets($entity) {
+      global $LANG,$DB;
+      $profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
+      return $profiles;
+   }
+
+   function getEvents() {
+      global $LANG;
+      return array ('desynchronization' => $LANG['setup'][810]);
+   }
+
 }
 ?>

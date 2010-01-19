@@ -1156,7 +1156,7 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
       autocompletionTextField($this, "email", array('name'=>"email_form"));
-      if (!empty($ID) && !isValidEmail($this->fields["email"])) {
+      if (!empty($ID) && !NotificationMail::isValidEmail($this->fields["email"])) {
          echo "<br><span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
       }
       echo "</td>";
@@ -1318,7 +1318,7 @@ class User extends CommonDBTM {
             echo $this->fields["email"];
          } else {
             autocompletionTextField($this, "email", array('name'=>"email_form"));
-            if (!isValidEmail($this->fields["email"])) {
+            if (!NotificationMail::isValidEmail($this->fields["email"])) {
                echo "<br><span class='red'>".$LANG['mailing'][110]."</span>";
             }
          }
@@ -1507,12 +1507,6 @@ class User extends CommonDBTM {
       $tab[11]['linkfield'] = 'mobile';
       $tab[11]['name']      = $LANG['common'][42];
 
-      $tab[16]['table']     = 'glpi_users';
-      $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
-
       $tab[13]['table']        = 'glpi_groups';
       $tab[13]['field']        = 'name';
       $tab[13]['linkfield']    = '';
@@ -1529,6 +1523,18 @@ class User extends CommonDBTM {
       $tab[15]['field']     = 'name';
       $tab[15]['linkfield'] = '';
       $tab[15]['name']      = $LANG['login'][10];
+
+      $tab[16]['table']     = 'glpi_users';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[17]['table']     = 'glpi_users';
+      $tab[17]['field']     = 'language';
+      $tab[17]['linkfield'] = '';
+      $tab[17]['name']      = $LANG['setup'][41];
+      $tab[17]['datatype']  = 'language';
 
       $tab[19]['table']     = 'glpi_users';
       $tab[19]['field']     = 'date_mod';

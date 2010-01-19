@@ -52,6 +52,24 @@ class NotificationEvent extends CommonDBTM {
       $events[''] = '-----';
       Dropdown::showFromArray('event',$events, array ('value'=>$value));
    }
+
+   /**
+    * Raise an event
+    */
+   static function raiseEvent($event, $itemtype, $entity,$item) {
+
+      //Store notifications infos & targets
+      $notifications_infos = array();
+
+/*
+      //Get all notifications by event, itemtype and entity
+      foreach (Notification::getByEvent($event, $itemtype, $entity) as $notification_id => $notification) {
+         $notifications_infos[] = array ($notification,
+         NotificationTarget::getByNotificationIdAndEntity($notification_id, $itemtype,array()));
+      }*/
+   }
+
+
 }
 
 ?>

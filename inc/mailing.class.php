@@ -74,25 +74,6 @@ class Mailing {
       $this->followupisprivate=$followupisprivate;
    }
 
-   /**
-    * Add new mail with lang to current email array
-    *
-    * @param $emails : emails array
-    * @param $mail : new email to add
-    * @param $lang used with this email - default to config language
-    *
-    */
-   function addToEmailList(&$emails,$mail,$lang='') {
-      global $CFG_GLPI;
-
-      $new_mail=trim($mail);
-      $new_lang=trim($lang);
-      if (!empty($new_mail)) {
-         if (isValidEmail($new_mail) && !isset($emails[$new_mail])) {
-            $emails[$new_mail] = (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang);
-         }
-      }
-   }
 
    /**
     * Give mails to send the mail
@@ -586,6 +567,8 @@ class Mailing {
       }
       return $replyto;
    }
+
+
 
    /**
     * Send mail function

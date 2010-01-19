@@ -100,6 +100,9 @@ class Entity extends CommonTreeDropdown {
          if (haveRight("document","r")) {
             $ong[6]=$LANG['Menu'][27];       // Docs
          }
+         if (haveRight('notification','r')) {
+            $ong[7] = $LANG['setup'][704];
+         }
       }
       return $ong;
    }
@@ -154,6 +157,11 @@ class Entity extends CommonTreeDropdown {
 
             case 6 :
                Document::showAssociated($this);
+               break;
+
+            case 7 :
+               $entitynotification = new EntityNotification;
+               $entitynotification->showForm($this);
                break;
 
             default :

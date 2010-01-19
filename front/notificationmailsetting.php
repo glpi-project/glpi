@@ -1,6 +1,8 @@
 <?php
+
+
 /*
- * @version $Id: setup.auth.php 9584 2009-12-08 20:36:44Z moyo $
+ * @version $Id: notification.php 9638 2009-12-12 07:46:53Z remi $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -37,25 +39,22 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("notification","r");
+checkRight("config", "w");
+$notificationmail = new NotificationMailSetting();
 
-commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
-
-if (haveRight("config","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationmailsetting.php'>" . $LANG['setup'][240] .
-         "</a></td></tr>";
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationtemplate.php'>" .$LANG['mailing'][113] .
-         "</a></td> </tr>";
+if (!empty($_POST["test_smtp_send"])) {
+   NotificationMail::testNotification();
+   glpi_header($_SERVER['HTTP_REFERER']);
+} elseif (!empty($_POST["update"])) {
+   $config = new Config;
+   $config->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
-if (haveRight("notification","r")) {
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
-         "</a></td></tr>";
-}
-echo "</table>";
+
+
+commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing","config");
+
+$notificationmail->showForm($_SERVER['PHP_SELF'],1);
 
 commonFooter();
-
 ?>

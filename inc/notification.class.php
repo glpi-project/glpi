@@ -35,6 +35,9 @@ if (!defined('GLPI_ROOT')){
 // Class Notification
 class Notification extends CommonDBTM {
 
+   // From CommonDBTM
+   public $dohistory = true;
+
    static function getTypeName() {
       global $LANG;
 
@@ -48,6 +51,8 @@ class Notification extends CommonDBTM {
       if ($ID > 0) {
          $tabs[2] = $LANG['mailing'][121];
       }
+      $tabs[12]=$LANG['title'][38];
+
       return $tabs;
    }
 
@@ -106,33 +111,15 @@ class Notification extends CommonDBTM {
       NotificationTemplate::dropdownTemplates('notificationtemplates_id',$this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
       echo "</span></td></tr>";
-
+/*
       echo "<tr class='tab_bg_1'><td>".$LANG['setup'][204]."&nbsp;: </td>";
       echo "<td class='center middle'><textarea cols='45' rows='9' name='content' >"
-         .$this->fields["content"]."</textarea></td><td colspan='2'></td></tr>";
-
+           .($this->fields['content']?$this->fields["content"]:$CFG_GLPI['mailing_signature']).
+           "</textarea></td><td colspan='2'></td></tr>";
+*/
      $this->showFormButtons($ID,'',2);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
-   }
-
-   function canCreate() {
-      return haveRight('notification', 'w');
-   }
-
-   function canView() {
-      return haveRight('notification', 'r');
-   }
-
-   static function dropdownMode($value) {
-      global $LANG;
-      $modes['mail'] = $LANG['mailing'][118];
-      Dropdown::showFromArray('mode',$modes, array ('value'=>$value));
-   }
-
-   static function getMode($mode) {
-      global $LANG;
-      return $LANG['mailing'][118];
    }
 
    function getSearchOptions() {
@@ -184,6 +171,61 @@ class Notification extends CommonDBTM {
       return $tab;
    }
 
+   function canCreate() {
+      return haveRight('notification', 'w');
+   }
+
+   function canView() {
+      return haveRight('notification', 'r');
+   }
+
+   /**
+    * Display a dropdown with all the available notification modes
+    * @param value the default value for the dropdown
+    * @return nothing
+    */
+   static function dropdownMode($value) {
+      global $LANG;
+      $modes['mail'] = $LANG['mailing'][118];
+      Dropdown::showFromArray('mode',$modes, array ('value'=>$value));
+   }
+
+   /**
+    * Get notification method label (email only for the moment)
+    * @param mode the mode to use
+    * @return the mode's label
+    */
+   static function getMode($mode) {
+      global $LANG;
+      return $LANG['mailing'][118];
+   }
+
+   /**
+    * Get all templates by event, itemtype and entity
+    * @param event the event raised
+    * @param itemtype the item type
+    * @param entity the entity in which the entity have been raised
+    * @return an array with all the templates data associated with the event
+    */
+   static function getByEvent($event, $itemtype, $entity) {
+      global $DB;
+
+      $notifications = array();
+
+      //Get all template's data (id, language, subject, content,etc)
+      $query = "SELECT `glpi_notificationtemplates`.*
+                FROM `".$this->table. "`, `glpi_notificationtemplates`
+                WHERE `".$this->table. "`.`event`='$event'
+                  AND `".$this->table. "`.`itemtype`='$itemtype'
+                     AND `".$this->table."`.`notificationtemplates_id` =
+                                               `glpi_notificationtemplates`.`id`";
+      $query.= getEntitiesRestrictRequest(" AND", $this->table,'entities_id',$entity,true);
+
+      foreach ($DB->request($query) as $data) {
+         $notifications[$data['id']] = $data;
+      }
+      return $notifications;
+   }
 }
 
 ?>

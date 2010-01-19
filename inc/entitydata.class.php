@@ -92,17 +92,15 @@ class EntityData extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($entdata, "phonenumber");
       echo "</td>";
-      echo "<td rowspan='3'>".$LANG['financial'][44]."&nbsp;:</td>";
-      echo "<td rowspan='3'><textarea cols='45' rows='3' name='address'>".
+      echo "<td rowspan='5'>".$LANG['financial'][44]."&nbsp;:</td>";
+      echo "<td rowspan='5'><textarea cols='45' rows='3' name='address'>".
              $entdata->fields["address"]."</textarea></td></tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($entdata, "fax");
       echo "</td></tr>";
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
       echo "<td>";
@@ -113,6 +111,9 @@ class EntityData extends CommonDBTM {
       echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($entdata, "email");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($entdata,"postcode",array('size' => 7));
@@ -120,24 +121,11 @@ class EntityData extends CommonDBTM {
       autocompletionTextField($entdata, "town", array('size'=>25));
       echo "</td></tr>";
 
-
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][203]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField($entdata, "admin_email");
-      echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
+      echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($entdata, "state");
       echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][207]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField($entdata, "admin_reply");
-      echo "<td>".$LANG['financial'][103]."&nbsp;:</td><td>";
-      autocompletionTextField($entdata, "country");
-      echo "</td></tr>";
-
 
       if ($canedit) {
          echo "<tr>";
