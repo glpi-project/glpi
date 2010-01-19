@@ -74,7 +74,7 @@ switch($_GET["type"]) {
 
       $next = getNextItem("glpi_users",$_GET["id"]);
       $prev = getPreviousItem("glpi_users",$_GET["id"]);
-      $title = $LANG['stats'][16]."&nbsp;: ".getAssignName($_GET["id"],'User',1);
+      $title = $LANG['stats'][16]."&nbsp;: ".Ticket::getAssignName($_GET["id"],'User',1);
       break;
 
    case "technicien_followup" :
@@ -83,7 +83,7 @@ switch($_GET["type"]) {
 
       $next = getNextItem("glpi_users",$_GET["id"]);
       $prev = getPreviousItem("glpi_users",$_GET["id"]);
-      $title = $LANG['stats'][16]."&nbsp;: ".getAssignName($_GET["id"],'User',1);
+      $title = $LANG['stats'][16]."&nbsp;: ".Ticket::getAssignName($_GET["id"],'User',1);
       break;
 
    case "enterprise" :
@@ -92,7 +92,7 @@ switch($_GET["type"]) {
 
       $next = getNextItem("glpi_suppliers",$_GET["id"]);
       $prev = getPreviousItem("glpi_suppliers",$_GET["id"]);
-      $title = $LANG['stats'][44]."&nbsp;: ".getAssignName($_GET["id"],'Supplier',1);
+      $title = $LANG['stats'][44]."&nbsp;: ".Ticket::getAssignName($_GET["id"],'Supplier',1);
       break;
 
    case "user" :
