@@ -297,7 +297,7 @@ class NotificationTarget extends CommonDBTM {
       $new_mail=trim($mail);
       $new_lang=trim($lang);
       if (!empty($new_mail)) {
-         if (isValidEmail($new_mail) && !isset($emails[$new_mail])) {
+         if (isUserAddressValid($new_mail) && !isset($emails[$new_mail])) {
             $this->target[$notifications_id][$new_mail] = (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang);
          }
       }
