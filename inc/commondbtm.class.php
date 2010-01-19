@@ -45,8 +45,11 @@ class CommonDBTM extends CommonGLPI {
    var $history_blacklist	= array();
    /// Set false to desactivate automatic message on action
    var $auto_message_on_action=true;
+
    /// Forward entity datas to linked items
    protected $forward_entity_to=array();
+   /// Disable entity update display : set to false when forward entity to is set to disable recursive update
+   protected $entity_update_display = true;
 
    /// Table name cache : set dynamically calling getTable
    protected $table="";
@@ -940,7 +943,6 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $addMessAfterRedirect=false;
-//      print_r($this->input);exit();
 
       if (isset($this->input['_purge']) || isset($this->input['_delete'])) {
          $addMessAfterRedirect=true;
@@ -1399,14 +1401,13 @@ class CommonDBTM extends CommonGLPI {
       }
       echo "</th><th colspan='$colspan'>";
 
-      if (isset($this->fields["is_recursive"]) && isMultiEntitiesMode()) {
+      if ($this->maybeRecursive() && isMultiEntitiesMode()) {
          echo $LANG['entity'][9]."&nbsp;:&nbsp;";
-
          if (!$this->can($ID,'recursive')) {
             echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][86];
             $image="/pics/lock.png";
-         } else if (!$this->canUnrecurs()) {
+         } else if (!$this->entity_update_display || !$this->canUnrecurs()) {
             echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][84];
             $image="/pics/lock.png";
@@ -1556,6 +1557,7 @@ class CommonDBTM extends CommonGLPI {
    * @return ID of the entity
    **/
    function getEntityID() {
+      
       if ($this->isEntityAssign()) {
          return $this->fields["entities_id"];
       }
@@ -1570,7 +1572,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean
     **/
    function isEntityAssign() {
-      if (!isset($this->fields['id'])) {
+      if (!array_key_exists('id',$this->fields)) {
          $this->getEmpty();
       }
       return array_key_exists('entities_id', $this->fields);
@@ -1584,7 +1586,7 @@ class CommonDBTM extends CommonGLPI {
    * @return boolean
    **/
    function maybeRecursive() {
-      if (!isset($this->fields['id'])) {
+      if (!array_key_exists('id',$this->fields)) {
          $this->getEmpty();
       }
       return array_key_exists('is_recursive', $this->fields);

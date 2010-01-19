@@ -45,7 +45,7 @@ class Software extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to=array('Infocom');
+   protected $forward_entity_to=array('Infocom','SoftwareVersion');
 
    static function getTypeName() {
       global $LANG;

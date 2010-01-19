@@ -50,6 +50,10 @@ abstract class CommonDBChild extends CommonDBTM {
    * @return ID of the entity
    **/
    function getEntityID () {
+      // Case of Duplicate Entity info to child
+      if (parent::isEntityAssign()) {
+         return parent::getEntityID();
+      }
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
@@ -66,6 +70,11 @@ abstract class CommonDBChild extends CommonDBTM {
    }
 
    function isEntityAssign() {
+      // Case of Duplicate Entity info to child
+      if (parent::isEntityAssign()) {
+         return true;
+      }
+
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
       } else {
@@ -84,6 +93,10 @@ abstract class CommonDBChild extends CommonDBTM {
     * @return boolean
    **/
    function maybeRecursive() {
+      // Case of Duplicate Entity info to child
+      if (parent::maybeRecursive()) {
+         return true;
+      }
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
@@ -103,6 +116,10 @@ abstract class CommonDBChild extends CommonDBTM {
     * @return boolean
     **/
    function isRecursive () {
+      // Case of Duplicate Entity info to child
+      if (parent::maybeRecursive()) {
+          return parent::isRecursive();
+      }
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];

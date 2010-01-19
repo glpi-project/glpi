@@ -44,6 +44,7 @@ class SoftwareVersion extends CommonDBChild {
 
    // From CommonDBTM
    public $dohistory = true;
+   protected $entity_update_display = false;
 
    // From CommonDBChild
    public $itemtype = 'Software';
@@ -83,28 +84,28 @@ class SoftwareVersion extends CommonDBChild {
       return $input;
    }
 
-   function isEntityAssign() {
-      if (isset($this->fields["softwares_id"])) {
-         // Object is instanciated (from can method, p.e.)
-         return true;
-      }
-      // Not intanciated, probably to check if entities_id field exists
-      return false;
-   }
-
-   function getEntityID () {
-
-      $soft=new Software();
-      $soft->getFromDB($this->fields["softwares_id"]);
-      return $soft->getEntityID();
-   }
-
-   function isRecursive () {
-
-      $soft=new Software();
-      $soft->getFromDB($this->fields["softwares_id"]);
-      return $soft->isRecursive();
-   }
+//    function isEntityAssign() {
+//       if (isset($this->fields["softwares_id"])) {
+//          // Object is instanciated (from can method, p.e.)
+//          return true;
+//       }
+//       // Not intanciated, probably to check if entities_id field exists
+//       return false;
+//    }
+// 
+//    function getEntityID () {
+// 
+//       $soft=new Software();
+//       $soft->getFromDB($this->fields["softwares_id"]);
+//       return $soft->getEntityID();
+//    }
+// 
+//    function isRecursive () {
+// 
+//       $soft=new Software();
+//       $soft->getFromDB($this->fields["softwares_id"]);
+//       return $soft->isRecursive();
+//    }
 
    function defineTabs($ID,$withtemplate) {
       global $LANG, $CFG_GLPI;
@@ -136,8 +137,11 @@ class SoftwareVersion extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
+         $soft = new Software();
+         $soft->getFromDB($softwares_id);
          // Create item
-         $input = array('softwares_id' => $softwares_id);
+         $input = array('entities_id' => $soft->getEntityID(),
+                        'is_recursive' => $soft->isRecursive());
          $this->check(-1, 'w', $input);
       }
 
