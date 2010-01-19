@@ -1251,7 +1251,7 @@ INSERT INTO `glpi_displaypreferences` VALUES ('142','Profile','2','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('143','Profile','3','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('144','Profile','19','3','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('145','Transfer','19','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('146','Ticket','2','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('146','Ticket','12','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('147','Ticket','19','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('148','Ticket','15','3','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('149','Ticket','3','4','0');

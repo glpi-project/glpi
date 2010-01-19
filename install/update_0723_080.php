@@ -3070,7 +3070,7 @@ function update0723to080($output='HTML') {
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences'); // Updating schema
 
    // Add search values for tickets
-   $ADDTODISPLAYPREF['Ticket']=array(2,19,15,3,4,5,7);
+   $ADDTODISPLAYPREF['Ticket']=array(12,19,15,3,4,5,7);
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
 
