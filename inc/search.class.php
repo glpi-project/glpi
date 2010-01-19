@@ -2317,8 +2317,10 @@ class Search {
                }
                $search=array("/\&lt;/","/\&gt;/");
                $replace=array("<",">");
+
                $val=preg_replace($search,$replace,$val);
-               if (preg_match("/([<>=])(.*)/",$val,$regs)) {
+
+               if (preg_match("/([<>=]+)(.*)/",$val,$regs)) {
                   if (is_numeric($regs[2])) {
                      return $link." NOW() ".$regs[1]." ADDDATE($date_computation,
                                                                INTERVAL ".$regs[2]." $interval_search) ";
@@ -3588,6 +3590,7 @@ class Search {
             $_SESSION["glpisearchcount2"][$itemtype]=0;
          }
       }
+      //printCleanArray($_GET);
    }
 
 
