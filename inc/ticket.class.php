@@ -3214,7 +3214,6 @@ class Ticket extends CommonDBTM {
 
       if ($number > 0) {
          echo "<table class='tab_cadrehov' style='width:420px'>";
-
          $link_common="&amp;status=$status&amp;reset=reset";
          $link="users_id_assign=mine$link_common";
          // Only mine
@@ -3236,15 +3235,26 @@ class Ticket extends CommonDBTM {
             echo $LANG['central'][17]."&nbsp;: ";
             if ($showgrouptickets) {
                if (haveRight("show_group_ticket",1)) {
+
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?group=-1&amp;users_id=".
                         $_SESSION["glpiID"]."&amp;reset=reset\">".$LANG['joblist'][5]."</a> / ";
                }
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
                      $LANG['joblist'][21]."</a>";
             } else {
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?users_id=".
-                     $_SESSION["glpiID"]."&amp;reset=reset\">".$LANG['joblist'][5]."</a> / ".
-                  "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
+               $options['reset']  = 'reset';
+               $options['field'][0]      = 4; // users_id
+               $options['searchtype'][0] = 'equals';
+               $options['contains'][0]   = $_SESSION["glpiID"];
+               $options['link'][0]        = 'AND';
+
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
+                        "\">".$LANG['joblist'][5]."</a> / ";
+
+               $options['field'][0]      = 5; // users_id_assign
+
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
+                        "\">".
                      $LANG['joblist'][21]."</a>";
             }
          }
