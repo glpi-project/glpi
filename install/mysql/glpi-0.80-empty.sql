@@ -151,6 +151,7 @@ CREATE TABLE `glpi_budgets` (
   `is_template` tinyint(1) NOT NULL default '0',
   `template_name` varchar(255) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
+  `notepad` longtext collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
