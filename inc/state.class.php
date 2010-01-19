@@ -145,8 +145,8 @@ class State extends CommonDropdown {
          while ($data=$DB->fetch_array($result)) {
             $tot=0;
             echo "<tr class='tab_bg_2'><td class='b'>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset_before=1&amp;contains[0]=$$$$".
-                  $data["id"]."&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset=reset&amp;contains[0]=$$$$".
+                  $data["id"]."&amp;searchtype[0]=contains&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></td>";
 
             foreach ($state_type as $itemtype) {
                echo "<td class='center tab_bg_1'>";

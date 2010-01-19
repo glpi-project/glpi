@@ -3214,7 +3214,8 @@ class Ticket extends CommonDBTM {
 
       if ($number > 0) {
          echo "<table class='tab_cadrehov' style='width:420px'>";
-         $link_common="&amp;status=$status&amp;reset=reset_before";
+
+         $link_common="&amp;status=$status&amp;reset=reset";
          $link="users_id_assign=mine$link_common";
          // Only mine
          if (!$showgrouptickets
@@ -3236,13 +3237,13 @@ class Ticket extends CommonDBTM {
             if ($showgrouptickets) {
                if (haveRight("show_group_ticket",1)) {
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?group=-1&amp;users_id=".
-                        $_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / ";
+                        $_SESSION["glpiID"]."&amp;reset=reset\">".$LANG['joblist'][5]."</a> / ";
                }
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
                      $LANG['joblist'][21]."</a>";
             } else {
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?users_id=".
-                     $_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / ".
+                     $_SESSION["glpiID"]."&amp;reset=reset\">".$LANG['joblist'][5]."</a> / ".
                   "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
                      $LANG['joblist'][21]."</a>";
             }
@@ -3297,27 +3298,27 @@ class Ticket extends CommonDBTM {
       }
       echo "<table class='tab_cadrehov' >";
       echo "<tr><th colspan='2'>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=process&amp;reset=reset_before\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=process&amp;reset=reset\">".
             $LANG['title'][10]."</a></th></tr>";
       echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=new&amp;reset=reset_before\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=new&amp;reset=reset\">".
             $LANG['tracking'][30]."</a> </td>";
       echo "<td>".$status["new"]."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=assign&amp;reset=reset_before\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=assign&amp;reset=reset\">".
             $LANG['tracking'][31]."</a></td>";
       echo "<td>".$status["assign"]."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=plan&amp;reset=reset_before\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=plan&amp;reset=reset\">".
             $LANG['tracking'][32]."</a></td>";
       echo "<td>".$status["plan"]."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=waiting&amp;reset=reset_before\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=waiting&amp;reset=reset\">".
             $LANG['joblist'][26]."</a></td>";
       echo "<td>".$status["waiting"]."</td></tr>";
       echo "</table><br>";
@@ -3344,7 +3345,7 @@ class Ticket extends CommonDBTM {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset&amp;status=".
                "new'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
@@ -3437,7 +3438,7 @@ class Ticket extends CommonDBTM {
          initNavigateListItems('Ticket',$item->getTypeName()." = ".$item->getName());
 
          echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset&amp;status=".
                "all&amp;items_id=$items_id&amp;itemtype=$itemtype'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
       } else {
@@ -3514,7 +3515,7 @@ class Ticket extends CommonDBTM {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;:&nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset&amp;status=".
                "all&amp;suppliers_id_assign=$entID'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
@@ -3557,7 +3558,7 @@ class Ticket extends CommonDBTM {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset&amp;status=".
                "all&amp;users_id=$userID'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 

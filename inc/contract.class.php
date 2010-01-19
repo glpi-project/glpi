@@ -468,37 +468,42 @@ class Contract extends CommonDBTM {
 
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset_before\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset\">".
              $LANG['financial'][1]."</a></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;".
-                 "field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".
+                 "field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30".
+                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
                  $LANG['financial'][93]."</a> </td>";
       echo "<td>$contract0</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;".
-                 "contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0&amp;start=0\">".
+                 "contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0&amp;start=0".
+                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
                  $LANG['financial'][94]."</a></td>";
       echo "<td>".$contract7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;".
-                 "contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0&amp;start=0\">".
+                 "contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0".
+                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains&amp;start=0\">".
                  $LANG['financial'][95]."</a></td>";
       echo "<td>".$contract30."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;".
-                 "contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;is_deleted=0&amp;start=0\">".
+                 "contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;is_deleted=0".
+                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains&amp;start=0\">".
                  $LANG['financial'][96]."</a></td>";
       echo "<td>".$contractpre7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;".
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;".
-                 "field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".
+                 "field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30".
+                  "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
                  $LANG['financial'][97]."</a></td>";
       echo "<td>".$contractpre30."</td></tr>";
       echo "</table>";
