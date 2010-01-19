@@ -75,11 +75,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
    }
    echo "&nbsp;<span id='span$dropdownname'>\n";
    echo "</span>\n";
+
    $paramsaction=array( 'searchtype'   => '__VALUE__',
                         'field'        => $_POST["field"],
                         'itemtype'     => $_POST["itemtype"],
                         'num'          => $_POST["num"],
-                        'value'        => $_POST['value'],
+                        'value'        => rawurlencode(stripslashes($_POST['value'])),
                         'searchopt'    => $searchopt,
                         'meta'         => $_POST['meta'],);
 

@@ -1788,30 +1788,8 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 update value of glpi_column in glpi_ocsadmininfoslinks " . $LANG['update'][90] . $DB->error());
    }
 
-   // Update tracking bookmarks for new columns fields
+   // Update bookmarks for new columns fields
    if (FieldExists('glpi_bookmarks', 'query')) {
-      $olds = array("category", "type", "author","assign",
-               "assign_group","assign_ent","recipient","contents","name_contents");
-
-      $news   = array("ticketcategories_id", "itemtype", "ice users_id","users_id_assign",
-               "groups_id_assign","suppliers_id_assign","users_id_recipient","content","name_content");
-
-      foreach ($olds as $key => $val) {
-         $olds[$key]="&$val=";
-      }
-      foreach ($news as $key => $val) {
-         $news[$key]="&$val=";
-      }
-
-      $query="SELECT id, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." AND itemtype=".TRACKING_TYPE.";";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE id=".$data['id'].";";
-               $DB->query($query2) or die("0.80 update tracking bookmarks " . $LANG['update'][90] . $DB->error());
-            }
-         }
-      }
       // All search
       $olds = array("deleted",);
 
@@ -3067,9 +3045,239 @@ function update0723to080($output='HTML') {
    // Change search pref : date_mod 
    $ADDTODISPLAYPREF['Transfer']=array(19);
 
-   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences'); // Updating schema
+   displayMigrationMessage("080", $LANG['update'][142] . ' - ticket bookmarks'); 
+   $query="SELECT * FROM `glpi_bookmarks`
+            WHERE `itemtype`='Ticket' AND `type`='".BOOKMARK_SEARCH."';";
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $num=0;
+            $num2=0;
+            parse_str($data["query"],$options);
+            $newoptions=array();
 
-   /// TODO : update ticket bookmarks
+            foreach ($options as $key => $val) {
+               switch ($key){
+                  case "status":
+                     $newoptions['field'][$num]       = 12;
+                     $newoptions['searchtype'][$num]  = 'equals';
+                     $newoptions['link'][$num]        = 'AND';
+                     if ($val=='old_done' || $val=='old_notdone') {
+                        $newoptions['contains'][$num] = 'closed';
+                     } else {
+                        $newoptions['contains'][$num] = $val;
+                     }
+                     $num++;
+                     break;
+                  case "priority":
+                     if ($val!=0) {
+                        $newoptions['field'][$num]       = 3;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "category":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 7;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "request_type":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 9;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "type":
+                     if ($val>0 && isset($data['item']) && $data['item']>0)  {
+                        $newoptions['itemtype2'][$num2]  = $typetoname[$val];
+                        $newoptions['field2'][$num2]      = 1;
+                        $newoptions['searchtype2'][$num2] = 'equals';
+                        $newoptions['contains2'][$num2]   = $data['item'];
+                        $newoptions['link2'][$num2]        = 'AND';
+                        $num2++;
+                     }
+                     break;
+                  case "author":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 4;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "group":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 71;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "assign":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 5;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "assign_group":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 8;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "assign_ent":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 6;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "recipient":
+                     if ($val>0) {
+                        $newoptions['field'][$num]       = 22;
+                        $newoptions['searchtype'][$num]  = 'equals';
+                        $newoptions['contains'][$num]    = $val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "date1": // begin from
+                     if (strlen($val)>0 && $val!='NULL') {
+                        $newoptions['field'][$num]       = 15;
+                        $newoptions['searchtype'][$num]  = 'contains';
+                        $newoptions['contains'][$num]    = '&gt;='.$val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "date2": // begin to
+                     if (strlen($val)>0 && $val!='NULL') {
+                        $newoptions['field'][$num]       = 15;
+                        $newoptions['searchtype'][$num]  = 'contains';
+                        $newoptions['contains'][$num]    = '&lt;='.$val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "enddate1": // end from
+                     if (strlen($val)>0 && $val!='NULL') {
+                        $newoptions['field'][$num]       = 16;
+                        $newoptions['searchtype'][$num]  = 'contains';
+                        $newoptions['contains'][$num]    = '&gt;='.$val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "enddate2": // end to
+                     if (strlen($val)>0 && $val!='NULL') {
+                        $newoptions['field'][$num]       = 16;
+                        $newoptions['searchtype'][$num]  = 'contains';
+                        $newoptions['contains'][$num]    = '&lt;='.$val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "datemod1": // mod from
+                     if (strlen($val)>0 && $val!='NULL') {
+                        $newoptions['field'][$num]       = 19;
+                        $newoptions['searchtype'][$num]  = 'contains';
+                        $newoptions['contains'][$num]    = '&gt;='.$val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "datemod2": // mod to
+                     if (strlen($val)>0 && $val!='NULL') {
+                        $newoptions['field'][$num]       = 19;
+                        $newoptions['searchtype'][$num]  = 'contains';
+                        $newoptions['contains'][$num]    = '&lt;='.$val;
+                        $newoptions['link'][$num]        = 'AND';
+                        $num++;
+                     }
+                     break;
+                  case "tosearch":
+                     if (isset($data['search'])) {
+                        $search=trim($data['search']);
+                        if (strlen($search)>0){
+                           $first=false;
+                           if (strstr($data['search'],'name')) {
+                              $newoptions['field'][$num]       = 1;
+                              $newoptions['searchtype'][$num]  = 'contains';
+                              $newoptions['contains'][$num]    = $val;
+                              $newoptions['link'][$num]        = ($first?'AND':'OR');
+                              $first=false;
+                              $num++;
+                           }
+                           if (strstr($data['search'],'contents')) {
+                              $newoptions['field'][$num]       = 21;
+                              $newoptions['searchtype'][$num]  = 'contains';
+                              $newoptions['contains'][$num]    = $val;
+                              $newoptions['link'][$num]        = ($first?'AND':'OR');
+                              $first=false;
+                              $num++;
+                           }
+                           if (strstr($data['search'],'followup')) {
+                              $newoptions['field'][$num]       = 25;
+                              $newoptions['searchtype'][$num]  = 'contains';
+                              $newoptions['contains'][$num]    = $val;
+                              $newoptions['link'][$num]        = ($first?'AND':'OR');
+                              $first=false;
+                              $num++;
+                           }
+                           if (strstr($data['search'],'ID')) {
+                              $newoptions['field'][$num]       = 2;
+                              $newoptions['searchtype'][$num]  = 'contains';
+                              $newoptions['contains'][$num]    = $val;
+                              $newoptions['link'][$num]        = 'AND';
+                              $first=false;
+                              $num++;
+                           }
+                        }
+                     }
+                     break;
+               }
+            }
+            if ($num>0 || $num2 >0) {
+               $newoptions['glpisearchcount']=$num;
+               $newoptions['glpisearchcount2']=$num2;
+               $newoptions['itemtype']='Ticket';
+               $query2="UPDATE glpi_bookmarks SET query='".addslashes(append_params($newoptions))."' WHERE id=".$data['id'].";";
+               $DB->query($query2) or die("0.80 update ticket bookmarks " . $LANG['update'][90] . $DB->error());
+
+            } else {
+               $query2="DELETE FROM glpi_bookmarks WHERE id=".$data['id'].";";
+               $DB->query($query2) or die("0.80 delete ticket bookmarks : cannot convert " . $LANG['update'][90] . $DB->error());
+            }
+            // Lost paramaters
+            //only_computers=1&contains=dddd&field=moboard.designation&
+         }
+      }
+   }
+
+
+
+
+   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences'); 
+
    // Add search values for tickets
    $ADDTODISPLAYPREF['Ticket']=array(12,19,15,3,4,5,7);
    
