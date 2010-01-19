@@ -1285,7 +1285,7 @@ class Search {
                echo "selected";
             }
             echo ">OR NOT</option>\n";
-            echo "</select>";
+            echo "</select>&nbsp;";
 
             // Display select of the linked item type available
             echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
@@ -1293,7 +1293,7 @@ class Search {
             foreach ($linked as $key) {
                echo "<option value='$key'>".utf8_substr($names[$key],0,20)."</option>\n";
             }
-            echo "</select>";
+            echo "</select>&nbsp;";
 
 
 
