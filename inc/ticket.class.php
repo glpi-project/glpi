@@ -1517,7 +1517,6 @@ class Ticket extends CommonDBTM {
    function getSearchOptions() {
       global $LANG;
 
-      // TRACKING_TYPE - used for massive actions and for history
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
@@ -1527,6 +1526,12 @@ class Ticket extends CommonDBTM {
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'Ticket';
+      $tab[1]['searchtype']    = 'contains';
+
+      $tab[21]['table']         = 'glpi_tickets';
+      $tab[21]['field']         = 'content';
+      $tab[21]['linkfield']     = '';
+      $tab[21]['name']          = $LANG['joblist'][6];
 
       $tab[2]['table']     = 'glpi_tickets';
       $tab[2]['field']     = 'id';
@@ -1551,13 +1556,6 @@ class Ticket extends CommonDBTM {
       $tab[11]['name']      = $LANG['joblist'][30];
       $tab[11]['searchtype']= 'equals';
 
-      $tab[3]['table']     = 'glpi_tickets';
-      $tab[3]['field']     = 'priority';
-      $tab[3]['linkfield'] = 'priority';
-      $tab[3]['name']      = $LANG['joblist'][2];
-      $tab[3]['searchtype']= 'equals';
-
-
       $tab[15]['table']     = 'glpi_tickets';
       $tab[15]['field']     = 'date';
       $tab[15]['linkfield'] = '';
@@ -1576,31 +1574,6 @@ class Ticket extends CommonDBTM {
       $tab[19]['name']      = $LANG['common'][26];
       $tab[19]['datatype'] = 'datetime';
 
-      $tab[4]['table']     = 'glpi_users';
-      $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'users_id';
-      $tab[4]['name']      = $LANG['job'][4];
-
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'name';
-      $tab[71]['linkfield'] = 'groups_id';
-      $tab[71]['name']      = $LANG['common'][35];
-
-      $tab[5]['table']     = 'glpi_users';
-      $tab[5]['field']     = 'name';
-      $tab[5]['linkfield'] = 'users_id_assign';
-      $tab[5]['name']      = $LANG['job'][5]." - ".$LANG['job'][6];
-
-      $tab[6]['table']     = 'glpi_suppliers';
-      $tab[6]['field']     = 'name';
-      $tab[6]['linkfield'] = 'suppliers_id_assign';
-      $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
-
-      $tab[8]['table']     = 'glpi_groups';
-      $tab[8]['field']     = 'name';
-      $tab[8]['linkfield'] = 'groups_id_assign';
-      $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
-
       $tab[7]['table']     = 'glpi_ticketcategories';
       $tab[7]['field']     = 'name';
       $tab[7]['linkfield'] = 'ticketcategories_id';
@@ -1611,6 +1584,41 @@ class Ticket extends CommonDBTM {
       $tab[9]['linkfield'] = 'requesttypes_id';
       $tab[9]['name']      = $LANG['job'][44];
 
+      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
+
+         $tab[4]['table']     = 'glpi_users';
+         $tab[4]['field']     = 'name';
+         $tab[4]['linkfield'] = 'users_id';
+         $tab[4]['name']      = $LANG['job'][4];
+
+         $tab[71]['table']     = 'glpi_groups';
+         $tab[71]['field']     = 'name';
+         $tab[71]['linkfield'] = 'groups_id';
+         $tab[71]['name']      = $LANG['common'][35];
+
+         $tab[3]['table']     = 'glpi_tickets';
+         $tab[3]['field']     = 'priority';
+         $tab[3]['linkfield'] = 'priority';
+         $tab[3]['name']      = $LANG['joblist'][2];
+         $tab[3]['searchtype']= 'equals';
+
+
+         $tab[5]['table']     = 'glpi_users';
+         $tab[5]['field']     = 'name';
+         $tab[5]['linkfield'] = 'users_id_assign';
+         $tab[5]['name']      = $LANG['job'][5]." - ".$LANG['job'][6];
+
+         $tab[6]['table']     = 'glpi_suppliers';
+         $tab[6]['field']     = 'name';
+         $tab[6]['linkfield'] = 'suppliers_id_assign';
+         $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
+
+         $tab[8]['table']     = 'glpi_groups';
+         $tab[8]['field']     = 'name';
+         $tab[8]['linkfield'] = 'groups_id_assign';
+         $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
+
+      }
 
       return $tab;
    }

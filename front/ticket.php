@@ -249,6 +249,13 @@ if (!haveRight("show_all_ticket","1") && !haveRight("show_assign_ticket",'1')) {
 }
 */
 
+// Manage default value : search not old tickets
+if (!isset($_GET) || !is_array($_GET) || count($_GET)==0) {
+   $_GET=array('field'      => array(0=>12),
+               'searchtype' => array(0=>'equals'),
+               'contains'   => array(0=>'notold'),);
+}
+
 Search::show('Ticket');
 
 
