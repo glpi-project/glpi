@@ -1881,6 +1881,11 @@ class Search {
          case 'glpi_crontasks.description' :
             return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.", ";
             break;
+         case 'glpi_tickets.name' :
+            return "`$table$addtable`.`$field` AS ".$NAME."_$num,
+                        `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
+                        `$table$addtable`.`content` AS ".$NAME."_".$num."_3, ";
+
       }
 
       //// Default cases
@@ -3239,6 +3244,23 @@ class Search {
          case 'glpi_tickets.impact':
             return Ticket::getImpactName($data[$NAME.$num]);
 
+         case 'glpi_tickets.name':
+            $link=getItemTypeFormURL('Ticket');
+            $out  = "<a href=\"".$link;
+            $out .= (strstr($link,'?') ?'&amp;' :  '?');
+            $out .= 'id='.$data[$NAME.$num."_2"]."\">";
+            $out .= $data[$NAME.$num];
+            if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
+               $out .= " (".$data[$NAME.$num."_2"].")";
+            }
+            $out .= "</a>";
+
+            $out .= "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
+                           "onmouseout=\"cleanhide('comment_tracking".$data[$NAME.$num."_2"]."')\" ".
+                           "onmouseover=\"cleandisplay('comment_tracking".$data[$NAME.$num."_2"]."')\" >";
+            $out .= "<span class='over_link' id='comment_tracking".$data[$NAME.$num."_2"]."'>".
+                           nl2br($data[$NAME.$num."_3"])."</span>";
+            return $out;
       }
 
 
