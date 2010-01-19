@@ -52,6 +52,7 @@ class Dropdown {
    *    - used : array / Already used items ID: not to display in dropdown (default empty)
    *    - auto_submit : boolean / preselected value (default 0)
    *    - rand : integer / already computed rand value
+   *    - displaywith : array / array of field to display with request 
    *
    *
    * @param $itemtype itemtype used for create dropdown
@@ -81,6 +82,7 @@ class Dropdown {
       $params['auto_submit']=0;
       $params['condition']='';
       $params['rand']=mt_rand();
+      $params['displaywith']=array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
