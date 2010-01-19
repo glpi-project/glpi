@@ -98,7 +98,9 @@ class Budget extends CommonDBTM{
 
       $use_cache=true;
 
+      $rowspan=4;
       if ($ID > 0) {
+         $rowspan++;
          $this->check($ID,'r');
       } else {
          // Create item
@@ -113,27 +115,36 @@ class Budget extends CommonDBTM{
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='4' class='middle right'>".$LANG['common'][25].
-         "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='4'>.<textarea cols='45'
+
+      echo "<td rowspan='$rowspan' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='$rowspan'><textarea cols='45'
       rows='4' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][21]." :</td>";
+      echo "<td>".$LANG['financial'][21]."&nbsp;:</td>";
       echo "<td><input type='text' name='value' size='14'
          value=\"".formatNumber($this->fields["value"],true)."\" ></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['search'][8]." : </td>";
+      echo "<td>".$LANG['search'][8]."&nbsp;: </td>";
       echo "<td>";
       showDateFormItem("begin_date",$this->fields["begin_date"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['search'][9]." : </td>";
+      echo "<td>".$LANG['search'][9]."&nbsp;: </td>";
       echo "<td>";
       showDateFormItem("end_date",$this->fields["end_date"]);
       echo "</td></tr>";
+
+      if ($ID>0) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<td>";
+         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+         echo "</td></tr>";
+      }
+
 
       $this->showFormButtons($ID,$withtemplate,2);
 
@@ -186,6 +197,12 @@ class Budget extends CommonDBTM{
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'Budget';
+
+      $tab[19]['table']     = 'glpi_budgets';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
 
       $tab[2]['table']     = 'glpi_budgets';
       $tab[2]['field']     = 'begin_date';

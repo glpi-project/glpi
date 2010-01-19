@@ -97,6 +97,36 @@ class Transfer extends CommonDBTM {
    }
 
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common']           = $LANG['common'][16];
+
+      $tab[1]['table']         = 'glpi_transfers';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = 'Profile';
+
+
+      $tab[19]['table']     = 'glpi_transfers';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+
+      $tab[16]['table']     = 'glpi_transfers';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      return $tab;
+   }
+
+
    /**
     * Transfer items
     *
@@ -2688,10 +2718,20 @@ class Transfer extends CommonDBTM {
 
       if ($edit_form) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>".$LANG['common'][16]."&nbsp;:</td><td colspan='2'>";
+         echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
          autocompletionTextField($this,"name");
          echo "</td>";
+
+         echo "<td rowspan='3' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+         echo "<td class='center middle' rowspan='3'><textarea cols='45'
+         rows='3' name='comment' >".$this->fields["comment"]."</textarea></td>";
          echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<td>";
+         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+         echo "</td></tr>";
       }
 
       $keep = array(0 => $LANG['buttons'][6],
@@ -2705,7 +2745,9 @@ class Transfer extends CommonDBTM {
       $params['value']=$this->fields['keep_history'];
       Dropdown::showFromArray('keep_history',$keep,$params);
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      if (!$edit_form) {
+         echo "<td colspan='2'>&nbsp;</td>";
+      }
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
