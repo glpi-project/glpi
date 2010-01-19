@@ -73,9 +73,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          Group_User::showForUser($_POST['target'], $user);
          $user->showItems();
          Reservation::showForUser($_POST["id"]);
-         if (haveRight("show_all_ticket", "1")) {
-            showJobListForUser($_POST["id"]);
-         }
+         Ticket::showListForUser($_POST["id"]);
          Plugin::displayAction($user, $_REQUEST['glpi_tab']);
          break;
 
@@ -84,7 +82,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 3 :
-         showJobListForUser($_POST["id"]);
+         Ticket::showListForUser($_POST["id"]);
          break;
 
       case 4 :

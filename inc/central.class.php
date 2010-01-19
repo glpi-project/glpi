@@ -87,7 +87,7 @@ class Central extends CommonGLPI {
 
       if ($_SESSION["glpishow_jobs_at_login"] && $showticket) {
          echo "<br>";
-         showNewJobList();
+         Ticket::showCentralNewList();
       }
    }
 

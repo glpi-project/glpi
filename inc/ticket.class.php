@@ -3323,6 +3323,260 @@ class Ticket extends CommonDBTM {
       echo "</table><br>";
    }
 
+   static function showCentralNewList() {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if (!haveRight("show_all_ticket","1")) {
+         return false;
+      }
+
+      $query = "SELECT ".getCommonSelectForTrackingSearch()."
+               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+               WHERE `status` = 'new' ".
+                     getEntitiesRestrictRequest("AND","glpi_tickets")."
+               ORDER BY `glpi_tickets`.`date_mod` DESC
+               LIMIT ".intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      if ($number > 0) {
+         initNavigateListItems('Ticket');
+
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+               "new'>".$LANG['buttons'][40]."</a>";
+         echo "</th></tr>";
+
+         Ticket::commonListHeader(HTML_OUTPUT);
+
+         while ($data=$DB->fetch_assoc($result)) {
+            addToNavigateListItems('Ticket',$data["id"]);
+            showJobShort($data, 0);
+         }
+         echo "</table></div>";
+      } else {
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+         echo "</table>";
+         echo "</div><br>";
+      }
+   }
+
+   static function commonListHeader($output_type=HTML_OUTPUT) {
+      global $LANG,$CFG_GLPI;
+
+      // New Line for Header Items Line
+      echo displaySearchNewLine($output_type);
+      // $show_sort if
+      $header_num=1;
+
+      $items=array();
+
+      $items[$LANG['joblist'][0]] = "glpi_tickets.status";
+      $items[$LANG['common'][27]] = "glpi_tickets.date";
+      $items[$LANG['common'][26]] = "glpi_tickets.date_mod";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $items[$LANG['Menu'][37]] = "glpi_entities.completename";
+      }
+      $items[$LANG['joblist'][2]]   = "glpi_tickets.priority";
+      $items[$LANG['job'][4]]       = "glpi_tickets.users_id";
+      $items[$LANG['joblist'][4]]   = "glpi_tickets.users_id_assign";
+      $items[$LANG['common'][1]]    = "glpi_tickets.itemtype,glpi_tickets.items_id";
+      $items[$LANG['common'][36]]   = "glpi_ticketcategories.completename";
+      $items[$LANG['common'][57]]   = "glpi_tickets.name";
+
+      foreach ($items as $key => $val) {
+         $issort = 0;
+         $link = "";
+         echo displaySearchHeaderItem($output_type,$key,$header_num,$link);
+      }
+
+      // End Line for column headers
+      echo displaySearchEndLine($output_type);
+   }
+
+   /**
+   * Display tickets for an item
+   *
+   * Will also display tickets of linked items
+   *
+   * @param $itemtype
+   * @param $items_id
+   *
+   * @return nothing (display a table)
+   */
+   static function showListForItem($itemtype,$items_id) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if (!haveRight("show_all_ticket","1")) {
+         return false;
+      }
+      if (!class_exists($itemtype)) {
+         return false;
+      }
+      $item=new $itemtype();
+      if (!$item->getFromDB($items_id)) {
+         return false;
+      }
+
+      $query = "SELECT ".getCommonSelectForTrackingSearch()."
+               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+               WHERE (`items_id` = '$items_id'
+                     AND `itemtype` = '$itemtype') ".
+                     getEntitiesRestrictRequest("AND","glpi_tickets")."
+               ORDER BY `glpi_tickets`.`date_mod` DESC
+               LIMIT ".intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      // Ticket for the item
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      if ($number > 0) {
+         initNavigateListItems('Ticket',$item->getTypeName()." = ".$item->getName());
+
+         echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+               "all&amp;items_id=$items_id&amp;itemtype=$itemtype'>".$LANG['buttons'][40]."</a>";
+         echo "</th></tr>";
+      } else {
+         echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+      }
+
+      // Link to open a new ticcket
+      if ($items_id) {
+         echo "<tr><td class='tab_bg_2 center' colspan='10'>";
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=$items_id&amp;itemtype=".
+               "$itemtype\"><strong>".$LANG['joblist'][7]."</strong></a>";
+         echo "</td></tr>";
+      }
+
+      // Ticket list
+      if ($number > 0) {
+         Ticket::commonListHeader(HTML_OUTPUT);
+
+         while ($data=$DB->fetch_assoc($result)) {
+            addToNavigateListItems('Ticket',$data["id"]);
+            showJobShort($data, 0);
+         }
+      }
+      echo "</table></div><br>";
+
+      // Tickets for linked items
+      if ($subquery = $item->getSelectLinkedItem()) {
+         $query = "SELECT ".getCommonSelectForTrackingSearch()."
+                  FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+                  WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
+                        getEntitiesRestrictRequest(' AND ', 'glpi_tickets') . "
+                  ORDER BY `glpi_tickets`.`date_mod` DESC
+                  LIMIT ".intval($_SESSION['glpilist_limit']);
+         $result = $DB->query($query);
+         $number = $DB->numrows($result);
+
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='10'>".$LANG['joblist'][28]."</th></tr>";
+         if ($number > 0) {
+            Ticket::commonListHeader(HTML_OUTPUT);
+
+            while ($data=$DB->fetch_assoc($result)) {
+               // addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+               showJobShort($data, 0);
+            }
+         } else {
+            echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+         }
+         echo "</table></div><br>";
+
+      } // Subquery for linked item
+   }
+
+   static function showListForSupplier($entID) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if (!haveRight("show_all_ticket","1")) {
+         return false;
+      }
+
+      $query = "SELECT ".getCommonSelectForTrackingSearch()."
+               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+               WHERE (`suppliers_id_assign` = '$entID') ".
+                     getEntitiesRestrictRequest("AND","glpi_tickets")."
+               ORDER BY `glpi_tickets`.`date_mod` DESC
+               LIMIT ".intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      if ($number > 0) {
+         $ent=new Supplier();
+         $ent->getFromDB($entID);
+         initNavigateListItems('Ticket',$LANG['financial'][26]." = ".$ent->fields['name']);
+
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;:&nbsp;";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+               "all&amp;suppliers_id_assign=$entID'>".$LANG['buttons'][40]."</a>";
+         echo "</th></tr>";
+
+         Ticket::commonListHeader(HTML_OUTPUT);
+
+         while ($data=$DB->fetch_assoc($result)) {
+            addToNavigateListItems('Ticket',$data["id"]);
+            showJobShort($data, 0);
+         }
+         echo "</table></div>";
+      } else {
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+         echo "</table>";
+         echo "</div><br>";
+      }
+   }
+
+   static function showListForUser($userID) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if (!haveRight("show_all_ticket","1")) {
+         return false;
+      }
+
+      $query = "SELECT ".getCommonSelectForTrackingSearch()."
+               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+               WHERE (`glpi_tickets`.`users_id` = '$userID') ".
+                     getEntitiesRestrictRequest("AND","glpi_tickets")."
+               ORDER BY `glpi_tickets`.`date_mod` DESC
+               LIMIT ".intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      if ($number > 0) {
+         $user=new User();
+         $user->getFromDB($userID);
+         initNavigateListItems('Ticket',$LANG['common'][34]." = ".$user->getName());
+
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset_before&amp;status=".
+               "all&amp;users_id=$userID'>".$LANG['buttons'][40]."</a>";
+         echo "</th></tr>";
+
+         Ticket::commonListHeader(HTML_OUTPUT);
+
+         while ($data=$DB->fetch_assoc($result)) {
+            addToNavigateListItems('Ticket',$data["id"]);
+            showJobShort($data, 0);
+         }
+         echo "</table></div>";
+      } else {
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
+         echo "</table>";
+         echo "</div><br>";
+      }
+   }
+
 
 }
 ?>
