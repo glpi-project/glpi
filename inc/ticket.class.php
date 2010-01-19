@@ -1983,7 +1983,7 @@ class Ticket extends CommonDBTM {
    static function getStatus($value) {
       global $LANG;
 
-      $tab = self::getAllStatusArray();
+      $tab = self::getAllStatusArray(true);
       return (isset($tab[$value]) ? $tab[$value] : '');
    }
 
