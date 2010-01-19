@@ -42,7 +42,7 @@ checkCentralAccess();
 commonHeader($LANG['search'][0],$_SERVER['PHP_SELF']);
 
 if (isset($_GET["globalsearch"])) {
-   $_GET["reset_before"] = 1;
+   $_GET["reset"] = 'reset';
    $_GET["display_type"] = GLOBAL_SEARCH;
    $types = array('Computer', 'Monitor', 'Software', 'NetworkEquipment', 'Peripheral', 'Printer',
                   'Phone', 'Contact', 'Supplier', 'Document');

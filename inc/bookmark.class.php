@@ -230,7 +230,7 @@ class Bookmark extends CommonDBTM {
 
       switch ($type) {
          case BOOKMARK_SEARCH :
-            $query_tab['reset_before']=1;
+            $query_tab['reset']='reset';
             break;
       }
       return $query_tab;
