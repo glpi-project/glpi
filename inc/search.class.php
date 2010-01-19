@@ -1110,7 +1110,8 @@ class Search {
                      'Monitor'    => $LANG['Menu'][3],
                      'Peripheral' => $LANG['Menu'][16],
                      'Software'   => $LANG['Menu'][4],
-                     'Phone'      => $LANG['Menu'][34]);
+                     'Phone'      => $LANG['Menu'][34],
+                     'Ticket'     => $LANG['Menu'][5],);
 
       echo "<form method='get' action=\"$target\">";
       echo "<table class='tab_cadre_fixe'>";
@@ -1243,6 +1244,12 @@ class Search {
          switch ($itemtype) {
             case 'Computer' :
                $linked = array('Printer', 'Monitor', 'Peripheral', 'Software', 'Phone');
+               break;
+
+            case 'Ticket' :
+               if (haveRight("show_all_ticket","1")) {
+                  $linked = array_keys(getAllTypesForHelpdesk());
+               }
                break;
 
             case 'Printer' :
@@ -2787,6 +2794,13 @@ class Search {
       }
 
       switch ($from_type) {
+         case 'Ticket' :
+            $totable=getTableForItemType($to_type);
+            array_push($already_link_tables2,$totable);
+            return " $LINK `$totable`
+                        ON (`$totable`.`id` = `glpi_tickets`.`items_id`
+                           AND `glpi_tickets`.`itemtype` = '$to_type')";
+
          case 'Computer' :
             switch ($to_type) {
                case 'Printer' :
@@ -3500,6 +3514,7 @@ class Search {
       $default_values["field2"]=array(0=>"view");
       $default_values["contains2"]=array(0=>"");
       $default_values["itemtype2"]="";
+      $default_values["searchtype2"]=array(0=>"");
       $default_values["sort"]=1;
 
       // First view of the page : try to load a bookmark
