@@ -1597,6 +1597,8 @@ class Ticket extends CommonDBTM {
          $tab[80]['linkfield'] = 'entities_id';
          $tab[80]['name']      = $LANG['entity'][0];
 
+         $tab['requester'] = $LANG['job'][4];
+
          $tab[4]['table']     = 'glpi_users';
          $tab[4]['field']     = 'name';
          $tab[4]['linkfield'] = 'users_id';
@@ -1606,6 +1608,8 @@ class Ticket extends CommonDBTM {
          $tab[71]['field']     = 'name';
          $tab[71]['linkfield'] = 'groups_id';
          $tab[71]['name']      = $LANG['common'][35];
+
+         $tab['assign'] = $LANG['job'][5];
 
          $tab[5]['table']     = 'glpi_users';
          $tab[5]['field']     = 'name';
@@ -1627,6 +1631,17 @@ class Ticket extends CommonDBTM {
          $tab[22]['linkfield'] = 'users_id_recipient';
          $tab[22]['name']      = $LANG['job'][3];
 
+         $tab['solution'] = $LANG['jobresolution'][1];
+
+         $tab[23]['table']     = 'glpi_ticketsolutiontypes';
+         $tab[23]['field']     = 'name';
+         $tab[23]['linkfield'] = 'ticketsolutiontypes_id';
+         $tab[23]['name']      = $LANG['job'][48];
+
+         $tab[24]['table']     = 'glpi_tickets';
+         $tab[24]['field']     = 'solution';
+         $tab[24]['linkfield'] = '';
+         $tab[24]['name']      = $LANG['jobresolution'][1];
       }
 
       return $tab;
