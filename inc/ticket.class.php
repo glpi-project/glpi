@@ -3153,5 +3153,176 @@ class Ticket extends CommonDBTM {
 
    return $profiles;
    }
+
+   static function showCentralList($target,$start,$status="process",$showgrouptickets=true) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      if (!haveRight("show_all_ticket","1")
+         && !haveRight("show_assign_ticket","1")
+         && !haveRight("create_ticket","1")) {
+         return false;
+      }
+
+      $search_users_id = " (`glpi_tickets`.`users_id` = '".$_SESSION["glpiID"]."'
+                           AND (`status` = 'new'
+                                 OR `status` = 'plan'
+                                 OR `status` = 'assign'
+                                 OR `status` = 'waiting'))
+                        OR ";
+      $search_assign = " `users_id_assign` = '".$_SESSION["glpiID"]."' ";
+      if ($showgrouptickets) {
+         $search_users_id = "";
+         $search_assign = " 0 = 1 ";
+         if (count($_SESSION['glpigroups'])) {
+            $groups = implode("','",$_SESSION['glpigroups']);
+            $search_assign = " `groups_id_assign` IN ('$groups') ";
+            if (haveRight("show_group_ticket",1)) {
+               $search_users_id = " (`groups_id` IN ('$groups')
+                                    AND (`status` = 'new'
+                                          OR `status` = 'plan'
+                                          OR `status` = 'assign'
+                                          OR `status` = 'waiting'))
+                                 OR ";
+            }
+         }
+      }
+
+      $query = "SELECT `id`
+               FROM `glpi_tickets`";
+
+      if ($status=="waiting") { // on affiche les tickets en attente
+         $query .= "WHERE ($search_assign)
+                        AND `status` ='waiting' ".
+                        getEntitiesRestrictRequest("AND","glpi_tickets");
+
+      } else { // on affiche les tickets planifiés ou assignés à glpiID
+         $query .= "WHERE ($search_users_id (( $search_assign )
+                                             AND (`status` ='plan'
+                                                OR `status` = 'assign'))) ".
+                        getEntitiesRestrictRequest("AND","glpi_tickets");
+      }
+      $query .= "ORDER BY `date_mod` DESC";
+
+      $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+
+      $query .= " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
+
+      $result = $DB->query($query);
+      $i = 0;
+      $number = $DB->numrows($result);
+
+      if ($number > 0) {
+         echo "<table class='tab_cadrehov' style='width:420px'>";
+         $link_common="&amp;status=$status&amp;reset=reset_before";
+         $link="users_id_assign=mine$link_common";
+         // Only mine
+         if (!$showgrouptickets
+            && (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1'))) {
+            $link = "users_id_assign=".$_SESSION["glpiID"].$link_common;
+         }
+
+         echo "<tr><th colspan='5'>";
+         if ($status=="waiting") {
+            if ($showgrouptickets) {
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
+                     $LANG['central'][16]."</a>";
+            } else {
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
+                     $LANG['central'][11]."</a>";
+            }
+         } else {
+            echo $LANG['central'][17]."&nbsp;: ";
+            if ($showgrouptickets) {
+               if (haveRight("show_group_ticket",1)) {
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?group=-1&amp;users_id=".
+                        $_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / ";
+               }
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
+                     $LANG['joblist'][21]."</a>";
+            } else {
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?users_id=".
+                     $_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / ".
+                  "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
+                     $LANG['joblist'][21]."</a>";
+            }
+         }
+         echo "</th></tr>";
+         echo "<tr><th></th>";
+         echo "<th>".$LANG['job'][4]."</th>";
+         echo "<th>".$LANG['common'][1]."</th>";
+         echo "<th>".$LANG['joblist'][6]."</th></tr>";
+         while ($i < $number) {
+            $ID = $DB->result($result, $i, "id");
+            showJobVeryShort($ID);
+            $i++;
+         }
+         echo "</table>";
+      } else {
+         echo "<table class='tab_cadrehov'>";
+         echo "<tr><th>";
+         if ($status=="waiting") {
+            echo $LANG['central'][11];
+         } else {
+            echo $LANG['central'][9];
+         }
+         echo "</th></tr>";
+         echo "</table>";
+      }
+   }
+
+   static function showCentralCount() {
+      global $DB,$CFG_GLPI, $LANG;
+
+      // show a tab with count of jobs in the central and give link
+      if (!haveRight("show_all_ticket","1")) {
+         return false;
+      }
+
+      $query = "SELECT `status`, count(*) AS COUNT
+               FROM `glpi_tickets` ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets")."
+               GROUP BY `status`";
+      $result = $DB->query($query);
+
+      $status = array('new'      => 0,
+                     'assign'   => 0,
+                     'plan'     => 0,
+                     'waiting'  => 0);
+
+      if ($DB->numrows($result)>0) {
+         while ($data=$DB->fetch_assoc($result)) {
+            $status[$data["status"]] = $data["COUNT"];
+         }
+      }
+      echo "<table class='tab_cadrehov' >";
+      echo "<tr><th colspan='2'>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=process&amp;reset=reset_before\">".
+            $LANG['title'][10]."</a></th></tr>";
+      echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=new&amp;reset=reset_before\">".
+            $LANG['tracking'][30]."</a> </td>";
+      echo "<td>".$status["new"]."</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=assign&amp;reset=reset_before\">".
+            $LANG['tracking'][31]."</a></td>";
+      echo "<td>".$status["assign"]."</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=plan&amp;reset=reset_before\">".
+            $LANG['tracking'][32]."</a></td>";
+      echo "<td>".$status["plan"]."</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?status=waiting&amp;reset=reset_before\">".
+            $LANG['joblist'][26]."</a></td>";
+      echo "<td>".$status["waiting"]."</td></tr>";
+      echo "</table><br>";
+   }
+
+
 }
 ?>

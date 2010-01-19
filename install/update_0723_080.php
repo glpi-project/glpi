@@ -3045,6 +3045,16 @@ function update0723to080($output='HTML') {
    // Change search pref : date_mod 
    $ADDTODISPLAYPREF['Transfer']=array(19);
 
+   // Convert events
+   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_events');
+
+   $convert_types=array('tracking'=>'ticket');
+   //$convert_service=array('tracking'=>'ticket');
+   foreach ($convert_types as $from =>$to) {
+      $query2="UPDATE glpi_events SET type='$to' WHERE type='$from';";
+      $DB->query($query2) or die("0.80 update events data " . $LANG['update'][90] . $DB->error());
+   }
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - ticket bookmarks'); 
    $query="SELECT * FROM `glpi_bookmarks`
             WHERE `itemtype`='Ticket' AND `type`='".BOOKMARK_SEARCH."';";

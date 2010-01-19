@@ -66,7 +66,7 @@ class Central extends CommonGLPI {
       echo "<table >";
       if ($showticket) {
          echo "<tr><td class='top' width='450px'>";
-         showCentralJobCount();
+         Ticket::showCentralCount();
          echo "</td></tr>";
       }
       if (haveRight("contract","r")) {
@@ -111,10 +111,10 @@ class Central extends CommonGLPI {
 
          if ($showticket) {
             echo "<tr><td class='top' width='450px'><br>";
-            showCentralJobList($_SERVER['PHP_SELF'],0,"process",false);
+            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",false);
             echo "</td></tr>";
             echo "<tr><td class='top' width='450px'>";
-            showCentralJobList($_SERVER['PHP_SELF'],0,"waiting",false);
+            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",false);
             echo "</td></tr>";
          }
          echo "</table></td>";
@@ -158,7 +158,7 @@ class Central extends CommonGLPI {
 
          if ($showticket) {
             echo "<tr><td class='top' width='450px'><br>";
-            showCentralJobList($_SERVER['PHP_SELF'],0,"process",true);
+            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",true);
             echo "</td></tr>";
          }
          echo "</table></td>";
@@ -166,7 +166,7 @@ class Central extends CommonGLPI {
 
          if ($showticket) {
             echo "<tr><td  class='top' width='450px'><br>";
-            showCentralJobList($_SERVER['PHP_SELF'],0,"waiting",true);
+            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",true);
             echo "</td></tr>";
          }
          echo "</table></td></tr></table>";
