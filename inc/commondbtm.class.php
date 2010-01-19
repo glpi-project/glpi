@@ -626,6 +626,8 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
+         // Do not display quotes
+         $this->fields['name']=stripslashes($this->fields['name']);
          addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " . $this->getLink());
       }
    }
