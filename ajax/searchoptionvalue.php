@@ -49,7 +49,13 @@ checkLoginUser();
 //print_r($_REQUEST);
 if (isset($_REQUEST['searchtype'])) {
    $searchopt=unserialize(stripslashes($_REQUEST['searchopt']));
-   $inputname='contains['.$_REQUEST['num'].']';
+
+   $addmeta="";
+   if (isset($_POST['meta'])&&$_POST['meta']) {
+      $addmeta='2';
+   }
+
+   $inputname='contains'.$addmeta.'['.$_REQUEST['num'].']';
    //print_r($searchopt);
    $display=false;
    switch ($_REQUEST['searchtype']) {

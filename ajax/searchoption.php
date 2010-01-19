@@ -49,12 +49,19 @@ checkLoginUser();
 
 // Non define case
 if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
-//   print_r($_POST);
+
+   $addmeta="";
+   if (isset($_POST['meta'])&&$_POST['meta']) {
+      $addmeta='2';
+   } else {
+      $_POST['meta']=0;
+   }
 
    $actions=Search::getActionsFor($_POST["itemtype"],$_POST["field"]);
    $randsearch=-1;
-   $dropdownname='searchtype'.$_POST["itemtype"].$_POST["num"];
+   $dropdownname="searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
    $searchopt=array();
+
    if (count($actions)>0){
       // get already get search options
       if (isset($actions['searchopt'])) {
@@ -63,7 +70,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
          unset($searchopt['name']);
          unset($actions['searchopt']);
       }
-      $randsearch=Dropdown::showFromArray('searchtype['.$_POST["num"].']',
+      $randsearch=Dropdown::showFromArray("searchtype".$addmeta."[".$_POST["num"]."]",
                            $actions,array('value' => $_POST["searchtype"]));
    }
    echo "&nbsp;<span id='span$dropdownname'>\n";
@@ -73,12 +80,13 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
                         'itemtype'     => $_POST["itemtype"],
                         'num'          => $_POST["num"],
                         'value'        => $_POST['value'],
-                        'searchopt'    => $searchopt);
+                        'searchopt'    => $searchopt,
+                        'meta'         => $_POST['meta'],);
 
-   ajaxUpdateItemOnSelectEvent("dropdown_searchtype[".$_POST["num"]."]$randsearch","span$dropdownname",
+   ajaxUpdateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch","span$dropdownname",
                                  $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",$paramsaction,false);
    ajaxUpdateItem("span$dropdownname",$CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
-                     $paramsaction, false,"dropdown_searchtype[".$_POST["num"]."]$randsearch");
+                     $paramsaction, false,"dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch");
 
 }
 
