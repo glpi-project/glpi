@@ -613,6 +613,45 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
+
+   static function showShortForTicket($ID) {
+      global $DB,$CFG_GLPI, $LANG;
+
+      // Print Followups for a job
+      $showprivate = haveRight("show_full_ticket","1");
+
+      $RESTRICT = "";
+      if (!$showprivate) {
+         $RESTRICT = " AND (`is_private` = '0'
+                           OR `users_id` ='".$_SESSION["glpiID"]."') ";
+      }
+
+      // Get Number of Followups
+      $query = "SELECT *
+               FROM `glpi_ticketfollowups`
+               WHERE `tickets_id` = '$ID'
+                     $RESTRICT
+               ORDER BY `date` DESC";
+      $result=$DB->query($query);
+
+      $out = "";
+      if ($DB->numrows($result)>0) {
+         $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
+                  <tr><th>".$LANG['common'][27]."</th><th>".$LANG['job'][4]."</th>
+                  <th>".$LANG['joblist'][6]."</th></tr>\n";
+
+         while ($data=$DB->fetch_array($result)) {
+            $out .= "<tr class='tab_bg_3'>
+                     <td class='center'>".convDateTime($data["date"])."</td>
+                     <td class='center'>".getUserName($data["users_id"],1)."</td>
+                     <td width='70%' class='b'>".resume_text($data["content"],$CFG_GLPI["cut"])."</td>
+                     </tr>";
+         }
+         $out .= "</table></div>";
+      }
+      return $out;
+   }
+
 }
 
 

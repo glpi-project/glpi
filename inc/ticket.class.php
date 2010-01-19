@@ -342,11 +342,11 @@ class Ticket extends CommonDBTM {
       // Old values for add followup in change
       if ($CFG_GLPI["add_followup_on_update_ticket"]) {
          $this->getFromDB($input["id"]);
-         $input["_old_assign_name"] = getAssignName($this->fields["users_id_assign"],'User');
+         $input["_old_assign_name"] = Ticket::getAssignName($this->fields["users_id_assign"],'User');
          $input["_old_assign"]      = $this->fields["users_id_assign"];
-         $input["_old_assign_supplier_name"]  = getAssignName($this->fields["suppliers_id_assign"],
+         $input["_old_assign_supplier_name"]  = Ticket::getAssignName($this->fields["suppliers_id_assign"],
                                                              'Supplier');
-         $input["_old_groups_id_assign_name"] = getAssignName($this->fields["groups_id_assign"],
+         $input["_old_groups_id_assign_name"] = Ticket::getAssignName($this->fields["groups_id_assign"],
                                                               'Group');
          $input["_old_ticketcategories_id"]  = $this->fields["ticketcategories_id"];
          $input["_old_items_id"]       = $this->fields["items_id"];
@@ -647,7 +647,7 @@ class Ticket extends CommonDBTM {
                      break;
 
                   case "users_id_assign" :
-                     $new_assign_name = getAssignName($this->fields["users_id_assign"],'User');
+                     $new_assign_name = Ticket::getAssignName($this->fields["users_id_assign"],'User');
                      if ($this->input["_old_assign"]==0) {
                         $this->input["_old_assign_name"]=$LANG['mailing'][105];
                      }
@@ -658,7 +658,7 @@ class Ticket extends CommonDBTM {
                      break;
 
                   case "suppliers_id_assign" :
-                     $new_assign_supplier_name = getAssignName($this->fields["suppliers_id_assign"],
+                     $new_assign_supplier_name = Ticket::getAssignName($this->fields["suppliers_id_assign"],
                                                                'Supplier');
                      $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
                                                  $this->input["_old_assign_supplier_name"]." -> ".
@@ -667,7 +667,7 @@ class Ticket extends CommonDBTM {
                      break;
 
                   case "groups_id_assign" :
-                     $new_groups_id_assign_name = getAssignName($this->fields["groups_id_assign"],
+                     $new_groups_id_assign_name = Ticket::getAssignName($this->fields["groups_id_assign"],
                                                                 'Group');
                      $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
                                                  $this->input["_old_groups_id_assign_name"]." -> ".
@@ -1273,10 +1273,10 @@ class Ticket extends CommonDBTM {
          $message .= "<span style='color:#8B8C8F; font-weight:bold; text-decoration:underline;'>".
                       $LANG['joblist'][0]."&nbsp;:</span> ".$this->getStatus($this->fields["status"])."\n";
 
-         $assign = getAssignName($this->fields["users_id_assign"],'User');
+         $assign = Ticket::getAssignName($this->fields["users_id_assign"],'User');
          $group_assign = "";
          if (isset($this->fields["groups_id_assign"])) {
-            $group_assign = getAssignName($this->fields["groups_id_assign"],'Group');
+            $group_assign = Ticket::getAssignName($this->fields["groups_id_assign"],'Group');
          }
          if ($assign=="[Nobody]") {
             if (!empty($group_assign)) {
@@ -1347,10 +1347,10 @@ class Ticket extends CommonDBTM {
             $message .= mailRow($LANG['common'][10],$tech);
          }
          $message .= mailRow($LANG['joblist'][0],$this->getStatus($this->fields["status"]));
-         $assign = getAssignName($this->fields["users_id_assign"],'User');
+         $assign = Ticket::getAssignName($this->fields["users_id_assign"],'User');
          $group_assign = "";
          if (isset($this->fields["groups_id_assign"])) {
-            $group_assign = getAssignName($this->fields["groups_id_assign"],'Group');
+            $group_assign = Ticket::getAssignName($this->fields["groups_id_assign"],'Group');
          }
          if ($assign=="[Nobody]") {
             if (!empty($groups_id_assign)) {
@@ -3722,14 +3722,14 @@ class Ticket extends CommonDBTM {
             if (!empty($fifth_col)) {
                $fifth_col .= "<br>";
             }
-            $fifth_col .= getAssignName($data["groups_id_assign"],'Group',1);
+            $fifth_col .= Ticket::getAssignName($data["groups_id_assign"],'Group',1);
          }
 
          if ($data["suppliers_id_assign"]>0) {
             if (!empty($fifth_col)) {
                $fifth_col .= "<br>";
             }
-            $fifth_col .= getAssignName($data["suppliers_id_assign"],'Supplier',1);
+            $fifth_col .= Ticket::getAssignName($data["suppliers_id_assign"],'Supplier',1);
          }
          echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
@@ -3781,7 +3781,7 @@ class Ticket extends CommonDBTM {
                                  $data["id"]."\">$eigth_column</a>";
 
                if ($followups && $output_type==HTML_OUTPUT) {
-                  $eigth_column .= showFollowupsShort($data["id"]);
+                  $eigth_column .= TicketFollowup::showShortForTicket($data["id"]);
                } else {
                   $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket",
                                                                               "1")).")";
@@ -3791,7 +3791,7 @@ class Ticket extends CommonDBTM {
             $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=".
                               "user&amp;id=".$data["id"]."\">$eigth_column</a>";
             if ($followups && $output_type==HTML_OUTPUT) {
-               $eigth_column .= showFollowupsShort($data["id"]);
+               $eigth_column .= TicketFollowup::showShortForTicket($data["id"]);
             } else {
                $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
             }
@@ -4011,6 +4011,32 @@ class Ticket extends CommonDBTM {
       }
 
       return false;
+   }
+
+   static function getAssignName($ID,$itemtype,$link=0) {
+      global $CFG_GLPI;
+
+      switch ($itemtype) {
+         case 'User' :
+            if ($ID==0) {
+               return "";
+            }
+            return getUserName($ID,$link);
+            break;
+
+         case 'Supplier' :
+         case 'Group' :
+            $item=new $itemtype();
+            if ($item->getFromDB($ID)) {
+               $before = "";
+               $after = "";
+               if ($link) {
+                  return $item->getLink(1);
+               }
+               return $item->getNameID();
+            }
+            return "";
+      }
    }
 
 }
