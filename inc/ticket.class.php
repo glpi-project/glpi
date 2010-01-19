@@ -1556,6 +1556,12 @@ class Ticket extends CommonDBTM {
       $tab[11]['name']      = $LANG['joblist'][30];
       $tab[11]['searchtype']= 'equals';
 
+      $tab[3]['table']     = 'glpi_tickets';
+      $tab[3]['field']     = 'priority';
+      $tab[3]['linkfield'] = 'priority';
+      $tab[3]['name']      = $LANG['joblist'][2];
+      $tab[3]['searchtype']= 'equals';
+
       $tab[15]['table']     = 'glpi_tickets';
       $tab[15]['field']     = 'date';
       $tab[15]['linkfield'] = '';
@@ -1586,6 +1592,11 @@ class Ticket extends CommonDBTM {
 
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 
+         $tab[80]['table']     = 'glpi_entities';
+         $tab[80]['field']     = 'completename';
+         $tab[80]['linkfield'] = 'entities_id';
+         $tab[80]['name']      = $LANG['entity'][0];
+
          $tab[4]['table']     = 'glpi_users';
          $tab[4]['field']     = 'name';
          $tab[4]['linkfield'] = 'users_id';
@@ -1595,13 +1606,6 @@ class Ticket extends CommonDBTM {
          $tab[71]['field']     = 'name';
          $tab[71]['linkfield'] = 'groups_id';
          $tab[71]['name']      = $LANG['common'][35];
-
-         $tab[3]['table']     = 'glpi_tickets';
-         $tab[3]['field']     = 'priority';
-         $tab[3]['linkfield'] = 'priority';
-         $tab[3]['name']      = $LANG['joblist'][2];
-         $tab[3]['searchtype']= 'equals';
-
 
          $tab[5]['table']     = 'glpi_users';
          $tab[5]['field']     = 'name';
