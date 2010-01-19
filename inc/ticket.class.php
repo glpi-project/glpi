@@ -138,7 +138,7 @@ class Ticket extends CommonDBTM {
       if ($ID>0) {
          if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
             if ($this->canAddFollowups()) {
-               $ong[1] = $LANG['Menu'][5];
+               $ong[1] = $LANG['job'][9];
                $ong[2] = $LANG['job'][7];
             }
          } else if (haveRight("add_followups","1")) {
@@ -1631,6 +1631,20 @@ class Ticket extends CommonDBTM {
          $tab[22]['linkfield'] = 'users_id_recipient';
          $tab[22]['name']      = $LANG['job'][3];
 
+         $tab['followup'] = $LANG['job'][9];
+
+         $tab[25]['table']     = 'glpi_ticketfollowups';
+         $tab[25]['field']     = 'content';
+         $tab[25]['linkfield'] = '';
+         $tab[25]['name']      = $LANG['job'][9];
+         $tab[25]['forcegroupby'] = true;
+
+         $tab[26]['table']     = 'glpi_tickettasks';
+         $tab[26]['field']     = 'content';
+         $tab[26]['linkfield'] = '';
+         $tab[26]['name']      = $LANG['job'][7];
+         $tab[26]['forcegroupby'] = true;
+
          $tab['solution'] = $LANG['jobresolution'][1];
 
          $tab[23]['table']     = 'glpi_ticketsolutiontypes';
@@ -1642,6 +1656,7 @@ class Ticket extends CommonDBTM {
          $tab[24]['field']     = 'solution';
          $tab[24]['linkfield'] = '';
          $tab[24]['name']      = $LANG['jobresolution'][1];
+
       }
 
       return $tab;
