@@ -196,7 +196,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             $data=$DB->fetch_assoc($result);
-            if (NotificationMail::isValidEmail($data["email"])) {
+            if (NotificationMail::isUserAddressValid($data["email"])) {
                return $data["email"];
             }
          }

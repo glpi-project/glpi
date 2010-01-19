@@ -461,7 +461,7 @@ class Mailing {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             $data=$DB->fetch_assoc($result);
-            if (isValidEmail($data["email"])) {
+            if (isUserAddressValid($data["email"])) {
                return $data["email"];
             }
          }
@@ -533,22 +533,22 @@ class Mailing {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             $data=$DB->fetch_assoc($result);
-            if (isValidEmail($data["reply"])) {
+            if (isUserAddressValid($data["reply"])) {
                return $data["reply"];
-            } else if (isValidEmail($data["email"])) {
+            } else if (isUserAddressValid($data["email"])) {
                $replyto=$data["email"];
             }
          }
       }
       // Global conf
-      if (isValidEmail($CFG_GLPI["admin_reply"])) {
+      if (isUserAddressValid($CFG_GLPI["admin_reply"])) {
          return $CFG_GLPI["admin_reply"];
       }
       // No specific config
       switch ($this->mailtype) {
          case "new" :
             if (isset($this->job->fields["user_email"])
-                && isValidEmail($this->job->fields["user_email"])) {
+                && isUserAddressValid($this->job->fields["user_email"])) {
                $replyto=$this->job->fields["user_email"];
             } else {
                $replyto=$sender;
@@ -558,7 +558,7 @@ class Mailing {
          case "followup" :
 
          case "update" :
-            if (isset($this->user->fields["email"]) && isValidEmail($this->user->fields["email"])) {
+            if (isset($this->user->fields["email"]) && isUserAddressValid($this->user->fields["email"])) {
                $replyto=$this->user->fields["email"];
             } else {
                $replyto=$sender;
@@ -698,7 +698,7 @@ class MailingResa {
       $new_mail=trim($mail);
       $new_lang=trim($lang);
       if (!empty($new_mail)) {
-         if (isValidEmail($new_mail) && !isset($emails[$new_mail])) {
+         if (isUserAddressValid($new_mail) && !isset($emails[$new_mail])) {
             $emails[$new_mail] = (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang);
          }
       }
@@ -882,7 +882,7 @@ class MailingResa {
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)) {
                $data=$DB->fetch_assoc($result);
-               if (isValidEmail($data["email"])) {
+               if (isUserAddressValid($data["email"])) {
                   return $data["email"];
                }
             }
@@ -944,7 +944,7 @@ class MailingResa {
       $replyto="";
       $user = new User;
       if ($user->getFromDB($this->resa->fields["users_id"])) {
-         if (isValidEmail($user->fields["email"])) {
+         if (isUserAddressValid($user->fields["email"])) {
             $replyto=$user->fields["email"];
          } else {
             $replyto=$sender;
@@ -965,7 +965,7 @@ class MailingResa {
    function send() {
       global $CFG_GLPI,$LANG;
 
-      if ($CFG_GLPI["use_mailing"] && isValidEmail($CFG_GLPI["admin_email"])) {
+      if ($CFG_GLPI["use_mailing"] && isUserAddressValid($CFG_GLPI["admin_email"])) {
          // get users to send mail
          $users=$this->get_users_to_send_mail();
          // get sender
@@ -1061,7 +1061,7 @@ class MailingAlert {
                   switch($data["items_id"]) {
                      // ADMIN SEND
                      case ADMIN_MAILING :
-                        if (isValidEmail($CFG_GLPI["admin_email"])
+                        if (isUserAddressValid($CFG_GLPI["admin_email"])
                             && !isset($emails[$CFG_GLPI["admin_email"]])) {
                            $emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
                         }
@@ -1075,7 +1075,7 @@ class MailingAlert {
                         if ($result2 = $DB->query($query2)) {
                            if ($DB->numrows($result2)==1) {
                               $row = $DB->fetch_array($result2);
-                              if (isValidEmail($row['email']) && !isset($emails[$row['email']])) {
+                              if (isUserAddressValid($row['email']) && !isset($emails[$row['email']])) {
                                  $emails[$row['email']]=$CFG_GLPI["language"];
                               }
                            }
@@ -1095,7 +1095,7 @@ class MailingAlert {
                   if ($result2= $DB->query($query)) {
                      if ($DB->numrows($result2)) {
                         while ($row=$DB->fetch_assoc($result2)) {
-                           if (isValidEmail($row['email']) && !isset($emails[$row['email']])) {
+                           if (isUserAddressValid($row['email']) && !isset($emails[$row['email']])) {
                               $emails[$row['email']]=$row['lang'];
                            }
                         }
@@ -1112,7 +1112,7 @@ class MailingAlert {
                   if ($result2= $DB->query($query)) {
                      if ($DB->numrows($result2)) {
                         while ($row=$DB->fetch_assoc($result2)) {
-                           if (isValidEmail($row['email'])&&!isset($emails[$row['email']])){
+                           if (isUserAddressValid($row['email'])&&!isset($emails[$row['email']])){
                               $emails[$row['email']]=$row['lang'];
                            }
                         }
@@ -1197,7 +1197,7 @@ class MailingAlert {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             $data=$DB->fetch_assoc($result);
-            if (isValidEmail($data["email"])) {
+            if (isUserAddressValid($data["email"])) {
                return $data["email"];
             }
          }

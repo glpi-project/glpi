@@ -1156,7 +1156,7 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
       autocompletionTextField($this, "email", array('name'=>"email_form"));
-      if (!empty($ID) && !NotificationMail::isValidEmail($this->fields["email"])) {
+      if (!empty($ID) && !NotificationMail::isUserAddressValid($this->fields["email"])) {
          echo "<br><span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
       }
       echo "</td>";
@@ -1318,7 +1318,7 @@ class User extends CommonDBTM {
             echo $this->fields["email"];
          } else {
             autocompletionTextField($this, "email", array('name'=>"email_form"));
-            if (!NotificationMail::isValidEmail($this->fields["email"])) {
+            if (!NotificationMail::isUserAddressValid($this->fields["email"])) {
                echo "<br><span class='red'>".$LANG['mailing'][110]."</span>";
             }
          }

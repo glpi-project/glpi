@@ -262,7 +262,7 @@ class DBConnection {
 
             // Send notification if mail configured
             if (!empty($CFG_GLPI["dbreplicate_email"])
-                && NotificationMail::isValidEmail($CFG_GLPI["dbreplicate_email"])) {
+                && NotificationMail::isUserAddressValid($CFG_GLPI["dbreplicate_email"])) {
                $mmail = new NotificationMail();
                $mmail->From = $CFG_GLPI["admin_email"];
                $mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
