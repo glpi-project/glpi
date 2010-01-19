@@ -1980,23 +1980,19 @@ function update0723to080($output='HTML') {
       $query = "UPDATE `glpi_budgets` SET `is_recursive` = '1';";
       $DB->query($query) or die("0.80 set is_recursive to true in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
+
    if (!FieldExists("glpi_budgets","entities_id")) {
-         $query = "ALTER TABLE `glpi_budgets` ADD `entities_id` int(11) NOT NULL default '0' AFTER `name`;";
+         $query = "ALTER TABLE `glpi_budgets` ADD `entities_id` int(11) NOT NULL default '0' AFTER `name`,
+                                          ADD INDEX `entities_id` (`entities_id`);";
          $DB->query($query) or die("0.80 add entities_id field in glpi_budgets" . $LANG['update'][90] . $DB->error());
-   }
-   if (!isIndex("glpi_budgets","entities_id")) {
-      $query="ALTER TABLE `glpi_budgets` ADD INDEX `entities_id` (`entities_id`);";
-      $DB->query($query) or die("0.80 create index entities_id in glpi_budgets " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists("glpi_budgets","is_deleted")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `is_deleted` tinyint(1) NOT NULL DEFAULT '0'";
+      $query = "ALTER TABLE `glpi_budgets` ADD `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                       ADD INDEX `is_deleted` (`is_deleted`)";
       $DB->query($query) or die("0.80 add is_deleted field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
-   if (!isIndex("glpi_budgets","is_deleted")) {
-      $query="ALTER TABLE `glpi_budgets` ADD INDEX `is_deleted` (`is_deleted`);";
-      $DB->query($query) or die("0.80 create index is_deleted in glpi_budgets " . $LANG['update'][90] . $DB->error());
-   }
+
    if (!FieldExists("glpi_budgets","begin_date")) {
       $query = "ALTER TABLE `glpi_budgets` ADD `begin_date` DATE NULL";
       $DB->query($query) or die("0.80 add begin_date field in glpi_budgets" . $LANG['update'][90] . $DB->error());
@@ -2010,12 +2006,9 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 add value field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_budgets","is_template")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `is_template` tinyint(1) NOT NULL default '0'";
+      $query = "ALTER TABLE `glpi_budgets` ADD `is_template` tinyint(1) NOT NULL default '0',
+                                          ADD INDEX `is_template` (`is_template`);";
       $DB->query($query) or die("0.80 add is_template field in glpi_budgets" . $LANG['update'][90] . $DB->error());
-   }
-   if (!isIndex("glpi_budgets","is_template")) {
-      $query="ALTER TABLE `glpi_budgets` ADD INDEX `is_template` (`is_template`);";
-      $DB->query($query) or die("0.80 create index is_template in glpi_budgets " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists("glpi_budgets","template_name")) {
@@ -2027,6 +2020,13 @@ function update0723to080($output='HTML') {
       $query = "ALTER TABLE `glpi_budgets` ADD `date_mod`  DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
       $DB->query($query) or die("0.80 add date_mod field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
+
+
+   if (!FieldExists("glpi_budgets","notepad")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `notepad` LONGTEXT collate utf8_unicode_ci";
+      $DB->query($query) or die("0.80 add notepad field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+
 
    // Change budget search pref : date_mod
    $ADDTODISPLAYPREF['Budget']=array(2,3,4,19);
