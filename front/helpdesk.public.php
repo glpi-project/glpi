@@ -90,44 +90,6 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
 
     if (!isset($_GET["id"])) {
 
-//       if (!isset($_GET["start"])) {
-//          $_GET["start"] = 0;
-//       }
-//       if (!isset($_GET["status"])) {
-//          $_GET["status"] = "all";
-//       }
-//       if (!isset($_GET["sort"])) {
-//          $_GET["sort"] = "";
-//       }
-//       if (!isset($_GET["search"])) {
-//          $_GET["search"] = "";
-//       }
-//       if (!isset($_GET["tosearch"])) {
-//          $_GET["tosearch"] = "name_content";
-//       }
-//       if (!isset($_GET["order"])) {
-//          $_GET["order"] = "DESC";
-//       }
-//       if (!isset($_GET["group"])) {
-//          $_GET["group"] = 0;
-//       }
-//       if (!isset($_GET["ticketcategories_id"])) {
-//          $_GET["ticketcategories_id"] = 0;
-//       }
-//       if (!isset($_GET["showfollowups"])) {
-//          $_GET["showfollowups"] = 0;
-//       }
-//       if (!isset($_GET["extended"])) {
-//          $_GET["extended"] = 0;
-//       }
-
-//       searchSimpleFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["status"],
-//                                $_GET["tosearch"],$_GET["search"],$_GET["group"],
-//                              $_GET["showfollowups"],$_GET["ticketcategories_id"]);
-// 
-//       showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],
-//                        $_GET["status"],$_GET["tosearch"],$_GET["search"],$_SESSION["glpiID"],
-//                        $_GET["group"],$_GET["showfollowups"],$_GET["ticketcategories_id"]);
 
    // Manage default value : search not old tickets : show=user in GET param by default
    if (!isset($_GET) || !is_array($_GET) || count($_GET)<=1) {
