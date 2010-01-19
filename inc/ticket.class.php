@@ -3211,36 +3211,67 @@ class Ticket extends CommonDBTM {
       $result = $DB->query($query);
       $i = 0;
       $number = $DB->numrows($result);
-
+      //echo $query;
       if ($number > 0) {
          echo "<table class='tab_cadrehov' style='width:420px'>";
-         $link_common="&amp;status=$status&amp;reset=reset";
-         $link="users_id_assign=mine$link_common";
-         // Only mine
-         if (!$showgrouptickets
-            && (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1'))) {
-            $link = "users_id_assign=".$_SESSION["glpiID"].$link_common;
-         }
 
          echo "<tr><th colspan='5'>";
          if ($status=="waiting") {
             if ($showgrouptickets) {
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
-                     $LANG['central'][16]."</a>";
+               $options['reset']  = 'reset';
+               $options['field'][0]      = 12; // status
+               $options['searchtype'][0] = 'equals';
+               $options['contains'][0]   = 'waiting';
+               $options['link'][0]        = 'AND';
+
+               $num=1;
+               foreach ($_SESSION['glpigroups'] as $gID) {
+                  $options['field'][$num]      = 8; // status
+                  $options['searchtype'][$num] = 'equals';
+                  $options['contains'][$num]   = $gID;
+                  $options['link'][$num]        = ($num==1?'AND':'OR');
+                  $num++;
+
+               }
+
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
+                     "\">".$LANG['central'][16]."</a>";
             } else {
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
-                     $LANG['central'][11]."</a>";
+               $options['reset']  = 'reset';
+               $options['field'][0]      = 12; // status
+               $options['searchtype'][0] = 'equals';
+               $options['contains'][0]   = 'waiting';
+               $options['link'][0]        = 'AND';
+
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
+                     "\">".$LANG['central'][11]."</a>";
             }
          } else {
             echo $LANG['central'][17]."&nbsp;: ";
             if ($showgrouptickets) {
-               if (haveRight("show_group_ticket",1)) {
-
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?group=-1&amp;users_id=".
+      // Not used ??
+/*               if (haveRight("show_group_ticket",1)) {
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.phpq?group=-1&amp;users_id=".
                         $_SESSION["glpiID"]."&amp;reset=reset\">".$LANG['joblist'][5]."</a> / ";
+               }*/
+               $options['reset']  = 'reset';
+               $options['field'][0]      = 12; // status
+               $options['searchtype'][0] = 'equals';
+               $options['contains'][0]   = 'process';
+               $options['link'][0]        = 'AND';
+
+               $num=1;
+               foreach ($_SESSION['glpigroups'] as $gID) {
+                  $options['field'][$num]      = 8; // status
+                  $options['searchtype'][$num] = 'equals';
+                  $options['contains'][$num]   = $gID;
+                  $options['link'][$num]        = ($num==1?'AND':'OR');
+                  $num++;
+
                }
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?$link\">".
-                     $LANG['joblist'][21]."</a>";
+
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
+                     "\">".$LANG['joblist'][21]."</a>";
             } else {
                $options['reset']  = 'reset';
                $options['field'][0]      = 4; // users_id
@@ -3254,8 +3285,7 @@ class Ticket extends CommonDBTM {
                $options['field'][0]      = 5; // users_id_assign
 
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
-                        "\">".
-                     $LANG['joblist'][21]."</a>";
+                        "\">".$LANG['joblist'][21]."</a>";
             }
          }
          echo "</th></tr>";
@@ -3611,8 +3641,14 @@ class Ticket extends CommonDBTM {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?reset=reset&amp;status=".
-               "all&amp;users_id=$userID'>".$LANG['buttons'][40]."</a>";
+
+         $options['reset']  = 'reset';
+         $options['field'][0]      = 4; // status
+         $options['searchtype'][0] = 'equals';
+         $options['contains'][0]   = $userID;
+         $options['link'][0]        = 'AND';
+
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
          Ticket::commonListHeader(HTML_OUTPUT);
