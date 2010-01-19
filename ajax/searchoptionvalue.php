@@ -54,42 +54,68 @@ if (isset($_REQUEST['searchtype'])) {
    $display=false;
    switch ($_REQUEST['searchtype']) {
       case "equals" :
-        if (isset($searchopt['field'])) {
-            //echo $searchopt['field'];
-            switch ($searchopt['field']) {
-               case "status" :
+
+        // Specific cases with linkfield
+        if (isset($searchopt['linkfield'])) {
+            switch ($_REQUEST['itemtype'].".".$searchopt['linkfield']) {
+               case "Ticket.users_id_recipient" :
+               case "Ticket.users_id" :
+                  User::dropdownForTicket($inputname,$_REQUEST['value'],$searchopt['linkfield']);
+                  $display=true;
+                  break;
+               case "Ticket.users_id_assign" :
+                  User::dropdown(array('name'   => $inputname,
+                                       'value'  => $_REQUEST['value'],
+                                       'right'  => 'own_ticket',
+                                       'all'    => 1));
+                  $display=true;
+                  break;
+            }
+        }
+
+        if (!$display && isset($searchopt['field'])) {
+            // Specific cases
+            switch ($searchopt['table'].".".$searchopt['field']) {
+
+               case "glpi_tickets.status" :
                   Ticket::dropdownStatus($inputname,$_REQUEST['value'],1);
                   $display=true;
                   break;
-               case "priority" :
+               case "glpi_tickets.priority" :
                   Ticket::dropdownPriority($inputname,$_REQUEST['value'],true,true);
                   $display=true;
                   break;
-               case "impact" :
+               case "glpi_tickets.impact" :
                   Ticket::dropdownImpact($inputname,$_REQUEST['value'],true);
                   $display=true;
                   break;
-               case "urgency" :
+               case "glpi_tickets.urgency" :
                   Ticket::dropdownUrgency($inputname,$_REQUEST['value'],true);
                   $display=true;
                   break;
-   
-               case "name":
-               case "completename":
-                  if ($searchopt['table']=='glpi_users') {
-                     User::dropdown(array('name'      => $inputname,
-                                          'value'     => $_REQUEST['value'],
-                                          'comments'  => false,
-                                          'all'       => -1,
-                                          'right'     => 'all'));
-                  } else {
+               case "glpi_users.name":
+                  User::dropdown(array('name'      => $inputname,
+                                       'value'     => $_REQUEST['value'],
+                                       'comments'  => false,
+                                       'all'       => -1,
+                                       'right'     => 'all'));
+                  $display=true;
+                  break;
+            }
+
+            // Standard field usage
+            if (!$display) {
+               switch ($searchopt['field']) {
+      
+                  case "name":
+                  case "completename":
                      Dropdown::show(getItemTypeForTable($searchopt['table']),
                                     array('value'     => $_REQUEST['value'],
                                           'name'      => $inputname,
                                           'comments'  => 0));
-                  }
-                  $display=true;
-                  break;
+                     $display=true;
+                     break;
+               }
             }
         }
         break;
