@@ -307,7 +307,9 @@ class Profile extends CommonDBTM {
 
       $onfocus = "";
       $new = false;
+      $rowspan=4;
       if ($ID > 0) {
+         $rowspan++;
          $this->check($ID,'r');
       } else {
          // Create item
@@ -324,7 +326,12 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td><input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></td>";
 
-      echo "<td>".$LANG['profiles'][13]."&nbsp;:</td><td>";
+
+      echo "<td rowspan='$rowspan' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='$rowspan'><textarea cols='45'
+      rows='4' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][13]."&nbsp;:</td><td>";
       Dropdown::showYesNo("is_default",$this->fields["is_default"]);
       echo "</td></tr>\n";
 
@@ -335,11 +342,19 @@ class Profile extends CommonDBTM {
              $LANG['Menu'][31]."</option>\n";
       echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".
              $LANG['title'][0]."</option>";
-      echo "</select></td>";
+      echo "</select></td></tr>\n";
 
-      echo "<td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
       Dropdown::showYesNo("password_update",$this->fields["password_update"]);
       echo "</td></tr>\n";
+
+      if ($ID>0) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<td>";
+         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+         echo "</td></tr>";
+      }
 
       $this->showFormButtons($ID,$withtemplate,2);
 
@@ -946,6 +961,13 @@ class Profile extends CommonDBTM {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'Profile';
 
+
+      $tab[19]['table']     = 'glpi_profiles';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+
       $tab[2]['table']     = 'glpi_profiles';
       $tab[2]['field']     = 'interface';
       $tab[2]['linkfield'] = '';
@@ -956,6 +978,12 @@ class Profile extends CommonDBTM {
       $tab[3]['linkfield'] = '';
       $tab[3]['name']      = $LANG['profiles'][13];
       $tab[3]['datatype']  = 'bool';
+
+      $tab[16]['table']     = 'glpi_profiles';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
 
       return $tab;
    }

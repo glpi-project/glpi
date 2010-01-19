@@ -115,6 +115,47 @@ class OcsServer extends CommonDBTM {
       return $tabs;
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['login'][2];
+
+      $tab[1]['table']         = 'glpi_ocsservers';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = 'OcsServer';
+
+      $tab[2]['table']        = 'glpi_ocsservers';
+      $tab[2]['field']        = 'id';
+      $tab[2]['linkfield']    = '';
+      $tab[2]['name']         = $LANG['common'][2];
+
+      $tab[3]['table']         = 'glpi_ocsservers';
+      $tab[3]['field']         = 'ocs_db_host';
+      $tab[3]['linkfield']     = 'ocs_db_host';
+      $tab[3]['name']          = $LANG['common'][52];
+
+
+      $tab[19]['table']       = 'glpi_ocsservers';
+      $tab[19]['field']       = 'date_mod';
+      $tab[19]['linkfield']   = '';
+      $tab[19]['name']        = $LANG['common'][26];
+      $tab[19]['datatype']    = 'datetime';
+
+      $tab[16]['table']     = 'glpi_ocsservers';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+
+      return $tab;
+   }
+
+
    /**
     * Print ocs config form
     *
@@ -410,9 +451,11 @@ class OcsServer extends CommonDBTM {
          return false;
       }
 
+      $rowspan=5;
       //If no ID provided, or if the server is created using an existing template
       if (empty ($ID)) {
          $this->getEmpty();
+         $rowspan++;
       } else {
          $this->getFromDB($ID);
       }
@@ -422,28 +465,42 @@ class OcsServer extends CommonDBTM {
       $out  = "\n<div class='center' id='tabsbody'>";
       $out .= "<form name='formdbconfig' action=\"$target\" method=\"post\">";
       $out .= "<table class='tab_cadre_fixe'>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][88] . " </td>\n";
-      $out .= "<td><strong>" . $this->fields["id"] . "</strong></td></tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . " </td>\n";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][88] . "&nbsp;: </td>\n";
+      $out .= "<td><strong>" . $this->fields["id"] . "</strong></td>\n";
+
+      $out .= "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
+      $out .= "<td rowspan='$rowspan'><textarea cols='45'
+      rows='4' name='comment' >".$this->fields["comment"]."</textarea></td>\n";
+
+
+      $out .= "</tr><tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "&nbsp;: </td>\n";
       $out .= "<td><input type='text' name='name' value=\"" . $this->fields["name"] ."\"></td></tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . " </td>\n";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
       $out .= "<td><input type='text' name='ocs_db_host' value=\"" .
                     $this->fields["ocs_db_host"] ."\"></td></tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][4] . " </td>\n";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][4] . "&nbsp;: </td>\n";
       $out .= "<td><input type='text' name='ocs_db_name' value=\"" .
                     $this->fields["ocs_db_name"] . "\"></td></tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][1] . " </td>\n";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][1] . "&nbsp;: </td>\n";
       $out .= "<td><input type='text' name='ocs_db_user' value=\"" .
                     $this->fields["ocs_db_user"] . "\"></td></tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . " </td>\n";
-      $out .= "<td><input type='password' name='ocs_db_passwd' value=''></td></tr>\n";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
+      $out .= "<td><input type='password' name='ocs_db_passwd' value=''></td>";
+      if (!empty ($ID)) {
+         $out .= "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         $out .= "<td>";
+         $out .= ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+         $out .= "</td>";
+
+      }
+      $out .= "</tr>\n";
 
       if ($ID == '') {
-         $out .= "<tr class='tab_bg_2'><td class='center' colspan=2>";
+         $out .= "<tr class='tab_bg_2'><td class='center' colspan=4>";
          $out .= "<input type='submit' name='add' class='submit' value=\"" .
                    $LANG['buttons'][2] . "\" ></td></tr>\n";
       } else {
-         $out .= "<tr class='tab_bg_2'><td class='center' colspan=2>";
+         $out .= "<tr class='tab_bg_2'><td class='center' colspan=4>";
          $out .= "<input type='hidden' name='id' value='$ID'>\n";
          $out .= "<input type='submit' name='update' class='submit' value=\"" .
                    $LANG['buttons'][2] . "\" >&nbsp;";

@@ -2023,6 +2023,15 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 add template_name field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_budgets","date_mod")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `date_mod`  DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
+      $DB->query($query) or die("0.80 add date_mod field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+
+   // Change budget search pref : date_mod
+   $ADDTODISPLAYPREF['Budget']=array(2,3,4,19);
+
+
    displayMigrationMessage("080", $LANG['update'][141] . ' - ' . $LANG['crontask'][0]); // Updating schema
    if (!TableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
@@ -2473,7 +2482,7 @@ function update0723to080($output='HTML') {
 
    if (!FieldExists('glpi_groups','date_mod')) {
       $query = "ALTER TABLE `glpi_groups`
-                ADD `date_mod` DATETIME NULL";
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
 
       $DB->query($query) or die("0.80 add date_mod to glpi_groups" .
                                  $LANG['update'][90] . $DB->error());
@@ -2722,7 +2731,7 @@ function update0723to080($output='HTML') {
 
    if (!FieldExists('glpi_rules','date_mod')) {
       $query = "ALTER TABLE `glpi_rules`
-                ADD `date_mod` DATETIME NULL";
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
 
       $DB->query($query) or die("0.80 add date_mod to glpi_rules" . $LANG['update'][90] . $DB->error());
    }
@@ -2893,15 +2902,14 @@ function update0723to080($output='HTML') {
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
 
-   // Change mailgate search pref : add active
-	if (!FieldExists("glpi_mailcollectors", "is_active")) {
-		$query = "ALTER TABLE `glpi_mailcollectors` ADD `is_active` tinyint( 1 ) NOT NULL DEFAULT '1' ;";
+   if (!FieldExists("glpi_mailcollectors", "is_active")) {
+      $query = "ALTER TABLE `glpi_mailcollectors` ADD `is_active` tinyint( 1 ) NOT NULL DEFAULT '1' ;";
       $DB->query($query) or die("0.80 add is_active in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
-	}
+   }
 
    if (!FieldExists('glpi_mailcollectors','date_mod')) {
       $query = "ALTER TABLE `glpi_mailcollectors`
-                ADD `date_mod` DATETIME NULL";
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
 
       $DB->query($query) or die("0.80 add date_mod to glpi_mailcollectors" .
                                  $LANG['update'][90] . $DB->error());
@@ -2915,7 +2923,7 @@ function update0723to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
-   // Change mailgate search pref : add active / date_mod
+   // Change search pref : add active / date_mod
    $ADDTODISPLAYPREF['MailCollector']=array(2,19);
 
 
@@ -2924,7 +2932,7 @@ function update0723to080($output='HTML') {
 
    if (!FieldExists('glpi_authldaps','date_mod')) {
       $query = "ALTER TABLE `glpi_authldaps`
-                ADD `date_mod` DATETIME NULL";
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
 
       $DB->query($query) or die("0.80 add date_mod to glpi_authldaps" .
                                  $LANG['update'][90] . $DB->error());
@@ -2938,7 +2946,7 @@ function update0723to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
-   // Change mailgate search pref : date_mod
+   // Change search pref : host, date_mod
    $ADDTODISPLAYPREF['AuthLDAP']=array(3,19);
 
 
@@ -2946,7 +2954,7 @@ function update0723to080($output='HTML') {
 
    if (!FieldExists('glpi_authmails','date_mod')) {
       $query = "ALTER TABLE `glpi_authmails`
-                ADD `date_mod` DATETIME NULL";
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
 
       $DB->query($query) or die("0.80 add date_mod to glpi_authmails" .
                                  $LANG['update'][90] . $DB->error());
@@ -2960,8 +2968,72 @@ function update0723to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
-   // Change mailgate search pref : host, date_mod
+   // Change search pref : host, date_mod
    $ADDTODISPLAYPREF['AuthMail']=array(3,19);
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_ocsservers'); // Updating schema
+
+   if (!FieldExists('glpi_ocsservers','date_mod')) {
+      $query = "ALTER TABLE `glpi_ocsservers`
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
+
+      $DB->query($query) or die("0.80 add date_mod to glpi_ocsservers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_ocsservers','comment')) {
+      $query = "ALTER TABLE `glpi_ocsservers`
+                ADD `comment` text collate utf8_unicode_ci";
+
+      $DB->query($query) or die("0.80 add comment to glpi_ocsservers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+   // Change search pref : date_mod / host
+   $ADDTODISPLAYPREF['OcsServer']=array(3,19);
+
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_profiles'); // Updating schema
+
+   if (!FieldExists('glpi_profiles','date_mod')) {
+      $query = "ALTER TABLE `glpi_profiles`
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
+
+      $DB->query($query) or die("0.80 add date_mod to glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_profiles','comment')) {
+      $query = "ALTER TABLE `glpi_profiles`
+                ADD `comment` text collate utf8_unicode_ci";
+
+      $DB->query($query) or die("0.80 add comment to glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+   // Change search pref : date_mod / host
+   $ADDTODISPLAYPREF['Profile']=array(2,3,19);
+
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_profiles'); // Updating schema
+
+   if (!FieldExists('glpi_transfers','date_mod')) {
+      $query = "ALTER TABLE `glpi_transfers`
+                ADD `date_mod` DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
+
+      $DB->query($query) or die("0.80 add date_mod to glpi_transfers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_transfers','comment')) {
+      $query = "ALTER TABLE `glpi_transfers`
+                ADD `comment` text collate utf8_unicode_ci";
+
+      $DB->query($query) or die("0.80 add comment to glpi_transfers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+   // Change search pref : date_mod 
+   $ADDTODISPLAYPREF['Transfer']=array(19);
+
+   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences'); // Updating schema
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
 
