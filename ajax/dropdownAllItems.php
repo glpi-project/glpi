@@ -62,8 +62,8 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
                          'itemtype'=>$_POST["idtable"],
                          'rand'=>$rand,
                          'myname'=>$_POST["myname"],
-                         'withserial'=>1,
-                         'withotherserial'=>1);
+                         'displaywith'=>array('serial','otherserial')
+                  );
 
    if (isset($_POST['value'])) {
       $paramsallitems['value']=$_POST['value'];
@@ -75,7 +75,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $paramsallitems['onlyglobal']=$_POST['onlyglobal'];
    }
 
-   $default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
+   $default="--<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
    ajaxDropdown($use_ajax,"/ajax/$link",$paramsallitems,$default,$rand);
 }
 

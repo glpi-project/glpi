@@ -54,6 +54,13 @@ if (!class_exists($_POST['itemtype']) ) {
 $item = new $_POST['itemtype']();
 $table = $item->getTable();
 
+
+$displaywith=false;
+if (isset($_POST['displaywith']) && is_array($_POST['displaywith'])
+      && count($_POST['displaywith'])) {
+   $displaywith=true;
+}
+
 // No define value
 if (!isset($_POST['value'])) {
    $_POST['value']='';
@@ -216,6 +223,14 @@ if ($item instanceof CommonTreeDropdown) {
             $level = $data['level'];
             $output=$data['name'];
 
+            if ($displaywith) {
+               foreach ($_POST['displaywith'] as $key) {
+                  if (isset($data[$key]) && !empty($data[$key])) {
+                     $output.=" - ".$data[$key];
+                  }
+               }
+            }
+
             if ($multi && $data["entities_id"]!=$prev) {
                      if ($prev>=0) {
                            echo "</optgroup>";
@@ -351,13 +366,15 @@ if ($item instanceof CommonTreeDropdown) {
          $prev=-1;
          while ($data =$DB->fetch_array($result)) {
             $output = $data[$field];
-            if (isset($_POST['withserial']) && isset($data["serial"]) && !empty($data["serial"])) {
-               $output.=" - ".$data["serial"];
+
+            if ($displaywith) {
+               foreach ($_POST['displaywith'] as $key) {
+                  if (isset($data[$key]) && !empty($data[$key])) {
+                     $output.=" - ".$data[$key];
+                  }
+               }
             }
-            if (isset($_POST['withotherserial']) && isset($data["otherserial"])
-               && !empty($data["otherserial"])) {
-               $output.=" - ".$data["otherserial"];
-            }
+
             $ID = $data['id'];
             $addcomment="";
             if (isset($data["comment"])) {
