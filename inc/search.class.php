@@ -54,7 +54,8 @@ class Search {
    * Build the query, make the search and list items after a search.
    *
    *@param $itemtype item type
-   *@param $params parameters array may include field, contains, searchtype, sort, order, start, deleted, link, link2, contains2, field2, itemtype2
+   *@param $params parameters array may include field, contains, searchtype, sort, order, start,
+                  deleted, link, link2, contains2, field2, itemtype2, searchtype2
    *
    *@return Nothing (display)
    *
@@ -84,6 +85,8 @@ class Search {
       $p['contains2']   = '';//
       $p['field2']      = '';//
       $p['itemtype2']   = '';
+      $p['searchtype2']  = '';
+
 
       foreach ($params as $key => $val) {
             $p[$key]=$val;
@@ -462,7 +465,7 @@ class Search {
                   if (!empty($HAVING)) {
                      $LINK=$tmplink;
                   }
-                  $HAVING .= Search::addHaving($LINK,$NOT,$p['itemtype2'][$key],$p['field2'][$key],'contains',$p['contains2'][$key],1,$key);
+                  $HAVING .= Search::addHaving($LINK,$NOT,$p['itemtype2'][$key],$p['field2'][$key],$p['searchtype2'][$key],$p['contains2'][$key],1,$key);
                } else { // Meta Where Search
                   $LINK=" ";
                   $NOT=0;
@@ -478,7 +481,7 @@ class Search {
                   if (!empty($WHERE)) {
                      $LINK=$tmplink;
                   }
-                  $WHERE .= Search::addWhere($LINK,$NOT,$p['itemtype2'][$key],$p['field2'][$key],'contains',$p['contains2'][$key],1);
+                  $WHERE .= Search::addWhere($LINK,$NOT,$p['itemtype2'][$key],$p['field2'][$key],$p['searchtype2'][$key],$p['contains2'][$key],1);
                }
             }
          }
@@ -1085,6 +1088,7 @@ class Search {
       $p['contains2']   = '';
       $p['field2']      = '';
       $p['itemtype2']   = '';
+      $p['searchtype2']  = '';
 
       foreach ($params as $key => $val) {
          $p[$key]=$val;
@@ -1291,13 +1295,16 @@ class Search {
             }
             echo "</select>";
 
-            // Ajax script for display search meat item
+
+
+            // Ajax script for display search met& item
             echo "<span id='show_".$itemtype."_".$i."_$rand'>&nbsp;</span>\n";
 
             $params=array('itemtype'=>'__VALUE__',
                         'num'=>$i,
                         'field'=>(is_array($p['field2']) && isset($p['field2'][$i])?$p['field2'][$i]:""),
-                        'val'=>(is_array($p['contains2']) && isset($p['contains2'][$i])?$p['contains2'][$i]:""));
+                        'value'=>(is_array($p['contains2']) && isset($p['contains2'][$i])?$p['contains2'][$i]:""),
+                        'searchtype2'=>(is_array($p['searchtype2']) && isset($p['searchtype2'][$i])?$p['searchtype2'][$i]:""));
 
             ajaxUpdateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand","show_".$itemtype."_".
                      $i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
@@ -1311,6 +1318,7 @@ class Search {
                                                    $p['itemtype2'][$i]."';";
                echo "</script>\n";
             }
+
             echo "</td></tr>\n";
          }
       }

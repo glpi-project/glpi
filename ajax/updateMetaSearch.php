@@ -41,16 +41,13 @@ header_nocache();
 
 if (!empty($_POST["itemtype"])) {
    checkTypeRight($_POST["itemtype"],"r");
-   echo "<input type='text' size='10' name='contains2[".$_POST["num"]."]' value=\"".
-          stripslashes($_POST["val"])."\" >&nbsp;";
-   echo $LANG['search'][10]."&nbsp;";
 
    $first_group=true;
    $newgroup="";
    $items_in_group=0;
    $searchopt=Search::getCleanedOptions($_POST["itemtype"]);
 
-   echo "<select name='field2[".$_POST["num"]."]' size='1'>";
+   echo "<select id='Search2".$_POST["itemtype"].$_POST["num"]."' name='field2[".$_POST["num"]."]' size='1'>";
    foreach ($searchopt as $key => $val) {
       // print groups
       if (!is_array($val)) {
@@ -84,6 +81,29 @@ if (!empty($_POST["itemtype"])) {
       echo "</optgroup>";
    }
    echo "</select>&nbsp;";
+   //print_r($_POST);
+   echo "<span id='Search2Span".$_POST["itemtype"].$_POST["num"]."'>\n";
+
+   $_POST['itemtype']=$_POST["itemtype"];
+   $_POST['num']=$_POST["num"];
+   $_POST['field']=$_POST["field"];
+   $_POST['searchtype']=$_POST["searchtype2"];
+   $_POST['value']=$_POST["value"];
+   $_POST['meta']=1;
+   include (GLPI_ROOT."/ajax/searchoption.php");
+   echo "</span>\n";
+
+   $params = array('field'       => '__VALUE__',
+                     'itemtype'    => $_POST["itemtype"],
+                     'num'         => $_POST["num"],
+                     'value'       => $_POST["value"],
+                     'searchtype'  => $_POST["searchtype2"],
+                     'meta'        => 1);
+   ajaxUpdateItemOnSelectEvent("Search2".$_POST["itemtype"].$_POST["num"],
+                                 "Search2Span".$_POST["itemtype"].$_POST["num"],
+                                 $CFG_GLPI["root_doc"]."/ajax/searchoption.php",$params,false);
+
+
 }
 
 ?>
