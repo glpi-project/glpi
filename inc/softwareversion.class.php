@@ -44,7 +44,6 @@ class SoftwareVersion extends CommonDBChild {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $entity_update_display = false;
 
    // From CommonDBChild
    public $itemtype = 'Software';
