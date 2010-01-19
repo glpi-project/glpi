@@ -1138,7 +1138,7 @@ class Ticket extends CommonDBTM {
                   if ($fup->fields["realtime"]>0) {
                      $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                   "text-decoration:underline; '>".$LANG['mailing'][104].":</span> ".
-                                  getRealtime($fup->fields["realtime"])."\n";
+                                  Ticket::getRealtime($fup->fields["realtime"])."\n";
                   }
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                "text-decoration:underline; '>".$LANG['mailing'][25]."</span> ";
@@ -1174,7 +1174,7 @@ class Ticket extends CommonDBTM {
                   $message .= $LANG['mailing'][3]." :\n".$fup->fields["content"]."\n";
                   if ($fup->fields["realtime"]>0) {
                      $message .= $LANG['mailing'][104]." : ".
-                                 getRealtime($fup->fields["realtime"])."\n";
+                                 Ticket::getRealtime($fup->fields["realtime"])."\n";
                   }
                   $message .= $LANG['mailing'][25]." ";
 
@@ -2132,7 +2132,7 @@ class Ticket extends CommonDBTM {
 
          // My items
          foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
-            if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+            if (class_exists($itemtype) && self::isPossibleToAssignType($itemtype)) {
                $itemtable=getTableForItemType($itemtype);
                $item = new $itemtype();
                $query="SELECT *
@@ -2206,7 +2206,7 @@ class Ticket extends CommonDBTM {
 
                $tmp_device="";
                foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
-                  if (class_exists($itemtype) && isPossibleToAssignType($itemtype)) {
+                  if (class_exists($itemtype) && self::isPossibleToAssignType($itemtype)) {
                      $itemtable=getTableForItemType($itemtype);
                      $item = new $itemtype();
                      $query="SELECT *
@@ -2395,7 +2395,7 @@ class Ticket extends CommonDBTM {
                echo $LANG['tracking'][2]."&nbsp;: ";
             }
 
-            $types = getAllTypesForHelpdesk();
+            $types = self::getAllTypesForHelpdesk();
             echo "<select id='search_$myname$rand' name='$myname'>\n";
             echo "<option value='-1' >-----</option>\n";
             echo "<option value='' ".(empty($itemtype)?" selected":"").">".$LANG['help'][30]."</option>";
@@ -2443,7 +2443,7 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='left' width='50%'>".$LANG['job'][20]."&nbsp;: </td>";
 
-      echo "<td class='b'>".getRealtime($this->fields["realtime"])."</td>";
+      echo "<td class='b'>".Ticket::getRealtime($this->fields["realtime"])."</td>";
       echo "</tr>";
 
       if ($canedit) {  // admin = oui on affiche les couts liés à l'interventions
@@ -3254,7 +3254,7 @@ class Ticket extends CommonDBTM {
          echo "<th>".$LANG['joblist'][6]."</th></tr>";
          while ($i < $number) {
             $ID = $DB->result($result, $i, "id");
-            showJobVeryShort($ID);
+            Ticket::showVeryShort($ID);
             $i++;
          }
          echo "</table>";
@@ -3330,8 +3330,8 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT ".getCommonSelectForTrackingSearch()."
-               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+      $query = "SELECT ".Ticket::getCommonSelect()."
+               FROM `glpi_tickets` ".Ticket::getCommonLeftJoin()."
                WHERE `status` = 'new' ".
                      getEntitiesRestrictRequest("AND","glpi_tickets")."
                ORDER BY `glpi_tickets`.`date_mod` DESC
@@ -3352,7 +3352,7 @@ class Ticket extends CommonDBTM {
 
          while ($data=$DB->fetch_assoc($result)) {
             addToNavigateListItems('Ticket',$data["id"]);
-            showJobShort($data, 0);
+            Ticket::showShort($data, 0);
          }
          echo "</table></div>";
       } else {
@@ -3421,8 +3421,8 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT ".getCommonSelectForTrackingSearch()."
-               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+      $query = "SELECT ".Ticket::getCommonSelect()."
+               FROM `glpi_tickets` ".Ticket::getCommonLeftJoin()."
                WHERE (`items_id` = '$items_id'
                      AND `itemtype` = '$itemtype') ".
                      getEntitiesRestrictRequest("AND","glpi_tickets")."
@@ -3458,15 +3458,15 @@ class Ticket extends CommonDBTM {
 
          while ($data=$DB->fetch_assoc($result)) {
             addToNavigateListItems('Ticket',$data["id"]);
-            showJobShort($data, 0);
+            Ticket::showShort($data, 0);
          }
       }
       echo "</table></div><br>";
 
       // Tickets for linked items
       if ($subquery = $item->getSelectLinkedItem()) {
-         $query = "SELECT ".getCommonSelectForTrackingSearch()."
-                  FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+         $query = "SELECT ".Ticket::getCommonSelect()."
+                  FROM `glpi_tickets` ".Ticket::getCommonLeftJoin()."
                   WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
                         getEntitiesRestrictRequest(' AND ', 'glpi_tickets') . "
                   ORDER BY `glpi_tickets`.`date_mod` DESC
@@ -3481,7 +3481,7 @@ class Ticket extends CommonDBTM {
 
             while ($data=$DB->fetch_assoc($result)) {
                // addToNavigateListItems(TRACKING_TYPE,$data["id"]);
-               showJobShort($data, 0);
+               Ticket::showShort($data, 0);
             }
          } else {
             echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
@@ -3498,8 +3498,8 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT ".getCommonSelectForTrackingSearch()."
-               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+      $query = "SELECT ".Ticket::getCommonSelect()."
+               FROM `glpi_tickets` ".Ticket::getCommonLeftJoin()."
                WHERE (`suppliers_id_assign` = '$entID') ".
                      getEntitiesRestrictRequest("AND","glpi_tickets")."
                ORDER BY `glpi_tickets`.`date_mod` DESC
@@ -3522,7 +3522,7 @@ class Ticket extends CommonDBTM {
 
          while ($data=$DB->fetch_assoc($result)) {
             addToNavigateListItems('Ticket',$data["id"]);
-            showJobShort($data, 0);
+            Ticket::showShort($data, 0);
          }
          echo "</table></div>";
       } else {
@@ -3541,8 +3541,8 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT ".getCommonSelectForTrackingSearch()."
-               FROM `glpi_tickets` ".getCommonLeftJoinForTrackingSearch()."
+      $query = "SELECT ".Ticket::getCommonSelect()."
+               FROM `glpi_tickets` ".Ticket::getCommonLeftJoin()."
                WHERE (`glpi_tickets`.`users_id` = '$userID') ".
                      getEntitiesRestrictRequest("AND","glpi_tickets")."
                ORDER BY `glpi_tickets`.`date_mod` DESC
@@ -3565,7 +3565,7 @@ class Ticket extends CommonDBTM {
 
          while ($data=$DB->fetch_assoc($result)) {
             addToNavigateListItems('Ticket',$data["id"]);
-            showJobShort($data, 0);
+            Ticket::showShort($data, 0);
          }
          echo "</table></div>";
       } else {
@@ -3577,6 +3577,441 @@ class Ticket extends CommonDBTM {
       }
    }
 
+
+   static function showShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
+      global $CFG_GLPI, $LANG;
+
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $job=new Ticket();
+      $job->fields = $data;
+      $candelete = haveRight("delete_ticket","1");
+      $canupdate = haveRight("update_ticket","1");
+      $align = "class='center";
+      $align_desc = "class='left";
+      if ($followups) {
+         $align .= " top'";
+         $align_desc .= " top'";
+      } else {
+         $align .= "'";
+         $align_desc .= "'";
+      }
+      if ($data["id"]) {
+         $item_num=1;
+         $bgcolor=$_SESSION["glpipriority_".$data["priority"]];
+
+         echo displaySearchNewLine($output_type,$row_num%2);
+
+         // First column
+         $first_col = "ID : ".$data["id"];
+         if ($output_type==HTML_OUTPUT) {
+            $first_col .= "<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data["status"].".png\"
+                           alt='".Ticket::getStatus($data["status"])."' title='".
+                           Ticket::getStatus($data["status"])."'>";
+         } else {
+            $first_col .= " - ".Ticket::getStatus($data["status"]);
+         }
+         if (($candelete || $canupdate)
+            && $output_type==HTML_OUTPUT) {
+
+            $sel = "";
+            if (isset($_GET["select"]) && $_GET["select"]=="all") {
+               $sel = "checked";
+            }
+            if (isset($_SESSION['glpimassiveactionselected'][$data["id"]])) {
+               $sel = "checked";
+            }
+            $first_col .= "&nbsp;<input type='checkbox' name='item[".$data["id"]."]' value='1' $sel>";
+         }
+
+         echo displaySearchItem($output_type,$first_col,$item_num,$row_num,$align);
+
+         // Second column
+         $second_col = "";
+         if (!strstr($data["status"],"old_")) {
+            $second_col .= "<span class='tracking_open'>".$LANG['joblist'][11]."&nbsp;:";
+            if ($output_type==HTML_OUTPUT) {
+               $second_col .= "<br>";
+            }
+            $second_col .= "&nbsp;".convDateTime($data["date"])."</span>";
+         } else {
+            $second_col .= "<div class='tracking_hour'>";
+            $second_col .= "".$LANG['joblist'][11]."&nbsp;:";
+            if ($output_type==HTML_OUTPUT) {
+               $second_col .= "<br>";
+            }
+            $second_col .= "&nbsp;<span class='tracking_bold'>".convDateTime($data["date"])."</span><br>";
+            $second_col .= "".$LANG['joblist'][12]."&nbsp;:";
+            if ($output_type==HTML_OUTPUT) {
+               $second_col .= "<br>";
+            }
+            $second_col .= "&nbsp;<span class='tracking_bold'>".convDateTime($data["closedate"]).
+                           "</span><br>";
+            if ($data["realtime"]>0) {
+               $second_col .= $LANG['job'][20]."&nbsp;: ";
+            }
+            if ($output_type==HTML_OUTPUT) {
+               $second_col .= "<br>";
+            }
+            $second_col .= "&nbsp;".Ticket::getRealtime($data["realtime"]);
+            $second_col .= "</div>";
+         }
+
+         echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=130");
+
+         // Second BIS column
+         $second_col = convDateTime($data["date_mod"]);
+         echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=90");
+
+         // Second TER column
+         if (count($_SESSION["glpiactiveentities"])>1) {
+            if ($data['entityID']==0) {
+               $second_col = $LANG['entity'][2];
+            } else {
+               $second_col = $data['entityname'];
+            }
+            echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=100");
+         }
+
+         // Third Column
+         echo displaySearchItem($output_type,"<strong>".Ticket::getPriorityName($data["priority"])."</strong>",
+                              $item_num,$row_num,"$align bgcolor='$bgcolor'");
+
+         // Fourth Column
+         $fourth_col = "";
+         if ($data['users_id']) {
+            $userdata = getUserName($data['users_id'],2);
+            $comment_display = "";
+            if ($output_type==HTML_OUTPUT) {
+               $comment_display  = "<a href='".$userdata["link"]."'>";
+               $comment_display .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
+                                    "onmouseout=\"cleanhide('comment_trackusers_id".$data['id']."')\" ".
+                                    "onmouseover=\"cleandisplay('comment_trackusers_id".$data['id']."')\">";
+               $comment_display .= "</a>";
+               $comment_display .= "<span class='over_link' id='comment_trackusers_id".$data['id']."'>".
+                                    $userdata["comment"]."</span>";
+            }
+            $fourth_col .= "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
+         }
+
+         if ($data["groups_id"]) {
+            $fourth_col .= "<br>".$data["groupname"];
+         }
+         echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,$align);
+
+         // Fifth column
+         $fifth_col = "";
+         if ($data["users_id_assign"]>0) {
+            $userdata = getUserName($data['users_id_assign'],2);
+            $comment_display = "";
+            if ($output_type==HTML_OUTPUT) {
+               $comment_display  = "<a href='".$userdata["link"]."'>";
+               $comment_display .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
+                                    "onmouseout=\"cleanhide('comment_trackassign".$data['id']."')\" ".
+                                    "onmouseover=\"cleandisplay('comment_trackassign".$data['id']."')\">";
+               $comment_display .= "</a>";
+               $comment_display .= "<span class='over_link' id='comment_trackassign".$data['id']."'>".
+                                    $userdata["comment"]."</span>";
+            }
+            $fifth_col = "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
+         }
+
+         if ($data["groups_id_assign"]>0) {
+            if (!empty($fifth_col)) {
+               $fifth_col .= "<br>";
+            }
+            $fifth_col .= getAssignName($data["groups_id_assign"],'Group',1);
+         }
+
+         if ($data["suppliers_id_assign"]>0) {
+            if (!empty($fifth_col)) {
+               $fifth_col .= "<br>";
+            }
+            $fifth_col .= getAssignName($data["suppliers_id_assign"],'Supplier',1);
+         }
+         echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
+
+         // Sixth Colum
+         $sixth_col = "";
+         $is_deleted = false;
+         if (!empty($data["itemtype"]) && $data["items_id"]>0) {
+            if (class_exists($data["itemtype"])) {
+               $item=new $data["itemtype"]();
+               if ($item->getFromDB($data["items_id"])) {
+                  $is_deleted=$item->isDeleted();
+
+                  $sixth_col .= $item->getTypeName();
+
+                  $sixth_col .= "<br><strong>";
+                  if ($item->canView()) {
+                     $sixth_col .= $item->getLink($output_type==HTML_OUTPUT);
+                  } else {
+                     $sixth_col .= $item->getNameID();
+                  }
+                  $sixth_col .= "</strong>";
+               }
+            }
+         } else if (empty($data["itemtype"])) {
+            $sixth_col=$LANG['help'][30];
+         }
+
+         echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,
+                              ($is_deleted?" class='center deleted' ":$align));
+
+         // Seventh column
+         echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,
+                              $row_num,$align);
+
+         // Eigth column
+         $eigth_column = "<strong>".$data["name"]."</strong>&nbsp;";
+         if ($output_type==HTML_OUTPUT) {
+            $eigth_column .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
+                              "onmouseout=\"cleanhide('comment_tracking".$data["id"]."')\" ".
+                              "onmouseover=\"cleandisplay('comment_tracking".$data["id"]."')\" >";
+            $eigth_column .= "<span class='over_link' id='comment_tracking".$data["id"]."'>".
+                              nl2br($data['content'])."</span>";
+         }
+
+         // Add link
+         if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
+            if ($job->canViewItem()) {
+               $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+                                 $data["id"]."\">$eigth_column</a>";
+
+               if ($followups && $output_type==HTML_OUTPUT) {
+                  $eigth_column .= showFollowupsShort($data["id"]);
+               } else {
+                  $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket",
+                                                                              "1")).")";
+               }
+            }
+         } else {
+            $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=".
+                              "user&amp;id=".$data["id"]."\">$eigth_column</a>";
+            if ($followups && $output_type==HTML_OUTPUT) {
+               $eigth_column .= showFollowupsShort($data["id"]);
+            } else {
+               $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+            }
+         }
+         echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,$align_desc."width='300'");
+
+         // Finish Line
+         echo displaySearchEndLine($output_type);
+
+      } else {
+         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG['joblist'][16]."</i></td></tr>";
+      }
+   }
+
+   static function showVeryShort($ID) {
+      global $CFG_GLPI, $LANG;
+
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $viewusers = haveRight("user","r");
+      $job=new Ticket;
+      if ($job->getFromDBwithData($ID,0)) {
+         $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
+         $rand = mt_rand();
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' bgcolor='$bgcolor' >ID : ".$job->fields["id"]."</td>";
+         echo "<td class='center'>";
+
+         if ($viewusers) {
+            $userdata = getUserName($job->fields['users_id'],2);
+            $comment_display  = "<a href='".$userdata["link"]."'>";
+            $comment_display .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
+                                 "onmouseout=\"cleanhide('comment_trackusers_id".$rand.$ID."')\" ".
+                                 "onmouseover=\"cleandisplay('comment_trackusers_id".$rand.$ID."')\">";
+            $comment_display .= "</a>";
+            $comment_display .= "<span class='over_link' id='comment_trackusers_id".$rand.$ID."'>".
+                                 $userdata["comment"]."</span>";
+
+            echo "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
+         } else {
+            echo "<strong>".$job->getAuthorName()."</strong>";
+         }
+
+         if ($job->fields["groups_id"]) {
+            echo "<br>".Dropdown::getDropdownName("glpi_groups",$job->fields["groups_id"]);
+         }
+         echo "</td>";
+
+         if ($job->hardwaredatas && $job->hardwaredatas->canView()) {
+            echo "<td class='center";
+            if ($job->hardwaredatas->isDeleted()) {
+               echo " tab_bg_1_2";
+            }
+            echo "'>";
+            echo $job->hardwaredatas->getTypeName()."<br>";
+            echo "<strong>".$job->hardwaredatas->getLink()."</strong>";
+            echo "</td>";
+         } else if ($job->hardwaredatas) {
+            echo "<td class='center' >".$job->hardwaredatas->getTypeName()."<br><strong>".
+                  $job->hardwaredatas->getNameID()."</strong></td>";
+         } else {
+            echo "<td class='center' >".$LANG['help'][30]."</td>";
+         }
+         echo "<td>";
+
+         if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
+            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+                  $job->fields["id"]."\">";
+         } else {
+            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;id=".
+                  $job->fields["id"]."\">";
+         }
+         echo "<strong>".$job->fields["name"]."</strong>&nbsp;";
+         echo "<img alt='".$LANG['joblist'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
+               "onmouseout=\"cleanhide('comment_tracking".$rand.$job->fields["id"]."')\" ".
+               "onmouseover=\"cleandisplay('comment_tracking".$rand.$job->fields["id"]."')\" >";
+         echo "<span class='over_link' id='comment_tracking".$rand.$job->fields["id"]."'>".
+               nl2br($job->fields['content'])."</span>";
+         echo "</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;";
+         echo "</td>";
+
+         // Finish Line
+         echo "</tr>";
+      } else {
+         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG['joblist'][16]."</i></td></tr>";
+      }
+   }
+
+   static function getRealtime($realtime) {
+      global $LANG;
+
+      $output = "";
+      $hour = floor($realtime);
+      if ($hour>0) {
+         $output .= $hour." ".$LANG['job'][21]." ";
+      }
+      $output .= round((($realtime-floor($realtime))*60))." ".$LANG['job'][22];
+      return $output;
+   }
+
+   static function getCommonSelect() {
+
+      $SELECT = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
+                     `glpi_tickets`.`entities_id` AS entityID ";
+      }
+
+      return " DISTINCT `glpi_tickets`.*,
+                        `glpi_ticketcategories`.`completename` AS catname,
+                        `glpi_groups`.`name` AS groupname
+                        $SELECT";
+   }
+
+
+   static function getCommonLeftJoin() {
+
+      $FROM = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $FROM .= " LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
+      }
+
+      return " LEFT JOIN `glpi_groups` ON (`glpi_tickets`.`groups_id` = `glpi_groups`.`id`)
+               LEFT JOIN `glpi_ticketcategories`
+                  ON (`glpi_tickets`.`ticketcategories_id` = `glpi_ticketcategories`.`id`)
+               $FROM";
+   }
+
+   static function showPreviewAssignAction($output) {
+      global $LANG,$CFG_GLPI;
+
+      //If ticket is assign to an object, display this information first
+      if (isset($output["entities_id"]) && isset($output["items_id"]) && isset($output["itemtype"])) {
+
+         if (class_exists($output["itemtype"])) {
+            $item = new $output["itemtype"]();
+            if ($item->getFromDB($output["items_id"])) {
+               echo "<tr class='tab_bg_2'>";
+               echo "<td>".$LANG['rulesengine'][48]."</td>";
+
+               echo "<td>";
+               echo $item->getLink(true);
+               echo "</td>";
+               echo "</tr>";
+            }
+         }
+
+            //Clean output of unnecessary fields (already processed)
+            unset($output["items_id"]);
+            unset($output["itemtype"]);
+      }
+      unset($output["entities_id"]);
+      return $output;
+   }
+
+
+   /**
+   * Get all available types to which a ticket can be assigned
+   *
+   */
+   static function getAllTypesForHelpdesk() {
+      global $LANG, $PLUGIN_HOOKS, $CFG_GLPI;
+
+      $types = array();
+
+      //Types of the plugins (keep the plugin hook for right check)
+      if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
+         foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
+            $types = doOneHook($plugin,'AssignToTicket',$types);
+         }
+      }
+
+      //Types of the core (after the plugin for robustness)
+      foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
+         if (class_exists($itemtype)) {
+            if (!isPluginItemType($itemtype) // No plugin here
+               && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+               $item = new $itemtype();
+               $types[$itemtype] = $item->getTypeName();
+            }
+         }
+      }
+      ksort($types); // core type first... asort could be better ?
+
+      return $types;
+   }
+
+
+   /**
+   * Check if it's possible to assign ticket to a type (core or plugin)
+   * @param $itemtype the object's type
+   * @return true if ticket can be assign to this type, false if not
+   */
+   static function isPossibleToAssignType($itemtype) {
+      global $PLUGIN_HOOKS;
+
+
+      // Plugin case
+      if (isPluginItemType($itemtype)){
+         /// TODO maybe only check plugin of itemtype ?
+         //If it's not a core's type, then check plugins
+         $types = array();
+         if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
+            foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
+               $types = doOneHook($plugin,'AssignToTicket',$types);
+            }
+            if (array_key_exists($itemtype,$types)) {
+               return true;
+            }
+         }
+      } else { // standard case
+         if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            return true;
+         }
+      }
+
+      return false;
+   }
 
 }
 ?>
