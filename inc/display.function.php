@@ -170,8 +170,8 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
       foreach ($ref_btts as $key => $val) {
          echo "<td><a class='icon_consol_hov' href=\"".$key."\">".$val."</a></td>";
       }
-      echo "</tr></table></div>";
    }
+   echo "</tr></table></div>";
 }
 
 /**
