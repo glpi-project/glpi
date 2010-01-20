@@ -2004,6 +2004,34 @@ class Search {
                return getEntitiesRestrictRequest("","glpi_profiles_users");
             }
             break;
+         case 'Ticket' :
+            if (!haveRight("show_all_ticket","1")) {
+               if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
+                  $condition =" (glpi_tickets.users_id= '".$_SESSION["glpiID"]."' 
+                              OR `glpi_tickets`.`users_id_assign` = '".$_SESSION["glpiID"]."'";
+                  if (count($_SESSION['glpigroups'])) {
+                     $condition .= " OR `glpi_tickets`.`groups_id_assign` 
+                                             IN ('".implode("','",$_SESSION['glpigroups'])."')";
+                  }
+
+                  $condition.=")";
+                  return $condition;
+               } else {
+                  if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
+                     $condition = " glpi_tickets.users_id= '".$_SESSION["glpiID"]."' ";
+                  } else { // Can own ticket : show my and assign to me
+                     $condition = " glpi_tickets.users_id= '".$_SESSION["glpiID"]."' OR glpi_tickets.users_id_assign= '".$_SESSION["glpiID"]."' ";
+                  }
+                  if (haveRight("show_group_ticket",1)) {
+                     if (count($_SESSION['glpigroups'])) {
+                        $condition .= " OR `glpi_tickets`.`groups_id` 
+                                                IN ('".implode("','",$_SESSION['glpigroups'])."') ";
+                     }
+                  }  
+                  return $condition;
+               }
+            }
+            break;
 
          default :
             return "";
