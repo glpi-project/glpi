@@ -799,8 +799,14 @@ class CommonDBTM extends CommonGLPI {
       if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
          $addMessAfterRedirect=false;
       }
-
+      
       if ($addMessAfterRedirect) {
+         
+         // Do not display quotes
+         if (isset($this->fields['name'])) {
+            $this->fields['name']=stripslashes($this->fields['name']);
+         }
+      
          addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " . $this->getLink());
       }
    }
