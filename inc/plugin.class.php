@@ -464,13 +464,16 @@ class Plugin extends CommonDBTM {
    function uninstall($ID) {
 
       if ($this->getFromDB($ID)) {
+         
+         CronTask::Unregister($this->fields['directory']);
+         
          self::load($this->fields['directory'],true);
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
             $function();
          }
-         CronTask::Unregister($this->fields['directory']);
+         
          $this->update(array('id'=>$ID,
                              'state'=>self::NOTINSTALLED,
                              'version'=>''));
