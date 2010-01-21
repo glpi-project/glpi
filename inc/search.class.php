@@ -2483,8 +2483,10 @@ class Search {
 
       // Multiple link possibilies case
       if ($new_table=="glpi_users" || $new_table=="glpi_groups" ) {
-         $nt .= "_".$linkfield;
-         $AS .= " AS ".$nt;
+         if (!empty($linkfield)) {
+            $nt .= "_".$linkfield;
+            $AS .= " AS ".$nt;
+         }
       }
 
       $addmetanum = "";
