@@ -61,6 +61,10 @@ class User extends CommonDBTM {
       return false;
    }
 
+   function canUpdate() {
+      return haveRight('user', 'w');
+   }
+
    function canView() {
       return haveRight('user', 'r');
    }
