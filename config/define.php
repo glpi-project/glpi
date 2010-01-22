@@ -201,25 +201,41 @@ define("HISTORY_DEL_RELATION",16);
 
 
 // MAILING TYPE
-define("USER_MAILING_TYPE",1);
-define("PROFILE_MAILING_TYPE",2);
-define("GROUP_MAILING_TYPE",3);
+//Notification to a user (sse mailing users type below)
+define("NOTIFICATION_USER_TYPE",1);
+//Notification to users of a profile
+define("NOTIFICATION_PROFILE_TYPE",2);
+//Notification to a users of a group
+define("NOTIFICATION_GROUP_TYPE",3);
+//Notification to the people in charge of the database synchronisation
 define("DB_NOTIFICATION_MAILING_TYPE",3);
 
-
 // MAILING USERS TYPE
-define("ADMIN_MAILING",1);
-define("ASSIGN_MAILING",2);
-define("AUTHOR_MAILING",3);
-define("OLD_ASSIGN_MAILING",4);
-define("TECH_MAILING",5);
-define("USER_MAILING",6);
-define("RECIPIENT_MAILING",7);
-define("ASSIGN_ENT_MAILING",8);
+
+//Notification to the GLPI global administrator
+define("NOTIFICATION_GLOBAL_ADMINISTRATOR",1);
+//Notification to the technicial who's assign to a ticket
+define("NOTIFICATION_TICKET_ASSIGN_TECH",2);
+//Notification to the owner of the item
+define("NOTIFICATION_AUTHOR",3);
+//Notification to the technician previously in charge of the ticket
+define("NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE",4);
+//Notification to the technician in charge of the item
+define("NOTIFICATION_ITEM_TECH_IN_CHARGE",5);
+//Notification to the item's user
+define("NOTIFICATION_ITEM_USER",6);
+//Notification to the ticket's recipient
+define("NOTIFICATION_TICKET_RECIPIENT",7);
+//Notificartion to the ticket's assigned supplier
+define("NOTIFICATION_TICKET_SUPPLIER",8);
+//Notification to a group of people
 define("ASSIGN_GROUP_MAILING",9);
-define("SUPERVISOR_ASSIGN_GROUP_MAILING",10);
-define("ADMIN_ENTITY_MAILING",11);
-define("SUPERVISOR_AUTHOR_GROUP_MAILING",12);
+//Notification to the supervisor of the ticket's assigned group
+define("NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP",10);
+//Notification to the entity administrator
+define("NOTIFICATION_ENTITY_ADMINISTRATOR",11);
+//Notification to the supervisor of the ticket's requester group
+define("NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP",12);
 
 
 // EXPORT TYPE
@@ -631,8 +647,9 @@ $CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, O
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, 'CronTask');
 
-$CFG_GLPI["notificationtemplates_types"] = array('Reservation', 'Ticket', 'CartridgeItem',
-                                                 'ConsumableItem','DBConnection');
+$CFG_GLPI["notificationtemplates_types"] = array('ReservationItem', 'Ticket', 'Cartridge',
+                                                 'Consumable', 'DBConnection', 'Contract',
+                                                  'SoftwareLicense', 'Infocom');
 
 $CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
 /*

@@ -1459,26 +1459,13 @@ CREATE TABLE `glpi_entitydatas` (
   `tag` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ldapservers_id` int(11) NOT NULL DEFAULT '0',
   `entity_ldapfilter` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`entities_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_entitynotifications
-
-DROP TABLE IF EXISTS `glpi_entitynotifications`;
-CREATE TABLE `glpi_entitynotifications` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `entities_id` int(11) NOT NULL DEFAULT '0',
   `mailing_signature` text NOT NULL,
   `cartridges_alert_repeat` int(11) NOT NULL DEFAULT '0',
   `consumables_alert_repeat` int(11) NOT NULL DEFAULT '0',
   `use_licenses_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `admin_email` varchar(255) NOT NULL,
-  `admin_reply` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`entities_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_events
 

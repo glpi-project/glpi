@@ -734,6 +734,34 @@ class Cartridge extends CommonDBTM {
       echo "</table></div>";
    }
 
+   /**
+    * Get notification parameters by entity
+    * @param entity the entity
+    */
+   static function getNotificationParameters($entity = 0) {
+      global $DB, $CFG_GLPI;
+
+      //Look for parameters for this entity
+      $query = "SELECT `cartridges_alert_repeat`
+                FROM `glpi_entitydatas`
+                WHERE `entities_id`='$entity'";
+      $iterator = $DB->request($query);
+      if (!$iterator->numrows()) {
+         //No specific parameters defined, taking global configuration params
+         return $CFG_GLPI['cartridges_alert_repeat'];
+      }
+      else {
+         $datas = $iterator->next();
+         //This entity uses global parameters -> return global config
+         if ($datas['cartridges_alert_repeat'] == -1) {
+            return $CFG_GLPI['cartridges_alert_repeat'];
+         }
+         else {
+            //Special configuration for this entity
+            return $datas['cartridges_alert_repeat'];
+         }
+      }
+   }
 }
 
 ?>

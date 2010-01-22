@@ -42,12 +42,23 @@ if (!defined('GLPI_ROOT')){
  */
 interface NotificationInterface {
 
-   //Send notifications
-   function send();
+   /**
+    * Send notifications
+    * @return must return 0 or 1
+    */
+   function sendNotification();
 
-   //Check user address
+   /**
+    * Check user address
+    * @param address the user's address to check
+    * @param options an array with the special options (may be needed)
+    * @return true or false
+    */
    static function isUserAddressValid($address, $options = array());
 
+   /**
+    * Method to test notification
+    */
    static function testNotification();
 }
 

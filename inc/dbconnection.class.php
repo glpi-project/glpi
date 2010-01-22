@@ -255,7 +255,7 @@ class DBConnection {
 
          if ($diff > ($task->fields['param']*60)) {
             //Raise event if replicate is not synchronized
-            NotificationEvent::raiseEvent('desynchronization','DBConnection',0,$this);
+            NotificationEvent::raiseEvent('desynchronization',$this);
             /*
             $msg = $LANG['setup'][807] . " " . timestampToString($diff);
             $task->log($msg);
@@ -316,17 +316,5 @@ class DBConnection {
       $input['state'] = ($enable?1:0);
       $cron->update($input);
    }
-
-   function getNotficationTargets($entity) {
-      global $LANG,$DB;
-      $profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
-      return $profiles;
-   }
-
-   function getEvents() {
-      global $LANG;
-      return array ('desynchronization' => $LANG['setup'][810]);
-   }
-
 }
 ?>

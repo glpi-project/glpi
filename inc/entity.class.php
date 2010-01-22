@@ -160,10 +160,8 @@ class Entity extends CommonTreeDropdown {
                break;
 
             case 7 :
-               $entitynotification = new EntityNotification;
-               $entitynotification->showForm($this);
+               EntityData::showNotificationOptions($this);
                break;
-
             default :
                if (!Plugin::displayAction($this, $tab)) {
                   $this->showChildren($ID);
@@ -286,6 +284,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[12]['table']     = 'glpi_entitydatas';
       $tab[12]['field']     = 'state';
+
       $tab[12]['linkfield'] = '';
       $tab[12]['name']      = $LANG['financial'][102];
 
@@ -329,6 +328,16 @@ class Entity extends CommonTreeDropdown {
       $tab[10]['field']     = 'entity_ldapfilter';
       $tab[10]['linkfield'] = '';
       $tab[10]['name']      = $LANG['entity'][16];
+
+      $tab[11]['table']     = 'glpi_entitydatas';
+      $tab[11]['field']     = 'admin_email';
+      $tab[11]['linkfield'] = '';
+      $tab[11]['name']      = $LANG['setup'][203];
+
+      $tab[12]['table']     = 'glpi_entitydatas';
+      $tab[12]['field']     = 'admin_reply';
+      $tab[12]['linkfield'] = '';
+      $tab[12]['name']      = $LANG['setup'][207];
 
       return $tab;
    }

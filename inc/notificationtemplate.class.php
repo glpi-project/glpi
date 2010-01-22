@@ -218,6 +218,35 @@ class NotificationTemplate extends CommonDBTM {
 
       Dropdown::showFromArray($name,$templates, array ('value'=>$value));
    }
+
+   /**
+    * Get default template for an itemtype
+    */
+   static function getDefault($itemtype='') {
+      global $DB;
+
+      if ($itemtype != '') {
+         foreach ($DB->request('glpi_notificationtemplates', array('is_default'=>1,
+                                                                   'itemtype'=>$itemtype)) as $data) {
+            return $data['id'];
+         }
+      }
+      return 0;
+   }
+
+   function post_updateItem($history=1) {
+      global $DB;
+
+      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
+         $query = "UPDATE ".
+                   $this->getTable()."
+                   SET `is_default` = '0'
+                   WHERE `id` <> '".$this->input['id']."'
+                      AND itemtype='".$this->getType()."'";
+         $DB->query($query);
+      }
+   }
+
 }
 
 ?>

@@ -954,20 +954,26 @@ class Contract extends CommonDBTM {
                                          MONTH),CURDATE()) < '0'
                     AND `glpi_alerts`.`date` IS NULL";
 
-      $result=$DB->query($query);
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
-            if (!isset($message[$data["entities_id"]])) {
-               $message[$data["entities_id"]]="";
-            }
-            if (!isset($items_notice[$data["entities_id"]])) {
-               $items_notice[$data["entities_id"]]=array();
-            }
-            // define message alert
-            $message[$data["entities_id"]].=$LANG['mailing'][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"],$data["notice"])."<br>\n";
-            $items_notice[$data["entities_id"]][]=$data["id"];
+      foreach( $DB->request($query) as $data) {
+         $contract = new Contract;
+         $contract->fields = $data;
+
+         if (!isset($message[$data["entities_id"]])) {
+            $message[$data["entities_id"]]="";
          }
+         if (!isset($items_notice[$data["entities_id"]])) {
+            $items_notice[$data["entities_id"]]=array();
+         }
+         // define message alert
+         $message[$data["entities_id"]]['msg']=$LANG['mailing'][37]." ".$data["name"].": ".
+                                           getWarrantyExpir($data["begin_date"],
+                                                           $data["duration"],
+                                                           $data["notice"])."<br>\n";
+
+         $message[$data["entities_id"]]['contract'] = $contract;
+         $items_notice[$data["entities_id"]][]=$data["id"];
       }
+
       // Check end
       $query="SELECT `glpi_contracts`.*
               FROM `glpi_contracts`
@@ -982,31 +988,33 @@ class Contract extends CommonDBTM {
                                          (`glpi_contracts`.`duration`) MONTH),CURDATE()) < '0'
                     AND `glpi_alerts`.`date` IS NULL";
 
-      $result=$DB->query($query);
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
-            if (!isset($message[$data["entities_id"]])) {
-               $message[$data["entities_id"]]="";
-            }
-            if (!isset($items_end[$data["entities_id"]])) {
-               $items_end[$data["entities_id"]]=array();
-            }
-            // define message alert
-            $message[$data["entities_id"]].=$LANG['mailing'][38]." ".$data["name"].": ".
-                                            getWarrantyExpir($data["begin_date"],$data["duration"])."<br>\n";
-            $items_end[$data["entities_id"]][]=$data["id"];
+      foreach ($DB->request($query) as $data) {
+         $contract = new Contract;
+         $contract->fields = $data;
+         if (!isset($message[$data["entities_id"]])) {
+            $message[$data["entities_id"]]=array();
          }
+         if (!isset($items_end[$data["entities_id"]])) {
+            $items_end[$data["entities_id"]]=array();
+         }
+         // define message alert
+         $message[$data["entities_id"]]['msg']=$LANG['mailing'][38]." ".$data["name"].": ".
+                                         getWarrantyExpir($data["begin_date"],
+                                                          $data["duration"])."<br>\n";
+         $message[$data["entities_id"]]['contract'] = $contract;
+         $items_end[$data["entities_id"]][]=$data["id"];
       }
 
       if (count($message)>0) {
-         foreach ($message as $entity => $msg) {
-            $mail=new MailingAlert("alertcontract",$msg,$entity);
-            if ($mail->send()) {
+         foreach ($message as $entity => $values) {
+            $msg = $values['msg'];
+            if (NotificationEvent::raiseEvent('alert',$values['contract'])) {
                if ($task) {
                   $task->log(Dropdown::getDropdownName("glpi_entities",$entity).":  $msg\n");
                   $task->addVolume(1);
                } else {
-                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).":  $msg");
+                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                    $entity).":  $msg");
                }
 
                // Mark alert as done
@@ -1030,7 +1038,8 @@ class Contract extends CommonDBTM {
                }
             } else {
                if ($task) {
-                  $task->log(Dropdown::getDropdownName("glpi_entities",$entity).":  Send contract alert failed\n");
+                  $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
+                             ":  Send contract alert failed\n");
                } else {
                   addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
                                           ":  Send contract alert failed",false,ERROR);

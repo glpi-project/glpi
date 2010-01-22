@@ -2007,10 +2007,10 @@ class Search {
          case 'Ticket' :
             if (!haveRight("show_all_ticket","1")) {
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
-                  $condition =" (glpi_tickets.users_id= '".$_SESSION["glpiID"]."' 
+                  $condition =" (glpi_tickets.users_id= '".$_SESSION["glpiID"]."'
                               OR `glpi_tickets`.`users_id_assign` = '".$_SESSION["glpiID"]."'";
                   if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR `glpi_tickets`.`groups_id_assign` 
+                     $condition .= " OR `glpi_tickets`.`groups_id_assign`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
 
@@ -2024,10 +2024,10 @@ class Search {
                   }
                   if (haveRight("show_group_ticket",1)) {
                      if (count($_SESSION['glpigroups'])) {
-                        $condition .= " OR `glpi_tickets`.`groups_id` 
+                        $condition .= " OR `glpi_tickets`.`groups_id`
                                                 IN ('".implode("','",$_SESSION['glpigroups'])."') ";
                      }
-                  }  
+                  }
                   return $condition;
                }
             }
@@ -3285,8 +3285,8 @@ class Search {
          case 'glpi_notifications.mode' :
                return Notification::getMode($data[$NAME.$num]);
          case 'glpi_notifications.event' :
-               if (class_exists($data['itemtype'])) {
-                  $item = new $data['itemtype'] ();
+               $item = NotificationTarget::getInstanceByType($data['itemtype']);
+               if ($item) {
                   $events = $item->getEvents();
                   return $events[$data[$NAME.$num]];
                }

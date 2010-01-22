@@ -111,13 +111,7 @@ class Notification extends CommonDBTM {
       NotificationTemplate::dropdownTemplates('notificationtemplates_id',$this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
       echo "</span></td></tr>";
-/*
-      echo "<tr class='tab_bg_1'><td>".$LANG['setup'][204]."&nbsp;: </td>";
-      echo "<td class='center middle'><textarea cols='45' rows='9' name='content' >"
-           .($this->fields['content']?$this->fields["content"]:$CFG_GLPI['mailing_signature']).
-           "</textarea></td><td colspan='2'></td></tr>";
-*/
-     $this->showFormButtons($ID,'',2);
+      $this->showFormButtons($ID,'',2);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
@@ -209,23 +203,33 @@ class Notification extends CommonDBTM {
     */
    static function getByEvent($event, $itemtype, $entity) {
       global $DB;
-
       $notifications = array();
 
       //Get all template's data (id, language, subject, content,etc)
-      $query = "SELECT `glpi_notificationtemplates`.*
-                FROM `".$this->table. "`, `glpi_notificationtemplates`
-                WHERE `".$this->table. "`.`event`='$event'
-                  AND `".$this->table. "`.`itemtype`='$itemtype'
-                     AND `".$this->table."`.`notificationtemplates_id` =
+      $query = "SELECT `glpi_notificationtemplates`.*,
+                       `glpi_notifications`.`id` as `notification_id`
+                FROM `glpi_notifications`, `glpi_notificationtemplates`
+                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id` = `glpi_notifications`.`entities_id`)
+                  AND `glpi_notificationtemplates`.`itemtype`='$itemtype'
+                     AND `glpi_notifications`.`notificationtemplates_id` =
                                                `glpi_notificationtemplates`.`id`";
-      $query.= getEntitiesRestrictRequest(" AND", $this->table,'entities_id',$entity,true);
+      $query.= getEntitiesRestrictRequest(" AND", "glpi_notifications",'entities_id',$entity,true);
 
       foreach ($DB->request($query) as $data) {
-         $notifications[$data['id']] = $data;
+         $notifications[$data['notification_id']] = $data;
       }
       return $notifications;
    }
+
+   function cleanDBonPurge() {
+      global $DB;
+
+      $query = "DELETE
+                FROM `glpi_notificationtargets`
+                WHERE `notifications_id` = '".$this->fields['id']."'";
+      $DB->query($query);
+   }
+
 }
 
 ?>

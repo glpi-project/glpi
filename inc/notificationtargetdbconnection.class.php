@@ -35,18 +35,17 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTargetDBConnection extends NotificationTarget {
 
-   function getEmails($notifications_id,$itemtype,$data,$options=array()) {
-      //Look for all targets whose type is USER_MAILING
-      switch ($data['type']) {
-
-         case USER_MAILING_TYPE:
-            switch ($data['items_id']) {
-               //Send to glpi's global admin (as defined in the mailing configuration)
-               case ADMIN_MAILING :
-                  $notificationtarget->getAdminEmail($notifications_id);
-               break;
-            }
-      }
+   //Overwrite the function in NotificationTarget because there's only one target to be notified
+   function getNotficationTargets($entity) {
+      global $LANG,$DB;
+      $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+      return $profiles;
    }
+
+   function getEvents() {
+      global $LANG;
+      return array ('desynchronization' => $LANG['setup'][810]);
+   }
+
 }
 ?>

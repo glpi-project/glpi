@@ -1013,6 +1013,7 @@ class Ticket extends CommonDBTM {
       }
 
       // Processing Email
+
       if ($CFG_GLPI["use_mailing"] && !$already_mail) {
          $user = new User();
          $user->getFromDB($this->input["users_id"]);
@@ -1023,8 +1024,9 @@ class Ticket extends CommonDBTM {
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
             $type = "finish";
          }
-         $mail = new Mailing($type,$this,$user);
-         $mail->send();
+         //$mail = new Mailing($type,$this,$user);
+         //$mail->send();
+         NotificationEvent::raiseEvent($type,$this);
       }
    }
 
@@ -3108,51 +3110,6 @@ class Ticket extends CommonDBTM {
       return true;
    }
 
-   function getEvents() {
-      global $LANG;
-      return array ('open' => $LANG['mailing'][9],
-                    'update' => $LANG['mailing'][30],
-                    'assign' => $LANG['mailing'][12],
-                    'add_followp' => $LANG['mailing'][10]);
-   }
-
-   function getNotficationTargets($entity) {
-      global $LANG,$DB;
-
-      $profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
-      $profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG['setup'][237]." ".
-                                                                        $LANG['entity'][0];
-      $profiles[USER_MAILING_TYPE . "_" . TECH_MAILING] = $LANG['common'][10];
-      $profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG['job'][4];
-      $profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG['job'][3];
-      $profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG['common'][34] . " " .
-                                                                $LANG['common'][1];
-      $profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG['setup'][239];
-      $profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG['financial'][26];
-      $profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG['setup'][248];
-      $profiles[USER_MAILING_TYPE . "_" .
-                SUPERVISOR_ASSIGN_GROUP_MAILING] = $LANG['common'][64]." ".$LANG['setup'][248];
-      $profiles[USER_MAILING_TYPE . "_" .
-                SUPERVISOR_AUTHOR_GROUP_MAILING] = $LANG['common'][64]." ".$LANG['setup'][249];
-      asort($profiles);
-
-      foreach ($DB->request('glpi_profiles') as $data) {
-         $profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
-                                                                                    $data["name"];
-      }
-
-      $query = "SELECT `id`, `name`
-                FROM `glpi_groups`
-                ".getEntitiesRestrictRequest(" WHERE",'glpi_groups','entities_id',$entity,true)."
-                ORDER BY `name`";
-     $result = $DB->query($query);
-     while ($data = $DB->fetch_assoc($result)) {
-         $profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
-                                                            $data["name"];
-      }
-
-   return $profiles;
-   }
 
    static function showCentralList($target,$start,$status="process",$showgrouptickets=true) {
       global $DB,$CFG_GLPI, $LANG;

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- *  NotificationMail class extends
+ *  This class manages the mail settings
  */
 class NotificationMailSetting extends CommonDBTM {
 
@@ -110,28 +110,28 @@ class NotificationMailSetting extends CommonDBTM {
 /*            break;
 
          case 2 :
-            $profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
-            $profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG['setup'][237]." ".
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
                                                                         $LANG['entity'][0];
-            $profiles[USER_MAILING_TYPE . "_" . TECH_MAILING] = $LANG['common'][10];
-            $profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG['job'][4];
-            $profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG['job'][3];
-            $profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG['common'][34] . " " .
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_TECH_IN_CHARGE] = $LANG['common'][10];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_AUTHOR] = $LANG['job'][4];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_RECIPIENT] = $LANG['job'][3];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_USER] = $LANG['common'][34] . " " .
                                                                 $LANG['common'][1];
-            $profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG['setup'][239];
-            $profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG['financial'][26];
-            $profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG['setup'][248];
-            $profiles[USER_MAILING_TYPE . "_" .
-                      SUPERVISOR_ASSIGN_GROUP_MAILING] = $LANG['common'][64]." ".$LANG['setup'][248];
-            $profiles[USER_MAILING_TYPE . "_" .
-                      SUPERVISOR_AUTHOR_GROUP_MAILING] = $LANG['common'][64]." ".$LANG['setup'][249];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_ASSIGN_TECH] = $LANG['setup'][239];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPPLIER] = $LANG['financial'][26];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG['setup'][248];
+            $profiles[NOTIFICATION_USER_TYPE . "_" .
+                      NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP] = $LANG['common'][64]." ".$LANG['setup'][248];
+            $profiles[NOTIFICATION_USER_TYPE . "_" .
+                      NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP] = $LANG['common'][64]." ".$LANG['setup'][249];
             asort($profiles);
             $query = "SELECT `id`, `name`
                       FROM `glpi_profiles`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
+               $profiles[NOTIFICATION_PROFILE_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
                                                                     $data["name"];
             }
             $query = "SELECT `id`, `name`
@@ -139,7 +139,7 @@ class NotificationMailSetting extends CommonDBTM {
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
+               $profiles[NOTIFICATION_GROUP_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
                                                                   $data["name"];
             }
             echo "<div class='center'>";
@@ -160,34 +160,34 @@ class NotificationMailSetting extends CommonDBTM {
             echo "</tr>";
             echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['setup'][230] . "</th></tr>";
             echo "<tr class='tab_bg_1'>";
-            $profiles[USER_MAILING_TYPE . "_" . OLD_ASSIGN_MAILING] = $LANG['setup'][236];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE] = $LANG['setup'][236];
             ksort($profiles);
             showFormMailingType("update", $profiles);
-            unset ($profiles[USER_MAILING_TYPE . "_" . OLD_ASSIGN_MAILING]);
+            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE]);
             echo "</tr>";
             echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['setup'][225] . "</th></tr>";
             echo "<tr class='tab_bg_2'>";
-            unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING]);
-            unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING]);
-            unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING]);
-            unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_ASSIGN_GROUP_MAILING]);
-            unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_AUTHOR_GROUP_MAILING]);
-            unset ($profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING]);
+            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_ASSIGN_TECH]);
+            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPPLIER]);
+            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING]);
+            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP]);
+            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP]);
+            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_RECIPIENT]);
 
             showFormMailingType("resa", $profiles);
             echo "</tr></table></div>";
             break;
 
          case 3 :
-            $profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
-            $profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG['setup'][237]." ".
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
                                                                         $LANG['entity'][0];
             $query = "SELECT `id`, `name`
                       FROM `glpi_profiles`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[PROFILE_MAILING_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
+               $profiles[NOTIFICATION_PROFILE_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
                                                                     $data["name"];
             }
             $query = "SELECT `id`, `name`
@@ -195,7 +195,7 @@ class NotificationMailSetting extends CommonDBTM {
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[GROUP_MAILING_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
+               $profiles[NOTIFICATION_GROUP_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
                                                                   $data["name"];
             }
             ksort($profiles);
@@ -309,37 +309,15 @@ class NotificationMailSetting extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][244] . "</td><td>";
-      echo "<select name='cartridges_alert_repeat'> ";
-      echo "<option value='0' " .
-             ($CFG_GLPI["cartridges_alert_repeat"] == 0 ? "selected" : "") . " >" .
-              $LANG['setup'][307] . "</option>";
-      echo "<option value='" . DAY_TIMESTAMP . "' " .
-             ($CFG_GLPI["cartridges_alert_repeat"] == DAY_TIMESTAMP ? "selected" : "") . " >" .
-             $LANG['setup'][305] . "</option>";
-      echo "<option value='" . WEEK_TIMESTAMP . "' " .
-             ($CFG_GLPI["cartridges_alert_repeat"] == WEEK_TIMESTAMP ? "selected" : "") . " >" .
-              $LANG['setup'][308] . "</option>";
-      echo "<option value='" . MONTH_TIMESTAMP . "' " .
-             ($CFG_GLPI["cartridges_alert_repeat"] == MONTH_TIMESTAMP ? "selected" : "") . " >" .
-             $LANG['setup'][309] . "</option>";
-      echo "</select>";
+
+      Alert::dropdown(array('name'=>'cartridges_alert_repeat',
+                      'value'=>$CFG_GLPI["cartridges_alert_repeat"]));
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td >" . $LANG['setup'][245] . " " . $LANG['setup'][243] . "</td><td>";
-      echo "<select name='consumables_alert_repeat'> ";
-      echo "<option value='0' " .
-             ($CFG_GLPI["consumables_alert_repeat"] == 0 ? "selected" : "") . " >" .
-             $LANG['setup'][307] . "</option>";
-      echo "<option value='" . DAY_TIMESTAMP . "' " .
-             ($CFG_GLPI["consumables_alert_repeat"] == DAY_TIMESTAMP ? "selected" : "")." >".
-             $LANG['setup'][305] . "</option>";
-      echo "<option value='" . WEEK_TIMESTAMP . "' " .
-             ($CFG_GLPI["consumables_alert_repeat"] == WEEK_TIMESTAMP ? "selected" : "")." >".
-             $LANG['setup'][308] . "</option>";
-      echo "<option value='" . MONTH_TIMESTAMP . "' " .
-             ($CFG_GLPI["consumables_alert_repeat"] == MONTH_TIMESTAMP ? "selected" : "")." >".
-             $LANG['setup'][309] . "</option>";
-      echo "</select>";
+      Alert::dropdown(array('name'=>'consumables_alert_repeat',
+                      'value'=>$CFG_GLPI["consumables_alert_repeat"]));
+
       echo "</td></tr>";
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][264] . "</td><td>";
       Dropdown::showYesNo("use_licenses_alert", $CFG_GLPI["use_licenses_alert"]);
