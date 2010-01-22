@@ -464,16 +464,16 @@ class Plugin extends CommonDBTM {
    function uninstall($ID) {
 
       if ($this->getFromDB($ID)) {
-         
+
          CronTask::Unregister($this->fields['directory']);
-         
+
          self::load($this->fields['directory'],true);
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
             $function();
          }
-         
+
          $this->update(array('id'=>$ID,
                              'state'=>self::NOTINSTALLED,
                              'version'=>''));
@@ -774,7 +774,7 @@ class Plugin extends CommonDBTM {
       foreach (array('contract_types','doc_types','helpdesk_types','helpdesk_visible_types',
                      'infocom_types','linkgroup_types','linkuser_types',
                      'massiveaction_noupdate_types','massiveaction_nodelete_types',
-                     'netport_types','reservation_types') as $att) {
+                     'netport_types','reservation_types','notificationtemplates_types') as $att) {
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
             unset($attrib[$att]);

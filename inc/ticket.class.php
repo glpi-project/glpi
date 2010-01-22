@@ -761,8 +761,9 @@ class Ticket extends CommonDBTM {
             if (isset($this->input["_old_assign"])) {
                $this->fields["_old_assign"] = $this->input["_old_assign"];
             }
-            $mail = new Mailing($mailtype,$this,$user);
-            $mail->send();
+            NotificationEvent::raiseEvent($mailtype, $this);
+            //$mail = new Mailing($mailtype,$this,$user);
+            //$mail->send();
          }
       }
    }
