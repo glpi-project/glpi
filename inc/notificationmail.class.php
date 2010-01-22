@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')){
 require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 
 /**
- *  NotificationMail class extends
+ *  NotificationMail class extends phpmail and implements the NotificationInterface
  */
 class NotificationMail extends phpmailer implements NotificationInterface {
 
@@ -155,8 +155,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $query="SELECT COUNT(id)
                  FROM `glpi_mailingsettings`
                  WHERE `type` IN ('new','followup','update','finish')
-                       AND `mailingtype` = '".USER_MAILING_TYPE."'
-                       AND `items_id` = '".AUTHOR_MAILING."'";
+                       AND `mailingtype` = '".NOTIFICATION_USER_TYPE."'
+                       AND `items_id` = '".NOTIFICATION_AUTHOR."'";
          if ($result=$DB->query($query)) {
             if ($DB->result($result,0,0)>0) {
                return true;
@@ -187,7 +187,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
     * Format the mail sender to send
     * @return mail sender email string
     */
-   function getEntityAdminEmail() {
+   function getEntityAdminAddress() {
       global $CFG_GLPI,$DB;
 
       $query = "SELECT `admin_email` AS email
@@ -204,7 +204,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       return $CFG_GLPI["admin_email"];
    }
 
-   function send() {
+
+   function sendNotification() {
 
    }
 }

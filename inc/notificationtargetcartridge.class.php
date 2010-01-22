@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownInstallVersion.php 9341 2009-11-24 18:33:38Z moyo $
+ * @version $Id: notification.class.php 10030 2010-01-05 11:11:22Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -28,21 +28,17 @@
  --------------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-if (strpos($_SERVER['PHP_SELF'],"dropdownNotificationTemplate.php")) {
-   define('GLPI_ROOT','..');
-   include (GLPI_ROOT."/inc/includes.php");
-   header("Content-Type: text/html; charset=UTF-8");
-   header_nocache();
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
 }
 
-checkRight("notification","w");
+// Class NotificationTarget
+class NotificationTargetCartridge extends NotificationTarget {
 
-NotificationTemplate::dropdownTemplates('notificationtemplates_id',
-                                        $_POST['itemtype'],
-                                        NotificationTemplate::getDefault($_POST['itemtype']));
+   function getEvents() {
+      global $LANG;
+      return array ('alert' => $LANG['mailing'][33]);
+   }
+
+}
 ?>

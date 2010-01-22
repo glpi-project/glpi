@@ -169,18 +169,18 @@ function update065to068(){
 		$DB->query($query) or die("0.68 create mailing table ".$LANG['update'][90].$DB->error());
 
 		// MAILING TYPE
-		if (!defined("USER_MAILING_TYPE")){
-			define("USER_MAILING_TYPE","1");
-			define("PROFILE_MAILING_TYPE","2");
-			define("GROUP_MAILING_TYPE","3");
+		if (!defined("NOTIFICATION_USER_TYPE")){
+			define("NOTIFICATION_USER_TYPE","1");
+			define("NOTIFICATION_PROFILE_TYPE","2");
+			define("NOTIFICATION_GROUP_TYPE","3");
 		}
 
 		// MAILING USERS TYPE
-		if (!defined("ADMIN_MAILING")){
-			define("ADMIN_MAILING","1");
-			define("ASSIGN_MAILING","2");
-			define("AUTHOR_MAILING","3");
-			define("OLD_ASSIGN_MAILING","4");
+		if (!defined("NOTIFICATION_GLOBAL_ADMINISTRATOR")){
+			define("NOTIFICATION_GLOBAL_ADMINISTRATOR","1");
+			define("NOTIFICATION_TICKET_ASSIGN_TECH","2");
+			define("NOTIFICATION_AUTHOR","3");
+			define("NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE","4");
 		}
 
 
@@ -189,99 +189,99 @@ function update065to068(){
 		if ($result){
 			$data=$DB->fetch_assoc($result);
 			if ($data["mailing_resa_all_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".$profiles["admin"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_resa_user"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".NOTIFICATION_AUTHOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_resa_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".NOTIFICATION_GLOBAL_ADMINISTRATOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_all_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".$profiles["admin"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing new all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_all_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".$profiles["admin"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing update all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_all_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".$profiles["admin"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing followup all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_all_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".$profiles["admin"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing finish all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_all_normal"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".$profiles["normal"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing new all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_all_normal"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".$profiles["normal"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing update all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_all_normal"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".$profiles["normal"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing followup all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_all_normal"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".$profiles["normal"]."','".NOTIFICATION_PROFILE_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing finish all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".NOTIFICATION_GLOBAL_ADMINISTRATOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing new admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".NOTIFICATION_GLOBAL_ADMINISTRATOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing update admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".NOTIFICATION_GLOBAL_ADMINISTRATOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing followup admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_admin"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".NOTIFICATION_GLOBAL_ADMINISTRATOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing finish admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_attrib"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".NOTIFICATION_TICKET_ASSIGN_TECH."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing new attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_attrib"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".NOTIFICATION_TICKET_ASSIGN_TECH."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing update attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_attrib"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".NOTIFICATION_TICKET_ASSIGN_TECH."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing followup attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_attrib"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".NOTIFICATION_TICKET_ASSIGN_TECH."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing finish attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_attrib_attrib"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".OLD_ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing finish attrib ".$LANG['update'][90].$DB->error());
 			}	
 			if ($data["mailing_new_user"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".NOTIFICATION_AUTHOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing new user ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_user"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".NOTIFICATION_AUTHOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing update user ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_user"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".NOTIFICATION_AUTHOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing followup user ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_user"]){
-				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
+				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".NOTIFICATION_AUTHOR."','".NOTIFICATION_USER_TYPE."');";
 				$DB->query($query2) or die("0.68 populate mailing finish user ".$LANG['update'][90].$DB->error());
 			}
 

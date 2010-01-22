@@ -45,6 +45,15 @@ class EntityData extends CommonDBTM {
    // From CommonDBTM
    public $table = 'glpi_entitydatas';
 
+/*
+   function getEmpty() {
+      global $CFG_GLPI;
+      $this->fields['cartridges_alert_repeat'] = -1;
+      $this->fields['consumables_alert_repeat'] = -1;
+      $this->fields['use_licenses_alert'] = 0;
+      $this->fields['mailing_signature'] = '';
+   }
+*/
    function getIndexName() {
       return 'entities_id';
    }
@@ -216,6 +225,86 @@ class EntityData extends CommonDBTM {
       }
    }
 
+   static function showNotificationOptions(Entity $entity) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $con_spotted=false;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r')) {
+         return false;
+      }
+      $canedit=$entity->can($ID,'w');
+
+      // Get data
+      $entitynotification=new EntityData();
+      if (!$entitynotification->getFromDB($ID)) {
+         $entitynotification->getEmpty();
+      }
+
+      if ($canedit) {
+         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+      }
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='4'>".$LANG['setup'][240]."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['setup'][203]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField($entitynotification, "admin_email");
+      echo "</td>";
+      echo "<td rowspan='2' class='middle right'>" . $LANG['setup'][204] . "</td>";
+      echo "<td rowspan='2' class='middle right'><textarea cols='60' rows='5' name=\"mailing_signature\" >".
+                 $entitynotification->fields["mailing_signature"]."</textarea></td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['setup'][207]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField($entitynotification, "admin_reply");
+      echo "</td></tr>";
+
+      echo "<tr><th colspan='4'>".$LANG['setup'][242]."</th></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][244] . "</td><td>";
+
+      $default_value = ($entitynotification->fields['cartridges_alert_repeat']?
+                           $entitynotification->fields['cartridges_alert_repeat']:-1);
+      Alert::dropdown(array('name'=>'cartridges_alert_repeat',
+                            'value'=>$default_value,
+                            'inherit_global'=>1));
+
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][243] . "</td><td>";
+      $default_value = ($entitynotification->fields['consumables_alert_repeat']?
+                           $entitynotification->fields['consumables_alert_repeat']:-1);
+      Alert::dropdown(array('name'=>'consumables_alert_repeat',
+                            'value'=>$default_value,
+                            'inherit_global'=>1));
+
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][264] . "</td><td>";
+      Dropdown::showYesNo("use_licenses_alert", $entitynotification->fields["use_licenses_alert"]);
+      echo "<td colspan='2'></td>";
+      echo "</td></tr>";
+
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value='$ID'>";
+         if (isset($entitynotification->fields["id"])) {
+            echo "<input type='hidden' name='id' value=\"".$entitynotification->fields["id"]."\">";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+         } else {
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+         }
+         echo "</td></tr>";
+         echo "</table></form>";
+      } else {
+         echo "</table>";
+      }
+   }
+
    private static function getEntityIDByField($field,$value) {
       global $DB;
 
@@ -238,6 +327,7 @@ class EntityData extends CommonDBTM {
    static function getEntityIDByTag($value) {
       return self::getEntityIDByField("tag",$value);
    }
+
 
 }
 

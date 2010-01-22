@@ -35,78 +35,26 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTargetReservationItem extends NotificationTarget {
 
-   function getEmails($notifications_id,$itemtype,$data,$options=array()) {
+   function getAddressesByTarget($notifications_id,$itemtype,$data,$options=array()) {
 
-   //Look for all targets whose type is USER_MAILING
+   //Look for all targets whose type is NOTIFICATION_ITEM_USER
    switch ($data['type']) {
 
-      case USER_MAILING_TYPE:
+      case NOTIFICATION_USER_TYPE:
          switch ($data['items_id']) {
-            //Send to glpi's global admin (as defined in the mailing configuration)
-            case ADMIN_MAILING :
-               $notificationtarget->getAdminEmail($notifications_id);
+           //Send to the author of the ticket
+            case NOTIFICATION_AUTHOR:
+               $target->getItemAuthorAddress($notifications_id);
             break;
-            //Send to the entity's admninistrator
-            case ADMIN_ENTITY_MAILING :
-               $target->getEntityAdminEmail();
-            break;
-            //Send to the author of the ticket
-            case AUTHOR_MAILING:
-               $target->getAuthorEmail($notifications_id);
-            break;
-            //Technician in charge of the ticket
-            case TECH_MAILING :
-               $this->getTechnicianInChargeEmail($notifications_id);
-            break;
-            //User who's owner of the material
-            case USER_MAILING :
-               $this->getUserOwnerEmail($notifications_id);
-            break;
-            //Assign to a supplier
-            case ASSIGN_ENT_MAILING :
-               $this->getSupplierEmails($notifications_id);
-            break;
-            //Send to the group in charge of the ticket supervisor
       }
-      //Send to all the users of a group
-      case GROUP_MAILING_TYPE:
-         $this->getUsersEmailsByGroup($notifications_id,$data['items_id']);
-      break;
 
       //Send to all the users of a profile
-      case ASSIGN_MAILING_TYPE:
-         $target->getUsersEmailsByProfile($notifications_id,$data['items_id']);
+      case NOTIFICATION_TICKET_ASSIGN_TECH_TYPE:
+         $target->getUsersAddressesByProfile($notifications_id,$data['items_id']);
       break;
       }
    }
 
-   function getAuthorEmail($notifications_id) {
-      $user = new User;
-      if ($user->getFromDB($this->obj->fields["users_id"])) {
-         $this->addToEmailList($notifications_id,$user->fields["email"], $user->fields['language']);
-      }
-   }
-
-   function getUserByField ($notifications_id, $field) {
-      global $DB;
-
-      $ri=new ReservationItem();
-      if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
-         if (class_exists($ri->fields["itemtype"])) {
-            $item = new $ri->fields["itemtype"]();
-            if ($item->getFromDB($ri->fields["items_id"])) {
-               if ($item->isField($field)) {
-                  $query = NotificationTargetTicket::getDistinctUserSql()."
-                             FROM `glpi_users`
-                             WHERE `glpi_users`.`id` = '".$item->getField($field)."'";
-                  foreach ($DB->request($query) as $data) {
-                     $this->addToEmailList($notifications_id,$data['email'],$data['lang']);
-                  }
-               }
-            }
-         }
-      }
-   }
 
    /**
     * Get users emails by profile
@@ -114,7 +62,7 @@ class NotificationTargetReservationItem extends NotificationTarget {
     * @param profiles_id the profile ID to get users emails
     * @return nothing
     */
-   function getUsersEmailsByProfile($notifications_id,$profiles_id) {
+   function getUsersAddressesByProfile($notifications_id,$profiles_id) {
       global $DB;
 
       $item = NotificationTargetReservationItem::getReservationItem();
@@ -131,85 +79,13 @@ class NotificationTargetReservationItem extends NotificationTarget {
                  if ($result2= $DB->query($query)) {
                     if ($DB->numrows($result2)) {
                         while ($row=$DB->fetch_assoc($result2)) {
-                           $this->addToEmailList($notifications_id,$row['email'],$row['lang']);
+                           $this->addToAddressesList($notifications_id,$row['email'],$row['lang']);
                            }
                         }
                  }
       }
    }
 
-   //Get thecnician in charge of the ticket
-   function getTechnicianInChargeEmail($notifications_id,$ticket) {
-      NotificationTargetReservationItem::getByItemUserEmail($notifications_id,'user_id_tech');
-   }
-
-   //Get user owner of the material
-   function getUserOwnerEmail($notifications_id) {
-      NotificationTargetTicket::getByItemUserEmail($notifications_id,'user_id');
-   }
-
-   function getByItemUserEmail($notifications_id,$field) {
-      global $DB;
-
-      if (isset($this->obj->fields["items_id"])
-                && $this->obj->fields["items_id"]>0
-                && isset($this->obj->fields["itemtype"])
-                && class_exists($this->obj->fields["itemtype"])) {
-
-         $item= new $this->obj->fields["itemtype"]();
-         if ($item->getFromDB($this->obj->fields["items_id"])) {
-            if ($item->isField($field)) {
-
-               $query = NotificationTargetTicket::getDistinctUserSql()."
-                        FROM `glpi_users`".
-                        NotificationTargetTicket::getJoinProfileSql().
-                       "WHERE `glpi_users`.`id` = '".
-                        $item->getField($field)."'";
-               foreach ($DB->request($query) as $data) {
-                  $this->addToEmailList($notifications_id,$data['email'],$data['lang']);
-               }
-            }
-         }
-      }
-   }
-
-
-   function getSupplierEmails($notifications_id, $sendprivate=true) {
-      global $DB;
-
-      if (!$sendprivate && isset($ths->obj->fields["suppliers_id_assign"])
-          && $this->obj->fields["suppliers_id_assign"]>0) {
-
-         $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email
-                   FROM `glpi_suppliers`
-                   WHERE `glpi_suppliers`.`id` = '".
-                          $ticket->fields["suppliers_id_assign"]."'";
-         foreach ($DB->request($query) as $data) {
-            $this->addToEmailList($notifications_id,$data['email']);
-         }
-      }
-   }
-
-   //Get supervisor of a group (works for request group or assigned group)
-   function getGroupSupervisorEmail ($notifications_id, $assign=true) {
-      global $DB;
-
-      $group_field = ($assign?"groups_id_assign":"groups_id");
-
-      if (isset($this->obj->fields[$group_field])
-                && $this->obj->fields[$group_field]>0) {
-
-         $query = NotificationTargetTicket::getDistinctUserSql().
-                   "FROM `glpi_groups`
-                    LEFT JOIN `glpi_users`
-                    ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
-                   NotificationTargetTicket::getJoinProfileSql()."
-                    WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
-         foreach ($DB->request($query) as $data) {
-            $this->addToEmailList($notifications_id,$data['email'], $data['lang']);
-         }
-      }
-   }
 
    static function getJoinProfileSql() {
       return " INNER JOIN `glpi_profiles_users`
@@ -224,7 +100,7 @@ class NotificationTargetReservationItem extends NotificationTarget {
 
    //Overload function in NotificationTarget because here it's needed to search into ReservationItem
    //And not directly into the $this->obj
-   function getEntityAdminEmail($notifications_id) {
+   function getEntityAdminAddress($notifications_id) {
       global $DB;
 
       //Get reserved object
@@ -242,7 +118,7 @@ class NotificationTargetReservationItem extends NotificationTarget {
          if ($result2 = $DB->query($query2)) {
             if ($DB->numrows($result2)==1) {
                $row = $DB->fetch_array($result2);
-               $this->addToEmailList($notifications_id,$row["email"]);
+               $this->addToAddressesList($notifications_id,$row["email"]);
             }
          }
       }
@@ -260,6 +136,31 @@ class NotificationTargetReservationItem extends NotificationTarget {
          }
       }
       return $item;
+   }
+
+   function getEvents() {
+      global $LANG;
+      return array ('new' => $LANG['mailing'][19],
+                    'update'=> $LANG['mailing'][23],
+                    'delete'=>$LANG['mailing'][29]);
+   }
+
+   function getAdditionnalTargets() {
+      global $LANG;
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
+             NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP] =
+                                                      $LANG['common'][64]." ".$LANG['setup'][248];
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
+             NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP] =
+                                                      $LANG['common'][64]." ".$LANG['setup'][249];
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_TECH_IN_CHARGE] =
+                                                      $LANG['common'][10];
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_AUTHOR] =
+                                                      $LANG['job'][4];
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_USER] =
+                                                      $LANG['common'][34] . " " .$LANG['common'][1];
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING] =
+                                                      $LANG['setup'][248];
    }
 }
 ?>

@@ -55,8 +55,9 @@ class Reservation extends CommonDBTM {
 
          // Processing Email
          if ($CFG_GLPI["use_mailing"]) {
-            $mail = new MailingResa($this,"delete");
-            $mail->send();
+            NotificationEvent::raiseEvent("delete",$this);
+            //$mail = new MailingResa($this,"delete");
+            //$mail->send();
          }
       }
       return true;
@@ -97,8 +98,9 @@ class Reservation extends CommonDBTM {
       global $CFG_GLPI;
 
       if (count($this->updates) && $CFG_GLPI["use_mailing"]) {
-         $mail = new MailingResa($this,"update");
-         $mail->send();
+         NotificationEvent::raiseEvent("new",$this);
+         //$mail = new MailingResa($this,"update");
+         //$mail->send();
       }
    }
 
@@ -131,8 +133,9 @@ class Reservation extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($CFG_GLPI["use_mailing"]) {
-         $mail = new MailingResa($this,"new");
-         $mail->send();
+         NotificationEvent::raiseEvent("new",$this);
+         //$mail = new MailingResa($this,"new");
+         //$mail->send();
       }
    }
 

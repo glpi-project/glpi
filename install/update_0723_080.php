@@ -2757,6 +2757,25 @@ function update0723to080($output='HTML') {
                  PRIMARY KEY ( `ID` )
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_notificationtemplates" . $LANG['update'][90] . $DB->error());
+/*
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(1, 'Ticket', 'en_GB', 1, 'Ticket', '', '', '', 'Ticket', '2010-01-22 16:16:27');";
+      $DB->query($query) or die("0.80 add template ticket" . $LANG['update'][90] . $DB->error());
+
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(2, 'Reservation', 'en_GB', 1, 'Reservation', '', '', '', 'ReservationItem', '2010-01-22 16:16:51');";
+      $DB->query($query) or die("0.80 add template reservation" . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(3, 'Consumable alert', 'en_GB', 1, 'Consumable alert', '', '', '', 'Consumable', '2010-01-22 16:17:20');";
+      $DB->query($query) or die("0.80 add template consumables" . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(4, 'Cartridge alert', 'en_GB', 1, 'Cartridge alert', '', '', '', 'Cartridge', '2010-01-22 16:17:41');";
+      $DB->query($query) or die("0.80 add template cartridges" . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(5, 'MySQL synchronization alert', 'en_GB', 1, 'MySQL synchronization alert', '', '', '', 'DBConnection', '2010-01-22 16:18:07');";
+      $DB->query($query) or die("0.80 add template mysql synchronization" . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(6, 'License expiration alert', 'en_GB', 1, 'License expiration alert', '', '', '', 'SoftwareLicense', '2010-01-22 16:18:32');";
+      $DB->query($query) or die("0.80 add template licenses" . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(7, 'Infocom alert', 'en_GB', 1, 'Infocom alert', '', '', '', 'Infocom', '2010-01-22 16:18:49');";
+      $DB->query($query) or die("0.80 add template infocoms" . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_notificationtemplates` VALUES(8, 'Contract expiration alert', 'en_GB', 1, 'Contract expiration alert', '', '', '', 'Contract', '2010-01-22 16:19:20');";
+      $DB->query($query) or die("0.80 add template contract" . $LANG['update'][90] . $DB->error());
+*/
    }
 
    if (!TableExists('glpi_notifications')) {
@@ -2775,6 +2794,25 @@ function update0723to080($output='HTML') {
                   PRIMARY KEY ( `id` )
                   ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
       $DB->query($query) or die("0.80 create glpi_notifications" . $LANG['update'][90] . $DB->error());
+/*
+   $query = "INSERT INTO `glpi_notifications` (`id`, `name`, `entities_id`, `itemtype`, `event`, `mode`, `notificationtemplates_id`, `content`, `comment`, `is_recursive`) VALUES
+         (1, 'New ticket', 0, 'Ticket', 'new', 'mail', 1, '', '', 1),
+         (2, 'Update ticket', 0, 'Ticket', 'update', 'mail', 1, '', '', 1),
+         (3, 'Add Followup', 0, 'Ticket', 'add_followp', 'mail', 1, '', '', 1),
+         (4, 'Add solution', 0, 'Ticket', 'solved', 'mail', 1, '', '', 1),
+         (5, 'Add task', 0, 'Ticket', 'add_task', 'mail', 1, '', '', 1),
+         (6, 'Close ticket', 0, 'Ticket', 'close', 'mail', 1, '', '', 1),
+         (7, 'Cartridge alert', 0, 'Cartridge', 'alert', 'mail', 4, '', '', 1),
+         (8, 'Consumable alert', 0, 'Consumable', 'alert', 'mail', 3, '', '', 1),
+         (9, 'Contract expiration alert', 0, 'Contract', 'alert', 'mail', 8, '', '', 1),
+         (10, 'Infocom alert', 0, 'Infocom', 'alert', 'mail', 7, '', '', 1),
+         (11, 'License expiration alert', 0, 'SoftwareLicense', 'alert', 'mail', 6, '', '', 1),
+         (12, 'MySQL synchronization alert', 0, 'DBConnection', 'desynchronization', 'mail', 5, '', '', 1),
+         (13, 'New reservation', 0, 'ReservationItem', 'new', 'mail', 2, '', '', 1),
+         (14, 'Update reservation', 0, 'ReservationItem', 'update', 'mail', 2, '', '', 1),
+         (15, 'Cancel reservation', 0, 'ReservationItem', 'delete', 'mail', 2, '', '', 1);";
+      $DB->query($query) or die("0.80 add notifications" . $LANG['update'][90] . $DB->error());
+*/
    }
 
    if (!TableExists('glpi_notificationtargets')) {
@@ -2786,6 +2824,8 @@ function update0723to080($output='HTML') {
                   PRIMARY KEY ( `id` )
                   ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
       $DB->query($query) or die("0.80 create glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
+
+      //$targets = array ("new"=>1, "followup"=> 3, "update"=>2, "finish"=> 4, "");
    }
 
    if (!FieldExists('glpi_profiles','notification')) {
@@ -2796,27 +2836,12 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 add notification write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
    }
 
-   if (!TableExists('glpi_entitynotifications')) {
-      $query = "CREATE TABLE `glpi_entitynotifications` (
-                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-                  `entities_id` INT( 11 ) NOT NULL DEFAULT '0',
-                  `mailing_signature` TEXT NOT NULL ,
-                  `cartridges_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
-                  `consumables_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
-                  `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                  `admin_email` VARCHAR( 255 ) NOT NULL ,
-                  `admin_reply` VARCHAR( 255 ) NOT NULL ,
-                  PRIMARY KEY ( `id` )
-                  ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
-      $DB->query($query) or die("0.80 create glpi_entitynotifications" . $LANG['update'][90] . $DB->error());
-
-      $query = "INSERT INTO `glpi_entitynotifications` (`entities_id`, `admin_email`, `admin_reply`)
-                SELECT `entities_id`, `admin_email`, `admin_reply`
-                FROM `glpi_entitydatas`";
-      $DB->query($query) or die("0.80 move admin_email, admin_reply in glpi_entitynotifications" . $LANG['update'][90] . $DB->error());
-
-      $query = "ALTER TABLE `glpi_entitydatas` DROP `admin_email`, DROP `admin_reply`;";
-       $DB->query($query) or die("0.80 delete admin_email, admin_reply in glpi_entitydatas" . $LANG['update'][90] . $DB->error());
+   if (!FieldExists('glpi_entitydatas','mailing_signature')) {
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `mailing_signature` TEXT NOT NULL ,
+                                 ADD `cartridges_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
+                                 ADD `consumables_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
+                                 ADD `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 add notifications fields in glpi_entitydatas" . $LANG['update'][90] . $DB->error());
    }
 
    if (TableExists('glpi_mailsettings')) {

@@ -372,7 +372,8 @@ class CartridgeItem extends CommonDBTM {
    static function cronCartridge($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
 
-      if (!$CFG_GLPI["use_mailing"] || !$CFG_GLPI["cartridges_alert_repeat"]) {
+      //TODO check if cron is activated for cartridges !
+      if (!$CFG_GLPI["use_mailing"]) {
          return false;
       }
 
@@ -381,7 +382,8 @@ class CartridgeItem extends CommonDBTM {
       // Get cartridges type with alarm activated and last warning > X days depending on config
       $query="SELECT `glpi_cartridgeitems`.`id` AS cartID,
                      `glpi_cartridgeitems`.`entities_id` as entity,
-                     `glpi_cartridgeitems`.`ref` as cartref, `glpi_cartridgeitems`.`name` AS cartname,
+                     `glpi_cartridgeitems`.`ref` as cartref,
+                     `glpi_cartridgeitems`.`name` AS cartname,
                      `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
                      `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
               FROM `glpi_cartridgeitems`

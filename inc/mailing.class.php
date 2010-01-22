@@ -95,7 +95,7 @@ class Mailing {
          $selectdistinctuser ="SELECT DISTINCT `glpi_users`.`email` AS email,
                                                `glpi_users`.`language` AS lang ";
          $join="";
-         $joinprofile=""; //cas PROFILE_MAILING_TYPE
+         $joinprofile=""; //cas NOTIFICATION_PROFILE_TYPE
          // If send private is the user can see private followups ?
          if ($sendprivate) {
             $join=" INNER JOIN `glpi_profiles_users`
@@ -113,28 +113,28 @@ class Mailing {
          }
          while ($data=$DB->fetch_assoc($result)) {
             switch ($data["mailingtype"]) {
-               case USER_MAILING_TYPE :
+               case NOTIFICATION_USER_TYPE :
                   switch ($data["items_id"]) {
                      // ADMIN SEND
-                     case ADMIN_MAILING :
-                        $this->addToEmailList($emails,$CFG_GLPI["admin_email"]);
+                     case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+                        $this->addToAddressesList($emails,$CFG_GLPI["admin_email"]);
                         break;
 
                      // ADMIN ENTITY SEND
-                     case ADMIN_ENTITY_MAILING :
+                     case NOTIFICATION_ENTITY_ADMINISTRATOR :
                         $query2 = "SELECT `admin_email` AS email
                                    FROM `glpi_entitydatas`
                                    WHERE `entities_id` = '".$this->job->fields["entities_id"]."'";
                         if ($result2 = $DB->query($query2)) {
                            if ($DB->numrows($result2)==1) {
                               $row = $DB->fetch_array($result2);
-                              $this->addToEmailList($emails,$row['email']);
+                              $this->addToAddressesList($emails,$row['email']);
                            }
                         }
                         break;
 
                      // ASSIGN SEND
-                     case ASSIGN_MAILING :
+                     case NOTIFICATION_TICKET_ASSIGN_TECH :
                         if (isset($this->job->fields["users_id_assign"])
                             && $this->job->fields["users_id_assign"]>0) {
 
@@ -146,14 +146,14 @@ class Mailing {
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
                                  $row = $DB->fetch_array($result2);
-                                 $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                 $this->addToAddressesList($emails,$row['email'],$row['lang']);
                               }
                            }
                         }
                         break;
 
                      // ASSIGN SEND
-                     case ASSIGN_ENT_MAILING :
+                     case NOTIFICATION_TICKET_SUPPLIER :
                         if (!$sendprivate && isset($this->job->fields["suppliers_id_assign"])
                             && $this->job->fields["suppliers_id_assign"]>0) {
 
@@ -164,7 +164,7 @@ class Mailing {
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
                                  $row = $DB->fetch_array($result2);
-                                 $this->addToEmailList($emails,$row['email']);
+                                 $this->addToAddressesList($emails,$row['email']);
                               }
                            }
                         }
@@ -186,7 +186,7 @@ class Mailing {
                            if ($result2= $DB->query($query)) {
                               if ($DB->numrows($result2)) {
                                  while ($row=$DB->fetch_assoc($result2)) {
-                                    $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                    $this->addToAddressesList($emails,$row['email'],$row['lang']);
                                  }
                               }
                            }
@@ -194,7 +194,7 @@ class Mailing {
                         break;
 
                      // SUPERVISOR ASSIGN GROUP SEND
-                     case SUPERVISOR_ASSIGN_GROUP_MAILING :
+                     case NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP :
                         if (isset($this->job->fields["groups_id_assign"])
                             && $this->job->fields["groups_id_assign"]>0) {
 
@@ -208,14 +208,14 @@ class Mailing {
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
                                  $row = $DB->fetch_array($result2);
-                                 $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                 $this->addToAddressesList($emails,$row['email'],$row['lang']);
                               }
                            }
                         }
                         break;
 
                      // RECIPIENT SEND
-                     case RECIPIENT_MAILING :
+                     case NOTIFICATION_TICKET_RECIPIENT :
                         if (isset($this->job->fields["users_id_recipient"])
                             && $this->job->fields["users_id_recipient"]>0) {
 
@@ -227,14 +227,14 @@ class Mailing {
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
                                  $row = $DB->fetch_array($result2);
-                                 $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                 $this->addToAddressesList($emails,$row['email'],$row['lang']);
                               }
                            }
                         }
                         break;
 
                      // AUTHOR SEND
-                     case AUTHOR_MAILING :
+                     case NOTIFICATION_AUTHOR :
                         if ($this->job->fields["use_email_notification"]) {
                            // Uemail = mail of the users_id ? -> use right of the users_id to see private followups
                            // Else not see private
@@ -274,14 +274,14 @@ class Mailing {
                            $DB->free_result($result3);
 
                            if ($users_idsend) {
-                              $this->addToEmailList($emails,$this->job->fields["user_email"],
+                              $this->addToAddressesList($emails,$this->job->fields["user_email"],
                                                     $users_idlang);
                            }
                         }
                         break;
 
                      // SUPERVISOR ASSIGN GROUP SEND
-                     case SUPERVISOR_AUTHOR_GROUP_MAILING :
+                     case NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP :
                         if (isset($this->job->fields["groups_id"])
                             && $this->job->fields["groups_id"]>0) {
 
@@ -295,14 +295,14 @@ class Mailing {
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
                                  $row = $DB->fetch_array($result2);
-                                 $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                 $this->addToAddressesList($emails,$row['email'],$row['lang']);
                               }
                            }
                         }
                         break;
 
                      // OLD ASSIGN SEND
-                     case OLD_ASSIGN_MAILING :
+                     case NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE :
                         if (isset($this->job->fields["_old_assign"])
                             && $this->job->fields["_old_assign"]>0) {
 
@@ -314,14 +314,14 @@ class Mailing {
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
                                  $row = $DB->fetch_array($result2);
-                                 $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                 $this->addToAddressesList($emails,$row['email'],$row['lang']);
                               }
                            }
                         }
                         break;
 
                      // TECH SEND
-                     case TECH_MAILING :
+                     case NOTIFICATION_ITEM_TECH_IN_CHARGE :
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
@@ -337,7 +337,7 @@ class Mailing {
                                  if ($result2 = $DB->query($query2)) {
                                     if ($DB->numrows($result2)==1) {
                                        $row = $DB->fetch_array($result2);
-                                       $this->addToEmailList($emails,$row['email'],$row['email']);
+                                       $this->addToAddressesList($emails,$row['email'],$row['email']);
                                     }
                                  }
                               }
@@ -346,7 +346,7 @@ class Mailing {
                         break;
 
                      // USER SEND
-                     case USER_MAILING :
+                     case NOTIFICATION_ITEM_USER :
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
@@ -362,7 +362,7 @@ class Mailing {
                                  if ($result2 = $DB->query($query2)) {
                                     if ($DB->numrows($result2)==1) {
                                        $row = $DB->fetch_array($result2);
-                                       $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                       $this->addToAddressesList($emails,$row['email'],$row['lang']);
                                     }
                                  }
                               }
@@ -370,9 +370,9 @@ class Mailing {
                         }
                         break;
                   } //fin switch ($data["items_id"])
-                  break; //fin case USER_MAILING_TYPE
+                  break; //fin case NOTIFICATION_USER_TYPE
 
-               case PROFILE_MAILING_TYPE :
+               case NOTIFICATION_PROFILE_TYPE :
                   $query="$selectdistinctuser
                           FROM `glpi_profiles_users`
                           INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id`=`glpi_users`.`id`)
@@ -384,13 +384,13 @@ class Mailing {
                   if ($result2= $DB->query($query)) {
                      if ($DB->numrows($result2)) {
                         while ($row=$DB->fetch_assoc($result2)) {
-                           $this->addToEmailList($emails,$row['email'],$row['lang']);
+                           $this->addToAddressesList($emails,$row['email'],$row['lang']);
                         }
                      }
                   }
                   break;
 
-               case GROUP_MAILING_TYPE :
+               case NOTIFICATION_GROUP_TYPE :
                   $query="$selectdistinctuser
                           FROM `glpi_groups_users`
                           INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id`=`glpi_users`.`id`)
@@ -400,7 +400,7 @@ class Mailing {
                   if ($result2= $DB->query($query)) {
                      if ($DB->numrows($result2)) {
                         while ($row=$DB->fetch_assoc($result2)) {
-                           $this->addToEmailList($emails,$row['email'],$row['lang']);
+                           $this->addToAddressesList($emails,$row['email'],$row['lang']);
                         }
                      }
                   }
@@ -692,7 +692,7 @@ class MailingResa {
     * @param $lang used with this email - default to config language
     *
     */
-   function addToEmailList(&$emails,$mail,$lang='') {
+   function addToAddressesList(&$emails,$mail,$lang='') {
       global $CFG_GLPI;
 
       $new_mail=trim($mail);
@@ -724,15 +724,15 @@ class MailingResa {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_assoc($result)) {
             switch ($data["mailingtype"]) {
-               case USER_MAILING_TYPE :
+               case NOTIFICATION_USER_TYPE :
                   switch ($data["items_id"]) {
                      // ADMIN SEND
-                     case ADMIN_MAILING :
-                        $this->addToEmailList($emails,$CFG_GLPI["admin_email"]);
+                     case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+                        $this->addToAddressesList($emails,$CFG_GLPI["admin_email"]);
                         break;
 
                      // ADMIN ENTITY SEND
-                     case ADMIN_ENTITY_MAILING :
+                     case NOTIFICATION_ENTITY_ADMINISTRATOR :
                         $ri=new ReservationItem();
                         $entity=-1;
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
@@ -750,23 +750,23 @@ class MailingResa {
                            if ($result2 = $DB->query($query2)) {
                               if ($DB->numrows($result2)==1) {
                                  $row = $DB->fetch_array($result2);
-                                 $this->addToEmailList($emails,$row['email']);
+                                 $this->addToAddressesList($emails,$row['email']);
                               }
                            }
                         }
                         break;
 
                      // AUTHOR SEND
-                     case AUTHOR_MAILING :
+                     case NOTIFICATION_AUTHOR :
                         $user = new User;
                         if ($user->getFromDB($this->resa->fields["users_id"])) {
-                           $this->addToEmailList($emails,$user->fields["email"],
+                           $this->addToAddressesList($emails,$user->fields["email"],
                                                  $user->fields['language']);
                         }
                         break;
 
                      // TECH SEND
-                     case TECH_MAILING :
+                     case NOTIFICATION_ITEM_TECH_IN_CHARGE :
                         $ri=new ReservationItem();
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
                            if (class_exists($ri->fields["itemtype"])) {
@@ -779,7 +779,7 @@ class MailingResa {
                                     if ($result2 = $DB->query($query2)) {
                                        if ($DB->numrows($result2)==1) {
                                           $row = $DB->fetch_row($result2);
-                                          $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                          $this->addToAddressesList($emails,$row['email'],$row['lang']);
                                        }
                                     }
                                  }
@@ -789,7 +789,7 @@ class MailingResa {
                         break;
 
                      // USER SEND
-                     case USER_MAILING :
+                     case NOTIFICATION_ITEM_USER :
                         $ri=new ReservationItem();
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
                            if (class_exists($ri->fields["itemtype"])) {
@@ -802,7 +802,7 @@ class MailingResa {
                                     if ($result2 = $DB->query($query2)) {
                                        if ($DB->numrows($result2)==1) {
                                           $row = $DB->fetch_row($result2);
-                                          $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                          $this->addToAddressesList($emails,$row['email'],$row['lang']);
                                        }
                                     }
                                  }
@@ -813,7 +813,7 @@ class MailingResa {
                   } //fin switch ($data["items_id"])
                   break;
 
-               case PROFILE_MAILING_TYPE :
+               case NOTIFICATION_PROFILE_TYPE :
                   // Get entity
                   $ri=new ReservationItem();
                   $ri->getFromDB($this->resa->fields['reservationitems_id']);
@@ -830,7 +830,7 @@ class MailingResa {
                         if ($result2= $DB->query($query)) {
                            if ($DB->numrows($result2)) {
                               while ($row=$DB->fetch_assoc($result2)) {
-                                 $this->addToEmailList($emails,$row['email'],$row['lang']);
+                                 $this->addToAddressesList($emails,$row['email'],$row['lang']);
                               }
                            }
                         }
@@ -838,7 +838,7 @@ class MailingResa {
                   }
                   break;
 
-               case GROUP_MAILING_TYPE :
+               case NOTIFICATION_GROUP_TYPE :
                   $query="$selectuser
                           FROM `glpi_groups_users`
                           INNER JOIN `glpi_users`
@@ -847,7 +847,7 @@ class MailingResa {
                   if ($result2= $DB->query($query)) {
                      if ($DB->numrows($result2)) {
                         while ($row=$DB->fetch_assoc($result2)) {
-                           $this->addToEmailList($emails,$row['email'],$row['lang']);
+                           $this->addToAddressesList($emails,$row['email'],$row['lang']);
                         }
                      }
                   }
@@ -1057,10 +1057,10 @@ class MailingAlert {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_assoc($result)) {
             switch ($data["mailingtype"]) {
-               case USER_MAILING_TYPE :
+               case NOTIFICATION_USER_TYPE :
                   switch($data["items_id"]) {
                      // ADMIN SEND
-                     case ADMIN_MAILING :
+                     case NOTIFICATION_GLOBAL_ADMINISTRATOR :
                         if (isUserAddressValid($CFG_GLPI["admin_email"])
                             && !isset($emails[$CFG_GLPI["admin_email"]])) {
                            $emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
@@ -1068,7 +1068,7 @@ class MailingAlert {
                         break;
 
                      // ADMIN ENTITY SEND
-                     case ADMIN_ENTITY_MAILING :
+                     case NOTIFICATION_ENTITY_ADMINISTRATOR :
                         $query2 = "SELECT `admin_email` AS email
                                    FROM `glpi_entitydatas`
                                    WHERE `entities_id` = '".$this->entity."'";
@@ -1084,7 +1084,7 @@ class MailingAlert {
                   }
                   break;
 
-               case PROFILE_MAILING_TYPE :
+               case NOTIFICATION_PROFILE_TYPE :
                   $query="SELECT `glpi_users`.`email` AS email, `glpi_users`.`language` AS lang
                           FROM `glpi_profiles_users`
                           INNER JOIN `glpi_users`
@@ -1103,7 +1103,7 @@ class MailingAlert {
                   }
                   break;
 
-               case GROUP_MAILING_TYPE :
+               case NOTIFICATION_GROUP_TYPE :
                   $query="SELECT `glpi_users`.`email` AS email, `glpi_users`.`language` AS lang
                           FROM `glpi_groups_users`
                           INNER JOIN `glpi_users`

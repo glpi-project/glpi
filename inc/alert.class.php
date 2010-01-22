@@ -70,6 +70,31 @@ class Alert extends CommonDBTM {
       $DB->query($query);
    }
 
+   static function dropdown($options = array()) {
+      global $LANG;
+
+      if (!isset($options['value'])){
+         $value = 0;
+      }
+      else {
+         $value = $options['value'];
+      }
+
+      if (isset($options['inherit_global']) && $options['inherit_global']){
+         $times[-1] = $LANG['setup'][731];
+      }
+
+      $times[0] = $LANG['setup'][307];
+      $times[DAY_TIMESTAMP] = $LANG['setup'][305];
+      $times[WEEK_TIMESTAMP] = $LANG['setup'][308];
+      $times[MONTH_TIMESTAMP] = $LANG['setup'][309];
+
+      Dropdown::showFromArray($options['name'],
+                              $times,
+                              array('value'=>$value));
+
+   }
+
 }
 
 ?>

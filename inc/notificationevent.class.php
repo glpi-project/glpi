@@ -38,38 +38,70 @@ if (!defined('GLPI_ROOT')){
 }
 
 /**
- * Entity Data class
+ * Class which manages notification events
  */
 class NotificationEvent extends CommonDBTM {
+
+   //Store values used in template
+   var $values = array();
 
    static function dropdownEvents($itemtype,$value='') {
       $events = array();
 
-      if (class_exists($itemtype)) {
-         $item = new $itemtype ();
-         $events = $item->getEvents();
+      $target = NotificationTarget::getInstanceByType($itemtype);
+      if ($target) {
+         $events = $target->getEvents();
       }
       $events[''] = '-----';
       Dropdown::showFromArray('event',$events, array ('value'=>$value));
    }
 
    /**
-    * Raise an event
+    * Raise a notification event event
+    * @param event the event raised for the itemtype
+    * @param item the object which raised the event
     */
-   static function raiseEvent($event, $itemtype, $entity,$item) {
+   static function raiseEvent($event,$item) {
+      global $CFG_GLPI;
 
-      //Store notifications infos & targets
-      $notifications_infos = array();
+      //If notifications are enabled in GLPI's configuration
+      if ($CFG_GLPI["use_mailing"]) {
+         if ($item->isField('entities_id')) {
+            $entity = $item->getField('entities_id');
+         }
+         else {
+            //Objects don't necessary have an entities_id field (like DBConnection)
+            $entity = 0;
+         }
 
-/*
-      //Get all notifications by event, itemtype and entity
-      foreach (Notification::getByEvent($event, $itemtype, $entity) as $notification_id => $notification) {
-         $notifications_infos[] = array ($notification,
-         NotificationTarget::getByNotificationIdAndEntity($notification_id, $itemtype,array()));
-      }*/
+         $itemtype = $item->getType();
+         //Store notifications infos & targets
+         $notifications_infos = array();
+
+         //Get all notifications by event, itemtype and entity
+         foreach (Notification::getByEvent($event,
+                                           $itemtype,
+                                           $item->getEntityID()) as $notification_id => $notification) {
+
+            $notificationtarget = NotificationTarget::getByNotificationIdAndEntity($notification_id,
+                                                                                   $item,
+                                                                                   array());
+
+            //Get all users addresses
+            $notifications_infos[] = array ("notification"=>$notification,
+                                            "targets"=>$notificationtarget);
+
+            foreach ($notifications_infos as $info) {
+               logDebug($info['targets']);
+               //TODO send notifications
+            }
+         }
+      }
+      return true;
    }
 
-
+   public function getValues() {
+      return $$this->values;
+   }
 }
-
 ?>
