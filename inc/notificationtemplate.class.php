@@ -210,13 +210,8 @@ class NotificationTemplate extends CommonDBTM {
    static function dropdownTemplates($name,$itemtype,$value=0) {
       global $DB;
 
-      $templates = array();
-      $templates[0] = '-----';
-      foreach ($DB->request('glpi_notificationtemplates', array('itemtype'=>$itemtype)) as $data) {
-         $templates[$data['id']] = $data['name'];
-      }
-
-      Dropdown::showFromArray($name,$templates, array ('value'=>$value));
+      Dropdown::show('NotificationTemplate',array('name'=>$name,'value'=>$value,'comment'=>1,
+                           'condition'=>"`itemtype`='$itemtype'"));
    }
 
    /**
