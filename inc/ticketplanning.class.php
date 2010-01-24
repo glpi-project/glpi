@@ -258,7 +258,7 @@ class TicketPlanning extends CommonDBTM {
       }
    }
 
-   function pre_deleteItem($ID) {
+   function pre_deleteItem() {
 
       if (isset($this->fields["users_id"]) &&
           ($this->fields["users_id"]==$_SESSION["glpiID"] || haveRight("global_add_tasks","1"))) {

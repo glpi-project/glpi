@@ -93,7 +93,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       return $input;
    }
 
-   function pre_deleteItem($ID) {
+   function pre_deleteItem() {
       global $DB;
 
       if ($this->input['_replace_by']) {
@@ -104,7 +104,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       CleanFields($this->getTable(), array('sons_cache', 'ancestors_cache'));
       $tmp = clone $this;
-      $crit = array('FIELDS'=>'id',$this->getForeignKeyField()=>$ID);
+      $crit = array('FIELDS'=>'id',$this->getForeignKeyField()=>$this->fields["id"]);
       foreach ($DB->request($this->getTable(), $crit) as $data) {
          $data[$this->getForeignKeyField()] = $parent;
          $tmp->update($data);

@@ -153,10 +153,10 @@ class User extends CommonDBTM {
       $this->fields["is_active"] = 1;
    }
 
-   function pre_deleteItem($ID) {
+   function pre_deleteItem() {
       global $LANG,$DB;
 
-      $entities = Profile_User::getUserEntities($ID);
+      $entities = Profile_User::getUserEntities($this->fields["id"]);
       $view_all = isViewAllEntities();
       // Have right on all entities ?
       $all = true;
@@ -175,7 +175,7 @@ class User extends CommonDBTM {
                $all = false;
                $query = "DELETE
                          FROM `glpi_profiles_users`
-                         WHERE `users_id` = '$ID'
+                         WHERE `users_id` = '".$this->fields["id"]."'
                                AND `entities_id` = '$ent'";
                $DB->query($query);
             }

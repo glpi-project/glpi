@@ -216,7 +216,7 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
 
-   function pre_deleteItem($id) {
+   function pre_deleteItem() {
       if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
          return false;
       }
