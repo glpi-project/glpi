@@ -799,14 +799,14 @@ class CommonDBTM extends CommonGLPI {
       if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
          $addMessAfterRedirect=false;
       }
-      
+
       if ($addMessAfterRedirect) {
-         
+
          // Do not display quotes
          if (isset($this->fields['name'])) {
             $this->fields['name']=stripslashes($this->fields['name']);
          }
-      
+
          addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " . $this->getLink());
       }
    }
@@ -891,7 +891,7 @@ class CommonDBTM extends CommonGLPI {
          // $input clear by a hook to cancel delete
          return false;
       }
-      if ($this->pre_deleteItem($this->fields["id"])) {
+      if ($this->pre_deleteItem()) {
          if ($this->deleteFromDB($force)) {
             if ($force) {
                $this->addMessageOnPurgeAction();
@@ -966,12 +966,10 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Actions done before the DELETE of the item in the database / Maybe used to add another check for deletion
    *
-   *@param $ID ID of the item to delete
-   *
    *@return bool : true if item need to be deleted else false
    *
    **/
-   function pre_deleteItem($ID) {
+   function pre_deleteItem() {
       return true;
    }
 
@@ -1415,7 +1413,7 @@ class CommonDBTM extends CommonGLPI {
             echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][86];
             $image="/pics/lock.png";
-         // CommonDBChild : entity data is get or copy from parent 
+         // CommonDBChild : entity data is get or copy from parent
          } else if ( $this instanceof CommonDBChild) {
             echo Dropdown::getYesNo($this->fields["is_recursive"]);
             $comment=$LANG['common'][91];
@@ -1570,7 +1568,7 @@ class CommonDBTM extends CommonGLPI {
    * @return ID of the entity
    **/
    function getEntityID() {
-      
+
       if ($this->isEntityAssign()) {
          return $this->fields["entities_id"];
       }

@@ -46,7 +46,7 @@ class Reservation extends CommonDBTM {
       return $LANG['Menu'][17];
    }
 
-   function pre_deleteItem($ID) {
+   function pre_deleteItem() {
       global $CFG_GLPI;
 
       if (isset($this->fields["users_id"])

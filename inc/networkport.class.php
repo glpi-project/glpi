@@ -100,9 +100,9 @@ class NetworkPort extends CommonDBTM {
       return $input;
    }
 
-   function pre_deleteItem($ID) {
+   function pre_deleteItem() {
       $nn= new NetworkPort_NetworkPort();
-      if ($nn->getFromDBForNetworkPort($ID)){
+      if ($nn->getFromDBForNetworkPort($this->fields["id"])){
          $nn->delete($nn->fields);
       }
       return true;
