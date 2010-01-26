@@ -626,10 +626,14 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
+
          // Do not display quotes
          if (isset($this->fields['name'])) {
             $this->fields['name']=stripslashes($this->fields['name']);
+         } else {
+            $this->fields['name']=$this->getTypeName()." : ".$LANG['common'][2]." ".$this->fields['id'];
          }
+         
          addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " . $this->getLink());
       }
    }
@@ -805,6 +809,8 @@ class CommonDBTM extends CommonGLPI {
          // Do not display quotes
          if (isset($this->fields['name'])) {
             $this->fields['name']=stripslashes($this->fields['name']);
+         } else {
+            $this->fields['name']=$this->getTypeName()." : ".$LANG['common'][2]." ".$this->fields['id'];
          }
 
          addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " . $this->getLink());
