@@ -42,23 +42,25 @@ if (!defined('GLPI_ROOT')){
 class Computer_Device extends CommonDBTM {
 
    function __construct($itemtype='') {
+
       if (!empty($itemtype)) {
-         $linktable=getTableForItemType('Computer_'.$itemtype);
+         $linktable = getTableForItemType('Computer_'.$itemtype);
          $this->forceTable($linktable);
       }
    }
 
    /// Get itemtype of devices : key is ocs identifier
    static function getDeviceTypes() {
-      return array (1=>'DeviceMotherboard',2=>'DeviceProcessor',3=>'DeviceMemory',
-                          4=>'DeviceHardDrive',5=>'DeviceNetworkCard',6=>'DeviceDrive',
-                          7=>'DeviceControl',8=>'DeviceGraphicCard',9=>'DeviceSoundCard',
-                          10=>'DevicePci',11=>'DeviceCase',12=>'DevicePowerSupply');
+
+      return array (1 => 'DeviceMotherboard', 2 => 'DeviceProcessor',   3 => 'DeviceMemory',
+                    4 => 'DeviceHardDrive',   5 => 'DeviceNetworkCard', 6 => 'DeviceDrive',
+                    7 => 'DeviceControl',     8 => 'DeviceGraphicCard', 9 => 'DeviceSoundCard',
+                   10 => 'DevicePci',        11 => 'DeviceCase',       12 => 'DevicePowerSupply');
    }
 
    function getEmpty() {
-      $this->fields['id']='';
-      $this->fields['computers_id']='';
+      $this->fields['id'] = '';
+      $this->fields['computers_id'] = '';
    }
 
    function canCreate() {
@@ -70,14 +72,14 @@ class Computer_Device extends CommonDBTM {
    }
 
    function prepareInputForAdd($input) {
+
       // For add from interface
       if (isset($input['itemtype'])) {
          $input['_itemtype'] = $input['itemtype'];
          unset($input['itemtype']);
       }
 
-
-      if (empty($input['_itemtype'])  || !$input['computers_id']) {
+      if (empty($input['_itemtype']) || !$input['computers_id']) {
          return false;
       }
 
@@ -91,13 +93,13 @@ class Computer_Device extends CommonDBTM {
          return false;
       }
 
-      $linktable=getTableForItemType('Computer_'.$input['_itemtype']);
+      $linktable = getTableForItemType('Computer_'.$input['_itemtype']);
       $this->forceTable($linktable);
 
-      if (count($dev->getSpecifityLabel()) > 0 &&
-         ( !isset($input['specificity']) || empty($input['specificity']))) {
-         $dev = new $input['_itemtype'];
+      if (count($dev->getSpecifityLabel()) > 0
+          && (!isset($input['specificity']) || empty($input['specificity']))) {
 
+         $dev = new $input['_itemtype'];
          $dev->getFromDB($input[$dev->getForeignKeyField()]);
          $input['specificity'] = $dev->getField('specif_default');
       }
@@ -116,7 +118,8 @@ class Computer_Device extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = addslashes($dev->getName());
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_ADD_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),
+                   HISTORY_ADD_DEVICE);
    }
 
    // overload to log HISTORY_DELETE_DEVICE instead of HISTORY_DEL_RELATION
@@ -131,7 +134,8 @@ class Computer_Device extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = addslashes($dev->getName());
       $changes[2] = '';
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),HISTORY_DELETE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($dev),
+                   HISTORY_DELETE_DEVICE);
    }
 
    function post_updateItem($history=1) {
@@ -145,7 +149,8 @@ class Computer_Device extends CommonDBTM {
       $changes[1] = addslashes($this->oldvalues['specificity']);
       $changes[2] = $this->fields['specificity'];
       // history log
-      Log::history($this->fields['computers_id'],'Computer',$changes,get_class($this->input['_itemtype']),HISTORY_UPDATE_DEVICE);
+      Log::history($this->fields['computers_id'],'Computer',$changes,
+                   get_class($this->input['_itemtype']),HISTORY_UPDATE_DEVICE);
    }
 
    /**
@@ -164,7 +169,7 @@ class Computer_Device extends CommonDBTM {
    static function showForComputer(Computer $computer, $withtemplate='') {
       global $DB, $LANG;
 
-      $devtypes=self::getDeviceTypes();
+      $devtypes = self::getDeviceTypes();
 
       $ID = $computer->getField('id');
       if (!$computer->can($ID, 'r')) {
@@ -172,14 +177,13 @@ class Computer_Device extends CommonDBTM {
       }
       $canedit = ($withtemplate!=2 && $computer->can($ID, 'w'));
 
-
       if ($canedit) {
-         echo "<form name='form_device_action' action='".getItemTypeFormURL(__CLASS__)."' method=\"post\" >";
+         echo "<form name='form_device_action' action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
       echo "<table class='tab_cadre_fixe' >";
       echo "<tr><th colspan='63'>".$LANG['title'][30]."</th></tr>";
-      $nb=0;
+      $nb = 0;
 
       foreach ($devtypes as $itemtype) {
          initNavigateListItems($itemtype, $computer->getTypeName()." = ".$computer->getName());
@@ -192,8 +196,8 @@ class Computer_Device extends CommonDBTM {
             $specif_text=" ,".$specif_text." ";
          }
 
-         $linktable=getTableForItemType('Computer_'.$itemtype);
-         $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+         $linktable = getTableForItemType('Computer_'.$itemtype);
+         $fk = getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
          $query = "SELECT count(*) AS NB, `id`, `$fk` $specif_text
                   FROM `$linktable`
@@ -243,7 +247,7 @@ class Computer_Device extends CommonDBTM {
       }
 
       if ($canedit) {
-         if ($nb>0) {
+         if ($nb > 0) {
             echo "<tr><td colspan='63' class='tab_bg_1 center'>";
             echo "<input type='submit' class='submit' name='updateall' value='".
                    $LANG['buttons'][7]."'></td></tr>";
@@ -252,7 +256,7 @@ class Computer_Device extends CommonDBTM {
          echo "<tr><td colspan='63' class='tab_bg_1 center'>";
          echo $LANG['devices'][0]."&nbsp;: ";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
          echo "</tr></table></form>";
       } else {
       echo "</table>";
@@ -269,17 +273,16 @@ class Computer_Device extends CommonDBTM {
    private function updateQuantity($newNumber, $itemtype,$compDevID) {
       global $DB;
 
-      $linktable=getTableForItemType('Computer_'.$itemtype);
+      $linktable = getTableForItemType('Computer_'.$itemtype);
       $this->forceTable($linktable);
-      $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+      $fk = getForeignKeyFieldForTable(getTableForItemType($itemtype));
       // Force table for link
       $item = new $itemtype();
-      $specif_fields=$item->getSpecifityLabel();
+      $specif_fields = $item->getSpecifityLabel();
 
       if (!$this->getFromDB($compDevID)) {
          return false;
       }
-
 
       $query2 = "SELECT `id`
                  FROM `$linktable`
@@ -293,21 +296,21 @@ class Computer_Device extends CommonDBTM {
 
       if ($result2 = $DB->query($query2)) {
          // Delete devices
-         $number=$DB->numrows($result2);
-         if ($number>$newNumber) {
+         $number = $DB->numrows($result2);
+         if ($number > $newNumber) {
             for ($i=$newNumber ; $i<$number ; $i++) {
                $data2 = $DB->fetch_array($result2);
-               $data2['_itemtype']=$itemtype;
+               $data2['_itemtype'] = $itemtype;
                $this->delete($data2);
             }
          // Add devices
-         } else if ($number<$newNumber) {
+         } else if ($number < $newNumber) {
             $input = array('computers_id' => $this->fields["computers_id"],
-                           '_itemtype' => $itemtype,
-                           $fk     => $this->fields[$fk]);
+                           '_itemtype'    => $itemtype,
+                           $fk            => $this->fields[$fk]);
             if (count($specif_fields)) {
                foreach ($specif_fields as $field => $name) {
-                  $input[$field]= addslashes($this->fields["specificity"]);
+                  $input[$field] = addslashes($this->fields["specificity"]);
                }
             }
             for ($i=$number ; $i<$newNumber ; $i++) {
@@ -335,22 +338,22 @@ class Computer_Device extends CommonDBTM {
          return false;
       }
 
-      $linktable=getTableForItemType('Computer_'.$itemtype);
+      $linktable = getTableForItemType('Computer_'.$itemtype);
       $this->forceTable($linktable);
-      $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+      $fk = getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
       if (!$this->getFromDB($compDevID)) {
          return false;
       }
       // Is it a real change ?
-      if (addslashes($this->fields['specificity'])==$newValue) {
+      if (addslashes($this->fields['specificity']) == $newValue) {
          return false;
       }
       // Update specificity
       $query = "SELECT `id`
                 FROM `$linktable`
                 WHERE `computers_id` = '".$this->fields["computers_id"]."'
-                      AND `$fk` = '".$this->fields[$fk]."'";"
+                      AND `$fk` = '".$this->fields[$fk]."'
                       AND `specificity` = '".addslashes($this->fields["specificity"])."'";
 
       $first = true;
@@ -391,33 +394,34 @@ class Computer_Device extends CommonDBTM {
       global $DB;
 
       if ($itemtype == 'Computer') {
-
-         $devtypes=self::getDeviceTypes();
+         $devtypes = self::getDeviceTypes();
          foreach ($devtypes as $type) {
-            $linktable=getTableForItemType('Computer_'.$type);
+            $linktable = getTableForItemType('Computer_'.$type);
             $this->forceTable($linktable);
 
             $query = "SELECT `id`
-                     FROM `$linktable` WHERE `computers_id`='$item_id'";
+                      FROM `$linktable`
+                      WHERE `computers_id` = '$item_id'";
 
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
                $data['_no_history'] = true; // Parent is deleted
-               $data['_itemtype']=$type;
+               $data['_itemtype'] = $type;
                $this->delete($data);
             }
          }
       } else {
-         $linktable=getTableForItemType('Computer_'.$itemtype);
-         $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+         $linktable = getTableForItemType('Computer_'.$itemtype);
+         $fk = getForeignKeyFieldForTable(getTableForItemType($itemtype));
          $this->forceTable($linktable);
 
          $query = "SELECT `id`
-                  FROM `$linktable` WHERE `$fk`='$item_id'";
+                   FROM `$linktable`
+                   WHERE `$fk` = '$item_id'";
 
          $result = $DB->query($query);
          while ($data = $DB->fetch_assoc($result)) {
-            $data['_itemtype']=$itemtype;
+            $data['_itemtype'] = $itemtype;
             $this->delete($data);
          }
       }
@@ -429,14 +433,14 @@ class Computer_Device extends CommonDBTM {
    function cloneComputer ($oldid, $newid) {
       global $DB;
 
-      $devtypes=self::getDeviceTypes();
+      $devtypes = self::getDeviceTypes();
       foreach ($devtypes as $itemtype) {
-         $linktable=getTableForItemType('Computer_'.$itemtype);
-         $fk=getForeignKeyFieldForTable(getTableForItemType($itemtype));
+         $linktable = getTableForItemType('Computer_'.$itemtype);
+         $fk = getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
          $query = "SELECT *
-                     FROM `$linktable`
-                     WHERE `computers_id`='$oldid'";
+                   FROM `$linktable`
+                   WHERE `computers_id` = '$oldid'";
 
          foreach ($DB->request($query) as $data) {
             unset($data['id']);
@@ -447,9 +451,10 @@ class Computer_Device extends CommonDBTM {
             $this->add($data);
          }
       }
-}
+   }
 
    function prepareInputForUpdate($input) {
+
       if (isset($input['itemtype'])) {
          $input['_itemtype'] = $input['itemtype'];
          unset($input['itemtype']);
@@ -461,7 +466,7 @@ class Computer_Device extends CommonDBTM {
             return false;
          }
       }
-      if ($input['_itemtype']=='DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
+      if ($input['_itemtype'] == 'DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
          if (!$this->input['specificity']) {
             // frequency can't be 0 (but sometime OCS report such value)
             return false;
@@ -470,16 +475,16 @@ class Computer_Device extends CommonDBTM {
             $diff = ($this->input['specificity'] > $this->fields['specificity']
                       ? $this->input['specificity'] - $this->fields['specificity']
                       : $this->fields['specificity'] - $this->input['specificity']);
-            if (($diff*100/$this->fields['specificity'])<5) {
+            if (($diff*100/$this->fields['specificity']) < 5) {
                $this->input['_no_history'] = true;
             }
          }
       }
-      if ($this->fields['specificity']==$this->input['specificity']) {
+      if ($this->fields['specificity'] == $this->input['specificity']) {
          // No change
          return false;
       }
-      $linktable=getTableForItemType('Computer_'.$input['_itemtype']);
+      $linktable = getTableForItemType('Computer_'.$input['_itemtype']);
       $this->forceTable($linktable);
 
       return $this->input;
@@ -519,7 +524,7 @@ class Computer_Device extends CommonDBTM {
    static function resetDevices($glpi_computers_id, $itemtype) {
       global $DB;
 
-      $linktable=getTableForItemType('Computer_'.$itemtype);
+      $linktable = getTableForItemType('Computer_'.$itemtype);
 
       $query = "DELETE
                 FROM `$linktable`
