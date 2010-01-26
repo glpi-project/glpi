@@ -2869,6 +2869,13 @@ function update0723to080($output='HTML') {
                displayMigrationMessage("080", $LANG['update'][141].' - '.$LANG['financial'][3].' - '.$data['itemtype']); // Updating schema
 
                $itemtable=getTableForItemType($data['itemtype']);
+               // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
+               if (!TableExists($itemtable)) {
+                  if ($output) {
+                     echo "<p class='red'>*** Skip : no table $itemtable ***</p>";
+                  }
+                  continue;
+               }
                $do_recursive=false;
                if (FieldExists($itemtable,'is_recursive')) {
                   $do_recursive=true;
