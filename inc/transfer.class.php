@@ -2538,7 +2538,7 @@ class Transfer extends CommonDBTM {
 
       // Only same case because no duplication of computers
       switch ($this->options['keep_device']) {
-         
+
          // delete devices
          case 0 :
             foreach ($this->DEVICES_TYPES as $type) {
@@ -2614,7 +2614,7 @@ class Transfer extends CommonDBTM {
                   // Not a copy -> disconnect
                   if ($ID == $newID) {
                      while ($data = $DB->fetch_array($result)) {
-                        if ($nn->getFromDBForNetworkPort($data['id'])) {
+                        if ($nn->getFromDBForNetworkPort()) {
                            $nn->delete($data);
                         }
                         if ($data['netpoints_id']) {

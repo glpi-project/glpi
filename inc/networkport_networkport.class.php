@@ -44,33 +44,30 @@ class NetworkPort_NetworkPort extends CommonDBTM {
    /**
     * Retrieve an item from the database
     *
-    *@param $ID ID of the item to get
     *@return true if succeed else false
     *
    **/
-   function getFromDBForNetworkPort ($ID) {
+   function getFromDBForNetworkPort() {
       global $DB;
 
       // Make new database object and fill variables
-      if (empty($ID)) {
+      if (empty($this->fields["id"])) {
          return false;
       }
 
       $query = "SELECT *
                 FROM `".$this->getTable()."`
-                WHERE `networkports_id_1` = '$ID'
-                      OR `networkports_id_2` = '$ID'";
+                WHERE `networkports_id_1` = '".$this->fields["id"]."'
+                      OR `networkports_id_2` = '".$this->fields["id"]."'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $this->fields = $DB->fetch_assoc($result);
             return true;
-         } else {
-            return false;
          }
-      } else {
          return false;
       }
+      return false;
    }
 
    function post_addItem() {
@@ -297,7 +294,7 @@ class NetworkPort_NetworkPort extends CommonDBTM {
    function getOppositeContact ($ID) {
       global $DB;
 
-      if ($this->getFromDBForNetworkPort($ID)) {
+      if ($this->getFromDBForNetworkPort()) {
          if ($this->fields['networkports_id_1'] == $ID) {
             return $this->fields['networkports_id_2'];
          } else if ($this->fields['networkports_id_2'] == $ID) {
