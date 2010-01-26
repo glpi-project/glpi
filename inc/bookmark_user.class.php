@@ -33,11 +33,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class Bookmark_User extends CommonDBTM{
+class Bookmark_User extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_bookmarks_users';
-   var $auto_message_on_action=false;
+    var $auto_message_on_action=false;
 
 }
 
