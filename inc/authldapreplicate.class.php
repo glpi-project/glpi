@@ -38,9 +38,6 @@
 **/
 class AuthLdapReplicate extends CommonDBTM {
 
-   // From CommonDBTM
-   public $table = 'glpi_authldapreplicates';
-
    function prepareInputForAdd($input) {
       if (isset($input["port"]) && intval($input["port"]) == 0) {
          $input["port"] = 389;
