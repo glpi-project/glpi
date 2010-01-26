@@ -47,5 +47,12 @@ class NotificationTargetDBConnection extends NotificationTarget {
       return array ('desynchronization' => $LANG['setup'][810]);
    }
 
+   function getDatasForTemplate($event) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $tpldatas = array();
+      $tpldatas['delay'] = DBConnection::getReplicateDelay();
+      return $tpldatas;
+   }
 }
 ?>

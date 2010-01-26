@@ -183,6 +183,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       }
    }
 
+
    /**
     * Format the mail sender to send
     * @return mail sender email string
@@ -205,8 +206,30 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    }
 
 
-   function sendNotification() {
+   function sendNotification($options = array()) {
+      global $LANG;
+      $mmail=new NotificationMail();
+      $mmail->From=$options['from'];
+      $mmail->AddReplyTo($options['replyto'], '');
+      $mmail->FromName=$options['from'];
+      $mmail->isHTML(true);
+      $mmail->Subject=$options['subject'];
+      $mmail->Body=$options['content_html'];
+      $mmail->AltBody=$options['content_text'];
+      $mmail->AddAddress($options['to'], "");
+      $mmail->MessageID="GLPI-".$options["items_id"].".".time().".".rand().
+                             "@".php_uname('n');
 
+      $messageerror=$LANG['mailing'][47];
+
+      if (!$mmail->Send()) {
+         $senderror=true;
+         addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
+      } else {
+         logInFile("mail",$LANG['tracking'][38]." ".$options['to'].": ".$options['subject']."\n");
+      }
+      $mmail->ClearAddresses();
+      return true;
    }
 }
 

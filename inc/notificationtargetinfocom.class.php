@@ -40,5 +40,11 @@ class NotificationTargetInfocom extends NotificationTarget {
       return array ('alert' => $LANG['setup'][247]);
    }
 
+   function getDatasForTemplate($event) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $tpldatas = array();
+      return $tpldatas;
+   }
 }
 ?>

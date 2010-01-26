@@ -62,10 +62,11 @@ class NotificationEvent extends CommonDBTM {
     * @param item the object which raised the event
     */
    static function raiseEvent($event,$item) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       //If notifications are enabled in GLPI's configuration
       if ($CFG_GLPI["use_mailing"]) {
+
          if ($item->isField('entities_id')) {
             $entity = $item->getField('entities_id');
          }
@@ -75,27 +76,80 @@ class NotificationEvent extends CommonDBTM {
          }
 
          $itemtype = $item->getType();
-         //Store notifications infos & targets
-         $notifications_infos = array();
 
-         //Get all notifications by event, itemtype and entity
-         foreach (Notification::getByEvent($event,
-                                           $itemtype,
-                                           $item->getEntityID()) as $notification_id => $notification) {
+         $notifications = array();
+         //Get all the targets
+         $query = "SELECT DISTINCT `glpi_notificationtargets`.`type`,
+                                   `glpi_notificationtargets`.`items_id`
+                   FROM `glpi_notificationtargets`, `glpi_notifications`
+                   WHERE `glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`
+                      AND `glpi_notifications`.`itemtype`='$itemtype'
+                        AND `glpi_notifications`.`event`='$event';";
 
-            $notificationtarget = NotificationTarget::getByNotificationIdAndEntity($notification_id,
-                                                                                   $item,
-                                                                                   array());
+         foreach ($DB->request($query) as $data) {
+            //Get the first notification for this target
+            $query = "SELECT `glpi_notifications`.*
+                      FROM `glpi_notifications`
+                      INNER JOIN `glpi_notificationtargets`
+                         ON (`glpi_notificationtargets`.`notifications_id` = `glpi_notifications`.`id`
+                            AND `glpi_notificationtargets`.`type`='".$data['type']."'
+                              AND `glpi_notificationtargets`.`items_id`='".$data['items_id']."')
+                     LEFT JOIN glpi_entities on (glpi_entities.id = glpi_notifications.entities_id)
+                     WHERE `glpi_notifications`.`itemtype`='$itemtype'
+                        AND `glpi_notifications`.`event`='$event'";
+               $query.= getEntitiesRestrictRequest(" AND",
+                                                   "glpi_notifications",
+                                                   'entities_id',
+                                                   $entity,
+                                                   true);
+               $query.=" ORDER BY glpi_entities.level DESC LIMIT 1";
 
-            //Get all users addresses
-            $notifications_infos[] = array ("notification"=>$notification,
-                                            "targets"=>$notificationtarget);
-
-            foreach ($notifications_infos as $info) {
-               logDebug($info['targets']);
-               //TODO send notifications
+            foreach ($DB->request($query) as $data2) {
+               //Create a table which contains templates informations + targets associated with it
+               if (!isset($notifications[$data2['notificationtemplates_id']])) {
+                  $template = new NotificationTemplate;
+                  $template->getFromDB($data2['notificationtemplates_id']);
+                  $notifications[$data2['notificationtemplates_id']]['template'] = $template;
+                  $notifications[$data2['notificationtemplates_id']]['targets'][] = $data;
+               }
+               else {
+                  $notifications[$data2['notificationtemplates_id']]['targets'][] = $data;
+               }
             }
          }
+
+         //Store user's emails & language
+         $target = NotificationTarget::getInstance($item);
+         foreach ($notifications as $id => $values) {
+            $template_targets = $values['targets'];
+            foreach ($template_targets as $template_target) {
+               //Get all users by target type
+               $target->getAddressesByTarget($id,$template_target);
+            }
+         }
+
+         $languages = array();
+         //Get all the languages in which the template must be displayed
+         foreach ($target->getTargets() as $template_id => $users_infos) {
+            //Send mail for each user
+            foreach ($users_infos as $email => $language) {
+               if (NotificationMail::isUserAddressValid($email)) {
+                  //Is template already processed in this language ?
+                  if (!isset($languages[$template_id][$language])) {
+                     $template = $notifications[$template_id]['template'];
+                     $languages[$template_id][$language] =
+                     $template->getTemplateByLanguage($target,$language,$event);
+                  }
+                  $options['to'] = $email;
+                  $options['from'] = $target->getSender();
+                  $options['replyto'] = $target->getReplyTo();
+                  $options['items_id'] = $item->getField('id');
+                  Notification::send ($event, $options, $languages[$template_id][$language]);
+
+               }
+            }
+         }
+        loadLanguage();
       }
       return true;
    }

@@ -179,10 +179,11 @@ class TicketFollowup  extends CommonDBTM {
 
                $user = new User;
                $user->getFromDB($_SESSION["glpiID"]);
-               $mail = new Mailing("followup",$job,$user,
-                                   (isset($this->input["is_private"]) && $this->input["is_private"]));
-               $mail->send();
-               $mailsend = true;
+               $mailsend = NotificationEvent::raiseEvent('add_followup',$job);
+               //$mail = new Mailing("followup",$job,$user,
+               //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
+               //$mail->send();
+               //$mailsend = true;
             }
          }
       }
@@ -290,9 +291,11 @@ class TicketFollowup  extends CommonDBTM {
          if (!isset($this->input['_auto_import']) && isset($_SESSION["glpiID"])) {
             $user->getFromDB($_SESSION["glpiID"]);
          }
-         $mail = new Mailing($this->input["_type"],$this->input["_job"],$user,
-                             (isset($this->input["is_private"]) && $this->input["is_private"]));
-         $mail->send();
+
+         NotificationEvent::raiseEvent("add_followup",$this->input["_job"]);
+         //$mail = new Mailing($this->input["_type"],$this->input["_job"],$user,
+         //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
+         //$mail->send();
       }
 
       // Add log entry in the ticket

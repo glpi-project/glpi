@@ -194,32 +194,6 @@ class Notification extends CommonDBTM {
       return $LANG['mailing'][118];
    }
 
-   /**
-    * Get all templates by event, itemtype and entity
-    * @param event the event raised
-    * @param itemtype the item type
-    * @param entity the entity in which the entity have been raised
-    * @return an array with all the templates data associated with the event
-    */
-   static function getByEvent($event, $itemtype, $entity) {
-      global $DB;
-      $notifications = array();
-
-      //Get all template's data (id, language, subject, content,etc)
-      $query = "SELECT `glpi_notificationtemplates`.*,
-                       `glpi_notifications`.`id` as `notification_id`
-                FROM `glpi_notifications`, `glpi_notificationtemplates`
-                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id` = `glpi_notifications`.`entities_id`)
-                  AND `glpi_notificationtemplates`.`itemtype`='$itemtype'
-                     AND `glpi_notifications`.`notificationtemplates_id` =
-                                               `glpi_notificationtemplates`.`id`";
-      $query.= getEntitiesRestrictRequest(" AND", "glpi_notifications",'entities_id',$entity,true);
-
-      foreach ($DB->request($query) as $data) {
-         $notifications[$data['notification_id']] = $data;
-      }
-      return $notifications;
-   }
 
    function cleanDBonPurge() {
       global $DB;
@@ -230,6 +204,28 @@ class Notification extends CommonDBTM {
       $DB->query($query);
    }
 
+   static function send ($event, $options, $template_infos) {
+      $mail = new NotificationMail;
+      $options['subject'] = $template_infos['subject'];
+      $options['content_html'] = $template_infos['content_html'];
+      $options['content_text'] = $template_infos['content_text'];
+
+      $mail->sendNotification($options);
+      $mail->ClearAddresses();
+   }
+
+   /**
+    * Get the mailing signature for the entity
+    */
+   static function getMailingSignature($entity) {
+      global $DB, $CFG_GLPI;
+
+      foreach($DB->request('glpi_entitydatas', array('entities_id'=>$entity)) as $data) {
+         return $data['mailing_signature'];
+      }
+      return $CFG_GLPI['mailing_signature'];
+
+   }
 }
 
 ?>

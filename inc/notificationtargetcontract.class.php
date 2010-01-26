@@ -45,5 +45,11 @@ class NotificationTargetContract extends NotificationTarget {
       return array ('alert' => $LANG['mailing'][39]);
    }
 
+   function getDatasForTemplate($event) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $tpldatas = array();
+      return $tpldatas;
+   }
 }
 ?>

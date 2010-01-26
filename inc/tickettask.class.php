@@ -185,10 +185,13 @@ class TicketTask  extends CommonDBTM {
 
                $user = new User;
                $user->getFromDB($_SESSION["glpiID"]);
-               $mail = new Mailing("followup",$job,$user,
-                                   (isset($this->input["is_private"]) && $this->input["is_private"]));
-               $mail->send();
-               $mailsend = true;
+
+               $ticket = new Ticket;
+               $mailsend = NotificationEvent::raiseEvent('add_followup',$job);
+               //$mail = new Mailing("followup",$job,$user,
+               //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
+               //$mail->send();
+               //$mailsend = true;
             }
 
             if (in_array("realtime",$this->updates)) {
@@ -346,9 +349,12 @@ class TicketTask  extends CommonDBTM {
          if (!isset($this->input['_auto_import']) && isset($_SESSION["glpiID"])) {
             $user->getFromDB($_SESSION["glpiID"]);
          }
-         $mail = new Mailing($this->input["_type"],$this->input["_job"],$user,
-                             (isset($this->input["is_private"]) && $this->input["is_private"]));
-         $mail->send();
+         $ticket = new Ticket;
+         $ticket->getFromDB($this->input["tickets_id"]);
+         NotificationEvent::raiseEvent('add_task',$this->input["_job"]);
+         //$mail = new Mailing($this->input["_type"],$this->input["_job"],$user,
+         //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
+         //$mail->send();
       }
 
       // Add log entry in the ticket

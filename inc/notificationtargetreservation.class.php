@@ -33,9 +33,16 @@ if (!defined('GLPI_ROOT')){
 }
 
 // Class NotificationTarget
-class NotificationTargetReservationItem extends NotificationTarget {
+class NotificationTargetReservation extends NotificationTarget {
 
-   function getAddressesByTarget($notifications_id,$itemtype,$data,$options=array()) {
+   function __construct($entity='', $object = null) {
+      parent::__construct($entity, $object);
+      if ($object != null) {
+         $this->getObjectItem();
+      }
+   }
+
+   function getSpecificAddresses($notifications_id,$data,$options=array()) {
 
    //Look for all targets whose type is NOTIFICATION_ITEM_USER
    switch ($data['type']) {
@@ -44,48 +51,32 @@ class NotificationTargetReservationItem extends NotificationTarget {
          switch ($data['items_id']) {
            //Send to the author of the ticket
             case NOTIFICATION_AUTHOR:
-               $target->getItemAuthorAddress($notifications_id);
+               $this->getItemAuthorAddress($notifications_id);
             break;
       }
 
       //Send to all the users of a profile
-      case NOTIFICATION_TICKET_ASSIGN_TECH_TYPE:
-         $target->getUsersAddressesByProfile($notifications_id,$data['items_id']);
+      case NOTIFICATION_PROFILE_TYPE:
+         $this->getUsersAddressesByProfile($notifications_id,$data['items_id']);
       break;
       }
    }
 
 
    /**
-    * Get users emails by profile
-    * @param notifications_id the notification ID
-    * @param profiles_id the profile ID to get users emails
-    * @return nothing
+    * Get item associated with the object on which the event was raised
+    * @return the object associated with the itemtype
     */
-   function getUsersAddressesByProfile($notifications_id,$profiles_id) {
-      global $DB;
-
-      $item = NotificationTargetReservationItem::getReservationItem();
-
-      $ri=new ReservationItem();
-      if ($item) {
-         $query=NotificationTargetTicket::getDistinctUserSql()."
-                 FROM `glpi_profiles_users`
-                 INNER JOIN `glpi_users`
-                 ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
-                 WHERE `glpi_profiles_users`.`profiles_id`='".$profiles_id."'".
-                    getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                     $item->getEntityID(),true);
-                 if ($result2= $DB->query($query)) {
-                    if ($DB->numrows($result2)) {
-                        while ($row=$DB->fetch_assoc($result2)) {
-                           $this->addToAddressesList($notifications_id,$row['email'],$row['lang']);
-                           }
-                        }
-                 }
+   function getObjectItem() {
+      $ri = new ReservationItem;
+      if ($ri->getFromDB($this->obj->getField('reservationitems_id')))
+      {
+         $itemtype = $ri->getField('itemtype');
+         $item = new  $itemtype ();
+         $item->getFromDB($ri->getField('items_id'));
+         $this->target_object = $item;
       }
    }
-
 
    static function getJoinProfileSql() {
       return " INNER JOIN `glpi_profiles_users`
@@ -98,46 +89,6 @@ class NotificationTargetReservationItem extends NotificationTarget {
                             AND `glpi_profiles`.`show_full_ticket` = '1') ";
    }
 
-   //Overload function in NotificationTarget because here it's needed to search into ReservationItem
-   //And not directly into the $this->obj
-   function getEntityAdminAddress($notifications_id) {
-      global $DB;
-
-      //Get reserved object
-      $entity=-1;
-      $item = NotificationTargetReservationItem::getReservationItem();
-      if ($item) {
-         //Get object's entity
-         $entity = $item->getEntityID();
-      }
-
-      if ($entity>=0) {
-         $query2 = "SELECT `admin_email` AS email
-                    FROM `glpi_entitydatas`
-                    WHERE `entities_id` = '".$entity."'";
-         if ($result2 = $DB->query($query2)) {
-            if ($DB->numrows($result2)==1) {
-               $row = $DB->fetch_array($result2);
-               $this->addToAddressesList($notifications_id,$row["email"]);
-            }
-         }
-      }
-   }
-
-   static function getReservationItem() {
-      $item = null;
-      $ri=new ReservationItem();
-      if ($ri->getFromDB($this->obj->fields["reservationitems_id"])) {
-         if (class_exists($ri->fields['itemtype'])) {
-            $item = new $ri->fields['itemtype'];
-            if ($item->getFromDB($ri->fields['items_id'])) {
-               return $item;
-            }
-         }
-      }
-      return $item;
-   }
-
    function getEvents() {
       global $LANG;
       return array ('new' => $LANG['mailing'][19],
@@ -145,7 +96,7 @@ class NotificationTargetReservationItem extends NotificationTarget {
                     'delete'=>$LANG['mailing'][29]);
    }
 
-   function getAdditionnalTargets() {
+   function getAdditionalTargets() {
       global $LANG;
       $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
              NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP] =
@@ -161,6 +112,35 @@ class NotificationTargetReservationItem extends NotificationTarget {
                                                       $LANG['common'][34] . " " .$LANG['common'][1];
       $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING] =
                                                       $LANG['setup'][248];
+   }
+
+   function getDatasForTemplate($event) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $tpldatas = array();
+
+      //----------- Ticket infos -------------- //
+
+      $events = $this->getEvents();
+      $tpldatas['##reservation.action##'] = $events[$event];
+      $tpldatas['##reservation.user##'] = Dropdown::getDropdownName('glpi_users',
+                                                                $this->obj->getField('users_id'));
+      $tpldatas['##reservation.begin##'] = convDateTime($this->obj->getField('begin'));
+      $tpldatas['##reservation.end##'] = convDateTime($this->obj->getField('end'));
+
+      $reservationitem = new ReservationItem;
+      $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
+      $itemtype = $reservationitem->getField('itemtype');
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         $item->getFromDB($reservationitem->getField('items_id'));
+         $tpldatas['##reservation.itemtype##'] = $item->getTypeName();
+         $tpldatas['##reservation.item##'] = $item->getField('name');
+         $tpldatas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                     $item->getField('entities_id'));
+      }
+
+      return $tpldatas;
    }
 }
 ?>
