@@ -42,7 +42,9 @@ header_nocache();
 checkRight("notification",'r');
 
 if ($_POST['id'] > 0) {
-   $target =new NotificationTarget($_SESSION['glpiactive_entity']);
+   $notification = new Notification();
+   $notification->getFromDB($_POST['id']);
+   $target =NotificationTarget::getInstanceByType($notification->getField('itemtype'));
    $notification = new Notification;
    switch($_REQUEST['glpi_tab']) {
       case -1 :

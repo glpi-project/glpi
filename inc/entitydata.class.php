@@ -328,7 +328,6 @@ class EntityData extends CommonDBTM {
       return self::getEntityIDByField("tag",$value);
    }
 
-
 }
 
 ?>

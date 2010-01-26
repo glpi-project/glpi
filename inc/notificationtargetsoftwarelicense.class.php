@@ -40,5 +40,11 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
       return array ('alert' => $LANG['setup'][264]);
    }
 
+   function getDatasForTemplate($event) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $tpldatas = array();
+      return $tpldatas;
+   }
 }
 ?>

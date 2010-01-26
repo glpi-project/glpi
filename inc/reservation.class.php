@@ -98,7 +98,7 @@ class Reservation extends CommonDBTM {
       global $CFG_GLPI;
 
       if (count($this->updates) && $CFG_GLPI["use_mailing"]) {
-         NotificationEvent::raiseEvent("new",$this);
+         NotificationEvent::raiseEvent("update",$this);
          //$mail = new MailingResa($this,"update");
          //$mail->send();
       }

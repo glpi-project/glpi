@@ -242,6 +242,15 @@ class NotificationTemplate extends CommonDBTM {
       }
    }
 
+   function getTemplateByLanguage($target, $language, $event) {
+      $lang = array();
+      loadLanguage($language);
+      $lang['subject'] = $this->getField('subject');
+      $lang['content_html'] = $this->getField('content_html');
+      $lang['content_text'] = $this->getField('content_text');
+      $lang['data'] = $target->getDatasForTemplate($event);
+      return $lang;
+   }
 }
 
 ?>

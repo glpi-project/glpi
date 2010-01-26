@@ -45,5 +45,11 @@ class NotificationTargetConsumable extends NotificationTarget {
       return array ('alert' => $LANG['mailing'][36]);
    }
 
+   function getDatasForTemplate($event) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $tpldatas = array();
+      return $tpldatas;
+   }
 }
 ?>

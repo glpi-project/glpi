@@ -40,5 +40,11 @@ class NotificationTargetCartridge extends NotificationTarget {
       return array ('alert' => $LANG['mailing'][33]);
    }
 
+   function getDatasForTemplate($event) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $tpldatas = array();
+      return $tpldatas;
+   }
 }
 ?>
