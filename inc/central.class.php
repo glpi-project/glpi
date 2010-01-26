@@ -41,7 +41,7 @@ class Central extends CommonGLPI {
       return $LANG['common'][56];
    }
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($ID,$withtemplate) {
       global $LANG;
 
       $tabs[1] = $LANG['central'][12]; // My
@@ -55,11 +55,10 @@ class Central extends CommonGLPI {
     * Show the central global view
     *
     *
-    **/
+   **/
    static function showGlobalView() {
-      global $CFG_GLPI,$LANG;
 
-      $showticket=haveRight("show_all_ticket","1");
+      $showticket = haveRight("show_all_ticket","1");
 
       echo "<table class='tab_cadre_central'><tr>";
       echo "<td class='top'><br>";
@@ -95,82 +94,83 @@ class Central extends CommonGLPI {
     * Show the central personal view
     *
     *
-    **/
+   **/
    static function showMyView() {
-         global $LANG, $DB;
+      global $LANG, $DB;
 
-         $showticket=(haveRight("show_all_ticket","1") || haveRight("show_assign_ticket","1"));
-         echo "<table class='tab_cadre_central'>";
+      $showticket = (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket","1"));
+      echo "<table class='tab_cadre_central'>";
 
-         if ($DB->isSlave() && !$DB->first_connection) {
-            echo "<tr><th colspan='2'><br>";
-            displayTitle(GLPI_ROOT."/pics/warning.png", $LANG['setup'][809], $LANG['setup'][809]);
-            echo "</th></tr>";
-         }
-         echo "<tr><td class='top'><table>";
+      if ($DB->isSlave() && !$DB->first_connection) {
+         echo "<tr><th colspan='2'><br>";
+         displayTitle(GLPI_ROOT."/pics/warning.png", $LANG['setup'][809], $LANG['setup'][809]);
+         echo "</th></tr>";
+      }
+      echo "<tr><td class='top'><table>";
 
-         if ($showticket) {
-            echo "<tr><td class='top' width='450px'><br>";
-            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",false);
-            echo "</td></tr>";
-            echo "<tr><td class='top' width='450px'>";
-            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",false);
-            echo "</td></tr>";
-         }
-         echo "</table></td>";
-         echo "<td class='top'><table><tr>";
-         echo "<td class='top' width='450px'><br>";
-         Planning::showCentral($_SESSION["glpiID"]);
+      if ($showticket) {
+         echo "<tr><td class='top' width='450px'><br>";
+         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",false);
          echo "</td></tr>";
-
          echo "<tr><td class='top' width='450px'>";
-         Reminder::showListForCentral();
+         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",false);
          echo "</td></tr>";
+      }
+      echo "</table></td>";
+      echo "<td class='top'><table><tr>";
+      echo "<td class='top' width='450px'><br>";
+      Planning::showCentral($_SESSION["glpiID"]);
+      echo "</td></tr>";
 
-         if (haveRight("reminder_public","r")) {
-            echo "<tr><td class='top' width='450px'>";
-            Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
-            $entities=array_reverse(getAncestorsOf("glpi_entities",$_SESSION["glpiactive_entity"]));
-            foreach ($entities as $entity) {
-               Reminder::showListForCentral($entity, true);
-            }
-            foreach ($_SESSION["glpiactiveentities"] as $entity) {
-               if ($entity != $_SESSION["glpiactive_entity"]) {
-                  Reminder::showListForCentral($entity, false);
-               }
-            }
-            echo "</td></tr>";
+      echo "<tr><td class='top' width='450px'>";
+      Reminder::showListForCentral();
+      echo "</td></tr>";
+
+      if (haveRight("reminder_public","r")) {
+         echo "<tr><td class='top' width='450px'>";
+         Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
+         $entities = array_reverse(getAncestorsOf("glpi_entities",$_SESSION["glpiactive_entity"]));
+         foreach ($entities as $entity) {
+            Reminder::showListForCentral($entity, true);
          }
-         echo "</table></td></tr></table>";
+         foreach ($_SESSION["glpiactiveentities"] as $entity) {
+            if ($entity != $_SESSION["glpiactive_entity"]) {
+               Reminder::showListForCentral($entity, false);
+            }
+         }
+         echo "</td></tr>";
+      }
+      echo "</table></td></tr></table>";
    }
 
    /**
     * Show the central group view
     *
     *
-    **/
+   **/
    static function showGroupView() {
 
-         $showticket=haveRight("show_all_ticket","1") || haveRight("show_assign_ticket","1");
+      $showticket = haveRight("show_all_ticket","1") || haveRight("show_assign_ticket","1");
 
-         echo "<table class='tab_cadre_central'>";
-         echo "<tr><td class='top'><table>";
+      echo "<table class='tab_cadre_central'>";
+      echo "<tr><td class='top'><table>";
 
-         if ($showticket) {
-            echo "<tr><td class='top' width='450px'><br>";
-            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",true);
-            echo "</td></tr>";
-         }
-         echo "</table></td>";
-         echo "<td class='top'><table>";
+      if ($showticket) {
+         echo "<tr><td class='top' width='450px'><br>";
+         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",true);
+         echo "</td></tr>";
+      }
+      echo "</table></td>";
+      echo "<td class='top'><table>";
 
-         if ($showticket) {
-            echo "<tr><td  class='top' width='450px'><br>";
-            Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",true);
-            echo "</td></tr>";
-         }
-         echo "</table></td></tr></table>";
+      if ($showticket) {
+         echo "<tr><td  class='top' width='450px'><br>";
+         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",true);
+         echo "</td></tr>";
+      }
+      echo "</table></td></tr></table>";
    }
+
 }
 
 ?>
