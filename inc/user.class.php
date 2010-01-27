@@ -283,7 +283,14 @@ class User extends CommonDBTM {
          if (empty ($input["password"])) {
             unset ($input["password"]);
          } else {
-            $input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+            
+            if ($input["password"]==$input["password2"]) {
+                $input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+               
+            } else {
+             addMessageAfterRedirect($LANG['setup'][21],false,ERROR);
+               return false;
+            }
          }
       }
       if (isset ($input["_extauth"])) {
@@ -355,14 +362,23 @@ class User extends CommonDBTM {
          if (empty($input["password"])) {
             unset($input["password"]);
          } else {
-            // Check right : my password of user with lesser rights
-            if (isset($input['id'])
-                && ((isset($_SESSION['glpiID']) && $input['id']==$_SESSION['glpiID'])
-                    || $this->currentUserHaveMoreRightThan($input['id']) )) {
-               $input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
-            } else {
-               unset($input["password"]);
+            
+             if ($input["password"]==$input["password2"]) {
+                
+                  // Check right : my password of user with lesser rights
+                  if (isset($input['id'])
+                      && ((isset($_SESSION['glpiID']) && $input['id']==$_SESSION['glpiID'])
+                          || $this->currentUserHaveMoreRightThan($input['id']) )) {
+                     $input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                  } else {
+                     unset($input["password"]);
+                  }
+            
+             } else {
+             addMessageAfterRedirect($LANG['setup'][21],false,ERROR);
+               return false;
             }
+            
          }
       }
 
@@ -1131,7 +1147,29 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
       autocompletionTextField($this,"realname");
       echo "</td>";
-      //Authentications informations : auth method used and server used
+      
+       //do some rights verification
+      if (haveRight("user", "w")) {
+         if ((!$extauth || empty($ID))
+             && $caneditpassword) {
+
+            echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
+            echo "<td><input type='password' name='password2' value='' size='20'></td></tr>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td></tr>";
+         }
+      } else {
+         echo "<td colspan='2'>&nbsp;</td></tr>";
+      }
+      
+      
+      
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
+      autocompletionTextField($this, "firstname");
+      echo "</td>";
+     //Authentications informations : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
          if (haveRight("user_authtype", "r")){
@@ -1142,20 +1180,15 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
       }
+     
+     
       echo "</tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
-      autocompletionTextField($this, "firstname");
-      echo "</td>";
-      echo "<td>".$LANG['common'][60]."&nbsp;:</td><td>";
-      Dropdown::showYesNo('is_active',$this->fields['is_active']);
-      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
       autocompletionTextField($this, "mobile");
       echo "</td>";
-      echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
-      Dropdown::show('UserCategory',array('value' => $this->fields["usercategories_id"]));
+       echo "<td>".$LANG['common'][60]."&nbsp;:</td><td>";
+      Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
@@ -1164,14 +1197,19 @@ class User extends CommonDBTM {
          echo "<br><span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
       }
       echo "</td>";
-      echo "<td rowspan='5' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='5'><textarea cols='45' rows='7' name='comment' >" .
-            $this->fields["comment"] . "</textarea></td>";
-      echo "</tr>";
+      
+      echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
+      Dropdown::show('UserCategory',array('value' => $this->fields["usercategories_id"]));
+      
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
       autocompletionTextField($this, "phone");
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td rowspan='4' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='4'><textarea cols='45' rows='7' name='comment' >" .
+            $this->fields["comment"] . "</textarea></td>";
+       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2&nbsp;:</td><td>";
       autocompletionTextField($this, "phone2");
@@ -1288,13 +1326,16 @@ class User extends CommonDBTM {
             autocompletionTextField($this, "firstname");
          }
          echo "</td>";
-         if (!GLPI_DEMO_MODE){
-            echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
-            /// Use sesion variable because field in table may be null if same of the global config
-            Dropdown::showLanguages("language", $_SESSION["glpilanguage"]);
+         
+          if (!$extauth && haveRight("password_update", "1")) {
+            echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
+            echo "<td><input type='password' name='password2' value='' size='30' /></td></tr>";
          } else {
-            echo "<td colspan='2'>&nbsp;";
+            echo "<td colspan='2'></tr>";
          }
+         
+         
+       
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
@@ -1304,17 +1345,16 @@ class User extends CommonDBTM {
             autocompletionTextField($this, "mobile");
          }
          echo "</td>";
-         if (count($_SESSION['glpiprofiles']) >1) {
-            echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
-            $options = array(0=>'----');
-            foreach ($_SESSION['glpiprofiles'] as $ID => $prof) {
-               $options[$ID] = $prof['name'];
-            }
-            Dropdown::showFromArray("profiles_id", $options,
-                                    array('value' => $this->fields["profiles_id"]));
+         
+           if (!GLPI_DEMO_MODE){
+            echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
+            /// Use sesion variable because field in table may be null if same of the global config
+            Dropdown::showLanguages("language", $_SESSION["glpilanguage"]);
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
+         
+        
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
@@ -1327,14 +1367,21 @@ class User extends CommonDBTM {
             }
          }
          echo "</td>";
-         if (count($_SESSION['glpiactiveentities'])>1) {
-            echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
-            Dropdown::show('Entity',
-                     array('value'  => $_SESSION["glpidefault_entity"],
-                           'entity' => $_SESSION['glpiactiveentities']));
+         
+          if (count($_SESSION['glpiprofiles']) >1) {
+            echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
+            $options = array(0=>'----');
+            foreach ($_SESSION['glpiprofiles'] as $ID => $prof) {
+               $options[$ID] = $prof['name'];
+            }
+            Dropdown::showFromArray("profiles_id", $options,
+                                    array('value' => $this->fields["profiles_id"]));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
+         
+         
+         
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
@@ -1344,6 +1391,28 @@ class User extends CommonDBTM {
             autocompletionTextField($this, "phone");
          }
          echo "</td>";
+        
+        if (count($_SESSION['glpiactiveentities'])>1) {
+            echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
+            Dropdown::show('Entity',
+                     array('value'  => $_SESSION["glpidefault_entity"],
+                           'entity' => $_SESSION['glpiactiveentities']));
+         } else {
+            echo "<td colspan='2'>&nbsp;";
+         }
+        
+        
+        
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2 : </td><td>";
+         if ($extauth && isset ($authtype['phone2_field']) && !empty ($authtype['phone2_field'])) {
+            echo $this->fields["phone2"];
+         } else {
+            autocompletionTextField($this, "phone2");
+         }
+         echo "</td>";
+         
         if (haveRight("config", "w")) {
             echo "<td>" . $LANG['setup'][138] . "&nbsp;:</td><td><select name='use_mode'>";
             echo "<option value='" . NORMAL_MODE . "' " .
@@ -1359,14 +1428,7 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2 : </td><td colspan='3'>";
-         if ($extauth && isset ($authtype['phone2_field']) && !empty ($authtype['phone2_field'])) {
-            echo $this->fields["phone2"];
-         } else {
-            autocompletionTextField($this, "phone2");
-         }
+         
          echo "</td></tr>";
 
          echo "<tr>";
