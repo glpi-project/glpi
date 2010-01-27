@@ -146,7 +146,7 @@ class Infocom extends CommonDBTM {
           && ($this->oldvalues['warranty_duration'] < $this->fields['warranty_duration']))) {
 
          $alert=new Alert();
-         $alert->clear(ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
       }
    }
 
@@ -157,12 +157,12 @@ class Infocom extends CommonDBTM {
     * @return boolean
    **/
 //    function isEntityAssign() {
-//
+// 
 //       if (isset($this->fields["itemtype"]) && class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          return $item->isEntityAssign();
 //       }
-//
+// 
 //       return false;
 //    }
 
@@ -172,7 +172,7 @@ class Infocom extends CommonDBTM {
     * @return ID of the entity
    **/
 //    function getEntityID () {
-//
+// 
 //       if (class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          if ($item->getFromDB($this->fields["items_id"])) {
@@ -188,12 +188,12 @@ class Infocom extends CommonDBTM {
     * @return boolean
    **/
 //    function maybeRecursive() {
-//
+// 
 //       if (class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          return $item->maybeRecursive();
 //       }
-//
+// 
 //       return false;
 //    }
 
@@ -205,12 +205,12 @@ class Infocom extends CommonDBTM {
     * @return integer (0/1)
    **/
 //    function isRecursive() {
-//
+// 
 //       if (class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          return $item->isRecursive();
 //       }
-//
+// 
 //       return false;
 //    }
 
