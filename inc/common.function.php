@@ -695,9 +695,10 @@ function commonCheckForUseGLPI(){
 		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][96]." - ".$LANG['install'][89]."' title='".$LANG['install'][96]." - ".$LANG['install'][89]."'></td></tr>";
 	}
 	else{	
-		if ($mem<64*1024*1024){ // memoire insuffisante
+		if ($mem<48*1024*1024){ // memoire insuffisante
 			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><b>".$LANG['install'][87]." $mem octets</b><br>".$LANG['install'][88]."<br>".$LANG['install'][90]."</td></tr>";
-		}
+         $error = 2;
+      }
 		else{ // on a sufisament de mémoire on passe à la suite
 			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][91]." - ".$LANG['install'][89]."' title='".$LANG['install'][91]." - ".$LANG['install'][89]."'></td></tr>";
 		}
