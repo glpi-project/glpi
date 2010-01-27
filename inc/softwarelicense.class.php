@@ -65,7 +65,7 @@ class SoftwareLicense extends CommonDBTM {
       // Clean end alert if expire is after old one
       if ((isset($this->oldvalues['expire']) && ($this->oldvalues['expire'] < $this->fields['expire']))) {
          $alert=new Alert();
-         $alert->clear(ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
       }
    }
 

@@ -53,17 +53,19 @@ class Alert extends CommonDBTM {
    /**
     * Clear all alerts of an alert type for an item
     *
-     *@param $alert_type ID of the alert type to clear
+    *@param $ID ID of the item to clear
+    *@param $itemtype ID of the type to clear
+    *@param $alert_type ID of the alert type to clear
     *@return nothing
     *
    **/
-   function clear($alert_type) {
+   function clear($itemtype,$ID,$alert_type) {
       global $DB;
 
       $query="DELETE
               FROM `".$this->getTable()."`
-              WHERE `itemtype` = '".$this->getType()."'
-                    AND `items_id` = '".$this->fields['id']."'
+              WHERE `itemtype` = '$itemtype'
+                    AND `items_id` = '$ID'
                     AND `type` = '$alert_type'";
       $DB->query($query);
    }
@@ -73,7 +75,8 @@ class Alert extends CommonDBTM {
 
       if (!isset($options['value'])){
          $value = 0;
-      } else {
+      }
+      else {
          $value = $options['value'];
       }
 
@@ -89,6 +92,7 @@ class Alert extends CommonDBTM {
       Dropdown::showFromArray($options['name'],
                               $times,
                               array('value'=>$value));
+
    }
 
 }
