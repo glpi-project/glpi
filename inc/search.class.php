@@ -2130,7 +2130,7 @@ class Search {
 
          case "glpi_groups.name" :
             $linkfield="";
-            if (!empty($searchopt[$ID]["linkfield"])) {
+            if ($itemtype!='Group' && !empty($searchopt[$ID]["linkfield"])) {
                $linkfield = "_".$searchopt[$ID]["linkfield"];
 
                if ($meta && getTableForItemType($itemtype)!=$inittable) {
