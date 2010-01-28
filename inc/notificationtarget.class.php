@@ -82,7 +82,13 @@ class NotificationTarget extends CommonDBTM {
     * @return a notificationtarget class or false
     */
    static function getInstance($item) {
-      $name = 'NotificationTarget'.$item->getType();
+      if ($plug = isPluginItemType($item->getType())) {
+         $name = 'Plugin'.$plug['plugin'].'NotificationTarget'.$plug['class'];
+      }
+      else {
+         $name = 'NotificationTarget'.$item->getType();
+      }
+
       if (class_exists($name)) {
          return new $name (($item->isField('entities_id')?$item->getField('entities_id'):0),
                            $item);
@@ -98,13 +104,13 @@ class NotificationTarget extends CommonDBTM {
     * @return a notificationtarget class or false
     */
    static function getInstanceByType($itemtype) {
-      $name = 'NotificationTarget'.$itemtype;
-      if (class_exists($name)) {
-         return new $name ();
+      if (class_exists($itemtype)) {
+         return NotificationTarget::getInstance(new $itemtype ());
       }
       else {
          return false;
       }
+
    }
 
    function showForm($target, $notifications_id) {
