@@ -194,7 +194,7 @@ class Planning {
       echo "</td>\n";
 
       echo "<td>";
-      echo "<a target='_blank' href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?genical=1&amp;uID=".$uID."\" title='".
+      echo "<a target='_blank' href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID."\" title='".
             $LANG['planning'][12]."'><span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
       echo "<br>";
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
