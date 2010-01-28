@@ -818,7 +818,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['crontask']['links']['search']="/front/crontask.php";
 
      $menu['config']['content']['mailing']['options']['config']['title']=$LANG['setup'][240];
-     $menu['config']['content']['mailing']['options']['config']['page']='/front/notification.php';
+     $menu['config']['content']['mailing']['options']['config']['page']='/front/notificationmailsetting.php';
 
       $menu['config']['content']['mailing']['options']['notificationtemplate']['title']=$LANG['mailing'][113];
       $menu['config']['content']['mailing']['options']['notificationtemplate']['page']='/front/notificationtemplate.php';
