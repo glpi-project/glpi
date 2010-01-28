@@ -1,4 +1,4 @@
-#GLPI Dump database on 2010-01-28 16:44
+#GLPI Dump database on 2010-01-28 16:49
 
 ### Dump table glpi_alerts
 
@@ -861,9 +861,6 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','5','0','2010-01-28 16:44:48','0','0','0','Mode d\'exécution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','5','1','2010-01-28 16:44:48','2','0.00221205','0','Tâche terminée, rien à faire');
-
 ### Dump table glpi_crontasks
 
 DROP TABLE IF EXISTS `glpi_crontasks`;
@@ -890,7 +887,7 @@ INSERT INTO `glpi_crontasks` VALUES ('1','OcsServer','ocsng','300',NULL,'0','1',
 INSERT INTO `glpi_crontasks` VALUES ('2','CartridgeItem','cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3','ConsumableItem','consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4','SoftwareLicense','software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30','2010-01-28 16:44:49',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('6','InfoCom','infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('7','CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8','CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -1459,7 +1456,7 @@ CREATE TABLE `glpi_entitydatas` (
   `tag` varchar(255) collate utf8_unicode_ci default NULL,
   `ldapservers_id` int(11) NOT NULL default '0',
   `entity_ldapfilter` text collate utf8_unicode_ci,
-  `mailing_signature` text collate utf8_unicode_ci NOT NULL,
+  `mailing_signature` text collate utf8_unicode_ci,
   `cartridges_alert_repeat` int(11) NOT NULL default '0',
   `consumables_alert_repeat` int(11) NOT NULL default '0',
   `use_licenses_alert` tinyint(1) NOT NULL default '0',
@@ -1487,7 +1484,7 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-10-04 21:30:45','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('6','-1','system','2010-01-28 16:44:51','login','3','glpi connexion de l\'IP: 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('6','-1','system','2010-01-28 16:49:49','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
