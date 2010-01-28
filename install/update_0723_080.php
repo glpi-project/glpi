@@ -2062,7 +2062,7 @@ function update0723to080($output='HTML') {
         `state` int(11) NOT NULL COMMENT '0:start, 1:run, 2:stop',
         `elapsed` float NOT NULL COMMENT 'time elapsed since start',
         `volume` int(11) NOT NULL COMMENT 'for statistics',
-        `content` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'message',
+        `content` varchar(255) COLLATE utf8_unicode_ci NULL COMMENT 'message',
         PRIMARY KEY (`id`),
         KEY `crontasks_id` (`crontasks_id`),
         KEY `crontasklogs_id` (`crontasklogs_id`),
@@ -2715,7 +2715,7 @@ function update0723to080($output='HTML') {
    }
 
    if (!FieldExists('glpi_authldaps','entity_field')) {
-      $query = "ALTER TABLE `glpi_authldaps` ADD `entity_field` VARCHAR( 255 ) NULL";
+      $query = "ALTER TABLE `glpi_authldaps` ADD `entity_field` VARCHAR( 255 ) DEFAULT NULL";
       $DB->query($query) or die("0.80 add entity_field to glpi_authldaps" . $LANG['update'][90] . $DB->error());
    }
 
@@ -2745,15 +2745,15 @@ function update0723to080($output='HTML') {
    if (!TableExists('glpi_notificationtemplates')) {
       $query = "CREATE TABLE `glpi_notificationtemplates` (
                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-                 `name` VARCHAR( 255 ) NOT NULL ,
-                 `language` VARCHAR( 255 ) NOT NULL ,
+                 `name` VARCHAR( 255 ) default NULL ,
+                 `language` VARCHAR( 255 ) default NULL,
                  `is_default` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                 `subject` TEXT NOT NULL ,
-                 `content_text` TEXT NOT NULL ,
-                 `content_html` TEXT NOT NULL ,
-                 `comment` TEXT NOT NULL ,
-                 `itemtype` VARCHAR( 255 ) NOT NULL,
-                 `date_mod` DATETIME NULL ,
+                 `subject` TEXT DEFAULT NULL ,
+                 `content_text` TEXT DEFAULT NULL ,
+                 `content_html` TEXT DEFAULT NULL ,
+                 `comment` TEXT DEFAULT NULL ,
+                 `itemtype` VARCHAR( 100 ) NOT NULL,
+                 `date_mod` DATETIME DEFAULT NULL ,
                  PRIMARY KEY ( `ID` )
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_notificationtemplates" . $LANG['update'][90] . $DB->error());
@@ -2781,16 +2781,16 @@ function update0723to080($output='HTML') {
    if (!TableExists('glpi_notifications')) {
       $query = "CREATE TABLE `glpi_notifications` (
                   `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-                  `name` VARCHAR( 255 ) NOT NULL ,
+                  `name` VARCHAR( 255 ) DEFAULT NULL ,
                   `entities_id` INT( 11 ) NOT NULL DEFAULT '0',
-                  `itemtype` VARCHAR( 255 ) NOT NULL ,
+                  `itemtype` VARCHAR( 100 ) NOT NULL ,
                   `event` VARCHAR( 255 ) NOT NULL ,
                   `mode` VARCHAR( 255 ) NOT NULL ,
                   `notificationtemplates_id` INT( 11 ) NOT NULL DEFAULT '0',
-                  `content` TEXT NOT NULL ,
-                  `comment` TEXT NOT NULL ,
+                  `content` TEXT DEFAULT NULL ,
+                  `comment` TEXT DEFAULT NULL ,
                   `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                 `date_mod` DATETIME NULL ,
+                 `date_mod` DATETIME DEFAULT NULL ,
                   PRIMARY KEY ( `id` )
                   ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
       $DB->query($query) or die("0.80 create glpi_notifications" . $LANG['update'][90] . $DB->error());
