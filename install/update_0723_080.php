@@ -2001,7 +2001,7 @@ function update0723to080($output='HTML') {
 
 
    if (!FieldExists("glpi_budgets","notepad")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `notepad` LONGTEXT collate utf8_unicode_ci";
+      $query = "ALTER TABLE `glpi_budgets` ADD `notepad` LONGTEXT NULL collate utf8_unicode_ci";
       $DB->query($query) or die("0.80 add notepad field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
 
@@ -2720,7 +2720,7 @@ function update0723to080($output='HTML') {
    }
 
    if (!FieldExists('glpi_authldaps','entity_condition')) {
-      $query = "ALTER TABLE `glpi_authldaps` ADD `entity_condition`  TEXT collate utf8_unicode_ci";
+      $query = "ALTER TABLE `glpi_authldaps` ADD `entity_condition`  TEXT NULL collate utf8_unicode_ci";
       $DB->query($query) or die("0.80 add entity_condition to glpi_authldaps" . $LANG['update'][90] . $DB->error());
    }
 
@@ -2730,7 +2730,7 @@ function update0723to080($output='HTML') {
    }
 
    if (!FieldExists ('glpi_entitydatas','entity_ldapfilter')) {
-      $query = "ALTER TABLE `glpi_entitydatas` ADD `entity_ldapfilter`  TEXT collate utf8_unicode_ci";
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `entity_ldapfilter`  TEXT NULL collate utf8_unicode_ci";
       $DB->query($query) or die("0.80 add entity_ldapfilter to glpi_entitydatas" . $LANG['update'][90] . $DB->error());
    }
 
@@ -2837,7 +2837,7 @@ function update0723to080($output='HTML') {
    }
 
    if (!FieldExists('glpi_entitydatas','mailing_signature')) {
-      $query = "ALTER TABLE `glpi_entitydatas` ADD `mailing_signature` TEXT NOT NULL ,
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `mailing_signature` TEXT DEFAULT NULL ,
                                  ADD `cartridges_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
                                  ADD `consumables_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
                                  ADD `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '0'";
