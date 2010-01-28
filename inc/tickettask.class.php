@@ -187,7 +187,13 @@ class TicketTask  extends CommonDBTM {
                $user->getFromDB($_SESSION["glpiID"]);
 
                $ticket = new Ticket;
-               $mailsend = NotificationEvent::raiseEvent('add_followup',$job);
+               if (isset($this->input["is_private"]) && $this->input["is_private"]) {
+                  $options['is_private'] = true;
+               }
+               else {
+                  $options = array();
+               }
+               $mailsend = NotificationEvent::raiseEvent('add_followup',$job, $options);
                //$mail = new Mailing("followup",$job,$user,
                //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
                //$mail->send();

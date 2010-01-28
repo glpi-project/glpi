@@ -204,11 +204,16 @@ class Notification extends CommonDBTM {
       $DB->query($query);
    }
 
-   static function send ($event, $options, $template_infos) {
+   static function send ($event, $options, $template,$entity, $signature = '') {
       $mail = new NotificationMail;
-      $options['subject'] = $template_infos['subject'];
-      $options['content_html'] = $template_infos['content_html'];
-      $options['content_text'] = $template_infos['content_text'];
+
+      $options['subject'] =$template['subject'];
+      $content_html = $template['content_html'];
+      $content_html.= "<br /><br />".$signature;
+      $content_text = $template['content_text'];
+      $content_text.= "\n-- \n".$signature;
+      $options['content_html'] = $content_html;
+      $options['content_text'] = $content_text;
 
       $mail->sendNotification($options);
       $mail->ClearAddresses();

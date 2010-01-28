@@ -42,7 +42,7 @@ class NotificationTargetReservation extends NotificationTarget {
       }
    }
 
-   function getSpecificAddresses($notifications_id,$data,$options=array()) {
+   function getSpecificAddresses($data,$options=array()) {
 
    //Look for all targets whose type is NOTIFICATION_ITEM_USER
    switch ($data['type']) {
@@ -51,13 +51,13 @@ class NotificationTargetReservation extends NotificationTarget {
          switch ($data['items_id']) {
            //Send to the author of the ticket
             case NOTIFICATION_AUTHOR:
-               $this->getItemAuthorAddress($notifications_id);
+               $this->getItemAuthorAddress();
             break;
       }
 
       //Send to all the users of a profile
       case NOTIFICATION_PROFILE_TYPE:
-         $this->getUsersAddressesByProfile($notifications_id,$data['items_id']);
+         $this->getUsersAddressesByProfile($data['items_id']);
       break;
       }
    }

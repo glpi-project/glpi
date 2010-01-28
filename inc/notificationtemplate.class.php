@@ -242,13 +242,21 @@ class NotificationTemplate extends CommonDBTM {
       }
    }
 
-   function getTemplateByLanguage($target, $language, $event) {
+   function getTemplateByLanguage(NotificationTarget $target, $language, $event) {
       $lang = array();
+
+      //Switch to the desired language
       loadLanguage($language);
-      $lang['subject'] = $this->getField('subject');
-      $lang['content_html'] = $this->getField('content_html');
-      $lang['content_text'] = $this->getField('content_text');
-      $lang['data'] = $target->getDatasForTemplate($event);
+      //Get template's language data for in this language
+      $data = $target->getDatasForTemplate($event);
+      //Restore default language
+      loadLanguage();
+
+      //Template processing
+      //TODO implement the TAG processing engine
+      $lang['subject'] = strtr($this->getField('subject'),$data);
+      $lang['content_html'] =  strtr($this->getField('content_html'),$data);
+      $lang['content_text'] =  strtr($this->getField('content_text'),$data);
       return $lang;
    }
 }

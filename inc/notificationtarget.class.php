@@ -124,8 +124,6 @@ class NotificationTarget extends CommonDBTM {
 
       $notification->getFromDB($notifications_id);
 
-      //$this->showAddNew($notification);
-
       echo "<div class='center'>";
 
       echo "<form name='notificationtargets_form' id='notificationtargets_form'
@@ -142,28 +140,6 @@ class NotificationTarget extends CommonDBTM {
 
    function dropdownTargets($used = array()) {
       Dropdown::showFromArray('type', $this->notification_targets);
-   }
-
-   function showAddNew(Notification $notification) {
-      global $LANG;
-      $notifications_id = $notification->fields['id'];
-      $this->getNotficationTargets($_SESSION['glpiactive_entity']);
-
-      $notification = new Notification;
-      $canedit = $notification->can($notifications_id,'w');
-
-      echo "<div class='center'>";
-
-      echo "<form name='add_notificationtargets_form' id='add_notificationtargets_form'
-             method='post' action=' ";
-      echo getItemTypeFormURL(__CLASS__)."'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th>" . $LANG['mailing'][121] . "</th></tr>";
-      echo "<tr class='tab_bg_2'><td>";
-      echo "<input type='hidden' name='notifications_id' value='$notifications_id'>";
-      NotificationTarget::dropdownTargets();
-      echo "</td></tr>";
-      echo "</table></form></div>";
    }
 
    /**
@@ -360,7 +336,7 @@ class NotificationTarget extends CommonDBTM {
     * @param $lang used with this email - default to config language
     *
     */
-   function addToAddressesList($notifications_id, $mail,$lang='') {
+   function addToAddressesList( $mail,$lang='',$entity=0) {
       global $CFG_GLPI;
 
       $new_mail=trim($mail);
@@ -368,9 +344,13 @@ class NotificationTarget extends CommonDBTM {
 
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail)
-               && !isset($this->target [$notifications_id][$new_mail])) {
-            $this->target[$notifications_id][$new_mail] =
-                              (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang);
+               && !isset($this->target [$new_mail])) {
+            $this->target[$new_mail] = array ('language'=>(empty($new_lang) ?
+                                                           $CFG_GLPI["language"] :
+                                                           $new_lang),
+                                              'entity'=>$entity,
+                                              'email'=>$new_mail);
+
          }
       }
    }
@@ -378,52 +358,61 @@ class NotificationTarget extends CommonDBTM {
    /**
     * Get GLPI's global administrator email
     */
-   function getAdminAddress($notifications_id) {
+   function getAdminAddress() {
       global $CFG_GLPI;
-      $this->addToAddressesList($notifications_id,$CFG_GLPI["admin_email"]);
+      $this->addToAddressesList($CFG_GLPI["admin_email"],
+                                $CFG_GLPI["language"],
+                                0);
    }
 
    /**
     * Get the email of the item's user
     */
-   function getItemAuthorAddress($notifications_id) {
+   function getItemAuthorAddress() {
       $user = new User;
       if ($this->obj->isField('users_id')
-            && $user->getFromDB($this->obj->fields["users_id"])) {
-         $this->addToAddressesList($notifications_id,$user->fields["email"], $user->fields['language']);
+            && $user->getFromDB($this->obj->getField('users_id'))) {
+         $this->addToAddressesList($user->getField('email'),
+                                   $user->getField('language'),
+                                   $user->getField('entities_id'));
       }
    }
 
    /**
     * Get entity admin email
     */
-   function getEntityAdminAddress($notifications_id) {
-      global $DB;
+   function getEntityAdminAddress() {
+      global $DB,$CFG_GLPI;
 
       foreach ($DB->request('glpi_entitydatas',
                             array('entities_id'=>$this->entity)) as $data) {
-         $this->addToAddressesList($notifications_id,$data["email"]);
+         $this->addToAddressesList($data["email"],
+                                   $CFG_GLPI['language'],
+                                   $this->entity);
       }
    }
 
    /**
     * Get targets for all the users of a group
     */
-   function getUsersAddressesByGroup($notifications_id,$group_id) {
+   function getUsersAddressesByGroup($group_id) {
       global $DB;
-      $query="SELECT `glpi_users`.`email` AS email, `glpi_users`.`language` AS lang
+      $query="SELECT `glpi_users`.`email` AS email,
+                        `glpi_users`.`language` AS lang,
+                         `glpi_users`.`entities_id` as entity
               FROM `glpi_groups_users`
               INNER JOIN `glpi_users`
                       ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`)
                           WHERE `glpi_groups_users`.`groups_id`='".$group_id."'";
       foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($notifications_id,$data['email'], $data['lang']);
+         $this->addToAddressesList($data['email'], $data['lang'],$data['entity']);
       }
    }
 
    static function getDistinctUserSql() {
       return "SELECT DISTINCT `glpi_users`.`email` AS email,
-                               `glpi_users`.`language` AS lang ";
+                               `glpi_users`.`language` AS lang,
+                                 `glpi_users`.`entities_id` as entity ";
    }
 
    /**
@@ -444,8 +433,10 @@ class NotificationTarget extends CommonDBTM {
    function getNotficationTargets($entity) {
       global $LANG,$DB;
 
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
+                                     NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
+                                     NOTIFICATION_ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
                                                                         $LANG['entity'][0];
       $this->getAdditionalTargets();
       asort($this->notification_targets);
@@ -475,7 +466,7 @@ class NotificationTarget extends CommonDBTM {
    /**
     * Get addresses by a method not defined in NotificationTarget (specific to an itemtype)
     */
-   function getSpecificTargets ($notifications_id,$data,$options=array()) {
+   function getSpecificTargets ($data,$options=array()) {
 
    }
 
@@ -490,10 +481,9 @@ class NotificationTarget extends CommonDBTM {
 
    /**
     * Add user to the notified users list
-    * @param notifications_id the notification id
     * @param field look for user looking for this field in the object which raises the event
     */
-   function getUserByField ($notifications_id, $field) {
+   function getUserByField ( $field) {
       global $DB;
       if ($this->target_object) {
          //Look for the user by his id
@@ -503,7 +493,7 @@ class NotificationTarget extends CommonDBTM {
 
          foreach ($DB->request($query) as $data) {
             //Add the user email and language in the notified users list
-            $this->addToAddressesList($notifications_id,$data['email'],$data['lang']);
+            $this->addToAddressesList($data['email'],$data['lang'],$data['entity']);
          }
       }
    }
@@ -511,24 +501,23 @@ class NotificationTarget extends CommonDBTM {
    /**
     * Get thecnician in charge of the item
     */
-   function getItemTechnicianInChargeAddress($notifications_id) {
-      $this->getUserByField($notifications_id,'users_id_tech');
+   function getItemTechnicianInChargeAddress() {
+      $this->getUserByField('users_id_tech');
    }
 
    /**
     * Get user owner of the material
     */
-   function getItemOwnerAddress($notifications_id) {
-      $this->getUserByField($notifications_id,'users_id');
+   function getItemOwnerAddress() {
+      $this->getUserByField('users_id');
    }
 
    /**
     * Get users emails by profile
-    * @param notifications_id the notification ID
     * @param profiles_id the profile ID to get users emails
     * @return nothing
     */
-   function getUsersAddressesByProfile($notifications_id,$profiles_id) {
+   function getUsersAddressesByProfile($profiles_id) {
       global $DB;
 
       if ($this->target_object) {
@@ -540,7 +529,7 @@ class NotificationTarget extends CommonDBTM {
                     getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
                                                      $this->target_object->getEntityID(),true);
          foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($notifications_id,$data['email'],$data['lang']);
+            $this->addToAddressesList($data['email'],$data['lang'],$data['entity']);
          }
       }
    }
@@ -575,12 +564,11 @@ class NotificationTarget extends CommonDBTM {
 
    /**
     * Get addresses by type of notification
-    * @param notifications_id id of the notification
     * @param itemtype the itemtype
     * @param target the NotificationTarget object associated with the type
     * @param options additionnal options
     */
-   function getAddressesByTarget($notifications_id,$data,$options=array()) {
+   function getAddressesByTarget($data,$options=array()) {
       //Look for all targets whose type is NOTIFICATION_USER_TYPE
 
       switch ($data['type']) {
@@ -590,33 +578,33 @@ class NotificationTarget extends CommonDBTM {
             switch ($data['items_id']) {
                //Send to glpi's global admin (as defined in the mailing configuration)
                case NOTIFICATION_GLOBAL_ADMINISTRATOR :
-                  $this->getAdminAddress($notifications_id);
+                  $this->getAdminAddress();
                break;
                //Send to the entity's admninistrator
                case NOTIFICATION_ENTITY_ADMINISTRATOR :
-                  $this->getEntityAdminAddress($notifications_id);
+                  $this->getEntityAdminAddress();
                break;
                //Technician in charge of the ticket
                case NOTIFICATION_ITEM_TECH_IN_CHARGE :
-                  $this->getItemTechnicianInChargeAddress($notifications_id);
+                  $this->getItemTechnicianInChargeAddress();
                break;
                //User who's owner of the material
                case NOTIFICATION_ITEM_USER :
-                  $this->getItemOwnerAddress($notifications_id);
+                  $this->getItemOwnerAddress();
                break;
                //Send to the author of the ticket
                case NOTIFICATION_AUTHOR:
-                  $this->getItemAuthorAddress($notifications_id);
+                  $this->getItemAuthorAddress();
                break;
             }
          break;
          //Send to all the users of a group
          case NOTIFICATION_GROUP_TYPE:
-            $this->getUsersAddressesByGroup($notifications_id,$data['items_id']);
+            $this->getUsersAddressesByGroup($data['items_id']);
          break;
          default :
             //Maybe a target specific to a type
-            $this->getSpecificTargets($notifications_id,$data,$options);
+            $this->getSpecificTargets($data,$options);
          break;
       }
    }

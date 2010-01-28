@@ -61,9 +61,10 @@ class NotificationEvent extends CommonDBTM {
     * @param event the event raised for the itemtype
     * @param item the object which raised the event
     */
-   static function raiseEvent($event,$item) {
+   static function raiseEvent($event,$item,$options=array()) {
       global $CFG_GLPI, $DB;
 
+      logDebug("raise event : $event");
       //If notifications are enabled in GLPI's configuration
       if ($CFG_GLPI["use_mailing"]) {
 
@@ -76,81 +77,126 @@ class NotificationEvent extends CommonDBTM {
          }
 
          $itemtype = $item->getType();
+         $email_processed = array();
+         $email_notprocessed = array();
+         $template_processed = array();
+         $signatures = array();
 
-         $notifications = array();
-         //Get all the targets
-         $query = "SELECT DISTINCT `glpi_notificationtargets`.`type`,
-                                   `glpi_notificationtargets`.`items_id`
-                   FROM `glpi_notificationtargets`, `glpi_notifications`
-                   WHERE `glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`
-                      AND `glpi_notifications`.`itemtype`='$itemtype'
-                        AND `glpi_notifications`.`event`='$event';";
-
-         foreach ($DB->request($query) as $data) {
-            //Get the first notification for this target
-            $query = "SELECT `glpi_notifications`.*
+         $query = "SELECT `glpi_notifications`.*
                       FROM `glpi_notifications`
-                      INNER JOIN `glpi_notificationtargets`
-                         ON (`glpi_notificationtargets`.`notifications_id` = `glpi_notifications`.`id`
-                            AND `glpi_notificationtargets`.`type`='".$data['type']."'
-                              AND `glpi_notificationtargets`.`items_id`='".$data['items_id']."')
-                     LEFT JOIN glpi_entities on (glpi_entities.id = glpi_notifications.entities_id)
+                     LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id` =
+                                                   `glpi_notifications`.`entities_id`)
                      WHERE `glpi_notifications`.`itemtype`='$itemtype'
                         AND `glpi_notifications`.`event`='$event'";
-               $query.= getEntitiesRestrictRequest(" AND",
-                                                   "glpi_notifications",
-                                                   'entities_id',
-                                                   $entity,
-                                                   true);
-               $query.=" ORDER BY glpi_entities.level DESC LIMIT 1";
+          $query.= getEntitiesRestrictRequest(" AND",
+                                              "glpi_notifications",
+                                              'entities_id',
+                                              $entity,
+                                              true);
+         $query.=" ORDER BY `glpi_entities`.`level` DESC";
 
-            foreach ($DB->request($query) as $data2) {
-               //Create a table which contains templates informations + targets associated with it
-               if (!isset($notifications[$data2['notificationtemplates_id']])) {
-                  $template = new NotificationTemplate;
-                  $template->getFromDB($data2['notificationtemplates_id']);
-                  $notifications[$data2['notificationtemplates_id']]['template'] = $template;
-                  $notifications[$data2['notificationtemplates_id']]['targets'][] = $data;
-               }
-               else {
-                  $notifications[$data2['notificationtemplates_id']]['targets'][] = $data;
-               }
-            }
-         }
+         //Foreach notification
+         foreach ($DB->request($query) as $data) {
+            $targets = getAllDatasFromTable('glpi_notificationtargets',
+                                            'notifications_id='.$data['id']);
+            //Foreach notification targets
+            foreach ($targets as $target) {
+               $templates_id = $data['notificationtemplates_id'];
 
-         //Store user's emails & language
-         $target = NotificationTarget::getInstance($item);
-         foreach ($notifications as $id => $values) {
-            $template_targets = $values['targets'];
-            foreach ($template_targets as $template_target) {
-               //Get all users by target type
-               $target->getAddressesByTarget($id,$template_target);
-            }
-         }
+               $notificationtarget = NotificationTarget::getInstance($item);
+               //Get all users affected by this notification
+               $notificationtarget->getAddressesByTarget($target,$options);
 
-         $languages = array();
-         //Get all the languages in which the template must be displayed
-         foreach ($target->getTargets() as $template_id => $users_infos) {
-            //Send mail for each user
-            foreach ($users_infos as $email => $language) {
-               if (NotificationMail::isUserAddressValid($email)) {
-                  //Is template already processed in this language ?
-                  if (!isset($languages[$template_id][$language])) {
-                     $template = $notifications[$template_id]['template'];
-                     $languages[$template_id][$language] =
-                     $template->getTemplateByLanguage($target,$language,$event);
+               //Get template's informations
+               $template = new NotificationTemplate;
+               $template->getFromDB($templates_id);
+               foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
+                  $entity = $users_infos['entity'];
+                  $email = $users_infos['email'];
+                  $language = $users_infos['language'];
+
+                  //If the user have not yet been notified
+                  if (!isset($email_processed[$email])) {
+                     //If ther user's language is the same as the template's one
+                     if ($language == $template->getField('language')) {
+                        //If the user was previously in the not notified users list, remove it
+                        if (isset($email_notprocessed[$email])) {
+                           unset($email_notprocessed[$email]);
+                        }
+
+                        //If the template's datas have not yet been collected, then do it
+                        if (!isset($template_processed[$templates_id])) {
+                           $template_processed[$templates_id] =
+                              $template->getTemplateByLanguage($notificationtarget,
+                                                               $language,
+                                                               $event);
+                        }
+
+                        //Send notification to the user
+                        $mailing_options['to'] = $users_infos['email'];
+                        $mailing_options['from'] = $notificationtarget->getSender();
+                        $mailing_options['replyto'] = $notificationtarget->getReplyTo();
+                        $mailing_options['items_id'] = $item->getField('id');
+
+                        //SIf the signature for this entity have not yet been collected, do it
+                        if (!isset($signatures[$entity])) {
+                            $signatures[$entity]= Notification::getMailingSignature($entity);
+                        }
+
+                        Notification::send ($event,
+                                            $mailing_options,
+                                            $template_processed[$templates_id],
+                                            $entity,
+                                            $signatures[$entity]);
+
+                        $email_processed[$email] = $users_infos;
+                     }
+                     else {
+                        $email_notprocessed[$email] = $users_infos;
+                     }
                   }
-                  $options['to'] = $email;
-                  $options['from'] = $target->getSender();
-                  $options['replyto'] = $target->getReplyTo();
-                  $options['items_id'] = $item->getField('id');
-                  Notification::send ($event, $options, $languages[$template_id][$language]);
-
                }
             }
          }
-        loadLanguage();
+
+         if (!empty($email_notprocessed)) {
+            //Get the default template, in case the user's language is not the one
+            //of the selected template
+            $default_template = NotificationTemplate::getDefault($itemtype);
+            if ($default_template) {
+               $notificationtarget = NotificationTarget::getInstance($item,$options);
+
+               foreach ($email_notprocessed as $email => $users_infos) {
+                  $entity = $users_infos['entity'];
+                  $email = $users_infos['email'];
+                  $language = $users_infos['language'];
+
+                  //If the template's datas have not yet been collected, then do it
+                  if (!isset($template_processed[$templates_id])) {
+                     $template_language = $template->getTemplateByLanguage($notificationtarget,
+                                                                           $language,
+                                                                           $event);
+                  }
+
+                  $mailing_options['to'] = $email;
+                  $mailing_options['from'] = $notificationtarget->getSender();
+                  $mailing_options['replyto'] = $notificationtarget->getReplyTo();
+                  $mailing_options['items_id'] = $item->getField('id');
+
+                  //Store signature for each entity
+                 if (!isset($signatures[$entity])) {
+                     $signatures[$entity]= Notification::getMailingSignature($entity);
+                  }
+                  Notification::send ($event,
+                                      $mailing_options,
+                                      $template_processed[$templates_id],
+                                      $entity,
+                                      $signatures[$entity]);
+               }
+            }
+         }
       }
+
       return true;
    }
 
