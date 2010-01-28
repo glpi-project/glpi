@@ -42,7 +42,7 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
-   function getSpecificTargets($notifications_id,$data,$options=array()) {
+   function getSpecificTargets($data,$options=array()) {
 
    if (isset($options['sendprivate']) && $options['sendprivate'] == true) {
       $sendprivate = true;
@@ -57,32 +57,32 @@ class NotificationTargetTicket extends NotificationTarget {
       case NOTIFICATION_USER_TYPE:
          switch ($data['items_id']) {
             case NOTIFICATION_TICKET_ASSIGN_TECH:
-               $this->getTicketAssignTechnicianAddress($notifications_id);
+               $this->getTicketAssignTechnicianAddress();
             break;
             //Send to the group in charge of the ticket supervisor
             case NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP :
-               $this->getGroupSupervisorAddress($notifications_id,true);
+               $this->getGroupSupervisorAddress(true);
             break;
             //Send to the user who's got the issue
             case NOTIFICATION_TICKET_RECIPIENT :
-               $this->getReceipientAddress($notifications_id);
+               $this->getReceipientAddress();
             break;
             //Send to the supervisor of the requester's group
             case NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP :
-               $this->getGroupSupervisorAddress($notifications_id,false);
+               $this->getGroupSupervisorAddress(false);
             break;
             //Send to the technician previously in charge of the ticket (before reassignation)
             case NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE :
-               $this->getTicketOldAssignTechnicianAddress($notifications_id);
+               $this->getTicketOldAssignTechnicianAddress();
             break;
             //Assign to a supplier
             case NOTIFICATION_TICKET_SUPPLIER :
-               $this->getTicketSupplierAddress($notifications_id);
+               $this->getTicketSupplierAddress();
             break;
          }
       //Send to all the users of a profile
       case NOTIFICATION_PROFILE_TYPE:
-         $this->getUsersAddressesByProfile($notifications_id,$data['items_id']);
+         $this->getUsersAddressesByProfile($data['items_id']);
       break;
 
       }
@@ -101,23 +101,23 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
-   function getTicketAssignTechnicianAddress ($notifications_id) {
-      return $this->getUserByField ($notifications_id, "users_id_assign");
+   function getTicketAssignTechnicianAddress () {
+      return $this->getUserByField ("users_id_assign");
    }
 
-   function getTicketOldAssignTechnicianAddress ($notifications_id) {
-      return $this->getUserByField ($notifications_id, "_old_assign");
+   function getTicketOldAssignTechnicianAddress () {
+      return $this->getUserByField ("_old_assign");
    }
 
    //Get receipient
-   function getReceipientAddress($notifications_id) {
-      return $this->getUserByField ($notifications_id, "users_id_recipient");
+   function getReceipientAddress() {
+      return $this->getUserByField ("users_id_recipient");
   }
 
    /**
     * Get supplier related to the ticket
     */
-   function getTicketSupplierAddress($notifications_id, $sendprivate=true) {
+   function getTicketSupplierAddress($sendprivate=true) {
       global $DB;
 
       if (!$sendprivate && isset($ths->obj->fields["suppliers_id_assign"])
@@ -128,7 +128,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    WHERE `glpi_suppliers`.`id` = '".
                           $ticket->fields["suppliers_id_assign"]."'";
          foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($notifications_id,$data['email']);
+            $this->addToAddressesList($data['email']);
          }
       }
    }
@@ -136,7 +136,7 @@ class NotificationTargetTicket extends NotificationTarget {
    /**
     * Get supervisor of a group (works for request group or assigned group)
     */
-   function getGroupSupervisorAddress ($notifications_id, $assign=true) {
+   function getGroupSupervisorAddress ($assign=true) {
       global $DB;
 
       $group_field = ($assign?"groups_id_assign":"groups_id");
@@ -151,7 +151,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    NotificationTargetTicket::getJoinProfileSql()."
                     WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
          foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($notifications_id,$data['email'], $data['lang']);
+            $this->addToAddressesList($data['email'], $data['lang']);
          }
       }
    }
@@ -214,24 +214,24 @@ class NotificationTargetTicket extends NotificationTarget {
       $fields = array ('ticket.name'=> 'name',
                        'ticket.id'=>'id',
                        'ticket.content'=>'content',
-                       'costfixed'=>'cost_fixed',
-                       'costmaterial'=>'cost_material',
-                       'useremail'=>'user_email');
+                       'ticket.costfixed'=>'cost_fixed',
+                       'ticket.costmaterial'=>'cost_material',
+                       'ticket.useremail'=>'user_email');
 
-      foreach ($fields as $table_field => $name) {
-      	$tpldatas['##'.$name.'##'] = $table_field;
+      foreach ($fields as $tag => $table_field) {
+      	$tpldatas['##'.$tag.'##'] = $this->obj->getField($table_field);
       }
 
-      $tpldatas['##ticket.url##'] = "<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+      $tpldatas['##ticket.url##'] = urldecode("<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
                                     $this->obj->getField("id")."\">".$CFG_GLPI["url_base"].
                                     "/index.php?redirect=ticket_".
-                                    $this->obj->getField("id")."\"</a>";
+                                    $this->obj->getField("id")."\"</a>");
 
       $tpldatas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                              $this->obj->getField('entities_id'));
       $events = $this->getEvents();
       $tpldatas['##ticket.action##'] = $events[$event];
-      $tpldatas['##ticket.status##'] = Ticket::getStatus($this->obj->getField('content'));
+      $tpldatas['##ticket.status##'] = Ticket::getStatus($this->obj->getField('status'));
       $tpldatas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                                   $this->obj->getField('requesttypes_id'));
 
@@ -296,6 +296,14 @@ class NotificationTargetTicket extends NotificationTarget {
          $tpldatas['##ticket.group##'] = '';
       }
 
+      if ($this->obj->getField('groups_id_assign')) {
+         $tpldatas['##ticket.assigngroup##'] = Dropdown::getDropdownName('glpi_groups',
+                                                                    $this->obj->getField('groups_id_assign'));
+      }
+      else {
+         $tpldatas['##ticket.group##'] = '';
+      }
+
       if ($this->obj->getField('itemtype') != '') {
          $itemtype = $this->obj->getField('itemtype');
          $item = new  $itemtype ();
@@ -343,6 +351,48 @@ class NotificationTargetTicket extends NotificationTarget {
          $tpldatas['followup'][] = $tmp;
       }
 
+      $labels = array ('##lang.ticket.id##'=>$LANG['common'][2],
+                       '##lang.ticket.title##'=>$LANG['common'][16],
+                       '##lang.ticket.entity##' => $LANG['entity'][0],
+                       '##lang.ticket.content##' => $LANG['joblist'][6],
+                       '##lang.ticket.status##'=> $LANG['joblist'][0],
+                       '##lang.ticket.creationdate##' => $LANG['reports'][60],
+                       '##lang.ticket.closedate##' => $LANG['reports'][61],
+                       '##lang.ticket.requesttype##' => $LANG['job'][44],
+                       '##lang.ticket.author##' => $LANG['common'][2].' '.$LANG['job'][4],
+                       '##lang.ticket.author.name##' =>$LANG['job'][4],
+                       '##lang.ticket.author.location##' =>$LANG['common'][15],
+                       '##lang.ticket.author.phone##' =>$LANG['help'][35],
+                       '##lang.ticket.openbyuser##' =>$LANG['job'][3],
+                       '##lang.ticket.group##' =>$LANG['common'][35],
+                       '##lang.ticket.assigntouser##' =>$LANG['job'][5]." - ".$LANG['job'][6],
+                       '##lang.ticket.assigntogroup##' =>$LANG['job'][5]." - ".$LANG['common'][35],
+                       '##lang.ticket.assigntosupplier##' =>$LANG['job'][5]." - ".$LANG['financial'][26],
+                       '##lang.ticket.itemtype##' =>$LANG['reports'][12],
+                       '##lang.ticket.item##' =>$LANG['financial'][104],
+                       '##lang.ticket.urgency##' =>$LANG['joblist'][29],
+                       '##lang.ticket.impact##' =>$LANG['joblist'][30],
+                       '##lang.ticket.priority##' =>$LANG['joblist'][2],
+                       '##lang.ticket.time##' =>$LANG['job'][20],
+                       '##lang.ticket.costtime##' =>$LANG['job'][40],
+                       '##lang.ticket.costfixed##' =>$LANG['job'][41],
+                       '##lang.ticket.costmaterial##' =>$LANG['job'][42],
+                       '##lang.ticket.solution.type##' =>$LANG['job'][48],
+                       '##lang.ticket.solution.comment##' =>$LANG['common'][25],
+                       '##lang.ticket.solution.name##' =>$LANG['jobresolution'][1],
+                       '##lang.ticket.task.author##' =>$LANG['job'][4],
+                       '##lang.ticket.task.date##' =>$LANG['reports'][60],
+                       '##lang.ticket.task.description##' =>$LANG['joblist'][6],
+                       '##lang.ticket.task.category##' =>$LANG['common'][36],
+                       '##lang.ticket.task.time##' =>$LANG['job'][20],
+                       '##lang.ticket.followup.time##' =>$LANG['job'][20],
+                       '##lang.ticket.followup.author##' =>$LANG['job'][4],
+                       '##lang.ticket.followup.description##' =>$LANG['joblist'][6],
+                       '##lang.ticket.followup.requesttype##' =>$LANG['job'][44]
+                       );
+      foreach ($labels as $tag => $label) {
+         $tpldatas[$tag] = $label;
+      }
       return  $tpldatas;
    }
 
@@ -352,7 +402,7 @@ class NotificationTargetTicket extends NotificationTarget {
     * @param profiles_id the profile ID to get users emails
     * @return nothing
     */
-   function getUsersAddressesByProfile($notifications_id,$profiles_id) {
+   function getUsersAddressesByProfile($profiles_id) {
       global $DB;
 
       if ($this->target_object) {
@@ -364,7 +414,7 @@ class NotificationTargetTicket extends NotificationTarget {
                     getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
                                                      $this->obj->getEntityID(),true);
          foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($notifications_id,$data['email'],$data['lang']);
+            $this->addToAddressesList($data['email'],$data['lang']);
          }
       }
    }

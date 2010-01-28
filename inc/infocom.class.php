@@ -282,8 +282,10 @@ class Infocom extends CommonDBTM {
             $alert=new Alert();
 
             foreach ($message as $entity => $msg) {
-               $mail=new MailingAlert("alertinfocom",$msg,$entity);
-               if ($mail->send()) {
+
+               //$mail=new MailingAlert("alertinfocom",$msg,$entity);
+               //if ($mail->send()) {
+               if (NotificationEvent::raiseEvent('alert',$this)) {
                   if ($task) {
                      $task->log(Dropdown::getDropdownName("glpi_entities",$entity).": $msg\n");
                      $task->addVolume(1);
