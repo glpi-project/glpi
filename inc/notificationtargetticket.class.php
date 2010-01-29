@@ -211,7 +211,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
       //----------- Ticket infos -------------- //
 
-      $fields = array ('ticket.name'=> 'name',
+      $fields = array ('ticket.title'=> 'name',
                        'ticket.id'=>'id',
                        'ticket.content'=>'content',
                        'ticket.costfixed'=>'cost_fixed',
@@ -240,6 +240,9 @@ class NotificationTargetTicket extends NotificationTarget {
       $tpldatas['##ticket.impact##'] = Ticket::getPriorityName($this->obj->getField('priority'));
       $tpldatas['##ticket.time##'] = convDateTime($this->obj->getField('realtime'));
       $tpldatas['##ticket.costtime##'] = $this->obj->getField('cost_time');
+
+     $tpldatas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
+     $tpldatas['##ticket.closedate##'] = convDateTime($this->obj->getField('closedate'));
 
       if ($this->obj->getField('ticketcategories_id')) {
          $tpldatas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
@@ -347,13 +350,14 @@ class NotificationTargetTicket extends NotificationTarget {
          $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                                   $followup['requesttypes_id']);
          $tmp['##followup.date##'] = convDateTime($followup['date']);
-         $tmp['##followup.content##'] = $followup['content'];
-         $tpldatas['followup'][] = $tmp;
+         $tmp['##followup.description##'] = $followup['content'];
+         $tpldatas['followups'][] = $tmp;
       }
 
       $labels = array ('##lang.ticket.id##'=>$LANG['common'][2],
                        '##lang.ticket.title##'=>$LANG['common'][16],
                        '##lang.ticket.entity##' => $LANG['entity'][0],
+                       '##lang.ticket.category##' =>$LANG['common'][36],
                        '##lang.ticket.content##' => $LANG['joblist'][6],
                        '##lang.ticket.status##'=> $LANG['joblist'][0],
                        '##lang.ticket.creationdate##' => $LANG['reports'][60],
@@ -380,15 +384,15 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.ticket.solution.type##' =>$LANG['job'][48],
                        '##lang.ticket.solution.comment##' =>$LANG['common'][25],
                        '##lang.ticket.solution.name##' =>$LANG['jobresolution'][1],
-                       '##lang.ticket.task.author##' =>$LANG['job'][4],
-                       '##lang.ticket.task.date##' =>$LANG['reports'][60],
-                       '##lang.ticket.task.description##' =>$LANG['joblist'][6],
-                       '##lang.ticket.task.category##' =>$LANG['common'][36],
-                       '##lang.ticket.task.time##' =>$LANG['job'][20],
-                       '##lang.ticket.followup.time##' =>$LANG['job'][20],
-                       '##lang.ticket.followup.author##' =>$LANG['job'][4],
-                       '##lang.ticket.followup.description##' =>$LANG['joblist'][6],
-                       '##lang.ticket.followup.requesttype##' =>$LANG['job'][44]
+                       '##lang.task.author##' =>$LANG['job'][4],
+                       '##lang.task.date##' =>$LANG['reports'][60],
+                       '##lang.task.description##' =>$LANG['joblist'][6],
+                       '##lang.task.category##' =>$LANG['common'][36],
+                       '##lang.task.time##' =>$LANG['job'][20],
+                       '##lang.followup.time##' =>$LANG['job'][20],
+                       '##lang.followup.author##' =>$LANG['job'][4],
+                       '##lang.followup.description##' =>$LANG['joblist'][6],
+                       '##lang.followup.requesttype##' =>$LANG['job'][44]
                        );
       foreach ($labels as $tag => $label) {
          $tpldatas[$tag] = $label;

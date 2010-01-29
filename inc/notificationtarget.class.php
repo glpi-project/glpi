@@ -35,6 +35,8 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTarget extends CommonDBTM {
 
+   var $prefix = '';
+
    //Indicates that the object which raises the event is the object in which to look for
    //users, technicians and so on
    //False for items like Reservation, CartridgeItem, ConsumableItem
@@ -154,147 +156,149 @@ class NotificationTarget extends CommonDBTM {
     */
    function showNotificationTargets(Notification $notification) {
       global $LANG, $DB;
-      $notifications_id = $notification->fields['id'];
-      $this->getNotficationTargets($_SESSION['glpiactive_entity']);
+      if ($notification->getField('itemtype') != '') {
+          $notifications_id = $notification->fields['id'];
+         $this->getNotficationTargets($_SESSION['glpiactive_entity']);
 
-      $notification = new Notification;
-      $canedit = $notification->can($notifications_id,'w');
+         $notification = new Notification;
+         $canedit = $notification->can($notifications_id,'w');
 
-      $options="";
-      // Get User mailing
-      $query = "SELECT `glpi_notificationtargets`.`items_id` , `glpi_notificationtargets`.`id`
-                FROM `glpi_notificationtargets`
-                WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
-                      AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_USER_TYPE . "'
-                ORDER BY `glpi_notificationtargets`.`items_id`";
-      foreach ($DB->request($query) as $data) {
-          if (isset($this->notification_targets[NOTIFICATION_USER_TYPE."_".$data["items_id"]])) {
-            unset($this->notification_targets[NOTIFICATION_USER_TYPE."_".$data["items_id"]]);
-         }
-         switch ($data["items_id"]) {
-            case NOTIFICATION_GLOBAL_ADMINISTRATOR :
-               $name = $LANG['setup'][237];
-            break;
-
-            case NOTIFICATION_ENTITY_ADMINISTRATOR :
-               $name = $LANG['setup'][237]." ".$LANG['entity'][0];
-            break;
-
-            case NOTIFICATION_TICKET_ASSIGN_TECH :
-               $name = $LANG['setup'][239];
-            break;
-
-            case NOTIFICATION_AUTHOR :
-               $name = $LANG['job'][4];
-            break;
-
-            case NOTIFICATION_ITEM_USER :
-               $name = $LANG['common'][34] . " " . $LANG['common'][1];
-            break;
-
-            case NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE :
-               $name = $LANG['setup'][236];
-            break;
-
-            case NOTIFICATION_ITEM_TECH_IN_CHARGE :
-               $name = $LANG['common'][10];
-            break;
-
-            case NOTIFICATION_TICKET_RECIPIENT :
-               $name = $LANG['job'][3];
-            break;
-
-            case NOTIFICATION_TICKET_SUPPLIER :
-               $name = $LANG['financial'][26];
-            break;
-
-            case ASSIGN_GROUP_MAILING :
-               $name = $LANG['setup'][248];
-            break;
-
-            case NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP :
-                  $name = $LANG['common'][64]." ".$LANG['setup'][248];
-            break;
-
-            case NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP :
-               $name = $LANG['common'][64]." ".$LANG['setup'][249];
-            break;
-
-             default :
-               $name="&nbsp;";
-            break;
-         }
-         $options.= "<option value='" . $data["id"] . "'>" . $name . "</option>";
-
-      }
-
-      // Get Profile mailing
-      $query = "SELECT `glpi_notificationtargets`.`items_id`, `glpi_notificationtargets`.`id`,
-                       `glpi_profiles`.`name` AS `prof`
-                FROM `glpi_notificationtargets`
-                LEFT JOIN `glpi_profiles` ON (`glpi_notificationtargets`.`items_id` = `glpi_profiles`.`id`)
-                WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
-                      AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_PROFILE_TYPE . "'
-                ORDER BY `prof`";
-      foreach ($DB->request($query) as $data) {
-         $options.= "<option value='" . $data["id"] . "'>" . $LANG['profiles'][22] . " " .
-                     $data["prof"] . "</option>";
-         if (isset($this->notification_targets[NOTIFICATION_PROFILE_TYPE."_".$data["items_id"]])) {
-            unset($this->notification_targets[NOTIFICATION_PROFILE_TYPE."_".$data["items_id"]]);
-      }
-
-      // Get Group mailing
-      $query = "SELECT `glpi_notificationtargets`.`items_id`, `glpi_notificationtargets`.`id`,
-                       `glpi_groups`.`name` AS `name`
-                FROM `glpi_notificationtargets`
-                LEFT JOIN `glpi_groups` ON (`glpi_notificationtargets`.`items_id` = `glpi_groups`.`id`)
-                WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
-                      AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_GROUP_TYPE . "'
-                ORDER BY `name`;";
+         $options="";
+         // Get User mailing
+         $query = "SELECT `glpi_notificationtargets`.`items_id` , `glpi_notificationtargets`.`id`
+                   FROM `glpi_notificationtargets`
+                   WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
+                         AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_USER_TYPE . "'
+                   ORDER BY `glpi_notificationtargets`.`items_id`";
          foreach ($DB->request($query) as $data) {
-            $options.= "<option value='" . $data["id"] . "'>" . $LANG['common'][35] . " " .
-                        $data["name"] . "</option>";
-            if (isset($this->notification_targets[NOTIFICATION_GROUP_TYPE."_".$data["items_id"]])) {
-               unset($this->notification_targets[NOTIFICATION_GROUP_TYPE."_".$data["items_id"]]);
+             if (isset($this->notification_targets[NOTIFICATION_USER_TYPE."_".$data["items_id"]])) {
+               unset($this->notification_targets[NOTIFICATION_USER_TYPE."_".$data["items_id"]]);
             }
-         }
-      }
+            switch ($data["items_id"]) {
+               case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+                  $name = $LANG['setup'][237];
+               break;
 
-      if ($canedit) {
-         echo "<td class='right'>";
-         if (count($this->notification_targets)) {
-            echo "<select name='mailing_to_add[]' multiple size='5'>";
-            foreach ($this->notification_targets as $key => $val) {
-               list ($mailingtype, $items_id) = explode("_", $key);
-               echo "<option value='$key'>" . $val . "</option>";
+               case NOTIFICATION_ENTITY_ADMINISTRATOR :
+                  $name = $LANG['setup'][237]." ".$LANG['entity'][0];
+               break;
+
+               case NOTIFICATION_TICKET_ASSIGN_TECH :
+                  $name = $LANG['setup'][239];
+               break;
+
+               case NOTIFICATION_AUTHOR :
+                  $name = $LANG['job'][4];
+               break;
+
+               case NOTIFICATION_ITEM_USER :
+                  $name = $LANG['common'][34] . " " . $LANG['common'][1];
+               break;
+
+               case NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE :
+                  $name = $LANG['setup'][236];
+               break;
+
+               case NOTIFICATION_ITEM_TECH_IN_CHARGE :
+                  $name = $LANG['common'][10];
+               break;
+
+               case NOTIFICATION_TICKET_RECIPIENT :
+                  $name = $LANG['job'][3];
+               break;
+
+               case NOTIFICATION_TICKET_SUPPLIER :
+                  $name = $LANG['financial'][26];
+               break;
+
+               case ASSIGN_GROUP_MAILING :
+                  $name = $LANG['setup'][248];
+               break;
+
+               case NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP :
+                     $name = $LANG['common'][64]." ".$LANG['setup'][248];
+               break;
+
+               case NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP :
+                  $name = $LANG['common'][64]." ".$LANG['setup'][249];
+               break;
+
+                default :
+                  $name="&nbsp;";
+               break;
             }
-            echo "</select>";
+            $options.= "<option value='" . $data["id"] . "'>" . $name . "</option>";
+
          }
-         echo "</td><td class='center'>";
-         if (count($this->notification_targets)) {
-            echo "<input type='submit' class='submit' name='mailing_add' value='" .
-                  $LANG['buttons'][8] . " >>'>";
+
+         // Get Profile mailing
+         $query = "SELECT `glpi_notificationtargets`.`items_id`, `glpi_notificationtargets`.`id`,
+                          `glpi_profiles`.`name` AS `prof`
+                   FROM `glpi_notificationtargets`
+                   LEFT JOIN `glpi_profiles` ON (`glpi_notificationtargets`.`items_id` = `glpi_profiles`.`id`)
+                   WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
+                         AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_PROFILE_TYPE . "'
+                   ORDER BY `prof`";
+         foreach ($DB->request($query) as $data) {
+            $options.= "<option value='" . $data["id"] . "'>" . $LANG['profiles'][22] . " " .
+                        $data["prof"] . "</option>";
+            if (isset($this->notification_targets[NOTIFICATION_PROFILE_TYPE."_".$data["items_id"]])) {
+               unset($this->notification_targets[NOTIFICATION_PROFILE_TYPE."_".$data["items_id"]]);
          }
-         echo "<br><br>";
+
+         // Get Group mailing
+         $query = "SELECT `glpi_notificationtargets`.`items_id`, `glpi_notificationtargets`.`id`,
+                          `glpi_groups`.`name` AS `name`
+                   FROM `glpi_notificationtargets`
+                   LEFT JOIN `glpi_groups` ON (`glpi_notificationtargets`.`items_id` = `glpi_groups`.`id`)
+                   WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
+                         AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_GROUP_TYPE . "'
+                   ORDER BY `name`;";
+            foreach ($DB->request($query) as $data) {
+               $options.= "<option value='" . $data["id"] . "'>" . $LANG['common'][35] . " " .
+                           $data["name"] . "</option>";
+               if (isset($this->notification_targets[NOTIFICATION_GROUP_TYPE."_".$data["items_id"]])) {
+                  unset($this->notification_targets[NOTIFICATION_GROUP_TYPE."_".$data["items_id"]]);
+               }
+            }
+         }
+
+         if ($canedit) {
+            echo "<td class='right'>";
+            if (count($this->notification_targets)) {
+               echo "<select name='mailing_to_add[]' multiple size='5'>";
+               foreach ($this->notification_targets as $key => $val) {
+                  list ($mailingtype, $items_id) = explode("_", $key);
+                  echo "<option value='$key'>" . $val . "</option>";
+               }
+               echo "</select>";
+            }
+            echo "</td><td class='center'>";
+            if (count($this->notification_targets)) {
+               echo "<input type='submit' class='submit' name='mailing_add' value='" .
+                     $LANG['buttons'][8] . " >>'>";
+            }
+            echo "<br><br>";
+
+            if (!empty($options)) {
+               echo "<input type='submit' class='submit' name='mailing_delete' value='<< " .
+                     $LANG['buttons'][6] . "'>";
+            }
+            echo "</td><td>";
+
+         }
+         else {
+            echo "<td class='center'>";
+         }
 
          if (!empty($options)) {
-            echo "<input type='submit' class='submit' name='mailing_delete' value='<< " .
-                  $LANG['buttons'][6] . "'>";
+            echo "<select name='mailing_to_delete[]' multiple size='5'>";
+            echo $options ."</select>";
+         } else {
+            echo "&nbsp;";
          }
-         echo "</td><td>";
-
+         echo "</td>";
       }
-      else {
-         echo "<td class='center'>";
-      }
-
-      if (!empty($options)) {
-         echo "<select name='mailing_to_delete[]' multiple size='5'>";
-         echo $options ."</select>";
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td>";
    }
 
    static function updateTargets($input) {
@@ -350,7 +354,7 @@ class NotificationTarget extends CommonDBTM {
 
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail)
-               && !isset($this->target [$new_mail])) {
+               && !isset($this->target[$new_mail])) {
             $this->target[$new_mail] = array ('language'=>(empty($new_lang) ?
                                                            $CFG_GLPI["language"] :
                                                            $new_lang),
@@ -617,10 +621,17 @@ class NotificationTarget extends CommonDBTM {
 
    /**
     * Get all data needed for template processing
-    * Must be overridden by each NotificationTartget class
+    * Provides minimum informations for alerts
+    * Can be overridden by each NotificationTartget class if needed
     */
    function getDatasForTemplate($event) {
-
+      global $LANG;
+      $prefix = strtolower($item->getType());
+      $tpldatas['##'.$prefix.'.entity##'] =
+                           Dropdown::getDropdownName('glpi_entities',
+                                                     $this->obj->getField('entities_id'));
+      $tpldatas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
+      return $tpldatas;
    }
 
    function getTargets() {

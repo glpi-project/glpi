@@ -40,10 +40,17 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
       return array ('alert' => $LANG['setup'][264]);
    }
 
+      /**
+    * Get all data needed for template processing
+    */
    function getDatasForTemplate($event) {
-      global $DB, $LANG, $CFG_GLPI;
-
-      $tpldatas = array();
+      global $LANG;
+      $prefix = strtolower($item->getType());
+      $tpldatas['##'.$prefix.'.entity##'] =
+                           Dropdown::getDropdownName('glpi_entities',
+                                                     $this->obj->getField('entities_id'));
+      $tpldatas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
+      $tpldatas['##lang.'.$prefix.'.action##']= $LANG['mailing'][52];
       return $tpldatas;
    }
 }
