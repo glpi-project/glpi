@@ -40,10 +40,29 @@ class NotificationTargetInfocom extends NotificationTarget {
       return array ('alert' => $LANG['setup'][247]);
    }
 
+      /**
+    * Get all data needed for template processing
+    */
    function getDatasForTemplate($event) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $LANG;
+      $prefix = strtolower($item->getType());
+      $tpldatas['##'.$prefix.'.entity##'] =
+                           Dropdown::getDropdownName('glpi_entities',
+                                                     $this->obj->getField('entities_id'));
+      $tpldatas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
+      $tpldatas['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
 
-      $tpldatas = array();
+      $tpldatas['##lang.'.$prefix.'.itemtype##']= $this->target_object->getTypeName();
+      $tpldatas['##lang.'.$prefix.'.item##']= $this->target_object->getField('name');
+      $tpldatas['##lang.'.$prefix.'.expirationdate##']=
+                                        getWarrantyExpir($this->obj->getField("buy_date"),
+                                                         $this->obj->getField("warranty_duration"));
+
+      $tpldatas['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
+      $tpldatas['##lang.'.$prefix.'.itemtype##']= $LANG['reports'][12];
+      $tpldatas['##lang.'.$prefix.'.item##']= $LANG['financial'][104];
+      $tpldatas['##lang.'.$prefix.'.expirationdate##']= $LANG['mailing'][54];
+
       return $tpldatas;
    }
 }

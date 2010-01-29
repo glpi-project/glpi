@@ -136,9 +136,16 @@ class NotificationTargetReservation extends NotificationTarget {
          $item->getFromDB($reservationitem->getField('items_id'));
          $tpldatas['##reservation.itemtype##'] = $item->getTypeName();
          $tpldatas['##reservation.item##'] = $item->getField('name');
+         $tpldatas['##reservation.comment##'] = $item->getField('comment');
          $tpldatas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                      $item->getField('entities_id'));
       }
+
+      $tpldatas['##lang.reservation.user##'] = $LANG['common'][37];
+      $tpldatas['##lang.reservation.begin##'] = $LANG['search'][8];
+      $tpldatas['##lang.reservation.end##'] = $LANG['search'][9];
+      $tpldatas['##lang.reservation.comment##'] = $LANG['common'][25];
+      $tpldatas['##lang.reservation.entity##'] = $LANG['entity'][0];
 
       return $tpldatas;
    }

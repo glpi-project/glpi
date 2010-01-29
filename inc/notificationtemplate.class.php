@@ -44,6 +44,7 @@ class NotificationTemplate extends CommonDBTM {
       return $LANG['mailing'][113];
    }
 
+
    function defineTabs($ID,$withtemplate){
       global $LANG;
 
@@ -125,7 +126,8 @@ class NotificationTemplate extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "</td><td>";
-      Dropdown::dropdownTypes("itemtype",($this->fields['itemtype']?$this->fields['itemtype']:0),
+      Dropdown::dropdownTypes("itemtype",
+                              ($this->fields['itemtype']?$this->fields['itemtype']:'Ticket'),
                               $CFG_GLPI["notificationtemplates_types"]);
       echo "</td></tr>";
 
@@ -182,6 +184,29 @@ class NotificationTemplate extends CommonDBTM {
       $tab[4]['name']          = $LANG['common'][17];
       $tab[4]['datatype']      = 'itemtypename';
 
+      $tab[5]['table']         = 'glpi_notificationtemplates';
+      $tab[5]['field']         = 'subject';
+      $tab[5]['linkfield']     = '';
+      $tab[5]['name']          = $LANG['knowbase'][14];
+      $tab[5]['datatype']     = 'text';
+
+      $tab[6]['table']         = 'glpi_notificationtemplates';
+      $tab[6]['field']         = 'content_html';
+      $tab[6]['linkfield']     = '';
+      $tab[6]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
+      $tab[6]['datatype']     = 'text';
+
+      $tab[7]['table']         = 'glpi_notificationtemplates';
+      $tab[7]['field']         = 'content_text';
+      $tab[7]['linkfield']     = '';
+      $tab[7]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
+      $tab[7]['datatype']     = 'text';
+
+      $tab[8]['table']     = 'glpi_notificationtemplates';
+      $tab[8]['field']     = 'comment';
+      $tab[8]['linkfield'] = 'comment';
+      $tab[8]['name']      = $LANG['common'][25];
+      $tab[8]['datatype']  = 'text';
 
       return $tab;
    }
@@ -253,12 +278,116 @@ class NotificationTemplate extends CommonDBTM {
       loadLanguage();
 
       //Template processing
-      //TODO implement the TAG processing engine
       $lang['subject'] = strtr($this->getField('subject'),$data);
-      $lang['content_html'] =  strtr($this->getField('content_html'),$data);
-      $lang['content_text'] =  strtr($this->getField('content_text'),$data);
+      $lang['content_html'] =  NotificationTemplate::process($this->getField('content_html'),$data);
+      $lang['content_text'] =  NotificationTemplate::process($this->getField('content_text'),$data);
       return $lang;
    }
-}
 
+   static function process ($string, $data) {
+      $offset = $new_offset = 0;
+      //Template processed
+      $output = "";
+
+      //Remove all
+      $string = unclean_cross_side_scripting_deep($string);
+      $string = preg_replace(array('/\r/','/\r\n/','/\n/'),array('','',''),$string);
+
+
+      //First of all process the FOREACH tag
+      if (preg_match_all("/##FOREACH([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
+         foreach ($out[1] as $id => $tag_infos) {
+
+            $regex= "/##FOREACH".$tag_infos."##(.*)##ENDFOREACH".$tag_infos."##/";
+            preg_match($regex,$string,$tag_out);
+            logDebug("TAG=$tag_infos");
+            if (isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
+
+               $data_lang_foreach = $data;
+               unset($data_lang_foreach[$tag_infos]);
+
+               $output_foreach_string = "";
+               foreach ($data[$tag_infos] as $line) {
+                  foreach ($line as $field => $value) {
+                     $data_lang_foreach[$field] = $value;
+                  }
+
+                  foreach ($data_lang_foreach as $field=>$value) {
+                     if (is_array($value)) {
+                        unset($data_lang_foreach[$field]);
+                     }
+                  }
+                  $tmp = NotificationTemplate::processIf($tag_out[1],$data_lang_foreach);
+                  $output_foreach_string.=strtr($tmp,$data_lang_foreach);
+               }
+               $string = str_replace($tag_out[0],$output_foreach_string,$string);
+         }
+         else {
+            $string = str_replace($tag_out,'',$string);
+         }
+      }
+   }
+
+   foreach ($data as $field=>$value) {
+      if (is_array($value)) {
+          unset($data[$field]);
+      }
+   }
+
+   //Now process IF statements
+   $string = NotificationTemplate::processIf($string,$data);
+   $string= strtr($string,$data);
+
+   return $string;
+   }
+
+   private static function processIf($string, $data) {
+
+
+      foreach ($data as $field=>$value) {
+         if (is_array($value)) {
+            unset($data[$field]);
+         }
+      }
+
+      if (preg_match_all("/##IF([a-z\.]*)##/i",$string,$out)) {
+         foreach ($out[1] as $tag_infos) {
+            $if_field = $tag_infos;
+
+            //Get the field tag value (if one)
+            $regex_if= "/##IF".$if_field."##(.*)##ENDIF".$if_field."##/";
+
+            //Get the else tag value (if one)
+            $regex_else= "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/";
+
+            //If field exists in template's data -> replace the IF sentence
+            if (preg_match($regex_if,$string,$tag_if_out)) {
+               if (isset($data['##'.$if_field.'##']) && $data['##'.$if_field.'##'] != '') {
+                  $replace = strtr($tag_if_out[1],$data);
+                  $tmp = array($tag_if_out[0]=>$replace);
+
+                  //Now check if there's an else statement
+                  if (preg_match($regex_else,$string,$tag_else_out)) {
+                     $tmp[$tag_else_out[0]] = '';
+                  }
+               }
+               else {
+                  $tmp[$tag_if_out[0]] = '';
+
+                  //If an ELSE statement exists -> use it
+                  if (preg_match($regex_else,$string,$tag_else_out)) {
+                     $replace = strtr($tag_else_out[1],$data);
+                     $tmp[$tag_else_out[0]]= $replace;
+                  }
+                  else {
+                  }
+               }
+               $string = strtr($string,$tmp);
+            }
+         }
+      }
+
+      return $string;
+   }
+}
 ?>
