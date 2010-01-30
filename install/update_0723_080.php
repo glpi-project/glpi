@@ -2880,6 +2880,7 @@ function update0723to080($output='HTML') {
                if (FieldExists($itemtable,'is_recursive')) {
                   $do_recursive=true;
                }
+               // This is duplicated in Plugin::migrateItemType() for plugin object
                foreach ($entities as $entID => $val) {
                   if ($do_recursive) {
                      // Non recursive ones
