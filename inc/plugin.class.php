@@ -702,6 +702,53 @@ class Plugin extends CommonDBTM {
             $DB->query($query) or die("update itemtype of table $table for $name : ". $DB->error());
          }
       }
+
+      if (in_array('glpi_infocoms', $glpitables)) {
+         $entities=getAllDatasFromTable('glpi_entities');
+         $entities[0]="Root";
+
+         foreach ($types as $num => $name) {
+            $itemtable=getTableForItemType($name);
+            if (!TableExists($itemtable)) {
+               // Just for security, shouldn't append
+               continue;
+            }
+            $do_recursive=false;
+            if (FieldExists($itemtable,'is_recursive')) {
+               $do_recursive=true;
+            }
+            foreach ($entities as $entID => $val) {
+               if ($do_recursive) {
+                  // Non recursive ones
+                  $query3="UPDATE `glpi_infocoms`
+                           SET `entities_id`=$entID, `is_recursive`=0
+                           WHERE `itemtype`='$name'
+                              AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                              WHERE `entities_id`=$entID AND `is_recursive`=0)";
+                  $DB->query($query3) or die("0.80 update entities_id and is_recursive=0
+                        in glpi_infocoms for $name ". $LANG['update'][90] . $DB->error());
+
+                  // Recursive ones
+                  $query3="UPDATE `glpi_infocoms`
+                           SET `entities_id`=$entID, `is_recursive`=1
+                           WHERE `itemtype`='$name'
+                              AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                              WHERE `entities_id`=$entID AND `is_recursive`=1)";
+                  $DB->query($query3) or die("0.80 update entities_id and is_recursive=1
+                        in glpi_infocoms for $name ". $LANG['update'][90] . $DB->error());
+               } else {
+                  $query3="UPDATE `glpi_infocoms`
+                           SET `entities_id`=$entID
+                           WHERE `itemtype`='$name'
+                              AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                              WHERE `entities_id`=$entID)";
+                  $DB->query($query3) or die("0.80 update entities_id in glpi_infocoms
+                        for $name ". $LANG['update'][90] . $DB->error());
+               }
+            } // each entity
+         } // each plugin type
+      }
+
       foreach ($typetoname as $num => $name) {
          foreach ($plugtables as $table) {
             $query = "UPDATE `$table` SET `itemtype` = '$name' WHERE `itemtype` = '$num'";
