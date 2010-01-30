@@ -283,10 +283,10 @@ class User extends CommonDBTM {
          if (empty ($input["password"])) {
             unset ($input["password"]);
          } else {
-            
+
             if ($input["password"]==$input["password2"]) {
                 $input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
-               
+
             } else {
              addMessageAfterRedirect($LANG['setup'][21],false,ERROR);
                return false;
@@ -357,14 +357,14 @@ class User extends CommonDBTM {
    function prepareInputForUpdate($input) {
       global $LANG,$CFG_GLPI;
 
-      if (isset ($input["password"])) {
+      if (isset($input["password2"])) {
          // Empty : do not update
          if (empty($input["password"])) {
             unset($input["password"]);
          } else {
-            
+
              if ($input["password"]==$input["password2"]) {
-                
+
                   // Check right : my password of user with lesser rights
                   if (isset($input['id'])
                       && ((isset($_SESSION['glpiID']) && $input['id']==$_SESSION['glpiID'])
@@ -373,13 +373,15 @@ class User extends CommonDBTM {
                   } else {
                      unset($input["password"]);
                   }
-            
+
              } else {
              addMessageAfterRedirect($LANG['setup'][21],false,ERROR);
                return false;
             }
-            
+
          }
+      } else if (isset($input["password"])) { // From login
+         unset($input["password"]);
       }
 
       // change email_form to email (not to have a problem with preselected email)
@@ -1147,7 +1149,7 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][48] . "&nbsp;:</td><td>";
       autocompletionTextField($this,"realname");
       echo "</td>";
-      
+
        //do some rights verification
       if (haveRight("user", "w")) {
          if ((!$extauth || empty($ID))
@@ -1161,9 +1163,9 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'>&nbsp;</td></tr>";
       }
-      
-      
-      
+
+
+
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
@@ -1180,8 +1182,8 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
       }
-     
-     
+
+
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
@@ -1197,10 +1199,10 @@ class User extends CommonDBTM {
          echo "<br><span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
       }
       echo "</td>";
-      
+
       echo "<td>" . $LANG['users'][2] . "&nbsp;:</td><td>";
       Dropdown::show('UserCategory',array('value' => $this->fields["usercategories_id"]));
-      
+
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
@@ -1326,16 +1328,16 @@ class User extends CommonDBTM {
             autocompletionTextField($this, "firstname");
          }
          echo "</td>";
-         
+
           if (!$extauth && haveRight("password_update", "1")) {
             echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
             echo "<td><input type='password' name='password2' value='' size='30' /></td></tr>";
          } else {
             echo "<td colspan='2'></tr>";
          }
-         
-         
-       
+
+
+
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
@@ -1345,7 +1347,7 @@ class User extends CommonDBTM {
             autocompletionTextField($this, "mobile");
          }
          echo "</td>";
-         
+
            if (!GLPI_DEMO_MODE){
             echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
             /// Use sesion variable because field in table may be null if same of the global config
@@ -1353,8 +1355,8 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-         
-        
+
+
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
@@ -1367,7 +1369,7 @@ class User extends CommonDBTM {
             }
          }
          echo "</td>";
-         
+
           if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
             $options = array(0=>'----');
@@ -1379,9 +1381,9 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-         
-         
-         
+
+
+
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
@@ -1391,7 +1393,7 @@ class User extends CommonDBTM {
             autocompletionTextField($this, "phone");
          }
          echo "</td>";
-        
+
         if (count($_SESSION['glpiactiveentities'])>1) {
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
             Dropdown::show('Entity',
@@ -1400,9 +1402,9 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-        
-        
-        
+
+
+
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2 : </td><td>";
@@ -1412,7 +1414,7 @@ class User extends CommonDBTM {
             autocompletionTextField($this, "phone2");
          }
          echo "</td>";
-         
+
         if (haveRight("config", "w")) {
             echo "<td>" . $LANG['setup'][138] . "&nbsp;:</td><td><select name='use_mode'>";
             echo "<option value='" . NORMAL_MODE . "' " .
@@ -1428,7 +1430,7 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-         
+
          echo "</td></tr>";
 
          echo "<tr>";
