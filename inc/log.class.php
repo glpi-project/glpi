@@ -431,6 +431,15 @@ class Log extends CommonDBTM {
                }
             }
             switch ($fieldname) {
+               //For notification templates
+               case "subject" :
+                  $change = $LANG['log'][98];
+                  break;
+               case "content_text" :
+               case "content_html" :
+                  $change = $LANG['log'][99];
+                  break;
+               //For comments
                case "comment" :
                   $change =$LANG['log'][64];
                   break;
