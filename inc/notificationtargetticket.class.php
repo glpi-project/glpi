@@ -163,10 +163,11 @@ class NotificationTargetTicket extends NotificationTarget {
       global $LANG;
       return array ('new' => $LANG['mailing'][9],
                     'update' => $LANG['mailing'][30],
+                    'attrib' => $LANG['mailing'][12],
                     'solved' => $LANG['jobresolution'][2],
                     'add_followup' => $LANG['mailing'][10],
                     'add_task' => $LANG['job'][30],
-                    'close' => $LANG['joblist'][33]);
+                    'close' => $LANG['mailing'][123]);
    }
 
    /**
@@ -212,7 +213,6 @@ class NotificationTargetTicket extends NotificationTarget {
       //----------- Ticket infos -------------- //
 
       $fields = array ('ticket.title'=> 'name',
-                       'ticket.id'=>'id',
                        'ticket.content'=>'content',
                        'ticket.costfixed'=>'cost_fixed',
                        'ticket.costmaterial'=>'cost_material',
@@ -221,7 +221,7 @@ class NotificationTargetTicket extends NotificationTarget {
       foreach ($fields as $tag => $table_field) {
       	$tpldatas['##'.$tag.'##'] = $this->obj->getField($table_field);
       }
-
+      $tpldatas['##ticket.id##'] = sprintf("%07d",$this->obj->getField("id"));
       $tpldatas['##ticket.url##'] = urldecode("<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
                                     $this->obj->getField("id")."\">".$CFG_GLPI["url_base"].
                                     "/index.php?redirect=ticket_".
@@ -237,7 +237,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
       $tpldatas['##ticket.urgency##'] = Ticket::getUrgencyName($this->obj->getField('urgency'));
       $tpldatas['##ticket.impact##'] = Ticket::getImpactName($this->obj->getField('impact'));
-      $tpldatas['##ticket.impact##'] = Ticket::getPriorityName($this->obj->getField('priority'));
+      $tpldatas['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
       $tpldatas['##ticket.time##'] = convDateTime($this->obj->getField('realtime'));
       $tpldatas['##ticket.costtime##'] = $this->obj->getField('cost_time');
 
@@ -300,23 +300,45 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       if ($this->obj->getField('groups_id_assign')) {
-         $tpldatas['##ticket.assigngroup##'] = Dropdown::getDropdownName('glpi_groups',
+         $tpldatas['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
                                                                     $this->obj->getField('groups_id_assign'));
       }
       else {
          $tpldatas['##ticket.group##'] = '';
       }
 
+      //Hardware
       if ($this->obj->getField('itemtype') != '') {
          $itemtype = $this->obj->getField('itemtype');
          $item = new  $itemtype ();
          $item->getFromDB($this->obj->getField('items_id'));
          $tpldatas['##ticket.itemtype##'] = $item->getTypeName();
-         $tpldatas['##ticket.item##'] = $item->getField('name');
+         $tpldatas['##ticket.item.name##'] = $item->getField('name');
+
+         if ($item->isField('serial')) {
+            $tpldatas['##ticket.item.serial##'] = $item->getField('serial');
+         }
+         if ($item->isField('otherserial')) {
+            $tpldatas['##ticket.item.otherserial##'] = $item->getField('otherserial');
+         }
+
+         if ($item->isField('location')) {
+            $tpldatas['##ticket.item.location##'] =
+                                             Dropdown::getDropdownName('glpi_locations',
+                                                                   $user->getField('locations_id'));
+         }
+         $modeltable = getSingular($this->getTable())."models";
+         $modelfield = getForeignKeyFieldForTable($modeltable);
+         if ($item->isField($modelfield)) {
+            $tpldatas['##ticket.item.model##'] = $item->getField($modelfield);
+         }
       }
       else {
          $tpldatas['##ticket.itemtype##'] = '';
-         $tpldatas['##ticket.item##'] = '';
+         $tpldatas['##ticket.item.name##'] = '';
+         $tpldatas['##ticket.item.serial##'] = '';
+         $tpldatas['##ticket.item.otherserial##'] = '';
+         $tpldatas['##ticket.item.location##'] = '';
       }
 
       if ($this->obj->getField('ticketsolutiontypes_id')) {
@@ -330,6 +352,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                     "`tickets_id`='".$this->obj->getField('id')."'");
       foreach ($tasks as $task) {
          $tmp = array();
+         $tmp['##task.isprivate##'] =  $task['is_private'];
          $tmp['##task.author##'] =  Dropdown::getDropdownName('glpi_users',
                                                           $task['users_id']);
          $tmp['##task.category##'] = Dropdown::getDropdownName('glpi_taskcategories',
@@ -339,12 +362,19 @@ class NotificationTargetTicket extends NotificationTarget {
          $tmp['##task.time##'] = $task['realtime'];
          $tpldatas['tasks'][] = $tmp;
       }
+      if (!empty($tpldatas['tasks'])) {
+         $tpldatas['##ticket.numberoftasks##'] = count($tpldatas['tasks']);
+      }
+      else {
+         $tpldatas['##ticket.numberoftasks##'] = 0;
+      }
+
       //Followup infos
       $followups = getAllDatasFromTable('glpi_ticketfollowups',
                                     "`tickets_id`='".$this->obj->getField('id')."'");
       foreach ($followups as $followup) {
          $tmp = array();
-         if ($followup['users_id']) {}
+         $tmp['##followup.isprivate##'] =  $followup['is_private'];
          $tmp['##followup.author##'] =  Dropdown::getDropdownName('glpi_users',
                                                           $followup['users_id']);
          $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
@@ -353,12 +383,20 @@ class NotificationTargetTicket extends NotificationTarget {
          $tmp['##followup.description##'] = $followup['content'];
          $tpldatas['followups'][] = $tmp;
       }
+      if (isset($tpldatas['followups'])) {
+         $tpldatas['##ticket.numberoftasks##'] = count($tpldatas['followups']);
+      }
+      else {
+         $tpldatas['##ticket.numberoftasks##'] = 0;
+      }
 
+      //Locales
       $labels = array ('##lang.ticket.id##'=>$LANG['common'][2],
                        '##lang.ticket.title##'=>$LANG['common'][16],
                        '##lang.ticket.entity##' => $LANG['entity'][0],
                        '##lang.ticket.category##' =>$LANG['common'][36],
                        '##lang.ticket.content##' => $LANG['joblist'][6],
+                       '##lang.ticket.description##' => $LANG['mailing'][5],
                        '##lang.ticket.status##'=> $LANG['joblist'][0],
                        '##lang.ticket.creationdate##' => $LANG['reports'][60],
                        '##lang.ticket.closedate##' => $LANG['reports'][61],
@@ -373,7 +411,11 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.ticket.assigntogroup##' =>$LANG['job'][5]." - ".$LANG['common'][35],
                        '##lang.ticket.assigntosupplier##' =>$LANG['job'][5]." - ".$LANG['financial'][26],
                        '##lang.ticket.itemtype##' =>$LANG['reports'][12],
-                       '##lang.ticket.item##' =>$LANG['financial'][104],
+                       '##lang.ticket.item.name##' =>$LANG['financial'][104],
+                       '##lang.ticket.item.serial##' =>$LANG['common'][19],
+                       '##lang.ticket.item.otherserial##' =>$LANG['common'][20],
+                       '##lang.ticket.item.location##' =>$LANG['common'][15],
+                       '##lang.ticket.item.model##' =>$LANG['common'][22],
                        '##lang.ticket.urgency##' =>$LANG['joblist'][29],
                        '##lang.ticket.impact##' =>$LANG['joblist'][30],
                        '##lang.ticket.priority##' =>$LANG['joblist'][2],
@@ -385,14 +427,19 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.ticket.solution.comment##' =>$LANG['common'][25],
                        '##lang.ticket.solution.name##' =>$LANG['jobresolution'][1],
                        '##lang.task.author##' =>$LANG['job'][4],
+                       '##lang.task.isprivate##' =>$LANG['common'][77],
                        '##lang.task.date##' =>$LANG['reports'][60],
                        '##lang.task.description##' =>$LANG['joblist'][6],
                        '##lang.task.category##' =>$LANG['common'][36],
                        '##lang.task.time##' =>$LANG['job'][20],
                        '##lang.followup.time##' =>$LANG['job'][20],
+                       '##lang.followup.isprivate##' =>$LANG['job'][20],
                        '##lang.followup.author##' =>$LANG['job'][4],
                        '##lang.followup.description##' =>$LANG['joblist'][6],
-                       '##lang.followup.requesttype##' =>$LANG['job'][44]
+                       '##lang.followup.requesttype##' =>$LANG['job'][44],
+                       '##lang.ticket.numberoffollowups##' =>$LANG['mailing'][4],
+                       '##lang.ticket.numberoftasks##' =>$LANG['mailing'][122],
+                       '##lang.ticket.nocategoryassigned##' => $LANG['mailing'][100],
                        );
       foreach ($labels as $tag => $label) {
          $tpldatas[$tag] = $label;

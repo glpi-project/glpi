@@ -56,6 +56,7 @@ class Notification extends CommonDBTM {
       return $tabs;
    }
 
+
    function showForm($ID, $options=array()) {
       global $LANG,$CFG_GLPI;
 
@@ -209,7 +210,7 @@ class Notification extends CommonDBTM {
 
       $options['subject'] =$template['subject'];
       $content_html = $template['content_html'];
-      $content_html.= "<br /><br />".$signature;
+      $content_html.= "<br />-- <br />".$signature."</body></html>";
       $content_text = $template['content_text'];
       $content_text.= "\n-- \n".$signature;
       $options['content_html'] = $content_html;
