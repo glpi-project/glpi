@@ -93,12 +93,13 @@ if ($_GET["action"] == "edit") {
    if (isset($_GET['id']) && $_GET['id']>0) {
       // Modify
       $bookmark->check($_GET["id"],'w');
-      $bookmark->showForm($_SERVER['PHP_SELF'],$_GET['id']);
+      $bookmark->showForm($_GET['id']);
    } else {
       // Create
       $bookmark->check(-1,'w');
-      $bookmark->showForm($_SERVER['PHP_SELF'], 0, $_GET["type"], rawurldecode($_GET["url"]),
-                          $_GET["itemtype"]);
+      $bookmark->showForm(0, array('type'     => $_GET["type"],
+                                   'url'      => rawurldecode($_GET["url"]),
+                                   'itemtype' => $_GET["itemtype"]));
    }
 } else {
    echo '<br>';

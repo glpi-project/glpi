@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['financial'][87],$_SERVER['PHP_SELF'],"financial","budget");
-   $budget->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["withtemplate"]);
+   $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    commonFooter();
 }
 

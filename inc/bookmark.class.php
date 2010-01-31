@@ -102,14 +102,16 @@ class Bookmark extends CommonDBTM {
    /**
    * Print the bookmark form
    *
-   * @param $target target for the form
-   * @param $ID ID of the item
-   * @param $type bookmark type when adding a new bookmark
-   * @param $url url when adding a new bookmark
-   * @param $itemtype itemtype when adding a new bookmark
+   * @param $options array
+   *     - target for the Form
+   *     - type bookmark type when adding a new bookmark
+   *     - url when adding a new bookmark
+   *     - itemtype when adding a new bookmark
    **/
-   function showForm($target,$ID,$type=0,$url='',$itemtype=0) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
+
+      $ID = $this->fields['id'];
 
       // Only an edit form : always check w right
       if ($ID > 0) {
@@ -119,17 +121,17 @@ class Bookmark extends CommonDBTM {
       }
 
       echo '<br>';
-      echo "<form method='post' name='form_save_query' action=\"$target\">";
+      echo "<form method='post' name='form_save_query' action='".$options['target']."'>";
       echo "<div class='center'>";
-      if (!empty($itemtype)) {
-         echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+      if (isset($options['itemtype'])) {
+         echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
       }
-      if ($type!=0) {
-         echo "<input type='hidden' name='type' value='$type'>";
+      if (isset($options['type']) && $options['type'] != 0) {
+         echo "<input type='hidden' name='type' value='".$options['type']."'>";
       }
 
-      if (!empty($url)) {
-         echo "<input type='hidden' name='url' value='" . rawurlencode($url) . "'>";
+      if (isset($options['url'])) {
+         echo "<input type='hidden' name='url' value='" . rawurlencode($options['url']) . "'>";
       }
 
       echo "<table class='tab_cadre_report'>";
@@ -151,7 +153,7 @@ class Bookmark extends CommonDBTM {
 
       if (haveRight("bookmark_public","w")) {
          Dropdown::showPrivatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
-                             $this->fields["is_recursive"]);
+                                           $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
             echo $LANG['common'][77];
@@ -161,7 +163,7 @@ class Bookmark extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      if ($ID<=0) { // add
+      if ($ID <= 0) { // add
          echo "<tr>";
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value=\"".$this->fields['users_id']."\">";
