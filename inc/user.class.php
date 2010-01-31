@@ -1084,13 +1084,15 @@ class User extends CommonDBTM {
    /**
     * Print the user form
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the user
-    *@param $withtemplate boolean : template or basic item
+    * @param $ID Integer : Id of the user
+    * @param $options array
+    *     - target form target
+    *     - withtemplate boolean : template or basic item
     *
-    *@return boolean : user found
+    * @return boolean : user found
+    *
     **/
-   function showForm($target, $ID, $withtemplate = '') {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       // Affiche un formulaire User
@@ -1111,8 +1113,8 @@ class User extends CommonDBTM {
                     || ($this->fields["authtype"] == NOT_YET_AUTHENTIFIED
                         && !empty ($this->fields["password"]) ) );
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][18] . "&nbsp;:</td>";
@@ -1164,8 +1166,6 @@ class User extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td></tr>";
       }
 
-
-
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
@@ -1182,7 +1182,6 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
       }
-
 
       echo "</tr>";
 
@@ -1225,17 +1224,15 @@ class User extends CommonDBTM {
       if (!empty($ID)) {
          $entities = Profile_User::getUserEntities($ID,true);
          if (count($entities)>0) {
-            Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $entities));
+            Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                             'entity' => $entities));
          } else {
             echo "&nbsp;";
          }
       } else {
          if (!isMultiEntitiesMode()) {
             // Display all locations : only one entity
-            Dropdown::show('Location',
-                     array('value' => $this->fields["locations_id"]));
+            Dropdown::show('Location', array('value' => $this->fields["locations_id"]));
          } else {
             echo "&nbsp;";
          }
@@ -1255,13 +1252,13 @@ class User extends CommonDBTM {
          }
          echo "</td><td colspan='2'class='center'>";
          if ($ID>0) {
-            echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"]."/front/user.form.php?getvcard=1&amp;id=$ID'>".
-                  $LANG['common'][46]."</a>";
+            echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"].
+                  "/front/user.form.php?getvcard=1&amp;id=$ID'>". $LANG['common'][46]."</a>";
          }
          echo "</td></tr>";
       }
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

@@ -70,11 +70,11 @@ class Supplier extends CommonDBTM {
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
       $ong=array();
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          if (haveRight("contact_enterprise","r")) {
             $ong[1] = $LANG['Menu'][22];
          }
@@ -105,13 +105,15 @@ class Supplier extends CommonDBTM {
    /**
     * Print the enterprise form
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the computer or the template to print
-    *@param $withtemplate='' boolean : template or basic computer
+    * @param $ID Integer : Id of the computer or the template to print
+    * @param $options array
+    *     - target form target
+    *     - withtemplate boolean : template or basic item
     *
     *@return Nothing (display)
+    *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
 
       // Show Supplier or blank form
@@ -126,8 +128,8 @@ class Supplier extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
@@ -191,7 +193,7 @@ class Supplier extends CommonDBTM {
       autocompletionTextField($this,"country");
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

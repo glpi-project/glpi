@@ -119,7 +119,7 @@ if (isset($_POST["delete_criteria"])) {
 commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'], "admin",
              $rulecollection->menu_type, $rulecollection->menu_option);
 
-$rule->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+$rule->showForm($_GET["id"]);
 if (!empty($_GET["id"]) && $_GET["id"] >0) {
    $rule->showCriteriasList($_SERVER['PHP_SELF'],$_GET["id"]);
    $rule->showActionsList($_SERVER['PHP_SELF'],$_GET["id"]);

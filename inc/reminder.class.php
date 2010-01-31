@@ -143,11 +143,12 @@ class Reminder extends CommonDBTM {
    /**
     * Print the reminder form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
+    * @param $ID Integer : Id of the item to print
+    * @param $options array
+    *     - target filename : where to go when done.
     *
     **/
-   function showForm ($target,$ID) {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
 
       // Show Reminder or blank form
@@ -164,7 +165,7 @@ class Reminder extends CommonDBTM {
       $canedit=$this->can($ID,'w');
 
       if ($canedit) {
-         echo "<form method='post' name='remind' action=\"$target\">";
+         echo "<form method='post' name='remind' action='".$options['target']."'>";
       }
 
       echo "<div class='center'><table class='tab_cadre' width='450'>";
@@ -178,10 +179,10 @@ class Reminder extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"name",array('size'  => 80,
-                                                'entity' => -1,
-                                                'user'   => $this->fields["users_id"],
-                                                'option' => $onfocus));
+      autocompletionTextField($this,"name",array('size'   => 80,
+                                                 'entity' => -1,
+                                                 'user'   => $this->fields["users_id"],
+                                                 'option' => $onfocus));
       echo "</td></tr>\n";
 
       if (!$canedit) {
@@ -203,7 +204,7 @@ class Reminder extends CommonDBTM {
             }
          }
          Dropdown::showPrivatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
-                             $this->fields["is_recursive"]);
+                                           $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
             echo $LANG['common'][77];
@@ -240,8 +241,8 @@ class Reminder extends CommonDBTM {
             echo "<div id='plan' onClick='showPlan()'>\n";
             echo "<span class='showplan'>";
          }
-         echo Planning::getState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".
-              convDateTime($this->fields["end"]);
+         echo Planning::getState($this->fields["state"]).": ".convDateTime($this->fields["begin"]).
+              "->". convDateTime($this->fields["end"]);
          if ($canedit) {
             echo "</span>";
          }

@@ -44,11 +44,11 @@ class Notification extends CommonDBTM {
       return $LANG['setup'][704];
    }
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($options=array()){
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          $tabs[2] = $LANG['mailing'][121];
       }
       $tabs[12]=$LANG['title'][38];
@@ -56,7 +56,7 @@ class Notification extends CommonDBTM {
       return $tabs;
    }
 
-   function showForm($target, $ID) {
+   function showForm($ID, $options=array()) {
       global $LANG,$CFG_GLPI;
 
       if (!haveRight("notification", "r")) {
@@ -70,8 +70,8 @@ class Notification extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID,'');
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
       echo "<td>";
@@ -111,7 +111,7 @@ class Notification extends CommonDBTM {
       NotificationTemplate::dropdownTemplates('notificationtemplates_id',$this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
       echo "</span></td></tr>";
-      $this->showFormButtons($ID,'',2);
+      $this->showFormButtons($options=array());
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }

@@ -83,7 +83,6 @@ class ComputerDisk extends CommonDBChild {
    *@return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options=array()) {
-    //$target,$ID,$computers_id=-1) {
       global $CFG_GLPI,$LANG;
 
       $computers_id = -1;

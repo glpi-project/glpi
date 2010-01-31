@@ -86,8 +86,7 @@ class Transfer extends CommonDBTM {
    }
 
 
-
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong = array();
@@ -2538,7 +2537,7 @@ class Transfer extends CommonDBTM {
 
       // Only same case because no duplication of computers
       switch ($this->options['keep_device']) {
-         
+
          // delete devices
          case 0 :
             foreach ($this->DEVICES_TYPES as $type) {
@@ -2667,16 +2666,15 @@ class Transfer extends CommonDBTM {
    /**
     * Print the transfer form
     *
-    * Print transfer form
+    * @param $ID Integer : Id of the contact to print
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the contact to print
-    *@param $withtemplate='' boolean : template or basic item
-    *
-    *@return boolean item found
+    * @return boolean item found
     *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("transfer","r")) {
@@ -2700,11 +2698,11 @@ class Transfer extends CommonDBTM {
          $params['readonly']=true;
       }
       if ($edit_form) {
-         $this->showTabs($ID, $withtemplate);
-         $this->showFormHeader($target,$ID,$withtemplate,2);
+         $this->showTabs($options=array());
+         $this->showFormHeader($options=array());
 
       } else {
-         echo "<form method='post' name=form action='$target'>";
+         echo "<form method='post' name=form action='".$options['target']."'>";
          echo "<div class='center' id='tabsbody' >";
          echo "<table class='tab_cadre_fixe'>";
 
@@ -2904,7 +2902,7 @@ class Transfer extends CommonDBTM {
 
       if (haveRight("transfer","w")) {
          if ($edit_form) {
-            $this->showFormButtons($ID,$withtemplate,2);
+            $this->showFormButtons($options=array());
             echo "<div id='tabcontent'></div>";
             echo "<script type='text/javascript'>loadDefaultTab();</script>";
          } else {

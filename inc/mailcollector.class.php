@@ -110,12 +110,14 @@ class MailCollector  extends CommonDBTM {
    /**
     * Print the mailgate form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
+    * @param $ID Integer : Id of the item to print
+    * @param $options array
+    *     - target filename : where to go when done.
     *
     *@return boolean item found
+    **
     **/
-   function showForm ($target,$ID) {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("config","r")) {
@@ -128,7 +130,7 @@ class MailCollector  extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      echo "<div class='center'><form method='post' name=form action=\"$target\">";
+      echo "<div class='center'><form method='post' name=form action='".$options['target']."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr><th class='center'>";
       if (empty($ID)) {
@@ -150,9 +152,8 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['entity'][0]."&nbsp;:</td><td>";
-      Dropdown::show('Entity',
-                     array('value'  => $this->fields["entities_id"],
-                           'entity' => $_SESSION['glpiactiveentities']));
+      Dropdown::show('Entity', array('value'  => $this->fields["entities_id"],
+                                     'entity' => $_SESSION['glpiactiveentities']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][60]."&nbsp;:</td><td>";
