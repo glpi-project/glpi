@@ -76,14 +76,20 @@ class ComputerDisk extends CommonDBChild {
    /**
    * Print the version form
    *
-   *@param $target form target
-   *@param $ID Integer : Id of the version or the template to print
-   *@param $computers_id ID of the computer for add process
+   * @param $options array
+   *     - target for the Form
+   *     - computers_id ID of the computer for add process
    *
    *@return true if displayed  false if item not found or not right to display
    **/
-   function showForm($target,$ID,$computers_id=-1) {
+   function showForm($ID, $options=array()) {
+    //$target,$ID,$computers_id=-1) {
       global $CFG_GLPI,$LANG;
+
+      $computers_id = -1;
+      if (isset($options['computers_id'])) {
+        $computers_id = $options['computers_id'];
+      }
 
       if (!haveRight("computer","w")) {
         return false;
@@ -98,8 +104,8 @@ class ComputerDisk extends CommonDBChild {
          $this->check(-1,'w',$input);
       }
 
-      $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       if ($ID>0) {
         $computers_id=$this->fields["computers_id"];
@@ -143,7 +149,7 @@ class ComputerDisk extends CommonDBChild {
       autocompletionTextField($this, "freesize");
       echo "&nbsp;".$LANG['common'][82]."</td></tr>";
 
-      $this->showFormButtons($ID,'',2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -152,7 +158,7 @@ class ComputerDisk extends CommonDBChild {
 
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
       $ong[1]=$LANG['title'][26];

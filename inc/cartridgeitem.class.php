@@ -108,14 +108,14 @@ class CartridgeItem extends CommonDBTM {
       global $LANG;
 
       $ong[1]=$LANG['Menu'][21];
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          if (haveRight("contract","r") || haveRight("infocom","r")) {
-         	$ong[4]=$LANG['Menu'][26];
+            $ong[4]=$LANG['Menu'][26];
          }
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
          }
-         if(empty($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("link","r")) {
                $ong[7]=$LANG['title'][34];
             }
@@ -200,20 +200,17 @@ class CartridgeItem extends CommonDBTM {
    /**
    * Print the cartridge type form
    *
-   * Print general cartridge type form
+   * @param $options array
+   *     - target for the Form
+   *     - withtemplate : 1 for newtemplate, 2 for newobject from template
    *
-   *@param $target filename : where to go when done.
-   *@param $ID Integer : Id of the cartridge type
-   *@param $withtemplate='' boolean : template or basic item
-   *
-   *@return Nothing (display)
+   * @return Nothing (display)
    *
    **/
-   function showForm ($target,$ID,$withtemplate='') {
-   // Show CartridgeItem or blank form
-
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
 
+   // Show CartridgeItem or blank form
       if (!haveRight("cartridge","r")) {
         return false;
       }
@@ -225,9 +222,8 @@ class CartridgeItem extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
@@ -248,8 +244,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][17]." : </td>";
       echo "<td>";
-      Dropdown::show('CartridgeItemType',
-               array('value' => $this->fields["cartridgeitemtypes_id"]));
+      Dropdown::show('CartridgeItemType', array('value' => $this->fields["cartridgeitemtypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -270,9 +265,8 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]." : </td>";
       echo "<td>";
-      Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -281,7 +275,7 @@ class CartridgeItem extends CommonDBTM {
       Dropdown::showInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100);
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
-   $cartype->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $cartype->showForm($_GET["id"]);
    commonFooter();
 }
 
