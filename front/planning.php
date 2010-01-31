@@ -82,7 +82,8 @@ if (isset($_REQUEST['genical'])) {
          break;
    }
 
-   Planning::showForm($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],$_GET["gID"]);
+   Planning::showSelectionForm($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],
+                               $_GET["gID"]);
 
    Planning::show($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
 

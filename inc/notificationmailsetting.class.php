@@ -44,15 +44,13 @@ class NotificationMailSetting extends CommonDBTM {
 
    var $table = 'glpi_configs';
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($options=array()){
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
-      if ($ID > 0) {
-         $tabs[2] = $LANG['setup'][660];
-         $tabs[3] = $LANG['setup'][242];
-         $tabs[4] = $LANG['mailing'][32];
-      }
+      $tabs[2] = $LANG['setup'][660];
+      $tabs[3] = $LANG['setup'][242];
+      $tabs[4] = $LANG['mailing'][32];
 
       return $tabs;
    }
@@ -60,21 +58,22 @@ class NotificationMailSetting extends CommonDBTM {
    /**
     * Print the mailing config form
     *
-    *@param $target filename : where to go when done.
-    *@param $tabs integer : ID of the tab to display
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - tabs integer : ID of the tab to display
     *
-    *@return Nothing (display)
+    * @return Nothing (display)
     *
    **/
-   function showForm($target,$tabs) {
+   function showForm($ID, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      $this->showTabs(1,'');
-      $this->showFormHeader($target,1,'');
+      $this->showTabs($options);
+      $this->showFormHeader($options);
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][202] . "</td><td>";
       Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
@@ -242,7 +241,8 @@ class NotificationMailSetting extends CommonDBTM {
             break;
       //echo "</form>";
       */
-      $this->showFormButtons(1,'',2,false);
+      $options['candel'] = false;
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }

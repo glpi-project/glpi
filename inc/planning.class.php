@@ -92,7 +92,7 @@ class Planning {
     *
     * @return Display form
     **/
-   static function showForm($type,$date,$usertype,$uID,$gID) {
+   static function showSelectionForm($type,$date,$usertype,$uID,$gID) {
       global $LANG, $CFG_GLPI;
 
       switch ($type) {

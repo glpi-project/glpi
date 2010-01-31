@@ -108,11 +108,11 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0) {
          glpi_header($_SERVER['PHP_SELF']."?show=user&id=".$_POST["id"]);
       }
       $track = new Ticket();
-      $track->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
+      $track->showForm($_GET["id"]);
    }
 
 //*******************
-// fin  Affichage Module r�ervation
+// fin  Affichage Module reservation
 //*******************
 
 } else {

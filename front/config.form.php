@@ -55,7 +55,7 @@ if (!empty ($_POST["update"])) {
 }
 
 commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'],"config","config");
-$config->showForm($_SERVER['PHP_SELF'],1);
+$config->showForm(1);
 commonFooter();
 
 ?>

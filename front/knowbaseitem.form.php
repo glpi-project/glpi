@@ -59,7 +59,7 @@ if ($_GET["id"] == "new") {
    $kb->check(-1,'w');
 
    commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
-   $kb->showForm($_SERVER['PHP_SELF'],"");
+   $kb->showForm("");
    commonFooter();
 
 } else if (isset($_POST["add"])) {
@@ -83,7 +83,7 @@ if ($_GET["id"] == "new") {
    $kb->check($_GET["id"],'r');
 
    commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
-   $kb->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $kb->showForm($_GET["id"]);
    commonFooter();
 
 } else if (isset($_GET["id"]) && strcmp($_GET["delete"],"yes") == 0) {
