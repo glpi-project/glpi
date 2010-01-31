@@ -209,7 +209,7 @@ if (isset($_POST["add"])) {
 } else {//print computer informations
    commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
    //show computer form to add
-   $computer->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+   $computer->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    commonFooter();
 }
 

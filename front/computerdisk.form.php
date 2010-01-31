@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
-   $disk->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["computers_id"]);
+   $disk->showForm($_GET["id"], array('computers_id' => $_GET["computers_id"]));
    commonFooter();
 }
 

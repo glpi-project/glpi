@@ -63,10 +63,10 @@ class Computer extends CommonDBTM {
       return haveRight('computer', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['title'][30];
          $ong[20]=$LANG['computers'][8];
          if (haveRight("software","r")) {
@@ -83,7 +83,7 @@ class Computer extends CommonDBTM {
             $ong[5]=$LANG['Menu'][27];
          }
 
-         if (empty($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if ($CFG_GLPI["use_ocs_mode"]) {
                $ong[14]=$LANG['title'][43];
             }
@@ -466,16 +466,14 @@ class Computer extends CommonDBTM {
    /**
    * Print the computer form
    *
-   * Print general computer form
-   *
-   *@param $target form target
-   *@param $ID Integer : Id of the computer or the template to print
-   *@param $withtemplate template or basic computer
+   * @param $options array
+   *     - target for the Form
+   *     - withtemplate template or basic computer
    *
    *@return Nothing (display)
    *
    **/
-   function showForm($target,$ID,$withtemplate='') {
+   function showForm($ID, $options=array()) {
       global $LANG,$CFG_GLPI,$DB;
 
       if (!haveRight("computer","r")) {
@@ -489,11 +487,11 @@ class Computer extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      if(!empty($withtemplate) && $withtemplate == 2) {
+      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
          $datestring = $LANG['computers'][14]." : ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
-      } elseif(!empty($withtemplate) && $withtemplate == 1) {
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template = "newtemplate";
          $datestring = $LANG['computers'][14]." : ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -503,14 +501,14 @@ class Computer extends CommonDBTM {
          $template = false;
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target, $ID, $withtemplate, 2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),$this->getType(),
-                    $this->fields["entities_id"]);
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
+                             $this->getType(), $this->fields["entities_id"]);
 
       autocompletionTextField($this,'name',array('value'=>$objectName));
       echo "</td>";
@@ -522,9 +520,8 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;: </td>";
       echo "<td>";
-      Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
@@ -585,9 +582,8 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Group',
-               array('value'  => $this->fields["groups_id"],
-                     'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
 
       echo "</td>";
       echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
@@ -706,7 +702,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>";
 
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
