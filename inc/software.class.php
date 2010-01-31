@@ -61,11 +61,11 @@ class Software extends CommonDBTM {
       return haveRight('software', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
       $ong=array();
-      if ($ID > 0 ) {
+      if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['software'][5]."/".$LANG['software'][11];
          if (empty ($withtemplate)) {
             $ong[2] = $LANG['software'][19];
@@ -77,7 +77,7 @@ class Software extends CommonDBTM {
             $ong[5] = $LANG['Menu'][27];
          }
 
-         if (empty ($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
                $ong[6] = $LANG['title'][28];
             }
@@ -213,16 +213,17 @@ class Software extends CommonDBTM {
    /**
     * Print the Software form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
-    *@param $withtemplate integer template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
     *@return boolean item found
     **/
-   function showForm($target, $ID, $withtemplate = '') {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       // Show Software or blank form
+
       if (!haveRight("software", "r")) {
          return false;
       }
@@ -235,11 +236,11 @@ class Software extends CommonDBTM {
       }
       $canedit=$this->can($ID,'w');
 
-      if (!empty ($withtemplate) && $withtemplate == 2) {
+      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
          $datestring = $LANG['computers'][14] . "&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
-      } else if (!empty ($withtemplate) && $withtemplate == 1) {
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template = "newtemplate";
          $datestring = $LANG['computers'][14] . "&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -249,8 +250,8 @@ class Software extends CommonDBTM {
          $template = false;
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target, $ID, $withtemplate, 2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][16] . "&nbsp;:</td>";
@@ -263,9 +264,8 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][15] . "&nbsp;:</td><td>";
-      Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>" . $LANG['common'][36] . "&nbsp;:</td><td>";
       Dropdown::show('SoftwareCategory', array('value' => $this->fields["softwarecategories_id"]));
@@ -295,9 +295,8 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['common'][35] . "&nbsp;:</td><td>";
-      Dropdown::show('Group',
-                     array('value'  => $this->fields["groups_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td rowspan='3' class='middle'>".$LANG['common'][25] . "&nbsp;: </td>";
       echo "<td class='center middle' rowspan='3'><textarea cols='45' rows='5' name='comment' >" .
@@ -319,7 +318,7 @@ class Software extends CommonDBTM {
       Dropdown::show('Software', array('value' => $this->fields["softwares_id"]));
       echo "</td></tr>\n";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

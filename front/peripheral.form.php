@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $peripheral->check($_POST["id"],'d');
    $peripheral->delete($_POST);
-   
+
    Event::log($_POST["id"], "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
    if (!empty($_POST["withtemplate"])) {
@@ -110,7 +110,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
-   $peripheral->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+   $peripheral->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    commonFooter();
 }
 

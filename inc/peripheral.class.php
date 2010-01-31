@@ -59,11 +59,11 @@ class Peripheral  extends CommonDBTM {
       return haveRight('peripheral', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          if (haveRight("computer","r")) {
             $ong[1]=$LANG['title'][27];
          }
@@ -73,7 +73,7 @@ class Peripheral  extends CommonDBTM {
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
          }
-         if (empty($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
                $ong[6]=$LANG['title'][28];
             }
@@ -201,14 +201,23 @@ class Peripheral  extends CommonDBTM {
    /**
     * Print the peripheral form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
-    *@param $withtemplate integer template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-    *@return boolean item found
+    * @return boolean item found
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
+
+      $target = $this->getFormURL();
+      $withtemplate = '';
+      if (isset($options['target'])) {
+        $target = $options['target'];
+      }
+      if (isset($options['withtemplate'])) {
+         $withtemplate = $options['withtemplate'];
+      }
 
       if (!haveRight("peripheral","r")) {
          return false;
@@ -221,11 +230,11 @@ class Peripheral  extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      if (!empty($withtemplate) && $withtemplate == 2) {
+      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
          $datestring = $LANG['computers'][14];
          $date = convDateTime($_SESSION["glpi_currenttime"]);
-      } else if(!empty($withtemplate) && $withtemplate == 1) {
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template = "newtemplate";
          $datestring = $LANG['computers'][14];
          $date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -235,8 +244,8 @@ class Peripheral  extends CommonDBTM {
          $template = false;
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>\n";
@@ -312,14 +321,14 @@ class Peripheral  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('Group',
-               array('value'  => $this->fields["groups_id"],
-                     'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                               $CFG_GLPI["peripherals_management_restrict"]);
+      Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],
+                                 $this->fields["is_global"],
+                                 $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -340,7 +349,7 @@ class Peripheral  extends CommonDBTM {
       }
       echo "</td></tr>\n";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
