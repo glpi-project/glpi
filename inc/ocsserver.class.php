@@ -100,13 +100,17 @@ class OcsServer extends CommonDBTM {
       return haveRight('ocsng', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $tabs[1]=$LANG['help'][30];
       //If connection to the OCS DB  is ok, and all rights are ok too
-      if ($ID != '' && OcsServer::checkOCSconnection($ID) && OcsServer::checkConfig(1) && OcsServer::checkConfig(2)
-          && OcsServer::checkConfig(4) && OcsServer::checkConfig(8)) {
+      if ($this->fields['id'] != ''
+          && OcsServer::checkOCSconnection($this->fields['id'])
+          && OcsServer::checkConfig(1)
+          && OcsServer::checkConfig(2)
+          && OcsServer::checkConfig(4)
+          && OcsServer::checkConfig(8)) {
 
          $tabs[2]=$LANG['ocsconfig'][5];
          $tabs[3]=$LANG['ocsconfig'][27];
@@ -439,12 +443,14 @@ class OcsServer extends CommonDBTM {
    /**
     * Print simple ocs config form (database part)
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the ocs config
+    * @param $ID Integer : Id of the ocs config
+    * @param $options array
+    *     - target form target
+    *
     *@return Nothing (display)
     *
     **/
-   function showForm($target, $ID) {
+   function showForm($ID, $options=array()) {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
 
       if (!haveRight("ocsng", "w")) {
@@ -460,10 +466,10 @@ class OcsServer extends CommonDBTM {
          $this->getFromDB($ID);
       }
 
-      $this->showTabs($ID);
+      $this->showTabs($options=array());
 
       $out  = "\n<div class='center' id='tabsbody'>";
-      $out .= "<form name='formdbconfig' action=\"$target\" method=\"post\">";
+      $out .= "<form name='formdbconfig' action='".$options['target']."' method='post'>";
       $out .= "<table class='tab_cadre_fixe'>\n";
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][88] . "&nbsp;: </td>\n";
       $out .= "<td><strong>" . $this->fields["id"] . "</strong></td>\n";

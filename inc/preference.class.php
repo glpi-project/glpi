@@ -41,7 +41,7 @@ class Preference extends CommonGLPI {
       return $LANG['Menu'][11];
    }
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($options=array()){
       global $LANG;
 
       $tabs[1] = $LANG['title'][26];

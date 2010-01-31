@@ -115,7 +115,7 @@ class NotificationTarget extends CommonDBTM {
 
    }
 
-   function showForm($target, $notifications_id) {
+   function showForm($notifications_id, $options=array()) {
       global $DB, $LANG;
 
       if (!haveRight("notification", "r")) {

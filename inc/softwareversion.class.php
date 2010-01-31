@@ -91,26 +91,26 @@ class SoftwareVersion extends CommonDBChild {
 //       // Not intanciated, probably to check if entities_id field exists
 //       return false;
 //    }
-// 
+//
 //    function getEntityID () {
-// 
+//
 //       $soft=new Software();
 //       $soft->getFromDB($this->fields["softwares_id"]);
 //       return $soft->getEntityID();
 //    }
-// 
+//
 //    function isRecursive () {
-// 
+//
 //       $soft=new Software();
 //       $soft->getFromDB($this->fields["softwares_id"]);
 //       return $soft->isRecursive();
 //    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
       $ong[1] = $LANG['title'][26];
-      if ($ID) {
+      if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['software'][19];
          $ong[12] = $LANG['title'][38];
       }
@@ -120,14 +120,21 @@ class SoftwareVersion extends CommonDBChild {
    /**
     * Print the Software / version form
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the version or the template to print
-    *@param $softwares_id ID of the software for add process
+    * @param $ID Integer : Id of the version or the template to print
+    * @param $options array
+    *     - target form target
+    *     - softwares_id ID of the software for add process
     *
-    *@return true if displayed  false if item not found or not right to display
+    * @return true if displayed  false if item not found or not right to display
+    *
     **/
-   function showForm($target,$ID,$softwares_id=-1) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
+
+      $softwares_id = -1;
+      if (isset($options['$softwares_id'])) {
+         $softwares_id = $options['$softwares_id'];
+      }
 
       if (!haveRight("software","r")) {
          return false;
@@ -144,8 +151,8 @@ class SoftwareVersion extends CommonDBChild {
          $this->check(-1, 'w', $input);
       }
 
-      $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'><td>".$LANG['help'][31]."&nbsp;:</td>";
       echo "<td>";
@@ -171,13 +178,12 @@ class SoftwareVersion extends CommonDBChild {
       Dropdown::show('State', array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
-      $candel = true;
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
       if (SoftwareLicense::countForVersion($ID)>0
           || Computer_SoftwareVersion::countForVersion($ID)>0) {
-             $candel = false;
+             $options['candel'] = false;
       }
-      $this->showFormButtons($ID,'',2,$candel);
+      $this->showFormButtons($options=array());
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

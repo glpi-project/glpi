@@ -168,7 +168,7 @@ class NetworkPort extends CommonDBTM {
       }
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
       $ong[1] = $LANG['title'][26];

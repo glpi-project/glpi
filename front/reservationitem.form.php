@@ -65,7 +65,7 @@ if (isset($_REQUEST["add"])) {
 } else {
    checkRight("reservation_central","w");
    commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
-   $ri->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $ri->showForm($_GET["id"]);
 }
 
 commonFooter();

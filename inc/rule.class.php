@@ -102,12 +102,15 @@ class Rule extends CommonDBTM {
 
    /**
    * Show the rule
-   * @param $target
+   *
    * @param $ID ID of the rule
-   * @param $withtemplate
+   * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+   *
    * @return nothing
    **/
-   function showForm($target,$ID,$withtemplate='') {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       $canedit=haveRight($this->right,"w");
@@ -118,9 +121,9 @@ class Rule extends CommonDBTM {
          $this->getEmpty();
          $new=true;
       }
-      $this->getTitleRule($target);
+      $this->getTitleRule($options['target']);
       $this->showTabs($ID, $new);
-      echo "<form name='rule_form'  method='post' action=\"$target\">\n";
+      echo "<form name='rule_form'  method='post' action='".$options['target']."'>\n";
       echo "<div class='center' id='tabsbody' >";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $this->getTitle() . "</th></tr>\n";

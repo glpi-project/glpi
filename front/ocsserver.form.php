@@ -68,7 +68,7 @@ if (isset ($_POST["delete"])) {
 
 //Other
 } else {
-   $ocs->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
+   $ocs->showForm($_GET["id"]);
 }
 commonFooter();
 

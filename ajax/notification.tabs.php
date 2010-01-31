@@ -49,13 +49,13 @@ if ($_POST['id'] > 0) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          if ($target) {
-            $target->showForm($_POST['target'], $_POST["id"]);
+            $target->showForm($_POST["id"]);
          }
          Plugin::displayAction($notification, $_REQUEST['glpi_tab']);
          break;
       case 2 :
          if ($target) {
-            $target->showForm($_POST['target'], $_POST["id"]);
+            $target->showForm($_POST["id"]);
          }
          break;
       case 12 :

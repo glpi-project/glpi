@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
-   $remind->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $remind->showForm($_GET["id"]);
    commonFooter();
 }
 

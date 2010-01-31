@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
-   $license->showForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["softwares_id"]);
+   $license->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
    commonFooter();
 }
 

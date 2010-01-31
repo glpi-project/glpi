@@ -128,11 +128,11 @@ class SoftwareLicense extends CommonDBTM {
       }
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
       $ong[1] = $LANG['title'][26];
-      if ($ID) {
+      if ($this->fields['id'] > 0) {
          if (haveRight("infocom","r")) {
             $ong[4] = $LANG['Menu'][26];
          }
@@ -147,14 +147,21 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Print the Software / license form
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the version or the template to print
-    *@param $softwares_id ID of the software for add process
+    * @param $ID Integer : Id of the version or the template to print
+    * @param $options array
+    *     - target form target
+    *     - softwares_id ID of the software for add process
     *
-    *@return true if displayed  false if item not found or not right to display
+    * @return true if displayed  false if item not found or not right to display
+    *
     **/
-   function showForm($target,$ID,$softwares_id=-1) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
+
+      $softwares_id = -1;
+      if (isset($options['$softwares_id'])) {
+         $softwares_id = $options['$softwares_id'];
+      }
 
       if (!haveRight("software","w")) {
          return false;
@@ -169,8 +176,8 @@ class SoftwareLicense extends CommonDBTM {
          $this->fields['number']=1;
       }
 
-      $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][31]."&nbsp;:</td>";
@@ -237,10 +244,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".$LANG['software'][50]."&nbsp;:</td>";
       echo "<td>";
       if ($this->fields["number"]==1) {
-         Dropdown::show('Computer',
-                        array('value'        => $this->fields["computers_id"],
-                              'entity'       => $this->fields['entities_id'],
-                              'entity_sons'  => $this->fields['is_recursive']));
+         Dropdown::show('Computer', array('value'        => $this->fields["computers_id"],
+                                          'entity'       => $this->fields['entities_id'],
+                                          'entity_sons'  => $this->fields['is_recursive']));
       } else {
          echo $LANG['software'][51];
       }
@@ -252,7 +258,7 @@ class SoftwareLicense extends CommonDBTM {
       showDateFormItem('expire',$this->fields["expire"]);
       echo "</td></tr>\n";
 
-      $this->showFormButtons($ID,'',2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

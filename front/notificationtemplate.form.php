@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing","notificationtemplate");
-   $notificationtemplate->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $notificationtemplate->showForm($_GET["id"]);
    commonFooter();
 }
 

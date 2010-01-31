@@ -67,10 +67,10 @@ class Profile extends CommonDBTM {
       return haveRight('profile', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
-      if (!$ID) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['common'][12];
 
       } else if ($this->fields['interface']=='helpdesk') {
@@ -296,13 +296,14 @@ class Profile extends CommonDBTM {
    /**
     * Print the profile form headers
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
-    *@param $withtemplate integer template or basic item
+    * @param $ID Integer : Id of the item to print
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-    *@return boolean item found
+    * @return boolean item found
     **/
-   function showForm($target, $ID, $withtemplate='') {
+   function showForm($ID, $options=array()) {
       global $LANG,$CFG_GLPI;
 
       $onfocus = "";
@@ -320,8 +321,8 @@ class Profile extends CommonDBTM {
 
       $rand = mt_rand();
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td><input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></td>";
@@ -336,7 +337,6 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][2]."&nbsp;:</td><td>";
-      //echo "<select name='interface' ".($new?"":"onchange='submit()'").">";
       echo "<select name='interface'>";
       echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".
              $LANG['Menu'][31]."</option>\n";
@@ -356,7 +356,7 @@ class Profile extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

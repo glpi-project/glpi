@@ -45,11 +45,11 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($options=array()){
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          $tabs[12]=$LANG['title'][38];
       }
 
@@ -64,7 +64,7 @@ class NotificationTemplate extends CommonDBTM {
       return haveRight('config', 'r');
    }
 
-   function showForm($target,$ID) {
+   function showForm($ID, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
@@ -81,8 +81,8 @@ class NotificationTemplate extends CommonDBTM {
             $spotted = true;
          }
       }
-      $this->showTabs($ID,'');
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
      //echo "<div id='contenukb'>";
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
@@ -148,7 +148,7 @@ class NotificationTemplate extends CommonDBTM {
          .$this->fields["content_html"]."</textarea></td></tr>";
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,'',2);
+      $this->showFormButtons($options=array());
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }

@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
 
 commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 
-$prof->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+$prof->showForm($_GET["id"]);
 
 commonFooter();
 

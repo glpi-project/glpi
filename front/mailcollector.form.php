@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][39],$_SERVER['PHP_SELF'],"config","mailgate");
-   $mailgate->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $mailgate->showForm($_GET["id"]);
    commonFooter();
 }
 
