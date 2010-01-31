@@ -69,12 +69,12 @@ class Group extends CommonDBTM {
       global $CFG_GLPI;
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
 
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          if (haveRight("user","r")) {
             $ong[1]=$LANG['Menu'][14];
          }
@@ -91,14 +91,14 @@ class Group extends CommonDBTM {
    /**
     * Print the group form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the contact to print
-    *@param $withtemplate='' boolean : template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-    *@return Nothing (display)
+    * @return Nothing (display)
     *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID,$options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("group","r")) {
@@ -112,8 +112,8 @@ class Group extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
@@ -148,7 +148,7 @@ class Group extends CommonDBTM {
 
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

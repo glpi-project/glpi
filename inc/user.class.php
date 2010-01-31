@@ -123,12 +123,12 @@ class User extends CommonDBTM {
       }
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong = array();
       // No add process
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['Menu'][35]; // principal
          $ong[4] = $LANG['Menu'][36];
          $ong[2] = $LANG['common'][1]; // materiel

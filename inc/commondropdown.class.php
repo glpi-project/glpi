@@ -50,7 +50,7 @@ abstract class CommonDropdown extends CommonDBTM {
       return array();
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
@@ -119,7 +119,7 @@ abstract class CommonDropdown extends CommonDBTM {
       commonHeader($this->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",get_class($this));
    }
 
-   function showForm ($target,$ID) {
+   function showForm ($ID,$options=array()) {
       global $CFG_GLPI, $LANG;
 
       if ($ID > 0) {
@@ -129,8 +129,8 @@ abstract class CommonDropdown extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       $fields = $this->getAdditionalFields();
       $nb=count($fields);
@@ -204,11 +204,10 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "</td></tr>\n";
       }
 
-      $candel=true;
       if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
-         $candel=false;
+         $options['candel'] = false;
       }
-      $this->showFormButtons($ID,'',2,$candel);
+      $this->showFormButtons($options=array());
 
       echo "<br><div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

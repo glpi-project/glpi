@@ -107,14 +107,14 @@ if (isset($_POST["add"])) {
    if (isset($_GET["rand"])) {
       $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
    }
-   $dropdown->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $dropdown->showForm($_GET["id"]);
    echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
    echo "</div>";
    popFooter();
 
 } else {
    $dropdown->displayHeader();
-   $dropdown->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $dropdown->showForm($_GET["id"]);
    commonFooter();
 }
 

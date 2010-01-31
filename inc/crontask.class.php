@@ -52,7 +52,7 @@ class CronTask extends CommonDBTM{
    const MODE_INTERNAL = 1;
    const MODE_EXTERNAL = 2;
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
@@ -337,24 +337,22 @@ class CronTask extends CommonDBTM{
    /**
     * Print the contact form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the contact to print
-    *@param $withtemplate='' boolean : template or basic item
-    *
-    *
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+     *
     *@return Nothing (display)
     *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
-
+   function showForm ($ID,$options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("config","r") || !$this->getFromDB($ID)) {
          return false;
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
@@ -394,9 +392,9 @@ class CronTask extends CommonDBTM{
          echo "<strong>" . $this->getStateName(self::STATE_RUNNING)."</strong>";
       } else {
          Dropdown::showFromArray('state',
-            array(self::STATE_DISABLE => $this->getStateName(self::STATE_DISABLE),
-                  self::STATE_WAITING => $this->getStateName(self::STATE_WAITING)),
-            array('value' => $this->fields["state"]));
+                                 array(self::STATE_DISABLE => $this->getStateName(self::STATE_DISABLE),
+                                       self::STATE_WAITING => $this->getStateName(self::STATE_WAITING)),
+                                 array('value' => $this->fields["state"]));
       }
       echo "</td></tr>";
 
@@ -423,6 +421,7 @@ class CronTask extends CommonDBTM{
       if (empty($this->fields['lastrun'])) {
          echo $LANG['setup'][307];
       } else {
+        $target = $options['target'];
          echo convDateTime($this->fields['lastrun']);
          echo " <a href='$target?id=$ID&amp;resetdate=1'><img src='".GLPI_ROOT."/pics/reset.png' ";
          echo " alt='".$LANG['buttons'][16]."' title='".$LANG['buttons'][16]."'></a>";
@@ -476,7 +475,7 @@ class CronTask extends CommonDBTM{
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

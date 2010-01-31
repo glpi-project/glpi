@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
-   $group->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $group->showForm($_GET["id"]);
    commonFooter();
 }
 

@@ -74,11 +74,11 @@ class Contract extends CommonDBTM {
       $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['Menu'][23];
          $ong[2]=$LANG['common'][1];
          if (haveRight("document","r")) {
@@ -121,13 +121,14 @@ class Contract extends CommonDBTM {
    /**
     * Print the contract form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
-    *@param $withtemplate integer template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-     *@return boolean item found
+    *@return boolean item found
+    *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID,$options=array()) {
       global $CFG_GLPI,$LANG;
       // Show Contract or blank form
 
@@ -144,8 +145,8 @@ class Contract extends CommonDBTM {
 
       $can_edit=$this->can($ID,'w');
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
@@ -184,11 +185,11 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][69]."&nbsp;:</td><td>";
-      Dropdown::showInteger("periodicity",$this->fields["periodicity"],12,60,12,array(0=>"-----",
-                                                                                1=>"1",
-                                                                                2=>"2",
-                                                                                3=>"3",
-                                                                                6=>"6"));
+      Dropdown::showInteger("periodicity",$this->fields["periodicity"],12,60,12,array(0 => "-----",
+                                                                                      1 => "1",
+                                                                                      2 => "2",
+                                                                                      3 => "3",
+                                                                                      6 => "6"));
       echo " ".$LANG['financial'][57];
       echo "</td>";
       echo "<td>".$LANG['financial'][10]."&nbsp;:</td><td>";
@@ -259,7 +260,7 @@ class Contract extends CommonDBTM {
       Dropdown::showHours("monday_end_hour",$this->fields["monday_end_hour"]);
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

@@ -96,11 +96,11 @@ class Location extends CommonTreeDropdown {
       return $tab;
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
-      $ong=parent::defineTabs($ID,$withtemplate);
-      if ($ID>0) {
+      $ong=parent::defineTabs($options=array());
+      if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['networking'][51];
       }
 

@@ -41,7 +41,7 @@ class Central extends CommonGLPI {
       return $LANG['common'][56];
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $tabs[1] = $LANG['central'][12]; // My

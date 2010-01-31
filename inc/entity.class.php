@@ -88,11 +88,11 @@ class Entity extends CommonTreeDropdown {
       return ($ID<0 || !strlen($ID));
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong[1] = $LANG['title'][26];          // Main
-      if ($ID>=0) {
+      if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['financial'][44];   // Address
          $ong[3] = $LANG['Menu'][14];        // Users
          $ong[4] = $LANG['rulesengine'][17]; // Rules

@@ -54,7 +54,7 @@ class Link extends CommonDBTM {
       return haveRight('link', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
@@ -74,15 +74,13 @@ class Link extends CommonDBTM {
    /**
     * Print the link form
     *
-    * Print g��al link form
-    *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the link to print
+     * @param $options array
+    *     - target filename : where to go when done.
     *
     *@return Nothing (display)
     *
     **/
-   function showForm ($target,$ID) {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("link","r")) {
@@ -95,8 +93,8 @@ class Link extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'><td height='23'>".$LANG['links'][6]."&nbsp;:</td>";
       echo "<td colspan='3'>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK],
@@ -117,7 +115,7 @@ class Link extends CommonDBTM {
       echo "<textarea name='data' rows='10' cols='96'>".$this->fields["data"]."</textarea>";
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,'',2);
+      $this->showFormButtons($options=array());
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

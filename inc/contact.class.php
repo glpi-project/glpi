@@ -65,11 +65,11 @@ class Contact extends CommonDBTM{
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['Menu'][23];
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
@@ -139,15 +139,14 @@ class Contact extends CommonDBTM{
    /**
     * Print the contact form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the contact to print
-    *@param $withtemplate='' boolean : template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-    *
-    *@return Nothing (display)
+    * @return Nothing (display)
     *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("contact_enterprise","r")) {
@@ -160,8 +159,8 @@ class Contact extends CommonDBTM{
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][48]."&nbsp;:</td>";
@@ -220,7 +219,7 @@ class Contact extends CommonDBTM{
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

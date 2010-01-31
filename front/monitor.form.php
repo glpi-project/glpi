@@ -106,7 +106,7 @@ if (isset($_POST["add"])) {
 } else {
    commonHeader($LANG['Menu'][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 
-   $monitor->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+   $monitor->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
 
    commonFooter();
 }
