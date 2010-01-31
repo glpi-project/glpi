@@ -69,42 +69,45 @@ class CommonGLPI {
    /**
    * Define tabs to display
    *
-   *@param $ID integer ID of the item
-   *@param $withtemplate is a template view ?
+   * @param $options array
+   *     - withtemplate is a template view ?
    *
-   *@return array containing the onglets
+   *  @return array containing the onglets
    *
    **/
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       return array();
    }
 
    /**
    * Show onglets
    *
-   *@param $ID ID of the item to display
-   *@param $withtemplate is a template view ?
-   *@param $addparams array of parameters to add to URLs and ajax
+   * @param $options array of parameters to add to URLs and ajax
+   *     - withtemplate is a template view ?
    *
-   *@return Nothing ()
+   * @return Nothing ()
    *
    **/
-   function showTabs($ID,$withtemplate='',$addparams=array()) {
+   function showTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
-      $target=$_SERVER['PHP_SELF'];
-      $template="";
-      $templatehtml="";
-      if(!empty($withtemplate)) {
-         $template="&withtemplate=$withtemplate";
-         $templatehtml="&amp;withtemplate=$withtemplate";
+      // for objects not in table like central
+      if (isset($this->fields['id'])) {
+         $ID = $this->fields['id'];
+      } else {
+        $ID = 0;
       }
-      $extraparamhtml="";
-      $extraparam="";
-      if (is_array($addparams) && count($addparams)) {
-         foreach ($addparams as $key => $val) {
-            $extraparamhtml.="&amp;$key=$val";
-            $extraparam.="&$key=$val";
+      $target = $_SERVER['PHP_SELF'];
+      $extraparamhtml = "";
+      $extraparam = "";
+      $withtemplate = "";
+      if (is_array($options) && count($options)) {
+         if (isset($options['withtemplate'])) {
+            $withtemplate = $options['withtemplate'];
+         }
+         foreach ($options as $key => $val) {
+            $extraparamhtml .= "&amp;$key=$val";
+            $extraparam .= "&$key=$val";
          }
       }
       if (empty($withtemplate) && $ID && $this->getType()) {
@@ -118,28 +121,28 @@ class CommonGLPI {
             $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
             $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
          }
-         $next=$prev=$first=$last=-1;
-         $current=false;
+         $next = $prev = $first = $last = -1;
+         $current = false;
          if (is_array($glpilistitems)) {
-            $current=array_search($ID,$glpilistitems);
-            if ($current!==false) {
+            $current = array_search($ID,$glpilistitems);
+            if ($current !== false) {
                if (isset($glpilistitems[$current+1])) {
-                  $next=$glpilistitems[$current+1];
+                  $next = $glpilistitems[$current+1];
                }
                if (isset($glpilistitems[$current-1])) {
-                  $prev=$glpilistitems[$current-1];
+                  $prev = $glpilistitems[$current-1];
                }
-               $first=$glpilistitems[0];
-               if ($first==$ID) {
-                  $first= -1;
+               $first = $glpilistitems[0];
+               if ($first == $ID) {
+                  $first = -1;
                }
-               $last=$glpilistitems[count($glpilistitems)-1];
-               if ($last==$ID) {
-                  $last= -1;
+               $last = $glpilistitems[count($glpilistitems)-1];
+               if ($last == $ID) {
+                  $last = -1;
                }
             }
          }
-         $cleantarget=preg_replace("/\?id=([0-9]+)/","",$target);
+         $cleantarget = preg_replace("/\?id=([0-9]+)/","",$target);
          echo "<ul>";
          echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"].
                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
@@ -148,7 +151,7 @@ class CommonGLPI {
 
          echo "<li><a href=\"".$glpilisturl."\">";
          if ($glpilisttitle) {
-            if (utf8_strlen($glpilisttitle)>$_SESSION['glpidropdown_chars_limit']) {
+            if (utf8_strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
                $glpilisttitle = utf8_substr($glpilisttitle, 0, $_SESSION['glpidropdown_chars_limit'])
                                             . "&hellip;";
             }
@@ -158,7 +161,7 @@ class CommonGLPI {
          }
          echo "</a>:&nbsp;</li>";
 
-         if ($first>0) {
+         if ($first > 0) {
             echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src=\"".
                        $CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][55].
                        "' title='".$LANG['buttons'][55]."'></a></li>";
@@ -167,7 +170,7 @@ class CommonGLPI {
                        $LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></li>";
          }
 
-         if ($prev>0) {
+         if ($prev > 0) {
             echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src=\"".
                        $CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12].
                        "' title='".$LANG['buttons'][12]."'></a></li>";
@@ -176,11 +179,11 @@ class CommonGLPI {
                        $LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></li>";
          }
 
-         if ($current!==false) {
+         if ($current !== false) {
             echo "<li>".($current+1) . "/" . count($glpilistitems)."</li>";
          }
 
-         if ($next>0) {
+         if ($next > 0) {
             echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src=\"".
                        $CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11].
                        "' title='".$LANG['buttons'][11]."'></a></li>";
@@ -189,7 +192,7 @@ class CommonGLPI {
                        $LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></li>";
          }
 
-         if ($last>0) {
+         if ($last > 0) {
             echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
                        $CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG['buttons'][56].
                        "' title='".$LANG['buttons'][56]."'></a></li>";
@@ -202,34 +205,31 @@ class CommonGLPI {
       }
       echo "<div id='tabspanel' class='center-h'></div>";
 
-      $active=0;
-      $onglets=$this->defineTabs($ID,$withtemplate);
-      $display_all=true;
+      $active = 0;
+      $onglets = $this->defineTabs($ID,$withtemplate);
+      $display_all = true;
       if (isset($onglets['no_all_tab'])) {
-         $display_all=false;
+         $display_all = false;
          unset($onglets['no_all_tab']);
       }
       if (count($onglets)) {
-
-         $tabpage=$this->getTabsURL();
-
-         $tabs=array();
+         $tabpage = $this->getTabsURL();
+         $tabs = array();
 
          foreach ($onglets as $key => $val ) {
-            $tabs[$key]=array('title'=>$val,
-                              'url'=>$tabpage,
-                              'params'=>"target=$target&itemtype=".$this->getType().
-                                        "&glpi_tab=$key&id=$ID$template$extraparam");
+            $tabs[$key] = array('title'  =>$val,
+                                'url'    =>$tabpage,
+                                'params' =>"target=$target&itemtype=".$this->getType().
+                                           "&glpi_tab=$key&id=$ID$extraparam");
          }
          $plug_tabs = Plugin::getTabs($target,$this, $withtemplate);
-         $tabs+=$plug_tabs;
+         $tabs += $plug_tabs;
          // Not all tab for templates and if only 1 tab
-         if($display_all && empty($withtemplate)
-            && count($tabs)>1) {
-            $tabs[-1]=array('title'=>$LANG['common'][66],
-                            'url'=>$tabpage,
-                            'params'=>"target=$target&itemtype=".$this->getType().
-                                      "&glpi_tab=-1&id=$ID$template$extraparam");
+         if ($display_all && empty($withtemplate) && count($tabs)>1) {
+            $tabs[-1] = array('title'  =>$LANG['common'][66],
+                              'url'    =>$tabpage,
+                              'params' =>"target=$target&itemtype=".$this->getType().
+                                         "&glpi_tab=-1&id=$ID$extraparam");
          }
          createAjaxTabs('tabspanel','tabcontent',$tabs,$this->getType());
       }

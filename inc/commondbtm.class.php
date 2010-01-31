@@ -633,7 +633,7 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $this->fields['name']=$this->getTypeName()." : ".$LANG['common'][2]." ".$this->fields['id'];
          }
-         
+
          addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " . $this->getLink());
       }
    }
@@ -1304,15 +1304,25 @@ class CommonDBTM extends CommonGLPI {
     * Display a 2 columns Footer for Form buttons
     * Close the form is user can edit
     *
-    * @param $ID ID of the item (-1 if new item)
-    * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
-    * @param $colspan for each column
-    * @param $candel : set to false to hide "delete" button
+   * @param $options array
+   *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+   *     - colspan for each column (default 2)
+   *     - candel : set to false to hide "delete" button
     *
     */
-   function showFormButtons ($ID, $withtemplate='', $colspan=1, $candel=true) {
+   function showFormButtons ($options=array()) {
       global $LANG, $CFG_GLPI;
 
+      $ID = $this->fields['id'];
+      $params['colspan'] = 2;
+      $params['withtemplate'] = '';
+      $params['candel'] = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key]=$val;
+         }
+      }
       if (!$this->can($ID,'w')) {
          echo "</table></div>";
          return false;
@@ -1321,22 +1331,22 @@ class CommonDBTM extends CommonGLPI {
 
       if (get_class($this)=='Entity' && !$ID) {
          // Very special case ;)
-      } else if ($withtemplate || $ID<=0) {
-         echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>";
-         if ($ID<=0||$withtemplate==2){
+      } else if ($params['withtemplate'] || $ID<=0) {
+         echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
+         if ($ID<=0 || $params['withtemplate']==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          } else {
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
       } else {
-         if ($candel && !$this->can($ID,'d')) {
-            $candel = false;
+         if ($params['candel'] && !$this->can($ID,'d')) {
+            $params['candel'] = false;
          }
-         if ($candel) {
-            echo "<td class='tab_bg_2 center' colspan='".$colspan."'>\n";
+         if ($params['candel']) {
+            echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."'>\n";
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
             echo "</td>\n";
-            echo "<td class='tab_bg_2 center' colspan='".$colspan."' >\n";
+            echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n";
             if ($this->isDeleted()){
                echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21].
                       "\" class='submit'>";
@@ -1353,7 +1363,7 @@ class CommonDBTM extends CommonGLPI {
                }
             }
          } else {
-            echo "<td class='tab_bg_2 center' colspan='".($colspan*2)."'>\n";
+            echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>\n";
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
       }
@@ -1372,18 +1382,30 @@ class CommonDBTM extends CommonGLPI {
    * Display a 2 columns Header 1 for ID, 1 for recursivity menu
    * Open the form is user can edit
    *
-   * @param $target for the Form
-   * @param $ID ID of the item (-1 if new item)
-   * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
-   * @param $colspan for each column
-   * @param $formoptions string (javascript p.e.)
+   * @param $options array
+   *     - target for the Form
+   *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+   *     - colspan for each column (default 2)
+   *     - formoptions string (javascript p.e.)
    *
    */
-   function showFormHeader ($target, $ID, $withtemplate='', $colspan=1, $formoptions='') {
+   function showFormHeader ($options=array()) {
       global $LANG, $CFG_GLPI;
 
+      $ID = $this->fields['id'];
+      $params['target'] = $this->getFormURL();
+      $params['colspan'] = 2;
+      $params['withtemplate'] = '';
+      $params['formoptions'] = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key]=$val;
+         }
+      }
+
       if ($this->can($ID,'w')) {
-         echo "<form name='form' method='post' action=\"$target\" $formoptions>";
+         echo "<form name='form' method='post' action='".$params['target']."' ".$params['formoptions'].">";
          if (isset($this->fields["entities_id"])) {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
@@ -1391,18 +1413,19 @@ class CommonDBTM extends CommonGLPI {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='$colspan'>";
+      echo "<tr><th colspan='".$params['colspan']."'>";
 
       if (get_class($this)=='Entity' && !$ID) {
          // Very special case ;)
-      } else if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
+      } else if (!empty($params['withtemplate']) && $params['withtemplate'] == 2 && $ID>0) {
          echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
-         echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . "&nbsp;: " . $this->fields["template_name"];
-      } else if (!empty($withtemplate) && $withtemplate == 1) {
+         echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . "&nbsp;: " .
+              $this->fields["template_name"];
+      } else if (!empty($params['withtemplate']) && $params['withtemplate'] == 1) {
          echo "<input type='hidden' name='is_template' value='1' />\n";
          echo $LANG['common'][6]."&nbsp;: ";
          autocompletionTextField($this,"template_name",array('size'=>25));
-      } else if (empty($ID)||$ID<0) {
+      } else if (empty($ID) || $ID<0) {
          echo $this->getTypeName()." - ".$LANG['common'][87];
       } else {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID";
@@ -1411,7 +1434,7 @@ class CommonDBTM extends CommonGLPI {
       if (isset($this->fields["entities_id"]) && isMultiEntitiesMode()) {
          echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
       }
-      echo "</th><th colspan='$colspan'>";
+      echo "</th><th colspan='".$params['colspan']."'>";
 
       if ($this->maybeRecursive() && isMultiEntitiesMode()) {
          echo $LANG['entity'][9]."&nbsp;:&nbsp;";
