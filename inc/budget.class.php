@@ -55,16 +55,17 @@ class Budget extends CommonDBTM{
       return haveRight('budget', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
+
       $ong=array();
       $ong[1]=$LANG['title'][26];
 
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
          }
-         if(empty($withtemplate)) {
+         if (isset($options['withtemplate'])) {
             $ong[2]=$LANG['common'][1];
             if (haveRight("link","r")) {
                $ong[7]=$LANG['title'][34];
@@ -82,16 +83,14 @@ class Budget extends CommonDBTM{
    /**
     * Print the contact form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the contact to print
-    *@param $withtemplate='' boolean : template or basic item
-    *
+    * @param $options array
+    *     - target for the Form
+    *     - withtemplate : template or basic item
     *
     *@return Nothing (display)
     *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
-
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("budget","r")) return false;
@@ -107,8 +106,8 @@ class Budget extends CommonDBTM{
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
@@ -146,7 +145,7 @@ class Budget extends CommonDBTM{
       }
 
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
