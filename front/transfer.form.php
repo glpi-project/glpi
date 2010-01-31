@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
 
 commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
-$transfer->showForm($_GET["id"]);
+$transfer->showForm($_GET["id"], array('target'=>$_SERVER['PHP_SELF']));
 
 commonFooter();
 
