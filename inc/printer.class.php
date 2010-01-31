@@ -59,11 +59,11 @@ class Printer  extends CommonDBTM {
       return haveRight('printer', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
       $ong=array();
-      if ($ID > 0 ) {
+      if ($this->fields['id'] > 0) {
          if (haveRight("cartridge","r")) {
             $ong[1]=$LANG['Menu'][21];
          }
@@ -76,7 +76,7 @@ class Printer  extends CommonDBTM {
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
          }
-         if (empty($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
                $ong[6]=$LANG['title'][28];
             }
@@ -289,14 +289,23 @@ class Printer  extends CommonDBTM {
    /**
     * Print the printer form
     *
-    *@param $target string: where to go when done.
-    *@param $ID integer: Id of the item to print
-    *@param $withtemplate integer: template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
      *@return boolean item found
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
+
+      $target = $this->getFormURL();
+      $withtemplate = '';
+      if (isset($options['target'])) {
+        $target = $options['target'];
+      }
+      if (isset($options['withtemplate'])) {
+         $withtemplate = $options['withtemplate'];
+      }
 
       if (!haveRight("printer","r")) {
          return false;
@@ -309,11 +318,11 @@ class Printer  extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      if (!empty($withtemplate) && $withtemplate == 2) {
+      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
-      } else if (!empty($withtemplate) && $withtemplate == 1) {
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template = "newtemplate";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -323,8 +332,8 @@ class Printer  extends CommonDBTM {
          $template = false;
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>\n";
@@ -341,9 +350,8 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;: </td>\n";
       echo "<td>";
-      Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>\n";
       echo "<td>";
@@ -400,19 +408,19 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>\n";
       echo "<td>";
-      Dropdown::show('Group',
-               array('value'  => $this->fields["groups_id"],
-                     'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
       if ($this->can($ID,'w')) {
-         Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                                  $CFG_GLPI["printers_management_restrict"]);
+         Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],
+                                    $this->fields["is_global"],
+                                    $CFG_GLPI["printers_management_restrict"]);
       } else {
          // Use printers_management_restrict to disallow change this
-         Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                                  $this->fields["is_global"]);
+         Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],
+                                    $this->fields["is_global"]);
       }
       echo "</td></tr>\n";
 
@@ -433,7 +441,8 @@ class Printer  extends CommonDBTM {
       echo "</td>";
       echo "<td rowspan='4'>";
       echo $LANG['common'][25]."&nbsp;:</td>\n";
-      echo "<td rowspan='4'><textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='4'><textarea cols='45' rows='8' name='comment' >".
+            $this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -465,7 +474,7 @@ class Printer  extends CommonDBTM {
       }
       echo "</td></tr>\n";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

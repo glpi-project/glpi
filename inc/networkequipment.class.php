@@ -59,11 +59,11 @@ class NetworkEquipment extends CommonDBTM {
       return haveRight('networking', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['title'][27];
          if (haveRight("contract","r") || haveRight("infocom","r")) {
             $ong[4]=$LANG['Menu'][26];
@@ -71,7 +71,7 @@ class NetworkEquipment extends CommonDBTM {
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
          }
-         if (empty($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
                $ong[6]=$LANG['title'][28];
             }
@@ -240,13 +240,13 @@ class NetworkEquipment extends CommonDBTM {
    /**
     * Print the networking form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
-    *@param $withtemplate integer template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
     *@return boolean item found
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       // Show device or blank form
@@ -262,11 +262,11 @@ class NetworkEquipment extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      if (!empty($withtemplate) && $withtemplate == 2) {
+      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
          $datestring = $LANG['computers'][14].": ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
-      } elseif (!empty($withtemplate) && $withtemplate == 1) {
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template = "newtemplate";
          $datestring = $LANG['computers'][14].": ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -276,8 +276,8 @@ class NetworkEquipment extends CommonDBTM {
          $template = false;
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID, $withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>";
@@ -294,14 +294,13 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('NetworkEquipmentType',
-                        array('value' => $this->fields["networkequipmenttypes_id"]));
+                     array('value' => $this->fields["networkequipmenttypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -324,7 +323,8 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('NetworkEquipmentModel', array('value' => $this->fields["networkequipmentmodels_id"]));
+      Dropdown::show('NetworkEquipmentModel',
+                     array('value' => $this->fields["networkequipmentmodels_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -354,9 +354,8 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Group',
-               array('value'  => $this->fields["groups_id"],
-                     'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['setup'][88]."&nbsp;:</td>";
       echo "<td>";
@@ -406,7 +405,7 @@ class NetworkEquipment extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

@@ -106,7 +106,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
-   $phone->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+   $phone->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    commonFooter();
 }
 

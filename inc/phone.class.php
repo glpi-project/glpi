@@ -59,11 +59,11 @@ class Phone extends CommonDBTM {
       return haveRight('phone', 'r');
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
       $ong=array();
-      if ($ID > 0) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['title'][27];
          if (haveRight("contract","r") || haveRight("infocom","r")) {
             $ong[4]=$LANG['Menu'][26];
@@ -72,7 +72,7 @@ class Phone extends CommonDBTM {
             $ong[5]=$LANG['Menu'][27];
          }
 
-         if (empty($withtemplate)) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
                $ong[6]=$LANG['title'][28];
             }
@@ -204,14 +204,23 @@ class Phone extends CommonDBTM {
    /**
     * Print the phone form
     *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the item to print
-    *@param $withtemplate integer template or basic item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
     *@return boolean item found
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
+
+      $target = $this->getFormURL();
+      $withtemplate = '';
+      if (isset($options['target'])) {
+        $target = $options['target'];
+      }
+      if (isset($options['withtemplate'])) {
+         $withtemplate = $options['withtemplate'];
+      }
 
       if (!haveRight("phone","r")) {
          return false;
@@ -224,14 +233,14 @@ class Phone extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
-      if (!empty($withtemplate) && $withtemplate == 2) {
+      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
-      } else if (!empty($withtemplate) && $withtemplate == 1) {
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template = "newtemplate";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
          $date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -256,9 +265,8 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][15]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
@@ -314,13 +322,14 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][35]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Group',
-               array('value' => $this->fields["groups_id"],'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                    'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],$this->fields["is_global"],
-                               $CFG_GLPI["phones_management_restrict"]);
+      Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],
+                                 $this->fields["is_global"],
+                                 $CFG_GLPI["phones_management_restrict"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -373,7 +382,7 @@ class Phone extends CommonDBTM {
       }
       echo "</td></tr>\n";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

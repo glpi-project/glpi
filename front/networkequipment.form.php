@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $netdevice->check($_POST["id"],'d');
    $netdevice->delete($_POST);
-   
+
    Event::log($_POST["id"], "networking", 4, "inventory",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
 
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
-   $netdevice->showForm($_SERVER['PHP_SELF'],$_GET["id"], $_GET["withtemplate"]);
+   $netdevice->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    commonFooter();
 }
 
