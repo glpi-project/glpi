@@ -103,8 +103,8 @@ class ComputerDisk extends CommonDBChild {
          $this->check(-1,'w',$input);
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       if ($ID>0) {
         $computers_id=$this->fields["computers_id"];
@@ -148,7 +148,7 @@ class ComputerDisk extends CommonDBChild {
       autocompletionTextField($this, "freesize");
       echo "&nbsp;".$LANG['common'][82]."</td></tr>";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

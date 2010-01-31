@@ -2698,8 +2698,8 @@ class Transfer extends CommonDBTM {
          $params['readonly']=true;
       }
       if ($edit_form) {
-         $this->showTabs($options=array());
-         $this->showFormHeader($options=array());
+         $this->showTabs($options);
+         $this->showFormHeader($options);
 
       } else {
          echo "<form method='post' name=form action='".$options['target']."'>";
@@ -2902,7 +2902,7 @@ class Transfer extends CommonDBTM {
 
       if (haveRight("transfer","w")) {
          if ($edit_form) {
-            $this->showFormButtons($options=array());
+            $this->showFormButtons($options);
             echo "<div id='tabcontent'></div>";
             echo "<script type='text/javascript'>loadDefaultTab();</script>";
          } else {

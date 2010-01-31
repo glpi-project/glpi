@@ -466,10 +466,10 @@ class OcsServer extends CommonDBTM {
          $this->getFromDB($ID);
       }
 
-      $this->showTabs($options=array());
+      $this->showTabs($options);
 
       $out  = "\n<div class='center' id='tabsbody'>";
-      $out .= "<form name='formdbconfig' action='".$options['target']."' method='post'>";
+      $out .= "<form name='formdbconfig' action='".$_SERVER['PHP_SELF']."' method='post'>";
       $out .= "<table class='tab_cadre_fixe'>\n";
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][88] . "&nbsp;: </td>\n";
       $out .= "<td><strong>" . $this->fields["id"] . "</strong></td>\n";

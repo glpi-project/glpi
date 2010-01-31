@@ -121,9 +121,9 @@ class Rule extends CommonDBTM {
          $this->getEmpty();
          $new=true;
       }
-      $this->getTitleRule($options['target']);
+      $this->getTitleRule($_SERVER['PHP_SELF']);
       $this->showTabs($ID, $new);
-      echo "<form name='rule_form'  method='post' action='".$options['target']."'>\n";
+      echo "<form name='rule_form'  method='post' action='".$_SERVER['PHP_SELF']."'>\n";
       echo "<div class='center' id='tabsbody' >";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $this->getTitle() . "</th></tr>\n";

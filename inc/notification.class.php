@@ -70,8 +70,8 @@ class Notification extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
       echo "<td>";
@@ -111,7 +111,7 @@ class Notification extends CommonDBTM {
       NotificationTemplate::dropdownTemplates('notificationtemplates_id',$this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
       echo "</span></td></tr>";
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }

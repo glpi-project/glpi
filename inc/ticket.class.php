@@ -132,10 +132,10 @@ class Ticket extends CommonDBTM {
    }
 
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
             if ($this->canAddFollowups()) {
                $ong[1] = $LANG['job'][9];
@@ -2528,7 +2528,7 @@ class Ticket extends CommonDBTM {
       return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
    }
 
-   function showForm($target, $ID,$array=array()) {
+   function showForm($ID, $options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
       $canupdate = haveRight('update_ticket','1');
@@ -2542,7 +2542,7 @@ class Ticket extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $this->check(-1,'w',$array);
+         $this->check(-1,'w',$options);
       }
 
       $this->showTabs($ID);
@@ -2551,7 +2551,8 @@ class Ticket extends CommonDBTM {
                                         && $this->fields['users_id']==$_SESSION['glpiID']);
 
 
-      echo "<form method='post' name='form_ticket' action='$target' enctype='multipart/form-data'>";
+      echo "<form method='post' name='form_ticket' action='".$_SERVER['PHP_SELF'].
+            "' enctype='multipart/form-data'>";
       echo '<div class="center" id="tabsbody">';
       echo "<table class='tab_cadre_fixe'>";
 
@@ -2631,7 +2632,8 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='left'>".$LANG['joblist'][29]."&nbsp;: </td>";
       echo "<td>";
-      if ($canupdate && ($canpriority || !$ID || $this->fields["users_id_recipient"]==$_SESSION["glpiID"])) {
+      if ($canupdate
+          && ($canpriority || !$ID || $this->fields["users_id_recipient"]==$_SESSION["glpiID"])) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
          $idurgency = Ticket::dropdownUrgency("urgency",$this->fields["urgency"]);
       } else {
@@ -2646,14 +2648,14 @@ class Ticket extends CommonDBTM {
          echo "<td>";
 
          //List all users in the active entity (and all it's sub-entities if needed)
-         User::dropdown(array('value'        => $array["users_id"],
+         User::dropdown(array('value'        => $options["users_id"],
                               'entity'       => $this->fields["entities_id"],
                               'entity_sons'  => haveAccessToEntity($this->fields["entities_id"],true),
                               'right'        => 'all',
                               'helpdesk_ajax'=> 1));
 
          //Get all the user's entities
-         $all_entities = Profile_User::getUserEntities($array["users_id"], true);
+         $all_entities = Profile_User::getUserEntities($options["users_id"], true);
          $values = array();
 
          //For each user's entity, check if the technician which creates the ticket have access to it
@@ -2849,9 +2851,9 @@ class Ticket extends CommonDBTM {
       if (haveRight("global_add_followups","1") && !$ID) {
          echo "<td class='left'>".$LANG['job'][20]."&nbsp;: </td>";
          echo "<td class='center' colspan='3'>";
-         Dropdown::showInteger('hour',$array['hour'],0,100);
+         Dropdown::showInteger('hour',$options['hour'],0,100);
          echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
-         Dropdown::showInteger('minute',$array['minute'],0,59);
+         Dropdown::showInteger('minute',$options['minute'],0,59);
          echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
       } else {
          echo "<td colspan='2'>&nbsp;";
@@ -3065,7 +3067,7 @@ class Ticket extends CommonDBTM {
             echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
          } else {
             echo "<td colspan='1' class='center'>";
-            echo "<a href='$target'>";
+            echo "<a href='".$_SERVER['PHP_SELF']."'>";
             echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a></td>";
             echo "<td colspan='2' class='center'>";
             echo "<input type='submit' name='add' value='".$LANG['buttons'][2]."' class='submit'>";

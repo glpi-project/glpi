@@ -44,7 +44,7 @@ class Search {
    static function show ($itemtype) {
 
       Search::manageGetValues($itemtype);
-      Search::showForm($itemtype,$_GET);
+      Search::showGenericSearch($itemtype,$_GET);
       Search::showList($itemtype,$_GET);
    }
 
@@ -1074,7 +1074,7 @@ class Search {
    *@return nothing (displays)
    *
    **/
-   static function showForm($itemtype,$params) {
+   static function showGenericSearch($itemtype,$params) {
       global $LANG,$CFG_GLPI;
 
       // Default values of parameters

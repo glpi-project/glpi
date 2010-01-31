@@ -159,8 +159,8 @@ class SoftwareLicense extends CommonDBTM {
       global $CFG_GLPI,$LANG;
 
       $softwares_id = -1;
-      if (isset($options['$softwares_id'])) {
-         $softwares_id = $options['$softwares_id'];
+      if (isset($options['softwares_id'])) {
+         $softwares_id = $options['softwares_id'];
       }
 
       if (!haveRight("software","w")) {
@@ -176,8 +176,8 @@ class SoftwareLicense extends CommonDBTM {
          $this->fields['number']=1;
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][31]."&nbsp;:</td>";
@@ -258,7 +258,7 @@ class SoftwareLicense extends CommonDBTM {
       showDateFormItem('expire',$this->fields["expire"]);
       echo "</td></tr>\n";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

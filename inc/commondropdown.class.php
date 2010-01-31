@@ -129,8 +129,8 @@ abstract class CommonDropdown extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();
       $nb=count($fields);
@@ -207,7 +207,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
          $options['candel'] = false;
       }
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<br><div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

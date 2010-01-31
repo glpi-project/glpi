@@ -1113,8 +1113,8 @@ class User extends CommonDBTM {
                     || ($this->fields["authtype"] == NOT_YET_AUTHENTIFIED
                         && !empty ($this->fields["password"]) ) );
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][18] . "&nbsp;:</td>";
@@ -1258,7 +1258,7 @@ class User extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

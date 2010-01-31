@@ -351,8 +351,8 @@ class CronTask extends CommonDBTM{
          return false;
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
@@ -421,7 +421,7 @@ class CronTask extends CommonDBTM{
       if (empty($this->fields['lastrun'])) {
          echo $LANG['setup'][307];
       } else {
-        $target = $options['target'];
+        $target = $_SERVER['PHP_SELF'];
          echo convDateTime($this->fields['lastrun']);
          echo " <a href='$target?id=$ID&amp;resetdate=1'><img src='".GLPI_ROOT."/pics/reset.png' ";
          echo " alt='".$LANG['buttons'][16]."' title='".$LANG['buttons'][16]."'></a>";
@@ -475,7 +475,7 @@ class CronTask extends CommonDBTM{
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

@@ -217,7 +217,7 @@ class RuleCollection {
    * @param $target
    * @return nothing
    **/
-   function showForm($target) {
+   function showListRules($target) {
       global $CFG_GLPI, $LANG;
 
       $canedit = haveRight($this->right, "w");

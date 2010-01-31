@@ -145,8 +145,8 @@ class Contract extends CommonDBTM {
 
       $can_edit=$this->can($ID,'w');
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td><td>";
@@ -260,7 +260,7 @@ class Contract extends CommonDBTM {
       Dropdown::showHours("monday_end_hour",$this->fields["monday_end_hour"]);
       echo "</td></tr>";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

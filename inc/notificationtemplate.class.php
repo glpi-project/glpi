@@ -81,8 +81,8 @@ class NotificationTemplate extends CommonDBTM {
             $spotted = true;
          }
       }
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
      //echo "<div id='contenukb'>";
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
@@ -148,7 +148,7 @@ class NotificationTemplate extends CommonDBTM {
          .$this->fields["content_html"]."</textarea></td></tr>";
       echo "</td></tr>";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }

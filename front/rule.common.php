@@ -153,7 +153,7 @@ commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecolle
              $rulecollection->menu_option);
 
 $rulecollection->title();
-$rulecollection->showForm($_SERVER['PHP_SELF']);
+$rulecollection->showListRules($_SERVER['PHP_SELF']);
 commonFooter();
 
 ?>

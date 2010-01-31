@@ -106,8 +106,8 @@ class Budget extends CommonDBTM{
          $this->check(-1,'w');
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." : </td>";
@@ -145,7 +145,7 @@ class Budget extends CommonDBTM{
       }
 
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

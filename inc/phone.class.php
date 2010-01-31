@@ -233,8 +233,8 @@ class Phone extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
@@ -382,7 +382,7 @@ class Phone extends CommonDBTM {
       }
       echo "</td></tr>\n";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

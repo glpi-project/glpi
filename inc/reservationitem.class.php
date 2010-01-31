@@ -225,7 +225,7 @@ class ReservationItem extends CommonDBTM {
             }
          }
 
-         echo "<div class='center'><form method='post' name=form action='".$options['target']."'>";
+         echo "<div class='center'><form method='post' name=form action='".$_SERVER['PHP_SELF']."'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>".$LANG['reservation'][22]."</th></tr>";

@@ -132,8 +132,8 @@ class SoftwareVersion extends CommonDBChild {
       global $CFG_GLPI,$LANG;
 
       $softwares_id = -1;
-      if (isset($options['$softwares_id'])) {
-         $softwares_id = $options['$softwares_id'];
+      if (isset($options['softwares_id'])) {
+         $softwares_id = $options['softwares_id'];
       }
 
       if (!haveRight("software","r")) {
@@ -151,8 +151,8 @@ class SoftwareVersion extends CommonDBChild {
          $this->check(-1, 'w', $input);
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['help'][31]."&nbsp;:</td>";
       echo "<td>";
@@ -183,7 +183,7 @@ class SoftwareVersion extends CommonDBChild {
           || Computer_SoftwareVersion::countForVersion($ID)>0) {
              $options['candel'] = false;
       }
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
