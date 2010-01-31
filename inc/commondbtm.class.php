@@ -1313,7 +1313,12 @@ class CommonDBTM extends CommonGLPI {
    function showFormButtons ($options=array()) {
       global $LANG, $CFG_GLPI;
 
-      $ID = $this->fields['id'];
+      // for single object like config
+      if (isset($this->fields['id'])) {
+         $ID = $this->fields['id'];
+      } else {
+        $ID = 1;
+      }
       $params['colspan'] = 2;
       $params['withtemplate'] = '';
       $params['candel'] = true;

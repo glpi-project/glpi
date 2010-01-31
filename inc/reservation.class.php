@@ -503,16 +503,18 @@ class Reservation extends CommonDBTM {
    * Display for reservation
    *
    * @param $ID ID of the reservation (empty for create new)
-   * @param $items reservation items ID for creation process
-   * @param $date date for creation process
+   * @param $options array
+   *     - item  reservation items ID for creation process
+   *     - date date for creation process
    */
-   function showForm($ID, $items=array(),$date='') {
+   function showForm($ID, $options=array()) {
+    //$items=array(),$date='') {
       global $LANG;
 
       if (!haveRight("reservation_helpdesk","1")) {
          return false;
       }
-      if (count($items)==0) {
+      if (count($options['item'])==0) {
          return false;
       }
 
@@ -527,8 +529,8 @@ class Reservation extends CommonDBTM {
          }
       } else {
          $resa->getEmpty();
-         $resa->fields["begin"]=$date." 12:00:00";
-         $resa->fields["end"]=$date." 13:00:00";
+         $resa->fields["begin"] = $options['date']." 12:00:00";
+         $resa->fields["end"]   = $options['date']." 13:00:00";
       }
 
       echo "<div class='center'><form method='post' name=form action='reservation.form.php'>";
@@ -544,7 +546,7 @@ class Reservation extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4]."&nbsp;:</td>";
       echo "<td>";
-      foreach ($items as $itemID) {
+      foreach ($options['item'] as $itemID) {
          $r->getFromDB($itemID);
          $type=$r->fields["itemtype"];
          $name=NOT_AVAILABLE;

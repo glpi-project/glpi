@@ -116,11 +116,14 @@ class KnowbaseItem extends CommonDBTM {
    /**
    * Print out an HTML "<form>" for knowbase item
    *
-   * @param $target
    * @param $ID
+   * @param $options array
+   *     - target for the Form
+   *
    * @return nothing (display the form)
+   * *
    **/
-   function showForm($target,$ID) {
+   function showForm($ID, $options=array()) {
       global $LANG, $CFG_GLPI;
 
       // show kb item form
@@ -136,7 +139,7 @@ class KnowbaseItem extends CommonDBTM {
       $canedit=$this->can($ID,'w');
       $canrecu=$this->can($ID,'recursive');
 
-      if($canedit) {
+      if ($canedit) {
          echo "<div id='contenukb'>";
          echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
                "/lib/tiny_mce/tiny_mce.js'></script>";
@@ -160,14 +163,14 @@ class KnowbaseItem extends CommonDBTM {
          echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
 
          if (!empty($ID)) {
-            echo "<input type='hidden' name='id' value=\"$ID\">\n";
+            echo "<input type='hidden' name='id' value='$ID'>\n";
          }
 
          echo "<fieldset>";
          echo "<legend>".$LANG['knowbase'][13]."</legend>";
          echo "<div class='center'>".$LANG['knowbase'][6];
          Dropdown::show('KnowbaseItemCategory',
-                     array('value' => $this->fields["knowbaseitemcategories_id"]));
+                        array('value' => $this->fields["knowbaseitemcategories_id"]));
          echo "</div></fieldset>";
 
          echo "<fieldset>";
@@ -210,9 +213,8 @@ class KnowbaseItem extends CommonDBTM {
 
          if (isMultiEntitiesMode()) {
             echo $LANG['entity'][0]."&nbsp;: ";
-            Dropdown::show('Entity',
-                        array('value'     => $this->fields["entities_id"],
-                              'comments'  => 0 ));
+            Dropdown::show('Entity', array('value'     => $this->fields["entities_id"],
+                                           'comments'  => 0 ));
             echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
             if ($canrecu) {
                Dropdown::showYesNo("is_recursive",$this->fields["is_recursive"]);

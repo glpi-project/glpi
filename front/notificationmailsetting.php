@@ -54,7 +54,7 @@ if (!empty($_POST["test_smtp_send"])) {
 
 commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing","config");
 
-$notificationmail->showForm($_SERVER['PHP_SELF'],1);
+$notificationmail->showForm(1);
 
 commonFooter();
 ?>

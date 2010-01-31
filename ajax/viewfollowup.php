@@ -48,9 +48,9 @@ if ($_POST['type']=='TicketTask') {
 }
 $ticket = new Ticket();
 if (isset($_POST["tickets_id"]) && isset($_POST["id"]) && $ticket->getFromDB($_POST["tickets_id"])) {
-   $item->showForm($_POST["id"], $ticket);
+   $item->showForm($_POST["id"], array('ticket' => $ticket));
 } else {
-   echo $LANG['login'][5];// print_r($_POST);
+   echo $LANG['login'][5];
 }
 
 ajaxFooter();
