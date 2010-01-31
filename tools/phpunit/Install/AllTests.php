@@ -103,7 +103,6 @@ class Install_AllTests  {
    public static function suite() {
 
       $suite = new PHPUnit_Framework_TestSuite('Install');
-//      $suite->addTestSuite('Install_Install');
 
       return $suite;
    }
