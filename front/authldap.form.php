@@ -113,7 +113,7 @@ if (isset ($_POST["update"])) {
 }
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","ldap");
-$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
+$config_ldap->showForm($_GET["id"]);
 
 commonFooter();
 

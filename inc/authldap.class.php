@@ -118,12 +118,12 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Print the auth ldap form
     *
-    *@param $target form target
-    *@param $ID Integer : ID of the item
+   * @param $options array
+   *     - target for the Form
     *
     *@return Nothing (display)
     **/
-   function showForm($target, $ID) {
+   function showForm($ID, $options=array()) {
       global $LANG;
 
       if (!haveRight("config", "w")) {
@@ -144,9 +144,10 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (canUseLdap()) {
-         $this->showTabs($ID);
-         $this->showFormHeader($target,$ID,'',2);
+         $this->showTabs($options=array());
+         $this->showFormHeader($options=array());
          if (empty($ID)) {
+            $target = $options['target'];
             echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][16]."&nbsp;:</td> ";
             echo "<td colspan='3'>";
             echo "<a href='$target?preconfig=AD'>".$LANG['ldap'][17]."</a>";
@@ -201,7 +202,7 @@ class AuthLDAP extends CommonDBTM {
             }
          }
 
-         $this->showFormButtons($ID,'',2);
+         $this->showFormButtons($options=array());
 
          echo "<div id='tabcontent'></div>";
          echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -448,18 +449,18 @@ class AuthLDAP extends CommonDBTM {
       echo "</table></form></div>";
 
    }
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong = array();
       $ong[1] = $LANG['title'][26];
 
-      if ($ID>0) {
-            $ong[2] = $LANG['Menu'][14];
-            $ong[3] = $LANG['Menu'][36];
-            $ong[4] = $LANG['entity'][0];
-            $ong[5] = $LANG['entity'][14];
-            $ong[6] = $LANG['ldap'][22];
+      if ($this->fields['id'] > 0) {
+         $ong[2] = $LANG['Menu'][14];
+         $ong[3] = $LANG['Menu'][36];
+         $ong[4] = $LANG['entity'][0];
+         $ong[5] = $LANG['entity'][14];
+         $ong[6] = $LANG['ldap'][22];
       }
       return $ong;
    }

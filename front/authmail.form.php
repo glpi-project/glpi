@@ -71,7 +71,7 @@ if (isset ($_POST["update"])) {
 
 commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
 
-$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["id"]);
+$config_mail->showForm($_GET["id"]);
 
 commonFooter();
 

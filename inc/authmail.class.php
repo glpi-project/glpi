@@ -118,7 +118,7 @@ class AuthMail extends CommonDBTM {
     *
     *@return Nothing (display)
     **/
-   function showForm($target, $ID) {
+   function showForm($ID, $options=array()) {
       global $LANG;
 
       if (!haveRight("config", "w")) {
@@ -136,9 +136,9 @@ class AuthMail extends CommonDBTM {
       }
 
       if (canUseImapPop()) {
-         echo "<form action=\"$target\" method=\"post\">";
+         echo "<form action='".$options['target']."' method='post'>";
          if (!empty ($ID)) {
-            echo "<input type='hidden' name='id' value='" . $ID . "'>";
+            echo "<input type='hidden' name='id' value='$ID'>";
          }
          echo "<div class='center'>";
          echo "<table class='tab_cadre'>";
