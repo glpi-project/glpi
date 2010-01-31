@@ -278,8 +278,9 @@ class NotificationTemplate extends CommonDBTM {
       loadLanguage();
 
       //Template processing
-      $lang['subject'] = strtr($this->getField('subject'),$data);
-      $lang['content_html'] =  NotificationTemplate::process($this->getField('content_html'),$data);
+      $lang['subject'] = NotificationTemplate::process($this->getField('subject'),$data);
+      $lang['content_html'] =
+            "<html><body>".NotificationTemplate::process($this->getField('content_html'),$data);
       $lang['content_text'] =  NotificationTemplate::process($this->getField('content_text'),$data);
       return $lang;
    }
@@ -300,7 +301,7 @@ class NotificationTemplate extends CommonDBTM {
 
             $regex= "/##FOREACH".$tag_infos."##(.*)##ENDFOREACH".$tag_infos."##/";
             preg_match($regex,$string,$tag_out);
-            logDebug("TAG=$tag_infos");
+
             if (isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
 
                $data_lang_foreach = $data;

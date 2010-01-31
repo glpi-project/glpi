@@ -115,22 +115,19 @@ class NotificationTarget extends CommonDBTM {
 
    }
 
-   function showForm($notifications_id, $options=array()) {
+   function showForNotification(Notification $notification) {
       global $DB, $LANG;
 
       if (!haveRight("notification", "r")) {
          return false;
       }
 
-      $notification = new Notification;
-      if ($notifications_id > 0) {
-         $notification->check($notifications_id,'r');
+      if ($notification->getField('id') > 0) {
+         $notification->check($notification->getField('id'),'r');
       } else {
          // Create item
          $notification->check(-1,'w');
       }
-
-      $notification->getFromDB($notifications_id);
 
       echo "<div class='center'>";
 
@@ -140,7 +137,7 @@ class NotificationTarget extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $LANG['mailing'][121] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
-      echo "<input type='hidden' name='notifications_id' value='$notifications_id'>";
+      echo "<input type='hidden' name='notifications_id' value='".$notification->getField('id')."'>";
       $this->showNotificationTargets($notification);
       echo "</tr>";
       echo "</table></form></div>";

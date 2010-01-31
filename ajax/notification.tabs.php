@@ -39,23 +39,23 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("notification",'r');
+$notification = new Notification;
 
-if ($_POST['id'] > 0) {
-   $notification = new Notification();
+//checkRight("notification",'r');
+if ($_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
    $notification->getFromDB($_POST['id']);
    $target =NotificationTarget::getInstanceByType($notification->getField('itemtype'));
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          if ($target) {
-            $target->showForm($_POST["id"]);
+            $target->showForNotification($notification);
          }
          Plugin::displayAction($notification, $_REQUEST['glpi_tab']);
          break;
       case 2 :
          if ($target) {
-            $target->showForm($_POST["id"]);
+            $target->showForNotification($notification);
          }
          break;
       case 12 :

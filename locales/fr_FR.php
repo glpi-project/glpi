@@ -1035,6 +1035,8 @@ $LANG['mailing'][118]="Email";
 $LANG['mailing'][119]="Evènement";
 $LANG['mailing'][120]="Mode de notification";
 $LANG['mailing'][121]="Destinataires";
+$LANG['mailing'][122]="Tâche(s) déjà effectuée(s)";
+$LANG['mailing'][123]="Ticket résolu";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
