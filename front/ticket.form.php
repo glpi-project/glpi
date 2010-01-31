@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {
    commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
-   $track->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $track->showForm($_GET["id"]);
 
 } else {
    commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
@@ -130,8 +130,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    if (isset($_SESSION["helpdeskSaved"])) {
       unset($_SESSION["helpdeskSaved"]);
    }
-
-   $track->showForm($_SERVER['PHP_SELF'], 0, $values);
+   $track->showForm(0, $values);
 }
 
 

@@ -222,9 +222,9 @@ class Document extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($options=array());
+      $this->showTabs($options);
       $options['formoptions'] = " enctype='multipart/form-data'";
-      $this->showFormHeader($options=array());
+      $this->showFormHeader($options);
 
       if ($ID>0) {
          echo "<tr><th colspan='2'>";
@@ -293,7 +293,7 @@ class Document extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

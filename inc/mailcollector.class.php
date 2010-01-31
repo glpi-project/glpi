@@ -130,7 +130,7 @@ class MailCollector  extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      echo "<div class='center'><form method='post' name=form action='".$options['target']."'>";
+      echo "<div class='center'><form method='post' name=form action='".$_SERVER['PHP_SELF']."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr><th class='center'>";
       if (empty($ID)) {

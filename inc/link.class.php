@@ -93,8 +93,8 @@ class Link extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td height='23'>".$LANG['links'][6]."&nbsp;:</td>";
       echo "<td colspan='3'>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK],
@@ -115,7 +115,7 @@ class Link extends CommonDBTM {
       echo "<textarea name='data' rows='10' cols='96'>".$this->fields["data"]."</textarea>";
       echo "</td></tr>";
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

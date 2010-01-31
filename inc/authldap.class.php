@@ -144,10 +144,10 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (canUseLdap()) {
-         $this->showTabs($options=array());
-         $this->showFormHeader($options=array());
+         $this->showTabs($options);
+         $this->showFormHeader($options);
          if (empty($ID)) {
-            $target = $options['target'];
+            $target = $_SERVER['PHP_SELF'];
             echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][16]."&nbsp;:</td> ";
             echo "<td colspan='3'>";
             echo "<a href='$target?preconfig=AD'>".$LANG['ldap'][17]."</a>";
@@ -202,7 +202,7 @@ class AuthLDAP extends CommonDBTM {
             }
          }
 
-         $this->showFormButtons($options=array());
+         $this->showFormButtons($options);
 
          echo "<div id='tabcontent'></div>";
          echo "<script type='text/javascript'>loadDefaultTab();</script>";

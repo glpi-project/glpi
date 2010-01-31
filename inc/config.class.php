@@ -68,7 +68,7 @@ class Config extends CommonDBTM {
 
    function showForm($ID, $options=array()) {
 
-      $this->showTabs($options=array());
+      $this->showTabs($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

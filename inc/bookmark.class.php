@@ -121,7 +121,7 @@ class Bookmark extends CommonDBTM {
       }
 
       echo '<br>';
-      echo "<form method='post' name='form_save_query' action='".$options['target']."'>";
+      echo "<form method='post' name='form_save_query' action='".$_SERVER['PHP_SELF']."'>";
       echo "<div class='center'>";
       if (isset($options['itemtype'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";

@@ -70,7 +70,7 @@ class Profile extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
-      if ($this->fields['id'] > 0) {
+      if (!$this->fields['id']) {
          $ong[1]=$LANG['common'][12];
 
       } else if ($this->fields['interface']=='helpdesk') {
@@ -321,8 +321,8 @@ class Profile extends CommonDBTM {
 
       $rand = mt_rand();
 
-      $this->showTabs($options=array());
-      $this->showFormHeader($options=array());
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td><input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></td>";
@@ -356,7 +356,7 @@ class Profile extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      $this->showFormButtons($options=array());
+      $this->showFormButtons($options);
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
