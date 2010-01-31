@@ -107,7 +107,7 @@ class Transfer extends CommonDBTM {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Profile';
+      $tab[1]['itemlink_type'] = 'Transfer';
 
 
       $tab[19]['table']     = 'glpi_transfers';
