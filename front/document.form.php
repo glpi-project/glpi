@@ -135,7 +135,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");
-   $doc->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $doc->showForm($_GET["id"]);
    commonFooter();
 }
 

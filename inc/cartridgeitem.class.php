@@ -104,7 +104,7 @@ class CartridgeItem extends CommonDBTM {
       $this->fields["alarm_threshold"]=$CFG_GLPI["default_alarm_threshold"];
    }
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($options=array()){
       global $LANG;
 
       $ong[1]=$LANG['Menu'][21];

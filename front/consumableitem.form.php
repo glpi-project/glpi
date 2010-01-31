@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
-   $constype->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $constype->showForm($_GET["id"]);
    commonFooter();
 }
 

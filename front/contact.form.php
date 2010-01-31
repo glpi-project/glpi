@@ -111,7 +111,7 @@ if (isset($_REQUEST['getvcard'])) {
 
 } else {
    commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
-   $contact->showForm($_SERVER['PHP_SELF'],$_GET["id"],'');
+   $contact->showForm($_GET["id"],'');
    commonFooter();
 }
 

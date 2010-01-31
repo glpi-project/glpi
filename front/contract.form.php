@@ -136,7 +136,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
-   $contract->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $contract->showForm($_GET["id"]);
    commonFooter();
 }
 

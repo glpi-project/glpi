@@ -100,11 +100,11 @@ class ConsumableItem extends CommonDBTM {
       $this->fields["alarm_threshold"]=$CFG_GLPI["default_alarm_threshold"];
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['Menu'][32];
          if (haveRight("contract","r") || haveRight("infocom","r")) {
             $ong[4]=$LANG['Menu'][26];
@@ -127,21 +127,17 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Print the consumable type form
     *
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-    * Print g��al consumable type form
-    *
-    *@param $target filename : where to go when done.
-    *@param $ID Integer : Id of the consumable type
-    *@param $withtemplate='' boolean : template or basic item
-    *
-    *
-    *@return Nothing (display)
+    * @return Nothing (display)
     *
     **/
-   function showForm ($target,$ID,$withtemplate='') {
-      // Show ConsumableItem or blank form
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
 
+      // Show ConsumableItem or blank form
       if (!haveRight("consumable","r")) {
          return false;
       }
@@ -153,8 +149,8 @@ class ConsumableItem extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options=array());
+      $this->showFormHeader($options=array());
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
@@ -176,7 +172,7 @@ class ConsumableItem extends CommonDBTM {
       echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('ConsumableItemType',
-               array('value' => $this->fields["consumableitemtypes_id"]));
+                     array('value' => $this->fields["consumableitemtypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -197,9 +193,8 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][36]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('Location',
-                     array('value'  => $this->fields["locations_id"],
-                           'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -208,7 +203,7 @@ class ConsumableItem extends CommonDBTM {
       Dropdown::showInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100);
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

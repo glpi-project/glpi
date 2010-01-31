@@ -165,7 +165,7 @@ if (isset($_REQUEST['getvcard'])) {
    if (!isset($_GET["ext_auth"])) {
       checkRight("user","r");
       commonHeader($LANG['title'][13],$_SERVER['PHP_SELF'],"admin","user");
-      $user->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+      $user->showForm($_GET["id"]);
       commonFooter();
 
    } else {

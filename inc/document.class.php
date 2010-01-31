@@ -82,11 +82,11 @@ class Document extends CommonDBTM {
       }
    }
 
-   function defineTabs($ID,$withtemplate) {
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong=array();
-      if ($ID>0) {
+      if ($this->fields['id'] > 0) {
          $ong[1]=$LANG['financial'][104];
          $ong[5]=$LANG['document'][21];
          if (haveRight("notes","r")) {
@@ -202,13 +202,13 @@ class Document extends CommonDBTM {
    /**
     * Print the document form
     *
-    *@param $target form target
-    *@param $ID Integer : Id of the computer or the template to print
-    *@param $withtemplate='' boolean : template or basic computer
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
     *
-    *@return Nothing (display)
+    * @return Nothing (display)
     **/
-   function showForm ($target,$ID,$withtemplate='') {
+   function showForm ($ID,$options=array()) {
       global $CFG_GLPI,$LANG;
 
       if (!haveRight("document","r")) {
@@ -222,8 +222,9 @@ class Document extends CommonDBTM {
          $this->check(-1,'w');
       }
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2, " enctype='multipart/form-data'");
+      $this->showTabs($options=array());
+      $options['formoptions'] = " enctype='multipart/form-data'";
+      $this->showFormHeader($options=array());
 
       if ($ID>0) {
          echo "<tr><th colspan='2'>";
@@ -292,7 +293,7 @@ class Document extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options=array());
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

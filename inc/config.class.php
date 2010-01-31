@@ -51,7 +51,7 @@ class Config extends CommonDBTM {
       return $LANG['common'][12];
    }
 
-   function defineTabs($ID,$withtemplate){
+   function defineTabs($options=array()){
       global $LANG;
 
       $tabs[1] = $LANG['setup'][70];   // Main

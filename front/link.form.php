@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
 } else {
    commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
-   $link->showForm($_SERVER['PHP_SELF'],$_GET["id"])&&!empty($_GET["id"]);
+   $link->showForm($_GET["id"])&&!empty($_GET["id"]);
    commonFooter();
 }
 

@@ -55,7 +55,7 @@ if (isset($_POST["update"])) {
       exit();
    }
    commonHeader($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
-   $crontask->showForm($_SERVER['PHP_SELF'],$_GET["id"]);
+   $crontask->showForm($_GET["id"]);
    commonFooter();
 }
 
