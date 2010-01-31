@@ -65,7 +65,7 @@ class Budget extends CommonDBTM{
          if (haveRight("document","r")) {
             $ong[5]=$LANG['Menu'][27];
          }
-         if (isset($options['withtemplate'])) {
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             $ong[2]=$LANG['common'][1];
             if (haveRight("link","r")) {
                $ong[7]=$LANG['title'][34];
