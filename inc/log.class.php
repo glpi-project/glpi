@@ -428,29 +428,25 @@ class Log extends CommonDBTM {
                if ($key2==$data["id_search_option"]) {
                   $field= $val2["name"];
                   $fieldname=$val2["field"];
+                  $shorthistory = (isset($fieldname['shorthistory'])?
+                                                                  $fieldname['shorthistory']:false);
                }
             }
             switch ($fieldname) {
-               //For notification templates
-               case "subject" :
-                  $change = $LANG['log'][98];
+               case "comment":
+                  $change = $LANG['log'][64];
                   break;
-               case "content_text" :
-               case "content_html" :
-                  $change = $LANG['log'][99];
-                  break;
-               //For comments
-               case "comment" :
-                  $change =$LANG['log'][64];
-                  break;
-
                case "notepad" :
                   $change =$LANG['log'][67];
                   break;
-
                default :
-                  $change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".
-                            $data[ "new_value"]."\"";
+                  if ($shorthistory) {
+                     $change = $LANG['log'][64];
+                  }
+                  else {
+                     $change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".
+                               $data[ "new_value"]."\"";
+                  }
             }
          }// fin du else
 
