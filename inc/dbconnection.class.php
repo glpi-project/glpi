@@ -270,14 +270,9 @@ class DBConnection {
          echo $LANG['common'][60]." : ".$LANG['choice'][1]."\n";
 
          $task = new CronTask;
-         $task->getFromDBbyName('check_dbreplicate');
+         $task->getFromDBbyName('DBConnection','CheckDBreplicate');
          $diff = DBConnection::getReplicateDelay();
-         if ($diff > ($task->fields['param']*60)) {
-            echo $LANG['setup'][807]." ".timestampToString($diff)."\n";
-         }
-         else {
-            echo $LANG['setup'][808]."\n";
-         }
+         echo $LANG['setup'][803]." : ".timestampToString($diff)."\n";
       }
       else {
             echo $LANG['common'][60]." : ".$LANG['choice'][0]."\n";
@@ -291,7 +286,7 @@ class DBConnection {
     */
    static function changeCronTaskStatus($enable=true) {
       $cron = new CronTask;
-      $cron->getFromDBbyName('check_dbreplicate');
+      $cron->getFromDBbyName('DBConnection','CheckDBreplicate');
       $input['id'] = $cron->fields['id'];
       $input['state'] = ($enable?1:0);
       $cron->update($input);
