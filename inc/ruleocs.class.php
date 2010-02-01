@@ -108,11 +108,10 @@ class RuleOcs extends Rule {
          }
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>" . $LANG['entity'][5] . "</th></tr>\n";
-         initNavigateListItems('Rule', $LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID),
-                               $this->sub_type);
+         initNavigateListItems('RuleOcs', $LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID));
 
          foreach ($rules as $rule) {
-            addToNavigateListItems('Rule',$rule->fields["id"],$this->sub_type);
+            addToNavigateListItems('RuleOcs',$rule->fields["id"]);
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";

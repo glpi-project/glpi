@@ -1947,9 +1947,8 @@ function getCountLogin() {
  *
  * @param $itemtype device type
  * @param $title titre de la liste
- * @param $sub_type of the device (for RULE_TYPE, ...)
  */
-function initNavigateListItems($itemtype,$title="",$sub_type=-1) {
+function initNavigateListItems($itemtype,$title="") {
    global $LANG;
 
    if (empty($title)) {
@@ -1962,30 +1961,19 @@ function initNavigateListItems($itemtype,$title="",$sub_type=-1) {
    } else {
       $url=$_SERVER['PHP_SELF'];
    }
-   if ($sub_type<0) {
-      $_SESSION['glpilisttitle'][$itemtype]=$title;
-      $_SESSION['glpilistitems'][$itemtype]=array();
-      $_SESSION['glpilisturl'][$itemtype]=$url;
-   } else {
-      $_SESSION['glpilisttitle'][$itemtype][$sub_type]=$title;
-      $_SESSION['glpilistitems'][$itemtype][$sub_type]=array();
-      $_SESSION['glpilisturl'][$itemtype][$sub_type]=$url;
-   }
+   $_SESSION['glpilisttitle'][$itemtype]=$title;
+   $_SESSION['glpilistitems'][$itemtype]=array();
+   $_SESSION['glpilisturl'][$itemtype]=$url;
 }
 
 /** Add an item to the navigate through search results list
  *
  * @param $itemtype device type
  * @param $ID ID of the item
- * @param $sub_type of the device (for RULE_TYPE, ...)
  */
-function addToNavigateListItems($itemtype,$ID,$sub_type=-1) {
+function addToNavigateListItems($itemtype,$ID) {
 
-   if ($sub_type<0) {
-      $_SESSION['glpilistitems'][$itemtype][]=$ID;
-   } else {
-      $_SESSION['glpilistitems'][$itemtype][$sub_type][]=$ID;
-   }
+   $_SESSION['glpilistitems'][$itemtype][]=$ID;
 }
 
 

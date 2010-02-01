@@ -112,15 +112,10 @@ class CommonGLPI {
       }
       if (empty($withtemplate) && $ID && $this->getType()) {
          echo "<div id='menu_navigate'>";
-         if (isset($this->sub_type)) {
-            $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()][$this->sub_type];
-            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()][$this->sub_type];
-            $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()][$this->sub_type];
-         } else {
-            $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
-            $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
-            $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
-         }
+         $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
+         $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
+         $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
+
          $next = $prev = $first = $last = -1;
          $current = false;
          if (is_array($glpilistitems)) {
