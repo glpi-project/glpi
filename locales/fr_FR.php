@@ -749,6 +749,7 @@ $LANG['job'][45]="Source du suivi";
 $LANG['job'][46]="Ticket créé dans l'entité";
 $LANG['job'][47]="Coûts";
 $LANG['job'][48]="Type de solution";
+$LANG['job'][49]="Nouvelle tâche";
 
 $LANG['joblist'][0]="Statut";
 $LANG['joblist'][1]="Seulement les miens";
