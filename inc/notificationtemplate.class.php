@@ -188,25 +188,26 @@ class NotificationTemplate extends CommonDBTM {
       $tab[5]['field']         = 'subject';
       $tab[5]['linkfield']     = '';
       $tab[5]['name']          = $LANG['knowbase'][14];
-      $tab[5]['datatype']     = 'text';
+      $tab[5]['shorthistory']  = true;
 
       $tab[6]['table']         = 'glpi_notificationtemplates';
       $tab[6]['field']         = 'content_html';
       $tab[6]['linkfield']     = '';
       $tab[6]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
-      $tab[6]['datatype']     = 'text';
+      $tab[6]['shorthistory']  = true;
 
       $tab[7]['table']         = 'glpi_notificationtemplates';
       $tab[7]['field']         = 'content_text';
       $tab[7]['linkfield']     = '';
       $tab[7]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
-      $tab[7]['datatype']     = 'text';
+      $tab[7]['shorthistory']  = true;
 
-      $tab[8]['table']     = 'glpi_notificationtemplates';
-      $tab[8]['field']     = 'comment';
-      $tab[8]['linkfield'] = 'comment';
-      $tab[8]['name']      = $LANG['common'][25];
-      $tab[8]['datatype']  = 'text';
+      $tab[16]['table']     = 'glpi_notificationtemplates';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
 
       return $tab;
    }

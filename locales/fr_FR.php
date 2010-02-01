@@ -892,7 +892,7 @@ $LANG['log'][60]="déglobalisation de l'item";
 $LANG['log'][61]="ajout utilisateur à l'entité";
 $LANG['log'][62]="suppression utilisateur à l'entité";
 $LANG['log'][63]="entité";
-$LANG['log'][64]="modification des commentaires";
+$LANG['log'][64]="modification du champs";
 $LANG['log'][65]="règle";
 $LANG['log'][66]="Sécurité";
 $LANG['log'][67]="modification des notes";
@@ -922,8 +922,6 @@ $LANG['log'][94]="mise à jour d'une cartouche";
 $LANG['log'][95]="installation d'une cartouche";
 $LANG['log'][96]="désinstallation d'une cartouche";
 $LANG['log'][97]="sortie d'un consommable pour l'utilisateur";
-$LANG['log'][98]="modification du sujet";
-$LANG['log'][99]="modification du contenu";
 
 $LANG['login'][0]="Dernière connexion";
 $LANG['login'][1]="Se reconnecter";
