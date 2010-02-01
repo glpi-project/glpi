@@ -125,11 +125,10 @@ class RuleRight extends Rule {
          }
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>" . $LANG['entity'][6] . "</th></tr>";
-         initNavigateListItems('Rule',$LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID),
-                               $this->sub_type);
+         initNavigateListItems('RuleRight',$LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID));
 
          foreach ($rules as $rule) {
-            addToNavigateListItems('Rule',$rule->fields["id"],$this->sub_type);
+            addToNavigateListItems('RuleRight',$rule->fields["id"]);
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";

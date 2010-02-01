@@ -255,10 +255,13 @@ class RuleCollection {
       echo "<td class='tab_bg_2 center'>".$LANG['common'][60]."</td>";
       echo "<td class='tab_bg_2' colspan='2'></td></tr>\n";
 
-      initNavigateListItems('Rule',"",$this->sub_type);
+      if (count($this->RuleList->list)) {
+         $ruletype=$this->RuleList->list[0]->getType();
+         initNavigateListItems($ruletype);
+      }
       for ($i=$start,$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
          $this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1);
-         addToNavigateListItems('Rule',$this->RuleList->list[$j]->fields['id'],$this->sub_type);
+         addToNavigateListItems($ruletype,$this->RuleList->list[$j]->fields['id']);
       }
       echo "</table>\n";
       if ($canedit && $nb>0) {
