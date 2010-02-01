@@ -256,26 +256,6 @@ class DBConnection {
          if ($diff > ($task->fields['param']*60)) {
             //Raise event if replicate is not synchronized
             NotificationEvent::raiseEvent('desynchronization',$this);
-            /*
-            $msg = $LANG['setup'][807] . " " . timestampToString($diff);
-            $task->log($msg);
-
-            // Send notification if mail configured
-            if (!empty($CFG_GLPI["dbreplicate_email"])
-                && NotificationMail::isUserAddressValid($CFG_GLPI["dbreplicate_email"])) {
-               $mmail = new NotificationMail();
-               $mmail->From = $CFG_GLPI["admin_email"];
-               $mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
-               $mmail->FromName = $CFG_GLPI["dbreplicate_email"];
-               $mmail->AddAddress($CFG_GLPI["dbreplicate_email"], "");
-               $mmail->Subject = $LANG['setup'][808];
-               $mmail->Body = $msg;
-               $mmail->isHTML(false);
-
-               if ($mmail->Send()) {
-                  $task->log("Mail send to ".$CFG_GLPI["dbreplicate_email"]);
-               }
-            }*/
          }
          return 1;
       }
