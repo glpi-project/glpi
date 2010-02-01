@@ -135,18 +135,28 @@ class NotificationTargetReservation extends NotificationTarget {
          $item = new $itemtype();
          $item->getFromDB($reservationitem->getField('items_id'));
          $tpldatas['##reservation.itemtype##'] = $item->getTypeName();
-         $tpldatas['##reservation.item##'] = $item->getField('name');
+         $tpldatas['##reservation.item.name##'] = $item->getField('name');
          $tpldatas['##reservation.comment##'] = $item->getField('comment');
-         $tpldatas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                                     $item->getField('entities_id'));
+         $tpldatas['##reservation.item.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                    $item->getField('entities_id'));
+         if ($item->isField('users_id_tech')) {
+             $tpldatas['##reservation.item.tech##'] = Dropdown::getDropdownName('glpi_users',
+                                                                  $item->getField('users_id_tech'));
+         }
       }
 
-      $tpldatas['##lang.reservation.user##'] = $LANG['common'][37];
-      $tpldatas['##lang.reservation.begin##'] = $LANG['search'][8];
-      $tpldatas['##lang.reservation.end##'] = $LANG['search'][9];
-      $tpldatas['##lang.reservation.comment##'] = $LANG['common'][25];
-      $tpldatas['##lang.reservation.entity##'] = $LANG['entity'][0];
-
+      $fields = array('##lang.ticket.item.name##'=> $LANG['financial'][104],
+                      '##lang.reservation.user##'=>$LANG['common'][37],
+                      '##lang.reservation.begin##'=>$LANG['search'][8],
+                      '##lang.reservation.end##'=>$LANG['search'][9],
+                      '##lang.reservation.comment##'=>$LANG['common'][25],
+                      '##lang.reservation.item.entity##'=>$LANG['entity'][0],
+                      '##lang.reservation.item.name##'=>$LANG['financial'][104],
+                      '##lang.reservation.item.tech##'=> $LANG['common'][10]
+                      );
+      foreach ($fields as $name => $label) {
+         $tpldatas[$name] = $label;
+      }
       return $tpldatas;
    }
 }
