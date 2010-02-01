@@ -37,7 +37,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
    //Overwrite the function in NotificationTarget because there's only one target to be notified
    function getNotficationTargets($entity) {
-      global $LANG,$DB;
+      global $LANG;
       $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
       return $profiles;
    }
@@ -48,10 +48,12 @@ class NotificationTargetDBConnection extends NotificationTarget {
    }
 
    function getDatasForTemplate($event) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $LANG;
 
       $tpldatas = array();
-      $tpldatas['delay'] = DBConnection::getReplicateDelay();
+      $tpldatas['dbconnection.description'] = $LANG['setup'][808];
+      $tpldatas['lang.dbconnection.delay'] = $LANG['setup'][807];
+      $tpldatas['dbconnection.delay'] = DBConnection::getReplicateDelay();
       return $tpldatas;
    }
 }
