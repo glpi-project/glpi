@@ -1441,6 +1441,9 @@ class CommonDBTM extends CommonGLPI {
       }
       echo "</th><th colspan='".$params['colspan']."'>";
 
+      if (get_class($this)=='Entity') {
+         // is recursive but cannot be change
+      } else
       if ($this->maybeRecursive() && isMultiEntitiesMode()) {
          echo $LANG['entity'][9]."&nbsp;:&nbsp;";
          if (!$this->can($ID,'recursive')) {
