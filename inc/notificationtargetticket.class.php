@@ -163,10 +163,9 @@ class NotificationTargetTicket extends NotificationTarget {
       global $LANG;
       return array ('new' => $LANG['mailing'][9],
                     'update' => $LANG['mailing'][30],
-                    'attrib' => $LANG['mailing'][12],
                     'solved' => $LANG['jobresolution'][2],
                     'add_followup' => $LANG['mailing'][10],
-                    'add_task' => $LANG['job'][30],
+                    'add_task' => $LANG['job'][49],
                     'close' => $LANG['mailing'][123]);
    }
 
@@ -352,7 +351,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                     "`tickets_id`='".$this->obj->getField('id')."'");
       foreach ($tasks as $task) {
          $tmp = array();
-         $tmp['##task.isprivate##'] =  $task['is_private'];
+         $tmp['##task.isprivate##'] =  Dropdown::getYesNo($task['is_private']);
          $tmp['##task.author##'] =  Dropdown::getDropdownName('glpi_users',
                                                           $task['users_id']);
          $tmp['##task.category##'] = Dropdown::getDropdownName('glpi_taskcategories',
@@ -374,7 +373,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                     "`tickets_id`='".$this->obj->getField('id')."'");
       foreach ($followups as $followup) {
          $tmp = array();
-         $tmp['##followup.isprivate##'] =  $followup['is_private'];
+         $tmp['##followup.isprivate##'] =  Dropdown::getYesNo($followup['is_private']);
          $tmp['##followup.author##'] =  Dropdown::getDropdownName('glpi_users',
                                                           $followup['users_id']);
          $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
@@ -384,10 +383,10 @@ class NotificationTargetTicket extends NotificationTarget {
          $tpldatas['followups'][] = $tmp;
       }
       if (isset($tpldatas['followups'])) {
-         $tpldatas['##ticket.numberoftasks##'] = count($tpldatas['followups']);
+         $tpldatas['##ticket.numberoffollowups##'] = count($tpldatas['followups']);
       }
       else {
-         $tpldatas['##ticket.numberoftasks##'] = 0;
+         $tpldatas['##ticket.numberoffollowups##'] = 0;
       }
 
       //Locales
@@ -432,8 +431,8 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.task.description##' =>$LANG['joblist'][6],
                        '##lang.task.category##' =>$LANG['common'][36],
                        '##lang.task.time##' =>$LANG['job'][20],
-                       '##lang.followup.time##' =>$LANG['job'][20],
-                       '##lang.followup.isprivate##' =>$LANG['job'][20],
+                       '##lang.followup.date##' =>$LANG['reports'][60],
+                       '##lang.followup.isprivate##' =>$LANG['common'][77],
                        '##lang.followup.author##' =>$LANG['job'][4],
                        '##lang.followup.description##' =>$LANG['joblist'][6],
                        '##lang.followup.requesttype##' =>$LANG['job'][44],

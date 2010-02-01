@@ -122,15 +122,7 @@ class NotificationTarget extends CommonDBTM {
          return false;
       }
 
-      if ($notification->getField('id') > 0) {
-         $notification->check($notification->getField('id'),'r');
-      } else {
-         // Create item
-         $notification->check(-1,'w');
-      }
-
       echo "<div class='center'>";
-
       echo "<form name='notificationtargets_form' id='notificationtargets_form'
              method='post' action=' ";
       echo getItemTypeFormURL(__CLASS__)."'>";
