@@ -41,7 +41,7 @@ commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
 $transfer = new Transfer();
 
-checkTypeRight('Transfer',"r");
+$transfer->checkGlobal('r');
 
 if (isset($_POST['transfer'])) {
    if (isset($_SESSION['glpitransfer_list'])) {

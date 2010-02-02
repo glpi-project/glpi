@@ -48,7 +48,8 @@ if (isset($_GET["globalsearch"])) {
                   'Phone', 'Contact', 'Supplier', 'Document');
 
    foreach($types as $itemtype) {
-      if (haveTypeRight($itemtype,'r')) {
+      $item = new $itemtype();
+      if ($item->canView()) {
          Search::manageGetValues($itemtype,false,false);
          $_GET["contains"][0] = $_GET["globalsearch"];
          Search::showList($itemtype,$_GET);

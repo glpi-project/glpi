@@ -46,18 +46,10 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
    }
    $item = new $_POST["itemtype"]();
 
-   switch ($_POST["itemtype"]){
-      case 'Ticket' :
-         checkRight("update_ticket","1");
-         break;
-
-      default :
-         if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-            checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
-         } else {
-            $item->checkGlobal("w");
-         }
-         break;
+   if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
+      checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
+   } else {
+      $item->checkGlobal("w");
    }
 
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
