@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+checkLoginUser();
 
 $fup = new TicketFollowup();
 $track = new Ticket();
@@ -47,6 +47,8 @@ if (!isset($_GET['id'])) {
 }
 
 if (isset($_POST["add"])) {
+   $track->check(-1,'w',$_POST);
+
    if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
       $splitter = explode("_",$_POST["_my_items"]);
       if (count($splitter) == 2) {
@@ -60,12 +62,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST['update'])) {
-   checkSeveralRightsOr(array('update_ticket'        => '1',
-                              'assign_ticket'        => '1',
-                              'steal_ticket'         => '1',
-                              'add_followups'        => '1',
-                              'global_add_followups' => '1'));
-
+   $track->check($_POST['id'],'w');
    $track->update($_POST);
    Event::log($_POST["id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
@@ -87,7 +84,13 @@ if (isset($_POST["add"])) {
 }
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {
-   commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
+
+   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   } else {
+      commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
+   }
+   
    $track->showForm($_GET["id"]);
 
 } else {

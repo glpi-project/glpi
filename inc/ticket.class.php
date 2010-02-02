@@ -62,7 +62,9 @@ class Ticket extends CommonDBTM {
    }
 
    function canUpdate() {
-      return haveRight('update_ticket', 1);
+      return haveRight('update_ticket', 1)
+            || haveRight('assign_ticket', 1)
+            || haveRight('steal_ticket', 1);
    }
 
    function canView() {
