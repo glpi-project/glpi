@@ -764,6 +764,7 @@ $LANG['joblist'][9]="Nouveau";
 $LANG['joblist'][10]="Fermé (résolu)";
 $LANG['joblist'][11]="Ouvert le";
 $LANG['joblist'][12]="Fermé le";
+$LANG['joblist'][13]="Tickets à traiter";
 $LANG['joblist'][16]="Pas de ticket en cours.";
 $LANG['joblist'][17]="Fermé (non résolu)";
 $LANG['joblist'][18]="En cours (Attribué)";

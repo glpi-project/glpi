@@ -3123,26 +3123,16 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $search_users_id = " (`glpi_tickets`.`users_id` = '".$_SESSION["glpiID"]."'
-                           AND (`status` = 'new'
-                                 OR `status` = 'plan'
-                                 OR `status` = 'assign'
-                                 OR `status` = 'waiting'))
-                        OR ";
+      $search_users_id = " (`glpi_tickets`.`users_id` = '".$_SESSION["glpiID"]."') ";
       $search_assign = " `users_id_assign` = '".$_SESSION["glpiID"]."' ";
       if ($showgrouptickets) {
-         $search_users_id = "";
+         $search_users_id = " 0 = 1 ";
          $search_assign = " 0 = 1 ";
          if (count($_SESSION['glpigroups'])) {
             $groups = implode("','",$_SESSION['glpigroups']);
             $search_assign = " `groups_id_assign` IN ('$groups') ";
             if (haveRight("show_group_ticket",1)) {
-               $search_users_id = " (`groups_id` IN ('$groups')
-                                    AND (`status` = 'new'
-                                          OR `status` = 'plan'
-                                          OR `status` = 'assign'
-                                          OR `status` = 'waiting'))
-                                 OR ";
+               $search_users_id = " (`groups_id` IN ('$groups')) ";
             }
          }
       }
@@ -3155,19 +3145,25 @@ class Ticket extends CommonDBTM {
                         AND `status` ='waiting' ".
                         getEntitiesRestrictRequest("AND","glpi_tickets");
 
-      } else { // on affiche les tickets planifiés ou assignés à glpiID
-         $query .= "WHERE ($search_users_id (( $search_assign )
-                                             AND (`status` ='plan'
-                                                OR `status` = 'assign'))) ".
+      } else  if ($status=="process") { // on affiche les tickets planifiés ou assignés à glpiID
+         $query .= "WHERE ( $search_assign )
+                                             AND (`status` IN ('plan','assign')) ".
+                        getEntitiesRestrictRequest("AND","glpi_tickets");
+      } else { // on affiche les tickets demandés par glpiID qui sont planifiés ou assignés
+            // à quelqu'un d'autre (exclut les self-tickets)
+         $query .= "WHERE ($search_users_id)
+                       AND (`status` IN ('new', 'plan', 'assign', 'waiting'))
+                       AND NOT ( $search_assign ) ".
                         getEntitiesRestrictRequest("AND","glpi_tickets");
       }
-      $query .= "ORDER BY `date_mod` DESC";
+
+      $query .= " ORDER BY date_mod DESC";
 
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
       $query .= " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
-
+      echo $query;
       $result = $DB->query($query);
       $i = 0;
       $number = $DB->numrows($result);
@@ -3195,7 +3191,7 @@ class Ticket extends CommonDBTM {
                }
 
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
-                     "\">".$LANG['central'][16]."</a>";
+                     "\">".$LANG['joblist'][13]." (".$LANG['joblist'][26].")"."</a>";
             } else {
                $options['reset']  = 'reset';
                $options['field'][0]      = 12; // status
@@ -3203,17 +3199,16 @@ class Ticket extends CommonDBTM {
                $options['contains'][0]   = 'waiting';
                $options['link'][0]        = 'AND';
 
+               $options['field'][1]      = 5; // users_id_assign
+               $options['searchtype'][1] = 'equals';
+               $options['contains'][1]   = $_SESSION["glpiID"];
+               $options['link'][1]        = 'AND';
+
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
-                     "\">".$LANG['central'][11]."</a>";
+                     "\">".$LANG['joblist'][13]." (".$LANG['joblist'][26].")"."</a>";
             }
          } else {
-            echo $LANG['central'][17]."&nbsp;: ";
             if ($showgrouptickets) {
-      // Not used ??
-/*               if (haveRight("show_group_ticket",1)) {
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.phpq?group=-1&amp;users_id=".
-                        $_SESSION["glpiID"]."&amp;reset=reset\">".$LANG['joblist'][5]."</a> / ";
-               }*/
                $options['reset']  = 'reset';
                $options['field'][0]      = 12; // status
                $options['searchtype'][0] = 'equals';
@@ -3222,7 +3217,7 @@ class Ticket extends CommonDBTM {
 
                $num=1;
                foreach ($_SESSION['glpigroups'] as $gID) {
-                  $options['field'][$num]      = 8; // status
+                  $options['field'][$num]      = 8; // groups_id
                   $options['searchtype'][$num] = 'equals';
                   $options['contains'][$num]   = $gID;
                   $options['link'][$num]        = ($num==1?'AND':'OR');
@@ -3231,21 +3226,37 @@ class Ticket extends CommonDBTM {
                }
 
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
-                     "\">".$LANG['joblist'][21]."</a>";
-            } else {
+                     "\">".$LANG['central'][9]."</a>";
+            } else if ($status=="process") {
                $options['reset']  = 'reset';
+               
+               $options['field'][0]      = 5; // users_id_assign
+               $options['searchtype'][0] = 'equals';
+               $options['contains'][0]   = $_SESSION["glpiID"];
+               $options['link'][0]        = 'AND';
+
+               $options['field'][1]      = 12; // status
+               $options['searchtype'][1] = 'equals';
+               $options['contains'][1]   = 'process';
+               $options['link'][1]        = 'AND';
+
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
+                        "\">".$LANG['joblist'][13]."</a>";
+            } else { // request by self
+               $options['reset']  = 'reset';
+               
                $options['field'][0]      = 4; // users_id
                $options['searchtype'][0] = 'equals';
                $options['contains'][0]   = $_SESSION["glpiID"];
                $options['link'][0]        = 'AND';
 
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
-                        "\">".$LANG['joblist'][5]."</a> / ";
+               $options['field'][1]      = 12; // status
+               $options['searchtype'][1] = 'equals';
+               $options['contains'][1]   = 'notold';
+               $options['link'][1]        = 'AND';
 
-               $options['field'][0]      = 5; // users_id_assign
-
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
-                        "\">".$LANG['joblist'][21]."</a>";
+                        "\">".$LANG['central'][9]."</a>";
             }
          }
          echo "</th></tr>";
@@ -3263,7 +3274,9 @@ class Ticket extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th>";
          if ($status=="waiting") {
-            echo $LANG['central'][11];
+            echo $LANG['joblist'][13]." (".$LANG['joblist'][26].")";
+         } else if ($status=='process') {
+            echo $LANG['joblist'][13];
          } else {
             echo $LANG['central'][9];
          }

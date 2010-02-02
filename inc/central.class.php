@@ -115,6 +115,9 @@ class Central extends CommonGLPI {
          echo "<tr><td class='top' width='450px'>";
          Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",false);
          echo "</td></tr>";
+         echo "<tr><td class='top' width='450px'>";
+         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"requestbyself",false);
+         echo "</td></tr>";
       }
       echo "</table></td>";
       echo "<td class='top'><table><tr>";
@@ -160,14 +163,25 @@ class Central extends CommonGLPI {
          Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",true);
          echo "</td></tr>";
       }
-      echo "</table></td>";
-      echo "<td class='top'><table>";
-
-      if ($showticket) {
+      if (haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
          Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",true);
          echo "</td></tr>";
       }
+      echo "</table></td>";
+      echo "<td class='top'><table>";
+
+
+      if (haveRight('show_group_ticket','1')) {
+         echo "<tr><td  class='top' width='450px'><br>";
+         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"requestbyselfgroup",true);
+         echo "</td></tr>";
+      } else {
+         echo "<tr><td  class='top' width='450px'><br>";
+         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",true);
+         echo "</td></tr>";
+      }
+
       echo "</table></td></tr></table>";
    }
 
