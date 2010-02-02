@@ -43,19 +43,12 @@ if (!class_exists($_POST["itemtype"])) {
 }
 
 $item = new $_POST["itemtype"]();
-switch ($_POST["itemtype"]) {
-   case 'Ticket' :
-      checkRight("update_ticket","1");
-      break;
-
-   default :
-      if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-         checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
-      } else {
-         checkTypeRight($_POST["itemtype"],"w");
-      }
-      break;
+if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
+   checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
+} else {
+   $item->checkGlobal("w");
 }
+
 
 if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]) {
    $search = Search::getOptions($_POST["itemtype"]);

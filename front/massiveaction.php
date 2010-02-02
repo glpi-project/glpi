@@ -45,6 +45,12 @@ if (isset($_GET['multiple_actions'])) {
    }
 }
 
+if (!class_exists($_POST["itemtype"])) {
+   exit();
+}
+$item = new $_POST["itemtype"]();
+
+
 if (isset($_POST["itemtype"])) {
    /// Right check
    switch ($_POST["itemtype"]) {
@@ -70,7 +76,7 @@ if (isset($_POST["itemtype"])) {
             checkSeveralRightsOr(array($_POST["itemtype"] => 'w',
                                        'infocom'          => 'w'));
          } else {
-            checkTypeRight($_POST["itemtype"],"w");
+            $item->checkGlobal('w');
          }
    }
 
@@ -145,7 +151,6 @@ if (isset($_POST["itemtype"])) {
 
          case "disconnect" :
             $conn = new Computer_Item();
-            $item = new $_POST["itemtype"]();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   if ($item->getFromDB($key)) {
@@ -156,47 +161,37 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case "delete" :
-            if (class_exists($_POST["itemtype"])) {
-               $item = new $_POST["itemtype"]();
-               foreach ($_POST["item"] as $key => $val) {
-                  if ($val == 1 && $item->can($key,'d')) {
-                     $item->delete(array("id"=>$key));
-                  }
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1 && $item->can($key,'d')) {
+                  $item->delete(array("id"=>$key));
                }
             }
             break;
 
          case "purge" :
-            if (class_exists($_POST["itemtype"])) {
-               $item = new $_POST["itemtype"]();
-               foreach ($_POST["item"] as $key => $val){
-                  if ($val == 1) {
-                     $item->delete(array("id"=>$key),1);
-                  }
+            foreach ($_POST["item"] as $key => $val){
+               if ($val == 1) {
+                  $item->delete(array("id"=>$key),1);
                }
             }
             break;
 
          case "restore" :
-            if (class_exists($_POST["itemtype"])) {
-               $item = new $_POST["itemtype"]();
-               foreach ($_POST["item"] as $key => $val) {
-                  if ($val == 1) {
-                     $item->restore(array("id"=>$key));
-                  }
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $item->restore(array("id"=>$key));
                }
             }
             break;
 
          case "update" :
             $searchopt = Search::getCleanedOptions($_POST["itemtype"],'w');
-            if (isset($searchopt[$_POST["id_field"]]) && class_exists($_POST["itemtype"])) {
+            if (isset($searchopt[$_POST["id_field"]])) {
                /// Infocoms case
                if (!isPluginItemType($_POST["itemtype"])
                    && Search::isInfocomOption($_POST["itemtype"],$_POST["id_field"])) {
 
                   $ic = new Infocom();
-                  $item =new $_POST["itemtype"]();
                   $link_entity_type = -1;
                   /// Specific entity item
                   if ($searchopt[$_POST["id_field"]]["table"] == "glpi_suppliers_infocoms"){
@@ -232,14 +227,13 @@ if (isset($_POST["itemtype"])) {
                   }
 
                } else { /// Not infocoms
-                  $item = new $_POST["itemtype"]();
                   $link_entity_type = array();
                   /// Specific entity item
                   $itemtable = getTableForItemType($_POST["itemtype"]);
 
-                  $itemtype = getItemTypeForTable($searchopt[$_POST["id_field"]]["table"]);
-                  if (class_exists($itemtype)) {
-                     $item2 = new $itemtype();
+                  $itemtype2 = getItemTypeForTable($searchopt[$_POST["id_field"]]["table"]);
+                  if (class_exists($itemtype2)) {
+                     $item2 = new $itemtype2();
 
                      if ($searchopt[$_POST["id_field"]]["table"] != $itemtable
                         && $item2->isEntityAssign()
@@ -572,8 +566,7 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case 'move_under' :
-            if (isset($_POST['parent']) && class_exists($_POST["itemtype"])) {
-               $item = new $_POST["itemtype"]();
+            if (isset($_POST['parent'])) {
                $fk = $item->getForeignKeyField();
                foreach ($_POST["item"] as $key => $val) {
                   if ($val==1 && $item->can($key,'w')) {
