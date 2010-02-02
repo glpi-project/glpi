@@ -224,7 +224,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                $plugdisplay=doOneHook($plug['plugin'],
                                        'MassiveActionsFieldsDisplay',
                                           array('itemtype'  => $_POST["itemtype"],
-                                                'options'     => $search);
+                                                'options'     => $search));
             }
             if (!$plugdisplay) {
                Dropdown::show(getItemTypeForTable($search["table"]),
