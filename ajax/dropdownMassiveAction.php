@@ -39,6 +39,13 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
+   
+
+   if (!class_exists($_POST['itemtype']) ) {
+      exit();
+   }
+   $item = new $_POST["itemtype"]();
+
    switch ($_POST["itemtype"]){
       case 'Ticket' :
          checkRight("update_ticket","1");
@@ -48,7 +55,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
             checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
          } else {
-            checkTypeRight($_POST["itemtype"],"w");
+            $item->checkGlobal("w");
          }
          break;
    }
@@ -203,10 +210,11 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          $items_in_group=0;
          $show_all=true;
          $show_infocoms=true;
+         $ic = new Infocom();
          if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])
-             && (!haveTypeRight($_POST["itemtype"],"w") || !haveTypeRight('Infocom',"w"))) {
+             && (!$item->checkGlobal("w") || !$ic->checkGlobal("w"))) {
             $show_all=false;
-            $show_infocoms=haveTypeRight('Infocom',"w");
+            $show_infocoms=$ic->checkGlobal("w");
          }
          echo "<select name='id_field' id='massiveaction_field'>";
          echo "<option value='0' selected>------</option>";
