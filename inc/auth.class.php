@@ -186,7 +186,7 @@ class Auth {
          return false;
       }
 
-      $query = "SELECT `password`
+      $query = "SELECT `id`,`password`
                 FROM `glpi_users`
                 WHERE `name` = '" . $name . "'";
       $result = $DB->query($query);
@@ -196,10 +196,25 @@ class Auth {
       }
       if ($result) {
          if ($DB->numrows($result) == 1) {
-            $password_md5_db = $DB->result($result, 0, "password");
-            $password_md5_post = md5($password);
+            $password_db = $DB->result($result, 0, "password");
+            // MD5 password
+            if (strlen($password_db)==32) {
+               $password_post = md5($password);
+            } else {
+               $password_post = sha1($password);
+            }
 
-            if (strcmp($password_md5_db, $password_md5_post) == 0) {
+            if (strcmp($password_db, $password_post) == 0) {
+               // Update password to sha1
+               if (strlen($password_db)==32) {
+                  $input['id']=$DB->result($result, 0, "id");
+                  // Set glpiID to allow passwod update
+                  $_SESSION['glpiID']=$input['id'];
+                  $input['password']=$password;
+                  $input['password2']=$password;
+                  $user=new User();
+                  $user->update($input);
+               }
                return true;
             }
             $this->addToError($LANG['login'][12]);

@@ -1386,7 +1386,7 @@ function update0723to080($output='HTML') {
    }
 
    if (FieldExists('glpi_users', 'password_md5')) {
-      $changes['glpi_users'][]="CHANGE `password_md5` `password` CHAR( 32 )  NULL DEFAULT NULL";
+      $changes['glpi_users'][]="CHANGE `password_md5` `password` CHAR( 40 )  NULL DEFAULT NULL";
    }
 
    if (!FieldExists('glpi_mailcollectors', 'filesize_max')) {
