@@ -213,6 +213,8 @@ if ($item instanceof CommonTreeDropdown) {
          }
       }
 
+      $last_level_displayed = array();
+
       if ($DB->numrows($result)) {
          $prev=-1;
          while ($data =$DB->fetch_array($result)) {
@@ -229,11 +231,14 @@ if ($item instanceof CommonTreeDropdown) {
             }
 
             if ($multi && $data["entities_id"]!=$prev) {
-                     if ($prev>=0) {
-                           echo "</optgroup>";
-                     }
-                     $prev=$data["entities_id"];
-                     echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
+               if ($prev>=0) {
+                     echo "</optgroup>";
+               }
+               $prev=$data["entities_id"];
+               echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
+               // Reset last level displayed :
+               $last_level_displayed = array();
+                  
             }
 
 
@@ -250,6 +255,53 @@ if ($item instanceof CommonTreeDropdown) {
                   $raquo="";
                   $level=0;
                }
+            } else { // Need to check if parent is the good one
+               if ($level>1) {
+                  // Last parent is not the good one need to display arbo
+                  if (!isset($last_level_displayed[$level-1])
+                         || $last_level_displayed[$level-1] != $data[$item->getForeignKeyField()]) {
+
+                     $work_level=$level-1;
+                     $work_parentID=$data[$item->getForeignKeyField()];
+                     $to_display='';
+                     
+                     do {
+                        // Get parent
+                        if ($item->getFromDB($work_parentID)) {
+                           $addcomment="";
+                           if (isset($item->fields["comment"])) {
+                              $addcomment=" - ".$item->fields["comment"];
+                           }
+                           $output2=$item->getName();
+                           if (utf8_strlen($output2)>$_POST["limit"]) {
+                              $output2=utf8_substr($output2,0,$_POST["limit"])."&hellip;";
+                           }
+
+                           $class2=" class='tree' ";
+                           $raquo2="&raquo;";
+                           if ($work_level==1) {
+                              $class2=" class='treeroot'";
+                              $raquo2="";
+                           }
+
+                           $to_display="<option disabled value='$work_parentID' $class2
+                                    title=\"".cleanInputText($item->fields['completename'].
+                                    $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
+                                    $raquo2.$output2."</option>".$to_display;
+                           $last_level_displayed[$work_level]=$item->fields['id'];
+                           $work_level--;
+                           $work_parentID=$item->fields[$item->getForeignKeyField()];
+                        } else { // Error getting item : stop
+                           $work_level=-1;
+                        }
+                     } while ($work_level > 1
+                              && (!isset($last_level_displayed[$work_level])
+                                 || $last_level_displayed[$work_level] != $work_parentID));
+                     
+                     echo $to_display;
+                  }
+               }
+               $last_level_displayed[$level]=$data['id'];
             }
             if (utf8_strlen($output)>$_POST["limit"]) {
                if ($_SESSION['glpiuse_flat_dropdowntree']) {
@@ -261,12 +313,11 @@ if ($item instanceof CommonTreeDropdown) {
             if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
                $output.=" ($ID)";
             }
-            $style=$class;
             $addcomment="";
             if (isset($data["comment"])) {
                $addcomment=" - ".$data["comment"];
             }
-            echo "<option value='$ID' $style title=\"".cleanInputText($data['completename'].
+            echo "<option value='$ID' $class title=\"".cleanInputText($data['completename'].
                   $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
          }
          if ($multi) {
