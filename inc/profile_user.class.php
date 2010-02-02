@@ -77,7 +77,7 @@ class Profile_User extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$ID'>";
          Dropdown::show('Entity', array('entity'=>$_SESSION['glpiactiveentities']));
          echo "</td><td class='center'>".$LANG['profiles'][22]."&nbsp;: ";
-         Profile::dropdownUnder();
+         Profile::dropdownUnder(array('value'=>Profile::getDefault()));
          echo "</td><td class='center'>".$LANG['profiles'][28]."&nbsp;: ";
          Dropdown::showYesNo("is_recursive",0);
          echo "</td><td class='center'>";
