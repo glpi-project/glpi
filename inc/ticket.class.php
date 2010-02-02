@@ -3163,7 +3163,7 @@ class Ticket extends CommonDBTM {
       $numrows = $DB->numrows($result);
 
       $query .= " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
-      echo $query;
+      //echo $query;
       $result = $DB->query($query);
       $i = 0;
       $number = $DB->numrows($result);
