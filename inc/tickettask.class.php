@@ -611,7 +611,7 @@ class TicketTask  extends CommonDBTM {
       //echo "<h3>" . $LANG['job'][37] . "</h3>";
 
       if ($DB->numrows($result) == 0) {
-         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th class='b'>" . $LANG['job'][12];
+         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th class='b'>" . $LANG['job'][50];
          echo "</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
