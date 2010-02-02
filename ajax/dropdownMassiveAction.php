@@ -55,6 +55,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
    echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
+   echo '&nbsp;';
    switch($_POST["action"]) {
       case "activate_rule" :
          Dropdown::showYesNo("activate_rule");
@@ -63,9 +64,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case 'move_under' :
-         echo '&nbsp;'.$LANG['setup'][75];
+         echo $LANG['setup'][75];
          Dropdown::show($_POST['itemtype'], array('name' => 'parent', 'comments' => 0));
-         echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;
 
@@ -131,13 +132,13 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "install" :
          Software::dropdownSoftwareToInstall("softwareversions_id",$_SESSION["glpiactive_entity"],1);
-         echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][4]."\" >";
          break;
 
       case "connect" :
          Computer_Item::dropdownConnect('Computer',$_POST["itemtype"],"connect_item");
-         echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
@@ -147,7 +148,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                                                                                   'Printer',
                                                                                   'Peripheral'),
                           true);
-         echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >";
          break;
 
