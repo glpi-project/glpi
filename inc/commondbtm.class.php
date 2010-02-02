@@ -1599,7 +1599,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-   * Check right on an item with block
+   * Check global right on an object
    *
    * @param $right Right to check : c / r / w / d
    * @return nothing
@@ -1607,23 +1607,7 @@ class CommonDBTM extends CommonGLPI {
    function checkGlobal($right) {
       global $CFG_GLPI;
 
-      $ok=false;
-      switch ($right) {
-         case 'r' :
-            $ok = $this->canView();
-            break;
-         case 'w' :
-            $ok = $this->canUpdate();
-            break;
-         case 'c' :
-            $ok = $this->canCreate();
-            break;
-         case 'd' :
-            $ok = $this->canDeletew();
-            break;
-      }
-
-      if (!$ok) {
+      if (!$this->canGlobal($right)) {
          // Gestion timeout session
          if (!isset ($_SESSION["glpiID"])) {
             glpi_header($CFG_GLPI["root_doc"] . "/index.php");
@@ -1631,6 +1615,30 @@ class CommonDBTM extends CommonGLPI {
          }
          displayRightError();
       }
+   }
+
+   /**
+   * Get global right on an object
+   *
+   * @param $right Right to check : c / r / w / d
+   * @return nothing
+   **/   
+   function canGlobal($right) {
+      switch ($right) {
+         case 'r' :
+            return $this->canView();
+            break;
+         case 'w' :
+            return $this->canUpdate();
+            break;
+         case 'c' :
+            return $this->canCreate();
+            break;
+         case 'd' :
+            return $this->canDelete();
+            break;
+      }
+      return false;
    }
 
    /**

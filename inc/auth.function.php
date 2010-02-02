@@ -78,21 +78,21 @@ function haveRight($module, $right) {
  *
  * @return Boolean : session variable have more than the right specified for the module type
 **/
-function haveTypeRight($itemtype, $right) {
-   global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
-
-   if ($right=='w') {
-      $method = array($itemtype,'canCreate');
-   } else {
-      $method = array($itemtype,'canView');
-   }
-   $item=new $itemtype();
-
-   if (method_exists($item,$method[1])) {
-      return $item->$method[1]();
-   }
-   return false;
-}
+// function haveTypeRight($itemtype, $right) {
+//    global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
+// 
+//    if ($right=='w') {
+//       $method = array($itemtype,'canCreate');
+//    } else {
+//       $method = array($itemtype,'canView');
+//    }
+//    $item=new $itemtype();
+// 
+//    if (method_exists($item,$method[1])) {
+//       return $item->$method[1]();
+//    }
+//    return false;
+// }
 
 /**
  * Display common message for privileges errors
@@ -165,8 +165,11 @@ function checkSeveralRightsOr($modules) {
       foreach ($modules as $mod => $right) {
          // Itemtype
          if (preg_match('/[A-Z]/',$mod[0])){
-            if (haveTypeRight($mod, $right)) {
-               $valid = true;
+            if (class_exists($mod)) {
+               $item = new $mod();
+               if ($item->canGlobal($right)) {
+                  $valid=true;
+               }
             }
          } else if (haveRight($mod, $right)) {
             $valid = true;
