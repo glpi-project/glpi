@@ -1497,7 +1497,7 @@ $LANG['setup'][165]="L'extensió IMAP del seu intèrpret PHP no està instal.lad
 $LANG['setup'][166]="Impossible utilitzar IMAP/POP com origen de connexió externa"; 
 $LANG['setup'][167]="Enllaç GLPI/LDAP"; 
 $LANG['setup'][168]="Opcions de connexió"; 
-$LANG['setup'][169]="Mail folder (optional, often INBOX)"; 
+$LANG['setup'][169]="Carpeta de correu (opcional, normalment INBOX)"; 
 $LANG['setup'][170]="Cadena de connexió obtinguda"; 
 $LANG['setup'][171]="Port (opcional)"; 
 $LANG['setup'][172]="Port LDAP (predeterminat=389)"; 
@@ -1629,7 +1629,7 @@ $LANG['setup'][609]="Impossible afegir. El servidor OCS ja existeix.";
 $LANG['setup'][610]="Títol d'incidència obligatori"; 
 $LANG['setup'][611]="El contingut de l'incident es obligatori"; 
 $LANG['setup'][612]="La categoria de l'incident es obligatoria"; 
-$LANG['setup'][614]="Unable to update login. A user already exists."; 
+$LANG['setup'][614]="Impossible actualitzar l'accés. L'usuari ja existeix,"; 
 $LANG['setup'][620]="Enllaç"; 
 $LANG['setup'][650]="PHP"; 
 $LANG['setup'][651]="SMTP"; 

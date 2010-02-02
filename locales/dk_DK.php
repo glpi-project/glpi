@@ -439,7 +439,7 @@ $LANG['event'][19]="Opdatering";
 $LANG['event'][20]="Ingen historie"; 
 
 $LANG['financial'][1]="Kontrakt"; 
-$LANG['financial'][2]="Has life"; 
+$LANG['financial'][2]="Lifelong"; 
 $LANG['financial'][3]="Finans information"; 
 $LANG['financial'][4]="Nummer"; 
 $LANG['financial'][5]="Pris"; 

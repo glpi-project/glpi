@@ -439,7 +439,7 @@ $LANG['event'][19]="更新";
 $LANG['event'][20]="没有历史"; 
 
 $LANG['financial'][1]="合同"; 
-$LANG['financial'][2]="Has life"; 
+$LANG['financial'][2]="Lifelong"; 
 $LANG['financial'][3]="财政信息"; 
 $LANG['financial'][4]="数字"; 
 $LANG['financial'][5]="花费了"; 

@@ -439,7 +439,7 @@ $LANG['event'][19]="Update";
 $LANG['event'][20]="Geen geschiedenis"; 
 
 $LANG['financial'][1]="Contract"; 
-$LANG['financial'][2]="Has life"; 
+$LANG['financial'][2]="Lifelong"; 
 $LANG['financial'][3]="Commerciële informatie"; 
 $LANG['financial'][4]="Nummer"; 
 $LANG['financial'][5]="Kostprijs"; 

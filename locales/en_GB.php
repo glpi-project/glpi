@@ -439,7 +439,7 @@ $LANG['event'][19]="Update";
 $LANG['event'][20]="No historical"; 
 
 $LANG['financial'][1]="Contract"; 
-$LANG['financial'][2]="Has life"; 
+$LANG['financial'][2]="Lifelong"; 
 $LANG['financial'][3]="Financial Information"; 
 $LANG['financial'][4]="Number"; 
 $LANG['financial'][5]="Cost"; 
@@ -1065,7 +1065,7 @@ $LANG['ocsng'][15]="No field locked";
 $LANG['ocsng'][16]="Locked Fields"; 
 $LANG['ocsng'][18]="Connection to OCS database successful"; 
 $LANG['ocsng'][19]="Valid OCS NG configuration and version"; 
-$LANG['ocsng'][20]="Invalid OCS NG Version: require RC3"; 
+$LANG['ocsng'][20]="Invalid OCS NG Version: RC3 is required"; 
 $LANG['ocsng'][21]="Connection to the OCS NG database failed"; 
 $LANG['ocsng'][22]="Caution! The imported data (see your configuration) will overwrite the existing data"; 
 $LANG['ocsng'][23]="Unable to import, GLPI computer is already related to an element of OCS NG"; 

@@ -439,7 +439,7 @@ $LANG['event'][19]="Güncelle";
 $LANG['event'][20]="No historical"; 
 
 $LANG['financial'][1]="Sözleşme"; 
-$LANG['financial'][2]="Has life"; 
+$LANG['financial'][2]="Lifelong"; 
 $LANG['financial'][3]="Finansal bilgi"; 
 $LANG['financial'][4]="Sayı"; 
 $LANG['financial'][5]="Maliyet"; 

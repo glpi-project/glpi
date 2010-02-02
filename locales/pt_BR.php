@@ -1497,7 +1497,7 @@ $LANG['setup'][165]="Seu PHP foi compilado sem suporte a IMAP";
 $LANG['setup'][166]="Impossével usar IMAP/POP como fonte externa de conexão"; 
 $LANG['setup'][167]="Links GLPI/LDAP"; 
 $LANG['setup'][168]="Opções de Conexão"; 
-$LANG['setup'][169]="Mail folder (optional, often INBOX)"; 
+$LANG['setup'][169]="Arquivo de mensagens (opcional, geralmente INBOX)"; 
 $LANG['setup'][170]="Resulting Ccnnection parameter"; 
 $LANG['setup'][171]="Porta (opcional)"; 
 $LANG['setup'][172]="Porta LDAP (default=389)"; 
@@ -1629,7 +1629,7 @@ $LANG['setup'][609]="Não foi possível adicionar. O servidor do OCS-NG já exis
 $LANG['setup'][610]="Obrigatório o título do chamado"; 
 $LANG['setup'][611]="Obrigatório o conteúdo do chamado"; 
 $LANG['setup'][612]="Obrigatório a categoria no chamado"; 
-$LANG['setup'][614]="Unable to update login. A user already exists."; 
+$LANG['setup'][614]="Não foi possível atualizar o login. Um usuário já existe."; 
 $LANG['setup'][620]="Link"; 
 $LANG['setup'][650]="PHP"; 
 $LANG['setup'][651]="SMTP"; 
