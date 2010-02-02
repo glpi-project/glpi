@@ -1597,6 +1597,42 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+
+   /**
+   * Check right on an item with block
+   *
+   * @param $right Right to check : c / r / w / d
+   * @return nothing
+   **/
+   function checkGlobal($right) {
+      global $CFG_GLPI;
+
+      $ok=false;
+      switch ($right) {
+         case 'r' :
+            $ok = $this->canView();
+            break;
+         case 'w' :
+            $ok = $this->canUpdate();
+            break;
+         case 'c' :
+            $ok = $this->canCreate();
+            break;
+         case 'd' :
+            $ok = $this->canDeletew();
+            break;
+      }
+
+      if (!$ok) {
+         // Gestion timeout session
+         if (!isset ($_SESSION["glpiID"])) {
+            glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+            exit ();
+         }
+         displayRightError();
+      }
+   }
+
    /**
    * Get the ID of entity assigned to the object
    *
