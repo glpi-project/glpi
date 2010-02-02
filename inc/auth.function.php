@@ -191,31 +191,32 @@ function checkSeveralRightsOr($modules) {
  *
  * @return Nothing : display error if not permit
 **/
-function checkSeveralRightsAnd($modules) {
-   global $CFG_GLPI;
+// function checkSeveralRightsAnd($modules) {
+//    global $CFG_GLPI;
+// 
+//    $valid = true;
+//    if (count($modules)) {
+//       foreach ($modules as $mod => $right) {
+//          if (is_numeric($mod)) {
+//             if (!haveTypeRight($mod, $right)) {
+//                $valid = false;
+//             }
+//          } else if (!haveRight($mod, $right)) {
+//             $valid = false;
+//          }
+//       }
+//    }
+// 
+//    if (!$valid) {
+//       // Gestion timeout session
+//       if (!isset ($_SESSION["glpiID"])) {
+//          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+//          exit ();
+//       }
+//       displayRightError();
+//    }
+// }
 
-   $valid = true;
-   if (count($modules)) {
-      foreach ($modules as $mod => $right) {
-         if (is_numeric($mod)) {
-            if (!haveTypeRight($mod, $right)) {
-               $valid = false;
-            }
-         } else if (!haveRight($mod, $right)) {
-            $valid = false;
-         }
-      }
-   }
-
-   if (!$valid) {
-      // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
-         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-         exit ();
-      }
-      displayRightError();
-   }
-}
 /**
  * Check if I have the right $right to module type $itemtype (conpare to session variable)
  *
@@ -224,17 +225,17 @@ function checkSeveralRightsAnd($modules) {
  *
  * @return Nothing : display error if not permit
 **/
-function checkTypeRight($itemtype, $right) {
-   global $CFG_GLPI;
-   if (!haveTypeRight($itemtype, $right)) {
-      // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
-         glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-         exit ();
-      }
-      displayRightError();
-   }
-}
+// function checkTypeRight($itemtype, $right) {
+//    global $CFG_GLPI;
+//    if (!haveTypeRight($itemtype, $right)) {
+//       // Gestion timeout session
+//       if (!isset ($_SESSION["glpiID"])) {
+//          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+//          exit ();
+//       }
+//       displayRightError();
+//    }
+// }
 /**
  * Check if I have access to the central interface
  *
