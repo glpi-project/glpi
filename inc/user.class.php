@@ -279,14 +279,14 @@ class User extends CommonDBTM {
          return false;
       }
 
-      if (isset ($input["password"])) {
+      if (isset ($input["password2"])) {
          if (empty ($input["password"])) {
             unset ($input["password"]);
          } else {
 
             if ($input["password"]==$input["password2"]) {
-                $input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
-
+               $input["password"] = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+               unset($input["password2"]);
             } else {
              addMessageAfterRedirect($LANG['setup'][21],false,ERROR);
                return false;
@@ -364,16 +364,15 @@ class User extends CommonDBTM {
          } else {
 
              if ($input["password"]==$input["password2"]) {
-
                   // Check right : my password of user with lesser rights
                   if (isset($input['id'])
                       && ((isset($_SESSION['glpiID']) && $input['id']==$_SESSION['glpiID'])
                           || $this->currentUserHaveMoreRightThan($input['id']) )) {
-                     $input["password"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     $input["password"] = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
                   } else {
                      unset($input["password"]);
                   }
-
+                  unset($input["password2"]);
              } else {
              addMessageAfterRedirect($LANG['setup'][21],false,ERROR);
                return false;
