@@ -108,10 +108,7 @@ function doHookFunction($name,$parm=NULL) {
  *
  * @return mixed $data
  */
-function doOneHook() {
-   $args=func_get_args();
-   $plugname = array_shift($args);
-   $hook = array_shift($args);
+function doOneHook($plugname,$hook,$options=array()) {
    if (!is_array($hook)) {
       $hook = "plugin_" . $plugname . "_" . $hook;
       if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
@@ -119,7 +116,7 @@ function doOneHook() {
       }
    }
    if (is_callable($hook)) {
-      return call_user_func_array($hook, $args);
+      return call_user_func($hook, $options);
    }
 }
 
