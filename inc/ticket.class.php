@@ -2441,12 +2441,13 @@ class Ticket extends CommonDBTM {
 
       $this->showFormHeader($this->getFormURL(), $this->getField('id'), '', 1);
 
-      echo "<tr><th colspan='2'>".$LANG['job'][47]."</th></tr>";
+      echo "<tr><th colspan='4'>".$LANG['job'][47]."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='left' width='50%'>".$LANG['job'][20]."&nbsp;: </td>";
 
       echo "<td class='b'>".Ticket::getRealtime($this->fields["realtime"])."</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
       if ($canedit) {  // admin = oui on affiche les couts liés à l'interventions
@@ -2455,6 +2456,7 @@ class Ticket extends CommonDBTM {
 
          echo "<td><input type='text' maxlength='100' size='15' name='cost_time' value='".
                     formatNumber($this->fields["cost_time"],true)."'></td>";
+         echo "<td colspan='2'>&nbsp;</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -2462,6 +2464,7 @@ class Ticket extends CommonDBTM {
 
          echo "<td><input type='text' maxlength='100' size='15' name='cost_fixed' value='".
                     formatNumber($this->fields["cost_fixed"],true)."'></td>";
+         echo "<td colspan='2'>&nbsp;</td>";
          echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'>";
@@ -2469,6 +2472,7 @@ class Ticket extends CommonDBTM {
 
          echo "<td><input type='text' maxlength='100' size='15' name='cost_material' value='".
                     formatNumber($this->fields["cost_material"],true)."'></td>";
+         echo "<td colspan='2'>&nbsp;</td>";
          echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'>";
@@ -2478,6 +2482,7 @@ class Ticket extends CommonDBTM {
          echo self::trackingTotalCost($this->fields["realtime"], $this->fields["cost_time"],
                                       $this->fields["cost_fixed"],$this->fields["cost_material"]);
          echo "</td>";
+         echo "<td colspan='2'>&nbsp;</td>";
          echo "</tr>\n";
       }
       $this->showFormButtons($this->getField('id'), '', 1, false);
