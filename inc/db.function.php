@@ -74,30 +74,40 @@ function getTableNameForForeignKeyField($fkname) {
  * return string itemtype corresponding to a table name parameter
  */
 function getItemTypeForTable($table) {
-   $table=str_replace("glpi_","",$table);
-   $prefix="";
-   if (preg_match('/^plugin_([a-z0-9]+)_/',$table,$matches)) {
-      $table=preg_replace('/^plugin_[a-z0-9]+_/','',$table);
-      $prefix= "Plugin".ucfirst($matches[1]);
-   }
-   if (strstr($table,'_')) {
-      $split=explode('_',$table);
-      foreach ($split as $key => $part) {
-         $split[$key]=ucfirst(getSingular($part));
-      }
-      $table=implode('_',$split);
+   global $CFG_GLPI;
+
+   if (isset($CFG_GLPI['glpiitemtypetables'][$table])) {
+      return $CFG_GLPI['glpiitemtypetables'][$table];
    } else {
-      $table=ucfirst(getSingular($table));
-   }
 
-   $itemtype=$prefix.$table;
+      $table=str_replace("glpi_","",$table);
+      $prefix="";
+      if (preg_match('/^plugin_([a-z0-9]+)_/',$table,$matches)) {
+         $table=preg_replace('/^plugin_[a-z0-9]+_/','',$table);
+         $prefix= "Plugin".ucfirst($matches[1]);
+      }
+      if (strstr($table,'_')) {
+         $split=explode('_',$table);
+         foreach ($split as $key => $part) {
+            $split[$key]=ucfirst(getSingular($part));
+         }
+         $table=implode('_',$split);
+      } else {
+         $table=ucfirst(getSingular($table));
+      }
 
-   // Get real existence of itemtype
-   if (class_exists($itemtype)){
-	$item = new $itemtype();
-	return get_class($item);
+      $itemtype=$prefix.$table;
+
+      // Get real existence of itemtype
+      if (class_exists($itemtype)){
+         $item = new $itemtype();
+         $itemtype=get_class($item);
+         $CFG_GLPI['glpiitemtypetables'][$table]=$itemtype;
+         $CFG_GLPI['glpitablesitemtype'][$itemtype]=$table;
+         return $itemtype;
+      }
+      return "UNKNOWN";
    }
-   return "UNKNOWN";
 }
 
 /**
@@ -110,8 +120,8 @@ function getItemTypeForTable($table) {
 function getTableForItemType($itemtype) {
    global $CFG_GLPI;
 
-   if (isset($CFG_GLPI['glpitables'][$itemtype])) {
-      return $CFG_GLPI['glpitables'][$itemtype];
+   if (isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
+      return $CFG_GLPI['glpitablesitemtype'][$itemtype];
    } else {
 
       $prefix="glpi_";
@@ -131,7 +141,8 @@ function getTableForItemType($itemtype) {
       } else {
          $table=getPlural($table);
       }
-      $CFG_GLPI['glpitables'][$itemtype]=$prefix.$table;
+      $CFG_GLPI['glpitablesitemtype'][$itemtype]=$prefix.$table;
+      $CFG_GLPI['glpiitemtypetables'][$prefix.$table]=$itemtype;
       return $prefix.$table;
    }
 }
