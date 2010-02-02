@@ -92,7 +92,7 @@ class NotificationTemplate extends CommonDBTM {
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
          elements: 'content_html',
-         plugins : 'table,directionality,paste,safari,searchreplace',
+         plugins : 'table,directionality,paste,searchreplace',
          theme : 'advanced',
          entity_encoding : 'numeric', ";
          // directionality + search replace plugin
