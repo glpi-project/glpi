@@ -100,8 +100,8 @@ if (isset($_REQUEST['getvcard'])) {
    glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
 } else if (isset ($_POST["force_ldap_resynch"])) {
-   checkSeveralRightsAnd(array('user'          => 'w',
-                               'user_authtype' => 'w'));
+   checkRight('user_authtype','w');
+   $user->check($_POST['id'],'w');
 
    $user->getFromDB($_POST["id"]);
    ldapImportUserByServerId($user->fields["name"],true,$user->fields["auths_id"],true);
@@ -132,8 +132,8 @@ if (isset($_REQUEST['getvcard'])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["switch_auth_internal"])) {
-   checkSeveralRightsAnd(array('user'          => 'w',
-                               'user_authtype' => 'w'));
+   checkRight('user_authtype','w');
+   $user->check($_POST['id'],'w');
 
    $input["id"] = $_POST["id"];
    $input["authtype"] = AUTH_DB_GLPI;
@@ -142,8 +142,8 @@ if (isset($_REQUEST['getvcard'])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } elseif (isset($_POST["switch_auth_ldap"])) {
-   checkSeveralRightsAnd(array('user'          => 'w',
-                               'user_authtype' => 'w'));
+   checkRight('user_authtype','w');
+   $user->check($_POST['id'],'w');
 
    $input["id"] = $_POST["id"];
    $input["authtype"] = AUTH_LDAP;
@@ -152,8 +152,8 @@ if (isset($_REQUEST['getvcard'])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } elseif (isset($_POST["switch_auth_mail"])) {
-   checkSeveralRightsAnd(array('user'          => 'w',
-                               'user_authtype' => 'w'));
+   checkRight('user_authtype','w');
+   $user->check($_POST['id'],'w');
 
    $input["id"] = $_POST["id"];
    $input["authtype"] = AUTH_MAIL;
