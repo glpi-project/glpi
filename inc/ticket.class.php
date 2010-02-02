@@ -3271,7 +3271,7 @@ class Ticket extends CommonDBTM {
          }
          echo "</table>";
       } else {
-         echo "<table class='tab_cadrehov'>";
+         echo "<table class='tab_cadrehov' style='width:420px'>";
          echo "<tr><th>";
          if ($status=="waiting") {
             echo $LANG['joblist'][13]." (".$LANG['joblist'][26].")";
