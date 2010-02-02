@@ -148,7 +148,7 @@ class KnowbaseItem extends CommonDBTM {
             language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
             mode : 'exact',
             elements: 'answer',
-            plugins : 'table,directionality,paste,safari,searchreplace',
+            plugins : 'table,directionality,searchreplace',
             theme : 'advanced',
             entity_encoding : 'numeric', ";
             // directionality + search replace plugin
