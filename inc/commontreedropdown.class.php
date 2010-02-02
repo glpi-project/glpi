@@ -96,7 +96,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function pre_deleteItem() {
       global $DB;
 
-      if ($this->input['_replace_by']) {
+      // Not set in case of massive delete : use parent
+      if (isset($this->input['_replace_by']) && $this->input['_replace_by']) {
          $parent = $this->input['_replace_by'];
       } else {
          $parent = $this->fields[$this->getForeignKeyField()];
