@@ -44,7 +44,20 @@ class EntityData extends CommonDBTM {
 
    // From CommonDBTM
    public $table = 'glpi_entitydatas';
+   // link in message dont work (no showForm)
+   public $auto_message_on_action = false;
 
+   // Array of "right required to update" => array of fields allowed
+   private static $field_right = array(
+                  // Address
+                 'entity' => array('address', 'postcode', 'postcode', 'town', 'state', 'country',
+                                   'website', 'phonenumber', 'fax', 'email', 'notepad'),
+                 // Advanced (could be user_authtype ?)
+                 'entity' => array('ldap_dn', 'tag', 'ldapservers_id', 'entity_ldapfilter'),
+                 // Notification
+                 'notification' => array('admin_email', 'admin_reply', 'mailing_signature',
+                                         'cartridges_alert_repeat', 'consumables_alert_repeat',
+                                         'use_licenses_alert'));
 /*
    function getEmpty() {
       global $CFG_GLPI;
@@ -59,11 +72,29 @@ class EntityData extends CommonDBTM {
    }
 
    function canCreate() {
-      return haveRight('entity', 'w');
+      return haveRight('entity', 'w') || haveRight('notification', 'w');
    }
 
    function canView() {
       return haveRight('entity', 'r');
+   }
+
+   function prepareInputForAdd($input) {
+
+      foreach (self::$field_right as $right => $fields) {
+         if (!haveRight($right, 'w')) {
+            foreach ($fields as $field) {
+               if (isset($input[$field])) {
+                  unset($input[$field]);
+               }
+            }
+         }
+      }
+      return $input;
+   }
+
+   function prepareInputForUpdate($input) {
+      return $this->prepareInputForAdd($input);
    }
 
    /**
@@ -78,6 +109,8 @@ class EntityData extends CommonDBTM {
       if (!$entity->can($ID,'r')) {
          return false;
       }
+
+      // Entity right applied
       $canedit=$entity->can($ID,'w');
 
       // Get data
@@ -101,8 +134,8 @@ class EntityData extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($entdata, "phonenumber");
       echo "</td>";
-      echo "<td rowspan='5'>".$LANG['financial'][44]."&nbsp;:</td>";
-      echo "<td rowspan='5'><textarea cols='45' rows='3' name='address'>".
+      echo "<td rowspan='6'>".$LANG['financial'][44]."&nbsp;:</td>";
+      echo "<td rowspan='6'><textarea cols='45' rows='6' name='address'>".
              $entdata->fields["address"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -165,6 +198,8 @@ class EntityData extends CommonDBTM {
       if (!$entity->can($ID,'r')) {
          return false;
       }
+
+      // Entity right applied (could be user_authtype)
       $canedit=$entity->can($ID,'w');
 
       // Get data
@@ -234,7 +269,9 @@ class EntityData extends CommonDBTM {
       if (!$entity->can($ID,'r')) {
          return false;
       }
-      $canedit=$entity->can($ID,'w');
+
+      // Notification right applied
+      $canedit = haveRight('notification','w') && haveAccessToEntity($ID);
 
       // Get data
       $entitynotification=new EntityData();
