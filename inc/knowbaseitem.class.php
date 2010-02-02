@@ -160,7 +160,7 @@ class KnowbaseItem extends CommonDBTM {
             theme_advanced_buttons3 : ''});";
          echo "</script>";
 
-         echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
+         echo "<form method='post' id='form_kb' name='form_kb' action=\"".$this->getFormUrl()."\">";
 
          if (!empty($ID)) {
             echo "<input type='hidden' name='id' value='$ID'>\n";
