@@ -94,8 +94,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             $plugdisplay=false;
             if ($plug=isPluginItemType($_POST["itemtype"])) {
                $plugdisplay=doOneHook($plug['plugin'],
-                                         'MassiveActionsFieldsDisplay',$_POST["itemtype"],
-                                         $search["table"],$search["field"],$search["linkfield"]);
+                                         'MassiveActionsFieldsDisplay',
+                                          array('itemtype'  => $_POST["itemtype"],
+                                                'options'     => $search));
             }
             $already_display=false;
             if (isset($search['datatype'])) {
@@ -221,8 +222,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             $plugdisplay=false;
             if ($plug=isPluginItemType($_POST["itemtype"])) {
                $plugdisplay=doOneHook($plug['plugin'],
-                                       'MassiveActionsFieldsDisplay',$_POST["itemtype"],
-                                       $search["table"],$search["field"],$search["linkfield"]);
+                                       'MassiveActionsFieldsDisplay',
+                                          array('itemtype'  => $_POST["itemtype"],
+                                                'options'     => $search);
             }
             if (!$plugdisplay) {
                Dropdown::show(getItemTypeForTable($search["table"]),
