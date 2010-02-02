@@ -44,16 +44,15 @@ if (!isset($_POST["id"]) || !isset($_POST["itemtype"])) {
 
 $setupdisplay=new DisplayPreference();
 
-checkSeveralRightsOr(array("search_config_global"=>"w",
-                           "search_config"=>"w"));
-
 if ($_POST["id"]<0) {
    switch($_REQUEST['glpi_tab']) {
       case 1 :
+         checkRight('search_config_global','w');
          $setupdisplay->showFormGlobal($_POST['target'],$_POST["displaytype"]);
          break;
 
       case 2 :
+         checkRight('search_config','w');
          $setupdisplay->showFormPerso($_POST['target'],$_POST["displaytype"]);
          break;
    }

@@ -61,8 +61,11 @@ if (isset($_POST["itemtype"])) {
                break;
 
             case "add_followup" :
-            case "add_task" :
                checkSeveralRightsOr(array('global_add_followups' => 1,
+                                          'own_ticket'           => 1));
+               break;
+            case "add_task" :
+               checkSeveralRightsOr(array('global_add_tasks' => 1,
                                           'own_ticket'           => 1));
                break;
 
