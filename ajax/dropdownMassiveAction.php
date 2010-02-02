@@ -212,9 +212,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          $show_infocoms=true;
          $ic = new Infocom();
          if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])
-             && (!$item->checkGlobal("w") || !$ic->checkGlobal("w"))) {
+             && (!$item->canUpdate() || !$ic->canUpdate())) {
             $show_all=false;
-            $show_infocoms=$ic->checkGlobal("w");
+            $show_infocoms=$ic->canUpdate();
          }
          echo "<select name='id_field' id='massiveaction_field'>";
          echo "<option value='0' selected>------</option>";
