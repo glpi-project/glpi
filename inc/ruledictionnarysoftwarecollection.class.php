@@ -52,7 +52,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    **/
    function __construct() {
       //Init cache system values
-      $this->initCache("glpi_rulescachesoftwares", array("name" => "old_value",
+      $this->initCache("glpi_rulecachesoftwares", array("name" => "old_value",
                                                          "manufacturer" => "manufacturer"),
                        array("name" => "new_value",
                              "version" => "version",
