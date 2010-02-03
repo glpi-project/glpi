@@ -51,9 +51,9 @@ class EntityData extends CommonDBTM {
    private static $field_right = array(
                   // Address
                  'entity' => array('address', 'postcode', 'postcode', 'town', 'state', 'country',
-                                   'website', 'phonenumber', 'fax', 'email', 'notepad'),
+                                   'website', 'phonenumber', 'fax', 'email', 'notepad',
                  // Advanced (could be user_authtype ?)
-                 'entity' => array('ldap_dn', 'tag', 'ldapservers_id', 'entity_ldapfilter'),
+                                   'ldap_dn', 'tag', 'ldapservers_id', 'entity_ldapfilter'),
                  // Notification
                  'notification' => array('admin_email', 'admin_reply', 'mailing_signature',
                                          'cartridges_alert_repeat', 'consumables_alert_repeat',
