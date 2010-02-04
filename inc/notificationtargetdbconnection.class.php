@@ -38,7 +38,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
    //Overwrite the function in NotificationTarget because there's only one target to be notified
    function getNotficationTargets($entity) {
       global $LANG;
-      $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+      $profiles[Notification::USER_TYPE . "_" . Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
       return $profiles;
    }
 
@@ -47,7 +47,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
       return array ('desynchronization' => $LANG['setup'][810]);
    }
 
-   function getDatasForTemplate($event) {
+   function getDatasForTemplate($event,$options=array()) {
       global $LANG;
 
       $tpldatas = array();

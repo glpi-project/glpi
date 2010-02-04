@@ -2070,21 +2070,27 @@ CREATE TABLE `glpi_notificationtargets` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_notificationtemplates
-
 DROP TABLE IF EXISTS `glpi_notificationtemplates`;
 CREATE TABLE `glpi_notificationtemplates` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `language` varchar(255) collate utf8_unicode_ci default NULL,
-  `is_default` tinyint(1) NOT NULL default '0',
-  `subject` text collate utf8_unicode_ci,
-  `content_text` text collate utf8_unicode_ci,
-  `content_html` text collate utf8_unicode_ci,
-  `comment` text collate utf8_unicode_ci,
-  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
-  `date_mod` datetime default NULL,
-  PRIMARY KEY  (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_notificationtemplatetranslations
+
+DROP TABLE IF EXISTS `glpi_notificationtemplatetranslations`;
+CREATE TABLE `glpi_notificationtemplatetranslations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
+  `language` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `content_text` text COLLATE utf8_unicode_ci,
+  `content_html` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

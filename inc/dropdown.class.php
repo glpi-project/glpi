@@ -53,7 +53,7 @@ class Dropdown {
    *    - auto_submit : boolean / preselected value (default 0)
    *    - rand : integer / already computed rand value
    *    - condition : string / aditional SQL condition to limit display
-   *    - displaywith : array / array of field to display with request 
+   *    - displaywith : array / array of field to display with request
    *
    *
    * @param $itemtype itemtype used for create dropdown
@@ -656,24 +656,24 @@ class Dropdown {
    /**
     * Dropdown available languages
     *
-   * @param $myname select name
+    * @param $myname select name
     * @param $value default value
+    * @param options additionnal options :
+    *    - display_none : allow selection of no language
     */
-   static function showLanguages($myname,$value) {
+   static function showLanguages($myname,$options=array()) {
       global $CFG_GLPI;
 
-      echo "<select name='$myname'>";
-
+      $values = array();
+      if (isset($options['display_none']) && ($options['display_none'])) {
+         $values[''] = '-----';
+      }
       foreach ($CFG_GLPI["languages"] as $key => $val) {
          if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {
-            echo "<option value=\"".$key."\"";
-            if ($value==$key) {
-               echo " selected";
-            }
-            echo ">".$val[0]." ($key)";
+            $values[$key] = $val[0];
          }
       }
-      echo "</select>";
+      Dropdown::showFromArray($myname,$values,$options);
    }
 
    /**

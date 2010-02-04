@@ -35,27 +35,30 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTargetContract extends NotificationTarget {
 
-    function __construct() {
-      parent::__construct();
-      $this->real_object = false;
-   }
-
    function getEvents() {
       global $LANG;
-      return array ('alert' => $LANG['mailing'][39]);
+      return array ('alert_end' => $LANG['mailing'][125], 'alert_notice'=>$LANG['mailing'][124]);
    }
 
       /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event) {
+   function getDatasForTemplate($event,$options=array()) {
       global $LANG;
-      $prefix = strtolower($item->getType());
-      $tpldatas['##'.$prefix.'.entity##'] =
+      $tpldatas['##contract.entity##'] =
                            Dropdown::getDropdownName('glpi_entities',
                                                      $this->obj->getField('entities_id'));
-      $tpldatas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $tpldatas['##lang.'.$prefix.'.action##']= $LANG['mailing'][39];
+      $tpldatas['##lang.contract.entity##'] = $LANG['entity'][0];
+      switch ($options['type']) {
+         case ALERT_END :
+            $tpldatas['##lang.contract.action##'] = $LANG['mailing'][37];
+            break;
+         case ALERT_NOTICE:
+            $tpldatas['##lang.contract.action##'] = $LANG['mailing'][38];
+            break;
+      }
+      $tpldatas['##lang.contract.action##']= $LANG['mailing'][39];
+
       return $tpldatas;
    }
 }

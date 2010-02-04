@@ -1347,7 +1347,7 @@ class User extends CommonDBTM {
            if (!GLPI_DEMO_MODE){
             echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
             /// Use sesion variable because field in table may be null if same of the global config
-            Dropdown::showLanguages("language", $_SESSION["glpilanguage"]);
+            Dropdown::showLanguages("language", array('value'=>$_SESSION["glpilanguage"]));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }

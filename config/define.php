@@ -198,46 +198,6 @@ define("HISTORY_RESTORE_ITEM",14);
 define("HISTORY_ADD_RELATION",15);
 define("HISTORY_DEL_RELATION",16);
 
-
-
-// MAILING TYPE
-//Notification to a user (sse mailing users type below)
-define("NOTIFICATION_USER_TYPE",1);
-//Notification to users of a profile
-define("NOTIFICATION_PROFILE_TYPE",2);
-//Notification to a users of a group
-define("NOTIFICATION_GROUP_TYPE",3);
-//Notification to the people in charge of the database synchronisation
-define("DB_NOTIFICATION_MAILING_TYPE",3);
-
-// MAILING USERS TYPE
-
-//Notification to the GLPI global administrator
-define("NOTIFICATION_GLOBAL_ADMINISTRATOR",1);
-//Notification to the technicial who's assign to a ticket
-define("NOTIFICATION_TICKET_ASSIGN_TECH",2);
-//Notification to the owner of the item
-define("NOTIFICATION_AUTHOR",3);
-//Notification to the technician previously in charge of the ticket
-define("NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE",4);
-//Notification to the technician in charge of the item
-define("NOTIFICATION_ITEM_TECH_IN_CHARGE",5);
-//Notification to the item's user
-define("NOTIFICATION_ITEM_USER",6);
-//Notification to the ticket's recipient
-define("NOTIFICATION_TICKET_RECIPIENT",7);
-//Notificartion to the ticket's assigned supplier
-define("NOTIFICATION_TICKET_SUPPLIER",8);
-//Notification to a group of people
-define("ASSIGN_GROUP_MAILING",9);
-//Notification to the supervisor of the ticket's assigned group
-define("NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP",10);
-//Notification to the entity administrator
-define("NOTIFICATION_ENTITY_ADMINISTRATOR",11);
-//Notification to the supervisor of the ticket's requester group
-define("NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP",12);
-
-
 // EXPORT TYPE
 define("GLOBAL_SEARCH",-1);
 define("HTML_OUTPUT",0);

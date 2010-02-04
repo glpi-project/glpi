@@ -38,6 +38,10 @@ class NotificationTemplate extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   public $signature = '';
+
+   public $templates_by_languages = array();
+
    static function getTypeName() {
       global $LANG;
 
@@ -84,69 +88,20 @@ class NotificationTemplate extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-     //echo "<div id='contenukb'>";
-      echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
-             "/lib/tiny_mce/tiny_mce.js'></script>";
-      echo "<script language='javascript' type='text/javascript''>";
-      echo "tinyMCE.init({
-         language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
-         mode : 'exact',
-         elements: 'content_html',
-         plugins : 'table,directionality,paste,searchreplace',
-         theme : 'advanced',
-         entity_encoding : 'numeric', ";
-         // directionality + search replace plugin
-      echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
-      echo "theme_advanced_toolbar_location : 'top',
-         theme_advanced_toolbar_align : 'left',
-         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-         theme_advanced_buttons3 : ''});";
-      echo "</script>";
-
-
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
-      echo "<td>";
+      echo "<td colspan='3'>";
       autocompletionTextField($this, "name");
-      echo "</td>";
-
-      echo "<td rowspan='4' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='4'><textarea cols='45' rows='9' name='comment' >"
-         .$this->fields["comment"]."</textarea></td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
-      $language = ($this->fields['language'] !=''?$this->fields['language']:
-                                                    $_SESSION['glpilanguage']);
-      Dropdown::showLanguages("language", $language);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][114] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo('is_default',$this->fields['is_default']);
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "</td><td colspan='3'>";
       Dropdown::dropdownTypes("itemtype",
                               ($this->fields['itemtype']?$this->fields['itemtype']:'Ticket'),
                               $CFG_GLPI["notificationtemplates_types"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['knowbase'][14] . "&nbsp;:</td><td colspan='3'>";
-      echo "<textarea cols='100' rows='2' name='subject' >"
-         .$this->fields["subject"]."</textarea></td></tr>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][115]. ' '. $LANG['mailing'][117].
-           "&nbsp;:</td><td colspan='3'>";
-      echo "<textarea cols='100' rows='9' name='content_text' >"
-         .$this->fields["content_text"]."</textarea></td></tr>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][115]. ' '. $LANG['mailing'][116].
-           "&nbsp;:</td><td colspan='3'>";
-      echo "<textarea cols='100' rows='9' name='content_html' >"
-         .$this->fields["content_html"]."</textarea></td></tr>";
-      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td colspan='3'><textarea cols='45' rows='9' name='comment' >"
+         .$this->fields["comment"]."</textarea></td></tr>";
 
       $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
@@ -166,6 +121,14 @@ class NotificationTemplate extends CommonDBTM {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'NotificationTemplate';
 
+      $tab[4]['table']         = 'glpi_notificationtemplates';
+      $tab[4]['field']         = 'itemtype';
+      $tab[4]['linkfield']     = '';
+      $tab[4]['name']          = $LANG['common'][17];
+      $tab[4]['datatype']      = 'itemtypename';
+
+
+/*
       $tab[2]['table']         = 'glpi_notificationtemplates';
       $tab[2]['field']         = 'is_default';
       $tab[2]['linkfield']     = '';
@@ -177,12 +140,6 @@ class NotificationTemplate extends CommonDBTM {
       $tab[3]['linkfield']     = '';
       $tab[3]['name']          = $LANG['setup'][41];
       $tab[3]['datatype']      = 'language';
-
-      $tab[4]['table']         = 'glpi_notificationtemplates';
-      $tab[4]['field']         = 'itemtype';
-      $tab[4]['linkfield']     = '';
-      $tab[4]['name']          = $LANG['common'][17];
-      $tab[4]['datatype']      = 'itemtypename';
 
       $tab[5]['table']         = 'glpi_notificationtemplates';
       $tab[5]['field']         = 'subject';
@@ -201,7 +158,7 @@ class NotificationTemplate extends CommonDBTM {
       $tab[7]['linkfield']     = '';
       $tab[7]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
       $tab[7]['shorthistory']  = true;
-
+*/
       $tab[16]['table']     = 'glpi_notificationtemplates';
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
@@ -210,21 +167,6 @@ class NotificationTemplate extends CommonDBTM {
 
 
       return $tab;
-   }
-
-   function prepareInputForAdd($input) {
-      return NotificationTemplate::cleanContentHtml($input);
-   }
-
-   static function cleanContentHtml($input) {
-      if (!$input['content_text']) {
-         $input['content_text'] = html_clean(unclean_cross_side_scripting_deep($input['content_html']));
-      }
-      return $input;
-   }
-
-   function prepareInputForUpdate($input) {
-      return NotificationTemplate::cleanContentHtml($input);
    }
 
    /**
@@ -237,7 +179,7 @@ class NotificationTemplate extends CommonDBTM {
       global $DB;
 
       Dropdown::show('NotificationTemplate',array('name'=>$name,'value'=>$value,'comment'=>1,
-                           'condition'=>"`itemtype`='$itemtype'"));
+                                                  'condition'=>"`itemtype`='$itemtype'"));
    }
 
    /**
@@ -247,43 +189,52 @@ class NotificationTemplate extends CommonDBTM {
       global $DB;
 
       if ($itemtype != '') {
-         foreach ($DB->request('glpi_notificationtemplates', array('is_default'=>1,
-                                                                   'itemtype'=>$itemtype)) as $data) {
+         foreach ($DB->request('glpi_notificationtemplates',array('is_default'=>1,
+                                                                  'itemtype'=>$itemtype)) as $data) {
             return $data['id'];
          }
       }
       return 0;
    }
 
-   function post_updateItem($history=1) {
-      global $DB;
-
-      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
-         $query = "UPDATE ".
-                   $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->input['id']."'
-                      AND itemtype='".$this->getType()."'";
-         $DB->query($query);
+   function getAdditionnalProcessOption($options) {
+      //Additionnal option can be given for template processing
+      //For the moment, only option to see private tasks & followups is available
+      if (!empty($options) && isset($options['sendprivate'])) {
+         return 1;
+      }
+      else {
+         return 0;
       }
    }
-
-   function getTemplateByLanguage(NotificationTarget $target, $language, $event) {
+   function getTemplateByLanguage(NotificationTarget $target, $language, $event,$options=array()) {
       $lang = array();
 
-      //Switch to the desired language
-      loadLanguage($language);
-      //Get template's language data for in this language
-      $data = $target->getDatasForTemplate($event);
-      //Restore default language
-      loadLanguage();
+      $additionnaloption = $this->getAdditionnalProcessOption($options);
 
-      //Template processing
-      $lang['subject'] = NotificationTemplate::process($this->getField('subject'),$data);
-      $lang['content_html'] =
-            "<html><body>".NotificationTemplate::process($this->getField('content_html'),$data);
-      $lang['content_text'] =  NotificationTemplate::process($this->getField('content_text'),$data);
-      return $lang;
+      if (!isset($this->templates_by_languages[$additionnaloption][$language])) {
+         //Switch to the desired language
+         loadLanguage($language);
+         //Get template's language data for in this language
+         $data = $target->getDatasForTemplate($event,$options);
+         //Restore default language
+         loadLanguage();
+
+         if ($template_datas = $this->getByLanguage($language)) {
+            //Template processing
+            $lang['subject'] = NotificationTemplate::process($template_datas['subject'],$data);
+            $lang['content_html'] =
+                  "<html><body>".NotificationTemplate::process($template_datas['content_html'],$data).
+                  "<br /><br />".$this->signature."</body></html>";
+
+            $lang['content_text'] =  NotificationTemplate::process($template_datas['content_text'],
+                                                                   $data).
+                  "\n\n".$this->signature;
+            $this->templates_by_languages[$additionnaloption][$language] = $lang;
+         }
+      }
+
+      return isset($this->templates_by_languages[$additionnaloption][$language]);
    }
 
    static function process ($string, $data) {
@@ -293,8 +244,8 @@ class NotificationTemplate extends CommonDBTM {
 
       //Remove all
       $string = unclean_cross_side_scripting_deep($string);
-      $string = preg_replace(array('/\r/','/\r\n/','/\n/'),array('','',''),$string);
-
+      $string = preg_replace(array('/\r/','/\r\n/','/\n/'),
+                             array('','',''),$string);
 
       //First of all process the FOREACH tag
       if (preg_match_all("/##FOREACH([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
@@ -390,6 +341,43 @@ class NotificationTemplate extends CommonDBTM {
       }
 
       return $string;
+   }
+
+   function setSignature($signature) {
+      $this->signature = $signature;
+   }
+
+   function getByLanguage($language) {
+      global $DB;
+      $query = "SELECT *
+               FROM `glpi_notificationtemplatetranslations`
+               WHERE `notificationtemplates_id`='".$this->getField('id')."'
+                  AND `language` IN ('$language','') ORDER BY `language` DESC LIMIT 1";
+
+      $iterator = $DB->request($query);
+      if ($iterator->numrows()) {
+         return $iterator->next();
+      }
+      else {
+         //No template found at all!
+         return false;
+      }
+   }
+
+   function getDataToSend(NotificationTarget $target, $language,$user_email,$options) {
+      $mailing_options['to'] = $user_email;
+      $mailing_options['from'] = $target->getSender();
+      $mailing_options['replyto'] = $target->getReplyTo();
+
+      $additionnaloption = $this->getAdditionnalProcessOption($options);
+
+      $template_data = $this->templates_by_languages[$additionnaloption][$language];
+      $mailing_options['subject'] = $template_data['subject'];
+      $mailing_options['content_html'] = $template_data['content_html'];
+      $mailing_options['content_text'] = $template_data['content_text'];
+      $mailing_options['items_id'] = $target->obj->getField('id');
+
+      return $mailing_options;
    }
 }
 ?>

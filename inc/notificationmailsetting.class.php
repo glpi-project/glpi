@@ -44,6 +44,12 @@ class NotificationMailSetting extends CommonDBTM {
 
    var $table = 'glpi_configs';
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['setup'][201]. ' '.$LANG['mailing'][118];
+   }
+
    function defineTabs($options=array()){
       global $LANG;
 
@@ -71,6 +77,7 @@ class NotificationMailSetting extends CommonDBTM {
       if (!haveRight("config", "w")) {
          return false;
       }
+      $this->getFromDB($ID);
 
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -109,28 +116,28 @@ class NotificationMailSetting extends CommonDBTM {
 /*            break;
 
          case 2 :
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
+            $profiles[Notification::USER_TYPE . "_" . Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+            $profiles[Notification::USER_TYPE . "_" . Notification::ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
                                                                         $LANG['entity'][0];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_TECH_IN_CHARGE] = $LANG['common'][10];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_AUTHOR] = $LANG['job'][4];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_RECIPIENT] = $LANG['job'][3];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_USER] = $LANG['common'][34] . " " .
+            $profiles[Notification::USER_TYPE . "_" . Notification::ITEM_TECH_IN_CHARGE] = $LANG['common'][10];
+            $profiles[Notification::USER_TYPE . "_" . Notification::AUTHOR] = $LANG['job'][4];
+            $profiles[Notification::USER_TYPE . "_" . Notification::TICKET_RECIPIENT] = $LANG['job'][3];
+            $profiles[Notification::USER_TYPE . "_" . Notification::ITEM_USER] = $LANG['common'][34] . " " .
                                                                 $LANG['common'][1];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_ASSIGN_TECH] = $LANG['setup'][239];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPPLIER] = $LANG['financial'][26];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG['setup'][248];
-            $profiles[NOTIFICATION_USER_TYPE . "_" .
-                      NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP] = $LANG['common'][64]." ".$LANG['setup'][248];
-            $profiles[NOTIFICATION_USER_TYPE . "_" .
-                      NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP] = $LANG['common'][64]." ".$LANG['setup'][249];
+            $profiles[Notification::USER_TYPE . "_" . Notification::TICKET_ASSIGN_TECH] = $LANG['setup'][239];
+            $profiles[Notification::USER_TYPE . "_" . Notification::TICKET_SUPPLIER] = $LANG['financial'][26];
+            $profiles[Notification::USER_TYPE . "_" . Notification::GROUP_MAILING] = $LANG['setup'][248];
+            $profiles[Notification::USER_TYPE . "_" .
+                      Notification::TICKET_SUPERVISOR_ASSIGN_GROUP] = $LANG['common'][64]." ".$LANG['setup'][248];
+            $profiles[Notification::USER_TYPE . "_" .
+                      Notification::TICKET_SUPERVISOR_REQUESTER_GROUP] = $LANG['common'][64]." ".$LANG['setup'][249];
             asort($profiles);
             $query = "SELECT `id`, `name`
                       FROM `glpi_profiles`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[NOTIFICATION_PROFILE_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
+               $profiles[Notification::PROFILE_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
                                                                     $data["name"];
             }
             $query = "SELECT `id`, `name`
@@ -138,7 +145,7 @@ class NotificationMailSetting extends CommonDBTM {
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[NOTIFICATION_GROUP_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
+               $profiles[Notification::GROUP_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
                                                                   $data["name"];
             }
             echo "<div class='center'>";
@@ -159,34 +166,34 @@ class NotificationMailSetting extends CommonDBTM {
             echo "</tr>";
             echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['setup'][230] . "</th></tr>";
             echo "<tr class='tab_bg_1'>";
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE] = $LANG['setup'][236];
+            $profiles[Notification::USER_TYPE . "_" . Notification::TICKET_OLD_TECH_IN_CHARGE] = $LANG['setup'][236];
             ksort($profiles);
             showFormMailingType("update", $profiles);
-            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE]);
+            unset ($profiles[Notification::USER_TYPE . "_" . Notification::TICKET_OLD_TECH_IN_CHARGE]);
             echo "</tr>";
             echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['setup'][225] . "</th></tr>";
             echo "<tr class='tab_bg_2'>";
-            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_ASSIGN_TECH]);
-            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPPLIER]);
-            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING]);
-            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP]);
-            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP]);
-            unset ($profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_RECIPIENT]);
+            unset ($profiles[Notification::USER_TYPE . "_" . Notification::TICKET_ASSIGN_TECH]);
+            unset ($profiles[Notification::USER_TYPE . "_" . Notification::TICKET_SUPPLIER]);
+            unset ($profiles[Notification::USER_TYPE . "_" . Notification::GROUP_MAILING]);
+            unset ($profiles[Notification::USER_TYPE . "_" . Notification::TICKET_SUPERVISOR_ASSIGN_GROUP]);
+            unset ($profiles[Notification::USER_TYPE . "_" . Notification::TICKET_SUPERVISOR_REQUESTER_GROUP]);
+            unset ($profiles[Notification::USER_TYPE . "_" . Notification::TICKET_RECIPIENT]);
 
             showFormMailingType("resa", $profiles);
             echo "</tr></table></div>";
             break;
 
          case 3 :
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
-            $profiles[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
+            $profiles[Notification::USER_TYPE . "_" . Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+            $profiles[Notification::USER_TYPE . "_" . Notification::ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
                                                                         $LANG['entity'][0];
             $query = "SELECT `id`, `name`
                       FROM `glpi_profiles`
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[NOTIFICATION_PROFILE_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
+               $profiles[Notification::PROFILE_TYPE ."_" . $data["id"]] = $LANG['profiles'][22] . " " .
                                                                     $data["name"];
             }
             $query = "SELECT `id`, `name`
@@ -194,7 +201,7 @@ class NotificationMailSetting extends CommonDBTM {
                       ORDER BY `name`";
             $result = $DB->query($query);
             while ($data = $DB->fetch_assoc($result)) {
-               $profiles[NOTIFICATION_GROUP_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
+               $profiles[Notification::GROUP_TYPE ."_" . $data["id"]] = $LANG['common'][35] . " " .
                                                                   $data["name"];
             }
             ksort($profiles);

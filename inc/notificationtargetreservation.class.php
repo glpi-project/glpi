@@ -44,19 +44,19 @@ class NotificationTargetReservation extends NotificationTarget {
 
    function getSpecificAddresses($data,$options=array()) {
 
-   //Look for all targets whose type is NOTIFICATION_ITEM_USER
+   //Look for all targets whose type is Notification::ITEM_USER
    switch ($data['type']) {
 
-      case NOTIFICATION_USER_TYPE:
+      case Notification::USER_TYPE:
          switch ($data['items_id']) {
            //Send to the author of the ticket
-            case NOTIFICATION_AUTHOR:
+            case Notification::AUTHOR:
                $this->getItemAuthorAddress();
             break;
       }
 
       //Send to all the users of a profile
-      case NOTIFICATION_PROFILE_TYPE:
+      case Notification::PROFILE_TYPE:
          $this->getUsersAddressesByProfile($data['items_id']);
       break;
       }
@@ -98,23 +98,23 @@ class NotificationTargetReservation extends NotificationTarget {
 
    function getAdditionalTargets() {
       global $LANG;
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
-             NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP] =
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_SUPERVISOR_ASSIGN_GROUP] =
                                                       $LANG['common'][64]." ".$LANG['setup'][248];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
-             NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP] =
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_SUPERVISOR_REQUESTER_GROUP] =
                                                       $LANG['common'][64]." ".$LANG['setup'][249];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_TECH_IN_CHARGE] =
+      $this->notification_targets[Notification::USER_TYPE . "_" . Notification::ITEM_TECH_IN_CHARGE] =
                                                       $LANG['common'][10];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_AUTHOR] =
+      $this->notification_targets[Notification::USER_TYPE . "_" . Notification::AUTHOR] =
                                                       $LANG['job'][4];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_USER] =
+      $this->notification_targets[Notification::USER_TYPE . "_" . Notification::ITEM_USER] =
                                                       $LANG['common'][34] . " " .$LANG['common'][1];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING] =
+      $this->notification_targets[Notification::USER_TYPE . "_" . Notification::GROUP_MAILING] =
                                                       $LANG['setup'][248];
    }
 
-   function getDatasForTemplate($event) {
+   function getDatasForTemplate($event,$options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       $tpldatas = array();

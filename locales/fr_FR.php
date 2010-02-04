@@ -1039,6 +1039,8 @@ $LANG['mailing'][120]="Mode de notification";
 $LANG['mailing'][121]="Destinataires";
 $LANG['mailing'][122]="Tâche(s) déjà effectuée(s)";
 $LANG['mailing'][123]="Ticket résolu";
+$LANG['mailing'][124]="Ajouter une nouvelle traduction";
+$LANG['mailing'][125]="Modèle générique";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";

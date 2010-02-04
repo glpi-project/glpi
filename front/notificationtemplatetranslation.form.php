@@ -40,46 +40,42 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$notificationtemplate = new NotificationTemplate();
+$language = new NotificationTemplateTranslation();
 if (isset($_POST["add"])) {
-   $notificationtemplate->check(-1,'w',$_POST);
+   $language->check(-1,'w',$_POST);
 
-   $newID = $notificationtemplate->add($_POST);
+   $newID = $language->add($_POST);
    Event::log($newID, "notificationtemplates", 4, "notification",
-              $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
+              $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["language"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $notificationtemplate->check($_POST["id"],'d');
-   $notificationtemplate->delete($_POST);
+   $language->check($_POST["id"],'d');
+   $language->delete($_POST);
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
 
-   glpi_header(getItemTypeSearchURL('NotificationTemplate', true));
-} else if (isset($_POST["delete_languages"])) {
-   $notificationtemplate->check(-1,'d');
-   $language = new NotificationTemplateTranslation;
-   if (isset($_POST['languages'])) {
-      foreach($_POST['languages'] as $key =>$val) {
-         if ($val=='on') {
-            $input['id'] = $key;
-            $language->delete($input);
-            }
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
+   glpi_header(getItemTypeFormURL('NotificationTemplate', true).
+               '?id='.$_GET['notificationtemplates_id']);
 } else if (isset($_POST["update"])) {
-   $notificationtemplate->check($_POST["id"],'w');
+   $language->check($_POST["id"],'w');
 
-   $notificationtemplate->update($_POST);
-   Event::log($_POST["id"], "notificationtemplates", 4, "notification", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   $language->update($_POST);
+   Event::log($_POST["id"], "notificationtemplates", 4, "notification", $_SESSION["glpiname"].
+              " ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
    commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing","notificationtemplate");
-   $notificationtemplate->showForm($_GET["id"]);
+   if ($_GET["id"] == '') {
+      $options = array("notificationtemplates_id"=> $_GET["notificationtemplates_id"]);
+   }
+   else {
+      $options = array();
+   }
+   $language->showForm($_GET["id"],
+                       $options);
    commonFooter();
 }
 
