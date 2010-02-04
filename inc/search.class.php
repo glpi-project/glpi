@@ -2285,8 +2285,8 @@ class Search {
                }
                return $link.'('.implode(' OR ',$tocheck[$val]).')';
             } else {
-               if ($tocheck!='all') {
-                  return " $link 0=1 "; //  Bad search
+               if ($val=='all') {
+                  return ""; 
                }
             }
             break;
