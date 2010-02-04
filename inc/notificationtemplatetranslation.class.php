@@ -43,7 +43,23 @@ class NotificationTemplateTranslation extends CommonDBChild {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['mailing'][113];
+      return $LANG['mailing'][126];
+   }
+
+   function getNameID($with_comment=0) {
+      global $CFG_GLPI,$LANG;
+
+      if ($this->getField('language') != '') {
+         $toadd = $CFG_GLPI['languages'][$this->getField('language')][0];
+      }
+      else {
+         $toadd = $LANG['mailing'][126];
+      }
+
+      if ($_SESSION['glpiis_ids_visible']) {
+         $toadd.=" (".$this->getField('id').")";
+      }
+      return $toadd;
    }
 
    function defineTabs($options=array()){

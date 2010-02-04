@@ -37,7 +37,7 @@ class NotificationTargetContract extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
-      return array ('alert_end' => $LANG['mailing'][125], 'alert_notice'=>$LANG['mailing'][124]);
+      return array ('alert_end' => $LANG['financial'][98], 'alert_notice'=>$LANG['financial'][10]);
    }
 
       /**
