@@ -2748,6 +2748,7 @@ function update0723to080($output='HTML') {
                  `name` VARCHAR( 255 ) default NULL ,
                  `itemtype` VARCHAR( 100 ) NOT NULL,
                  `date_mod` DATETIME DEFAULT NULL ,
+                 `comment` text collate utf8_unicode_ci,
                  PRIMARY KEY ( `ID` )
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_notificationtemplates" . $LANG['update'][90] . $DB->error());
@@ -2758,7 +2759,7 @@ function update0723to080($output='HTML') {
       $query = "CREATE TABLE `glpi_notificationtemplatetranslations` (
             `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
             `notificationtemplates_id` INT( 11 ) NOT NULL DEFAULT '0',
-            `language` VARCHAR( 255 ) NOT NULL DEFAULT '',
+            `language` CHAR ( 5 ) NOT NULL DEFAULT '',
             `subject` VARCHAR( 255 ) NOT NULL ,
             `content_text` TEXT NULL ,
             `content_html` TEXT NULL ,

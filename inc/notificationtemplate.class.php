@@ -127,38 +127,6 @@ class NotificationTemplate extends CommonDBTM {
       $tab[4]['name']          = $LANG['common'][17];
       $tab[4]['datatype']      = 'itemtypename';
 
-
-/*
-      $tab[2]['table']         = 'glpi_notificationtemplates';
-      $tab[2]['field']         = 'is_default';
-      $tab[2]['linkfield']     = '';
-      $tab[2]['name']          = $LANG['mailing'][114];
-      $tab[2]['datatype']      = 'bool';
-
-      $tab[3]['table']         = 'glpi_notificationtemplates';
-      $tab[3]['field']         = 'language';
-      $tab[3]['linkfield']     = '';
-      $tab[3]['name']          = $LANG['setup'][41];
-      $tab[3]['datatype']      = 'language';
-
-      $tab[5]['table']         = 'glpi_notificationtemplates';
-      $tab[5]['field']         = 'subject';
-      $tab[5]['linkfield']     = '';
-      $tab[5]['name']          = $LANG['knowbase'][14];
-      $tab[5]['shorthistory']  = true;
-
-      $tab[6]['table']         = 'glpi_notificationtemplates';
-      $tab[6]['field']         = 'content_html';
-      $tab[6]['linkfield']     = '';
-      $tab[6]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
-      $tab[6]['shorthistory']  = true;
-
-      $tab[7]['table']         = 'glpi_notificationtemplates';
-      $tab[7]['field']         = 'content_text';
-      $tab[7]['linkfield']     = '';
-      $tab[7]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
-      $tab[7]['shorthistory']  = true;
-*/
       $tab[16]['table']     = 'glpi_notificationtemplates';
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
@@ -180,21 +148,6 @@ class NotificationTemplate extends CommonDBTM {
 
       Dropdown::show('NotificationTemplate',array('name'=>$name,'value'=>$value,'comment'=>1,
                                                   'condition'=>"`itemtype`='$itemtype'"));
-   }
-
-   /**
-    * Get default template for an itemtype
-    */
-   static function getDefault($itemtype='') {
-      global $DB;
-
-      if ($itemtype != '') {
-         foreach ($DB->request('glpi_notificationtemplates',array('is_default'=>1,
-                                                                  'itemtype'=>$itemtype)) as $data) {
-            return $data['id'];
-         }
-      }
-      return 0;
    }
 
    function getAdditionnalProcessOption($options) {

@@ -2086,7 +2086,7 @@ DROP TABLE IF EXISTS `glpi_notificationtemplatetranslations`;
 CREATE TABLE `glpi_notificationtemplatetranslations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
-  `language` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `language` char(5) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `content_text` text COLLATE utf8_unicode_ci,
   `content_html` text COLLATE utf8_unicode_ci,
