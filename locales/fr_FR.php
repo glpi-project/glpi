@@ -1042,6 +1042,8 @@ $LANG['mailing'][123]="Ticket résolu";
 $LANG['mailing'][124]="Ajouter une nouvelle traduction";
 $LANG['mailing'][125]="Traduction par défaut";
 $LANG['mailing'][126]="Traduction d'un modèle";
+$LANG['mailing'][127]="Cloture du ticket";
+$LANG['mailing'][128]="laisser le champs vide pour une génération à partir du HTML";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
