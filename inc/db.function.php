@@ -79,7 +79,7 @@ function getItemTypeForTable($table) {
    if (isset($CFG_GLPI['glpiitemtypetables'][$table])) {
       return $CFG_GLPI['glpiitemtypetables'][$table];
    } else {
-
+      $inittable=$table;
       $table=str_replace("glpi_","",$table);
       $prefix="";
       if (preg_match('/^plugin_([a-z0-9]+)_/',$table,$matches)) {
@@ -102,8 +102,8 @@ function getItemTypeForTable($table) {
       if (class_exists($itemtype)){
          $item = new $itemtype();
          $itemtype=get_class($item);
-         $CFG_GLPI['glpiitemtypetables'][$table]=$itemtype;
-         $CFG_GLPI['glpitablesitemtype'][$itemtype]=$table;
+         $CFG_GLPI['glpiitemtypetables'][$inittable]=$itemtype;
+         $CFG_GLPI['glpitablesitemtype'][$itemtype]=$inittable;
          return $itemtype;
       }
       return "UNKNOWN";
