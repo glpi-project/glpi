@@ -240,7 +240,7 @@ class NotificationTargetTicket extends NotificationTarget {
       $tpldatas['##ticket.url##'] = urldecode("<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
                                     $this->obj->getField("id")."\">".$CFG_GLPI["url_base"].
                                     "/index.php?redirect=ticket_".
-                                    $this->obj->getField("id")."\"</a>");
+                                    $this->obj->getField("id")."</a>");
 
       $tpldatas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                              $this->obj->getField('entities_id'));
@@ -409,6 +409,7 @@ class NotificationTargetTicket extends NotificationTarget {
       //Locales
       $labels = array ('##lang.ticket.id##'=>$LANG['common'][2],
                        '##lang.ticket.title##'=>$LANG['common'][16],
+                       '##lang.ticket.url##'=>'URL',
                        '##lang.ticket.entity##' => $LANG['entity'][0],
                        '##lang.ticket.category##' =>$LANG['common'][36],
                        '##lang.ticket.content##' => $LANG['joblist'][6],

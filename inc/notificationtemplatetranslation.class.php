@@ -50,6 +50,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
+      if ($this->fields['id'] > 0) {
+         $tabs[12]=$LANG['title'][38];
+      }
       return $tabs;
    }
 
@@ -82,27 +85,25 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $template = new NotificationTemplate;
       $template->getFromDB($notificationtemplates_id);
 
-         echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
-               "/lib/tiny_mce/tiny_mce.js'></script>";
-         echo "<script language='javascript' type='text/javascript'>";
-         echo "tinyMCE.init({
-            language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
-            mode : 'exact',
-            elements: 'content_html',
-            plugins : 'table,directionality,searchreplace',
-            theme : 'advanced',
-            entity_encoding : 'numeric', ";
-            // directionality + search replace plugin
-         echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
-         echo "theme_advanced_toolbar_location : 'top',
-            theme_advanced_toolbar_align : 'left',
-            theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,
-               formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,
-               numlist,outdent,indent',
-            theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,
-               anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-            theme_advanced_buttons3 : ''});";
-         echo "</script>";
+      echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
+            "/lib/tiny_mce/tiny_mce.js'></script>";
+      echo "<script language='javascript' type='text/javascript''>";
+      echo "tinyMCE.init({
+         language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
+         mode : 'exact',
+         elements: 'content_html',
+         plugins : 'table,directionality,searchreplace',
+          theme : 'advanced',
+          entity_encoding : 'numeric', ";
+         // directionality + search replace plugin
+      echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
+      echo "theme_advanced_toolbar_location : 'top',
+         theme_advanced_toolbar_align : 'left',
+         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
+          theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
+         theme_advanced_buttons3 : ''});";
+      echo "</script>";
+
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -151,6 +152,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td></tr>";
 
       $this->showFormButtons();
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
    }
 
    function showSummary(NotificationTemplate $template,$options = array()) {
@@ -229,6 +233,42 @@ class NotificationTemplateTranslation extends CommonDBChild {
          $DB->query($query);
       }
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = 'glpi_notificationtemplatetranslations';
+      $tab[1]['field']         = 'language';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['setup'][41];
+      $tab[1]['datatype']      = 'language';
+
+      $tab[2]['table']         = 'glpi_notificationtemplatetranslations';
+      $tab[2]['field']         = 'subject';
+      $tab[2]['linkfield']     = '';
+      $tab[2]['name']          = $LANG['knowbase'][14];
+      $tab[2]['shorthistory']  = true;
+
+      $tab[3]['table']         = 'glpi_notificationtemplatetranslations';
+      $tab[3]['field']         = 'content_html';
+      $tab[3]['linkfield']     = '';
+      $tab[3]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
+      $tab[3]['shorthistory']  = true;
+
+      $tab[4]['table']         = 'glpi_notificationtemplatetranslations';
+      $tab[4]['field']         = 'content_text';
+      $tab[4]['linkfield']     = '';
+      $tab[4]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
+      $tab[4]['shorthistory']  = true;
+
+
+
+      return $tab;
+   }
+
 
    static function getAllUsedLanguages($language_id) {
       $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',
