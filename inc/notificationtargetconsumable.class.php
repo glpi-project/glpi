@@ -61,7 +61,7 @@ class NotificationTargetConsumable extends NotificationTarget {
       /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event) {
+   function getDatasForTemplate($event,$options=array()) {
       global $LANG;
       $prefix = strtolower($item->getType());
       $tpldatas['##'.$prefix.'.entity##'] =

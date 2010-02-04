@@ -35,6 +35,45 @@ if (!defined('GLPI_ROOT')){
 // Class Notification
 class Notification extends CommonDBTM {
 
+// MAILING TYPE
+//Notification to a user (sse mailing users type below)
+   const USER_TYPE = 1;
+   //Notification to users of a profile
+   const PROFILE_TYPE = 2;
+   //Notification to a users of a group
+   const GROUP_TYPE = 3;
+   //Notification to the people in charge of the database synchronisation
+   const MAILING_TYPE = 4;
+
+   // MAILING USERS TYPE
+
+   //Notification to the GLPI global administrator
+   const GLOBAL_ADMINISTRATOR = 1;
+   //Notification to the technicial who's assign to a ticket
+   const TICKET_ASSIGN_TECH = 2;
+   //Notification to the owner of the item
+   const AUTHOR = 3;
+   //Notification to the technician previously in charge of the ticket
+   const TICKET_OLD_TECH_IN_CHARGE = 4;
+   //Notification to the technician in charge of the item
+   const ITEM_TECH_IN_CHARGE = 5;
+   //Notification to the item's user
+   const ITEM_USER = 6;
+   //Notification to the ticket's recipient
+   const TICKET_RECIPIENT = 7;
+   //Notificartion to the ticket's assigned supplier
+   const TICKET_SUPPLIER = 8;
+   //Notification to a group of people
+   const GROUP_MAILING = 9;
+   //Notification to the supervisor of the ticket's assigned group
+   const TICKET_SUPERVISOR_ASSIGN_GROUP = 10;
+   //Notification to the entity administrator
+   const ENTITY_ADMINISTRATOR = 11;
+   //Notification to the supervisor of the ticket's requester group
+   const TICKET_SUPERVISOR_REQUESTER_GROUP = 12;
+   //Notification to the ticket's requester group
+   const TICKET_REQUESTER_GROUP = 13;
+
    // From CommonDBTM
    public $dohistory = true;
 
@@ -205,18 +244,9 @@ class Notification extends CommonDBTM {
       $DB->query($query);
    }
 
-   static function send ($event, $options, $template,$entity, $signature = '') {
+   static function send ($mailing_options) {
       $mail = new NotificationMail;
-
-      $options['subject'] =$template['subject'];
-      $content_html = $template['content_html'];
-      $content_html.= "<br />-- <br />".$signature."</body></html>";
-      $content_text = $template['content_text'];
-      $content_text.= "\n-- \n".$signature;
-      $options['content_html'] = $content_html;
-      $options['content_text'] = $content_text;
-
-      $mail->sendNotification($options);
+      $mail->sendNotification($mailing_options);
       $mail->ClearAddresses();
    }
 
@@ -231,6 +261,23 @@ class Notification extends CommonDBTM {
       }
       return $CFG_GLPI['mailing_signature'];
 
+   }
+
+   static function  getNotificationsByEventAndType($event,$itemtype,$entity) {
+      global $DB;
+      $query = "SELECT `glpi_notifications`.*
+                FROM `glpi_notifications`
+                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id` =
+                                              `glpi_notifications`.`entities_id`)
+                WHERE `glpi_notifications`.`itemtype`='$itemtype'
+                   AND `glpi_notifications`.`event`='$event'";
+      $query.= getEntitiesRestrictRequest(" AND",
+                                          "glpi_notifications",
+                                          'entities_id',
+                                          $entity,
+                                          true);
+      $query.=" ORDER BY `glpi_entities`.`level` DESC";
+      return $DB->request($query);
    }
 }
 

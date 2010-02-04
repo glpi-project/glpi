@@ -95,7 +95,7 @@ class Mailing {
          $selectdistinctuser ="SELECT DISTINCT `glpi_users`.`email` AS email,
                                                `glpi_users`.`language` AS lang ";
          $join="";
-         $joinprofile=""; //cas NOTIFICATION_PROFILE_TYPE
+         $joinprofile=""; //cas Notification::PROFILE_TYPE
          // If send private is the user can see private followups ?
          if ($sendprivate) {
             $join=" INNER JOIN `glpi_profiles_users`
@@ -113,15 +113,15 @@ class Mailing {
          }
          while ($data=$DB->fetch_assoc($result)) {
             switch ($data["mailingtype"]) {
-               case NOTIFICATION_USER_TYPE :
+               case Notification::USER_TYPE :
                   switch ($data["items_id"]) {
                      // ADMIN SEND
-                     case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+                     case Notification::GLOBAL_ADMINISTRATOR :
                         $this->addToAddressesList($emails,$CFG_GLPI["admin_email"]);
                         break;
 
                      // ADMIN ENTITY SEND
-                     case NOTIFICATION_ENTITY_ADMINISTRATOR :
+                     case Notification::ENTITY_ADMINISTRATOR :
                         $query2 = "SELECT `admin_email` AS email
                                    FROM `glpi_entitydatas`
                                    WHERE `entities_id` = '".$this->job->fields["entities_id"]."'";
@@ -134,7 +134,7 @@ class Mailing {
                         break;
 
                      // ASSIGN SEND
-                     case NOTIFICATION_TICKET_ASSIGN_TECH :
+                     case Notification::TICKET_ASSIGN_TECH :
                         if (isset($this->job->fields["users_id_assign"])
                             && $this->job->fields["users_id_assign"]>0) {
 
@@ -153,7 +153,7 @@ class Mailing {
                         break;
 
                      // ASSIGN SEND
-                     case NOTIFICATION_TICKET_SUPPLIER :
+                     case Notification::TICKET_SUPPLIER :
                         if (!$sendprivate && isset($this->job->fields["suppliers_id_assign"])
                             && $this->job->fields["suppliers_id_assign"]>0) {
 
@@ -171,7 +171,7 @@ class Mailing {
                         break;
 
                      // ASSIGN GROUP SEND
-                     case ASSIGN_GROUP_MAILING :
+                     case Notification::GROUP_MAILING :
                         if (isset($this->job->fields["groups_id_assign"])
                             && $this->job->fields["groups_id_assign"]>0) {
 
@@ -194,7 +194,7 @@ class Mailing {
                         break;
 
                      // SUPERVISOR ASSIGN GROUP SEND
-                     case NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP :
+                     case Notification::TICKET_SUPERVISOR_ASSIGN_GROUP :
                         if (isset($this->job->fields["groups_id_assign"])
                             && $this->job->fields["groups_id_assign"]>0) {
 
@@ -215,7 +215,7 @@ class Mailing {
                         break;
 
                      // RECIPIENT SEND
-                     case NOTIFICATION_TICKET_RECIPIENT :
+                     case Notification::TICKET_RECIPIENT :
                         if (isset($this->job->fields["users_id_recipient"])
                             && $this->job->fields["users_id_recipient"]>0) {
 
@@ -234,7 +234,7 @@ class Mailing {
                         break;
 
                      // AUTHOR SEND
-                     case NOTIFICATION_AUTHOR :
+                     case Notification::AUTHOR :
                         if ($this->job->fields["use_email_notification"]) {
                            // Uemail = mail of the users_id ? -> use right of the users_id to see private followups
                            // Else not see private
@@ -281,7 +281,7 @@ class Mailing {
                         break;
 
                      // SUPERVISOR ASSIGN GROUP SEND
-                     case NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP :
+                     case Notification::TICKET_SUPERVISOR_REQUESTER_GROUP :
                         if (isset($this->job->fields["groups_id"])
                             && $this->job->fields["groups_id"]>0) {
 
@@ -302,7 +302,7 @@ class Mailing {
                         break;
 
                      // OLD ASSIGN SEND
-                     case NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE :
+                     case Notification::TICKET_OLD_TECH_IN_CHARGE :
                         if (isset($this->job->fields["_old_assign"])
                             && $this->job->fields["_old_assign"]>0) {
 
@@ -321,7 +321,7 @@ class Mailing {
                         break;
 
                      // TECH SEND
-                     case NOTIFICATION_ITEM_TECH_IN_CHARGE :
+                     case Notification::ITEM_TECH_IN_CHARGE :
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
@@ -346,7 +346,7 @@ class Mailing {
                         break;
 
                      // USER SEND
-                     case NOTIFICATION_ITEM_USER :
+                     case Notification::ITEM_USER :
                         if (isset($this->job->fields["items_id"])
                             && $this->job->fields["items_id"]>0
                             && isset($this->job->fields["itemtype"])
@@ -370,9 +370,9 @@ class Mailing {
                         }
                         break;
                   } //fin switch ($data["items_id"])
-                  break; //fin case NOTIFICATION_USER_TYPE
+                  break; //fin case Notification::USER_TYPE
 
-               case NOTIFICATION_PROFILE_TYPE :
+               case Notification::PROFILE_TYPE :
                   $query="$selectdistinctuser
                           FROM `glpi_profiles_users`
                           INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id`=`glpi_users`.`id`)
@@ -390,7 +390,7 @@ class Mailing {
                   }
                   break;
 
-               case NOTIFICATION_GROUP_TYPE :
+               case Notification::GROUP_TYPE :
                   $query="$selectdistinctuser
                           FROM `glpi_groups_users`
                           INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id`=`glpi_users`.`id`)
@@ -724,15 +724,15 @@ class MailingResa {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_assoc($result)) {
             switch ($data["mailingtype"]) {
-               case NOTIFICATION_USER_TYPE :
+               case Notification::USER_TYPE :
                   switch ($data["items_id"]) {
                      // ADMIN SEND
-                     case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+                     case Notification::GLOBAL_ADMINISTRATOR :
                         $this->addToAddressesList($emails,$CFG_GLPI["admin_email"]);
                         break;
 
                      // ADMIN ENTITY SEND
-                     case NOTIFICATION_ENTITY_ADMINISTRATOR :
+                     case Notification::ENTITY_ADMINISTRATOR :
                         $ri=new ReservationItem();
                         $entity=-1;
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
@@ -757,7 +757,7 @@ class MailingResa {
                         break;
 
                      // AUTHOR SEND
-                     case NOTIFICATION_AUTHOR :
+                     case Notification::AUTHOR :
                         $user = new User;
                         if ($user->getFromDB($this->resa->fields["users_id"])) {
                            $this->addToAddressesList($emails,$user->fields["email"],
@@ -766,7 +766,7 @@ class MailingResa {
                         break;
 
                      // TECH SEND
-                     case NOTIFICATION_ITEM_TECH_IN_CHARGE :
+                     case Notification::ITEM_TECH_IN_CHARGE :
                         $ri=new ReservationItem();
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
                            if (class_exists($ri->fields["itemtype"])) {
@@ -789,7 +789,7 @@ class MailingResa {
                         break;
 
                      // USER SEND
-                     case NOTIFICATION_ITEM_USER :
+                     case Notification::ITEM_USER :
                         $ri=new ReservationItem();
                         if ($ri->getFromDB($this->resa->fields["reservationitems_id"])) {
                            if (class_exists($ri->fields["itemtype"])) {
@@ -813,7 +813,7 @@ class MailingResa {
                   } //fin switch ($data["items_id"])
                   break;
 
-               case NOTIFICATION_PROFILE_TYPE :
+               case Notification::PROFILE_TYPE :
                   // Get entity
                   $ri=new ReservationItem();
                   $ri->getFromDB($this->resa->fields['reservationitems_id']);
@@ -838,7 +838,7 @@ class MailingResa {
                   }
                   break;
 
-               case NOTIFICATION_GROUP_TYPE :
+               case Notification::GROUP_TYPE :
                   $query="$selectuser
                           FROM `glpi_groups_users`
                           INNER JOIN `glpi_users`
@@ -1057,10 +1057,10 @@ class MailingAlert {
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_assoc($result)) {
             switch ($data["mailingtype"]) {
-               case NOTIFICATION_USER_TYPE :
+               case Notification::USER_TYPE :
                   switch($data["items_id"]) {
                      // ADMIN SEND
-                     case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+                     case Notification::GLOBAL_ADMINISTRATOR :
                         if (isUserAddressValid($CFG_GLPI["admin_email"])
                             && !isset($emails[$CFG_GLPI["admin_email"]])) {
                            $emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
@@ -1068,7 +1068,7 @@ class MailingAlert {
                         break;
 
                      // ADMIN ENTITY SEND
-                     case NOTIFICATION_ENTITY_ADMINISTRATOR :
+                     case Notification::ENTITY_ADMINISTRATOR :
                         $query2 = "SELECT `admin_email` AS email
                                    FROM `glpi_entitydatas`
                                    WHERE `entities_id` = '".$this->entity."'";
@@ -1084,7 +1084,7 @@ class MailingAlert {
                   }
                   break;
 
-               case NOTIFICATION_PROFILE_TYPE :
+               case Notification::PROFILE_TYPE :
                   $query="SELECT `glpi_users`.`email` AS email, `glpi_users`.`language` AS lang
                           FROM `glpi_profiles_users`
                           INNER JOIN `glpi_users`
@@ -1103,7 +1103,7 @@ class MailingAlert {
                   }
                   break;
 
-               case NOTIFICATION_GROUP_TYPE :
+               case Notification::GROUP_TYPE :
                   $query="SELECT `glpi_users`.`email` AS email, `glpi_users`.`language` AS lang
                           FROM `glpi_groups_users`
                           INNER JOIN `glpi_users`

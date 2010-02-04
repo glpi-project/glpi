@@ -51,37 +51,37 @@ class NotificationTargetTicket extends NotificationTarget {
       $sendprivate = false;
    }
 
-   //Look for all targets whose type is NOTIFICATION_ITEM_USER
+   //Look for all targets whose type is Notification::ITEM_USER
    switch ($data['type']) {
 
-      case NOTIFICATION_USER_TYPE:
+      case Notification::USER_TYPE:
          switch ($data['items_id']) {
-            case NOTIFICATION_TICKET_ASSIGN_TECH:
+            case Notification::TICKET_ASSIGN_TECH:
                $this->getTicketAssignTechnicianAddress();
             break;
             //Send to the group in charge of the ticket supervisor
-            case NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP :
+            case Notification::TICKET_SUPERVISOR_ASSIGN_GROUP :
                $this->getGroupSupervisorAddress(true);
             break;
             //Send to the user who's got the issue
-            case NOTIFICATION_TICKET_RECIPIENT :
+            case Notification::TICKET_RECIPIENT :
                $this->getReceipientAddress();
             break;
             //Send to the supervisor of the requester's group
-            case NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP :
+            case Notification::TICKET_SUPERVISOR_REQUESTER_GROUP :
                $this->getGroupSupervisorAddress(false);
             break;
             //Send to the technician previously in charge of the ticket (before reassignation)
-            case NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE :
+            case Notification::TICKET_OLD_TECH_IN_CHARGE :
                $this->getTicketOldAssignTechnicianAddress();
             break;
             //Assign to a supplier
-            case NOTIFICATION_TICKET_SUPPLIER :
+            case Notification::TICKET_SUPPLIER :
                $this->getTicketSupplierAddress();
             break;
          }
       //Send to all the users of a profile
-      case NOTIFICATION_PROFILE_TYPE:
+      case Notification::PROFILE_TYPE:
          $this->getUsersAddressesByProfile($data['items_id']);
       break;
 
@@ -166,7 +166,7 @@ class NotificationTargetTicket extends NotificationTarget {
                     'solved' => $LANG['jobresolution'][2],
                     'add_followup' => $LANG['mailing'][10],
                     'add_task' => $LANG['job'][49],
-                    'close' => $LANG['mailing'][123]);
+                    'closed' => $LANG['mailing'][123]);
    }
 
    /**
@@ -175,19 +175,28 @@ class NotificationTargetTicket extends NotificationTarget {
    function getAdditionalTargets() {
       global $LANG;
 
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
-             NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP] = $LANG['common'][64]." ".$LANG['setup'][248];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
-             NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP] = $LANG['common'][64]." ".$LANG['setup'][249];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_TECH_IN_CHARGE] = $LANG['common'][10];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_AUTHOR] = $LANG['job'][4];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_RECIPIENT] = $LANG['job'][3];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_ITEM_USER] = $LANG['common'][34] . " " .
-                                                                $LANG['common'][1];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_ASSIGN_TECH] = $LANG['setup'][239];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . NOTIFICATION_TICKET_SUPPLIER] = $LANG['financial'][26];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG['setup'][248];
-
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_SUPERVISOR_ASSIGN_GROUP] =
+                                                      $LANG['common'][64]." ".$LANG['setup'][248];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_SUPERVISOR_REQUESTER_GROUP] =
+                                                      $LANG['common'][64]." ".$LANG['setup'][249];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::ITEM_TECH_IN_CHARGE] = $LANG['common'][10];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::AUTHOR] = $LANG['job'][4];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_RECIPIENT] = $LANG['job'][3];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::ITEM_USER] = $LANG['common'][34] . " " .$LANG['common'][1];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_ASSIGN_TECH] = $LANG['setup'][239];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_SUPPLIER] = $LANG['financial'][26];
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::GROUP_MAILING] = $LANG['setup'][248];
+     $this->notification_targets[Notification::USER_TYPE . "_" .
+             Notification::TICKET_REQUESTER_GROUP] = $LANG['setup'][249];
    }
 
    static function getJoinProfileSql() {
@@ -204,10 +213,17 @@ class NotificationTargetTicket extends NotificationTarget {
    /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event) {
+   function getDatasForTemplate($event,$options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       $tpldatas = array();
+
+      if (isset($options['sendprivate'])) {
+         $sendprivate = true;
+      }
+      else {
+         $sendprivate = false;
+      }
 
       //----------- Ticket infos -------------- //
 
@@ -307,29 +323,26 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       //Hardware
-      if ($this->obj->getField('itemtype') != '') {
-         $itemtype = $this->obj->getField('itemtype');
-         $item = new  $itemtype ();
-         $item->getFromDB($this->obj->getField('items_id'));
-         $tpldatas['##ticket.itemtype##'] = $item->getTypeName();
-         $tpldatas['##ticket.item.name##'] = $item->getField('name');
+      if ($this->target_object != null) {
+         $tpldatas['##ticket.itemtype##'] = $this->target_object->getTypeName();
+         $tpldatas['##ticket.item.name##'] = $this->target_object->getField('name');
 
-         if ($item->isField('serial')) {
-            $tpldatas['##ticket.item.serial##'] = $item->getField('serial');
+         if ($this->target_object->isField('serial')) {
+            $tpldatas['##ticket.item.serial##'] = $this->target_object->getField('serial');
          }
-         if ($item->isField('otherserial')) {
-            $tpldatas['##ticket.item.otherserial##'] = $item->getField('otherserial');
+         if ($this->target_object->isField('otherserial')) {
+            $tpldatas['##ticket.item.otherserial##'] = $this->target_object->getField('otherserial');
          }
 
-         if ($item->isField('location')) {
+         if ($this->target_object->isField('location')) {
             $tpldatas['##ticket.item.location##'] =
                                              Dropdown::getDropdownName('glpi_locations',
                                                                    $user->getField('locations_id'));
          }
          $modeltable = getSingular($this->getTable())."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
-         if ($item->isField($modelfield)) {
-            $tpldatas['##ticket.item.model##'] = $item->getField($modelfield);
+         if ($this->target_object->isField($modelfield)) {
+            $tpldatas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
          }
       }
       else {
@@ -346,9 +359,14 @@ class NotificationTargetTicket extends NotificationTarget {
          $tpldatas['##ticket.solution.description##'] = $this->obj->getField('solution');
       }
 
+      $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+      if (!$sendprivate) {
+         $restrict.=" AND `is_private`='0'";
+      }
+      $restrict.=" ORDER BY `date` DESC";
+
       //Task infos
-      $tasks = getAllDatasFromTable('glpi_tickettasks',
-                                    "`tickets_id`='".$this->obj->getField('id')."'");
+      $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
       foreach ($tasks as $task) {
          $tmp = array();
          $tmp['##task.isprivate##'] =  Dropdown::getYesNo($task['is_private']);
@@ -369,8 +387,7 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       //Followup infos
-      $followups = getAllDatasFromTable('glpi_ticketfollowups',
-                                    "`tickets_id`='".$this->obj->getField('id')."'");
+      $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
       foreach ($followups as $followup) {
          $tmp = array();
          $tmp['##followup.isprivate##'] =  Dropdown::getYesNo($followup['is_private']);
@@ -452,6 +469,7 @@ class NotificationTargetTicket extends NotificationTarget {
     * @param profiles_id the profile ID to get users emails
     * @return nothing
     */
+/*
    function getUsersAddressesByProfile($profiles_id) {
       global $DB;
 
@@ -468,6 +486,6 @@ class NotificationTargetTicket extends NotificationTarget {
          }
       }
    }
-
+*/
 }
 ?>

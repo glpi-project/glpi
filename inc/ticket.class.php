@@ -758,8 +758,11 @@ class Ticket extends CommonDBTM {
                 && in_array("status",$this->updates)
                 && $this->input["status"]=="solved") {
 
-               $mailtype="finish";
+               $mailtype="solved";
             }
+
+            //TODO : manage assignation
+
             if (isset($this->input["_old_assign"])) {
                $this->fields["_old_assign"] = $this->input["_old_assign"];
             }
@@ -3236,7 +3239,7 @@ class Ticket extends CommonDBTM {
                      "\">".$LANG['central'][9]."</a>";
             } else if ($status=="process") {
                $options['reset']  = 'reset';
-               
+
                $options['field'][0]      = 5; // users_id_assign
                $options['searchtype'][0] = 'equals';
                $options['contains'][0]   = $_SESSION["glpiID"];
@@ -3251,7 +3254,7 @@ class Ticket extends CommonDBTM {
                         "\">".$LANG['joblist'][13]."</a>";
             } else { // request by self
                $options['reset']  = 'reset';
-               
+
                $options['field'][0]      = 4; // users_id
                $options['searchtype'][0] = 'equals';
                $options['contains'][0]   = $_SESSION["glpiID"];

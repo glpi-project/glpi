@@ -42,13 +42,14 @@ checkRight("notification","r");
 commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
 
 echo "<table class='tab_cadre'>";
-echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
+echo "<tr><th>&nbsp;" . $LANG['setup'][201] . " ".$LANG['setup'][704]."&nbsp;</th></tr>";
 
 if (haveRight("config","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationmailsetting.php'>" . $LANG['setup'][240] .
+   echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.php'>" .
+         $LANG['setup'][201]. ' '.$LANG['mailing'][118] .
          "</a></td></tr>";
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='notificationtemplate.php'>" .$LANG['mailing'][113] .
-         "</a></td> </tr>";
+   echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
+         $LANG['mailing'][113] ."</a></td> </tr>";
 }
 if (haveRight("notification","r")) {
    echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .

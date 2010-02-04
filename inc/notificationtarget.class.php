@@ -157,58 +157,58 @@ class NotificationTarget extends CommonDBTM {
          $query = "SELECT `glpi_notificationtargets`.`items_id` , `glpi_notificationtargets`.`id`
                    FROM `glpi_notificationtargets`
                    WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
-                         AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_USER_TYPE . "'
+                         AND `glpi_notificationtargets`.`type`='" . Notification::USER_TYPE . "'
                    ORDER BY `glpi_notificationtargets`.`items_id`";
          foreach ($DB->request($query) as $data) {
-             if (isset($this->notification_targets[NOTIFICATION_USER_TYPE."_".$data["items_id"]])) {
-               unset($this->notification_targets[NOTIFICATION_USER_TYPE."_".$data["items_id"]]);
+             if (isset($this->notification_targets[Notification::USER_TYPE."_".$data["items_id"]])) {
+               unset($this->notification_targets[Notification::USER_TYPE."_".$data["items_id"]]);
             }
             switch ($data["items_id"]) {
-               case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+               case Notification::GLOBAL_ADMINISTRATOR :
                   $name = $LANG['setup'][237];
                break;
 
-               case NOTIFICATION_ENTITY_ADMINISTRATOR :
+               case Notification::ENTITY_ADMINISTRATOR :
                   $name = $LANG['setup'][237]." ".$LANG['entity'][0];
                break;
 
-               case NOTIFICATION_TICKET_ASSIGN_TECH :
+               case Notification::TICKET_ASSIGN_TECH :
                   $name = $LANG['setup'][239];
                break;
 
-               case NOTIFICATION_AUTHOR :
+               case Notification::AUTHOR :
                   $name = $LANG['job'][4];
                break;
 
-               case NOTIFICATION_ITEM_USER :
+               case Notification::ITEM_USER :
                   $name = $LANG['common'][34] . " " . $LANG['common'][1];
                break;
 
-               case NOTIFICATION_TICKET_OLD_TECH_IN_CHARGE :
+               case Notification::TICKET_OLD_TECH_IN_CHARGE :
                   $name = $LANG['setup'][236];
                break;
 
-               case NOTIFICATION_ITEM_TECH_IN_CHARGE :
+               case Notification::ITEM_TECH_IN_CHARGE :
                   $name = $LANG['common'][10];
                break;
 
-               case NOTIFICATION_TICKET_RECIPIENT :
+               case Notification::TICKET_RECIPIENT :
                   $name = $LANG['job'][3];
                break;
 
-               case NOTIFICATION_TICKET_SUPPLIER :
+               case Notification::TICKET_SUPPLIER :
                   $name = $LANG['financial'][26];
                break;
 
-               case ASSIGN_GROUP_MAILING :
+               case Notification::GROUP_MAILING :
                   $name = $LANG['setup'][248];
                break;
 
-               case NOTIFICATION_TICKET_SUPERVISOR_ASSIGN_GROUP :
+               case Notification::TICKET_SUPERVISOR_ASSIGN_GROUP :
                      $name = $LANG['common'][64]." ".$LANG['setup'][248];
                break;
 
-               case NOTIFICATION_TICKET_SUPERVISOR_REQUESTER_GROUP :
+               case Notification::TICKET_SUPERVISOR_REQUESTER_GROUP :
                   $name = $LANG['common'][64]." ".$LANG['setup'][249];
                break;
 
@@ -226,13 +226,13 @@ class NotificationTarget extends CommonDBTM {
                    FROM `glpi_notificationtargets`
                    LEFT JOIN `glpi_profiles` ON (`glpi_notificationtargets`.`items_id` = `glpi_profiles`.`id`)
                    WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
-                         AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_PROFILE_TYPE . "'
+                         AND `glpi_notificationtargets`.`type`='" . Notification::PROFILE_TYPE . "'
                    ORDER BY `prof`";
          foreach ($DB->request($query) as $data) {
             $options.= "<option value='" . $data["id"] . "'>" . $LANG['profiles'][22] . " " .
                         $data["prof"] . "</option>";
-            if (isset($this->notification_targets[NOTIFICATION_PROFILE_TYPE."_".$data["items_id"]])) {
-               unset($this->notification_targets[NOTIFICATION_PROFILE_TYPE."_".$data["items_id"]]);
+            if (isset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]])) {
+               unset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]]);
          }
 
          // Get Group mailing
@@ -241,13 +241,13 @@ class NotificationTarget extends CommonDBTM {
                    FROM `glpi_notificationtargets`
                    LEFT JOIN `glpi_groups` ON (`glpi_notificationtargets`.`items_id` = `glpi_groups`.`id`)
                    WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
-                         AND `glpi_notificationtargets`.`type`='" . NOTIFICATION_GROUP_TYPE . "'
+                         AND `glpi_notificationtargets`.`type`='" . Notification::GROUP_TYPE . "'
                    ORDER BY `name`;";
             foreach ($DB->request($query) as $data) {
                $options.= "<option value='" . $data["id"] . "'>" . $LANG['common'][35] . " " .
                            $data["name"] . "</option>";
-               if (isset($this->notification_targets[NOTIFICATION_GROUP_TYPE."_".$data["items_id"]])) {
-                  unset($this->notification_targets[NOTIFICATION_GROUP_TYPE."_".$data["items_id"]]);
+               if (isset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]])) {
+                  unset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]]);
                }
             }
          }
@@ -333,9 +333,10 @@ class NotificationTarget extends CommonDBTM {
     *
     * @param $mail : new email to add
     * @param $lang used with this email - default to config language
+    * @param $option an additionnal option to sort users
     *
     */
-   function addToAddressesList( $mail,$lang='',$entity=0) {
+   function addToAddressesList($mail,$lang='',$options='') {
       global $CFG_GLPI;
 
       $new_mail=trim($mail);
@@ -347,8 +348,8 @@ class NotificationTarget extends CommonDBTM {
             $this->target[$new_mail] = array ('language'=>(empty($new_lang) ?
                                                            $CFG_GLPI["language"] :
                                                            $new_lang),
-                                              'entity'=>$entity,
-                                              'email'=>$new_mail);
+                                              'email'=>$new_mail,
+                                              'options'=>$options);
 
          }
       }
@@ -361,7 +362,7 @@ class NotificationTarget extends CommonDBTM {
       global $CFG_GLPI;
       $this->addToAddressesList($CFG_GLPI["admin_email"],
                                 $CFG_GLPI["language"],
-                                0);
+                                array('sendprivate'=>true));
    }
 
    /**
@@ -396,22 +397,20 @@ class NotificationTarget extends CommonDBTM {
     */
    function getUsersAddressesByGroup($group_id) {
       global $DB;
-      $query="SELECT `glpi_users`.`email` AS email,
-                        `glpi_users`.`language` AS lang,
-                         `glpi_users`.`entities_id` as entity
-              FROM `glpi_groups_users`
+      $query=NotificationTargetTicket::getDistinctUserSql()."
+              FROM `glpi_groups_users`".
+              NotificationTargetTicket::getJoinProfileSql()."
               INNER JOIN `glpi_users`
                       ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`)
                           WHERE `glpi_groups_users`.`groups_id`='".$group_id."'";
       foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data['email'], $data['lang'],$data['entity']);
+         $this->addToAddressesList($data['email'], $data['lang']);
       }
    }
 
    static function getDistinctUserSql() {
       return "SELECT DISTINCT `glpi_users`.`email` AS email,
-                               `glpi_users`.`language` AS lang,
-                                 `glpi_users`.`entities_id` as entity ";
+                               `glpi_users`.`language` AS lang";
    }
 
    /**
@@ -432,16 +431,18 @@ class NotificationTarget extends CommonDBTM {
    function getNotficationTargets($entity) {
       global $LANG,$DB;
 
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
-                                     NOTIFICATION_GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
-      $this->notification_targets[NOTIFICATION_USER_TYPE . "_" .
-                                     NOTIFICATION_ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
+      if (haveRight("config","w")) {
+         $this->notification_targets[Notification::USER_TYPE . "_" .
+                                        Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
+      }
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+                                     Notification::ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
                                                                         $LANG['entity'][0];
       $this->getAdditionalTargets();
       asort($this->notification_targets);
 
       foreach ($DB->request('glpi_profiles') as $data) {
-         $this->notification_targets[NOTIFICATION_PROFILE_TYPE ."_" . $data["id"]] =
+         $this->notification_targets[Notification::PROFILE_TYPE ."_" . $data["id"]] =
                                        $LANG['profiles'][22] . " " .$data["name"];
       }
 
@@ -450,7 +451,7 @@ class NotificationTarget extends CommonDBTM {
                 ".getEntitiesRestrictRequest(" WHERE",'glpi_groups','entities_id',$entity,true)."
                 ORDER BY `name`";
      foreach ($DB->request($query) as $data) {
-         $this->notification_targets[NOTIFICATION_GROUP_TYPE ."_" . $data["id"]] =
+         $this->notification_targets[Notification::GROUP_TYPE ."_" . $data["id"]] =
                                        $LANG['common'][35] . " " .$data["name"];
       }
    }
@@ -482,17 +483,18 @@ class NotificationTarget extends CommonDBTM {
     * Add user to the notified users list
     * @param field look for user looking for this field in the object which raises the event
     */
-   function getUserByField ( $field) {
+   function getUserByField ($field) {
       global $DB;
       if ($this->target_object) {
          //Look for the user by his id
          $query = NotificationTargetTicket::getDistinctUserSql()."
-                  FROM `glpi_users`
+                  FROM `glpi_users`".
+                  NotificationTargetTicket::getJoinProfileSql()."
                   WHERE `glpi_users`.`id` = '".$this->target_object->getField($field)."'";
 
          foreach ($DB->request($query) as $data) {
             //Add the user email and language in the notified users list
-            $this->addToAddressesList($data['email'],$data['lang'],$data['entity']);
+            $this->addToAddressesList($data['email'],$data['lang'],array());
          }
       }
    }
@@ -521,8 +523,9 @@ class NotificationTarget extends CommonDBTM {
 
       if ($this->target_object) {
          $query=NotificationTargetTicket::getDistinctUserSql()."
-                 FROM `glpi_profiles_users`
-                 INNER JOIN `glpi_users`
+                 FROM `glpi_profiles_users`".
+                 NotificationTargetTicket::getJoinProfileSql()
+                ."INNER JOIN `glpi_users`
                  ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
                  WHERE `glpi_profiles_users`.`profiles_id`='".$profiles_id."'".
                     getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
@@ -568,37 +571,37 @@ class NotificationTarget extends CommonDBTM {
     * @param options additionnal options
     */
    function getAddressesByTarget($data,$options=array()) {
-      //Look for all targets whose type is NOTIFICATION_USER_TYPE
+      //Look for all targets whose type is Notification::USER_TYPE
 
       switch ($data['type']) {
 
          //Notifications for one people
-         case NOTIFICATION_USER_TYPE:
+         case Notification::USER_TYPE:
             switch ($data['items_id']) {
                //Send to glpi's global admin (as defined in the mailing configuration)
-               case NOTIFICATION_GLOBAL_ADMINISTRATOR :
+               case Notification::GLOBAL_ADMINISTRATOR :
                   $this->getAdminAddress();
                break;
                //Send to the entity's admninistrator
-               case NOTIFICATION_ENTITY_ADMINISTRATOR :
+               case Notification::ENTITY_ADMINISTRATOR :
                   $this->getEntityAdminAddress();
                break;
                //Technician in charge of the ticket
-               case NOTIFICATION_ITEM_TECH_IN_CHARGE :
+               case Notification::ITEM_TECH_IN_CHARGE :
                   $this->getItemTechnicianInChargeAddress();
                break;
                //User who's owner of the material
-               case NOTIFICATION_ITEM_USER :
+               case Notification::ITEM_USER :
                   $this->getItemOwnerAddress();
                break;
                //Send to the author of the ticket
-               case NOTIFICATION_AUTHOR:
+               case Notification::AUTHOR:
                   $this->getItemAuthorAddress();
                break;
             }
          break;
          //Send to all the users of a group
-         case NOTIFICATION_GROUP_TYPE:
+         case Notification::GROUP_TYPE:
             $this->getUsersAddressesByGroup($data['items_id']);
          break;
          default :
@@ -613,7 +616,7 @@ class NotificationTarget extends CommonDBTM {
     * Provides minimum informations for alerts
     * Can be overridden by each NotificationTartget class if needed
     */
-   function getDatasForTemplate($event) {
+   function getDatasForTemplate($event,$options=array()) {
       global $LANG;
       $prefix = strtolower($item->getType());
       $tpldatas['##'.$prefix.'.entity##'] =
@@ -625,6 +628,26 @@ class NotificationTarget extends CommonDBTM {
 
    function getTargets() {
       return $this->target;
+   }
+
+   function getEntity() {
+      if ($this->obj->isField('entities_id')) {
+         return $this->obj->getField('entities_id');
+      }
+      elseif ($this->target_object) {
+         return $this->target_object->getField('entities_id');
+      }
+      else {
+         return 0;
+      }
+   }
+
+   function clearAddressesList() {
+      $this->target = array();
+   }
+
+   static function getJoinProfileSql() {
+      return "";
    }
 }
 ?>

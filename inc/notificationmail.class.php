@@ -155,8 +155,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $query="SELECT COUNT(id)
                  FROM `glpi_mailingsettings`
                  WHERE `type` IN ('new','followup','update','finish')
-                       AND `mailingtype` = '".NOTIFICATION_USER_TYPE."'
-                       AND `items_id` = '".NOTIFICATION_AUTHOR."'";
+                       AND `mailingtype` = '".Notification::USER_TYPE."'
+                       AND `items_id` = '".Notification::AUTHOR."'";
          if ($result=$DB->query($query)) {
             if ($DB->result($result,0,0)>0) {
                return true;
