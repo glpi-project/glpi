@@ -45,7 +45,7 @@ echo "<table class='tab_cadre'>";
 echo "<tr><th>&nbsp;" . $LANG['setup'][201] . " ".$LANG['setup'][704]."&nbsp;</th></tr>";
 
 if (haveRight("config","r")) {
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.php'>" .
+   echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
          $LANG['setup'][201]. ' '.$LANG['mailing'][118] .
          "</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .

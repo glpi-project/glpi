@@ -43,6 +43,5 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownNotificationTemplate.php")) {
 checkRight("notification","w");
 
 NotificationTemplate::dropdownTemplates('notificationtemplates_id',
-                                        $_POST['itemtype'],
-                                        NotificationTemplate::getDefault($_POST['itemtype']));
+                                        $_POST['itemtype']);
 ?>
