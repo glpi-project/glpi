@@ -2076,6 +2076,7 @@ CREATE TABLE `glpi_notificationtemplates` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `date_mod` datetime DEFAULT NULL,
+  `comment` text collate utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
