@@ -163,10 +163,10 @@ class NotificationTargetTicket extends NotificationTarget {
       global $LANG;
       return array ('new' => $LANG['mailing'][9],
                     'update' => $LANG['mailing'][30],
-                    'solved' => $LANG['jobresolution'][2],
+                    'solved' => $LANG['mailing'][123],
                     'add_followup' => $LANG['mailing'][10],
                     'add_task' => $LANG['job'][49],
-                    'closed' => $LANG['mailing'][123]);
+                    'closed' => $LANG['mailing'][127]);
    }
 
    /**

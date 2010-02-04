@@ -156,9 +156,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][115]. ' '. $LANG['mailing'][117].
-           "&nbsp;:</td><td colspan='3'>";
+           "&nbsp;:<br />(".$LANG['mailing'][128].")</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_text' >"
-         .$this->fields["content_text"]."</textarea></td></tr>";
+         .$this->fields["content_text"]."</textarea></tr>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][115]. ' '. $LANG['mailing'][116].
@@ -191,7 +191,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                               " = ". $template->fields["name"]);
 
       echo "<form name='form_language' id='form_language' method='post'>";
-      echo "<table class='tab_cadrehov'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th></th><th>".$LANG['setup'][41]."</th></tr>";
       foreach ($DB->request('glpi_notificationtemplatetranslations',
                             array('notificationtemplates_id'=>$nID)) as $data) {
@@ -217,7 +217,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          echo "</table>";
 
       if ($canedit) {
-         openArrowMassive("form_language");
+         openArrowMassive("form_language",true);
          closeArrowMassive("delete_languages",$LANG["buttons"][6]);
       }
    }
