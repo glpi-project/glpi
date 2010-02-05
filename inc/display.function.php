@@ -799,13 +799,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
       $menu['config']['content']['mailing']['title']=$LANG['setup'][704];
       $menu['config']['content']['mailing']['page']='/front/setup.notification.php';
-
       $menu['config']['content']['mailing']['options']['notification']['title']=$LANG['setup'][704];
       $menu['config']['content']['mailing']['options']['notification']['page']='/front/notification.php';
-      if (haveRight("config","w") || haveRight("notification","w")) {
-         $menu['config']['content']['mailing']['options']['notification']['links']['add']='/front/notification.form.php';
-      }
+      $menu['config']['content']['mailing']['options']['notification']['links']['add']='/front/notification.form.php';
       $menu['config']['content']['mailing']['options']['notification']['links']['search']='/front/notification.php';
+
    }
 
    if (haveRight("config","w")) {

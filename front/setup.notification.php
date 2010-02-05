@@ -51,7 +51,7 @@ if (haveRight("config","r")) {
    echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
          $LANG['mailing'][113] ."</a></td> </tr>";
 }
-if (haveRight("notification","r")) {
+if (haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
    echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
          "</a></td></tr>";
 }
