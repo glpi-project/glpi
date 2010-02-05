@@ -201,19 +201,31 @@ class NotificationTemplate extends CommonDBTM {
                              array('','',''),$string);
 
       //First of all process the FOREACH tag
-      if (preg_match_all("/##FOREACH([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
-         foreach ($out[1] as $id => $tag_infos) {
+      if (preg_match_all("/##FOREACH(FIRST|LAST)?([0-9]*)?([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
+         foreach ($out[3] as $id => $tag_infos) {
 
-            $regex= "/##FOREACH".$tag_infos."##(.*)##ENDFOREACH".$tag_infos."##/";
+            $regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/";
             preg_match($regex,$string,$tag_out);
-
             if (isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
 
                $data_lang_foreach = $data;
                unset($data_lang_foreach[$tag_infos]);
 
+               //Manage FIRST & LAST statement
+               $foreachvalues = $data[$tag_infos];
+               if (!empty($foreachvalues)) {
+                  if ($out[1][$id] == 'FIRST') {
+                     $foreachvalues = array_reverse($foreachvalues);
+                  }
+                  if ($out[2][$id]) {
+                     $foreachvalues = array_slice($foreachvalues,0,$out[2][$id]);
+                  }
+                  else {
+                     $foreachvalues = array_slice($foreachvalues,0,1);
+                  }
+               }
                $output_foreach_string = "";
-               foreach ($data[$tag_infos] as $line) {
+               foreach ($foreachvalues as $line) {
                   foreach ($line as $field => $value) {
                      $data_lang_foreach[$field] = $value;
                   }
