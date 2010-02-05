@@ -292,15 +292,12 @@ class SoftwareVersion extends CommonDBChild {
                addToNavigateListItems('SoftwareVersion',$data['id']);
                $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
-               // Show version if canedit (to update/delete) or if nb (to see installations)
-               if ($canedit || $nb) {
-                  echo "<tr class='tab_bg_2'>";
-                  echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>";
-                  echo $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
-                  echo "<td class='right'>".$data['sname']."</td>";
-                  echo "<td class='right'>$nb</td>";
-                  echo "<td>".$data['comment']."</td></tr>\n";
-               }
+               echo "<tr class='tab_bg_2'>";
+               echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>";
+               echo $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
+               echo "<td class='right'>".$data['sname']."</td>";
+               echo "<td class='right'>$nb</td>";
+               echo "<td>".$data['comment']."</td></tr>\n";
             }
             echo "<tr class='tab_bg_1'><td class='right b' colspan='2'>".$LANG['common'][33]."</td>";
             echo "<td class='right b'>$tot</td><td>";
