@@ -91,7 +91,7 @@ class Software extends CommonDBTM {
                $ong[11] = $LANG['Menu'][17];
             }
             $ong[12] = $LANG['title'][38];
-            if ($this->isRecursive()) {
+            if ($this->isRecursive() && $this->can($this->fields['id'],'w')) {
                $ong[21] = $LANG['software'][47];
             }
          }
