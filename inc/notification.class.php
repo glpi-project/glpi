@@ -140,7 +140,7 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][119] . "&nbsp;:</td>";
       echo "<td><span id='show_events'>";
-      NotificationEvent::dropdownEvents($this->fields['itemtype']);
+      NotificationEvent::dropdownEvents($this->fields['itemtype'],$this->fields['event']);
       echo "</span></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][113] . "&nbsp;:</td>";
