@@ -63,7 +63,7 @@ class Infocom extends CommonDBTM {
    function post_getEmpty() {
       global $CFG_GLPI;
 
-   $this->fields["alert"]=$CFG_GLPI["default_infocom_alert"];
+      $this->fields["alert"]=$CFG_GLPI["default_infocom_alert"];
    }
 
    /**
@@ -657,9 +657,6 @@ class Infocom extends CommonDBTM {
       if (!$item) {
          echo "<div class='center'><br><br>".$LANG['financial'][85]."</div>";
       } else {
-         echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
-
-
          $date_tax=$CFG_GLPI["date_tax"];
          $dev_ID = $item->getField('id');
          $ic = new Infocom;
@@ -675,13 +672,18 @@ class Infocom extends CommonDBTM {
          if (!$ic->getFromDBforDevice($item->getType(),$dev_ID)) {
             //$input=array('entities_id'=>$entity);
             $input=array('itemtype' => $item->getType(),
-                        'items_id' => $dev_ID);
+                        'items_id' => $dev_ID,
+                        'entities_id' => $item->getEntityID());
+            
             if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
+               echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
+
                echo "<table class='tab_cadre'><tr><th>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".$item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".
                      $LANG['financial'][68]."</a></th></tr></table>";
             }
          } else { // getFromDBforDevice
+            echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
             $canedit = ($ic->can($ic->fields['id'], "w") && $withtemplate!=2);
             if ($canedit) {
                echo "<form name='form_ic' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/infocom.form.php\">";
