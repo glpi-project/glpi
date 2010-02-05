@@ -386,7 +386,7 @@ class NotificationTarget extends CommonDBTM {
 
       foreach ($DB->request('glpi_entitydatas',
                             array('entities_id'=>$this->entity)) as $data) {
-         $this->addToAddressesList($data["email"],
+         $this->addToAddressesList($data['admin_email'],
                                    $CFG_GLPI['language'],
                                    $this->entity);
       }
