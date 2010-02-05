@@ -215,7 +215,7 @@ class NetworkEquipment extends CommonDBTM {
                        AND `glpi_networkports_networkports`.`$enda`
                                  IN (SELECT `id`
                                      FROM `glpi_networkports`
-                                     WHERE `itemtype` = ".$this->getType()."
+                                     WHERE `itemtype` = '".$this->getType()."'
                                            AND `items_id` = '$ID')
                  GROUP BY `itemtype`";
 
