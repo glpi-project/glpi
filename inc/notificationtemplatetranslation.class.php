@@ -146,9 +146,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                               array('display_none'=>true,
                                     'value'=>$this->fields['language'],
                                     'used'=>$used));
-     // echo "</td>";
-      //echo "<td>" . $LANG['mailing'][114] . "&nbsp;:</td><td>";
-      //Dropdown::showYesNo('is_default',$this->fields['is_default']);
+
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['knowbase'][14] . "&nbsp;:</td><td colspan='3'>";
@@ -237,19 +235,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
       return NotificationTemplateTranslation::cleanContentHtml($input);
    }
 
-   function post_updateItem($history=1) {
-      global $DB;
-
-      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
-         $query = "UPDATE ".
-                   $this->getTable()."
-                   SET `is_default` = '0'
-                   WHERE `id` <> '".$this->input['id']."'
-                      AND notificationtemplates_id='".$this->fields['notificationtemplates_id']."'";
-         $DB->query($query);
-      }
-   }
-
    function getSearchOptions() {
       global $LANG;
 
@@ -284,7 +269,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       return $tab;
    }
-
 
    static function getAllUsedLanguages($language_id) {
       $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',

@@ -177,11 +177,12 @@ class NotificationTemplate extends CommonDBTM {
             //Template processing
             $lang['subject'] = NotificationTemplate::process($template_datas['subject'],$data);
             $lang['content_html'] =
-                  "<html><body>".NotificationTemplate::process($template_datas['content_html'],$data).
+                  "<html><body>".NotificationTemplate::process($template_datas['content_html'],
+                                                                $data).
                   "<br /><br />".$this->signature."</body></html>";
 
-            $lang['content_text'] =  NotificationTemplate::process($template_datas['content_text'],
-                                                                   $data).
+            $lang['content_text'] = NotificationTemplate::process($template_datas['content_text'],
+                                                                  $data).
                   "\n\n".$this->signature;
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }

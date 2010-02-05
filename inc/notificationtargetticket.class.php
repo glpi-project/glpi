@@ -406,6 +406,21 @@ class NotificationTargetTicket extends NotificationTarget {
          $tpldatas['##ticket.numberoffollowups##'] = 0;
       }
 
+      foreach (Log::getHistoryData($this->obj) as $data) {
+         $tmp['##ticket.log.date##'] = $data['date_mod'];
+         $tmp['##ticket.log.user##'] = $data['user_name'];
+         $tmp['##ticket.log.field##'] = $data['field'];
+         $tmp['##ticket.log.content##'] = $data['change'];
+         $tpldatas['log'][] = $tmp;
+      }
+
+      if (isset($tpldatas['log'])) {
+         $tpldatas['##ticket.numberoflogs##'] = count($tpldatas['log']);
+      }
+      else {
+         $tpldatas['##ticket.numberoflogs##'] = 0;
+      }
+
       //Locales
       $labels = array ('##lang.ticket.id##'=>$LANG['common'][2],
                        '##lang.ticket.title##'=>$LANG['common'][16],

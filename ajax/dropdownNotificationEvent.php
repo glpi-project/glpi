@@ -41,5 +41,5 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownNotificationEvent.php")) {
 }
 
 checkRight("notification","w");
-NotificationEvent::dropdownEvents($_POST['itemtype'],'');
+NotificationEvent::dropdownEvents($_POST['itemtype']);
 ?>
