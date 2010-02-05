@@ -42,9 +42,6 @@ if (!defined('GLPI_ROOT')){
  */
 class NotificationEvent extends CommonDBTM {
 
-   //Store values used in template
-   var $values = array();
-
    static function dropdownEvents($itemtype,$value='') {
       $events = array();
 
@@ -128,8 +125,5 @@ class NotificationEvent extends CommonDBTM {
       return true;
    }
 
-   public function getValues() {
-      return $$this->values;
-   }
 }
 ?>

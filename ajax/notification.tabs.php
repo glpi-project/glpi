@@ -52,7 +52,7 @@ if ($_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
          }
          Plugin::displayAction($notification, $_REQUEST['glpi_tab']);
          break;
-      case 2 :
+      case 1 :
          if ($target) {
             $target->showForNotification($notification);
          }
