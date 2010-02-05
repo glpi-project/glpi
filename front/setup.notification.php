@@ -55,8 +55,11 @@ if (haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
    echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
          "</a></td></tr>";
 }
+else {
+      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][661] ."</td></tr>";
+}
+
 echo "</table>";
 
 commonFooter();
-
 ?>

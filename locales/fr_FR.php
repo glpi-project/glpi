@@ -1780,7 +1780,7 @@ $LANG['setup'][652]="SMTP+SSL";
 $LANG['setup'][653]="SMTP+TLS";
 
 $LANG['setup'][660]="Serveur mail";
-
+$LANG['setup'][661]="Configuration des notifications impossible : veuillez activer le suivi par email";
 
 $LANG['setup'][703]="Générale";
 $LANG['setup'][704]="Notifications";
