@@ -450,14 +450,16 @@ class Log extends CommonDBTM {
             }
 
          } else {
-            $fieldname="";
+            $fieldname = "";
+            $shorthistory = false;
             // It's not an internal device
             foreach($SEARCHOPTION as $key2 => $val2) {
                if ($key2==$data["id_search_option"]) {
                   $tmp['field']= $val2["name"];
                   $fieldname=$val2["field"];
-                  $shorthistory = (isset($fieldname['shorthistory'])?
-                                                                  $fieldname['shorthistory']:false);
+                  if (isset($val2['shorthistory'])) {
+                     $shorthistory = $val2['shorthistory'];
+                  }
                }
             }
             switch ($fieldname) {
