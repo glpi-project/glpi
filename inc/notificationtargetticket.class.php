@@ -406,7 +406,8 @@ class NotificationTargetTicket extends NotificationTarget {
          $tpldatas['##ticket.numberoffollowups##'] = 0;
       }
 
-      foreach (Log::getHistoryData($this->obj) as $data) {
+      // Use list_limit_max or load the full history ?
+      foreach (Log::getHistoryData($this->obj,0,$CFG_GLPI['list_limit_max']) as $data) {
          $tmp['##ticket.log.date##'] = $data['date_mod'];
          $tmp['##ticket.log.user##'] = $data['user_name'];
          $tmp['##ticket.log.field##'] = $data['field'];
