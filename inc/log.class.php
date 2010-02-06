@@ -259,7 +259,7 @@ class Log extends CommonDBTM {
       echo "<th>".$LANG['common'][34]."</th><th>".$LANG['event'][18]."</th>";
       echo "<th>".$LANG['event'][19]."</th></tr>";
 
-      foreach (Log::getHistoryData($item) as $data) {
+      foreach (Log::getHistoryData($item,$start,$_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {
             // show line
             echo "<tr class='tab_bg_2'>";
@@ -271,25 +271,31 @@ class Log extends CommonDBTM {
       echo "</table></div>";
    }
 
-   static function getHistoryData(CommonDBTM $item) {
+   /**
+    * Retrieve last history Data for an item
+    *
+    * @param $item CommonDBTM object
+    * @param $start interger first line to retrieve
+    * @param $limit interfer max number of line to retrive (0 for all)
+    *
+    * @return array of localized log entry
+    */
+   static function getHistoryData(CommonDBTM $item, $start=0, $limit=0) {
       global $DB, $LANG;
 
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
       $SEARCHOPTION=Search::getOptions($itemtype);
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
-      } else {
-         $start = 0;
-      }
 
       $query="SELECT *
               FROM `glpi_logs`
               WHERE `items_id`='".$items_id."'
                     AND `itemtype`='".$itemtype."'
-              ORDER BY `id` DESC
-              LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+              ORDER BY `id` DESC";
+      if ($limit) {
+         $query .= " LIMIT ".intval($start)."," . intval($limit);
+      }
 
       $changes = array();
       foreach ($DB->request($query) as $data) {
@@ -453,7 +459,7 @@ class Log extends CommonDBTM {
             $fieldname = "";
             $shorthistory = false;
             // It's not an internal device
-            foreach($SEARCHOPTION as $key2 => $val2) {
+            foreach ($SEARCHOPTION as $key2 => $val2) {
                if ($key2==$data["id_search_option"]) {
                   $tmp['field']= $val2["name"];
                   $fieldname=$val2["field"];
