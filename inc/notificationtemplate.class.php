@@ -167,6 +167,8 @@ class NotificationTemplate extends CommonDBTM {
 
       if (!isset($this->templates_by_languages[$additionnaloption][$language])) {
          //Switch to the desired language
+         $start=microtime(true);
+         logDebug("000: Start for ".$language);
          loadLanguage($language);
          //Get template's language data for in this language
          $data = $target->getDatasForTemplate($event,$options);
@@ -186,6 +188,7 @@ class NotificationTemplate extends CommonDBTM {
                   "\n\n".$this->signature;
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }
+         logDebug("999: ".(microtime(true)-$start)." End for ".$language);
       }
 
       return isset($this->templates_by_languages[$additionnaloption][$language]);
@@ -228,12 +231,8 @@ class NotificationTemplate extends CommonDBTM {
                $output_foreach_string = "";
                foreach ($foreachvalues as $line) {
                   foreach ($line as $field => $value) {
-                     $data_lang_foreach[$field] = $value;
-                  }
-
-                  foreach ($data_lang_foreach as $field=>$value) {
-                     if (is_array($value)) {
-                        unset($data_lang_foreach[$field]);
+                     if (!is_array($value)) {
+                        $data_lang_foreach[$field] = $value;
                      }
                   }
                   $tmp = NotificationTemplate::processIf($tag_out[1],$data_lang_foreach);
@@ -262,13 +261,6 @@ class NotificationTemplate extends CommonDBTM {
 
    private static function processIf($string, $data) {
 
-
-      foreach ($data as $field=>$value) {
-         if (is_array($value)) {
-            unset($data[$field]);
-         }
-      }
-
       if (preg_match_all("/##IF([a-z\.]*)##/i",$string,$out)) {
          foreach ($out[1] as $tag_infos) {
             $if_field = $tag_infos;
@@ -279,29 +271,12 @@ class NotificationTemplate extends CommonDBTM {
             //Get the else tag value (if one)
             $regex_else= "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/";
 
-            //If field exists in template's data -> replace the IF sentence
-            if (preg_match($regex_if,$string,$tag_if_out)) {
-               if (isset($data['##'.$if_field.'##']) && $data['##'.$if_field.'##'] != '') {
-                  $replace = strtr($tag_if_out[1],$data);
-                  $tmp = array($tag_if_out[0]=>$replace);
-
-                  //Now check if there's an else statement
-                  if (preg_match($regex_else,$string,$tag_else_out)) {
-                     $tmp[$tag_else_out[0]] = '';
-                  }
-               }
-               else {
-                  $tmp[$tag_if_out[0]] = '';
-
-                  //If an ELSE statement exists -> use it
-                  if (preg_match($regex_else,$string,$tag_else_out)) {
-                     $replace = strtr($tag_else_out[1],$data);
-                     $tmp[$tag_else_out[0]]= $replace;
-                  }
-                  else {
-                  }
-               }
-               $string = strtr($string,$tmp);
+            if (isset($data['##'.$if_field.'##']) && $data['##'.$if_field.'##'] != '') {
+               $string = preg_replace($regex_if, "\\1", $string);
+               $string = preg_replace($regex_else, "",  $string);
+            } else {
+               $string = preg_replace($regex_if, "", $string);
+               $string = preg_replace($regex_else, "\\1",  $string);
             }
          }
       }
