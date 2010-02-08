@@ -2021,7 +2021,10 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			} else {
 				$ADD="";
 				if ($nott) {
-					$ADD=" OR $table$linkfield.$field IS NULL";
+               // search not but not NOT NULL
+               if ($val != 'NULL') {
+                   $ADD=" OR $table$linkfield.$field IS NULL";
+               }
 				}
 
             if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE) {
