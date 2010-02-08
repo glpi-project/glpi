@@ -2555,7 +2555,7 @@ class Ticket extends CommonDBTM {
          $this->check(-1,'w',$options);
       }
 
-      $this->showTabs($ID);
+      $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups()==0
                                         && $this->fields['users_id']==$_SESSION['glpiID']);
@@ -2833,7 +2833,7 @@ class Ticket extends CommonDBTM {
          Ticket::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
                                     1, $this->fields["entities_id"]);
       } else {
-         if ($ID && class_exists($this->fields['itemtype'])) {
+         if ($ID && $this->fields['itemtype'] && class_exists($this->fields['itemtype'])) {
             $item = new $this->fields['itemtype']();
             echo $item->getTypeName()." ".$item->getNameID();
          } else {
