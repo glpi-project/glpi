@@ -130,7 +130,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    }
    $netport->showTabs($ID);
 
-   echo "\n<div class='center' id='tabsbody'><form method='post' action=\"$target\">\n";
+   echo "\n<form method='post' action=\"$target\"><div class='center' id='tabsbody'>\n";
    echo "<table class='tab_cadre_fixe'>\n<tr>";
    echo "<th colspan='2'>" . $LANG['networking'][20] . "&nbsp;:</th>";
    echo "</tr>\n";
@@ -248,7 +248,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
       echo "</td></tr>\n";
    }
 
-   echo "</table></form></div>\n";
+   echo "</table></div></form>\n";
 
    echo "<div id='tabcontent'></div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
