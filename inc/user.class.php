@@ -1030,7 +1030,7 @@ class User extends CommonDBTM {
          $title = "";
 
          if (haveRight("import_externalauth_users", "w")) {
-            if (useAuthLdap()) {
+            if (AuthLdap::useAuthLdap()) {
                $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
                $buttons["ldap.php"] = $LANG['setup'][3];
             } else if (Auth::useAuthExt()) {
