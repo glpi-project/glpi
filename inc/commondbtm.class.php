@@ -1513,7 +1513,7 @@ class CommonDBTM extends CommonGLPI {
                }
             }
          }
-         if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]) {
+         if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
             return true;
          } else {
             return ($this->canCreate() && $this->canCreateItem());
@@ -1531,7 +1531,7 @@ class CommonDBTM extends CommonGLPI {
       switch ($right) {
          case 'r':
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]) {
+            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
                return true;
             } else {
                return ($this->canView() && $this->canViewItem());
@@ -1540,7 +1540,7 @@ class CommonDBTM extends CommonGLPI {
 
          case 'w':
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]){
+            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()){
                return true;
             } else {
                return ($this->canUpdate() && $this->canUpdateItem());
@@ -1548,7 +1548,7 @@ class CommonDBTM extends CommonGLPI {
             break;
          case 'd':
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']==$_SESSION["glpiID"]){
+            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()){
                return true;
             } else {
                return ($this->canDelete() && $this->canDeleteItem());
@@ -1580,7 +1580,7 @@ class CommonDBTM extends CommonGLPI {
       // Check item exists
       if (!$this->isNewID($ID) && !$this->getFromDB($ID)) {
          // Gestion timeout session
-         if (!isset ($_SESSION["glpiID"])) {
+         if (!getLoginUserID()) {
             glpi_header($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
@@ -1588,7 +1588,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          if (!$this->can($ID,$right,$input)) {
             // Gestion timeout session
-            if (!isset ($_SESSION["glpiID"])) {
+            if (!getLoginUserID()) {
                glpi_header($CFG_GLPI["root_doc"] . "/index.php");
                exit ();
             }
@@ -1609,7 +1609,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (!$this->canGlobal($right)) {
          // Gestion timeout session
-         if (!isset ($_SESSION["glpiID"])) {
+         if (!getLoginUserID()) {
             glpi_header($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }

@@ -97,7 +97,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
 
    // Set default value...
-   $values = array('users_id'             => $_SESSION["glpiID"],
+   $values = array('users_id'             => getLoginUserID(),
                    'groups_id'            => 0,
                    'users_id_assign'      => 0,
                    'groups_id_assign'     => 0,

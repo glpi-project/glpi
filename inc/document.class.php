@@ -105,7 +105,9 @@ class Document extends CommonDBTM {
       // security (don't accept filename from $_POST)
       unset($input['filename']);
 
-      $input["users_id"] = $_SESSION["glpiID"];
+      if ($uid=getLoginUserID()) {
+         $input["users_id"] = getLoginUserID();
+      }
 
       if (isset($input["item"]) && isset($input["itemtype"])
           && class_exists($input["itemtype"]) && $input["item"]>0) {
@@ -407,7 +409,7 @@ class Document extends CommonDBTM {
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
           && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
          // My doc Check and Common doc right access
-         if ($this->can($this->fields["id"],'r') || $this->fields["users_id"]==$_SESSION["glpiID"]) {
+         if ($this->can($this->fields["id"],'r') || $this->fields["users_id"]===getLoginUserID()) {
             return true;
          }
 
@@ -459,10 +461,10 @@ class Document extends CommonDBTM {
                }
             }
          }
-      } else if (isset($_SESSION["glpiID"])) { // ! central
+      } else if (getLoginUserID()) { // ! central
 
          // Check if it is my doc
-         if ($this->fields["users_id"]==$_SESSION["glpiID"]) {
+         if ($this->fields["users_id"]===getLoginUserID()) {
             return true;
          }
          if (haveRight("faq","r")) {
@@ -1027,7 +1029,7 @@ class Document extends CommonDBTM {
                 WHERE `glpi_documents_items`.`items_id` = '$ID'
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
-      if (isset($_SESSION["glpiID"])) {
+      if (getLoginUserID()) {
          $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
       } else {
          // Anonymous access from FAQ
@@ -1045,7 +1047,7 @@ class Document extends CommonDBTM {
                     WHERE `glpi_documents_items`.`documents_id` = '$ID'
                           AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
-         if (isset($_SESSION["glpiID"])) {
+         if (getLoginUserID()) {
             $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
          } else {
             // Anonymous access from FAQ

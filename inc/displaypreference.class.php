@@ -206,7 +206,7 @@ class DisplayPreference extends CommonDBTM {
          return false;
       }
 
-      $IDuser=$_SESSION["glpiID"];
+      $IDuser=getLoginUserID();
 
       echo "<div class='center' id='tabsbody' >";
       // Defined items

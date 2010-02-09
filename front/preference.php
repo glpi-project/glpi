@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkLoginUser();
 $user = new User();
 
-if (isset ($_POST["update"]) && $_POST["id"] == $_SESSION["glpiID"]) {
+if (isset ($_POST["update"]) && $_POST["id"] === getLoginUserID()) {
    $user->update($_POST);
    Event::log(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " .
               $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");

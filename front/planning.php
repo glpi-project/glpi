@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_REQUEST['genical'])) {
    if (!isset($_GET["uID"])) {
-      $_GET["uID"] = $_SESSION["glpiID"];
+      $_GET["uID"] = getLoginUserID();
    }
    // Send UTF8 Headers
    @header ("content-type:text/calendar; charset=UTF-8");
@@ -59,7 +59,7 @@ if (isset($_REQUEST['genical'])) {
       $_GET["type"] = "week";
    }
    if (!isset($_GET["uID"]) || !haveRight("show_all_planning","1")) {
-      $_GET["uID"] = $_SESSION["glpiID"];
+      $_GET["uID"] = getLoginUserID();
    }
    if (!isset($_GET["gID"])) {
       $_GET["gID"] = 0;

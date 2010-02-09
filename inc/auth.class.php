@@ -350,7 +350,7 @@ class Auth {
                // glpiprofiles -> other available profile with link to the associated entities
                doHook("init_session");
 
-               initEntityProfiles($_SESSION["glpiID"]);
+               initEntityProfiles(getLoginUserID());
                // Use default profile if exist
                if (isset($_SESSION['glpiprofiles'][$this->user->fields['profiles_id']])) {
                   changeProfile($this->user->fields['profiles_id']);
