@@ -166,7 +166,7 @@ function checkRight($module, $right) {
 
    if (!haveRight($module, $right)) {
       // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
+      if (!getLoginUserID()) {
          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -203,7 +203,7 @@ function checkSeveralRightsOr($modules) {
 
    if (!$valid) {
       // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
+      if (!getLoginUserID()) {
          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -236,7 +236,7 @@ function checkSeveralRightsOr($modules) {
 // 
 //    if (!$valid) {
 //       // Gestion timeout session
-//       if (!isset ($_SESSION["glpiID"])) {
+//       if (!getLoginUserID()) {
 //          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
 //          exit ();
 //       }
@@ -256,7 +256,7 @@ function checkSeveralRightsOr($modules) {
 //    global $CFG_GLPI;
 //    if (!haveTypeRight($itemtype, $right)) {
 //       // Gestion timeout session
-//       if (!isset ($_SESSION["glpiID"])) {
+//       if (!getLoginUserID()) {
 //          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
 //          exit ();
 //       }
@@ -274,7 +274,7 @@ function checkCentralAccess() {
    if (!isset ($_SESSION["glpiactiveprofile"])
        || $_SESSION["glpiactiveprofile"]["interface"] != "central") {
       // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
+      if (!getLoginUserID()) {
          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -292,7 +292,7 @@ function checkHelpdeskAccess() {
    if (!isset ($_SESSION["glpiactiveprofile"])
        || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
       // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
+      if (!getLoginUserID()) {
          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -310,7 +310,7 @@ function checkLoginUser() {
 
    if (!isset ($_SESSION["glpiname"])) {
       // Gestion timeout session
-      if (!isset ($_SESSION["glpiID"])) {
+      if (!getLoginUserID()) {
          glpi_header($CFG_GLPI["root_doc"] . "/index.php");
          exit ();
       }
@@ -585,7 +585,7 @@ function loadGroups() {
    $query_gp = "SELECT `groups_id`
                 FROM `glpi_groups_users`
                 LEFT JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                WHERE `glpi_groups_users`.`users_id`='" . $_SESSION['glpiID'] . "' " .
+                WHERE `glpi_groups_users`.`users_id`='" . getLoginUserID() . "' " .
                       getEntitiesRestrictRequest(" AND ","glpi_groups","entities_id",
                                                  $_SESSION['glpiactiveentities'],true);
    $result_gp = $DB->query($query_gp);

@@ -71,7 +71,7 @@ if (isset($_GET["redirect"])) {
 
 // Greet the user
 echo "<br><span class='icon_consol'>".$LANG['central'][0]." ";
-echo formatUserName($_SESSION["glpiID"], $_SESSION["glpiname"], $_SESSION["glpirealname"],
+echo formatUserName(getLoginUserID(), $_SESSION["glpiname"], $_SESSION["glpirealname"],
                     $_SESSION["glpifirstname"]);
 echo ", ".$LANG['central'][1]."</span>";
 echo "<br><br>";

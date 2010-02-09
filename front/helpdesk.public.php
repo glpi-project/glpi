@@ -69,7 +69,7 @@ if (isset($_GET["redirect"])) {
 
 checkHelpdeskAccess();
 helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-printHelpDesk($_SESSION["glpiID"],1);
+printHelpDesk(getLoginUserID(),1);
 
 helpFooter();
 

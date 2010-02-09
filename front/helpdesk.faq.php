@@ -48,7 +48,7 @@ if (isset($_GET["redirect"])) {
 
 $name = "";
 checkFaqAccess();
-if (isset($_SESSION["glpiID"])) {
+if (getLoginUserID()) {
    helpHeader($LANG['Menu'][20],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];

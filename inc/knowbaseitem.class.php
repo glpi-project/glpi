@@ -234,7 +234,7 @@ class KnowbaseItem extends CommonDBTM {
             echo " <input type='reset' class='submit' value=\"".
                   $LANG['buttons'][16]."\">";
          } else {
-            echo "<input type='hidden' name='users_id' value=\"".$_SESSION['glpiID']."\">";
+            echo "<input type='hidden' name='users_id' value=\"".getLoginUserID()."\">";
             echo "<input type='submit' class='submit' name='add' value=\"".$LANG['buttons'][8]."\">";
             echo " <input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\">";
          }
@@ -438,7 +438,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td>";
 
       // Category select not for anonymous FAQ
-      if (isset($_SESSION["glpiID"]) && !$faq) {
+      if (getLoginUserID() && !$faq) {
          echo "<td><form method=get action=\"".$target."\"><table border='0' class='tab_cadre'>";
          echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp:</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
@@ -468,7 +468,7 @@ class KnowbaseItem extends CommonDBTM {
       $score="";
 
       // Build query
-      if (isset($_SESSION["glpiID"])) {
+      if (getLoginUserID()) {
          $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
       } else {
          // Anonymous access
@@ -631,7 +631,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $faq_limit="";
-      if (isset($_SESSION["glpiID"])) {
+      if (getLoginUserID()) {
          $faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_knowbaseitems", "", "", true);
       } else {
          // Anonymous access

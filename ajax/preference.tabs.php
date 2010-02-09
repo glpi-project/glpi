@@ -46,14 +46,14 @@ $pref = new Preference();
 switch ($_REQUEST['glpi_tab']) {
    case 2 :
       $config = new Config();
-      $user->getFromDB($_SESSION["glpiID"]);
+      $user->getFromDB(getLoginUserID());
       $user->computePreferences();
       $config->showFormUserPrefs($_POST['target'],$user->fields);
       break;
 
    default :
       if (!Plugin::displayAction($pref, $_REQUEST['glpi_tab'])) {
-         $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", $_SESSION["glpiID"]);
+         $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", getLoginUserID());
       }
 }
 
