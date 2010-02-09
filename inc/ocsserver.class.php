@@ -3966,7 +3966,7 @@ class OcsServer extends CommonDBTM {
                   $name=encodeInUtf8($name);
                }
                $version = $data2["VERSION"];
-               $manufacturer = processManufacturerName($data2["PUBLISHER"]);
+               $manufacturer = Manufacturer::processName($data2["PUBLISHER"]);
                $use_glpi_dictionnary = false;
                if (!$cfg_ocs["use_soft_dict"]) {
                   //Software dictionnary

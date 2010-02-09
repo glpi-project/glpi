@@ -183,7 +183,7 @@ class RuleOcs extends Rule {
                   //Assign entity using the regex's result
                   if ($action->fields["field"] == "_affect_entity_by_tag") {
                      //Get the TAG from the regex's results
-                     $res = getRegexResultById($action->fields["value"],$regex_results);
+                     $res = RuleAction::getRegexResultById($action->fields["value"],$regex_results);
                      if ($res != null) {
                         //Get the entity associated with the TAG
                         $target_entity = EntityData::getEntityIDByTag($res);

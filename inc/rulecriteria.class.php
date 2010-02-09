@@ -76,7 +76,7 @@ class RuleCriteria extends CommonDBTM {
       //If the value is not an array
       if (!is_array($input[$this->fields["criteria"]])) {
          $value=$this->getValueToMatch($this->fields["condition"],$input[$this->fields["criteria"]]);
-         $res = matchRules($value,$this->fields["condition"],$this->fields["pattern"],$regex_result);
+         $res = self::match($value,$this->fields["condition"],$this->fields["pattern"],$regex_result);
       } else {
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
@@ -86,7 +86,7 @@ class RuleCriteria extends CommonDBTM {
             $res = true;
             foreach($input[$this->fields["criteria"]] as $tmp) {
                $value=$this->getValueToMatch($this->fields["condition"],$tmp);
-               $res &= matchRules($value,$this->fields["condition"],$this->fields["pattern"],
+               $res &= self::match($value,$this->fields["condition"],$this->fields["pattern"],
                                   $regex_result);
             }
 
@@ -95,7 +95,7 @@ class RuleCriteria extends CommonDBTM {
             $res = false;
             foreach($input[$this->fields["criteria"]] as $tmp) {
                $value=$this->getValueToMatch($this->fields["condition"],$tmp);
-               $res |= matchRules($value,$this->fields["condition"],$this->fields["pattern"],
+               $res |= self::match($value,$this->fields["condition"],$this->fields["pattern"],
                                   $regex_result);
                if ($res) {
                   break;
@@ -146,6 +146,154 @@ class RuleCriteria extends CommonDBTM {
          }
       }
       return $initValue;
+   }
+
+   /**
+   * Try to match a definied rule
+   *
+   * @param $field the field to match
+   * @param $condition the condition (is, is_not, contain, not_contain,begin,end)
+   * @param $pattern the pattern to match
+   * @param $regex_result
+   * @return true if the field match the rule, false if it doesn't match
+   **/
+   static function match($field, $condition, $pattern,&$regex_result) {
+
+      //If pattern is wildcard, don't check the rule and return true
+      if ($pattern == RULE_WILDCARD) {
+         return true;
+      }
+
+      // Trim for remove keyboard errors
+      // Input are slashed protected, not output.
+      $field=stripslashes(trim($field));
+      $pattern=trim($pattern);
+      if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH) {
+         //Perform comparison with fields in lower case
+         $field = utf8_strtolower($field);
+         $pattern = utf8_strtolower($pattern);
+      }
+
+      switch ($condition) {
+         case PATTERN_IS :
+            if ($field == $pattern) {
+               return true;
+            }
+            return false;
+
+         case PATTERN_IS_NOT :
+            if ($field != $pattern) {
+               return true;
+            }
+            return false;
+
+         case PATTERN_END :
+            $value = "/".$pattern."$/";
+            if (preg_match($value, $field) > 0) {
+               return true;
+            }
+            return false;
+
+         case PATTERN_BEGIN :
+            if (empty($pattern)) {
+               return false;
+            }
+            $value = strpos($field,$pattern);
+            if (($value !== false) && $value == 0) {
+               return true;
+            }
+            return false;
+
+         case PATTERN_CONTAIN :
+            if (empty($pattern)) {
+               return false;
+            }
+            $value = strpos($field,$pattern);
+            if (($value !== false) && $value >= 0) {
+               return true;
+            }
+            return false;
+
+         case PATTERN_NOT_CONTAIN :
+            if (empty($pattern)) {
+               return false;
+            }
+            $value = strpos($field,$pattern);
+            if ($value === false) {
+               return true;
+            }
+            return false;
+
+         case REGEX_MATCH :
+            $results = array();
+            if (preg_match($pattern."i",$field,$results)>0) {
+               for ($i=1;$i<count($results);$i++) {
+                  $regex_result[]=$results[$i];
+               }
+               return true;
+            }
+            return false;
+
+         case REGEX_NOT_MATCH :
+            if (preg_match($pattern."i", $field) == 0) {
+               return true;
+            }
+            return false;
+      }
+      return false;
+   }
+
+   /**
+   * Return the condition label by giving his ID
+   * @param $ID condition's ID
+   * @return condition's label
+   **/
+   static function getConditionByID($ID) {
+      global $LANG;
+
+      switch ($ID) {
+         case PATTERN_IS :
+            return $LANG['rulesengine'][0];
+
+         case PATTERN_IS_NOT :
+            return $LANG['rulesengine'][1];
+
+         case PATTERN_CONTAIN :
+            return $LANG['rulesengine'][2];
+
+         case PATTERN_NOT_CONTAIN :
+            return $LANG['rulesengine'][3];
+
+         case PATTERN_BEGIN :
+            return $LANG['rulesengine'][4];
+
+         case PATTERN_END :
+            return $LANG['rulesengine'][5];
+
+         case REGEX_MATCH :
+            return $LANG['rulesengine'][26];
+
+         case REGEX_NOT_MATCH:
+            return $LANG['rulesengine'][27];
+      }
+   }
+
+   /**
+   * Display a dropdown with all the criterias
+   **/
+   static function dropdownConditions($type,$name,$value='') {
+      global $LANG;
+
+      $elements[PATTERN_IS]          = $LANG['rulesengine'][0];
+      $elements[PATTERN_IS_NOT]      = $LANG['rulesengine'][1];
+      $elements[PATTERN_CONTAIN]     = $LANG['rulesengine'][2];
+      $elements[PATTERN_NOT_CONTAIN] = $LANG['rulesengine'][3];
+      $elements[PATTERN_BEGIN]       = $LANG['rulesengine'][4];
+      $elements[PATTERN_END]         = $LANG['rulesengine'][5];
+      $elements[REGEX_MATCH]         = $LANG['rulesengine'][26];
+      $elements[REGEX_NOT_MATCH]     = $LANG['rulesengine'][27];
+
+      return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
 
 }

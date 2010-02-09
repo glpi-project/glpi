@@ -321,7 +321,7 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['rulesengine'][7] . "</tr>";
       echo "<tr class='tab_bg_1 center'>";
       echo "<td>".$LANG['rulesengine'][30] . "&nbsp;:</td><td>";
-      $val=$this->dropdownActions(getAlreadyUsedActionsByRuleID($rules_id,$this->sub_type));
+      $val=$this->dropdownActions(RuleAction::getAlreadyUsedForRuleID($rules_id,$this->sub_type));
       echo "</td><td class='left'>";
       echo "<span id='action_span'>\n";
       $_POST["sub_type"]=$this->sub_type;
@@ -668,7 +668,7 @@ class Rule extends CommonDBTM {
          $value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],
                                         $input[$criteria->fields["criteria"]]);
 
-         $res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],
+         $res = RuleCriteria::match($value,$criteria->fields["condition"],$criteria->fields["pattern"],
                            $regex_result);
       } else {
          //If the value if, in fact, an array of values
@@ -680,7 +680,7 @@ class Rule extends CommonDBTM {
             foreach($input[$criteria->fields["criteria"]] as $tmp) {
                $value=$this->getCriteriaValue($criteria->fields["criteria"],
                                               $criteria->fields["condition"],$tmp);
-               $res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],
+               $res &= RuleCriteria::match($value,$criteria->fields["condition"],$criteria->fields["pattern"],
                                   $regex_result);
                if (!$res) {
                   break;
@@ -692,7 +692,7 @@ class Rule extends CommonDBTM {
             foreach($input[$criteria->fields["criteria"]] as $crit) {
                $value=$this->getCriteriaValue($criteria->fields["criteria"],
                                               $criteria->fields["condition"],$crit);
-               $res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],
+               $res |= RuleCriteria::match($value,$criteria->fields["condition"],$criteria->fields["pattern"],
                                   $regex_result);
                //if ($res) {
                //   break;
@@ -738,7 +738,7 @@ class Rule extends CommonDBTM {
                   } else {
                      $res="";
                   }
-                  $res .= getRegexResultById($action->fields["value"],$regex_results);
+                  $res .= RuleAction::getRegexResultById($action->fields["value"],$regex_results);
                   $output[$action->fields["field"]]=$res;
                   break;
             }
@@ -964,7 +964,7 @@ class Rule extends CommonDBTM {
    function showMinimalCriteria($fields) {
 
       echo "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      echo "<td>" . getConditionByID($fields["condition"]) . "</td>";
+      echo "<td>" . RuleCriteria::getConditionByID($fields["condition"]) . "</td>";
       echo "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"],$fields["condition"],
                                                      $fields["pattern"]) . "</td>";
    }
@@ -977,7 +977,7 @@ class Rule extends CommonDBTM {
    function showMinimalAction($fields,$canedit) {
 
       echo "<td>" . $this->getActionName($fields["field"]) . "</td>";
-      echo "<td>" . getActionByID($fields["action_type"]) . "</td>";
+      echo "<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
       echo "<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"])) . "</td>";
    }
 
@@ -1088,6 +1088,7 @@ class Rule extends CommonDBTM {
       global $LANG;
 
       $action=$this->getAction($ID);
+
       if (isset($action['type'])) {
          switch ($action['type']) {
             case "dropdown" :

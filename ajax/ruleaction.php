@@ -59,7 +59,7 @@ if (isset($_POST["sub_type"]) && isset($RULES_ACTIONS[$_POST["sub_type"]])) {
       $_POST["field"]=key($RULES_ACTIONS[$_POST["sub_type"]]);
    }
 
-   $randaction=dropdownRulesActions($_POST["sub_type"],"action_type",$_POST["field"]);
+   $randaction=RuleAction::dropdownActions($_POST["sub_type"],"action_type",$_POST["field"]);
 
    echo "&nbsp;&nbsp;";
    echo "<span id='action_type_span'>\n";
