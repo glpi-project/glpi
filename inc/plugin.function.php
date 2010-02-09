@@ -48,7 +48,7 @@ $CFG_GLPI_PLUGINS = array();
 /**
  * This function executes a hook.
  * @param $name Name of hook to fire
- * @param $param Parameters if needed
+ * @param $param Parameters if needed : if object limit to the itemtype 
  * @return mixed $data
  */
 function doHook ($name,$param=NULL) {
@@ -60,13 +60,30 @@ function doHook ($name,$param=NULL) {
       $data=$param;
    }
 
-   if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
-      foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
-         if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
-            include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+   // Apply hook only for the item
+   if ($param != NULL && is_object($param)) {
+      $itemtype=get_class($param);
+      if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
+         foreach ($PLUGIN_HOOKS[$name] as $plug => $tab) {
+            if (isset($tab[$itemtype])) {
+               if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+                  include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+               }
+               if (is_callable($tab[$itemtype])) {
+                  call_user_func($tab[$itemtype],$data);
+               }
+            }
          }
-         if (is_callable($function)) {
-            call_user_func($function,$data);
+      }
+   } else { // Standard hook call
+      if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
+         foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
+            if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+               include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+            }
+            if (is_callable($function)) {
+               call_user_func($function,$data);
+            }
          }
       }
    }
