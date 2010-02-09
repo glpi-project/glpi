@@ -401,7 +401,7 @@ class NotificationTarget extends CommonDBTM {
       global $DB;
       $query=$this->getDistinctUserSql()."
               FROM `glpi_groups_users`".
-              NotificationTargetTicket::getJoinProfileSql()."
+              NotificationTarget::getJoinProfileSql()."
               INNER JOIN `glpi_users`
                       ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`)
                           WHERE `glpi_groups_users`.`groups_id`='".$group_id."'";
@@ -491,7 +491,7 @@ class NotificationTarget extends CommonDBTM {
          //Look for the user by his id
          $query = $this->getDistinctUserSql()."
                   FROM `glpi_users`".
-                  NotificationTargetTicket::getJoinProfileSql()."
+                  NotificationTarget::getJoinProfileSql()."
                   WHERE `glpi_users`.`id` = '".$this->target_object->getField($field)."'";
 
          foreach ($DB->request($query) as $data) {
@@ -526,7 +526,7 @@ class NotificationTarget extends CommonDBTM {
       if ($this->target_object) {
          $query=NotificationTargetTicket::getDistinctUserSql()."
                  FROM `glpi_profiles_users`".
-                 NotificationTargetTicket::getJoinProfileSql()
+                 NotificationTarget::getJoinProfileSql()
                 ."INNER JOIN `glpi_users`
                  ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
                  WHERE `glpi_profiles_users`.`profiles_id`='".$profiles_id."'".
