@@ -899,7 +899,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<table class='tab_cadre'>";
             echo "<tr><th>" . (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
             $num=0;
-            echo displaySearchHeaderItem(0,$LANG['Menu'][14],$num,$target.
+            echo Search::showHeaderItem(0,$LANG['Menu'][14],$num,$target.
                                          "?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>";
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
@@ -1127,7 +1127,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<table class='tab_cadre'>";
             echo "<tr><th>" . $LANG['buttons'][37]. "</th>";
             $header_num=0;
-            echo displaySearchHeaderItem(HTML_OUTPUT,$LANG['common'][35],$header_num,$target.
+            echo Search::showHeaderItem(HTML_OUTPUT,$LANG['common'][35],$header_num,$target.
                                          "?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
             echo "<th>".$LANG['setup'][261]."</th>";
             echo"<th>".$LANG['ocsng'][36]."</th></tr>";

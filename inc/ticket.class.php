@@ -3214,7 +3214,7 @@ class Ticket extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       // New Line for Header Items Line
-      echo displaySearchNewLine($output_type);
+      echo Search::showNewLine($output_type);
       // $show_sort if
       $header_num=1;
 
@@ -3236,11 +3236,11 @@ class Ticket extends CommonDBTM {
       foreach ($items as $key => $val) {
          $issort = 0;
          $link = "";
-         echo displaySearchHeaderItem($output_type,$key,$header_num,$link);
+         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
       }
 
       // End Line for column headers
-      echo displaySearchEndLine($output_type);
+      echo Search::showEndLine($output_type);
    }
 
    /**
@@ -3476,7 +3476,7 @@ class Ticket extends CommonDBTM {
          $item_num=1;
          $bgcolor=$_SESSION["glpipriority_".$data["priority"]];
 
-         echo displaySearchNewLine($output_type,$row_num%2);
+         echo Search::showNewLine($output_type,$row_num%2);
 
          // First column
          $first_col = "ID : ".$data["id"];
@@ -3500,7 +3500,7 @@ class Ticket extends CommonDBTM {
             $first_col .= "&nbsp;<input type='checkbox' name='item[".$data["id"]."]' value='1' $sel>";
          }
 
-         echo displaySearchItem($output_type,$first_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type,$first_col,$item_num,$row_num,$align);
 
          // Second column
          $second_col = "";
@@ -3533,11 +3533,11 @@ class Ticket extends CommonDBTM {
             $second_col .= "</div>";
          }
 
-         echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=130");
+         echo Search::showItem($output_type,$second_col,$item_num,$row_num,$align." width=130");
 
          // Second BIS column
          $second_col = convDateTime($data["date_mod"]);
-         echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=90");
+         echo Search::showItem($output_type,$second_col,$item_num,$row_num,$align." width=90");
 
          // Second TER column
          if (count($_SESSION["glpiactiveentities"])>1) {
@@ -3546,11 +3546,11 @@ class Ticket extends CommonDBTM {
             } else {
                $second_col = $data['entityname'];
             }
-            echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=100");
+            echo Search::showItem($output_type,$second_col,$item_num,$row_num,$align." width=100");
          }
 
          // Third Column
-         echo displaySearchItem($output_type,"<strong>".Ticket::getPriorityName($data["priority"])."</strong>",
+         echo Search::showItem($output_type,"<strong>".Ticket::getPriorityName($data["priority"])."</strong>",
                               $item_num,$row_num,"$align bgcolor='$bgcolor'");
 
          // Fourth Column
@@ -3573,7 +3573,7 @@ class Ticket extends CommonDBTM {
          if ($data["groups_id"]) {
             $fourth_col .= "<br>".$data["groupname"];
          }
-         echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type,$fourth_col,$item_num,$row_num,$align);
 
          // Fifth column
          $fifth_col = "";
@@ -3605,7 +3605,7 @@ class Ticket extends CommonDBTM {
             }
             $fifth_col .= Ticket::getAssignName($data["suppliers_id_assign"],'Supplier',1);
          }
-         echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
          // Sixth Colum
          $sixth_col = "";
@@ -3631,11 +3631,11 @@ class Ticket extends CommonDBTM {
             $sixth_col=$LANG['help'][30];
          }
 
-         echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,
+         echo Search::showItem($output_type,$sixth_col,$item_num,$row_num,
                               ($is_deleted?" class='center deleted' ":$align));
 
          // Seventh column
-         echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,
+         echo Search::showItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,
                               $row_num,$align);
 
          // Eigth column
@@ -3670,10 +3670,10 @@ class Ticket extends CommonDBTM {
                $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
             }
          }
-         echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,$align_desc."width='300'");
+         echo Search::showItem($output_type,$eigth_column,$item_num,$row_num,$align_desc."width='300'");
 
          // Finish Line
-         echo displaySearchEndLine($output_type);
+         echo Search::showEndLine($output_type);
 
       } else {
          echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG['joblist'][16]."</i></td></tr>";

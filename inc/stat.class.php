@@ -199,27 +199,27 @@ class Stat {
          if ($output_type!=HTML_OUTPUT) { // not HTML display
          $nbcols--;
          }
-         echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols);
-         echo displaySearchNewLine($output_type);
+         echo Search::showHeader($output_type,$end_display-$start+1,$nbcols);
+         echo Search::showNewLine($output_type);
          $header_num=1;
-         echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
+         echo Search::showHeaderItem($output_type,"&nbsp;",$header_num);
          if ($output_type==HTML_OUTPUT) { // HTML display
-            echo displaySearchHeaderItem($output_type,"",$header_num);
+            echo Search::showHeaderItem($output_type,"",$header_num);
          }
-         echo displaySearchHeaderItem($output_type,$LANG['stats'][13],$header_num);
-         echo displaySearchHeaderItem($output_type,$LANG['stats'][11],$header_num);
-         echo displaySearchHeaderItem($output_type,$LANG['stats'][15],$header_num);
-         echo displaySearchHeaderItem($output_type,$LANG['stats'][25],$header_num);
-         echo displaySearchHeaderItem($output_type,$LANG['stats'][27],$header_num);
-         echo displaySearchHeaderItem($output_type,$LANG['stats'][30],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][13],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][11],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][15],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][25],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][27],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][30],$header_num);
          // End Line for column headers
-         echo displaySearchEndLine($output_type);
+         echo Search::showEndLine($output_type);
          $row_num=1;
          for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
             $row_num++;
             $item_num=1;
-            echo displaySearchNewLine($output_type,$i%2);
-            echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
+            echo Search::showNewLine($output_type,$i%2);
+            echo Search::showItem($output_type,$value[$i]['link'],$item_num,$row_num);
             if ($output_type==HTML_OUTPUT) { // HTML display
                $link="";
                if ($value[$i]['id']>0) {
@@ -228,17 +228,17 @@ class Stat {
                         "<img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''>".
                         "</a>";
                }
-               echo displaySearchItem($output_type,$link,$item_num,$row_num);
+               echo Search::showItem($output_type,$link,$item_num,$row_num);
             }
 
             //le nombre d'intervention - the number of intervention
             $opened=Stat::constructEntryValues("inter_total",$date1,$date2,$type,$value[$i]["id"],$value2);
             $nb_opened=array_sum($opened);
-            echo displaySearchItem($output_type,$nb_opened,$item_num,$row_num);
+            echo Search::showItem($output_type,$nb_opened,$item_num,$row_num);
             //le nombre d'intervention resolues - the number of resolved intervention
             $solved=Stat::constructEntryValues("inter_solved",$date1,$date2,$type,$value[$i]["id"],$value2);
             $nb_solved=array_sum($solved);
-            echo displaySearchItem($output_type,$nb_solved,$item_num,$row_num);
+            echo Search::showItem($output_type,$nb_solved,$item_num,$row_num);
             //Le temps moyen de resolution - The average time to resolv
             $data=Stat::constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$value[$i]["id"],$value2);
             foreach ($data as $key2 => $val2) {
@@ -255,7 +255,7 @@ class Stat {
                || $output_type==PDF_OUTPUT_PORTRAIT) {
                $timedisplay=timestampToString($timedisplay,0);
             }
-            echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
+            echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
             //Le temps moyen de l'intervention reelle - The average realtime to resolv
             $data=Stat::constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["id"],$value2);
             foreach ($data as $key2 => $val2) {
@@ -276,7 +276,7 @@ class Stat {
                || $output_type==PDF_OUTPUT_PORTRAIT) {
                $timedisplay=timestampToString($timedisplay,0);
             }
-            echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
+            echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
             //Le temps total de l'intervention reelle - The total realtime to resolv
             $timedisplay=$total_realtime*MINUTE_TIMESTAMP;
             if ($output_type==HTML_OUTPUT
@@ -284,7 +284,7 @@ class Stat {
                || $output_type==PDF_OUTPUT_PORTRAIT) {
                $timedisplay=timestampToString($timedisplay,0);
             }
-            echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
+            echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
             //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
             $data=Stat::constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["id"],
                                        $value2);
@@ -302,11 +302,11 @@ class Stat {
                || $output_type==PDF_OUTPUT_PORTRAIT) {
                $timedisplay=timestampToString($timedisplay,0);
             }
-            echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
-            echo displaySearchEndLine($output_type);
+            echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
+            echo Search::showEndLine($output_type);
          }
          // Display footer
-         echo displaySearchFooter($output_type);
+         echo Search::showFooter($output_type);
       } else {
          echo $LANG['stats'][23];
       }
@@ -806,15 +806,15 @@ class Stat {
          if (isset($_GET['export_all'])) {
             $end_display=$numrows;
          }
-         echo displaySearchHeader($output_type,$end_display-$start+1,2,1);
+         echo Search::showHeader($output_type,$end_display-$start+1,2,1);
          $header_num=1;
-         echo displaySearchNewLine($output_type);
-         echo displaySearchHeaderItem($output_type,$LANG['common'][1],$header_num);
+         echo Search::showNewLine($output_type);
+         echo Search::showHeaderItem($output_type,$LANG['common'][1],$header_num);
          if ($view_entities) {
-            echo displaySearchHeaderItem($output_type,$LANG['entity'][0],$header_num);
+            echo Search::showHeaderItem($output_type,$LANG['entity'][0],$header_num);
          }
-         echo displaySearchHeaderItem($output_type,$LANG['stats'][13],$header_num);
-         echo displaySearchEndLine($output_type);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][13],$header_num);
+         echo Search::showEndLine($output_type);
 
          $DB->data_seek($result,$start);
 
@@ -832,8 +832,8 @@ class Stat {
             $item = new $data["itemtype"]();
             if ($item->getFromDB($data["items_id"])) {
 
-               echo displaySearchNewLine($output_type,$i%2);
-               echo displaySearchItem($output_type,$item->getTypeName()." - ".$item->getLink(),$item_num,
+               echo Search::showNewLine($output_type,$i%2);
+               echo Search::showItem($output_type,$item->getTypeName()." - ".$item->getLink(),$item_num,
                                     $i-$start+1,"class='center'"." ".
                                     ($item->isDeleted()?" class='deleted' ":""));
                if ($view_entities) {
@@ -843,16 +843,16 @@ class Stat {
                   } else {
                      $ent=$entities[$ent]['completename'];
                   }
-                  echo displaySearchItem($output_type,$ent,$item_num,$i-$start+1,"class='center'"." ".
+                  echo Search::showItem($output_type,$ent,$item_num,$i-$start+1,"class='center'"." ".
                                        ($item->isDeleted()?" class='deleted' ":""));
                }
-               echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,
+               echo Search::showItem($output_type,$data["NB"],$item_num,$i-$start+1,
                                     "class='center'"." ".
                                     ($item->isDeleted()?" class='deleted' ":""));
             }
          }
 
-         echo displaySearchFooter($output_type);
+         echo Search::showFooter($output_type);
          if ($output_type==HTML_OUTPUT) {
             echo "</div>";
          }

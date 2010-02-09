@@ -635,7 +635,7 @@ class Search {
             }
          }
          if (empty($QUERY)) {
-            echo displaySearchError($output_type);
+            echo Search::showError($output_type);
             return;
          }
          $QUERY .= str_replace($CFG_GLPI["union_search_type"][$itemtype].".","",$ORDER).
@@ -763,10 +763,10 @@ class Search {
             }
 
             // Display List Header
-            echo displaySearchHeader($output_type,$end_display-$begin_display+1,$nbcols);
+            echo Search::showHeader($output_type,$end_display-$begin_display+1,$nbcols);
 
             // New Line for Header Items Line
-            echo displaySearchNewLine($output_type);
+            echo Search::showNewLine($output_type);
             $header_num=1;
 
             if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
@@ -780,14 +780,14 @@ class Search {
                                     "' src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
                   $search_config .= $tmp.">";
                }
-               echo displaySearchHeaderItem($output_type,$search_config,$header_num,"",0,$p['order']);
+               echo Search::showHeaderItem($output_type,$search_config,$header_num,"",0,$p['order']);
             }
 
             // Display column Headers for toview items
             foreach ($toview as $key => $val) {
                $linkto = "$target?itemtype=$itemtype&amp;sort=".$val."&amp;order=".($p['order']=="ASC"?"DESC":"ASC").
                         "&amp;start=".$p['start'].$globallinkto;
-               echo displaySearchHeaderItem($output_type,$searchopt[$itemtype][$val]["name"],
+               echo Search::showHeaderItem($output_type,$searchopt[$itemtype][$val]["name"],
                                           $header_num,$linkto,$p['sort']==$val,$p['order']);
             }
 
@@ -797,7 +797,7 @@ class Search {
                   if (isset($p['itemtype2'][$i]) && !empty($p['itemtype2'][$i]) && isset($p['contains2'][$i])
                      && strlen($p['contains2'][$i])>0) {
 
-                     echo displaySearchHeaderItem($output_type,$names[$p['itemtype2'][$i]]." - ".
+                     echo Search::showHeaderItem($output_type,$names[$p['itemtype2'][$i]]." - ".
                                                 $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
                                                 $header_num);
                   }
@@ -806,23 +806,23 @@ class Search {
 
             // Add specific column Header
             if ($itemtype == 'CartridgeItem') {
-               echo displaySearchHeaderItem($output_type,$LANG['cartridges'][0],$header_num);
+               echo Search::showHeaderItem($output_type,$LANG['cartridges'][0],$header_num);
             }
             if ($itemtype == 'ConsumableItem') {
-               echo displaySearchHeaderItem($output_type,$LANG['consumables'][0],$header_num);
+               echo Search::showHeaderItem($output_type,$LANG['consumables'][0],$header_num);
             }
             if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
-               echo displaySearchHeaderItem($output_type,$LANG['state'][6],$header_num);
+               echo Search::showHeaderItem($output_type,$LANG['state'][6],$header_num);
             }
             if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
                if (haveRight("reservation_central","w")) {
-                  echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
-                  echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
+                  echo Search::showHeaderItem($output_type,"&nbsp;",$header_num);
+                  echo Search::showHeaderItem($output_type,"&nbsp;",$header_num);
                }
-               echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
+               echo Search::showHeaderItem($output_type,"&nbsp;",$header_num);
             }
             // End Line for column headers
-            echo displaySearchEndLine($output_type);
+            echo Search::showEndLine($output_type);
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$nosearch) {
@@ -849,7 +849,7 @@ class Search {
                $i++;
                $row_num++;
                // New line
-               echo displaySearchNewLine($output_type,($i%2));
+               echo Search::showNewLine($output_type,($i%2));
 
                // Add item in item list
                addToNavigateListItems($itemtype,$data["id"]);
@@ -875,18 +875,18 @@ class Search {
                         $tmpcheck="<input type='checkbox' name='item[".$data["id"]."]' value='1' $sel>";
                      }
                   }
-                  echo displaySearchItem($output_type,$tmpcheck,$item_num,$row_num,"width='10'");
+                  echo Search::showItem($output_type,$tmpcheck,$item_num,$row_num,"width='10'");
                }
 
                // Print first element - specific case for user
-               echo displaySearchItem($output_type,Search::giveItem($itemtype,1,$data,0),$item_num,$row_num,
+               echo Search::showItem($output_type,Search::giveItem($itemtype,1,$data,0),$item_num,$row_num,
                                  Search::displayConfigItem($itemtype,$searchopt[$itemtype][1]["table"].".".
                                                             $searchopt[$itemtype][1]["field"]));
                // Print other toview items
                foreach ($toview as $key => $val) {
                   // Do not display first item
                   if ($key>0) {
-                     echo displaySearchItem($output_type,Search::giveItem($itemtype,$val,$data,$key),$item_num,
+                     echo Search::showItem($output_type,Search::giveItem($itemtype,$val,$data,$key),$item_num,
                                           $row_num,
                               Search::displayConfigItem($itemtype,$searchopt[$itemtype][$val]["table"].".".
                                                          $searchopt[$itemtype][$val]["field"]));
@@ -902,7 +902,7 @@ class Search {
                         // General case
                         if (strpos($data["META_$j"],"$$$$")===false) {
                            $out=Search::giveItem ($p['itemtype2'][$j],$p['field2'][$j],$data,$j,1);
-                           echo displaySearchItem($output_type,$out,$item_num,$row_num);
+                           echo Search::showItem($output_type,$out,$item_num,$row_num);
 
                         // Case of GROUP_CONCAT item : split item and multilline display
                         } else {
@@ -937,19 +937,19 @@ class Search {
                                  }
                               }
                            }
-                           echo displaySearchItem($output_type,$out,$item_num,$row_num);
+                           echo Search::showItem($output_type,$out,$item_num,$row_num);
                         }
                      }
                   }
                }
                // Specific column display
                if ($itemtype == 'CartridgeItem') {
-                  echo displaySearchItem($output_type,
+                  echo Search::showItem($output_type,
                                        Cartridge::getCount($data["id"],$data["ALARM"],$output_type),
                                        $item_num,$row_num);
                }
                if ($itemtype == 'ConsumableItem') {
-                  echo displaySearchItem($output_type,
+                  echo Search::showItem($output_type,
                                        Consumable::getCount($data["id"],$data["ALARM"],$output_type),
                                        $item_num,$row_num);
                }
@@ -959,22 +959,22 @@ class Search {
                      $itemtmp = new $data["TYPE"]();
                      $typename=$itemtmp->getTypeName();
                   }
-                  echo displaySearchItem($output_type,$typename,$item_num,$row_num);
+                  echo Search::showItem($output_type,$typename,$item_num,$row_num);
                }
                if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
                   if (haveRight("reservation_central","w")) {
                      if (!haveAccessToEntity($data["ENTITY"])) {
-                        echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
-                        echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
+                        echo Search::showItem($output_type,"&nbsp;",$item_num,$row_num);
+                        echo Search::showItem($output_type,"&nbsp;",$item_num,$row_num);
                      } else {
-                        echo displaySearchItem($output_type,
+                        echo Search::showItem($output_type,
                               "<a href=\"".getItemTypeFormURL($itemtype)."?id=".$data["refID"].
                               "&amp;is_active=".($data["ACTIVE"]?0:1)."&amp;update=update\" ".
                               "title='".$LANG['buttons'][42]."'><img src=\"".
                               $CFG_GLPI["root_doc"]."/pics/".($data["ACTIVE"]?"moins":"plus").
                               ".png\" alt='' title=''></a>",
                               $item_num,$row_num,"class='center'");
-                        echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".
+                        echo Search::showItem($output_type,"<a href=\"javascript:confirmAction('".
                                        addslashes($LANG['reservation'][38])."\\n".
                                        addslashes($LANG['reservation'][39])."','".
                                        getItemTypeFormURL($itemtype)."?id=".$data["refID"].
@@ -985,16 +985,16 @@ class Search {
                      }
                   }
                   if ($data["ACTIVE"]) {
-                     echo displaySearchItem($output_type,"<a href='reservation.php?reservationitems_id=".
+                     echo Search::showItem($output_type,"<a href='reservation.php?reservationitems_id=".
                                     $data["refID"]."' title='".$LANG['reservation'][21]."'><img src=\"".
                                     $CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",
                                     $item_num,$row_num,"class='center'");
                   } else {
-                     echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
+                     echo Search::showItem($output_type,"&nbsp;",$item_num,$row_num);
                   }
                }
                // End Line
-               echo displaySearchEndLine($output_type);
+               echo Search::showEndLine($output_type);
             }
 
             $title="";
@@ -1037,7 +1037,7 @@ class Search {
             }
 
             // Display footer
-            echo displaySearchFooter($output_type,$title);
+            echo Search::showFooter($output_type,$title);
 
             // Delete selected item
             if ($output_type==HTML_OUTPUT) {
@@ -1056,7 +1056,7 @@ class Search {
                printPager($p['start'],$numrows,$target,$parameters);
             }
          } else {
-            echo displaySearchError($output_type);
+            echo Search::showError($output_type);
          }
       } else {
          echo $DB->error();
@@ -4099,6 +4099,355 @@ class Search {
 
       return $actions;
 
+   }
+
+
+   /**
+   * Print generic Header Column
+   *
+   *
+   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+   *@param $value value to display
+   *@param $num column number
+   *@param $linkto link display element (HTML specific)
+   *@param $issort is the sort column ?
+   *@param $order  order type ASC or DESC
+   *
+   *@return string to display
+   *
+   **/
+   static function showHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order="") {
+      global $CFG_GLPI;
+
+      $out="";
+      switch ($type) {
+         case PDF_OUTPUT_LANDSCAPE : //pdf
+
+         case PDF_OUTPUT_PORTRAIT :
+            global $PDF_HEADER;
+            $PDF_HEADER[$num]=decodeFromUtf8(html_clean($value));
+            break;
+
+         case SYLK_OUTPUT : //sylk
+            global $SYLK_HEADER,$SYLK_SIZE;
+            $SYLK_HEADER[$num]=sylk_clean($value);
+            $SYLK_SIZE[$num]=utf8_strlen($SYLK_HEADER[$num]);
+            break;
+
+         case CSV_OUTPUT : //CSV
+            $out="\"".csv_clean($value)."\";";
+            break;
+
+         default :
+            $out="<th>";
+            if ($issort) {
+               if ($order=="DESC") {
+                  $out.="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+               } else {
+                  $out.="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+               }
+            }
+            if (!empty($linkto)) {
+               $out.= "<a href=\"$linkto\">";
+            }
+            $out.= $value;
+            if (!empty($linkto)) {
+               $out.="</a>";
+            }
+            $out.="</th>\n";
+            break;
+      }
+      $num++;
+      return $out;
+   }
+
+   /**
+   * Print generic normal Item Cell
+   *
+   *
+   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+   *@param $value value to display
+   *@param $num column number
+   *@param $row  row number
+   *@param $extraparam extra parameters for display
+   *
+   *@return string to display
+   *
+   **/
+   static function showItem($type,$value,&$num,$row,$extraparam='') {
+
+      $out="";
+      switch ($type) {
+         case PDF_OUTPUT_LANDSCAPE : //pdf
+
+         case PDF_OUTPUT_PORTRAIT :
+            global $PDF_ARRAY,$PDF_HEADER;
+            $value = weblink_extract($value);
+            $PDF_ARRAY[$row][$num]=decodeFromUtf8(html_clean($value));
+            break;
+
+         case SYLK_OUTPUT : //sylk
+            global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
+            $value = weblink_extract($value);
+            $SYLK_ARRAY[$row][$num]=sylk_clean($value);
+            $SYLK_SIZE[$num]=max($SYLK_SIZE[$num],utf8_strlen($SYLK_ARRAY[$row][$num]));
+            break;
+
+         case CSV_OUTPUT : //csv
+            $value = weblink_extract($value);
+            $out="\"".csv_clean($value)."\";";
+            break;
+
+         default :
+            $out="<td $extraparam valign='top'>".$value."</td>\n";
+            break;
+      }
+      $num++;
+      return $out;
+   }
+
+
+   /**
+   * Print generic error
+   *
+   *
+   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+   *
+   *@return string to display
+   *
+   **/
+   static function showError($type) {
+      global $LANG;
+
+      $out="";
+      switch ($type) {
+         case PDF_OUTPUT_LANDSCAPE : //pdf
+
+         case PDF_OUTPUT_PORTRAIT :
+            break;
+
+         case SYLK_OUTPUT : //sylk
+            break;
+
+         case CSV_OUTPUT : //csv
+            break;
+
+         default :
+            $out= "<div class='center'><strong>".$LANG['search'][15]."</strong></div>\n";
+            break;
+      }
+      return $out;
+   }
+
+   /**
+   * Print generic footer
+   *
+   *
+   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+   *@param $title title of file : used for PDF
+   *
+   *@return string to display
+   *
+   **/
+   static function showFooter($type,$title="") {
+      global $LANG;
+
+      $out="";
+      switch ($type) {
+         case PDF_OUTPUT_LANDSCAPE : //pdf
+            global $PDF_HEADER,$PDF_ARRAY;
+            $pdf= new Cezpdf('a4','landscape');
+            $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
+            $pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5])."- {PAGENUM}/{TOTALPAGENUM}");
+            $options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
+            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title),$options);
+            $pdf->ezStream();
+            break;
+
+         case PDF_OUTPUT_PORTRAIT : //pdf
+            global $PDF_HEADER,$PDF_ARRAY;
+            $pdf= new Cezpdf('a4','portrait');
+            $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
+            $pdf->ezStartPageNumbers(550,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5])."- {PAGENUM}/{TOTALPAGENUM}");
+            $options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>565,'titleFontSize'=>8,);
+            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title),$options);
+            $pdf->ezStream();
+            break;
+
+         case SYLK_OUTPUT : //sylk
+            global $SYLK_HEADER,$SYLK_ARRAY,$SYLK_SIZE;
+            // largeurs des colonnes
+            foreach ($SYLK_SIZE as $num => $val) {
+               $out.= "F;W".$num." ".$num." ".min(50,$val)."\n";
+            }
+            $out.="\n";
+            // Header
+            foreach ($SYLK_HEADER as $num => $val) {
+               $out.="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
+               $out.= "C;N;K\"".sylk_clean($val)."\"\n";
+               $out.="\n";
+            }
+            // Datas
+            foreach ($SYLK_ARRAY as $row => $tab) {
+               foreach ($tab as $num => $val) {
+                  $out.="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
+                  $out.= "C;N;K\"".sylk_clean($val)."\"\n";
+               }
+            }
+            $out.= "E\n";
+            break;
+
+         case CSV_OUTPUT : //csv
+            break;
+
+         default :
+            $out= "</table></div>\n";
+            break;
+      }
+      return $out;
+   }
+
+   /**
+   * Print generic footer
+   *
+   *
+   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+   *@param $cols number of columns
+   *@param $rows  number of rows
+   *@param $fixed  used tab_cadre_fixe table for HTML export ?
+   *
+   *@return string to display
+   *
+   **/
+   static function showHeader($type,$rows,$cols,$fixed=0) {
+
+      $out="";
+      switch ($type) {
+         case PDF_OUTPUT_LANDSCAPE : //pdf
+
+         case PDF_OUTPUT_PORTRAIT :
+            global $PDF_ARRAY,$PDF_HEADER;
+            $PDF_ARRAY=array();
+            $PDF_HEADER=array();
+            break;
+
+         case SYLK_OUTPUT : // Sylk
+            global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
+            $SYLK_ARRAY=array();
+            $SYLK_HEADER=array();
+            $SYLK_SIZE=array();
+            // entetes HTTP
+            header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+            header('Pragma: private'); /// IE BUG + SSL
+            header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+            header("Content-disposition: filename=glpi.slk");
+            header('Content-type: application/octetstream');
+            // entete du fichier
+            echo "ID;PGLPI_EXPORT\n"; // ID;Pappli
+            echo "\n";
+            // formats
+            echo "P;PGeneral\n";
+            echo "P;P#,##0.00\n";       // P;Pformat_1 (reels)
+            echo "P;P#,##0\n";          // P;Pformat_2 (entiers)
+            echo "P;P@\n";              // P;Pformat_3 (textes)
+            echo "\n";
+            // polices
+            echo "P;EArial;M200\n";
+            echo "P;EArial;M200\n";
+            echo "P;EArial;M200\n";
+            echo "P;FArial;M200;SB\n";
+            echo "\n";
+            // nb lignes * nb colonnes
+            echo "B;Y".$rows;
+            echo ";X".$cols."\n"; // B;Yligmax;Xcolmax
+            echo "\n";
+            break;
+
+         case CSV_OUTPUT : // csv
+            header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+            header('Pragma: private'); /// IE BUG + SSL
+            header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+            header("Content-disposition: filename=glpi.csv");
+            header('Content-type: application/octetstream');
+            break;
+
+         default :
+            if ($fixed) {
+               $out="<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
+            } else {
+               $out="<div class='center'><table border='0' class='tab_cadrehov'>\n";
+            }
+            break;
+      }
+      return $out;
+   }
+
+   /**
+   * Print generic new line
+   *
+   *
+   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+   *@param $odd is it a new odd line ?
+   *
+   *@return string to display
+   *
+   **/
+   static function showNewLine($type,$odd=false) {
+
+      $out="";
+      switch ($type) {
+         case PDF_OUTPUT_LANDSCAPE : //pdf
+
+         case PDF_OUTPUT_PORTRAIT :
+            break;
+
+         case SYLK_OUTPUT : //sylk
+            break;
+
+         case CSV_OUTPUT : //csv
+            break;
+
+         default :
+            $class=" class='tab_bg_2' ";
+            if ($odd) {
+               $class=" class='tab_bg_1' ";
+            }
+            $out="<tr $class>";
+            break;
+      }
+      return $out;
+   }
+
+   /**
+   * Print generic end line
+   *
+   *
+   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+   *
+   *@return string to display
+   *
+   **/
+   static function showEndLine($type) {
+
+      $out="";
+      switch ($type) {
+         case PDF_OUTPUT_LANDSCAPE : //pdf
+
+         case PDF_OUTPUT_PORTRAIT :
+            break;
+
+         case SYLK_OUTPUT : //sylk
+            break;
+
+         case CSV_OUTPUT : //csv
+            $out="\n";
+            break;
+
+         default :
+            $out="</tr>";
+            break;
+      }
+      return $out;
    }
 
 }

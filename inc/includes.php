@@ -141,7 +141,6 @@ if (isset($AJAX_INCLUDE)) {
 
 
 // TODO Remove this ASAP
-include_once (GLPI_ROOT . "/inc/export.function.php");
 include_once (GLPI_ROOT . "/inc/rule.function.php");
 
 
