@@ -44,7 +44,9 @@ if (!defined('GLPI_ROOT')) {
  * Get the Login User ID or return cron user ID for cron jobs
  *
  * @param $force_human boolean : force human / do not return cron user
-*
+ *
+ * return false if user is not logged in
+ *
  * @return int or string : int for user id, string for cron jobs
 **/
 function getLoginUserID($force_human=false) {
