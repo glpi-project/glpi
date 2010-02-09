@@ -38,6 +38,28 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+
+
+/**
+ * Get the Login User ID or return cron user ID for cron jobs
+ *
+ * @param $force_human boolean : force human / do not return cron user
+*
+ * @return int or string : int for user id, string for cron jobs
+**/
+function getLoginUserID($force_human=false) {
+   if (!$force_human) { // Check cron jobs
+      if (isset($_SESSION["glpicronuserrunning"]) &&
+         (isCommandLine() || strpos($_SERVER['PHP_SELF'],"popup"))) {
+         return $_SESSION["glpicronuserrunning"];
+      }
+   }
+   if (isset($_SESSION["glpiID"])){
+      return $_SESSION["glpiID"];
+   }
+   return false;
+}
+
 /**
  * Have I the right $right to module $module (conpare to session variable)
  *
