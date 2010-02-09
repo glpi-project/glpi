@@ -43,22 +43,6 @@ class NetworkPort extends CommonDBChild {
 
    /// TODO manage access right on this object
 
-   // Specific ones
-   /// hardare data : name
-   var $device_name	= "";
-   /// hardare data : ID
-   var $device_ID		= 0;
-   /// hardare data : type
-//   var $itemtype		= 0;
-   /// hardare data : entity
-   var $entities_id		= -1;
-   /// hardare data : locations_id
-   var $locations_id		= -1;
-   /// hardare data : is_recursive
-   var $is_recursive = 0;
-   /// hardare data : is_deleted
-   var $is_deleted = 0;
-
    // From CommonDBChild
    public $itemtype='itemtype';
    public $items_id='items_id'; 
@@ -125,37 +109,6 @@ class NetworkPort extends CommonDBChild {
       $result = $DB->query($query);
    }
 
-   // SPECIFIC FUNCTIONS
-   /**
-    * Retrieve data in the port of the item which belongs to
-    *
-    *@param $ID Integer : Id of the item to print
-    *@param $itemtype item type
-    *
-    *@return boolean item found
-    **/
-   function getDeviceData($ID, $itemtype) {
-      global $DB;
-
-      $table = getTableForItemType($itemtype);
-
-      $query = "SELECT *
-                FROM `$table`
-                WHERE `id` = '$ID'";
-      if ($result=$DB->query($query)) {
-         $data = $DB->fetch_array($result);
-         $this->device_name = $data["name"];
-         $this->is_deleted = $data["is_deleted"];
-         $this->entities_id = $data["entities_id"];
-         $this->locations_id = $data["locations_id"];
-         $this->device_ID = $ID;
-         $this->itemtype = $itemtype;
-         $this->is_recursive = (isset($data["is_recursive"])?$data["is_recursive"]:0);
-         return true;
-      } else {
-         return false;
-      }
-   }
 
    /**
     * Get port opposite port ID if linked item

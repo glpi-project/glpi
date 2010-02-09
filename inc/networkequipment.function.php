@@ -120,12 +120,19 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
       // Create item
       $netport->check(-1,'w',$input);
    }
-
    if ($ID) {
-      $netport->getDeviceData($ondevice=$netport->fields["items_id"],
-                              $devtype=$netport->fields["itemtype"]);
-   } else {
-      $netport->getDeviceData($ondevice, $devtype);
+      $ondevice=$netport->fields["items_id"];
+      $devtype=$netport->fields["itemtype"];
+   }
+
+   $type = $netport->itemtype;
+   $link = NOT_AVAILABLE;
+   if (class_exists($devtype)) {
+      $item = new $devtype();
+      $type = $item->getTypeName();
+      if ($item->getFromDB($ondevice)){
+         $link=$item->getLink();
+      }
    }
 
    // Ajout des infos deja remplies
@@ -143,15 +150,6 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    echo "<th colspan='2'>" . $LANG['networking'][20] . "&nbsp;:</th>";
    echo "</tr>\n";
 
-   $type = $netport->itemtype;
-   $link = NOT_AVAILABLE;
-   if (class_exists($netport->itemtype)) {
-      $item = new $netport->itemtype();
-      $type = $item->getTypeName();
-      if ($item->getFromDB($netport->device_ID)) {
-         $link=$item->getLink();
-      }
-   }
    echo "<tr class='tab_bg_1'><td>$type:</td>\n<td>";
    echo $link. "</td></tr>\n";
 
@@ -231,8 +229,8 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    if ($several != "yes") {
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . "&nbsp;:</td>\n";
       echo "<td>";
-      Netpoint::dropdownNetpoint("netpoints_id", $netport->fields["netpoints_id"], $netport->locations_id, 1,
-                       $netport->entities_id, ($ID ? $netport->fields["itemtype"] : $devtype));
+      Netpoint::dropdownNetpoint("netpoints_id", $netport->fields["netpoints_id"], $item->fields['locations_id'], 1,
+                       $item->getEntityID(), ($ID ? $netport->fields["itemtype"] : $devtype));
       echo "</td></tr>\n";
    }
    if ($ID) {
