@@ -41,20 +41,26 @@ if (!defined('GLPI_ROOT')){
 /// NetworkPort class
 class NetworkPort extends CommonDBChild {
 
-   /// TODO manage access right on this object
 
    // From CommonDBChild
    public $itemtype='itemtype';
    public $items_id='items_id'; 
    public $dohistory = true;
 
-
    function canCreate() {
-      return haveRight('networking', 'w');
+      if (isset($this->fields['itemtype'])) {
+         $item=new $this->fields['itemtype']();
+         return $item->canCreate();
+      }
+      return false;
    }
 
    function canView() {
-      return haveRight('networking', 'r');
+      if (isset($this->fields['itemtype'])) {
+         $item=new $this->fields['itemtype']();
+         return $item->canView();
+      }
+      return false;
    }
 
    function post_updateItem($history=1) {
