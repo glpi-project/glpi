@@ -113,10 +113,10 @@ if (empty($_POST["dropdown"]) || !class_exists($_POST["dropdown"])) {
 }
 $item = new $_POST["dropdown"];
 if (!($item instanceof CommonDevice)) {
-   echo "Dropdown";
+  // echo "Dropdown";
    $type = "comp_champ";
 
-   $val = getStatsItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
+   $val = Stat::getItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_POST["dropdown"],
                    'date1'    => $_POST["date1"],
@@ -127,14 +127,14 @@ if (!($item instanceof CommonDevice)) {
               "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
               'Stat',$params);
 
-   displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
+   Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
 
 } else {
-   echo "Device";
+//   echo "Device";
    $type = "device";
    $field = $_POST["dropdown"];
 
-   $val = getStatsItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
+   $val = Stat::getItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_POST["dropdown"],
                    'date1'    => $_POST["date1"],
@@ -145,7 +145,7 @@ if (!($item instanceof CommonDevice)) {
               "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
               'Stat',$params);
 
-   displayStats($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
+   Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
 }
 
 commonFooter();

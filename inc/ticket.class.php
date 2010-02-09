@@ -3919,5 +3919,447 @@ class Ticket extends CommonDBTM {
       }
    }
 
+   /** Get users which have intervention assigned to  between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct users which have any intervention assigned to.
+   */
+   static function getUsedTechBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `glpi_tickets`.`users_id_assign`, `glpi_users`.`name` AS name,
+                     `glpi_users`.`realname` AS realname, `glpi_users`.`firstname` AS firstname
+               FROM `glpi_tickets`
+               LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_assign`) ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY realname, firstname, name";
+
+      $result = $DB->query($query);
+      $tab=array();
+
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["users_id_assign"];
+            $tmp['link']=formatUserName($line["users_id_assign"],$line["name"],$line["realname"],
+                                       $line["firstname"],1);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /** Get users which have followup assigned to  between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct users which have any followup assigned to.
+   */
+   static function getUsedTechFollowupBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `glpi_ticketfollowups`.`users_id` AS users_id,
+                     `glpi_users`.`name` AS name, `glpi_users`.`realname` AS realname,
+                     `glpi_users`.`firstname` AS firstname
+               FROM `glpi_tickets`
+               LEFT JOIN `glpi_ticketfollowups`
+                        ON (`glpi_tickets`.`id` = `glpi_ticketfollowups`.`tickets_id`)
+               LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .="     AND `glpi_ticketfollowups`.`users_id` <> '0'
+                     AND `glpi_ticketfollowups`.`users_id` IS NOT NULL
+               ORDER BY realname, firstname, name";
+
+      $result = $DB->query($query);
+      $tab=array();
+
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["users_id"];
+            $tmp['link']=formatUserName($line["users_id"],$line["name"],$line["realname"],
+                                       $line["firstname"],1);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /** Get enterprises which have followup assigned to between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct enterprises which have any tickets assigned to.
+   */
+   static function getUsedSupplierBetween($date1='',$date2='') {
+      global $DB,$CFG_GLPI;
+
+      $query = "SELECT DISTINCT `glpi_tickets`.`suppliers_id_assign` AS suppliers_id_assign,
+                     `glpi_suppliers`.`name` AS name
+               FROM `glpi_tickets`
+               LEFT JOIN `glpi_suppliers`
+                     ON (`glpi_suppliers`.`id` = `glpi_tickets`.`suppliers_id_assign`) ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query.= " ORDER BY name";
+
+      $tab=array();
+      $result = $DB->query($query);
+      if ($DB->numrows($result) >0) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp["id"]=$line["suppliers_id_assign"];
+            $tmp["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
+                           $line["suppliers_id_assign"]."'>";
+            $tmp["link"].=$line["name"];
+            $tmp["link"].="</a>";
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+
+   /** Get users_ids of tickets between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct users_ids which have tickets
+   */
+   static function getUsedAuthorBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `glpi_tickets`.`users_id`, `glpi_users`.`name` AS name,
+                     `glpi_users`.`realname` AS realname, `glpi_users`.`firstname` AS firstname
+               FROM `glpi_tickets`
+               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`)".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY realname, firstname, name";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["users_id"];
+            $tmp['link']=formatUserName($line["users_id"],$line["name"],$line["realname"],
+                                       $line["firstname"],1);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /** Get recipient of tickets between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct recipents which have tickets
+   */
+   static function getUsedRecipientBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `glpi_tickets`.`users_id_recipient`, `glpi_users`.`name` AS name,
+                     `glpi_users`.`realname` AS realname, `glpi_users`.`firstname` AS firstname
+               FROM `glpi_tickets`
+               LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_recipient`)".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY realname, firstname, name";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["users_id_recipient"];
+            $tmp['link']=formatUserName($line["users_id_recipient"],$line["name"],$line["realname"],
+                                       $line["firstname"],1);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /** Get groups which have tickets between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct groups of tickets
+   */
+   static function getUsedGroupBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
+               FROM `glpi_tickets`
+               LEFT JOIN `glpi_groups` ON (`glpi_tickets`.`groups_id` = `glpi_groups`.`id`)".
+               getEntitiesRestrictRequest(" WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY `glpi_groups`.`name`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["id"];
+            $tmp['link']=$line["name"];
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /** Get groups assigned to tickets between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct groups assigned to a tickets
+   */
+   static function getUsedAssignGroupBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
+               FROM `glpi_tickets`
+               LEFT JOIN `glpi_groups` ON (`glpi_tickets`.`groups_id_assign` = `glpi_groups`.`id`)".
+               getEntitiesRestrictRequest(" WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY `glpi_groups`.`name`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["id"];
+            $tmp['link']=$line["name"];
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+   /**
+   * Get priorities of tickets between 2 dates
+   *
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct priorities of tickets
+   */
+   static function getUsedPriorityBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `priority`
+               FROM `glpi_tickets` ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY `priority`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         $i = 0;
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["priority"];
+            $tmp['link']=Ticket::getPriorityName($line["priority"]);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /**
+   * Get urgencies of tickets between 2 dates
+   *
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct priorities of tickets
+   */
+   static function getUsedUrgencyBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `urgency`
+               FROM `glpi_tickets` ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY `urgency`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         $i = 0;
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["urgency"];
+            $tmp['link']=Ticket::getUrgencyName($line["urgency"]);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /**
+   * Get impacts of tickets between 2 dates
+   *
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct priorities of tickets
+   */
+   static function getUsedImpactBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `impact`
+               FROM `glpi_tickets` ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY `impact`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         $i = 0;
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["impact"];
+            $tmp['link']=Ticket::getImpactName($line["impact"]);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+
+   /**
+   * Get request types of tickets between 2 dates
+   *
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct request types of tickets
+   */
+   static function getUsedRequestTypeBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `requesttypes_id`
+               FROM `glpi_tickets` ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY `requesttypes_id`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["requesttypes_id"];
+            $tmp['link']=Dropdown::getDropdownName('glpi_requesttypes',$line["requesttypes_id"]);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+   /**
+   * Get solution types of tickets between 2 dates
+   *
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @return array contains the distinct request types of tickets
+   */
+   static function getUsedSolutionTypeBetween($date1='',$date2='') {
+      global $DB;
+
+      $query = "SELECT DISTINCT `ticketsolutiontypes_id`
+               FROM `glpi_tickets` ".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .= " ORDER BY `ticketsolutiontypes_id`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line["ticketsolutiontypes_id"];
+            $tmp['link']=Dropdown::getDropdownName('glpi_ticketsolutiontypes',$line["ticketsolutiontypes_id"]);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
+
+
+   /** Get recipient of tickets between 2 dates
+   * @param $date1 date : begin date
+   * @param $date2 date : end date
+   * @param title : indicates if stat if by title (true) or type (false)
+   * @return array contains the distinct recipents which have tickets
+   */
+   static function getUsedUserTitleOrTypeBetween($date1='',$date2='',$title=true) {
+      global $DB;
+
+      if ($title) {
+         $table = "glpi_usertitles";
+         $field = "usertitles_id";
+      } else {
+         $table = "glpi_usercategories";
+         $field = "usercategories_id";
+      }
+
+      $query = "SELECT DISTINCT `glpi_users`.`$field`
+               FROM `glpi_tickets`
+               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`)
+               LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`)".
+               getEntitiesRestrictRequest("WHERE","glpi_tickets");
+
+      if (!empty($date1)||!empty($date2)) {
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
+         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+      }
+      $query .=" ORDER BY `glpi_users`.`$field`";
+
+      $result = $DB->query($query);
+      $tab=array();
+      if ($DB->numrows($result) >=1) {
+         while ($line = $DB->fetch_assoc($result)) {
+            $tmp['id']= $line[$field];
+            $tmp['link']=Dropdown::getDropdownName($table,$line[$field]);
+            $tab[]=$tmp;
+         }
+      }
+      return $tab;
+   }
 }
 ?>

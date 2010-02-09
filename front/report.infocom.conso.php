@@ -183,7 +183,7 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeurnettegraphtot[$key] += $valeurnettegraph[$key];
             }
 
-            graphBy($valeurnettegraphdisplay,$LANG['financial'][81],"",0,"year");
+            Stat::graphBy($valeurnettegraphdisplay,$LANG['financial'][81],"",0,"year");
             echo "</td></tr>\n";
          }
 
@@ -199,7 +199,7 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeurgraphtot[$key] += $valeurgraph[$key];
             }
 
-            graphBy($valeurgraphdisplay,$LANG['financial'][21],"",0,"year");
+            Stat::graphBy($valeurgraphdisplay,$LANG['financial'][21],"",0,"year");
             echo "</td></tr>";
          }
          echo "</table>\n";
@@ -224,11 +224,11 @@ echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
 
 if (count($valeurnettegraphtot) >0) {
    $valeurnettegraphtotdisplay = array_map('round',$valeurnettegraphtot);
-   graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
+   Stat::graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
 }
 if (count($valeurgraphtot) >0) {
    $valeurgraphtotdisplay = array_map('round',$valeurgraphtot);
-   graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
+   Stat::graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
 }
 
 commonFooter();
