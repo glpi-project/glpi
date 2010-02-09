@@ -244,7 +244,7 @@ class NetworkPort extends CommonDBChild {
          echo "</strong></a></td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
          echo "<a href=\"" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=yes\"><strong>";
+               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=1\"><strong>";
          echo $LANG['networking'][46];
          echo "</strong></a></td></tr>\n";
          echo "</table></div><br>\n";
@@ -435,6 +435,143 @@ class NetworkPort extends CommonDBChild {
          echo "<td><div id='not_connected_display$ID'>" . $LANG['connect'][1] . "</div></td>";
          echo "</tr></table>\n";
       }
+   }
+
+
+   function showForm($ID, $options=array()) {
+   //static function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
+      global $CFG_GLPI, $LANG;
+
+      if (!isset($options['several'])) {
+         $options['several']=false;
+      }
+
+      if (!haveRight("networking", "r")) {
+         return false;
+      }
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         $input=array('itemtype'=>$options["itemtype"],'items_id'=>$options["items_id"]);
+         // Create item
+         $this->check(-1,'w',$input);
+      }
+
+      $type = $this->fields['itemtype'];
+      $link = NOT_AVAILABLE;
+      if (class_exists($this->fields['itemtype'])) {
+         $item = new $this->fields['itemtype']();
+         $type = $item->getTypeName();
+         if ($item->getFromDB($this->fields["items_id"])){
+            $link=$item->getLink();
+         }
+      }
+
+      // Ajout des infos deja remplies
+      if (isset ($_POST) && !empty ($_POST)) {
+         foreach ($netport->fields as $key => $val) {
+            if ($key != 'id' && isset ($_POST[$key])) {
+               $netport->fields[$key] = $_POST[$key];
+            }
+         }
+      }
+      $this->showTabs($ID);
+
+      $options['colspan']=1;
+      $this->showFormHeader($options);
+
+
+      echo "<tr class='tab_bg_1'><td>$type:</td>\n<td>";
+      if (!($ID>0)){
+         echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
+         echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
+      }
+      echo $link. "</td></tr>\n";
+
+      if (!$options['several']) {
+         echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
+         echo "<td>";
+         autocompletionTextField($this,"logical_number", array('size'=>5));
+         echo "</td></tr>\n";
+      } else {
+         echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
+         echo "<input type='hidden' name='several' value='yes'>";
+         echo "<input type='hidden' name='logical_number' value=''>\n";
+         echo "<td>";
+         echo $LANG['networking'][47] . "&nbsp;:&nbsp;";
+         Dropdown::showInteger('from_logical_number', 0, 0, 100);
+         echo $LANG['networking'][48] . "&nbsp;:&nbsp;";
+         Dropdown::showInteger('to_logical_number', 0, 0, 100);
+         echo "</td></tr>\n";
+      }
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>\n";
+      echo "<td>";
+      autocompletionTextField($this, "name");
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
+      Dropdown::show('NetworkInterface', array('value'  => $this->fields["networkinterfaces_id"]));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
+      autocompletionTextField($this, "ip");
+      echo "</td></tr>\n";
+
+      // Show device MAC adresses
+      if ((!empty ($this->fields['itemtype']) || !$options['several'] )
+            && $this->fields['itemtype'] == 'Computer') {
+
+         $comp = new Computer();
+         $comp->getFromDB($this->fields['items_id']);
+         $macs = Computer_Device::getMacAddr($comp);
+
+         if (count($macs) > 0) {
+            echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
+            echo "<select name='pre_mac'>\n";
+            echo "<option value=''>------</option>\n";
+            foreach ($macs as $key => $val) {
+               echo "<option value='" . $val . "' >$val</option>\n";
+            }
+            echo "</select></td></tr>\n";
+
+            echo "<tr class='tab_bg_2'>";
+            echo "<td colspan='2' class='center'>" . $LANG['networking'][57];
+            echo "</td></tr>\n";
+         }
+      }
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
+      autocompletionTextField($this, "mac");
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][60] . "&nbsp;:</td>\n<td>";
+      autocompletionTextField($this, "netmask");
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][59] . "&nbsp;:</td>\n<td>";
+      autocompletionTextField($this, "gateway");
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][61] . "&nbsp;:</td>\n<td>";
+      autocompletionTextField($this, "subnet");
+      echo "</td></tr>\n";
+
+      if (!$options['several']) {
+         echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . "&nbsp;:</td>\n";
+         echo "<td>";
+         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"], $item->fields['locations_id'], 1,
+                        $item->getEntityID(), $this->fields["itemtype"]);
+         echo "</td></tr>\n";
+      }
+
+      $this->showFormButtons($options);
+
+      echo "</table></div></form>\n";
+
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
 }

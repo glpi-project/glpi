@@ -1460,7 +1460,7 @@ class CommonDBTM extends CommonGLPI {
             $image="/pics/lock.png";
          // CommonDBChild : entity data is get or copy from parent
          } else if ( $this instanceof CommonDBChild) {
-            echo Dropdown::getYesNo($this->fields["is_recursive"]);
+            echo Dropdown::getYesNo($this->isRecursive());
             $comment=$LANG['common'][91];
             $image="/pics/lock.png";
          } else if ( !$this->canUnrecurs()) {

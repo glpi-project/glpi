@@ -41,10 +41,13 @@ $np = new NetworkPort();
 $nn = new NetworkPort_NetworkPort();
 $npv = new NetworkPort_Vlan();
 
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
+
+
 if (isset($_POST["add"])) {
    checkRight("networking","w");
-
-   unset($_POST["referer"]);
 
    // Is a preselected mac adress selected ?
    if (isset($_POST['pre_mac'])) {
@@ -83,7 +86,11 @@ if (isset($_POST["add"])) {
    checkRight("networking","w");
    $np->delete($_POST);
    Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][73]);
-   glpi_header(preg_replace("/&amp;/","&",rawurldecode($_POST["referer"])));
+   if (class_exists($np->fields['itemtype'])) {
+      $item=new $np->fields['itemtype']();
+      glpi_header($item->getFormURL().'?id='.$np->fields['items_id']);
+   }
+   glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
 
 } else if(isset($_POST["delete_several"])) {
    checkRight("networking","w");
@@ -193,12 +200,8 @@ if (isset($_POST["add"])) {
    checkRight("networking","w");
    commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory");
 
-   if (isset($_GET["id"])) {
-      showNetportForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["items_id"],$_GET["itemtype"],
-                      $_GET["several"]);
-   } else {
-      showNetportForm($_SERVER['PHP_SELF'],"",$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
-   }
+//   NetworkPort::showNetportForm($_SERVER['PHP_SELF'],$_GET["id"],$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
+   $np->showForm($_GET["id"],$_GET);
    commonFooter();
 }
 
