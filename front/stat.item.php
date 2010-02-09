@@ -77,7 +77,7 @@ showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-showItemStats($_SERVER['PHP_SELF'],$_POST["date1"],$_POST["date2"],$_GET['start']);
+Stat::showItems($_SERVER['PHP_SELF'],$_POST["date1"],$_POST["date2"],$_GET['start']);
 
 commonFooter();
 

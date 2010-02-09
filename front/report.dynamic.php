@@ -62,24 +62,24 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
             $params = unserialize(stripslashes($_GET["item_type_param"]));
             switch ($params["type"]) {
                case "comp_champ" :
-                  $val = getStatsItems($params["date1"], $params["date2"], $params["table"]);
-                  displayStats($params["type"], $params["date1"], $params["date2"], $params["start"],
+                  $val = Stat::getItems($params["date1"], $params["date2"], $params["table"]);
+                  Stat::show($params["type"], $params["date1"], $params["date2"], $params["start"],
                                $val, $params["field"]);
                   break;
 
                case "device" :
-                  $val = getStatsItems($params["date1"], $params["date2"], $params["field"]);
-                  displayStats($params["type"], $params["date1"], $params["date2"], $params["start"],
+                  $val = Stat::getItems($params["date1"], $params["date2"], $params["field"]);
+                  Stat::show($params["type"], $params["date1"], $params["date2"], $params["start"],
                                $val, $params["field"]);
                   break;
 
                default :
-                  $val = getStatsItems($params["date1"], $params["date2"], $params["type"]);
-                  displayStats($params["type"], $params["date1"], $params["date2"], $params["start"],
+                  $val = Stat::getItems($params["date1"], $params["date2"], $params["type"]);
+                  Stat::show($params["type"], $params["date1"], $params["date2"], $params["start"],
                                $val);
             }
          } else if (isset($_GET["type"]) && $_GET["type"] == "hardwares") {
-            showItemStats("",$_GET["date1"], $_GET["date2"], $_GET['start']);
+            Stat::showItems("",$_GET["date1"], $_GET["date2"], $_GET['start']);
          }
          break;
 

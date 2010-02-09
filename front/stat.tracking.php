@@ -142,7 +142,7 @@ showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-$val = getStatsItems($_POST["date1"],$_POST["date2"],$_POST["type"]);
+$val = Stat::getItems($_POST["date1"],$_POST["date2"],$_POST["type"]);
 $params = array('type'  => $_POST["type"],
                 'field' => $field,
                 'date1' => $_POST["date1"],
@@ -153,7 +153,7 @@ printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],
            "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;type=".$_POST["type"],
            'Stat',$params);
 
-displayStats($_POST["type"],$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
+Stat::show($_POST["type"],$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
 commonFooter();
 
