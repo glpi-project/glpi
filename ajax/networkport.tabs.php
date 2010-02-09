@@ -43,13 +43,13 @@ $port = new NetworkPort();
 if ($_POST["id"]>0 && $port->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1: // All
-         showPortVLANForm($_POST["id"]);
+         NetworkPort_Vlan::showForNetworkPortForm($_POST["id"]);
          Plugin::displayAction($port, $_REQUEST['glpi_tab']);
          break;
 
       default :
          if (!Plugin::displayAction($port, $_REQUEST['glpi_tab'])) {
-            showPortVLANForm($_POST["id"]);
+            NetworkPort_Vlan::showForNetworkPortForm($_POST["id"]);
          }
    }
 }
