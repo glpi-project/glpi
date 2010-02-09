@@ -1218,27 +1218,30 @@ function displayMessageAfterRedirect() {
  **/
 function addMessageAfterRedirect($msg,$check_once=false,$message_type=INFO,$reset=false) {
 
-   if (!empty($msg)) {
-      if ($reset) {
-         $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
-      }
-      $toadd="";
-      if ($check_once) {
-         if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$msg)===false) {
+   // Do not display of cron jobs messages in user interface
+   if (getLoginUserID() === getLoginUserID(true)) {
+      if (!empty($msg)) {
+         if ($reset) {
+            $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
+         }
+         $toadd="";
+         if ($check_once) {
+            if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$msg)===false) {
+               $toadd=$msg.'<br>';
+            }
+         } else {
             $toadd=$msg.'<br>';
          }
-      } else {
-         $toadd=$msg.'<br>';
-      }
-      if (!empty($toadd)) {
-         switch ($message_type) {
-            case ERROR :
-               $_SESSION["MESSAGE_AFTER_REDIRECT"].="<h3><span class='red'>$toadd</span></h3>";
-               break;
+         if (!empty($toadd)) {
+            switch ($message_type) {
+               case ERROR :
+                  $_SESSION["MESSAGE_AFTER_REDIRECT"].="<h3><span class='red'>$toadd</span></h3>";
+                  break;
 
-            default: // INFO
-               $_SESSION["MESSAGE_AFTER_REDIRECT"].="<h3>$toadd</h3>";
-               break;
+               default: // INFO
+                  $_SESSION["MESSAGE_AFTER_REDIRECT"].="<h3>$toadd</h3>";
+                  break;
+            }
          }
       }
    }
