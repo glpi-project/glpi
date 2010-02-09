@@ -113,12 +113,12 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    }
 
    $netport = new NetworkPort;
-
    if ($ID > 0) {
       $netport->check($ID,'r');
    } else {
+      $input=array('itemtype'=>$devtype,'items_id'=>$ondevice);
       // Create item
-      $netport->check(-1,'w');
+      $netport->check(-1,'w',$input);
    }
 
    if ($ID) {
