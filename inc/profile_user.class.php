@@ -36,12 +36,41 @@ if (!defined('GLPI_ROOT')) {
 /// Profile_User class
 class Profile_User extends CommonDBTM {
 
-   //TODO : right management
-
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
    }
+
+   function canView() {
+      return haveRight('user','r');
+   }
+
+   function canCreate() {
+      return haveRight('user','w');
+   }
+
+   function canCreateItem() {
+      $user = new User();
+      return $user->can($this->fields['users_id'],'r')
+       && Profile::currentUserHaveMoreRightThan(array($this->fields['profiles_id'] => $this->fields['profiles_id']))
+       && haveAccessToEntity($this->fields['entities_id']);
+   }
+
+
+   function prepareInputForAdd($input) {
+      global $LANG;
+      if (!isset($input['profiles_id']) || $input['profiles_id'] <= 0
+         || !isset($input['entities_id']) || $input['entities_id'] < 0
+         || !isset($input['users_id']) || $input['users_id'] < 0) {
+
+         addMessageAfterRedirect($LANG['common'][24],false,ERROR);
+         return false;
+      }
+      return $input;
+   }
+
+
+
 
    /**
     * Show rights of a user
@@ -187,7 +216,7 @@ class Profile_User extends CommonDBTM {
          User::dropdown(array('right'  => 'all'));
          echo "</td><td class='tab_bg_2 center'>";
          echo $LANG['profiles'][22]."&nbsp;:&nbsp;";
-         Profile::dropdownUnder();
+         Profile::dropdownUnder(array('value'=>Profile::getDefault()));
          echo "</td><td class='tab_bg_2 center'>";
          echo $LANG['profiles'][28]."&nbsp;:&nbsp;";
          Dropdown::showYesNo("is_recursive",0);
