@@ -36,24 +36,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (isset($_SERVER['HTTP_REFERER'])) {
-   $REFERER = $_SERVER['HTTP_REFERER'];
-}
-
-if (isset($_GET["referer"])) {
-   $REFERER = $_GET["referer"];
-} else if (isset($_POST["referer"])) {
-   $REFERER = $_POST["referer"];
-}
-$REFERER = rawurldecode($REFERER);
-
-$REFERER = preg_replace("/&amp;/","&",$REFERER);
-$REFERER = preg_replace("/&/","&amp;",$REFERER);
-
-$ADDREFERER = "";
-if (!strpos($_SERVER['HTTP_REFERER'],"&referer=")) {
-   $ADDREFERER = "&referer=".urlencode($REFERER);
-}
 
 $np = new NetworkPort();
 $nn = new NetworkPort_NetworkPort();
@@ -75,7 +57,7 @@ if (isset($_POST["add"])) {
    if (!isset($_POST["several"])) {
       $np->add($_POST);
       Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][70]);
-      glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
+      glpi_header($_SERVER['HTTP_REFERER']);
 
    } else {
       $input = $_POST;
@@ -94,7 +76,7 @@ if (isset($_POST["add"])) {
       }
       Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".
                  ($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG['log'][71]);
-      glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
+      glpi_header($_SERVER['HTTP_REFERER']);
    }
 
 } else if(isset($_POST["delete"])) {
@@ -132,7 +114,7 @@ if (isset($_POST["add"])) {
    checkRight("networking","w");
 
    $np->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["connect"])) {
    if (isset($_POST["dport"]) && count($_POST["dport"])) {
@@ -176,7 +158,7 @@ if (isset($_POST["add"])) {
       $npv->assignVlan($_POST["id"],$_POST["vlans_id"]);
       Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
    }
-   glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if(isset($_POST["unassign_vlan_several"])) {
    checkRight("networking","w");
@@ -196,7 +178,7 @@ if (isset($_POST["add"])) {
 
   $npv->unassignVlanbyID($_GET['id']);
    Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
-   glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
    if (empty($_GET["items_id"])) {
