@@ -79,7 +79,7 @@ class Group extends CommonDBTM {
             $ong[1]=$LANG['Menu'][14];
          }
          $ong[2]=$LANG['common'][1];
-         if (haveRight("config","r") && useAuthLdap()) {
+         if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
             $ong[3]=$LANG['setup'][3];
          }
       } else { // New item
@@ -165,7 +165,7 @@ class Group extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       $buttons = array ();
-      if (haveRight("group", "w") && haveRight("user_authtype", "w") && useAuthLdap()) {
+      if (haveRight("group", "w") && haveRight("user_authtype", "w") && AuthLdap::useAuthLdap()) {
          $buttons["ldap.group.php"] = $LANG['setup'][3];
          $title="";
       } else {
@@ -251,7 +251,7 @@ class Group extends CommonDBTM {
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action=\"$target\">";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
-      if (useAuthLdap()) {
+      if (AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>".$LANG['setup'][256]."&nbsp;:</td></tr>";
 

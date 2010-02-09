@@ -140,10 +140,10 @@ class Auth {
          return false;
       }
 
-      $this->ldap_connection = try_connect_ldap($ldap_method,$login,$password);
+      $this->ldap_connection = AuthLdap::tryToConnectToServer($ldap_method,$login,$password);
 
       if ($this->ldap_connection) {
-         $dn = ldap_search_user_dn($this->ldap_connection, $ldap_method['basedn'],
+         $dn = AuthLdap::searchUserDn($this->ldap_connection, $ldap_method['basedn'],
                                     $ldap_method['login_field'], $login, $ldap_method['condition']);
          if (@ldap_bind($this->ldap_connection, $dn, $password)) {
 
@@ -448,7 +448,7 @@ class Auth {
       $this->auth_succeded = false;
 
 
-      if (!$noauto && $authtype=checkAlternateAuthSystems()) {
+      if (!$noauto && $authtype=Auth::checkAlternateAuthSystems()) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
 
@@ -466,11 +466,11 @@ class Auth {
             if (canUseLdap()) {
                if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])) {
                   $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
-                  $ds = connect_ldap($ldap_method["host"], $ldap_method["port"], $ldap_method["rootdn"],
+                  $ds = AuthLdap::connectToServer($ldap_method["host"], $ldap_method["port"], $ldap_method["rootdn"],
                                      $ldap_method["rootdn_password"], $ldap_method["use_tls"],
                                      $ldap_method["deref_option"]);
                   if ($ds) {
-                     $user_dn = ldap_search_user_dn($ds, $ldap_method["basedn"],
+                     $user_dn = AuthLdap::searchUserDn($ds, $ldap_method["basedn"],
                                                     $ldap_method["login_field"],
                                                     $user, $ldap_method["condition"]);
                      if ($user_dn) {
@@ -529,7 +529,7 @@ class Auth {
                   case AUTH_LDAP :
                      if (canUseLdap()) {
                         $oldlevel = error_reporting(0);
-                        try_ldap_auth($this, $login_name, $login_password,
+                        AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                       $this->user->fields["auths_id"]);
                         error_reporting($oldlevel);
                      }
@@ -537,7 +537,7 @@ class Auth {
 
                   case AUTH_MAIL :
                      if (canUseImapPop()) {
-                        try_mail_auth($this, $login_name, $login_password,
+                        AuthMail::tryMailAuth($this, $login_name, $login_password,
                                       $this->user->fields["auths_id"]);
                      }
                      break;
@@ -551,13 +551,13 @@ class Auth {
             //test all ldap servers
             if (!$this->auth_succeded && canUseLdap()) {
                $oldlevel = error_reporting(0);
-               try_ldap_auth($this,$login_name,$login_password);
+               AuthLdap::tryLdapAuth($this,$login_name,$login_password);
                error_reporting($oldlevel);
             }
 
             //test all imap/pop servers
             if (!$this->auth_succeded && canUseImapPop()) {
-               try_mail_auth($this,$login_name,$login_password);
+               AuthMail::tryMailAuth($this,$login_name,$login_password);
             }
             // Fin des tests de connexion
          }
@@ -760,6 +760,94 @@ class Auth {
       return array();
    }
 
+   /**
+    * Is an external authentication used ?
+    *
+    * @return boolean
+   **/
+   function useAuthExt() {
+      global $DB;
+
+      //Get all the ldap directories
+      if (AuthLdap::useAuthLdap()) {
+         return true;
+      }
+
+      if (AuthMail::useAuthMail()) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Is an alternate auth ?
+    *
+    * @param $auths_id auth type
+    * @return boolean
+   **/
+   static function isAlternateAuth($auths_id) {
+      return  in_array($auths_id,array(AUTH_X509,AUTH_CAS,AUTH_EXTERNAL));
+   }
+
+   /**
+    * Is an alternate auth wich used LDAP extra server?
+    *
+    * @param $auths_id auth type
+    * @return boolean
+   **/
+   static function isAlternateAuthWithLdap($auths_id) {
+      global $CFG_GLPI;
+
+      return (Auth::isAlternateAuth($auths_id) && $CFG_GLPI["authldaps_id_extra"] > 0);
+   }
+
+   /**
+    * Check alternate authentication systems
+    *
+    * @param $redirect : need to redirect (true) or get type of Auth system which match
+    * @param $redirect_string : redirect string if exists
+    * @return nothing if redirect is true, else Auth system ID
+   **/
+   static function checkAlternateAuthSystems($redirect=false,$redirect_string='') {
+      global $CFG_GLPI;
+
+      if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
+         return false;
+      }
+
+      $redir_string="";
+      if (!empty($redirect_string)) {
+         $redir_string="?redirect=".$redirect_string;
+      }
+      // Using x509 server
+      if (!empty($CFG_GLPI["x509_email_field"]) && isset($_SERVER['SSL_CLIENT_S_DN'])
+          && strstr($_SERVER['SSL_CLIENT_S_DN'],$CFG_GLPI["x509_email_field"])) {
+         if ($redirect) {
+            glpi_header("login.php".$redir_string);
+         } else {
+            return AUTH_X509;
+         }
+      }
+      // Existing auth method
+      if (!empty($CFG_GLPI["existing_auth_server_field"])
+          && isset($_SERVER[$CFG_GLPI["existing_auth_server_field"]])
+          && !empty($_SERVER[$CFG_GLPI["existing_auth_server_field"]])) {
+         if ($redirect) {
+            glpi_header("login.php".$redir_string);
+         } else {
+            return AUTH_EXTERNAL;
+         }
+      }
+      // Using CAS server
+      if (!empty($CFG_GLPI["cas_host"])) {
+         if ($redirect) {
+            glpi_header("login.php".$redir_string);
+         } else {
+            return AUTH_CAS;
+         }
+      }
+   return false;
+   }
 }
 
 

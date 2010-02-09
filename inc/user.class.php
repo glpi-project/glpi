@@ -447,7 +447,7 @@ class User extends CommonDBTM {
       if (isset($this->fields["authtype"])
           && ($this->fields["authtype"] == AUTH_LDAP
               || $this->fields["authtype"] == AUTH_MAIL
-              || isAlternateAuthWithLdap($this->fields["authtype"]))) {
+              || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
 
          if (isset($this->fields["id"])
              && $this->fields["id"] >0
@@ -573,7 +573,7 @@ class User extends CommonDBTM {
       global $DB;
 
       if (isset($this->input["authtype"])
-          && ($this->input["authtype"] == AUTH_LDAP || isAlternateAuthWithLdap($this->input['authtype']))) {
+          && ($this->input["authtype"] == AUTH_LDAP || Auth::isAlternateAuthWithLdap($this->input['authtype']))) {
          if (isset ($this->input["id"]) && $this->input["id"]>0) {
             $authtype = Auth::getMethodsByID($this->input["authtype"], $this->input["auths_id"]);
 
@@ -1033,7 +1033,7 @@ class User extends CommonDBTM {
             if (useAuthLdap()) {
                $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
                $buttons["ldap.php"] = $LANG['setup'][3];
-            } else if (useAuthExt()) {
+            } else if (Auth::useAuthExt()) {
                $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
             }
          }
@@ -1476,7 +1476,7 @@ class User extends CommonDBTM {
                // extauth ldap case
                if ($_SESSION["glpiextauth"]
                    && ($this->fields["authtype"] == AUTH_LDAP
-                       || isAlternateAuthWithLdap($this->fields["authtype"]))) {
+                       || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
                   $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
                   if (count($authtype)) {
                      $fields = AuthLDAP::getSyncFields($authtype);

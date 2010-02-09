@@ -43,8 +43,8 @@ if ($argv) {
 		$arg=str_replace('\=','°',$argv[$i]);
 		$it = explode("=",$arg);
 		$it[0] = preg_replace('/^--/','',$it[0]);
-		
-		//Replace the ° by = the find the good filter 
+
+		//Replace the ° by = the find the good filter
 		$it=str_replace('°','=',$it);
 		$_GET[$it[0]] = $it[1];
 	}
@@ -53,7 +53,7 @@ if ($argv) {
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-// Default action : synchro 
+// Default action : synchro
 // - possible option :
 //   - 0 : import new users
 //	 - 1 : synchronize users
@@ -76,10 +76,10 @@ $result = $DB->query($sql);
 if ($DB->numrows($result) == 0 && $_GET["server_id"] != '')
 	echo "LDAP Server not found";
 else
-{	
-	while ($datas = $DB->fetch_array($result)) 
+{
+	while ($datas = $DB->fetch_array($result))
 		import ($_GET["action"],$datas,$_GET["filter"]);
-	
+
 }
 
 /**
@@ -91,10 +91,10 @@ function import($action, $datas,$filter='')
 {
 	//The ldap server id is passed in the script url (parameter server_id)
 	$server_id = $datas["id"];
-	$users = getAllLdapUsers($server_id, $action,$filter);
-	
+	$users = AuthLdap::getAllLdapUsers($server_id, $action,$filter);
+
 	foreach ($users as $user) {
-		ldapImportUserByServerId($user["user"], $action, $server_id);
+		AuthLdap::ldapImportUserByServerId($user["user"], $action, $server_id);
 		echo ".";
 	}
 }

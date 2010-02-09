@@ -76,10 +76,10 @@ $ok = $ok_slave && $ok_master;
 
 // Check session dir (usefull when NFS mounted))
 if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
-		echo "GLPI_SESSION_DIR_OK\n";	
+		echo "GLPI_SESSION_DIR_OK\n";
 } else {
 		echo "GLPI_SESSION_DIR_PROBLEM\n";
-		$ok=false;		
+		$ok=false;
 }
 
 // Reestablished DB connection
@@ -104,18 +104,18 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 			echo "No OCS server\n";
 		}
 	}
-	
+
 	// Check Auth connections
 	$auth = new Auth();
 	$auth->getAuthMethods();
 	$ldap_methods = $auth->authtypes["ldap"];
-		
+
 	if (count($ldap_methods)){
 		echo "Check LDAP servers:";
 		foreach ($ldap_methods as $method){
 			echo " ".$method['name'];
 
-			if (try_connect_ldap($method['host'],$method['port'], 
+			if (AuthLdap::tryToConnectToServer($method['host'],$method['port'],
 				 $method["rootdn"], $method["rootdn_password"], $method["use_tls"],"","",$method["deref_option"],$method['id'])){
 				echo "_OK";
 			} else {
@@ -132,7 +132,7 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 
 	// TODO check CAS url / check url using socket ?
 
-	
+
 }
 
 echo "\n";
