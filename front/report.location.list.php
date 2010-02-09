@@ -80,8 +80,14 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
          $portordi = "";
 
          if ($networkports_id_1 && $np->getFromDB($networkports_id_1)) {
-            $np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
-            $ordi = $np->device_name;
+            $ordi = '';
+            if (class_exists($np->fields["itemtype"])) {
+               $item=new $np->fields["itemtype"]();
+               if ($item->getFromDB($np->fields["items_id"])) {
+                  $ordi = $item->getName();
+               }
+            }
+
             $ip2 = $np->fields['ip'];
             $mac2 = $np->fields['mac'];
             $portordi = $np->fields['name'];
