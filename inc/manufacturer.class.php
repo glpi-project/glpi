@@ -45,6 +45,22 @@ class Manufacturer extends CommonDropdown {
 
       return $LANG['common'][5];
    }
+
+   static function processName($old_name) {
+
+      if ($old_name == null) {
+         return $old_name;
+      }
+
+      $rulecollection = new RuleDictionnaryDropdownCollection(RULE_DICTIONNARY_MANUFACTURER);
+      $output=array();
+      $output = $rulecollection->processAllRules(array("name"=>addslashes($old_name)),$output,array());
+      if (isset($output["name"])) {
+         return $output["name"];
+      }
+      return $old_name;
+   }
+
 }
 
 ?>

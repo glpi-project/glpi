@@ -362,7 +362,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             }
             // Model case
             if (isset($data["manufacturer"])) {
-               $data["manufacturer"] = processManufacturerName($data["manufacturer"]);
+               $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
             }
             //Replay Type dictionnary
             $ID=Dropdown::importExternal(getItemTypeForTable($this->item_table),addslashes($data["name"]),

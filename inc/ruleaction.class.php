@@ -80,6 +80,106 @@ class RuleAction extends CommonDBTM {
       $ruleAction->add($input);
    }
 
+   /**
+   * Display a dropdown with all the possible actions
+   **/
+   static function dropdownActions($sub_type,$name,$value='') {
+      global $LANG,$CFG_GLPI,$RULES_ACTIONS;
+
+      $actions=array("assign");
+      if (isset($RULES_ACTIONS[$sub_type][$value]['force_actions'])) {
+         $actions=$RULES_ACTIONS[$sub_type][$value]['force_actions'];
+      }
+
+      $elements=array();
+      foreach ($actions as $action) {
+         switch ($action) {
+            case "assign" :
+               $elements["assign"] = $LANG['rulesengine'][22];
+               break;
+
+            case "regex_result" :
+               $elements["regex_result"] = $LANG['rulesengine'][45];
+               break;
+
+            case "append_regex_result" :
+               $elements["append_regex_result"] = $LANG['rulesengine'][79];
+               break;
+
+            case "affectbyip" :
+               $elements["affectbyip"] = $LANG['rulesengine'][46];
+               break;
+
+            case "affectbyfqdn" :
+               $elements["affectbyfqdn"] = $LANG['rulesengine'][47];
+               break;
+
+            case "affectbymac" :
+               $elements["affectbymac"] = $LANG['rulesengine'][49];
+               break;
+
+            case 'compute';
+               $elements['compute'] = $LANG['rulesengine'][38];
+               break;
+         }
+      }
+      return Dropdown::showFromArray($name,$elements,array('value' => $value));
+   }
+
+   static function getActionByID($ID) {
+      global $LANG;
+
+      switch ($ID) {
+         case "assign" :
+            return $LANG['rulesengine'][22];
+
+         case "regex_result" :
+            return $LANG['rulesengine'][45];
+
+         case "append_regex_result" :
+            return $LANG['rulesengine'][79];
+
+         case "affectbyip" :
+            return $LANG['rulesengine'][46];
+
+         case "affectbyfqdn" :
+            return $LANG['rulesengine'][47];
+
+         case "affectbymac" :
+            return $LANG['rulesengine'][49];
+
+         case 'compute' :
+            return $LANG['rulesengine'][38];
+      }
+   }
+
+   static function getRegexResultById($action,$regex_results) {
+      $results = array();
+
+      if (count($regex_results)>0) {
+         if (preg_match_all("/#([0-9])/",$action,$results)>0) {
+            foreach($results[1] as $result) {
+               $action=str_replace("#$result",
+                                 (isset($regex_results[$result])?$regex_results[$result]:''),$action);
+            }
+         }
+      }
+      return $action;
+   }
+
+   static function getAlreadyUsedForRuleID($rules_id,$sub_type) {
+      global $DB,$RULES_ACTIONS;
+
+      $actions = array();
+      $res = $DB->query("SELECT field FROM glpi_ruleactions WHERE rules_id='".$rules_id."'");
+      while ($action = $DB->fetch_array($res)) {
+         if (isset($RULES_ACTIONS[$sub_type][$action["field"]])) {
+            $actions[$action["field"]] = $action["field"];
+         }
+      }
+      return $actions;
+   }
+
 }
 
 ?>
