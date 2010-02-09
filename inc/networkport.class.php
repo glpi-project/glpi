@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')){
 
 
 /// NetworkPort class
-class NetworkPort extends CommonDBTM {
+class NetworkPort extends CommonDBChild {
 
    /// TODO manage access right on this object
 
@@ -49,7 +49,7 @@ class NetworkPort extends CommonDBTM {
    /// hardare data : ID
    var $device_ID		= 0;
    /// hardare data : type
-   var $itemtype		= 0;
+//   var $itemtype		= 0;
    /// hardare data : entity
    var $entities_id		= -1;
    /// hardare data : locations_id
@@ -58,6 +58,12 @@ class NetworkPort extends CommonDBTM {
    var $is_recursive = 0;
    /// hardare data : is_deleted
    var $is_deleted = 0;
+
+   // From CommonDBChild
+   public $itemtype='itemtype';
+   public $items_id='items_id'; 
+   public $dohistory = true;
+
 
    function canCreate() {
       return haveRight('networking', 'w');

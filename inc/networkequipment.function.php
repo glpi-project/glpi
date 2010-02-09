@@ -77,8 +77,10 @@ function showPortVLAN($ID, $canedit, $withtemplate) {
 
 function showPortVLANForm ($ID) {
    global $DB, $CFG_GLPI, $LANG;
+   $port=new NetworkPort();
 
-   if ($ID) {
+   if ($ID && $port->can($ID,'w')) {
+      
       echo "\n<div class='center'>";
       echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>";
       echo "<input type='hidden' name='id' value='$ID'>\n";
@@ -86,7 +88,7 @@ function showPortVLANForm ($ID) {
       echo "<table class='tab_cadre'>";
       echo "<tr><th>" . $LANG['setup'][90] . "</th></tr>\n";
       echo "<tr class='tab_bg_2'><td>";
-      $used=showPortVLAN($ID, 0);
+      $used=showPortVLAN($ID, true,0);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>";
@@ -111,13 +113,19 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
    }
 
    $netport = new NetworkPort;
+
+   if ($ID > 0) {
+      $netport->check($ID,'r');
+   } else {
+      // Create item
+      $netport->check(-1,'w');
+   }
+
    if ($ID) {
-      $netport->getFromDB($ID);
       $netport->getDeviceData($ondevice=$netport->fields["items_id"],
                               $devtype=$netport->fields["itemtype"]);
    } else {
       $netport->getDeviceData($ondevice, $devtype);
-      $netport->getEmpty();
    }
 
    // Ajout des infos deja remplies
