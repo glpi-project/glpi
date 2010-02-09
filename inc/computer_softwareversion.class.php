@@ -37,15 +37,13 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Computer and Items (monitor, printer, phone, peripheral only)
-// TODO move this as a CommonDBRelation
-class Computer_SoftwareVersion extends CommonDBTM {
+class Computer_SoftwareVersion extends CommonDBRelation {
 
    // From CommonDBRelation
-   //public $itemtype_1 = 'Computer';
-   //public $items_id_1 = 'computers_id';
-   //public $itemtype_2 = 'SoftwareVersion';
-   //public $items_id_2 = 'softwareversions_id';
+   public $itemtype_1 = 'Computer';
+   public $items_id_1 = 'computers_id';
+   public $itemtype_2 = 'SoftwareVersion';
+   public $items_id_2 = 'softwareversions_id';
 
    /**
     * Get number of installed licenses of a version
