@@ -276,7 +276,7 @@ class NetworkPort extends CommonDBTM {
       $canedit = $item->can($ID, 'w');
 
       // Show Add Form
-      if ($canedit && empty($withtemplate) || $withtemplate !=2) {
+      if ($canedit && (empty($withtemplate) || $withtemplate !=2)) {
          echo "\n<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<a href=\"" . $CFG_GLPI["root_doc"] .
@@ -289,6 +289,8 @@ class NetworkPort extends CommonDBTM {
          echo $LANG['networking'][46];
          echo "</strong></a></td></tr>\n";
          echo "</table></div><br>\n";
+      } else {
+         echo "<br>";
       }
 
       initNavigateListItems('NetworkPort',$item->getTypeName()." = ".$item->getName());
