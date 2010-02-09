@@ -634,7 +634,8 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['name']=$this->getTypeName()." : ".$LANG['common'][2]." ".$this->fields['id'];
          }
 
-         addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " . $this->getLink());
+         addMessageAfterRedirect($LANG['common'][70] . "&nbsp;: " .
+                  (isset($this->input['_no_message_link'])?$this->getNameID():$this->getLink()));
       }
    }
 
@@ -813,7 +814,8 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['name']=$this->getTypeName()." : ".$LANG['common'][2]." ".$this->fields['id'];
          }
 
-         addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " . $this->getLink());
+         addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " .
+               (isset($this->input['_no_message_link'])?$this->getNameID():$this->getLink()));
       }
    }
 
@@ -941,7 +943,8 @@ class CommonDBTM extends CommonGLPI {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " . $this->getLink());
+         addMessageAfterRedirect($LANG['common'][72] . "&nbsp;: " .
+               (isset($this->input['_no_message_link'])?$this->getNameID():$this->getLink()));
       }
    }
 
@@ -1034,7 +1037,8 @@ class CommonDBTM extends CommonGLPI {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " . $this->getLink());
+         addMessageAfterRedirect($LANG['common'][74] . "&nbsp;: " .
+            (isset($this->input['_no_message_link'])?$this->getNameID():$this->getLink()));
       }
    }
 
@@ -1413,6 +1417,10 @@ class CommonDBTM extends CommonGLPI {
          echo "<form name='form' method='post' action='".$params['target']."' ".$params['formoptions'].">";
          if (isset($this->fields["entities_id"])) {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+         }
+         // No link on popup window
+         if (isset($_GET['popup']) && $_GET['popup']) {
+            echo "<input type='hidden' name='_no_message_link' value='1'>";
          }
       }
       echo "<div class='center' id='tabsbody'>";
