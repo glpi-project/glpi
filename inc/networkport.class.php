@@ -362,7 +362,7 @@ class NetworkPort extends CommonDBTM {
                            "<br>".$netport->fields["gateway"] . "</td>\n";
                // VLANs
                echo "<td>";
-               showPortVLAN($netport->fields["id"], $withtemplate);
+               showPortVLAN($netport->fields["id"], $canedit, $withtemplate);
                echo "</td>\n";
                echo "<td>" . Dropdown::getDropdownName("glpi_networkinterfaces",
                                              $netport->fields["networkinterfaces_id"]) . "</td>\n";

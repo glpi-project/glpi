@@ -43,10 +43,9 @@ if (!defined('GLPI_ROOT')) {
 ///// Manage Ports on Devices /////
 
 
-function showPortVLAN($ID, $withtemplate) {
+function showPortVLAN($ID, $canedit, $withtemplate) {
    global $DB, $CFG_GLPI, $LANG;
 
-   $canedit = haveRight("networking", "w");
    $used = array();
 
    $query = "SELECT *
