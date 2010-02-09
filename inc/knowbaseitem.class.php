@@ -557,12 +557,12 @@ class KnowbaseItem extends CommonDBTM {
             }
             $nbcols=1;
             // Display List Header
-            echo displaySearchHeader($output_type,$numrows_limit+1,$nbcols);
+            echo Search::showHeader($output_type,$numrows_limit+1,$nbcols);
 
             if ($output_type!=HTML_OUTPUT) {
                $header_num=1;
-               echo displaySearchHeaderItem($output_type,$LANG['knowbase'][3],$header_num);
-               echo displaySearchHeaderItem($output_type,$LANG['knowbase'][4],$header_num);
+               echo Search::showHeaderItem($output_type,$LANG['knowbase'][3],$header_num);
+               echo Search::showHeaderItem($output_type,$LANG['knowbase'][4],$header_num);
             }
 
             // Num of the row (1=header_line)
@@ -572,32 +572,32 @@ class KnowbaseItem extends CommonDBTM {
                // Column num
                $item_num=1;
                $row_num++;
-               echo displaySearchNewLine($output_type,$i%2);
+               echo Search::showNewLine($output_type,$i%2);
 
                if ($output_type==HTML_OUTPUT) {
-                  echo displaySearchItem($output_type,"<div class='kb'><a ".
+                  echo Search::showItem($output_type,"<div class='kb'><a ".
                      ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
                      $target."?id=".$data["id"]."\">".resume_text($data["question"],80).
                      "</a></div><div class='kb_resume'>".
                      resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),600).
                      "</div>",$item_num,$row_num);
                } else {
-                  echo displaySearchItem($output_type,$data["question"],$item_num,$row_num);
-                  echo displaySearchItem($output_type,
+                  echo Search::showItem($output_type,$data["question"],$item_num,$row_num);
+                  echo Search::showItem($output_type,
                      html_clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
                            ENT_QUOTES,"UTF-8"))),$item_num,$row_num);
                }
 
                // End Line
-               echo displaySearchEndLine($output_type);
+               echo Search::showEndLine($output_type);
             }
 
             // Display footer
             if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT) {
-               echo displaySearchFooter($output_type,Dropdown::getDropdownName("glpi_knowbaseitemcategories",
+               echo Search::showFooter($output_type,Dropdown::getDropdownName("glpi_knowbaseitemcategories",
                                                                      $knowbaseitemcategories_id));
             } else {
-               echo displaySearchFooter($output_type);
+               echo Search::showFooter($output_type);
             }
             echo "<br>";
             if ($output_type==HTML_OUTPUT) {

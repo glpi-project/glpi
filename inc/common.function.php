@@ -1977,4 +1977,62 @@ function addToNavigateListItems($itemtype,$ID) {
 }
 
 
+/**
+ * Clean display value for csv export
+ *
+ *
+ *@param $value string value
+ *
+ *@return clean value
+ *
+ **/
+function csv_clean($value) {
+
+   if (get_magic_quotes_runtime()) {
+      $value=stripslashes($value);
+   }
+   $value=str_replace("\"","''",$value);
+   $value=html_clean($value);
+
+   return $value;
+}
+
+/**
+ * Extract url from web link
+ *
+ *
+ *@param $value string value
+ *
+ *@return clean value
+ *
+ **/
+function weblink_extract($value) {
+
+   $value = preg_replace('/<a\s+href\="(https?\:\/\/[^"]+)"[^>]*>[^<]*<\/a>/i', '$1', $value);
+   return $value;
+}
+
+/**
+ * Clean display value for sylk export
+ *
+ *
+ *@param $value string value
+ *
+ *@return clean value
+ *
+ **/
+function sylk_clean($value) {
+
+   if (get_magic_quotes_runtime()) {
+      $value=stripslashes($value);
+   }
+   $value=preg_replace('/\x0A/',' ',$value);
+   $value=preg_replace('/\x0D/',NULL,$value);
+   $value=str_replace("\"","''",$value);
+   $value=str_replace(';', ';;', $value);
+   $value=html_clean($value);
+
+   return $value;
+}
+
 ?>
