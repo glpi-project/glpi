@@ -82,13 +82,12 @@ class Ticket extends CommonDBTM {
          return false;
       }
       return (haveRight("show_all_ticket","1")
-              || ($this->fields["users_id"] === getLoginUserID())
+              || $this->fields["users_id"] === getLoginUserID()
               || (haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
               || (haveRight("show_assign_ticket",'1')
                   && ($this->fields["users_id_assign"] === getLoginUserID()
-                      )
                       || (isset($_SESSION["glpigroups"])
                           && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"]))
                      )

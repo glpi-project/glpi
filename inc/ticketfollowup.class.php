@@ -418,7 +418,7 @@ class TicketFollowup  extends CommonDBTM {
       $canplan = haveRight("show_planning","1");
 
       $tech=(haveRight("global_add_followups","1")
-             || $ticket->fields["users_id_assign"] === getLoginUserID()
+             || $ticket->fields["users_id_assign"] === getLoginUserID())
              || (isset($_SESSION["glpigroups"])
                   && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups']));
 
