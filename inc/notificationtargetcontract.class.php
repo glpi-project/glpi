@@ -51,14 +51,18 @@ class NotificationTargetContract extends NotificationTarget {
       $tpldatas['##lang.contract.entity##'] = $LANG['entity'][0];
       switch ($options['type']) {
          case ALERT_END :
-            $tpldatas['##lang.contract.action##'] = $LANG['mailing'][37];
+            $tpldatas['##contract.action##'] = $LANG['mailing'][37];
             break;
          case ALERT_NOTICE:
-            $tpldatas['##lang.contract.action##'] = $LANG['mailing'][38];
+            $tpldatas['##contract.action##'] = $LANG['mailing'][38];
             break;
       }
+      $tpldatas['##contract.name##']= $this->obj->getField("name");
       $tpldatas['##lang.contract.action##']= $LANG['mailing'][39];
-
+      $tpldatas['##lang.contract.action##']= $LANG['mailing'][39];
+      $tpldatas['contract.time'] = getWarrantyExpir($this->obj->getField("begin_date"),
+                                       $this->obj->getField("duration"),
+                                       $this->obj->getField("notice"));
       return $tpldatas;
    }
 }

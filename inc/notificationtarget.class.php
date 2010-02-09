@@ -213,6 +213,7 @@ class NotificationTarget extends CommonDBTM {
                break;
 
                 default :
+                  //TODO : add function to look for additionnal targets (plugins)
                   $name="&nbsp;";
                break;
             }
@@ -397,7 +398,7 @@ class NotificationTarget extends CommonDBTM {
     */
    function getUsersAddressesByGroup($group_id) {
       global $DB;
-      $query=NotificationTargetTicket::getDistinctUserSql()."
+      $query=$this->getDistinctUserSql()."
               FROM `glpi_groups_users`".
               NotificationTargetTicket::getJoinProfileSql()."
               INNER JOIN `glpi_users`
@@ -487,7 +488,7 @@ class NotificationTarget extends CommonDBTM {
       global $DB;
       if ($this->target_object) {
          //Look for the user by his id
-         $query = NotificationTargetTicket::getDistinctUserSql()."
+         $query = $this->getDistinctUserSql()."
                   FROM `glpi_users`".
                   NotificationTargetTicket::getJoinProfileSql()."
                   WHERE `glpi_users`.`id` = '".$this->target_object->getField($field)."'";
