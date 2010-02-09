@@ -342,7 +342,7 @@ class NetworkPort extends CommonDBChild {
 
             if ($canedit && $withtemplate != 2) {
                openArrowMassive("networking_ports$rand", true);
-               dropdownMassiveAction('NetworkPort');
+               Dropdown::showForMassiveAction('NetworkPort');
                closeArrowMassive();
             } else {
                echo "<br>";
