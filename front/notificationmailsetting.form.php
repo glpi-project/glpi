@@ -2,10 +2,10 @@
 
 
 /*
- * @version $Id: notification.php 9638 2009-12-12 07:46:53Z remi $
+ * @version $Id: HEADER 7762 2009-01-06 18:30:32Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2009 by the INDEPNET Development Team.
+ Copyright (C) 2003-2010 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------

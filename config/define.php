@@ -109,50 +109,32 @@ if (!strstr($_SERVER['PHP_SELF'],"/install/")) {
 }
 
 /*define("GENERAL_TYPE",0);
-define("COMPUTER_TYPE",1);
-define("NETWORKING_TYPE",2);
-define("PRINTER_TYPE",3);
-define("MONITOR_TYPE",4);
-define("PERIPHERAL_TYPE",5);
-define("SOFTWARE_TYPE",6);
-define("CONTACT_TYPE",7);
-define("ENTERPRISE_TYPE",8);
-define("INFOCOM_TYPE",9);
-define("CONTRACT_TYPE",10);
-define("CARTRIDGEITEM_TYPE",11);
-define("TYPEDOC_TYPE",12);
-define("DOCUMENT_TYPE",13);
-define("KNOWBASE_TYPE",14);
-define("USER_TYPE",15);
-define("TRACKING_TYPE",16);
-define("CONSUMABLEITEM_TYPE",17);
-define("CONSUMABLE_TYPE",18);
-define("CARTRIDGE_TYPE",19);
-define("SOFTWARELICENSE_TYPE",20);
-define("LINK_TYPE",21);
-define("STATE_TYPE",22);
-define("PHONE_TYPE",23);
-define("DEVICE_TYPE",24);
-define("REMINDER_TYPE",25);
-define("STAT_TYPE",26);
-define("GROUP_TYPE",27);
-define("ENTITY_TYPE",28);
-define("RESERVATION_TYPE",29);
-define("AUTH_MAIL_TYPE",30);
-define("AUTH_LDAP_TYPE",31);
-define("OCSNG_TYPE",32);
-define("REGISTRY_TYPE",33);
-define("PROFILE_TYPE",34);
-define("MAILGATE_TYPE",35);
-define("RULE_TYPE",36);
-define("TRANSFER_TYPE",37);
-define("BOOKMARK_TYPE",38);
-define("SOFTWAREVERSION_TYPE",39);
-define("PLUGIN_TYPE",40);
-define("COMPUTERDISK_TYPE",41);
-define("NETWORKING_PORT_TYPE",42);
-define("FOLLOWUP_TYPE",43);
-define("BUDGET_TYPE",44);
+ * @version $Id$
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2010 by the INDEPNET Development Team.
+
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
 */
 
 

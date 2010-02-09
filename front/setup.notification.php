@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: setup.auth.php 9584 2009-12-08 20:36:44Z moyo $
+ * @version $Id: HEADER 7762 2009-01-06 18:30:32Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2009 by the INDEPNET Development Team.
+ Copyright (C) 2003-2010 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
