@@ -1219,7 +1219,7 @@ function displayMessageAfterRedirect() {
 function addMessageAfterRedirect($msg,$check_once=false,$message_type=INFO,$reset=false) {
 
    // Do not display of cron jobs messages in user interface
-   if (getLoginUserID() === getLoginUserID(true)) {
+   if (getLoginUserID() === getLoginUserID(false)) {
       if (!empty($msg)) {
          if ($reset) {
             $_SESSION["MESSAGE_AFTER_REDIRECT"]='';

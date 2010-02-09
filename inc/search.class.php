@@ -135,7 +135,7 @@ class Search {
       $toview=Search::addDefaultToView($itemtype);
 
       // Add items to display depending of personal prefs
-      $displaypref=DisplayPreference::getForTypeUser($itemtype,getLoginUserID(true));
+      $displaypref=DisplayPreference::getForTypeUser($itemtype,getLoginUserID());
       if (count($displaypref)) {
          foreach ($displaypref as $val) {
             array_push($toview,$val);
@@ -2007,8 +2007,8 @@ class Search {
          case 'Ticket' :
             if (!haveRight("show_all_ticket","1")) {
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
-                  $condition =" (glpi_tickets.users_id= '".getLoginUserID(true)."'
-                              OR `glpi_tickets`.`users_id_assign` = '".getLoginUserID(true)."'";
+                  $condition =" (glpi_tickets.users_id= '".getLoginUserID()."'
+                              OR `glpi_tickets`.`users_id_assign` = '".getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR `glpi_tickets`.`groups_id_assign`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
@@ -2018,9 +2018,9 @@ class Search {
                   return $condition;
                } else {
                   if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                     $condition = " glpi_tickets.users_id= '".getLoginUserID(true)."' ";
+                     $condition = " glpi_tickets.users_id= '".getLoginUserID()."' ";
                   } else { // Can own ticket : show my and assign to me
-                     $condition = " glpi_tickets.users_id= '".getLoginUserID(true)."' OR glpi_tickets.users_id_assign= '".getLoginUserID(true)."' ";
+                     $condition = " glpi_tickets.users_id= '".getLoginUserID()."' OR glpi_tickets.users_id_assign= '".getLoginUserID()."' ";
                   }
                   if (haveRight("show_group_ticket",1)) {
                      if (count($_SESSION['glpigroups'])) {
@@ -3594,7 +3594,7 @@ class Search {
       if ($usesession && !isset($_SESSION['glpisearch'][$itemtype])) {
          $query = "SELECT `bookmarks_id`
                   FROM `glpi_bookmarks_users`
-                  WHERE `users_id`='".getLoginUserID(true)."'
+                  WHERE `users_id`='".getLoginUserID()."'
                         AND `itemtype` = '$itemtype'";
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {

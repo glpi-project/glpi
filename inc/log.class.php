@@ -195,7 +195,7 @@ class Log extends CommonDBTM {
       $old_value=$changes[1];
       $new_value=$changes[2];
 
-      if ($uid=getLoginUserID(true)) {
+      if ($uid=getLoginUserID(false)) {
          if (is_numeric($uid)) {
             $username = getUserName($uid,$link=0);
          } else { // For cron management

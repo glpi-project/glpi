@@ -236,7 +236,7 @@ class TicketFollowup  extends CommonDBTM {
       $input['_close'] = 0;
       unset($input["add"]);
 
-      if (!isset($input["users_id"]) && $uid=getLoginUserID(true)) {
+      if (!isset($input["users_id"]) && $uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
       if ($input["_isadmin"] && $input["_type"]!="update") {
