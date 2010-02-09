@@ -397,13 +397,13 @@ class User extends CommonDBTM {
       }
 
       if (isset ($input["entities_id"])
-          && getLoginUserID() == $input['id']) {
+          && getLoginUserID() === $input['id']) {
 
          $_SESSION["glpidefault_entity"] = $input["entities_id"];
       }
 
       // Manage preferences fields
-      if (getLoginUserID() == $input['id']) {
+      if (getLoginUserID() === $input['id']) {
          if (isset($input['use_mode']) && $_SESSION['glpi_use_mode'] !=  $input['use_mode']) {
             $_SESSION['glpi_use_mode']=$input['use_mode'];
             //loadLanguage();
@@ -1471,7 +1471,7 @@ class User extends CommonDBTM {
           && !haveRight("user", "w")
           && !strpos($_SERVER['PHP_SELF'],"login.php")) {
 
-         if (getLoginUserID() == $this->input['id']) {
+         if (getLoginUserID() === $this->input['id']) {
             if (isset($this->fields["authtype"])) {
                // extauth ldap case
                if ($_SESSION["glpiextauth"]
@@ -1662,7 +1662,7 @@ class User extends CommonDBTM {
             break;
 
          case "id" :
-            $where=" `glpi_users`.`id`='".getLoginUserID(true)."' ";
+            $where=" `glpi_users`.`id`='".getLoginUserID()."' ";
             break;
 
          case "all" :

@@ -82,13 +82,12 @@ class Ticket extends CommonDBTM {
          return false;
       }
       return (haveRight("show_all_ticket","1")
-              || (isset($_SESSION["glpiID"]) && $this->fields["users_id"]==$_SESSION["glpiID"])
+              || ($this->fields["users_id"] === getLoginUserID())
               || (haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
               || (haveRight("show_assign_ticket",'1')
-                  && ((isset($_SESSION["glpiID"])
-                       && $this->fields["users_id_assign"]==$_SESSION["glpiID"]
+                  && ($this->fields["users_id_assign"] === getLoginUserID()
                       )
                       || (isset($_SESSION["glpigroups"])
                           && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"]))
@@ -145,7 +144,7 @@ class Ticket extends CommonDBTM {
             }
          } else if (haveRight("add_followups","1")) {
             if (!strstr($this->fields["status"],"closed") // TODO review this => to add "approbation"
-                && $this->fields["users_id"]==$_SESSION["glpiID"]) {
+                && $this->fields["users_id"] === getLoginUserID()) {
             }
             $ong[1] = $LANG['Menu'][5];
             $ong[2] = $LANG['job'][7];
@@ -243,13 +242,13 @@ class Ticket extends CommonDBTM {
             // must own_ticket to grab a non assign ticket
             if ($this->fields['users_id_assign']==0) {
                if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
-                   || ($input["users_id_assign"]!=$_SESSION["glpiID"])) {
+                   || ($input["users_id_assign"]!=getLoginUserID())) {
                   unset($input["users_id_assign"]);
                }
             } else {
                // Can not steal or can steal and not assign to me
                if (!haveRight("steal_ticket","1")
-                   || $input["users_id_assign"] != $_SESSION["glpiID"]) {
+                   || $input["users_id_assign"] != getLoginUserID()) {
                   unset($input["users_id_assign"]);
                }
             }
@@ -718,7 +717,7 @@ class Ticket extends CommonDBTM {
          if (!empty($change_followup_content)) { // Add followup if not empty
             $newinput=array();
             $newinput["content"]    = addslashes($change_followup_content);
-            $newinput["users_id"]   = $_SESSION['glpiID'];
+            $newinput["users_id"]   = getLoginUserID();
             $newinput["is_private"] = 0;
             $newinput["hour"]       = $newinput["minute"] = 0;
             $newinput["tickets_id"] = $this->fields["id"];
@@ -749,8 +748,6 @@ class Ticket extends CommonDBTM {
 */
          if (count($this->updates)>0 && $CFG_GLPI["use_mailing"]) {
 
-            $user=new User;
-            $user->getFromDB($_SESSION["glpiID"]);
             $mailtype = "update";
 
             if (isset($this->input["status"])
@@ -837,15 +834,15 @@ class Ticket extends CommonDBTM {
       // No Auto set Import for external source
       if (!isset($input['_auto_import'])) {
          if (!isset($input["users_id"])) {
-            if (isset($_SESSION["glpiID"]) && $_SESSION["glpiID"]>0) {
-               $input["users_id"] = $_SESSION["glpiID"];
+            if ($uid=getLoginUserID()) {
+               $input["users_id"] = $uid;
             }
          }
       }
 
       // No Auto set Import for external source
-      if (isset($_SESSION["glpiID"]) && !isset($input['_auto_import'])) {
-         $input["users_id_recipient"] = $_SESSION["glpiID"];
+      if ($uid=getLoginUserID() && !isset($input['_auto_import'])) {
+         $input["users_id_recipient"] = $uid;
       } else if ($input["users_id"]) {
          $input["users_id_recipient"] = $input["users_id"];
       }
@@ -1234,10 +1231,9 @@ class Ticket extends CommonDBTM {
     */
    function canAddFollowups() {
 
-      return ((haveRight("add_followups","1") && $this->fields["users_id"]==$_SESSION["glpiID"])
+      return ((haveRight("add_followups","1") && $this->fields["users_id"]===getLoginUserID())
               || haveRight("global_add_followups","1")
-              || (isset($_SESSION["glpiID"])
-                  && $this->fields["users_id_assign"]==$_SESSION["glpiID"])
+              || ($this->fields["users_id_assign"]===getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups'])));
    }
@@ -1250,13 +1246,12 @@ class Ticket extends CommonDBTM {
    function canUserView() {
 
       return (haveRight("show_all_ticket","1")
-              || (isset($_SESSION["glpiID"]) && $this->fields["users_id"]==$_SESSION["glpiID"])
+              || ($this->fields["users_id"]===getLoginUserID())
               || (haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
               || (haveRight("show_assign_ticket",'1')
-                  && ((isset($_SESSION["glpiID"])
-                       && $this->fields["users_id_assign"]==$_SESSION["glpiID"]
+                  && ($this->fields["users_id_assign"]===getLoginUserID()
                       )
                       || (isset($_SESSION["glpigroups"])
                           && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"]))
@@ -1820,7 +1815,7 @@ class Ticket extends CommonDBTM {
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
-                                     OR `users_id` ='" . $_SESSION["glpiID"] . "') ";
+                                     OR `users_id` ='" . getLoginUserID() . "') ";
       }
 
       // TODO keep this for a union with followup + task + histo + ...
@@ -1934,7 +1929,7 @@ class Ticket extends CommonDBTM {
       global $DB,$LANG,$CFG_GLPI;
 
       if ($userID==0) {
-         $userID=$_SESSION["glpiID"];
+         $userID=getLoginUserID();
       }
 
       $rand=mt_rand();
@@ -2365,7 +2360,7 @@ class Ticket extends CommonDBTM {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups()==0
-                                        && $this->fields['users_id']==$_SESSION['glpiID']);
+                                        && $this->fields['users_id']===getLoginUserID());
 
 
       echo "<form method='post' name='form_ticket' action='".$_SERVER['PHP_SELF'].
@@ -2450,7 +2445,7 @@ class Ticket extends CommonDBTM {
       echo "<td class='left'>".$LANG['joblist'][29]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate
-          && ($canpriority || !$ID || $this->fields["users_id_recipient"]==$_SESSION["glpiID"])) {
+          && ($canpriority || !$ID || $this->fields["users_id_recipient"]===getLoginUserID())) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
          $idurgency = Ticket::dropdownUrgency("urgency",$this->fields["urgency"]);
       } else {
@@ -2940,8 +2935,8 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $search_users_id = " (`glpi_tickets`.`users_id` = '".$_SESSION["glpiID"]."') ";
-      $search_assign = " `users_id_assign` = '".$_SESSION["glpiID"]."' ";
+      $search_users_id = " (`glpi_tickets`.`users_id` = '".getLoginUserID()."') ";
+      $search_assign = " `users_id_assign` = '".getLoginUserID()."' ";
       if ($showgrouptickets) {
          $search_users_id = " 0 = 1 ";
          $search_assign = " 0 = 1 ";
@@ -2962,11 +2957,11 @@ class Ticket extends CommonDBTM {
                         AND `status` ='waiting' ".
                         getEntitiesRestrictRequest("AND","glpi_tickets");
 
-      } else  if ($status=="process") { // on affiche les tickets planifiés ou assignés à glpiID
+      } else  if ($status=="process") { // on affiche les tickets planifiés ou assignés au user
          $query .= "WHERE ( $search_assign )
                                              AND (`status` IN ('plan','assign')) ".
                         getEntitiesRestrictRequest("AND","glpi_tickets");
-      } else { // on affiche les tickets demandés par glpiID qui sont planifiés ou assignés
+      } else { // on affiche les tickets demandés le user qui sont planifiés ou assignés
             // à quelqu'un d'autre (exclut les self-tickets)
          $query .= "WHERE ($search_users_id)
                        AND (`status` IN ('new', 'plan', 'assign', 'waiting'))
@@ -3018,7 +3013,7 @@ class Ticket extends CommonDBTM {
 
                $options['field'][1]      = 5; // users_id_assign
                $options['searchtype'][1] = 'equals';
-               $options['contains'][1]   = $_SESSION["glpiID"];
+               $options['contains'][1]   = getLoginUserID();
                $options['link'][1]        = 'AND';
 
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
@@ -3049,7 +3044,7 @@ class Ticket extends CommonDBTM {
 
                $options['field'][0]      = 5; // users_id_assign
                $options['searchtype'][0] = 'equals';
-               $options['contains'][0]   = $_SESSION["glpiID"];
+               $options['contains'][0]   = getLoginUserID();
                $options['link'][0]        = 'AND';
 
                $options['field'][1]      = 12; // status
@@ -3064,7 +3059,7 @@ class Ticket extends CommonDBTM {
 
                $options['field'][0]      = 4; // users_id
                $options['searchtype'][0] = 'equals';
-               $options['contains'][0]   = $_SESSION["glpiID"];
+               $options['contains'][0]   = getLoginUserID();
                $options['link'][0]        = 'AND';
 
                $options['field'][1]      = 12; // status

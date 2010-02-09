@@ -49,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @return int or string : int for user id, string for cron jobs
 **/
-function getLoginUserID($force_human=false) {
+function getLoginUserID($force_human=true) {
    if (!$force_human) { // Check cron jobs
       if (isset($_SESSION["glpicronuserrunning"]) &&
          (isCommandLine() || strpos($_SERVER['PHP_SELF'],"popup"))) {
