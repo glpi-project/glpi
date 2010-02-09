@@ -96,7 +96,6 @@ include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/setup.function.php");
-include_once (GLPI_ROOT . "/inc/networkequipment.function.php");
 
 // Standard includes
 include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
