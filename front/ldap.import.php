@@ -43,7 +43,7 @@ checkRight('user_authtype','w');
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 
 if (isset($_GET['next'])) {
-   ldapChooseDirectory($_SERVER['PHP_SELF']);
+   AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);
 } else {
    if (isset($_SESSION["ldap_import"])) {
       if ($count = count($_SESSION["ldap_import"])) {
@@ -52,7 +52,7 @@ if (isset($_GET['next'])) {
 
          displayProgressBar(400,$percent);
          $key = array_pop($_SESSION["ldap_import"]);
-         ldapImportUser($key,0);
+         AuthLdap::ldapImportUser($key,0);
          glpi_header($_SERVER['PHP_SELF']);
 
       } else {
@@ -86,7 +86,7 @@ if (isset($_GET['next'])) {
          }
       }
 
-      if (!testLDAPConnection($_SESSION["ldap_server"])) {
+      if (!AuthLdap::testLDAPConnection($_SESSION["ldap_server"])) {
          unset($_SESSION["ldap_server"]);
          echo "<div class='center b'>".$LANG['ldap'][6]."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".$LANG['buttons'][13]."</a></div>";
@@ -100,7 +100,7 @@ if (isset($_GET['next'])) {
          } else {
             $_SESSION["ldap_sortorder"] = (!isset($_GET["order"])?"DESC":$_GET["order"]);
          }
-         showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"],$_SESSION["ldap_sortorder"]);
+         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"],$_SESSION["ldap_sortorder"]);
       }
 
    } else {

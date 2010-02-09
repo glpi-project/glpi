@@ -54,7 +54,7 @@ if (isset ($_POST["update"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
       if ($newID = $config_ldap->add($_POST)) {
-         if (testLDAPConnection($newID)) {
+         if (AuthLdap::testLDAPConnection($newID)) {
             addMessageAfterRedirect($LANG['login'][22]);
          } else {
             addMessageAfterRedirect($LANG['login'][23],false,ERROR);
@@ -73,7 +73,7 @@ if (isset ($_POST["update"])) {
    $ldap = new AuthLDAP;
    $ldap->getFromDB($_POST["id"]);
 
-   if (testLDAPConnection($_POST["id"])) {
+   if (AuthLdap::testLDAPConnection($_POST["id"])) {
       $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][22].
                                        " (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";
    } else {
@@ -87,7 +87,7 @@ if (isset ($_POST["update"])) {
       $replicate = new AuthLdapReplicate;
       $replicate->getFromDB($replicate_id);
 
-      if (testLDAPConnection($_POST["id"],$replicate_id)) {
+      if (AuthLdap::testLDAPConnection($_POST["id"],$replicate_id)) {
          $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][22].
                                           " (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
       } else {

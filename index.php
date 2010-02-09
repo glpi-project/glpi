@@ -53,7 +53,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $_GET["noAUTO"] = $_GET["noCAS"];
    }
 
-   checkAlternateAuthSystems(true,isset($_GET["redirect"])?$_GET["redirect"]:"");
+   Auth::checkAlternateAuthSystems(true,isset($_GET["redirect"])?$_GET["redirect"]:"");
 
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");

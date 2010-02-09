@@ -44,6 +44,7 @@ class NotificationTarget extends CommonDBTM {
 
    var $notification_targets = array();
 
+   var $notificationoptions = 0;
 
    // From CommonDBTM
    public $dohistory = true;

@@ -61,7 +61,7 @@ if (isset ($_POST["update"])) {
    $_SESSION['glpi_authconfig']=2;
    glpi_header($CFG_GLPI["root_doc"] . "/front/authmail.php");
 } else if (isset ($_POST["test"])) {
-   if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])) {
+   if (AuthMail::testAuth($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])) {
       addMessageAfterRedirect($LANG['login'][22]);
    } else {
       addMessageAfterRedirect($LANG['login'][23],false,ERROR);
