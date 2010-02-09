@@ -112,6 +112,66 @@ class NetworkPort_Vlan extends CommonDBRelation {
       }
    }
 
+   static function showForNetworkPort($ID, $canedit, $withtemplate) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $used = array();
+
+      $query = "SELECT *
+               FROM `glpi_networkports_vlans`
+               WHERE `networkports_id` = '$ID'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         echo "\n<table>";
+         while ($line = $DB->fetch_array($result)) {
+            $used[]=$line["vlans_id"];
+            echo "<tr><td>" . Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]);
+            echo "</td>\n<td>";
+            if ($canedit) {
+               echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
+                     "unassigned&amp;id=" . $line["id"] . "'>";
+               echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete2.png\" alt='" .
+                     $LANG['buttons'][6] . "' title='" . $LANG['buttons'][6] . "'></a>";
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td></tr>\n";
+         }
+         echo "</table>";
+      } else {
+         echo "&nbsp;";
+      }
+      return $used;
+   }
+
+   static function showForNetworkPortForm ($ID) {
+      global $DB, $CFG_GLPI, $LANG;
+      $port=new NetworkPort();
+
+      if ($ID && $port->can($ID,'w')) {
+         
+         echo "\n<div class='center'>";
+         echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>";
+         echo "<input type='hidden' name='id' value='$ID'>\n";
+
+         echo "<table class='tab_cadre'>";
+         echo "<tr><th>" . $LANG['setup'][90] . "</th></tr>\n";
+         echo "<tr class='tab_bg_2'><td>";
+         $used=self::showForNetworkPort($ID, true,0);
+         echo "</td></tr>\n";
+
+         echo "<tr class='tab_bg_2'><td>";
+         echo $LANG['networking'][55] . "&nbsp;:&nbsp;";
+         Dropdown::show('Vlan', array('used' => $used));
+         echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG['buttons'][3] .
+                     "' class='submit'>";
+         echo "</td></tr>\n";
+
+         echo "</table></form></div>";
+      }
+   }
+
+
 }
 
 ?>

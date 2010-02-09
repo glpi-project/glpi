@@ -323,7 +323,7 @@ class NetworkPort extends CommonDBChild {
                            "<br>".$netport->fields["gateway"] . "</td>\n";
                // VLANs
                echo "<td>";
-               showPortVLAN($netport->fields["id"], $canedit, $withtemplate);
+               NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
                echo "</td>\n";
                echo "<td>" . Dropdown::getDropdownName("glpi_networkinterfaces",
                                              $netport->fields["networkinterfaces_id"]) . "</td>\n";
