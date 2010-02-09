@@ -100,16 +100,16 @@ class RuleTicket extends Rule {
                   $regexvalue = getRegexResultById($action->fields["value"],$regex_results);
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
-                        $result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",
+                        $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",
                                                                     $output["entities_id"]);
                         break;
 
                      case "affectbyfqdn" :
-                        $result= getUniqueObjectIDByFQDN($regexvalue,$output["entities_id"]);
+                        $result= NetworkPort::getUniqueObjectIDByFQDN($regexvalue,$output["entities_id"]);
                         break;
 
                      case "affectbymac" :
-                        $result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"MAC",
+                        $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"MAC",
                                                                     $output["entities_id"]);
                         break;
 
