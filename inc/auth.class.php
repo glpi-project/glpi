@@ -765,7 +765,7 @@ class Auth {
     *
     * @return boolean
    **/
-   function useAuthExt() {
+   static function useAuthExt() {
       global $DB;
 
       //Get all the ldap directories
