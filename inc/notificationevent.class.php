@@ -71,6 +71,11 @@ class NotificationEvent extends CommonDBTM {
       $notificationtarget = NotificationTarget::getInstance($item);
       $entity = $notificationtarget->getEntity();
 
+      //If event is raised by a plugin, load it in order to get the language file available
+      if ($plug = isPluginItemType(get_class($item))) {
+         Plugin::loadLang(getItemTypeTabsURL($item->getItemType()));
+      }
+
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event,
                                                                $item->getType(),

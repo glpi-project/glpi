@@ -92,7 +92,6 @@ class Notification extends CommonDBTM {
       return $tabs;
    }
 
-
    function showForm($ID, $options=array()) {
       global $LANG,$CFG_GLPI;
 
