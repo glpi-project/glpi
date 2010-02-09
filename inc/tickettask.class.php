@@ -87,7 +87,7 @@ class TicketTask  extends CommonDBTM {
       if (!$this->fields['is_private'] && haveRight('observe_ticket',1)) {
          return true;
       }
-      if ($this->fields["users_id"]==$_SESSION["glpiID"]) {
+      if ($this->fields["users_id"] === getLoginUserID()) {
          return true;
       }
       return false;
@@ -104,8 +104,7 @@ class TicketTask  extends CommonDBTM {
          return false;
       }
       return (haveRight("global_add_tasks","1")
-              || (isset($_SESSION["glpiID"])
-                  && $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+              || ($ticket->fields["users_id_assign"] === getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
    }
@@ -117,7 +116,7 @@ class TicketTask  extends CommonDBTM {
     */
    function canUpdateItem() {
 
-      if ($this->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight('update_tasks',1)) {
+      if ($this->fields["users_id"] != getLoginUserID() && !haveRight('update_tasks',1)) {
          return false;
       }
       $ticket = new Ticket();
@@ -159,8 +158,8 @@ class TicketTask  extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       $input["realtime"] = $input["hour"]+$input["minute"]/60;
-      if (isset($_SESSION["glpiID"])) {
-         $input["users_id"] = $_SESSION["glpiID"];
+      if ($uid=getLoginUserID(true)) {
+         $input["users_id"] = $uid;
       }
       if (isset($input["plan"])) {
          $input["_plan"] = $input["plan"];
@@ -184,7 +183,7 @@ class TicketTask  extends CommonDBTM {
                 && (in_array("content",$this->updates) || isset($this->input['_need_send_mail']))) {
 
                $user = new User;
-               $user->getFromDB($_SESSION["glpiID"]);
+               $user->getFromDB(getLoginUserID());
 
                $ticket = new Ticket;
                if (isset($this->input["is_private"]) && $this->input["is_private"]) {
@@ -243,7 +242,7 @@ class TicketTask  extends CommonDBTM {
       if ($input["_job"]->getFromDB($input["tickets_id"])) {
          // Security to add unusers_idized followups
          if (!isset($input['_do_not_check_users_id'])
-             && $input["_job"]->fields["users_id"]!=$_SESSION["glpiID"]
+             && $input["_job"]->fields["users_id"]!=getLoginUserID()
              && !$input["_job"]->canAddFollowups()) {
             return false;
          }
@@ -264,8 +263,8 @@ class TicketTask  extends CommonDBTM {
       $input['_close'] = 0;
       unset($input["add"]);
 
-      if (!isset($input["users_id"])) {
-         $input["users_id"] = $_SESSION["glpiID"];
+      if (!isset($input["users_id"]) && $uid=getLoginUserID(true)) {
+         $input["users_id"] = $uid;
       }
       if ($input["_isadmin"] && $input["_type"]!="update") {
          if (isset($input['plan'])) {
@@ -351,10 +350,7 @@ class TicketTask  extends CommonDBTM {
          if ($this->input["_close"]) {
             $this->input["_type"] = "finish";
          }
-         $user = new User;
-         if (!isset($this->input['_auto_import']) && isset($_SESSION["glpiID"])) {
-            $user->getFromDB($_SESSION["glpiID"]);
-         }
+
          $ticket = new Ticket;
          $ticket->getFromDB($this->input["tickets_id"]);
          NotificationEvent::raiseEvent('add_task',$this->input["_job"]);
@@ -579,7 +575,7 @@ class TicketTask  extends CommonDBTM {
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
-                            OR `users_id` ='" . $_SESSION["glpiID"] . "') ";
+                            OR `users_id` ='" . getLoginUserID(true) . "') ";
       }
 
       $query = "SELECT `id`, `date`

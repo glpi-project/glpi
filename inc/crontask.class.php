@@ -632,14 +632,11 @@ class CronTask extends CommonDBTM{
       $taskname='';
 
       if (CronTask::get_lock()) {
-         if (isset($_SESSION["glpiID"])) {
-            $saveglpiid=$_SESSION["glpiID"];
-         }
          $task = new CronTask();
          for ($i=1 ; $i<=$max ; $i++) {
             $prefix = ($mode==self::MODE_EXTERNAL ? 'External' : 'Internal')." #$i: ";
             if ($task->getNeedToRun($mode, $name)) {
-               $_SESSION["glpiID"]="cron_".$task->fields['name'];
+               $_SESSION["glpicronuserrunning"]="cron_".$task->fields['name'];
 
                if ($plug=isPluginItemType($task->fields['itemtype'])) {
                   Plugin::load($plug['plugin'],true);
@@ -668,12 +665,7 @@ class CronTask extends CommonDBTM{
                logInFile('cron', $prefix."Nothing to launch\n");
             }
          } // end for
-
-         if (empty($saveglpiid)) {
-            unset($_SESSION["glpiID"]);
-         } else {
-            $_SESSION["glpiID"]=$saveglpiid;
-         }
+         $_SESSION["glpicronuserrunning"]='';
 
          CronTask::release_lock();
       } else {
