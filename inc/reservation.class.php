@@ -50,7 +50,7 @@ class Reservation extends CommonDBTM {
       global $CFG_GLPI;
 
       if (isset($this->fields["users_id"])
-          && ($this->fields["users_id"]==$_SESSION["glpiID"]
+          && ($this->fields["users_id"]===getLoginUserID()
               || haveRight("reservation_central","w"))) {
 
          // Processing Email
@@ -219,7 +219,7 @@ class Reservation extends CommonDBTM {
          }
       }
       // Original user always have right
-      if ($this->fields['users_id']==$_SESSION['glpiID']) {
+      if ($this->fields['users_id']===getLoginUserID()) {
          return true;
       }
       if (!haveRight("reservation_central",$right)) {
@@ -510,12 +510,12 @@ class Reservation extends CommonDBTM {
          || is_null($item)
          || !haveAccessToEntity($item->fields["entities_id"])) {
 
-         echo "<input type='hidden' name='users_id' value='".$_SESSION["glpiID"]."'>";
+         echo "<input type='hidden' name='users_id' value='".getLoginUserID()."'>";
       } else {
          echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31]."&nbsp;:</td>";
          echo "<td>";
          if (empty($ID)) {
-            User::dropdown(array('value'  => $_SESSION["glpiID"],
+            User::dropdown(array('value'  => getLoginUserID(),
                                  'entity' => $item->getEntityID(),
                                  'right'  => 'all'));
          } else {
@@ -637,7 +637,7 @@ class Reservation extends CommonDBTM {
    static function displayReservationsForAnItem($ID,$date) {
       global $DB,$LANG;
 
-      $users_id=$_SESSION["glpiID"];
+      $users_id=getLoginUserID();
       $resa = new Reservation();
       $user=new User;
       list($year,$month,$day)=explode("-",$date);

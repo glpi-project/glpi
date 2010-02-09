@@ -158,7 +158,7 @@ class TicketTask  extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       $input["realtime"] = $input["hour"]+$input["minute"]/60;
-      if ($uid=getLoginUserID(true)) {
+      if ($uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
       if (isset($input["plan"])) {
@@ -263,7 +263,7 @@ class TicketTask  extends CommonDBTM {
       $input['_close'] = 0;
       unset($input["add"]);
 
-      if (!isset($input["users_id"]) && $uid=getLoginUserID(true)) {
+      if (!isset($input["users_id"]) && $uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
       if ($input["_isadmin"] && $input["_type"]!="update") {
@@ -575,7 +575,7 @@ class TicketTask  extends CommonDBTM {
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
-                            OR `users_id` ='" . getLoginUserID(true) . "') ";
+                            OR `users_id` ='" . getLoginUserID() . "') ";
       }
 
       $query = "SELECT `id`, `date`
@@ -713,7 +713,7 @@ class TicketTask  extends CommonDBTM {
             echo "Ext.get('plan').setDisplayed('none');";
             $params = array('form'     => 'followups',
                             'state'    => 1,
-                            'users_id' => $_SESSION['glpiID'],
+                            'users_id' => getLoginUserID(),
                             'entity'   => $_SESSION["glpiactive_entity"]);
             ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,
                                  false);

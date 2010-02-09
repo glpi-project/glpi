@@ -116,7 +116,7 @@ class TicketPlanning extends CommonDBTM {
             echo "Ext.get('plan').setDisplayed('none');";
             $params = array('form'     => 'followups',
                             'state'    => 1,
-                            'users_id' => $_SESSION['glpiID'],
+                            'users_id' => getLoginUserID(),
                             'entity'   => $_SESSION["glpiactive_entity"]);
             ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params);
             echo "};";
@@ -191,7 +191,7 @@ class TicketPlanning extends CommonDBTM {
           && count($this->updates)>0 && $CFG_GLPI["use_mailing"]) {
 
          $user=new User;
-         $user->getFromDB($_SESSION["glpiID"]);
+         $user->getFromDB(getLoginUserID());
          $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
          $mail->send();
       }
@@ -252,7 +252,7 @@ class TicketPlanning extends CommonDBTM {
           && $CFG_GLPI["use_mailing"]) {
 
          $user=new User;
-         $user->getFromDB($_SESSION["glpiID"]);
+         $user->getFromDB(getLoginUserID());
          $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
          $mail->send();
       }
@@ -261,7 +261,7 @@ class TicketPlanning extends CommonDBTM {
    function pre_deleteItem() {
 
       if (isset($this->fields["users_id"]) &&
-          ($this->fields["users_id"]==$_SESSION["glpiID"] || haveRight("global_add_tasks","1"))) {
+          ($this->fields["users_id"] === getLoginUserID() || haveRight("global_add_tasks","1"))) {
 
          // Auto update realtime
          $fup=new TicketTask();

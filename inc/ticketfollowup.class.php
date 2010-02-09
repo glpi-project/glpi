@@ -80,7 +80,7 @@ class TicketFollowup  extends CommonDBTM {
       if (!$this->fields['is_private'] && haveRight('observe_ticket',1)) {
          return true;
       }
-      if ($this->fields["users_id"]==$_SESSION["glpiID"]) {
+      if ($this->fields["users_id"] === getLoginUserID()) {
          return true;
       }
       return false;
@@ -97,10 +97,9 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
       // From canAddFollowup
-      $right=((haveRight("add_followups","1") && $ticket->fields["users_id"]==$_SESSION["glpiID"])
+      $right=((haveRight("add_followups","1") && $ticket->fields["users_id"] === getLoginUserID())
               || haveRight("global_add_followups","1")
-              || (isset($_SESSION["glpiID"])
-                  && $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+              || ($ticket->fields["users_id_assign"] === getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
 
@@ -113,7 +112,7 @@ class TicketFollowup  extends CommonDBTM {
     * @return boolean
     */
    function canUpdateItem() {
-      if ($this->fields["users_id"]!=$_SESSION['glpiID'] && !haveRight('update_followup',1)) {
+      if ($this->fields["users_id"]!=getLoginUserID() && !haveRight('update_followup',1)) {
          return false;
       }
       $ticket = new Ticket();
@@ -122,7 +121,7 @@ class TicketFollowup  extends CommonDBTM {
       }
       // Only the technician
       return ((haveRight("global_add_followups","1")
-              || $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+              || $ticket->fields["users_id_assign"] === getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
    }
@@ -157,8 +156,8 @@ class TicketFollowup  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($_SESSION["glpiID"])) {
-         $input["users_id"] = $_SESSION["glpiID"];
+      if ($uid=getLoginUserID()) {
+         $input["users_id"] = $uid;
       }
       return $input;
    }
@@ -178,7 +177,7 @@ class TicketFollowup  extends CommonDBTM {
                 && (in_array("content",$this->updates) || isset($this->input['_need_send_mail']))) {
 
                $user = new User;
-               $user->getFromDB($_SESSION["glpiID"]);
+               $user->getFromDB(getLoginUserID());
 
                if (isset($this->input["is_private"]) && $this->input["is_private"]) {
                   $options['is_private'] = true;
@@ -207,7 +206,7 @@ class TicketFollowup  extends CommonDBTM {
       if ($input["_job"]->getFromDB($input["tickets_id"])) {
          // Security to add unusers_idized followups
          if (!isset($input['_do_not_check_users_id'])
-             && $input["_job"]->fields["users_id"]!=$_SESSION["glpiID"]
+             && $input["_job"]->fields["users_id"]!=getLoginUserID()
              && !$input["_job"]->canAddFollowups()) {
             return false;
          }
@@ -237,8 +236,8 @@ class TicketFollowup  extends CommonDBTM {
       $input['_close'] = 0;
       unset($input["add"]);
 
-      if (!isset($input["users_id"])) {
-         $input["users_id"] = $_SESSION["glpiID"];
+      if (!isset($input["users_id"]) && $uid=getLoginUserID(true)) {
+         $input["users_id"] = $uid;
       }
       if ($input["_isadmin"] && $input["_type"]!="update") {
          if (isset($input["add_close"])) {
@@ -294,10 +293,6 @@ class TicketFollowup  extends CommonDBTM {
       if ($CFG_GLPI["use_mailing"]) {
          if ($this->input["_close"]) {
             $this->input["_type"] = "finish";
-         }
-         $user = new User;
-         if (!isset($this->input['_auto_import']) && isset($_SESSION["glpiID"])) {
-            $user->getFromDB($_SESSION["glpiID"]);
          }
 
          NotificationEvent::raiseEvent("add_followup",$this->input["_job"]);
@@ -423,7 +418,7 @@ class TicketFollowup  extends CommonDBTM {
       $canplan = haveRight("show_planning","1");
 
       $tech=(haveRight("global_add_followups","1")
-             || $ticket->fields["users_id_assign"]==$_SESSION["glpiID"])
+             || $ticket->fields["users_id_assign"] === getLoginUserID()
              || (isset($_SESSION["glpigroups"])
                   && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups']));
 
@@ -570,7 +565,7 @@ class TicketFollowup  extends CommonDBTM {
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
-                            OR `users_id` ='" . $_SESSION["glpiID"] . "') ";
+                            OR `users_id` ='" . getLoginUserID() . "') ";
       }
 
       $query = "SELECT `id`, `date`
@@ -634,7 +629,7 @@ class TicketFollowup  extends CommonDBTM {
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
-                           OR `users_id` ='".$_SESSION["glpiID"]."') ";
+                           OR `users_id` ='".getLoginUserID()."') ";
       }
 
       // Get Number of Followups
