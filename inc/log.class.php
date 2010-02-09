@@ -195,11 +195,11 @@ class Log extends CommonDBTM {
       $old_value=$changes[1];
       $new_value=$changes[2];
 
-      if (isset($_SESSION["glpiID"])) {
-         if (is_numeric($_SESSION["glpiID"])) {
-            $username = getUserName($_SESSION["glpiID"],$link=0);
+      if ($uid=getLoginUserID(true)) {
+         if (is_numeric($uid)) {
+            $username = getUserName($uid,$link=0);
          } else { // For cron management
-            $username=$_SESSION["glpiID"];
+            $username=$uid;
          }
       } else {
          $username="";
