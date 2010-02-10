@@ -861,16 +861,31 @@ class AuthLDAP extends CommonDBTM {
     * @param   $order display order
     * @return  nothing
     */
-   static function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DESC') {
+   static function showLdapUsers($target, $options = array ()) {
+   //static function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DESC') {
       global $DB, $CFG_GLPI, $LANG;
 
-      AuthLdap::displayLdapFilter($target);
-      echo "<br>";
-      $ldap_users = AuthLdap::getAllLdapUsers($_SESSION["ldap_server"], $sync,$filter,$order);
+      $values['order'] = 'DESC';
+      $values['sync'] = 0;
+      $values['filter'] = '';
+      $values['start'] = 0;
+      $values['check'] = 'none';
+      $values['display_filter'] = true;
+      $values['ldapservers_id'] = (isset($_SESSION["ldap_server"])?$_SESSION["ldap_server"]:0);
+
+      foreach ($options as $option => $value) {
+         $values[$option] = $value;
+      }
+
+      if ($values['display_filter']) {
+         AuthLdap::displayLdapFilter($target);
+         echo "<br>";
+      }
+      $ldap_users = AuthLdap::getAllLdapUsers($values['ldapservers_id'], $values);
 
       if (is_array($ldap_users)) {
          $numrows = count($ldap_users);
-         if (!$sync) {
+         if (!$values['sync']) {
             $action = "toimport";
             $form_action = "import_ok";
          } else {
@@ -879,14 +894,14 @@ class AuthLDAP extends CommonDBTM {
          }
 
          if ($numrows > 0) {
-            $parameters = "check=$check";
-            printPager($start, $numrows, $target, $parameters);
+            $parameters = "check=".$values['check'];
+            printPager($values['start'], $numrows, $target, $parameters);
 
             // delete end
-            array_splice($ldap_users, $start + $_SESSION['glpilist_limit']);
+            array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
             // delete begin
-            if ($start > 0) {
-               array_splice($ldap_users, 0, $start);
+            if ($values['start'] > 0) {
+               array_splice($ldap_users, 0, $values['start']);
             }
 
             echo "<div class='center'>";
@@ -897,10 +912,14 @@ class AuthLDAP extends CommonDBTM {
                   $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" .
                   $LANG['buttons'][19] . "</a>";
             echo "<table class='tab_cadre'>";
-            echo "<tr><th>" . (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
+            echo "<tr><th>" . (!$values['sync']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
             $num=0;
-            echo Search::showHeaderItem(0,$LANG['Menu'][14],$num,$target.
-                                         "?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+            echo Search::showItem(0,
+                                  $LANG['Menu'][14],
+                                  $num,
+                                  $target."?order=".($values['order']=="DESC"?"ASC":"DESC"),
+                                  1,
+                                  $values['order']);
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>";
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
             echo "</tr>";
@@ -922,7 +941,7 @@ class AuthLDAP extends CommonDBTM {
                echo "<tr class='tab_bg_2 center'>";
                //Need to use " instead of ' because it doesn't work with names with ' inside !
                echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\" " .
-                           ($check == "all" ? "checked" : "") ."></td>";
+                           ($values['check'] == "all" ? "checked" : "") ."></td>";
                echo "<td>" . $user . "</td>";
 
                if ($stamp != '') {
@@ -939,7 +958,7 @@ class AuthLDAP extends CommonDBTM {
             }
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input class='submit' type='submit' name='" . $form_action . "' value='" .
-                   (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
+                   (!$values['sync']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
             echo "</td></tr>";
             echo "</table></form></div>";
             echo "<a href='" .
@@ -947,7 +966,7 @@ class AuthLDAP extends CommonDBTM {
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
                   $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" .
                   $LANG['buttons'][19] . "</a>";
-            printPager($start, $numrows, $target, $parameters);
+            printPager($values['start'], $numrows, $target, $parameters);
          } else {
             echo "<div class='center'><strong>" . $LANG['ldap'][3] . "</strong></div>";
          }
@@ -964,19 +983,30 @@ class AuthLDAP extends CommonDBTM {
     * @param   $order display order
     * @return  array of the user
     */
-   static function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
+   static function getAllLdapUsers($auths_id, $options = array()) {
+   //static function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
       global $DB, $LANG,$CFG_GLPI;
 
       $config_ldap = new AuthLDAP();
       $res = $config_ldap->getFromDB($auths_id);
+
+      $values['order'] = 'DESC';
+      $values['sync'] = 0;
+      $values['filter'] = '';
+      $values['basedn'] = $config_ldap->fields['basedn'];
+
+      foreach ($options as $option => $value) {
+         $values[$option] = $value;
+      }
+
       $ldap_users = array ();
 
       // we prevent some delay...
       if (!$res) {
          return false;
       }
-      if ($order!="DESC") {
-         $order="ASC";
+      if ($values['order']!="DESC") {
+         $values['order']="ASC";
       }
       $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
                          $config_ldap->fields['rootdn'], $config_ldap->fields['rootdn_password'],
@@ -988,24 +1018,24 @@ class AuthLDAP extends CommonDBTM {
                          "modifyTimestamp");
 
          // Tenter une recherche pour essayer de retrouver le DN
-         if ($myfilter == '') {
+         if ($values['filter'] == '') {
             $filter = "(".$config_ldap->fields['login_field']."=*)";
          } else {
-            $filter = $myfilter;
+            $filter = $values['filter'];
          }
 
          if (!empty ($config_ldap->fields['condition'])) {
             $filter = "(& $filter ".$config_ldap->fields['condition'].")";
          }
 
-         $sr = @ldap_search($ds, $config_ldap->fields['basedn'],$filter , $attrs);
+         $sr = @ldap_search($ds, $values['basedn'],$filter , $attrs);
          if ($sr) {
             $info = ldap_get_entries($ds, $sr);
             $user_infos = array();
 
             for ($ligne = 0; $ligne < $info["count"]; $ligne++) {
                //If ldap add
-               if (!$sync) {
+               if (!$values['sync']) {
                   if (in_array($config_ldap->fields['login_field'],$info[$ligne])) {
                      $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]] =
                         $info[$ligne][$config_ldap->fields['login_field']][0];
@@ -1035,23 +1065,23 @@ class AuthLDAP extends CommonDBTM {
       $glpi_users = array ();
       $sql = "SELECT `name`, `date_mod`
               FROM `glpi_users` ";
-      if ($sync) {
+      if ($values['sync']) {
          $sql.=" WHERE `authtype` IN (-1,".AUTH_LDAP.",".AUTH_EXTERNAL.") ";
       }
-      $sql.="ORDER BY `name` ".$order;
+      $sql.="ORDER BY `name` ".$values['order'];
 
       $result = $DB->query($sql);
       if ($DB->numrows($result) > 0) {
          while ($user = $DB->fetch_array($result)) {
             //Ldap add : fill the array with the login of the user
-            if (!$sync) {
+            if (!$values['sync']) {
                $glpi_users[$user['name']] = $user['name'];
             } else {
                //Ldap synchronisation : look if the user exists in the directory
                //and compares the modifications dates (ldap and glpi db)
                if (!empty ($ldap_users[$user['name']])) {
                   //If entry was modified or if script should synchronize all the users
-                  if ( ($sync ==2) || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)) {
+                  if ( ($values['order'] ==2) || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)) {
                      $glpi_users[] = array("user" => $user['name'],
                                            "timestamp"=>$user_infos[$user['name']]['timestamp'],
                                            "date_mod"=>$user['date_mod']);
@@ -1061,7 +1091,7 @@ class AuthLDAP extends CommonDBTM {
          }
       }
       //If add, do the difference between ldap users and glpi users
-      if (!$sync) {
+      if (!$values['sync']) {
          $diff = array_diff_ukey($ldap_users,$glpi_users,'strcasecmp');
          $list = array();
 
@@ -1070,7 +1100,7 @@ class AuthLDAP extends CommonDBTM {
                             "timestamp" => $user_infos[$user]["timestamp"],
                             "date_mod"=> "-----");
          }
-         if ($order=='DESC') {
+         if ($values['order']=='DESC') {
             rsort($list);
          } else {
             sort($list);
@@ -1127,7 +1157,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<table class='tab_cadre'>";
             echo "<tr><th>" . $LANG['buttons'][37]. "</th>";
             $header_num=0;
-            echo Search::showHeaderItem(HTML_OUTPUT,$LANG['common'][35],$header_num,$target.
+            echo displaySearchHeaderItem(HTML_OUTPUT,$LANG['common'][35],$header_num,$target.
                                          "?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
             echo "<th>".$LANG['setup'][261]."</th>";
             echo"<th>".$LANG['ocsng'][36]."</th></tr>";
@@ -1709,6 +1739,127 @@ class AuthLDAP extends CommonDBTM {
       return false;
    }
 
+   static function showUserImportForm($options) {
+      global $DB, $LANG;
 
+      $entity = (isset($options['entities_id'])?$options['entities_id']:$_SESSION['glpiactive_entity']);
+      //Get data related to entity (directory and ldap filter)
+      $entitydata = new EntityData;
+      $entitydata->getFromDB($entity);
+
+      $entity_directory = $entitydata->getField('ldapservers_id');
+      $authldap = new AuthLDAP;
+
+      echo "<div class='center'>";
+      echo "<form method='post' action=\"".$options['target']."\">";
+      echo "<table class='tab_cadre_fixe'>";
+
+      //Do not display entity dropdown when glpi is in mono entity mode
+      if (isMultiEntitiesMode()) {
+         echo "<tr><th colspan='2'>" . $LANG['ldap'][37] . "</th></tr>";
+         echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td>";
+         Dropdown::show('Entity',
+                        array('value'  => $entity,
+                              'entity' => $_SESSION['glpiactiveentities'],
+                              'auto_submit'=>1));
+         echo "</td></tr>";
+      }
+
+      //Cannot import is directory is not set in the entity's form
+      if ($entity_directory !=  NOT_AVAILABLE) {
+         $authldap->getFromDB($entity_directory);
+
+         $fields = array('login_field'=>$LANG['login'][6],
+                         'email_field'=>$LANG['setup'][14],
+                         'realname_field'=>$LANG['common'][48],
+                         'firstname_field'=>$LANG['common'][43],
+                         'phone_field'=>$LANG['help'][35],
+                         'phone2_field'=>$LANG['help'][35] . " 2",
+                         'mobile_field'=>$LANG['common'][42],
+                         'title_field'=>$LANG['users'][1],
+                         'category_field'=>$LANG['users'][2]);
+         $available_fields = array();
+         foreach ($fields as $field => $label) {
+            if (isset($authldap->fields[$field]) && $authldap->fields[$field] != '') {
+               $available_fields[$field] = $label;
+            }
+         }
+
+         echo "<tr><th colspan='2'>" . $LANG['ldap'][35] . "</th></tr>";
+         foreach ($available_fields as $field => $label) {
+            echo "<tr class='tab_bg_2'><td>$label</td><td>";
+            echo "<input type='text' name='criterias[$field]' value='".
+                                                            (isset($options['criterias'][$field])?
+                                                                   $options['criterias'][$field]:
+                                                                   '')."'>";
+            echo "</td></tr>";
+         }
+
+         echo "<tr class='tab_bg_2'><td colspan='2' align='center'>";
+         echo "<input  type='hidden' name='ldapservers_id' value='".$entity_directory."'>";
+         echo "<input  class='submit' type='submit' name='search' value='".$LANG['buttons'][0]."'>";
+         echo "</td></tr>";
+      }
+      else {
+         echo "<tr class='tab_bg_2'><td colspan='2' align='center'>";
+         echo $LANG['ldap'][36];
+         echo "</td></tr>";
+      }
+      echo "</table></form></div>";
+   }
+
+   static function searchUser($target,$values) {
+      global $LANG;
+
+      //Get data related to entity (directory and ldap filter)
+      $entitydata = new EntityData;
+      $entitydata->getFromDB($values['entities_id']);
+
+      $ldapservers_id = $entitydata->getField('ldapservers_id');
+      $entity_filter = $entitydata->getField('entity_ldapfilter');
+      $entity_basedn = $entitydata->getField('ldap_dn');
+
+      $authldap = new AuthLDAP;
+      $authldap->getFromDB($ldapservers_id);
+
+      $ds = AuthLdap::connectToServer($authldap->getField('host'),
+                                      $authldap->getField('port'),
+                                      $authldap->getField('rootdn'),
+                                      $authldap->getField('rootdn_password'),
+                                      $authldap->getField('use_tls'),
+                                      $authldap->getField('deref_option'));
+
+      if ($ds) {
+         $attrs = array ('dn',$authldap->getField('login_field'));
+
+         $counter = 0;
+         $filter = '';
+         if (!empty($values['criterias'])) {
+            foreach ($values['criterias'] as $criteria => $value) {
+               if ($value!='') {
+                  $counter++;
+                  $filter.="(".$authldap->fields[$criteria]."=$value)";
+               }
+            }
+         }
+         else {
+            $filter = "(".$authldap->getField("login_field")."=*)";
+         }
+
+         if ($counter > 1) {
+            $myfilter = "(|".$filter."))";
+         }
+         else {
+            $myfilter= $filter;
+         }
+
+          AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>0,
+                                                              'filter'=>$myfilter,
+                                                              'ldapservers_id'=>$ldapservers_id,
+                                                              'display_filter'=>false,
+                                                              'basedn'=>$entity_basedn,
+                                                              'sbutree_search'=>false));
+      }
+   }
 }
 ?>
