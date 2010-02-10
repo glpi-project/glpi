@@ -906,6 +906,7 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<div class='center'>";
             echo "<form method='post' id='ldap_form' name='ldap_form' action='" . $target . "'>";
+            echo "<input type='hidden' name='ldapservers_id' value='".$values['ldapservers_id']."'>";
             echo "<a href='" .
                   $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
