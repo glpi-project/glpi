@@ -1780,13 +1780,13 @@ class User extends CommonDBTM {
       $p['entity']         = -1;
       $p['entity_sons']    = false;
       $p['used']           = array();
+      $p['ldap_import'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key]=$val;
          }
       }
-
 
       if (!($p['entity']<0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
@@ -1858,6 +1858,16 @@ class User extends CommonDBTM {
                         array('widget' => 'dropdown_'.$p['name'].$rand,
                               'value'  => '__VALUE__',
                               'table'  => 'glpi_users'));
+      }
+
+      if (haveRight('import_externalauth_users','w') && $p['ldap_import']) {
+
+         echo "<img alt='' title='".$LANG['ldap'][35]."' src='".$CFG_GLPI["root_doc"].
+               "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
+               "/front/popup.php?popup=add_ldapuser&ampentity=".$_SESSION['glpiactive_entity']."' ,
+               'glpipopup', 'height=400, ".
+               "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
       return $rand;
    }

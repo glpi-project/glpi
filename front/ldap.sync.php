@@ -101,8 +101,11 @@ if (isset ($_GET['next'])) {
          } else {
             $_SESSION["ldap_sortorder"]=(!isset($_GET["order"])?"DESC":$_GET["order"]);
          }
-         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 1,
-                       $_SESSION["ldap_filter"],$_SESSION["ldap_sortorder"]);
+         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('check'=>$_GET['check'],
+                                                             'start'=>$_GET['start'],
+                                                             'sync'=>1,
+                                                             'filter'=>$_SESSION["ldap_filter"],
+                                                             'order'=>$_SESSION["ldap_sortorder"]));
       }
    } else {
       if (count($_POST['tosync']) > 0) {

@@ -2463,7 +2463,8 @@ class Ticket extends CommonDBTM {
                               'entity'       => $this->fields["entities_id"],
                               'entity_sons'  => haveAccessToEntity($this->fields["entities_id"],true),
                               'right'        => 'all',
-                              'helpdesk_ajax'=> 1));
+                              'helpdesk_ajax'=> 1,
+                              'ldap_import'=> true));
 
          //Get all the user's entities
          $all_entities = Profile_User::getUserEntities($options["users_id"], true);

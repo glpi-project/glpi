@@ -87,6 +87,11 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          include "bookmark.php";
          popFooter();
          break;
+      case "add_ldapuser" :
+         popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
+         include "addldapuser.php";
+         popFooter();
+         break;
    }
 }
 

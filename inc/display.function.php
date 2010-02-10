@@ -511,11 +511,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          $menu['admin']['content']['user']['links']['add']="/front/user.form.php";
       }
 
-      switch($option) {
-         case 'ldap' :
-            $menu['admin']['content']['user']['links']['showall']="/front/ldap.php";
-            break;
-      }
+     //switch($option) {
+     //   case 'ldap' :
+            $menu['admin']['content']['user']['options']['ldap']['links']['showall']="/front/ldap.php";
+            $menu['admin']['content']['user']['options']['ldap']['title']=$LANG['login'][2];
+     //      break;
+     //}
    }
    if (haveRight("group","r")) {
       $menu['admin']['content']['group']['title']=$LANG['Menu'][36];

@@ -834,6 +834,9 @@ $LANG['ldap'][31]="Jamais déréférencés (défaut)";
 $LANG['ldap'][32]="Toujours déréférencés";
 $LANG['ldap'][33]="Déréférencés pendant la recherche";
 $LANG['ldap'][34]="Déréférencés pendant la localisation";
+$LANG['ldap'][35]="Importer un utilisateur";
+$LANG['ldap'][36]="Aucun annuaire associé à l'entité : recherche impossible";
+$LANG['ldap'][37]="Sélection d'une entité pour import des utilisateurs";
 
 $LANG['links'][1]="Lien ou Nom du fichier";
 $LANG['links'][4]="Types de matériel associés";
