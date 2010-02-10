@@ -1833,6 +1833,9 @@ class AuthLDAP extends CommonDBTM {
          $attrs = array ('dn',$authldap->getField('login_field'));
 
          $counter = 0;
+         if ($entity_filter == NOT_AVAILABLE) {
+            $entity_filter = '';
+         }
          $filter = '';
          if (!empty($values['criterias'])) {
             foreach ($values['criterias'] as $criteria => $value) {
@@ -1846,11 +1849,12 @@ class AuthLDAP extends CommonDBTM {
             $filter = "(".$authldap->getField("login_field")."=*)";
          }
 
+         $ldap_condition = $authldap->fields['condition'];
          if ($counter > 1) {
-            $myfilter = "(|".$filter."))";
+            $myfilter = "(&$entity_filter $filter $ldap_condition)";
          }
          else {
-            $myfilter= $filter;
+               $myfilter= "(&$entity_filter $filter $ldap_condition)";
          }
 
           AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>0,
