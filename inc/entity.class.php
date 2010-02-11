@@ -48,7 +48,7 @@ class Entity extends CommonTreeDropdown {
       if ($ID==0) {
          $this->fields=array('id'=>0,
                         'name'=>$LANG['entity'][2],
-                        'entities_id'=>-1,
+                        'entities_id'=>0,
                         'completename'=>$LANG['entity'][2],
                         'comment'=>'',
                         'level'=>0,
@@ -92,7 +92,7 @@ class Entity extends CommonTreeDropdown {
       global $LANG;
 
       $ong[1] = $LANG['title'][26];          // Main
-      if ($this->fields['id'] > 0) {
+      if (!$this->isNewID($this->fields['id'])) {
          $ong[2] = $LANG['financial'][44];   // Address
          $ong[3] = $LANG['Menu'][14];        // Users
          $ong[4] = $LANG['rulesengine'][17]; // Rules

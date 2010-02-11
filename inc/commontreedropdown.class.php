@@ -61,7 +61,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return true if handled (for class stack)
     */
    function showTabContent ($ID, $tab) {
-      if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
+      if (!$this->isNewID() && !parent::showTabContent ($ID, $tab)) {
          switch ($tab) {
             case 1 :
                $this->showChildren($ID);
