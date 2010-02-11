@@ -1745,6 +1745,8 @@ class AuthLDAP extends CommonDBTM {
    static function showUserImportForm($options) {
       global $DB, $LANG;
 
+      $interface = (isset($options['interface'])?$options['interface']:'simple');
+
       $entity = (isset($options['entities_id'])?$options['entities_id']:
                                                                   $_SESSION['glpiactive_entity']);
       //Get data related to entity (directory and ldap filter)
@@ -1760,8 +1762,8 @@ class AuthLDAP extends CommonDBTM {
 
       //Do not display entity dropdown when glpi is in mono entity mode
       if (isMultiEntitiesMode()) {
-         echo "<tr><th colspan='2'>" . $LANG['ldap'][37] . "</th></tr>";
-         echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td>";
+         echo "<tr><th colspan='4'>" . $LANG['ldap'][37] . "</th></tr>";
+         echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td colspan='3'>";
          Dropdown::show('Entity',
                         array('value'  => $entity,
                               'entity' => $_SESSION['glpiactiveentities'],
@@ -1773,6 +1775,7 @@ class AuthLDAP extends CommonDBTM {
       if ($entity_directory !=  NOT_AVAILABLE) {
          $authldap->getFromDB($entity_directory);
 
+         $field_counter = 0;
          $fields = array('login_field'=>$LANG['login'][6],
                          'email_field'=>$LANG['setup'][14],
                          'realname_field'=>$LANG['common'][48],
@@ -1789,23 +1792,41 @@ class AuthLDAP extends CommonDBTM {
             }
          }
 
-         echo "<tr><th colspan='2'>" . $LANG['ldap'][35] . "</th></tr>";
+         echo "<tr><th colspan='4'>" . $LANG['ldap'][38] . "</th></tr>";
          foreach ($available_fields as $field => $label) {
-            echo "<tr class='tab_bg_2'><td>$label</td><td>";
+            if ($field_counter==0) {
+               echo "<tr class='tab_bg_1'>";
+            }
+            echo "<td>$label</td><td>";
+            $field_counter++;
             echo "<input type='text' name='criterias[$field]' value='".
                                                             (isset($options['criterias'][$field])?
                                                                    $options['criterias'][$field]:
                                                                    '')."'>";
-            echo "</td></tr>";
+            echo "</td>";
+            if ($field_counter==2) {
+               echo "</tr>";
+               $field_counter=0;
+            }
          }
 
-         echo "<tr class='tab_bg_2'><td colspan='2' align='center'>";
+         if ($field_counter>0) {
+            while ($field_counter<2) {
+               echo "<td colspan='2'></td>";
+               $field_counter++;
+            }
+            $field_counter=0;
+            echo "</tr>";
+         }
+
+
+         echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
          echo "<input  type='hidden' name='ldapservers_id' value='".$entity_directory."'>";
          echo "<input  class='submit' type='submit' name='search' value='".$LANG['buttons'][0]."'>";
          echo "</td></tr>";
       }
       else {
-         echo "<tr class='tab_bg_2'><td colspan='2' align='center'>";
+         echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
          echo $LANG['ldap'][36];
          echo "</td></tr>";
       }
