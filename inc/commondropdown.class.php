@@ -90,7 +90,7 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return true if handled (for class stack)
     */
    function showTabContent ($ID, $tab) {
-      if ($ID>0) {
+      if (!$this->isNewID($ID)) {
          switch ($tab) {
             case -1 :
                Plugin::displayAction($this, $tab);
@@ -122,13 +122,12 @@ abstract class CommonDropdown extends CommonDBTM {
    function showForm ($ID,$options=array()) {
       global $CFG_GLPI, $LANG;
 
-      if ($ID > 0) {
+      if (!$this->isNewID($ID)) {
          $this->check($ID,'r');
       } else {
          // Create item
          $this->check(-1,'w');
       }
-
       $this->showTabs($options);
       $this->showFormHeader($options);
 
