@@ -339,6 +339,8 @@ class Entity extends CommonTreeDropdown {
       $tab[12]['linkfield'] = '';
       $tab[12]['name']      = $LANG['setup'][207];
 
+
+
       return $tab;
    }
 

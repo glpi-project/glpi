@@ -365,6 +365,21 @@ class EntityData extends CommonDBTM {
       return self::getEntityIDByField("tag",$value);
    }
 
+   static function isEntityDirectoryConfigured($entities_id) {
+      $entitydatas = new EntityData;
+      if ($entitydatas->getFromDB($entities_id)) {
+         if ($entitydatas->getField('ldapservers_id') != NOT_AVAILABLE) {
+            return true;
+         }
+         else {
+            return false;
+         }
+      }
+      else {
+         return false;
+      }
+
+   }
 }
 
 ?>
