@@ -1857,6 +1857,7 @@ class AuthLDAP extends CommonDBTM {
       if ($ds) {
          $attrs = array ('dn',$authldap->getField('login_field'));
 
+         //Build search filter
          $counter = 0;
          if ($entity_filter == NOT_AVAILABLE) {
             $entity_filter = '';
@@ -1882,6 +1883,10 @@ class AuthLDAP extends CommonDBTM {
                $myfilter= "(&$entity_filter $filter $ldap_condition)";
          }
 
+          //Build basedn : if no basedn specified in entity, take the one of the global conf
+          if ($entity_basedn == '') {
+            $entity_basedn = $authldap->getField('basedn');
+          }
           AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>0,
                                                               'filter'=>$myfilter,
                                                               'ldapservers_id'=>$ldapservers_id,
