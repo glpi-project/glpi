@@ -46,7 +46,7 @@ if (isset($_POST['toimport']) && count($_POST['toimport']) >0) {
    $_SESSION["ldap_import_count"] = 0;
    foreach ($_POST['toimport'] as $key => $val) {
       if ($val == "on") {
-         AuthLdap::ldapImportUserByServerId($key,0,$_POST['ldapservers_id']);
+         AuthLdap::ldapImportUserByServerId($key,0,$_POST['ldapservers_id'],true);
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);

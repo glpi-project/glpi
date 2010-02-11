@@ -1412,7 +1412,6 @@ class AuthLDAP extends CommonDBTM {
                                         $config_ldap->fields['login_field'], stripslashes($login),
                                         $config_ldap->fields['condition']);
          if ($user_dn) {
-            $rule = new RuleRightCollection;
             $groups = array();
             $user = new User();
             //Get informations from LDAP
@@ -1625,7 +1624,7 @@ class AuthLDAP extends CommonDBTM {
          $userid = -1;
 
          foreach ($ldap_methods as $ldap_method) {
-            $result=ldapImportUserByServerId($login, 0,$ldap_method["id"],true);
+            $result=AuthLdap::ldapImportUserByServerId($login, 0,$ldap_method["id"],true);
             if ($result != false) {
                return $result;
             }
@@ -1761,7 +1760,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       //Do not display entity dropdown when glpi is in mono entity mode
-      if (isMultiEntitiesMode()) {
+      if (isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
          echo "<tr><th colspan='4'>" . $LANG['ldap'][37] . "</th></tr>";
          echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td colspan='3'>";
          Dropdown::show('Entity',
@@ -1769,6 +1768,15 @@ class AuthLDAP extends CommonDBTM {
                               'entity' => $_SESSION['glpiactiveentities'],
                               'auto_submit'=>1));
          echo "</td></tr>";
+      }
+      else {
+         if (!isMultiEntitiesMode()) {
+            echo "<input type='hidden' name='entities_id' value='0'>";
+         }
+         else {
+            echo "<input type='hidden' name='entities_id' value=".
+                                                        $_SESSION['glpiactiveentities_string'].">";
+         }
       }
 
       //Cannot import is directory is not set in the entity's form
@@ -1785,6 +1793,7 @@ class AuthLDAP extends CommonDBTM {
                          'mobile_field'=>$LANG['common'][42],
                          'title_field'=>$LANG['users'][1],
                          'category_field'=>$LANG['users'][2]);
+
          $available_fields = array();
          foreach ($fields as $field => $label) {
             if (isset($authldap->fields[$field]) && $authldap->fields[$field] != '') {
@@ -1876,24 +1885,20 @@ class AuthLDAP extends CommonDBTM {
          }
 
          $ldap_condition = $authldap->fields['condition'];
-         if ($counter > 1) {
-            $myfilter = "(&$entity_filter $filter $ldap_condition)";
-         }
-         else {
-               $myfilter= "(&$entity_filter $filter $ldap_condition)";
-         }
+         //Add entity filter and filter filled in directory's configuration form
+         $myfilter = "(&$entity_filter $filter $ldap_condition)";
 
-          //Build basedn : if no basedn specified in entity, take the one of the global conf
-          if ($entity_basedn == '') {
-            $entity_basedn = $authldap->getField('basedn');
-          }
-          AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>0,
-                                                              'filter'=>$myfilter,
-                                                              'ldapservers_id'=>$ldapservers_id,
-                                                              'display_filter'=>false,
-                                                              'basedn'=>$entity_basedn,
-                                                              'sbutree_search'=>false,
-                                                              'entities_id'=>$values['entities_id']));
+         //Build basedn : if no basedn specified in entity, take the one of the global conf
+         if ($entity_basedn == '') {
+           $entity_basedn = $authldap->getField('basedn');
+         }
+         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>0,
+                                                             'filter'=>$myfilter,
+                                                             'ldapservers_id'=>$ldapservers_id,
+                                                             'display_filter'=>false,
+                                                             'basedn'=>$entity_basedn,
+                                                             'sbutree_search'=>false,
+                                                             'entities_id'=>$values['entities_id']));
       }
    }
 }
