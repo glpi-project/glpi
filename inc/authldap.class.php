@@ -872,6 +872,7 @@ class AuthLDAP extends CommonDBTM {
       $values['check'] = 'none';
       $values['display_filter'] = true;
       $values['ldapservers_id'] = (isset($_SESSION["ldap_server"])?$_SESSION["ldap_server"]:0);
+      $values['entities_id'] = $_SESSION['glpiactive_entity'];
 
       foreach ($options as $option => $value) {
          $values[$option] = $value;
@@ -958,6 +959,7 @@ class AuthLDAP extends CommonDBTM {
                echo "</tr>";
             }
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
+            echo "<input type='hidden' name='entities_id' value='".$values['entities_id']."'>";
             echo "<input class='submit' type='submit' name='" . $form_action . "' value='" .
                    (!$values['sync']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
             echo "</td></tr>";
@@ -1743,7 +1745,8 @@ class AuthLDAP extends CommonDBTM {
    static function showUserImportForm($options) {
       global $DB, $LANG;
 
-      $entity = (isset($options['entities_id'])?$options['entities_id']:$_SESSION['glpiactive_entity']);
+      $entity = (isset($options['entities_id'])?$options['entities_id']:
+                                                                  $_SESSION['glpiactive_entity']);
       //Get data related to entity (directory and ldap filter)
       $entitydata = new EntityData;
       $entitydata->getFromDB($entity);
@@ -1863,7 +1866,8 @@ class AuthLDAP extends CommonDBTM {
                                                               'ldapservers_id'=>$ldapservers_id,
                                                               'display_filter'=>false,
                                                               'basedn'=>$entity_basedn,
-                                                              'sbutree_search'=>false));
+                                                              'sbutree_search'=>false,
+                                                              'entities_id'=>$values['entities_id']));
       }
    }
 }
