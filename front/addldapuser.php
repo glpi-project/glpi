@@ -49,10 +49,14 @@ if (isset($_POST['toimport']) && count($_POST['toimport']) >0) {
          AuthLdap::ldapImportUserByServerId($key,0,$_POST['ldapservers_id'],true);
       }
    }
+
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 $_REQUEST['target']=$_SERVER['PHP_SELF'];
+$_REQUEST['from_ticket'] = 1;
+$_REQUEST['mode'] = 'import';
+$_REQUEST['action'] = 'show';
 AuthLdap::showUserImportForm($_REQUEST);
 if (isset($_POST['search'])) {
    echo "<br />";

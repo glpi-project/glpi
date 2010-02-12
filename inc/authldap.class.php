@@ -38,6 +38,9 @@
 **/
 class AuthLDAP extends CommonDBTM {
 
+   const SIMPLE_INTERFACE = 'simple';
+   const EXPERT_INTERFACE = 'expert';
+
    static function getTypeName() {
       global $LANG;
 
@@ -908,6 +911,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<div class='center'>";
             echo "<form method='post' id='ldap_form' name='ldap_form' action='" . $target . "'>";
             echo "<input type='hidden' name='ldapservers_id' value='".$values['ldapservers_id']."'>";
+            echo "<input type='hidden' name='mode' value='".$values['mode']."'>";
             echo "<a href='" .
                   $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
@@ -1030,6 +1034,7 @@ class AuthLDAP extends CommonDBTM {
          if (!empty ($config_ldap->fields['condition'])) {
             $filter = "(& $filter ".$config_ldap->fields['condition'].")";
          }
+
 
          $sr = @ldap_search($ds, $values['basedn'],$filter , $attrs);
          if ($sr) {
@@ -1668,7 +1673,7 @@ class AuthLDAP extends CommonDBTM {
     * @param $auths_id : auths_id already used for the user
     * @return identification object
    **/
-   function tryLdapAuth($auth,$login,$password, $auths_id = 0) {
+   static function tryLdapAuth($auth,$login,$password, $auths_id = 0) {
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
@@ -1744,7 +1749,17 @@ class AuthLDAP extends CommonDBTM {
    static function showUserImportForm($options) {
       global $DB, $LANG;
 
-      $interface = (isset($options['interface'])?$options['interface']:'simple');
+      $authldap = new AuthLDAP;
+
+      //Import interface type : simple or expert
+      //If popup in ticket form : interface mode is simple !
+      if (isset($options['from_ticket'])) {
+         $interface = AuthLdap::SIMPLE_INTERFACE;
+      }
+      else {
+         $interface = (isset($options['interface'])
+                        ?$options['interface']:AuthLdap::SIMPLE_INTERFACE);
+      }
 
       $entity = (isset($options['entities_id'])?$options['entities_id']:
                                                                   $_SESSION['glpiactive_entity']);
@@ -1752,22 +1767,100 @@ class AuthLDAP extends CommonDBTM {
       $entitydata = new EntityData;
       $entitydata->getFromDB($entity);
 
-      $entity_directory = $entitydata->getField('ldapservers_id');
-      $authldap = new AuthLDAP;
+      //
+      if (!isset($options['ldapservers_id']) || !$options['ldapservers_id']) {
+         $entity_directory = $entitydata->getField('ldapservers_id');
+         if ($entity_directory == NOT_AVAILABLE) {
+            $entity_directory = 0;
+         }
+         else {
+            $authldap->getFromDB($entity_directory);
+         }
+      }
+      else {
+         $entity_directory = $options['ldapservers_id'];
+         $authldap->getFromDB($entity_directory);
+      }
+
+      if (!isset($options['ldap_filter'])) {
+         $options['ldap_filter'] = '';
+      }
+
+      if ($entity_directory) {
+         if ($interface == AuthLdap::SIMPLE_INTERFACE || $options['ldap_filter'] == '') {
+            $options['ldap_filter'] =
+                           AuthLdap::buildLdapFilter($authldap,
+                                                     array('criterias'=>(isset($options['criterias'])
+                                                     ?$options['criterias']:array()),
+                                                     'entity_filter'=>
+                                                           $entitydata->getField('entity_ldapfilter')));
+         }
+      }
+      else {
+         $options['ldap_filter'] = '';
+      }
 
       echo "<div class='center'>";
+
       echo "<form method='post' action=\"".$options['target']."\">";
       echo "<table class='tab_cadre_fixe'>";
+
+      echo "<input  type='hidden' name='mode' value='".$options['mode']."'>";
+      echo "<input  type='hidden' name='action' value='".$options['action']."'>";
+      echo "<input  type='hidden' name='ldap_filter' value='".$options['ldap_filter']."'>";
+      echo "<input  type='hidden' name='interface' value='".$interface."'>";
 
       //Do not display entity dropdown when glpi is in mono entity mode
       if (isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
          echo "<tr><th colspan='4'>" . $LANG['ldap'][37] . "</th></tr>";
-         echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td colspan='3'>";
-         Dropdown::show('Entity',
-                        array('value'  => $entity,
-                              'entity' => $_SESSION['glpiactiveentities'],
-                              'auto_submit'=>1));
-         echo "</td></tr>";
+
+         if (haveRight("user_authtype","w")) {
+            //If not coming from the ticket form, then give expert/simple link
+            if (!isset($options['from_ticket'])) {
+               echo "<tr class='tab_bg_2'><td>".$LANG['common'][65]."</td><td colspan='3' align='left'>";
+               echo "<a href='".$options['target']."?action=".$options['action']."&mode=".$options['mode'].
+                            "&interface=".
+                             ($interface == AuthLdap::SIMPLE_INTERFACE
+                                 ?AuthLdap::EXPERT_INTERFACE:AuthLdap::SIMPLE_INTERFACE)."'>".
+                             ($interface == AuthLdap::SIMPLE_INTERFACE
+                                 ?$LANG['ldap'][39]:$LANG['ldap'][40])."</a>";
+               echo "</td></tr>";
+            }
+
+            //Simple interface
+            if ($interface == AuthLdap::SIMPLE_INTERFACE) {
+               echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td colspan='3'>";
+               Dropdown::show('Entity',
+                              array('value'  => $entity,
+                                    'entity' => $_SESSION['glpiactiveentities'],
+                                    'auto_submit'=>1));
+               echo "</td></tr>";
+
+               echo "<input type='hidden' name='ldapservers_id' value='".$entity_directory."'>";
+               echo "<input type='hidden' name='ldap_filter' value='".$options['ldap_filter']."'>";
+               echo "</td></tr>";
+            }
+            else {
+               if (AuthLdap::getNumberOfServers() > 1) {
+                  echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][4]."</td><td colspan='3'>";
+                  Dropdown::show('AuthLdap',
+                                 array('name'=>'ldapservers_id',
+                                       'value'  => $entity_directory));
+                  echo "&nbsp;<input  class='submit' type='submit' name='change_directory'
+                          value='".$LANG['ldap'][41]."'>";
+                  echo "</td></tr>";
+               }
+               else {
+                  echo "<input  type='hidden' name='ldapservers_id' value='".$entity_directory."'>";
+               }
+
+               echo "<input type='hidden' name='entities_id' value='".$entity."'>";
+               echo "<tr class='tab_bg_2'><td>".$LANG['setup'][263]."</td><td colspan='3'>";
+               echo "<input type='text' name='ldap_filter'
+                          value='".$options['ldap_filter']."' size='90' ".(!$entity_directory?"disabled":"").">";
+               echo "</td></tr>";
+            }
+         }
       }
       else {
          if (!isMultiEntitiesMode()) {
@@ -1781,58 +1874,64 @@ class AuthLDAP extends CommonDBTM {
 
       //Cannot import is directory is not set in the entity's form
       if ($entity_directory !=  NOT_AVAILABLE) {
-         $authldap->getFromDB($entity_directory);
+         if ($interface == AuthLdap::SIMPLE_INTERFACE) {
 
-         $field_counter = 0;
-         $fields = array('login_field'=>$LANG['login'][6],
-                         'email_field'=>$LANG['setup'][14],
-                         'realname_field'=>$LANG['common'][48],
-                         'firstname_field'=>$LANG['common'][43],
-                         'phone_field'=>$LANG['help'][35],
-                         'phone2_field'=>$LANG['help'][35] . " 2",
-                         'mobile_field'=>$LANG['common'][42],
-                         'title_field'=>$LANG['users'][1],
-                         'category_field'=>$LANG['users'][2]);
+            $field_counter = 0;
+            $fields = array('login_field'=>$LANG['login'][6],
+                            'email_field'=>$LANG['setup'][14],
+                            'realname_field'=>$LANG['common'][48],
+                            'firstname_field'=>$LANG['common'][43],
+                            'phone_field'=>$LANG['help'][35],
+                            'phone2_field'=>$LANG['help'][35] . " 2",
+                            'mobile_field'=>$LANG['common'][42],
+                            'title_field'=>$LANG['users'][1],
+                            'category_field'=>$LANG['users'][2]);
 
-         $available_fields = array();
-         foreach ($fields as $field => $label) {
-            if (isset($authldap->fields[$field]) && $authldap->fields[$field] != '') {
-               $available_fields[$field] = $label;
+            $available_fields = array();
+            foreach ($fields as $field => $label) {
+               if (isset($authldap->fields[$field]) && $authldap->fields[$field] != '') {
+                  $available_fields[$field] = $label;
+               }
             }
-         }
 
-         echo "<tr><th colspan='4'>" . $LANG['ldap'][38] . "</th></tr>";
-         foreach ($available_fields as $field => $label) {
-            if ($field_counter==0) {
-               echo "<tr class='tab_bg_1'>";
-            }
-            echo "<td>$label</td><td>";
-            $field_counter++;
-            echo "<input type='text' name='criterias[$field]' value='".
-                                                            (isset($options['criterias'][$field])?
-                                                                   $options['criterias'][$field]:
-                                                                   '')."'>";
-            echo "</td>";
-            if ($field_counter==2) {
-               echo "</tr>";
-               $field_counter=0;
-            }
-         }
-
-         if ($field_counter>0) {
-            while ($field_counter<2) {
-               echo "<td colspan='2'></td>";
+            echo "<tr><th colspan='4'>" . $LANG['ldap'][38] . "</th></tr>";
+            foreach ($available_fields as $field => $label) {
+               if ($field_counter==0) {
+                  echo "<tr class='tab_bg_1'>";
+               }
+               echo "<td>$label</td><td>";
                $field_counter++;
+               echo "<input type='text' name='criterias[$field]' value='".
+                                                               (isset($options['criterias'][$field])?
+                                                                      $options['criterias'][$field]:
+                                                                      '')."'>";
+               echo "</td>";
+               if ($field_counter==2) {
+                  echo "</tr>";
+                  $field_counter=0;
+               }
             }
-            $field_counter=0;
-            echo "</tr>";
+
+            if ($field_counter>0) {
+               while ($field_counter<2) {
+                  echo "<td colspan='2'></td>";
+                  $field_counter++;
+               }
+               $field_counter=0;
+               echo "</tr>";
+            }
          }
 
-
-         echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
-         echo "<input  type='hidden' name='ldapservers_id' value='".$entity_directory."'>";
-         echo "<input  class='submit' type='submit' name='search' value='".$LANG['buttons'][0]."'>";
-         echo "</td></tr>";
+         if ($entity_directory) {
+            echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
+            echo "<input  class='submit' type='submit' name='search' value='".$LANG['buttons'][0]."'>";
+            echo "</td></tr>";
+         }
+         else {
+            echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
+            echo $LANG['ldap'][42];
+            echo "</td></tr>";
+         }
       }
       else {
          echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
@@ -1842,19 +1941,62 @@ class AuthLDAP extends CommonDBTM {
       echo "</table></form></div>";
    }
 
-   static function searchUser($target,$values) {
+   static function getNumberOfServers() {
+      global $DB;
+      $query = "SELECT count(*) as cpt FROM `glpi_authldaps`";
+      $result = $DB->query($query);
+      return $DB->result($result,0,'cpt');
+   }
+
+   static private function buildLdapFilter(AuthLdap $authldap, $options = array()) {
+      //Build search filter
+
+      $entity_filter = $options['entity_filter'];
+      $counter = 0;
+      if ($entity_filter == NOT_AVAILABLE) {
+         $entity_filter = '';
+      }
+      $filter = '';
+      if (!empty($options['criterias'])) {
+         foreach ($options['criterias'] as $criteria => $value) {
+            if ($value!='') {
+               $counter++;
+                $filter.="(".$authldap->fields[$criteria]."=$value)";
+             }
+          }
+      }
+      else {
+         $filter = "(".$authldap->getField("login_field")."=*)";
+      }
+
+      $ldap_condition = $authldap->fields['condition'];
+      //Add entity filter and filter filled in directory's configuration form
+      return  "(&$entity_filter $filter $ldap_condition)";
+   }
+
+   static function searchUser($target,$options) {
       global $LANG;
 
-      //Get data related to entity (directory and ldap filter)
-      $entitydata = new EntityData;
-      $entitydata->getFromDB($values['entities_id']);
-
-      $ldapservers_id = $entitydata->getField('ldapservers_id');
-      $entity_filter = $entitydata->getField('entity_ldapfilter');
-      $entity_basedn = $entitydata->getField('ldap_dn');
-
       $authldap = new AuthLDAP;
-      $authldap->getFromDB($ldapservers_id);
+      if ($options['interface'] == AuthLdap::SIMPLE_INTERFACE) {
+         //Get data related to entity (directory and ldap filter)
+         $entitydata = new EntityData;
+         $entitydata->getFromDB($options['entities_id']);
+
+         $ldapservers_id = $entitydata->getField('ldapservers_id');
+         //$entity_filter = $entitydata->getField('entity_ldapfilter');
+         $entity_filter = $options['ldap_filter'];
+         $entity_basedn = $entitydata->getField('ldap_dn');
+         $authldap->getFromDB($ldapservers_id);
+         $entity = $options['entities_id'];
+      }
+      else {
+         $ldapservers_id = $options['ldapservers_id'];
+         $authldap->getFromDB($options['ldapservers_id']);
+         $entity_filter = $options['ldap_filter'];
+         $entity_basedn = $authldap->getField('basedn');
+         $entity = $_SESSION['glpiactive_entity'];
+      }
 
       $ds = AuthLdap::connectToServer($authldap->getField('host'),
                                       $authldap->getField('port'),
@@ -1865,40 +2007,22 @@ class AuthLDAP extends CommonDBTM {
 
       if ($ds) {
          $attrs = array ('dn',$authldap->getField('login_field'));
-
-         //Build search filter
-         $counter = 0;
-         if ($entity_filter == NOT_AVAILABLE) {
-            $entity_filter = '';
-         }
-         $filter = '';
-         if (!empty($values['criterias'])) {
-            foreach ($values['criterias'] as $criteria => $value) {
-               if ($value!='') {
-                  $counter++;
-                  $filter.="(".$authldap->fields[$criteria]."=$value)";
-               }
-            }
-         }
-         else {
-            $filter = "(".$authldap->getField("login_field")."=*)";
-         }
-
-         $ldap_condition = $authldap->fields['condition'];
-         //Add entity filter and filter filled in directory's configuration form
-         $myfilter = "(&$entity_filter $filter $ldap_condition)";
-
          //Build basedn : if no basedn specified in entity, take the one of the global conf
          if ($entity_basedn == '') {
            $entity_basedn = $authldap->getField('basedn');
          }
+
          AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>0,
-                                                             'filter'=>$myfilter,
+                                                             'filter'=>$options['ldap_filter'],
                                                              'ldapservers_id'=>$ldapservers_id,
                                                              'display_filter'=>false,
                                                              'basedn'=>$entity_basedn,
                                                              'sbutree_search'=>false,
-                                                             'entities_id'=>$values['entities_id']));
+                                                             'entities_id'=>$entity,
+                                                             'mode'=>$options['mode']));
+      }
+      else {
+         echo "<div class='center b'>".$LANG['ldap'][6]."<br>";
       }
    }
 }
