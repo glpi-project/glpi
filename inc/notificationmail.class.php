@@ -210,7 +210,9 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       global $LANG;
       $mmail=new NotificationMail();
       $mmail->From=$options['from'];
-      $mmail->AddReplyTo($options['replyto'], '');
+      if ($options['replyto']) {
+         $mmail->AddReplyTo($options['replyto'], '');
+      }
       $mmail->FromName=$options['from'];
       $mmail->isHTML(true);
       $mmail->Subject=$options['subject'];

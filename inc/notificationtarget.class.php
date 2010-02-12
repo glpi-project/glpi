@@ -72,6 +72,9 @@ class NotificationTarget extends CommonDBTM {
 
    }
 
+   function getSubjectPrefix() {
+      return "[GLPI] ";
+   }
 
    static function getTypeName() {
       global $LANG;

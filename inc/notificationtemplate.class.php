@@ -184,8 +184,8 @@ class NotificationTemplate extends CommonDBTM {
 
          if ($template_datas = $this->getByLanguage($language)) {
             //Template processing
-            $lang['subject'] = "[GLPI]". NotificationTemplate::process($template_datas['subject'],
-                                                                       $data);
+            $lang['subject'] = $target->getSubjectPrefix() .
+                          NotificationTemplate::process($template_datas['subject'], $data);
             $lang['content_html'] =
                   "<html><body>".NotificationTemplate::process($template_datas['content_html'],
                                                                 $data).
