@@ -42,7 +42,7 @@ checkRight('user_authtype','w');
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 
-if (isset($_REQUEST['action'])) {
+if (isset($_REQUEST['action']) || !isset($_SESSION["ldap_process"])) {
 
    if (isset($_POST['change_directory'])) {
       $_REQUEST['ldap_filter'] = '';

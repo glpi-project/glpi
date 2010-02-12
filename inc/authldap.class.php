@@ -869,7 +869,7 @@ class AuthLDAP extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $values['order'] = 'DESC';
-      $values['sync'] = 0;
+      $values['mode'] = 0;
       $values['ldap_filter'] = '';
       $values['start'] = 0;
       $values['ldapservers_id'] = (isset($_SESSION["ldap_server"])?$_SESSION["ldap_server"]:0);
@@ -921,7 +921,7 @@ class AuthLDAP extends CommonDBTM {
                       return false;\">" .
                   $LANG['buttons'][19] . "</a>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . (!$values['sync']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
+            echo "<tr><th>" . (!$values['mode']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
             $num=0;
             echo Search::showHeaderItem(HTML_OUTPUT,
                                   $LANG['Menu'][14],
@@ -929,7 +929,7 @@ class AuthLDAP extends CommonDBTM {
                                   $target."?order=".($values['order']=="DESC"?"ASC":"DESC").
                                      '&'.$parameters);
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>";
-            if ($values['sync']) {
+            if ($values['mode']) {
                echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
             }
             echo "</tr>";
@@ -958,7 +958,7 @@ class AuthLDAP extends CommonDBTM {
                } else {
                   echo "<td>&nbsp;</td>";
                }
-               if ($values['sync']) {
+               if ($values['mode']) {
                   if ($date_mod != '') {
                      echo "<td>" . convDateTime($date_mod) . "</td>";
                   } else {
@@ -967,7 +967,7 @@ class AuthLDAP extends CommonDBTM {
                }
                echo "</tr>";
             }
-            if ($values['sync']) {
+            if ($values['mode']) {
                $colspan = 6;
             }
             else {
@@ -975,7 +975,7 @@ class AuthLDAP extends CommonDBTM {
             }
             echo "<tr class='tab_bg_1'><td colspan='$colspan' class='center'>";
             echo "<input class='submit' type='submit' name='" . $form_action . "' value='" .
-                   (!$values['sync']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
+                   (!$values['mode']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
             echo "</td></tr>";
             echo "</table></form>";
             echo "<a href='" .
@@ -1013,7 +1013,7 @@ class AuthLDAP extends CommonDBTM {
       $res = $config_ldap->getFromDB($auths_id);
 
       $values['order'] = 'DESC';
-      $values['sync'] = 0;
+      $values['mode'] = 0;
       $values['ldap_filter'] = '';
       $values['basedn'] = $config_ldap->fields['basedn'];
 
@@ -1057,7 +1057,7 @@ class AuthLDAP extends CommonDBTM {
 
             for ($ligne = 0; $ligne < $info["count"]; $ligne++) {
                //If ldap add
-               if (!$values['sync']) {
+               if (!$values['mode']) {
                   if (in_array($config_ldap->fields['login_field'],$info[$ligne])) {
                      $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]] =
                         $info[$ligne][$config_ldap->fields['login_field']][0];
@@ -1087,7 +1087,7 @@ class AuthLDAP extends CommonDBTM {
       $glpi_users = array ();
       $sql = "SELECT `name`, `date_mod`
               FROM `glpi_users` ";
-      if ($values['sync']) {
+      if ($values['mode']) {
          $sql.=" WHERE `authtype` IN (-1,".AUTH_LDAP.",".AUTH_EXTERNAL.") ";
       }
       $sql.="ORDER BY `name` ".$values['order'];
@@ -1096,7 +1096,7 @@ class AuthLDAP extends CommonDBTM {
       if ($DB->numrows($result) > 0) {
          while ($user = $DB->fetch_array($result)) {
             //Ldap add : fill the array with the login of the user
-            if (!$values['sync']) {
+            if (!$values['mode']) {
                $glpi_users[$user['name']] = $user['name'];
             } else {
                //Ldap synchronisation : look if the user exists in the directory
@@ -1113,7 +1113,7 @@ class AuthLDAP extends CommonDBTM {
          }
       }
       //If add, do the difference between ldap users and glpi users
-      if (!$values['sync']) {
+      if (!$values['mode']) {
          $diff = array_diff_ukey($ldap_users,$glpi_users,'strcasecmp');
          $list = array();
 
@@ -1782,16 +1782,17 @@ class AuthLDAP extends CommonDBTM {
       $entitydata->getFromDB($entity);
 
       //
-      if (!isset($options['ldapservers_id']) || !$options['ldapservers_id']) {
+      //if (!isset($options['ldapservers_id']) || !$options['ldapservers_id']) {
          $entity_directory = $entitydata->getField('ldapservers_id');
          if ($entity_directory != NOT_AVAILABLE) {
             $authldap->getFromDB($entity_directory);
          }
-      }
-      else {
-         $entity_directory = $options['ldapservers_id'];
-         $authldap->getFromDB($entity_directory);
-      }
+      //}
+      //else {
+         //$entity_directory = $options['ldapservers_id'];
+      //   $entity_directory = $entitydata->getFromDB();
+      //   $authldap->getFromDB($entity_directory);
+     // }
 
       if (!isset($options['ldap_filter'])) {
          $options['ldap_filter'] = '';
@@ -1980,6 +1981,10 @@ class AuthLDAP extends CommonDBTM {
    static function searchUser($target,$options) {
       global $LANG;
 
+      //In case you page is called from the pager
+      if (!isset($options['ldap_filter'])) {
+         $options['ldap_filter'] = '';
+      }
       $authldap = new AuthLDAP;
       if ($options['interface'] == AuthLdap::SIMPLE_INTERFACE) {
          //Get data related to entity (directory and ldap filter)
