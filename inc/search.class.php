@@ -2286,7 +2286,7 @@ class Search {
                return $link.'('.implode(' OR ',$tocheck[$val]).')';
             } else {
                if ($val=='all') {
-                  return ""; 
+                  return "";
                }
             }
             break;

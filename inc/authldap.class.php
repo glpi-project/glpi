@@ -870,10 +870,8 @@ class AuthLDAP extends CommonDBTM {
 
       $values['order'] = 'DESC';
       $values['sync'] = 0;
-      $values['filter'] = '';
+      $values['ldap_filter'] = '';
       $values['start'] = 0;
-      $values['check'] = 'none';
-      $values['display_filter'] = true;
       $values['ldapservers_id'] = (isset($_SESSION["ldap_server"])?$_SESSION["ldap_server"]:0);
       $values['entities_id'] = $_SESSION['glpiactive_entity'];
 
@@ -881,10 +879,6 @@ class AuthLDAP extends CommonDBTM {
          $values[$option] = $value;
       }
 
-      if ($values['display_filter']) {
-         AuthLdap::displayLdapFilter($target);
-         echo "<br>";
-      }
       $ldap_users = AuthLdap::getAllLdapUsers($values['ldapservers_id'], $values);
 
       if (is_array($ldap_users)) {
@@ -893,7 +887,15 @@ class AuthLDAP extends CommonDBTM {
          $form_action = "process_ok";
 
          if ($numrows > 0) {
-            $parameters = "check=".$values['check'];
+            $parameters = "action=show";
+            $parameters.="&mode=".$values['mode']."&ldapservers_id=".$values['ldapservers_id'];
+            $parameters.="&entities_id=".$values['entities_id']."&interface=".$values['interface'];
+            if (isset($values['criterias'])) {
+               foreach ($values['criterias'] as $criteria=>$value) {
+                  $parameters.="&criterias[$criteria]=".$value;
+               }
+            }
+
             printPager($values['start'], $numrows, $target, $parameters);
 
             // delete end
@@ -905,24 +907,31 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<div class='center'>";
             echo "<form method='post' id='ldap_form' name='ldap_form' action='" . $target . "'>";
+
+            //Input fields (needed because of the pager...)
             echo "<input type='hidden' name='ldapservers_id' value='".$values['ldapservers_id']."'>";
             echo "<input type='hidden' name='mode' value='".$values['mode']."'>";
+            echo "<input type='hidden' name='entities_id' value='".$values['entities_id']."'>";
+
             echo "<a href='" .
-                  $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" .
+                  $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
+                      return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
-                  $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" .
+                  $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
+                      return false;\">" .
                   $LANG['buttons'][19] . "</a>";
-            echo "<table class='tab_cadre'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . (!$values['sync']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
             $num=0;
-            echo Search::showItem(0,
+            echo Search::showHeaderItem(HTML_OUTPUT,
                                   $LANG['Menu'][14],
                                   $num,
-                                  $target."?order=".($values['order']=="DESC"?"ASC":"DESC"),
-                                  1,
-                                  $values['order']);
+                                  $target."?order=".($values['order']=="DESC"?"ASC":"DESC").
+                                     '&'.$parameters);
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>";
-            echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
+            if ($values['sync']) {
+               echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
+            }
             echo "</tr>";
 
             foreach ($ldap_users as $userinfos) {
@@ -939,10 +948,9 @@ class AuthLDAP extends CommonDBTM {
                   $date_mod='';
                }
 
-               echo "<tr class='tab_bg_2 center'>";
+               echo "<tr class='tab_bg_2' align='center'>";
                //Need to use " instead of ' because it doesn't work with names with ' inside !
-               echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\" " .
-                           ($values['check'] == "all" ? "checked" : "") ."></td>";
+               echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\"></td>";
                echo "<td>" . $user . "</td>";
 
                if ($stamp != '') {
@@ -950,32 +958,42 @@ class AuthLDAP extends CommonDBTM {
                } else {
                   echo "<td>&nbsp;</td>";
                }
-               if ($date_mod != '') {
-                  echo "<td>" . convDateTime($date_mod) . "</td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
+               if ($values['sync']) {
+                  if ($date_mod != '') {
+                     echo "<td>" . convDateTime($date_mod) . "</td>";
+                  } else {
+                     echo "<td>&nbsp;</td>";
+                  }
                }
                echo "</tr>";
             }
-            echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-            echo "<input type='hidden' name='entities_id' value='".$values['entities_id']."'>";
+            if ($values['sync']) {
+               $colspan = 6;
+            }
+            else {
+               $colspan = 5;
+            }
+            echo "<tr class='tab_bg_1'><td colspan='$colspan' class='center'>";
             echo "<input class='submit' type='submit' name='" . $form_action . "' value='" .
                    (!$values['sync']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
             echo "</td></tr>";
-            echo "</table></form></div>";
+            echo "</table></form>";
             echo "<a href='" .
-                  $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" .
+                  $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
+                      return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
-                  $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" .
+                  $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
+                      return false;\">" .
                   $LANG['buttons'][19] . "</a>";
+            echo "</div>";
             printPager($values['start'], $numrows, $target, $parameters);
          } else {
             echo "<div class='center'><strong>" .
-                        ($options['mode']?$LANG['ldap'][43]:$LANG['ldap'][6]) . "</strong></div>";
+                        ($options['mode']?$LANG['ldap'][43]:$LANG['ldap'][3]) . "</strong></div>";
          }
       } else {
          echo "<div class='center'><strong>" .
-                        ($options['mode']?$LANG['ldap'][43]:$LANG['ldap'][6]) . "</strong></div>";
+                        ($options['mode']?$LANG['ldap'][43]:$LANG['ldap'][3]) . "</strong></div>";
       }
    }
 
@@ -996,7 +1014,7 @@ class AuthLDAP extends CommonDBTM {
 
       $values['order'] = 'DESC';
       $values['sync'] = 0;
-      $values['filter'] = '';
+      $values['ldap_filter'] = '';
       $values['basedn'] = $config_ldap->fields['basedn'];
 
       foreach ($options as $option => $value) {
@@ -1022,16 +1040,15 @@ class AuthLDAP extends CommonDBTM {
                          "modifyTimestamp");
 
          // Tenter une recherche pour essayer de retrouver le DN
-         if ($values['filter'] == '') {
+         if ($values['ldap_filter'] == '') {
             $filter = "(".$config_ldap->fields['login_field']."=*)";
          } else {
-            $filter = $values['filter'];
+            $filter = $values['ldap_filter'];
          }
 
-         if (!empty ($config_ldap->fields['condition'])) {
-            $filter = "(& $filter ".$config_ldap->fields['condition'].")";
-         }
-
+         //if (!empty ($config_ldap->fields['condition'])) {
+         //   $filter = "(& $filter ".$config_ldap->fields['condition'].")";
+         //}
 
          $sr = @ldap_search($ds, $values['basedn'],$filter , $attrs);
          if ($sr) {
@@ -1767,10 +1784,7 @@ class AuthLDAP extends CommonDBTM {
       //
       if (!isset($options['ldapservers_id']) || !$options['ldapservers_id']) {
          $entity_directory = $entitydata->getField('ldapservers_id');
-         if ($entity_directory == NOT_AVAILABLE) {
-            $entity_directory = 0;
-         }
-         else {
+         if ($entity_directory != NOT_AVAILABLE) {
             $authldap->getFromDB($entity_directory);
          }
       }
@@ -1783,20 +1797,6 @@ class AuthLDAP extends CommonDBTM {
          $options['ldap_filter'] = '';
       }
 
-      if ($entity_directory) {
-         if ($interface == AuthLdap::SIMPLE_INTERFACE || $options['ldap_filter'] == '') {
-            $options['ldap_filter'] =
-                           AuthLdap::buildLdapFilter($authldap,
-                                                     array('criterias'=>(isset($options['criterias'])
-                                                     ?$options['criterias']:array()),
-                                                     'entity_filter'=>
-                                                           $entitydata->getField('entity_ldapfilter')));
-         }
-      }
-      else {
-         $options['ldap_filter'] = '';
-      }
-
       echo "<div class='center'>";
 
       echo "<form method='post' action=\"".$options['target']."\">";
@@ -1804,16 +1804,14 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<input  type='hidden' name='mode' value='".$options['mode']."'>";
       echo "<input  type='hidden' name='action' value='".$options['action']."'>";
-      echo "<input  type='hidden' name='ldap_filter' value='".$options['ldap_filter']."'>";
+      //echo "<input  type='hidden' name='ldap_filter' value='".$options['ldap_filter']."'>";
       echo "<input  type='hidden' name='interface' value='".$interface."'>";
 
-         echo "<tr><th colspan='4'>" .
-                           ($options['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]) . "</th></tr>";
+         echo "<tr><th colspan='4'>" .($options['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]);
+         echo "</th></tr>";
 
       //Do not display entity dropdown when glpi is in mono entity mode
       if (isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
-         echo "<tr><th colspan='4'>" . $LANG['ldap'][37] . "</th></tr>";
-
 
          if (haveRight("user_authtype","w")) {
             //If not coming from the ticket form, then give expert/simple link
@@ -1835,8 +1833,6 @@ class AuthLDAP extends CommonDBTM {
                               array('value'  => $entity,
                                     'entity' => $_SESSION['glpiactiveentities'],
                                     'auto_submit'=>1));
-               echo "</td></tr>";
-
                echo "<input type='hidden' name='ldapservers_id' value='".$entity_directory."'>";
                echo "<input type='hidden' name='ldap_filter' value='".$options['ldap_filter']."'>";
                echo "</td></tr>";
@@ -1853,6 +1849,13 @@ class AuthLDAP extends CommonDBTM {
                }
                else {
                   echo "<input  type='hidden' name='ldapservers_id' value='".$entity_directory."'>";
+               }
+
+               if ($options['ldap_filter'] == '') {
+                  $options['ldap_filter'] =
+                                 AuthLdap::buildLdapFilter($authldap,
+                                                           array('criterias'=>(isset($options['criterias'])
+                                                           ?$options['criterias']:array())));
                }
 
                echo "<input type='hidden' name='entities_id' value='".$entity."'>";
@@ -1952,11 +1955,10 @@ class AuthLDAP extends CommonDBTM {
    static private function buildLdapFilter(AuthLdap $authldap, $options = array()) {
       //Build search filter
 
-      $entity_filter = $options['entity_filter'];
-      $counter = 0;
-      if ($entity_filter == NOT_AVAILABLE) {
-         $entity_filter = '';
+      if (!isset($options['entity_filter']) || $options['entity_filter']) {
+         $options['entity_filter'] = '';
       }
+      $counter = 0;
       $filter = '';
       if (!empty($options['criterias'])) {
          foreach ($options['criterias'] as $criteria => $value) {
@@ -1972,7 +1974,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ldap_condition = $authldap->fields['condition'];
       //Add entity filter and filter filled in directory's configuration form
-      return  "(&$entity_filter $filter $ldap_condition)";
+      return  "(&".$options['entity_filter']." $filter $ldap_condition)";
    }
 
    static function searchUser($target,$options) {
@@ -1984,19 +1986,26 @@ class AuthLDAP extends CommonDBTM {
          $entitydata = new EntityData;
          $entitydata->getFromDB($options['entities_id']);
 
-         $ldapservers_id = $entitydata->getField('ldapservers_id');
-         //$entity_filter = $entitydata->getField('entity_ldapfilter');
-         $entity_filter = $options['ldap_filter'];
-         $entity_basedn = $entitydata->getField('ldap_dn');
-         $authldap->getFromDB($ldapservers_id);
-         $entity = $options['entities_id'];
+         $options['ldapservers_id'] = $entitydata->getField('ldapservers_id');
+         $options['basedn'] = $entitydata->getField('ldap_dn');
+         $authldap->getFromDB($options['ldapservers_id']);
+         $options['ldap_filter'] =
+                           AuthLdap::buildLdapFilter($authldap,
+                                                     array('criterias'=>(isset($options['criterias'])
+                                                     ?$options['criterias']:array()),
+                                                     'entity_filter'=>$options['ldap_filter']));
       }
       else {
-         $ldapservers_id = $options['ldapservers_id'];
          $authldap->getFromDB($options['ldapservers_id']);
-         $entity_filter = $options['ldap_filter'];
-         $entity_basedn = $authldap->getField('basedn');
-         $entity = $_SESSION['glpiactive_entity'];
+         $options['basedn'] = $authldap->getField('basedn');
+         $options['entities_id'] = $_SESSION['glpiactive_entity'];
+         //If directory was changed
+         if ($options['ldap_filter'] == '') {
+            $options['ldap_filter'] =
+            AuthLdap::buildLdapFilter($authldap,
+                                     array('criterias'=>(isset($options['criterias'])
+                                                        ?$options['criterias']:array())));
+               }
       }
 
       $ds = AuthLdap::connectToServer($authldap->getField('host'),
@@ -2007,20 +2016,14 @@ class AuthLDAP extends CommonDBTM {
                                       $authldap->getField('deref_option'));
 
       if ($ds) {
+
          $attrs = array ('dn',$authldap->getField('login_field'));
          //Build basedn : if no basedn specified in entity, take the one of the global conf
-         if ($entity_basedn == '') {
-           $entity_basedn = $authldap->getField('basedn');
+         if ($options['basedn'] == '') {
+           $options['basedn'] = $authldap->getField('basedn');
          }
 
-         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>$options['mode'],
-                                                             'filter'=>$options['ldap_filter'],
-                                                             'ldapservers_id'=>$ldapservers_id,
-                                                             'display_filter'=>false,
-                                                             'basedn'=>$entity_basedn,
-                                                             'sbutree_search'=>false,
-                                                             'entities_id'=>$entity,
-                                                             'mode'=>$options['mode']));
+         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],$options);
       }
       else {
          echo "<div class='center b'>".$LANG['ldap'][6]."<br>";

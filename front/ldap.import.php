@@ -45,15 +45,14 @@ commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 if (isset($_REQUEST['action'])) {
 
    if (isset($_POST['change_directory'])) {
-      $_POST['ldap_filter'] = '';
+      $_REQUEST['ldap_filter'] = '';
    }
    $_REQUEST['target']=$_SERVER['PHP_SELF'];
    AuthLdap::showUserImportForm($_REQUEST);
-   if (isset($_POST['search'])) {
+   if (isset($_REQUEST['ldapservers_id']) && $_REQUEST['ldapservers_id'] != NOT_AVAILABLE) {
       echo "<br />";
-   AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
-}
-   //AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);
+      AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
+   }
 } else {
    if (isset($_SESSION["ldap_process"])) {
       if ($count = count($_SESSION["ldap_process"])) {
