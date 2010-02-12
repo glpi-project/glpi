@@ -42,14 +42,13 @@ checkRight('user_authtype','w');
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 
-if (isset($_REQUEST['action']) || !isset($_SESSION["ldap_process"])) {
+AuthLdap::manageValuesInSession($_REQUEST);
 
-   if (isset($_POST['change_directory'])) {
-      $_REQUEST['ldap_filter'] = '';
-   }
+if ($_SESSION['ldap_import']['action'] == 'show') {
    $_REQUEST['target']=$_SERVER['PHP_SELF'];
    AuthLdap::showUserImportForm($_REQUEST);
-   if (isset($_REQUEST['ldapservers_id']) && $_REQUEST['ldapservers_id'] != NOT_AVAILABLE) {
+   if (isset($_SESSION['ldap_import']['ldapservers_id']) &&
+       $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE) {
       echo "<br />";
       AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
    }
@@ -61,7 +60,10 @@ if (isset($_REQUEST['action']) || !isset($_SESSION["ldap_process"])) {
 
          displayProgressBar(400,$percent);
          $key = array_pop($_SESSION["ldap_process"]);
-         AuthLdap::ldapImportUserByServerId($key,$_SESSION["mode"],$_SESSION["ldapservers_id"],true);
+         AuthLdap::ldapImportUserByServerId($key,
+                                            $_SESSION['ldap_import']["mode"],
+                                            $_SESSION['ldap_import']["ldapservers_id"],
+                                            true);
          glpi_header($_SERVER['PHP_SELF']);
 
       } else {
@@ -69,18 +71,17 @@ if (isset($_REQUEST['action']) || !isset($_SESSION["ldap_process"])) {
          displayProgressBar(400,100);
 
          echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
-         echo "<a href='".$_SERVER['PHP_SELF']."?mode=".$_SESSION["mode"].
-               "&action=show&ldapservers_id=".$_SESSION["ldapservers_id"].
-                  "'>".$LANG['buttons'][13]."</a></div>";
+         echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
          unset($_SESSION["ldapservers_id"]);
          unset($_SESSION["mode"]);
+         unset($_SESSION["interface"]);
+         $_SESSION['ldap_import']['action'] = 'show';
 
       }
  } else {
       if (count($_POST['toprocess']) >0) {
          $_SESSION["ldap_process_count"] = 0;
-         $_SESSION["ldapservers_id"] = $_POST['ldapservers_id'];
-         $_SESSION["mode"] = $_POST['mode'];
+         $_SESSION["ldapservers_id"] = $_SESSION['ldap_import']['ldapservers_id'];
          foreach ($_POST['toprocess'] as $key => $val) {
             if ($val == "on") {
                $_SESSION["ldap_process"][] = $key;

@@ -448,8 +448,7 @@ class User extends CommonDBTM {
           && ($this->fields["authtype"] == AUTH_LDAP
               || $this->fields["authtype"] == AUTH_MAIL
               || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
-         logDebug("dans applyRightRules ");
-         logDebug($this->fields);
+
          if (isset($this->fields["id"])
              && $this->fields["id"] >0
              && isset($this->fields["_ldap_rules"])
@@ -546,8 +545,6 @@ class User extends CommonDBTM {
             if (count($retrieved_dynamic_profiles)) {
                $right = new Profile_User();
                foreach ($retrieved_dynamic_profiles as $keyretr => $retr_profile) {
-                  logDebug("add dynamic profile");
-                  logDebug($retr_profile);
                   $right->add($retr_profile);
                }
             }
