@@ -217,8 +217,8 @@ class NotificationTemplate extends CommonDBTM {
          foreach ($out[3] as $id => $tag_infos) {
 
             $regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/";
-            preg_match($regex,$string,$tag_out);
-            if (isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
+            if (preg_match($regex,$string,$tag_out) &&
+                  isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
 
                $data_lang_foreach = $data;
                unset($data_lang_foreach[$tag_infos]);
