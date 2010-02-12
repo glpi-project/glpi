@@ -1725,6 +1725,8 @@ class User extends CommonDBTM {
             $where.=" AND (`glpi_users`.`name` ".makeTextSearch($search)."
                            OR `glpi_users`.`realname` ".makeTextSearch($search)."
                            OR `glpi_users`.`firstname` ".makeTextSearch($search)."
+                           OR `glpi_users`.`phone` ".makeTextSearch($search)."
+                           OR `glpi_users`.`email` ".makeTextSearch($search)."
                            OR CONCAT(`glpi_users`.`realname`,' ',`glpi_users`.`firstname`) ".
                                      makeTextSearch($search).")";
          }
