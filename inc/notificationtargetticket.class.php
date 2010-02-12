@@ -42,6 +42,10 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
+   function getSubjectPrefix() {
+      return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
+   }
+
    function getSpecificTargets($data,$options=array()) {
 
    if (isset($options['sendprivate']) && $options['sendprivate'] == true) {
