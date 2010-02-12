@@ -60,7 +60,7 @@ if (!isset($_REQUEST['action'])) {
 }
 
 AuthLdap::showUserImportForm($_REQUEST);
-if (isset($_POST['search'])) {
+if (isset($_REQUEST['ldapservers_id']) && $_REQUEST['ldapservers_id']) {
    echo "<br />";
    $users = AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
 }
