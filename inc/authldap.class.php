@@ -889,13 +889,8 @@ class AuthLDAP extends CommonDBTM {
 
       if (is_array($ldap_users)) {
          $numrows = count($ldap_users);
-         if (!$values['sync']) {
-            $action = "toimport";
-            $form_action = "import_ok";
-         } else {
-            $action = "tosync";
-            $form_action = "sync_ok";
-         }
+         $action = "toprocess";
+         $form_action = "process_ok";
 
          if ($numrows > 0) {
             $parameters = "check=".$values['check'];
@@ -1810,9 +1805,13 @@ class AuthLDAP extends CommonDBTM {
       echo "<input  type='hidden' name='ldap_filter' value='".$options['ldap_filter']."'>";
       echo "<input  type='hidden' name='interface' value='".$interface."'>";
 
+         echo "<tr><th colspan='4'>" .
+                           ($options['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]) . "</th></tr>";
+
       //Do not display entity dropdown when glpi is in mono entity mode
       if (isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
          echo "<tr><th colspan='4'>" . $LANG['ldap'][37] . "</th></tr>";
+
 
          if (haveRight("user_authtype","w")) {
             //If not coming from the ticket form, then give expert/simple link
@@ -2012,7 +2011,7 @@ class AuthLDAP extends CommonDBTM {
            $entity_basedn = $authldap->getField('basedn');
          }
 
-         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>0,
+         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('sync'=>$options['mode'],
                                                              'filter'=>$options['ldap_filter'],
                                                              'ldapservers_id'=>$ldapservers_id,
                                                              'display_filter'=>false,

@@ -55,18 +55,18 @@ if (isset($_REQUEST['action'])) {
 }
    //AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);
 } else {
-   if (isset($_SESSION["ldap_import"])) {
-      if ($count = count($_SESSION["ldap_import"])) {
-         $percent = min(100,round(100*($_SESSION["ldap_import_count"]-$count)/
-                                  $_SESSION["ldap_import_count"],0));
+   if (isset($_SESSION["ldap_process"])) {
+      if ($count = count($_SESSION["ldap_process"])) {
+         $percent = min(100,round(100*($_SESSION["ldap_process_count"]-$count)/
+                                  $_SESSION["ldap_process_count"],0));
 
          displayProgressBar(400,$percent);
-         $key = array_pop($_SESSION["ldap_import"]);
-         AuthLdap::ldapImportUserByServerId($key,0,$_SESSION["ldapservers_id"],true);
+         $key = array_pop($_SESSION["ldap_process"]);
+         AuthLdap::ldapImportUserByServerId($key,$_SESSION["mode"],$_SESSION["ldapservers_id"],true);
          glpi_header($_SERVER['PHP_SELF']);
 
       } else {
-         unset($_SESSION["ldap_import"]);
+         unset($_SESSION["ldap_process"]);
          displayProgressBar(400,100);
 
          echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
@@ -78,14 +78,14 @@ if (isset($_REQUEST['action'])) {
 
       }
  } else {
-      if (count($_POST['toimport']) >0) {
-         $_SESSION["ldap_import_count"] = 0;
+      if (count($_POST['toprocess']) >0) {
+         $_SESSION["ldap_process_count"] = 0;
          $_SESSION["ldapservers_id"] = $_POST['ldapservers_id'];
          $_SESSION["mode"] = $_POST['mode'];
-         foreach ($_POST['toimport'] as $key => $val) {
+         foreach ($_POST['toprocess'] as $key => $val) {
             if ($val == "on") {
-               $_SESSION["ldap_import"][] = $key;
-               $_SESSION["ldap_import_count"]++;
+               $_SESSION["ldap_process"][] = $key;
+               $_SESSION["ldap_process_count"]++;
             }
          }
       }

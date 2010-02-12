@@ -42,26 +42,30 @@ checkRight('user_authtype','w');
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 
+/*
 if (isset($_SESSION["ldap_import"])) {
    unset($_SESSION["ldap_import"]);
 }
 if (isset($_SESSION["ldap_sync"])) {
    unset($_SESSION["ldap_sync"]);
 }
+
 if (isset($_SESSION["ldap_server"])) {
    unset($_SESSION["ldap_server"]);
 }
+*/
 if (isset($_SESSION["ldap_sortorder"])) {
    unset($_SESSION["ldap_sortorder"]);
 }
 
+
 echo "<div class='center'><table class='tab_cadre'>";
 echo "<tr><th>&nbsp;".$LANG['ldap'][0]."&nbsp;</th></tr>";
 
-echo "<tr class='tab_bg_1'><td class='center b'><a href='ldap.import.php?mode=sync&action=show'>".
+echo "<tr class='tab_bg_1'><td class='center b'><a href='ldap.import.php?mode=1&action=show'>".
       $LANG['ldap'][1]."</a></td></tr>";
 
-echo "<tr class='tab_bg_1'><td class='center b'><a href='ldap.import.php?mode=import&action=show'>".
+echo "<tr class='tab_bg_1'><td class='center b'><a href='ldap.import.php?mode=0&action=show'>".
       $LANG['ldap'][2]."</a></td> </tr>";
 
 echo "</table></div>";
