@@ -36,14 +36,24 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$group = new Group();
-$group->checkGlobal('w');
+$user = new User();
+$user->checkGlobal('w');
 checkRight('user_authtype','w');
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 
-if (isset($_GET['next'])) {
-   AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);
+if (isset($_REQUEST['action'])) {
+
+   if (isset($_POST['change_directory'])) {
+      $_POST['ldap_filter'] = '';
+   }
+   $_REQUEST['target']=$_SERVER['PHP_SELF'];
+   AuthLdap::showUserImportForm($_REQUEST);
+   if (isset($_POST['search'])) {
+      echo "<br />";
+   AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
+}
+   //AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);
 } else {
    if (isset($_SESSION["ldap_import"])) {
       if ($count = count($_SESSION["ldap_import"])) {
@@ -52,7 +62,7 @@ if (isset($_GET['next'])) {
 
          displayProgressBar(400,$percent);
          $key = array_pop($_SESSION["ldap_import"]);
-         AuthLdap::ldapImportUser($key,0);
+         AuthLdap::ldapImportUserByServerId($key,0,$_SESSION["ldapservers_id"],true);
          glpi_header($_SERVER['PHP_SELF']);
 
       } else {
@@ -60,56 +70,18 @@ if (isset($_GET['next'])) {
          displayProgressBar(400,100);
 
          echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
-         echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
-      }
-   }
-   if (isset($_POST["change_ldap_filter"])) {
-      $_SESSION["ldap_filter"] = $_POST["ldap_filter"];
-      glpi_header($_SERVER['PHP_SELF']);
+         echo "<a href='".$_SERVER['PHP_SELF']."?mode=".$_SESSION["mode"].
+               "&action=show&ldapservers_id=".$_SESSION["ldapservers_id"].
+                  "'>".$LANG['buttons'][13]."</a></div>";
+         unset($_SESSION["ldapservers_id"]);
+         unset($_SESSION["mode"]);
 
-   } else if (!isset($_POST["import_ok"])) {
-      if (!isset($_GET['check'])) {
-         $_GET['check'] = 'all';
       }
-      if (!isset($_GET['start'])) {
-         $_GET['start'] = 0;
-      }
-      if (isset($_SESSION["ldap_import"])) {
-         unset($_SESSION["ldap_import"]);
-      }
-
-      if (!isset($_SESSION["ldap_server"])) {
-         if (isset($_POST["ldap_server"])) {
-            $_SESSION["ldap_server"] = $_POST["ldap_server"];
-         } else {
-            glpi_header($CFG_GLPI["root_doc"]."/front/ldap.php");
-         }
-      }
-
-      if (!AuthLdap::testLDAPConnection($_SESSION["ldap_server"])) {
-         unset($_SESSION["ldap_server"]);
-         echo "<div class='center b'>".$LANG['ldap'][6]."<br>";
-         echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".$LANG['buttons'][13]."</a></div>";
-      } else {
-         if (!isset($_SESSION["ldap_filter"])) {
-            $_SESSION["ldap_filter"] = '';
-         }
-
-         if (!isset($_SESSION["ldap_sortorder"])) {
-            $_SESSION["ldap_sortorder"] = "DESC";
-         } else {
-            $_SESSION["ldap_sortorder"] = (!isset($_GET["order"])?"DESC":$_GET["order"]);
-         }
-         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],array ('check'=>$_GET['check'],
-                                                             'start'=>$_GET['start'],
-                                                             'sync'=>0,
-                                                             'filter'=>$_SESSION["ldap_filter"],
-                                                             'order'=>$_SESSION["ldap_sortorder"]));
-      }
-
-   } else {
+ } else {
       if (count($_POST['toimport']) >0) {
          $_SESSION["ldap_import_count"] = 0;
+         $_SESSION["ldapservers_id"] = $_POST['ldapservers_id'];
+         $_SESSION["mode"] = $_POST['mode'];
          foreach ($_POST['toimport'] as $key => $val) {
             if ($val == "on") {
                $_SESSION["ldap_import"][] = $key;

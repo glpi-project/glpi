@@ -238,7 +238,7 @@ if ($item instanceof CommonTreeDropdown) {
                echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
                // Reset last level displayed :
                $last_level_displayed = array();
-                  
+
             }
 
 
@@ -264,7 +264,7 @@ if ($item instanceof CommonTreeDropdown) {
                      $work_level=$level-1;
                      $work_parentID=$data[$item->getForeignKeyField()];
                      $to_display='';
-                     
+
                      do {
                         // Get parent
                         if ($item->getFromDB($work_parentID)) {
@@ -297,7 +297,7 @@ if ($item instanceof CommonTreeDropdown) {
                      } while ($work_level > 1
                               && (!isset($last_level_displayed[$work_level])
                                  || $last_level_displayed[$work_level] != $work_parentID));
-                     
+
                      echo $to_display;
                   }
                }
@@ -395,7 +395,11 @@ if ($item instanceof CommonTreeDropdown) {
    if ($result = $DB->query($query)){
 
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname'].
-            "\" size='1'>";
+            "\" size='1'";
+      if (isset($_POST["auto_submit"]) && $_POST["auto_submit"]==1) {
+         echo " onChange='submit()'";
+      }
+      echo ">";
 
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
          echo "<option value='0'>--".$LANG['common'][11]."--</option>";
