@@ -42,9 +42,8 @@ checkLoginUser();
 
 checkSeveralRightsOr(array('user'=>'w','ldap_import'=>'w'));
 
-if (isset($_POST['toimport']) && count($_POST['toimport']) >0) {
-   $_SESSION["ldap_import_count"] = 0;
-   foreach ($_POST['toimport'] as $key => $val) {
+if (isset($_POST['toprocess']) && count($_POST['toprocess']) >0) {
+   foreach ($_POST['toprocess'] as $key => $val) {
       if ($val == "on") {
          AuthLdap::ldapImportUserByServerId($key,0,$_POST['ldapservers_id'],true);
       }
@@ -55,8 +54,11 @@ if (isset($_POST['toimport']) && count($_POST['toimport']) >0) {
 
 $_REQUEST['target']=$_SERVER['PHP_SELF'];
 $_REQUEST['from_ticket'] = 1;
-$_REQUEST['mode'] = 'import';
-$_REQUEST['action'] = 'show';
+$_REQUEST['mode'] = 0;
+if (!isset($_REQUEST['action'])) {
+   $_REQUEST['action'] = 'show';
+}
+
 AuthLdap::showUserImportForm($_REQUEST);
 if (isset($_POST['search'])) {
    echo "<br />";

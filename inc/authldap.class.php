@@ -970,10 +970,12 @@ class AuthLDAP extends CommonDBTM {
                   $LANG['buttons'][19] . "</a>";
             printPager($values['start'], $numrows, $target, $parameters);
          } else {
-            echo "<div class='center'><strong>" . $LANG['ldap'][3] . "</strong></div>";
+            echo "<div class='center'><strong>" .
+                        ($options['mode']?$LANG['ldap'][43]:$LANG['ldap'][6]) . "</strong></div>";
          }
       } else {
-         echo "<div class='center'><strong>" . $LANG['ldap'][3] . "</strong></div>";
+         echo "<div class='center'><strong>" .
+                        ($options['mode']?$LANG['ldap'][43]:$LANG['ldap'][6]) . "</strong></div>";
       }
    }
 
