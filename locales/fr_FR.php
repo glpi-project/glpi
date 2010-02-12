@@ -842,6 +842,7 @@ $LANG['ldap'][39]="Mode expert";
 $LANG['ldap'][40]="Mode simple";
 $LANG['ldap'][41]="Changer";
 $LANG['ldap'][42]="Aucun annuaire sélectionné";
+$LANG['ldap'][43]="Pas d'utilisateurs à synchroniser";
 
 $LANG['links'][1]="Lien ou Nom du fichier";
 $LANG['links'][4]="Types de matériel associés";
