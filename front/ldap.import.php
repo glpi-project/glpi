@@ -48,7 +48,9 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
    $_REQUEST['target']=$_SERVER['PHP_SELF'];
    AuthLdap::showUserImportForm($_REQUEST);
    if (isset($_SESSION['ldap_import']['ldapservers_id']) &&
-       $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE) {
+       $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE
+         && isset($_SESSION['ldap_import']['criterias'])
+            && !empty($_SESSION['ldap_import']['criterias'])) {
       echo "<br />";
       AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
    }

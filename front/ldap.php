@@ -42,23 +42,11 @@ checkRight('user_authtype','w');
 
 commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 
-/*
-if (isset($_SESSION["ldap_import"])) {
-   unset($_SESSION["ldap_import"]);
-}
-if (isset($_SESSION["ldap_sync"])) {
-   unset($_SESSION["ldap_sync"]);
-}
-
-if (isset($_SESSION["ldap_server"])) {
-   unset($_SESSION["ldap_server"]);
-}
-*/
 if (isset($_SESSION["ldap_sortorder"])) {
    unset($_SESSION["ldap_sortorder"]);
 }
 
-
+AuthLdap::manageValuesInSession(array(),true);
 echo "<div class='center'><table class='tab_cadre'>";
 echo "<tr><th>&nbsp;".$LANG['ldap'][0]."&nbsp;</th></tr>";
 

@@ -1751,29 +1751,39 @@ class AuthLDAP extends CommonDBTM {
       return false;
    }
 
-   static function manageValuesInSession($options) {
-      if (!isset($_SESSION['ldap_import']['entities_id'])) {
-         $options['entities_id'] = $_SESSION['glpiactive_entity'];
-      }
+   static function manageValuesInSession($options=array(),$delete=false) {
+         $fields = array('interface','mode','criterias','action','entities_id','ldapservers_id',
+                         'ldap_filter');
 
-      if (isset($options['toprocess'])) {
-         $_SESSION['ldap_import']['action'] = 'process';
-      }
-
-      if (isset($options['change_directory'])) {
-         $options['ldap_filter'] = '';
-      }
-
-      if (!isset($_SESSION['ldap_import']['interface']) && !isset($options['interface'])) {
-         $options['interface'] = AuthLdap::SIMPLE_INTERFACE;
-      }
-      $fields = array('interface','mode','criterias','action','entities_id','ldapservers_id',
-                      'ldap_filter');
-
-      foreach($fields as $field) {
-         if (isset($options[$field])) {
-            $_SESSION['ldap_import'][$field] = $options[$field];
+      if (!$delete) {
+         if (!isset($_SESSION['ldap_import']['entities_id'])) {
+            $options['entities_id'] = $_SESSION['glpiactive_entity'];
          }
+
+         if (isset($options['toprocess'])) {
+            $_SESSION['ldap_import']['action'] = 'process';
+         }
+
+         if (isset($options['change_directory'])) {
+            $options['ldap_filter'] = '';
+         }
+
+         if (!isset($_SESSION['ldap_import']['ldapservers_id'])) {
+            $_SESSION['ldap_import']['ldapservers_id'] = NOT_AVAILABLE;
+         }
+
+         if (!isset($_SESSION['ldap_import']['interface']) && !isset($options['interface'])) {
+            $options['interface'] = AuthLdap::SIMPLE_INTERFACE;
+         }
+
+         foreach($fields as $field) {
+            if (isset($options[$field])) {
+               $_SESSION['ldap_import'][$field] = $options[$field];
+            }
+         }
+      }
+      else {
+         unset($_SESSION['ldap_import']);
       }
    }
 
@@ -1787,7 +1797,7 @@ class AuthLDAP extends CommonDBTM {
       $entitydata->getFromDB($_SESSION['ldap_import']['entities_id']);
 
       //If in simple mode : get entitydata
-      if ($_SESSION['ldap_import']['ldapservers_id'] == AuthLdap::SIMPLE_INTERFACE) {
+      if ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE) {
          $_SESSION['ldap_import']['ldapservers_id'] = $entitydata->getField('ldapservers_id');
       }
 
