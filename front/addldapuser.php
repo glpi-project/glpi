@@ -62,8 +62,10 @@ if (!isset($_REQUEST['action'])) {
 
 AuthLdap::manageValuesInSession($_REQUEST);
 AuthLdap::showUserImportForm($_REQUEST);
-if (isset($_SESSION['ldap_import']['ldapservers_id']) &&
-   $_SESSION['ldap_import']['ldapservers_id']) {
+  if (isset($_SESSION['ldap_import']['ldapservers_id']) &&
+       $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE
+         && isset($_SESSION['ldap_import']['criterias'])
+            && !empty($_SESSION['ldap_import']['criterias'])) {
    echo "<br />";
    $users = AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
 }
