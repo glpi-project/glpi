@@ -241,10 +241,8 @@ class NotificationTargetTicket extends NotificationTarget {
       	$tpldatas['##'.$tag.'##'] = $this->obj->getField($table_field);
       }
       $tpldatas['##ticket.id##'] = sprintf("%07d",$this->obj->getField("id"));
-      $tpldatas['##ticket.url##'] = urldecode("<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                                    $this->obj->getField("id")."\">".$CFG_GLPI["url_base"].
-                                    "/index.php?redirect=ticket_".
-                                    $this->obj->getField("id")."</a>");
+      $tpldatas['##ticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+                                    $this->obj->getField("id"));
 
       $tpldatas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                              $this->obj->getField('entities_id'));
