@@ -2181,7 +2181,8 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 
 
 				if ($SEARCH_OPTION[$type][$ID]["datatype"]=="date_delay"){
-					$date_computation="ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH)";
+					$date_computation="ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].",
+                     INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH)";
 				}
 
 				$search=array("/\&lt;/","/\&gt;/");
@@ -2189,7 +2190,7 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 				$val=preg_replace($search,$replace,$val);
 				if (preg_match("/([<>=])(.*)/",$val,$regs)){
 					if (is_numeric($regs[2])){
-						return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";
+                  return $link." $date_computation ".$regs[1]." ADDDATE(NOW(), INTERVAL ".$regs[2]." $interval_search) ";
 					} else {
 						// Reformat date if needed
 						$regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
