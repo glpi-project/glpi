@@ -599,6 +599,7 @@ function updateDbUpTo031()
       case "0.72.3":
          include("update_0723_080.php");
          update0723to080();
+      case "0.72.4":
       case "0.80":
 			break;
 		default:
