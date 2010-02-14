@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //de_DE
 
@@ -491,7 +490,7 @@ $LANG['financial'][69]="Vertragsverlängerung um";
 $LANG['financial'][76]="Inbetriebnahme-Datum"; 
 $LANG['financial'][77]="Abschreibungsfaktor"; 
 $LANG['financial'][78]="Wert am Ende der Garantie"; 
-$LANG['financial'][79]="anderer Anbieter"; 
+$LANG['financial'][79]="Anbieter-Typ"; 
 $LANG['financial'][80]="Ende der Garantie"; 
 $LANG['financial'][81]="Nettobuchwert"; 
 $LANG['financial'][82]="Rechnungsnummer"; 
@@ -674,7 +673,7 @@ $LANG['joblist'][1]="Nur meine";
 $LANG['joblist'][2]="Priorität"; 
 $LANG['joblist'][3]="Meine und die meiner Gruppen"; 
 $LANG['joblist'][4]="zugewiesen"; 
-$LANG['joblist'][5]="Persöhnliche"; 
+$LANG['joblist'][5]="Persönliche"; 
 $LANG['joblist'][6]="Beschreibung"; 
 $LANG['joblist'][7]="Neues Supportticket erstellen"; 
 $LANG['joblist'][8]="Kein bestehendes Supportticket"; 
@@ -1423,7 +1422,7 @@ $LANG['setup'][75]="ist Unterkategorie von";
 $LANG['setup'][76]="Ist auf der selben Ebene wie"; 
 $LANG['setup'][77]="Wählen Sie einen Eintrag"; 
 $LANG['setup'][79]="Kategorien der Supporttickets"; 
-$LANG['setup'][80]="Selbstdefinierte Geräte"; 
+$LANG['setup'][80]="Anbieter Typen"; 
 $LANG['setup'][81]="Dokumentenkopf"; 
 $LANG['setup'][82]="Kontakttyp"; 
 $LANG['setup'][83]="Status"; 

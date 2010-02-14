@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //ro_RO
 
@@ -36,8 +35,8 @@ $LANG['backup'][0]="SQL Dump";
 $LANG['backup'][1]="XML Dump"; 
 $LANG['backup'][11]="Marime"; 
 $LANG['backup'][13]="Vizualizeaza/Descarca"; 
-$LANG['backup'][16]="Sigur doriţi să suprascrieţi baza de date cu acest fişier de siguranţă:"; 
-$LANG['backup'][17]="Şterge fişierul"; 
+$LANG['backup'][16]="Sigur doriți să suprascrieți baza de date cu acest fișier de siguranță:"; 
+$LANG['backup'][17]="Șterge fișierul"; 
 $LANG['backup'][18]="Salvare a bazei de date"; 
 $LANG['backup'][19]="Acum"; 
 $LANG['backup'][21]="Fisierul exista deja"; 
@@ -412,7 +411,7 @@ $LANG['document'][40]="Mutarea fisierului esuata";
 $LANG['document'][41]="Document copiat cu succes"; 
 $LANG['document'][42]="Adaugat de"; 
 $LANG['document'][43]="Fisier necunoscut"; 
-$LANG['document'][44]="Nume de fişier eronat"; 
+$LANG['document'][44]="Nume de fișier eronat"; 
 $LANG['document'][45]="Nu aveti acces la acest fisier"; 
 $LANG['document'][46]="Trimiterea fisierului a esuat (prea mare)"; 
 $LANG['document'][47]="Empty file"; 
@@ -440,7 +439,7 @@ $LANG['event'][19]="Actualizeaza";
 $LANG['event'][20]="Fara istorie"; 
 
 $LANG['financial'][1]="Contract"; 
-$LANG['financial'][2]="Pe viaţă"; 
+$LANG['financial'][2]="Pe viață"; 
 $LANG['financial'][3]="Informatii financiare"; 
 $LANG['financial'][4]="Numar"; 
 $LANG['financial'][5]="Cost"; 
@@ -549,15 +548,15 @@ $LANG['help'][40]="Problema nu are titlu, va rugam reincercati.";
 $LANG['help'][41]="Nu a fost gasita o categorie a problemei, va rugam reincercati."; 
 
 $LANG['install'][0]="Instaleaza sau actualizeaza GLPI"; 
-$LANG['install'][1]="Alegeţi 'Instalare' pentru o instalare nouă a GLPI."; 
-$LANG['install'][2]="Alegeţi 'Actualizare' pentru o actualizare a GLPI de la o versiune mai veche"; 
+$LANG['install'][1]="Alegeți 'Instalare' pentru o instalare nouă a GLPI."; 
+$LANG['install'][2]="Alegeți 'Actualizare' pentru o actualizare a GLPI de la o versiune mai veche"; 
 $LANG['install'][3]="Instaleaza"; 
 $LANG['install'][4]="Actualizeaza"; 
 $LANG['install'][5]="Verificati compatibilitatea mediului cu rularea GLPI"; 
 $LANG['install'][6]="S-a terminat testul"; 
 $LANG['install'][7]="Rezultate"; 
 $LANG['install'][8]="Testeaza parser-ul PHP"; 
-$LANG['install'][9]="Trebuie să instalaţi cel puţin versiunea 5 a PHP."; 
+$LANG['install'][9]="Trebuie să instalați cel puțin versiunea 5 a PHP."; 
 $LANG['install'][10]="GLPI is not compatible with the option zend.ze1_compatibility_mode = On."; 
 $LANG['install'][11]="Versiunea PHP este mai mare decât minimum necesar – Perfect!"; 
 $LANG['install'][12]="Test sesiune"; 
@@ -582,20 +581,20 @@ $LANG['install'][32]="Parola MySQL";
 $LANG['install'][34]="Testarea conexiunii la baza de date"; 
 $LANG['install'][35]="Imposibil de conectat la baza de date"; 
 $LANG['install'][36]="Serverul a rspuns"; 
-$LANG['install'][37]="Câmpurile „server Mysql“ şi/sau „nume utilizator Mysql“ sunt goale"; 
+$LANG['install'][37]="Câmpurile „server Mysql“ și/sau „nume utilizator Mysql“ sunt goale"; 
 $LANG['install'][38]="Selectati o baza de date:"; 
 $LANG['install'][39]="Creati o noua baza de date sau folositi una existenta:"; 
 $LANG['install'][40]="Selectati o baza de date pentru actualizare:"; 
 $LANG['install'][41]="Imposibil de utilizat baza de date:"; 
 $LANG['install'][43]="OK - baza de date a fost initializata"; 
 $LANG['install'][44]="Valorile implicite au fost introduse, puteti sa le stergeti daca doriti"; 
-$LANG['install'][46]="La prima conectare puteţi folosi ca utilizator 'glpi' şi parola 'glpi' pentru a avea acces la aplicaţie şi a avea drepturi de administrator"; 
+$LANG['install'][46]="La prima conectare puteți folosi ca utilizator 'glpi' și parola 'glpi' pentru a avea acces la aplicație și a avea drepturi de administrator"; 
 $LANG['install'][47]="Imposibil de scris fisierul de setup al bazei de date"; 
 $LANG['install'][48]="Eroare in crearea bazei de date !"; 
 $LANG['install'][49]="Nu ati selectat nici o baza de date !"; 
 $LANG['install'][50]="Verificarea permisiunilor de scriere a fisierelor pentru sesiune"; 
 $LANG['install'][52]="Verificarea permisiunilor de scriere pentru fisiere cron"; 
-$LANG['install'][53]="Test de scriere a fişierelor de logare"; 
+$LANG['install'][53]="Test de scriere a fișierelor de logare"; 
 $LANG['install'][55]="Instalarea a fost efectuata"; 
 $LANG['install'][57]="Numele utilizator si parola implicite sunt:"; 
 $LANG['install'][58]="glpi/glpi pentru contul de administrator"; 
@@ -633,7 +632,7 @@ $LANG['install'][93]="Am citit si ACCEPT termenii din licenta de mai sus.";
 $LANG['install'][94]="Am citit si NU ACCEPT termenii de licenta de mai jos"; 
 $LANG['install'][95]="Memorie nelimitata"; 
 $LANG['install'][96]="Memorie nelimitata"; 
-$LANG['install'][97]="Verificaţi permisiunile pe director:"; 
+$LANG['install'][97]="Verificați permisiunile pe director:"; 
 $LANG['install'][99]="Se verifica permisiunea de a scrie pentru fisierele Cache"; 
 $LANG['install'][100]="Directorul nu a putut fi creat."; 
 $LANG['install'][101]="Directorul a fost creat, dar nu a putut fi indepartat"; 
@@ -646,7 +645,7 @@ $LANG['job'][4]="Solicitant";
 $LANG['job'][5]="Repartizat catre"; 
 $LANG['job'][6]="Tehnician"; 
 $LANG['job'][8]="last(s) ticket(s)"; 
-$LANG['job'][11]="Descriere a problemei/acţiunii"; 
+$LANG['job'][11]="Descriere a problemei/acțiunii"; 
 $LANG['job'][12]="Nu exista nici o comentariu/solutie pentru aceasta problema."; 
 $LANG['job'][13]="Adauga o noua problema"; 
 $LANG['job'][19]="Comentarii pe E-mail"; 
@@ -672,7 +671,7 @@ $LANG['job'][46]="Ticket created in the entity";
 $LANG['joblist'][0]="Starea problemelor"; 
 $LANG['joblist'][1]="Doar in ale mele"; 
 $LANG['joblist'][2]="Prioritate"; 
-$LANG['joblist'][3]="Ale mele şi ale grupurilor"; 
+$LANG['joblist'][3]="Ale mele și ale grupurilor"; 
 $LANG['joblist'][4]="Repartizat"; 
 $LANG['joblist'][5]="Personal"; 
 $LANG['joblist'][6]="Descriere"; 
@@ -870,7 +869,7 @@ $LANG['mailgate'][3]="Numar de E-mail-uri disponibile si regasite";
 $LANG['mailgate'][4]="extensia mbstring nu a fost gasita. Atentie la charsets-urile utilizate."; 
 $LANG['mailgate'][5]="Fisierul atasat este defect"; 
 $LANG['mailgate'][6]="Fisierul atasat este prea mare"; 
-$LANG['mailgate'][7]="Mail Gateway: dimensiunea maximă a fiecărui fişier ataşat (0 = fără import)"; 
+$LANG['mailgate'][7]="Mail Gateway: dimensiunea maximă a fiecărui fișier atașat (0 = fără import)"; 
 $LANG['mailgate'][8]="octet"; 
 
 $LANG['mailing'][0]="----------------------------------------------------------"; 
@@ -1044,7 +1043,7 @@ $LANG['ocsconfig'][54]="Criteriu existentei unui computer";
 $LANG['ocsconfig'][55]="Gaseste computere care sa contina statusul"; 
 $LANG['ocsconfig'][56]="gol"; 
 $LANG['ocsconfig'][57]="egal"; 
-$LANG['ocsconfig'][58]="Conexiunea realizeaza automat conectarea unui computer GLPI la unul in OCS. Această opţiune este luata in considerare doar script-urile de sincronizare (nu manual)."; 
+$LANG['ocsconfig'][58]="Conexiunea realizează automat conectarea unui computer GLPI la unul în OCS. Această opțiune este luată în considerare doar de script-urile de sincronizare (nu manual)."; 
 $LANG['ocsconfig'][59]="URL-ul consolei OCS"; 
 
 $LANG['ocsng'][0]="OCS Inventarul NG"; 
@@ -1083,7 +1082,7 @@ $LANG['ocsng'][35]="Nici o imprimanta blocata";
 $LANG['ocsng'][36]="Entitatea destinatiei"; 
 $LANG['ocsng'][37]="Activeaza previzualizarea"; 
 $LANG['ocsng'][38]="Dezactiveaza previzualizarea"; 
-$LANG['ocsng'][40]="Se potriveşte regula?"; 
+$LANG['ocsng'][40]="Se potrivește regula?"; 
 $LANG['ocsng'][41]="Modul de import manual"; 
 $LANG['ocsng'][42]="Configurare OCSNG eronata (este necesara activarea TRACE_DELITED)"; 
 $LANG['ocsng'][43]="Nu aveti acces la baza de date OCS (Trebuie sa puteti scrie pe hardware.CHECKSUM)"; 
@@ -1232,7 +1231,7 @@ $LANG['reports'][41]="După hardware";
 $LANG['reports'][42]="Dupa drop"; 
 $LANG['reports'][46]="porturi hardware"; 
 $LANG['reports'][47]="porturi dispozitive"; 
-$LANG['reports'][49]="Raport reţea după hardware"; 
+$LANG['reports'][49]="Raport rețea după hardware"; 
 $LANG['reports'][51]="Network report by drop"; 
 $LANG['reports'][52]="switch"; 
 $LANG['reports'][54]="Raport retea dupa locatie"; 
@@ -1241,7 +1240,7 @@ $LANG['reports'][58]="Raport de materiale pe an";
 $LANG['reports'][59]="Afiseaza comentariile/rezolvarile"; 
 $LANG['reports'][60]="Data deschiderii"; 
 $LANG['reports'][61]="Data de inchidere"; 
-$LANG['reports'][62]="Informaţii financiare despre hardware"; 
+$LANG['reports'][62]="Informații financiare despre hardware"; 
 $LANG['reports'][63]="Alte informatii financiare (licente, cartuse, consumabile)"; 
 
 $LANG['reservation'][1]="Element de rezervat"; 
@@ -1260,7 +1259,7 @@ $LANG['reservation'][20]="Inapoi la calendar";
 $LANG['reservation'][21]="Vedere rezervarile"; 
 $LANG['reservation'][22]="Modifica comentariu"; 
 $LANG['reservation'][25]="Hardware-ul imprumutat"; 
-$LANG['reservation'][27]="Rehearsal"; 
+$LANG['reservation'][27]="Perioada"; 
 $LANG['reservation'][28]="Dupa saptamana"; 
 $LANG['reservation'][29]="In fiecare zi"; 
 $LANG['reservation'][30]="timp"; 
@@ -1347,11 +1346,11 @@ $LANG['rulesengine'][84]="Testeaza motorul de reguli";
 $LANG['rulesengine'][85]="Rezultatul expresiilor regulate"; 
 $LANG['rulesengine'][86]="Categorie de software afectata la stergerea din dictionar"; 
 $LANG['rulesengine'][87]="Software sters de dictionarul GLPI"; 
-$LANG['rulesengine'][88]="Software creat de dicţionarul GLPI"; 
+$LANG['rulesengine'][88]="Software creat de dicționarul GLPI"; 
 $LANG['rulesengine'][90]="Lucru in desfasurare"; 
 $LANG['rulesengine'][91]="Munca incheiata."; 
 $LANG['rulesengine'][92]="Atentie, inainte sa rulati dictionarul"; 
-$LANG['rulesengine'][93]="Atenţie! Această operatiune poate trimite software-ul în coşul de gunoi.<br>Informaţi-vă utilizatorii."; 
+$LANG['rulesengine'][93]="Atenție! Această operațiune poate trimite software-ul în coșul de gunoi.<br>Informați-vă utilizatorii."; 
 $LANG['rulesengine'][94]="Fuziune"; 
 $LANG['rulesengine'][95]="Alegerea producatorului"; 
 $LANG['rulesengine'][96]="Rederuleaza dictionarul pentru producator(i)<br> ( ----- = Toate)"; 
@@ -1416,7 +1415,7 @@ $LANG['setup'][68]="Comentariu pe E-mail";
 $LANG['setup'][69]="Tipuri de dispozitive"; 
 $LANG['setup'][70]="Setari generale"; 
 $LANG['setup'][71]="Firmware"; 
-$LANG['setup'][72]="Select a dropdown type"; 
+$LANG['setup'][72]="Selectați o casetă derulantă"; 
 $LANG['setup'][73]="Nod de retea"; 
 $LANG['setup'][74]="Nu puteti sterge aceasta locatie pentru ca are sub-locatii"; 
 $LANG['setup'][75]="Ca fiul al"; 
@@ -1444,12 +1443,12 @@ $LANG['setup'][97]="Modele de periferice";
 $LANG['setup'][102]="Nivel de logare"; 
 $LANG['setup'][103]="1- Critic (doar eroare de logare)"; 
 $LANG['setup'][104]="2- Servar (Nefolosit)"; 
-$LANG['setup'][105]="3- Important (logare reuşită)"; 
+$LANG['setup'][105]="3- Important (logare reușită)"; 
 $LANG['setup'][106]="4- Instintare (Adauga, Sterge, Urmarire)"; 
 $LANG['setup'][107]="5- Complet (Tot/Toate)"; 
 $LANG['setup'][108]="Numarul jurnalelor care vor fi printate"; 
 $LANG['setup'][109]="Cat timp vor fi tinute logarile in baza de date (in zile, 0 pentru infinit)"; 
-$LANG['setup'][110]="Afişează problemele noi după deschiderea sesiunii"; 
+$LANG['setup'][110]="Afișează problemele noi după deschiderea sesiunii"; 
 $LANG['setup'][111]="Numarul elementelor ce vor fi printate pe o pagina"; 
 $LANG['setup'][112]="Numarul maxim de caractere pentru fiecare obiect al listei"; 
 $LANG['setup'][113]="Limba implicita"; 
@@ -1498,7 +1497,7 @@ $LANG['setup'][165]="Parser-ul PHP a fost compilat fara functiile IMAP";
 $LANG['setup'][166]="Imposibil de utilizat IMAP/POP ca sursa externa de conexiune"; 
 $LANG['setup'][167]="Link-uri GLPI/LDAP"; 
 $LANG['setup'][168]="Optiuni de conexiune"; 
-$LANG['setup'][169]="Dosarul e-mail (opţional, de obicei INBOX)"; 
+$LANG['setup'][169]="Dosarul e-mail (opțional, de obicei INBOX)"; 
 $LANG['setup'][170]="Parametru rezultat din conexiune"; 
 $LANG['setup'][171]="Port (optional)"; 
 $LANG['setup'][172]="LDAP Port (implicit=389)"; 
@@ -1513,7 +1512,7 @@ $LANG['setup'][181]="ldap_start_tls nu exista";
 $LANG['setup'][182]="Conexiune URL alternativa in caz de eroare"; 
 $LANG['setup'][183]="Utilizeaza cache"; 
 $LANG['setup'][184]="Restrictii"; 
-$LANG['setup'][185]="Rapoarte în fişiere (SQL, E-mail, cron ...)"; 
+$LANG['setup'][185]="Rapoarte în fișiere (SQL, E-mail, cron ...)"; 
 $LANG['setup'][186]="Fus orar"; 
 $LANG['setup'][187]="Limita cache"; 
 $LANG['setup'][190]="Certificare x509"; 
@@ -1549,8 +1548,8 @@ $LANG['setup'][229]="Testeaza si trimite un E-mail administratorului";
 $LANG['setup'][230]="La actualizarea unei probleme"; 
 $LANG['setup'][231]="Folosirea unui server SMTP pentru a trimite e-mailuri"; 
 $LANG['setup'][232]="Gazda SMTP[:port] (separator ; pentru mai multe gazde)"; 
-$LANG['setup'][234]="Nume utilizator SMTP (opţional)"; 
-$LANG['setup'][235]="Parola SMTP (opţional)"; 
+$LANG['setup'][234]="Nume utilizator SMTP (opțional)"; 
+$LANG['setup'][235]="Parola SMTP (opțional)"; 
 $LANG['setup'][236]="Fostul responsabil insarcinat cu rezolvarea problemei"; 
 $LANG['setup'][237]="Administrator"; 
 $LANG['setup'][239]="Tehnicianul raspunzator de aceasta problema"; 
@@ -1758,7 +1757,7 @@ $LANG['transfer'][7]="Elemente de transferat";
 $LANG['transfer'][8]="Modul de transfer"; 
 
 $LANG['update'][88]="Versiunea dumneavoastră de bază de date nu este compatibilă cu versiunea codului instalat. O actualizare este necesară."; 
-$LANG['update'][89]="Aţi încercat să folosiţi GLPI cu o varianta a bazei de date destinată unei versiuni superioare. Trebuie să instalaţi versiunea corespunzătoare bazei dumneavoastră de date."; 
+$LANG['update'][89]="Ați încercat să folosiți GLPI cu o variantă a bazei de date destinată unei versiuni superioare. Trebuie să instalați versiunea corespunzătoare bazei dumneavoastră de date."; 
 $LANG['update'][90]="Eroare in timpul actualizarii bazei de date"; 
 $LANG['update'][91]="Atentie !"; 
 $LANG['update'][92]="Veti actualiza baza de date GLPI cu numele:"; 
@@ -1775,7 +1774,7 @@ $LANG['update'][132]="Daca ati folosit caracter de separare il puteti seta sa au
 $LANG['update'][133]="Puteti de asemenea puteti specificati o locatie radacina care include toate locatiile generate"; 
 $LANG['update'][134]="Caracter de separare"; 
 $LANG['update'][135]="Locatia radacina"; 
-$LANG['update'][136]="Aceasta este noua ierarhie creată. Dacă este OK o puteţi valida."; 
+$LANG['update'][136]="Aceasta este noua ierarhie creată. Dacă este OK o puteți valida."; 
 $LANG['update'][137]="Ierarhie noua"; 
 $LANG['update'][138]="Locatii actuale"; 
 $LANG['update'][139]="Tables Optimization"; 

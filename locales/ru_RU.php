@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //ru_RU
 
@@ -53,7 +52,7 @@ $LANG['bookmark'][6]="Вид по умолчанию";
 
 $LANG['buttons'][0]="Поиск"; 
 $LANG['buttons'][2]="Отправить"; 
-$LANG['buttons'][3]="Назначение"; 
+$LANG['buttons'][3]="Назначить"; 
 $LANG['buttons'][4]="Установить"; 
 $LANG['buttons'][5]="Удалить"; 
 $LANG['buttons'][6]="Удалить"; 
@@ -229,10 +228,10 @@ $LANG['common'][41]="Уведомления на Email";
 $LANG['common'][42]="Мобильный"; 
 $LANG['common'][43]="ФИО или Имя"; 
 $LANG['common'][44]="Цена по умолчанию"; 
-$LANG['common'][45]="Мб макс."; 
+$LANG['common'][45]="МБ макс."; 
 $LANG['common'][46]="Vcard"; 
 $LANG['common'][47]="Прогресс"; 
-$LANG['common'][48]="Название организации"; 
+$LANG['common'][48]="Фамилия"; 
 $LANG['common'][49]="Нисколько"; 
 $LANG['common'][50]="Подтвердить удаление?"; 
 $LANG['common'][51]="Полное название"; 
@@ -244,7 +243,7 @@ $LANG['common'][56]="Основная панель";
 $LANG['common'][57]="Заглавие"; 
 $LANG['common'][58]="Максимальное значение"; 
 $LANG['common'][59]="Глобально"; 
-$LANG['common'][60]="Активная"; 
+$LANG['common'][60]="Активен"; 
 $LANG['common'][61]="Неизвестная ошибка"; 
 $LANG['common'][62]="другое"; 
 $LANG['common'][63]="ошибка(ошибки)"; 
@@ -260,7 +259,7 @@ $LANG['common'][72]="Объект успешно удалён";
 $LANG['common'][73]="Объект успешно очищен"; 
 $LANG['common'][74]="Объект успешно восстановлен"; 
 $LANG['common'][75]="Нет прав сделать этот объект рекурсивным для этой организации"; 
-$LANG['common'][76]="Общий"; 
+$LANG['common'][76]="Общие"; 
 $LANG['common'][77]="Личный"; 
 $LANG['common'][78]="Сделать общей"; 
 $LANG['common'][79]="Сделать личной"; 
