@@ -1350,18 +1350,19 @@ function putSoftwareInTrash($ID, $comments = '') {
 function removeSoftwareFromTrash($ID) {
 	$s = new Software;
 
+	$s->restore(array (
+		"ID" => $ID
+	));
+
 	$s->getFromDB($ID);
 	$softcatrule = new SoftwareCategoriesRuleCollection;
 	$result = $softcatrule->processAllRules(null, null, $s->fields);
 
-	if (!empty ($result) && isset ($result["category"]))
-		$input["category"] = $result["category"];
-	else
-		$input["category"] = 0;
+	if (!empty ($result) && isset ($result["category"])) {
+         $s->update(array('ID'                    => $ID,
+                   'category' => $result['category']));
+   }
 
-	$s->restore(array (
-		"ID" => $ID
-	));
 }
 /**
  * Add a Software. If already exist in trash restore it
