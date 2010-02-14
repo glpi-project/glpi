@@ -41,7 +41,7 @@ checkRight("reports","r");
 commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
-               'Software');
+               'SoftwareLicense');
 
 # Titre
 echo "<div class='center b'><big>".$LANG['reports'][57]."</big></div><br><br>";
@@ -57,15 +57,31 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
    foreach ($_POST["item_type"] as $key => $val) {
       if (in_array($val,$items)) {
          $itemtable = getTableForItemType($val);
+
+         $deleted_field="`$itemtable`.`is_deleted`";
+         $location_field="`glpi_locations`.`completename`";
+         $add_leftjoin="LEFT JOIN `glpi_locations`
+                            ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)";
+         $template_condition="`$itemtable`.`is_template` ='0'";
+         if ($val=='SoftwareLicense') {
+            $deleted_field="`glpi_softwares`.`is_deleted`";
+            $location_field="''";
+            $add_leftjoin="LEFT JOIN `glpi_softwares` ON (`glpi_softwares`.`id`
+                                                      = `glpi_softwarelicenses`.`softwares_id`)";
+            $template_condition="`glpi_softwares`.`is_template` ='0'";
+         }
+
+
+
          $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
-                                `$itemtable`.`is_deleted` AS itemdeleted,
-                                `glpi_locations`.`completename` AS location,
+                                $deleted_field AS itemdeleted,
+                                $location_field AS location,
                                 `glpi_contracttypes`.`name` AS type, `glpi_infocoms`.`buy_date`,
                                 `glpi_infocoms`.`warranty_duration`, `glpi_contracts`.`begin_date`,
                                 `glpi_contracts`.`duration`,
                                 `glpi_entities`.`completename` AS entname,
                                 `glpi_entities`.`id` AS entID
-                         FROM `$itemtable`
+                         FROM `$itemtable` $add_leftjoin
                          LEFT JOIN `glpi_contracts_items`
                               ON (`glpi_contracts_items`.`itemtype` = '$val'
                                   AND `$itemtable`.`id` = `glpi_contracts_items`.`items_id`)
@@ -77,11 +93,9 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                                    AND `$itemtable`.`id` = `glpi_infocoms`.`items_id`)
                          LEFT JOIN `glpi_contracttypes`
                                ON (`glpi_contracts`.`contracttypes_id` = `glpi_contracttypes`.`id`)
-                         LEFT JOIN `glpi_locations`
-                               ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                          LEFT JOIN `glpi_entities`
                                ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`)
-                         WHERE `$itemtable`.`is_template` ='0' ".
+                         WHERE $template_condition ".
                                getEntitiesRestrictRequest("AND",$itemtable);
 
          if (isset($_POST["annee"][0]) && $_POST["annee"][0] != 'toutes') {
