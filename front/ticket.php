@@ -37,9 +37,16 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+checkLoginUser();
 
-commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
+if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   helpHeader($LANG['title'][10],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+} else {
+   commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
+}
+
+
+
 
 // Manage default value : search not old tickets
 if (!isset($_GET) || !is_array($_GET) || count($_GET)==0) {
@@ -50,7 +57,10 @@ if (!isset($_GET) || !is_array($_GET) || count($_GET)==0) {
 
 Search::show('Ticket');
 
-
-commonFooter();
+if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   helpFooter();
+} else {
+   commonFooter();
+}
 
 ?>
