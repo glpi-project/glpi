@@ -1550,16 +1550,6 @@ class Search {
                               `glpi_authmails`.`name` $order ";
             break;
 
-         case "glpi_contracts.expire" :
-            return " ORDER BY ADDDATE(`glpi_contracts`.`begin_date`,
-                                    INTERVAL `glpi_contracts`.`duration` MONTH) $order ";
-            break;
-
-         case "glpi_contracts.expire_notice" :
-            return " ORDER BY ADDDATE(`glpi_contracts`.`begin_date`,
-                                    INTERVAL (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
-                                    MONTH) $order ";
-            break;
 
          case "glpi_users.name" :
             if (!empty($searchopt[$ID]["linkfield"])) {
@@ -1595,9 +1585,18 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "date_delay" :
-               return " ORDER BY ADDDATE($table.".$searchopt[$ID]["datafields"][1].",
-                                       INTERVAL $table.".$searchopt[$ID]["datafields"][2]."
-                                       MONTH) $order ";
+               $interval="MONTH";
+               if (isset($searchopt[$ID]['delayunit'])) {
+                  $interval=$searchopt[$ID]['delayunit'];
+               }
+
+               $add_minus='';
+               if (isset($searchopt[$ID]["datafields"][3])) {
+                  $add_minus = "- `$table`.`".$searchopt[$ID]["datafields"][3]."`";
+               }
+               return " ORDER BY ADDDATE(`$table`.`".$searchopt[$ID]["datafields"][1]."`,
+                           INTERVAL (`$table`.`".$searchopt[$ID]["datafields"][2]."` $add_minus)
+                                       $interval) $order ";
                break;
          }
       }
@@ -1760,17 +1759,6 @@ class Search {
             }
             break;
 
-         case "glpi_contracts.expire_notice" : // ajout jmd
-            return "`$table$addtable`.`begin_date` AS ".$NAME."_$num,
-                  `$table$addtable`.`duration` AS ".$NAME."_".$num."_2,
-                  `$table$addtable`.`notice` AS ".$NAME."_".$num."_3, ";
-            break;
-
-         case "glpi_contracts.expire" : // ajout jmd
-            return "`$table$addtable`.`begin_date` AS ".$NAME."_$num,
-                  `$table$addtable`.`duration` AS ".$NAME."_".$num."_2, ";
-            break;
-
          case "glpi_softwarelicenses.number" :
             return " FLOOR(SUM(`$table$addtable`.`$field`)
                            * COUNT(DISTINCT `$table$addtable`.`id`)
@@ -1926,31 +1914,24 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "date_delay" :
+               $add_minus='';
+               if (isset($searchopt[$ID]["datafields"][3])) {
+                  $add_minus="-`$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
+               }
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])
                   ){
-   /*               return " GROUP_CONCAT
-                              (DISTINCT ADDDATE
-                                 (`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
-                                 INTERVAL
-                                 `$table$addtable`.".$searchopt[$ID]["datafields"][2]."
-                                 MONTH)
-                              SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-   */
                   return " GROUP_CONCAT(DISTINCT
-                              CONCAT(`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
+                              CONCAT(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
                                        ',',
-                                       `$table$addtable`.".$searchopt[$ID]["datafields"][2].")
+                                       `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`
+                                       $add_minus)
                               SEPARATOR '$$$$') AS ".$NAME."_$num, ";
                } else {
-   /*               return "`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`
-                              AS ".$NAME."_$num,
-                        `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`
-                              AS ".$NAME."_".$num."_2, ";
-   */
                   return "CONCAT(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
                                  ',',
-                                 `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`)
+                                 `$table$addtable`.`".$searchopt[$ID]["datafields"][2]."`
+                                 $add_minus)
                                  AS ".$NAME."_$num, ";
                }
                break;
@@ -2152,36 +2133,6 @@ class Search {
             }
             return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
 
-         case "glpi_contracts.expire" :
-            $search=array("/\&lt;/","/\&gt;/");
-            $replace=array("<",">");
-            $val=preg_replace($search,$replace,$val);
-            if (preg_match("/([<>=])(.*)/",$val,$regs)) {
-               return $link." DATEDIFF(ADDDATE(`$table`.`begin_date`,
-                                             INTERVAL `$table`.`duration` MONTH),
-                                       CURDATE() )".$regs[1].$regs[2]." ";
-            } else {
-               return $link." ADDDATE(`$table`.`begin_date`,
-                                    INTERVAL `$table`.`duration` MONTH) $SEARCH ";
-            }
-            break;
-
-         // ajout jmd
-         case "glpi_contracts.expire_notice" :
-            $search=array("/\&lt;/","/\&gt;/");
-            $replace=array("<",">");
-            $val=preg_replace($search,$replace,$val);
-            if (preg_match("/([<>])(.*)/",$val,$regs)){
-               return $link." `$table`.`notice`<>'0'
-                        AND DATEDIFF(ADDDATE(`$table`.`begin_date`,
-                                             INTERVAL (`$table`.`duration` - `$table`.`notice`) MONTH),
-                                    CURDATE() )".$regs[1].$regs[2]." ";
-            } else {
-               return $link." ADDDATE(`$table`.`begin_date`,
-                                    INTERVAL (`$table`.`duration` - `$table`.`notice`) MONTH) $SEARCH ";
-            }
-            break;
-
          case "glpi_infocoms.sink_time" :
          case "glpi_infocoms.warranty_duration" :
             $ADD = "";
@@ -2334,13 +2285,21 @@ class Search {
             case "datetime" :
             case "date_delay" :
                $date_computation=$tocompute;
-               $interval_search=" MONTH ";
+
+               $search_unit=' MONTH ';
+               if (isset($searchopt[$ID]['searchunit'])) {
+                  $search_unit=$searchopt[$ID]['searchunit'];
+               }
 
                if ($searchopt[$ID]["datatype"]=="date_delay") {
+                  $delay_unit=' MONTH ';
+                  if (isset($searchopt[$ID]['delayunit'])) {
+                     $delay_unit=$searchopt[$ID]['delayunit'];
+                  }
                   $date_computation="ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
                                              INTERVAL
                                              `$table`.".$searchopt[$ID]["datafields"][2]."
-                                             MONTH)";
+                                             $delay_unit)";
                }
                $search=array("/\&lt;/","/\&gt;/");
                $replace=array("<",">");
@@ -2350,7 +2309,7 @@ class Search {
                if (preg_match("/([<>=]+)(.*)/",$val,$regs)) {
                   if (is_numeric($regs[2])) {
                      return $link." $date_computation ".$regs[1]."
-                              ADDDATE(NOW(), INTERVAL ".$regs[2]." $interval_search) ";
+                              ADDDATE(NOW(), INTERVAL ".$regs[2]." $search_unit) ";
                   } else {
                      // Reformat date if needed
                      $regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
@@ -3170,18 +3129,6 @@ class Search {
          case "glpi_contracts.renewal" :
             return Contract::getContractRenewalName($data[$NAME.$num]);
 
-         case "glpi_contracts.expire_notice" : // ajout jmd
-            if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])) {
-               return getExpir($data[$NAME.$num],$data[$NAME.$num."_2"],$data[$NAME.$num."_3"]);
-            }
-            return "&nbsp;";
-
-         case "glpi_contracts.expire" : // ajout jmd
-            if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])){
-               return getExpir($data[$NAME.$num],$data[$NAME.$num."_2"]);
-            }
-            return "&nbsp;";
-
          case "glpi_infocoms.sink_time" :
             if (!empty($data[$NAME.$num])) {
                $split=explode("$$$$",$data[$NAME.$num]);
@@ -3425,6 +3372,7 @@ class Search {
             case "date_delay" :
                $split = explode('$$$$',$data[$NAME.$num]);
                $out='';
+
                foreach($split as $val) {
                   if (strpos($val,',')) {
                      list($dat,$dur)=explode(',',$val);
@@ -3433,10 +3381,6 @@ class Search {
                      }
                   }
                }
-   /*          if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])) {
-                  return getWarrantyExpir($data[$NAME.$num],$data[$NAME.$num."_2"]);
-               }
-   */
                return (empty($out) ? "&nbsp;" : $out);
 
             case "email" :
@@ -3857,7 +3801,8 @@ class Search {
             $search[$itemtype][134]['forcegroupby']  = true;
             $search[$itemtype][134]['datatype']      = 'date_delay';
             $search[$itemtype][134]['datafields'][1] = 'begin_date';
-            $search[$itemtype][134]['datafields'][2] = 'duration';
+            $search[$itemtype][134]['searchunit']    = 'duration';
+            $search[$itemtype][134]['delayunit']     = 'MONTH';
 
             $search[$itemtype][135]['table']        = 'glpi_contracts';
             $search[$itemtype][135]['field']        = 'notice';
@@ -3952,6 +3897,8 @@ class Search {
             $search[$itemtype][120]['datatype']      = 'date_delay';
             $search[$itemtype][120]['datafields'][1] = 'buy_date';
             $search[$itemtype][120]['datafields'][2] = 'warranty_duration';
+            $search[$itemtype][120]['searchunit']    = 'MONTH';
+            $search[$itemtype][120]['delayunit']     = 'MONTH';
             $search[$itemtype][120]['forcegroupby']  = true;
 
             $search[$itemtype][53]['table']        = 'glpi_suppliers_infocoms';
