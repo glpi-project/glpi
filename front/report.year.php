@@ -59,7 +59,7 @@ echo "<option value='Printer'>".$LANG['Menu'][2]."</option>";
 echo "<option value='NetworkEquipment'>".$LANG['help'][26]."</option>";
 echo "<option value='Monitor'>".$LANG['Menu'][3]."</option>";
 echo "<option value='Peripheral'>".$LANG['Menu'][16]."</option>";
-echo "<option value='Software'>".$LANG['Menu'][4]."</option>";
+echo "<option value='SoftwareLicense'>".$LANG['Menu'][4]." - ".$LANG['software'][11]."</option>";
 echo "<option value='Phone'>".$LANG['Menu'][34]."</option>";
 echo "</select> </p></td>";
 
