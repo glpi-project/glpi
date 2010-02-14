@@ -2349,8 +2349,8 @@ class Search {
 
                if (preg_match("/([<>=]+)(.*)/",$val,$regs)) {
                   if (is_numeric($regs[2])) {
-                     return $link." NOW() ".$regs[1]." ADDDATE($date_computation,
-                                                               INTERVAL ".$regs[2]." $interval_search) ";
+                     return $link." $date_computation ".$regs[1]."
+                              ADDDATE(NOW(), INTERVAL ".$regs[2]." $interval_search) ";
                   } else {
                      // Reformat date if needed
                      $regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
