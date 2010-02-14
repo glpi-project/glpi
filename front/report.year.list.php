@@ -46,7 +46,7 @@ checkRight("reports","r");
 
 commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-$items=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,SOFTWARE_TYPE,PHONE_TYPE);
+$items=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,SOFTWARELICENSE_TYPE,PHONE_TYPE);
 
 # Titre
 echo "<div align='center'><big><strong>".$LANG['reports'][57]."</strong></big><br><br>";
@@ -60,17 +60,34 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 	$query=array();
 	foreach ($_POST["item_type"] as $key => $val)
 	if (in_array($val,$items)){
-		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".deleted AS itemdeleted, ";
-		$query[$val].= " glpi_dropdown_locations.completename AS location, glpi_dropdown_contract_type.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.ID as entID ";
+
+      $deleted_field=$LINK_ID_TABLE[$val].".deleted";
+      $location_field="glpi_dropdown_locations.completename";
+      if ($val == SOFTWARELICENSE_TYPE) {
+         $deleted_field="glpi_software.deleted";
+         $location_field="''";
+      }
+
+		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, $deleted_field AS itemdeleted, ";
+		$query[$val].= " $location_field AS location, glpi_dropdown_contract_type.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.ID as entID ";
 		$query[$val].= " FROM ".$LINK_ID_TABLE[$val]." ";
+      if ($val == SOFTWARELICENSE_TYPE) {
+   		$query[$val].= " LEFT JOIN glpi_software ON (glpi_software.ID = glpi_softwarelicenses.sID) ";
+      }
 		$query[$val].= " LEFT JOIN glpi_contract_device ON glpi_contract_device.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_contract_device.FK_device ";
 		$query[$val].= " LEFT JOIN glpi_contracts ON glpi_contract_device.FK_contract=glpi_contracts.ID AND glpi_contract_device.FK_contract IS NOT NULL ";
 		$query[$val].= " LEFT JOIN glpi_infocoms ON glpi_infocoms.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_infocoms.FK_device ";
 		$query[$val].= " LEFT JOIN glpi_dropdown_contract_type ON (glpi_contracts.contract_type = glpi_dropdown_contract_type.ID) ";
-		$query[$val].= " LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$val].".location = glpi_dropdown_locations.ID) ";
+      if ($val != SOFTWARELICENSE_TYPE) {
+   		$query[$val].= " LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$val].".location = glpi_dropdown_locations.ID) ";
+      }
 		$query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".FK_entities = glpi_entities.ID) ";
 
-		$query[$val].=" WHERE ".$LINK_ID_TABLE[$val].".is_template ='0' ";
+      if ($val == SOFTWARELICENSE_TYPE) {
+   		$query[$val].=" WHERE glpi_software.is_template ='0' ";
+      } else {
+   		$query[$val].=" WHERE ".$LINK_ID_TABLE[$val].".is_template ='0' ";
+      }
 		$query[$val].= getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$val]);
 
 		if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
