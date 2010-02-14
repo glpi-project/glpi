@@ -137,6 +137,11 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 }
 
 
-commonFooter();
+if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   helpFooter();
+} else {
+   commonFooter();
+}
+
 
 ?>

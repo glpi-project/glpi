@@ -1310,7 +1310,7 @@ function helpHeader($title,$url='') {
    //  Suivi ticket
    if (haveRight("observe_ticket","1")) {
       echo "<li id='menu2' >";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\" title=\"".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php\" title=\"".
              $LANG['title'][10]."\" class='itemP'>".$LANG['title'][28]."</a>";
       echo "</li>";
    }
