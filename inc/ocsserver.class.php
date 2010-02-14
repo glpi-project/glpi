@@ -3788,7 +3788,7 @@ class OcsServer extends CommonDBTM {
                   $disk['device']=$line['FILESYSTEM'];
                   $disk['filesystems_id']=Dropdown::importExternal('Filesystem', $line["TYPE"]);
                } else if (in_array($line['FILESYSTEM'],array('ext4','ext3','ext2','jfs','jfs2',
-                                                             'smbfs','nfs','hfs','ufs',
+                                                             'xfs','smbfs','nfs','hfs','ufs',
                                                              'Journaled HFS+','fusefs','fuseblk')) ) {
                   $disk['name']=$line['VOLUMN'];
                   $disk['mountpoint']=$line['VOLUMN'];
