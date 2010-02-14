@@ -2079,7 +2079,10 @@ function initNavigateListItems($device_type,$title="",$sub_type=-1){
 	}
 	if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
 		$url=$_SERVER['HTTP_REFERER'];
-	} else {
+   // Special hack for 0.72 version.
+	}  elseif (strpos($_SERVER['PHP_SELF'],"helpdesk.public")>0 && $_GET['show']=="user") {
+     $url=$_SERVER['PHP_SELF']."?show=user";
+   } else {
 		$url=$_SERVER['PHP_SELF'];
 	}
 	if ($sub_type<0) {

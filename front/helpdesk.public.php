@@ -113,7 +113,8 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		}
 		$track=new Job();	
 		$track->check($_GET["ID"],'r');
-		$track->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']); 
+      $extra_param = array("show" => "user");
+		$track->showTabs($_GET["ID"],'',$_SESSION['glpi_tab'],$extra_param);
 		echo "<div id='tabcontent'></div>";
 	
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
