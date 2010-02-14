@@ -314,6 +314,8 @@ class Contract extends CommonDBTM {
       $tab[20]['datatype']      = 'date_delay';
       $tab[20]['datafields'][1] = 'begin_date';
       $tab[20]['datafields'][2] = 'duration';
+      $tab[20]['searchunit']    = 'MONTH';
+      $tab[20]['delayunit']     = 'MONTH';
 
       $tab[7]['table']     = 'glpi_contracts';
       $tab[7]['field']     = 'notice';
@@ -346,15 +348,26 @@ class Contract extends CommonDBTM {
       $tab[23]['linkfield'] = '';
       $tab[23]['name']      = $LANG['financial'][107];
 
-      $tab[12]['table']     = 'glpi_contracts';
-      $tab[12]['field']     = 'expire';
-      $tab[12]['linkfield'] = '';
-      $tab[12]['name']      = $LANG['financial'][98];
+      $tab[12]['table']         = 'glpi_contracts';
+      $tab[12]['field']         = 'expire';
+      $tab[12]['linkfield']     = '';
+      $tab[12]['name']          = $LANG['financial'][98];
+      $tab[12]['datatype']     = 'date_delay';
+      $tab[12]['datafields'][1] = 'begin_date';
+      $tab[12]['datafields'][2] = 'duration';
+      $tab[12]['searchunit']    = 'DAY';
+      $tab[12]['delayunit']     = 'MONTH';
 
       $tab[13]['table']     = 'glpi_contracts';
       $tab[13]['field']     = 'expire_notice';
       $tab[13]['linkfield'] = '';
       $tab[13]['name']      = $LANG['financial'][99];
+      $tab[13]['datatype']     = 'date_delay';
+      $tab[13]['datafields'][1] = 'begin_date';
+      $tab[13]['datafields'][2] = 'duration';
+      $tab[13]['datafields'][3] = 'notice';
+      $tab[13]['searchunit']    = 'DAY';
+      $tab[13]['delayunit']     = 'MONTH';
 
       $tab[16]['table']     = 'glpi_contracts';
       $tab[16]['field']     = 'comment';
