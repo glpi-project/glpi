@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset($_SESSION["noAUTO"])
     && isset($_SESSION["glpiauthtype"])
-    && $_SESSION["glpiauthtype"]==AUTH_CAS) {
+    && $_SESSION["glpiauthtype"]==Auth::CAS) {
 
    include (GLPI_ROOT . "/lib/phpcas/CAS.php");
    $cas=new phpCAS();

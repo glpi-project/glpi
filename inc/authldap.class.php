@@ -755,7 +755,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<div class='center'>";
             echo "<form method='post' action=\"$target\">";
             switch($data["authtype"]) {
-               case AUTH_LDAP :
+               case Auth::LDAP :
                   //Look it the auth server still exists !
                   // <- Bad idea : id not exists unable to change anything
                   $sql = "SELECT `name`
@@ -774,21 +774,21 @@ class AuthLDAP extends CommonDBTM {
                   AuthLdap::formChangeAuthMethodToMail($ID);
                   break;
 
-               case AUTH_DB_GLPI :
+               case Auth::DB_GLPI :
                   AuthLdap::formChangeAuthMethodToLDAP($ID);
                   echo "<br>";
                   AuthLdap::formChangeAuthMethodToMail($ID);
                   break;
 
-               case AUTH_MAIL :
+               case Auth::MAIL :
                   AuthLdap::formChangeAuthMethodToDB($ID);
                   echo "<br>";
                   AuthLdap::formChangeAuthMethodToLDAP($ID);
                   break;
 
-               case AUTH_CAS :
-               case AUTH_EXTERNAL :
-               case AUTH_X509 :
+               case Auth::CAS :
+               case Auth::EXTERNAL :
+               case Auth::X509 :
                   if ($CFG_GLPI['authldaps_id_extra']) {
                      $sql = "SELECT `name`
                              FROM `glpi_authldaps`
@@ -1067,7 +1067,7 @@ class AuthLDAP extends CommonDBTM {
       $sql = "SELECT `name`, `date_mod`
               FROM `glpi_users` ";
       if ($values['mode']) {
-         $sql.=" WHERE `authtype` IN (-1,".AUTH_LDAP.",".AUTH_EXTERNAL.") ";
+         $sql.=" WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.") ";
       }
       $sql.="ORDER BY `name` ".$values['order'];
 
@@ -1416,7 +1416,7 @@ class AuthLDAP extends CommonDBTM {
             if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login), "")) {
                //Add the auth method
                if (!$sync) {
-                  $user->fields["authtype"] = AUTH_LDAP;
+                  $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
                }
                // Force date mod
@@ -1656,7 +1656,7 @@ class AuthLDAP extends CommonDBTM {
          $auth->user->getFromLDAP($auth->ldap_connection,$ldap_method, $user_dn, $login,
                                          $password);
          $auth->auth_parameters = $ldap_method;
-         $auth->user->fields["authtype"] = AUTH_LDAP;
+         $auth->user->fields["authtype"] = Auth::LDAP;
          $auth->user->fields["auths_id"] = $ldap_method["id"];
       }
       return $auth;

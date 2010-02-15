@@ -42,15 +42,15 @@ header_nocache();
 checkRight("user","w");
 if ($_POST["authtype"] > 0) {
    switch($_POST["authtype"]) {
-      case AUTH_DB_GLPI :
+      case Auth::DB_GLPI :
          echo "<input type='hidden' name='auth_server' value='0'>";
          break;
-      case AUTH_LDAP :
-      case AUTH_EXTERNAL :
+      case Auth::LDAP :
+      case Auth::EXTERNAL :
          Dropdown::show('AuthLDAP', array('name' => "auth_server"));
          break;
 
-      case AUTH_MAIL :
+      case Auth::MAIL :
          Dropdown::show('AuthMail', array('name' => "auth_server"));
          break;
    }

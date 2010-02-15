@@ -2482,9 +2482,9 @@ class Search {
       switch ($new_table) {
          // No link
          case "glpi_auth_tables" :
-            return " LEFT JOIN `glpi_authldaps` ON (`glpi_users`.`authtype` = ".AUTH_LDAP."
+            return " LEFT JOIN `glpi_authldaps` ON (`glpi_users`.`authtype` = ".Auth::LDAP."
                                                    AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)
-                     LEFT JOIN `glpi_authmails` ON (`glpi_users`.`authtype` = ".AUTH_MAIL."
+                     LEFT JOIN `glpi_authmails` ON (`glpi_users`.`authtype` = ".Auth::MAIL."
                                                    AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
 
          case "glpi_reservationitems" :

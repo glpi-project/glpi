@@ -244,7 +244,7 @@ class AuthMail extends CommonDBTM {
             $auth->user->getFromIMAP($mail_method, decodeFromUtf8($login));
 
             //Update the authentication method for the current user
-            $auth->user->fields["authtype"] = AUTH_MAIL;
+            $auth->user->fields["authtype"] = Auth::MAIL;
             $auth->user->fields["auths_id"] = $mail_method["id"];
          }
       }
