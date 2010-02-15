@@ -200,27 +200,38 @@ function display_infocoms_report($device_type,$begin,$end){
 			echo "</td></tr>";
 		}
 		echo "</table>";
-
+      return true;
 	}
+   return false;
 }
 
-echo "<table>";
-echo "<tr><td>";
-display_infocoms_report(COMPUTER_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
-display_infocoms_report(MONITOR_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td></tr>";
-echo "<tr><td>";
-display_infocoms_report(NETWORKING_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
-display_infocoms_report(PRINTER_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td></tr>";
-echo "<tr><td>";
-display_infocoms_report(PERIPHERAL_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
-display_infocoms_report(PHONE_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td></tr>";
-echo "</table>";
+
+
+$types=array(COMPUTER_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
+
+$i=0;
+while (count($types)>0) {
+   if ($i==0){
+      echo "<table><tr><td valign='top'>";
+   }
+   $type=array_shift($types);
+   if (display_infocoms_report($type,$_POST["date1"],$_POST["date2"])) {
+      echo "</td>";
+      $i++;
+      if (($i%2)==0){
+         echo "</tr><tr>";
+      }
+      echo "<td valign='top'>";
+   }
+}
+if (($i%2)==0){
+   echo "</td><td>&nbsp;";
+}
+
+if ($i>0){
+   echo "</td></tr></table>";
+}
+
 
 
 

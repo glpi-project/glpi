@@ -62,7 +62,7 @@ echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVE
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $LANG['search'][8]." :</td><td>";
 showDateFormItem("date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\"></td></tr>";
 echo "<tr class='tab_bg_2'><td align='right'>".$LANG['search'][9]." :</td><td>";
 showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
@@ -192,24 +192,38 @@ function display_infocoms_report($device_type,$begin,$end){
 				echo "</td></tr>";
 			}
 			echo "</table>";
-
+         return true;
 		}
 	}
+   return false;
 }
 
-echo "<table width='90%'>";
-echo "<tr><td align='center' valign='top'>";
-display_infocoms_report(CONSUMABLE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td><td  align='center' valign='top'>";
-display_infocoms_report(CARTRIDGE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td></tr>";
-echo "<tr><td>";
-display_infocoms_report(SOFTWARELICENSE_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>&nbsp;";
 
-echo "</td></tr>";
-echo "</table>";
+$types=array(CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE,SOFTWARELICENSE_TYPE);
 
+$i=0;
+while (count($types)>0) {
+   if ($i==0){
+      echo "<table width='90%'><tr><td align='center' valign='top'>";
+   }
+   $type=array_shift($types);
+   if (display_infocoms_report($type,$_POST["date1"],$_POST["date2"])) {
+      echo "</td>";
+      $i++;
+      if (($i%2)==0){
+         echo "</tr><tr>";
+      }
+      echo "<td align='center' valign='top'>";
+   }
+}
+
+if (($i%2)==0){
+   echo "</td><td>&nbsp;";
+}
+
+if ($i>0){
+   echo "</td></tr></table>";
+}
 
 
 echo "<div align='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeurtot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettetot)."</h3></div>";
