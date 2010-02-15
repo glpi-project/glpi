@@ -224,7 +224,7 @@ while (count($types)>0) {
       if (($i%2)==0){
          echo "</tr><tr>";
       }
-      echo "<td valign='top'>";
+      echo "<td class='center top'>";
    }
 }
 if ($i>0){
