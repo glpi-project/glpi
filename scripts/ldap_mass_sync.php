@@ -36,18 +36,18 @@
 // ----------------------------------------------------------------------
 
 if ($argv) {
-	for ($i=1;$i<count($argv);$i++)
-	{
-		//To be able to use = in search filters, enter \= instead in command line
-		//Replace the \= by ° not to match the split function
-		$arg=str_replace('\=','°',$argv[$i]);
-		$it = explode("=",$arg);
-		$it[0] = preg_replace('/^--/','',$it[0]);
+   for ($i=1;$i<count($argv);$i++)
+   {
+      //To be able to use = in search filters, enter \= instead in command line
+      //Replace the \= by ° not to match the split function
+      $arg=str_replace('\=','°',$argv[$i]);
+      $it = explode("=",$arg);
+      $it[0] = preg_replace('/^--/','',$it[0]);
 
-		//Replace the ° by = the find the good filter
-		$it=str_replace('°','=',$it);
-		$_GET[$it[0]] = $it[1];
-	}
+      //Replace the ° by = the find the good filter
+      $it=str_replace('°','=',$it);
+      $_GET[$it[0]] = $it[1];
+   }
 }
 
 define('GLPI_ROOT', '..');
@@ -56,8 +56,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 // Default action : synchro
 // - possible option :
 //   - 0 : import new users
-//	 - 1 : synchronize users
-//	 - 2 : force synchronization of all the users (even if ldap timestamp wasn't modified)
+//  - 1 : synchronize users
+//  - 2 : force synchronization of all the users (even if ldap timestamp wasn't modified)
 if (!isset($_GET["action"])) $_GET["action"]=1;
 
 //If no ldap_server ID is given, then use all the available servers
@@ -68,17 +68,17 @@ if (!isset($_GET["filter"])) $_GET["filter"]='';
 
 //Get the ldap server's id by his name
 if ($_GET["server_id"] != '')
-	$sql = "SELECT id, name from glpi_auth_ldap WHERE id=" . $_GET["server_id"];
+   $sql = "SELECT id, name from glpi_auth_ldap WHERE id=" . $_GET["server_id"];
 else
-	$sql = "SELECT id, name from glpi_auth_ldap";
+   $sql = "SELECT id, name from glpi_auth_ldap";
 
 $result = $DB->query($sql);
 if ($DB->numrows($result) == 0 && $_GET["server_id"] != '')
-	echo "LDAP Server not found";
+   echo "LDAP Server not found";
 else
 {
-	while ($datas = $DB->fetch_array($result))
-		import ($_GET["action"],$datas,$_GET["filter"]);
+   while ($datas = $DB->fetch_array($result))
+      import ($_GET["action"],$datas,$_GET["filter"]);
 
 }
 
@@ -89,13 +89,14 @@ else
  */
 function import($action, $datas,$filter='')
 {
-	//The ldap server id is passed in the script url (parameter server_id)
-	$server_id = $datas["id"];
-	$users = AuthLdap::getAllLdapUsers($server_id, $action,$filter);
+   //The ldap server id is passed in the script url (parameter server_id)
+   $action['ldapservers_id'] = $datas["id"];
+   $action['ldap_filter'] = $filter;
+   $users = AuthLdap::getAllLdapUsers($action);
 
-	foreach ($users as $user) {
-		AuthLdap::ldapImportUserByServerId($user["user"], $action, $server_id);
-		echo ".";
-	}
+   foreach ($users as $user) {
+      AuthLdap::ldapImportUserByServerId($user["user"], $action, $datas["id"]);
+      echo ".";
+   }
 }
 ?>
