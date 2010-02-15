@@ -870,17 +870,13 @@ class AuthLDAP extends CommonDBTM {
 
 
       $values['order'] = 'DESC';
-      //$values['mode'] = 0;
-      //$values['ldap_filter'] = '';
       $values['start'] = 0;
-      //$values['ldapservers_id'] = (isset($_SESSION["ldap_server"])?$_SESSION["ldap_server"]:0);
-      //$values['entities_id'] = $_SESSION['glpiactive_entity'];
 
       foreach ($_SESSION['ldap_import'] as $option => $value) {
          $values[$option] = $value;
       }
 
-      $ldap_users = AuthLdap::getAllLdapUsers($_SESSION['ldap_import']['ldapservers_id'], $values);
+      $ldap_users = AuthLdap::getAllLdapUsers($values);
 
       if (is_array($ldap_users)) {
          $numrows = count($ldap_users);
@@ -992,12 +988,11 @@ class AuthLDAP extends CommonDBTM {
     * @param   $order display order
     * @return  array of the user
     */
-   static function getAllLdapUsers($auths_id, $options = array()) {
-   //static function getAllLdapUsers($auths_id, $sync = 0,$myfilter='',$order='DESC') {
+   static function getAllLdapUsers($options = array()) {
       global $DB, $LANG,$CFG_GLPI;
 
       $config_ldap = new AuthLDAP();
-      $res = $config_ldap->getFromDB($auths_id);
+      $res = $config_ldap->getFromDB($options['ldapservers_id']);
 
       $values['order'] = 'DESC';
       $values['mode'] = 0;
@@ -1032,10 +1027,6 @@ class AuthLDAP extends CommonDBTM {
          } else {
             $filter = $values['ldap_filter'];
          }
-
-         //if (!empty ($config_ldap->fields['condition'])) {
-         //   $filter = "(& $filter ".$config_ldap->fields['condition'].")";
-         //}
 
          $sr = @ldap_search($ds, $values['basedn'],$filter , $attrs);
          if ($sr) {
@@ -1752,8 +1743,14 @@ class AuthLDAP extends CommonDBTM {
    }
 
    static function manageValuesInSession($options=array(),$delete=false) {
-         $fields = array('interface','mode','criterias','action','entities_id','ldapservers_id',
-                         'ldap_filter');
+         $fields = array('interface',
+                        'mode',
+                        'criterias',
+                        'action',
+                        'entities_id',
+                        'ldapservers_id',
+                        'ldap_filter',
+                        'basedn');
 
       if (!$delete) {
          if (!isset($_SESSION['ldap_import']['entities_id'])) {
@@ -1992,17 +1989,17 @@ class AuthLDAP extends CommonDBTM {
          $entitydata = new EntityData;
          $entitydata->getFromDB($_SESSION['ldap_import']['entities_id']);
 
-         $options['basedn'] = $entitydata->getField('ldap_dn');
+         $_SESSION['ldap_import']['basedn'] = $entitydata->getField('ldap_dn');
          $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
          $_SESSION['ldap_import']['ldap_filter'] =
                            AuthLdap::buildLdapFilter($authldap,
-                                                     array('criterias'=>(isset($options['criterias'])
-                                                     ?$options['criterias']:array()),
+                                                     array('criterias'=>(isset($_SESSION['ldap_import']['criterias'])
+                                                     ?$_SESSION['ldap_import']['criterias']:array()),
                                                      'entity_filter'=>$_SESSION['ldap_import']['ldap_filter']));
       }
       else {
          $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
-         $options['basedn'] = $authldap->getField('basedn');
+         $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
          //If directory was changed
          if ($_SESSION['ldap_import']['ldap_filter'] == '') {
             $_SESSION['ldap_import']['ldap_filter'] =
@@ -2023,8 +2020,8 @@ class AuthLDAP extends CommonDBTM {
 
          $attrs = array ('dn',$authldap->getField('login_field'));
          //Build basedn : if no basedn specified in entity, take the one of the global conf
-         if ($options['basedn'] == '') {
-           $options['basedn'] = $authldap->getField('basedn');
+         if ($_SESSION['ldap_import']['basedn'] == '') {
+           $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
          }
 
          AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],$options);
