@@ -40,6 +40,8 @@ class AuthLDAP extends CommonDBTM {
 
    const SIMPLE_INTERFACE = 'simple';
    const EXPERT_INTERFACE = 'expert';
+   // From CommonDBTM
+   public $dohistory = true;
 
    static function getTypeName() {
       global $LANG;
@@ -470,6 +472,7 @@ class AuthLDAP extends CommonDBTM {
          $ong[4] = $LANG['entity'][0];
          $ong[5] = $LANG['entity'][14];
          $ong[6] = $LANG['ldap'][22];
+         $ong[12]=$LANG['title'][38];
       }
       return $ong;
    }
@@ -518,11 +521,45 @@ class AuthLDAP extends CommonDBTM {
       $tab[7]['name']      = $LANG['ldap'][44];
       $tab[7]['datatype']  = 'bool';
 
-      $tab[19]['table']       = 'glpi_authldaps';
-      $tab[19]['field']       = 'date_mod';
-      $tab[19]['linkfield']   = '';
-      $tab[19]['name']        = $LANG['common'][26];
-      $tab[19]['datatype']    = 'datetime';
+      $tab[8]['table']     = 'glpi_authldaps';
+      $tab[8]['field']     = 'login_field';
+      $tab[8]['linkfield'] = '';
+      $tab[8]['name']      = $LANG['setup'][14];
+
+      $tab[9]['table']     = 'glpi_authldaps';
+      $tab[9]['field']     = 'realname_field';
+      $tab[9]['linkfield'] = '';
+      $tab[9]['name']      = $LANG['common'][48];
+
+      $tab[10]['table']     = 'glpi_authldaps';
+      $tab[10]['field']     = 'firstname_field';
+      $tab[10]['linkfield'] = '';
+      $tab[10]['name']      = $LANG['common'][43];
+
+      $tab[11]['table']     = 'glpi_authldaps';
+      $tab[11]['field']     = 'phone_field';
+      $tab[11]['linkfield'] = '';
+      $tab[11]['name']      = $LANG['help'][35];
+
+      $tab[12]['table']     = 'glpi_authldaps';
+      $tab[12]['field']     = 'phone2_field';
+      $tab[12]['linkfield'] = '';
+      $tab[12]['name']      = $LANG['help'][35]." 2";
+
+      $tab[13]['table']     = 'glpi_authldaps';
+      $tab[13]['field']     = 'mobile_field';
+      $tab[13]['linkfield'] = '';
+      $tab[13]['name']      = $LANG['common'][42];
+
+      $tab[14]['table']     = 'glpi_authldaps';
+      $tab[14]['field']     = 'title_field';
+      $tab[14]['linkfield'] = '';
+      $tab[14]['name']      = $LANG['users'][1];
+
+      $tab[15]['table']     = 'glpi_authldaps';
+      $tab[15]['field']     = 'category_field';
+      $tab[15]['linkfield'] = '';
+      $tab[15]['name']      = $LANG['users'][2];
 
       $tab[16]['table']     = 'glpi_authldaps';
       $tab[16]['field']     = 'comment';
@@ -530,6 +567,48 @@ class AuthLDAP extends CommonDBTM {
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
+
+      $tab[17]['table']     = 'glpi_authldaps';
+      $tab[17]['field']     = 'email_field';
+      $tab[17]['linkfield'] = '';
+      $tab[17]['name']      = $LANG['setup'][14];
+
+      $tab[18]['table']     = 'glpi_authldaps';
+      $tab[18]['field']     = 'use_dn';
+      $tab[18]['linkfield'] = '';
+      $tab[18]['name']      = $LANG['setup'][262];
+      $tab[18]['datatype']  = 'bool';
+
+      $tab[19]['table']       = 'glpi_authldaps';
+      $tab[19]['field']       = 'date_mod';
+      $tab[19]['linkfield']   = '';
+      $tab[19]['name']        = $LANG['common'][26];
+      $tab[19]['datatype']    = 'datetime';
+
+      $tab[20]['table']     = 'glpi_authldaps';
+      $tab[20]['field']     = 'language_field';
+      $tab[20]['linkfield'] = '';
+      $tab[20]['name']      = $LANG['setup'][41];
+
+      $tab[21]['table']     = 'glpi_authldaps';
+      $tab[21]['field']     = 'group_field';
+      $tab[21]['linkfield'] = '';
+      $tab[21]['name']      = $LANG['setup'][260];
+
+      $tab[22]['table']     = 'glpi_authldaps';
+      $tab[22]['field']     = 'group_condition';
+      $tab[22]['linkfield'] = '';
+      $tab[22]['name']      = $LANG['setup'][253];
+
+      $tab[23]['table']     = 'glpi_authldaps';
+      $tab[23]['field']     = 'group_member_field';
+      $tab[23]['linkfield'] = '';
+      $tab[23]['name']      = $LANG['setup'][255];
+
+      $tab[24]['table']     = 'glpi_authldaps';
+      $tab[24]['field']     = 'group_search_type';
+      $tab[24]['linkfield'] = '';
+      $tab[24]['name']      = $LANG['setup'][254];
       return $tab;
    }
 
