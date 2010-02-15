@@ -352,6 +352,10 @@ class Identification {
 							$_SESSION["glpi$field"] = $this->user->fields[$field];
 						}
 					}
+
+               if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
+                  $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
+               }
                // Init not set value for language
                if (empty($_SESSION["glpilanguage"])){
                   $_SESSION["glpilanguage"]=$CFG_GLPI['language'];
