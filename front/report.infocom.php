@@ -226,6 +226,10 @@ while (count($types)>0) {
       echo "<td valign='top'>";
    }
 }
+if (($i%2)==0){
+   echo "</td><td>&nbsp;";
+}
+
 if ($i>0){
    echo "</td></tr></table>";
 }
