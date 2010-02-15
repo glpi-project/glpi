@@ -51,17 +51,19 @@ else {
    commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 }
 
-
-
 if ($_SESSION['ldap_import']['action'] == 'show') {
    $_REQUEST['target']=$_SERVER['PHP_SELF'];
-   AuthLdap::showUserImportForm($_REQUEST);
+
+   $authldap = new AuthLDAP;
+   $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
+
+   AuthLdap::showUserImportForm($authldap);
    if (isset($_SESSION['ldap_import']['ldapservers_id']) &&
        $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE
          && isset($_SESSION['ldap_import']['criterias'])
             && !empty($_SESSION['ldap_import']['criterias'])) {
       echo "<br />";
-      AuthLdap::searchUser($_SERVER['PHP_SELF'],$_REQUEST);
+      AuthLdap::searchUser($authldap);
    }
 } else {
    if (isset($_SESSION["ldap_process"])) {

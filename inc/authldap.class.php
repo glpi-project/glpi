@@ -864,10 +864,8 @@ class AuthLDAP extends CommonDBTM {
     * @param   $order display order
     * @return  nothing
     */
-   static function showLdapUsers($target, $options = array ()) {
-   //static function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DESC') {
+   static function showLdapUsers() {
       global $DB, $CFG_GLPI, $LANG;
-
 
       $values['order'] = 'DESC';
       $values['start'] = 0;
@@ -884,7 +882,7 @@ class AuthLDAP extends CommonDBTM {
          $form_action = "process_ok";
 
          if ($numrows > 0) {
-            printPager($values['start'], $numrows, $target,'');
+            printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
 
             // delete end
             array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
@@ -894,23 +892,26 @@ class AuthLDAP extends CommonDBTM {
             }
 
             echo "<div class='center'>";
-            echo "<form method='post' id='ldap_form' name='ldap_form' action='" . $target . "'>";
+            echo "<form method='post' id='ldap_form' name='ldap_form' action='" .
+                     $_SERVER['PHP_SELF'] . "'>";
 
             //Input fields (needed because of the pager...)
             echo "<a href='" .
-                  $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
+                  $_SERVER['PHP_SELF'] . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
                       return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
-                  $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
+                  $_SERVER['PHP_SELF'] . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
                       return false;\">" .
                   $LANG['buttons'][19] . "</a>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . (!$_SESSION['ldap_import']['mode']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
+            echo "<tr><th>" .
+               (!$_SESSION['ldap_import']['mode']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
             $num=0;
             echo Search::showHeaderItem(HTML_OUTPUT,
                                   $LANG['Menu'][14],
                                   $num,
-                                  $target."?order=".($values['order']=="DESC"?"ASC":"DESC"));
+                                  $_SERVER['PHP_SELF'].
+                                       "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>";
             if ($_SESSION['ldap_import']['mode']) {
                echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
@@ -962,14 +963,14 @@ class AuthLDAP extends CommonDBTM {
             echo "</td></tr>";
             echo "</table></form>";
             echo "<a href='" .
-                  $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
+                  $_SERVER['PHP_SELF'] . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
                       return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
-                  $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
+                  $_SERVER['PHP_SELF'] . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
                       return false;\">" .
                   $LANG['buttons'][19] . "</a>";
             echo "</div>";
-            printPager($values['start'], $numrows, $target,'');
+            printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
          } else {
             echo "<div class='center'><strong>" .
                         ($_SESSION['ldap_import']['mode']?$LANG['ldap'][43]:$LANG['ldap'][3]) . "</strong></div>";
@@ -1752,6 +1753,7 @@ class AuthLDAP extends CommonDBTM {
                         'ldap_filter',
                         'basedn');
 
+      //If form accessed via popup, do not show expert mode link
       if (isset($options['popup'])) {
          $_SESSION['ldap_import']['popup'] = 1;
          $_SESSION['ldap_import']['no_expert_mode'] = 1;
@@ -1783,37 +1785,51 @@ class AuthLDAP extends CommonDBTM {
                $_SESSION['ldap_import'][$field] = $options[$field];
             }
          }
+
+         if (!isset($_SESSION['ldap_import']['criterias'])) {
+            $_SESSION['ldap_import']['criterias'] = array();
+         }
+
+         $authldap = new AuthLdap;
+         //Filter computation
+         if ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE) {
+
+            $entitydata = new EntityData;
+            if ($entitydata->getFromDB($_SESSION['ldap_import']['entities_id'])
+                  && $entitydata->getField('ldapservers_id') > 0) {
+               $_SESSION['ldap_import']['ldapservers_id'] = $entitydata->getField('ldapservers_id');
+               $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
+               $_SESSION['ldap_import']['basedn'] = $entitydata->getField('ldap_dn');
+               $_SESSION['ldap_import']['ldap_filter'] =
+                                 AuthLdap::buildLdapFilter($authldap);
+               }
+         }
+         elseif (!isset($_SESSION['ldap_import']['ldap_filter']) ||
+                         $_SESSION['ldap_import']['ldap_filter'] == '') {
+            $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
+            $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
+            $_SESSION['ldap_import']['ldap_filter'] =
+                              AuthLdap::buildLdapFilter($authldap);
+         }
       }
+      //Unset all values in session
       else {
          unset($_SESSION['ldap_import']);
       }
    }
 
-   static function showUserImportForm($options) {
+   static function showUserImportForm(AuthLDAP $authldap) {
       global $DB, $LANG;
 
-      $authldap = new AuthLDAP;
-
       //Get data related to entity (directory and ldap filter)
-      $entitydata = new EntityData;
-      $entitydata->getFromDB($_SESSION['ldap_import']['entities_id']);
-
-      //If in simple mode : get entitydata
-      if ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE) {
-         $_SESSION['ldap_import']['ldapservers_id'] = $entitydata->getField('ldapservers_id');
-      }
-
-      //If directory is available, get data for it
-      if ($_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE) {
-         $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
-      }
-
+      $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
       echo "<div class='center'>";
 
-      echo "<form method='post' action=\"".$options['target']."\">";
+      echo "<form method='post' action=\"".$_SERVER['PHP_SELF']."\">";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" .($_SESSION['ldap_import']['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]);
+      echo "<tr><th colspan='4'>" .
+                              ($_SESSION['ldap_import']['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]);
       echo "</th></tr>";
 
       //Do not display entity dropdown when glpi is in mono entity mode
@@ -1822,8 +1838,9 @@ class AuthLDAP extends CommonDBTM {
          if (haveRight("user_authtype","w")) {
             //If not coming from the ticket form, then give expert/simple link
             if (!isset($_SESSION['ldap_import']['no_expert_mode'])) {
-               echo "<tr class='tab_bg_2'><td>".$LANG['common'][65]."</td><td colspan='3' align='left'>";
-               echo "<a href='".$options['target']."?action=".$_SESSION['ldap_import']['action'].
+               echo "<tr class='tab_bg_2'><td>".$LANG['common'][65].
+                                         "</td><td colspan='3' align='left'>";
+               echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
                             "&mode=".$_SESSION['ldap_import']['mode'].
                             "&interface=".
                              ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
@@ -1853,14 +1870,15 @@ class AuthLDAP extends CommonDBTM {
                   echo "</td></tr>";
                }
 
-               if ($_SESSION['ldap_import']['ldap_filter'] == '') {
-                  $_SESSION['ldap_import']['ldap_filter'] =
-                                 AuthLdap::buildLdapFilter($authldap,
-                                                           array('criterias'=>(isset($_SESSION['ldap_import']['criterias'])
-                                                           ?$_SESSION['ldap_import']['criterias']:array())));
-               }
-
-               echo "<input type='hidden' name='entities_id' value='".$_SESSION['ldap_import']['entities_id']."'>";
+               echo "<input type='hidden'
+                            name='entities_id'
+                            value='".$_SESSION['ldap_import']['entities_id']."'>";
+               echo "<tr class='tab_bg_2'><td>Basedn</td><td colspan='3'>";
+               echo "<input type='text' name='basedn'
+                          value='".$_SESSION['ldap_import']['basedn'].
+                         "' size='90' ".
+                              (!$_SESSION['ldap_import']['basedn']?"disabled":"").">";
+               echo "</td></tr>";
                echo "<tr class='tab_bg_2'><td>".$LANG['setup'][263]."</td><td colspan='3'>";
                echo "<input type='text' name='ldap_filter'
                           value='".$_SESSION['ldap_import']['ldap_filter'].
@@ -1909,10 +1927,10 @@ class AuthLDAP extends CommonDBTM {
                }
                echo "<td>$label</td><td>";
                $field_counter++;
-               echo "<input type='text' name='criterias[$field]' value='".
-                                                               (isset($_SESSION['ldap_import']['criterias'][$field])?
-                                                                      $_SESSION['ldap_import']['criterias'][$field]:
-                                                                      '')."'>";
+               echo "<input type='text'
+                            name='criterias[$field]'
+                            value='".(isset($_SESSION['ldap_import']['criterias'][$field])?
+                                            $_SESSION['ldap_import']['criterias'][$field]:'')."'>";
                echo "</td>";
                if ($field_counter==2) {
                   echo "</tr>";
@@ -1932,7 +1950,10 @@ class AuthLDAP extends CommonDBTM {
 
          if ($_SESSION['ldap_import']['ldapservers_id']) {
             echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
-            echo "<input  class='submit' type='submit' name='search' value='".$LANG['buttons'][0]."'>";
+            echo "<input  class='submit'
+                          type='submit'
+                          name='search'
+                          value='".$LANG['buttons'][0]."'>";
             echo "</td></tr>";
          }
          else {
@@ -1956,15 +1977,13 @@ class AuthLDAP extends CommonDBTM {
       return $DB->result($result,0,'cpt');
    }
 
-   static private function buildLdapFilter(AuthLdap $authldap, $options = array()) {
+   static private function buildLdapFilter(AuthLdap $authldap) {
       //Build search filter
 
-      if (!isset($options['entity_filter']) || $options['entity_filter']) {
-         $options['entity_filter'] = '';
-      }
       $counter = 0;
       $filter = '';
-      if (!empty($_SESSION['ldap_import']['criterias'])) {
+      if (!empty($_SESSION['ldap_import']['criterias'])
+         && $_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE) {
          foreach ($_SESSION['ldap_import']['criterias'] as $criteria => $value) {
             if ($value!='') {
                $counter++;
@@ -1978,58 +1997,21 @@ class AuthLDAP extends CommonDBTM {
 
       $ldap_condition = $authldap->fields['condition'];
       //Add entity filter and filter filled in directory's configuration form
-      return  "(&".$options['entity_filter']." $filter $ldap_condition)";
+      return  "(&".(isset($_SESSION['ldap_import']['entity_filter'])?
+                              $_SESSION['ldap_import']['entity_filter']:'')
+             ." $filter $ldap_condition)";
    }
 
-   static function searchUser($target,$options) {
+   static function searchUser(AuthLDAP $authldap) {
       global $LANG;
 
-      //In case you page is called from the pager
-      if (!isset($_SESSION['ldap_import']['ldap_filter'])) {
-         $_SESSION['ldap_import']['ldap_filter'] = '';
-      }
-      $authldap = new AuthLDAP;
-      if ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE) {
-         //Get data related to entity (directory and ldap filter)
-         $entitydata = new EntityData;
-         $entitydata->getFromDB($_SESSION['ldap_import']['entities_id']);
-
-         $_SESSION['ldap_import']['basedn'] = $entitydata->getField('ldap_dn');
-         $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
-         $_SESSION['ldap_import']['ldap_filter'] =
-                           AuthLdap::buildLdapFilter($authldap,
-                                                     array('criterias'=>(isset($_SESSION['ldap_import']['criterias'])
-                                                     ?$_SESSION['ldap_import']['criterias']:array()),
-                                                     'entity_filter'=>$_SESSION['ldap_import']['ldap_filter']));
-      }
-      else {
-         $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
-         $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
-         //If directory was changed
-         if ($_SESSION['ldap_import']['ldap_filter'] == '') {
-            $_SESSION['ldap_import']['ldap_filter'] =
-            AuthLdap::buildLdapFilter($authldap,
-                                     array('criterias'=>(isset($_SESSION['ldap_import']['criterias'])
-                                                        ?$_SESSION['ldap_import']['criterias']:array())));
-               }
-      }
-
-      $ds = AuthLdap::connectToServer($authldap->getField('host'),
+      if (AuthLdap::connectToServer($authldap->getField('host'),
                                       $authldap->getField('port'),
                                       $authldap->getField('rootdn'),
                                       $authldap->getField('rootdn_password'),
                                       $authldap->getField('use_tls'),
-                                      $authldap->getField('deref_option'));
-
-      if ($ds) {
-
-         $attrs = array ('dn',$authldap->getField('login_field'));
-         //Build basedn : if no basedn specified in entity, take the one of the global conf
-         if ($_SESSION['ldap_import']['basedn'] == '') {
-           $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
-         }
-
-         AuthLdap::showLdapUsers($_SERVER['PHP_SELF'],$options);
+                                      $authldap->getField('deref_option'))) {
+         AuthLdap::showLdapUsers();
       }
       else {
          echo "<div class='center b'>".$LANG['ldap'][6]."<br>";
