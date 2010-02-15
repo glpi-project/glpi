@@ -128,7 +128,7 @@ $options['keep_cartridge']=1;
 $options['keep_consumable']=1;
 
 //$entity_id=4;
-//$items[COMPUTER_TYPE]=array(403);
+//$items['Computer']=array(403);
 //$transfer->moveItems($items,$entity_id,$options);
 */
 ?>
