@@ -215,7 +215,7 @@ $types=array('Consumable','Cartridge','SoftwareLicense');
 $i=0;
 while (count($types)>0) {
    if ($i==0){
-      echo "<table  width='90%'><tr><td class='center top'>";
+      echo "<table width='90%'><tr><td class='center top'>";
    }
    $type=array_shift($types);
    if (display_infocoms_report($type,$_POST["date1"],$_POST["date2"])) {
@@ -227,8 +227,12 @@ while (count($types)>0) {
       echo "<td class='center top'>";
    }
 }
+if (($i%2)==0){
+   echo "</td><td>&nbsp;";
+}
+
 if ($i>0){
-   echo "</td></tr></table>";
+   echo "&nbsp;</td></tr></table>";
 }
 
 echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
