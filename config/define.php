@@ -91,8 +91,8 @@ if (!strstr($_SERVER['PHP_SELF'],"/install/")) {
    define("GROUP_TYPE",'Group');
    define("ENTITY_TYPE",'Entity');
    define("RESERVATION_TYPE",'ReservationItem');
-   define("AUTH_MAIL_TYPE",'AuthMail');
-   define("AUTH_LDAP_TYPE",'AuthLDAP');
+   define("AUTHMAIL_TYPE",'AuthMail');
+   define("AUTHLDAP_TYPE",'AuthLDAP');
    define("OCSNG_TYPE",'OcsServer');
    define("REGISTRY_TYPE",'RegistryKey');
    define("PROFILE_TYPE",'Profile');
@@ -238,8 +238,8 @@ define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
                        GROUP_TYPE                        => 'glpi_groups',
                        ENTITY_TYPE                       => 'glpi_entities',
                        RESERVATION_TYPE                  => 'glpi_reservationitems',
-                       AUTH_MAIL_TYPE                    => 'glpi_authmails',
-                       AUTH_LDAP_TYPE                    => 'glpi_authldaps',
+                       AUTHMAIL_TYPE                    => 'glpi_authmails',
+                       AUTHLDAP_TYPE                    => 'glpi_authldaps',
                        OCSNG_TYPE                        => 'glpi_ocsservers',
                        REGISTRY_TYPE                     => 'glpi_registrykeys',
                        PROFILE_TYPE                      => 'glpi_profiles',
@@ -335,8 +335,8 @@ define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
                         GROUP_TYPE           => "front/group.form.php",
                         ENTITY_TYPE          => "front/entity.form.php",
 // RESERVATION_TYPE => "???",
-                        AUTH_MAIL_TYPE       => "front/authmail.form.php",
-                        AUTH_LDAP_TYPE       => "front/authldap.form.php",
+                        AUTHMAIL_TYPE       => "front/authmail.form.php",
+                        AUTHLDAP_TYPE       => "front/authldap.form.php",
                         OCSNG_TYPE           => "front/ocsserver.form.php",
 // REGISTRY_TYPE => "???",
                         PROFILE_TYPE         => "front/profile.form.php",
@@ -464,15 +464,6 @@ $SEARCH_PAGES = array(COMPUTER_TYPE                   => "front/computer.php",
                       'UserCategory'               => "front/usercategory.php");
 */
 
-define("AUTH_DB_GLPI",1);
-define("AUTH_MAIL",2);
-define("AUTH_LDAP",3);
-define("AUTH_EXTERNAL",4);
-define("AUTH_CAS",5);
-define("AUTH_X509",6);
-define("NOT_YET_AUTHENTIFIED",0);
-
-
 //Mail send methods
 define("MAIL_MAIL",0);
 define("MAIL_SMTP",1);
@@ -585,9 +576,9 @@ $CFG_GLPI["helpdesk_visible_types"] = array(SOFTWARE_TYPE);
 $CFG_GLPI["netport_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE,
                                    PHONE_TYPE);
 
-$CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, OCSNG_TYPE, PROFILE_TYPE);
+$CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTHLDAP_TYPE, OCSNG_TYPE, PROFILE_TYPE);
 
-$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTH_LDAP_TYPE, 'CronTask');
+$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTHLDAP_TYPE, 'CronTask');
 
 $CFG_GLPI["notificationtemplates_types"] = array('Ticket', 'Reservation', 'Cartridge',
                                                  'Consumable', 'DBConnection', 'Contract',

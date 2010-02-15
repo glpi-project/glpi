@@ -445,8 +445,8 @@ class User extends CommonDBTM {
       global $DB;
 
       if (isset($this->fields["authtype"])
-          && ($this->fields["authtype"] == AUTH_LDAP
-              || $this->fields["authtype"] == AUTH_MAIL
+          && ($this->fields["authtype"] == Auth::LDAP
+              || $this->fields["authtype"] == Auth::MAIL
               || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
 
          if (isset($this->fields["id"])
@@ -573,7 +573,7 @@ class User extends CommonDBTM {
       global $DB;
 
       if (isset($this->input["authtype"])
-          && ($this->input["authtype"] == AUTH_LDAP || Auth::isAlternateAuthWithLdap($this->input['authtype']))) {
+          && ($this->input["authtype"] == Auth::LDAP || Auth::isAlternateAuthWithLdap($this->input['authtype']))) {
          if (isset ($this->input["id"]) && $this->input["id"]>0) {
             $authtype = Auth::getMethodsByID($this->input["authtype"], $this->input["auths_id"]);
 
@@ -1107,8 +1107,8 @@ class User extends CommonDBTM {
 
       $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
 
-      $extauth = ! ($this->fields["authtype"] == AUTH_DB_GLPI
-                    || ($this->fields["authtype"] == NOT_YET_AUTHENTIFIED
+      $extauth = ! ($this->fields["authtype"] == Auth::DB_GLPI
+                    || ($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED
                         && !empty ($this->fields["password"]) ) );
 
       $this->showTabs($options);
@@ -1121,7 +1121,7 @@ class User extends CommonDBTM {
          echo "<td><input name='name' value='" . $this->fields["name"] . "'></td>";
          // si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
       } else {
-         if (!empty ($this->fields["password"]) || $this->fields["authtype"] == AUTH_DB_GLPI) {
+         if (!empty ($this->fields["password"]) || $this->fields["authtype"] == Auth::DB_GLPI) {
             echo "<td>";
 
             autocompletionTextField($this, "name");
@@ -1283,8 +1283,8 @@ class User extends CommonDBTM {
       if ($this->getFromDB($ID)) {
          $authtype = $this->getAuthMethodsByID();
 
-         $extauth = ! ($this->fields["authtype"] == AUTH_DB_GLPI
-                       || ($this->fields["authtype"] == NOT_YET_AUTHENTIFIED
+         $extauth = ! ($this->fields["authtype"] == Auth::DB_GLPI
+                       || ($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED
                            && !empty ($this->fields["password"])));
 
          // No autocopletion :
@@ -1475,7 +1475,7 @@ class User extends CommonDBTM {
             if (isset($this->fields["authtype"])) {
                // extauth ldap case
                if ($_SESSION["glpiextauth"]
-                   && ($this->fields["authtype"] == AUTH_LDAP
+                   && ($this->fields["authtype"] == Auth::LDAP
                        || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
                   $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
                   if (count($authtype)) {
@@ -1488,7 +1488,7 @@ class User extends CommonDBTM {
                   }
                }
                /// extauth imap case
-               if (isset($this->fields["authtype"]) && $this->fields["authtype"] == AUTH_MAIL) {
+               if (isset($this->fields["authtype"]) && $this->fields["authtype"] == Auth::MAIL) {
                   if (($key = array_search("email",$this->updates))!==false) {
                      unset ($this->updates[$key]);
                   }
@@ -1972,10 +1972,10 @@ class User extends CommonDBTM {
    static function changeAuthMethod($IDs=array(), $authtype=1 ,$server=-1) {
       global $DB;
 
-      if (!empty($IDs) && in_array($authtype, array(AUTH_DB_GLPI,
-                                                    AUTH_LDAP,
-                                                    AUTH_MAIL,
-                                                    AUTH_EXTERNAL))) {
+      if (!empty($IDs) && in_array($authtype, array(Auth::DB_GLPI,
+                                                    Auth::LDAP,
+                                                    Auth::MAIL,
+                                                    Auth::EXTERNAL))) {
          $where = implode("','",$IDs);
          $query = "UPDATE
                    `glpi_users`

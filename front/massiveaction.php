@@ -504,8 +504,8 @@ if (isset($_POST["itemtype"])) {
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   $user->getFromDB($key);
-                  if (($user->fields["authtype"] == AUTH_LDAP)
-                      || ($user->fields["authtype"] == AUTH_EXTERNAL)) {
+                  if (($user->fields["authtype"] == Auth::LDAP)
+                      || ($user->fields["authtype"] == Auth::EXTERNAL)) {
                      AuthLdap::ldapImportUserByServerId($user->fields["name"],1,$user->fields["auths_id"]);
                   }
                }

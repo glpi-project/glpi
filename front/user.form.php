@@ -136,7 +136,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'],'w');
 
    $input["id"] = $_POST["id"];
-   $input["authtype"] = AUTH_DB_GLPI;
+   $input["authtype"] = Auth::DB_GLPI;
    $input["auths_id"] = 0;
    $user->update($input);
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -146,7 +146,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'],'w');
 
    $input["id"] = $_POST["id"];
-   $input["authtype"] = AUTH_LDAP;
+   $input["authtype"] = Auth::LDAP;
    $input["auths_id"] = $_POST["auths_id"];
    $user->update($input);
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -156,7 +156,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'],'w');
 
    $input["id"] = $_POST["id"];
-   $input["authtype"] = AUTH_MAIL;
+   $input["authtype"] = Auth::MAIL;
    $input["auths_id"] = $_POST["auths_id"];
    $user->update($input);
    glpi_header($_SERVER['HTTP_REFERER']);
