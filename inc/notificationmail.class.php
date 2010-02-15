@@ -214,10 +214,15 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $mmail->AddReplyTo($options['replyto'], '');
       }
       $mmail->FromName=$options['from'];
-      $mmail->isHTML(true);
       $mmail->Subject=$options['subject'];
-      $mmail->Body=$options['content_html'];
-      $mmail->AltBody=$options['content_text'];
+      if (empty($options['content_html'])) {
+         $mmail->isHTML(false);
+         $mmail->Body=$options['content_text'];
+      } else {
+         $mmail->isHTML(true);
+         $mmail->Body=$options['content_html'];
+         $mmail->AltBody=$options['content_text'];
+      }
       $mmail->AddAddress($options['to'], "");
       $mmail->MessageID="GLPI-".$options["items_id"].".".time().".".rand().
                              "@".php_uname('n');
