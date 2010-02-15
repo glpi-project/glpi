@@ -65,6 +65,7 @@ CREATE TABLE `glpi_authldaps` (
   `entity_condition` text collate utf8_unicode_ci,
   `date_mod` datetime default NULL,
   `comment` text collate utf8_unicode_ci,
+  `is_default` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

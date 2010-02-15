@@ -3361,6 +3361,10 @@ function update0723to080($output='HTML') {
       }
    }
 
+   if (!FieldExists('glpi_authldaps','is_default')) {
+      $query = "ALTER TABLE `glpi_authldaps` ADD `is_default` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 add is_default to glpi_authldaps " . $LANG['update'][90] . $DB->error());
+   }
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 

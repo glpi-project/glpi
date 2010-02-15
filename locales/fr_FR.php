@@ -838,11 +838,12 @@ $LANG['ldap'][35]="Importer un utilisateur";
 $LANG['ldap'][36]="Aucun annuaire associé à l'entité : recherche impossible";
 $LANG['ldap'][37]="Sélection d'une entité";
 $LANG['ldap'][38]="Critères de recherche des utilisateurs";
-$LANG['ldap'][39]="Passer en mode expert";
-$LANG['ldap'][40]="Passer en mode simple";
+$LANG['ldap'][39]="Expert";
+$LANG['ldap'][40]="Simple";
 $LANG['ldap'][41]="Changer";
 $LANG['ldap'][42]="Aucun annuaire sélectionné";
 $LANG['ldap'][43]="Pas d'utilisateurs à synchroniser";
+$LANG['ldap'][44]="Serveur par défaut";
 
 $LANG['links'][1]="Lien ou Nom du fichier";
 $LANG['links'][4]="Types de matériel associés";
