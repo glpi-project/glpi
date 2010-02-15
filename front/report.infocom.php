@@ -204,28 +204,31 @@ function display_infocoms_report($itemtype,$begin,$end){
 			echo "</td></tr>";
 		}
 		echo "</table>";
-
+      return true;
 	}
+   return false;
 }
 
-echo "<table>";
-echo "<tr><td>";
-display_infocoms_report('Computer',$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
-display_infocoms_report('Monitor',$_POST["date1"],$_POST["date2"]);
-echo "</td></tr>";
-echo "<tr><td>";
-display_infocoms_report('NetworkEquipment',$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
-display_infocoms_report('Printer',$_POST["date1"],$_POST["date2"]);
-echo "</td></tr>";
-echo "<tr><td>";
-display_infocoms_report('Peripheral',$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
-display_infocoms_report('Phone',$_POST["date1"],$_POST["date2"]);
-echo "</td></tr>";
-echo "</table>";
+$types=array('Computer','Monitor','NetworkEquipment','Printer','Peripheral','Phone');
 
+$i=0;
+while (count($types)>0) {
+   if ($i==0){
+      echo "<table><tr><td valign='top'>";
+   }
+   $type=array_shift($types);
+   if (display_infocoms_report($type,$_POST["date1"],$_POST["date2"])) {
+      echo "</td>";
+      $i++;
+      if (($i%2)==0){
+         echo "</tr><tr>";
+      }
+      echo "<td valign='top'>";
+   }
+}
+if ($i>0){
+   echo "</td></tr></table>";
+}
 
 
 echo "<div align='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeurtot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettetot)."</h3></div>";
