@@ -246,47 +246,47 @@ define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 
 
 
-$CFG_GLPI["state_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                 PERIPHERAL_TYPE, PHONE_TYPE);
+$CFG_GLPI["state_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                 'Peripheral', 'Phone');
 
-$CFG_GLPI["doc_types"]= array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                              PERIPHERAL_TYPE, SOFTWARE_TYPE, ENTERPRISE_TYPE, CONTRACT_TYPE,
-                              CARTRIDGEITEM_TYPE, CONSUMABLEITEM_TYPE, PHONE_TYPE, ENTITY_TYPE,
-                              SOFTWARELICENSE_TYPE, BUDGET_TYPE);
+$CFG_GLPI["doc_types"]= array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                              'Peripheral', 'Software', 'Supplier', 'Contract',
+                              'CartridgeItem', 'ConsumableItem', 'Phone', 'Entity',
+                              'SoftwareLicense', 'Budget');
 
-$CFG_GLPI["contract_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                    PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
+$CFG_GLPI["contract_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                    'Peripheral', 'Software', 'Phone');
 
-$CFG_GLPI["infocom_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                   PERIPHERAL_TYPE, SOFTWARE_TYPE, CARTRIDGEITEM_TYPE,
-                                   CONSUMABLEITEM_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, PHONE_TYPE,
-                                   SOFTWARELICENSE_TYPE);
+$CFG_GLPI["infocom_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                   'Peripheral', 'Software', 'CartridgeItem',
+                                   'ConsumableItem', 'Consumable', 'Cartridge', 'Phone',
+                                   'SoftwareLicense');
 
-$CFG_GLPI["reservation_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                       PERIPHERAL_TYPE, SOFTWARE_TYPE,PHONE_TYPE);
+$CFG_GLPI["reservation_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                       'Peripheral', 'Software','Phone');
 
-$CFG_GLPI["linkuser_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                    PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
+$CFG_GLPI["linkuser_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                    'Peripheral', 'Software', 'Phone');
 
-$CFG_GLPI["linkgroup_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                     PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
+$CFG_GLPI["linkgroup_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                     'Peripheral', 'Software', 'Phone');
 
-$CFG_GLPI["helpdesk_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                    PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
+$CFG_GLPI["helpdesk_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                    'Peripheral', 'Software', 'Phone');
 
-$CFG_GLPI["link_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
-                                PERIPHERAL_TYPE, SOFTWARE_TYPE, CONTACT_TYPE, ENTERPRISE_TYPE,
-                                CONTRACT_TYPE, CARTRIDGEITEM_TYPE, CONSUMABLEITEM_TYPE, PHONE_TYPE,
-                                BUDGET_TYPE);
+$CFG_GLPI["link_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
+                                'Peripheral', 'Software', 'Contact', 'Supplier',
+                                'Contract', 'CartridgeItem', 'ConsumableItem', 'Phone',
+                                'Budget');
 
-$CFG_GLPI["helpdesk_visible_types"] = array(SOFTWARE_TYPE);
+$CFG_GLPI["helpdesk_visible_types"] = array('Software');
 
-$CFG_GLPI["netport_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE,
-                                   PHONE_TYPE);
+$CFG_GLPI["netport_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Peripheral',
+                                   'Phone');
 
-$CFG_GLPI["massiveaction_noupdate_types"] = array(ENTITY_TYPE, AUTHLDAP_TYPE, OCSNG_TYPE, PROFILE_TYPE);
+$CFG_GLPI["massiveaction_noupdate_types"] = array('Entity', 'AuthLDAP', 'OcsServer', 'Profile');
 
-$CFG_GLPI["massiveaction_nodelete_types"] = array(ENTITY_TYPE, AUTHLDAP_TYPE, 'CronTask');
+$CFG_GLPI["massiveaction_nodelete_types"] = array('Entity', 'AuthLDAP', 'CronTask');
 
 $CFG_GLPI["notificationtemplates_types"] = array('Ticket', 'Reservation', 'Cartridge',
                                                  'Consumable', 'DBConnection', 'Contract',
