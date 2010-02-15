@@ -89,7 +89,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
       case "add_ldapuser" :
          popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
-         include "addldapuser.php";
+         include "ldap.import.php";
          popFooter();
          break;
    }

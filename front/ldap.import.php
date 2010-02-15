@@ -33,16 +33,25 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+if (!defined('GLPI_ROOT')) {
+   define('GLPI_ROOT', '..');
+   include (GLPI_ROOT . "/inc/includes.php");
+}
 
 $user = new User();
 $user->checkGlobal('w');
 checkRight('user_authtype','w');
 
-commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
-
 AuthLdap::manageValuesInSession($_REQUEST);
+
+if (isset($_SESSION['ldap_import']['popup']) && $_SESSION['ldap_import']['popup']) {
+   popHeader($LANG['setup'][3],$_SERVER['PHP_SELF']);
+}
+else {
+   commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
+}
+
+
 
 if ($_SESSION['ldap_import']['action'] == 'show') {
    $_REQUEST['target']=$_SERVER['PHP_SELF'];
@@ -95,6 +104,10 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
    }
 }
 
-commonFooter();
-
+if (isset($_SESSION['ldap_import']['popup']) && $_SESSION['ldap_import']['popup']) {
+   ajaxFooter();
+}
+else {
+   commonFooter();
+}
 ?>

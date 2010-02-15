@@ -1752,6 +1752,11 @@ class AuthLDAP extends CommonDBTM {
                         'ldap_filter',
                         'basedn');
 
+      if (isset($options['popup'])) {
+         $_SESSION['ldap_import']['popup'] = 1;
+         $_SESSION['ldap_import']['no_expert_mode'] = 1;
+      }
+
       if (!$delete) {
          if (!isset($_SESSION['ldap_import']['entities_id'])) {
             $options['entities_id'] = $_SESSION['glpiactive_entity'];
@@ -1816,7 +1821,7 @@ class AuthLDAP extends CommonDBTM {
 
          if (haveRight("user_authtype","w")) {
             //If not coming from the ticket form, then give expert/simple link
-            if (!isset($options['from_ticket'])) {
+            if (!isset($_SESSION['ldap_import']['no_expert_mode'])) {
                echo "<tr class='tab_bg_2'><td>".$LANG['common'][65]."</td><td colspan='3' align='left'>";
                echo "<a href='".$options['target']."?action=".$_SESSION['ldap_import']['action'].
                             "&mode=".$_SESSION['ldap_import']['mode'].
