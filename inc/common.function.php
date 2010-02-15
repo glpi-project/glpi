@@ -1030,13 +1030,13 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
 
    // Display : clean display
    switch ($_SESSION['glpinumber_format']) {
-      case 2: // Other French
-         return number_format($number,$decimal,',',' ');
-         break;
+		case 2: // Other French
+			return str_replace(' ','&nbsp;',number_format($number,$decimal,',',' '));
+			break;
 
-      case 0: // French
-         return number_format($number,$decimal,'.',' ');
-         break;
+		case 0: // French
+			return str_replace(' ','&nbsp;',number_format($number,$decimal,'.',' '));
+			break;
 
       default: // English
          return number_format($number,$decimal,'.',',');
