@@ -1822,13 +1822,6 @@ class AuthLDAP extends CommonDBTM {
                   $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
                   $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
                }
-/*
-               elseif (AuthLdap::getNumberOfServers()) {
-                  $_SESSION['ldap_import']['ldapservers_id'] = AuthLdap::getFirstLdapServer();
-                  $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
-                  $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
-               }
-*/
             }
 
             if ($_SESSION['ldap_import']['ldapservers_id'] > 0) {
@@ -1844,13 +1837,6 @@ class AuthLDAP extends CommonDBTM {
                   $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
                   $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
                }
-/*
-               elseif (AuthLdap::getNumberOfServers()) {
-                  $_SESSION['ldap_import']['ldapservers_id'] = AuthLdap::getFirstLdapServer();
-                  $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
-                  $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
-               }
-*/
             }
             if (!isset($_SESSION['ldap_import']['ldap_filter'])
                      || $_SESSION['ldap_import']['ldap_filter'] == '') {
@@ -2086,6 +2072,14 @@ class AuthLDAP extends CommonDBTM {
                    WHERE `id` <> '".$this->input['id']."'";
          $DB->query($query);
       }
+   }
+
+   function prepareInputForAdd($input) {
+      //If it's the first ldap directory then set it as the default directory
+      if (!AuthLdap::getNumberOfServers()) {
+         $input['is_default'] = 1;
+      }
+      return $input;
    }
 }
 ?>

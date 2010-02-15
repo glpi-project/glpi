@@ -3364,6 +3364,32 @@ function update0723to080($output='HTML') {
    if (!FieldExists('glpi_authldaps','is_default')) {
       $query = "ALTER TABLE `glpi_authldaps` ADD `is_default` TINYINT( 1 ) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.80 add is_default to glpi_authldaps " . $LANG['update'][90] . $DB->error());
+
+      $query = "SELECT count(*) as cpt FROM `glpi_authldaps`";
+      $result = $DB->query($query);
+      $number_servers = $DB->result($result,0,'cpt');
+
+      if ($number_servers >= 1) {
+         //If only one server defined
+         if ($number_servers==1) {
+            $query = "SELECT `id` FROM `glpi_authldaps`";
+            $result = $DB->query($query);
+            $ldapservers_id = $DB->result($result,0,'id');
+         }
+         //If more than one server defined, get the most used
+         else {
+            $query = "SELECT `auths_id`, count(auths_id) as cpt
+                FROM `glpi_users`
+                WHERE `authtype` = '3'
+                GROUP BY `auths_id`
+                ORDER BY `cpt` DESC";
+            $result = $DB->query($query);
+            $ldapservers_id= $DB->result($result,0,'auths_id');
+         }
+         $query = "UPDATE `glpi_authldaps` SET `is_default`='1' WHERE `id`='".$ldapservers_id."'";
+         $DB->query($query) or die("0.80 set default directory " . $LANG['update'][90] . $DB->error());
+      }
+
    }
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
