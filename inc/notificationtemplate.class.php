@@ -186,10 +186,13 @@ class NotificationTemplate extends CommonDBTM {
             //Template processing
             $lang['subject'] = $target->getSubjectPrefix() .
                           NotificationTemplate::process($template_datas['subject'], $data);
-            $lang['content_html'] =
+            $lang['content_html'] = '';
+            if (!empty($template_datas['content_html'])) {
+                 $lang['content_html'] =
                   "<html><body>".NotificationTemplate::process($template_datas['content_html'],
                                                                 $data).
                   "<br /><br />".$this->signature."</body></html>";
+            }
 
             $lang['content_text'] = NotificationTemplate::process($template_datas['content_text'],
                                                                   $data).
@@ -209,14 +212,15 @@ class NotificationTemplate extends CommonDBTM {
 
       //Remove all
       $string = unclean_cross_side_scripting_deep($string);
-      $string = preg_replace(array('/\r/','/\r\n/','/\n/'),
-                             array('','',''),$string);
+      //$string = preg_replace(array('/\r/','/\r\n/','/\n/'),
+      //                       array('','',''),$string);
 
       //First of all process the FOREACH tag
       if (preg_match_all("/##FOREACH(FIRST|LAST)?([0-9]*)?([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
          foreach ($out[3] as $id => $tag_infos) {
 
-            $regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/";
+            //$regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/";
+            $regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/is";
             if (preg_match($regex,$string,$tag_out) &&
                   isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
 
@@ -274,10 +278,10 @@ class NotificationTemplate extends CommonDBTM {
             $if_field = $tag_infos;
 
             //Get the field tag value (if one)
-            $regex_if= "/##IF".$if_field."##(.*)##ENDIF".$if_field."##/";
+            $regex_if= "/##IF".$if_field."##(.*)##ENDIF".$if_field."##/is";
 
             //Get the else tag value (if one)
-            $regex_else= "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/";
+            $regex_else= "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/is";
 
             if (isset($data['##'.$if_field.'##']) && $data['##'.$if_field.'##'] != '') {
                $string = preg_replace($regex_if, "\\1", $string);
