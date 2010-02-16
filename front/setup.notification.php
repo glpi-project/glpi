@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("notification","r");
+checkSeveralRightsOr(array('notification'=>'r','config'=>'w'));
 
 commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
 

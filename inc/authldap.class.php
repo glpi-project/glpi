@@ -1954,7 +1954,7 @@ class AuthLDAP extends CommonDBTM {
       echo "</th></tr>";
 
       //If not coming from the ticket form, then give expert/simple link
-      if (!isset($_SESSION['ldap_import']['no_expert_mode'])) {
+      if (!isset($_SESSION['ldap_import']['no_expert_mode']) && haveRight('config','w')) {
          echo "<tr class='tab_bg_2'><td>".$LANG['common'][65].
                               "</td><td colspan='3' align='left'>";
          echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
