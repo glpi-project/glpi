@@ -1029,14 +1029,13 @@ class User extends CommonDBTM {
       if (haveRight("user", "w")) {
          $buttons["user.form.php?new=1"] = $LANG['setup'][2];
          $title = "";
-
-         if (haveRight("import_externalauth_users", "w")) {
-            if (AuthLdap::useAuthLdap()) {
-               $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
-               $buttons["ldap.php"] = $LANG['setup'][3];
-            } else if (Auth::useAuthExt()) {
-               $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
-            }
+      }
+      if (haveRight("import_externalauth_users", "w")) {
+         if (AuthLdap::useAuthLdap()) {
+            $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
+            $buttons["ldap.php"] = $LANG['setup'][3];
+         } else if (Auth::useAuthExt()) {
+            $buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
          }
       }
       displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['Menu'][14], $title, $buttons);
@@ -1945,7 +1944,7 @@ class User extends CommonDBTM {
    static function showAddExtAuthForm() {
       global $LANG;
 
-      if (!haveRight("user","w")) {
+      if (!haveRight("import_externalauth_users","w")) {
          return false;
       }
 

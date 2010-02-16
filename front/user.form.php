@@ -169,7 +169,7 @@ if (isset($_REQUEST['getvcard'])) {
       commonFooter();
 
    } else {
-      checkRight("user","w");
+      checkRight("import_externalauth_users","w");
 
       if (isset($_GET['add_ext_auth_ldap'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {
