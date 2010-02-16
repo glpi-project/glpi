@@ -258,47 +258,43 @@ class TicketFollowup  extends CommonDBTM {
    function post_addItem() {
       global $CFG_GLPI, $LANG;
 
+      $donotif = $CFG_GLPI["use_mailing"];
+
       $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
 
-      if ($this->input["_type"]!="update") {
+      if (isset($this->input["_close"])
+          && $this->input["_close"]
+          && $this->input["_job"]->fields["status"] == 'solved') {
 
-         // TODO add + close from solution tab, not from followup
-         if ($this->input["_close"] && $this->input["_type"]!="update"
-                                    && $this->input["_type"]!="finish") {
-            $updates[] = "status";
-            $updates[] = "closedate";
-            $this->input["_job"]->fields["status"] = "closed";
-            $this->input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
-            $this->input["_job"]->updateInDB($updates);
-         }
+         $update['id'] = $this->input["_job"]->fields['id'];
+         $update['status'] = 'closed';
+         $update['closedate'] = $_SESSION["glpi_currenttime"];
+
+         // Use update method for history
+         $this->input["_job"]->update($update);
+         $donotif = false; // Done for ticket update (new status)
       }
 
-      // No check on admin because my be used by mailgate
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
-          && strstr($this->input["_job"]->fields["status"],"old_")) {
+          && $this->input["_job"]->fields["status"] == 'solved') {
 
-         $updates[]="status";
          if ($this->input["_job"]->fields["users_id_assign"]>0
              || $this->input["_job"]->fields["groups_id_assign"]>0
              || $this->input["_job"]->fields["suppliers_id_assign"]>0) {
 
-            $this->input["_job"]->fields["status"]="assign";
+            $update['status'] = 'assign';
          } else {
-            $this->input["_job"]->fields["status"] = "new";
+            $update['status'] = 'new';
          }
-         $this->input["_job"]->updateInDB($updates);
+         $update['id'] = $this->input["_job"]->fields['id'];
+         // Use update method for history
+         $this->input["_job"]->update($update);
+         $donotif = false; // Done for ticket update (new status)
       }
 
-      if ($CFG_GLPI["use_mailing"]) {
-         if ($this->input["_close"]) {
-            $this->input["_type"] = "finish";
-         }
-
-         NotificationEvent::raiseEvent("add_followup",$this->input["_job"]);
-         //$mail = new Mailing($this->input["_type"],$this->input["_job"],$user,
-         //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
-         //$mail->send();
+      if ($donotif) {
+         NotificationEvent::raiseEvent("add_followup", $this->input["_job"]);
       }
 
       // Add log entry in the ticket
