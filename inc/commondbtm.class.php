@@ -448,8 +448,6 @@ class CommonDBTM extends CommonGLPI {
    /**
    * Actions done when item is deleted from the database
    *
-   *@param $ID ID of the item
-   *
    *@return nothing
    **/
    function cleanDBonPurge() {
@@ -653,9 +651,6 @@ class CommonDBTM extends CommonGLPI {
 
    /**
    * Actions done after the ADD of the item in the database
-   *
-   *@param $newID ID of the new item
-   *@param $input datas used to add the item
    *
    * @return nothing
    *

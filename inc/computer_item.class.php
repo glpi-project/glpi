@@ -206,8 +206,6 @@ class Computer_Item extends CommonDBRelation{
     * Actions done when item is deleted from the database
     * Overloaded to manage autoupdate feature
     *
-    *@param $ID ID of the item
-    *
     *@return nothing
     **/
    function cleanDBonPurge() {

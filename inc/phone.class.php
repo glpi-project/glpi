@@ -204,6 +204,7 @@ class Phone extends CommonDBTM {
    /**
     * Print the phone form
     *
+    * @param $ID integer ID of the item
     * @param $options array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item

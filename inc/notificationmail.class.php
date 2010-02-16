@@ -92,8 +92,9 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    }
    /**
     * Determine if email is valid
-    * @param $email email to check
-    * @param $checkdns check dns entry
+    * @param $address email to check
+    * @param $options array options used
+    *     - checkdns :check dns entry
     * @return boolean
     * from http://www.linuxjournal.com/article/9585
     */

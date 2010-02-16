@@ -57,6 +57,7 @@ class NotificationEvent extends CommonDBTM {
     * Raise a notification event event
     * @param event the event raised for the itemtype
     * @param item the object which raised the event
+    * @param options array options used
     */
    static function raiseEvent($event,$item,$options=array()) {
       global $CFG_GLPI, $DB;

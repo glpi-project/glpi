@@ -657,8 +657,7 @@ class Dropdown {
     * Dropdown available languages
     *
     * @param $myname select name
-    * @param $value default value
-    * @param options additionnal options :
+    * @param $options additionnal options :
     *    - display_none : allow selection of no language
     */
    static function showLanguages($myname,$options=array()) {

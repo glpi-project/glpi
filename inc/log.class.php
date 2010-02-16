@@ -50,7 +50,7 @@ class Log extends CommonDBTM {
    /**
     * Construct  history for an item
     *
-    * @param $items CommonDBTM object
+    * @param $item CommonDBTM object
     * @param $oldvalues array of old values updated
     * @param $values array of all values of the item
     *

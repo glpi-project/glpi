@@ -338,7 +338,7 @@ class NotificationTarget extends CommonDBTM {
     *
     * @param $mail : new email to add
     * @param $lang used with this email - default to config language
-    * @param $option an additionnal option to sort users
+    * @param $options an additionnal option to sort users
     *
     */
    function addToAddressesList($mail,$lang='',$options='') {
@@ -571,9 +571,8 @@ class NotificationTarget extends CommonDBTM {
 
    /**
     * Get addresses by type of notification
-    * @param itemtype the itemtype
-    * @param target the NotificationTarget object associated with the type
-    * @param options additionnal options
+    * @param $data
+    * @param $options additionnal options
     */
    function getAddressesByTarget($data,$options=array()) {
       //Look for all targets whose type is Notification::USER_TYPE

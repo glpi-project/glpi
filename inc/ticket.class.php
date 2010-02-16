@@ -1206,12 +1206,6 @@ class Ticket extends CommonDBTM {
       }
    }
 
-
-   /**
-    * Get text describing ticket
-    *
-    * @param $format text or html
-    */
    /**
     * Get users_id name
     *

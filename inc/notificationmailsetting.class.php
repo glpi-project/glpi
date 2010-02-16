@@ -64,6 +64,7 @@ class NotificationMailSetting extends CommonDBTM {
    /**
     * Print the mailing config form
     *
+    * @param $ID integer ID of the item
     * @param $options array
     *     - target filename : where to go when done.
     *     - tabs integer : ID of the tab to display

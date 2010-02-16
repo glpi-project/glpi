@@ -466,6 +466,7 @@ class Computer extends CommonDBTM {
    /**
    * Print the computer form
    *
+   * @param $ID integer ID of the item
    * @param $options array
    *     - target for the Form
    *     - withtemplate template or basic computer

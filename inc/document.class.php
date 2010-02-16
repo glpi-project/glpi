@@ -204,6 +204,7 @@ class Document extends CommonDBTM {
    /**
     * Print the document form
     *
+    * @param $ID integer ID of the item
     * @param $options array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item

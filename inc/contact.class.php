@@ -137,15 +137,16 @@ class Contact extends CommonDBTM{
    }
 
    /**
-    * Print the contact form
-    *
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    * @return Nothing (display)
-    *
-    **/
+   * Print the contact form
+   *
+   * @param $ID integer ID of the item
+   * @param $options array
+   *     - target filename : where to go when done.
+   *     - withtemplate boolean : template or basic item
+   *
+   * @return Nothing (display)
+   *
+   **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
