@@ -766,6 +766,8 @@ class Stat {
    *     - showtotal boolean show total in title (default false)
    *     - width integer width of the graph (default 700)
    *     - height integer height of the graph (default 300)
+   *     - unit integer height of the graph (default empty)
+   *     - type integer height of the graph (default line) : line bar pie
    * @return array contains the distinct groups assigned to a tickets
    */
    static function barGraph($entrees,$options=array()) {
@@ -781,6 +783,7 @@ class Stat {
          $param['width']      = 700;
          $param['height']     = 300;
          $param['unit']       = '';
+         $param['type']       = 'line';
 
          if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -791,16 +794,37 @@ class Stat {
          echo "<div class='center-h' style='width:".$param['width']."px'>";
          echo "<div>";
 
+         switch ($param['type']) {
+            case 'pie':
+               $graph = new ezcGraphPieChart();
+               break;
+            case 'bar':
+               $graph = new ezcGraphBarChart(); 
+               $graph->options->fillLines = 210; 
+               $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
+               $graph->xAxis->axisLabelRenderer->angle = 45;
+               $graph->xAxis->axisSpace = .2;
+               $graph->yAxis->min = 0;
+               break;
+            case 'line':
+               // No break default case
+            default :
+               $graph = new ezcGraphLineChart();
+               $graph->options->fillLines = 210; 
+               $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
+               $graph->xAxis->axisLabelRenderer->angle = 45;
+               $graph->xAxis->axisSpace = .2;
+               $graph->yAxis->min = 0;
+               break;
+         }
 
-         $graph = new ezcGraphLineChart(); 
-         $graph->palette = new ezcGraphPaletteEzGreen(); 
-         $graph->options->fillLines = 210; 
-         $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
-         $graph->xAxis->axisLabelRenderer->angle = 45;
-         $graph->xAxis->axisSpace = .2;
-         $graph->yAxis->min = 0;
+         $graph->palette = new ezcGraphPaletteEzGreen();
          $graph->options->font->maxFontSize = 20;
          $graph->title->background = '#EEEEEC';
+
+         $graph->renderer = new ezcGraphRenderer3d();
+         $graph->renderer->options->legendSymbolGleam = .5;
+         $graph->renderer->options->barChartGleam = .5; 
 
          if (!empty($param['title'])) {
             // Only when one dataset
@@ -839,10 +863,6 @@ class Stat {
             $graph->data[$label] = new ezcGraphArrayDataSet( $data );
             $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL; 
          }
-
-        $graph->renderer = new ezcGraphRenderer3d();
-        $graph->renderer->options->legendSymbolGleam = .5;
-        $graph->renderer->options->barChartGleam = .5; 
 
          switch ($_SESSION['glpigraphtype']) {
             case "png" :
