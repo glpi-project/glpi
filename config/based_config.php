@@ -126,4 +126,12 @@ if (!defined("GLPI_EZC_BASE")) {
    # if EZ components installed as PEAR extension, use (in config_path.php)
    # define("GLPI_EZC_BASE", "ezc/Base/base.php");
 }
+
+// Default path to FreeSans.ttf
+if (!defined("GLPI_FONT_FREESANS")) {
+   define("GLPI_FONT_FREESANS", GLPI_ROOT . '/lib/ezcomponents/FreeSans.ttf');
+
+   # if FreeSans.ttf available in system, use (in config_path.php)
+   # define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
+}
 ?>

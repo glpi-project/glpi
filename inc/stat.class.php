@@ -780,7 +780,7 @@ class Stat {
    */
    static function showGraph($entrees,$options=array()) {
       global $CFG_GLPI;
-      
+
       if ($uid=getLoginUserID(false)) {
          if (!isset($_SESSION['glpigraphtype'])) {
             $_SESSION['glpigraphtype']=$CFG_GLPI['default_graphtype'];
@@ -816,13 +816,13 @@ class Stat {
                $graph->renderer->options->pieChartGleamColor = '#FFFFFF';
                $graph->renderer->options->pieChartGleamBorder = 2;
                $graph->renderer->options->pieChartShadowSize = 5;
-               $graph->renderer->options->pieChartShadowColor = '#BABDB6'; 
-               
-               
+               $graph->renderer->options->pieChartShadowColor = '#BABDB6';
+
+
                break;
             case 'bar':
-               $graph = new ezcGraphBarChart(); 
-               $graph->options->fillLines = 210; 
+               $graph = new ezcGraphBarChart();
+               $graph->options->fillLines = 210;
                $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
                $graph->xAxis->axisLabelRenderer->angle = 45;
                $graph->xAxis->axisSpace = .2;
@@ -832,13 +832,13 @@ class Stat {
                $graph->title->background = '#EEEEEC';
                $graph->renderer = new ezcGraphRenderer3d();
                $graph->renderer->options->legendSymbolGleam = .5;
-               $graph->renderer->options->barChartGleam = .5; 
+               $graph->renderer->options->barChartGleam = .5;
                break;
             case 'line':
                // No break default case
             default :
                $graph = new ezcGraphLineChart();
-               $graph->options->fillLines = 210; 
+               $graph->options->fillLines = 210;
                $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
                $graph->xAxis->axisLabelRenderer->angle = 45;
                $graph->xAxis->axisSpace = .2;
@@ -848,13 +848,13 @@ class Stat {
                $graph->title->background = '#EEEEEC';
                $graph->renderer = new ezcGraphRenderer3d();
                $graph->renderer->options->legendSymbolGleam = .5;
-               $graph->renderer->options->barChartGleam = .5; 
+               $graph->renderer->options->barChartGleam = .5;
                break;
          }
 
-         
 
-         
+
+
 
          if (!empty($param['title'])) {
             // Only when one dataset
@@ -871,14 +871,14 @@ class Stat {
             $graph->title = $param['title'];
          }
          if (count($entrees)==1){
-            $graph->legend = false; 
+            $graph->legend = false;
          }
 
          switch ($_SESSION['glpigraphtype']) {
             case "png" :
                $extension="png";
                $graph->driver = new ezcGraphGdDriver();
-               $graph->options->font = GLPI_ROOT . '/lib/ezcomponents/FreeSans.ttf';
+               $graph->options->font = GLPI_FONT_FREESANS;
                break;
 
             default:
@@ -904,7 +904,7 @@ class Stat {
                echo "<object data='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
                      type='image/svg+xml'>You need a browser capeable of SVG to display this image.
                      </object> ";
-              
+
             break;
          }
          // Render CSV
