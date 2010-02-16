@@ -871,6 +871,7 @@ class Stat {
                $graph->renderer = new ezcGraphRenderer3d();
                $graph->renderer->options->legendSymbolGleam = .5;
                $graph->renderer->options->barChartGleam = .5;
+               $graph->renderer->options->depth = 0.07;
                break;
          }
 
