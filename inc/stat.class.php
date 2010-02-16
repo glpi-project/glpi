@@ -177,6 +177,29 @@ class Stat {
       return $val;
    }
 
+   static function getDatas($type,$date1,$date2,$start,$value,$value2="") {
+
+      $export_data=array();
+
+      if (is_array($value)) {
+         $end_display=$start+$_SESSION['glpilist_limit'];
+         $numrows=count($value);
+
+         for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
+            //le nombre d'intervention - the number of intervention
+            $opened=Stat::constructEntryValues("inter_total",$date1,$date2,$type,$value[$i]["id"],$value2);
+            $nb_opened=array_sum($opened);
+            $export_data['opened'][$value[$i]['link']]=$nb_opened;
+
+            //le nombre d'intervention resolues - the number of resolved intervention
+            $solved=Stat::constructEntryValues("inter_solved",$date1,$date2,$type,$value[$i]["id"],$value2);
+            $nb_solved=array_sum($solved);
+            $export_data['solved'][$value[$i]['link']]=$nb_solved;
+         }
+      }
+      return $export_data;
+   }
+
    static function show($type,$date1,$date2,$start,$value,$value2="") {
       global $LANG,$CFG_GLPI;
 
@@ -188,7 +211,6 @@ class Stat {
       if ($output_type==HTML_OUTPUT) { // HTML display
          echo "<div class ='center'>";
       }
-      $export_data=array();
 
       if (is_array($value)) {
          $end_display=$start+$_SESSION['glpilist_limit'];
@@ -319,7 +341,6 @@ class Stat {
       if ($output_type==HTML_OUTPUT) { // HTML display
          echo "</div>";
       }
-      return $export_data;
    }
 
 

@@ -40,50 +40,48 @@ commonHeader($LANG['Menu'][13],$_SERVER['PHP_SELF'],"maintain","stat");
 
 checkRight("statistic","1");
 
-if (isset($_GET["date1"])) {
-   $_POST["date1"] = $_GET["date1"];
-}
-if (isset($_GET["date2"])) {
-   $_POST["date2"] = $_GET["date2"];
+
+if (empty($_REQUEST["showgraph"])) {
+   $_REQUEST["showgraph"] = 0;
 }
 
-if (empty($_POST["date1"]) && empty($_POST["date2"])) {
+if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
    $year = date("Y")-1;
-   $_POST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
-   $_POST["date2"] = date("Y-m-d");
+   $_REQUEST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+   $_REQUEST["date2"] = date("Y-m-d");
 }
 
-if (!empty($_POST["date1"])
-    && !empty($_POST["date2"])
-    && strcmp($_POST["date2"],$_POST["date1"]) < 0) {
+if (!empty($_REQUEST["date1"])
+    && !empty($_REQUEST["date2"])
+    && strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0) {
 
-   $tmp = $_POST["date1"];
-   $_POST["date1"] = $_POST["date2"];
-   $_POST["date2"] = $tmp;
-}
-
-if (!isset($_GET["start"])) {
-   $_GET["start"] = 0;
-}
-if (isset($_GET["dropdown"])) {
-   $_POST["dropdown"] = $_GET["dropdown"];
-}
-if (empty($_POST["dropdown"])) {
-   $_POST["dropdown"] = "ComputerType";
+   $tmp = $_REQUEST["date1"];
+   $_REQUEST["date1"] = $_REQUEST["date2"];
+   $_REQUEST["date2"] = $tmp;
 }
 
-echo "<form method='post' name='form' action='stat.location.php'>";
+if (!isset($_REQUEST["start"])) {
+   $_REQUEST["start"] = 0;
+}
+if (isset($_REQUEST["dropdown"])) {
+   $_REQUEST["dropdown"] = $_REQUEST["dropdown"];
+}
+if (empty($_REQUEST["dropdown"])) {
+   $_REQUEST["dropdown"] = "ComputerType";
+}
+
+echo "<form method='get' name='form' action='stat.location.php'>";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name='dropdown'>";
 echo "<optgroup label='".$LANG['setup'][0]."'>";
-echo "<option value='ComputerType' ".($_POST["dropdown"]=="ComputerType"?"selected":"").
+echo "<option value='ComputerType' ".($_REQUEST["dropdown"]=="ComputerType"?"selected":"").
       ">".$LANG['common'][17]."</option>";
-echo "<option value='ComputerModel' ".($_POST["dropdown"]=="ComputerModel"?"selected":"").
+echo "<option value='ComputerModel' ".($_REQUEST["dropdown"]=="ComputerModel"?"selected":"").
       ">".$LANG['common'][22]."</option>";
 echo "<option value='OperatingSystem' ".
-      ($_POST["dropdown"]=="OperatingSystem"?"selected":"").">".$LANG['computers'][9]."</option>";
-echo "<option value='Location' ".($_POST["dropdown"]=="Location"?"selected":"").">".
+      ($_REQUEST["dropdown"]=="OperatingSystem"?"selected":"").">".$LANG['computers'][9]."</option>";
+echo "<option value='Location' ".($_REQUEST["dropdown"]=="Location"?"selected":"").">".
       $LANG['common'][15]."</option>";
 echo "</optgroup>";
 
@@ -91,85 +89,87 @@ $devices = Dropdown::getDeviceItemTypes();
 foreach($devices as $label => $dp) {
    echo "<optgroup label='$label'>";
    foreach ($dp as $i => $name) {
-      echo "<option value='$i' ".($_POST["dropdown"]==$i?"selected":"").">$name</option>";
+      echo "<option value='$i' ".($_REQUEST["dropdown"]==$i?"selected":"").">$name</option>";
    }
    echo "</optgroup>";
 }
 echo "</select></td>";
 
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
-showDateFormItem("date1",$_POST["date1"]);
-echo "</td><td rowspan='2' class='center'>";
+showDateFormItem("date1",$_REQUEST["date1"]);
+echo "</td>";
+echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
+echo "<td rowspan='2' class='center'>";
 echo "<input type='submit' class='button' name='submit' value='". $LANG['buttons'][7] ."'></td></tr>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
-showDateFormItem("date2",$_POST["date2"]);
-echo "</td></tr>";
+showDateFormItem("date2",$_REQUEST["date2"]);
+echo "</td><td class='center'>";
+Dropdown::showYesNo('showgraph',$_REQUEST['showgraph']);
+echo "</td>";
+echo "</tr>";
 echo "</table></form>";
 
-if (empty($_POST["dropdown"]) || !class_exists($_POST["dropdown"])) {
+if (empty($_REQUEST["dropdown"]) || !class_exists($_REQUEST["dropdown"])) {
    // Do nothing
    commonFooter();
    exit();
 }
-$item = new $_POST["dropdown"];
+$item = new $_REQUEST["dropdown"];
 if (!($item instanceof CommonDevice)) {
   // echo "Dropdown";
    $type = "comp_champ";
 
-   $val = Stat::getItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
+   $val = Stat::getItems($_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST["dropdown"]);
    $params = array('type'     => $type,
-                   'dropdown' => $_POST["dropdown"],
-                   'date1'    => $_POST["date1"],
-                   'date2'    => $_POST["date2"],
-                   'start'    => $_GET["start"]);
-
-   printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],
-              "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
-              'Stat',$params);
-
-   $data=Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
+                   'dropdown' => $_REQUEST["dropdown"],
+                   'date1'    => $_REQUEST["date1"],
+                   'date2'    => $_REQUEST["date2"],
+                   'start'    => $_REQUEST["start"]);
 
 } else {
 //   echo "Device";
    $type = "device";
-   $field = $_POST["dropdown"];
+   $field = $_REQUEST["dropdown"];
 
-   $val = Stat::getItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
+   $val = Stat::getItems($_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST["dropdown"]);
    $params = array('type'     => $type,
-                   'dropdown' => $_POST["dropdown"],
-                   'date1'    => $_POST["date1"],
-                   'date2'    => $_POST["date2"],
-                   'start'    => $_GET["start"]);
-
-   printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],
-              "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
-              'Stat',$params);
-
-   $data=Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
+                   'dropdown' => $_REQUEST["dropdown"],
+                   'date1'    => $_REQUEST["date1"],
+                   'date2'    => $_REQUEST["date2"],
+                   'start'    => $_REQUEST["start"]);
 }
 
-echo '<br>';
-if (is_array($data['opened'])) {
-   foreach($data['opened'] as $key => $val){
-      $cleandata[html_clean($key)]=$val;
+printPager($_REQUEST['start'],count($val),$_SERVER['PHP_SELF'],
+            "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;dropdown=".$_REQUEST["dropdown"],
+            'Stat',$params);
+if (!$_REQUEST['showgraph']) {
+   Stat::show($type,$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val,$_REQUEST["dropdown"]);
+} else {
+   $data=Stat::getDatas($type,$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val,$_REQUEST["dropdown"]);
+   if (is_array($data['opened'])) {
+      foreach($data['opened'] as $key => $val){
+         $cleandata[html_clean($key)]=$val;
+      }
+      Stat::showGraph(array($LANG['stats'][5]=>$cleandata)
+                     ,array('title'=>$LANG['stats'][5],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
    }
-   Stat::showGraph(array($LANG['stats'][5]=>$cleandata)
-                  ,array('title'=>$LANG['stats'][5],
-                        'showtotal' => 1,
-                        'unit'      => $LANG['stats'][35],
-                        'type'      => 'pie'));
-}
-if (is_array($data['solved'])) {
-   foreach($data['solved'] as $key => $val){
-      $cleandata[html_clean($key)]=$val;
-   }
+   if (is_array($data['solved'])) {
+      foreach($data['solved'] as $key => $val){
+         $cleandata[html_clean($key)]=$val;
+      }
 
-   Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
-                  ,array('title'    => $LANG['stats'][11],
-                        'showtotal' => 1,
-                        'unit'      => $LANG['stats'][35],
-                        'type'      => 'pie'));
+      Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
+                     ,array('title'    => $LANG['stats'][11],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
+   }
 }
+
+
 commonFooter();
 
 ?>
