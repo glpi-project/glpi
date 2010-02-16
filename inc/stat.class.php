@@ -772,7 +772,6 @@ class Stat {
       global $CFG_GLPI;
       
       if ($uid=getLoginUserID(false)) {
-         echo '<div>';
          if (!isset($_SESSION['glpigraphtype'])) {
             $_SESSION['glpigraphtype']='svg';
          }
@@ -788,6 +787,10 @@ class Stat {
                $param[$key]=$val;
             }
          }
+
+         echo "<div class='center-h' style='width:".$param['width']."px'>";
+         echo "<div>";
+
 
          $graph = new ezcGraphLineChart(); 
          $graph->palette = new ezcGraphPaletteEzGreen(); 
@@ -846,11 +849,13 @@ class Stat {
                break;
             default:
                $graph->render( $param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename );
-               echo "<embed src='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
-                     width='".$param['width']."' height='".$param['height']."'
-                     type='image/svg+xml' pluginspage='http://www.adobe.com/svg/viewer/install/'> ";
+               echo "<object data='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
+                     type='image/svg+xml'>You need a browser capeable of SVG to display this image.
+                     </object> ";
             break;
          }
+         echo "</div>";
+         echo "<span class='right' style='width:".$param['width']."px'>SVG / PNG / CSV</span>";
          echo '</div>';
       }
    }
