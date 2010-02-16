@@ -893,7 +893,7 @@ class Stat {
             }
             $graph->title = $param['title'];
          }
-         if (count($entrees)==1){
+         if (count($entrees)==1) {
             $graph->legend = false;
          }
 
@@ -912,7 +912,7 @@ class Stat {
          $filename=$uid.'_'.mt_rand();
          $csvfilename=$filename.'.csv';
          $filename.='.'.$extension;
-         foreach ($entrees as $label => $data){
+         foreach ($entrees as $label => $data) {
             $graph->data[$label] = new ezcGraphArrayDataSet( $data );
             $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL;
          }
