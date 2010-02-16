@@ -604,8 +604,10 @@ class TicketTask  extends CommonDBTM {
                               $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
          echo "};";
          echo "</script>\n";
-         echo "<p><a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
-         echo $LANG['job'][30]."</a></p><br>\n";
+         if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
+            echo "<p><a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+            echo $LANG['job'][30]."</a></p><br>\n";
+         }
       }
 
       //echo "<h3>" . $LANG['job'][37] . "</h3>";
