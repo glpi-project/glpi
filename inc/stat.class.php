@@ -772,9 +772,9 @@ class Stat {
       global $CFG_GLPI;
       
       if ($uid=getLoginUserID(false)) {
-
+         echo '<div>';
          if (!isset($_SESSION['glpigraphtype'])) {
-            $_SESSION['glpigraphtype']='png';
+            $_SESSION['glpigraphtype']='svg';
          }
 
          $param['showtotal']  = false;
@@ -796,7 +796,9 @@ class Stat {
          $graph->xAxis->axisLabelRenderer->angle = 45;
          $graph->xAxis->axisSpace = .2;
          $graph->yAxis->min = 0;
-         
+         $graph->options->font->maxFontSize = 20;
+         $graph->title->background = '#EEEEEC';
+
          if (!empty($param['title'])) {
             // Only when one dataset
             if ($param['showtotal']==1 && count($entrees)==1) {
@@ -849,8 +851,8 @@ class Stat {
                      type='image/svg+xml' pluginspage='http://www.adobe.com/svg/viewer/install/'> ";
             break;
          }
+         echo '</div>';
       }
-
    }
 
    static function showItems($target,$date1,$date2,$start) {
