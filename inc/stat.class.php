@@ -778,7 +778,7 @@ class Stat {
    *     - csv boolean export to CSV (default true)
    * @return array contains the distinct groups assigned to a tickets
    */
-   static function barGraph($entrees,$options=array()) {
+   static function showGraph($entrees,$options=array()) {
       global $CFG_GLPI;
       
       if ($uid=getLoginUserID(false)) {
