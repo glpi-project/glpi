@@ -127,7 +127,7 @@ if (!($item instanceof CommonDevice)) {
               "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
               'Stat',$params);
 
-   Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
+   $data=Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
 
 } else {
 //   echo "Device";
@@ -145,9 +145,24 @@ if (!($item instanceof CommonDevice)) {
               "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;dropdown=".$_POST["dropdown"],
               'Stat',$params);
 
-   Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
+   $data=Stat::show($type,$_POST["date1"],$_POST["date2"],$_GET['start'],$val,$_POST["dropdown"]);
 }
 
+echo '<br>';
+if (is_array($data['opened'])) {
+   Stat::barGraph(array($LANG['stats'][5]=>$data['opened'])
+                  ,array('title'=>$LANG['stats'][5],
+                        'showtotal' => 1,
+                        'unit'      => $LANG['stats'][35],
+                        'type'      => 'pie'));
+}
+if (is_array($data['solved'])) {
+   Stat::barGraph(array($LANG['stats'][11]=>$data['solved'])
+                  ,array('title'    => $LANG['stats'][11],
+                        'showtotal' => 1,
+                        'unit'      => $LANG['stats'][35],
+                        'type'      => 'pie'));
+}
 commonFooter();
 
 ?>

@@ -188,6 +188,8 @@ class Stat {
       if ($output_type==HTML_OUTPUT) { // HTML display
          echo "<div class ='center'>";
       }
+      $export_data=array();
+
       if (is_array($value)) {
          $end_display=$start+$_SESSION['glpilist_limit'];
          $numrows=count($value);
@@ -230,15 +232,18 @@ class Stat {
                }
                echo Search::showItem($output_type,$link,$item_num,$row_num);
             }
-
             //le nombre d'intervention - the number of intervention
             $opened=Stat::constructEntryValues("inter_total",$date1,$date2,$type,$value[$i]["id"],$value2);
             $nb_opened=array_sum($opened);
             echo Search::showItem($output_type,$nb_opened,$item_num,$row_num);
+            $export_data['opened'][$value[$i]['link']]=$nb_opened;
+
             //le nombre d'intervention resolues - the number of resolved intervention
             $solved=Stat::constructEntryValues("inter_solved",$date1,$date2,$type,$value[$i]["id"],$value2);
             $nb_solved=array_sum($solved);
             echo Search::showItem($output_type,$nb_solved,$item_num,$row_num);
+            $export_data['solved'][$value[$i]['link']]=$nb_solved;
+
             //Le temps moyen de resolution - The average time to resolv
             $data=Stat::constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$value[$i]["id"],$value2);
             foreach ($data as $key2 => $val2) {
@@ -256,6 +261,7 @@ class Stat {
                $timedisplay=timestampToString($timedisplay,0);
             }
             echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
+
             //Le temps moyen de l'intervention reelle - The average realtime to resolv
             $data=Stat::constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["id"],$value2);
             foreach ($data as $key2 => $val2) {
@@ -313,6 +319,7 @@ class Stat {
       if ($output_type==HTML_OUTPUT) { // HTML display
          echo "</div>";
       }
+      return $export_data;
    }
 
 
@@ -565,6 +572,7 @@ class Stat {
          $year=date("Y",$current);
          $current=mktime(0,0,0,intval($month)+1,1,intval($year));
       }
+      ksort($entrees);
 
       return $entrees;
    }
@@ -581,7 +589,6 @@ class Stat {
    static function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month") {
       global $DB,$CFG_GLPI,$LANG;
 
-      ksort($entrees);
       $total="";
       if ($showtotal==1) {
          $total=array_sum($entrees);
@@ -768,6 +775,7 @@ class Stat {
    *     - height integer height of the graph (default 300)
    *     - unit integer height of the graph (default empty)
    *     - type integer height of the graph (default line) : line bar pie
+   *     - csv boolean export to CSV (default true)
    * @return array contains the distinct groups assigned to a tickets
    */
    static function barGraph($entrees,$options=array()) {
@@ -784,6 +792,7 @@ class Stat {
          $param['height']     = 300;
          $param['unit']       = '';
          $param['type']       = 'line';
+         $param['csv']        = true;
 
          if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -877,25 +886,32 @@ class Stat {
             break;
          }
          // Render CSV
-         if ($fp = fopen(GLPI_GRAPH_DIR.'/'.$csvfilename, 'w')) {
-            foreach ($entrees as $label => $data) {
-               if (is_array($data) && count($data)) {
-                  foreach ($data as $key => $val) {
-                     fwrite($fp,$label.';'.$key.';'.$val.";\n");
+         if ($param['csv']) {
+            if ($fp = fopen(GLPI_GRAPH_DIR.'/'.$csvfilename, 'w')) {
+               foreach ($entrees as $label => $data) {
+                  if (is_array($data) && count($data)) {
+                     foreach ($data as $key => $val) {
+                        fwrite($fp,$label.';'.$key.';'.$val.";\n");
+                     }
                   }
                }
+               fclose($fp);
             }
-            fclose($fp);
          }
          echo "</div>";
          echo "<div class='right' style='width:".$param['width']."px'>";
          if ($_SESSION['glpigraphtype']!='svg') {
-            echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=svg'>SVG</a>";
+            echo "&nbsp;<a href='".$CFG_GLPI['root_doc'].
+                     "/front/graph.send.php?switchto=svg'>SVG</a>";
          }
          if ($_SESSION['glpigraphtype']!='png') {
-            echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=png'>PNG</a>";
+            echo "&nbsp;<a href='".$CFG_GLPI['root_doc'].
+                     "/front/graph.send.php?switchto=png'>PNG</a>";
          }
-         echo " / <a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$csvfilename'>CSV</a>";
+         if ($param['csv']) {
+            echo " / <a href='".$CFG_GLPI['root_doc'].
+                     "/front/graph.send.php?file=$csvfilename'>CSV</a>";
+         }
          echo "</div>";
          echo '</div>';
       }

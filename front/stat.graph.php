@@ -288,6 +288,11 @@ echo "</table></form></div>";
 // Total des interventions
 $entrees_total = Stat::constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],
                                       $val1,$val2);
+Stat::barGraph(array($LANG['stats'][5]=>$entrees_total)
+               ,array('title'=>$LANG['stats'][5],
+                     'showtotal' => 1,
+                     'unit'      => $LANG['stats'][35]));
+
 if (count($entrees_total) > 0) {
    Stat::graphBy($entrees_total,$LANG['stats'][5],$LANG['stats'][35],1,"month");
 }
@@ -295,29 +300,47 @@ if (count($entrees_total) > 0) {
 // Total des interventions resolues
 $entrees_solved = Stat::constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],
                                        $val1,$val2);
+Stat::barGraph(array($LANG['stats'][11]=>$entrees_solved)
+               ,array('title'    => $LANG['stats'][11],
+                     'showtotal' => 1,
+                     'unit'      => $LANG['stats'][35]));
+
 if (count($entrees_solved) > 0) {
    Stat::graphBy($entrees_solved,$LANG['stats'][11],$LANG['stats'][35],1,"month");
 }
 
 //Temps moyen de resolution d'intervention
-$entrees_avgtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],
+$entrees_avgsolvedtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
-if (count($entrees_avgtime) > 0) {
-   Stat::graphBy($entrees_avgtime,$LANG['stats'][6],$LANG['job'][21],0,"month");
+if (count($entrees_avgsolvedtime) > 0) {
+   Stat::graphBy($entrees_avgsolvedtime,$LANG['stats'][6],$LANG['job'][21],0,"month");
 }
 
+Stat::barGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
+               ,array('title' => $LANG['stats'][6],
+                     'unit'   => $LANG['job'][21]));
+
 //Temps moyen d'intervention reel
-$entrees_avgtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],
+$entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
-if (count($entrees_avgtime) > 0) {
-   Stat::graphBy($entrees_avgtime,$LANG['stats'][25],$LANG['stats'][33],0,"month");
+
+Stat::barGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
+               ,array('title' => $LANG['stats'][25],
+                     'unit'   => $LANG['job'][21]));
+
+if (count($entrees_avgrealtime) > 0) {
+   Stat::graphBy($entrees_avgrealtime,$LANG['stats'][25],$LANG['stats'][33],0,"month");
 }
 
 //Temps moyen de prise en compte de l'intervention
-$entrees_avgtime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],
+$entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
-if (count($entrees_avgtime) > 0) {
-   Stat::graphBy($entrees_avgtime,$LANG['stats'][30],$LANG['job'][21],0,"month");
+
+Stat::barGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
+               ,array('title' => $LANG['stats'][30],
+                     'unit'   => $LANG['job'][21]));
+if (count($entrees_avgtaketime) > 0) {
+   Stat::graphBy($entrees_avgtaketime,$LANG['stats'][30],$LANG['job'][21],0,"month");
 }
 
 commonFooter();
