@@ -62,23 +62,23 @@ class NotificationTargetCartridge extends NotificationTarget {
       /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event,$options=array()) {
+   function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
       global $LANG;
       $prefix = strtolower($item->getType());
-      $tpldatas['##'.$prefix.'.entity##'] =
+      $tpldata['##'.$prefix.'.entity##'] =
                            Dropdown::getDropdownName('glpi_entities',
                                                      $this->obj->getField('entities_id'));
-      $tpldatas['##'.$prefix.'.item##'] = $this->target_object->getField('name');
-      $tpldatas['##'.$prefix.'.reference##'] = $this->target_object->getField('ref');
-      $tpldatas['##'.$prefix.'.value##'] = Cartridge::getUnusedNumber($this->getField('id'));
+      $tpldata['##'.$prefix.'.item##'] = $this->target_object->getField('name');
+      $tpldata['##'.$prefix.'.reference##'] = $this->target_object->getField('ref');
+      $tpldata['##'.$prefix.'.value##'] = Cartridge::getUnusedNumber($this->getField('id'));
 
-      $tpldatas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $tpldatas['##lang.'.$prefix.'.action##']= $LANG['mailing'][33];
-      $tpldatas['##lang.'.$prefix.'.item##'] = $LANG['mailing'][35];
-      $tpldatas['##lang.'.$prefix.'.reference##'] = $LANG['consumables'][2];
-      $tpldatas['##lang.'.$prefix.'.value##'] = $LANG['software'][20];
+      $tpldata['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
+      $tpldata['##lang.'.$prefix.'.action##']= $LANG['mailing'][33];
+      $tpldata['##lang.'.$prefix.'.item##'] = $LANG['mailing'][35];
+      $tpldata['##lang.'.$prefix.'.reference##'] = $LANG['consumables'][2];
+      $tpldata['##lang.'.$prefix.'.value##'] = $LANG['software'][20];
 
-      return $tpldatas;
+      return $tpldata;
    }
 }
 ?>

@@ -620,14 +620,8 @@ class NotificationTarget extends CommonDBTM {
     * Provides minimum informations for alerts
     * Can be overridden by each NotificationTartget class if needed
     */
-   function getDatasForTemplate($event,$options=array()) {
-      global $LANG;
-      $prefix = strtolower($item->getType());
-      $tpldatas['##'.$prefix.'.entity##'] =
-                           Dropdown::getDropdownName('glpi_entities',
-                                                     $this->obj->getField('entities_id'));
-      $tpldatas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      return $tpldatas;
+   function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
+      return $tpldata;
    }
 
    function getTargets() {
@@ -652,6 +646,14 @@ class NotificationTarget extends CommonDBTM {
 
    static function getJoinProfileSql() {
       return "";
+   }
+
+   function getForTemplate($event,$options = array()) {
+      global $CFG_GLPI;
+      $tpldata = array();
+      $tpldata['##glpi.url##'] = $CFG_GLPI['root_doc'];
+      $tpldata = $this->getDatasForTemplate($event,$tpldata,$options);
+      return $tpldata;
    }
 }
 ?>
