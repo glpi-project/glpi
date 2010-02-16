@@ -40,6 +40,10 @@ class AuthLDAP extends CommonDBTM {
 
    const SIMPLE_INTERFACE = 'simple';
    const EXPERT_INTERFACE = 'expert';
+
+   const ACTION_IMPORT = 0;
+   const ACTION_SYNCHRONIZE = 1;
+
    // From CommonDBTM
    public $dohistory = true;
 
@@ -1471,12 +1475,12 @@ class AuthLDAP extends CommonDBTM {
    /** Import a user from a specific ldap server
     *
     * @param   $login  dn of the user to import
-    * @param   $sync synchoronise (true) or import (false)
+    * @param   $mode synchoronise (true) or import (false)
     * @param   $ldap_server ID of the LDAP server to use
     * @param   $display display message information on redirect
     * @return  nothing
     */
-   static function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
+   static function ldapImportUserByServerId($login, $mode,$ldap_server,$display=false) {
       global $DB, $LANG;
 
       $config_ldap = new AuthLDAP();
@@ -1503,14 +1507,14 @@ class AuthLDAP extends CommonDBTM {
             //Get informations from LDAP
             if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login), "")) {
                //Add the auth method
-               if (!$sync) {
+               if ($mode == AuthLDap::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
                }
                // Force date mod
                $user->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 
-               if (!$sync) {
+               if ($mode == AuthLDap::ACTION_IMPORT) {
                   //Save informations in database !
                   $input = $user->fields;
                   unset ($user->fields);
@@ -1544,12 +1548,12 @@ class AuthLDAP extends CommonDBTM {
    /** Import a user from the active ldap server
     *
     * @param   $login  dn of the user to import
-    * @param   $sync synchoronise (true) or import (false)
+    * @param   $mode synchoronise (true) or import (false)
     * @param   $display display message information on redirect
     * @return  nothing
     */
-   static function ldapImportUser ($login,$sync,$display=false) {
-      AuthLdap::ldapImportUserByServerId($login, $sync,$_SESSION["ldap_server"],$display);
+   static function ldapImportUser ($login,$mode,$display=false) {
+      AuthLdap::ldapImportUserByServerId($login, $mode,$_SESSION["ldap_server"],$display);
    }
 
    /** Converts an array of parameters into a query string to be appended to a URL.
@@ -1848,10 +1852,16 @@ class AuthLDAP extends CommonDBTM {
          $_SESSION['ldap_import']['popup'] = 1;
          $_SESSION['ldap_import']['no_expert_mode'] = 1;
          $_SESSION['ldap_import']['action'] = 'show';
-         $_SESSION['ldap_import']['mode'] = AuthLdap::SIMPLE_INTERFACE;
+         $_SESSION['ldap_import']['interface'] = AuthLdap::SIMPLE_INTERFACE;
+         $_SESSION['ldap_import']['mode'] = AuthLdap::ACTION_IMPORT;
       }
 
       if (!$delete) {
+
+         if (isset($options["rand"])) {
+            $_SESSION["glpipopup"]["rand"]=$options["rand"];
+         }
+
          if (!isset($_SESSION['ldap_import']['entities_id'])) {
             $options['entities_id'] = $_SESSION['glpiactive_entity'];
          }

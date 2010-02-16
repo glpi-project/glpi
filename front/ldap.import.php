@@ -38,9 +38,7 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-$user = new User();
-$user->checkGlobal('w');
-checkRight('user_authtype','w');
+checkRight("import_externalauth_users",'w');
 
 AuthLdap::manageValuesInSession($_REQUEST);
 
@@ -89,6 +87,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
          unset($_SESSION["mode"]);
          unset($_SESSION["interface"]);
          $_SESSION['ldap_import']['action'] = 'show';
+         refreshMainWindow();
 
       }
  } else {

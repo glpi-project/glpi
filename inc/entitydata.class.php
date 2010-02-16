@@ -367,18 +367,20 @@ class EntityData extends CommonDBTM {
 
    static function isEntityDirectoryConfigured($entities_id) {
       $entitydatas = new EntityData;
-      if ($entitydatas->getFromDB($entities_id)) {
-         if ($entitydatas->getField('ldapservers_id') != NOT_AVAILABLE) {
+
+      if ($entitydatas->getFromDB($entities_id)
+            && $entitydatas->getField('ldapservers_id') != NOT_AVAILABLE) {
+         return true;
+      }
+      else {
+         //If there's a directory marked as default
+         if (AuthLdap::getDefault()) {
             return true;
          }
          else {
             return false;
          }
       }
-      else {
-         return false;
-      }
-
    }
 }
 

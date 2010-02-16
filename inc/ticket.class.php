@@ -2494,7 +2494,8 @@ class Ticket extends CommonDBTM {
          echo "<td>";
          User::dropdown(array('value'  => $this->fields["users_id"],
                               'entity' => $this->fields["entities_id"],
-                              'right'  => 'all'));
+                              'right'  => 'all',
+                              'ldap_import'=> true));
       } else {
          echo $LANG['common'][34]."&nbsp;: </td>";
          echo "<td>";
@@ -2562,21 +2563,24 @@ class Ticket extends CommonDBTM {
          User::dropdown(array('name'   => 'users_id_assign',
                               'value'  => $this->fields["users_id_assign"],
                               'right'  => 'own_ticket',
-                              'entity' => $this->fields["entities_id"]));
+                              'entity' => $this->fields["entities_id"],
+                              'ldap_import'=> true));
          echo "</td>";
       } else if (haveRight("steal_ticket","1")) {
          echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
          User::dropdown(array('name'   => 'users_id_assign',
                               'value'  => $this->fields["users_id_assign"],
-                              'entity' => $this->fields["entities_id"]));
+                              'entity' => $this->fields["entities_id"],
+                              'ldap_import'=> true));
          echo "</td>";
       } else if (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0) {
          echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
          User::dropdown(array('name'   => 'users_id_assign',
                               'value'  => $this->fields["users_id_assign"],
-                              'entity' => $this->fields["entities_id"]));
+                              'entity' => $this->fields["entities_id"],
+                              'ldap_import'=> true));
          echo "</td>";
       } else {
          echo "<td class='left'>".$LANG['job'][6]."&nbsp;: </td>";
