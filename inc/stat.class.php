@@ -831,6 +831,7 @@ class Stat {
                $graph->options->font->maxFontSize = 15;
                $graph->title->background = '#EEEEEC';
                $graph->renderer = new ezcGraphRenderer3d();
+               $graph->renderer->options->pieChartHeight = 20;
                $graph->renderer->options->moveOut = .2;
                $graph->renderer->options->pieChartOffset = 63;
                $graph->renderer->options->pieChartGleam = .3;
