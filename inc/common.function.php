@@ -1078,6 +1078,15 @@ function sendFile($file,$filename) {
          case "xml" :
             $mime="text/xml";
             break;
+         case "csv" :
+            $mime="text/csv";
+            break;
+         case "svg" :
+            $mime="image/svg+xml";
+            break;
+         case "png" :
+            $mime="image/png";
+            break;
       }
    }
 

@@ -93,6 +93,11 @@ if (!defined("GLPI_LOG_DIR")) {
    define("GLPI_LOG_DIR",GLPI_ROOT . "/files/_log");
 }
 
+// Path for graph storage
+if (!defined("GLPI_GRAPH_DIR")) {
+   define("GLPI_GRAPH_DIR",GLPI_ROOT . "/files/_graphs");
+}
+
 // Default location scripts
 if (!defined("GLPI_SCRIPT_DIR")) {
    define("GLPI_SCRIPT_DIR",GLPI_ROOT . "/scripts");
