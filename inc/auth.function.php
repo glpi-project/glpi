@@ -94,14 +94,14 @@ function haveRight($module, $right) {
 
 
 // TODO keep for transition => to be removed ??
-/**
+/*
  * Have I the right $right to module type $itemtype (conpare to session variable)
  *
  * @param $right Right to check
  * @param $itemtype Type to check
  *
  * @return Boolean : session variable have more than the right specified for the module type
-**/
+*/
 // function haveTypeRight($itemtype, $right) {
 //    global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
 //
@@ -211,13 +211,13 @@ function checkSeveralRightsOr($modules) {
    }
 }
 
-/**
+/*
  * Check if I have all the rights specified
  *
  * @param $modules array of modules where keys are modules and value are right
  *
  * @return Nothing : display error if not permit
-**/
+*/
 // function checkSeveralRightsAnd($modules) {
 //    global $CFG_GLPI;
 //
@@ -244,14 +244,14 @@ function checkSeveralRightsOr($modules) {
 //    }
 // }
 
-/**
+/*
  * Check if I have the right $right to module type $itemtype (conpare to session variable)
  *
  * @param $itemtype Module type to check
  * @param $right Right to check
  *
  * @return Nothing : display error if not permit
-**/
+*/
 // function checkTypeRight($itemtype, $right) {
 //    global $CFG_GLPI;
 //    if (!haveTypeRight($itemtype, $right)) {
@@ -263,6 +263,7 @@ function checkSeveralRightsOr($modules) {
 //       displayRightError();
 //    }
 // }
+
 /**
  * Check if I have access to the central interface
  *

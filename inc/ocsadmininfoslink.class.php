@@ -41,14 +41,6 @@ if (!defined('GLPI_ROOT')){
  */
 class OcsAdminInfosLink extends CommonDBTM {
 
-   /**
-    * Actions done when item is deleted from the database
-    *
-    *@param $ID ID of the item
-    *
-    *@return nothing
-    *
-    **/
    function cleanDBonPurge() {
       global $DB;
 

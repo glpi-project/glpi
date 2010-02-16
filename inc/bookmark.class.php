@@ -102,6 +102,7 @@ class Bookmark extends CommonDBTM {
    /**
    * Print the bookmark form
    *
+   * @param $ID integer ID of the item
    * @param $options array
    *     - target for the Form
    *     - type bookmark type when adding a new bookmark

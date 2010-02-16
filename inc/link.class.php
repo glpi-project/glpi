@@ -72,14 +72,15 @@ class Link extends CommonDBTM {
    }
 
    /**
-    * Print the link form
-    *
-     * @param $options array
-    *     - target filename : where to go when done.
-    *
-    *@return Nothing (display)
-    *
-    **/
+   * Print the link form
+   *
+   * @param $ID integer ID of the item
+   * @param $options array
+   *     - target filename : where to go when done.
+   *
+   *@return Nothing (display)
+   *
+   **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 

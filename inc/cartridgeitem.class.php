@@ -200,6 +200,7 @@ class CartridgeItem extends CommonDBTM {
    /**
    * Print the cartridge type form
    *
+   * @param $ID integer ID of the item
    * @param $options array
    *     - target for the Form
    *     - withtemplate : 1 for newtemplate, 2 for newobject from template

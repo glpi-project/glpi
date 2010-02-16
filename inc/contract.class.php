@@ -119,15 +119,16 @@ class Contract extends CommonDBTM {
    }
 
    /**
-    * Print the contract form
-    *
-    * @param $options array
-    *     - target filename : where to go when done.
-    *     - withtemplate boolean : template or basic item
-    *
-    *@return boolean item found
-    *
-    **/
+   * Print the contract form
+   *
+   * @param $ID integer ID of the item
+   * @param $options array
+   *     - target filename : where to go when done.
+   *     - withtemplate boolean : template or basic item
+   *
+   *@return boolean item found
+   *
+   **/
    function showForm ($ID,$options=array()) {
       global $CFG_GLPI,$LANG;
       // Show Contract or blank form

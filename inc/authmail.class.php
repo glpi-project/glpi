@@ -113,8 +113,8 @@ class AuthMail extends CommonDBTM {
    /**
     * Print the auth mail form
     *
-    *@param $target form target
-    *@param $ID Integer : ID of the item
+    * @param $ID Integer : ID of the item
+    * @param $options array
     *
     *@return Nothing (display)
     **/

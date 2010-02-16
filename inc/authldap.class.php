@@ -121,13 +121,14 @@ class AuthLDAP extends CommonDBTM {
    }
 
    /**
-    * Print the auth ldap form
-    *
+   * Print the auth ldap form
+   *
+   * @param $ID integer ID of the item
    * @param $options array
    *     - target for the Form
-    *
-    *@return Nothing (display)
-    **/
+   *
+   *@return Nothing (display)
+   **/
    function showForm($ID, $options=array()) {
       global $LANG;
 
@@ -947,12 +948,6 @@ class AuthLDAP extends CommonDBTM {
 
    /** Show LDAP users to add or synchronise
     *
-    * @param   $target target page for the form
-    * @param   $check check all ? -> need to be delete
-    * @param   $start where to start the list
-    * @param   $sync synchronise or add ?
-    * @param   $filter ldap filter to use
-    * @param   $order display order
     * @return  nothing
     */
    static function showLdapUsers() {
@@ -1074,10 +1069,12 @@ class AuthLDAP extends CommonDBTM {
 
    /** Get the list of LDAP users to add/synchronize
     *
-    * @param   $auths_id ID of the server to use
-    * @param   $sync user to synchronise or add ?
-    * @param   $myfilter ldap filter to use
-    * @param   $order display order
+    * @param $options array options
+    *          - ldapservers_id ID of the server to use
+    *          - mode user to synchronise or add ?
+    *          - ldap_filter ldap filter to use
+    *          - basedn force basedn (default ldapservers_id one)
+    *          - order display order
     * @return  array of the user
     */
    static function getAllLdapUsers($options = array()) {
