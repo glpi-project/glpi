@@ -83,40 +83,23 @@ Stat::showGraph(array($LANG['stats'][5]=>$entrees_total)
                      'showtotal' => 1,
                      'unit'      => $LANG['stats'][35]));
 
-if (count($entrees_total) > 0) {
-   Stat::graphBy($entrees_total,$LANG['stats'][5],$LANG['stats'][35],1,"month");
-}
-
 Stat::showGraph(array($LANG['stats'][11]=>$entrees_solved)
                ,array('title'    => $LANG['stats'][11],
                      'showtotal' => 1,
                      'unit'      => $LANG['stats'][35]));
 
-if (count($entrees_solved) > 0) {
-   Stat::graphBy($entrees_solved,$LANG['stats'][11],$LANG['stats'][35],1,"month");
-}
 Stat::showGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
                ,array('title' => $LANG['stats'][6],
                      'unit'   => $LANG['job'][21]));
 
-if (count($entrees_avgsolvedtime) > 0) {
-   Stat::graphBy($entrees_avgsolvedtime,$LANG['stats'][6],$LANG['job'][21],0,"month");
-}
 Stat::showGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
                ,array('title' => $LANG['stats'][25],
                      'unit'   => $LANG['job'][21]));
 
-if (count($entrees_avgrealtime) > 0) {
-   Stat::graphBy($entrees_avgrealtime,$LANG['stats'][25],$LANG['stats'][33],0,"month");
-}
 
 Stat::showGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
                ,array('title' => $LANG['stats'][30],
                      'unit'   => $LANG['job'][21]));
-
-if (count($entrees_avgtaketime) > 0) {
-   Stat::graphBy($entrees_avgtaketime,$LANG['stats'][30],$LANG['job'][21],0,"month");
-}
 
 commonFooter();
 

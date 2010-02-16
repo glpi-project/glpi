@@ -336,6 +336,12 @@ class Config extends CommonDBTM {
       echo "</select>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>" . $LANG['setup'][47]."</td><td>";
+      Dropdown::showFromArray("default_graphtype",array('png'=>'PNG','svg'=>'SVG'),array('value'=>$CFG_GLPI["default_graphtype"]));
+      echo "</td><td class='center' colspan='2'>&nbsp;";
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['setup'][6] . "</strong></td></tr>";
 

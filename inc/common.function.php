@@ -2018,7 +2018,7 @@ function csv_clean($value) {
  **/
 function weblink_extract($value) {
 
-   $value = preg_replace('/<a\s+href\="(https?\:\/\/[^"]+)"[^>]*>[^<]*<\/a>/i', '$1', $value);
+   $value = preg_replace('/<a\s+href\="([^"]+)"[^>]*>[^<]*<\/a>/i', "$1", $value);
    return $value;
 }
 
