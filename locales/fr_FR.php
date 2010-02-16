@@ -1546,6 +1546,7 @@ $LANG['setup'][43]="Types d'imprimantes";
 $LANG['setup'][44]="Types de moniteurs";
 $LANG['setup'][45]="Types de boitiers";
 $LANG['setup'][46]="Valeur par défaut";
+$LANG['setup'][47]="Type de graphique par défaut";
 
 $LANG['setup'][62]="Sélectionnez la catégorie à configurer";
 $LANG['setup'][63]="Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs éléments.";

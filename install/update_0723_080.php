@@ -1877,13 +1877,6 @@ function update0723to080($output='HTML') {
    }
 
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
-	if (FieldExists('glpi_configs', 'license_deglobalisation')) {
-		$query="ALTER TABLE `glpi_configs` DROP `license_deglobalisation`;";
-      $DB->query($query) or die("0.80 alter clean glpi_configs table " . $LANG['update'][90] . $DB->error());
-	}
-
-
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rulecachesoftwares'); // Updating schema
 
 	if (FieldExists("glpi_rulecachesoftwares","ignore_ocs_import")) {
@@ -1892,7 +1885,7 @@ function update0723to080($output='HTML') {
 	}
 	if (!FieldExists("glpi_rulecachesoftwares","is_helpdesk_visible")) {
 		$query = "ALTER TABLE `glpi_rulecachesoftwares` ADD `is_helpdesk_visible` CHAR( 1 ) NULL ";
-      $DB->query($query) or die("0.80 add is_helpdesk_visible index in glpi_rulecachesoftwares " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add is_helpdesk_visible in glpi_rulecachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
@@ -1907,8 +1900,18 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 add ancestors_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
 
-
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
+
+
+	if (!FieldExists("glpi_configs","default_graphtype")) {
+		$query = "ALTER TABLE `glpi_configs` ADD `default_graphtype` char( 3 ) NOT NULL DEFAULT 'svg'";
+      $DB->query($query) or die("0.80 add default_graphtype in glpi_configs " . $LANG['update'][90] . $DB->error());
+	}
+
+	if (FieldExists('glpi_configs', 'license_deglobalisation')) {
+		$query="ALTER TABLE `glpi_configs` DROP `license_deglobalisation`;";
+      $DB->query($query) or die("0.80 alter clean glpi_configs table " . $LANG['update'][90] . $DB->error());
+	}
 
    if (FieldExists("glpi_configs","use_cache")) {
       $query = "ALTER TABLE `glpi_configs`  DROP `use_cache`;";
@@ -1922,24 +1925,24 @@ function update0723to080($output='HTML') {
 
 	if (!FieldExists("glpi_configs","default_request_type")) {
 		$query = "ALTER TABLE `glpi_configs` ADD `default_request_type` INT( 11 ) NOT NULL DEFAULT 1";
-      $DB->query($query) or die("0.80 add default_request_type index in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add default_request_type in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_users","default_request_type")) {
 		$query = "ALTER TABLE `glpi_users` ADD `default_request_type` INT( 11 ) NULL";
-      $DB->query($query) or die("0.80 add default_request_type index in glpi_users " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add default_request_type in glpi_users " . $LANG['update'][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_configs","use_noright_users_add")) {
 		$query = "ALTER TABLE `glpi_configs` ADD `use_noright_users_add` tinyint( 1 ) NOT NULL DEFAULT '1'";
-      $DB->query($query) or die("0.80 add use_noright_users_add index in glpi_configs " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add use_noright_users_add in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
 
 	displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
 
 	if (!FieldExists("glpi_profiles","budget")) {
 		$query = "ALTER TABLE `glpi_profiles` ADD `budget` CHAR( 1 ) NULL ";
-		$DB->query($query) or die("0.80 add budget index in glpi_profiles" . $LANG['update'][90] . $DB->error());
+		$DB->query($query) or die("0.80 add budget in glpi_profiles" . $LANG['update'][90] . $DB->error());
 
 		$query = "UPDATE `glpi_profiles` SET `budget`='w' WHERE `name` IN ('super-admin','admin')";
 		$DB->query($query) or die("0.80 add budget write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());

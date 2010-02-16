@@ -783,7 +783,7 @@ class Stat {
       
       if ($uid=getLoginUserID(false)) {
          if (!isset($_SESSION['glpigraphtype'])) {
-            $_SESSION['glpigraphtype']='svg';
+            $_SESSION['glpigraphtype']=$CFG_GLPI['default_graphtype'];
          }
 
          $param['showtotal']  = false;
@@ -870,7 +870,7 @@ class Stat {
          $filename.='.'.$extension;
          foreach ($entrees as $label => $data){
             $graph->data[$label] = new ezcGraphArrayDataSet( $data );
-            $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL; 
+            $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL;
          }
 
          switch ($_SESSION['glpigraphtype']) {
@@ -883,6 +883,8 @@ class Stat {
                echo "<object data='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
                      type='image/svg+xml'>You need a browser capeable of SVG to display this image.
                      </object> ";
+               $graph->driver->options->linkCursor = 'crosshair';
+               ezcGraphTools::linkSvgElements( $graph );
             break;
          }
          // Render CSV
