@@ -503,7 +503,7 @@ class Stat {
       $result=$DB->query($query);
       if ($result && $DB->numrows($result)>0) {
          while ($row = $DB->fetch_array($result)) {
-            $date = substr($row['date_unix'],2,5);
+            $date = $row['date_unix'];
             if ($type=="inter_avgtakeaccount") {
                $min=$row["OPEN"];
                if (!empty($row["FIRST"]) && !is_null($row["FIRST"]) && $row["FIRST"]<$min) {
@@ -557,7 +557,7 @@ class Stat {
       $current=$min;
 
       while ($current<=$max) {
-         $curentry=date("y-m",$current);
+         $curentry=date("Y-m",$current);
          if (!isset($entrees["$curentry"])) {
             $entrees["$curentry"]=0;
          }
@@ -788,7 +788,13 @@ class Stat {
             }
          }
 
-         $graph = new ezcGraphBarChart();
+         $graph = new ezcGraphLineChart(); 
+         $graph->palette = new ezcGraphPaletteEzGreen(); 
+         $graph->options->fillLines = 210; 
+         $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
+         $graph->xAxis->axisLabelRenderer->angle = 45;
+         $graph->xAxis->axisSpace = .2; 
+         
          if (!empty($param['title'])) {
             // Only when one dataset
             if ($param['showtotal']==1 && count($entrees)==1) {
@@ -815,7 +821,12 @@ class Stat {
          $filename=$uid.'_'.mt_rand().'.'.$extension;
          foreach ($entrees as $label => $data){
             $graph->data[$label] = new ezcGraphArrayDataSet( $data );
+            $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL; 
          }
+
+        $graph->renderer = new ezcGraphRenderer3d();
+        $graph->renderer->options->legendSymbolGleam = .5;
+        $graph->renderer->options->barChartGleam = .5; 
 
          switch ($_SESSION['glpigraphtype']) {
             case "png" :
