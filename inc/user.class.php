@@ -649,8 +649,9 @@ class User extends CommonDBTM {
     * @return string containing name of the user
    **/
    function getName($with_comment=0) {
-      return formatUserName($this->fields["id"],$this->fields["name"],$this->fields["realname"],
-                            $this->fields["firstname"]);
+      return formatUserName($this->fields["id"], $this->fields["name"],
+                            (isset($this->fields["realname"]) ? $this->fields["realname"] : ''),
+                            (isset($this->fields["firstname"]) ? $this->fields["firstname"] : ''));
    }
 
    /**
