@@ -43,15 +43,15 @@ commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
-	$year=date("Y")-1;
-	$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+   $year=date("Y")-1;
+   $_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
 
-	$_POST["date2"]=date("Y-m-d");
+   $_POST["date2"]=date("Y-m-d");
 }
 if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_POST["date1"])<0){
-	$tmp=$_POST["date1"];
-	$_POST["date1"]=$_POST["date2"];
-	$_POST["date2"]=$tmp;
+   $tmp=$_POST["date1"];
+   $_POST["date1"]=$_POST["date2"];
+   $_POST["date2"]=$tmp;
 }
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER['PHP_SELF']."\">";
@@ -78,134 +78,137 @@ $valeurgraphtot=array();
 * @param $end end date
 */
 function display_infocoms_report($itemtype,$begin,$end){
-	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
+   global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
 
    $itemtable=getTableForItemType($itemtype);
-	$query="SELECT glpi_infocoms.*, $itemtable.name AS name, $itemtable.ticket_tco,
+   $query="SELECT glpi_infocoms.*, $itemtable.name AS name, $itemtable.ticket_tco,
       glpi_entities.completename as entname, glpi_entities.id as entID FROM glpi_infocoms
-		INNER JOIN $itemtable ON ($itemtable.id = glpi_infocoms.items_id
+      INNER JOIN $itemtable ON ($itemtable.id = glpi_infocoms.items_id
                         AND glpi_infocoms.itemtype='".$itemtype."')";
-	$query.= " LEFT JOIN glpi_entities ON ($itemtable.entities_id = glpi_entities.id) ";
+   $query.= " LEFT JOIN glpi_entities ON ($itemtable.entities_id = glpi_entities.id) ";
 
-	$query.= " WHERE $itemtable.is_template='0' ".getEntitiesRestrictRequest("AND",$itemtable);
+   $query.= " WHERE $itemtable.is_template='0' ".getEntitiesRestrictRequest("AND",$itemtable);
 
-	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
-	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
+   if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
+   if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
 
-	$query .=" ORDER BY entname ASC, buy_date, use_date";
+   $query .=" ORDER BY entname ASC, buy_date, use_date";
 
-	$display_entity=isMultiEntitiesMode();
+   $display_entity=isMultiEntitiesMode();
 
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-		$item=new $itemtype();
+   $result=$DB->query($query);
+   if ($DB->numrows($result)>0){
+      $item=new $itemtype();
 
-		echo "<h2>".$item->getTypeName()."</h2>";
+      echo "<h2>".$item->getTypeName()."</h2>";
 
-		echo "<table class='tab_cadre'><tr><th>".$LANG['common'][16]."</th>";
-		if ($display_entity){
-			echo "<th>".$LANG['entity'][0]."</th>";
-		}
+      echo "<table class='tab_cadre'><tr><th>".$LANG['common'][16]."</th>";
+      if ($display_entity){
+         echo "<th>".$LANG['entity'][0]."</th>";
+      }
 
-		echo "<th>".$LANG['financial'][21]."</th><th>".$LANG['financial'][92]."</th><th>".$LANG['financial'][91]."</th><th>".$LANG['financial'][14]."</th><th>".$LANG['financial'][76]."</th><th>".$LANG['financial'][80]."</th></tr>";
+      echo "<th>".$LANG['financial'][21]."</th><th>".$LANG['financial'][92]."</th><th>".$LANG['financial'][91]."</th><th>".$LANG['financial'][14]."</th><th>".$LANG['financial'][76]."</th><th>".$LANG['financial'][80]."</th></tr>";
 
 
-		$valeursoustot=0;
-		$valeurnettesoustot=0;
-		$valeurnettegraph=array();
-		$valeurgraph=array();
+      $valeursoustot=0;
+      $valeurnettesoustot=0;
+      $valeurnettegraph=array();
+      $valeurgraph=array();
 
-		while ($line=$DB->fetch_array($result)){
+      while ($line=$DB->fetch_array($result)){
 
-			if (isset($line["is_global"])&&$line["is_global"]){
-				$line["value"] *= Computer_Item::countForItem($itemtype,$line["items_id"]);
-			}
+         if (isset($line["is_global"])&&$line["is_global"]){
+            $line["value"] *= Computer_Item::countForItem($itemtype,$line["items_id"]);
+         }
 
-			if ($line["value"]>0) $valeursoustot+=$line["value"];
+         if ($line["value"]>0) $valeursoustot+=$line["value"];
 
          $valeurnette=Infocom::Amort($line["sink_type"],$line["value"],$line["sink_time"],
-                                     $line["sink_coeff"],$line["buy_date"],$line["use_date"],
-                                     $CFG_GLPI["date_tax"],"n");
+                                    $line["sink_coeff"],$line["buy_date"],$line["use_date"],
+                                    $CFG_GLPI["date_tax"],"n");
          $tmp=Infocom::Amort($line["sink_type"],$line["value"],$line["sink_time"],
-                             $line["sink_coeff"],$line["buy_date"],$line["use_date"],
-                             $CFG_GLPI["date_tax"],"all");
+                           $line["sink_coeff"],$line["buy_date"],$line["use_date"],
+                           $CFG_GLPI["date_tax"],"all");
 
-			if (is_array($tmp)&&count($tmp)>0)
-				foreach ($tmp["annee"] as $key => $val){
-					if ($tmp["vcnetfin"][$key]>0){
-						if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
-						$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
-					}
-				}
-			if (!empty($line["buy_date"])){
-				$year=substr($line["buy_date"],0,4);
-				if ($line["value"]>0){
-					if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
-					$valeurgraph[$year]+=$line["value"];
-				}
-			}
+         if (is_array($tmp)&&count($tmp)>0)
+            foreach ($tmp["annee"] as $key => $val){
+               if ($tmp["vcnetfin"][$key]>0){
+                  if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
+                  $valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
+               }
+            }
+         if (!empty($line["buy_date"])){
+            $year=substr($line["buy_date"],0,4);
+            if ($line["value"]>0){
+               if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
+               $valeurgraph[$year]+=$line["value"];
+            }
+         }
 
 
-			$valeurnettesoustot+=str_replace(" ","",$valeurnette);
+         $valeurnettesoustot+=str_replace(" ","",$valeurnette);
 
-			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
-			if ($display_entity){
-				if ($line['entID']==0){
-					echo "<td>".$LANG['entity'][2]."</td>";
-				} else {
-					echo "<td>".$line['entname']."</td>";
-				}
-			}
+         echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
+         if ($display_entity){
+            if ($line['entID']==0){
+               echo "<td>".$LANG['entity'][2]."</td>";
+            } else {
+               echo "<td>".$line['entname']."</td>";
+            }
+         }
 
          echo "<td class='right'>".formatNumber($line["value"])."</td><td class='right'>".
                formatNumber($valeurnette)."</td><td class='right'>".
                Infocom::showTco($line["ticket_tco"],$line["value"])."</td><td>".
                convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".
                getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
-		}
+      }
 
-		$valeurtot+=$valeursoustot;
-		$valeurnettetot+=$valeurnettesoustot;
+      $valeurtot+=$valeursoustot;
+      $valeurnettetot+=$valeurnettesoustot;
 
-		echo "<tr><td colspan='6' class='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeursoustot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettesoustot)."</h3></td></tr>";
+      echo "<tr><td colspan='6' class='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeursoustot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettesoustot)."</h3></td></tr>";
 
 
-		if (count($valeurnettegraph)>0){
+      if (count($valeurnettegraph)>0){
 
-			echo "<tr><td colspan='5'  class='center'>";
-			ksort($valeurnettegraph);
+         echo "<tr><td colspan='5'  class='center'>";
+         ksort($valeurnettegraph);
 
-			$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
+         $valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
 
-			foreach ($valeurnettegraph as $key => $val) {
-				if (!isset($valeurnettegraphtot[$key])) $valeurnettegraphtot[$key]=0;
-				$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
-			}
+         foreach ($valeurnettegraph as $key => $val) {
+            if (!isset($valeurnettegraphtot[$key])) $valeurnettegraphtot[$key]=0;
+            $valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
+         }
 
-			Stat::graphBy($valeurnettegraphdisplay,$LANG['financial'][81],"",0,"year");
+         Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphdisplay)
+                        ,array('title'    => $LANG['financial'][81],
+                              'width'     => 500));
 
-			echo "</td></tr>";
-		}
+         echo "</td></tr>";
+      }
 
-		if (count($valeurgraph)>0){
-			echo "<tr><td colspan='5' class='center'>";
+      if (count($valeurgraph)>0){
+         echo "<tr><td colspan='5' class='center'>";
 
-			ksort($valeurgraph);
+         ksort($valeurgraph);
 
-			$valeurgraphdisplay=array_map('round',$valeurgraph);
+         $valeurgraphdisplay=array_map('round',$valeurgraph);
 
-			foreach ($valeurgraph as $key => $val) {
-				if (!isset($valeurgraphtot[$key])) $valeurgraphtot[$key]=0;
-				$valeurgraphtot[$key]+=$valeurgraph[$key];
-			}
+         foreach ($valeurgraph as $key => $val) {
+            if (!isset($valeurgraphtot[$key])) $valeurgraphtot[$key]=0;
+            $valeurgraphtot[$key]+=$valeurgraph[$key];
+         }
 
-			Stat::graphBy($valeurgraphdisplay,$LANG['financial'][21],"",0,"year");
-
-			echo "</td></tr>";
-		}
-		echo "</table>";
+         Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphdisplay)
+                        ,array('title'    => $LANG['financial'][21],
+                              'width'     => 500));
+         echo "</td></tr>";
+      }
+      echo "</table>";
       return true;
-	}
+   }
    return false;
 }
 
@@ -238,12 +241,15 @@ if ($i>0){
 echo "<div align='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeurtot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettetot)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
-	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
-	Stat::graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
+   $valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
+   Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphtotdisplay)
+                  ,array('title'    => $LANG['financial'][81]));
+
 }
 if (count($valeurgraphtot)>0){
-	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
-	Stat::graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
+   $valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
+   Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphtotdisplay)
+                  ,array('title'    => $LANG['financial'][21]));
 }
 commonFooter();
 ?>
