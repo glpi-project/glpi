@@ -69,6 +69,9 @@ echo "</table></form></div>";
 ///////// Stats nombre intervention
 // Total des interventions
 $entrees_total = Stat::constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"]);
+
+Stat::barGraph(array($LANG['stats'][35]=>$entrees_total),array('title'=>$LANG['stats'][5],'showtotal'=>1));
+
 if (count($entrees_total) > 0) {
    Stat::graphBy($entrees_total,$LANG['stats'][5],$LANG['stats'][35],1,"month");
 }

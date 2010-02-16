@@ -503,7 +503,7 @@ class Stat {
       $result=$DB->query($query);
       if ($result && $DB->numrows($result)>0) {
          while ($row = $DB->fetch_array($result)) {
-            $date = $row['date_unix'];
+            $date = substr($row['date_unix'],2,5);
             if ($type=="inter_avgtakeaccount") {
                $min=$row["OPEN"];
                if (!empty($row["FIRST"]) && !is_null($row["FIRST"]) && $row["FIRST"]<$min) {
@@ -557,7 +557,7 @@ class Stat {
       $current=$min;
 
       while ($current<=$max) {
-         $curentry=date("Y-m",$current);
+         $curentry=date("y-m",$current);
          if (!isset($entrees["$curentry"])) {
             $entrees["$curentry"]=0;
          }
@@ -758,6 +758,71 @@ class Stat {
       echo "</div>";
    }
 
+
+   /** Get groups assigned to tickets between 2 dates
+   * @param $entrees array : array containing data to displayed
+   * @param $options array : options
+   *     - title string title displayed (default empty)
+   *     - showtotal boolean show total in title (default false)
+   *     - width integer width of the graph (default 700)
+   *     - height integer height of the graph (default 300)
+   * @return array contains the distinct groups assigned to a tickets
+   */
+   static function barGraph($entrees,$options=array()) {
+
+      if (getLoginUserID(false)) {
+
+         if (!isset($_SESSION['glpigraphtype'])) {
+            $_SESSION['glpigraphtype']='svg';
+         }
+
+         $param['showtotal']  = false;
+         $param['title']      = '';
+         $param['width']      = 700;
+         $param['height']     = 300;
+
+         if (is_array($options) && count($options)) {
+            foreach ($options as $key => $val) {
+               $param[$key]=$val;
+            }
+         }
+
+         $graph = new ezcGraphBarChart();
+         if (!empty($param['title'])) {
+            // Only when one dataset
+            if ($param['showtotal']==1 && count($entrees)==1) {
+               $param['title'] .= " - ".array_sum($entrees[key($entrees)]);
+            }
+            $graph->title = $param['title'];
+         }
+
+         switch ($_SESSION['glpigraphtype']) {
+            case "png" :
+               $extension="png";
+               break;
+
+            default:
+               $extension="svg";
+               break;
+         }
+
+         $filename=GLPI_ROOT."/tutorial_bar_chart.$extension";
+         foreach ($entrees as $label => $data){
+            $graph->data[$label] = new ezcGraphArrayDataSet( $data );
+         }
+
+         switch ($_SESSION['glpigraphtype']) {
+            case "png" :
+               $graph->render( $param['width'], $param['height'], $filename );
+               break;
+            default:
+               $graph->render( $param['width'], $param['height'], $filename );
+               echo "<embed src='$filename' width='".$param['width']."' height='".$param['height']."' type='image/svg+xml' pluginspage='http://www.adobe.com/svg/viewer/install/'> ";
+            break;
+         }
+      }
+
+   }
 
    static function showItems($target,$date1,$date2,$start) {
       global $DB,$CFG_GLPI,$LANG;
