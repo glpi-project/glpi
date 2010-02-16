@@ -88,7 +88,6 @@ class NotificationTargetTicket extends NotificationTarget {
       case Notification::PROFILE_TYPE:
          $this->getUsersAddressesByProfile($data['items_id']);
       break;
-
       }
    }
 
@@ -97,7 +96,7 @@ class NotificationTargetTicket extends NotificationTarget {
     * @return the object associated with the itemtype
     */
    function getObjectItem() {
-      if ($this->obj->getField('itemtype') != '') {
+      if ($this->obj->getField('itemtype')) {
          $itemtype = $this->obj->getField('itemtype');
          $item = new  $itemtype ();
          $item->getFromDB($this->obj->getField('items_id'));

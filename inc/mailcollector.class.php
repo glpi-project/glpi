@@ -433,7 +433,7 @@ class MailCollector  extends CommonDBTM {
          // Medium
          $tkt['urgency']= "3";
          // No hardware associated
-         $tkt['itemtype']="0";
+         $tkt['itemtype']="";
          // Mail request type
       } else {
          // Reopen if needed
@@ -489,7 +489,7 @@ class MailCollector  extends CommonDBTM {
          for ($n=sizeOf($mimeStrs), $i=0; $i<$n; $i++) {
             $mimeStr=$mimeStrs[$i];
             $mimeStr->charset=utf8_strtolower($mimeStr->charset);
-            if (($mimeStr == 'default' && $inputCharset == $targetCharset)
+            if (($mimeStr->charset == 'default' && $inputCharset == $targetCharset)
                 || $mimeStr->charset == $targetCharset) {
 
                $decodedStr.=$mimeStr->text;
