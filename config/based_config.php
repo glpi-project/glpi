@@ -117,6 +117,13 @@ if (!defined("GLPI_PHPMAILER_DIR")) {
 
    # if PHPMailer installed, use (in config_path.php)
    # define("GLPI_PHPMAILER_DIR", "/usr/share/php/phpmailer");
+}
 
+// Default EZ Components path to base.php
+if (!defined("GLPI_EZC_BASE")) {
+   define("GLPI_EZC_BASE", GLPI_ROOT."/lib/ezcomponents/Base/src/base.php");
+
+   # if EZ components installed as PEAR extension, use (in config_path.php)
+   # define("GLPI_EZC_BASE", "ezc/Base/base.php");
 }
 ?>

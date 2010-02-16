@@ -69,7 +69,7 @@ function __autoload($classname) {
    } else {
       // Is ezComponent class ?
       if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
-         include_once(GLPI_ROOT . "/lib/ezcomponents/Base/src/base.php");
+         include_once(GLPI_EZC_BASE);
          ezcBase::autoload($classname);
          return true;
       } else {
