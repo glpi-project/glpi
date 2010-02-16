@@ -429,8 +429,8 @@ class User extends CommonDBTM {
 
 
    function post_updateItem($history=1) {
-      $this->syncLdapGroups();
 
+      $this->syncLdapGroups();
       $this->applyRightRules();
    }
 
@@ -451,24 +451,24 @@ class User extends CommonDBTM {
 
          if (isset($this->fields["id"])
              && $this->fields["id"] >0
-             && isset($this->fields["_ldap_rules"])
-             && count($this->fields["_ldap_rules"])) {
+             && isset($this->input["_ldap_rules"])
+             && count($this->input["_ldap_rules"])) {
 
             //and add/update/delete only if it's necessary !
-            if (isset($this->fields["_ldap_rules"]["rules_entities_rights"])) {
-               $entities_rules = $this->fields["_ldap_rules"]["rules_entities_rights"];
+            if (isset($this->input["_ldap_rules"]["rules_entities_rights"])) {
+               $entities_rules = $this->input["_ldap_rules"]["rules_entities_rights"];
             } else {
                $entities_rules = array();
             }
 
-            if (isset($this->fields["_ldap_rules"]["rules_entities"])) {
-               $entities = $this->fields["_ldap_rules"]["rules_entities"];
+            if (isset($this->input["_ldap_rules"]["rules_entities"])) {
+               $entities = $this->input["_ldap_rules"]["rules_entities"];
             } else {
                $entities = array();
             }
 
-            if (isset($this->fields["_ldap_rules"]["rules_rights"])) {
-               $rights = $this->fields["_ldap_rules"]["rules_rights"];
+            if (isset($this->input["_ldap_rules"]["rules_rights"])) {
+               $rights = $this->input["_ldap_rules"]["rules_rights"];
             } else {
                $rights = array();
             }
@@ -557,7 +557,7 @@ class User extends CommonDBTM {
             }
 
             //Unset all the temporary tables
-            unset($this->fields["_ldap_rules"]);
+            unset($this->input["_ldap_rules"]);
 
             return true;
          }
@@ -574,7 +574,7 @@ class User extends CommonDBTM {
 
       if (isset($this->input["authtype"])
           && ($this->input["authtype"] == Auth::LDAP || Auth::isAlternateAuthWithLdap($this->input['authtype']))) {
-         if (isset ($this->input["id"]) && $this->input["id"]>0) {
+         if (isset ($this->fields["id"]) && $this->fields["id"]>0) {
             $authtype = Auth::getMethodsByID($this->input["authtype"], $this->input["auths_id"]);
 
             if (count($authtype)) {
@@ -614,7 +614,7 @@ class User extends CommonDBTM {
                          FROM `glpi_groups_users`
                          LEFT JOIN `glpi_groups`
                               ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                         WHERE `glpi_groups_users`.`users_id` = '" . $this->input["id"] . "'
+                         WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'
                                $WHERE";
                $result = $DB->query($query);
 
@@ -633,7 +633,7 @@ class User extends CommonDBTM {
                //If the user needs to be added to one group or more
                if (count($this->input["_groups"])>0) {
                   foreach ($this->input["_groups"] as $group) {
-                     $groupuser->add(array('users_id'    => $this->input["id"],
+                     $groupuser->add(array('users_id'    => $this->fields["id"],
                                            'groups_id'   => $group));
                   }
                   unset ($this->input["_groups"]);
