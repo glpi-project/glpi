@@ -769,11 +769,12 @@ class Stat {
    * @return array contains the distinct groups assigned to a tickets
    */
    static function barGraph($entrees,$options=array()) {
+      global $CFG_GLPI;
 
-      if (getLoginUserID(false)) {
+      if ($uid=getLoginUserID(false)) {
 
          if (!isset($_SESSION['glpigraphtype'])) {
-            $_SESSION['glpigraphtype']='svg';
+            $_SESSION['glpigraphtype']='png';
          }
 
          $param['showtotal']  = false;
@@ -795,10 +796,15 @@ class Stat {
             }
             $graph->title = $param['title'];
          }
+         if (count($entrees)==1){
+            $graph->legend = false; 
+         }
 
          switch ($_SESSION['glpigraphtype']) {
             case "png" :
                $extension="png";
+               $graph->driver = new ezcGraphGdDriver();
+               $graph->options->font = GLPI_ROOT . '/lib/ezcomponents/FreeSans.ttf';
                break;
 
             default:
@@ -806,18 +812,21 @@ class Stat {
                break;
          }
 
-         $filename=GLPI_ROOT."/tutorial_bar_chart.$extension";
+         $filename=$uid.'_'.mt_rand().'.'.$extension;
          foreach ($entrees as $label => $data){
             $graph->data[$label] = new ezcGraphArrayDataSet( $data );
          }
 
          switch ($_SESSION['glpigraphtype']) {
             case "png" :
-               $graph->render( $param['width'], $param['height'], $filename );
+               $graph->render( $param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename );
+               echo "<img src='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'>";
                break;
             default:
-               $graph->render( $param['width'], $param['height'], $filename );
-               echo "<embed src='$filename' width='".$param['width']."' height='".$param['height']."' type='image/svg+xml' pluginspage='http://www.adobe.com/svg/viewer/install/'> ";
+               $graph->render( $param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename );
+               echo "<embed src='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
+                     width='".$param['width']."' height='".$param['height']."'
+                     type='image/svg+xml' pluginspage='http://www.adobe.com/svg/viewer/install/'> ";
             break;
          }
       }
