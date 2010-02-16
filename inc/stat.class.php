@@ -788,7 +788,7 @@ class Stat {
 
          $param['showtotal']  = false;
          $param['title']      = '';
-         $param['width']      = 700;
+         $param['width']      = 900;
          $param['height']     = 300;
          $param['unit']       = '';
          $param['type']       = 'line';
@@ -806,6 +806,19 @@ class Stat {
          switch ($param['type']) {
             case 'pie':
                $graph = new ezcGraphPieChart();
+               $graph->palette = new GraphPalette();
+               $graph->options->font->maxFontSize = 15;
+               $graph->title->background = '#EEEEEC';
+               $graph->renderer = new ezcGraphRenderer3d();
+               $graph->renderer->options->moveOut = .2;
+               $graph->renderer->options->pieChartOffset = 63;
+               $graph->renderer->options->pieChartGleam = .3;
+               $graph->renderer->options->pieChartGleamColor = '#FFFFFF';
+               $graph->renderer->options->pieChartGleamBorder = 2;
+               $graph->renderer->options->pieChartShadowSize = 5;
+               $graph->renderer->options->pieChartShadowColor = '#BABDB6'; 
+               
+               
                break;
             case 'bar':
                $graph = new ezcGraphBarChart(); 
@@ -814,6 +827,12 @@ class Stat {
                $graph->xAxis->axisLabelRenderer->angle = 45;
                $graph->xAxis->axisSpace = .2;
                $graph->yAxis->min = 0;
+               $graph->palette = new GraphPalette();
+               $graph->options->font->maxFontSize = 15;
+               $graph->title->background = '#EEEEEC';
+               $graph->renderer = new ezcGraphRenderer3d();
+               $graph->renderer->options->legendSymbolGleam = .5;
+               $graph->renderer->options->barChartGleam = .5; 
                break;
             case 'line':
                // No break default case
@@ -824,16 +843,18 @@ class Stat {
                $graph->xAxis->axisLabelRenderer->angle = 45;
                $graph->xAxis->axisSpace = .2;
                $graph->yAxis->min = 0;
+               $graph->palette = new GraphPalette();
+               $graph->options->font->maxFontSize = 15;
+               $graph->title->background = '#EEEEEC';
+               $graph->renderer = new ezcGraphRenderer3d();
+               $graph->renderer->options->legendSymbolGleam = .5;
+               $graph->renderer->options->barChartGleam = .5; 
                break;
          }
 
-         $graph->palette = new GraphPalette();
-         $graph->options->font->maxFontSize = 15;
-         $graph->title->background = '#EEEEEC';
+         
 
-         $graph->renderer = new ezcGraphRenderer3d();
-         $graph->renderer->options->legendSymbolGleam = .5;
-         $graph->renderer->options->barChartGleam = .5; 
+         
 
          if (!empty($param['title'])) {
             // Only when one dataset
