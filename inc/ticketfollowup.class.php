@@ -663,8 +663,6 @@ class TicketFollowup  extends CommonDBTM {
       return $out;
    }
 
-}
-
    /** form for soluce's approbation
     *
     *@param $ID Integer : Id of the ticket
@@ -701,6 +699,8 @@ class TicketFollowup  extends CommonDBTM {
       }
       return true;
    }
+}
+
 
 
 ?>
