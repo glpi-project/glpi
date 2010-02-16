@@ -714,6 +714,7 @@ $LANG['install'][102]="Test sur les fonctions Json";
 $LANG['install'][103]="GLPI ne peut pas fonctionner correctement sans les fonctions json_encode et json_decode ";
 $LANG['install'][104]="Test sur l'extension mbstring";
 $LANG['install'][105]="L'extension mbstring de votre parseur PHP n'est pas installée";
+$LANG['install'][106]="Test d'écriture des fichiers de graphiques";
 
 $LANG['job'][2]="par";
 $LANG['job'][3]="Receveur";

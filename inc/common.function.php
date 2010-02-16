@@ -675,7 +675,8 @@ function checkWriteAccessToDirs() {
                        GLPI_CONFIG_DIR  => $LANG['install'][23],
                        GLPI_SESSION_DIR => $LANG['install'][50],
                        GLPI_CRON_DIR    => $LANG['install'][52],
-                       GLPI_CACHE_DIR   => $LANG['install'][99]);
+                       GLPI_CACHE_DIR   => $LANG['install'][99],
+                       GLPI_GRAPH_DIR   => $LANG['install'][106]);
    $error=0;
    foreach ($dir_to_check as $dir => $message) {
       echo "<tr class='tab_bg_1' ><td class='left'><b>".$message."</b></td>";
