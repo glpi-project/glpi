@@ -213,7 +213,7 @@ class Ticket extends CommonDBTM {
          while ($data=$DB->fetch_array($result)) {
             $querydel = "DELETE
                          FROM `glpi_ticketplannings`
-                         WHERE `ticketfollowups_id` = '".$data['id']."'";
+                         WHERE `tickettasks_id` = '".$data['id']."'";
             $DB->query($querydel);
          }
       }
