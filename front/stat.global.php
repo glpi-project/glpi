@@ -55,6 +55,7 @@ if (!empty($_POST["date1"])
    $_POST["date2"] = $tmp;
 }
 
+
 echo "<div class='center'><form method='post' name='form' action='stat.global.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
