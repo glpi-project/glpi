@@ -787,6 +787,9 @@ $LANG['joblist'][33]="Clos";
 
 $LANG['jobresolution'][1]="Solution";
 $LANG['jobresolution'][2]="Nouvelle solution";
+$LANG['jobresolution'][3]="Solution approuvée";
+$LANG['jobresolution'][4]="Solution rejetée";
+$LANG['jobresolution'][5]="En cas de rejet de la solution, vous devez indiquer un motif";
 
 $LANG['knowbase'][1]="Foire aux questions";
 $LANG['knowbase'][3]="Question";
