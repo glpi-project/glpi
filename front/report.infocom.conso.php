@@ -183,7 +183,10 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeurnettegraphtot[$key] += $valeurnettegraph[$key];
             }
 
-            Stat::graphBy($valeurnettegraphdisplay,$LANG['financial'][81],"",0,"year");
+            Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphdisplay)
+                           ,array('title'    => $LANG['financial'][81],
+                                 'width'     => 500));
+
             echo "</td></tr>\n";
          }
 
@@ -199,7 +202,10 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeurgraphtot[$key] += $valeurgraph[$key];
             }
 
-            Stat::graphBy($valeurgraphdisplay,$LANG['financial'][21],"",0,"year");
+            Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphdisplay)
+                           ,array('title'    => $LANG['financial'][21],
+                                 'width'     => 500));
+
             echo "</td></tr>";
          }
          echo "</table>\n";
@@ -241,11 +247,14 @@ echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
 
 if (count($valeurnettegraphtot) >0) {
    $valeurnettegraphtotdisplay = array_map('round',$valeurnettegraphtot);
-   Stat::graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
+   Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphtotdisplay)
+                  ,array('title'    => $LANG['financial'][81]));
+
 }
 if (count($valeurgraphtot) >0) {
    $valeurgraphtotdisplay = array_map('round',$valeurgraphtot);
-   Stat::graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
+   Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphtotdisplay)
+                  ,array('title'    => $LANG['financial'][21]));
 }
 
 commonFooter();
