@@ -827,8 +827,8 @@ class Stat {
                break;
          }
 
-         $graph->palette = new ezcGraphPaletteEzGreen();
-         $graph->options->font->maxFontSize = 20;
+         $graph->palette = new GraphPalette();
+         $graph->options->font->maxFontSize = 15;
          $graph->title->background = '#EEEEEC';
 
          $graph->renderer = new ezcGraphRenderer3d();
@@ -883,8 +883,7 @@ class Stat {
                echo "<object data='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
                      type='image/svg+xml'>You need a browser capeable of SVG to display this image.
                      </object> ";
-               $graph->driver->options->linkCursor = 'crosshair';
-               ezcGraphTools::linkSvgElements( $graph );
+              
             break;
          }
          // Render CSV
