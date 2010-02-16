@@ -770,7 +770,7 @@ class Stat {
    */
    static function barGraph($entrees,$options=array()) {
       global $CFG_GLPI;
-
+      
       if ($uid=getLoginUserID(false)) {
 
          if (!isset($_SESSION['glpigraphtype'])) {
@@ -781,6 +781,7 @@ class Stat {
          $param['title']      = '';
          $param['width']      = 700;
          $param['height']     = 300;
+         $param['unit']       = '';
 
          if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -793,12 +794,20 @@ class Stat {
          $graph->options->fillLines = 210; 
          $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
          $graph->xAxis->axisLabelRenderer->angle = 45;
-         $graph->xAxis->axisSpace = .2; 
+         $graph->xAxis->axisSpace = .2;
+         $graph->yAxis->min = 0;
          
          if (!empty($param['title'])) {
             // Only when one dataset
             if ($param['showtotal']==1 && count($entrees)==1) {
                $param['title'] .= " - ".array_sum($entrees[key($entrees)]);
+               if (!empty($param['unit'])) {
+                  $param['title'] .= " ".$param['unit'];
+               }
+            } else {
+               if (!empty($param['unit']) && count($entrees)==1) {
+                  $param['title'] .= " - ".$param['unit'];
+               }
             }
             $graph->title = $param['title'];
          }
