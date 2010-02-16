@@ -832,7 +832,9 @@ class Stat {
                break;
          }
 
-         $filename=$uid.'_'.mt_rand().'.'.$extension;
+         $filename=$uid.'_'.mt_rand();
+         $csvfilename=$filename.'.csv';
+         $filename.='.'.$extension;
          foreach ($entrees as $label => $data){
             $graph->data[$label] = new ezcGraphArrayDataSet( $data );
             $graph->data[$label]->symbol = ezcGraph::NO_SYMBOL; 
@@ -854,8 +856,27 @@ class Stat {
                      </object> ";
             break;
          }
+         // Render CSV
+         if ($fp = fopen(GLPI_GRAPH_DIR.'/'.$csvfilename, 'w')) {
+            foreach ($entrees as $label => $data) {
+               if (is_array($data) && count($data)) {
+                  foreach ($data as $key => $val) {
+                     fwrite($fp,$label.';'.$key.';'.$val.";\n");
+                  }
+               }
+            }
+            fclose($fp);
+         }
          echo "</div>";
-         echo "<span class='right' style='width:".$param['width']."px'>SVG / PNG / CSV</span>";
+         echo "<div class='right' style='width:".$param['width']."px'>";
+         if ($_SESSION['glpigraphtype']!='svg') {
+            echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=svg'>SVG</a>";
+         }
+         if ($_SESSION['glpigraphtype']!='png') {
+            echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=png'>PNG</a>";
+         }
+         echo " / <a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$csvfilename'>CSV</a>";
+         echo "</div>";
          echo '</div>';
       }
    }
