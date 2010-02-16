@@ -178,7 +178,7 @@ class NotificationTemplate extends CommonDBTM {
       }
 
          //Get template's language data for in this language
-         $data = $target->getDatasForTemplate($event,$options);
+         $data = $target->getForTemplate($event,$options);
          //Restore default language
          loadLanguage();
 
@@ -187,6 +187,7 @@ class NotificationTemplate extends CommonDBTM {
             $lang['subject'] = $target->getSubjectPrefix() .
                           NotificationTemplate::process($template_datas['subject'], $data);
             $lang['content_html'] = '';
+            //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
                  $lang['content_html'] =
                   "<html><body>".NotificationTemplate::process($template_datas['content_html'],

@@ -114,19 +114,17 @@ class NotificationTargetReservation extends NotificationTarget {
                                                       $LANG['setup'][248];
    }
 
-   function getDatasForTemplate($event,$options=array()) {
+   function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
-
-      $tpldatas = array();
 
       //----------- Ticket infos -------------- //
 
       $events = $this->getEvents();
-      $tpldatas['##reservation.action##'] = $events[$event];
-      $tpldatas['##reservation.user##'] = Dropdown::getDropdownName('glpi_users',
+      $tpldata['##reservation.action##'] = $events[$event];
+      $tpldata['##reservation.user##'] = Dropdown::getDropdownName('glpi_users',
                                                                 $this->obj->getField('users_id'));
-      $tpldatas['##reservation.begin##'] = convDateTime($this->obj->getField('begin'));
-      $tpldatas['##reservation.end##'] = convDateTime($this->obj->getField('end'));
+      $tpldata['##reservation.begin##'] = convDateTime($this->obj->getField('begin'));
+      $tpldata['##reservation.end##'] = convDateTime($this->obj->getField('end'));
 
       $reservationitem = new ReservationItem;
       $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
@@ -134,13 +132,13 @@ class NotificationTargetReservation extends NotificationTarget {
       if (class_exists($itemtype)) {
          $item = new $itemtype();
          $item->getFromDB($reservationitem->getField('items_id'));
-         $tpldatas['##reservation.itemtype##'] = $item->getTypeName();
-         $tpldatas['##reservation.item.name##'] = $item->getField('name');
-         $tpldatas['##reservation.comment##'] = $item->getField('comment');
-         $tpldatas['##reservation.item.entity##'] = Dropdown::getDropdownName('glpi_entities',
+         $tpldata['##reservation.itemtype##'] = $item->getTypeName();
+         $tpldata['##reservation.item.name##'] = $item->getField('name');
+         $tpldata['##reservation.comment##'] = $item->getField('comment');
+         $tpldata['##reservation.item.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                     $item->getField('entities_id'));
          if ($item->isField('users_id_tech')) {
-             $tpldatas['##reservation.item.tech##'] = Dropdown::getDropdownName('glpi_users',
+             $tpldata['##reservation.item.tech##'] = Dropdown::getDropdownName('glpi_users',
                                                                   $item->getField('users_id_tech'));
          }
       }
@@ -155,9 +153,9 @@ class NotificationTargetReservation extends NotificationTarget {
                       '##lang.reservation.item.tech##'=> $LANG['common'][10]
                       );
       foreach ($fields as $name => $label) {
-         $tpldatas[$name] = $label;
+         $tpldata[$name] = $label;
       }
-      return $tpldatas;
+      return $tpldata;
    }
 }
 ?>

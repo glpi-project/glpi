@@ -37,33 +37,34 @@ class NotificationTargetContract extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
-      return array ('alert_end' => $LANG['financial'][98], 'alert_notice'=>$LANG['financial'][10]);
+      return array ('alert_end' => $LANG['financial'][98],
+                    'alert_notice'=>$LANG['financial'][10]);
    }
 
       /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event,$options=array()) {
+   function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
       global $LANG;
-      $tpldatas['##contract.entity##'] =
+      $tpldata['##contract.entity##'] =
                            Dropdown::getDropdownName('glpi_entities',
                                                      $this->obj->getField('entities_id'));
-      $tpldatas['##lang.contract.entity##'] = $LANG['entity'][0];
+      $tpldata['##lang.contract.entity##'] = $LANG['entity'][0];
       switch ($options['type']) {
          case ALERT_END :
-            $tpldatas['##contract.action##'] = $LANG['mailing'][37];
+            $tpldata['##contract.action##'] = $LANG['mailing'][37];
             break;
          case ALERT_NOTICE:
-            $tpldatas['##contract.action##'] = $LANG['mailing'][38];
+            $tpldata['##contract.action##'] = $LANG['mailing'][38];
             break;
       }
-      $tpldatas['##contract.name##']= $this->obj->getField("name");
-      $tpldatas['##lang.contract.action##']= $LANG['mailing'][39];
-      $tpldatas['##lang.contract.action##']= $LANG['mailing'][39];
-      $tpldatas['contract.time'] = getWarrantyExpir($this->obj->getField("begin_date"),
+      $tpldata['##contract.name##']= $this->obj->getField("name");
+      $tpldata['##lang.contract.action##']= $LANG['mailing'][39];
+      $tpldata['##lang.contract.action##']= $LANG['mailing'][39];
+      $tpldata['contract.time'] = getWarrantyExpir($this->obj->getField("begin_date"),
                                        $this->obj->getField("duration"),
                                        $this->obj->getField("notice"));
-      return $tpldatas;
+      return $tpldata;
    }
 }
 ?>

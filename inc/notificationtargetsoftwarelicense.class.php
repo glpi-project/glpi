@@ -43,15 +43,15 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
       /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event,$options=array()) {
+   function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
       global $LANG;
       $prefix = strtolower($item->getType());
-      $tpldatas['##'.$prefix.'.entity##'] =
+      $tpldata['##'.$prefix.'.entity##'] =
                            Dropdown::getDropdownName('glpi_entities',
                                                      $this->obj->getField('entities_id'));
-      $tpldatas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $tpldatas['##lang.'.$prefix.'.action##']= $LANG['mailing'][52];
-      return $tpldatas;
+      $tpldata['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
+      $tpldata['##lang.'.$prefix.'.action##']= $LANG['mailing'][52];
+      return $tpldata;
    }
 }
 ?>
