@@ -90,7 +90,7 @@ function includeCommonHtmlHeader($title='') {
              $CFG_GLPI["root_doc"]."/lib/extjs/ext-all.js'></script>\n";
    }
    echo "<link rel='stylesheet' type='text/css' href='".
-          $CFG_GLPI["root_doc"]."/lib/extjs/resources/ext-all.css' media='screen' >\n";
+          $CFG_GLPI["root_doc"]."/lib/extjs/resources/css/ext-all.css' media='screen' >\n";
    echo "<link rel='stylesheet' type='text/css' href='".
           $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
 
@@ -2182,8 +2182,8 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
          ,hiddenFormat:'Y-m-d H:i:s'
          ,applyTo: 'showdate$rand'
          ,timeFormat:'H:i'
-         ,timeWidth: 60
-         ,dateWidth: 100";
+         ,timeWidth: 55
+         ,dateWidth: 90";
 
    $empty="";
    if ($maybeempty) {
@@ -2290,6 +2290,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
    if (!empty($maxDate)) {
       $output .= ",maxValue: '".convDate($maxDate)."'";
    }
+
    $output .= " });
    });";
    $output .= "</script>\n";
@@ -2322,11 +2323,10 @@ function getActiveTab($itemtype) {
 function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
                         $type, $size=950){
    global $CFG_GLPI;
-
    $active_tabs = getActiveTab($type);
-
    if (count($tabs)>0) {
       echo "<script type='text/javascript'>";
+
          echo " var tabpanel = new Ext.TabPanel({
             applyTo: '$tabdiv_id',
             width:$size,
@@ -2338,7 +2338,7 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
             $first=true;
             $default_tab=$active_tabs;
             if (!isset($tabs[$active_tabs])) {
-               $default_tab=0;
+               $default_tab=key($tabs);
             }
             foreach ($tabs as $key => $val) {
                if ($first) {
@@ -2360,6 +2360,9 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
 
                echo "  listeners:{ // Force glpi_tab storage
                        beforeshow : function(panel){
+                        /* clean content because append data instead of replace it*/
+                        tabpanel.body.update('');
+                        /* update active tab*/
                         Ext.Ajax.request({
                            url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=$key',
                            success: function(objServerResponse){
@@ -2795,13 +2798,14 @@ function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
       });
       ";
 
-      $output .= "var search$name = new Ext.ux.form.SpanComboBox({
+      $output .= "var search$name = new Ext.form.ComboBox({
          store: text$name,
          displayField:'value',
          pageSize:20,
          hideTrigger:true,
          minChars:3,
          resizable:true,
+         width: ".($params['size']*7).",
          minListWidth:".($params['size']*5).", // IE problem : wrong computation of the width of the ComboBox field
          applyTo: 'text$name'
       });";
