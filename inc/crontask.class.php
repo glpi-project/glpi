@@ -1036,6 +1036,34 @@ class CronTask extends CommonDBTM{
    }
 
    /**
+    * Garbage collector for cleaning graph files
+    *
+    * @param $task for log
+    *
+    **/
+   static function cronGraph($task) {
+      global $CFG_GLPI;
+
+      // max time to keep the file session
+      $maxlifetime = HOUR_TIMESTAMP;
+      $nb=0;
+      foreach (glob(GLPI_GRAPH_DIR."/*") as $filename) {
+         if (filemtime($filename) + $maxlifetime < time()) {
+            // Delete session file if not delete before
+            if (@unlink($filename)) {
+               $nb++;
+            }
+         }
+      }
+      $task->setVolume($nb);
+      if ($nb) {
+         $task->log("Clean $nb graph file(s) created since more than $maxlifetime seconds\n");
+         return 1;
+      }
+      return 0;
+   }
+
+   /**
     * Clean log cron function
     *
     * @param $task instance of CronTask
@@ -1111,6 +1139,8 @@ class CronTask extends CommonDBTM{
             return array('description' => $LANG['crontask'][8]);
 
          case 'session':
+            return array('description' => $LANG['crontask'][12]);
+         case 'graph':
             return array('description' => $LANG['crontask'][12]);
       }
    }

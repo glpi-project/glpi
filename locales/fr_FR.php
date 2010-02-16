@@ -349,6 +349,7 @@ $LANG['crontask'][9]="Récupération des messages (Collecteurs)";
 $LANG['crontask'][10]="Vérification du réplicat MySQL";
 $LANG['crontask'][11]="Vérification de la présence de mises à jour ";
 $LANG['crontask'][12]="Nettoyage des sessions expirées";
+$LANG['crontask'][13]="Nettoyage des graphiques générés";
 // keep >12 free additionnal task
 $LANG['crontask'][30]="Description";
 $LANG['crontask'][31]="Désactivée";

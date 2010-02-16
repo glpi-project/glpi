@@ -2037,20 +2037,21 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_crontasks`
-         (`id`, `itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+         (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
          VALUES
-         (1, 'OcsServer', 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (2, 'CartridgeItem', 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (3, 'ConsumableItem', 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (4, 'SoftwareLicense', 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (5, 'Contract', 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (6, 'InfoCom', 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (7, 'CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (8, 'CronTask', 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (9, 'MailCollector', 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (10, 'DBconnection', 'checkdbreplicate', 300, NULL, 0, 0, 3, 0, 24, 30, NULL, NULL, NULL),
-         (11, 'CronTask', 'checkupdate', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         (12, 'CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
+         ('OcsServer', 'ocsng', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('CartridgeItem', 'cartridge', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('ConsumableItem', 'consumable', 86400, 10, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('SoftwareLicense', 'software', 86400, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('Contract', 'contract', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('InfoCom', 'infocom', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('CronTask', 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('MailCollector', 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('DBconnection', 'checkdbreplicate', 300, NULL, 0, 0, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('CronTask', 'checkupdate', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('CronTask', 'graph', 3600, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
       $DB->query($query) or die("0.80 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $ADDTODISPLAYPREF['Crontask']=array(8,3,4,7);
