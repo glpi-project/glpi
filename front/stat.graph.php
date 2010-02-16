@@ -288,7 +288,7 @@ echo "</table></form></div>";
 // Total des interventions
 $entrees_total = Stat::constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],
                                       $val1,$val2);
-Stat::barGraph(array($LANG['stats'][5]=>$entrees_total)
+Stat::showGraph(array($LANG['stats'][5]=>$entrees_total)
                ,array('title'=>$LANG['stats'][5],
                      'showtotal' => 1,
                      'unit'      => $LANG['stats'][35]));
@@ -300,7 +300,7 @@ if (count($entrees_total) > 0) {
 // Total des interventions resolues
 $entrees_solved = Stat::constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],
                                        $val1,$val2);
-Stat::barGraph(array($LANG['stats'][11]=>$entrees_solved)
+Stat::showGraph(array($LANG['stats'][11]=>$entrees_solved)
                ,array('title'    => $LANG['stats'][11],
                      'showtotal' => 1,
                      'unit'      => $LANG['stats'][35]));
@@ -316,7 +316,7 @@ if (count($entrees_avgsolvedtime) > 0) {
    Stat::graphBy($entrees_avgsolvedtime,$LANG['stats'][6],$LANG['job'][21],0,"month");
 }
 
-Stat::barGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
+Stat::showGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
                ,array('title' => $LANG['stats'][6],
                      'unit'   => $LANG['job'][21]));
 
@@ -324,7 +324,7 @@ Stat::barGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
 $entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
 
-Stat::barGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
+Stat::showGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
                ,array('title' => $LANG['stats'][25],
                      'unit'   => $LANG['job'][21]));
 
@@ -336,7 +336,7 @@ if (count($entrees_avgrealtime) > 0) {
 $entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],
                                         $_GET["type"],$val1,$val2);
 
-Stat::barGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
+Stat::showGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
                ,array('title' => $LANG['stats'][30],
                      'unit'   => $LANG['job'][21]));
 if (count($entrees_avgtaketime) > 0) {

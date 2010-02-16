@@ -55,7 +55,6 @@ if (!empty($_POST["date1"])
    $_POST["date2"] = $tmp;
 }
 
-
 echo "<div class='center'><form method='post' name='form' action='stat.global.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
@@ -79,7 +78,7 @@ $entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["da
 //Temps moyen de prise en compte de l'intervention
 $entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"]);
 
-Stat::barGraph(array($LANG['stats'][5]=>$entrees_total)
+Stat::showGraph(array($LANG['stats'][5]=>$entrees_total)
                ,array('title'=>$LANG['stats'][5],
                      'showtotal' => 1,
                      'unit'      => $LANG['stats'][35]));
@@ -88,7 +87,7 @@ if (count($entrees_total) > 0) {
    Stat::graphBy($entrees_total,$LANG['stats'][5],$LANG['stats'][35],1,"month");
 }
 
-Stat::barGraph(array($LANG['stats'][11]=>$entrees_solved)
+Stat::showGraph(array($LANG['stats'][11]=>$entrees_solved)
                ,array('title'    => $LANG['stats'][11],
                      'showtotal' => 1,
                      'unit'      => $LANG['stats'][35]));
@@ -96,15 +95,14 @@ Stat::barGraph(array($LANG['stats'][11]=>$entrees_solved)
 if (count($entrees_solved) > 0) {
    Stat::graphBy($entrees_solved,$LANG['stats'][11],$LANG['stats'][35],1,"month");
 }
-Stat::barGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
+Stat::showGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
                ,array('title' => $LANG['stats'][6],
                      'unit'   => $LANG['job'][21]));
-
 
 if (count($entrees_avgsolvedtime) > 0) {
    Stat::graphBy($entrees_avgsolvedtime,$LANG['stats'][6],$LANG['job'][21],0,"month");
 }
-Stat::barGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
+Stat::showGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
                ,array('title' => $LANG['stats'][25],
                      'unit'   => $LANG['job'][21]));
 
@@ -112,7 +110,7 @@ if (count($entrees_avgrealtime) > 0) {
    Stat::graphBy($entrees_avgrealtime,$LANG['stats'][25],$LANG['stats'][33],0,"month");
 }
 
-Stat::barGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
+Stat::showGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
                ,array('title' => $LANG['stats'][30],
                      'unit'   => $LANG['job'][21]));
 

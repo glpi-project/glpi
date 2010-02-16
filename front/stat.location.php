@@ -150,14 +150,14 @@ if (!($item instanceof CommonDevice)) {
 
 echo '<br>';
 if (is_array($data['opened'])) {
-   Stat::barGraph(array($LANG['stats'][5]=>$data['opened'])
+   Stat::showGraph(array($LANG['stats'][5]=>$data['opened'])
                   ,array('title'=>$LANG['stats'][5],
                         'showtotal' => 1,
                         'unit'      => $LANG['stats'][35],
                         'type'      => 'pie'));
 }
 if (is_array($data['solved'])) {
-   Stat::barGraph(array($LANG['stats'][11]=>$data['solved'])
+   Stat::showGraph(array($LANG['stats'][11]=>$data['solved'])
                   ,array('title'    => $LANG['stats'][11],
                         'showtotal' => 1,
                         'unit'      => $LANG['stats'][35],
