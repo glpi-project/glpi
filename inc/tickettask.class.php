@@ -485,12 +485,16 @@ class TicketTask  extends CommonDBTM {
    /** form for Task
     *
     *@param $ID Integer : Id of the task
-    *@param $ticket Object : the ticket
+    *@param $options array
+    *     - ticket Object : the ticket
     *
     */
-   function showForm($ID, Ticket $ticket) {
+   function showForm($ID, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
+      if (isset($options['ticket']) && !empty($options['ticket'])) {
+         $ticket = $options['ticket'];
+      }
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -501,7 +505,7 @@ class TicketTask  extends CommonDBTM {
 
       $canplan = haveRight("show_planning","1");
 
-      $this->showFormHeader($this->getFormURL(),$ID,'',2);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='5' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
@@ -548,7 +552,7 @@ class TicketTask  extends CommonDBTM {
       $plan->showFormForTask($ticket, $this);
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,'',2);
+      $this->showFormButtons($options);
 
       return true;
    }

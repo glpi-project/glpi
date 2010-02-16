@@ -401,12 +401,16 @@ class TicketFollowup  extends CommonDBTM {
    /** form for Followup
     *
     *@param $ID Integer : Id of the followup
-    *@param $ticket Object : the ticket
+    *@param $options array
+    *     - ticket Object : the ticket
     *
     */
-   function showForm($ID, Ticket $ticket) {
+   function showForm($ID, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
+      if (isset($options['ticket']) && !empty($options['ticket'])) {
+         $ticket = $options['ticket'];
+      }
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -415,8 +419,6 @@ class TicketFollowup  extends CommonDBTM {
          $this->check(-1,'w',$input);
       }
 
-      $canplan = haveRight("show_planning","1");
-
       $tech=(haveRight("global_add_followups","1")
              || $ticket->fields["users_id_assign"] === getLoginUserID())
              || (isset($_SESSION["glpigroups"])
@@ -424,7 +426,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if ($tech) {
 
-         $this->showFormHeader($this->getFormURL(),$ID,'',2);
+         $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'>";
          echo "<td rowspan='3' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
@@ -449,9 +451,10 @@ class TicketFollowup  extends CommonDBTM {
          Dropdown::showYesNo('is_private', $this->fields["is_private"]);
          echo "</td></tr>";
 
-         $this->showFormButtons($ID,'',2);
+         $this->showFormButtons($options);
       } else {
-         $this->showFormHeader($this->getFormURL(),$ID);
+         $options = array('colspan' => 1);
+         $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
@@ -460,7 +463,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
          echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk')."'>";
          echo "</td></tr>\n";
-         $this->showFormButtons($ID);
+         $this->showFormButtons($options);
       }
       return true;
    }

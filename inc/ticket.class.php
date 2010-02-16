@@ -1874,7 +1874,8 @@ class Ticket extends CommonDBTM {
       $this->check($this->getField('id'), 'r');
       $canedit = $this->can($this->getField('id'), 'w');
 
-      $this->showFormHeader($this->getFormURL(), $this->getField('id'), '', 2);
+      $options=array();
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['job'][48]."</td><td colspan='3'>";
@@ -1903,7 +1904,8 @@ class Ticket extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $this->showFormButtons($this->getField('id'), '', 2, false);
+      $options['candel'] = false;
+      $this->showFormButtons($options);
    }
 
 
@@ -2239,7 +2241,8 @@ class Ticket extends CommonDBTM {
       $this->check($this->getField('id'), 'r');
       $canedit = $this->can($this->getField('id'), 'w');
 
-      $this->showFormHeader($this->getFormURL(), $this->getField('id'), '', 1);
+      $options = array('colspan' => 1);
+      $this->showFormHeader($options);
 
       echo "<tr><th colspan='4'>".$LANG['job'][47]."</th></tr>";
 
@@ -2285,7 +2288,8 @@ class Ticket extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td>";
          echo "</tr>\n";
       }
-      $this->showFormButtons($this->getField('id'), '', 1, false);
+      $options['candel'] = false;
+      $this->showFormButtons($options);
    }
 
    /**
