@@ -37,6 +37,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if (isset($_GET["switchto"])) {
+   $_SESSION['glpigraphtype']=$_GET["switchto"];
+   glpi_header($_SERVER['HTTP_REFERER']);
+}
+
 if ($uid=getLoginUserID(false) && isset($_GET["file"])) {
    list($userID,$filename)=explode("_",$_GET["file"]);
    if ($userID==$uid && file_exists(GLPI_GRAPH_DIR."/".$_GET["file"])) {
