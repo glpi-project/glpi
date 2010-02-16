@@ -1860,6 +1860,7 @@ $LANG['stats'][1]="Globales";
 $LANG['stats'][3]="Par Intitulé";
 $LANG['stats'][5]="Nombre de tickets ouverts";
 $LANG['stats'][6]="Délai moyen de traitement du ticket";
+$LANG['stats'][7]="Voir les graphiques";
 $LANG['stats'][11]="Nombre de tickets fermés";
 $LANG['stats'][13]="Nombre de tickets";
 $LANG['stats'][15]="Durée moyenne de traitement du ticket";

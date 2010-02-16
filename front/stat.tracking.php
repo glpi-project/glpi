@@ -40,36 +40,31 @@ commonHeader($LANG['Menu'][13],$_SERVER['PHP_SELF'],"maintain","stat");
 
 checkRight("statistic","1");
 
-if (isset($_GET["date1"])) {
-   $_POST["date1"] = $_GET["date1"];
-}
-if (isset($_GET["date2"])) {
-   $_POST["date2"] = $_GET["date2"];
-}
-if (isset($_GET["type"])) {
-   $_POST["type"] = $_GET["type"];
-}
-if (empty($_POST["type"])) {
-   $_POST["type"] = "user";
+if (empty($_REQUEST["type"])) {
+   $_REQUEST["type"] = "user";
 }
 
-if (empty($_POST["date1"]) && empty($_POST["date2"])) {
+if (empty($_REQUEST["showgraph"])) {
+   $_REQUEST["showgraph"] = 0;
+}
+
+if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
    $year = date("Y")-1;
-   $_POST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
-   $_POST["date2"] = date("Y-m-d");
+   $_REQUEST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+   $_REQUEST["date2"] = date("Y-m-d");
 }
 
-if (!empty($_POST["date1"])
-    && !empty($_POST["date2"])
-    && strcmp($_POST["date2"],$_POST["date1"]) < 0) {
+if (!empty($_REQUEST["date1"])
+    && !empty($_REQUEST["date2"])
+    && strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0) {
 
-   $tmp = $_POST["date1"];
-   $_POST["date1"] = $_POST["date2"];
-   $_POST["date2"] = $tmp;
+   $tmp = $_REQUEST["date1"];
+   $_REQUEST["date1"] = $_REQUEST["date2"];
+   $_REQUEST["date2"] = $tmp;
 }
 
-if (!isset($_GET["start"])) {
-   $_GET["start"] = 0;
+if (!isset($_REQUEST["start"])) {
+   $_REQUEST["start"] = 0;
 }
 
 $items =
@@ -118,66 +113,75 @@ foreach ($items as $label => $tab) {
    $INSELECT .= "<optgroup label=\"$label\">";
    foreach ($tab as $key => $val) {
       // Current field
-      if ($key == $_POST["type"]) {
+      if ($key == $_REQUEST["type"]) {
          $field = $val["field"];
       }
-      $INSELECT .= "<option value='$key' ".($key==$_POST["type"]?"selected":"").">".$val['title'].
+      $INSELECT .= "<option value='$key' ".($key==$_REQUEST["type"]?"selected":"").">".$val['title'].
                    "</option>";
    }
    $INSELECT .= "</optgroup>";
 }
 
-echo "<div class='center'><form method='post' name='form' action='stat.tracking.php'>";
+echo "<div class='center'><form method='get' name='form' action='stat.tracking.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' class='center'>";
 echo "<select name='type'>";
 echo $INSELECT;
 echo "</select></td>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
-showDateFormItem("date1",$_POST["date1"]);
-echo "</td><td rowspan='2' class='center'>";
+showDateFormItem("date1",$_REQUEST["date1"]);
+echo "</td>";
+echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
+
+echo "<td rowspan='2' class='center'>";
 echo "<input type='submit' class='button' name='submit' value='". $LANG['buttons'][7] ."'></td></tr>";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
-showDateFormItem("date2",$_POST["date2"]);
-echo "</td></tr>";
+showDateFormItem("date2",$_REQUEST["date2"]);
+echo "</td><td class='center'>";
+Dropdown::showYesNo('showgraph',$_REQUEST['showgraph']);
+echo "</td>";
+
+echo "</tr>";
 echo "</table></form></div>";
 
-$val = Stat::getItems($_POST["date1"],$_POST["date2"],$_POST["type"]);
-$params = array('type'  => $_POST["type"],
+$val = Stat::getItems($_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST["type"]);
+$params = array('type'  => $_REQUEST["type"],
                 'field' => $field,
-                'date1' => $_POST["date1"],
-                'date2' => $_POST["date2"],
-                'start' => $_GET["start"]);
+                'date1' => $_REQUEST["date1"],
+                'date2' => $_REQUEST["date2"],
+                'start' => $_REQUEST["start"]);
 
-printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],
-           "date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;type=".$_POST["type"],
+printPager($_REQUEST['start'],count($val),$_SERVER['PHP_SELF'],
+           "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"].
+            "&amp;type=".$_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"],
            'Stat',$params);
 
-$data=Stat::show($_POST["type"],$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
-
-
-echo '<br>';
-if (is_array($data['opened'])) {
-   foreach($data['opened'] as $key => $val){
-      $newkey=html_clean($key);
-      $cleandata[$newkey]=$val;
+if (!$_REQUEST['showgraph']) {
+   Stat::show($_REQUEST["type"],$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val);
+} else {
+   $data=Stat::getDatas($_REQUEST["type"],$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val);
+   if (is_array($data['opened'])) {
+      foreach($data['opened'] as $key => $val){
+         $newkey=html_clean($key);
+         $cleandata[$newkey]=$val;
+      }
+      Stat::showGraph(array($LANG['stats'][5]=>$cleandata)
+                     ,array('title'=>$LANG['stats'][5],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
    }
-   Stat::showGraph(array($LANG['stats'][5]=>$cleandata)
-                  ,array('title'=>$LANG['stats'][5],
-                        'showtotal' => 1,
-                        'unit'      => $LANG['stats'][35],
-                        'type'      => 'pie'));
-}
-if (is_array($data['solved'])) {
-   foreach($data['solved'] as $key => $val){
-      $newkey=html_clean($key);
-      $cleandata[$newkey]=$val;
+   if (is_array($data['solved'])) {
+      foreach($data['solved'] as $key => $val){
+         $newkey=html_clean($key);
+         $cleandata[$newkey]=$val;
+      }
+      Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
+                     ,array('title'    => $LANG['stats'][11],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
    }
-   Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
-                  ,array('title'    => $LANG['stats'][11],
-                        'showtotal' => 1,
-                        'unit'      => $LANG['stats'][35],
-                        'type'      => 'pie'));
 }
 
 commonFooter();
