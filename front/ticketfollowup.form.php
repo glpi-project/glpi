@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $fup = new TicketFollowup();
 
-if (isset($_POST["add"])) {
+if (isset($_POST["add"]) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
    $fup->check(-1,'w',$_POST);
    $fup->add($_POST);
 

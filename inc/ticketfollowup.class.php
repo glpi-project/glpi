@@ -260,14 +260,14 @@ class TicketFollowup  extends CommonDBTM {
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
 
-      if ($this->input["_isadmin"] && $this->input["_type"]!="update") {
+      if ($this->input["_type"]!="update") {
 
          // TODO add + close from solution tab, not from followup
          if ($this->input["_close"] && $this->input["_type"]!="update"
                                     && $this->input["_type"]!="finish") {
             $updates[] = "status";
             $updates[] = "closedate";
-            $this->input["_job"]->fields["status"] = "solved";
+            $this->input["_job"]->fields["status"] = "closed";
             $this->input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
             $this->input["_job"]->updateInDB($updates);
          }
@@ -593,15 +593,21 @@ class TicketFollowup  extends CommonDBTM {
                               $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
          echo "};";
          echo "</script>\n";
-         echo "<p><a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
-         echo $LANG['job'][29]."</a></p><br>\n";
+         if ($ticket->fields["status"] == 'solved') {
+            $this->showApprobationForm($ticket);
+         } else if ($ticket->fields["status"] != 'closed') {
+            echo "<p><a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+            echo $LANG['job'][29]."</a></p><br>\n";
+         }
       }
 
       //echo "<h3>" . $LANG['job'][37] . "</h3>";
 
       if ($DB->numrows($result) == 0) {
-         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-         echo "<th class='b'>" . $LANG['job'][12]."</th></tr></table>";
+         if ($ticket->fields["status"] != 'solved') {
+            echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
+            echo "<th class='b'>" . $LANG['job'][12]."</th></tr></table>";
+         }
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
@@ -663,6 +669,42 @@ class TicketFollowup  extends CommonDBTM {
 
 }
 
+   /** form for soluce's approbation
+    *
+    *@param $ID Integer : Id of the ticket
+    *@param $ticket Object : the ticket
+    *
+    */
+   function showApprobationForm($ticket) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      $input=array('tickets_id' => $ticket->getField('id'));
+      $this->check(-1,'w',$input);
+
+      if ($ticket->fields["users_id_recipient"] == $_SESSION["glpiID"]
+          || $ticket->fields["users_id"] == $_SESSION["glpiID"]) {
+
+         echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='4'> Approbation de la solution</th></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='middle right' colspan='2'>".$LANG['common'][25]."&nbsp;:</td>";
+         echo "<td class='center middle' colspan='2'><textarea name='content' cols='70' rows='6'>".
+               $this->fields["content"]."</textarea>";
+         echo "<input type='hidden' name='tickets_id' value='".$ticket->getField('id')."'>";
+         echo "</td></tr>\n";
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='tab_bg_2 center' colspan='2' width='200'>\n";
+         echo "<input type='submit' name='add_close' value=\"".$LANG['jobresolution'][3]."\" class='submit'>";
+         echo "</td>\n";
+         echo "<td class='tab_bg_2 center' colspan='2'>\n";
+         echo "<input type='submit' name='add_reopen' value=\"".$LANG['jobresolution'][4]."\" class='submit'>";
+         echo "</td></tr>\n";
+      }
+      return true;
+   }
 
 
 ?>
