@@ -127,17 +127,15 @@ if (count($users)) {
 }
 echo "</select>";
 
-if (!$is_helpdesk_multientity) {
-   if (isset($_POST["comment"]) && $_POST["comment"]) {
-      $paramscomment=array('value' => '__VALUE__',
-                           'table' => "glpi_users");
-      if (isset($_POST['update_link'])) {
-         $paramscomment['withlink']="comment_link_".$_POST["myname"].$_POST["rand"];
-      }
-      ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
-            "comment_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",
-            $paramscomment,false);
+if (isset($_POST["comment"]) && $_POST["comment"]) {
+   $paramscomment=array('value' => '__VALUE__',
+                        'table' => "glpi_users");
+   if (isset($_POST['update_link'])) {
+      $paramscomment['withlink']="comment_link_".$_POST["myname"].$_POST["rand"];
    }
+   ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
+         "comment_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",
+         $paramscomment,false);
 }
 
 // Manage updates others dropdown for helpdesk

@@ -1679,9 +1679,9 @@ class User extends CommonDBTM {
       $where .= " AND `glpi_users`.`is_deleted`='0'
                   AND `glpi_users`.`is_active`='1' ";
 
-      if ($value || count($used)) {
+      if ((is_numeric($value) && $value) || count($used)) {
          $where .= " AND `glpi_users`.`id` NOT IN (";
-         if ($value) {
+         if (is_numeric($value)) {
             $first=false;
             $where .= $value;
          }
@@ -1854,10 +1854,9 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
          }
-         displayToolTip($user["comment"], $user["link"],
-                        array('widget' => 'dropdown_'.$p['name'].$rand,
-                              'value'  => '__VALUE__',
-                              'table'  => 'glpi_users'));
+         displayToolTip($user["comment"],array('contentid'=>"comment_".$p['name'].$rand,
+                                                'link'=>$user["link"],
+                                                'linkid'=>"comment_link_".$p["name"].$rand));
       }
 
       if (haveRight('import_externalauth_users','w')
@@ -1929,10 +1928,10 @@ class User extends CommonDBTM {
       }
       // Display comment
       if ($display_comment) {
-         displayToolTip($user["comment"], $user["link"],
-                        array('widget' => 'dropdown_'.$myname.$rand,
-                              'value'  => '__VALUE__',
-                              'table'  => 'glpi_users'));
+         displayToolTip($user["comment"],array('contentid'=>"comment_".$myname.$rand,
+                                                'link'=>$user["link"],
+                                                'linkid'=>"comment_link_".$myname.$rand));
+
       }
       return $rand;
    }
