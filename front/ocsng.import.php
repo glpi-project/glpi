@@ -67,7 +67,8 @@ if (isset($_SESSION["ocs_import"]["id"])) {
       } else {
          $entity = -1;
       }
-      OcsServer::processComputer($key,$_SESSION["ocsservers_id"],0,$entity,0);
+      $conf = OcsServer::getConfig($ocsservers_id);
+      OcsServer::processComputer($key,$_SESSION["ocsservers_id"],0,$entity,$conf["is_glpi_link_enabled"]);
 
       glpi_header($_SERVER['PHP_SELF']);
 
