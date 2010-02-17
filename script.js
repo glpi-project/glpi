@@ -407,3 +407,25 @@ function showHideDiv(id,img_name,img_src_close,img_src_open) {
 	}
 }
 
+function toogle(id,img_name,img_src_yes,img_src_no) {
+	//safe function to hide an element with a specified id
+	if (document.getElementById) { // DOM3 = IE5, NS6
+		if (document.getElementById(id).value == '0')
+		{
+			document.getElementById(id).value = '1';
+			if (img_name!=''){
+				document[img_name].src=img_src_yes;
+			}
+		}
+		else
+		{
+			document.getElementById(id).value = '0';
+			if (img_name!=''){
+				document[img_name].src=img_src_no;
+			}
+		}
+			
+	}
+	
+	}
+

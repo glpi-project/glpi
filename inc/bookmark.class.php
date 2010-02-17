@@ -196,22 +196,22 @@ class Bookmark extends CommonDBTM {
 
       switch ($type) {
          case BOOKMARK_SEARCH :
-            if (isset($query_tab['start'])) {
-               unset($query_tab['start']);
+            $fields_toclean = array('start','add_search_count','delete_search_count',
+                                 'add_search_count2','delete_search_count2',
+                                 'glpisearchcount','glpisearchcount2');
+            foreach ($fields_toclean as $field) {
+               if (isset($query_tab[$field])) {
+                  unset($query_tab[$field]);
+               }
             }
+            
             // Manage glpisearchcount / dclean if needed + store
-            if (isset($query_tab['glpisearchcount'])) {
-               unset($query_tab['glpisearchcount']);
-            }
             if (isset($_SESSION["glpisearchcount"][$itemtype])) {
                $query_tab['glpisearchcount']=$_SESSION["glpisearchcount"][$itemtype];
             } else {
                $query_tab['glpisearchcount']=1;
             }
             // Manage glpisearchcount2 / dclean if needed + store
-            if (isset($query_tab['glpisearchcount2'])) {
-               unset($query_tab['glpisearchcount2']);
-            }
             if (isset($_SESSION["glpisearchcount2"][$itemtype])) {
                $query_tab['glpisearchcount2']=$_SESSION["glpisearchcount2"][$itemtype];
             } else {
