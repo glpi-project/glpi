@@ -1854,7 +1854,7 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"]=$CFG_GLPI['root_doc']."/front/user.php";
          }
-         displayToolTip($user["comment"],array('contentid'=>"comment_".$p['name'].$rand,
+         showToolTip($user["comment"],array('contentid'=>"comment_".$p['name'].$rand,
                                                 'link'=>$user["link"],
                                                 'linkid'=>"comment_link_".$p["name"].$rand));
       }
@@ -1928,7 +1928,7 @@ class User extends CommonDBTM {
       }
       // Display comment
       if ($display_comment) {
-         displayToolTip($user["comment"],array('contentid'=>"comment_".$myname.$rand,
+         showToolTip($user["comment"],array('contentid'=>"comment_".$myname.$rand,
                                                 'link'=>$user["link"],
                                                 'linkid'=>"comment_link_".$myname.$rand));
 
