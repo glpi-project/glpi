@@ -103,7 +103,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
             "/lib/tiny_mce/tiny_mce.js'></script>";
-      echo "<script language='javascript' type='text/javascript''>";
+      echo "<script language='javascript' type='text/javascript'>";
       echo "tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
@@ -122,9 +122,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $this->showTabs($options);
       $this->showFormHeader($options);
-
-      echo "<input type='hidden' name='notificationtemplates_id' value='".
-                                                       $template->getField('id')."'>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$template->getTypeName()."</td><td colspan='3'>
@@ -154,15 +151,19 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][115]. ' '. $LANG['mailing'][117].
-           "&nbsp;:<br />(".$LANG['mailing'][128].")</td><td colspan='3'>";
+           "&nbsp;:<br>(".$LANG['mailing'][128].")</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_text' >"
-         .$this->fields["content_text"]."</textarea></tr>";
+         .$this->fields["content_text"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][115]. ' '. $LANG['mailing'][116].
            "&nbsp;:</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_html' >"
          .$this->fields["content_html"]."</textarea>";
+
+      echo "<input type='hidden' name='notificationtemplates_id' value='".
+                                                       $template->getField('id')."'>";
+
       echo "</td></tr>";
 
       $this->showFormButtons();

@@ -123,7 +123,6 @@ class Notification extends CommonDBTM {
       $rand = Dropdown::dropdownTypes("itemtype",
                                       ($this->fields['itemtype']!=''?$this->fields['itemtype']:''),
                                        $CFG_GLPI["notificationtemplates_types"]);
-      echo "</td></tr>";
 
       $params=array('itemtype' => '__VALUE__');
       ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand","show_events",
@@ -132,6 +131,8 @@ class Notification extends CommonDBTM {
       ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand","show_templates",
                                $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationTemplate.php",
                                $params);
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][120] . "&nbsp;:</td>";
       echo "<td>";
       Notification::dropdownMode($this->fields['mode']);

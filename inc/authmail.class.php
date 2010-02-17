@@ -156,7 +156,7 @@ class AuthMail extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
          echo "<td>";
-         echo "<textarea cols='40' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
          echo "</td></tr>";
 
          if (empty ($ID)) {
