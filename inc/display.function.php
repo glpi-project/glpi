@@ -2838,11 +2838,11 @@ function showToolTip($content,$options=array()){
    $out.= "new Ext.ToolTip({
             target: '".$param['applyto']."',
             anchor: 'left',
-            autoShow: true,";
+            autoShow: true";
    if (!empty($param['title'])) {
-      $out.= "title: \"".$param['title']."\",";
+      $out.= ",title: \"".$param['title']."\"";
    }
-   $out.= "contentEl: '".$param['contentid']."',";
+   $out.= ",contentEl: '".$param['contentid']."'";
    $out.= "});";
    $out.= "</script>";
 
