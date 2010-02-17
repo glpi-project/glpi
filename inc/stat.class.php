@@ -800,12 +800,13 @@ class Stat {
    * @return array contains the distinct groups assigned to a tickets
    */
    static function showGraph($entrees,$options=array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI,$LANG;
 
       if ($uid=getLoginUserID(false)) {
          if (!isset($_SESSION['glpigraphtype'])) {
             $_SESSION['glpigraphtype']=$CFG_GLPI['default_graphtype'];
          }
+
 
          $param['showtotal']  = false;
          $param['title']      = '';
@@ -821,11 +822,34 @@ class Stat {
             }
          }
 
+         // Clean data
+         if (count($entrees)) {
+            foreach ($entrees as $key => $val) {
+               if (count($val)==0) {
+                  unset($entrees[$key]);
+               }
+            }
+         }
+
+         if (!count($entrees) && !empty($param['title'])) {
+            echo "<div class='center'>".$param['title']." : ".$LANG['stats'][2]."</div>";
+            return false;
+         }
+
+
          echo "<div class='center-h' style='width:".$param['width']."px'>";
          echo "<div>";
 
          switch ($param['type']) {
             case 'pie':
+               // Check datas : sum must be > 0
+               $sum=array_sum(current($entrees));
+               while ($sum==0 && $data=next($entrees)) {
+                  $sum+=array_sum($data);
+               }
+               if ($sum==0) {
+                  return false;
+               }
                $graph = new ezcGraphPieChart();
                $graph->palette = new GraphPalette();
                $graph->options->font->maxFontSize = 15;
@@ -839,7 +863,6 @@ class Stat {
                $graph->renderer->options->pieChartGleamBorder = 2;
                $graph->renderer->options->pieChartShadowSize = 5;
                $graph->renderer->options->pieChartShadowColor = '#BABDB6';
-
 
                break;
             case 'bar':
