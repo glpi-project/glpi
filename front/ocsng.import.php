@@ -70,7 +70,9 @@ if (isset($_SESSION["ocs_import"]["ID"])){
 		else
 			$entity=-1;	
 
-		ocsProcessComputer($key,$_SESSION["ocs_server_id"],0,$entity,0);
+
+      $conf = getOcsConf($_SESSION["ocs_server_id"]);
+      ocsProcessComputer($key,$_SESSION["ocs_server_id"],0,$entity,$conf["glpi_link_enabled"]);
 
 		glpi_header($_SERVER['PHP_SELF']);
 
