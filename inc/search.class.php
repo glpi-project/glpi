@@ -1113,36 +1113,56 @@ class Search {
                      'Phone'      => $LANG['Menu'][34],
                      'Ticket'     => $LANG['Menu'][5],);
 
-      echo "<form method='get' action=\"$target\">";
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
+      echo "<table class='tab_cadre_fixe' >";
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "<table>";
 
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr><td class='right'>";
+         echo "<tr><td class='left'>";
+         
          // First line display add / delete images for normal and meta search items
          if ($i==0) {
-            echo "<a href='$target?add_search_count=1'>";
+            echo "<input type='hidden' disabled  id='add_search_count' name='add_search_count' value='1'>";
+            echo "<a href='#' onClick = \"document.getElementById('add_search_count').disabled=false;document.forms['searchform$itemtype'].submit();\">";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".
                   $LANG['search'][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             if ($_SESSION["glpisearchcount"][$itemtype]>1) {
-               echo "<a href='$target?delete_search_count=1'>";
+               echo "<input type='hidden' disabled  id='delete_search_count' name='delete_search_count' value='1'>";
+               echo "<a href='#' onClick = \"document.getElementById('delete_search_count').disabled=false;document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".
                      $LANG['search'][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             }
             if (isset($names[$itemtype])) {
-               echo "<a href='$target?add_search_count2=1'>";
+               echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2' value='1'>";
+               echo "<a href='#' onClick = \"document.getElementById('add_search_count2').disabled=false;document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".
                      $LANG['search'][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
-                  echo "<a href='$target?delete_search_count2=1'>";
+                  echo "<input type='hidden' disabled  id='delete_search_count2' name='delete_search_count2' value='1'>";
+                  echo "<a href='#' onClick = \"document.getElementById('delete_search_count2').disabled=false;document.forms['searchform$itemtype'].submit();\">";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".
                         $LANG['search'][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                }
             }
+            
+            $itemtable=getTableForItemType($itemtype);
+            if ($item && $item->maybeDeleted()) {
+               echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".$p['is_deleted']."'>";
+               echo "<a href='#' onClick = \"toogle('is_deleted','','','');document.forms['searchform$itemtype'].submit();\">
+                  <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".(!$p['is_deleted']?'_no':'').".png\" 
+                  name='img_deleted'  alt='".
+                  (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."' title='".(!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."' ></a>";
+               // Dropdown::showYesNo("is_deleted",$p['is_deleted']);
+               echo '&nbsp;&nbsp;';
+            }
          }
+         
+        
+         
+         
          // Display link item
          if ($i>0) {
             echo "<select name='link[$i]'>";
@@ -1358,26 +1378,19 @@ class Search {
       echo "</td>\n";
 */
       // Display deleted selection
-      echo "<td class='center'>";
-      $itemtable=getTableForItemType($itemtype);
-      if ($item && $item->maybeDeleted()) {
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3].
-               "' title='".$LANG['common'][3]."'>";
-         Dropdown::showYesNo("is_deleted",$p['is_deleted']);
-         echo '&nbsp;&nbsp;';
-      }
-      echo "<a href='$target?reset=reset' >";
-      echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
-            $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
-      Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
-      echo "</td>\n";
+      
       echo "</tr><tr>";
 
       // Display submit button
       echo "<td width='80' class='center'>";
       echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
-      echo "</td></tr>";
-      echo "</table>\n";
+      echo "</td><td>";
+      Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
+      echo "<a href='$target?reset=reset' >";
+      echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
+            $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+      
+      echo "</td></tr></table>\n";
 
       echo "</td></tr>";
       echo "</table>\n";
@@ -3497,25 +3510,26 @@ class Search {
    static function manageGetValues($itemtype,$usesession=true,$save=true) {
       global $_GET,$DB;
 
+      $redirect=false;
 
-      if (isset($_GET["add_search_count"])) {
+      if (isset($_GET["add_search_count"]) && $_GET["add_search_count"]) {
          $_SESSION["glpisearchcount"][$itemtype]++;
-         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+         glpi_header(str_replace("add_search_count=1&","",$_SERVER['REQUEST_URI']));
       }
 
-      if (isset($_GET["delete_search_count"])) {
+      if (isset($_GET["delete_search_count"]) && $_GET["delete_search_count"]) {
          $_SESSION["glpisearchcount"][$itemtype]--;
-         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+         glpi_header(str_replace("delete_search_count=1&","",$_SERVER['REQUEST_URI']));
       }
 
-      if (isset($_GET["add_search_count2"])) {
+      if (isset($_GET["add_search_count2"]) && $_GET["add_search_count2"]) {
          $_SESSION["glpisearchcount2"][$itemtype]++;
-         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+         glpi_header(str_replace("add_search_count2=1&","",$_SERVER['REQUEST_URI']));
       }
 
-      if (isset($_GET["delete_search_count2"])) {
+      if (isset($_GET["delete_search_count2"]) && $_GET["delete_search_count2"]) {
          $_SESSION["glpisearchcount2"][$itemtype]--;
-         glpi_header(str_replace("reset=reset","",$_SERVER['HTTP_REFERER']));
+         glpi_header(str_replace("delete_search_count2=1&","",$_SERVER['REQUEST_URI']));
       }
 
       $tab=array();
@@ -3611,6 +3625,7 @@ class Search {
             $_SESSION["glpisearchcount2"][$itemtype]=0;
          }
       }
+      
       //printCleanArray($_GET);
    }
 
