@@ -374,14 +374,10 @@ class Reminder extends CommonDBTM {
          $users_id="<br>".$LANG['planning'][9]."&nbsp;: ".getUserName($val["users_id"]);
          $img="rdv_public.png";
       }
+
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG['title'][37].
             "'>&nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'";
-      if (!$complete) {
-         echo "onmouseout=\"cleanhide('content_reminder_".$val["reminders_id"].$rand."')\"
-               onmouseover=\"cleandisplay('content_reminder_".$val["reminders_id"].$rand."')\"";
-      }
-      echo ">";
+      echo "<a id='reminder_".$val["reminders_id"].$rand."' href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
 
       switch ($type) {
          case "in" :
@@ -406,9 +402,8 @@ class Reminder extends CommonDBTM {
          echo "<br><strong>".Planning::getState($val["state"])."</strong><br>";
          echo $val["text"];
       } else {
-         echo "<div class='over_link' id='content_reminder_".$val["reminders_id"].$rand."'>";
-         echo "<strong>";
-         echo Planning::getState($val["state"])."</strong><br>".$val["text"]."</div>";
+         showToolTip("<strong>".Planning::getState($val["state"])."</strong><br>".$val["text"],
+                     array('applyto'=>"reminder_".$val["reminders_id"].$rand));
       }
       echo "";
    }
@@ -477,12 +472,10 @@ class Reminder extends CommonDBTM {
          $rand=mt_rand();
          while ($data =$DB->fetch_array($result)) {
             echo "<tr class='tab_bg_2'><td><div class='relative reminder_list'>";
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."\">".
+            echo "<a id='content_reminder_".$data["id"].$rand."'
+                  href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."\">".
                   $data["name"]."</a>&nbsp;";
-            echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-                  onmouseout=\"cleanhide('content_reminder_".$data["id"].$rand."')\"
-                  onmouseover=\"cleandisplay('content_reminder_".$data["id"].$rand."')\">";
-            echo "<div class='over_link' id='content_reminder_".$data["id"].$rand."'>".$data["text"]."</div>";
+            showToolTip($data["text"],array('applyto'=>"content_reminder_".$data["id"].$rand));
 
             if ($data["is_planned"]) {
                $tab=explode(" ",$data["begin"]);

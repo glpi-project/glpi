@@ -1467,11 +1467,8 @@ class CommonDBTM extends CommonGLPI {
             $comment=$LANG['common'][85];
             $image="/pics/aide.png";
          }
-         $rand=mt_rand();
-         echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image."'
-                      onmouseout=\"cleanhide('comment_recursive$rand')\"
-                      onmouseover=\"cleandisplay('comment_recursive$rand')\">";
-         echo "<span class='over_link' id='comment_recursive$rand'>$comment</span>";
+         echo "&nbsp;";
+         showToolTip($comment);
       } else {
          echo "&nbsp;";
       }
@@ -1856,14 +1853,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (!empty($comment)) {
-         $rand=mt_rand();
-         $comment_display=" onmouseout=\"cleanhide('comment_commonitem$rand')\"
-                            onmouseover=\"cleandisplay('comment_commonitem$rand')\" ";
-         $comment_display2="<span class='over_link' id='comment_commonitem$rand'>".nl2br($comment).
-                           "</span>";
-
-         $comment="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comment_display> ";
-         $comment.=$comment_display2;
+         return showToolTip($comment,array('display'=>false));
       }
       return $comment;
    }

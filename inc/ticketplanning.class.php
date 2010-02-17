@@ -461,13 +461,9 @@ class TicketPlanning extends CommonDBTM {
             $LANG['planning'][8]."'>&nbsp;&nbsp;";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".
             Ticket::getStatus($val["status"])."' title='".Ticket::getStatus($val["status"])."'>&nbsp;";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$val["tickets_id"].
-            "' style='$styleText'";
-      if (!$complete) {
-         echo "onmouseout=\"cleanhide('content_tracking_".$val["id"].$rand."')\"
-               onmouseover=\"cleandisplay('content_tracking_".$val["id"].$rand."')\"";
-      }
-      echo ">";
+      echo "<a id='content_tracking_".$val["id"].$rand."'
+               href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$val["tickets_id"]."'
+               style='$styleText'>";
       switch ($type) {
          case "in" :
             echo date("H:i",strtotime($val["begin"]))."/".date("H:i",strtotime($val["end"])).": ";
@@ -500,10 +496,10 @@ class TicketPlanning extends CommonDBTM {
          echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
          echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"];
       } else {
-         echo "<div class='over_link' id='content_tracking_".$val["id"].$rand."'>";
-         echo "<strong>".Planning::getState($val["state"])."</strong><br>";
-         echo "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]);
-         echo "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"]."</div>";
+         $content="<strong>".Planning::getState($val["state"])."</strong><br>".
+         "<strong>".$LANG['joblist'][2]."&nbsp;:</strong> ".Ticket::getPriorityName($val["priority"]).
+         "<br><strong>".$LANG['joblist'][6]."&nbsp;:</strong><br>".$val["content"]."</div>";
+         showToolTip($content,array('applyto'=>"content_tracking_".$val["id"].$rand));
       }
    }
 }

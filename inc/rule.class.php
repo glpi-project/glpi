@@ -784,14 +784,10 @@ class Rule extends CommonDBTM {
       } else {
          echo "<td></td>";
       }
-      echo "<td><a href=\"".str_replace(".php",".form.php",$target)."?id=".$this->fields["id"].
+      echo "<td><a id='rules".$this->fields["id"]."' href=\"".str_replace(".php",".form.php",$target)."?id=".$this->fields["id"].
                  "&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
       if (!empty($this->fields["comment"])) {
-         echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
-               "onmouseout=\"cleanhide('comment_rules".$this->fields["id"]."')\" ".
-               "onmouseover=\"cleandisplay('comment_rules".$this->fields["id"]."')\" >";
-         echo "<span class='over_link' id='comment_rules".$this->fields["id"]."'>".
-                nl2br($this->fields["comment"])."</span>";
+         showToolTip($this->fields["comment"],array('applyto'=>"rules".$this->fields["id"]));
       }
       echo "</td>";
       echo "<td>".$this->fields["description"]."</td>";
