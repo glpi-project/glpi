@@ -3051,9 +3051,9 @@ function update0723to080($output='HTML') {
                      INT( 11 ) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.80 change field mailingtype in type" . $LANG['update'][90] . $DB->error());
 
-      $query = "ALTER TABLE `glpi_notificationtargets` ADD `type` INT( 11 ) NOT NULL DEFAULT '0'";
+      /*$query = "ALTER TABLE `glpi_notificationtargets` ADD `type` INT( 11 ) NOT NULL DEFAULT '0'";
       $DB->query($query);
-      /*
+      
       $query = "CREATE TABLE `glpi_notificationtargets` (
                   `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
                   `notifications_id` INT( 11 ) NOT NULL DEFAULT '0',
@@ -3106,7 +3106,7 @@ function update0723to080($output='HTML') {
          $query = "INSERT INTO `glpi_notificationtargets`
                      (`id`, `notifications_id`, `type`, `items_id`)
                      VALUES (NULL, ".$id.", 1, 1);";
-          $DB->query($query_update) or die("0.80 add target for dbsynchronization " . $LANG['update'][90] . $DB->error());
+          $DB->query($query) or die("0.80 add target for dbsynchronization " . $LANG['update'][90] . $DB->error());
       }
 
       //TODO : manage contract notice, reservation update & delete
