@@ -3009,19 +3009,19 @@ function update0723to080($output='HTML') {
                                        '', '', 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Cartridges', 0, 'Cartridge', 'alert',
-                                       'mail','',
+                                       'mail',0,
                                        '', '', 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Consumables', 0, 'Consumable', 'alert',
-                                       'mail','',
+                                       'mail',0,
                                        '', '', 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Infocoms', 0, 'Infocom', 'alert',
-                                       'mail','',
+                                       'mail',0,
                                        '', '', 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Software Licenses', 0, 'SoftwareLicense', 'alert',
-                                       'mail','',
+                                       'mail',0,
                                        '', '', 1, '2010-02-16 16:41:39');";
       foreach($queries as $query) {
          $DB->query($query) or die("0.80 insert notification" . $LANG['update'][90] . $DB->error());
