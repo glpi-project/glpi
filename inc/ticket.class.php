@@ -3458,6 +3458,8 @@ class Ticket extends CommonDBTM {
    static function showShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
       global $CFG_GLPI, $LANG;
 
+      $rand=mt_rand();
+
       // Prints a job in short form
       // Should be called in a <table>-segment
       // Print links or not in case of user view
@@ -3560,17 +3562,11 @@ class Ticket extends CommonDBTM {
          $fourth_col = "";
          if ($data['users_id']) {
             $userdata = getUserName($data['users_id'],2);
-            $comment_display = "";
+            $fourth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
             if ($output_type==HTML_OUTPUT) {
-               $comment_display  = "<a href='".$userdata["link"]."'>";
-               $comment_display .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
-                                    "onmouseout=\"cleanhide('comment_trackusers_id".$data['id']."')\" ".
-                                    "onmouseover=\"cleandisplay('comment_trackusers_id".$data['id']."')\">";
-               $comment_display .= "</a>";
-               $comment_display .= "<span class='over_link' id='comment_trackusers_id".$data['id']."'>".
-                                    $userdata["comment"]."</span>";
+               $fourth_col .= showToolTip($userdata["comment"],array('link'=>$userdata["link"],'display'=>false));
             }
-            $fourth_col .= "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
+            
          }
 
          if ($data["groups_id"]) {
@@ -3583,16 +3579,8 @@ class Ticket extends CommonDBTM {
          if ($data["users_id_assign"]>0) {
             $userdata = getUserName($data['users_id_assign'],2);
             $comment_display = "";
-            if ($output_type==HTML_OUTPUT) {
-               $comment_display  = "<a href='".$userdata["link"]."'>";
-               $comment_display .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
-                                    "onmouseout=\"cleanhide('comment_trackassign".$data['id']."')\" ".
-                                    "onmouseover=\"cleandisplay('comment_trackassign".$data['id']."')\">";
-               $comment_display .= "</a>";
-               $comment_display .= "<span class='over_link' id='comment_trackassign".$data['id']."'>".
-                                    $userdata["comment"]."</span>";
-            }
-            $fifth_col = "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
+            $fifth_col = "<strong>".$userdata['name']."</strong>&nbsp;";
+            $fifth_col .= showToolTip($userdata["comment"],array('link'=>$userdata["link"],'display'=>false));
          }
 
          if ($data["groups_id_assign"]>0) {
@@ -3643,36 +3631,25 @@ class Ticket extends CommonDBTM {
 
          // Eigth column
          $eigth_column = "<strong>".$data["name"]."</strong>&nbsp;";
-         if ($output_type==HTML_OUTPUT) {
-            $eigth_column .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
-                              "onmouseout=\"cleanhide('comment_tracking".$data["id"]."')\" ".
-                              "onmouseover=\"cleandisplay('comment_tracking".$data["id"]."')\" >";
-            $eigth_column .= "<span class='over_link' id='comment_tracking".$data["id"]."'>".
-                              nl2br($data['content'])."</span>";
-         }
 
          // Add link
-         if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-            if ($job->canViewItem()) {
-               $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
-                                 $data["id"]."\">$eigth_column</a>";
+         if ($job->canViewItem()) {
+            $eigth_column = "<a id='ticket".$data["id"]."$rand' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+                              $data["id"]."\">$eigth_column</a>";
 
-               if ($followups && $output_type==HTML_OUTPUT) {
-                  $eigth_column .= TicketFollowup::showShortForTicket($data["id"]);
-               } else {
-                  $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket",
-                                                                              "1")).")";
-               }
-            }
-         } else {
-            $eigth_column = "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=".
-                              "user&amp;id=".$data["id"]."\">$eigth_column</a>";
             if ($followups && $output_type==HTML_OUTPUT) {
                $eigth_column .= TicketFollowup::showShortForTicket($data["id"]);
             } else {
-               $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+               $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket",
+                                                                           "1")).")";
             }
          }
+
+         if ($output_type==HTML_OUTPUT) {
+            $eigth_column .= "&nbsp;".showToolTip($data['content'],
+                  array('display'=>false,'applyto'=>"ticket".$data["id"].$rand));
+         }
+
          echo Search::showItem($output_type,$eigth_column,$item_num,$row_num,$align_desc."width='300'");
 
          // Finish Line
@@ -3692,6 +3669,7 @@ class Ticket extends CommonDBTM {
       // Make new job object and fill it from database, if success, print it
       $viewusers = haveRight("user","r");
       $job=new Ticket;
+      $rand= mt_rand();
       if ($job->getFromDBwithData($ID,0)) {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
          $rand = mt_rand();
@@ -3701,15 +3679,10 @@ class Ticket extends CommonDBTM {
 
          if ($viewusers) {
             $userdata = getUserName($job->fields['users_id'],2);
-            $comment_display  = "<a href='".$userdata["link"]."'>";
-            $comment_display .= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
-                                 "onmouseout=\"cleanhide('comment_trackusers_id".$rand.$ID."')\" ".
-                                 "onmouseover=\"cleandisplay('comment_trackusers_id".$rand.$ID."')\">";
-            $comment_display .= "</a>";
-            $comment_display .= "<span class='over_link' id='comment_trackusers_id".$rand.$ID."'>".
-                                 $userdata["comment"]."</span>";
+ 
+            echo "<strong>".$userdata['name']."</strong>&nbsp;";
+            showToolTip($userdata["comment"],array('link'=>$userdata["link"]));
 
-            echo "<strong>".$userdata['name']."&nbsp;".$comment_display."</strong>";
          } else {
             echo "<strong>".$job->getAuthorName()."</strong>";
          }
@@ -3736,20 +3709,12 @@ class Ticket extends CommonDBTM {
          }
          echo "<td>";
 
-         if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+         echo "<a id='ticket".$job->fields["id"].$rand."' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                   $job->fields["id"]."\">";
-         } else {
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;id=".
-                  $job->fields["id"]."\">";
-         }
-         echo "<strong>".$job->fields["name"]."</strong>&nbsp;";
-         echo "<img alt='".$LANG['joblist'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
-               "onmouseout=\"cleanhide('comment_tracking".$rand.$job->fields["id"]."')\" ".
-               "onmouseover=\"cleandisplay('comment_tracking".$rand.$job->fields["id"]."')\" >";
-         echo "<span class='over_link' id='comment_tracking".$rand.$job->fields["id"]."'>".
-               nl2br($job->fields['content'])."</span>";
+         echo "<strong>".$job->fields["name"]."</strong>";
          echo "</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;";
+         showToolTip($job->fields['content'],array('applyto'=>'ticket'.$job->fields["id"].$rand));
+
          echo "</td>";
 
          // Finish Line
