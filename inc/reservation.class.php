@@ -684,19 +684,20 @@ class Reservation extends CommonDBTM {
                $rand=mt_rand();
                $modif=$modif_end="";
                if ($resa->can($row['id'],"w")) {
-                  $modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\"
-                           onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"reservation.form.php?id=".$row['id']."&amp;item[$ID]=$ID&amp;".
+                  $modif="<a id='content_".$ID.$rand."'
+                           href=\"reservation.form.php?id=".$row['id']."&amp;item[$ID]=$ID&amp;".
                            "mois_courant=$month&amp;annee_courante=$year\">";
                   $modif_end="</a>";
+                  $modif_end.=showToolTip($row["comment"],
+                                 array('applyto'=>"content_".$ID.$rand,'display'=>false));
                }
-               $comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"]).
-                        "</div>";
 
                echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><strong>".
                formatUserName($user->fields["id"],$user->fields["name"],$user->fields["realname"],
                               $user->fields["firstname"]);
                echo "</strong></span>";
-               echo $modif_end.$comment."</td></tr>\n";
+               echo $modif_end;
+               echo "</td></tr>\n";
             }
             echo "</table>\n";
          }
