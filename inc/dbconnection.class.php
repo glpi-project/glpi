@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')){
 /**
  *  Database class for Mysql
  */
-class DBConnection {
+class DBConnection extends CommonDBTM {
 
    static function getTypeName() {
       global $LANG;

@@ -2781,6 +2781,10 @@ function update0723to080($output='HTML') {
          $templates[$itemtype] = $DB->result($result,0,'id');
       }
 
+      $query = "INSERT INTO `glpi_displaypreferences` VALUES(NULL, 'NotificationTemplate', 4, 1, 0);";
+      $DB->query($query) or die("0.80 insert notification display preferences " . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_displaypreferences` VALUES(NULL, 'NotificationTemplate', 16, 2, 0);";
+      $DB->query($query) or die("0.80 insert notification display preferences " . $LANG['update'][90] . $DB->error());
    }
 
    if (!TableExists('glpi_notificationtemplatetranslations')) {
@@ -2832,149 +2836,7 @@ function update0723to080($output='HTML') {
                                                     '##reservation.action##',
                                                    '$content_text_reservation',
                                                    '$content_html_reservation');";
-/*
-      $content_text_ticket = "##lang.ticket.url## : ##ticket.url## \r\n".
-                                 "[###ticket.id##] ##ticket.action## ##ticket.title##', '\r\n".
-                                 "##lang.ticket.url## : ##ticket.url## \r\n".
-                                 "##lang.ticket.description## \r\n\n".
-                                 "##lang.ticket.title## &#160;:##ticket.title##\n".
-                                 "##lang.ticket.author.name##".
-                                 " ##IFticket.author.name## ##ticket.author.name##".
-                                 "##ENDIFticket.author.name## ##ELSEticket.author.name##--".
-                                 "##ENDELSEticket.author.name##\n ##lang.ticket.creationdate## &#160;:".
-                                 "##ticket.creationdate##\n ##lang.ticket.closedate## &#160;:".
-                                 "##ticket.closedate##\n ##lang.ticket.requesttype## &#160;:".
-                                 "##ticket.requesttype##\n ##IFticket.itemtype## ##lang.ticket.item.name## &#160;:".
-                                 "##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model##".
-                                 "- ##ticket.item.model## ##ENDIFticket.item.model##".
-                                 "##IFticket.item.serial## -##ticket.item.serial##".
-                                 "##ENDIFticket.item.serial##&#160; ##IFticket.item.otherserial## -".
-                                 "##ticket.item.otherserial## ##ENDIFticket.item.otherserial##".
-                                 "##ENDIFticket.itemtype##\n ##IFticket.assigntouser##".
-                                 "##lang.ticket.assigntouser## &#160;: ##ticket.assigntouser##".
-                                 "##ENDIFticket.assigntouser##\n ##lang.ticket.status## &#160;:".
-                                 "##ticket.status##\n".
-                                 "##IFticket.assigntogroup## ##lang.ticket.assigntogroup## &#160;:".
-                                 "##ticket.assigntogroup## ##ENDIFticket.assigntogroup##\n".
-                                 "##lang.ticket.urgency## &#160;: ##ticket.urgency##\n".
-                                 "##lang.ticket.impact## &#160;: ##ticket.impact##\n".
-                                 "##lang.ticket.priority## &#160;: ##ticket.priority## \n".
-                                 "##IFticket.user.email## ##lang.ticket.user.email## &#160;:".
-                                 "##ticket.user.email ##ENDIFticket.user.email## \n".
-                                 "##IFticket.category## ##lang.ticket.category##".
-                                 "&#160;:##ticket.category## ##ENDIFticket.category##".
-                                 "##ELSEticket.category## ##lang.ticket.nocategoryassigned##".
-                                 "##ENDELSEticket.category## \n".
-                                 "##lang.ticket.content## &#160;: ##ticket.content## \r\n".
-                                 "##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups## \r\n\n".
-                                 "##FOREACHfollowups## \r\n \n".
-                                 "[##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate## \n".
-                                 " ##lang.followup.author## ##followup.author##\n".
-                                 " ##lang.followup.description## ##followup.description##\n".
-                                 " ##lang.followup.date## ##followup.date##\n".
-                                 " ##lang.followup.requesttype## ##followup.requesttype## \r\n\n".
-                                 "##ENDFOREACHfollowups## \r\n".
-                                 " ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks## \r\n\n".
-                                 "##FOREACHtasks## \r\n \n".
-                                 " [##task.date##] ##lang.task.isprivate## : ##task.isprivate## \n".
-                                 " ##lang.task.author## ##task.author##\n".
-                                 " ##lang.task.description## ##task.description##\n".
-                                 " ##lang.task.time## ##task.time##\n".
-                                 " ##lang.task.category## ##task.category## \r\n\n".
-                                 "##ENDFOREACHtasks##[###ticket.id##] ##ticket.action## ##ticket.title##', '\r\n".
-                                 "##lang.ticket.url## : ##ticket.url## \r\n".
-                                 "##lang.ticket.description## \r\n\n".
-                                 "##lang.ticket.title## &#160;:##ticket.title##\n".
-                                 "##lang.ticket.author.name##".
-                                 "##IFticket.author.name## ##ticket.author.name##".
-                                 "##ENDIFticket.author.name## ##ELSEticket.author.name##--".
-                                 "##ENDELSEticket.author.name##\n ##lang.ticket.creationdate## &#160;:".
-                                 "##ticket.creationdate##\n ##lang.ticket.closedate## &#160;:".
-                                 "##ticket.closedate##\n ##lang.ticket.requesttype## &#160;:".
-                                 "##ticket.requesttype##\n ##IFticket.itemtype## ##lang.ticket.item.name## &#160;:".
-                                 "##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model##".
-                                 "- ##ticket.item.model## ##ENDIFticket.item.model##".
-                                 "##IFticket.item.serial## -##ticket.item.serial##".
-                                 "##ENDIFticket.item.serial##&#160; ##IFticket.item.otherserial## -".
-                                 "##ticket.item.otherserial## ##ENDIFticket.item.otherserial##".
-                                 "##ENDIFticket.itemtype##\n ##IFticket.assigntouser##".
-                                 "##lang.ticket.assigntouser## &#160;: ##ticket.assigntouser##".
-                                 "##ENDIFticket.assigntouser##\n ##lang.ticket.status## &#160;:".
-                                 "##ticket.status##\n".
-                                 "##IFticket.assigntogroup## ##lang.ticket.assigntogroup## &#160;:".
-                                 "##ticket.assigntogroup## ##ENDIFticket.assigntogroup##\n".
-                                 "##lang.ticket.urgency## &#160;: ##ticket.urgency##\n".
-                                 "##lang.ticket.impact## &#160;: ##ticket.impact##\n".
-                                 "##lang.ticket.priority## &#160;: ##ticket.priority## \n".
-                                 "##IFticket.user.email## ##lang.ticket.user.email## &#160;:".
-                                 "##ticket.user.email ##ENDIFticket.user.email## \n".
-                                 "##IFticket.category## ##lang.ticket.category##".
-                                 "&#160;:##ticket.category## ##ENDIFticket.category##".
-                                 "##ELSEticket.category## ##lang.ticket.nocategoryassigned##".
-                                 "##ENDELSEticket.category## \n".
-                                 "##lang.ticket.content## &#160;: ##ticket.content## \r\n".
-                                 "##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups## \r\n\n".
-                                 "##FOREACHfollowups## \r\n \n".
-                                 "[##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate## \n".
-                                 " ##lang.followup.author## ##followup.author##\n".
-                                 " ##lang.followup.description## ##followup.description##\n".
-                                 " ##lang.followup.date## ##followup.date##\n".
-                                 " ##lang.followup.requesttype## ##followup.requesttype## \r\n\n".
-                                 "##ENDFOREACHfollowups## \r\n".
-                                 " ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks## \r\n\n".
-                                 "##FOREACHtasks## \r\n \n".
-                                 " [##task.date##] ##lang.task.isprivate## : ##task.isprivate## \n".
-                                 " ##lang.task.author## ##task.author##\n".
-                                 " ##lang.task.description## ##task.description##\n".
-                                 " ##lang.task.time## ##task.time##\n".
-                                 " ##lang.task.category## ##task.category## \r\n\n".
-                                 "##ENDFOREACHtasks####lang.ticket.description## \r\n\n".
-                                 "##lang.ticket.title## &#160;:##ticket.title##\n".
-                                 "##lang.ticket.author.name##".
-                                 "##IFticket.author.name## ##ticket.author.name##".
-                                 "##ENDIFticket.author.name## ##ELSEticket.author.name##--".
-                                 "##ENDELSEticket.author.name##\n ##lang.ticket.creationdate## &#160;:".
-                                 "##ticket.creationdate##\n ##lang.ticket.closedate## &#160;:".
-                                 "##ticket.closedate##\n ##lang.ticket.requesttype## &#160;:".
-                                 "##ticket.requesttype##\n ##IFticket.itemtype## ##lang.ticket.item.name## &#160;:".
-                                 "##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model##".
-                                 "- ##ticket.item.model## ##ENDIFticket.item.model##".
-                                 "##IFticket.item.serial## -##ticket.item.serial##".
-                                " ##ENDIFticket.item.serial##&#160; ##IFticket.item.otherserial## -".
-                                 "##ticket.item.otherserial## ##ENDIFticket.item.otherserial##".
-                                 "##ENDIFticket.itemtype##\n ##IFticket.assigntouser##".
-                                 "##lang.ticket.assigntouser## &#160;: ##ticket.assigntouser##".
-                                 "##ENDIFticket.assigntouser##\n ##lang.ticket.status## &#160;:".
-                                 "##ticket.status##\n".
-                                 "##IFticket.assigntogroup## ##lang.ticket.assigntogroup## &#160;:".
-                                 "##ticket.assigntogroup## ##ENDIFticket.assigntogroup##\n".
-                                 "##lang.ticket.urgency## &#160;: ##ticket.urgency##\n".
-                                 "##lang.ticket.impact## &#160;: ##ticket.impact##\n".
-                                 "##lang.ticket.priority## &#160;: ##ticket.priority## \n".
-                                 "##IFticket.user.email## ##lang.ticket.user.email## &#160;:".
-                                 "##ticket.user.email ##ENDIFticket.user.email## \n".
-                                 "##IFticket.category## ##lang.ticket.category##".
-                                 "&#160;:##ticket.category## ##ENDIFticket.category##".
-                                 "##ELSEticket.category## ##lang.ticket.nocategoryassigned##".
-                                 "##ENDELSEticket.category## \n".
-                                 "##lang.ticket.content## &#160;: ##ticket.content## \r\n".
-                                 "##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups## \r\n\n".
-                                 "##FOREACHfollowups## \r\n \n".
-                                 "[##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate## \n".
-                                 " ##lang.followup.author## ##followup.author##\n".
-                                 " ##lang.followup.description## ##followup.description##\n".
-                                 " ##lang.followup.date## ##followup.date##\n".
-                                  "##lang.followup.requesttype## ##followup.requesttype## \r\n\n".
-                                 "##ENDFOREACHfollowups## \r\n".
-                                 " ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks## \r\n\n".
-                                 "##FOREACHtasks## \r\n \n".
-                                 " [##task.date##] ##lang.task.isprivate## : ##task.isprivate## \n".
-                                 " ##lang.task.author## ##task.author##\n".
-                                 " ##lang.task.description## ##task.description##\n".
-                                 " ##lang.task.time## ##task.time##\n".
-                                 " ##lang.task.category## ##task.category## \r\n\n".
-                                 "##ENDFOREACHtasks##";
-*/
+
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                                     VALUES(NULL, '".$templates['Ticket']."', '',
                                     '[###ticket.id##] ##ticket.action## ##ticket.title##',
@@ -3077,8 +2939,10 @@ function update0723to080($output='HTML') {
                                              for $itemtype " . $LANG['update'][90] . $DB->error());
       }
 
+      unset($queries);
    }
 
+   $notifications = array();
    if (!TableExists('glpi_notifications')) {
       $query = "CREATE TABLE `glpi_notifications` (
                   `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -3097,55 +2961,80 @@ function update0723to080($output='HTML') {
       $DB->query($query) or die("0.80 create glpi_notifications" . $LANG['update'][90] . $DB->error());
 
       $queries = array();
-      $queries['new'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'New Ticket', 0, 'Ticket', 'new',
                                        'mail',".$templates['Ticket'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['update'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Update Ticket', 0, 'Ticket', 'update',
                                        'mail',".$templates['Ticket'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['closed'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Close Ticket', 0, 'Ticket', 'closed',
                                        'mail',".$templates['Ticket'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['add_followup'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Add Followup', 0, 'Ticket', 'add_followup',
                                        'mail',".$templates['Ticket'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['add_task'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Add Task', 0, 'Ticket', 'add_task',
                                        'mail',".$templates['Ticket'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['add_resa'] = "INSERT INTO `glpi_notifications`
+
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'New Reservation', 0, 'Reservation', 'new',
                                        'mail',".$templates['Reservation'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['update_resa'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Update Reservation', 0, 'Reservation', 'update',
                                        'mail',".$templates['Reservation'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['delete_resa'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Delete Reservation', 0, 'Reservation', 'delete',
                                        'mail',".$templates['Reservation'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['dbconnection'] = "INSERT INTO `glpi_notifications`
-                                VALUES (NULL, 'MySQL Synchronization', 0, 'DBConnection', 'desynchronization',
-                                       'mail',".$templates['DBConnection'].",
-                                       '', '', 1, '2010-02-16 16:41:39');";
-      $queries['contract_notice'] = "INSERT INTO `glpi_notifications`
+
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Contract Notice', 0, 'Contract', 'notice',
                                        'mail',".$templates['Contract'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      $queries['contract_end'] = "INSERT INTO `glpi_notifications`
+      $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Contract Notice', 0, 'Contract', 'end',
                                        'mail',".$templates['Contract'].",
                                        '', '', 1, '2010-02-16 16:41:39');";
-      foreach ($queries as $itemtype => $query) {
-         $DB->query($query) or die("0.80 insert notification
-                                             for $itemtype " . $LANG['update'][90] . $DB->error());
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'MySQL Synchronization', 0, 'DBConnection', 'desynchronization',
+                                       'mail',".$templates['DBConnection'].",
+                                       '', '', 1, '2010-02-16 16:41:39');";
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Cartridges', 0, 'Cartridge', 'alert',
+                                       'mail','',
+                                       '', '', 1, '2010-02-16 16:41:39');";
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Consumables', 0, 'Consumable', 'alert',
+                                       'mail','',
+                                       '', '', 1, '2010-02-16 16:41:39');";
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Infocoms', 0, 'Infocom', 'alert',
+                                       'mail','',
+                                       '', '', 1, '2010-02-16 16:41:39');";
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Software Licenses', 0, 'SoftwareLicense', 'alert',
+                                       'mail','',
+                                       '', '', 1, '2010-02-16 16:41:39');";
+      foreach($queries as $query) {
+         $DB->query($query) or die("0.80 insert notification" . $LANG['update'][90] . $DB->error());
       }
+
+      $display_notification = array(1=>5, 2=>2, 3=>4, 4=>80, 5=>86);
+      foreach ($display_notification as $order => $value) {
+         $query ="INSERT INTO `glpi_displaypreferences` VALUES(NULL, 'Notification', $value, $order, 0);";
+         $DB->query($query) or die("0.80 insert notification display preferences" . $LANG['update'][90] . $DB->error());
+      }
+      unset($queries);
    }
+
 
    if (!TableExists('glpi_notificationtargets')) {
       $query = "CREATE TABLE `glpi_notificationtargets` (
@@ -3177,8 +3066,8 @@ function update0723to080($output='HTML') {
    }
 
    if (TableExists('glpi_mailsettings')) {
-      $query = "RENAME TABLE `glpi_mailingsettings`  TO `glpi_notificationmailsettings` ;";
-      $DB->query($query) or die("0.80 rename glpi_mailingsettings to glpi_notificationmailsettings" . $LANG['update'][90] . $DB->error());
+      $query = "DROP TABLE `glpi_mailingsettings`;";
+      $DB->query($query) or die("0.80 drop table glpi_mailingsettings" . $LANG['update'][90] . $DB->error());
    }
 
    // Migrate infocoms entity information
