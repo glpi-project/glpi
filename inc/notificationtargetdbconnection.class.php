@@ -38,8 +38,8 @@ class NotificationTargetDBConnection extends NotificationTarget {
    //Overwrite the function in NotificationTarget because there's only one target to be notified
    function getNotficationTargets($entity) {
       global $LANG;
-      $profiles[Notification::USER_TYPE . "_" . Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
-      return $profiles;
+      $this->notification_targets[Notification::USER_TYPE . "_" .
+          Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
    }
 
    function getEvents() {

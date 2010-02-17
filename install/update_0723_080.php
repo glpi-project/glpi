@@ -3036,7 +3036,24 @@ function update0723to080($output='HTML') {
    }
 
 
-   if (!TableExists('glpi_notificationtargets')) {
+   if (!TableExists('glpi_notificationtargets') && TableExists('glpi_mailingsettings')) {
+      $query = "RENAME TABLE `glpi_mailingsettings`  TO `glpi_notificationtargets`;";
+      $DB->query($query) or die("0.80 rename table glpi_mailingsettings in glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_notificationtargets` ADD `notifications_id` INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 add field notifications_id to glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_notificationtargets` CHANGE `type` `oldtype` VARCHAR( 255 )
+                     CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL";
+      $DB->query($query) or die("0.80 change field type in oldtype" . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_notificationtargets` CHANGE `mailingtype` `type`
+                     INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 change field mailingtype in type" . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_notificationtargets` ADD `type` INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query);
+      /*
       $query = "CREATE TABLE `glpi_notificationtargets` (
                   `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
                   `notifications_id` INT( 11 ) NOT NULL DEFAULT '0',
@@ -3045,8 +3062,54 @@ function update0723to080($output='HTML') {
                   PRIMARY KEY ( `id` )
                   ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
       $DB->query($query) or die("0.80 create glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
+      */
+      $fields = array ('new'=>array('itemtype'=>'Ticket','newaction'=>'new'),
+                       'update'=>array('itemtype'=>'Ticket','newaction'=>'update'),
+                       'finish'=>array('itemtype'=>'Ticket','newaction'=>'closed'),
+                       'resa'=>array('itemtype'=>'Reservation','newaction'=>'new'),
+                       'followup'=>array('itemtype'=>'Ticket','newaction'=>'add_followup'),
+                       'alertconsumable'=>array('itemtype'=>'Consumable','newaction'=>'alert'),
+                       'alertcartridge'=>array('itemtype'=>'Cartridge','newaction'=>'alert'),
+                       'alertlicense'=>array('itemtype'=>'SoftwareLicense','newaction'=>'alert'),
+                       'alertinfocom'=>array('itemtype'=>'Infocom','newaction'=>'alert'),
+                       'alertcontract'=>array('itemtype'=>'Consumable','newaction'=>'end'));
 
-      //$targets = array ("new"=>1, "followup"=> 3, "update"=>2, "finish"=> 4, "");
+      $query = "SELECT `oldtype` FROM `glpi_notificationtargets` GROUP BY `oldtype`";
+      foreach ($DB->request($query) as $data) {
+
+         $infos = $fields[$data['oldtype']];
+         $query_type = "SELECT `id`
+                        FROM `glpi_notifications`
+                        WHERE `itemtype`='".$infos['itemtype']."' AND `event`='".$infos['newaction']."'";
+
+         $result = $DB->query($query_type) or die("0.80 get notificationtargets_id " . $LANG['update'][90] . $DB->error());
+
+         if ($DB->numrows($result)) {
+            $id = $DB->result($result,0,'id');
+            $query_update = "UPDATE `glpi_notificationtargets`
+                             SET `notifications_id`='$id'
+                             WHERE `oldtype`='".$data['oldtype']."'";
+            $DB->query($query_update) or die("0.80 set notificationtargets_id " . $LANG['update'][90] . $DB->error());
+         }
+      }
+      $query ="ALTER TABLE `glpi_notificationtargets` DROP INDEX `unicity` ";
+      $DB->query($query) or die("0.80 drop index unicity from glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_notificationtargets` DROP `oldtype`";
+      $DB->query($query) or die("0.80 drop field oldtype in glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
+
+      $query_type = "SELECT `id` FROM `glpi_notifications` WHERE `itemtype`='DBConnection'";
+      $result = $DB->query($query_type) or die("0.80 get notificationtargets_id " . $LANG['update'][90] . $DB->error());
+
+      if ($DB->numrows($result)) {
+         $id = $DB->result($result,0,'id');
+         $query = "INSERT INTO `glpi_notificationtargets`
+                     (`id`, `notifications_id`, `type`, `items_id`)
+                     VALUES (NULL, ".$id.", 1, 1);";
+          $DB->query($query_update) or die("0.80 add target for dbsynchronization " . $LANG['update'][90] . $DB->error());
+      }
+
+      //TODO : manage contract notice, reservation update & delete
    }
 
    if (!FieldExists('glpi_profiles','notification')) {

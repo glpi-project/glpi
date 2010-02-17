@@ -96,8 +96,12 @@ class NotificationTarget extends CommonDBTM {
       }
 
       if (class_exists($name)) {
-         return new $name (($item->isField('entities_id')?$item->getField('entities_id'):0),
-                           $item);
+         if ($name != 'NotificationTargetDBConnection') {
+            return new $name (($item->isField('entities_id')?$item->getField('entities_id'):0),$item);
+         }
+         else {
+            return new $name(0,$item);
+         }
       }
       else {
          return false;
