@@ -2813,6 +2813,10 @@ function showToolTip($content,$options=array()){
       }
    }
 
+   // No empty content to have a clean display
+   if (empty($content)) {
+      $content="&nbsp;";
+   }
    $rand=mt_rand();
    $out='';
    if (empty($param['applyto'])){
