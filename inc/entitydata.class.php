@@ -134,8 +134,8 @@ class EntityData extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($entdata, "phonenumber");
       echo "</td>";
-      echo "<td rowspan='6'>".$LANG['financial'][44]."&nbsp;:</td>";
-      echo "<td rowspan='6'><textarea cols='45' rows='6' name='address'>".
+      echo "<td rowspan='7'>".$LANG['financial'][44]."&nbsp;:</td>";
+      echo "<td rowspan='7'><textarea cols='45' rows='8' name='address'>".
              $entdata->fields["address"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -164,9 +164,15 @@ class EntityData extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
+      echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($entdata, "state");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField($entdata, "country");
       echo "</td></tr>";
 
       if ($canedit) {
