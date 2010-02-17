@@ -82,7 +82,6 @@ class NotificationMailSetting extends CommonDBTM {
 
       $this->showTabs($options);
       $this->showFormHeader($options);
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][202] . "</td><td>";
       Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
       echo "</td></tr>";
@@ -111,7 +110,7 @@ class NotificationMailSetting extends CommonDBTM {
           echo "<span class='red'>" . $LANG['setup'][217] . " : </span>";
           echo "<span>" . $LANG['setup'][218] . "</span></td></tr>";
       }
-
+      
       $this->showFormButtons(array('candel'=>false));
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

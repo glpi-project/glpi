@@ -202,9 +202,6 @@ class AuthLDAP extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
          echo "<td colspan='3'>";
          echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
-         echo "</td></tr>";
-
-         $this->showFormButtons($options);
 
          //Fill fields when using preconfiguration models
          if (!$ID) {
@@ -219,6 +216,10 @@ class AuthLDAP extends CommonDBTM {
                      $this->fields[$hidden_field]."'>";
             }
          }
+
+         echo "</td></tr>";
+
+         $this->showFormButtons($options);
 
          echo "<div id='tabcontent'></div>";
          echo "<script type='text/javascript'>loadDefaultTab();</script>";

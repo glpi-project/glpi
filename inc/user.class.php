@@ -1164,8 +1164,6 @@ class User extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td></tr>";
       }
 
-      echo "</tr>";
-
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][43] . "&nbsp;:</td><td>";
       autocompletionTextField($this, "firstname");
       echo "</td>";
@@ -1250,7 +1248,7 @@ class User extends CommonDBTM {
          }
          echo "</td><td colspan='2'class='center'>";
          if ($ID>0) {
-            echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"].
+            echo "<a target='_blank' href='".$CFG_GLPI["root_doc"].
                   "/front/user.form.php?getvcard=1&amp;id=$ID'>". $LANG['common'][46]."</a>";
          }
          echo "</td></tr>";
