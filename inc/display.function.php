@@ -2631,44 +2631,6 @@ function changeProgressBarMessage ($msg="&nbsp;") {
 }
 
 
-/**
- * Display an "help" image and display a tooltip on mouseover
- * could also be a link to another page
- *
- * @param $message to de displayed on mouseover
- * @param $link
- * @param $ajax array of ajax option
- *    widget : name of widget to observe
- *    table : use to get comment
- *    value : to pass to ajax (__VALUE__)
- */
-function displayToolTip ($message, $link='',$ajax=array()) {
-   global $CFG_GLPI;
-
-   $name="tooltip_".mt_rand();
-
-   if ($link) {
-      echo "<a id='link_$name' href='$link'>";
-      $ajax['withlink'] = "link_$name";
-   }
-   echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-       onmouseout=\"cleanhide('comment_$name')\" onmouseover=\"cleandisplay('comment_$name')\" ";
-   if ($link) {
-      echo "style='cursor:pointer;'></a>";
-   } else {
-      echo ">";
-   }
-   echo "<span class='over_link' id='comment_$name'>".nl2br($message)."</span>\n";
-
-   if (isset($ajax['widget'])) {
-      $widget = $ajax['widget'];
-      unset($ajax['widget']);
-
-      ajaxUpdateItemOnSelectEvent($widget, "comment_$name",
-            $CFG_GLPI["root_doc"]."/ajax/comments.php", $ajax);
-   }
-}
-
 
 /**
 * show arrow for massives actions : opening
@@ -2817,5 +2779,110 @@ function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
              cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
    }
 }
+
+/**
+* Show a tooltip on an item
+*
+* Parameters which could be used in options array :
+*   - applyto : string / id of the item to apply tooltip (default empty).
+*                  If not set display an icon
+*   - title : string / title to display (default empty)
+*   - contentid : string / id for the content html container (default auto generated) (used for ajax)
+*   - link : string / link to put on displayed image if contentid is empty
+*   - linkid : string / html id to put to the link link (used for ajax)
+*
+* @param $content string data to put in the tooltip
+* @param $options array possible options
+* @return nothing (print out an HTML div)
+*/
+function displayToolTip($content,$options=array()){
+   global $CFG_GLPI;
+
+   $param['applyto']='';
+   $param['title']='';
+   $param['contentid']='';
+   $param['link']='';
+   $param['linkid']='';
+   $param['ajax']='';
+
+   if (is_array($options) && count($options)) {
+      foreach ($options as $key => $val) {
+         $param[$key]=$val;
+      }
+   }
+
+   $rand=mt_rand();
+   if (empty($param['applyto'])){
+         if (!empty($param['link'])) {
+            echo "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'
+                     href='".$param['link']."'>";
+         }
+
+         echo "<img id='tooltip$rand' alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
+         if (!empty($param['link'])) {
+            echo "</a>";
+         }
+         $param['applyto']="tooltip$rand";
+   }
+   if (empty($param['contentid'])) {
+      $param['contentid'] = "content".$param['applyto'];
+   }
+
+   echo "<span id='".$param['contentid']."' class='x-hidden'>$content</span>";
+   
+   echo "<script type='text/javascript' >\n";
+
+   echo "new Ext.ToolTip({
+            target: '".$param['applyto']."',
+            anchor: 'left',
+            autoShow: true,";
+   if (!empty($param['title'])) {
+      echo "title: \"".$param['title']."\",";
+   }
+   echo "contentEl: '".$param['contentid']."',";
+   echo "});";
+   echo "</script>";
+
+}
+
+
+/**
+ * Display an "help" image and display a tooltip on mouseover
+ * could also be a link to another page
+ *
+ * @param $message to de displayed on mouseover
+ * @param $link
+ * @param $ajax array of ajax option
+ *    widget : name of widget to observe
+ *    table : use to get comment
+ *    value : to pass to ajax (__VALUE__)
+ */
+/*function displayToolTip($message, $link='',$ajax=array()) {
+   global $CFG_GLPI;
+
+   $name="tooltip_".mt_rand();
+
+   if ($link) {
+      echo "<a id='link_$name' href='$link'>";
+      $ajax['withlink'] = "link_$name";
+   }
+   echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+       onmouseout=\"cleanhide('comment_$name')\" onmouseover=\"cleandisplay('comment_$name')\" ";
+   if ($link) {
+      echo "style='cursor:pointer;'></a>";
+   } else {
+      echo ">";
+   }
+   echo "<span class='over_link' id='comment_$name'>".nl2br($message)."</span>\n";
+
+   if (isset($ajax['widget'])) {
+      $widget = $ajax['widget'];
+      unset($ajax['widget']);
+
+      ajaxUpdateItemOnSelectEvent($widget, "comment_$name",
+            $CFG_GLPI["root_doc"]."/ajax/comments.php", $ajax);
+   }
+}
+*/
 
 ?>

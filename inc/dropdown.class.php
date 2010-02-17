@@ -169,10 +169,8 @@ class Dropdown {
 
       // Display comment
       if ($params['comments']) {
-         echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-                onmouseout=\"cleanhide('comment_".$params['name'].$params['rand']."')\"
-                onmouseover=\"cleandisplay('comment_".$params['name'].$params['rand']."')\" >";
-         echo "<span class='over_link' id='comment_".$params['name'].$params['rand']."'>".nl2br($comment)."</span>";
+         displayToolTip($comment,array('contentid'=>"comment_".$params['name'].$params['rand']));
+
 
          if (($item instanceof CommonDropdown)
                && $item->canCreate()) {

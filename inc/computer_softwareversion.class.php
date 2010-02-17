@@ -442,7 +442,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $i = 0;
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
-
       if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
          echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
          echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/computer_softwareversion.form.php\">";
@@ -659,7 +658,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $link = $link_item."?id=".$licdata['id'];
          displayToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
                          $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
-                         $link);
+                         array('link'=>$link));
          echo "<br>";
       }
       if (!count($licids)) {
@@ -715,7 +714,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['name']."<br>".
                       $LANG['common'][19]."&nbsp;: ".$data['serial']."<br>".$data['comment'],
-                      $link);
+                      array('link'=>$link));
       echo "</td></tr>\n";
    }
 
