@@ -2048,7 +2048,7 @@ class Search {
 
       // Hack to allow search by ID on every sub-table
       if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)) {
-         return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1].") ";
+         return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".($regs[1]==0?" OR `$table`.`id` IS NULL":'').") ";
       }
 
       if ($searchtype=='contains') {
@@ -2387,7 +2387,8 @@ class Search {
 
       // Default case
       if ($searchtype=='equals') {
-         return " $link `$table`.`id`".$SEARCH;
+         // Add NULL if $val = 0 
+         return " $link (`$table`.`id`".$SEARCH.($val==0?" OR `$table`.`id` IS NULL":'').') ';
       } else {
          return makeTextCriteria($tocompute,$val,$nott,$link);
       }
