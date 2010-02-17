@@ -1901,6 +1901,10 @@ class AuthLDAP extends CommonDBTM {
                $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
                $_SESSION['ldap_import']['ldapservers_id'] = $entitydata->getField('ldapservers_id');
                $_SESSION['ldap_import']['basedn'] = $entitydata->getField('ldap_dn');
+               if ($entitydata->getField('entity_ldapfilter') != NOT_AVAILABLE) {
+                  $_SESSION['ldap_import']['entity_filter'] =
+                                                         $entitydata->getField('entity_ldapfilter');
+               }
             }
             else {
                $_SESSION['ldap_import']['ldapservers_id'] = AuthLdap::getDefault();
