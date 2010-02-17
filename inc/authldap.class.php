@@ -166,7 +166,7 @@ class AuthLDAP extends CommonDBTM {
             echo "</a></td></tr>";
          }
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
-         echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td><td>";
+         echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td><td colspan='2'>";
          echo ($ID>0?$LANG['common'][26]."&nbsp;:</td><td>".convDateTime($this->fields["date_mod"]):'&nbsp;');
          echo "</td></tr>";
 
@@ -201,8 +201,10 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
          echo "<td colspan='3'>";
-         echo "<textarea cols='40' name='comment'>".$this->fields["comment"]."</textarea>";
+         echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
          echo "</td></tr>";
+
+         $this->showFormButtons($options);
 
          //Fill fields when using preconfiguration models
          if (!$ID) {
@@ -217,8 +219,6 @@ class AuthLDAP extends CommonDBTM {
                      $this->fields[$hidden_field]."'>";
             }
          }
-
-         $this->showFormButtons($options);
 
          echo "<div id='tabcontent'></div>";
          echo "<script type='text/javascript'>loadDefaultTab();</script>";
