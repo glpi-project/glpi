@@ -169,7 +169,7 @@ class Dropdown {
 
       // Display comment
       if ($params['comments']) {
-         displayToolTip($comment,array('contentid'=>"comment_".$params['name'].$params['rand']));
+         showToolTip($comment,array('contentid'=>"comment_".$params['name'].$params['rand']));
 
 
          if (($item instanceof CommonDropdown)

@@ -2790,20 +2790,22 @@ function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
 *   - contentid : string / id for the content html container (default auto generated) (used for ajax)
 *   - link : string / link to put on displayed image if contentid is empty
 *   - linkid : string / html id to put to the link link (used for ajax)
+*   - display : boolean / display the item : false return the datas
 *
 * @param $content string data to put in the tooltip
 * @param $options array possible options
 * @return nothing (print out an HTML div)
 */
-function displayToolTip($content,$options=array()){
+function showToolTip($content,$options=array()){
    global $CFG_GLPI;
 
-   $param['applyto']='';
-   $param['title']='';
-   $param['contentid']='';
-   $param['link']='';
-   $param['linkid']='';
-   $param['ajax']='';
+   $param['applyto']    = '';
+   $param['title']      = '';
+   $param['contentid']  = '';
+   $param['link']       = '';
+   $param['linkid']     = '';
+   $param['ajax']       = '';
+   $param['display']    = true;
 
    if (is_array($options) && count($options)) {
       foreach ($options as $key => $val) {
@@ -2812,15 +2814,16 @@ function displayToolTip($content,$options=array()){
    }
 
    $rand=mt_rand();
+   $out='';
    if (empty($param['applyto'])){
          if (!empty($param['link'])) {
-            echo "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'
+            $out.="<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'
                      href='".$param['link']."'>";
          }
 
-         echo "<img id='tooltip$rand' alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
+         $out.= "<img id='tooltip$rand' alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
          if (!empty($param['link'])) {
-            echo "</a>";
+            $out.= "</a>";
          }
          $param['applyto']="tooltip$rand";
    }
@@ -2828,20 +2831,26 @@ function displayToolTip($content,$options=array()){
       $param['contentid'] = "content".$param['applyto'];
    }
 
-   echo "<span id='".$param['contentid']."' class='x-hidden'>$content</span>";
+   $out.= "<span id='".$param['contentid']."' class='x-hidden'>$content</span>";
    
-   echo "<script type='text/javascript' >\n";
+   $out.= "<script type='text/javascript' >\n";
 
-   echo "new Ext.ToolTip({
+   $out.= "new Ext.ToolTip({
             target: '".$param['applyto']."',
             anchor: 'left',
             autoShow: true,";
    if (!empty($param['title'])) {
-      echo "title: \"".$param['title']."\",";
+      $out.= "title: \"".$param['title']."\",";
    }
-   echo "contentEl: '".$param['contentid']."',";
-   echo "});";
-   echo "</script>";
+   $out.= "contentEl: '".$param['contentid']."',";
+   $out.= "});";
+   $out.= "</script>";
+
+   if ($param['display']) {
+      echo $out;
+   } else {
+      return  $out;
+   }
 
 }
 

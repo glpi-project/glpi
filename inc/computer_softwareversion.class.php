@@ -656,7 +656,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          $link_item=getItemTypeFormURL('SoftwareLicense');
          $link = $link_item."?id=".$licdata['id'];
-         displayToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
+         showToolTip ($LANG['common'][16]."&nbsp;: ".$licdata['name']."<br>".
                          $LANG['common'][19]."&nbsp;: ".$licdata['serial']."<br>".$licdata['comment'],
                          array('link'=>$link));
          echo "<br>";
@@ -712,7 +712,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if ($data["softwarelicensetypes_id"]) {
          echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",$data["softwarelicensetypes_id"]).")&nbsp; ";
       }
-      displayToolTip ($LANG['common'][16]."&nbsp;: ".$data['name']."<br>".
+      showToolTip ($LANG['common'][16]."&nbsp;: ".$data['name']."<br>".
                       $LANG['common'][19]."&nbsp;: ".$data['serial']."<br>".$data['comment'],
                       array('link'=>$link));
       echo "</td></tr>\n";

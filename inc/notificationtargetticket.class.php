@@ -96,8 +96,7 @@ class NotificationTargetTicket extends NotificationTarget {
     * @return the object associated with the itemtype
     */
    function getObjectItem() {
-      if ($this->obj->getField('itemtype')) {
-         $itemtype = $this->obj->getField('itemtype');
+      if ($itemtype=$this->obj->getField('itemtype') && !empty($itemtype)) {
          $item = new  $itemtype ();
          $item->getFromDB($this->obj->getField('items_id'));
          $this->target_object = $item;

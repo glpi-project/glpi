@@ -3279,7 +3279,7 @@ class Search {
 
          case 'glpi_tickets.name':
             $link=getItemTypeFormURL('Ticket');
-            $out  = "<a href=\"".$link;
+            $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
             $out .= (strstr($link,'?') ?'&amp;' :  '?');
             $out .= 'id='.$data[$NAME.$num."_2"]."\">";
             $out .= $data[$NAME.$num];
@@ -3288,11 +3288,8 @@ class Search {
             }
             $out .= "</a>";
 
-            $out .= "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' ".
-                           "onmouseout=\"cleanhide('comment_tracking".$data[$NAME.$num."_2"]."')\" ".
-                           "onmouseover=\"cleandisplay('comment_tracking".$data[$NAME.$num."_2"]."')\" >";
-            $out .= "<span class='over_link' id='comment_tracking".$data[$NAME.$num."_2"]."'>".
-                           nl2br($data[$NAME.$num."_3"])."</span>";
+            $out.= showToolTip(nl2br($data[$NAME.$num."_3"]),
+                     array('applyto'=>'ticket'.$data[$NAME.$num."_2"],'display'=>false));
             return $out;
       }
 
