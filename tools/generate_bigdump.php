@@ -34,7 +34,9 @@
 // ----------------------------------------------------------------------
 
 
-// BIG DUMP GENERATION FOR THE 0.6 VERSION
+// This script generate and populate a complete glpi DB
+// A good way to test GLPI with a lot of data 
+
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
