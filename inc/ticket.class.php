@@ -3677,14 +3677,10 @@ class Ticket extends CommonDBTM {
          echo "<td class='center' bgcolor='$bgcolor' >ID : ".$job->fields["id"]."</td>";
          echo "<td class='center'>";
 
+         $userdata = getUserName($job->fields['users_id'],2);
+         echo "<strong>".$userdata['name']."</strong>&nbsp;";
          if ($viewusers) {
-            $userdata = getUserName($job->fields['users_id'],2);
- 
-            echo "<strong>".$userdata['name']."</strong>&nbsp;";
             showToolTip($userdata["comment"],array('link'=>$userdata["link"]));
-
-         } else {
-            echo "<strong>".$job->getAuthorName()."</strong>";
          }
 
          if ($job->fields["groups_id"]) {
