@@ -1861,6 +1861,7 @@ $LANG['state'][11]="Synthèse";
 
 $LANG['stats'][0]="Sélectionnez les statistiques à visualiser";
 $LANG['stats'][1]="Globales";
+$LANG['stats'][2]="Aucun élément à afficher";
 $LANG['stats'][3]="Par Intitulé";
 $LANG['stats'][5]="Nombre de tickets ouverts";
 $LANG['stats'][6]="Délai moyen de traitement du ticket";
