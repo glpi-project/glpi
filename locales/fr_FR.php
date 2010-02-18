@@ -108,6 +108,7 @@ $LANG['buttons'][54]="Ajouter et Réouvrir";
 $LANG['buttons'][55]="Premier";
 $LANG['buttons'][56]="Dernier";
 $LANG['buttons'][57]="Executer";
+$LANG['buttons'][58]="Mettre à jour";
 
 $LANG['calendarD'][0]="D";
 $LANG['calendarD'][1]="L";
