@@ -82,7 +82,7 @@ if ($auth->Login($_POST['login_name'],
 
 } else {
    // we have done at least a good login? No, we exit.
-   nullHeader("Login", $_SERVER['PHP_SELF']);
+   nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');
    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
    // Logout whit noAUto to manage auto_login with errors
    echo '<a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1'.str_replace("?","&",$REDIRECT).'">' .
