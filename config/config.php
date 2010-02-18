@@ -125,7 +125,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       chdir(GLPI_ROOT);
       $glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
       chdir($currentdir);
-      $globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php.*/","",$_SERVER['REQUEST_URI']);
+      $globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$_SERVER['SCRIPT_NAME']);
       $globaldir=preg_replace("/\?.*/","",$globaldir);
       $CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
       $CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
