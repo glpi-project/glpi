@@ -47,7 +47,7 @@ class TicketFollowup  extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['Menu'][5];
+      return $LANG['job'][9];
    }
 
 
