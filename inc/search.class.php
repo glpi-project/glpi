@@ -156,6 +156,11 @@ class Search {
          array_push($toview,$p['sort']);
       }
 
+      // Special case for Ticket : put ID in front
+      if ($itemtype=='Ticket') {
+         array_unshift($toview,2);
+      }
+
       // Clean toview array
       $toview=array_unique($toview);
       foreach ($toview as $key => $val) {
@@ -163,6 +168,7 @@ class Search {
             unset($toview[$key]);
          }
       }
+
       $toview_count=count($toview);
 
       // Construct the request
@@ -878,19 +884,12 @@ class Search {
                   echo Search::showItem($output_type,$tmpcheck,$item_num,$row_num,"width='10'");
                }
 
-               // Print first element - specific case for user
-               echo Search::showItem($output_type,Search::giveItem($itemtype,1,$data,0),$item_num,$row_num,
-                                 Search::displayConfigItem($itemtype,$searchopt[$itemtype][1]["table"].".".
-                                                            $searchopt[$itemtype][1]["field"]));
                // Print other toview items
                foreach ($toview as $key => $val) {
-                  // Do not display first item
-                  if ($key>0) {
-                     echo Search::showItem($output_type,Search::giveItem($itemtype,$val,$data,$key),$item_num,
-                                          $row_num,
-                              Search::displayConfigItem($itemtype,$searchopt[$itemtype][$val]["table"].".".
-                                                         $searchopt[$itemtype][$val]["field"]));
-                  }
+                  echo Search::showItem($output_type,Search::giveItem($itemtype,$val,$data,$key),$item_num,
+                                       $row_num,
+                           Search::displayConfigItem($itemtype,$searchopt[$itemtype][$val]["table"].".".
+                                                      $searchopt[$itemtype][$val]["field"]));
                }
 
                // Print Meta Item
