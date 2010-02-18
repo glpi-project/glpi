@@ -1317,6 +1317,16 @@ class Ticket extends CommonDBTM {
       return $docadded;
    }
 
+   /** Get default values to search engine to override
+   **/
+   static function getDefaultSearchRequest() {
+         return array('field'      => array(0=>12),
+               'searchtype' => array(0=>'equals'),
+               'contains'   => array(0=>'notold'),
+               'sort'       => 19,
+               'order'      => 'DESC');
+   }
+
    function getSearchOptions() {
       global $LANG;
 
