@@ -45,7 +45,7 @@ setGlpiSessionPath();
 startGlpiSession();
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-   nullHeader("DB Error",$_SERVER['PHP_SELF']);
+   nullHeader("DB Error",$CFG_GLPI["root_doc"]);
    if (!isCommandLine()) {
       echo "<div class='center'>";
       echo "<p>Error : GLPI seems to not be installed properly.</p>";
@@ -58,7 +58,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo "config_db.php file is missing.\n";
       echo "Please restart the install process.\n";
    }
-   nullFooter("DB Error",$_SERVER['PHP_SELF']);
+   nullFooter("DB Error",$CFG_GLPI["root_doc"]);
 
    die();
 } else {
@@ -169,7 +169,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       if (isCommandLine()) {
          echo $LANG['update'][88] . "\n";
       } else {
-         nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);
+         nullHeader("UPDATE NEEDED",$CFG_GLPI["root_doc"]);
          echo "<div class='center'>";
          echo "<table class='tab_check'>";
          $error=commonCheckForUseGLPI();
@@ -186,7 +186,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                echo "<p class='red'>".$LANG['update'][89]."</p>";
             }
          } else {
-            echo "<form action=\"".$_SERVER['PHP_SELF']."\" method='post'>";
+            echo "<form action=\"".$CFG_GLPI["root_doc"]."/index.php\" method='post'>";
             echo "<input type='submit' name='submit' class='submit' value=\"".
                    $LANG['install'][27]."\" />";
             echo "</form>";
