@@ -825,7 +825,7 @@ class Stat {
          // Clean data
          if (count($entrees)) {
             foreach ($entrees as $key => $val) {
-               if (count($val)==0) {
+               if (!is_array($val) || count($val)==0) {
                   unset($entrees[$key]);
                }
             }
