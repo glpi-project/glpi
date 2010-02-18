@@ -201,8 +201,9 @@ class Plugin extends CommonDBTM {
             if ($file_plugins[$plug]['version']!=$pluglist[$ID]['version']) {
                $input=$file_plugins[$plug];
                $input['id']=$ID;
-               if ($pluglist[$ID]['version'])
+               if ($pluglist[$ID]['version']) {
                   $input['state']=self::NOTUPDATED;
+               }
                $this->update($input);
                $install_ok=false;
             }
@@ -238,10 +239,10 @@ class Plugin extends CommonDBTM {
       if (count($file_plugins)) {
          foreach ($file_plugins as $plug => $data) {
             if (isset($data['oldname'])) {
-               $data['state']=self::NOTUPDATED;
                $checking = $pluglist;
                foreach ($checking as $check) {
                   if (isset($check['directory']) && $check['directory'] == $data['oldname']) {
+                     $data['state']=self::NOTUPDATED;
                      $this->delete(array('id'=>$check['id']));
                   }
                }
@@ -375,7 +376,7 @@ class Plugin extends CommonDBTM {
                      $do_install=$function();
                   }
                   if ($plug['state']==self::NOTUPDATED) {
-                     $msg = $LANG['install'][4];
+                     $msg = $LANG['buttons'][58];
                   } else {
                      $msg = $LANG['buttons'][4];
                   }
