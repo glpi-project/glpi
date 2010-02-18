@@ -114,7 +114,7 @@ class NotificationTarget extends CommonDBTM {
     * @return a notificationtarget class or false
     */
    static function getInstanceByType($itemtype) {
-      if (class_exists($itemtype)) {
+      if ($itemtype != '' && class_exists($itemtype)) {
          return NotificationTarget::getInstance(new $itemtype ());
       }
       else {
