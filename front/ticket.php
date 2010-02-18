@@ -45,16 +45,6 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 }
 
-
-
-
-// Manage default value : search not old tickets
-if (!isset($_GET) || !is_array($_GET) || count($_GET)==0) {
-   $_GET=array('field'      => array(0=>12),
-               'searchtype' => array(0=>'equals'),
-               'contains'   => array(0=>'notold'),);
-}
-
 Search::show('Ticket');
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {

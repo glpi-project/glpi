@@ -87,7 +87,6 @@ class Search {
       $p['itemtype2']   = '';
       $p['searchtype2']  = '';
 
-
       foreach ($params as $key => $val) {
             $p[$key]=$val;
       }
@@ -3544,6 +3543,10 @@ class Search {
       $default_values["itemtype2"]="";
       $default_values["searchtype2"]=array(0=>"");
       $default_values["sort"]=1;
+
+      if (method_exists($itemtype,'getDefaultSearchRequest')) {
+         $default_values=array_merge(call_user_func(array($itemtype, 'getDefaultSearchRequest')));
+      }
 
       // First view of the page : try to load a bookmark
       if ($usesession && !isset($_SESSION['glpisearch'][$itemtype])) {
