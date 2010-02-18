@@ -57,14 +57,14 @@ if (isset($_POST["add"])) {
       }
    }
    if ($newID=$track->add($_POST)) {
-      Event::log($newID, "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
+      Event::log($newID, "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST['update'])) {
    $track->check($_POST['id'],'w');
    $track->update($_POST);
-   Event::log($_POST["id"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
                               'show_assign_ticket' => '1'));
    $newID = $fup->add($_POST);
 
-   Event::log($_POST["tickets_id"], "tracking", 4, "tracking",
+   Event::log($_POST["tickets_id"], "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                $_POST["tickets_id"]."&glpi_tab=1&itemtype=Ticket");
@@ -90,7 +90,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    } else {
       commonHeader($LANG['Menu'][31],$_SERVER['PHP_SELF'],"maintain","helpdesk");
    }
-   
+
    $track->showForm($_GET["id"]);
 
 } else {
