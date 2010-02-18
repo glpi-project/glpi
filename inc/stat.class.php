@@ -905,7 +905,8 @@ class Stat {
          if (!empty($param['title'])) {
             // Only when one dataset
             if ($param['showtotal']==1 && count($entrees)==1) {
-               $param['title'] .= " - ".array_sum($entrees[key($entrees)]);
+               reset($entrees);
+               $param['title'] .= " - ".array_sum(current($entrees));
                if (!empty($param['unit'])) {
                   $param['title'] .= " ".$param['unit'];
                }
