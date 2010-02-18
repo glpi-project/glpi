@@ -41,25 +41,28 @@ checkSeveralRightsOr(array('notification'=>'r','config'=>'w'));
 
 commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
 
-echo "<table class='tab_cadre'>";
-echo "<tr><th>&nbsp;" . $LANG['setup'][201] . " ".$LANG['setup'][704]."&nbsp;</th></tr>";
 
-if (haveRight("config","r")) {
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
-         $LANG['setup'][201]. ' '.$LANG['mailing'][118] .
-         "</a></td></tr>";
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
-         $LANG['mailing'][113] ."</a></td> </tr>";
+if (!haveRight("config","r") && haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
+   glpi_header($CFG_GLPI["root_doc"].'/front/notification.php');
+}else {
+   echo "<table class='tab_cadre'>";
+   echo "<tr><th>&nbsp;" . $LANG['setup'][201] . " ".$LANG['setup'][704]."&nbsp;</th></tr>";
+   if (haveRight("config","r")) {
+      echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
+            $LANG['setup'][201]. ' '.$LANG['mailing'][118] .
+            "</a></td></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
+            $LANG['mailing'][113] ."</a></td> </tr>";
+   }
+   if (haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
+      echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
+            "</a></td></tr>";
+   }
+   else {
+         echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][661] ."</td></tr>";
+   }
+   echo "</table>";
 }
-if (haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
-   echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . $LANG['setup'][704] .
-         "</a></td></tr>";
-}
-else {
-      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][661] ."</td></tr>";
-}
-
-echo "</table>";
 
 commonFooter();
 ?>
