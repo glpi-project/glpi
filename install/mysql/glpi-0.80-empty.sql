@@ -2053,28 +2053,27 @@ CREATE TABLE `glpi_notifications` (
   `event` varchar(255) collate utf8_unicode_ci NOT NULL,
   `mode` varchar(255) collate utf8_unicode_ci NOT NULL,
   `notificationtemplates_id` int(11) NOT NULL default '0',
-  `content` text collate utf8_unicode_ci,
   `comment` text collate utf8_unicode_ci,
   `is_recursive` tinyint(1) NOT NULL default '0',
   `date_mod` datetime default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notifications` VALUES ('1','New Ticket','0','Ticket','new','mail','3','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('2','Update Ticket','0','Ticket','update','mail','3','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('3','Close Ticket','0','Ticket','closed','mail','3','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('4','Add Followup','0','Ticket','add_followup','mail','3','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('5','Add Task','0','Ticket','add_task','mail','3','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('6','New Reservation','0','Reservation','new','mail','2','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('7','Update Reservation','0','Reservation','update','mail','2','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('8','Delete Reservation','0','Reservation','delete','mail','2','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('9','Contract Notice','0','Contract','notice','mail','8','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('10','Contract End','0','Contract','end','mail','8','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('11','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('12','Cartridges','0','Cartridge','alert','mail','0','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('13','Consumables','0','Consumable','alert','mail','0','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('14','Infocoms','0','Infocom','alert','mail','0','','','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('15','Software Licenses','0','SoftwareLicense','alert','mail','0','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('1','New Ticket','0','Ticket','new','mail','3','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('2','Update Ticket','0','Ticket','update','mail','3','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('3','Close Ticket','0','Ticket','closed','mail','3','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('4','Add Followup','0','Ticket','add_followup','mail','3','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('5','Add Task','0','Ticket','add_task','mail','3','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('6','New Reservation','0','Reservation','new','mail','2','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('7','Update Reservation','0','Reservation','update','mail','2','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('8','Delete Reservation','0','Reservation','delete','mail','2','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('9','Contract Notice','0','Contract','notice','mail','8','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('10','Contract End','0','Contract','end','mail','8','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('11','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('12','Cartridges','0','Cartridge','alert','mail','0','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('13','Consumables','0','Consumable','alert','mail','0','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('14','Infocoms','0','Infocom','alert','mail','0','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('15','Software Licenses','0','SoftwareLicense','alert','mail','0','','1','2010-02-16 16:41:39');
 
 ### Dump table glpi_notificationtargets
 
