@@ -175,7 +175,8 @@ class AuthMail extends CommonDBTM {
             echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][6] . "</td>";
             echo "<td><input size='30' type='text' name='imap_login' value=''></td></tr>";
             echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][7] . "</td>";
-            echo "<td><input size='30' type='password' name='imap_password' value=''></td>";
+            echo "<td><input size='30' type='password' name='imap_password' value=''
+                              autocomplete='off'></td>";
             echo "</tr><tr class='tab_bg_2'><td class='center' colspan=2>";
             echo "<input type='submit' name='test' class='submit'
                    value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";

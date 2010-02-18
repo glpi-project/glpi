@@ -147,7 +147,8 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<td><input type=\"text\" name=\"smtp_username\" size='40' value=\"" .
                  $CFG_GLPI["smtp_username"] . "\"></td></tr>";
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][235] . "</td>";
-      echo "<td><input type=\"password\" name=\"smtp_password\" size='40' value=\"\"></td></tr>";
+      echo "<td><input type='password' name='smtp_password' size='40' value=''
+                     autocomplete='off'></td></tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
       echo "<input class=\"submit\" type=\"submit\" name=\"update\" value=\"" .
              $LANG['buttons'][2] . "\">";
