@@ -491,7 +491,7 @@ class OcsServer extends CommonDBTM {
       $out .= "<td><input type='text' name='ocs_db_user' value=\"" .
                     $this->fields["ocs_db_user"] . "\"></td></tr>\n";
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
-      $out .= "<td><input type='password' name='ocs_db_passwd' value=''></td>";
+      $out .= "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'></td>";
       if (!empty ($ID)) {
          $out .= "<td>".$LANG['common'][26]."&nbsp;: </td>";
          $out .= "<td>";

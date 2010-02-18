@@ -1138,7 +1138,8 @@ class User extends CommonDBTM {
              && $caneditpassword) {
 
             echo "<td>" . $LANG['setup'][19] . "&nbsp;:</td>";
-            echo "<td><input type='password' name='password' value='' size='20'></td></tr>";
+            echo "<td><input type='password' name='password' value='' size='20'
+                              autocomplete='off'></td></tr>";
          } else {
             echo "<td colspan='2'>&nbsp;</td></tr>";
          }
@@ -1156,7 +1157,8 @@ class User extends CommonDBTM {
              && $caneditpassword) {
 
             echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
-            echo "<td><input type='password' name='password2' value='' size='20'></td></tr>";
+            echo "<td><input type='password' name='password2' value='' size='20'
+                              autocomplete='off'></td></tr>";
          } else {
             echo "<td colspan='2'>&nbsp;</td></tr>";
          }
@@ -1307,7 +1309,8 @@ class User extends CommonDBTM {
          //do some rights verification
          if (!$extauth && haveRight("password_update", "1")) {
             echo "<td>" . $LANG['setup'][19] . "&nbsp;:</td>";
-            echo "<td><input type='password' name='password' value='' size='30' /></td></tr>";
+            echo "<td><input type='password' name='password' value='' size='30'
+                              autocomplete='off'></td></tr>";
          } else {
             echo "<td colspan='2'></tr>";
          }
@@ -1324,7 +1327,8 @@ class User extends CommonDBTM {
 
           if (!$extauth && haveRight("password_update", "1")) {
             echo "<td>" . $LANG['setup'][20] . "&nbsp;:</td>";
-            echo "<td><input type='password' name='password2' value='' size='30' /></td></tr>";
+            echo "<td><input type='password' name='password2' value='' size='30'
+                              autocomplete='off'></td></tr>";
          } else {
             echo "<td colspan='2'></tr>";
          }

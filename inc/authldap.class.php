@@ -190,7 +190,7 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
-         echo "<td><input type='password' name='rootdn_password' value=''></td>";
+         echo "<td><input type='password' name='rootdn_password' value=''  autocomplete='off'></td>";
          echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";

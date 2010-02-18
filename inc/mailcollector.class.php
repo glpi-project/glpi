@@ -167,7 +167,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."&nbsp;:</td><td>";
-      echo "<input type='password' name='password' value='' size='20'>";
+      echo "<input type='password' name='password' value='' size='20'  autocomplete='off'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
