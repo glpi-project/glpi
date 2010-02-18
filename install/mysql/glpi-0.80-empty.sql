@@ -2060,6 +2060,21 @@ CREATE TABLE `glpi_notifications` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_notifications` VALUES ('1','New Ticket','0','Ticket','new','mail','3','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('2','Update Ticket','0','Ticket','update','mail','3','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('3','Close Ticket','0','Ticket','closed','mail','3','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('4','Add Followup','0','Ticket','add_followup','mail','3','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('5','Add Task','0','Ticket','add_task','mail','3','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('6','New Reservation','0','Reservation','new','mail','2','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('7','Update Reservation','0','Reservation','update','mail','2','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('8','Delete Reservation','0','Reservation','delete','mail','2','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('9','Contract Notice','0','Contract','notice','mail','8','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('10','Contract End','0','Contract','end','mail','8','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('11','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('12','Cartridges','0','Cartridge','alert','mail','0','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('13','Consumables','0','Consumable','alert','mail','0','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('14','Infocoms','0','Infocom','alert','mail','0','','','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('15','Software Licenses','0','SoftwareLicense','alert','mail','0','','','1','2010-02-16 16:41:39');
 
 ### Dump table glpi_notificationtargets
 
@@ -2072,6 +2087,24 @@ CREATE TABLE `glpi_notificationtargets` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_notificationtargets` VALUES ('1','3','1','6');
+INSERT INTO `glpi_notificationtargets` VALUES ('2','1','1','6');
+INSERT INTO `glpi_notificationtargets` VALUES ('3','3','2','1');
+INSERT INTO `glpi_notificationtargets` VALUES ('4','1','1','1');
+INSERT INTO `glpi_notificationtargets` VALUES ('5','1','1','2');
+INSERT INTO `glpi_notificationtargets` VALUES ('6','1','1','4');
+INSERT INTO `glpi_notificationtargets` VALUES ('7','1','1','3');
+INSERT INTO `glpi_notificationtargets` VALUES ('8','2','1','2');
+INSERT INTO `glpi_notificationtargets` VALUES ('9','4','1','2');
+INSERT INTO `glpi_notificationtargets` VALUES ('10','3','1','1');
+INSERT INTO `glpi_notificationtargets` VALUES ('11','3','1','2');
+INSERT INTO `glpi_notificationtargets` VALUES ('12','3','1','4');
+INSERT INTO `glpi_notificationtargets` VALUES ('13','3','1','3');
+INSERT INTO `glpi_notificationtargets` VALUES ('14','1','1','11');
+INSERT INTO `glpi_notificationtargets` VALUES ('15','3','1','7');
+INSERT INTO `glpi_notificationtargets` VALUES ('16','1','1','7');
+INSERT INTO `glpi_notificationtargets` VALUES ('17','3','1','8');
+INSERT INTO `glpi_notificationtargets` VALUES ('18','1','1','8');
 
 DROP TABLE IF EXISTS `glpi_notificationtemplates`;
 CREATE TABLE `glpi_notificationtemplates` (
@@ -2083,6 +2116,14 @@ CREATE TABLE `glpi_notificationtemplates` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_notificationtemplates` VALUES ('1','MySQL Synchronization','DBConnection','2010-02-01 15:51:46','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('2','Reservations','Reservation','2010-02-03 14:03:45','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('3','Tickets','Ticket','2010-02-07 21:39:15','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('4','Cartridges','Cartridge','2010-02-16 13:17:24','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('5','Consumables','Consumable','2010-02-16 13:17:38','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('6','Infocoms','Infocom','2010-02-16 13:17:55','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('7','Licenses','SoftwareLicense','2010-02-16 13:18:12','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('8','Contracts','Contract','2010-02-16 13:18:12','');
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -2097,6 +2138,155 @@ CREATE TABLE `glpi_notificationtemplatetranslations` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('1','1','','##lang.dbconnection.title##','##lang.dbconnection.delay## : ##dbconnection.delay##
+','&lt;p&gt;##lang.dbconnection.delay## : ##dbconnection.delay##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('2','2','','##reservation.action##','======================================================================
+##lang.reservation.user##: ##reservation.user##
+##lang.reservation.item.name##: ##reservation.itemtype## - ##reservation.item.name##
+##IFreservation.tech## ##lang.reservation.tech## ##reservation.tech## ##ENDIFreservation.tech##
+##lang.reservation.begin##: ##reservation.begin##
+##lang.reservation.end##: ##reservation.end##
+##lang.reservation.comment##: ##reservation.comment##
+======================================================================
+','&lt;!-- description{ color: inherit; background: #ebebeb;border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; } --&gt;
+&lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.user##:&lt;/span&gt;##reservation.user##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.item.name##:&lt;/span&gt;##reservation.itemtype## - ##reservation.item.name##&lt;br /&gt;##IFreservation.tech## ##lang.reservation.tech## ##reservation.tech####ENDIFreservation.tech##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.begin##:&lt;/span&gt; ##reservation.begin##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.end##:&lt;/span&gt;##reservation.end##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.comment##:&lt;/span&gt; ##reservation.comment##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','[###ticket.id##] ##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url## 
+
+                                  ##lang.ticket.description## 
+
+
+                                  ##lang.ticket.title## &#160;:##ticket.title##
+
+                                  ##lang.ticket.author.name##
+                                  ##IFticket.author.name##
+                                  ##ticket.author.name## ##ENDIFticket.author.name##
+                                  ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+
+                                  ##lang.ticket.creationdate## &#160;:##ticket.creationdate##
+
+                                  ##lang.ticket.closedate## &#160;:##ticket.closedate##
+
+                                  ##lang.ticket.requesttype## &#160;:##ticket.requesttype##
+
+                                  ##IFticket.itemtype## ##lang.ticket.item.name## &#160;: ##ticket.itemtype## - ##ticket.item.name##
+                                  ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model##
+                                  ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##
+                                 &#160; ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
+
+                                  ##IFticket.assigntouser## ##lang.ticket.assigntouser## &#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##
+
+                                  ##lang.ticket.status## &#160;: ##ticket.status##
+
+                                  ##IFticket.assigntogroup## ##lang.ticket.assigntogroup## &#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
+
+                                  ##lang.ticket.urgency## &#160;: ##ticket.urgency##
+
+                                  ##lang.ticket.impact## &#160;: ##ticket.impact##
+
+                                  ##lang.ticket.priority## &#160;: ##ticket.priority## 
+
+                                  ##IFticket.user.email## ##lang.ticket.user.email## &#160;: ##ticket.user.email ##ENDIFticket.user.email## 
+
+                                  ##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category## ##ENDIFticket.category##
+                                  ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category## 
+
+                                  ##lang.ticket.content## &#160;: ##ticket.content## 
+
+                                  ##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups## 
+
+
+                                 ##FOREACHfollowups## 
+ 
+ [##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate## 
+
+                                  ##lang.followup.author## ##followup.author##
+ ##lang.followup.description## ##followup.description##
+
+                                  ##lang.followup.date## ##followup.date##
+ ##lang.followup.requesttype## ##followup.requesttype## 
+
+
+                                 ##ENDFOREACHfollowups## 
+ ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks## 
+
+##FOREACHtasks## 
+ 
+
+                                  [##task.date##] ##lang.task.isprivate## : ##task.isprivate## 
+ ##lang.task.author## ##task.author##
+
+                                  ##lang.task.description## ##task.description##
+ ##lang.task.time## ##task.time##
+ ##lang.task.category## ##task.category## 
+
+
+                                 ##ENDFOREACHtasks##','&lt;!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }
+                                  --&gt;
+&lt;div&gt;##lang.ticket.url## : &lt;a href=\'##ticket.url##
+                                 \'&gt;##ticket.url##&lt;/a&gt;&lt;/div&gt;
+
+                                 &lt;div class=\"description b\"&gt;##lang.ticket.description##
+                                 &lt;/div&gt;
+&lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                  ##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
+                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.author.name##&lt;/span&gt; ##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name##
+                                  ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.creationdate##&lt;/span&gt;&#160;:##ticket.creationdate##
+                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.closedate##&lt;/span&gt;&#160;:##ticket.closedate##
+                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.requesttype##&lt;/span&gt;&#160;:##ticket.requesttype##&lt;br /&gt;
+                                  ##IFticket.itemtype## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.item.name##&lt;/span&gt;&#160;: ##ticket.itemtype## - ##ticket.item.name##
+                                  ##IFticket.item.model## - ##ticket.item.model##
+                                   ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##&#160;
+                                 ##IFticket.item.otherserial## -##ticket.item.otherserial##  ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
+                                 &lt;br /&gt; ##IFticket.assigntouser## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.assigntouser##&lt;/span&gt;&#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.ticket.status##
+                                 &lt;/span&gt;&#160;: ##ticket.status##&lt;br /&gt; ##IFticket.assigntogroup## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.assigntogroup##&lt;/span&gt;&#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.urgency##&lt;/span&gt;&#160;: ##ticket.urgency##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.impact##&lt;/span&gt;&#160;: ##ticket.impact##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.priority##&lt;/span&gt;&#160;: ##ticket.priority## &lt;br /&gt; ##IFticket.user.email##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.user.email##&lt;/span&gt;&#160;: ##ticket.user.email ##ENDIFticket.user.email##
+                                  &lt;br /&gt; ##IFticket.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.ticket.category##
+                                 &lt;/span&gt;&#160;:##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+                                  &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.ticket.content##&lt;/span&gt;&#160;: ##ticket.content##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;
+                                 ##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups##
+                                 &lt;/div&gt;
+&lt;p&gt;##FOREACHfollowups##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;&lt;br /&gt; &lt;strong&gt;
+                                 [##followup.date##] &lt;em&gt;##lang.followup.isprivate## : ##followup.isprivate##
+                                 &lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.followup.author##
+                                 &lt;/span&gt; ##followup.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.followup.description##
+                                 &lt;/span&gt; ##followup.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.followup.date##
+                                 &lt;/span&gt; ##followup.date##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.followup.requesttype##
+                                 &lt;/span&gt; ##followup.requesttype##&lt;/div&gt;
+&lt;p&gt;
+                                 ##ENDFOREACHfollowups##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;
+                                 ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##
+                                 &lt;/div&gt;
+&lt;p&gt;
+                                 ##FOREACHtasks##&lt;/p&gt;
+&lt;div class=\"description b\"&gt;&lt;br /&gt; &lt;strong&gt;
+                                 [##task.date##] &lt;em&gt;##lang.task.isprivate## : ##task.isprivate##
+                                 &lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.task.author##&lt;/span&gt; ##task.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.task.description##&lt;/span&gt; ##task.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.task.time##&lt;/span&gt; ##task.time##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                                 ##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;
+&lt;p&gt;
+                                 ##ENDFOREACHtasks##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','8','','##contract.action## - ##contract.entity##','##contract.action## ##contract.name## : ##contract.time##','&lt;p&gt;##contract.action## ##contract.name## : ##contract.time##&lt;/p&gt;');
 
 ### Dump table glpi_ocsadmininfoslinks
 
