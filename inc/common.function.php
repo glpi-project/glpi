@@ -2050,7 +2050,7 @@ function sylk_clean($value) {
 *
 */
 function cleanParametersURL($url) {
-   $url=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php.*/","",$url);
+   $url=preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/","$1",$url);
    return preg_replace("/\?.*/","",$url);
    
 }

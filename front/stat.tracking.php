@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][13],$_SERVER['PHP_SELF'],"maintain","stat");
+commonHeader($LANG['Menu'][13],'',"maintain","stat");
 
 checkRight("statistic","1");
 
@@ -151,7 +151,7 @@ $params = array('type'  => $_REQUEST["type"],
                 'date2' => $_REQUEST["date2"],
                 'start' => $_REQUEST["start"]);
 
-printPager($_REQUEST['start'],count($val),$_SERVER['PHP_SELF'],
+printPager($_REQUEST['start'],count($val),$CFG_GLPI['root_doc'].'/front/stat.tracking.php',
            "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"].
             "&amp;type=".$_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"],
            'Stat',$params);

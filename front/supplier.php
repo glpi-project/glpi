@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contact_enterprise","r");
 
-commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","supplier");
+commonHeader($LANG['Menu'][23],'',"financial","supplier");
 
 Search::show('Supplier');
 

@@ -67,9 +67,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
+commonHeader($LANG['transfer'][1],'',"admin","transfer");
 
-$transfer->showForm($_GET["id"], array('target'=>$_SERVER['PHP_SELF']));
+$transfer->showForm($_GET["id"], array('target'=>$transfer->getFormURL()));
 
 commonFooter();
 

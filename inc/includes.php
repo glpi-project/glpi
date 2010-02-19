@@ -41,6 +41,9 @@ include_once (GLPI_ROOT . "/inc/timer.class.php");
 
 include_once (GLPI_ROOT . "/inc/common.function.php");
 
+// Security of PHP_SELF
+$_SERVER['PHP_SELF']=cleanParametersURL($_SERVER['PHP_SELF']);
+
 function __autoload($classname) {
    global $DEBUG_AUTOLOAD;
    static $notfound = array();

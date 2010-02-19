@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","supplier");
+   commonHeader($LANG['Menu'][23],'',"financial","supplier");
 
    $ent->showForm($_GET["id"]);
 

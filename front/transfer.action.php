@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
+commonHeader($LANG['transfer'][1],'',"admin","transfer");
 
 $transfer = new Transfer();
 
