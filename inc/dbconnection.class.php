@@ -212,7 +212,7 @@ class DBConnection extends CommonDBTM {
     */
    static function displayMySQLError() {
 
-      nullHeader("Mysql Error", $_SERVER['PHP_SELF']);
+      nullHeader("Mysql Error", '');
 
       if (!isCommandLine()) {
          echo "<div class='center'><p><strong>
@@ -224,7 +224,7 @@ class DBConnection extends CommonDBTM {
          echo "Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration\n";
       }
 
-      nullFooter("Mysql Error", $_SERVER['PHP_SELF']);
+      nullFooter();
       die();
    }
 

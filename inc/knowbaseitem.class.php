@@ -553,7 +553,7 @@ class KnowbaseItem extends CommonDBTM {
             $parameters="start=$start&amp;knowbaseitemcategories_id=".
                         "$knowbaseitemcategories_id&amp;contains=$contains&amp;is_faq=$faq";
             if ($output_type==HTML_OUTPUT) {
-               printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,'KnowbaseItem');
+               printPager($start,$numrows,getItemTypeSearchURL('KnowbaseItem'),$parameters,'KnowbaseItem');
             }
             $nbcols=1;
             // Display List Header
@@ -601,7 +601,7 @@ class KnowbaseItem extends CommonDBTM {
             }
             echo "<br>";
             if ($output_type==HTML_OUTPUT) {
-               printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,'KnowbaseItem');
+               printPager($start,$numrows,getItemTypeSearchURL('KnowbaseItem'),$parameters,'KnowbaseItem');
             }
          } else {
             if ($knowbaseitemcategories_id!=0) {

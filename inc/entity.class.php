@@ -190,7 +190,7 @@ class Entity extends CommonTreeDropdown {
    function displayHeader () {
       global $LANG;
 
-      commonHeader($this->getTypeName(),$_SERVER['PHP_SELF'],"admin","entity");
+      commonHeader($this->getTypeName(),'',"admin","entity");
    }
 
 

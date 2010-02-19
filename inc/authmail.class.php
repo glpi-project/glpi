@@ -136,7 +136,7 @@ class AuthMail extends CommonDBTM {
       }
 
       if (canUseImapPop()) {
-         echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>";
+         echo "<form action='".$this->getFormURL()."' method='post'>";
          if (!empty ($ID)) {
             echo "<input type='hidden' name='id' value='$ID'>";
          }
