@@ -574,6 +574,10 @@ class NotificationTarget extends CommonDBChild {
                case Notification::AUTHOR:
                   $this->getItemAuthorAddress();
                break;
+               default :
+                  //Maybe a target specific to a type
+                  $this->getSpecificTargets($data,$options);
+               break;
             }
          break;
          //Send to all the users of a group
