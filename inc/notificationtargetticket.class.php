@@ -35,12 +35,14 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTargetTicket extends NotificationTarget {
 
+/*
    function __construct($entity='', $object = null) {
       parent::__construct($entity, $object);
       if ($object != null) {
          $this->getObjectItem();
       }
    }
+*/
 
    function getSubjectPrefix() {
       return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
@@ -96,7 +98,8 @@ class NotificationTargetTicket extends NotificationTarget {
     * @return the object associated with the itemtype
     */
    function getObjectItem() {
-      if ($itemtype=$this->obj->getField('itemtype') && !empty($itemtype)) {
+      $itemtype=$this->obj->getField('itemtype');
+      if ($itemtype != '') {
          $item = new  $itemtype ();
          $item->getFromDB($this->obj->getField('items_id'));
          $this->target_object = $item;
@@ -304,6 +307,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
       //Hardware
       if ($this->target_object != null) {
+         logDebug($this->target_object);
          $tpldata['##ticket.itemtype##'] = $this->target_object->getTypeName();
          $tpldata['##ticket.item.name##'] = $this->target_object->getField('name');
 

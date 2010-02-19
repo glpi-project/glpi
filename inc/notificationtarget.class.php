@@ -75,7 +75,10 @@ class NotificationTarget extends CommonDBChild {
          $this->entity = $entity;
       }
       $this->obj = $object;
-      $this->target_object = $object;
+      $this->getObjectItem();
+      if ($this->target_object == null) {
+         $this->target_object = $this->target;
+      }
 
       if (haveRight("config","w")) {
          $this->addTarget(Notification::GLOBAL_ADMINISTRATOR,$LANG['setup'][237]);
