@@ -171,7 +171,7 @@ class Mailing {
                         break;
 
                      // ASSIGN GROUP SEND
-                     case Notification::GROUP_MAILING :
+                     case Notification::TICKET_ASSIGN_GROUP :
                         if (isset($this->job->fields["groups_id_assign"])
                             && $this->job->fields["groups_id_assign"]>0) {
 

@@ -47,7 +47,12 @@ if (isset($_POST["add"])) {
    $newID = $notificationtemplate->add($_POST);
    Event::log($newID, "notificationtemplates", 4, "notification",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+
+   $language = new NotificationTemplateTranslation();
+   $url = getItemTypeFormURL('NotificationTemplateTranslation',true);
+   $url.="?notificationtemplates_id=$newID";
+   glpi_header($url);
+   //glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $notificationtemplate->check($_POST["id"],'d');
