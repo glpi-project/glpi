@@ -130,26 +130,35 @@ class Plugin extends CommonDBTM {
    *
    * @return nothing
    */
-   static function loadLang($name) {
+   static function loadLang($name,$forcelang='') {
       global $CFG_GLPI,$LANG;
 
-      if (isset($_SESSION['glpilanguage'])
-         && file_exists(GLPI_ROOT . "/plugins/$name/locales/".
-                        $CFG_GLPI["languages"][$_SESSION['glpilanguage']][1])) {
+      $trytoload='en_GB';
+      if (isset($_SESSION['glpilanguage'])) {
+         $trytoload=$_SESSION["glpilanguage"];
+      }
+      // Force to load a specific lang
+      if (!empty($forcelang)) {
+         $trytoload=$forcelang;
+      }
 
-         include_once (GLPI_ROOT . "/plugins/$name/locales/".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][1]);
+      // If not set try default lang file
+      if (empty($trytoload)) {
+         $trytoload=$CFG_GLPI["language"];
+      }
+      $dir=GLPI_ROOT . "/plugins/$name/locales/";
 
-      } else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/".
-                           $CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
+      if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
+         include ($dir.$CFG_GLPI["languages"][$trytoload][1]);
 
-         include_once (GLPI_ROOT . "/plugins/$name/locales/".
-                     $CFG_GLPI["languages"][$CFG_GLPI["language"]][1]);
+      } else if (file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
 
-      } else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/en_GB.php")) {
-         include_once (GLPI_ROOT . "/plugins/$name/locales/en_GB.php");
-      } else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/fr_FR.php")) {
-         include_once (GLPI_ROOT . "/plugins/$name/locales/fr_FR.php");
+         include ($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1]);
+
+      } else if (file_exists($dir . "en_GB.php")) {
+         include ($dir . "en_GB.php");
+      } else if (file_exists($dir . "fr_FR.php")) {
+         include ($dir . "fr_FR.php");
       }
    }
 

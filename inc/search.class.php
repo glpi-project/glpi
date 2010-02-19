@@ -3249,6 +3249,7 @@ class Search {
                   $events = $item->getEvents();
                   return $events[$data[$NAME.$num]];
                }
+               return '';
          case 'glpi_crontasks.description' :
             $tmp = new CronTask();
             return $tmp->getDescription($data['id']);
