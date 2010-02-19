@@ -95,6 +95,8 @@ class NotificationEvent extends CommonDBTM {
 
                //Get template's informations
                $template = new NotificationTemplate;
+
+               //Set notification's signature (the one which corresponds to the entity)
                $template->setSignature(Notification::getMailingSignature($entity));
                $template->getFromDB($templates_id);
 

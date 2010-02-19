@@ -33,16 +33,22 @@ if (!defined('GLPI_ROOT')){
 }
 
 // Class NotificationTarget
-class NotificationTarget extends CommonDBTM {
+class NotificationTarget extends CommonDBChild {
 
    var $prefix = '';
+   // From CommonDBChild
+   public $itemtype = 'Notification';
+   public $items_id = 'notifications_id';
 
+   public $table = 'glpi_notificationtargets';
    //Indicates that the object which raises the event is the object in which to look for
    //users, technicians and so on
    //False for items like Reservation, CartridgeItem, ConsumableItem
    var $real_object = true;
 
    var $notification_targets = array();
+
+   var $notification_targets_labels = array();
 
    var $notificationoptions = 0;
 
@@ -61,6 +67,7 @@ class NotificationTarget extends CommonDBTM {
    var $target_object = null;
 
    function __construct($entity='', $object = null) {
+      global $LANG;
       if (!$entity == '') {
          $this->entity = $_SESSION['glpiactive_entity'];
       }
@@ -70,6 +77,13 @@ class NotificationTarget extends CommonDBTM {
       $this->obj = $object;
       $this->target_object = $object;
 
+      if (haveRight("config","w")) {
+         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR,$LANG['setup'][237]);
+      }
+      $this->addTarget(Notification::ENTITY_ADMINISTRATOR,$LANG['setup'][237]." ".$LANG['entity'][0]);
+      $this->getNotificationTargets($entity);
+      $this->getAdditionalTargets();
+      asort($this->notification_targets);
    }
 
    function getSubjectPrefix() {
@@ -82,6 +96,16 @@ class NotificationTarget extends CommonDBTM {
       return $LANG['mailing'][113];
    }
 
+   function getNameID($with_comment=0) {
+      global $CFG_GLPI,$LANG;
+
+      if (isset($this->notification_targets_labels[$this->getField("type")][$this->getField("items_id")])) {
+         return $this->notification_targets_labels[$this->getField("type")][$this->getField("items_id")];
+      }
+      else {
+         return "";
+      }
+   }
    /**
     * Get a notificationtarget class by giving the object which raises the event
     * @param item the object which raises the event
@@ -138,13 +162,10 @@ class NotificationTarget extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['mailing'][121] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<input type='hidden' name='notifications_id' value='".$notification->getField('id')."'>";
+      echo "<input type='hidden' name='itemtype' value='".$notification->getField('itemtype')."'>";
       $this->showNotificationTargets($notification);
       echo "</tr>";
       echo "</table></form></div>";
-   }
-
-   function dropdownTargets($used = array()) {
-      Dropdown::showFromArray('type', $this->notification_targets);
    }
 
    /**
@@ -154,10 +175,10 @@ class NotificationTarget extends CommonDBTM {
    function showNotificationTargets(Notification $notification) {
       global $LANG, $DB;
       if ($notification->getField('itemtype') != '') {
-          $notifications_id = $notification->fields['id'];
-         $this->getNotficationTargets($_SESSION['glpiactive_entity']);
 
-         $notification = new Notification;
+         $notifications_id = $notification->fields['id'];
+         $this->getNotificationTargets($_SESSION['glpiactive_entity']);
+
          $canedit = $notification->can($notifications_id,'w');
 
          $options="";
@@ -171,62 +192,13 @@ class NotificationTarget extends CommonDBTM {
              if (isset($this->notification_targets[Notification::USER_TYPE."_".$data["items_id"]])) {
                unset($this->notification_targets[Notification::USER_TYPE."_".$data["items_id"]]);
             }
-            switch ($data["items_id"]) {
-               case Notification::GLOBAL_ADMINISTRATOR :
-                  $name = $LANG['setup'][237];
-               break;
 
-               case Notification::ENTITY_ADMINISTRATOR :
-                  $name = $LANG['setup'][237]." ".$LANG['entity'][0];
-               break;
-
-               case Notification::TICKET_ASSIGN_TECH :
-                  $name = $LANG['setup'][239];
-               break;
-
-               case Notification::AUTHOR :
-                  $name = $LANG['job'][4];
-               break;
-
-               case Notification::ITEM_USER :
-                  $name = $LANG['common'][34] . " " . $LANG['common'][1];
-               break;
-
-               case Notification::TICKET_OLD_TECH_IN_CHARGE :
-                  $name = $LANG['setup'][236];
-               break;
-
-               case Notification::ITEM_TECH_IN_CHARGE :
-                  $name = $LANG['common'][10];
-               break;
-
-               case Notification::TICKET_RECIPIENT :
-                  $name = $LANG['job'][3];
-               break;
-
-               case Notification::TICKET_SUPPLIER :
-                  $name = $LANG['financial'][26];
-               break;
-
-               case Notification::GROUP_MAILING :
-                  $name = $LANG['setup'][248];
-               break;
-
-               case Notification::TICKET_SUPERVISOR_ASSIGN_GROUP :
-                     $name = $LANG['common'][64]." ".$LANG['setup'][248];
-               break;
-
-               case Notification::TICKET_SUPERVISOR_REQUESTER_GROUP :
-                  $name = $LANG['common'][64]." ".$LANG['setup'][249];
-               break;
-
-                default :
-                  //TODO : add function to look for additionnal targets (plugins)
-                  $name="&nbsp;";
-               break;
+            if (isset($this->notification_targets_labels[Notification::USER_TYPE][$data["items_id"]])) {
+               $name = $this->notification_targets_labels[Notification::USER_TYPE][$data["items_id"]];
+            }else {
+                $name="&nbsp;";
             }
             $options.= "<option value='" . $data["id"] . "'>" . $name . "</option>";
-
          }
 
          // Get Profile mailing
@@ -240,8 +212,10 @@ class NotificationTarget extends CommonDBTM {
          foreach ($DB->request($query) as $data) {
             $options.= "<option value='" . $data["id"] . "'>" . $LANG['profiles'][22] . " " .
                         $data["prof"] . "</option>";
+
             if (isset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]])) {
                unset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]]);
+            }
          }
 
          // Get Group mailing
@@ -252,12 +226,11 @@ class NotificationTarget extends CommonDBTM {
                    WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
                          AND `glpi_notificationtargets`.`type`='" . Notification::GROUP_TYPE . "'
                    ORDER BY `name`;";
-            foreach ($DB->request($query) as $data) {
-               $options.= "<option value='" . $data["id"] . "'>" . $LANG['common'][35] . " " .
-                           $data["name"] . "</option>";
-               if (isset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]])) {
-                  unset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]]);
-               }
+         foreach ($DB->request($query) as $data) {
+            $options.= "<option value='" . $data["id"] . "'>" . $LANG['common'][35] . " " .
+                        $data["name"] . "</option>";
+            if (isset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]])) {
+               unset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]]);
             }
          }
 
@@ -266,8 +239,8 @@ class NotificationTarget extends CommonDBTM {
             if (count($this->notification_targets)) {
                echo "<select name='mailing_to_add[]' multiple size='5'>";
                foreach ($this->notification_targets as $key => $val) {
-                  list ($mailingtype, $items_id) = explode("_", $key);
-                  echo "<option value='$key'>" . $val . "</option>";
+                  list ($type, $items_id) = explode("_", $key);
+                  echo "<option value='$key'>" . $this->notification_targets_labels[$type][$items_id] . "</option>";
                }
                echo "</select>";
             }
@@ -303,8 +276,7 @@ class NotificationTarget extends CommonDBTM {
 
       $type = "";
       $action = "";
-
-      $target = new NotificationTarget;
+      $target = NotificationTarget::getInstanceByType($input['itemtype']);
 
       if (isset($input['mailing_add'])) {
          $action = 'add';
@@ -430,6 +402,11 @@ class NotificationTarget extends CommonDBTM {
       return array();
    }
 
+   function addTarget ($target='', $label='',$type=Notification::USER_TYPE) {
+      $key = $type.'_'.$target;
+      $this->notification_targets[$key] = $key;
+      $this->notification_targets_labels[$type][$target] = $label;
+   }
    /**
     * Return all the targets for this notification
     * Values returned by this method are the ones for the alerts
@@ -437,22 +414,11 @@ class NotificationTarget extends CommonDBTM {
     * Can be overwitten (like dbconnection)
     * @param entity the entity on which the event is raised
     */
-   function getNotficationTargets($entity) {
+   function getNotificationTargets($entity) {
       global $LANG,$DB;
 
-      if (haveRight("config","w")) {
-         $this->notification_targets[Notification::USER_TYPE . "_" .
-                                        Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];
-      }
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-                                     Notification::ENTITY_ADMINISTRATOR] = $LANG['setup'][237]." ".
-                                                                        $LANG['entity'][0];
-      $this->getAdditionalTargets();
-      asort($this->notification_targets);
-
       foreach ($DB->request('glpi_profiles') as $data) {
-         $this->notification_targets[Notification::PROFILE_TYPE ."_" . $data["id"]] =
-                                       $LANG['profiles'][22] . " " .$data["name"];
+         $this->addTarget($data["id"],$LANG['profiles'][22] . " " .$data["name"],Notification::PROFILE_TYPE);
       }
 
       $query = "SELECT `id`, `name`
@@ -460,8 +426,7 @@ class NotificationTarget extends CommonDBTM {
                 ".getEntitiesRestrictRequest(" WHERE",'glpi_groups','entities_id',$entity,true)."
                 ORDER BY `name`";
      foreach ($DB->request($query) as $data) {
-         $this->notification_targets[Notification::GROUP_TYPE ."_" . $data["id"]] =
-                                       $LANG['common'][35] . " " .$data["name"];
+         $this->addTarget($data["id"],$LANG['common'][35] . " " .$data["name"],Notification::GROUP_TYPE);
       }
    }
 

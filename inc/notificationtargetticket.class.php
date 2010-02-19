@@ -177,28 +177,17 @@ class NotificationTargetTicket extends NotificationTarget {
    function getAdditionalTargets() {
       global $LANG;
 
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::TICKET_SUPERVISOR_ASSIGN_GROUP] =
-                                                      $LANG['common'][64]." ".$LANG['setup'][248];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::TICKET_SUPERVISOR_REQUESTER_GROUP] =
-                                                      $LANG['common'][64]." ".$LANG['setup'][249];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::ITEM_TECH_IN_CHARGE] = $LANG['common'][10];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::AUTHOR] = $LANG['job'][4];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::TICKET_RECIPIENT] = $LANG['job'][3];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::ITEM_USER] = $LANG['common'][34] . " " .$LANG['common'][1];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::TICKET_ASSIGN_TECH] = $LANG['setup'][239];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::TICKET_SUPPLIER] = $LANG['financial'][26];
-      $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::GROUP_MAILING] = $LANG['setup'][248];
-     $this->notification_targets[Notification::USER_TYPE . "_" .
-             Notification::TICKET_REQUESTER_GROUP] = $LANG['setup'][249];
+      $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE,$LANG['setup'][236]);
+      $this->addTarget(Notification::TICKET_RECIPIENT,$LANG['job'][3]);
+      $this->addTarget(Notification::TICKET_SUPPLIER,$LANG['financial'][26]);
+      $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." ".$LANG['setup'][248]);
+      $this->addTarget(Notification::TICKET_SUPERVISOR_REQUESTER_GROUP,$LANG['common'][64]." ".$LANG['setup'][249]);
+      $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
+      $this->addTarget(Notification::TICKET_ASSIGN_TECH,$LANG['setup'][239]);
+      $this->addTarget(Notification::TICKET_REQUESTER_GROUP,$LANG['setup'][249]);
+      $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
+      $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
+      $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
    }
 
    static function getJoinProfileSql() {

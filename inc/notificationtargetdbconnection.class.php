@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')){
 class NotificationTargetDBConnection extends NotificationTarget {
 
    //Overwrite the function in NotificationTarget because there's only one target to be notified
-   function getNotficationTargets($entity) {
+   function getNotificationTargets($entity) {
       global $LANG;
       $this->notification_targets[Notification::USER_TYPE . "_" .
           Notification::GLOBAL_ADMINISTRATOR] = $LANG['setup'][237];

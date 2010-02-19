@@ -162,6 +162,7 @@ class NotificationTemplate extends CommonDBTM {
    }
 
    function getTemplateByLanguage(NotificationTarget $target, $language, $event,$options=array()) {
+      global $LANG;
       $lang = array();
 
       $additionnaloption = $this->getAdditionnalProcessOption($options);
@@ -173,9 +174,9 @@ class NotificationTemplate extends CommonDBTM {
          loadLanguage($language);
 
                //If event is raised by a plugin, load it in order to get the language file available
-      if ($plug = isPluginItemType(get_class($target->obj))) {
-         Plugin::loadLang(strtolower($plug['plugin']));
-      }
+         if ($plug = isPluginItemType(get_class($target->obj))) {
+            Plugin::loadLang(strtolower($plug['plugin']));
+         }
 
          //Get template's language data for in this language
          $data = $target->getForTemplate($event,$options);

@@ -64,7 +64,7 @@ class Notification extends CommonDBTM {
    //Notificartion to the ticket's assigned supplier
    const TICKET_SUPPLIER = 8;
    //Notification to a group of people
-   const GROUP_MAILING = 9;
+   const TICKET_ASSIGN_GROUP = 9;
    //Notification to the supervisor of the ticket's assigned group
    const TICKET_SUPERVISOR_ASSIGN_GROUP = 10;
    //Notification to the entity administrator
