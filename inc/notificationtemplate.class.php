@@ -173,9 +173,9 @@ class NotificationTemplate extends CommonDBTM {
          logDebug("000: Start for ".$language);
          loadLanguage($language);
 
-               //If event is raised by a plugin, load it in order to get the language file available
+         //If event is raised by a plugin, load it in order to get the language file available
          if ($plug = isPluginItemType(get_class($target->obj))) {
-            Plugin::loadLang(strtolower($plug['plugin']));
+            Plugin::loadLang(strtolower($plug['plugin']),$language);
          }
 
          //Get template's language data for in this language
