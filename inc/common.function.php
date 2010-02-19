@@ -2111,6 +2111,15 @@ function addToNavigateListItems($device_type,$ID,$sub_type=-1){
 	}
 }
 
+/**
+*   Clean all parameters of an URL. Get a clean URL
+*
+*/
+function cleanParametersURL($url) {
+   $url=preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/","$1",$url);
+   return preg_replace("/\?.*/","",$url);
+   
+}
 
 
 ?>

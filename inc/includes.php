@@ -57,6 +57,10 @@ include_once (GLPI_ROOT . "/config/config.php");
 include_once (GLPI_ROOT . "/inc/plugin.function.php");
 include_once (GLPI_ROOT . "/inc/plugin.class.php");
 
+// Security of PHP_SELF
+$_SERVER['PHP_SELF']=cleanParametersURL($_SERVER['PHP_SELF']);
+
+
 // Load Language file
 loadLanguage();
 
