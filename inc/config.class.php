@@ -1016,6 +1016,8 @@ class Config extends CommonDBTM {
          $glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
          chdir($currentdir);
          $globaldir=cleanParametersURL($_SERVER['REQUEST_URI']);
+         $globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
+         
          $CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
          $CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
          // urldecode for space redirect to encoded URL : change entity

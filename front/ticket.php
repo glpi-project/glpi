@@ -40,9 +40,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkLoginUser();
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   helpHeader($LANG['title'][10],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   helpHeader($LANG['title'][10],'',$_SESSION["glpiname"]);
 } else {
-   commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
+   commonHeader($LANG['title'][10],'',"maintain","tracking");
 }
 
 Search::show('Ticket');

@@ -164,7 +164,7 @@ if (isset($_REQUEST['getvcard'])) {
 } else {
    if (!isset($_GET["ext_auth"])) {
       checkRight("user","r");
-      commonHeader($LANG['title'][13],$_SERVER['PHP_SELF'],"admin","user");
+      commonHeader($LANG['title'][13],'',"admin","user");
       $user->showForm($_GET["id"]);
       commonFooter();
 
@@ -188,8 +188,8 @@ if (isset($_REQUEST['getvcard'])) {
          glpi_header($_SERVER['HTTP_REFERER']);
       }
 
-      commonHeader($LANG['title'][13],$_SERVER['PHP_SELF'],"admin","user");
-      User::showAddExtAuthForm($_SERVER['PHP_SELF']);
+      commonHeader($LANG['title'][13],'',"admin","user");
+      User::showAddExtAuthForm();
       commonFooter();
    }
 }

@@ -139,11 +139,11 @@ function displayNotFoundError() {
 
    if (!$HEADER_LOADED) {
       if (!isset ($_SESSION["glpiactiveprofile"]["interface"])) {
-         nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         nullHeader($LANG['login'][5]);
       } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-         commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         commonHeader($LANG['login'][5]);
       } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-         helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         helpHeader($LANG['login'][5]);
       }
    }
    echo "<div class='center'><br><br>";

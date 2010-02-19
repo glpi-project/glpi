@@ -51,13 +51,13 @@ if (empty($_POST) || count($_POST) == 0) {
 }
 
 if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-   nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
+   nullHeader($LANG['title'][10]);
 
 } else if ($_POST["_from_helpdesk"]) {
-   helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   helpHeader($LANG['title'][1],'',$_SESSION["glpiname"]);
 
 } else {
-   commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+   commonHeader($LANG['title'][1],'',$_SESSION["glpiname"],"maintain","tracking");
 }
 
 if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {

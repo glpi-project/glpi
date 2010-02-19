@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['Menu'][13],$_SERVER['PHP_SELF'],"maintain","stat");
+commonHeader($LANG['Menu'][13],'',"maintain","stat");
 
 checkRight("statistic","1");
 
@@ -139,7 +139,7 @@ if (!($item instanceof CommonDevice)) {
                    'start'    => $_REQUEST["start"]);
 }
 
-printPager($_REQUEST['start'],count($val),$_SERVER['PHP_SELF'],
+printPager($_REQUEST['start'],count($val),$CFG_GLPI['root_doc'].'/front/stat.location.php',
             "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;dropdown=".$_REQUEST["dropdown"],
             'Stat',$params);
 if (!$_REQUEST['showgraph']) {
