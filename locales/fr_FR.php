@@ -1516,6 +1516,7 @@ $LANG['rulesengine'][131]="Entité depuis TAG";
 $LANG['rulesengine'][132]="Ignorer l'import";
 
 $LANG['search'][0]="Recherche";
+$LANG['search'][1]="pour tous";
 $LANG['search'][2]="contient";
 $LANG['search'][4]="trié par";
 $LANG['search'][8]="Date début";
