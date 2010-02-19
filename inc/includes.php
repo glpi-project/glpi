@@ -45,6 +45,11 @@ function __autoload($classname) {
    global $DEBUG_AUTOLOAD;
    static $notfound = array();
 
+   // empty classname or non concerted plugin
+   if (empty($classname) || is_numeric($classname)){
+      return false;
+   }
+
    $dir=GLPI_ROOT . "/inc/";
    //$classname="PluginExampleProfile";
    if ($plug=isPluginItemType($classname)) {

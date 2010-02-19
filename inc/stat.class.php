@@ -1015,6 +1015,8 @@ class Stat {
                WHERE `date` <= '$date2'
                      AND `date` >= '$date1' ".
                      getEntitiesRestrictRequest("AND","glpi_tickets")."
+                     AND `itemtype` <> ''
+                     AND `items_id` > 0
                GROUP BY `itemtype`, `items_id`
                ORDER BY NB DESC";
 
