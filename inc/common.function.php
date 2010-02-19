@@ -2045,4 +2045,14 @@ function sylk_clean($value) {
    return $value;
 }
 
+/**
+*   Clean all parameters of an URL. Get a clean URL
+*
+*/
+function cleanParametersURL($url) {
+   $url=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php.*/","",$url);
+   return preg_replace("/\?.*/","",$url);
+   
+}
+
 ?>

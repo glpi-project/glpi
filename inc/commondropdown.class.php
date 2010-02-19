@@ -112,11 +112,11 @@ abstract class CommonDropdown extends CommonDBTM {
       global $LANG;
 
       Dropdown::showItemTypeMenu($LANG['setup'][0],
-                                 Dropdown::getStandardDropdownItemTypes(), $_SERVER['PHP_SELF']);
+                                 Dropdown::getStandardDropdownItemTypes(), $this->getSearchUrl());
    }
 
    function displayHeader () {
-      commonHeader($this->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",get_class($this));
+      commonHeader($this->getTypeName(),'',"config","dropdowns",get_class($this));
    }
 
    function showForm ($ID,$options=array()) {

@@ -58,7 +58,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo "config_db.php file is missing.\n";
       echo "Please restart the install process.\n";
    }
-   nullFooter("DB Error",$CFG_GLPI["root_doc"]);
+   nullFooter();
 
    die();
 } else {
@@ -118,19 +118,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       $CFG_GLPI=array_merge($CFG_GLPI,$config_object->fields);
       $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],true);
 
-      if ( !isset($_SERVER['REQUEST_URI']) ) {
-         $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
-      }
-      $currentdir=getcwd();
-      chdir(GLPI_ROOT);
-      $glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
-      chdir($currentdir);
-      $globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php.*/","",$_SERVER['REQUEST_URI']);
-      $globaldir=preg_replace("/\?.*/","",$globaldir);
-      $CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
-      $CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
-      // urldecode for space redirect to encoded URL : change entity
-      $CFG_GLPI["root_doc"]=urldecode($CFG_GLPI["root_doc"]);
+      Config::detectRootDoc();
+
       // Path for icon of document type
       $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
    } else {

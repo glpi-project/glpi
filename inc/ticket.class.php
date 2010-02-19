@@ -2938,7 +2938,7 @@ class Ticket extends CommonDBTM {
    }
 
 
-   static function showCentralList($target,$start,$status="process",$showgrouptickets=true) {
+   static function showCentralList($start,$status="process",$showgrouptickets=true) {
       global $DB,$CFG_GLPI, $LANG;
 
       if (!haveRight("show_all_ticket","1")

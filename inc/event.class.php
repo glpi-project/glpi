@@ -208,10 +208,9 @@ class Event extends CommonDBTM {
     *
     * Print a great tab to present lasts events occured on glpi
     *
-    * @param $target where to go when complete
     * @param $user string : name user to search on message
     **/
-   static function showForUser($target, $user="") {
+   static function showForUser($user="") {
       global $DB,$CFG_GLPI, $LANG;
 
       // Show events from $result in table form

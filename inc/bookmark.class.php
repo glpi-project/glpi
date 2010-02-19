@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Bookmark extends CommonDBTM {
 
+   var $auto_message_on_action=false;
+
    function canCreate() {
       return haveRight('bookmark_public', 'w');
    }
@@ -122,7 +124,7 @@ class Bookmark extends CommonDBTM {
       }
 
       echo '<br>';
-      echo "<form method='post' name='form_save_query' action='".$_SERVER['PHP_SELF']."'>";
+      echo "<form method='post' name='form_save_query' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
       echo "<div class='center'>";
       if (isset($options['itemtype'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";

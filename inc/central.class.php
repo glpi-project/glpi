@@ -79,7 +79,7 @@ class Central extends CommonGLPI {
          echo "<td class='top' width='450px'>";
 
          //Show last add events
-         Event::showForUser($_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+         Event::showForUser($_SESSION["glpiname"]);
          echo "</td>";
       }
       echo "</tr></table>";
@@ -110,13 +110,13 @@ class Central extends CommonGLPI {
 
       if ($showticket) {
          echo "<tr><td class='top' width='450px'><br>";
-         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",false);
+         Ticket::showCentralList(0,"process",false);
          echo "</td></tr>";
          echo "<tr><td class='top' width='450px'>";
-         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",false);
+         Ticket::showCentralList(0,"waiting",false);
          echo "</td></tr>";
          echo "<tr><td class='top' width='450px'>";
-         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"requestbyself",false);
+         Ticket::showCentralList(0,"requestbyself",false);
          echo "</td></tr>";
       }
       echo "</table></td>";
@@ -160,12 +160,12 @@ class Central extends CommonGLPI {
 
       if ($showticket) {
          echo "<tr><td class='top' width='450px'><br>";
-         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"process",true);
+         Ticket::showCentralList(0,"process",true);
          echo "</td></tr>";
       }
       if (haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
-         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",true);
+         Ticket::showCentralList(0,"waiting",true);
          echo "</td></tr>";
       }
       echo "</table></td>";
@@ -174,11 +174,11 @@ class Central extends CommonGLPI {
 
       if (haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
-         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"requestbyselfgroup",true);
+         Ticket::showCentralList(0,"requestbyselfgroup",true);
          echo "</td></tr>";
       } else {
          echo "<tr><td  class='top' width='450px'><br>";
-         Ticket::showCentralList($_SERVER['PHP_SELF'],0,"waiting",true);
+         Ticket::showCentralList(0,"waiting",true);
          echo "</td></tr>";
       }
 

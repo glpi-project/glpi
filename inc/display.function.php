@@ -1466,20 +1466,8 @@ function nullHeader($title,$url='') {
    // Print a nice HTML-head with no controls
 
    // Detect root_doc in case of error
-   if (!isset($CFG_GLPI["root_doc"])) {
-      if ( !isset($_SERVER['REQUEST_URI']) ) {
-         $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
-      }
-      $currentdir=getcwd();
-      chdir(GLPI_ROOT);
-      $glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
-      chdir($currentdir);
+   Config::detectRootDoc();
 
-      $globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$_SERVER['REQUEST_URI']);
-      $globaldir=preg_replace("/\?.*/","",$globaldir);
-      $CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
-      $CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
-   }
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
 
@@ -1497,6 +1485,7 @@ function nullHeader($title,$url='') {
    echo "<div id='page'>";
    echo "<div id='bloc'>";
    echo "<div class='haut'></div>";
+
 }
 
 /**
@@ -1748,11 +1737,11 @@ function displayErrorAndDie ($message, $minimal=false) {
 
    if (!$HEADER_LOADED) {
       if ($minimal || !isset ($_SESSION["glpiactiveprofile"]["interface"])) {
-         nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         nullHeader($LANG['login'][5], '');
       } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-         commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         commonHeader($LANG['login'][5], '');
       } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-         helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
+         helpHeader($LANG['login'][5], '');
       }
    }
    echo "<div class='center'><br><br>";

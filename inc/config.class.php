@@ -1004,6 +1004,25 @@ class Config extends CommonDBTM {
       return "";
    }
 
+   static function detectRootDoc() {
+      global $CFG_GLPI;
+
+      if (!isset($CFG_GLPI["root_doc"])) {
+         if ( !isset($_SERVER['REQUEST_URI']) ) {
+            $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
+         }
+         $currentdir=getcwd();
+         chdir(GLPI_ROOT);
+         $glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
+         chdir($currentdir);
+         $globaldir=cleanParametersURL($_SERVER['REQUEST_URI']);
+         $CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
+         $CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
+         // urldecode for space redirect to encoded URL : change entity
+         $CFG_GLPI["root_doc"]=urldecode($CFG_GLPI["root_doc"]);
+      }
+   }
+
 }
 
 ?>

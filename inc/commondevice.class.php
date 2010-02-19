@@ -83,11 +83,11 @@ abstract class CommonDevice extends CommonDropdown {
       global $LANG;
 
       Dropdown::showItemTypeMenu($LANG['title'][30],
-                                 Dropdown::getDeviceItemTypes(), $_SERVER['PHP_SELF']);
+                                 Dropdown::getDeviceItemTypes(), $this->getSearchUrl());
    }
 
    function displayHeader () {
-      commonHeader($this->getTypeName(),$_SERVER['PHP_SELF'],"config","device",get_class($this));
+      commonHeader($this->getTypeName(),'',"config","device",get_class($this));
    }
 
    function getName($with_comment=0) {
