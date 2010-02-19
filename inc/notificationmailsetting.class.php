@@ -79,7 +79,7 @@ class NotificationMailSetting extends CommonDBTM {
          return false;
       }
       $this->getFromDB($ID);
-
+      $options['colspan']=1;
       $this->showTabs($options);
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][202] . "</td><td>";
