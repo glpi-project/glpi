@@ -244,7 +244,7 @@ class RuleCollection {
       $limit = $_SESSION['glpilist_limit'];
       $this->getCollectionPart($start,$limit);
 
-      printPager($start,$nb,$_SERVER['PHP_SELF'],"");
+      printPager($start,$nb,getItemTypeSearchURL($this->rule_class_name),"");
 
       echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
       echo "\n<div class='center'>";

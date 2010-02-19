@@ -414,11 +414,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		require_once (GLPI_CONFIG_DIR . "/config_db.php");
 		$DB = new DB;
 
-		// hack for IIS who did'nt know $_SERVER['REQUEST_URI']
-		if ( !isset($_SERVER['REQUEST_URI']) ) {
-			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
-		}
-
 		$query="UPDATE glpi_configs SET url_base='".str_replace("/install/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE id='1'";
 		$DB->query($query);
 

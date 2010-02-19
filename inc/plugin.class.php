@@ -360,11 +360,11 @@ class Plugin extends CommonDBTM {
          switch ($plug['state']) {
             case self::ACTIVATED :
                echo "<td>";
-               echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=unactivate'>".
+               echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=unactivate'>".
                       $LANG['buttons'][42]."</a>";
                echo "</td><td>";
                if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                  echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".
+                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                          $LANG['buttons'][5]."</a>";
                } else {
                   echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
@@ -390,7 +390,7 @@ class Plugin extends CommonDBTM {
                      $msg = $LANG['buttons'][4];
                   }
                   if ($do_install) {
-                     echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=install'>".
+                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".
                             $msg."</a>";
                   }
                } else {
@@ -405,7 +405,7 @@ class Plugin extends CommonDBTM {
                echo "</td><td>";
                if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                   if (function_exists("plugin_".$plug['directory']."_check_config")) {
-                     echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".
+                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             $LANG['buttons'][5]."</a>";
                   } else {
                      // This is an incompatible plugin (0.71), uninstall fonction could crash
@@ -424,14 +424,14 @@ class Plugin extends CommonDBTM {
                   if ($function(true)) {
                      $this->update(array('id'=>$ID,
                                          'state'=>self::NOTACTIVATED));
-                     glpi_header($_SERVER['PHP_SELF']);
+                     glpi_header($this->getSearchURL());
                   }
                } else {
                   echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_check_config";
                }
                echo "</td><td>";
                if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                  echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".
+                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                          $LANG['buttons'][5]."</a>";
                } else {
                   echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
@@ -441,11 +441,11 @@ class Plugin extends CommonDBTM {
 
             case self::NOTACTIVATED :
                echo "<td>";
-               echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=activate'>".
+               echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
                       $LANG['buttons'][41]."</a>";
                echo "</td><td>";
                if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                  echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=uninstall'>".
+                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                          $LANG['buttons'][5]."</a>";
                } else {
                   echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
@@ -456,7 +456,7 @@ class Plugin extends CommonDBTM {
             case self::TOBECLEANED :
             default :
                echo "<td colspan='2'>";
-               echo "<a href='".$_SERVER['PHP_SELF']."?id=$ID&amp;action=clean'>".
+               echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
                       $LANG['buttons'][53]."</a>";
                echo "</td>";
          }

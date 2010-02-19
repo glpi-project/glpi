@@ -2370,8 +2370,8 @@ class Ticket extends CommonDBTM {
                                         && $this->fields['users_id']===getLoginUserID());
 
 
-      echo "<form method='post' name='form_ticket' action='".$_SERVER['PHP_SELF'].
-            "' enctype='multipart/form-data'>";
+      echo "<form method='post' name='form_ticket' enctype='multipart/form-data'
+               action='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
       echo '<div class="center" id="tabsbody">';
       echo "<table class='tab_cadre_fixe'>";
 
@@ -2891,7 +2891,7 @@ class Ticket extends CommonDBTM {
             echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
          } else {
             echo "<td colspan='1' class='center'>";
-            echo "<a href='".$_SERVER['PHP_SELF']."'>";
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
             echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a></td>";
             echo "<td colspan='2' class='center'>";
             echo "<input type='submit' name='add' value='".$LANG['buttons'][2]."' class='submit'>";

@@ -2977,7 +2977,7 @@ class Transfer extends CommonDBTM {
                                         $CFG_GLPI["root_doc"]."/ajax/transfers.php", $params, false);
          }
          echo "<div class='center' id='transfer_form'>";
-         echo "<a href='".$_SERVER['PHP_SELF']."?clear=1'>".$LANG['transfer'][4]."</a>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/transfer.action.php?clear=1'>".$LANG['transfer'][4]."</a>";
          echo "</div>";
          echo '</td></tr>';
          echo '</table>';

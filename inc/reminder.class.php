@@ -165,7 +165,7 @@ class Reminder extends CommonDBTM {
       $canedit=$this->can($ID,'w');
 
       if ($canedit) {
-         echo "<form method='post' name='remind' action='".$_SERVER['PHP_SELF']."'>";
+         echo "<form method='post' name='remind' action='".$this->getFormURL()."'>";
       }
 
       echo "<div class='center'><table class='tab_cadre' width='450'>";
