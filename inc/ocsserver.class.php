@@ -469,7 +469,7 @@ class OcsServer extends CommonDBTM {
       $this->showTabs($options);
 
       $out  = "\n<div class='center' id='tabsbody'>";
-      $out .= "<form name='formdbconfig' action='".$_SERVER['PHP_SELF']."' method='post'>";
+      $out .= "<form name='formdbconfig' action='".$this->getFormURL()."' method='post'>";
       $out .= "<table class='tab_cadre_fixe'>\n";
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][88] . "&nbsp;: </td>\n";
       $out .= "<td><strong>" . $this->fields["id"] . "</strong></td>\n";
@@ -1922,9 +1922,10 @@ class OcsServer extends CommonDBTM {
          echo "<div class='center'>";
          echo "<h2>" . $LANG['ocsng'][10] . "</h2>";
 
+         $target=$CFG_GLPI['root_doc'].'/front/ocsng.sync.php';
          if (($numrows = count($already_linked)) > 0) {
             $parameters = "check=$check";
-            printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
+            printPager($start, $numrows, $target, $parameters);
 
             // delete end
             array_splice($already_linked, $start + $_SESSION['glpilist_limit']);
@@ -1933,13 +1934,12 @@ class OcsServer extends CommonDBTM {
                array_splice($already_linked, 0, $start);
             }
 
-            echo "<form method='post' id='ocsng_form' name='ocsng_form' action='" .
-                   $_SERVER['PHP_SELF'] . "'>";
+            echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$target."'>";
 
-            echo "<a href='" .$_SERVER['PHP_SELF']. "?check=all' ".
+            echo "<a href='".$target."?check=all' ".
                    "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
                    $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
-            echo "<a href='" .$_SERVER['PHP_SELF']. "?check=none' ".
+            echo "<a href='".$target."?check=none' ".
                    "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
                    $LANG['buttons'][19] . "</a>\n";
             echo "<table class='tab_cadre'>";
@@ -1966,7 +1966,7 @@ class OcsServer extends CommonDBTM {
             echo "<input type=hidden name='ocsservers_id' value='" . $ocsservers_id . "'>";
             echo "</td></tr>";
             echo "</table></form>\n";
-            printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
+            printPager($start, $numrows, $target, $parameters);
          } else {
             echo "<br><strong>" . $LANG['ocsng'][11] . "</strong>";
          }
@@ -2073,6 +2073,11 @@ class OcsServer extends CommonDBTM {
          return false;
       }
 
+      $target=$CFG_GLPI['root_doc'].'/front/ocsng.import.php';
+      if ($tolinked) {
+         $target=$CFG_GLPI['root_doc'].'/front/ocsng.link.php';
+      }
+
       $cfg_ocs = OcsServer::getConfig($ocsservers_id);
       $WHERE = OcsServer::getTagLimit($cfg_ocs);
 
@@ -2124,7 +2129,7 @@ class OcsServer extends CommonDBTM {
          echo "<div class='center'>";
          if (($numrows = count($hardware)) > 0) {
             $parameters = "check=$check";
-            printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
+            printPager($start, $numrows, $target, $parameters);
             // delete end
             array_splice($hardware, $start + $_SESSION['glpilist_limit']);
             // delete begin
@@ -2133,7 +2138,7 @@ class OcsServer extends CommonDBTM {
             }
             if (!$tolinked) {
                echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode' action='" .
-                      $_SERVER['PHP_SELF'] . "'>\n";
+                      $target . "'>\n";
                echo "<table class='tab_cadre'>";
                echo "<tr><th>" . $LANG['ocsng'][41] . "</th></tr>\n";
                echo "<tr class='tab_bg_1'>";
@@ -2143,7 +2148,7 @@ class OcsServer extends CommonDBTM {
                } else {
                   $status = "true";
                }
-               echo "<a href='" . $_SERVER['PHP_SELF'] . "?change_import_mode=" . $status . "'>";
+               echo "<a href='" . $target . "?change_import_mode=" . $status . "'>";
                if ($advanced) {
                   echo $LANG['ocsng'][38];
                } else {
@@ -2154,11 +2159,11 @@ class OcsServer extends CommonDBTM {
             }
             echo "<strong>" . $LANG['ocsconfig'][18] . "</strong><br>";
             echo "<form method='post' name='ocsng_form' id='ocsng_form' action='" .
-                   $_SERVER['PHP_SELF'] . "'>";
+                   $target . "'>";
             if (!$tolinked) {
-               echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all&amp;start=$start' onclick= ".
+               echo "<a href='".$target."?check=all&amp;start=$start' onclick= ".
                      "\"if ( markCheckboxes('ocsng_form') ) return false;\">" . $LANG['buttons'][18] .
-                     "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none&amp;start=".
+                     "</a>&nbsp;/&nbsp;<a href='".$target."?check=none&amp;start=".
                      "$start' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
                      $LANG['buttons'][19] . "</a>\n";
             }
@@ -2225,7 +2230,7 @@ class OcsServer extends CommonDBTM {
             echo "</td></tr>";
             echo "</table></form>\n";
 
-            printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
+            printPager($start, $numrows, $target, $parameters);
          } else {
             echo "<strong>" . $LANG['ocsng'][9] . "</strong>";
          }
@@ -3442,15 +3447,15 @@ class OcsServer extends CommonDBTM {
     *
     * @return nothing.
     */
-   static function showFormServerChoice($target) {
-      global $DB, $LANG;
+   static function showFormServerChoice() {
+      global $DB, $LANG,$CFG_GLPI;
 
       $query = "SELECT *
                 FROM `glpi_ocsservers`
                 ORDER BY `name` ASC";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 1) {
-         echo "<form action=\"$target\" method='get'>";
+         echo "<form action=\"".$CFG_GLPI['root_doc']."/front/ocsng.php\" method='get'>";
          echo "<div class='center'><table class='tab_cadre'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>\n";
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td>";
@@ -3467,7 +3472,7 @@ class OcsServer extends CommonDBTM {
 
       } elseif ($DB->numrows($result) == 1) {
          $ocs = $DB->fetch_array($result);
-         glpi_header($_SERVER['PHP_SELF'] . "?ocsservers_id=" . $ocs["id"]);
+         glpi_header($CFG_GLPI['root_doc']."/front/ocsng.php?ocsservers_id=" . $ocs["id"]);
 
       } else{
          echo "<form action=\"$target\" method='get'>";

@@ -136,7 +136,7 @@ class Planning {
       echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
       echo "<table class='tab_cadre'><tr class='tab_bg_1'>";
       echo "<td>";
-      echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$prev\">";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID."&amp;date=$prev\">";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".
             $LANG['buttons'][12]."'></a>";
       echo "</td>";
@@ -204,7 +204,7 @@ class Planning {
       echo "</td>\n";
 
       echo "<td>";
-      echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$next\">";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front:planning.php?type=".$type."&amp;uID=".$uID."&amp;date=$next\">";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11].
             "' title='".$LANG['buttons'][11]."'></a>";
       echo "</td>";
