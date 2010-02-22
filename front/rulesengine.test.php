@@ -46,7 +46,7 @@ if (isset($_POST["sub_type"])) {
    $sub_type = 0;
 }
 
-$rulecollection = getRuleCollectionClass($sub_type);
+$rulecollection = RuleCollection::getClassByType($sub_type);
 checkRight($rulecollection->right,"r");
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {

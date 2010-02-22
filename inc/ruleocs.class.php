@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleOcs extends Rule {
 
    // From Rule
-   public $sub_type = RULE_OCS_AFFECT_COMPUTER;
+   public $sub_type = Rule::RULE_OCS_AFFECT_COMPUTER;
    public $right='rule_ocs';
    public $can_sort=true;
 

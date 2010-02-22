@@ -517,7 +517,7 @@ class RuleCollection {
             }
             echo "<td>";
             $rule = getRuleClass($this->sub_type);
-            $rule->displayCriteriaSelectPattern($criteria,$criteria,PATTERN_IS,
+            $rule->displayCriteriaSelectPattern($criteria,$criteria,Rule::PATTERN_IS,
                                                 isset($values[$criteria])?$values[$criteria]:'');
             echo "</td></tr>\n";
          }
@@ -716,6 +716,100 @@ class RuleCollection {
    function title() {
    }
 
+   function getClassByType($type) {
+
+      switch ($type) {
+         case Rule::RULE_OCS_AFFECT_COMPUTER :
+            return new RuleOcsCollection();
+
+         case Rule::RULE_AFFECT_RIGHTS :
+            return new RuleRightCollection();
+
+         case Rule::RULE_TRACKING_AUTO_ACTION :
+            return new RuleTicketCollection();
+
+         case Rule::RULE_SOFTWARE_CATEGORY :
+            return new RuleSoftwareCategoryCollection();
+
+         case Rule::RULE_DICTIONNARY_SOFTWARE :
+            return new RuleDictionnarySoftwareCollection;
+
+         case Rule::RULE_DICTIONNARY_MANUFACTURER :
+         case Rule::RULE_DICTIONNARY_MODEL_NETWORKING :
+         case Rule::RULE_DICTIONNARY_MODEL_COMPUTER :
+         case Rule::RULE_DICTIONNARY_MODEL_MONITOR :
+         case Rule::RULE_DICTIONNARY_MODEL_PRINTER :
+         case Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_MODEL_PHONE :
+         case Rule::RULE_DICTIONNARY_TYPE_NETWORKING :
+         case Rule::RULE_DICTIONNARY_TYPE_COMPUTER :
+         case Rule::RULE_DICTIONNARY_TYPE_PRINTER :
+         case Rule::RULE_DICTIONNARY_TYPE_MONITOR :
+         case Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_TYPE_PHONE :
+         case Rule::RULE_DICTIONNARY_OS :
+         case Rule::RULE_DICTIONNARY_OS_SP :
+         case Rule::RULE_DICTIONNARY_OS_VERSION :
+            return new RuleDictionnaryDropdownCollection($type);
+      }
+   }
+
+function getClassByTableName($tablename) {
+
+   switch ($tablename) {
+      case "glpi_softwares" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_SOFTWARE);
+
+      case "glpi_manufacturers" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MANUFACTURER);
+
+      case "glpi_computermodels" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_COMPUTER);
+
+      case "glpi_monitormodels" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_MONITOR);
+
+      case "glpi_printermodels" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PRINTER);
+
+      case "glpi_peripheralmodels" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL);
+
+      case "glpi_networkequipmentmodels" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_NETWORKING);
+
+      case "glpi_phonemodels" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PHONE);
+
+      case "glpi_computertypes" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_COMPUTER);
+
+      case "glpi_monitortypes" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_MONITOR);
+
+      case "glpi_printertypes" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PRINTER);
+
+      case "glpi_peripheraltypes" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL);
+
+      case "glpi_networkequipmenttypes" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_NETWORKING);
+
+      case "glpi_phonetypes" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PHONE);
+
+      case "glpi_operatingsystems" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS);
+
+      case "glpi_operatingsystemservicepacks" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_SP);
+
+      case "glpi_operatingsystemversions" :
+         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_VERSION);
+   }
+   return NULL;
+}
 }
 
 ?>

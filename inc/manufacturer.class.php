@@ -52,7 +52,7 @@ class Manufacturer extends CommonDropdown {
          return $old_name;
       }
 
-      $rulecollection = new RuleDictionnaryDropdownCollection(RULE_DICTIONNARY_MANUFACTURER);
+      $rulecollection = new RuleDictionnaryDropdownCollection(Rule::RULE_DICTIONNARY_MANUFACTURER);
       $output=array();
       $output = $rulecollection->processAllRules(array("name"=>addslashes($old_name)),$output,array());
       if (isset($output["name"])) {

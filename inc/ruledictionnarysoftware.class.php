@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleDictionnarySoftware extends RuleCached {
 
    // From Rule
-   public $sub_type=RULE_DICTIONNARY_SOFTWARE;
+   public $sub_type=Rule::RULE_DICTIONNARY_SOFTWARE;
    public $right='rule_dictionnary_software';
    public $can_sort=true;
 

@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    // From RuleCollection
-   public $sub_type = RULE_DICTIONNARY_SOFTWARE;
+   public $sub_type = Rule::RULE_DICTIONNARY_SOFTWARE;
    public $rule_class_name = 'RuleDictionnarySoftware';
    public $stop_on_first_match = true;
    public $right = 'rule_dictionnary_software';

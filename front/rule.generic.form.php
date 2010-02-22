@@ -41,7 +41,7 @@ if (isset($_GET["id"])) {
    $generic_rule->getFromDB($_GET["id"]);
    checkRight($generic_rule->right,"r");
 
-   $rulecollection = getRuleCollectionClass($generic_rule->fields["sub_type"]);
+   $rulecollection = RuleCollection::getClassByType($generic_rule->fields["sub_type"]);
    include (GLPI_ROOT . "/front/rule.common.form.php");
 }
 ?>

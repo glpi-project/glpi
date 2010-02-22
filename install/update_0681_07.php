@@ -856,7 +856,7 @@ function update0681to07() {
 			$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, 0, 0, 'Root', '', 'AND');";
 			$DB->query($query) or die("0.7 add default ocs affectation rule" . $LANG['update'][90] . $DB->error());
 		
-			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root' AND rule_type=".RULE_OCS_AFFECT_COMPUTER;
+			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root' AND rule_type=".Rule::RULE_OCS_AFFECT_COMPUTER;
 			$result = $DB->query($query);
 			//Get the defaut rule's ID
 			$datas = $DB->fetch_array($result);
@@ -868,10 +868,10 @@ function update0681to07() {
 			$DB->query($query) or die("0.7 add default ocs actions" . $LANG['update'][90] . $DB->error());
 
 			//Insert rule to affect users from LDAP to the root entity
-			$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, ".RULE_AFFECT_RIGHTS.", 1, 'Root', '', 'OR');";
+			$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, ".Rule::RULE_AFFECT_RIGHTS.", 1, 'Root', '', 'OR');";
 			$DB->query($query) or die("0.7 add default right affectation rule" . $LANG['update'][90] . $DB->error());
 
-			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root' AND rule_type=".RULE_AFFECT_RIGHTS;
+			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root' AND rule_type=".Rule::RULE_AFFECT_RIGHTS;
 			$result = $DB->query($query);
 			//Get the defaut rule's ID
 			$datas = $DB->fetch_array($result);

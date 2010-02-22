@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new RuleDictionnaryDropdownCollection(RULE_DICTIONNARY_TYPE_PRINTER);
+$rulecollection = new RuleDictionnaryDropdownCollection(Rule::RULE_DICTIONNARY_TYPE_PRINTER);
 
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>

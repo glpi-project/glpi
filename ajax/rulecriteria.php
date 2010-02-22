@@ -49,7 +49,7 @@ include_once (GLPI_ROOT."/inc/rule.function.php");
 checkLoginUser();
 
 if (isset($_POST["sub_type"])) {
-   $rule=getRuleClass($_POST["sub_type"]);
+   $rule=Rule::getClassByType($_POST["sub_type"]);
    $criterias=$rule->getCriterias();
    if (count($criterias)) {
       // First include -> first of the predefined array

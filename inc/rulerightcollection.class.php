@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleRightCollection extends RuleCollection {
 
    // From RuleCollection
-   public $sub_type = RULE_AFFECT_RIGHTS;
+   public $sub_type = Rule::RULE_AFFECT_RIGHTS;
    public $rule_class_name = 'RuleRight';
    public $stop_on_first_match=false;
    public $right = 'rule_ldap';

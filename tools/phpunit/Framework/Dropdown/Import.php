@@ -122,12 +122,12 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $nbc = countElementsInTable('glpi_rulecriterias');
 
       // Create some rules
-      $rule = new RuleDictionnaryDropdown(RULE_DICTIONNARY_MANUFACTURER);
+      $rule = new RuleDictionnaryDropdown(Rule::RULE_DICTIONNARY_MANUFACTURER);
       $crit = new RuleCriteria();
       $acte = new RuleAction();
 
       $idr[0] = $rule->add(array('name'      => 'test1',
-                                 'sub_type'  => RULE_DICTIONNARY_MANUFACTURER,
+                                 'sub_type'  => Rule::RULE_DICTIONNARY_MANUFACTURER,
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
@@ -136,7 +136,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $idc[0] = $crit->add(array('rules_id'  => $idr[0],
                                  'criteria'  => 'name',
-                                 'condition' => PATTERN_CONTAIN,
+                                 'condition' => Rule::PATTERN_CONTAIN,
                                  'pattern'   => 'indepnet'));
       $this->assertGreaterThan(0, $idc[0], "Fail: can't create rule 1 criteria");
 
@@ -148,7 +148,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       // Add another rule
       $idr[1] = $rule->add(array('name'      => 'test2',
-                                 'sub_type'  => RULE_DICTIONNARY_MANUFACTURER,
+                                 'sub_type'  => Rule::RULE_DICTIONNARY_MANUFACTURER,
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[1], "Fail: can't create rule 2");
@@ -157,7 +157,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $idc[1] = $crit->add(array('rules_id'  => $idr[1],
                                  'criteria'  => 'name',
-                                 'condition' => PATTERN_BEGIN,
+                                 'condition' => Rule::PATTERN_BEGIN,
                                  'pattern'   => 'http:'));
       $this->assertGreaterThan(0, $idc[1], "Fail: can't create rule 2 criteria");
 
@@ -177,7 +177,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $id[0] = $manu->importExternal($in='the indepnet team');
       $this->assertGreaterThan(0, $id[0]);
       $this->assertTrue($manu->getFromDB($id[0]));
-      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: Rule::PATTERN_CONTAIN not match");
       $this->assertEquals(1, countElementsInTable($cache), "Fail: cache empty");
 
       // Import second and use cache
@@ -185,7 +185,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(0, $id[1]);
       $this->assertEquals($id[0], $id[1]);
       $this->assertTrue($manu->getFromDB($id[1]));
-      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: Rule::PATTERN_CONTAIN not match");
       $this->assertEquals(1, countElementsInTable($cache), "Fail: cache not filled");
 
       // Import third not in cache
@@ -193,7 +193,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(0, $id[2]);
       $this->assertEquals($id[0], $id[2]);
       $this->assertTrue($manu->getFromDB($id[2]));
-      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: Rule::PATTERN_CONTAIN not match");
       $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not filled");
 
       // Set is_active=0, and clean cache
@@ -209,22 +209,22 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(0, $id[3]);
       $this->assertGreaterThan($id[0], $id[3]);
       $this->assertTrue($manu->getFromDB($id[3]));
-      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
       $this->assertEquals(1, countElementsInTable($cache), "Fail: cache empty");
 
       $id[4] = $manu->importExternal($in='http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[4]);
       $this->assertEquals($id[0], $id[4]);
       $this->assertTrue($manu->getFromDB($id[4]));
-      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: Rule::PATTERN_CONTAIN not match");
       $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not filled");
 
       // Hack : to disable preload done by Singleton
-      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
+      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_MANUFACTURER);
       $tmp->load=0;
 
       // Change rules order
-      $collection = new RuleDictionnaryDropdownCollection(RULE_DICTIONNARY_MANUFACTURER);
+      $collection = new RuleDictionnaryDropdownCollection(Rule::RULE_DICTIONNARY_MANUFACTURER);
       // Move rule 1 after rule 2
       $this->assertTrue($collection->moveRule($idr[0], $idr[1]), "Fail: can't move rules");
       $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
@@ -238,16 +238,16 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $id[5] = $manu->importExternal($in='http://www.glpi-project.org/');
       $this->assertGreaterThan(0, $id[5]);
       $this->assertTrue($manu->getFromDB($id[5]));
-      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
 
       $id[6] = $manu->importExternal($in='http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[6]);
       $this->assertTrue($manu->getFromDB($id[6]));
-      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
       $this->assertEquals($id[5], $id[6]);
 
       // Change rules orders again
-      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
+      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_MANUFACTURER);
       $tmp->load=0;
       // Move rule 1 up (before rule 2)
       $this->assertTrue($collection->changeRuleOrder($idr[0], 'up'), "Fail: can't move rules");
@@ -262,12 +262,12 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $id[7] = $manu->importExternal($in='http://www.glpi-project.org/');
       $this->assertGreaterThan(0, $id[7]);
       $this->assertTrue($manu->getFromDB($id[7]));
-      $this->assertEquals($out2, $manu->fields['name'], "Fail: PATTERN_BEGIN not match");
+      $this->assertEquals($out2, $manu->fields['name'], "Fail: Rule::PATTERN_BEGIN not match");
 
       $id[8] = $manu->importExternal($in='http://www.indepnet.net/');
       $this->assertGreaterThan(0, $id[8]);
       $this->assertTrue($manu->getFromDB($id[8]));
-      $this->assertEquals($out1, $manu->fields['name'], "Fail: PATTERN_CONTAIN not match");
+      $this->assertEquals($out1, $manu->fields['name'], "Fail: Rule::PATTERN_CONTAIN not match");
       $this->assertNotEquals($id[7], $id[8]);
       $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not empty");
 
@@ -293,20 +293,20 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
    public function testSoftwareRule() {
 
       // Clean preload rules
-      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_MANUFACTURER);
+      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_MANUFACTURER);
       $tmp->load=0;
-      $tmp = SingletonRuleList::getInstance(RULE_DICTIONNARY_SOFTWARE);
+      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_SOFTWARE);
       $tmp->load=0;
 
       // Needed objetcs
-      $rulem = new RuleDictionnaryDropdown(RULE_DICTIONNARY_MANUFACTURER);
-      $rules = new RuleDictionnaryDropdown(RULE_DICTIONNARY_SOFTWARE);
+      $rulem = new RuleDictionnaryDropdown(Rule::RULE_DICTIONNARY_MANUFACTURER);
+      $rules = new RuleDictionnaryDropdown(Rule::RULE_DICTIONNARY_SOFTWARE);
       $crit = new RuleCriteria();
       $acte = new RuleAction();
 
       // Rule for Manufacturer
       $idr[0] = $rulem->add(array('name'      => 'test1',
-                                  'sub_type'  => RULE_DICTIONNARY_MANUFACTURER,
+                                  'sub_type'  => Rule::RULE_DICTIONNARY_MANUFACTURER,
                                   'match'     => 'AND',
                                   'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create manufacturer rule");
@@ -315,7 +315,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $idc[0] = $crit->add(array('rules_id'  => $idr[0],
                                  'criteria'  => 'name',
-                                 'condition' => PATTERN_CONTAIN,
+                                 'condition' => Rule::PATTERN_CONTAIN,
                                  'pattern'   => 'indepnet'));
       $this->assertGreaterThan(0, $idc[0], "Fail: can't create manufacturer rule criteria");
 
@@ -327,7 +327,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       // Rule for Software
       $idr[1] = $rules->add(array('name'      => 'test2',
-                                 'sub_type'  => RULE_DICTIONNARY_SOFTWARE,
+                                 'sub_type'  => Rule::RULE_DICTIONNARY_SOFTWARE,
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[1], "Fail: can't create software rule");
@@ -336,7 +336,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $idc[1] = $crit->add(array('rules_id'  => $idr[1],
                                  'criteria'  => 'name',
-                                 'condition' => REGEX_MATCH,
+                                 'condition' => Rule::REGEX_MATCH,
                                  'pattern'   => '/^glpi (0\.[0-9]+)/'));
       $this->assertGreaterThan(0, $idc[1], "Fail: can't create software rule criteria");
 
@@ -438,7 +438,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $ent0 = $this->sharedFixture['entity'][0];
 
       // Clean preload rules
-      $tmp = SingletonRuleList::getInstance(RULE_SOFTWARE_CATEGORY);
+      $tmp = SingletonRuleList::getInstance(Rule::RULE_SOFTWARE_CATEGORY);
       $tmp->load=0;
 
       $this->assertArrayHasKey('softwarecategories_id_ondelete', $CFG_GLPI, "Fail: no softwarecategories_id_ondelete");
@@ -454,7 +454,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $acte = new RuleAction();
 
       $idr[0] = $rule->add(array('name'      => 'OSS',
-                                 'sub_type'  => RULE_SOFTWARE_CATEGORY,
+                                 'sub_type'  => Rule::RULE_SOFTWARE_CATEGORY,
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
@@ -463,7 +463,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       $idc[0] = $crit->add(array('rules_id'  => $idr[0],
                                  'criteria'  => 'manufacturer',
-                                 'condition' => PATTERN_IS,
+                                 'condition' => Rule::PATTERN_IS,
                                  'pattern'   => 'Indepnet'));
       $this->assertGreaterThan(0, $idc[0], "Fail: can't create rule 1 criteria");
 

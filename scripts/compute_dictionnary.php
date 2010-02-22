@@ -58,9 +58,9 @@ $_SESSION['glpi_use_mode']==NORMAL_MODE;
 
 if (isset($_GET["dictionnary"]))
 {
-	$rulecollection = getRuleCollectionClass($_GET["dictionnary"]);
+	$rulecollection = RuleCollection::getClassByType($_GET["dictionnary"]);
 	if ($rulecollection)
-		if ($_GET["dictionnary"]==RULE_DICTIONNARY_SOFTWARE && isset($_GET["manufacturer"])) {
+		if ($_GET["dictionnary"]==Rule::RULE_DICTIONNARY_SOFTWARE && isset($_GET["manufacturer"])) {
 			$rulecollection->replayRulesOnExistingDB(0,0,array(),$_GET["manufacturer"]);
 		} else {
 			$rulecollection->replayRulesOnExistingDB();
@@ -71,24 +71,24 @@ else
 	
 	echo "Usage : php -q -f compute_dictionnary.php dictionnary=<option>  [ manufacturer=ID ]\n";
 	echo "Options values :\n";
-	echo RULE_DICTIONNARY_SOFTWARE." : softwares\n";
-	echo RULE_DICTIONNARY_MANUFACTURER." : manufacturers\n";
+	echo Rule::RULE_DICTIONNARY_SOFTWARE." : softwares\n";
+	echo Rule::RULE_DICTIONNARY_MANUFACTURER." : manufacturers\n";
 
 	echo "--- Models ---\n";
-	echo RULE_DICTIONNARY_MODEL_COMPUTER." : computers\n";
-	echo RULE_DICTIONNARY_MODEL_MONITOR." : monitors\n";
-	echo RULE_DICTIONNARY_MODEL_PERIPHERAL." : peripherals\n";	
-	echo RULE_DICTIONNARY_MODEL_NETWORKING." : networking\n";	
-	echo RULE_DICTIONNARY_MODEL_PRINTER." : printers\n";
-	echo RULE_DICTIONNARY_MODEL_PHONE." : phones\n";
+	echo Rule::RULE_DICTIONNARY_MODEL_COMPUTER." : computers\n";
+	echo Rule::RULE_DICTIONNARY_MODEL_MONITOR." : monitors\n";
+	echo Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL." : peripherals\n";	
+	echo Rule::RULE_DICTIONNARY_MODEL_NETWORKING." : networking\n";	
+	echo Rule::RULE_DICTIONNARY_MODEL_PRINTER." : printers\n";
+	echo Rule::RULE_DICTIONNARY_MODEL_PHONE." : phones\n";
 
 	echo "--- Types ---\n";
-	echo RULE_DICTIONNARY_TYPE_COMPUTER." : computers\n";
-	echo RULE_DICTIONNARY_TYPE_MONITOR." : monitors\n";
-	echo RULE_DICTIONNARY_TYPE_PERIPHERAL." : peripherals\n";	
-	echo RULE_DICTIONNARY_TYPE_NETWORKING." : networking\n";	
-	echo RULE_DICTIONNARY_TYPE_PRINTER." : printers\n";
-	echo RULE_DICTIONNARY_TYPE_PHONE." : phones\n";
+	echo Rule::RULE_DICTIONNARY_TYPE_COMPUTER." : computers\n";
+	echo Rule::RULE_DICTIONNARY_TYPE_MONITOR." : monitors\n";
+	echo Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL." : peripherals\n";	
+	echo Rule::RULE_DICTIONNARY_TYPE_NETWORKING." : networking\n";	
+	echo Rule::RULE_DICTIONNARY_TYPE_PRINTER." : printers\n";
+	echo Rule::RULE_DICTIONNARY_TYPE_PHONE." : phones\n";
 		
 }
 ?>
