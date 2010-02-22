@@ -351,12 +351,7 @@ class TicketTask  extends CommonDBTM {
             $this->input["_type"] = "finish";
          }
 
-         $ticket = new Ticket;
-         $ticket->getFromDB($this->input["tickets_id"]);
          NotificationEvent::raiseEvent('add_task',$this->input["_job"]);
-         //$mail = new Mailing($this->input["_type"],$this->input["_job"],$user,
-         //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
-         //$mail->send();
       }
 
       // Add log entry in the ticket
