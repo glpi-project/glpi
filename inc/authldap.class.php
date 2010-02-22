@@ -166,8 +166,8 @@ class AuthLDAP extends CommonDBTM {
             echo "</a></td></tr>";
          }
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
-         echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td><td colspan='2'>";
-         echo ($ID>0?$LANG['common'][26]."&nbsp;:</td><td>".convDateTime($this->fields["date_mod"]):'&nbsp;');
+         echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td>";
+         echo ($ID>0?"<td>".$LANG['common'][26]."&nbsp;:</td><td>".convDateTime($this->fields["date_mod"]):"<td colspan='2'>&nbsp;");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['ldap'][44] . "&nbsp;:</td>";
