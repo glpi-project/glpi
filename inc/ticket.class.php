@@ -131,6 +131,11 @@ class Ticket extends CommonDBTM {
       return haveRight('delete_ticket', '1');
    }
 
+   function pre_deleteItem() {
+      NotificationEvent::raiseEvent('delete',$this);
+      return true;
+   }
+
 
    function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
@@ -3576,7 +3581,7 @@ class Ticket extends CommonDBTM {
             if ($output_type==HTML_OUTPUT) {
                $fourth_col .= showToolTip($userdata["comment"],array('link'=>$userdata["link"],'display'=>false));
             }
-            
+
          }
 
          if ($data["groups_id"]) {

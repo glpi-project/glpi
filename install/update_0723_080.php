@@ -2840,7 +2840,7 @@ function update0723to080($output='HTML') {
 
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                                     VALUES(NULL, '".$templates['Ticket']."', '',
-                                    '[###ticket.id##] ##ticket.action## ##ticket.title##',
+                                    '##ticket.action## ##ticket.title##',
                                     '##lang.ticket.url## : ##ticket.url## \r\n
                                   ##lang.ticket.description## \r\n\n
                                   ##lang.ticket.title## &#160;:##ticket.title##\n
@@ -2931,9 +2931,23 @@ function update0723to080($output='HTML') {
 
       $queries['Contract'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                               VALUES(NULL, ".$templates['Contract'].", '',
-                               '##contract.action## - ##contract.entity##',
-                               '##contract.action## ##contract.name## : ##contract.time##',
-                               '&lt;p&gt;##contract.action## ##contract.name## : ##contract.time##&lt;/p&gt;');";
+                               '##contract.action##  ##contract.entity##',
+                               '##lang.contract.entity## :##contract.entity##\r\n\
+                                r\n##FOREACHcontracts##\r\n
+                                ##lang.contract.name## : ##contract.name##\r\n
+                                ##lang.contract.number## : ##contract.number##\r\n
+                                ##lang.contract.time## : ##contract.time##\r\n
+                                ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##\r\n
+                                ##contract.url##\r\n
+                                ##ENDFOREACHcontracts##',
+                               '&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
+                                &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## : ##contract.name##&lt;br /&gt;
+                                ##lang.contract.number## : ##contract.number##&lt;br /&gt;
+                                ##lang.contract.time## : ##contract.time##&lt;br /&gt;
+                                ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##&lt;br /&gt;
+                                &lt;a href=\"##contract.url##\"&gt;
+                                ##contract.url##&lt;/a&gt;&lt;br /&gt;
+                                ##ENDFOREACHcontracts##&lt;/p&gt;');";
       foreach ($queries as $itemtype => $query) {
          //echo $query."<br>";
          $DB->query($query) or die("0.80 insert notification template default translation

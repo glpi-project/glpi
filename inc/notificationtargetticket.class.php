@@ -173,7 +173,8 @@ class NotificationTargetTicket extends NotificationTarget {
                     'solved' => $LANG['mailing'][123],
                     'add_followup' => $LANG['mailing'][10],
                     'add_task' => $LANG['job'][49],
-                    'closed' => $LANG['mailing'][127]);
+                    'closed' => $LANG['mailing'][127],
+                    'delete'=>$LANG['mailing'][129]);
    }
 
    /**
@@ -309,7 +310,6 @@ class NotificationTargetTicket extends NotificationTarget {
 
       //Hardware
       if ($this->target_object != null) {
-         logDebug($this->target_object);
          $tpldata['##ticket.itemtype##'] = $this->target_object->getTypeName();
          $tpldata['##ticket.item.name##'] = $this->target_object->getField('name');
 

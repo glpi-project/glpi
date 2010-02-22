@@ -45,25 +45,39 @@ class NotificationTargetContract extends NotificationTarget {
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
       $tpldata['##contract.entity##'] =
                            Dropdown::getDropdownName('glpi_entities',
-                                                     $this->obj->getField('entities_id'));
-      $tpldata['##lang.contract.entity##'] = $LANG['entity'][0];
-      switch ($options['type']) {
-         case ALERT_END :
-            $tpldata['##contract.action##'] = $LANG['mailing'][37];
-            break;
-         case ALERT_NOTICE:
-            $tpldata['##contract.action##'] = $LANG['mailing'][38];
-            break;
+                                                     $options['entities_id']);
+      $tpldata['##lang.contract.entity##'] =$LANG['entity'][0];
+      $tpldata['##contract.action##'] = ($event==ALERT_END?$LANG['mailing'][38]:
+                                                            $LANG['mailing'][37]);
+      $tpldata['##lang.contract.action##']= $LANG['mailing'][39];
+      $tpldata['##lang.contract.name##']= $LANG['common'][16];
+
+      $tpldata['##lang.contract.time##']= ($event==ALERT_END?$LANG['contract'][0]:
+                                                             $LANG['contract'][1]);
+      $tpldata['##lang.contract.number##']= $LANG['financial'][4];
+      $tpldata['##lang.contract.type##']= $LANG['setup'][85];
+
+      foreach($options['contracts'] as $id => $contract) {
+         $tmp = array();
+         $tmp['##contract.name##'] = $contract['name'];
+         $tmp['##contract.number##'] = $contract['num'];
+         if ($contract['contracttypes_id']) {
+            $tmp['##contract.type##'] = Dropdown::getDropdownName('glpi_contractyypes',
+                                                                  $contract['contracttypes_id']);
+         }
+         else {
+            $tmp['##contract.type##'] = "";
+         }
+         $tmp['##contract.time##'] = convDateTime(getWarrantyExpir($contract["begin_date"],
+                                                      $contract["duration"],
+                                                      $contract["notice"]));
+         $tmp['##contract.url##'] = urldecode($CFG_GLPI["url_base"].
+                                                  "/index.php?redirect=contract_".$id);
+         $tpldata['contracts'][] = $tmp;
       }
-      $tpldata['##contract.name##']= $this->obj->getField("name");
-      $tpldata['##lang.contract.action##']= $LANG['mailing'][39];
-      $tpldata['##lang.contract.action##']= $LANG['mailing'][39];
-      $tpldata['contract.time'] = getWarrantyExpir($this->obj->getField("begin_date"),
-                                       $this->obj->getField("duration"),
-                                       $this->obj->getField("notice"));
       return $tpldata;
    }
 }
