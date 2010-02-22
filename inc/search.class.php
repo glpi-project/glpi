@@ -1120,7 +1120,7 @@ class Search {
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
          echo "<tr><td class='left'>";
-         
+
          // First line display add / delete images for normal and meta search items
          if ($i==0) {
             echo "<input type='hidden' disabled  id='add_search_count' name='add_search_count' value='1'>";
@@ -1145,22 +1145,22 @@ class Search {
                         $LANG['search'][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                }
             }
-            
+
             $itemtable=getTableForItemType($itemtype);
             if ($item && $item->maybeDeleted()) {
                echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".$p['is_deleted']."'>";
                echo "<a href='#' onClick = \"toogle('is_deleted','','','');document.forms['searchform$itemtype'].submit();\">
-                  <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".(!$p['is_deleted']?'_no':'').".png\" 
+                  <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".(!$p['is_deleted']?'_no':'').".png\"
                   name='img_deleted'  alt='".
                   (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."' title='".(!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."' ></a>";
                // Dropdown::showYesNo("is_deleted",$p['is_deleted']);
                echo '&nbsp;&nbsp;';
             }
          }
-         
-        
-         
-         
+
+
+
+
          // Display link item
          if ($i>0) {
             echo "<select name='link[$i]'>";
@@ -1376,7 +1376,7 @@ class Search {
       echo "</td>\n";
 */
       // Display deleted selection
-      
+
       echo "</tr><tr>";
 
       // Display submit button
@@ -1387,7 +1387,7 @@ class Search {
       echo "<a href='$target?reset=reset' >";
       echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
-      
+
       echo "</td></tr></table>\n";
 
       echo "</td></tr>";
@@ -2005,7 +2005,9 @@ class Search {
                      $condition .= " OR `glpi_tickets`.`groups_id_assign`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
-
+                  if (haveRight('assign_ticket',1)) {
+                     $condition .= " OR `glpi_tickets`.`status`='new'";
+                  }
                   $condition.=")";
                   return $condition;
                } else {
@@ -2398,7 +2400,7 @@ class Search {
 
       // Default case
       if ($searchtype=='equals') {
-         // Add NULL if $val = 0 
+         // Add NULL if $val = 0
          return " $link (`$table`.`id`".$SEARCH.($val==0?" OR `$table`.`id` IS NULL":'').') ';
       } else {
          return makeTextCriteria($tocompute,$val,$nott,$link);
@@ -3625,7 +3627,7 @@ class Search {
             $_SESSION["glpisearchcount2"][$itemtype]=0;
          }
       }
-      
+
       //printCleanArray($_GET);
    }
 
