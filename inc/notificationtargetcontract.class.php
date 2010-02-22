@@ -58,14 +58,14 @@ class NotificationTargetContract extends NotificationTarget {
       $tpldata['##lang.contract.time##']= ($event==ALERT_END?$LANG['contract'][0]:
                                                              $LANG['contract'][1]);
       $tpldata['##lang.contract.number##']= $LANG['financial'][4];
-      $tpldata['##lang.contract.type##']= $LANG['setup'][85];
+      $tpldata['##lang.contract.type##']= $LANG['common'][17];
 
       foreach($options['contracts'] as $id => $contract) {
          $tmp = array();
          $tmp['##contract.name##'] = $contract['name'];
          $tmp['##contract.number##'] = $contract['num'];
          if ($contract['contracttypes_id']) {
-            $tmp['##contract.type##'] = Dropdown::getDropdownName('glpi_contractyypes',
+            $tmp['##contract.type##'] = Dropdown::getDropdownName('glpi_contracttypes',
                                                                   $contract['contracttypes_id']);
          }
          else {
