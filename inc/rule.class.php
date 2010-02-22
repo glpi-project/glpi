@@ -58,6 +58,42 @@ class Rule extends CommonDBTM {
    /// field used to order rules
    var $orderby='ranking';
 
+   const RULE_NOT_IN_CACHE = -1;
+   const RULE_OCS_AFFECT_COMPUTER = 0;
+   const RULE_AFFECT_RIGHTS = 1;
+   const RULE_TRACKING_AUTO_ACTION = 2;
+   const RULE_SOFTWARE_CATEGORY = 3;
+   const RULE_DICTIONNARY_SOFTWARE = 4;
+   const RULE_DICTIONNARY_MANUFACTURER = 5;
+   const RULE_DICTIONNARY_MODEL_COMPUTER = 6;
+   const RULE_DICTIONNARY_TYPE_COMPUTER = 7;
+   const RULE_DICTIONNARY_MODEL_MONITOR = 8;
+   const RULE_DICTIONNARY_TYPE_MONITOR = 9;
+   const RULE_DICTIONNARY_MODEL_PRINTER = 10;
+   const RULE_DICTIONNARY_TYPE_PRINTER =11;
+   const RULE_DICTIONNARY_MODEL_PHONE = 12;
+   const RULE_DICTIONNARY_TYPE_PHONE = 13;
+   const RULE_DICTIONNARY_MODEL_PERIPHERAL = 14;
+   const RULE_DICTIONNARY_TYPE_PERIPHERAL = 15;
+   const RULE_DICTIONNARY_MODEL_NETWORKING = 16;
+   const RULE_DICTIONNARY_TYPE_NETWORKING = 17;
+   const RULE_DICTIONNARY_OS = 18;
+   const RULE_DICTIONNARY_OS_SP = 19;
+   const RULE_DICTIONNARY_OS_VERSION = 20;
+   const RULE_WILDCARD = '*';
+
+//Generic rules engine
+   const PATTERN_IS = 0;
+   const PATTERN_IS_NOT = 1;
+   const PATTERN_CONTAIN = 2;
+   const PATTERN_NOT_CONTAIN = 3;
+   const PATTERN_BEGIN = 4;
+   const PATTERN_END = 5;
+   const REGEX_MATCH = 6;
+   const REGEX_NOT_MATCH = 7;
+
+   const AND_MATCHING = "AND";
+   const OR_MATCHING = "OR";
    /**
    * Constructor
    * @param sub_type the rule type used for the collection
@@ -197,8 +233,8 @@ class Rule extends CommonDBTM {
    function dropdownRulesMatch($name,$value='') {
       global $LANG;
 
-      $elements[AND_MATCHING] = $LANG['rulesengine'][42];
-      $elements[OR_MATCHING] = $LANG['rulesengine'][43];
+      $elements[Rule::AND_MATCHING] = $LANG['rulesengine'][42];
+      $elements[Rule::OR_MATCHING] = $LANG['rulesengine'][43];
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
 
@@ -611,7 +647,7 @@ class Rule extends CommonDBTM {
 
       $doactions=false;
       reset($this->criterias);
-      if ($this->fields["match"]==AND_MATCHING) {
+      if ($this->fields["match"]==Rule::AND_MATCHING) {
          $doactions=true;
          foreach ($this->criterias as $criteria) {
             $doactions &= $this->checkCriteria($criteria,$input,$regex_result);
@@ -673,9 +709,9 @@ class Rule extends CommonDBTM {
       } else {
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
-         if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,
-                                                           PATTERN_NOT_CONTAIN,
-                                                           REGEX_NOT_MATCH))) {
+         if (in_array($criteria->fields["condition"],array(Rule::PATTERN_IS_NOT,
+                                                           Rule::PATTERN_NOT_CONTAIN,
+                                                           Rule::REGEX_NOT_MATCH))) {
             $res = true;
             foreach($input[$criteria->fields["criteria"]] as $tmp) {
                $value=$this->getCriteriaValue($criteria->fields["criteria"],
@@ -988,7 +1024,7 @@ class Rule extends CommonDBTM {
 
       $crit=$this->getCriteria($ID);
       if (isset($crit['type'])
-          && ($condition==PATTERN_IS || $condition==PATTERN_IS_NOT)) {
+          && ($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
          switch ($crit['type']) {
             case "dropdown" :
                return Dropdown::getDropdownName($crit["table"],$pattern);
@@ -1033,7 +1069,7 @@ class Rule extends CommonDBTM {
       $crit=$this->getCriteria($ID);
       $display=false;
       if (isset($crit['type'])
-          && ($test||$condition==PATTERN_IS || $condition==PATTERN_IS_NOT)) {
+          && ($test||$condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
          switch ($crit['type']) {
             case "dropdown" :
                Dropdown::show(getItemTypeForTable($crit['table']),
@@ -1128,7 +1164,7 @@ class Rule extends CommonDBTM {
 
       $crit=$this->getCriteria($ID);
       if (isset($crit['type'])
-          && ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT)) {
+          && ($condition!=Rule::PATTERN_IS && $condition!=Rule::PATTERN_IS_NOT)) {
          switch ($crit['type']) {
             case "dropdown" :
                return Dropdown::getDropdownName($crit["table"],$value);
@@ -1187,7 +1223,7 @@ class Rule extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>" . $LANG['rulesengine'][6] . "</th></tr>";
 
-         $type_match=($this->fields["match"]==AND_MATCHING
+         $type_match=($this->fields["match"]==Rule::AND_MATCHING
                       ?$LANG['rulesengine'][42]:$LANG['rulesengine'][43]);
          $already_displayed=array();
          $first=true;
@@ -1286,6 +1322,43 @@ class Rule extends CommonDBTM {
       return $rand;
    }
 
+   function getClassByType($type) {
+
+      switch ($type) {
+         case Rule::RULE_OCS_AFFECT_COMPUTER :
+            return new RuleOcs();
+
+         case Rule::RULE_AFFECT_RIGHTS :
+            return new RuleRight();
+
+         case Rule::RULE_TRACKING_AUTO_ACTION :
+            return new RuleTicket();
+
+         case Rule::RULE_SOFTWARE_CATEGORY :
+            return new RuleSoftwareCategory();
+
+         case Rule::RULE_DICTIONNARY_SOFTWARE :
+            return new RuleDictionnarySoftware;
+
+         case Rule::RULE_DICTIONNARY_MANUFACTURER :
+         case Rule::RULE_DICTIONNARY_MODEL_NETWORKING :
+         case Rule::RULE_DICTIONNARY_MODEL_COMPUTER :
+         case Rule::RULE_DICTIONNARY_MODEL_MONITOR :
+         case Rule::RULE_DICTIONNARY_MODEL_PRINTER :
+         case Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_MODEL_PHONE :
+         case Rule::RULE_DICTIONNARY_TYPE_NETWORKING :
+         case Rule::RULE_DICTIONNARY_TYPE_COMPUTER :
+         case Rule::RULE_DICTIONNARY_TYPE_PRINTER :
+         case Rule::RULE_DICTIONNARY_TYPE_MONITOR :
+         case Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_TYPE_PHONE :
+         case Rule::RULE_DICTIONNARY_OS :
+         case Rule::RULE_DICTIONNARY_OS_SP :
+         case Rule::RULE_DICTIONNARY_OS_VERSION :
+            return new RuleDictionnaryDropdown($type);
+      }
+   }
 }
 
 

@@ -54,7 +54,7 @@ class RuleCached extends Rule {
     */
    function getCacheTable() {
 
-      $rulecollection = getRuleCollectionClass($this->sub_type);
+      $rulecollection = RuleCollection::getClassByType($this->sub_type);
       return $rulecollection->cache_table;
    }
 
@@ -92,7 +92,7 @@ class RuleCached extends Rule {
 
       echo "<div class='center'>";
       echo "<table  class='tab_cadre_fixe'>";
-      $rulecollection = getRuleCollectionClass($this->sub_type);
+      $rulecollection = RuleCollection::getClassByType($this->sub_type);
 
       $query = "SELECT *
                 FROM `".$rulecollection->cache_table."`, `glpi_rules`

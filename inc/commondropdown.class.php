@@ -500,7 +500,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       $ruleinput = array("name" => $value);
-      $rulecollection = getRuleCollectionClassByTableName($this->getTable());
+      $rulecollection = RuleCollection::getClassByTableName($this->getTable());
 
       switch ($this->getTable()) {
          case "glpi_computermodels" :

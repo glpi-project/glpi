@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicketCollection extends RuleCollection {
 
    // From RuleCollection
-   public $sub_type = RULE_TRACKING_AUTO_ACTION;
+   public $sub_type = Rule::RULE_TRACKING_AUTO_ACTION;
    public $rule_class_name = 'RuleTicket';
    public $right = 'rule_ticket';
    public $use_output_rule_process_as_next_input=true;

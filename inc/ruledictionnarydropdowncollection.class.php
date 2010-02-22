@@ -52,14 +52,14 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
       $this->sub_type = $type;
       switch ($this->sub_type) {
-         case RULE_DICTIONNARY_MANUFACTURER :
+         case Rule::RULE_DICTIONNARY_MANUFACTURER :
             $this->item_table="glpi_manufacturers";
             //Init cache system values
             $this->initCache("glpi_rulecachemanufacturers");
             $this->menu_option="manufacturers";
             break;
 
-         case RULE_DICTIONNARY_MODEL_COMPUTER :
+         case Rule::RULE_DICTIONNARY_MODEL_COMPUTER :
             $this->item_table="glpi_computermodels";
             //Init cache system values
             $this->initCache("glpi_rulecachecomputermodels",array("name"=>"old_value",
@@ -67,14 +67,14 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             $this->menu_option="model.computer";
             break;
 
-         case RULE_DICTIONNARY_TYPE_COMPUTER :
+         case Rule::RULE_DICTIONNARY_TYPE_COMPUTER :
             $this->item_table="glpi_computertypes";
             //Init cache system values
             $this->initCache("glpi_rulecachecomputertypes");
             $this->menu_option="type.computer";
             break;
 
-         case RULE_DICTIONNARY_MODEL_MONITOR :
+         case Rule::RULE_DICTIONNARY_MODEL_MONITOR :
             $this->item_table="glpi_monitormodels";
             //Init cache system values
             $this->initCache("glpi_rulecachemonitormodels",array("name"=>"old_value",
@@ -82,14 +82,14 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             $this->menu_option="model.monitor";
             break;
 
-         case RULE_DICTIONNARY_TYPE_MONITOR :
+         case Rule::RULE_DICTIONNARY_TYPE_MONITOR :
             $this->item_table="glpi_monitortypes";
             //Init cache system values
             $this->initCache("glpi_rulecachemonitortypes");
             $this->menu_option="type.monitor";
             break;
 
-         case RULE_DICTIONNARY_MODEL_PRINTER :
+         case Rule::RULE_DICTIONNARY_MODEL_PRINTER :
             $this->item_table="glpi_printermodels";
             //Init cache system values
             $this->initCache("glpi_rulecacheprintermodels",array("name"=>"old_value",
@@ -97,39 +97,39 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             $this->menu_option="model.printer";
             break;
 
-         case RULE_DICTIONNARY_TYPE_PRINTER :
+         case Rule::RULE_DICTIONNARY_TYPE_PRINTER :
             $this->item_table="glpi_printertypes";
             $this->initCache("glpi_rulecacheprintertypes");
             $this->menu_option="type.printer";
             break;
 
-         case RULE_DICTIONNARY_MODEL_PHONE :
+         case Rule::RULE_DICTIONNARY_MODEL_PHONE :
             $this->item_table="glpi_phonemodels";
             $this->initCache("glpi_rulecachephonemodels",array("name"=>"old_value",
                                                                  "manufacturer"=>"manufacturer"));
             $this->menu_option="model.phone";
             break;
 
-         case RULE_DICTIONNARY_TYPE_PHONE :
+         case Rule::RULE_DICTIONNARY_TYPE_PHONE :
             $this->item_table="glpi_phonetypes";
             $this->initCache("glpi_rulecachephonetypes");
             $this->menu_option="type.phone";
             break;
 
-         case RULE_DICTIONNARY_MODEL_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL :
             $this->item_table="glpi_peripheralmodels";
             $this->initCache("glpi_rulecacheperipheralmodels",array("name"=>"old_value",
                                                                       "manufacturer"=>"manufacturer"));
             $this->menu_option="model.peripheral";
             break;
 
-         case RULE_DICTIONNARY_TYPE_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL :
             $this->item_table="glpi_peripheraltypes";
             $this->initCache("glpi_rulecacheperipheraltypes");
             $this->menu_option="type.peripheral";
             break;
 
-         case RULE_DICTIONNARY_MODEL_NETWORKING :
+         case Rule::RULE_DICTIONNARY_MODEL_NETWORKING :
             $this->item_table="glpi_networkequipmentmodels";
             $this->initCache("glpi_rulecachenetworkequipmentmodels",
                              array("name"=>"old_value",
@@ -137,25 +137,25 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             $this->menu_option="model.networking";
             break;
 
-         case RULE_DICTIONNARY_TYPE_NETWORKING :
+         case Rule::RULE_DICTIONNARY_TYPE_NETWORKING :
             $this->item_table="glpi_networkequipmenttypess";
             $this->initCache("glpi_rulecachenetworkequipmenttypes");
             $this->menu_option="type.networking";
             break;
 
-         case RULE_DICTIONNARY_OS :
+         case Rule::RULE_DICTIONNARY_OS :
             $this->item_table="glpi_operatingsystems";
             $this->initCache("glpi_rulecacheoperatingsystems");
             $this->menu_option="os";
             break;
 
-         case RULE_DICTIONNARY_OS_SP :
+         case Rule::RULE_DICTIONNARY_OS_SP :
             $this->item_table="glpi_operatingsystemservicepacks";
             $this->initCache("glpi_rulecacheoperatingsystemservicepacks");
             $this->menu_option="os_sp";
             break;
 
-         case RULE_DICTIONNARY_OS_VERSION :
+         case Rule::RULE_DICTIONNARY_OS_VERSION :
             $this->item_table="glpi_operatingsystemversions";
             $this->initCache("glpi_rulecacheoperatingsystemversions");
             $this->menu_option="os_version";
@@ -167,67 +167,67 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       global $LANG;
 
       switch ($this->sub_type) {
-         case RULE_DICTIONNARY_MANUFACTURER :
+         case Rule::RULE_DICTIONNARY_MANUFACTURER :
             return $LANG['rulesengine'][36];
             break;
 
-         case RULE_DICTIONNARY_MODEL_COMPUTER :
+         case Rule::RULE_DICTIONNARY_MODEL_COMPUTER :
             return $LANG['rulesengine'][50];
             break;
 
-         case RULE_DICTIONNARY_TYPE_COMPUTER :
+         case Rule::RULE_DICTIONNARY_TYPE_COMPUTER :
             return $LANG['rulesengine'][60];
             break;
 
-         case RULE_DICTIONNARY_MODEL_MONITOR :
+         case Rule::RULE_DICTIONNARY_MODEL_MONITOR :
             return $LANG['rulesengine'][51];
             break;
 
-         case RULE_DICTIONNARY_TYPE_MONITOR :
+         case Rule::RULE_DICTIONNARY_TYPE_MONITOR :
             return $LANG['rulesengine'][61];
             break;
 
-         case RULE_DICTIONNARY_MODEL_PRINTER :
+         case Rule::RULE_DICTIONNARY_MODEL_PRINTER :
             return $LANG['rulesengine'][54];
             break;
 
-         case RULE_DICTIONNARY_TYPE_PRINTER :
+         case Rule::RULE_DICTIONNARY_TYPE_PRINTER :
             return $LANG['rulesengine'][64];
             break;
 
-         case RULE_DICTIONNARY_MODEL_PHONE :
+         case Rule::RULE_DICTIONNARY_MODEL_PHONE :
             return $LANG['rulesengine'][52];
             break;
 
-         case RULE_DICTIONNARY_TYPE_PHONE :
+         case Rule::RULE_DICTIONNARY_TYPE_PHONE :
             return $LANG['rulesengine'][62];
             break;
 
-         case RULE_DICTIONNARY_MODEL_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL :
             return $LANG['rulesengine'][53];
             break;
 
-         case RULE_DICTIONNARY_TYPE_PERIPHERAL :
+         case Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL :
             return $LANG['rulesengine'][63];
             break;
 
-         case RULE_DICTIONNARY_MODEL_NETWORKING :
+         case Rule::RULE_DICTIONNARY_MODEL_NETWORKING :
             return $LANG['rulesengine'][55];
             break;
 
-         case RULE_DICTIONNARY_TYPE_NETWORKING :
+         case Rule::RULE_DICTIONNARY_TYPE_NETWORKING :
             return $LANG['rulesengine'][65];
             break;
 
-         case RULE_DICTIONNARY_OS :
+         case Rule::RULE_DICTIONNARY_OS :
             return $LANG['rulesengine'][67];
             break;
 
-         case RULE_DICTIONNARY_OS_SP :
+         case Rule::RULE_DICTIONNARY_OS_SP :
             return $LANG['rulesengine'][68];
             break;
 
-         case RULE_DICTIONNARY_OS_VERSION :
+         case Rule::RULE_DICTIONNARY_OS_VERSION :
             return $LANG['rulesengine'][69];
             break;
       }
@@ -241,12 +241,12 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       global $DB,$LANG;
 
       // Model check : need to check using manufacturer extra data so specific function
-      if (in_array($this->sub_type,array(RULE_DICTIONNARY_MODEL_COMPUTER,
-                                         RULE_DICTIONNARY_MODEL_MONITOR,
-                                         RULE_DICTIONNARY_MODEL_PRINTER,
-                                         RULE_DICTIONNARY_MODEL_PHONE,
-                                         RULE_DICTIONNARY_MODEL_PERIPHERAL,
-                                         RULE_DICTIONNARY_MODEL_NETWORKING))){
+      if (in_array($this->sub_type,array(Rule::RULE_DICTIONNARY_MODEL_COMPUTER,
+                                         Rule::RULE_DICTIONNARY_MODEL_MONITOR,
+                                         Rule::RULE_DICTIONNARY_MODEL_PRINTER,
+                                         Rule::RULE_DICTIONNARY_MODEL_PHONE,
+                                         Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL,
+                                         Rule::RULE_DICTIONNARY_MODEL_NETWORKING))){
          return $this->replayRulesOnExistingDBForModel($offset,$maxtime);
       }
 
@@ -404,7 +404,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                $deletecartmodel=true;
             }
             // Manage cartridge assoc Update items
-            if ($this->sub_type==RULE_DICTIONNARY_MODEL_PRINTER) {
+            if ($this->sub_type==Rule::RULE_DICTIONNARY_MODEL_PRINTER) {
                $sql = "SELECT *
                        FROM `glpi_cartridges_printermodels`
                        WHERE `printermodels_id` = '$ID'";

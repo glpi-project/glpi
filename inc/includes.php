@@ -154,13 +154,6 @@ if (isset($AJAX_INCLUDE)) {
    $HEADER_LOADED=true;
 }
 
-
-// TODO Remove this ASAP
-include_once (GLPI_ROOT . "/inc/rule.function.php");
-
-
-
-
 /* On startup, register all plugins configured for use. */
 if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
    // PLugin already included

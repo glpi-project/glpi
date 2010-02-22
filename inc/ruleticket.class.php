@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicket extends Rule {
 
    // From Rule
-   public $sub_type = RULE_TRACKING_AUTO_ACTION;
+   public $sub_type = Rule::RULE_TRACKING_AUTO_ACTION;
    public $right='rule_ticket';
    public $can_sort=true;
 
@@ -55,7 +55,7 @@ class RuleTicket extends Rule {
    function maxActionsCount() {
       global $RULES_ACTIONS;
 
-      return count($RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]);
+      return count($RULES_ACTIONS[Rule::RULE_TRACKING_AUTO_ACTION]);
    }
 
    function addSpecificParamsForPreview($input,$params) {

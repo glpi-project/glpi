@@ -93,7 +93,7 @@ class RuleCachedCollection extends RuleCollection {
       //If cache enabled : try to get value from the cache
       $new_values = $this->checkDataInCache($input);
 
-      if ($new_values != RULE_NOT_IN_CACHE) {
+      if ($new_values != Rule::RULE_NOT_IN_CACHE) {
          $output["_rule_process"]=true;
          return array_merge($output,$new_values);
       }
@@ -175,7 +175,7 @@ class RuleCachedCollection extends RuleCollection {
             return $output_values;
          }
       }
-      return RULE_NOT_IN_CACHE;
+      return Rule::RULE_NOT_IN_CACHE;
    }
 
    /**

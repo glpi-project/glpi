@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new RuleDictionnaryDropdownCollection(RULE_DICTIONNARY_TYPE_NETWORKING);
+$rulecollection = new RuleDictionnaryDropdownCollection(Rule::RULE_DICTIONNARY_TYPE_NETWORKING);
 
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>

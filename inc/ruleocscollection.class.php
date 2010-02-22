@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleOcsCollection extends RuleCollection {
 
    // From RuleCollection
-   public $sub_type = RULE_OCS_AFFECT_COMPUTER;
+   public $sub_type = Rule::RULE_OCS_AFFECT_COMPUTER;
    public $rule_class_name = 'RuleOcs';
    public $stop_on_first_match=true;
    public $right = 'rule_ocs';

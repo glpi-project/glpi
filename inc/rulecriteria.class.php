@@ -80,9 +80,9 @@ class RuleCriteria extends CommonDBTM {
       } else {
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
-         if (in_array($this->fields["condition"],array(PATTERN_IS_NOT,
-                                                       PATTERN_NOT_CONTAIN,
-                                                       REGEX_NOT_MATCH))) {
+         if (in_array($this->fields["condition"],array(Rule::PATTERN_IS_NOT,
+                                                       Rule::PATTERN_NOT_CONTAIN,
+                                                       Rule::REGEX_NOT_MATCH))) {
             $res = true;
             foreach($input[$this->fields["criteria"]] as $tmp) {
                $value=$this->getValueToMatch($this->fields["condition"],$tmp);
@@ -117,7 +117,7 @@ class RuleCriteria extends CommonDBTM {
 
       $type = $this->getType();
       if (!empty($type)
-          && ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT)) {
+          && ($condition!=Rule::PATTERN_IS && $condition!=Rule::PATTERN_IS_NOT)) {
          switch ($this->getType()) {
             case "dropdown" :
                return Dropdown::getDropdownName($this->getTable(),$initValue);
@@ -160,7 +160,7 @@ class RuleCriteria extends CommonDBTM {
    static function match($field, $condition, $pattern,&$regex_result) {
 
       //If pattern is wildcard, don't check the rule and return true
-      if ($pattern == RULE_WILDCARD) {
+      if ($pattern == Rule::RULE_WILDCARD) {
          return true;
       }
 
@@ -168,33 +168,33 @@ class RuleCriteria extends CommonDBTM {
       // Input are slashed protected, not output.
       $field=stripslashes(trim($field));
       $pattern=trim($pattern);
-      if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH) {
+      if ($condition != Rule::REGEX_MATCH && $condition != Rule::REGEX_NOT_MATCH) {
          //Perform comparison with fields in lower case
          $field = utf8_strtolower($field);
          $pattern = utf8_strtolower($pattern);
       }
 
       switch ($condition) {
-         case PATTERN_IS :
+         case Rule::PATTERN_IS :
             if ($field == $pattern) {
                return true;
             }
             return false;
 
-         case PATTERN_IS_NOT :
+         case Rule::PATTERN_IS_NOT :
             if ($field != $pattern) {
                return true;
             }
             return false;
 
-         case PATTERN_END :
+         case Rule::PATTERN_END :
             $value = "/".$pattern."$/";
             if (preg_match($value, $field) > 0) {
                return true;
             }
             return false;
 
-         case PATTERN_BEGIN :
+         case Rule::PATTERN_BEGIN :
             if (empty($pattern)) {
                return false;
             }
@@ -204,7 +204,7 @@ class RuleCriteria extends CommonDBTM {
             }
             return false;
 
-         case PATTERN_CONTAIN :
+         case Rule::PATTERN_CONTAIN :
             if (empty($pattern)) {
                return false;
             }
@@ -214,7 +214,7 @@ class RuleCriteria extends CommonDBTM {
             }
             return false;
 
-         case PATTERN_NOT_CONTAIN :
+         case Rule::PATTERN_NOT_CONTAIN :
             if (empty($pattern)) {
                return false;
             }
@@ -224,7 +224,7 @@ class RuleCriteria extends CommonDBTM {
             }
             return false;
 
-         case REGEX_MATCH :
+         case Rule::REGEX_MATCH :
             $results = array();
             if (preg_match($pattern."i",$field,$results)>0) {
                for ($i=1;$i<count($results);$i++) {
@@ -234,7 +234,7 @@ class RuleCriteria extends CommonDBTM {
             }
             return false;
 
-         case REGEX_NOT_MATCH :
+         case Rule::REGEX_NOT_MATCH :
             if (preg_match($pattern."i", $field) == 0) {
                return true;
             }
@@ -252,28 +252,28 @@ class RuleCriteria extends CommonDBTM {
       global $LANG;
 
       switch ($ID) {
-         case PATTERN_IS :
+         case Rule::PATTERN_IS :
             return $LANG['rulesengine'][0];
 
-         case PATTERN_IS_NOT :
+         case Rule::PATTERN_IS_NOT :
             return $LANG['rulesengine'][1];
 
-         case PATTERN_CONTAIN :
+         case Rule::PATTERN_CONTAIN :
             return $LANG['rulesengine'][2];
 
-         case PATTERN_NOT_CONTAIN :
+         case Rule::PATTERN_NOT_CONTAIN :
             return $LANG['rulesengine'][3];
 
-         case PATTERN_BEGIN :
+         case Rule::PATTERN_BEGIN :
             return $LANG['rulesengine'][4];
 
-         case PATTERN_END :
+         case Rule::PATTERN_END :
             return $LANG['rulesengine'][5];
 
-         case REGEX_MATCH :
+         case Rule::REGEX_MATCH :
             return $LANG['rulesengine'][26];
 
-         case REGEX_NOT_MATCH:
+         case Rule::REGEX_NOT_MATCH:
             return $LANG['rulesengine'][27];
       }
    }
@@ -284,14 +284,14 @@ class RuleCriteria extends CommonDBTM {
    static function dropdownConditions($type,$name,$value='') {
       global $LANG;
 
-      $elements[PATTERN_IS]          = $LANG['rulesengine'][0];
-      $elements[PATTERN_IS_NOT]      = $LANG['rulesengine'][1];
-      $elements[PATTERN_CONTAIN]     = $LANG['rulesengine'][2];
-      $elements[PATTERN_NOT_CONTAIN] = $LANG['rulesengine'][3];
-      $elements[PATTERN_BEGIN]       = $LANG['rulesengine'][4];
-      $elements[PATTERN_END]         = $LANG['rulesengine'][5];
-      $elements[REGEX_MATCH]         = $LANG['rulesengine'][26];
-      $elements[REGEX_NOT_MATCH]     = $LANG['rulesengine'][27];
+      $elements[Rule::PATTERN_IS]          = $LANG['rulesengine'][0];
+      $elements[Rule::PATTERN_IS_NOT]      = $LANG['rulesengine'][1];
+      $elements[Rule::PATTERN_CONTAIN]     = $LANG['rulesengine'][2];
+      $elements[Rule::PATTERN_NOT_CONTAIN] = $LANG['rulesengine'][3];
+      $elements[Rule::PATTERN_BEGIN]       = $LANG['rulesengine'][4];
+      $elements[Rule::PATTERN_END]         = $LANG['rulesengine'][5];
+      $elements[Rule::REGEX_MATCH]         = $LANG['rulesengine'][26];
+      $elements[Rule::REGEX_NOT_MATCH]     = $LANG['rulesengine'][27];
 
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }

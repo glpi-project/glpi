@@ -1833,17 +1833,17 @@ function update0723to080($output='HTML') {
    }
 
    //// Upgrade rules datas
-   // For RULE_AFFECT_RIGHTS
-   $changes[RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id',
+   // For Rule::RULE_AFFECT_RIGHTS
+   $changes[Rule::RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id',
                         'recursive'=>'is_recursive','active'=>'is_active');
-   // For RULE_DICTIONNARY_SOFTWARE
-   $changes[RULE_DICTIONNARY_SOFTWARE]=array('helpdesk_visible'=>'is_helpdesk_visible');
-   // For RULE_OCS_AFFECT_COMPUTER
-   $changes[RULE_OCS_AFFECT_COMPUTER]=array('FK_entities'=>'entities_id');
-   // For RULE_SOFTWARE_CATEGORY
-   $changes[RULE_SOFTWARE_CATEGORY]=array('category'=>'softwarecategories_id','comment'=>'comment');
-   // For RULE_TRACKING_AUTO_ACTION
-   $changes[RULE_TRACKING_AUTO_ACTION]=array('category'        => 'ticketcategories_id',
+   // For Rule::RULE_DICTIONNARY_SOFTWARE
+   $changes[Rule::RULE_DICTIONNARY_SOFTWARE]=array('helpdesk_visible'=>'is_helpdesk_visible');
+   // For Rule::RULE_OCS_AFFECT_COMPUTER
+   $changes[Rule::RULE_OCS_AFFECT_COMPUTER]=array('FK_entities'=>'entities_id');
+   // For Rule::RULE_SOFTWARE_CATEGORY
+   $changes[Rule::RULE_SOFTWARE_CATEGORY]=array('category'=>'softwarecategories_id','comment'=>'comment');
+   // For Rule::RULE_TRACKING_AUTO_ACTION
+   $changes[Rule::RULE_TRACKING_AUTO_ACTION]=array('category'        => 'ticketcategories_id',
                                              'author'          => 'users_id',
                                              'author_location' => 'users_locations',
                                              'FK_group'        => 'groups_id',
@@ -2530,7 +2530,7 @@ function update0723to080($output='HTML') {
                 WHERE `criteria`='priority'
                   AND `rules_id` IN (SELECT `id`
                                      FROM `glpi_rules`
-                                     WHERE `sub_type`='".RULE_TRACKING_AUTO_ACTION."')";
+                                     WHERE `sub_type`='".Rule::RULE_TRACKING_AUTO_ACTION."')";
       $DB->query($query) or die("0.80 fix priority/urgency in business rules " .
                                  $LANG['update'][90] . $DB->error());
    }
