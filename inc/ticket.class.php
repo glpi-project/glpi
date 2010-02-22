@@ -862,13 +862,16 @@ class Ticket extends CommonDBTM {
       }
 
       // Set default dropdown
-      $dropdown_fields = array('entities_id','groups_id','groups_id_assign', 'itemtype','items_id',
+      $dropdown_fields = array('entities_id','groups_id','groups_id_assign', 'items_id',
                                'users_id','users_id_assign', 'suppliers_id_assign',
                                'ticketcategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field]=0;
          }
+      }
+      if (!isset($input['itemtype']) || !($input['items_id']>0)) {
+         $input['itemtype']='';
       }
 
       $item=NULL;
