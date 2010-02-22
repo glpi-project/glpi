@@ -996,10 +996,10 @@ class Contract extends CommonDBTM {
                                          $data["notice"])."<br>\n";
             $contract_infos[$type][$entity][] = $data;
 
-            if (!isset($contract_infos[$type][$entity]['message'])) {
-               $contract_messages[$type][$entity]['message'] = $LANG['mailing'][37]."<br />";
+            if (!isset($contract_messages[$type][$entity])) {
+               $contract_messages[$type][$entity] = $LANG['mailing'][37]."<br />";
             }
-            $contract_messages[$type][$entity]['message'] .= $message;
+            $contract_messages[$type][$entity] .= $message;
          }
 
       }
@@ -1010,7 +1010,7 @@ class Contract extends CommonDBTM {
                                               new Contract(),
                                               array('entities_id'=>$entity,
                                                     'contracts'=>$contracts))) {
-               $message = $contract_messages[$type][$entity]['message'];
+               $message = $contract_messages[$type][$entity];
                $cron_status = 1;
                if ($task) {
                   $task->log(Dropdown::getDropdownName("glpi_entities",
