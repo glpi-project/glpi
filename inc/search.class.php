@@ -3246,7 +3246,7 @@ class Search {
          case 'glpi_notifications.event' :
                $item = NotificationTarget::getInstanceByType($data['itemtype']);
                if ($item) {
-                  $events = $item->getEvents();
+                  $events = $item->getAllEvents();
                   return $events[$data[$NAME.$num]];
                }
                return '';
