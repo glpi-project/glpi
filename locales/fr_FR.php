@@ -318,6 +318,9 @@ $LANG['connect'][1]="Non connecté.";
 $LANG['connect'][15]="Mise à jour automatique des éléments suivants";
 $LANG['connect'][16]="Attention !! Les éléments suivants des deux matériels ne correspondent pas";
 
+$LANG['contract'][0]="Contrat expiré depuis le ";
+$LANG['contract'][1]="Contrat en préavis depuis le ";
+
 $LANG['consumables'][0]="Consommable";
 $LANG['consumables'][1]="En stock";
 $LANG['consumables'][2]="Référence";
@@ -1061,6 +1064,7 @@ $LANG['mailing'][125]="Traduction par défaut";
 $LANG['mailing'][126]="Traduction d'un modèle";
 $LANG['mailing'][127]="Cloture du ticket";
 $LANG['mailing'][128]="laisser le champs vide pour une génération à partir du HTML";
+$LANG['mailing'][129]="Suppression d'un ticket";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";

@@ -214,34 +214,34 @@ class NotificationTemplate extends CommonDBTM {
 
       //Remove all
       $string = unclean_cross_side_scripting_deep($string);
-      //$string = preg_replace(array('/\r/','/\r\n/','/\n/'),
-      //                       array('','',''),$string);
 
       //First of all process the FOREACH tag
-      if (preg_match_all("/##FOREACH(FIRST|LAST)?([0-9]*)?([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
+      if (preg_match_all("/##FOREACH[ ]?(FIRST|LAST)?[ ]?([0-9]*)?[ ]?([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
          foreach ($out[3] as $id => $tag_infos) {
 
-            //$regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/";
             $regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/is";
+
             if (preg_match($regex,$string,$tag_out) &&
                   isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
-
                $data_lang_foreach = $data;
                unset($data_lang_foreach[$tag_infos]);
 
                //Manage FIRST & LAST statement
                $foreachvalues = $data[$tag_infos];
                if (!empty($foreachvalues)) {
-                  if ($out[1][$id] == 'FIRST') {
-                     $foreachvalues = array_reverse($foreachvalues);
-                  }
-                  if ($out[2][$id]) {
-                     $foreachvalues = array_slice($foreachvalues,0,$out[2][$id]);
-                  }
-                  else {
-                     $foreachvalues = array_slice($foreachvalues,0,1);
+                  if (isset($out[1][$id]) && $out[1][$id] != '') {
+                     if ($out[1][$id] == 'FIRST') {
+                        $foreachvalues = array_reverse($foreachvalues);
+                     }
+                     if (isset ($out[2][$id]) && $out[2][$id]) {
+                        $foreachvalues = array_slice($foreachvalues,0,$out[2][$id]);
+                     }
+                     else {
+                        $foreachvalues = array_slice($foreachvalues,0,1);
+                     }
                   }
                }
+
                $output_foreach_string = "";
                foreach ($foreachvalues as $line) {
                   foreach ($line as $field => $value) {

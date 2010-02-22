@@ -984,17 +984,33 @@ class Contract extends CommonDBTM {
 
       $querys = array(ALERT_NOTICE=>$query_notice, ALERT_END=>$query_end);
 
+      $contract_infos = array();
+      $contract_messages = array();
       foreach ($querys as $type => $query) {
+         $contract_infos[$type] = array();
          foreach ($DB->request($query) as $data) {
             $entity = $data['entities_id'];
-            $contract = new Contract;
-            $contract->fields = $data;
-            $message = $LANG['mailing'][37]." ".$data["name"].": ".
-                                           getWarrantyExpir($data["begin_date"],
-                                                           $data["duration"],
-                                                           $data["notice"])."<br>\n";
+            $message = $data["name"].": ".
+                        getWarrantyExpir($data["begin_date"],
+                                         $data["duration"],
+                                         $data["notice"])."<br>\n";
+            $contract_infos[$type][$entity][] = $data;
 
-            if (NotificationEvent::raiseEvent('alert',$contract,array('type'=>$type))) {
+            if (!isset($contract_infos[$type][$entity]['message'])) {
+               $contract_messages[$type][$entity]['message'] = $LANG['mailing'][37]."<br />";
+            }
+            $contract_messages[$type][$entity]['message'] .= $message;
+         }
+
+      }
+
+      foreach ($querys as $type => $query) {
+         foreach ($contract_infos[$type] as $entity => $contracts) {
+            if (NotificationEvent::raiseEvent(($type==ALERT_NOTICE?"notice":"end"),
+                                              new Contract(),
+                                              array('entities_id'=>$entity,
+                                                    'contracts'=>$contracts))) {
+               $message = $contract_messages[$type][$entity]['message'];
                $cron_status = 1;
                if ($task) {
                   $task->log(Dropdown::getDropdownName("glpi_entities",
@@ -1008,8 +1024,11 @@ class Contract extends CommonDBTM {
                $alert=new Alert();
                $input["itemtype"] = 'Contract';
                $input["type"]=$type;
-               $input["items_id"]=$data['id'];
-               $alert->add($input);
+               foreach ($contracts as $id => $contract) {
+                  $input["items_id"]=$id;
+                  $alert->add($input);
+                  unset($alert->fields['ID']);
+               }
             } else {
                if ($task) {
                   $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
@@ -1021,6 +1040,7 @@ class Contract extends CommonDBTM {
             }
          }
       }
+
       return $cron_status;
    }
 

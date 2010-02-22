@@ -74,16 +74,11 @@ class NotificationTarget extends CommonDBChild {
       else {
          $this->entity = $entity;
       }
-      $this->obj = $object;
-      $this->getObjectItem();
-      if ($this->target_object == null) {
-         $this->target_object = $this->target;
+      if ($object) {
+         $this->obj = $object;
+         $this->getObjectItem();
       }
 
-      if (haveRight("config","w")) {
-         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR,$LANG['setup'][237]);
-      }
-      $this->addTarget(Notification::ENTITY_ADMINISTRATOR,$LANG['setup'][237]." ".$LANG['entity'][0]);
       $this->getNotificationTargets($entity);
       $this->getAdditionalTargets();
       asort($this->notification_targets);
@@ -419,6 +414,11 @@ class NotificationTarget extends CommonDBChild {
     */
    function getNotificationTargets($entity) {
       global $LANG,$DB;
+
+      if (haveRight("config","w")) {
+         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR,$LANG['setup'][237]);
+      }
+      $this->addTarget(Notification::ENTITY_ADMINISTRATOR,$LANG['setup'][237]." ".$LANG['entity'][0]);
 
       foreach ($DB->request('glpi_profiles') as $data) {
          $this->addTarget($data["id"],$LANG['profiles'][22] . " " .$data["name"],Notification::PROFILE_TYPE);

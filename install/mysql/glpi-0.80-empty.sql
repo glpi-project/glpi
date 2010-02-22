@@ -2149,7 +2149,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('2','2','','##reserv
 ======================================================================
 ','&lt;!-- description{ color: inherit; background: #ebebeb;border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; } --&gt;
 &lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.user##:&lt;/span&gt;##reservation.user##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.item.name##:&lt;/span&gt;##reservation.itemtype## - ##reservation.item.name##&lt;br /&gt;##IFreservation.tech## ##lang.reservation.tech## ##reservation.tech####ENDIFreservation.tech##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.begin##:&lt;/span&gt; ##reservation.begin##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.end##:&lt;/span&gt;##reservation.end##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.comment##:&lt;/span&gt; ##reservation.comment##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','[###ticket.id##] ##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url## 
 
                                   ##lang.ticket.description## 
 
@@ -2285,7 +2285,8 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','[###tick
                                  ##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;
 &lt;p&gt;
                                  ##ENDFOREACHtasks##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','8','','##contract.action## - ##contract.entity##','##contract.action## ##contract.name## : ##contract.time##','&lt;p&gt;##contract.action## ##contract.name## : ##contract.time##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES('5', 8, '', '##contract.action##  ##contract.entity##', '##lang.contract.entity## :##contract.entity##\r\n\r\n##FOREACHcontracts##\r\n##lang.contract.name## : ##contract.name##\r\n##lang.contract.number## : ##contract.number##\r\n##lang.contract.time## : ##contract.time##\r\n ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##\r\n ##contract.url##\r\n##ENDFOREACHcontracts##',
+ '&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;&lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## : ##contract.name##&lt;br /&gt;##lang.contract.number## : ##contract.number##&lt;br /&gt;##lang.contract.time## : ##contract.time##&lt;br /&gt; ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##&lt;br /&gt; &lt;a href="##contract.url##"&gt;##contract.url##&lt;/a&gt;&lt;br /&gt;##ENDFOREACHcontracts##&lt;/p&gt;');
 
 ### Dump table glpi_ocsadmininfoslinks
 
