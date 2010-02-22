@@ -162,6 +162,7 @@ class CronTask extends CommonDBTM{
 
       if ($DB->affected_rows($result)>0) {
          $this->timer = microtime(true);
+         $this->volume = 0;
          $log = new CronTaskLog();
          $txt = $LANG['crontask'][36] . " : " .
                 $this->getModeName(isCommandLine() ? self::MODE_EXTERNAL : self::MODE_INTERNAL);
