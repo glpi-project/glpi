@@ -358,7 +358,7 @@ function location_create_new($split_char,$add_first){
 ///// FIN FONCTIONS POUR UPDATE LOCATION
 
 function showLocationUpdateForm(){
-	global $DB,$LANG;
+	global $DB,$LANG,$CFG_GLPI;
 
 	if ((TableExists ("glpi_dropdown_locations") && FieldExists("glpi_dropdown_locations", "parentID"))
          || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "locations_id"))) {
