@@ -90,6 +90,7 @@ class Ticket extends CommonDBTM {
                   && ($this->fields["users_id_assign"] === getLoginUserID()
                       || (isset($_SESSION["glpigroups"])
                           && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"]))
+                      || (haveRight('assign_ticket',1) && $this->fields["status"]=='new')
                      )
                  )
              );
@@ -2964,6 +2965,7 @@ class Ticket extends CommonDBTM {
                $search_users_id = " (`groups_id` IN ('$groups')) ";
             }
          }
+
       }
 
       $query = "SELECT `id`
