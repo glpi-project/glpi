@@ -230,7 +230,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
       $tpldata['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                              $this->obj->getField('entities_id'));
-      $events = $this->getEvents();
+      $events = $this->getAllEvents();
       $tpldata['##ticket.action##'] = $events[$event];
       $tpldata['##ticket.status##'] = Ticket::getStatus($this->obj->getField('status'));
       $tpldata['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',

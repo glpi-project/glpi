@@ -109,7 +109,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
       //----------- Ticket infos -------------- //
 
-      $events = $this->getEvents();
+      $events = $this->getAllEvents();
       $tpldata['##reservation.action##'] = $events[$event];
       $tpldata['##reservation.user##'] = Dropdown::getDropdownName('glpi_users',
                                                                 $this->obj->getField('users_id'));

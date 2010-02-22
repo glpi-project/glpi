@@ -66,6 +66,9 @@ class NotificationTarget extends CommonDBChild {
    //Object which is associated with the event
    var $target_object = null;
 
+   // array of event name => event label
+   var $events = array();
+
    function __construct($entity='', $object = null) {
       global $LANG;
       if (!$entity == '') {
@@ -393,11 +396,25 @@ class NotificationTarget extends CommonDBChild {
    }
 
    /**
-    * Return all possible notification events for the object type
+    * Return main notification events for the object type
+    * Internal use only => should use getAllEvents
+    *
     * @return an array which contains : event => event label
     */
    function getEvents() {
       return array();
+   }
+
+   /**
+    * Return all (GLPI + plugins) notification events for the object type
+    * @return an array which contains : event => event label
+    */
+   function getAllEvents() {
+
+      $this->events = $this->getEvents();
+      doHook('item_get_events', $this);
+
+      return $this->events;
    }
 
    function addTarget ($target='', $label='',$type=Notification::USER_TYPE) {
