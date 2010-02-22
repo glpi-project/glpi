@@ -50,7 +50,7 @@ $config = array();
 
 if (haveRight("config","w")) {
    $config["config.form.php"]  = $LANG['setup'][70];
-   $config["notification.php"] = $LANG['setup'][68];
+   $config["setup.notification.php"] = $LANG['setup'][704];
    $config["setup.auth.php"]   = $LANG['setup'][67];
    $config["mailcollector.php"]     = $LANG['Menu'][39];
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("ocsng","w")) {
