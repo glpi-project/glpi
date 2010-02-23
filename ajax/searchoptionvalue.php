@@ -110,6 +110,20 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
             }
 
+            // Standard datatype usage
+            if (!$display && isset($searchopt['datatype'])) {
+               switch ($searchopt['datatype']) {
+      
+                  case "bool":
+                     Dropdown::showYesNo(getItemTypeForTable($searchopt['table']),
+                                    array('value'     => $_REQUEST['value'],
+                                          'name'      => $inputname,
+                                          'comments'  => 0));
+                     $display=true;
+                     break;
+               }
+            }
+
             // Standard field usage
             if (!$display) {
                switch ($searchopt['field']) {

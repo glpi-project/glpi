@@ -4084,6 +4084,15 @@ class Search {
             return $actions;
          }
 
+         if (isset($searchopt[$field_num]['datatype'])) {
+            switch ($searchopt[$field_num]['datatype']) {
+               case 'bool' :
+                  return array('contains' => $LANG['search'][2],
+                              'equals'    => $LANG['rulesengine'][0],
+                              'searchopt' => $searchopt[$field_num]);
+            }
+         }
+
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
                return array('equals'=>$LANG['rulesengine'][0],
