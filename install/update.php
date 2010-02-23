@@ -168,7 +168,7 @@ function displayMigrationMessage ($id, $msg="") {
 }
 
 /**
- * Add a dropdown if not exists (used by pre 0.80 update script)
+ * Add a dropdown if not exists (used by pre 0.78 update script)
  * Only use for simple dropdown (no entity and not tree)
  *
  * @param $table string table name
@@ -518,13 +518,13 @@ function updateDbUpTo031()
 		echo "<p class='center'>Version > 0.31  </p>";
 	}
 
-   // >= 0.80
+   // >= 0.78
    if (TableExists("glpi_configs")) {
       // Get current version
       $query="SELECT version FROM glpi_configs";
       $result=$DB->query($query) or die("get current version".$DB->error());
       $current_version=trim($DB->result($result,0,0));
-   } else { // < 0.80
+   } else { // < 0.78
       // Get current version
       $query="SELECT version FROM glpi_config";
       $result=$DB->query($query) or die("get current version".$DB->error());
@@ -597,10 +597,10 @@ function updateDbUpTo031()
          include("update_0722_0723.php");
          update0722to0723();
       case "0.72.3":
-         include("update_0723_080.php");
-         update0723to080();
       case "0.72.4":
-      case "0.80":
+         include("update_0723_078.php");
+         update0723to078();
+      case "0.78":
 			break;
 		default:
 			include("update_031_04.php");
@@ -636,14 +636,14 @@ function updateDbUpTo031()
 			update0721to0722();
          include("update_0722_0723.php");
          update0722to0723();
-         include("update_0723_080.php");
-         update0723to080();
+         include("update_0723_078.php");
+         update0723to078();
 
 			break;
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_configs` SET `version` = ' 0.80', language='".$glpilanguage."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_configs` SET `version` = ' 0.78', language='".$glpilanguage."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG['update'][90].$DB->error());
 
 	// Update process desactivate all plugins
@@ -754,7 +754,7 @@ else {
             $config_table="glpi_configs";
          }
 
-         // Find 2 tables to manage databases before 0.80
+         // Find 2 tables to manage databases before 0.78
 			if(!TableExists($config_table)) {
 				include("update_to_031.php");
 				updateDbTo031();
