@@ -908,6 +908,12 @@ class Search {
                            $count_display=0;
                            $out="";
                            $unit="";
+                           $separate='<br>';
+                           if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
+                              && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
+                              $separate='<hr>';
+                           }
+
                            if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'])) {
                               $unit=$searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'];
                            }
@@ -917,7 +923,7 @@ class Search {
                                  || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
 
                                  if ($count_display) {
-                                    $out.= "<br>";
+                                    $out.= $separate;
                                  }
                                  $count_display++;
 
@@ -1347,9 +1353,9 @@ class Search {
       echo "</td>\n";
 
       echo "<td width='150px'>";
-      echo "<table width='100%'><tr>";
+      echo "<table width='100%'>";
       // Display sort selection
-/*      echo "<td colspan='2'>".$LANG['search'][4];
+/*      echo "<tr><td colspan='2'>".$LANG['search'][4];
       echo "&nbsp;<select name='sort' size='1'>";
       reset($options);
       $first_group=true;
@@ -1373,11 +1379,11 @@ class Search {
          echo "</optgroup>\n";
       }
       echo "</select> ";
-      echo "</td>\n";
+      echo "</td></tr>\n";
 */
       // Display deleted selection
 
-      echo "</tr><tr>";
+      echo "<tr>";
 
       // Display submit button
       echo "<td width='80' class='center'>";
@@ -3271,7 +3277,7 @@ class Search {
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
                         alt='$status' title='$status'><br>$status";
          case 'glpi_tickets.priority':
-            return "<span width='100%' height='100%' style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\">".Ticket::getPriorityName($data[$NAME.$num]).'</span>';
+            return "<div style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\">".Ticket::getPriorityName($data[$NAME.$num]).'</div>';
 
          case 'glpi_tickets.urgency':
             return Ticket::getUrgencyName($data[$NAME.$num]);
@@ -3338,12 +3344,19 @@ class Search {
                   $out="";
                   $split=explode("$$$$",$data[$NAME.$num]);
                   $count_display=0;
+
+                  $separate='<br>';
+                  if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
+                     $separate='<hr>';
+                  }
+
+
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k]))>0) {
                         $split2=explode("$$",$split[$k]);
                         if (isset($split2[1]) && $split2[1]>0) {
                            if ($count_display) {
-                              $out .= "<br>";
+                              $out .= $separate;
                            }
                            $count_display++;
                            $page=getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
@@ -3362,7 +3375,11 @@ class Search {
                break;
 
             case "text" :
-               return str_replace('$$$$','<br>',nl2br($data[$NAME.$num]));
+               $separate='<br>';
+               if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
+                  $separate='<hr>';
+               }
+               return str_replace('$$$$',$separate,nl2br($data[$NAME.$num]));
 
             case "date" :
                $split=explode("$$$$",$data[$NAME.$num]);
@@ -3481,10 +3498,14 @@ class Search {
          $out="";
          $split=explode("$$$$",$data[$NAME.$num]);
          $count_display=0;
+         $separate='<br>';
+         if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
+            $separate='<hr>';
+         }
          for ($k=0 ; $k<count($split) ; $k++) {
             if (strlen(trim($split[$k]))>0) {
                if ($count_display) {
-                  $out.= "<br>";
+                  $out.= $separate;
                }
                $count_display++;
                $out .= $split[$k].$unit;

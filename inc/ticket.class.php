@@ -1460,12 +1460,14 @@ class Ticket extends CommonDBTM {
          $tab[25]['linkfield'] = '';
          $tab[25]['name']      = $LANG['job'][9];
          $tab[25]['forcegroupby'] = true;
+         $tab[25]['splititems'] = true;
 
          $tab[26]['table']     = 'glpi_tickettasks';
          $tab[26]['field']     = 'content';
          $tab[26]['linkfield'] = '';
          $tab[26]['name']      = $LANG['job'][7];
          $tab[26]['forcegroupby'] = true;
+         $tab[26]['splititems'] = true;
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
