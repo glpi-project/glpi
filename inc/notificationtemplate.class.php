@@ -285,7 +285,10 @@ class NotificationTemplate extends CommonDBTM {
             //Get the else tag value (if one)
             $regex_else= "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/is";
 
-            if (isset($data['##'.$if_field.'##']) && $data['##'.$if_field.'##'] != '') {
+            if (isset($data['##'.$if_field.'##']) 
+                  && $data['##'.$if_field.'##'] != '' 
+                        && $data['##'.$if_field.'##'] != '&nbsp;'
+                           && $data['##'.$if_field.'##'] != '--NULL') {
                $string = preg_replace($regex_if, "\\1", $string);
                $string = preg_replace($regex_else, "",  $string);
             } else {
