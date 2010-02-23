@@ -35,13 +35,6 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTargetReservation extends NotificationTarget {
 
-   function __construct($entity='', $object = null) {
-      parent::__construct($entity, $object);
-      if ($object != null) {
-         $this->getObjectItem();
-      }
-   }
-
    function getSpecificAddresses($data,$options=array()) {
 
    //Look for all targets whose type is Notification::ITEM_USER
@@ -76,17 +69,6 @@ class NotificationTargetReservation extends NotificationTarget {
          $item->getFromDB($ri->getField('items_id'));
          $this->target_object = $item;
       }
-   }
-
-   static function getJoinProfileSql() {
-      return " INNER JOIN `glpi_profiles_users`
-                        ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`".
-                            getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                       $this->job->fields['entities_id'],true).")
-                    INNER JOIN `glpi_profiles`
-                        ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-                            AND `glpi_profiles`.`interface` = 'central'
-                            AND `glpi_profiles`.`show_full_ticket` = '1') ";
    }
 
    function getEvents() {
