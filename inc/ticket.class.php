@@ -1481,6 +1481,54 @@ class Ticket extends CommonDBTM {
          $tab[24]['linkfield'] = '';
          $tab[24]['name']      = $LANG['jobresolution'][1];
 
+         $tab['hardware'] = $LANG['common'][1];
+
+         $tab[40]['table']     = 'glpi_tickets';
+         $tab[40]['field']     = 'itemtype';
+         $tab[40]['linkfield'] = '';
+         $tab[40]['name']      = $LANG['common'][17];
+         $tab[40]['datatype']     = 'itemtypename';
+
+         $tab[41]['table']     = 'glpi_tickets';
+         $tab[41]['field']     = 'items_id';
+         $tab[41]['linkfield'] = '';
+         $tab[41]['name']      = $LANG['common'][1];
+
+         $tab['cost'] = $LANG['financial'][5];
+
+         $tab[30]['table']     = 'glpi_tickets';
+         $tab[30]['field']     = 'cost_time';
+         $tab[30]['linkfield'] = 'cost_time';
+         $tab[30]['name']      = $LANG['job'][40];
+         $tab[30]['datatype'] = 'decimal';
+
+         $tab[31]['table']     = 'glpi_tickets';
+         $tab[31]['field']     = 'cost_fixed';
+         $tab[31]['linkfield'] = 'cost_fixed';
+         $tab[31]['name']      = $LANG['job'][41];
+         $tab[31]['datatype'] = 'decimal';
+
+         $tab[32]['table']     = 'glpi_tickets';
+         $tab[32]['field']     = 'cost_material';
+         $tab[32]['linkfield'] = 'cost_material';
+         $tab[32]['name']      = $LANG['job'][42];
+         $tab[32]['datatype'] = 'decimal';
+
+
+         $tab['notification'] = $LANG['setup'][704];
+
+         $tab[33]['table']     = 'glpi_tickets';
+         $tab[33]['field']     = 'use_email_notification';
+         $tab[33]['linkfield'] = 'use_email_notification';
+         $tab[33]['name']      = $LANG['job'][19];
+         $tab[33]['datatype'] = 'bool';
+
+         $tab[34]['table']     = 'glpi_tickets';
+         $tab[34]['field']     = 'user_email';
+         $tab[34]['linkfield'] = 'user_email';
+         $tab[34]['name']      = $LANG['joblist'][27];
+         $tab[34]['datatype'] = 'email';
+
       }
 
       return $tab;

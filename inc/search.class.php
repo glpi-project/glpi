@@ -1903,6 +1903,10 @@ class Search {
             return "`$table$addtable`.`$field` AS ".$NAME."_$num,
                         `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
                         `$table$addtable`.`content` AS ".$NAME."_".$num."_3, ";
+         case 'glpi_tickets.items_id':
+            return "`$table$addtable`.`$field` AS ".$NAME."_$num,
+                        `$table$addtable`.`itemtype` AS ".$NAME."_".$num."_2, ";
+
       }
 
       //// Default cases
@@ -3283,6 +3287,15 @@ class Search {
             return Ticket::getUrgencyName($data[$NAME.$num]);
          case 'glpi_tickets.impact':
             return Ticket::getImpactName($data[$NAME.$num]);
+
+         case 'glpi_tickets.items_id':
+            if (!empty($data[$NAME.$num."_2"]) && class_exists($data[$NAME.$num."_2"])) {
+               $item= new $data[$NAME.$num."_2"];
+               if ($item->getFromDB($data[$NAME.$num])) {
+                  return $item->getLink(true);
+               }
+            }
+            return '&nbsp;';
 
          case 'glpi_tickets.name':
             $link=getItemTypeFormURL('Ticket');
