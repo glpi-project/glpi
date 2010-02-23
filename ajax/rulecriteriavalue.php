@@ -45,7 +45,6 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-include_once (GLPI_ROOT."/inc/rule.function.php");
 checkLoginUser();
 
 // Non define case

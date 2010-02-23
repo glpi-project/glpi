@@ -161,7 +161,6 @@ class RuleRight extends Rule {
     */
    function addLdapCriteriasToArray() {
       global $DB,$RULES_CRITERIAS;
-
       $sql = "SELECT `name`, `value`
               FROM `glpi_ruleldapparameters`";
       $result = $DB->query($sql);
@@ -171,6 +170,7 @@ class RuleRight extends Rule {
          $RULES_CRITERIAS[$this->sub_type][$datas["value"]]['linkfield']='';
          $RULES_CRITERIAS[$this->sub_type][$datas["value"]]['table']='';
       }
+//      printCleanArray($RULES_CRITERIAS[$this->sub_type]);
    }
 
    /**

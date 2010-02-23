@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+
+
 /**
  * Rule class store all informations about a GLPI rule :
  *   - description
@@ -420,6 +422,7 @@ class Rule extends CommonDBTM {
 
       $canedit = haveRight($this->right, "w");
       $this->getTitleCriteria($target);
+
       if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount())
           && $canedit) {
 
@@ -1360,6 +1363,5 @@ class Rule extends CommonDBTM {
       }
    }
 }
-
 
 ?>
