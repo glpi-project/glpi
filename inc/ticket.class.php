@@ -232,7 +232,7 @@ class Ticket extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $LANG,$CFG_GLPI;
-
+//      echo $input["date"];exit();
       if (isset($input["date"]) && empty($input["date"])) {
          unset($input["date"]);
       }
