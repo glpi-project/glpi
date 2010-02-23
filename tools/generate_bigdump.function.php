@@ -1126,7 +1126,7 @@ function generate_entity($ID_entity){
 		$typeID=mt_rand(1,$MAX['type_printers']);
 		$modelID=mt_rand(1,$MAX['model_printers']);
       $recur=mt_rand(0,1);
-		$query="INSERT INTO glpi_printers VALUES (NULL,'$ID_entity','$recur','printer of loc ".$data['id']."',NOW(),'contact ".$data['id']."','num ".$data['id']."','$techID','".getRandomString(10)."','".getRandomString(10)."','0','0','1','comment $i','".mt_rand(0,64)."','".$data['id']."','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$MAX['manufacturer'])."','1','0','0','','0','notes printers ".$data['id']."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+		$query="INSERT INTO glpi_printers VALUES (NULL,'$ID_entity','$recur','printer of loc ".$data['id']."',NOW(),'contact ".$data['id']."','num ".$data['id']."','$techID','".getRandomString(10)."','".getRandomString(10)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','comment $i','".mt_rand(0,64)."','".$data['id']."','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$MAX['manufacturer'])."','1','0','0','','0','notes printers ".$data['id']."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$printID=$DB->insert_id();
 		addDocuments('Printer',$printID);
@@ -1349,7 +1349,7 @@ function generate_entity($ID_entity){
 			// Add printer
 			$typeID=mt_rand(1,$MAX['type_printers']);
 			$modelID=mt_rand(1,$MAX['model_printers']);
-			$query="INSERT INTO glpi_printers VALUES (NULL,'$ID_entity','0','printer of comp $i-$ID_entity',NOW(),'contact $i','num $i','$techID','".getRandomString(10)."','".getRandomString(10)."','0','0','1','comment $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$MAX['enterprises'])."','0','0','0','','0','notes printers $i','".mt_rand($FIRST['users_postonly'],$LAST['users_postonly'])."','".mt_rand(1,$MAX["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+			$query="INSERT INTO glpi_printers VALUES (NULL,'$ID_entity','0','printer of comp $i-$ID_entity',NOW(),'contact $i','num $i','$techID','".getRandomString(10)."','".getRandomString(10)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','comment $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$MAX['enterprises'])."','0','0','0','','0','notes printers $i','".mt_rand($FIRST['users_postonly'],$LAST['users_postonly'])."','".mt_rand(1,$MAX["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$printID=$DB->insert_id();
 			addDocuments('Printer',$printID);
