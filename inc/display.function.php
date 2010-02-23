@@ -2171,7 +2171,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
          ,hiddenFormat:'Y-m-d H:i:s'
          ,applyTo: 'showdate$rand'
          ,timeFormat:'H:i'
-         ,timeWidth: 55
+         ,timeWidth: 40
          ,dateWidth: 90";
 
    $empty="";
