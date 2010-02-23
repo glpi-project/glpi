@@ -2783,10 +2783,7 @@ function update0723to078($output='HTML') {
          $templates[$itemtype] = $DB->result($result,0,'id');
       }
 
-      $query = "INSERT INTO `glpi_displaypreferences` VALUES(NULL, 'NotificationTemplate', 4, 1, 0);";
-      $DB->query($query) or die("0.78 insert notification display preferences " . $LANG['update'][90] . $DB->error());
-      $query = "INSERT INTO `glpi_displaypreferences` VALUES(NULL, 'NotificationTemplate', 16, 2, 0);";
-      $DB->query($query) or die("0.78 insert notification display preferences " . $LANG['update'][90] . $DB->error());
+      $ADDTODISPLAYPREF['NotificationTemplate']=array(4,16);
    }
 
    if (!TableExists('glpi_notificationtemplatetranslations')) {
@@ -3044,11 +3041,8 @@ function update0723to078($output='HTML') {
          $DB->query($query) or die("0.78 insert notification" . $LANG['update'][90] . $DB->error());
       }
 
-      $display_notification = array(1=>5, 2=>2, 3=>4, 4=>80, 5=>86);
-      foreach ($display_notification as $order => $value) {
-         $query ="INSERT INTO `glpi_displaypreferences` VALUES(NULL, 'Notification', $value, $order, 0);";
-         $DB->query($query) or die("0.78 insert notification display preferences" . $LANG['update'][90] . $DB->error());
-      }
+
+      $ADDTODISPLAYPREF['Notification']=array(5,2,4,80,86);
       unset($queries);
    }
 
