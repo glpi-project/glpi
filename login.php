@@ -95,7 +95,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 				if ($ds) {
 					$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
 					if ($user_dn) {
-						$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"]);
+						$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $user);
 					}
 				}
 			}

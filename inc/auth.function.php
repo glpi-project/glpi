@@ -1073,8 +1073,7 @@ function ldap_auth($identificat,$login,$password, $ldap_method) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
 		$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
-		//$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
-		$identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login, $password);
+		$identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login);
 		$identificat->auth_parameters = $ldap_method;
 		$identificat->user->fields["auth_method"] = AUTH_LDAP;
 		$identificat->user->fields["id_auth"] = $ldap_method["ID"];

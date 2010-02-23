@@ -113,7 +113,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 			
 			$user = new User();
 			//Get informations from LDAP
-			if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login), "")){
+			if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login))){
 				//Add the auth method
 				if (!$sync){
 					$user->fields["auth_method"] = AUTH_LDAP;

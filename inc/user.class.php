@@ -539,11 +539,10 @@ class User extends CommonDBTM {
    * @param $ldap_method LDAP method
    * @param $userdn Basedn of the user
    * @param $login User Login
-   * @param $password User Password
    *
    * @return String : basedn of the user / false if not founded
       */
-   private function getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login, $password) {
+   private function getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB,$CFG_GLPI;
 
 		/// Search in DB the ldap_field we need to search for in LDAP
@@ -612,11 +611,10 @@ class User extends CommonDBTM {
    * @param $ldap_method LDAP method
    * @param $userdn Basedn of the user
    * @param $login User Login
-   * @param $password User Password
    *
    * @return String : basedn of the user / false if not founded
    */
-   private function getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password) {
+   private function getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB,$CFG_GLPI;
 
       if ($ldap_method["use_dn"]) {
@@ -652,11 +650,10 @@ class User extends CommonDBTM {
 	 * @param $ldap_method LDAP method
 	 * @param $userdn Basedn of the user
 	 * @param $login User Login
-	 * @param $password User Password
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function getFromLDAP($ldap_connection,$ldap_method, $userdn, $login, $password = "") {
+	function getFromLDAP($ldap_connection,$ldap_method, $userdn, $login) {
 		global $DB,$CFG_GLPI;
 
 		// we prevent some delay...
@@ -721,14 +718,14 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 			///The groups are retrieved by looking into an ldap user object
          if ($ldap_method["ldap_search_for_groups"] == 0
              || $ldap_method["ldap_search_for_groups"] == 2) {
-            $this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login, $password);
+            $this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login);
          }
 
 
 			///The groups are retrived by looking into an ldap group object
          if ($ldap_method["ldap_search_for_groups"] == 1
                  || $ldap_method["ldap_search_for_groups"] == 2) {
-            $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password);
+            $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login);
          }
 
 			///Only process rules if working on the master database
