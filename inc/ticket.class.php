@@ -267,6 +267,9 @@ class Ticket extends CommonDBTM {
       }
 
       if (!haveRight("update_ticket","1")) {
+         if ($this->canApprove()) {
+            $ret["status"] = $input["status"];
+         }
          // Manage assign and steal right
          if (isset($input["users_id_assign"])) {
             $ret["users_id_assign"]=$input["users_id_assign"];
@@ -4401,5 +4404,21 @@ class Ticket extends CommonDBTM {
       }
       return $tab;
    }
+
+
+   /**
+    * Is the current user have right to approve solution of the current ticket ?
+    *
+    * @return boolean
+    */
+   function canApprove() {
+
+      return ($this->fields["status"] == 'solved'
+              && ($this->fields["users_id_recipient"] === getLoginUserID()
+                 || $this->fields["users_id"] === getLoginUserID()
+                 || (isset($_SESSION["glpigroups"])
+                     && in_array($this->fields["groups_id"],$_SESSION['glpigroups']))));
+   }
+
 }
 ?>

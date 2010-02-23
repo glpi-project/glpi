@@ -41,13 +41,23 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $fup = new TicketFollowup();
 
-if (isset($_POST["add"]) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
+if (isset($_POST["add"])) {
    $fup->check(-1,'w',$_POST);
    $fup->add($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]."  ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
+   $ticket = new Ticket();
+   if ($ticket->getFromDB($_POST["tickets_id"]) && $ticket->canApprove()) {
+      $fup->add($_POST);
+
+      Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
+                 $_SESSION["glpiname"]."  ".$LANG['log'][29]);
+      glpi_header($_SERVER['HTTP_REFERER']);
+   }
 
 } else if (isset($_POST["update"])) {
    $fup->check($_POST['id'], 'w');
