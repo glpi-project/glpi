@@ -2159,10 +2159,39 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
       $time_step=$CFG_GLPI['time_step'];
    }
 
+
    $rand=mt_rand();
    echo "<input type='hidden' id='showdate$rand' value=''>";
 
-   $output = "<script type='text/javascript'>";
+   $minHour=0;
+   $maxHour=23;
+   $minMinute=0;
+   $maxMinute=59;
+
+   $output="";
+
+   if (!empty($minTime)) {
+      list($minHour,$minMinute)=split(':',$minTime);
+   }
+   if (!empty($maxTime)) {
+      list($maxHour,$maxMinute)=split(':',$maxTime);
+   }
+   $output.="<table><tr><td><div id='_date$rand-date' name='_date$rand-date'></div></td><td>";
+   $output.="<select name='_date$rand-hour' id='_date$rand-hour'>";
+   for ($i=$minHour;$i<$maxHour;$i++) {
+      $output.="<option value='$i'>$i</option>";
+   }
+   $output.="</select>";
+   $output.="</td><td>";
+   $output.="<select name='_date$rand-minute' id='_date$rand-minute'>";
+   for ($i=$minMinute;$i<$maxMinute;$i+=$time_step) {
+      $output.="<option value='$i'>$i</option>";
+   }
+   $output.="</select>";
+   $output.='</td></tr></table>';
+
+
+   $output .= "<script type='text/javascript'>";
    $output .= "Ext.onReady(function(){
       var md$rand = new Ext.ux.form.DateTime({
          hiddenName: '$element'
@@ -2181,14 +2210,10 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
       $empty="allowBlank: false";
    }
    $output .= ",$empty";
+//   $output .= ",hourConfig: {minValue:$minHour,maxValue:$maxHour}";
+//   $output .= ",minuteConfig: {minValue:$minMinute,maxValue:$maxMinute}";
    $output .= ",timeConfig: {
       altFormats:'H:i',increment: $time_step,$empty";
-   if (!empty($minTime)) {
-      $output .= ",minValue: '$minTime'";
-   }
-   if (!empty($maxTime)) {
-      $output .= ",maxValue: '$maxTime'";
-   }
    $output .= "}";
 
    switch ($_SESSION['glpidate_format']) {
@@ -2221,7 +2246,10 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $output .= " });
    });";
    $output .= "</script>\n";
+
    echo $output;
+
+
 }
 
 /**
