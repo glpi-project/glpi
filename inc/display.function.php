@@ -2463,24 +2463,50 @@ function glpi_flush() {
  * Display a simple progress bar
  * @param $width Width of the progress bar
  * @param $percent Percent of the progress bar
+ * @param $options array options :
+ *            - title : string title to display (default Progesssion)
+ *            - simple : display a simple progress bar (no title / only percent)
+ *            - forcepadding : boolean force str_pad to force refresh (default true)
  * @return nothing
  *
  *
  **/
-function displayProgressBar($width,$percent) {
+function displayProgressBar($width,$percent,$options=array()) {
    global  $CFG_GLPI,$LANG;
 
+   $param['title']=$LANG['common'][47];
+   $param['simple']=false;
+
+   if (is_array($options) && count($options)) {
+      foreach ($options as $key => $val) {
+         $param[$key]=$val;
+      }
+   }
+
    $percentwidth=floor($percent*$width/100);
-   echo utf8_str_pad("<div class='center'><table class='tab_cadre' width='$width'><tr>
-                      <th width='$width' class='center'> ".$LANG['common'][47]."&nbsp;".$percent."%
-                      </th></tr>
-                      <tr><td>
-                      <table><tr><td style='background:url(".$CFG_GLPI["root_doc"].
-                                  "/pics/loader.png) repeat-x;' width='.$percentwidth' height='20'>
-                      &nbsp;</td></tr></table>
-                      </td></tr></table></div>",4096);
-   glpi_flush();
+   $output="<div class='center'><table class='tab_cadre' width='".$width."px'>";
+   if (!$param['simple']) {
+      $output.="<tr><th class='center'>".$param['title']."&nbsp;".$percent."%</th></tr>";
+   }
+   $output.="<tr><td>
+             <table ><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
+             "/pics/loader.png) repeat-x;' width='.$percentwidth' height='12'>";
+   if ($param['simple']) {
+      $output.=$percent."%";
+   } else {
+      $output.='&nbsp;';
+   }
+   $output.="</td></tr></table></td>";
+   $output.="</tr></table>";
+   $output.="</div>";
+   if ($param['forcepadding']) {
+      echo $output;
+   } else {
+      echo utf8_str_pad($output,4096);
+      glpi_flush();
+   }
 }
+
 
 /**
  * Clean Printing of and array in a table
