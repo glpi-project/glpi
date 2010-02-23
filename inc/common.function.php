@@ -925,8 +925,8 @@ function html_clean($value) {
  */
 function convDateTime($time) {
 
-   if (is_null($time)) {
-      return $time;
+   if (is_null($time)  || $time=='NULL') {
+      return NULL;
    }
 
    if (!isset($_SESSION["glpidate_format"])) {
@@ -968,8 +968,8 @@ function convDateTime($time) {
 function convDate($time) {
    global $CFG_GLPI;
 
-   if (is_null($time)) {
-      return $time;
+   if (is_null($time) || $time=='NULL') {
+      return NULL;
    }
 
    if (!isset($_SESSION["glpidate_format"])) {
