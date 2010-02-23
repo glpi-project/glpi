@@ -2535,6 +2535,15 @@ class Search {
          case "glpi_operatingsystems" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`operatingsystems_id` = `$nt`.`id`) ";
 
+         case "glpi_vlans" :
+            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_networkports",$linkfield);
+            return $out." LEFT JOIN `glpi_networkports_vlans`
+                     ON (`glpi_networkports_vlans`.`networkports_id` = `glpi_networkports`.`id`)
+                  LEFT JOIN `$new_table` $AS ON (`glpi_networkports_vlans`.`vlans_id` = `$nt`.`id`) ";
+         case "glpi_networkinterfaces" :
+            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_networkports",$linkfield);
+            return $out."
+                  LEFT JOIN `$new_table` $AS ON (`glpi_networkports`.`networkinterfaces_id` = `$nt`.`id`) ";
          case "glpi_networkports" :
             $out="";
             // Add networking device for computers
@@ -3802,6 +3811,74 @@ class Search {
          } else if (class_exists($itemtype)) {
             $item = new $itemtype();
             $search[$itemtype] = $item->getSearchOptions();
+         }
+
+
+         if (in_array($itemtype, $CFG_GLPI["helpdesk_types"])) {
+            $search[$itemtype]['tracking'] = $LANG['title'][24];
+
+            $search[$itemtype][60]['table']        = 'glpi_tickets';
+            $search[$itemtype][60]['field']        = 'count';
+            $search[$itemtype][60]['linkfield']    = '';
+            $search[$itemtype][60]['name']         = $LANG['stats'][13];
+            $search[$itemtype][60]['forcegroupby'] = true;
+            $search[$itemtype][60]['usehaving']    = true;
+            $search[$itemtype][60]['datatype']     = 'number';
+         }
+
+
+         if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
+
+            $search[$itemtype]['network'] = $LANG['setup'][88];
+
+            $search[$itemtype][20]['table']        = 'glpi_networkports';
+            $search[$itemtype][20]['field']        = 'ip';
+            $search[$itemtype][20]['linkfield']    = '';
+            $search[$itemtype][20]['name']         = $LANG['networking'][14];
+            $search[$itemtype][20]['forcegroupby'] = true;
+
+            $search[$itemtype][21]['table']        = 'glpi_networkports';
+            $search[$itemtype][21]['field']        = 'mac';
+            $search[$itemtype][21]['linkfield']    = '';
+            $search[$itemtype][21]['name']         = $LANG['networking'][15];
+            $search[$itemtype][21]['forcegroupby'] = true;
+
+            $search[$itemtype][83]['table']        = 'glpi_networkports';
+            $search[$itemtype][83]['field']        = 'netmask';
+            $search[$itemtype][83]['linkfield']    = '';
+            $search[$itemtype][83]['name']         = $LANG['networking'][60];
+            $search[$itemtype][83]['forcegroupby'] = true;
+
+            $search[$itemtype][84]['table']        = 'glpi_networkports';
+            $search[$itemtype][84]['field']        = 'subnet';
+            $search[$itemtype][84]['linkfield']    = '';
+            $search[$itemtype][84]['name']         = $LANG['networking'][61];
+            $search[$itemtype][84]['forcegroupby'] = true;
+
+            $search[$itemtype][85]['table']        = 'glpi_networkports';
+            $search[$itemtype][85]['field']        = 'gateway';
+            $search[$itemtype][85]['linkfield']    = '';
+            $search[$itemtype][85]['name']         = $LANG['networking'][59];
+            $search[$itemtype][85]['forcegroupby'] = true;
+
+            $search[$itemtype][22]['table']        = 'glpi_netpoints';
+            $search[$itemtype][22]['field']        = 'name';
+            $search[$itemtype][22]['linkfield']    = '';
+            $search[$itemtype][22]['name']         = $LANG['networking'][51];
+            $search[$itemtype][22]['forcegroupby'] = true;
+
+            $search[$itemtype][87]['table']        = 'glpi_networkinterfaces';
+            $search[$itemtype][87]['field']        = 'name';
+            $search[$itemtype][87]['linkfield']    = '';
+            $search[$itemtype][87]['name']         = $LANG['common'][65];
+            $search[$itemtype][87]['forcegroupby'] = true;
+
+            $search[$itemtype][88]['table']        = 'glpi_vlans';
+            $search[$itemtype][88]['field']        = 'name';
+            $search[$itemtype][88]['linkfield']    = '';
+            $search[$itemtype][88]['name']         = $LANG['networking'][56];
+            $search[$itemtype][88]['forcegroupby'] = true;
+
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {

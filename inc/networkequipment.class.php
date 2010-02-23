@@ -551,54 +551,6 @@ class NetworkEquipment extends CommonDBTM {
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
 
-      $tab['network'] = $LANG['setup'][88];
-
-      $tab[20]['table']        = 'glpi_networkports';
-      $tab[20]['field']        = 'ip';
-      $tab[20]['linkfield']    = '';
-      $tab[20]['name']         = $LANG['networking'][14];
-      $tab[20]['forcegroupby'] = true;
-
-      $tab[21]['table']        = 'glpi_networkports';
-      $tab[21]['field']        = 'mac';
-      $tab[21]['linkfield']    = '';
-      $tab[21]['name']         = $LANG['networking'][15];
-      $tab[21]['forcegroupby'] = true;
-
-      $tab[83]['table']        = 'glpi_networkports';
-      $tab[83]['field']        = 'netmask';
-      $tab[83]['linkfield']    = '';
-      $tab[83]['name']         = $LANG['networking'][60];
-      $tab[83]['forcegroupby'] = true;
-
-      $tab[84]['table']        = 'glpi_networkports';
-      $tab[84]['field']        = 'subnet';
-      $tab[84]['linkfield']    = '';
-      $tab[84]['name']         = $LANG['networking'][61];
-      $tab[84]['forcegroupby'] = true;
-
-      $tab[85]['table']        = 'glpi_networkports';
-      $tab[85]['field']        = 'gateway';
-      $tab[85]['linkfield']    = '';
-      $tab[85]['name']         = $LANG['networking'][59];
-      $tab[85]['forcegroupby'] = true;
-
-      $tab[22]['table']        = 'glpi_netpoints';
-      $tab[22]['field']        = 'name';
-      $tab[22]['linkfield']    = '';
-      $tab[22]['name']         = $LANG['networking'][51];
-      $tab[22]['forcegroupby'] = true;
-
-      $tab['tracking'] = $LANG['title'][24];
-
-      $tab[60]['table']        = 'glpi_tickets';
-      $tab[60]['field']        = 'count';
-      $tab[60]['linkfield']    = '';
-      $tab[60]['name']         = $LANG['stats'][13];
-      $tab[60]['forcegroupby'] = true;
-      $tab[60]['usehaving']    = true;
-      $tab[60]['datatype']     = 'number';
-
       return $tab;
    }
 

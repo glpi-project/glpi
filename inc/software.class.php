@@ -500,17 +500,6 @@ class Software extends CommonDBTM {
       $tab[166]['forcegroupby'] = true;
       $tab[166]['datatype']     = 'date';
 
-
-      $tab['tracking'] = $LANG['title'][24];
-
-      $tab[60]['table']        = 'glpi_tickets';
-      $tab[60]['field']        = 'count';
-      $tab[60]['linkfield']    = '';
-      $tab[60]['name']         = $LANG['stats'][13];
-      $tab[60]['forcegroupby'] = true;
-      $tab[60]['usehaving']    = true;
-      $tab[60]['datatype']     = 'number';
-
       return $tab;
    }
 
