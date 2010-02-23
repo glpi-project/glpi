@@ -2950,8 +2950,16 @@ class Ticket extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          if ($ID) {
-            echo "<td colspan='3' class='center'>";
-            echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
+            if (haveRight('delete_ticket',1)){
+               echo "<td class='center'>";
+               echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
+               echo "</td><td class='center'>";
+               echo "<input type='submit' class='submit' name='delete' value='".$LANG['buttons'][6]."'
+                              OnClick='return window.confirm(\"".$LANG['common'][50]."\");'>";
+            } else {
+               echo "<td colspan='2' class='center'>";
+               echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
+            }
          } else {
             echo "<td colspan='1' class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";

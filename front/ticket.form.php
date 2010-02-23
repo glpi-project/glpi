@@ -67,7 +67,12 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+} else if (isset($_POST['delete'])) {
+   $track->check($_POST['id'],'d');
+   $track->delete($_POST);
+   Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.php");
 /*
 } else if (isset($_POST['add']) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
    checkSeveralRightsOr(array('add_followups'     => '1',
