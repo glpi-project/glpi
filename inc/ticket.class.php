@@ -1496,32 +1496,32 @@ class Ticket extends CommonDBTM {
 
          $tab['cost'] = $LANG['financial'][5];
 
-         $tab[30]['table']     = 'glpi_tickets';
-         $tab[30]['field']     = 'cost_time';
-         $tab[30]['linkfield'] = 'cost_time';
-         $tab[30]['name']      = $LANG['job'][40];
-         $tab[30]['datatype'] = 'decimal';
+         $tab[42]['table']     = 'glpi_tickets';
+         $tab[42]['field']     = 'cost_time';
+         $tab[42]['linkfield'] = 'cost_time';
+         $tab[42]['name']      = $LANG['job'][40];
+         $tab[42]['datatype'] = 'decimal';
 
-         $tab[31]['table']     = 'glpi_tickets';
-         $tab[31]['field']     = 'cost_fixed';
-         $tab[31]['linkfield'] = 'cost_fixed';
-         $tab[31]['name']      = $LANG['job'][41];
-         $tab[31]['datatype'] = 'decimal';
+         $tab[43]['table']     = 'glpi_tickets';
+         $tab[43]['field']     = 'cost_fixed';
+         $tab[43]['linkfield'] = 'cost_fixed';
+         $tab[43]['name']      = $LANG['job'][41];
+         $tab[43]['datatype'] = 'decimal';
 
-         $tab[32]['table']     = 'glpi_tickets';
-         $tab[32]['field']     = 'cost_material';
-         $tab[32]['linkfield'] = 'cost_material';
-         $tab[32]['name']      = $LANG['job'][42];
-         $tab[32]['datatype'] = 'decimal';
+         $tab[44]['table']     = 'glpi_tickets';
+         $tab[44]['field']     = 'cost_material';
+         $tab[44]['linkfield'] = 'cost_material';
+         $tab[44]['name']      = $LANG['job'][42];
+         $tab[44]['datatype'] = 'decimal';
 
 
          $tab['notification'] = $LANG['setup'][704];
 
-         $tab[33]['table']     = 'glpi_tickets';
-         $tab[33]['field']     = 'use_email_notification';
-         $tab[33]['linkfield'] = 'use_email_notification';
-         $tab[33]['name']      = $LANG['job'][19];
-         $tab[33]['datatype'] = 'bool';
+         $tab[35]['table']     = 'glpi_tickets';
+         $tab[35]['field']     = 'use_email_notification';
+         $tab[35]['linkfield'] = 'use_email_notification';
+         $tab[35]['name']      = $LANG['job'][19];
+         $tab[35]['datatype'] = 'bool';
 
          $tab[34]['table']     = 'glpi_tickets';
          $tab[34]['field']     = 'user_email';
