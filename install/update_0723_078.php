@@ -3433,6 +3433,24 @@ function update0723to078($output='HTML') {
    $ADDTODISPLAYPREF['Profile']=array(2,3,19);
 
 
+   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_printers'); // Updating schema
+
+   if (!FieldExists('glpi_printers','have_ethernet')) {
+      $query = "ALTER TABLE `glpi_printers` ADD `have_ethernet` TINYINT( 1 ) NOT NULL
+                  DEFAULT '0' AFTER `have_usb`;";
+
+      $DB->query($query) or die("0.78 add have_ethernet to glpi_printers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_printers','have_wifi')) {
+      $query = "ALTER TABLE `glpi_printers` ADD `have_wifi` TINYINT( 1 ) NOT NULL
+               DEFAULT '0' AFTER `have_usb` ;";
+
+      $DB->query($query) or die("0.78 add have_wifi to glpi_printers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
    displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_profiles'); // Updating schema
 
    if (!FieldExists('glpi_transfers','date_mod')) {
