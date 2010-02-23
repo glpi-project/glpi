@@ -463,9 +463,17 @@ class Printer  extends CommonDBTM {
       echo "<tr><td>".$LANG['printers'][15]."</td><td>";
       Dropdown::showYesNo("have_parallel",$this->fields["have_parallel"]);
       echo "</td></tr>";
-      // USB ?
+      // USB interface?
       echo "<tr><td>".$LANG['printers'][27]."</td><td>";
       Dropdown::showYesNo("have_usb",$this->fields["have_usb"]);
+      echo "</td></tr>";
+      // ethernet interface?
+      echo "<tr><td>".$LANG['printers'][28]."</td><td>";
+      Dropdown::showYesNo("have_ethernet",$this->fields["have_ethernet"]);
+      echo "</td></tr>";
+      // wifi ?
+      echo "<tr><td>".$LANG['printers'][29]."</td><td>";
+      Dropdown::showYesNo("have_wifi",$this->fields["have_wifi"]);
       echo "</td></tr></table>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -593,6 +601,18 @@ class Printer  extends CommonDBTM {
       $tab[44]['linkfield'] = 'have_usb';
       $tab[44]['name']      = $LANG['printers'][27];
       $tab[44]['datatype']  = 'bool';
+
+      $tab[45]['table']     = 'glpi_printers';
+      $tab[45]['field']     = 'have_ethernet';
+      $tab[45]['linkfield'] = 'have_ethernet';
+      $tab[45]['name']      = $LANG['printers'][28];
+      $tab[45]['datatype']  = 'bool';
+
+      $tab[46]['table']     = 'glpi_printers';
+      $tab[46]['field']     = 'have_wifi';
+      $tab[46]['linkfield'] = 'have_wifi';
+      $tab[46]['name']      = $LANG['printers'][29];
+      $tab[46]['datatype']  = 'bool';
 
       $tab[90]['table']     = 'glpi_printers';
       $tab[90]['field']     = 'notepad';
