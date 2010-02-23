@@ -200,17 +200,11 @@ class TicketFollowup  extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $LANG;
 
-      $input["_isadmin"] = haveRight("global_add_followups","1");
+//      $input["_isadmin"] = haveRight("global_add_followups","1");
       $input["_job"] = new Ticket;
 
-      if ($input["_job"]->getFromDB($input["tickets_id"])) {
-         // Security to add unusers_idized followups
-         if (!isset($input['_do_not_check_users_id'])
-             && $input["_job"]->fields["users_id"]!=getLoginUserID()
-             && !$input["_job"]->canAddFollowups()) {
-            return false;
-         }
-      } else {
+      // check rights made in front like all objects
+      if (!$input["_job"]->getFromDB($input["tickets_id"])) {
          return false;
       }
 
@@ -228,27 +222,31 @@ class TicketFollowup  extends CommonDBTM {
          $input["_job"]->fields["_old_assign"] = $input["_old_assign"];
       }
 
-      if (!isset($input["type"])) {
-         $input["type"] = "followup";
-      }
-      $input["_type"] = $input["type"];
-      unset($input["type"]);
+//      if (!isset($input["type"])) {
+//         $input["type"] = "followup";
+//      }
+//      $input["_type"] = $input["type"];
+//      unset($input["type"]);
       $input['_close'] = 0;
       unset($input["add"]);
 
       if (!isset($input["users_id"]) && $uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
-      if ($input["_isadmin"] && $input["_type"]!="update") {
+//      if ($input["_isadmin"] && $input["_type"]!="update") {
          if (isset($input["add_close"])) {
             $input['_close'] = 1;
          }
          unset($input["add_close"]);
          if (isset($input["add_reopen"])) {
+            if ($input["content"] == '') {
+               addMessageAfterRedirect($LANG['jobresolution'][5],false,ERROR);
+               return false;
+            }
             $input['_reopen'] = 1;
          }
          unset($input["add_reopen"]);
-      }
+//      }
       $input["date"] = $_SESSION["glpi_currenttime"];
 
       return $input;
@@ -449,7 +447,7 @@ class TicketFollowup  extends CommonDBTM {
 
          $this->showFormButtons($options);
       } else {
-         $options = array('colspan' => 1);
+         $options['colspan'] = 1;;
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'>";
@@ -589,21 +587,15 @@ class TicketFollowup  extends CommonDBTM {
                               $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
          echo "};";
          echo "</script>\n";
-         if ($ticket->fields["status"] == 'solved') {
-            $this->showApprobationForm($ticket);
-         } else if ($ticket->fields["status"] != 'closed') {
+         if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
             echo "<p><a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
             echo $LANG['job'][29]."</a></p><br>\n";
          }
       }
 
-      //echo "<h3>" . $LANG['job'][37] . "</h3>";
-
       if ($DB->numrows($result) == 0) {
-         if ($ticket->fields["status"] != 'solved') {
-            echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-            echo "<th class='b'>" . $LANG['job'][12]."</th></tr></table>";
-         }
+         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
+         echo "<th class='b'>" . $LANG['job'][12]."</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".$LANG['common'][17]."</th><th>" . $LANG['common'][27] . "</th>";
@@ -665,7 +657,6 @@ class TicketFollowup  extends CommonDBTM {
 
    /** form for soluce's approbation
     *
-    *@param $ID Integer : Id of the ticket
     *@param $ticket Object : the ticket
     *
     */
@@ -673,10 +664,8 @@ class TicketFollowup  extends CommonDBTM {
       global $DB, $LANG, $CFG_GLPI;
 
       $input=array('tickets_id' => $ticket->getField('id'));
-      $this->check(-1,'w',$input);
 
-      if ($ticket->fields["users_id_recipient"] == $_SESSION["glpiID"]
-          || $ticket->fields["users_id"] == $_SESSION["glpiID"]) {
+      if ($ticket->canApprove()) {
 
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -684,9 +673,10 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='middle right' colspan='2'>".$LANG['common'][25]."&nbsp;:</td>";
-         echo "<td class='center middle' colspan='2'><textarea name='content' cols='70' rows='6'>".
-               $this->fields["content"]."</textarea>";
+         echo "<td class='center middle' colspan='2'><textarea name='content' cols='70' rows='6'>";
+         echo "</textarea>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->getField('id')."'>";
+         echo "<input type='hidden' name='requesttypes_id' value='".RequestType::getDefault('helpdesk')."'>";
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_2'>";

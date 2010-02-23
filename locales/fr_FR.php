@@ -888,6 +888,7 @@ $LANG['log'][24]="purge de l'item";
 $LANG['log'][26]="déconnexion de l'item";
 $LANG['log'][27]="connexion de l'item";
 $LANG['log'][28]="modification des composants";
+$LANG['log'][29]="approbation/rejet de la solution";
 $LANG['log'][30]="association d'un type";
 $LANG['log'][31]="suppression d'un type";
 $LANG['log'][32]="ajout lien avec un  item";
