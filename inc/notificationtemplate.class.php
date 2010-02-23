@@ -288,7 +288,7 @@ class NotificationTemplate extends CommonDBTM {
             if (isset($data['##'.$if_field.'##'])
                   && $data['##'.$if_field.'##'] != ''
                         && $data['##'.$if_field.'##'] != '&nbsp;'
-                           && $data['##'.$if_field.'##'] != '--NULL') {
+                           && !is_null($data['##'.$if_field.'##'])) {
                $string = preg_replace($regex_if, "\\1", $string);
                $string = preg_replace($regex_else, "",  $string);
             } else {
