@@ -516,7 +516,8 @@ class NotificationTarget extends CommonDBChild {
       global $DB;
 
       if ($this->target_object) {
-         $query=NotificationTargetTicket::getDistinctUserSql()."
+         $query=NotificationTargetTicket::getDistinctUserSql().",
+                  glpi_profiles_users.entities_id as entity
                  FROM `glpi_profiles_users`".
                  NotificationTarget::getJoinProfileSql()
                 ."INNER JOIN `glpi_users`
