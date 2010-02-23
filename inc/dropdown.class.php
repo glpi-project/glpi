@@ -169,7 +169,18 @@ class Dropdown {
 
       // Display comment
       if ($params['comments']) {
-         showToolTip($comment,array('contentid'=>"comment_".$params['name'].$params['rand']));
+         $options_tooltip=array('contentid'=>"comment_".$params['name'].$params['rand']);
+         if ($itemtype=='TicketCategory' && haveRight('knowbase','r')) {
+            if ($params['value'] && $item->getFromDB($params['value'])) {
+               if ($kbid=$item->getField('knowbaseitemcategories_id')) {
+                  $options_tooltip['link']=$CFG_GLPI['root_doc'].
+                                       '/front/knowbaseitem.php?knowbaseitemcategories_id='.$kbid;
+               }
+            }
+            $options_tooltip['linkid']="comment_link_".$params["name"].$params['rand'];
+         }
+
+         showToolTip($comment,$options_tooltip);
 
 
          if (($item instanceof CommonDropdown)
