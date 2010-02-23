@@ -69,7 +69,7 @@ class NotificationEvent extends CommonDBTM {
       $email_processed = array();
       $email_notprocessed = array();
 
-      $notificationtarget = NotificationTarget::getInstance($item);
+      $notificationtarget = NotificationTarget::getInstance($item,$options);
       $entity = $notificationtarget->getEntity();
 
       //Foreach notification
@@ -79,11 +79,12 @@ class NotificationEvent extends CommonDBTM {
          $targets = getAllDatasFromTable('glpi_notificationtargets',
                                          'notifications_id='.$data['id']);
 
+         $notificationtarget->clearAddressesList();
+
          //Foreach notification targets
          foreach ($targets as $target) {
             $templates_id = $data['notificationtemplates_id'];
 
-            $notificationtarget->clearAddressesList();
             //Get all users affected by this notification
             $notificationtarget->getAddressesByTarget($target,$options);
 
@@ -95,12 +96,11 @@ class NotificationEvent extends CommonDBTM {
             $template->getFromDB($templates_id);
 
             foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
-
                //If the user have not yet been notified
-               if (!isset($email_processed[$users_infos['language']])) {
+               if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
                   //If ther user's language is the same as the template's one
-                  if (isset($email_notprocessed[$users_infos['language']])) {
-                     unset($email_notprocessed[$users_infos['language']]);
+                  if (isset($email_notprocessed[$users_infos['language']][$users_infos['email']])) {
+                     unset($email_notprocessed[$users_infos['language']][$users_infos['email']]);
                   }
 
                   if ($template->getTemplateByLanguage($notificationtarget,
@@ -112,10 +112,10 @@ class NotificationEvent extends CommonDBTM {
                                                                   $users_infos['language'],
                                                                   $users_infos['email'],
                                                                   $options));
-                      $email_processed[$users_infos['language']] = $users_infos;
+                      $email_processed[$users_infos['language']][$users_infos['email']] = $users_infos;
                   }
                   else {
-                     $email_notprocessed[$users_infos['language']] = $users_infos;
+                     $email_notprocessed[$users_infos['language']][$users_infos['email']] = $users_infos;
                   }
                }
             }

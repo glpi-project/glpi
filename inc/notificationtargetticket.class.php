@@ -35,27 +35,11 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTargetTicket extends NotificationTarget {
 
-/*
-   function __construct($entity='', $object = null) {
-      parent::__construct($entity, $object);
-      if ($object != null) {
-         $this->getObjectItem();
-      }
-   }
-*/
-
    function getSubjectPrefix() {
       return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
    }
 
-   function getSpecificTargets($data,$options=array()) {
-
-   if (isset($options['sendprivate']) && $options['sendprivate'] == true) {
-      $sendprivate = true;
-   }
-   else {
-      $sendprivate = false;
-   }
+   function getSpecificTargets($data) {
 
    //Look for all targets whose type is Notification::ITEM_USER
    switch ($data['type']) {
@@ -85,11 +69,13 @@ class NotificationTargetTicket extends NotificationTarget {
             case Notification::TICKET_SUPPLIER :
                $this->getTicketSupplierAddress();
             break;
+            case Notification::TICKET_REQUESTER_GROUP:
+               $this->getRequestGroupAddresses();
+            break;
+            case Notification::TICKET_ASSIGN_GROUP:
+               $this->getAssignGroupAddresses();
+            break;
          }
-      //Send to all the users of a profile
-      case Notification::PROFILE_TYPE:
-         $this->getUsersAddressesByProfile($data['items_id']);
-      break;
       }
    }
 
@@ -105,6 +91,18 @@ class NotificationTargetTicket extends NotificationTarget {
             $item->getFromDB($this->obj->getField('items_id'));
             $this->target_object = $item;
          }
+      }
+   }
+
+   function getRequestGroupAddresses() {
+      if ($this->obj->fields['groups_id']) {
+         $this->getUsersAddressesByGroup($this->obj->fields['groups_id']);
+      }
+   }
+
+   function getAssignGroupAddresses() {
+      if ($this->obj->fields['groups_id_assign']) {
+         $this->getUsersAddressesByGroup($this->obj->fields['groups_id_assign']);
       }
    }
 
@@ -152,10 +150,10 @@ class NotificationTargetTicket extends NotificationTarget {
                 && $this->obj->fields[$group_field]>0) {
 
          $query = NotificationTarget::getDistinctUserSql().
-                   "FROM `glpi_groups`
+                   " FROM `glpi_groups`
                     LEFT JOIN `glpi_users`
                     ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
-                   NotificationTargetTicket::getJoinProfileSql()."
+                   $this->getJoinProfileSql()."
                     WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data['email'], $data['lang']);
@@ -196,21 +194,46 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
    }
 
-   static function getJoinProfileSql() {
-      return " INNER JOIN `glpi_profiles_users`
-                        ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`".
-                            getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                       $this->job->fields['entities_id'],true).")
-                    INNER JOIN `glpi_profiles`
-                        ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-                            AND `glpi_profiles`.`interface` = 'central'
-                            AND `glpi_profiles`.`show_full_ticket` = '1') ";
+   function getJoinSql() {
+      if ($this->isPrivate()) {
+         return " INNER JOIN `glpi_profiles_users`
+                           ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`".
+                               getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
+                                                          $this->obj->fields['entities_id'],true).")
+                       INNER JOIN `glpi_profiles`
+                           ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
+                               AND `glpi_profiles`.`interface` = 'central'
+                               AND `glpi_profiles`.`show_full_ticket` = '1') ";
+      }
+      else {
+         return "";
+      }
    }
 
+   function getJoinProfileSql() {
+      if ($this->isPrivate()) {
+         return " INNER JOIN `glpi_profiles`
+                              ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
+                                  AND `glpi_profiles`.`interface` = 'central'
+                                  AND `glpi_profiles`.`show_full_ticket` = '1')";
+      }
+      else {
+         return "";
+      }
+   }
+
+   function isPrivate() {
+      if (isset($this->options['sendprivate']) && $this->options['sendprivate'] == 1) {
+         return true;
+      }
+      else {
+         return false;
+      }
+   }
    /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
+   function getDatasForTemplate($event,$tpldata = array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       //----------- Ticket infos -------------- //
@@ -346,7 +369,7 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
-      if (!isset($options['sendprivate']) || !$options['sendprivate']) {
+      if ($this->isPrivate()) {
          $restrict.=" AND `is_private`='0'";
       }
       $restrict.=" ORDER BY `date` DESC";
@@ -467,29 +490,6 @@ class NotificationTargetTicket extends NotificationTarget {
       return  $tpldata;
    }
 
-   /**
-    * Get users emails by profile
-    * @param notifications_id the notification ID
-    * @param profiles_id the profile ID to get users emails
-    * @return nothing
-    */
-/*
-   function getUsersAddressesByProfile($profiles_id) {
-      global $DB;
 
-      if ($this->target_object) {
-         $query=NotificationTargetTicket::getDistinctUserSql()."
-                 FROM `glpi_profiles_users`
-                 INNER JOIN `glpi_users`
-                 ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
-                 WHERE `glpi_profiles_users`.`profiles_id`='".$profiles_id."'".
-                    getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                     $this->obj->getEntityID(),true);
-         foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($data['email'],$data['lang']);
-         }
-      }
-   }
-*/
 }
 ?>
