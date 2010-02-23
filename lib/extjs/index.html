@@ -1,0 +1,344 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Welcome to Ext JS</title>
+<style type="text/css">
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #f7f7f7 url(welcome/images/bg-x.png) repeat-x 0 0;
+	color: #999;
+	font: normal 11px/1.3 Verdana, sans-serif;
+	margin: 0 auto 0;
+	padding: 0;
+	width: 740px;
+}
+
+p {
+	margin: 0 0 1em;
+}
+
+a:link,
+a:visited {
+	color: #0464BB;
+	text-decoration: none;
+}
+
+a:hover, 
+a:focus, 
+a:active {
+	color: #0464BB;
+	text-decoration: underline;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	color: #222;
+	font-family: "Myriad Pro","Trebuchet MS","Helvetica Neue",Arial,Verdana, sans-serif;
+	font-size: 24px;
+	font-weight: normal;
+	line-height: 24px;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+#page {
+	background: url(welcome/images/header.png) no-repeat 50% 0;
+}
+
+#header {
+    display: block;
+	height: 328px;
+	margin: 0 auto;
+	padding: 0;
+	width: 620px;
+	
+	overflow: hidden;
+	text-indent: 150%;
+	white-space: nowrap;
+}
+
+div#container {
+	margin: 0 auto;
+	overflow: hidden;
+	width: 740px;
+}
+
+.section {
+	float: left;
+	margin-right: 40px;
+	width: 220px;
+}
+
+.section h2 {
+	height: 30px;
+	line-height: 30px;
+	margin: 0;
+	padding: 0;
+	width: 100px;
+	
+	overflow: hidden;
+	text-indent: 150%;
+	white-space: nowrap;
+
+}
+
+#learn h2 {
+	background: url(welcome/images/h_learn.png) no-repeat 0 0;
+}
+
+#engage h2 {
+	background: url(welcome/images/h_engage.png) no-repeat 0 0;
+}
+
+#license h2 {
+	background: url(welcome/images/h_license.png) no-repeat 0 0;
+}
+
+#engage ul li {
+    height: 16px;
+    line-height: 16px;
+}
+
+#engage ul#social li a {
+    color: #777;
+    display: block;
+    height: 16px;
+    line-height: 16px;
+    margin: 6px 0 0;
+    padding-left: 22px;
+    text-decoration: none;
+}
+
+#engage ul#social li a span {
+    color: #0464BB;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#engage ul#social li a:hover {
+    color: #777;
+    text-decoration: none;
+}
+
+#engage ul#social li a:hover span {
+    color: #0464BB;
+    text-decoration: underline;
+}
+
+#engage a#join_us {
+    background: url(welcome/images/button_join_us.png) no-repeat 0 0;
+    display: block;
+    height: 27px;
+    
+    margin: 0 32px 16px 0;
+    padding: 0;
+    
+    width: 81px;
+    
+    overflow: hidden;
+    text-indent: 150%;
+    white-space: nowrap;
+}
+
+#engage a#join_us:hover,
+#engage a#join_us:active {
+    background: url(welcome/images/button_join_us.png) no-repeat 0 -27px;
+}
+
+#engage a#twitter {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 0;
+} 
+
+#engage a#twitter:hover {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -16px;
+} 
+
+#engage a#tumblr {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -32px;
+} 
+
+#engage a#tumblr:hover {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -48px;
+} 
+
+#engage a#facebook {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -64px;
+} 
+
+#engage a#facebook:hover {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -80px;
+}
+
+#engage a#linkedin {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -128px;
+} 
+
+#engage a#linkedin:hover {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -144px;
+}
+
+#engage a#blog {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -96px;
+} 
+
+#engage a#blog:hover {
+    background: url(welcome/images/social_sprite.gif) no-repeat 0 -112px;
+} 
+
+#license {
+	margin-right: 0;
+}
+
+ul,
+ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#learn ul li,
+#license ul li {
+	background: url(welcome/images/li.png) no-repeat 1px 2px;
+	padding: 0 0 0.5em 10px;
+	margin-left: 0px;
+}
+
+div#communication {
+	background: url(welcome/images/comm.png) no-repeat 50% 0;
+	height: 40px;
+	margin: 18px auto 0;
+	padding: 18px 0 32px;
+	text-align: center;
+	width: 720px;
+}
+
+div#communication p {
+	color: #222;
+	font-family: "Myriad Pro","Trebuchet MS","Helvetica Neue",Arial,Verdana, sans-serif;
+	font-size: 13px;
+	font-weight: normal;
+	height: 16px;
+	line-height: 16px;
+}
+
+div#communication p span {
+	display: block;
+	height: 28px;
+	margin-right: 12px;
+}
+
+div#communication input#MERGE0 {
+	padding: 2px;
+}
+
+div#jobs p {
+	font-family: "Myriad Pro","Trebuchet MS","Helvetica Neue",Arial,Verdana, sans-serif;
+	font-size: 13px;
+	font-weight: normal;
+	height: 12px;
+	line-height: 12px;
+	margin: 22px auto;
+	text-align: center;
+	width: 720px;
+}
+
+div#jobs p strong {
+	color: #222;
+}
+
+</style>
+
+<!--[if lte IE 6]>
+<style type="text/css">
+
+body {
+	background: #f7f7f7;
+}
+
+#page {
+	background: url(welcome/images/header_ie6.png) no-repeat 50% 0;
+}
+
+#learn h2 {
+	background: url(welcome/images/h_learn_ie6.png) no-repeat 0 0;
+}
+
+#engage h2 {
+	background: url(welcome/images/h_engage_ie6.png) no-repeat 0 0;
+}
+
+#license h2 {
+	background: url(welcome/images/h_license_ie6.png) no-repeat 0 0;
+}
+
+  
+</style>  
+<![endif]-->
+
+</head>
+<body>
+<div id="page">
+<a id="header" class="png" href="http://www.extjs.com/"><strong>Welcome to Ext JS</strong>&nbsp;Thank you for downloading Ext JS. With a community of over one million developers and our robust family of Extware products, Ext JS is the leader in Javascript application development.</a>
+
+<div id="container">
+<div id="learn" class="section">
+	<h2>Learn</h2>
+	<p>Use the included files to <a href="examples/index.html">view samples</a> and our <a href="http://www.extjs.com/deploy/dev/docs/">API documentation</a>.</p>
+	<p>For advanced, hands-on support, please see our premium <a href="http://extjs.com/store">support subscriptions</a>. Larger organizations can use <a href="http://www.extjs.com/support/">our enterprise training and services</a>.</p>
+	<ul>
+		<li><a href="examples/index.html" target="_blank">Samples</a></li>
+		<li><a href="http://extjs.com/learn" target="_blank">Wiki</a></li>
+		<li><a href="http://extjs.com/learn/Ext_FAQ" target="_blank">FAQ</a></li>
+	</ul>
+</div>
+
+<div id="engage" class="section">
+	<h2>Engage</h2>
+	<p>Our <a href="http://www.extjs.com/forum/">community forums</a> have over 100,000 registered users and are a great place to ask questions and interact with other Ext JS developers.</p>
+
+	<a href="http://www.extjs.com/forum/" id="join_us">Join Us</a>
+
+	<ul id="social">
+		<li><a href="http://twitter.com/extjs" id="twitter"><span>Follow @extjs</span> on Twitter</a></li>
+		<li><a href="http://extjs.tumblr.com/" id="tumblr"><span>Check out</span> our new Tumblog</a></li>
+		<li><a href="http://www.facebook.com/pages/Ext-JS/96223925772" id="facebook"><span>Become a fan</span> on Facebook</a></li>
+		<li><a href="http://j.mp/ext-in" id="linkedin"><span>Network with us</span> on LinkedIn</a></li>
+        <li><a href="http://www.extjs.com/blog/" id="blog"><span>Subscribe</span> to the official blog</a></li>
+	</ul>
+</div>
+
+<div id="license" class="section">
+	<h2>License</h2>
+	<p>Ext JS is <a href="http://www.extjs.com/company/dual.php">dual licensed</a>. This means:</p>
+	<ul>
+		<li>Free to use and test in your local development environment.</li>
+		<li>Free to use in your open source projects.</li>
+		<li>Purchase a developer license if you don&rsquo;t plan on releasing your website or application&rsquo;s code as open source.</li>
+	</ul>
+	<p>To purchase a commercial license, please see our <a href="http://www.extjs.com/store/extjs/">pricing page</a>.</p>
+</div>
+</div>
+
+<div id="communication">
+    <form action="http://extjs.us1.list-manage.com/subscribe/post" method="post">
+        <p><label for="MERGE0"><span>Sign up to stay in the loop:</span>
+            <input name="u" type="hidden" value="fb30e9d0e8ab5e66a19398a14" />
+            <input name="id" type="hidden" value="0d77ae4ac0" />
+            <input name="orig-lang" type="hidden" value="1" />
+            <input id="MERGE0" name="MERGE0" type="email" autofocus="true" placeholder="johndoe@example.com" size="25" />
+            <input id="submit" name="submit" type="submit" value="Subscribe" />
+        </label></p>
+    </form>
+</div>
+
+<div id="jobs">
+	<p><strong>Looking for a job?</strong> Check out our <a href="http://jobs.extjs.com/">Ext Job Board</a>, where companies worldwide seek Ext developers.</p>
+</div>
+</div>
+</body>
+</html>
