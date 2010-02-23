@@ -101,9 +101,11 @@ function includeCommonHtmlHeader($title='') {
    }
    // EXTRA EXTJS
    echo "<script type=\"text/javascript\" src='".
+          $CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
+   echo "<script type=\"text/javascript\" src='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
    echo "<script type=\"text/javascript\" src='".
-          $CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
+          $CFG_GLPI["root_doc"]."/lib/extrajs/spancombobox.js'></script>\n";
 
    echo "<script type=\"text/javascript\">\n";
    echo "//<![CDATA[ \n";
@@ -2747,7 +2749,7 @@ function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
       });
       ";
 
-      $output .= "var search$name = new Ext.form.ComboBox({
+      $output .= "var search$name = new Ext.ux.form.SpanComboBox({
          store: text$name,
          displayField:'value',
          pageSize:20,
