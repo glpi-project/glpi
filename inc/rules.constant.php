@@ -100,8 +100,7 @@ $RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_SERVER']['id']        = 'mail_s
 
 $RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['table']     = '';
 $RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['field']     = '';
-$RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['name']      = $LANG['login'][6]." ".
-                                                                  $LANG['login'][3];
+$RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['name']      = $LANG['login'][6]." ".$LANG['login'][3];
 $RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['linkfield'] = '';
 $RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['virtual']   = true;
 $RULES_CRITERIAS[Rule::RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['id']        = 'mail_email';

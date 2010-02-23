@@ -119,6 +119,8 @@ include_once (GLPI_ROOT . "/inc/commondbrelation.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
 
 
+
+
 // Load Language file
 loadLanguage();
 
@@ -186,5 +188,10 @@ if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
 if (isset($_REQUEST['glpilist_limit'])) {
    $_SESSION['glpilist_limit']=$_REQUEST['glpilist_limit'];
 }
+
+
+// TODO : try to delete this include
+include_once (GLPI_ROOT . "/inc/rules.constant.php");
+
 
 ?>
