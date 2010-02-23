@@ -306,9 +306,14 @@ class CommonDBTM extends CommonGLPI {
       global $DB,$CFG_GLPI;
 
       if ($this->maybeDeleted()) {
+         // Auto set date_mod if exsist
+         $toadd='';
+         if (isset($this->fields['date_mod'])) {
+            $toadd=", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
+         }
          $query = "UPDATE `".
                    $this->getTable()."`
-                   SET `is_deleted`='0'
+                   SET `is_deleted`='0' $toadd
                    WHERE `id` = '".$this->fields['id']."'";
          if ($result = $DB->query($query)) {
             return true;
@@ -348,9 +353,14 @@ class CommonDBTM extends CommonGLPI {
             return false;
          }
       }else {
+         // Auto set date_mod if exsist
+         $toadd='';
+         if (isset($this->fields['date_mod'])) {
+            $toadd=", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
+         }
          $query = "UPDATE `".
                    $this->getTable()."`
-                   SET `is_deleted`='1'
+                   SET `is_deleted`='1' $toadd
                    WHERE `id` = '".$this->fields['id']."'";
          $this->cleanDBonMarkDeleted();
 
