@@ -3335,6 +3335,13 @@ function update0723to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_profiles','rule_mailgate')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `rule_mailgate` CHAR( 1 ) NULL ";
+      $DB->query($query) or die("0.80 add rule_mailgate to glpi_profiles" .
+                                 $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_profiles` SET `rule_mailgate`='w' WHERE `name` IN ('super-admin')";
+      $DB->query($query) or die("0.80 add rule_mailgate right to super-admin profile " . $LANG['update'][90] . $DB->error());
+   }
    // Change search pref : add active / date_mod
    $ADDTODISPLAYPREF['MailCollector']=array(2,19);
 
