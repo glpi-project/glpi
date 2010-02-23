@@ -1322,7 +1322,7 @@ class Rule extends CommonDBTM {
       return $rand;
    }
 
-   function getClassByType($type) {
+   static function getClassByType($type) {
 
       switch ($type) {
          case Rule::RULE_OCS_AFFECT_COMPUTER :

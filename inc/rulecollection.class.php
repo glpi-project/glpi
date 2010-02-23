@@ -754,62 +754,62 @@ class RuleCollection {
       }
    }
 
-function getClassByTableName($tablename) {
+   static function getClassByTableName($tablename) {
 
-   switch ($tablename) {
-      case "glpi_softwares" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_SOFTWARE);
+      switch ($tablename) {
+         case "glpi_softwares" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_SOFTWARE);
 
-      case "glpi_manufacturers" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MANUFACTURER);
+         case "glpi_manufacturers" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MANUFACTURER);
 
-      case "glpi_computermodels" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_COMPUTER);
+         case "glpi_computermodels" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_COMPUTER);
 
-      case "glpi_monitormodels" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_MONITOR);
+         case "glpi_monitormodels" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_MONITOR);
 
-      case "glpi_printermodels" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PRINTER);
+         case "glpi_printermodels" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PRINTER);
 
-      case "glpi_peripheralmodels" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL);
+         case "glpi_peripheralmodels" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL);
 
-      case "glpi_networkequipmentmodels" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_NETWORKING);
+         case "glpi_networkequipmentmodels" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_NETWORKING);
 
-      case "glpi_phonemodels" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PHONE);
+         case "glpi_phonemodels" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PHONE);
 
-      case "glpi_computertypes" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_COMPUTER);
+         case "glpi_computertypes" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_COMPUTER);
 
-      case "glpi_monitortypes" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_MONITOR);
+         case "glpi_monitortypes" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_MONITOR);
 
-      case "glpi_printertypes" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PRINTER);
+         case "glpi_printertypes" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PRINTER);
 
-      case "glpi_peripheraltypes" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL);
+         case "glpi_peripheraltypes" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL);
 
-      case "glpi_networkequipmenttypes" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_NETWORKING);
+         case "glpi_networkequipmenttypes" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_NETWORKING);
 
-      case "glpi_phonetypes" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PHONE);
+         case "glpi_phonetypes" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PHONE);
 
-      case "glpi_operatingsystems" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS);
+         case "glpi_operatingsystems" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS);
 
-      case "glpi_operatingsystemservicepacks" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_SP);
+         case "glpi_operatingsystemservicepacks" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_SP);
 
-      case "glpi_operatingsystemversions" :
-         return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_VERSION);
+         case "glpi_operatingsystemversions" :
+            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_VERSION);
+      }
+      return NULL;
    }
-   return NULL;
-}
 }
 
 ?>
