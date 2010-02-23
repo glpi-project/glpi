@@ -656,11 +656,11 @@ class NotificationTarget extends CommonDBChild {
       return "";
    }
 
-   function getForTemplate($event) {
+   function getForTemplate($event,$options) {
       global $CFG_GLPI;
       $tpldata = array();
       $tpldata['##glpi.url##'] = $CFG_GLPI['root_doc'];
-      $tpldata = $this->getDatasForTemplate($event,$tpldata);
+      $tpldata = $this->getDatasForTemplate($event,$tpldata,$options);
       return $tpldata;
    }
 }
