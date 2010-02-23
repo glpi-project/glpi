@@ -522,17 +522,6 @@ class Monitor extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-
-      $tab['tracking'] = $LANG['title'][24];
-
-      $tab[60]['table']        = 'glpi_tickets';
-      $tab[60]['field']        = 'count';
-      $tab[60]['linkfield']    = '';
-      $tab[60]['name']         = $LANG['stats'][13];
-      $tab[60]['forcegroupby'] = true;
-      $tab[60]['usehaving']    = true;
-      $tab[60]['datatype']     = 'number';
-
       return $tab;
    }
 }
