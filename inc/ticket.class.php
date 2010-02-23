@@ -2223,7 +2223,11 @@ class Ticket extends CommonDBTM {
             echo "<select id='search_$myname$rand' name='$myname'>\n";
             echo "<option value='-1' >-----</option>\n";
             echo "<option value='' ".(empty($itemtype)?" selected":"").">".$LANG['help'][30]."</option>";
+            $found_type=false;
             foreach ($types as $type => $label) {
+               if ($type==$itemtype) {
+                  $found_type=true;
+               }
                echo "<option value='".$type."' ".(($type==$itemtype)?" selected":"").">".$label;
                echo "</option>\n";
             }
@@ -2236,10 +2240,10 @@ class Ticket extends CommonDBTM {
 
             ajaxUpdateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",$CFG_GLPI["root_doc"].
                                        "/ajax/dropdownTrackingDeviceType.php",$params);
-
             echo "<span id='results_$myname$rand'>\n";
 
-            if ($itemtype && class_exists($itemtype) && $items_id) {
+            // Display default value if itemtype is displayed
+            if ($found_type && $itemtype && class_exists($itemtype) && $items_id) {
                $item = new $itemtype();
                if ($item->getFromDB($items_id)) {
                   echo "<select name='items_id'>\n";
