@@ -3782,7 +3782,7 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_entitydatas','autoclose_delay')) {
       $query = "ALTER TABLE `glpi_entitydatas` ADD `autoclose_delay` int(11) NOT NULL default '0'";
       $DB->query($query) or die("0.78 add autoclose_delay to glpi_entitydatas " . $LANG['update'][90] . $DB->error());
-   
+   }
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 
