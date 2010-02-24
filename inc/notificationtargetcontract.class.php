@@ -44,21 +44,22 @@ class NotificationTargetContract extends NotificationTarget {
       /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event,$tpldata = array(), $options=array()) {
+   function getDatasForTemplate($event, $options=array()) {
       global $LANG,$CFG_GLPI;
-      $tpldata['##contract.entity##'] =
+
+      $this->datas['##contract.entity##'] =
                            Dropdown::getDropdownName('glpi_entities',
                                                      $options['entities_id']);
-      $tpldata['##lang.contract.entity##'] =$LANG['entity'][0];
-      $tpldata['##contract.action##'] = ($event==ALERT_END?$LANG['mailing'][38]:
+      $this->datas['##lang.contract.entity##'] =$LANG['entity'][0];
+      $this->datas['##contract.action##'] = ($event==ALERT_END?$LANG['mailing'][38]:
                                                             $LANG['mailing'][37]);
-      $tpldata['##lang.contract.action##']= $LANG['mailing'][39];
-      $tpldata['##lang.contract.name##']= $LANG['common'][16];
+      $this->datas['##lang.contract.action##']= $LANG['mailing'][39];
+      $this->datas['##lang.contract.name##']= $LANG['common'][16];
 
-      $tpldata['##lang.contract.time##']= ($event==ALERT_END?$LANG['contract'][0]:
+      $this->datas['##lang.contract.time##']= ($event==ALERT_END?$LANG['contract'][0]:
                                                              $LANG['contract'][1]);
-      $tpldata['##lang.contract.number##']= $LANG['financial'][4];
-      $tpldata['##lang.contract.type##']= $LANG['common'][17];
+      $this->datas['##lang.contract.number##']= $LANG['financial'][4];
+      $this->datas['##lang.contract.type##']= $LANG['common'][17];
 
       foreach($options['contracts'] as $id => $contract) {
          $tmp = array();
@@ -76,9 +77,8 @@ class NotificationTargetContract extends NotificationTarget {
                                                       $contract["notice"]));
          $tmp['##contract.url##'] = urldecode($CFG_GLPI["url_base"].
                                                   "/index.php?redirect=contract_".$id);
-         $tpldata['contracts'][] = $tmp;
+         $this->datas['contracts'][] = $tmp;
       }
-      return $tpldata;
    }
 }
 ?>

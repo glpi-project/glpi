@@ -43,27 +43,26 @@ class NotificationTargetInfocom extends NotificationTarget {
       /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event,$tpldata = array(),$options=array()) {
+   function getDatasForTemplate($event, $options=array()) {
       global $LANG;
+
       $prefix = strtolower($item->getType());
-      $tpldata['##'.$prefix.'.entity##'] =
+      $this->datas['##'.$prefix.'.entity##'] =
                            Dropdown::getDropdownName('glpi_entities',
                                                      $this->obj->getField('entities_id'));
-      $tpldata['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $tpldata['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
+      $this->datas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
+      $this->datas['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
 
-      $tpldata['##lang.'.$prefix.'.itemtype##']= $this->target_object->getTypeName();
-      $tpldata['##lang.'.$prefix.'.item##']= $this->target_object->getField('name');
-      $tpldata['##lang.'.$prefix.'.expirationdate##']=
+      $this->datas['##lang.'.$prefix.'.itemtype##']= $this->target_object->getTypeName();
+      $this->datas['##lang.'.$prefix.'.item##']= $this->target_object->getField('name');
+      $this->datas['##lang.'.$prefix.'.expirationdate##']=
                                         getWarrantyExpir($this->obj->getField("buy_date"),
                                                          $this->obj->getField("warranty_duration"));
 
-      $tpldata['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
-      $tpldata['##lang.'.$prefix.'.itemtype##']= $LANG['reports'][12];
-      $tpldata['##lang.'.$prefix.'.item##']= $LANG['financial'][104];
-      $tpldata['##lang.'.$prefix.'.expirationdate##']= $LANG['mailing'][54];
-
-      return $tpldata;
+      $this->datas['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
+      $this->datas['##lang.'.$prefix.'.itemtype##']= $LANG['reports'][12];
+      $this->datas['##lang.'.$prefix.'.item##']= $LANG['financial'][104];
+      $this->datas['##lang.'.$prefix.'.expirationdate##']= $LANG['mailing'][54];
    }
 }
 ?>
