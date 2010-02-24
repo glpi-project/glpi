@@ -1471,6 +1471,7 @@ CREATE TABLE `glpi_entitydatas` (
   `cartridges_alert_repeat` int(11) NOT NULL default '0',
   `consumables_alert_repeat` int(11) NOT NULL default '0',
   `use_licenses_alert` tinyint(1) NOT NULL default '0',
+  `autoclose_delay` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

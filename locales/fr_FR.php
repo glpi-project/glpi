@@ -492,6 +492,9 @@ $LANG['entity'][13]="Information OCS représentant l'entité";
 $LANG['entity'][14]="Informations avancées";
 $LANG['entity'][15]="Annuaire associé à l'entité";
 $LANG['entity'][16]="Filtre de recherche (si nécessaire)";
+$LANG['entity'][17]="Configuration fermeture administrative";
+$LANG['entity'][18]="Fermeture administrative des tickets résolus après";
+
 
 $LANG['event'][0]="Item (ID)";
 $LANG['event'][2]="Service";

@@ -103,6 +103,7 @@ class Entity extends CommonTreeDropdown {
          if (haveRight('notification','r')) {
             $ong[7] = $LANG['setup'][704];
          }
+         $ong[8] = $LANG['title'][24];      // Automatic close
       }
       return $ong;
    }
@@ -162,6 +163,11 @@ class Entity extends CommonTreeDropdown {
             case 7 :
                EntityData::showNotificationOptions($this);
                break;
+
+            case 8 :
+               EntityData::showHelpForm($this);
+               break;
+
             default :
                if (!Plugin::displayAction($this, $tab)) {
                   $this->showChildren($ID);
