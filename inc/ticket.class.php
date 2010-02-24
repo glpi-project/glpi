@@ -232,7 +232,7 @@ class Ticket extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $LANG,$CFG_GLPI;
-//      echo $input["date"];exit();
+
       if (isset($input["date"]) && empty($input["date"])) {
          unset($input["date"]);
       }
@@ -2430,6 +2430,9 @@ class Ticket extends CommonDBTM {
          $this->check(-1,'w',$options);
       }
 
+      if ($this->fields['status'] == 'solved') {
+         setActiveTab('Ticket', 4);
+      }
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups()==0
