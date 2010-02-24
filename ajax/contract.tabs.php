@@ -82,7 +82,6 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          if (!Plugin::displayAction($contract,$_REQUEST['glpi_tab'])) {
             $contract->showSuppliers();
          }
-         break;
    }
 }
 

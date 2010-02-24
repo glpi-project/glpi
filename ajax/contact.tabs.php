@@ -76,7 +76,6 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          if (!Plugin::displayAction($contact,$_REQUEST['glpi_tab'])) {
             $contact->showSuppliers();
          }
-         break;
    }
 }
 

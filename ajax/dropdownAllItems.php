@@ -57,13 +57,14 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $use_ajax=true;
    }
 
-   $paramsallitems=array('searchText'=>'__VALUE__',
-                         'table'=>$table,
-                         'itemtype'=>$_POST["idtable"],
-                         'rand'=>$rand,
-                         'myname'=>$_POST["myname"],
-                         'displaywith'=>array('serial','otherserial')
-                  );
+   $paramsallitems=array('searchText'  => '__VALUE__',
+                         'table'       => $table,
+                         'itemtype'    => $_POST["idtable"],
+                         'rand'        => $rand,
+                         'myname'      => $_POST["myname"],
+                         'displaywith' => array('serial',
+                                                'otherserial')
+                        );
 
    if (isset($_POST['value'])) {
       $paramsallitems['value']=$_POST['value'];

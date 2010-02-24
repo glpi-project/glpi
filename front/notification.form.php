@@ -55,14 +55,14 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "notifications", 4, "notification",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
-
    glpi_header(getItemTypeSearchURL('Notification', true));
 
 } else if (isset($_POST["update"])) {
    $notification->check($_POST["id"],'w');
 
    $notification->update($_POST);
-   Event::log($_POST["id"], "notifications", 4, "notification", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "notifications", 4, "notification",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {

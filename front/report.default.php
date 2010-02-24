@@ -130,7 +130,8 @@ echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][4]." :</td>";
 echo "<td class='right'>$number_of_software &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][3]." :</td>";
 echo "<td class='right'>$number_of_monitors &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][16]." :</td>";echo "<td class='right'>$number_of_peripherals &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
+echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][16]." :</td>";
+echo "<td class='right'>$number_of_peripherals &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][34]." :</td>";
 echo "<td class='right'>$number_of_phones &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 
@@ -159,7 +160,7 @@ while ($data=$DB->fetch_assoc($result)) {
 
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][1]." :</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][1]."&nbsp;:</td></tr>";
 
 # 4. Get some more number data (Networking)
 
@@ -182,7 +183,7 @@ while ($data=$DB->fetch_assoc($result)) {
 
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][3]." :</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][3]."&nbsp;:</td></tr>";
 
 # 4. Get some more number data (Monitor)
 
@@ -208,7 +209,7 @@ while ($data=$DB->fetch_assoc($result)) {
 
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][2]." :</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][2]."&nbsp;:</td></tr>";
 
 # 4. Get some more number data (Printers)
 
@@ -233,7 +234,7 @@ while ($data=$DB->fetch_assoc($result)) {
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][16]." :</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][16]."&nbsp;:</td></tr>";
 
 # 4. Get some more number data (Peripherals)
 
@@ -258,7 +259,7 @@ while ($data=$DB->fetch_assoc($result)) {
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][34]." :</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][34]."&nbsp;:</td></tr>";
 
 # 4. Get some more number data (Peripherals)
 

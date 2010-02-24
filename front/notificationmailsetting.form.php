@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -35,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -45,12 +42,12 @@ $notificationmail = new NotificationMailSetting();
 if (!empty($_POST["test_smtp_send"])) {
    NotificationMail::testNotification();
    glpi_header($_SERVER['HTTP_REFERER']);
-} elseif (!empty($_POST["update"])) {
+
+} else if (!empty($_POST["update"])) {
    $config = new Config;
    $config->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
-
 
 commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing","config");
 

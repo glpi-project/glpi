@@ -48,6 +48,7 @@ if ($_POST['id'] > 0) {
       case 12 :
             Log::showForItem($translation);
          break;
+
       default :
          if (!Plugin::displayAction($translation, $_REQUEST['glpi_tab'])) {
          }
