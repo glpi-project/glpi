@@ -79,7 +79,6 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
             Consumable::showForItem($consumable);
             Consumable::showForItem($consumable, 1);
          }
-         break;
    }
 }
 ajaxFooter();

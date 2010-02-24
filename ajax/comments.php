@@ -70,7 +70,6 @@ if (isset($_REQUEST["table"]) && isset($_REQUEST["value"])) {
             $tmpname=Dropdown::getDropdownName($_REQUEST["table"],$_REQUEST["value"],1);
             echo $tmpname["comment"];
          }
-         break;
    }
 }
 ?>

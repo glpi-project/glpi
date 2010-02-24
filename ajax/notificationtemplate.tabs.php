@@ -42,19 +42,19 @@ header_nocache();
 checkRight("config",'r');
 
 if ($_POST['id'] > 0) {
-   $template =new NotificationTemplate();
+   $template = new NotificationTemplate();
    $template->getFromDB($_POST['id']);
    $templatelanguage = new NotificationTemplateTranslation;
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $templatelanguage->showSummary($template);
-         break;
       case 1 :
          $templatelanguage->showSummary($template);
          break;
+
       case 12 :
             Log::showForItem($template);
          break;
+
       default :
          if (!Plugin::displayAction($template, $_REQUEST['glpi_tab'])) {
          }

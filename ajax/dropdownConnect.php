@@ -56,7 +56,8 @@ if (isset($_POST["used"]) && !is_numeric($_POST["used"]) && !is_array($_POST["us
    $used = $_POST["used"];
 }
 
-if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
+if (isset($_POST["entity_restrict"])
+    && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
 
    $_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
@@ -117,9 +118,9 @@ if ($_POST["onlyglobal"] && $_POST["idtable"] != 'Computer') {
 
 $LEFTJOINCONNECT="";
 if ($_POST["idtable"] != 'Computer' && !$_POST["onlyglobal"]) {
-   $LEFTJOINCONNECT=" LEFT JOIN `glpi_computers_items`
-                         ON (`$table`.`id` = `glpi_computers_items`.`items_id`
-                             AND `glpi_computers_items`.`itemtype` = '".$_POST['idtable']."')";
+   $LEFTJOINCONNECT = " LEFT JOIN `glpi_computers_items`
+                           ON (`$table`.`id` = `glpi_computers_items`.`items_id`
+                               AND `glpi_computers_items`.`itemtype` = '".$_POST['idtable']."')";
 }
 $query = "SELECT DISTINCT `$table`.`id`, `$table`.`name` AS name, `$table`.`serial` AS serial,
                  `$table`.`otherserial` AS otherserial, `$table`.`entities_id` AS entities_id
@@ -134,9 +135,9 @@ $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-   echo "<option value=\"0\">--".$LANG['common'][11]."--</option>";
+   echo "<option value='0'>--".$LANG['common'][11]."--</option>";
 }
-echo "<option value=\"0\">------</option>";
+echo "<option value='0'>------</option>";
 
 if ($DB->numrows($result)) {
    $prev=-1;

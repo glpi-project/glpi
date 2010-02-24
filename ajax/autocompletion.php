@@ -74,8 +74,8 @@ $query = "SELECT COUNT(`".$_POST['field']."`)
           WHERE `".$_POST['field']."` LIKE '".$_POST['query']."%'
                 AND `".$_POST['field']."` <> '".$_POST['query']."'
                 $entity ";
-$result=$DB->query($query);
-$totnum=$DB->result($result,0,0);
+$result = $DB->query($query);
+$totnum = $DB->result($result,0,0);
 
 $query = "SELECT DISTINCT `".$_POST['field']."` AS VAL
           FROM `$table`

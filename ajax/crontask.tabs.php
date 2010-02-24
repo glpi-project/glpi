@@ -59,7 +59,6 @@ if ($_POST['id']>0 && $crontask->getFromDB($_POST['id'])) {
          if (!Plugin::displayAction($crontask,$_REQUEST['glpi_tab'])) {
             $crontask->showStatistics();
          }
-         break;
    }
 }
 

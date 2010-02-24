@@ -44,7 +44,6 @@ if (isset($_POST["id"]) && $_POST['id']>0 && $disk->can($_POST['id'],'r')) {
       default :
          if (!Plugin::displayAction($disk, $_REQUEST['glpi_tab'])) {
          }
-         break;
    }
 }
 

@@ -52,7 +52,6 @@ if (isset($_POST["add"])) {
    $url = getItemTypeFormURL('NotificationTemplateTranslation',true);
    $url.="?notificationtemplates_id=$newID";
    glpi_header($url);
-   //glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $notificationtemplate->check($_POST["id"],'d');
@@ -60,8 +59,8 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
-
    glpi_header(getItemTypeSearchURL('NotificationTemplate', true));
+
 } else if (isset($_POST["delete_languages"])) {
    $notificationtemplate->check(-1,'d');
    $language = new NotificationTemplateTranslation;
@@ -70,7 +69,7 @@ if (isset($_POST["add"])) {
          if ($val=='on') {
             $input['id'] = $key;
             $language->delete($input);
-            }
+         }
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -79,11 +78,13 @@ if (isset($_POST["add"])) {
    $notificationtemplate->check($_POST["id"],'w');
 
    $notificationtemplate->update($_POST);
-   Event::log($_POST["id"], "notificationtemplates", 4, "notification", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "notificationtemplates", 4, "notification",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing","notificationtemplate");
+   commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing",
+                "notificationtemplate");
    $notificationtemplate->showForm($_GET["id"]);
    commonFooter();
 }

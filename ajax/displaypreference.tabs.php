@@ -42,7 +42,7 @@ if (!isset($_POST["id"]) || !isset($_POST["itemtype"])) {
    exit();
 }
 
-$setupdisplay=new DisplayPreference();
+$setupdisplay = new DisplayPreference();
 
 if ($_POST["id"]<0) {
    switch($_REQUEST['glpi_tab']) {

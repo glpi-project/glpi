@@ -68,7 +68,6 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          if (!Plugin::displayAction($doc,$_REQUEST['glpi_tab'])) {
             $doc->showItems();
          }
-         break;
    }
 }
 ajaxFooter();

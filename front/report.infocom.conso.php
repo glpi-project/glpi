@@ -144,8 +144,8 @@ function display_infocoms_report($itemtype,$begin,$end) {
                                           $line["sink_coeff"], $line["buy_date"], $line["use_date"],
                                           $CFG_GLPI["date_tax"], "n");
             $tmp = Infocom::Amort($line["sink_type"], $line["value"], $line["sink_time"],
-                              $line["sink_coeff"], $line["buy_date"], $line["use_date"],
-                              $CFG_GLPI["date_tax"], "all");
+                                  $line["sink_coeff"], $line["buy_date"], $line["use_date"],
+                                  $CFG_GLPI["date_tax"], "all");
 
             if (is_array($tmp) && count($tmp) >0) {
                foreach ($tmp["annee"] as $key => $val) {
@@ -183,9 +183,9 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeurnettegraphtot[$key] += $valeurnettegraph[$key];
             }
 
-            Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphdisplay)
-                           ,array('title'    => $LANG['financial'][81],
-                                 'width'     => 500));
+            Stat::showGraph(array($LANG['financial'][81] => $valeurnettegraphdisplay),
+                            array('title' => $LANG['financial'][81],
+                                  'width' => 500));
 
             echo "</td></tr>\n";
          }
@@ -202,9 +202,9 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeurgraphtot[$key] += $valeurgraph[$key];
             }
 
-            Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphdisplay)
-                           ,array('title'    => $LANG['financial'][21],
-                                 'width'     => 500));
+            Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphdisplay),
+                            array('title' => $LANG['financial'][21],
+                                  'width' => 500));
 
             echo "</td></tr>";
          }
@@ -216,7 +216,7 @@ function display_infocoms_report($itemtype,$begin,$end) {
 }
 
 
-$types=array('Consumable','Cartridge','SoftwareLicense');
+$types = array('Consumable', 'Cartridge', 'SoftwareLicense');
 
 $i=0;
 while (count($types)>0) {
@@ -247,14 +247,14 @@ echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
 
 if (count($valeurnettegraphtot) >0) {
    $valeurnettegraphtotdisplay = array_map('round',$valeurnettegraphtot);
-   Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphtotdisplay)
-                  ,array('title'    => $LANG['financial'][81]));
+   Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphtotdisplay),
+                   array('title' => $LANG['financial'][81]));
 
 }
 if (count($valeurgraphtot) >0) {
    $valeurgraphtotdisplay = array_map('round',$valeurgraphtot);
-   Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphtotdisplay)
-                  ,array('title'    => $LANG['financial'][21]));
+   Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphtotdisplay),
+                   array('title' => $LANG['financial'][21]));
 }
 
 commonFooter();

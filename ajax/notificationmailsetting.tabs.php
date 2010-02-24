@@ -42,7 +42,7 @@ header_nocache();
 checkRight("config",'r');
 
 if ($_POST['id'] > 0) {
-   $target =new NotificationMailSetting();
+   $target = new NotificationMailSetting();
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $target->showFormMailServerConfig($_POST['target']);
@@ -50,15 +50,19 @@ if ($_POST['id'] > 0) {
          $target->showFormTest($_POST['target']);
          Plugin::displayAction($target, $_REQUEST['glpi_tab']);
          break;
+
       case 2 :
          $target->showFormMailServerConfig($_POST['target']);
          break;
+
       case 3 :
          $target->showFormAlerts($_POST['target']);
          break;
+
       case 4 :
          $target->showFormTest($_POST['target']);
          break;
+
       default :
          if (!Plugin::displayAction($target, $_REQUEST['glpi_tab'])) {
          }

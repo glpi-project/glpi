@@ -43,7 +43,7 @@ $notification = new Notification;
 
 //checkRight("notification",'r');
 if ($_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
-   $target =NotificationTarget::getInstanceByType($notification->getField('itemtype'));
+   $target = NotificationTarget::getInstanceByType($notification->getField('itemtype'));
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
@@ -52,15 +52,18 @@ if ($_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
          }
          Plugin::displayAction($notification, $_REQUEST['glpi_tab']);
          break;
+
       case 1 :
          if ($target) {
             $target->showForNotification($notification);
          }
          break;
+
       case 12 :
             $notification->getFromDB($_POST["id"]);
             Log::showForItem($notification);
          break;
+
       default :
          if (!Plugin::displayAction($notification, $_REQUEST['glpi_tab'])) {
          }

@@ -85,7 +85,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                Computer_Device::showForComputer($computer, $_POST["withtemplate"]);
             }
-            break;
       }
    } else {
       switch($_REQUEST['glpi_tab']) {
@@ -158,7 +157,6 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                Computer_Device::showForComputer($computer);
             }
-            break;
       }
    }
 }
