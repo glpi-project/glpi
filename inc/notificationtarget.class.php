@@ -389,8 +389,9 @@ class NotificationTarget extends CommonDBChild {
       global $DB,$CFG_GLPI;
 
       foreach ($DB->request('glpi_entitydatas',
-                            array('entities_id'=>$this->entity)) as $data) {
+                            array('entities_id'=>$this->entity)) as $row) {
          $data['language'] = $CFG_GLPI['language'];
+         $data['email'] = $row['admin_email'];
          $this->addToAddressesList($data);
       }
    }

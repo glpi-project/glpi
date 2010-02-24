@@ -203,12 +203,12 @@ class NotificationTemplate extends CommonDBTM {
                  $lang['content_html'] =
                   "<html><body>".NotificationTemplate::process($template_datas['content_html'],
                                                                 $data).
-                  "<br /><br />".$this->signature."</body></html>";
+                  "<br /><br />".nl2br($this->signature)."</body></html>";
             }
 
             $lang['content_text'] = NotificationTemplate::process($template_datas['content_text'],
                                                                   $data).
-                  "\n\n--\n".$this->signature;
+                  "\n\n".$this->signature;
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }
          logDebug("999: ".(microtime(true)-$start)." End for ".$language);
