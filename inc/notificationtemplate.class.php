@@ -179,7 +179,7 @@ class NotificationTemplate extends CommonDBTM {
          }
 
          //Get template's language data for in this language
-         $data = $target->getForTemplate($event,$options);
+         $data = &$target->getForTemplate($event,$options);
          //Restore default language
          loadLanguage();
 
@@ -198,7 +198,7 @@ class NotificationTemplate extends CommonDBTM {
 
             $lang['content_text'] = NotificationTemplate::process($template_datas['content_text'],
                                                                   $data).
-                  "\n\n".$this->signature;
+                  "\n\n--\n".$this->signature;
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }
          logDebug("999: ".(microtime(true)-$start)." End for ".$language);

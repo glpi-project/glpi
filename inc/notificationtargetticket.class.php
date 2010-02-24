@@ -233,7 +233,7 @@ class NotificationTargetTicket extends NotificationTarget {
    /**
     * Get all data needed for template processing
     */
-   function getDatasForTemplate($event,$tpldata = array()) {
+   function getDatasForTemplate($event, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       //----------- Ticket infos -------------- //
@@ -245,127 +245,127 @@ class NotificationTargetTicket extends NotificationTarget {
                        'ticket.useremail'=>'user_email');
 
       foreach ($fields as $tag => $table_field) {
-         $tpldata['##'.$tag.'##'] = $this->obj->getField($table_field);
+         $this->datas['##'.$tag.'##'] = $this->obj->getField($table_field);
       }
-      $tpldata['##ticket.id##'] = sprintf("%07d",$this->obj->getField("id"));
-      $tpldata['##ticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+      $this->datas['##ticket.id##'] = sprintf("%07d",$this->obj->getField("id"));
+      $this->datas['##ticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
                                     $this->obj->getField("id"));
 
-      $tpldata['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
+      $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                              $this->obj->getField('entities_id'));
       $events = $this->getAllEvents();
-      $tpldata['##ticket.action##'] = $events[$event];
-      $tpldata['##ticket.status##'] = Ticket::getStatus($this->obj->getField('status'));
-      $tpldata['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+      $this->datas['##ticket.action##'] = $events[$event];
+      $this->datas['##ticket.status##'] = Ticket::getStatus($this->obj->getField('status'));
+      $this->datas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                                   $this->obj->getField('requesttypes_id'));
 
-      $tpldata['##ticket.urgency##'] = Ticket::getUrgencyName($this->obj->getField('urgency'));
-      $tpldata['##ticket.impact##'] = Ticket::getImpactName($this->obj->getField('impact'));
-      $tpldata['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
-      $tpldata['##ticket.time##'] = convDateTime($this->obj->getField('realtime'));
-      $tpldata['##ticket.costtime##'] = $this->obj->getField('cost_time');
+      $this->datas['##ticket.urgency##'] = Ticket::getUrgencyName($this->obj->getField('urgency'));
+      $this->datas['##ticket.impact##'] = Ticket::getImpactName($this->obj->getField('impact'));
+      $this->datas['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
+      $this->datas['##ticket.time##'] = convDateTime($this->obj->getField('realtime'));
+      $this->datas['##ticket.costtime##'] = $this->obj->getField('cost_time');
 
-     $tpldata['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
-     $tpldata['##ticket.closedate##'] = convDateTime($this->obj->getField('closedate'));
+     $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
+     $this->datas['##ticket.closedate##'] = convDateTime($this->obj->getField('closedate'));
 
       if ($this->obj->getField('ticketcategories_id')) {
-         $tpldata['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
+         $this->datas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
                                                                   $this->obj->getField('ticketcategories_id'));
       }
       else {
-         $tpldata['##ticket.category##'] = '';
+         $this->datas['##ticket.category##'] = '';
       }
 
       if ($this->obj->getField('users_id')) {
          $user = new User;
          $user->getFromDB($this->obj->getField('users_id'));
-         $tpldata['##ticket.author##'] = $user->getField('id');
-         $tpldata['##ticket.author.name##'] = $user->getField('name');
+         $this->datas['##ticket.author##'] = $user->getField('id');
+         $this->datas['##ticket.author.name##'] = $user->getField('name');
          if ($user->getField('locations_id')) {
-            $tpldata['##ticket.author.location##'] = Dropdown::getDropdownName('glpi_locations',
+            $this->datas['##ticket.author.location##'] = Dropdown::getDropdownName('glpi_locations',
                                                                             $user->getField('locations_id'));
          }
          else {
-            $tpldata['##ticket.author.location##'] = '';
+            $this->datas['##ticket.author.location##'] = '';
          }
-         $tpldata['##ticket.author.phone##'] = $user->getField('phone');
-         $tpldata['##ticket.author.phone2##'] = $user->getField('phone2');
+         $this->datas['##ticket.author.phone##'] = $user->getField('phone');
+         $this->datas['##ticket.author.phone2##'] = $user->getField('phone2');
       }
 
       if ($this->obj->getField('users_id_recipient')) {
-         $tpldata['##ticket.openbyuser##'] = Dropdown::getDropdownName('glpi_users',
+         $this->datas['##ticket.openbyuser##'] = Dropdown::getDropdownName('glpi_users',
                                                                     $this->obj->getField('users_id_recipient'));
       }
       else {
-         $tpldata['##ticket.openbyuser##'] = '';
+         $this->datas['##ticket.openbyuser##'] = '';
       }
 
       if ($this->obj->getField('users_id_assign')) {
-         $tpldata['##ticket.assigntouser##'] = Dropdown::getDropdownName('glpi_users',
+         $this->datas['##ticket.assigntouser##'] = Dropdown::getDropdownName('glpi_users',
                                                                     $this->obj->getField('users_id_assign'));
       }
       else {
-         $tpldata['##ticket.assigntouser##'] = '';
+         $this->datas['##ticket.assigntouser##'] = '';
       }
       if ($this->obj->getField('suppliers_id_assign')) {
-         $tpldata['##ticket.assigntosupplier##'] = Dropdown::getDropdownName('glpi_suppliers',
+         $this->datas['##ticket.assigntosupplier##'] = Dropdown::getDropdownName('glpi_suppliers',
                                                                     $this->obj->getField('suppliers_id_assign'));
       }
       else {
-         $tpldata['##ticket.assigntosupplier##'] = '';
+         $this->datas['##ticket.assigntosupplier##'] = '';
       }
 
       if ($this->obj->getField('groups_id')) {
-         $tpldata['##ticket.group##'] = Dropdown::getDropdownName('glpi_groups',
+         $this->datas['##ticket.group##'] = Dropdown::getDropdownName('glpi_groups',
                                                                     $this->obj->getField('groups_id'));
       }
       else {
-         $tpldata['##ticket.group##'] = '';
+         $this->datas['##ticket.group##'] = '';
       }
 
       if ($this->obj->getField('groups_id_assign')) {
-         $tpldata['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
+         $this->datas['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
                                                                     $this->obj->getField('groups_id_assign'));
       }
       else {
-         $tpldata['##ticket.group##'] = '';
+         $this->datas['##ticket.group##'] = '';
       }
 
       //Hardware
       if ($this->target_object != null) {
-         $tpldata['##ticket.itemtype##'] = $this->target_object->getTypeName();
-         $tpldata['##ticket.item.name##'] = $this->target_object->getField('name');
+         $this->datas['##ticket.itemtype##'] = $this->target_object->getTypeName();
+         $this->datas['##ticket.item.name##'] = $this->target_object->getField('name');
 
          if ($this->target_object->isField('serial')) {
-            $tpldata['##ticket.item.serial##'] = $this->target_object->getField('serial');
+            $this->datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
          }
          if ($this->target_object->isField('otherserial')) {
-            $tpldata['##ticket.item.otherserial##'] = $this->target_object->getField('otherserial');
+            $this->datas['##ticket.item.otherserial##'] = $this->target_object->getField('otherserial');
          }
 
          if ($this->target_object->isField('location')) {
-            $tpldata['##ticket.item.location##'] =
+            $this->datas['##ticket.item.location##'] =
                                              Dropdown::getDropdownName('glpi_locations',
                                                                    $user->getField('locations_id'));
          }
          $modeltable = getSingular($this->getTable())."models";
          $modelfield = getForeignKeyFieldForTable($modeltable);
          if ($this->target_object->isField($modelfield)) {
-            $tpldata['##ticket.item.model##'] = $this->target_object->getField($modelfield);
+            $this->datas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
          }
       }
       else {
-         $tpldata['##ticket.itemtype##'] = '';
-         $tpldata['##ticket.item.name##'] = '';
-         $tpldata['##ticket.item.serial##'] = '';
-         $tpldata['##ticket.item.otherserial##'] = '';
-         $tpldata['##ticket.item.location##'] = '';
+         $this->datas['##ticket.itemtype##'] = '';
+         $this->datas['##ticket.item.name##'] = '';
+         $this->datas['##ticket.item.serial##'] = '';
+         $this->datas['##ticket.item.otherserial##'] = '';
+         $this->datas['##ticket.item.location##'] = '';
       }
 
       if ($this->obj->getField('ticketsolutiontypes_id')) {
-         $tpldata['##ticket.solution.type##'] = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+         $this->datas['##ticket.solution.type##'] = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                                $this->obj->getField('ticketsolutiontypes_id'));
-         $tpldata['##ticket.solution.description##'] = $this->obj->getField('solution');
+         $this->datas['##ticket.solution.description##'] = $this->obj->getField('solution');
       }
 
       $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
@@ -386,13 +386,13 @@ class NotificationTargetTicket extends NotificationTarget {
          $tmp['##task.date##'] = convDateTime($task['date']);
          $tmp['##task.description##'] = $task['content'];
          $tmp['##task.time##'] = $task['realtime'];
-         $tpldata['tasks'][] = $tmp;
+         $this->datas['tasks'][] = $tmp;
       }
-      if (!empty($tpldata['tasks'])) {
-         $tpldata['##ticket.numberoftasks##'] = count($tpldata['tasks']);
+      if (!empty($this->datas['tasks'])) {
+         $this->datas['##ticket.numberoftasks##'] = count($this->datas['tasks']);
       }
       else {
-         $tpldata['##ticket.numberoftasks##'] = 0;
+         $this->datas['##ticket.numberoftasks##'] = 0;
       }
 
       //Followup infos
@@ -406,13 +406,13 @@ class NotificationTargetTicket extends NotificationTarget {
                                                                   $followup['requesttypes_id']);
          $tmp['##followup.date##'] = convDateTime($followup['date']);
          $tmp['##followup.description##'] = $followup['content'];
-         $tpldata['followups'][] = $tmp;
+         $this->datas['followups'][] = $tmp;
       }
-      if (isset($tpldata['followups'])) {
-         $tpldata['##ticket.numberoffollowups##'] = count($tpldata['followups']);
+      if (isset($this->datas['followups'])) {
+         $this->datas['##ticket.numberoffollowups##'] = count($this->datas['followups']);
       }
       else {
-         $tpldata['##ticket.numberoffollowups##'] = 0;
+         $this->datas['##ticket.numberoffollowups##'] = 0;
       }
 
       // Use list_limit_max or load the full history ?
@@ -422,14 +422,14 @@ class NotificationTargetTicket extends NotificationTarget {
          $tmp['##ticket.log.user##'] = $data['user_name'];
          $tmp['##ticket.log.field##'] = $data['field'];
          $tmp['##ticket.log.content##'] = $data['change'];
-         $tpldata['log'][] = $tmp;
+         $this->datas['log'][] = $tmp;
       }
 
-      if (isset($tpldata['log'])) {
-         $tpldata['##ticket.numberoflogs##'] = count($tpldata['log']);
+      if (isset($this->datas['log'])) {
+         $this->datas['##ticket.numberoflogs##'] = count($this->datas['log']);
       }
       else {
-         $tpldata['##ticket.numberoflogs##'] = 0;
+         $this->datas['##ticket.numberoflogs##'] = 0;
       }
 
       //Locales
@@ -485,9 +485,8 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.ticket.nocategoryassigned##' => $LANG['mailing'][100],
                        );
       foreach ($labels as $tag => $label) {
-         $tpldata[$tag] = $label;
+         $this->datas[$tag] = $label;
       }
-      return  $tpldata;
    }
 
 

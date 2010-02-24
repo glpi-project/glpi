@@ -52,6 +52,10 @@ class NotificationTarget extends CommonDBChild {
 
    var $notificationoptions = 0;
 
+   // Data from the objet which can be used by the template
+   // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
+   var $datas = array();
+
    // From CommonDBTM
    public $dohistory = true;
 
@@ -624,8 +628,7 @@ class NotificationTarget extends CommonDBChild {
     * Provides minimum informations for alerts
     * Can be overridden by each NotificationTartget class if needed
     */
-   function getDatasForTemplate($event,$tpldata = array()) {
-      return $tpldata;
+   function getDatasForTemplate($event, $options = array()) {
    }
 
    function getTargets() {
@@ -656,12 +659,16 @@ class NotificationTarget extends CommonDBChild {
       return "";
    }
 
-   function getForTemplate($event,$options) {
+   function &getForTemplate($event, $options) {
       global $CFG_GLPI;
-      $tpldata = array();
-      $tpldata['##glpi.url##'] = $CFG_GLPI['root_doc'];
-      $tpldata = $this->getDatasForTemplate($event,$tpldata,$options);
-      return $tpldata;
+
+      $this->datas = array();
+      $this->datas['##glpi.url##'] = $CFG_GLPI['root_doc'];
+
+      $this->getDatasForTemplate($event, $options);
+      doHook('item_get_datas', $this);
+
+      return $this->datas;
    }
 }
 ?>
