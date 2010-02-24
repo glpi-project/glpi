@@ -53,7 +53,9 @@ class EntityData extends CommonDBTM {
                  'entity' => array('address', 'postcode', 'postcode', 'town', 'state', 'country',
                                    'website', 'phonenumber', 'fax', 'email', 'notepad',
                  // Advanced (could be user_authtype ?)
-                                   'ldap_dn', 'tag', 'ldapservers_id', 'entity_ldapfilter'),
+                                   'ldap_dn', 'tag', 'ldapservers_id', 'entity_ldapfilter',
+                 // Helpdesk config (could be another right)
+                                   'autoclose_delay'),
                  // Notification
                  'notification' => array('admin_email', 'admin_reply', 'mailing_signature',
                                          'cartridges_alert_repeat', 'consumables_alert_repeat',
@@ -386,6 +388,53 @@ class EntityData extends CommonDBTM {
          else {
             return false;
          }
+      }
+   }
+
+
+   static function showHelpForm(Entity $entity) {
+      global $LANG;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r')) {
+         return false;
+      }
+      $canedit = $entity->canCreate();
+
+      // Get data
+      $entdata=new EntityData();
+      if (!$entdata->getFromDB($ID)) {
+         $entdata->getEmpty();
+      }
+
+      if ($canedit) {
+         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['entity'][18] . "&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'],0,99,1);
+      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+
+//      echo "<tr class='tab_bg_1'><td colspan='2' class='center'>" . $LANG['common'][26] . "&nbsp;: ";
+//      echo convDateTime($config->fields['date_mod'])."</td></tr>";
+
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value='$ID'>";
+         if ($entdata->fields["id"]) {
+            echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+         } else {
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+         }
+         echo "</td></tr>";
+         echo "</table></form>";
+      } else {
+         echo "</table>";
       }
    }
 }
