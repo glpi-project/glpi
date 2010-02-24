@@ -69,7 +69,7 @@ class NotificationEvent extends CommonDBTM {
       $email_processed = array();
       $email_notprocessed = array();
 
-      $notificationtarget = NotificationTarget::getInstance($item,$options);
+      $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
       $entity = $notificationtarget->getEntity();
 
       //Foreach notification
@@ -80,6 +80,9 @@ class NotificationEvent extends CommonDBTM {
                                          'notifications_id='.$data['id']);
 
          $notificationtarget->clearAddressesList();
+
+         //Process more infos (for example for tickets)
+         $notificationtarget->addAdditionnalInfosForTarget();
 
          //Foreach notification targets
          foreach ($targets as $target) {
@@ -104,13 +107,12 @@ class NotificationEvent extends CommonDBTM {
                   }
 
                   if ($template->getTemplateByLanguage($notificationtarget,
-                                                       $users_infos['language'],
+                                                       $users_infos,
                                                        $event,
                                                        $options)) {
                      //Send notification to the user
                      Notification::send ($template->getDataToSend($notificationtarget,
-                                                                  $users_infos['language'],
-                                                                  $users_infos['email'],
+                                                                  $users_infos,
                                                                   $options));
                       $email_processed[$users_infos['language']][$users_infos['email']] = $users_infos;
                   }
@@ -122,6 +124,9 @@ class NotificationEvent extends CommonDBTM {
          }
       }
    }
+   unset($email_processed);
+   unset($email_notprocessed);
+   $template = null;
    return true;
    }
 }

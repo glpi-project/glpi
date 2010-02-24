@@ -35,6 +35,10 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class NotificationTargetTicket extends NotificationTarget {
 
+   const VIEW_PRIVATE = 1;
+
+   var $private_profiles = array();
+
    function getSubjectPrefix() {
       return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
    }
@@ -76,6 +80,14 @@ class NotificationTargetTicket extends NotificationTarget {
                $this->getAssignGroupAddresses();
             break;
          }
+      }
+   }
+
+   function addAdditionnalInfosForTarget() {
+      global $DB;
+      $query = "SELECT `id` FROM `glpi_profiles` WHERE `glpi_profiles`.`show_full_ticket` = '1'";
+      foreach ($DB->request($query) as $data) {
+         $this->private_profiles[$data['id']] = $data['id'];
       }
    }
 
@@ -133,7 +145,26 @@ class NotificationTargetTicket extends NotificationTarget {
                    WHERE `glpi_suppliers`.`id` = '".
                           $ticket->fields["suppliers_id_assign"]."'";
          foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($data['email']);
+            $this->addToAddressesList($data);
+         }
+      }
+   }
+
+   function addAdditionnalUserInfo($data) {
+      global $DB;
+      if (!isset($data['id'])) {
+         return 1;
+      }
+      else {
+         $query = "SELECT count(*) as cpt FROM `glpi_profiles_users`
+                   WHERE `users_id`='".$data['id']."'
+                   AND profiles_id IN (".implode(',',$this->private_profiles).")";
+         $result = $DB->query($query);
+         if ($DB->result($result,0,'cpt')) {
+            return 1;
+         }
+         else {
+            return 0;
          }
       }
    }
@@ -149,14 +180,14 @@ class NotificationTargetTicket extends NotificationTarget {
       if (isset($this->obj->fields[$group_field])
                 && $this->obj->fields[$group_field]>0) {
 
-         $query = NotificationTarget::getDistinctUserSql().
+         $query = $this->getDistinctUserSql().
                    " FROM `glpi_groups`
                     LEFT JOIN `glpi_users`
                     ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
                    $this->getJoinProfileSql()."
                     WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
          foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($data['email'], $data['lang']);
+            $this->addToAddressesList($data);
          }
       }
    }
@@ -233,6 +264,7 @@ class NotificationTargetTicket extends NotificationTarget {
    /**
     * Get all data needed for template processing
     */
+
    function getDatasForTemplate($event, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
@@ -369,7 +401,7 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
-      if ($this->isPrivate()) {
+      if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
          $restrict.=" AND `is_private`='0'";
       }
       $restrict.=" ORDER BY `date` DESC";
@@ -452,7 +484,8 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.ticket.group##' =>$LANG['common'][35],
                        '##lang.ticket.assigntouser##' =>$LANG['job'][5]." - ".$LANG['job'][6],
                        '##lang.ticket.assigntogroup##' =>$LANG['job'][5]." - ".$LANG['common'][35],
-                       '##lang.ticket.assigntosupplier##' =>$LANG['job'][5]." - ".$LANG['financial'][26],
+                       '##lang.ticket.assigntosupplier##' =>$LANG['job'][5].
+                                                                     " - ".$LANG['financial'][26],
                        '##lang.ticket.itemtype##' =>$LANG['reports'][12],
                        '##lang.ticket.item.name##' =>$LANG['financial'][104],
                        '##lang.ticket.item.serial##' =>$LANG['common'][19],

@@ -75,7 +75,11 @@ class NotificationTarget extends CommonDBChild {
 
    var $options = array();
 
-   function __construct($entity='', $object = null, $options = array()) {
+   var $raiseevent = '';
+
+   const NO_OPTION = 0;
+
+   function __construct($entity='', $event='', $object = null, $options = array()) {
       global $LANG;
       if (!$entity == '') {
          $this->entity = $_SESSION['glpiactive_entity'];
@@ -83,10 +87,12 @@ class NotificationTarget extends CommonDBChild {
       else {
          $this->entity = $entity;
       }
+      logDebug($object);
       if ($object) {
          $this->obj = $object;
          $this->getObjectItem();
       }
+      $this->raiseevent = $event;
       $this->options = $options;
       $this->getNotificationTargets($entity);
       $this->getAdditionalTargets();
@@ -118,7 +124,7 @@ class NotificationTarget extends CommonDBChild {
     * @param item the object which raises the event
     * @return a notificationtarget class or false
     */
-   static function getInstance($item,$options=array()) {
+   static function getInstance($item,$event = '', $options=array()) {
       if ($plug = isPluginItemType($item->getType())) {
          $name = 'Plugin'.$plug['plugin'].'NotificationTarget'.$plug['class'];
       }
@@ -128,10 +134,11 @@ class NotificationTarget extends CommonDBChild {
 
       if (class_exists($name)) {
          if ($name != 'NotificationTargetDBConnection') {
-            return new $name (($item->isField('entities_id')?$item->getField('entities_id'):0),$item);
+            return new $name (($item->isField('entities_id')?$item->getField('entities_id'):0),
+                               $event, $item);
          }
          else {
-            return new $name(0,$item,$options);
+            return new $name(0,$item,$event, $options);
          }
       }
       else {
@@ -144,9 +151,9 @@ class NotificationTarget extends CommonDBChild {
     * @param itemtype the itemtype of the object which raises the event
     * @return a notificationtarget class or false
     */
-   static function getInstanceByType($itemtype,$options=array()) {
+   static function getInstanceByType($itemtype,$event='', $options=array()) {
       if ($itemtype != '' && class_exists($itemtype)) {
-         return NotificationTarget::getInstance(new $itemtype (),$options);
+         return NotificationTarget::getInstance(new $itemtype (), $event, $options);
       }
       else {
          return false;
@@ -317,6 +324,13 @@ class NotificationTarget extends CommonDBChild {
          }
    }
 
+   function addAdditionnalInfosForTarget() {
+   }
+
+   function addAdditionnalUserInfo($data) {
+      return NotificationTarget::NO_OPTION;
+   }
+
    /**
     * Add new mail with lang to current email array
     *
@@ -324,12 +338,15 @@ class NotificationTarget extends CommonDBChild {
     * @param $lang used with this email - default to config language
     *
     */
-   function addToAddressesList($mail,$lang='') {
+   function addToAddressesList($data) {
       global $CFG_GLPI;
 
-      $new_mail=trim($mail);
-      $new_lang=trim($lang);
+      $new_mail=trim($data['email']);
+      if (isset($data['lang'])) {
+         $new_lang=trim($data['lang']);
+      }
 
+      $notificationoption = $this->addAdditionnalUserInfo($data);
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail)
                && !isset($this->target[$new_mail])) {
@@ -337,7 +354,7 @@ class NotificationTarget extends CommonDBChild {
                                                            $CFG_GLPI["language"] :
                                                            $new_lang),
                                               'email'=>$new_mail,
-                                              'options'=>$this->options);
+                                              'additionnaloption'=>$notificationoption);
 
          }
       }
@@ -348,9 +365,8 @@ class NotificationTarget extends CommonDBChild {
     */
    function getAdminAddress() {
       global $CFG_GLPI;
-      $this->addToAddressesList($CFG_GLPI["admin_email"],
-                                $CFG_GLPI["language"],
-                                array('sendprivate'=>true));
+      $this->addToAddressesList(array("email"=>$CFG_GLPI["admin_email"],
+                                      "language"=>$CFG_GLPI["admin_email"]));
    }
 
    /**
@@ -360,9 +376,9 @@ class NotificationTarget extends CommonDBChild {
       $user = new User;
       if ($this->obj->isField('users_id')
             && $user->getFromDB($this->obj->getField('users_id'))) {
-         $this->addToAddressesList($user->getField('email'),
-                                   $user->getField('language'),
-                                   $user->getField('entities_id'));
+         $this->addToAddressesList(array('email'=>$user->getField('email'),
+                                         'language'=>$user->getField('email'),
+                                         'id'=>$user->getField('id')));
       }
    }
 
@@ -374,9 +390,8 @@ class NotificationTarget extends CommonDBChild {
 
       foreach ($DB->request('glpi_entitydatas',
                             array('entities_id'=>$this->entity)) as $data) {
-         $this->addToAddressesList($data['admin_email'],
-                                   $CFG_GLPI['language'],
-                                   $this->entity);
+         $data['language'] = $CFG_GLPI['language'];
+         $this->addToAddressesList($data);
       }
    }
 
@@ -393,12 +408,12 @@ class NotificationTarget extends CommonDBChild {
                       ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`)
                           WHERE `glpi_groups_users`.`groups_id`='".$group_id."'";
       foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data['email'], $data['lang']);
+         $this->addToAddressesList($data);
       }
    }
 
-   static function getDistinctUserSql() {
-      return "SELECT DISTINCT `glpi_users`.`email` AS email,
+   function getDistinctUserSql() {
+      return  "SELECT DISTINCT `glpi_users`.id as id, `glpi_users`.`email` AS email,
                                `glpi_users`.`language` AS lang";
    }
 
@@ -501,7 +516,7 @@ class NotificationTarget extends CommonDBChild {
 
          foreach ($DB->request($query) as $data) {
             //Add the user email and language in the notified users list
-            $this->addToAddressesList($data['email'],$data['lang'],array());
+            $this->addToAddressesList($data);
          }
       }
    }
@@ -528,7 +543,7 @@ class NotificationTarget extends CommonDBChild {
    function getUsersAddressesByProfile($profiles_id) {
       global $DB;
 
-      $query=NotificationTargetTicket::getDistinctUserSql().",
+      $query=$this->getDistinctUserSql().",
                glpi_profiles_users.entities_id as entity
               FROM `glpi_profiles_users`".
               $this->getJoinProfileSql()
@@ -538,7 +553,7 @@ class NotificationTarget extends CommonDBChild {
                  getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
                                                      $this->obj->getEntityID(),true);
       foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data['email'],$data['lang'],$data['entity']);
+         $this->addToAddressesList($data);
       }
    }
 
@@ -659,7 +674,9 @@ class NotificationTarget extends CommonDBChild {
       return "";
    }
 
+
    function &getForTemplate($event, $options) {
+
       global $CFG_GLPI;
 
       $this->datas = array();

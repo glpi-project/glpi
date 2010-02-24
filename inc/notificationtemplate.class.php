@@ -38,8 +38,10 @@ class NotificationTemplate extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   //Signature to add to the template
    public $signature = '';
 
+   //Store templates for each language
    public $templates_by_languages = array();
 
    static function getTypeName() {
@@ -47,7 +49,6 @@ class NotificationTemplate extends CommonDBTM {
 
       return $LANG['mailing'][113];
    }
-
 
    function defineTabs($options=array()){
       global $LANG;
@@ -161,11 +162,18 @@ class NotificationTemplate extends CommonDBTM {
       }
    }
 
-   function getTemplateByLanguage(NotificationTarget $target, $language, $event,$options=array()) {
+   function getTemplateByLanguage(NotificationTarget $target, $user_infos=array(), $event,$options=array()) {
       global $LANG;
       $lang = array();
 
-      $additionnaloption = $this->getAdditionnalProcessOption($options);
+      $language = $user_infos['language'];
+
+      if (isset($user_infos['additionnaloption'])) {
+         $additionnaloption =  $user_infos['additionnaloption'];
+      }
+      else {
+         $additionnaloption =  NotificationTarget::NO_OPTION;
+      }
 
       if (!isset($this->templates_by_languages[$additionnaloption][$language])) {
          //Switch to the desired language
@@ -179,7 +187,9 @@ class NotificationTemplate extends CommonDBTM {
          }
 
          //Get template's language data for in this language
+         $options['additionnaloption'] = $additionnaloption;
          $data = &$target->getForTemplate($event,$options);
+
          //Restore default language
          loadLanguage();
 
@@ -322,12 +332,20 @@ class NotificationTemplate extends CommonDBTM {
       }
    }
 
-   function getDataToSend(NotificationTarget $target, $language,$user_email,$options) {
+   function getDataToSend(NotificationTarget $target, $user_infos,$options) {
+      $language = $user_infos['language'];
+      $user_email = $user_infos['email'];
+
       $mailing_options['to'] = $user_email;
       $mailing_options['from'] = $target->getSender();
       $mailing_options['replyto'] = $target->getReplyTo();
 
-      $additionnaloption = $this->getAdditionnalProcessOption($options);
+      if (isset($user_infos['additionnaloption'])) {
+         $additionnaloption =  $user_infos['additionnaloption'];
+      }
+      else {
+         $additionnaloption =  NotificationTarget::NO_OPTION;
+      }
 
       $template_data = $this->templates_by_languages[$additionnaloption][$language];
       $mailing_options['subject'] = $template_data['subject'];
