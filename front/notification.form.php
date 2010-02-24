@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
    $newID = $notification->add($_POST);
    Event::log($newID, "notifications", 4, "notification",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
-   glpi_header($_SERVER['HTTP_REFERER']);
+   glpi_header($_SERVER['PHP_SELF']."?id=$newID");
 
 } else if (isset($_POST["delete"])) {
    $notification->check($_POST["id"],'d');
