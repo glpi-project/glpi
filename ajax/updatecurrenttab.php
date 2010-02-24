@@ -44,6 +44,6 @@ setGlpiSessionPath();
 startGlpiSession();
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-   $_SESSION['glpi_tabs'][$_REQUEST['itemtype']]=$_REQUEST['glpi_tab'];
+   setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
 }
 ?>

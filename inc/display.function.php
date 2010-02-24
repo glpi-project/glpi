@@ -2327,6 +2327,19 @@ function getActiveTab($itemtype) {
    return "";
 }
 
+
+/**
+ *  Force active Tab for an itemtype
+ *
+ * @param $itemtype :item type
+ * $param $tab : ID of the tab
+ * 
+ */
+function setActiveTab($itemtype, $tab) {
+   $_SESSION['glpi_tabs'][$itemtype] = $tab;
+}
+
+
 /**
  *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
  *
