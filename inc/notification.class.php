@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -83,14 +83,16 @@ class Notification extends CommonDBTM {
       return $LANG['setup'][704];
    }
 
-   function defineTabs($options=array()){
+
+   function defineTabs($options=array()) {
       global $LANG;
 
-      $tabs[1] = $LANG['common'][12];
-      $tabs[12]=$LANG['title'][38];
+      $tabs[1]  = $LANG['common'][12];
+      $tabs[12] = $LANG['title'][38];
 
       return $tabs;
    }
+
 
    function showForm($ID, $options=array()) {
       global $LANG,$CFG_GLPI;
@@ -116,7 +118,7 @@ class Notification extends CommonDBTM {
 
       echo "<td rowspan='5' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td class='center middle' rowspan='5'><textarea cols='45' rows='9' name='comment' >"
-         .$this->fields["comment"]."</textarea></td></tr>";
+            .$this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td>";
       echo "<td>";
@@ -124,13 +126,13 @@ class Notification extends CommonDBTM {
                                       ($this->fields['itemtype']!=''?$this->fields['itemtype']:''),
                                        $CFG_GLPI["notificationtemplates_types"]);
 
-      $params=array('itemtype' => '__VALUE__');
-      ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand","show_events",
+      $params = array('itemtype' => '__VALUE__');
+      ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "show_events",
                                   $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationEvent.php",
                                   $params);
-      ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand","show_templates",
-                               $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationTemplate.php",
-                               $params);
+      ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "show_templates",
+                                  $CFG_GLPI["root_doc"]."/ajax/dropdownNotificationTemplate.php",
+                                  $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][120] . "&nbsp;:</td>";
@@ -145,13 +147,14 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][113] . "&nbsp;:</td>";
       echo "<td><span id='show_templates'>";
-      NotificationTemplate::dropdownTemplates('notificationtemplates_id',$this->fields['itemtype'],
+      NotificationTemplate::dropdownTemplates('notificationtemplates_id', $this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
       echo "</span></td></tr>";
       $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -202,32 +205,38 @@ class Notification extends CommonDBTM {
       return $tab;
    }
 
+
    function canCreate() {
       return haveRight('notification', 'w');
    }
+
 
    function canView() {
       return haveRight('notification', 'r');
    }
 
+
    /**
     * Display a dropdown with all the available notification modes
-    * @param value the default value for the dropdown
-    * @return nothing
+    * @param $value the default value for the dropdown
     */
    static function dropdownMode($value) {
       global $LANG;
+
       $modes['mail'] = $LANG['mailing'][118];
-      Dropdown::showFromArray('mode',$modes, array ('value'=>$value));
+      Dropdown::showFromArray('mode', $modes, array ('value' => $value));
    }
+
 
    /**
     * Get notification method label (email only for the moment)
-    * @param mode the mode to use
+    * @param $mode the mode to use
+    *
     * @return the mode's label
     */
    static function getMode($mode) {
       global $LANG;
+
       return $LANG['mailing'][118];
    }
 
@@ -241,11 +250,14 @@ class Notification extends CommonDBTM {
       $DB->query($query);
    }
 
+
    static function send ($mailing_options) {
+
       $mail = new NotificationMail;
       $mail->sendNotification($mailing_options);
       $mail->ClearAddresses();
    }
+
 
    /**
     * Get the mailing signature for the entity
@@ -260,22 +272,21 @@ class Notification extends CommonDBTM {
 
    }
 
+
    static function  getNotificationsByEventAndType($event,$itemtype,$entity) {
       global $DB;
+
       $query = "SELECT `glpi_notifications`.*
                 FROM `glpi_notifications`
-                LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id` =
-                                              `glpi_notifications`.`entities_id`)
-                WHERE `glpi_notifications`.`itemtype`='$itemtype'
-                   AND `glpi_notifications`.`event`='$event'";
-      $query.= getEntitiesRestrictRequest(" AND",
-                                          "glpi_notifications",
-                                          'entities_id',
-                                          $entity,
-                                          true);
-      $query.=" ORDER BY `glpi_entities`.`level` DESC";
+                LEFT JOIN `glpi_entities`
+                  ON (`glpi_entities`.`id` = `glpi_notifications`.`entities_id`)
+                WHERE `glpi_notifications`.`itemtype` = '$itemtype'
+                      AND `glpi_notifications`.`event` = '$event' ".
+                      getEntitiesRestrictRequest(" AND", "glpi_notifications", 'entities_id',
+                                                 $entity, true) ."
+                ORDER BY `glpi_entities`.`level` DESC";
       return $DB->request($query);
    }
-}
 
+}
 ?>

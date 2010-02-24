@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -45,17 +45,17 @@ require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 class NotificationMail extends phpmailer implements NotificationInterface {
 
    //! mailing type (new,attrib,followup,finish)
-   var $mailtype=NULL;
+   var $mailtype = NULL;
    /** Job class variable - job to be mailed
     * @see Job
     */
-   var $job=NULL;
+   var $job = NULL;
    /** User class variable - user who make changes
     * @see User
     */
-   var $user=NULL;
+   var $user = NULL;
    /// Is the followupadded private ?
-   var $followupisprivate=NULL;
+   var $followupisprivate = NULL;
 
    /// Set default variables for all new objects
    var $WordWrap = 80;
@@ -75,9 +75,9 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $this->Mailer = "smtp";
          $this->Host = $CFG_GLPI['smtp_host'];
          if ($CFG_GLPI['smtp_username'] != '') {
-            $this->SMTPAuth  = true;
-            $this->Username  = $CFG_GLPI['smtp_username'];
-            $this->Password  =  $CFG_GLPI['smtp_password'];
+            $this->SMTPAuth = true;
+            $this->Username = $CFG_GLPI['smtp_username'];
+            $this->Password = $CFG_GLPI['smtp_password'];
          }
          if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
             $this->SMTPSecure = "ssl";
@@ -86,19 +86,22 @@ class NotificationMail extends phpmailer implements NotificationInterface {
             $this->SMTPSecure = "tls";
          }
       }
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+      if ($_SESSION['glpi_use_mode'] == DEBUG_MODE) {
          $this->do_debug = 3;
       }
    }
+
+
    /**
     * Determine if email is valid
     * @param $address email to check
     * @param $options array options used
     *     - checkdns :check dns entry
+    *
     * @return boolean
     * from http://www.linuxjournal.com/article/9585
     */
-   static function isUserAddressValid($address, $options = array('checkdns'=>false)) {
+   static function isUserAddressValid($address, $options=array('checkdns'=>false)) {
 
       $checkdns = $options['checkdns'];
       $isValid = true;
@@ -137,11 +140,12 @@ class NotificationMail extends phpmailer implements NotificationInterface {
             }
          }
          if ($checkdns) {
-            if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {
+            if ($isValid
+                && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {
                // domain not found in DNS
                $isValid = false;
             }
-         } else if (!preg_match('/\\./', $domain)|| !preg_match("/[a-zA-Z0-9]$/", $domain)) {
+         } else if (!preg_match('/\\./', $domain) || !preg_match("/[a-zA-Z0-9]$/", $domain)) {
             // domain has no dots or do not end by alphenum char
                $isValid = false;
             }
@@ -149,17 +153,19 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          return $isValid;
    }
 
+
    static function isAuthorMailingActivatedForHelpdesk() {
       global $DB,$CFG_GLPI;
 
       if ($CFG_GLPI['use_mailing']) {
-         $query="SELECT COUNT(id)
+         $query = "SELECT COUNT(`id`)
                  FROM `glpi_mailingsettings`
                  WHERE `type` IN ('new','followup','update','finish')
                        AND `mailingtype` = '".Notification::USER_TYPE."'
                        AND `items_id` = '".Notification::AUTHOR."'";
-         if ($result=$DB->query($query)) {
-            if ($DB->result($result,0,0)>0) {
+
+         if ($result = $DB->query($query)) {
+            if ($DB->result($result,0,0) >0) {
                return true;
             }
          }
@@ -167,17 +173,18 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       return false;
    }
 
+
    static function testNotification() {
       global $CFG_GLPI,$LANG;
 
       $mmail= new NotificationMail;
-      $mmail->From=$CFG_GLPI["admin_email"];
-      $mmail->FromName=$CFG_GLPI["admin_email"];
+      $mmail->From = $CFG_GLPI["admin_email"];
+      $mmail->FromName = $CFG_GLPI["admin_email"];
       $mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
-      $mmail->Subject="[GLPI] ".$LANG['mailing'][32];
-      $mmail->Body=$LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
+      $mmail->Subject = "[GLPI] ".$LANG['mailing'][32];
+      $mmail->Body = $LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
 
-      if(!$mmail->Send()) {
+      if (!$mmail->Send()) {
          addMessageAfterRedirect($LANG['setup'][206],false,ERROR);
       } else {
          addMessageAfterRedirect($LANG['setup'][205]);
@@ -187,6 +194,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
    /**
     * Format the mail sender to send
+    *
     * @return mail sender email string
     */
    function getEntityAdminAddress() {
@@ -195,9 +203,10 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       $query = "SELECT `admin_email` AS email
                 FROM `glpi_entitydatas`
                 WHERE `entities_id` = '".$this->job->fields["entities_id"]."'";
-      if ($result=$DB->query($query)) {
+
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            $data=$DB->fetch_assoc($result);
+            $data = $DB->fetch_assoc($result);
             if (NotificationMail::isUserAddressValid($data["email"])) {
                return $data["email"];
             }
@@ -207,31 +216,31 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    }
 
 
-   function sendNotification($options = array()) {
+   function sendNotification($options=array()) {
       global $LANG;
-      $mmail=new NotificationMail();
-      $mmail->From=$options['from'];
+
+      $mmail = new NotificationMail();
+      $mmail->From = $options['from'];
       if ($options['replyto']) {
          $mmail->AddReplyTo($options['replyto'], '');
       }
-      $mmail->FromName=$options['from'];
-      $mmail->Subject=$options['subject'];
+      $mmail->FromName = $options['from'];
+      $mmail->Subject  = $options['subject'];
       if (empty($options['content_html'])) {
          $mmail->isHTML(false);
-         $mmail->Body=$options['content_text'];
+         $mmail->Body = $options['content_text'];
       } else {
          $mmail->isHTML(true);
-         $mmail->Body=$options['content_html'];
-         $mmail->AltBody=$options['content_text'];
+         $mmail->Body    = $options['content_html'];
+         $mmail->AltBody = $options['content_text'];
       }
       $mmail->AddAddress($options['to'], "");
-      $mmail->MessageID="GLPI-".$options["items_id"].".".time().".".rand().
-                             "@".php_uname('n');
+      $mmail->MessageID = "GLPI-".$options["items_id"].".".time().".".rand(). "@".php_uname('n');
 
-      $messageerror=$LANG['mailing'][47];
+      $messageerror = $LANG['mailing'][47];
 
       if (!$mmail->Send()) {
-         $senderror=true;
+         $senderror = true;
          addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
       } else {
          logInFile("mail",$LANG['tracking'][38]." ".$options['to'].": ".$options['subject']."\n");
@@ -239,6 +248,6 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       $mmail->ClearAddresses();
       return true;
    }
-}
 
+}
 ?>

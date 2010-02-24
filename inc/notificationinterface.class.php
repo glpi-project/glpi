@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -48,13 +48,16 @@ interface NotificationInterface {
     */
    function sendNotification();
 
+
    /**
     * Check user address
-    * @param address the user's address to check
-    * @param options an array with the special options (may be needed)
+    * @param $address the user's address to check
+    * @param $options an array with the special options (may be needed)
+    *
     * @return true or false
     */
    static function isUserAddressValid($address, $options = array());
+
 
    /**
     * Method to test notification
