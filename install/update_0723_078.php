@@ -2052,7 +2052,8 @@ function update0723to078($output='HTML') {
          ('DBconnection', 'checkdbreplicate', 300, NULL, 0, 0, 3, 0, 24, 30, NULL, NULL, NULL),
          ('CronTask', 'checkupdate', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         ('CronTask', 'graph', 3600, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL);";
+         ('CronTask', 'graph', 3600, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('Ticket','closeticket','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL)";
       $DB->query($query) or die("0.78 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $ADDTODISPLAYPREF['Crontask']=array(8,3,4,7);
