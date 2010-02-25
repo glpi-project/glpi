@@ -2548,7 +2548,7 @@ function update0723to078($output='HTML') {
                 WHERE `criteria`='priority'
                   AND `rules_id` IN (SELECT `id`
                                      FROM `glpi_rules`
-                                     WHERE `sub_type`='2')";
+                                     WHERE `sub_type`='RuleTicket')";
       $DB->query($query) or die("0.78 fix priority/urgency in business rules " .
                                  $LANG['update'][90] . $DB->error());
    }
