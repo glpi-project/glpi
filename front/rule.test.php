@@ -54,7 +54,7 @@ if (isset($_POST["rules_id"])) {
    $rules_id = 0;
 }
 
-$rule = Auth::getRuleClass($sub_type);
+$rule = new $sub_type();
 checkRight($rule->right,"r");
 
 $test_rule_output = null;

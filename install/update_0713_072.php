@@ -1020,7 +1020,7 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 rename rule_type to sub_type in glpi_rules_descriptions" . $LANG['update'][90] . $DB->error());
 	}
 	//Add title criteria
-	$result  = $DB->query("SELECT count(*) as cpt FROM glpi_rules_ldap_parameters WHERE value='title' AND sub_type=".Rule::RULE_AFFECT_RIGHTS);
+	$result  = $DB->query("SELECT count(*) as cpt FROM glpi_rules_ldap_parameters WHERE value='title' AND sub_type=1");
 	if (!$DB->result($result,0,"cpt"))
 		$DB->query("INSERT INTO `glpi_rules_ldap_parameters` (`ID` ,`name` ,`value` ,`sub_type`) VALUES (NULL , '(LDAP) Title', 'title', '1');");
 

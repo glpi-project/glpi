@@ -87,7 +87,7 @@ class NotificationTarget extends CommonDBChild {
       else {
          $this->entity = $entity;
       }
-      logDebug($object);
+
       if ($object) {
          $this->obj = $object;
          $this->getObjectItem();

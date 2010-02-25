@@ -41,6 +41,7 @@ if (!defined('GLPI_ROOT')) {
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
    commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
 }
+
 if (isset($_GET["sub_type"])) {
    echo "<br>";
    $rulecollection = RuleCollection::getClassByType($_GET["sub_type"]);
@@ -48,7 +49,7 @@ if (isset($_GET["sub_type"])) {
       if (!isset($_GET["rules_id"])) {
          $rulecollection->showCacheStatusForRuleType();
       } else {
-         $rule = $rulecollection->getRuleClass();
+         $rule = new $_GET["sub_type"]();
          $rule->getRuleWithCriteriasAndActions($_GET["rules_id"],0,0);
          $rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
       }

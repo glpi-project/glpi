@@ -188,10 +188,4 @@ if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
 if (isset($_REQUEST['glpilist_limit'])) {
    $_SESSION['glpilist_limit']=$_REQUEST['glpilist_limit'];
 }
-
-
-// TODO : try to delete this include
-include_once (GLPI_ROOT . "/inc/rules.constant.php");
-
-
 ?>

@@ -40,7 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleOcs extends Rule {
 
    // From Rule
-   public $sub_type = Rule::RULE_OCS_AFFECT_COMPUTER;
    public $right='rule_ocs';
    public $can_sort=true;
 
@@ -85,7 +84,7 @@ class RuleOcs extends Rule {
          echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
          $this->dropdownRulesMatch("match", "AND");
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type=hidden name='sub_type' value='" . $this->sub_type . "'>";
+         echo "<input type=hidden name='sub_type' value='RuleOcs'>";
          echo "<input type=hidden name='entities_id' value='-1'>";
          echo "<input type=hidden name='affectentity' value='$ID'>";
          echo "<input type=hidden name='_method' value='addOcsRule'>";
@@ -154,7 +153,7 @@ class RuleOcs extends Rule {
               FROM `glpi_ruleactions`, `glpi_rules`
               WHERE `glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
                     AND `glpi_ruleactions`.`field` = 'entities_id'
-                    AND `glpi_rules`.`sub_type` = '".$this->sub_type."'
+                    AND `glpi_rules`.`sub_type` = 'RuleOcs'
                     AND `glpi_ruleactions`.`value` = '$ID'";
 
       $result = $DB->query($sql);
@@ -199,6 +198,63 @@ class RuleOcs extends Rule {
       return $output;
    }
 
+   function getCriterias() {
+      global $LANG;
+      $criterias = array ();
+
+      $criterias['TAG']['table']     = 'accountinfo';
+      $criterias['TAG']['field']     = 'TAG';
+      $criterias['TAG']['name']      = $LANG['ocsconfig'][39];
+      $criterias['TAG']['linkfield'] = 'HARDWARE_ID';
+
+      $criterias['DOMAIN']['table']     = 'hardware';
+      $criterias['DOMAIN']['field']     = 'WORKGROUP';
+      $criterias['DOMAIN']['name']      = $LANG['setup'][89];
+      $criterias['DOMAIN']['linkfield'] = '';
+
+      $criterias['OCS_SERVER']['table']     = 'glpi_ocsservers';
+      $criterias['OCS_SERVER']['field']     = 'name';
+      $criterias['OCS_SERVER']['name']      = $LANG['ocsng'][29];
+      $criterias['OCS_SERVER']['linkfield'] = '';
+      $criterias['OCS_SERVER']['type']      = 'dropdown';
+      $criterias['OCS_SERVER']['virtual']   = true;
+      $criterias['OCS_SERVER']['id']        = 'ocs_server';
+
+      $criterias['IPSUBNET']['table']     = 'networks';
+      $criterias['IPSUBNET']['field']     = 'IPSUBNET';
+      $criterias['IPSUBNET']['name']      = $LANG['networking'][61];
+      $criterias['IPSUBNET']['linkfield'] = 'HARDWARE_ID';
+
+      $criterias['IPADDRESS']['table']     = 'networks';
+      $criterias['IPADDRESS']['field']     = 'IPADDRESS';
+      $criterias['IPADDRESS']['name']      = $LANG['financial'][44]." ".
+                                                                             $LANG['networking'][14];
+      $criterias['IPADDRESS']['linkfield'] = 'HARDWARE_ID';
+
+      $criterias['MACHINE_NAME']['table']     = 'hardware';
+      $criterias['MACHINE_NAME']['field']     = 'NAME';
+      $criterias['MACHINE_NAME']['name']      = $LANG['rulesengine'][25];
+      $criterias['MACHINE_NAME']['linkfield'] = '';
+
+      $criterias['DESCRIPTION']['table']     = 'hardware';
+      $criterias['DESCRIPTION']['field']     = 'DESCRIPTION';
+      $criterias['DESCRIPTION']['name']      = $LANG['joblist'][6];
+      $criterias['DESCRIPTION']['linkfield'] = '';
+      return $criterias;
+   }
+
+   function getActions() {
+      global $LANG;
+      $actions = array();
+      $actions['entities_id']['name']  = $LANG['entity'][0];
+      $actions['entities_id']['type']  = 'dropdown';
+      $actions['entities_id']['table'] = 'glpi_entities';
+
+      $actions['_affect_entity_by_tag']['name'] = $LANG['rulesengine'][131];
+      $actions['_affect_entity_by_tag']['type'] = 'text';
+      $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
+      return $actions;
+   }
 }
 
 ?>

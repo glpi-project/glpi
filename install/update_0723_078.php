@@ -1832,19 +1832,18 @@ function update0723to078($output='HTML') {
 
    }
 
-   include_once (GLPI_ROOT . "/inc/rule.class.php");
    //// Upgrade rules datas
    // For Rule::RULE_AFFECT_RIGHTS
-   $changes[Rule::RULE_AFFECT_RIGHTS]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id',
+   $changes[1]=array('FK_entities'=>'entities_id', 'FK_profiles'=>'profiles_id',
                         'recursive'=>'is_recursive','active'=>'is_active');
    // For Rule::RULE_DICTIONNARY_SOFTWARE
-   $changes[Rule::RULE_DICTIONNARY_SOFTWARE]=array('helpdesk_visible'=>'is_helpdesk_visible');
+   $changes[4]=array('helpdesk_visible'=>'is_helpdesk_visible');
    // For Rule::RULE_OCS_AFFECT_COMPUTER
-   $changes[Rule::RULE_OCS_AFFECT_COMPUTER]=array('FK_entities'=>'entities_id');
+   $changes[0]=array('FK_entities'=>'entities_id');
    // For Rule::RULE_SOFTWARE_CATEGORY
-   $changes[Rule::RULE_SOFTWARE_CATEGORY]=array('category'=>'softwarecategories_id','comment'=>'comment');
+   $changes[3]=array('category'=>'softwarecategories_id','comment'=>'comment');
    // For Rule::RULE_TRACKING_AUTO_ACTION
-   $changes[Rule::RULE_TRACKING_AUTO_ACTION]=array('category'        => 'ticketcategories_id',
+   $changes[2]=array('category'        => 'ticketcategories_id',
                                              'author'          => 'users_id',
                                              'author_location' => 'users_locations',
                                              'FK_group'        => 'groups_id',
@@ -1877,8 +1876,25 @@ function update0723to078($output='HTML') {
       }
    }
 
-
    displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_rulecachesoftwares'); // Updating schema
+
+   $query = "ALTER TABLE `glpi_rules` CHANGE `sub_type` `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+   $DB->query($query) or die("0.78 change subtype from INT(11) to VARCHAR(255) in glpi_rules " . $LANG['update'][90] . $DB->error());
+   $subtypes = array (0=>'RuleOcs',1=>'RuleRight',2=>'RuleTicket',3=>'RuleSoftwareCategory',
+                   4=>'RuleDictionnarySoftware',5=>'RuleDictionnaryManufacturer',
+                   6=>'RuleDictionnaryComputerModel',7=>'RuleDictionnaryComputerType',
+                   8=>'RuleDictionnaryMonitorModel',9=>'RuleDictionnaryMonitorType',
+                   10=>'RuleDictionnaryPrinterModel',11=>'RuleDictionnaryPrinterType',
+                   12=>'RuleDictionnaryPhoneModel',13=>'RuleDictionnaryPhoneType',
+                   14=>'RuleDictionnaryPeripheralModel',15=>'RuleDictionnaryPeripheralType',
+                   16=>'RuleDictionnaryNetworkEquipmentModel',17=>'RuleDictionnaryNetworkEquipmentType',
+                   18=>'RuleDictionnaryOperatingSystem',19=>'RuleDictionnaryOperatingSystemServicePack',
+                   20=>'RuleDictionnaryOperatingSystemVersion',21=>'RuleMailgate');
+
+   foreach ($subtypes as $old_subtype => $new_subtype) {
+      $query = "UPDATE `glpi_rules` SET `sub_type`='$new_subtype' WHERE `sub_type`='$old_subtype'";
+      $DB->query($query) or die("0.78 change sub_type $old_subtype in $new_subtype in glpi_rules " . $LANG['update'][90] . $DB->error());
+   }
 
 	if (FieldExists("glpi_rulecachesoftwares","ignore_ocs_import")) {
 		$query = "ALTER TABLE `glpi_rulecachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) NULL DEFAULT NULL ";
@@ -2532,7 +2548,7 @@ function update0723to078($output='HTML') {
                 WHERE `criteria`='priority'
                   AND `rules_id` IN (SELECT `id`
                                      FROM `glpi_rules`
-                                     WHERE `sub_type`='".Rule::RULE_TRACKING_AUTO_ACTION."')";
+                                     WHERE `sub_type`='2')";
       $DB->query($query) or die("0.78 fix priority/urgency in business rules " .
                                  $LANG['update'][90] . $DB->error());
    }

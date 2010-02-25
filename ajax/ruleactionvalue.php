@@ -59,10 +59,11 @@ switch ($_POST["action_type"]) {
       break;
 
    default :
-      if (isset($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type'])) {
-         switch($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type']) {
+      $actions = Rule::getActionsByType($_POST["sub_type"]);
+      if (isset($actions[$_POST["field"]]['type'])) {
+         switch($actions[$_POST["field"]]['type']) {
             case "dropdown" :
-               $table=$RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['table'];
+               $table=$actions[$_POST["field"]]['table'];
                Dropdown::show(getItemTypeForTable($table), array('name' => "value"));
                $display=true;
                break;

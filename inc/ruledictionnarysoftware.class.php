@@ -48,7 +48,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleDictionnarySoftware extends RuleCached {
 
    // From Rule
-   public $sub_type=Rule::RULE_DICTIONNARY_SOFTWARE;
    public $right='rule_dictionnary_software';
    public $can_sort=true;
 
@@ -99,6 +98,41 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_2'>" .
             ((isset ($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '').".
              " ? Dropdown::getYesNo($fields["is_helpdesk_visible"]) : Dropdown::getYesNo(0)) . "</td>";
+   }
+
+   function getCriterias() {
+      global $LANG;
+      $criterias = array();
+      $criterias['name']['field'] = 'name';
+      $criterias['name']['name']  = $LANG['help'][31];
+      $criterias['name']['table'] = 'glpi_softwares';
+
+      $criterias['manufacturer']['field'] = 'name';
+      $criterias['manufacturer']['name']  = $LANG['common'][5];
+      $criterias['manufacturer']['table'] = 'glpi_manufacturers';
+      return $criterias;
+   }
+
+   function getActions() {
+      global $LANG;
+      $actions = array();
+      $actions['name']['name']          = $LANG['help'][31];
+      $actions['name']['force_actions'] = array('assign','regex_result');
+
+      $actions['_ignore_ocs_import']['name'] = $LANG['ocsconfig'][6];
+      $actions['_ignore_ocs_import']['type'] = 'yesno';
+
+      $actions['version']['name']          = $LANG['rulesengine'][78];
+      $actions['version']['force_actions'] = array('assign','regex_result','append_regex_result');
+
+      $actions['manufacturer']['name']  = $LANG['common'][5];
+      $actions['manufacturer']['table'] = 'glpi_manufacturers';
+      $actions['manufacturer']['type']  = 'dropdown';
+
+      $actions['is_helpdesk_visible']['name']  = $LANG['software'][46];
+      $actions['is_helpdesk_visible']['table'] = 'glpi_softwares';
+      $actions['is_helpdesk_visible']['type']  = 'yesno';
+      return $actions;
    }
 }
 

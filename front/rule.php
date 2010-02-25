@@ -50,6 +50,11 @@ if (haveRight("rule_ldap","r")) {
    echo "<a href='ruleright.php'>" .$LANG['rulesengine'][19] . "</a></td> </tr>";
 }
 
+if (haveRight("rule_mailgate","r")) {
+   echo "<tr class='tab_bg_1'><td class='center b'>";
+   echo "<a href='rulemailgate.php'>" . $LANG['rulesengine'][70] . "</a></td></tr>";
+}
+
 if (haveRight("rule_ticket","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href='ruleticket.php'>" . $LANG['rulesengine'][28] . "</a></td></tr>";

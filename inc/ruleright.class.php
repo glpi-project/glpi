@@ -40,7 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleRight extends Rule {
 
    // From Rule
-   public $sub_type = Rule::RULE_AFFECT_RIGHTS;
    public $right='rule_ldap';
    public $orderby="name";
 
@@ -48,9 +47,6 @@ class RuleRight extends Rule {
     * Constructor
    **/
    function __construct() {
-      //Dynamically add all the ldap criterias to the current list of rule's criterias
-      $this->addLdapCriteriasToArray();
-
       // Temproray hack for this class
       $this->forceTable('glpi_rules');
    }
@@ -94,7 +90,7 @@ class RuleRight extends Rule {
          echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
          $this->dropdownRulesMatch("match", "AND");
          echo "</td><td rowspan='2' class='tab_bg_2 center middle'>";
-         echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
+         echo "<input type=hidden name='sub_type' value=\"" . get_class($this) . "\">";
          echo "<input type=hidden name='entities_id' value='-1'>";
          echo "<input type=hidden name='affectentity' value='$ID'>";
          echo "<input type=hidden name='_method' value='addLdapRule'>";
@@ -159,18 +155,18 @@ class RuleRight extends Rule {
    /**
     * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
     */
-   function addLdapCriteriasToArray() {
-      global $DB,$RULES_CRITERIAS;
+   function addLdapCriteriasToArray(&$criterias) {
+      global $DB;
+
       $sql = "SELECT `name`, `value`
               FROM `glpi_ruleldapparameters`";
       $result = $DB->query($sql);
       while ($datas = $DB->fetch_array($result)) {
-         $RULES_CRITERIAS[$this->sub_type][$datas["value"]]['name']=$datas["name"];
-         $RULES_CRITERIAS[$this->sub_type][$datas["value"]]['field']=$datas["value"];
-         $RULES_CRITERIAS[$this->sub_type][$datas["value"]]['linkfield']='';
-         $RULES_CRITERIAS[$this->sub_type][$datas["value"]]['table']='';
+         $criterias[$datas["value"]]['name']=$datas["name"];
+         $criterias[$datas["value"]]['field']=$datas["value"];
+         $criterias[$datas["value"]]['linkfield']='';
+         $criterias[$datas["value"]]['table']='';
       }
-//      printCleanArray($RULES_CRITERIAS[$this->sub_type]);
    }
 
    /**
@@ -321,7 +317,7 @@ class RuleRight extends Rule {
               FROM `glpi_ruleactions`, `glpi_rules`
               WHERE `glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
                     AND `glpi_ruleactions`.`field` = 'entities_id'
-                    AND `glpi_rules`.`sub_type` = '".$this->sub_type."'
+                    AND `glpi_rules`.`sub_type` = '".get_class($this)."'
                     AND `glpi_ruleactions`.`value` = '$ID'";
       $result = $DB->query($sql);
       while ($rule = $DB->fetch_array($result)) {
@@ -341,6 +337,77 @@ class RuleRight extends Rule {
       return $LANG['entity'][6];
    }
 
+   function getCriterias() {
+      global $LANG;
+      $criterias = array();
+      $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
+      $criterias['LDAP_SERVER']['field']     = 'name';
+      $criterias['LDAP_SERVER']['name']      = $LANG['login'][2];
+      $criterias['LDAP_SERVER']['linkfield'] = '';
+      $criterias['LDAP_SERVER']['type']      = 'dropdown';
+      $criterias['LDAP_SERVER']['virtual']   = true;
+      $criterias['LDAP_SERVER']['id']        = 'ldap_server';
+
+      $criterias['MAIL_SERVER']['table']     = 'glpi_authmails';
+      $criterias['MAIL_SERVER']['field']     = 'name';
+      $criterias['MAIL_SERVER']['name']      = $LANG['login'][3];
+      $criterias['MAIL_SERVER']['linkfield'] = '';
+      $criterias['MAIL_SERVER']['type']      = 'dropdown';
+      $criterias['MAIL_SERVER']['virtual']   = true;
+      $criterias['MAIL_SERVER']['id']        = 'mail_server';
+
+      $criterias['MAIL_EMAIL']['table']     = '';
+      $criterias['MAIL_EMAIL']['field']     = '';
+      $criterias['MAIL_EMAIL']['name']      = $LANG['login'][6]." ".$LANG['login'][3];
+      $criterias['MAIL_EMAIL']['linkfield'] = '';
+      $criterias['MAIL_EMAIL']['virtual']   = true;
+      $criterias['MAIL_EMAIL']['id']        = 'mail_email';
+
+      $criterias['GROUPS']['table']     = 'glpi_groups';
+      $criterias['GROUPS']['field']     = 'name';
+      $criterias['GROUPS']['name']      = $LANG['Menu'][36]." ".$LANG['login'][2];
+      $criterias['GROUPS']['linkfield'] = '';
+      $criterias['GROUPS']['type']      = 'dropdown';
+      $criterias['GROUPS']['virtual']   = true;
+      $criterias['GROUPS']['id']        = 'groups';
+
+      //Dynamically add all the ldap criterias to the current list of rule's criterias
+      $this->addLdapCriteriasToArray($criterias);
+      return $criterias;
+   }
+
+   function getActions() {
+      global $LANG;
+      $actions = array();
+      $actions['entities_id']['name']   = $LANG['entity'][0];
+      $actions['entities_id']['type']   = 'dropdown';
+      $actions['entities_id']['table']  = 'glpi_entities';
+
+      $actions['_affect_entity_by_dn']['name']   = $LANG['rulesengine'][130];
+      $actions['_affect_entity_by_dn']['type']   = 'text';
+      $actions['_affect_entity_by_dn']['force_actions'] = array('regex_result');
+
+      $actions['_affect_entity_by_tag']['name']  = $LANG['rulesengine'][131];
+      $actions['_affect_entity_by_tag']['type']  = 'text';
+      $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
+
+      $actions['profiles_id']['name']  = $LANG['Menu'][35];
+      $actions['profiles_id']['type']  = 'dropdown';
+      $actions['profiles_id']['table'] = 'glpi_profiles';
+
+      $actions['is_recursive']['name']  = $LANG['profiles'][28];
+      $actions['is_recursive']['type']  = 'yesno';
+      $actions['is_recursive']['table'] = '';
+
+      $actions['is_active']['name']  = $LANG['common'][60];
+      $actions['is_active']['type']  = 'yesno';
+      $actions['is_active']['table'] = '';
+
+      $actions['_ignore_user_import']['name']  = $LANG['rulesengine'][132];
+      $actions['_ignore_user_import']['type']  = 'yesno';
+      $actions['_ignore_user_import']['table'] = '';
+      return $actions;
+   }
 }
 
 

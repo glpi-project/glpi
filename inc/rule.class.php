@@ -51,8 +51,6 @@ class Rule extends CommonDBTM {
    var $actions = array();
    ///Criterias affected to this rule
    var $criterias = array();
-   /// Rule type
-   var $sub_type;
    /// Right needed to use this rule
    var $right='config';
    /// Rules can be sorted ?
@@ -61,27 +59,6 @@ class Rule extends CommonDBTM {
    var $orderby='ranking';
 
    const RULE_NOT_IN_CACHE = -1;
-   const RULE_OCS_AFFECT_COMPUTER = 0;
-   const RULE_AFFECT_RIGHTS = 1;
-   const RULE_TRACKING_AUTO_ACTION = 2;
-   const RULE_SOFTWARE_CATEGORY = 3;
-   const RULE_DICTIONNARY_SOFTWARE = 4;
-   const RULE_DICTIONNARY_MANUFACTURER = 5;
-   const RULE_DICTIONNARY_MODEL_COMPUTER = 6;
-   const RULE_DICTIONNARY_TYPE_COMPUTER = 7;
-   const RULE_DICTIONNARY_MODEL_MONITOR = 8;
-   const RULE_DICTIONNARY_TYPE_MONITOR = 9;
-   const RULE_DICTIONNARY_MODEL_PRINTER = 10;
-   const RULE_DICTIONNARY_TYPE_PRINTER =11;
-   const RULE_DICTIONNARY_MODEL_PHONE = 12;
-   const RULE_DICTIONNARY_TYPE_PHONE = 13;
-   const RULE_DICTIONNARY_MODEL_PERIPHERAL = 14;
-   const RULE_DICTIONNARY_TYPE_PERIPHERAL = 15;
-   const RULE_DICTIONNARY_MODEL_NETWORKING = 16;
-   const RULE_DICTIONNARY_TYPE_NETWORKING = 17;
-   const RULE_DICTIONNARY_OS = 18;
-   const RULE_DICTIONNARY_OS_SP = 19;
-   const RULE_DICTIONNARY_OS_VERSION = 20;
    const RULE_WILDCARD = '*';
 
 //Generic rules engine
@@ -100,10 +77,7 @@ class Rule extends CommonDBTM {
    * Constructor
    * @param sub_type the rule type used for the collection
    **/
-   function __construct($sub_type=0) {
-      if ($sub_type > 0) {
-         $this->sub_type=$sub_type;
-      }
+   function __construct() {
       // Temproray hack for this class
       $this->forceTable('glpi_rules');
    }
@@ -190,7 +164,7 @@ class Rule extends CommonDBTM {
       echo "<td class='middle' colspan='3'>";
       echo "<textarea cols='110' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
       if (!$new) {
-         echo $LANG['common'][26]."&nbsp;: ";
+         echo "<br>".$LANG['common'][26]."&nbsp;: ";
          echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
       }
       echo"</td></tr>\n";
@@ -198,7 +172,7 @@ class Rule extends CommonDBTM {
       if ($canedit) {
          if ($new) {
             echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-            echo "<input type='hidden' name='sub_type' value='".$this->sub_type."'>";
+            echo "<input type='hidden' name='sub_type' value='".$this->getType()."'>";
             echo "<input type='submit' name='add_rule' value=\"" . $LANG['buttons'][8] .
                    "\" class='submit'>";
             echo "</td></tr>\n";
@@ -215,7 +189,7 @@ class Rule extends CommonDBTM {
 
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
             echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-                   "/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rules_id=".
+                   "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;rules_id=".
                    $this->fields["id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100,".
                    " scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>";
             echo "</td></tr>\n";
@@ -271,7 +245,7 @@ class Rule extends CommonDBTM {
    function getTitleAction($target) {
       global $LANG,$CFG_GLPI;
 
-      foreach($this->getFilteredActions() as $key => $val) {
+      foreach($this->getActions() as $key => $val) {
          if (isset($val['force_actions'])
              && (in_array('regex_result',$val['force_actions'])
                  || in_array('append_regex_result',$val['force_actions']))) {
@@ -359,10 +333,10 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='4'>" . $LANG['rulesengine'][7] . "</tr>";
       echo "<tr class='tab_bg_1 center'>";
       echo "<td>".$LANG['rulesengine'][30] . "&nbsp;:</td><td>";
-      $val=$this->dropdownActions(RuleAction::getAlreadyUsedForRuleID($rules_id,$this->sub_type));
+      $val=$this->dropdownActions(RuleAction::getAlreadyUsedForRuleID($rules_id,$this->getType()));
       echo "</td><td class='left'>";
       echo "<span id='action_span'>\n";
-      $_POST["sub_type"]=$this->sub_type;
+      $_POST["sub_type"]=$this->getType();
       $_POST["field"]=$val;
       include (GLPI_ROOT."/ajax/ruleaction.php");
       echo "</span>\n";
@@ -380,7 +354,7 @@ class Rule extends CommonDBTM {
     * @param $rules_id rule ID
     */
    function addCriteriaForm($rules_id) {
-      global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
+      global $LANG,$CFG_GLPI;
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -390,7 +364,7 @@ class Rule extends CommonDBTM {
       $val=$this->dropdownCriterias();
       echo "</td><td class='left'>";
       echo "<span id='criteria_span'>\n";
-      $_POST["sub_type"]=$this->sub_type;
+      $_POST["sub_type"]=$this->getType();
       $_POST["criteria"]=$val;
       include (GLPI_ROOT."/ajax/rulecriteria.php");
       echo "</span>\n";
@@ -471,7 +445,7 @@ class Rule extends CommonDBTM {
       }
       $rand=Dropdown::showFromArray("criteria", $items);
       $params = array('criteria' => '__VALUE__',
-                      'sub_type' => $this->sub_type);
+                      'sub_type' => $this->getType());
       ajaxUpdateItemOnSelectEvent("dropdown_criteria$rand","criteria_span",
                                   $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false);
 
@@ -490,7 +464,7 @@ class Rule extends CommonDBTM {
 
       $items=array();
       $value='';
-      foreach ($this->getFilteredActions() as $ID => $act) {
+      foreach ($this->getActions() as $ID => $act) {
          $items[$ID]=$act['name'];
          if (empty($value) && !isset($used[$ID])) {
             $value=$ID;
@@ -499,7 +473,7 @@ class Rule extends CommonDBTM {
 
       $rand=Dropdown::showFromArray("field", $items, array('value' => $value, 'used' => $used));
       $params = array('field'    => '__VALUE__',
-                      'sub_type' => $this->sub_type);
+                      'sub_type' => $this->getType());
       ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",
                                   $CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
 
@@ -513,45 +487,6 @@ class Rule extends CommonDBTM {
     */
    function filterActions($actions) {
       return $actions;
-   }
-
-   /**
-    * Get the criterias array definition
-    * @return the criterias array
-   **/
-   function getCriterias() {
-      global $RULES_CRITERIAS;
-
-      if (isset($RULES_CRITERIAS[$this->sub_type])) {
-         return $RULES_CRITERIAS[$this->sub_type];
-      } else {
-         return array();
-      }
-   }
-
-   function getFilteredActions() {
-      global $RULES_ACTIONS;
-
-      if (isset($RULES_ACTIONS[$this->sub_type])) {
-         return $this->filterActions($RULES_ACTIONS[$this->sub_type]);
-      } else {
-         return array();
-      }
-   }
-
-   /**
-    * Get the actions array definition
-    * filter_action true : list all the available actions, false : list all the actions for this type of rule
-    * @return the actions array
-    */
-   function getActions() {
-      global $RULES_ACTIONS;
-
-      if (isset($RULES_ACTIONS[$this->sub_type])) {
-         return $RULES_ACTIONS[$this->sub_type];
-      } else {
-         return array();
-      }
    }
 
    /**
@@ -628,7 +563,7 @@ class Rule extends CommonDBTM {
             $output=$this->executeActions($output,$params,$regex_result);
 
             //Hook
-            $hook_params["sub_type"]=$this->sub_type;
+            $hook_params["sub_type"]=$this->getType();
             $hook_params["ruleid"]=$this->fields["id"];
             $hook_params["input"]=$input;
             $hook_params["output"]=$output;
@@ -864,7 +799,7 @@ class Rule extends CommonDBTM {
 
       $sql = "SELECT max(`ranking`) AS rank
               FROM `glpi_rules`
-              WHERE `sub_type` = '".$this->sub_type."'";
+              WHERE `sub_type` = '".$this->getType()."'";
       $result = $DB->query($sql);
 
       if ($DB->numrows($result) > 0) {
@@ -906,8 +841,9 @@ class Rule extends CommonDBTM {
    * @param $params params used (see addSpecificParamsForPreview)
    */
    function showRulePreviewResultsForm($target,$input,$params) {
-      global $LANG,$RULES_ACTIONS;
+      global $LANG;
 
+      $actions = $this->getActions();
       $regex_results = array();
       $check_results = array();
       $output = array();
@@ -950,9 +886,9 @@ class Rule extends CommonDBTM {
       $output = $this->preProcessPreviewResults($output);
 
       foreach ($output as $criteria => $value) {
-         if (isset($RULES_ACTIONS[$this->sub_type][$criteria])) {
+         if (isset($actions[$criteria])) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td>".$RULES_ACTIONS[$this->sub_type][$criteria]["name"]."</td>";
+            echo "<td>".$actions[$criteria]["name"]."</td>";
             echo "<td>";
             echo $this->getActionValue($criteria,$value);
             echo "</td></tr>\n";
@@ -1218,8 +1154,9 @@ class Rule extends CommonDBTM {
     * @param $rules_id ID of the rule
     */
    function showRulePreviewCriteriasForm($target,$rules_id) {
-      global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS;
+      global $DB, $LANG;
 
+      $criterias = $this->getCriterias();
       if ($this->getRuleWithCriteriasAndActions($rules_id,1,0)) {
          echo "<form name='testrule_form' id='testrule_form' method='post' action=\"$target\">\n";
          echo "<div class='center'>";
@@ -1245,8 +1182,7 @@ class Rule extends CommonDBTM {
                   echo $type_match;
                }
                echo "</td>";
-               $criteria_constants = $RULES_CRITERIAS[$this->fields["sub_type"]]
-                                                     [$criteria->fields["criteria"]];
+               $criteria_constants = $criterias[$criteria->fields["criteria"]];
                echo "<td>".$criteria_constants["name"].":</td>";
                echo "<td>";
                $value="";
@@ -1266,7 +1202,7 @@ class Rule extends CommonDBTM {
          echo "<input type='submit' name='test_rule' value=\"" . $LANG['buttons'][50] .
                "\" class='submit'>";
          echo "<input type='hidden' name='rules_id' value='$rules_id'>";
-         echo "<input type='hidden' name='sub_type' value='" . $this->sub_type . "'>";
+         echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
          echo "</td></tr>\n";
          echo "</table></div></form>\n";
       }
@@ -1289,7 +1225,7 @@ class Rule extends CommonDBTM {
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $p['sub_type'] = -1;
+      $p['sub_type'] = '';
       $p['name']   = 'rules_id';
 
       if (is_array($options) && count($options)) {
@@ -1298,7 +1234,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      if ($p['sub_type']<=0) {
+      if ($p['sub_type'] == '') {
          return false;
       }
 
@@ -1325,41 +1261,21 @@ class Rule extends CommonDBTM {
       return $rand;
    }
 
-   static function getClassByType($type) {
+   function getCriterias() {
+      return array();
+   }
 
-      switch ($type) {
-         case Rule::RULE_OCS_AFFECT_COMPUTER :
-            return new RuleOcs();
+   function getActions() {
+      return array();
+   }
 
-         case Rule::RULE_AFFECT_RIGHTS :
-            return new RuleRight();
-
-         case Rule::RULE_TRACKING_AUTO_ACTION :
-            return new RuleTicket();
-
-         case Rule::RULE_SOFTWARE_CATEGORY :
-            return new RuleSoftwareCategory();
-
-         case Rule::RULE_DICTIONNARY_SOFTWARE :
-            return new RuleDictionnarySoftware;
-
-         case Rule::RULE_DICTIONNARY_MANUFACTURER :
-         case Rule::RULE_DICTIONNARY_MODEL_NETWORKING :
-         case Rule::RULE_DICTIONNARY_MODEL_COMPUTER :
-         case Rule::RULE_DICTIONNARY_MODEL_MONITOR :
-         case Rule::RULE_DICTIONNARY_MODEL_PRINTER :
-         case Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL :
-         case Rule::RULE_DICTIONNARY_MODEL_PHONE :
-         case Rule::RULE_DICTIONNARY_TYPE_NETWORKING :
-         case Rule::RULE_DICTIONNARY_TYPE_COMPUTER :
-         case Rule::RULE_DICTIONNARY_TYPE_PRINTER :
-         case Rule::RULE_DICTIONNARY_TYPE_MONITOR :
-         case Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL :
-         case Rule::RULE_DICTIONNARY_TYPE_PHONE :
-         case Rule::RULE_DICTIONNARY_OS :
-         case Rule::RULE_DICTIONNARY_OS_SP :
-         case Rule::RULE_DICTIONNARY_OS_VERSION :
-            return new RuleDictionnaryDropdown($type);
+   static function getActionsByType($sub_type) {
+      if (class_exists($sub_type)) {
+         $rule = new $sub_type();
+         return $rule->getActions();
+      }
+      else {
+         return array();
       }
    }
 }

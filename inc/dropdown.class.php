@@ -1099,12 +1099,12 @@ class Dropdown {
             switch ($itemtype) {
                case 'Software' :
                   if ($isadmin
-                     && countElementsInTable("glpi_rules","sub_type='".Rule::RULE_SOFTWARE_CATEGORY."'") > 0) {
+                     && countElementsInTable("glpi_rules","sub_type='RuleSoftwareCategory'") > 0) {
                      echo "<option value=\"compute_software_category\">".$LANG['rulesengine'][38]." ".
                            $LANG['rulesengine'][40]."</option>";
                   }
                   if (haveRight("rule_dictionnary_software","w")
-                     && countElementsInTable("glpi_rules","sub_type='".Rule::RULE_DICTIONNARY_SOFTWARE."'") > 0) {
+                     && countElementsInTable("glpi_rules","sub_type='RuleDictionnarySoftware'") > 0) {
                      echo "<option value=\"replay_dictionnary\">".$LANG['rulesengine'][76]."</option>";
                   }
                   break;

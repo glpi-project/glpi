@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleSoftwareCategoryCollection extends RuleCollection {
 
    // From RuleCollection
-   public $sub_type = Rule::RULE_SOFTWARE_CATEGORY;
-   public $rule_class_name = 'RuleSoftwareCategory';
    public $stop_on_first_match=true;
    public $right='rule_softwarecategories';
    public $menu_option='softwarecategories';

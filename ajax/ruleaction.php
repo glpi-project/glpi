@@ -48,10 +48,9 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 // Non define case
-if (isset($_POST["sub_type"]) && isset($RULES_ACTIONS[$_POST["sub_type"]])) {
-   // First include -> first of the predefined array
+if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
    if (!isset($_POST["field"])) {
-      $_POST["field"]=key($RULES_ACTIONS[$_POST["sub_type"]]);
+      $_POST["field"]=key(Rule::getActionsByType($_POST["sub_type"]));
    }
 
    $randaction=RuleAction::dropdownActions($_POST["sub_type"],"action_type",$_POST["field"]);
