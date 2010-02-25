@@ -482,8 +482,7 @@ class Auth {
                                                     $ldap_method["login_field"],
                                                     $user, $ldap_method["condition"]);
                      if ($user_dn) {
-                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $ldap_method["rootdn"],
-                                                        $ldap_method["rootdn_password"]);
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $user);
                      }
                   }
                }
