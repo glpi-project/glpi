@@ -50,27 +50,31 @@ class NotificationTemplate extends CommonDBTM {
       return $LANG['mailing'][113];
    }
 
+
    function defineTabs($options=array()){
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
       if ($this->fields['id'] > 0) {
-         $tabs[12]=$LANG['title'][38];
+         $tabs[12] = $LANG['title'][38];
       }
 
       return $tabs;
    }
 
+
    function canCreate() {
       return haveRight('config', 'w');
    }
+
 
    function canView() {
       return haveRight('config', 'r');
    }
 
+
    function showForm($ID, $options=array()) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
@@ -94,20 +98,21 @@ class NotificationTemplate extends CommonDBTM {
       autocompletionTextField($this, "name");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "</td><td colspan='3'>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td><td colspan='3'>";
       Dropdown::dropdownTypes("itemtype",
                               ($this->fields['itemtype']?$this->fields['itemtype']:'Ticket'),
                               $CFG_GLPI["notificationtemplates_types"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td colspan='3'><textarea cols='45' rows='9' name='comment' >"
-         .$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td colspan='3'><textarea cols='45' rows='9' name='comment' >".$this->fields["comment"].
+            "</textarea></td></tr>";
 
       $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -134,51 +139,54 @@ class NotificationTemplate extends CommonDBTM {
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-
       return $tab;
    }
 
+
    /**
     * Display templates available for an itemtype
-    * @param name the dropdown name
-    * @param itemtype display templates for this itemtype only
-    * @param value the dropdown's default value (0 by default)
+    * @param $name the dropdown name
+    * @param $itemtype display templates for this itemtype only
+    * @param $value the dropdown's default value (0 by default)
     */
-   static function dropdownTemplates($name,$itemtype,$value=0) {
+   static function dropdownTemplates($name, $itemtype, $value=0) {
       global $DB;
 
-      Dropdown::show('NotificationTemplate',array('name'=>$name,'value'=>$value,'comment'=>1,
-                                                  'condition'=>"`itemtype`='$itemtype'"));
+      Dropdown::show('NotificationTemplate', array('name'      => $name,
+                                                   'value'     => $value,
+                                                   'comment'   => 1,
+                                                   'condition' => "`itemtype`='$itemtype'"));
    }
 
+
    function getAdditionnalProcessOption($options) {
+
       //Additionnal option can be given for template processing
       //For the moment, only option to see private tasks & followups is available
       if (!empty($options) && isset($options['sendprivate'])) {
          return 1;
       }
-      else {
-         return 0;
-      }
+      return 0;
    }
 
-   function getTemplateByLanguage(NotificationTarget $target, $user_infos=array(), $event,$options=array()) {
+
+   function getTemplateByLanguage(NotificationTarget $target, $user_infos=array(), $event,
+                                  $options=array()) {
       global $LANG;
+
       $lang = array();
 
       $language = $user_infos['language'];
 
       if (isset($user_infos['additionnaloption'])) {
          $additionnaloption =  $user_infos['additionnaloption'];
-      }
-      else {
+      } else {
          $additionnaloption =  NotificationTarget::NO_OPTION;
       }
 
       if (!isset($this->templates_by_languages[$additionnaloption][$language])) {
          //Switch to the desired language
-         $start=microtime(true);
-         logDebug("000: Start for ".$language);
+         $start = microtime(true);
          loadLanguage($language);
 
          //If event is raised by a plugin, load it in order to get the language file available
@@ -196,28 +204,29 @@ class NotificationTemplate extends CommonDBTM {
          if ($template_datas = $this->getByLanguage($language)) {
             //Template processing
             $lang['subject'] = $target->getSubjectPrefix() .
-                          NotificationTemplate::process($template_datas['subject'], $data);
+                               NotificationTemplate::process($template_datas['subject'], $data);
             $lang['content_html'] = '';
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
-                 $lang['content_html'] =
-                  "<html><body>".NotificationTemplate::process($template_datas['content_html'],
-                                                                $data).
-                  "<br /><br />".nl2br($this->signature)."</body></html>";
+               $lang['content_html'] =
+                     "<html><body>".NotificationTemplate::process($template_datas['content_html'],
+                                                                  $data).
+                     "<br /><br />".nl2br($this->signature)."</body></html>";
             }
 
             $lang['content_text'] = NotificationTemplate::process($template_datas['content_text'],
                                                                   $data).
-                  "\n\n".$this->signature;
+                                    "\n\n".$this->signature;
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }
-         logDebug("999: ".(microtime(true)-$start)." End for ".$language);
       }
 
       return isset($this->templates_by_languages[$additionnaloption][$language]);
    }
 
+
    static function process ($string, $data) {
+
       $offset = $new_offset = 0;
       //Template processed
       $output = "";
@@ -226,13 +235,16 @@ class NotificationTemplate extends CommonDBTM {
       $string = unclean_cross_side_scripting_deep($string);
 
       //First of all process the FOREACH tag
-      if (preg_match_all("/##FOREACH[ ]?(FIRST|LAST)?[ ]?([0-9]*)?[ ]?([a-zA-Z-0-9\.]*)##/i",$string,$out)) {
+      if (preg_match_all("/##FOREACH[ ]?(FIRST|LAST)?[ ]?([0-9]*)?[ ]?([a-zA-Z-0-9\.]*)##/i",
+                         $string, $out)) {
+
          foreach ($out[3] as $id => $tag_infos) {
+            $regex = "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/is";
 
-            $regex= "/".$out[0][$id]."(.*)##ENDFOREACH".$tag_infos."##/is";
+            if (preg_match($regex,$string,$tag_out)
+                && isset($data[$tag_infos])
+                && is_array($data[$tag_infos])) {
 
-            if (preg_match($regex,$string,$tag_out) &&
-                  isset($data[$tag_infos]) && is_array($data[$tag_infos])) {
                $data_lang_foreach = $data;
                unset($data_lang_foreach[$tag_infos]);
 
@@ -245,8 +257,7 @@ class NotificationTemplate extends CommonDBTM {
                      }
                      if (isset ($out[2][$id]) && $out[2][$id]) {
                         $foreachvalues = array_slice($foreachvalues,0,$out[2][$id]);
-                     }
-                     else {
+                     } else {
                         $foreachvalues = array_slice($foreachvalues,0,1);
                      }
                   }
@@ -260,11 +271,10 @@ class NotificationTemplate extends CommonDBTM {
                      }
                   }
                   $tmp = NotificationTemplate::processIf($tag_out[1],$data_lang_foreach);
-                  $output_foreach_string.=strtr($tmp,$data_lang_foreach);
+                  $output_foreach_string .= strtr($tmp,$data_lang_foreach);
                }
                $string = str_replace($tag_out[0],$output_foreach_string,$string);
-         }
-         else {
+         } else {
             $string = str_replace($tag_out,'',$string);
          }
       }
@@ -272,16 +282,17 @@ class NotificationTemplate extends CommonDBTM {
 
    foreach ($data as $field=>$value) {
       if (is_array($value)) {
-          unset($data[$field]);
+         unset($data[$field]);
       }
    }
 
    //Now process IF statements
    $string = NotificationTemplate::processIf($string,$data);
-   $string= strtr($string,$data);
+   $string = strtr($string,$data);
 
    return $string;
    }
+
 
    private static function processIf($string, $data) {
 
@@ -290,15 +301,16 @@ class NotificationTemplate extends CommonDBTM {
             $if_field = $tag_infos;
 
             //Get the field tag value (if one)
-            $regex_if= "/##IF".$if_field."##(.*)##ENDIF".$if_field."##/is";
+            $regex_if = "/##IF".$if_field."##(.*)##ENDIF".$if_field."##/is";
 
             //Get the else tag value (if one)
-            $regex_else= "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/is";
+            $regex_else = "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/is";
 
             if (isset($data['##'.$if_field.'##'])
-                  && $data['##'.$if_field.'##'] != ''
-                        && $data['##'.$if_field.'##'] != '&nbsp;'
-                           && !is_null($data['##'.$if_field.'##'])) {
+                && $data['##'.$if_field.'##'] != ''
+                && $data['##'.$if_field.'##'] != '&nbsp;'
+                && !is_null($data['##'.$if_field.'##'])) {
+
                $string = preg_replace($regex_if, "\\1", $string);
                $string = preg_replace($regex_else, "",  $string);
             } else {
@@ -307,9 +319,9 @@ class NotificationTemplate extends CommonDBTM {
             }
          }
       }
-
       return $string;
    }
+
 
    function setSignature($signature) {
       $this->signature = $signature;
@@ -317,43 +329,46 @@ class NotificationTemplate extends CommonDBTM {
 
    function getByLanguage($language) {
       global $DB;
+
       $query = "SELECT *
-               FROM `glpi_notificationtemplatetranslations`
-               WHERE `notificationtemplates_id`='".$this->getField('id')."'
-                  AND `language` IN ('$language','') ORDER BY `language` DESC LIMIT 1";
+                FROM `glpi_notificationtemplatetranslations`
+                WHERE `notificationtemplates_id` = '".$this->getField('id')."'
+                      AND `language` IN ('$language','')
+                ORDER BY `language` DESC
+                LIMIT 1";
 
       $iterator = $DB->request($query);
       if ($iterator->numrows()) {
          return $iterator->next();
       }
-      else {
-         //No template found at all!
-         return false;
-      }
+      //No template found at all!
+      return false;
    }
 
-   function getDataToSend(NotificationTarget $target, $user_infos,$options) {
-      $language = $user_infos['language'];
+
+   function getDataToSend(NotificationTarget $target, $user_infos, $options) {
+
+      $language   = $user_infos['language'];
       $user_email = $user_infos['email'];
 
-      $mailing_options['to'] = $user_email;
-      $mailing_options['from'] = $target->getSender();
+      $mailing_options['to']      = $user_email;
+      $mailing_options['from']    = $target->getSender();
       $mailing_options['replyto'] = $target->getReplyTo();
 
       if (isset($user_infos['additionnaloption'])) {
          $additionnaloption =  $user_infos['additionnaloption'];
-      }
-      else {
+      } else {
          $additionnaloption =  NotificationTarget::NO_OPTION;
       }
 
       $template_data = $this->templates_by_languages[$additionnaloption][$language];
-      $mailing_options['subject'] = $template_data['subject'];
+      $mailing_options['subject']      = $template_data['subject'];
       $mailing_options['content_html'] = $template_data['content_html'];
       $mailing_options['content_text'] = $template_data['content_text'];
-      $mailing_options['items_id'] = $target->obj->getField('id');
+      $mailing_options['items_id']     = $target->obj->getField('id');
 
       return $mailing_options;
    }
+
 }
 ?>
