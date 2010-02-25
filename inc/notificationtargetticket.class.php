@@ -309,6 +309,7 @@ class NotificationTargetTicket extends NotificationTarget {
         $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
      }
      $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
+     $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
 
       if ($this->obj->getField('ticketcategories_id')) {
          $this->datas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
