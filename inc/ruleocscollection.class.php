@@ -40,8 +40,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleOcsCollection extends RuleCollection {
 
    // From RuleCollection
-   public $sub_type = Rule::RULE_OCS_AFFECT_COMPUTER;
-   public $rule_class_name = 'RuleOcs';
    public $stop_on_first_match=true;
    public $right = 'rule_ocs';
    public $menu_option='ocs';
@@ -134,10 +132,10 @@ class RuleOcsCollection extends RuleCollection {
        * @return an array of table names
     	*/
    function getTablesForQuery() {
-      global $RULES_CRITERIAS;
+      $rule = new RuleOcs();
 
       $tables = array();
-      foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria) {
+      foreach ($rule->getCriterias() as $criteria) {
          if ((!isset($criteria['virtual']) || !$criteria['virtual'])
              && $criteria['table'] != ''
              && !isset($tables[$criteria["table"]])) {
@@ -154,10 +152,10 @@ class RuleOcsCollection extends RuleCollection {
    * @return an array of needed fields
    */
    function getFieldsForQuery($withouttable=0) {
-      global $RULES_CRITERIAS;
 
+      $rule = new RuleOcs();
       $fields = array();
-      foreach ($RULES_CRITERIAS[$this->sub_type] as $key => $criteria) {
+      foreach ($rule->getCriterias() as $key => $criteria) {
          if ($withouttable) {
             if (strcasecmp($key,$criteria['field']) != 0) {
                $fields[]=$key;
@@ -192,10 +190,10 @@ class RuleOcsCollection extends RuleCollection {
    * @return an array of needed fields
    */
    function getFKFieldsForQuery() {
-      global $RULES_CRITERIAS;
 
+      $rule = new RuleOcs();
       $fields = array();
-      foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria) {
+      foreach ($rule->getCriterias() as $criteria) {
          //If the field name is not null AND a table name is provided
          if ((!isset($criteria['virtual']) || !$criteria['virtual'])
              && $criteria['linkfield'] != '') {

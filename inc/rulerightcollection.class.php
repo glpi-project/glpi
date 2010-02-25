@@ -41,8 +41,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleRightCollection extends RuleCollection {
 
    // From RuleCollection
-   public $sub_type = Rule::RULE_AFFECT_RIGHTS;
-   public $rule_class_name = 'RuleRight';
    public $stop_on_first_match=false;
    public $right = 'rule_ldap';
    public $orderby="name";
@@ -71,8 +69,9 @@ class RuleRightCollection extends RuleCollection {
    }
 
    function showTestResults($rule,$output,$global_result) {
-      global $LANG,$RULES_ACTIONS;
+      global $LANG;
 
+      $actions = $rule->getActions();
       echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='4'>".$LANG['rulesengine'][41]." : <strong> ".
@@ -117,9 +116,9 @@ class RuleRightCollection extends RuleCollection {
          unset($output["_ldap_rules"]);
       }
       foreach ($output as $criteria => $value) {
-         if (isset($RULES_ACTIONS[$this->sub_type][$criteria])) { // ignore _* fields
+         if (isset($actions[$criteria])) { // ignore _* fields
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>".$RULES_ACTIONS[$this->sub_type][$criteria]["name"]."</td>";
+            echo "<td class='center'>".$actions[$criteria]["name"]."</td>";
             echo "<td class='center'>".$rule->getActionValue($criteria,$value)."</td></tr>\n";
          }
       }
@@ -163,7 +162,7 @@ class RuleRightCollection extends RuleCollection {
       $params = array();
       $sql = "SELECT DISTINCT `value`
               FROM `glpi_rules`, `glpi_rulecriterias`, `glpi_ruleldapparameters`
-              WHERE `glpi_rules`.`sub_type` = '".$this->sub_type."'
+              WHERE `glpi_rules`.`sub_type` = 'RuleRight'
                     AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
                     AND `glpi_rulecriterias`.`criteria` = `glpi_ruleldapparameters`.`value`";
       $result = $DB->query($sql);
@@ -184,7 +183,6 @@ class RuleRightCollection extends RuleCollection {
     * @return an array of attributes
     */
    function prepareInputDataForProcess($input,$params) {
-      global $RULES_CRITERIAS;
 
       $rule_parameters = array();
       //LDAP type method
@@ -243,10 +241,11 @@ class RuleRightCollection extends RuleCollection {
     * Get the list of fields to be retreived to process rules
     */
    function getFieldsForQuery() {
-      global $RULES_CRITERIAS;
+      $rule = new RuleRight;
+      $criterias = $rule->getCriterias();
 
       $fields = array();
-      foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria) {
+      foreach ($criterias as $criteria) {
          if (isset($criteria['virtual']) && $criteria['virtual']) {
             $fields[]=$criteria['id'];
          } else {

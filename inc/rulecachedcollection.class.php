@@ -75,7 +75,7 @@ class RuleCachedCollection extends RuleCollection {
 
       echo "<span class='icon_consol'>";
       echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-            "/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."' ,'glpipopup', ".
+            "/front/popup.php?popup=show_cache&amp;sub_type=".$this->getRuleClassName()."' ,'glpipopup', ".
             "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
             $LANG['rulesengine'][100]."</a></span>";
    }
@@ -130,7 +130,7 @@ class RuleCachedCollection extends RuleCollection {
       $total = 0;
       while ($datas = $DB->fetch_array($res_count)) {
          echo "<tr><td class='tab_bg_2'>";
-         echo "<a href='/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type.
+         echo "<a href='/front/popup.php?popup=show_cache&amp;sub_type=".$this->getRuleClassName().
               "&amp;rules_id=".$datas["rules_id"]."' >";
          echo $datas["name"];
          echo "</a></td>";

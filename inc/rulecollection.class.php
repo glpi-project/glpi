@@ -64,7 +64,7 @@ class RuleCollection {
    /// Rule type
    public $sub_type;
    /// Name of the class used to rule
-   var $rule_class_name="Rule";
+   //var $rule_class_name="Rule";
    /// process collection stop on first matched rule
    var $stop_on_first_match=false;
    /// Right needed to use this rule collection
@@ -83,22 +83,12 @@ class RuleCollection {
    var $menu_option="";
 
    /**
-   * Constructor
-   * @param sub_type the rule type used for the collection
-   **/
-   function __construct($sub_type=-1) {
-      if ($sub_type > 0){
-         $this->sub_type = $sub_type;
-      }
-   }
-
-   /**
    * Get Collection Size : retrieve the number of rules
    *
    * @return : number of rules
    **/
    function getCollectionSize() {
-      return countElementsInTable("glpi_rules", "sub_type=".$this->sub_type);
+      return countElementsInTable("glpi_rules", "sub_type='".$this->getRuleClassName()."'");
    }
 
    /**
@@ -110,13 +100,13 @@ class RuleCollection {
    function getCollectionPart($start=0,$limit=0) {
       global $DB;
 
-      $this->RuleList = new SingletonRuleList($this->sub_type);
+      $this->RuleList = new SingletonRuleList($this->getRuleClassName());
       $this->RuleList->list = array();
 
       //Select all the rules of a different type
       $sql = "SELECT *
               FROM `glpi_rules`
-              WHERE `sub_type` = '".$this->sub_type."'
+              WHERE `sub_type` = '".$this->getRuleClassName()."'
               ORDER BY ".$this->orderby." ASC";
       if ($limit) {
          $sql .= " LIMIT ".intval($start).",".intval($limit);
@@ -142,7 +132,7 @@ class RuleCollection {
       global $DB;
 
       if ($this->RuleList === NULL) {
-         $this->RuleList = SingletonRuleList::getInstance($this->sub_type);
+         $this->RuleList = SingletonRuleList::getInstance($this->getRuleClassName());
       }
       $need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0);
 
@@ -152,7 +142,7 @@ class RuleCollection {
          $sql = "SELECT `id`
                  FROM `glpi_rules`
                  WHERE `is_active` = '1'
-                       AND `sub_type` = '".$this->sub_type."'
+                       AND `sub_type` = '".$this->getRuleClassName()."'
                  ORDER BY ".$this->orderby." ASC";
          $result = $DB->query($sql);
 
@@ -172,12 +162,26 @@ class RuleCollection {
       }
    }
 
+   function getRuleClassName() {
+      if (preg_match('/(.*)Collection/',get_class($this),$rule_class)) {
+         return $rule_class[1];
+      }
+      else {
+         return "";
+      }
+   }
    /**
     * Get a instance of the class to manipulate rule of this collection
     *
    **/
    function getRuleClass() {
-      return new $this->rule_class_name();
+      $name = $this->getRuleClassName();
+      if ($name !=  '') {
+         return new $name ();
+      }
+      else {
+         return null;
+      }
    }
 
    /**
@@ -244,7 +248,7 @@ class RuleCollection {
       $limit = $_SESSION['glpilist_limit'];
       $this->getCollectionPart($start,$limit);
 
-      printPager($start,$nb,getItemTypeSearchURL($this->rule_class_name),"");
+      printPager($start,$nb,getItemTypeSearchURL($this->getRuleClassName()),"");
 
       echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
       echo "\n<div class='center'>";
@@ -278,7 +282,7 @@ class RuleCollection {
 
          $params = array('action'   => '__VALUE__',
                          'itemtype' => 'Rule',
-                         'sub_type' => $this->sub_type);
+                         'sub_type' => $this->getRuleClassName());
 
          ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",$params);
@@ -295,7 +299,7 @@ class RuleCollection {
       echo "</form>";
       echo "<br><span class='icon_consol'>";
       echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-             "/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type.
+             "/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->getRuleClassName().
              "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
              "w.focus();\">".$LANG['rulesengine'][84]."</a></span>";
 
@@ -328,7 +332,7 @@ class RuleCollection {
             // Search rules to switch
             $sql2 = "SELECT `id`, `ranking`
                      FROM `glpi_rules`
-                     WHERE `sub_type` ='".$this->sub_type."'";
+                     WHERE `sub_type` ='".$this->getRuleClassName()."'";
             switch ($action) {
                case "up" :
                   $sql2 .= " AND `ranking` < '$current_rank'
@@ -375,7 +379,7 @@ class RuleCollection {
       $sql = "UPDATE
               `glpi_rules`
               SET `ranking` = `ranking`-1
-              WHERE `sub_type` ='".$this->sub_type."'
+              WHERE `sub_type` ='".$this->getRuleClassName()."'
                     AND `ranking` > '$ranking' ";
       return $DB->query($sql);
    }
@@ -407,7 +411,7 @@ class RuleCollection {
          // Move after all
          $query = "SELECT MAX(`ranking`) AS maxi
                    FROM `glpi_rules`
-                   WHERE `sub_type` ='".$this->sub_type."' ";
+                   WHERE `sub_type` ='".$this->getRuleClassName()."' ";
          $result = $DB->query($query);
          $ligne = $DB->fetch_array($result);
          $rank = $ligne['maxi'];
@@ -426,7 +430,7 @@ class RuleCollection {
          // Move back all rules between old and new rank
          $query = "SELECT `id`, `ranking`
                    FROM `glpi_rules`
-                   WHERE `sub_type` ='".$this->sub_type."'
+                   WHERE `sub_type` ='".$this->getRuleClassName()."'
                          AND `ranking` > '$old_rank'
                          AND `ranking` <= '$rank'";
          foreach ($DB->request($query) as $data) {
@@ -440,7 +444,7 @@ class RuleCollection {
          // Move forward all rule  between old and new rank
          $query = "SELECT `id`, `ranking`
                    FROM `glpi_rules`
-                   WHERE `sub_type` ='".$this->sub_type."'
+                   WHERE `sub_type` ='".$this->getRuleClassName()."'
                          AND `ranking` >= '$rank'
                          AND `ranking` < '$old_rank'";
          foreach ($DB->request($query) as $data) {
@@ -497,10 +501,12 @@ class RuleCollection {
     * @param $values data array
     **/
    function showRulesEnginePreviewCriteriasForm($target,$values) {
-      global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS;
+      global $DB, $LANG;
 
       $input = $this->prepareInputDataForTestProcess();
       if (count($input)) {
+         $rule = $this->getRuleClass();
+         $criterias = $rule->getCriterias();
          echo "<form name='testrule_form' id='testrulesengine_form' method='post' action=\"$target\">";
          echo "\n<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -509,14 +515,13 @@ class RuleCollection {
          //Brower all criterias
          foreach ($input as $criteria) {
             echo "<tr class='tab_bg_1'>";
-            if (isset($RULES_CRITERIAS[$this->sub_type][$criteria])) {
-               $criteria_constants = $RULES_CRITERIAS[$this->sub_type][$criteria];
+            if (isset($criterias[$criteria])) {
+               $criteria_constants = $criterias[$criteria];
                echo "<td>".$criteria_constants["name"]."&nbsp;:</td>";
             } else {
                echo "<td>".$criteria."&nbsp;:</td>";
             }
             echo "<td>";
-            $rule = getRuleClass($this->sub_type);
             $rule->displayCriteriaSelectPattern($criteria,$criteria,Rule::PATTERN_IS,
                                                 isset($values[$criteria])?$values[$criteria]:'');
             echo "</td></tr>\n";
@@ -526,7 +531,7 @@ class RuleCollection {
          echo "<tr><td class='tab_bg_2 center' colspan='2'>";
          echo "<input type='submit' name='test_all_rules' value=\"" . $LANG['buttons'][50] .
                 "\" class='submit'>";
-         echo "<input type='hidden' name='sub_type' value=\"" . $this->sub_type . "\">";
+         echo "<input type='hidden' name='sub_type' value=\"" . $this->getRuleClassName() . "\">";
          echo "</td></tr>\n";
          echo "</table></div>";
          echo "</form>\n";
@@ -599,7 +604,7 @@ class RuleCollection {
                          FROM `glpi_rulecriterias`, `glpi_rules`
                          WHERE `glpi_rules`.`is_active` = '1'
                                AND `glpi_rulecriterias`.`rules_id`=`glpi_rules`.`id`
-                               AND `glpi_rules`.`sub_type`='".$this->sub_type."'");
+                               AND `glpi_rules`.`sub_type`='".$this->getRuleClassName()."'");
       while ($data = $DB->fetch_array($res)) {
          $input[]=$data["criteria"];
       }
@@ -612,7 +617,7 @@ class RuleCollection {
     * @param $input data array
     **/
    function showRulesEnginePreviewResultsForm($target,$input) {
-      global $LANG,$RULES_ACTIONS;
+      global $LANG;
 
       $output = array();
 
@@ -621,7 +626,7 @@ class RuleCollection {
       }
 
       $output = $this->testAllRules($input,$output,$input);
-      $rule = getRuleClass($this->sub_type);
+      $rule = getRuleClass($this->getRuleClassName());
 
       echo "<div class='center'>";
 
@@ -683,8 +688,9 @@ class RuleCollection {
     * @return cleaned array
     **/
    function showTestResults($rule,$output,$global_result) {
-      global $LANG,$RULES_ACTIONS;
+      global $LANG;
 
+      $actions = $rule->getActions();
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . $LANG['rulesengine'][81] . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
@@ -694,9 +700,9 @@ class RuleCollection {
       $output = $this->preProcessPreviewResults($output);
 
       foreach ($output as $criteria => $value) {
-         if (isset($RULES_ACTIONS[$this->sub_type][$criteria])) {
+         if (isset($actions[$criteria])) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td>".$RULES_ACTIONS[$this->sub_type][$criteria]["name"]."</td>";
+            echo "<td>".$actions[$criteria]["name"]."</td>";
             echo "<td>".$rule->getActionValue($criteria,$value)."</td>";
             echo "</tr>\n";
          }
@@ -716,99 +722,25 @@ class RuleCollection {
    function title() {
    }
 
-   function getClassByType($type) {
-
-      switch ($type) {
-         case Rule::RULE_OCS_AFFECT_COMPUTER :
-            return new RuleOcsCollection();
-
-         case Rule::RULE_AFFECT_RIGHTS :
-            return new RuleRightCollection();
-
-         case Rule::RULE_TRACKING_AUTO_ACTION :
-            return new RuleTicketCollection();
-
-         case Rule::RULE_SOFTWARE_CATEGORY :
-            return new RuleSoftwareCategoryCollection();
-
-         case Rule::RULE_DICTIONNARY_SOFTWARE :
-            return new RuleDictionnarySoftwareCollection;
-
-         case Rule::RULE_DICTIONNARY_MANUFACTURER :
-         case Rule::RULE_DICTIONNARY_MODEL_NETWORKING :
-         case Rule::RULE_DICTIONNARY_MODEL_COMPUTER :
-         case Rule::RULE_DICTIONNARY_MODEL_MONITOR :
-         case Rule::RULE_DICTIONNARY_MODEL_PRINTER :
-         case Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL :
-         case Rule::RULE_DICTIONNARY_MODEL_PHONE :
-         case Rule::RULE_DICTIONNARY_TYPE_NETWORKING :
-         case Rule::RULE_DICTIONNARY_TYPE_COMPUTER :
-         case Rule::RULE_DICTIONNARY_TYPE_PRINTER :
-         case Rule::RULE_DICTIONNARY_TYPE_MONITOR :
-         case Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL :
-         case Rule::RULE_DICTIONNARY_TYPE_PHONE :
-         case Rule::RULE_DICTIONNARY_OS :
-         case Rule::RULE_DICTIONNARY_OS_SP :
-         case Rule::RULE_DICTIONNARY_OS_VERSION :
-            return new RuleDictionnaryDropdownCollection($type);
+   static function getClassByType($type) {
+      $typeclass = $type."Collection";
+      if(class_exists($typeclass)) {
+         return new $typeclass();
+      }
+      else {
+         return null;
       }
    }
 
-   static function getClassByTableName($tablename) {
+   static function getByItemType($itemtype) {
+      $collection_name = 'RuleDictionnary'.$itemtype.'Collection';
 
-      switch ($tablename) {
-         case "glpi_softwares" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_SOFTWARE);
-
-         case "glpi_manufacturers" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MANUFACTURER);
-
-         case "glpi_computermodels" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_COMPUTER);
-
-         case "glpi_monitormodels" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_MONITOR);
-
-         case "glpi_printermodels" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PRINTER);
-
-         case "glpi_peripheralmodels" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL);
-
-         case "glpi_networkequipmentmodels" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_NETWORKING);
-
-         case "glpi_phonemodels" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_MODEL_PHONE);
-
-         case "glpi_computertypes" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_COMPUTER);
-
-         case "glpi_monitortypes" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_MONITOR);
-
-         case "glpi_printertypes" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PRINTER);
-
-         case "glpi_peripheraltypes" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL);
-
-         case "glpi_networkequipmenttypes" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_NETWORKING);
-
-         case "glpi_phonetypes" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_TYPE_PHONE);
-
-         case "glpi_operatingsystems" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS);
-
-         case "glpi_operatingsystemservicepacks" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_SP);
-
-         case "glpi_operatingsystemversions" :
-            return RuleCollection::getClassByType(Rule::RULE_DICTIONNARY_OS_VERSION);
+      if (class_exists($collection_name)) {
+         return new $collection_name;
       }
-      return NULL;
+      else {
+         return NULL;
+      }
    }
 }
 

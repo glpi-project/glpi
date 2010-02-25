@@ -122,12 +122,12 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $nbc = countElementsInTable('glpi_rulecriterias');
 
       // Create some rules
-      $rule = new RuleDictionnaryDropdown(Rule::RULE_DICTIONNARY_MANUFACTURER);
+      $rule = new RuleDictionnaryDropdown('RuleDictionnaryManufacturer');
       $crit = new RuleCriteria();
       $acte = new RuleAction();
 
       $idr[0] = $rule->add(array('name'      => 'test1',
-                                 'sub_type'  => Rule::RULE_DICTIONNARY_MANUFACTURER,
+                                 'sub_type'  => 'RuleDictionnaryManufacturer',
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");
@@ -148,7 +148,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       // Add another rule
       $idr[1] = $rule->add(array('name'      => 'test2',
-                                 'sub_type'  => Rule::RULE_DICTIONNARY_MANUFACTURER,
+                                 'sub_type'  => 'RuleDictionnaryManufacturer',
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[1], "Fail: can't create rule 2");
@@ -220,11 +220,11 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals(2, countElementsInTable($cache), "Fail: cache not filled");
 
       // Hack : to disable preload done by Singleton
-      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_MANUFACTURER);
+      $tmp = SingletonRuleList::getInstance('RuleDictionnaryManufacturer');
       $tmp->load=0;
 
       // Change rules order
-      $collection = new RuleDictionnaryDropdownCollection(Rule::RULE_DICTIONNARY_MANUFACTURER);
+      $collection = new RuleDictionnaryDropdownCollection('RuleDictionnaryManufacturer');
       // Move rule 1 after rule 2
       $this->assertTrue($collection->moveRule($idr[0], $idr[1]), "Fail: can't move rules");
       $this->assertEquals(0, countElementsInTable($cache), "Fail: cache not empty");
@@ -247,7 +247,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals($id[5], $id[6]);
 
       // Change rules orders again
-      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_MANUFACTURER);
+      $tmp = SingletonRuleList::getInstance('RuleDictionnaryManufacturer');
       $tmp->load=0;
       // Move rule 1 up (before rule 2)
       $this->assertTrue($collection->changeRuleOrder($idr[0], 'up'), "Fail: can't move rules");
@@ -293,20 +293,20 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
    public function testSoftwareRule() {
 
       // Clean preload rules
-      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_MANUFACTURER);
+      $tmp = SingletonRuleList::getInstance('RuleDictionnaryManufacturer');
       $tmp->load=0;
-      $tmp = SingletonRuleList::getInstance(Rule::RULE_DICTIONNARY_SOFTWARE);
+      $tmp = SingletonRuleList::getInstance('RuleDictionnarySoftware');
       $tmp->load=0;
 
       // Needed objetcs
-      $rulem = new RuleDictionnaryDropdown(Rule::RULE_DICTIONNARY_MANUFACTURER);
-      $rules = new RuleDictionnaryDropdown(Rule::RULE_DICTIONNARY_SOFTWARE);
+      $rulem = new RuleDictionnaryDropdown('RuleDictionnaryManufacturer');
+      $rules = new RuleDictionnaryDropdown('RuleDictionnarySoftware');
       $crit = new RuleCriteria();
       $acte = new RuleAction();
 
       // Rule for Manufacturer
       $idr[0] = $rulem->add(array('name'      => 'test1',
-                                  'sub_type'  => Rule::RULE_DICTIONNARY_MANUFACTURER,
+                                  'sub_type'  => 'RuleDictionnaryManufacturer',
                                   'match'     => 'AND',
                                   'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create manufacturer rule");
@@ -327,7 +327,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
 
       // Rule for Software
       $idr[1] = $rules->add(array('name'      => 'test2',
-                                 'sub_type'  => Rule::RULE_DICTIONNARY_SOFTWARE,
+                                 'sub_type'  => 'RuleDictionnarySoftware',
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[1], "Fail: can't create software rule");
@@ -438,7 +438,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $ent0 = $this->sharedFixture['entity'][0];
 
       // Clean preload rules
-      $tmp = SingletonRuleList::getInstance(Rule::RULE_SOFTWARE_CATEGORY);
+      $tmp = SingletonRuleList::getInstance('RuleSoftwareCategory');
       $tmp->load=0;
 
       $this->assertArrayHasKey('softwarecategories_id_ondelete', $CFG_GLPI, "Fail: no softwarecategories_id_ondelete");
@@ -454,7 +454,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $acte = new RuleAction();
 
       $idr[0] = $rule->add(array('name'      => 'OSS',
-                                 'sub_type'  => Rule::RULE_SOFTWARE_CATEGORY,
+                                 'sub_type'  => 'RuleSoftwareCategory',
                                  'match'     => 'AND',
                                  'is_active' => 1));
       $this->assertGreaterThan(0, $idr[0], "Fail: can't create rule 1");

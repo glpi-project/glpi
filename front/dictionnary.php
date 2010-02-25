@@ -48,11 +48,11 @@ echo "<tr><th>".$LANG['rulesengine'][80]."</th></tr>";
 
 if (haveRight("rule_dictionnary_software","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href=\"rule.dictionnary.software.php\">" . $LANG['rulesengine'][35] ."</a></td></tr>";
+   echo "<a href=\"ruledictionnarysoftware.php\">" . $LANG['rulesengine'][35] ."</a></td></tr>";
 }
 if (haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href=\"rule.dictionnary.manufacturer.php\">" . $LANG['rulesengine'][36] ."</a></td></tr>";
+   echo "<a href=\"ruledictionnarymanufacturer.php\">" . $LANG['rulesengine'][36] ."</a></td></tr>";
 }
 
 echo "</table></td>";
@@ -61,17 +61,17 @@ echo "<td class='top'><table class='tab_cadre'>";
 if (haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr><th>".$LANG['rulesengine'][56]."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.model.computer.php'>" . $LANG['rulesengine'][50] . "</a></td>";
+         "<a href='ruledictionnarycomputermodel.php'>" . $LANG['rulesengine'][50] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.model.monitor.php'>" . $LANG['rulesengine'][51] . "</a></td>";
+         "<a href='ruledictionnarymonitormodel.php'>" . $LANG['rulesengine'][51] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.model.printer.php'>" . $LANG['rulesengine'][54] . "</a></td>";
+         "<a href='ruledictionnaryprintermodel.php'>" . $LANG['rulesengine'][54] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.model.peripheral.php'>" . $LANG['rulesengine'][53] . "</a></td>";
+         "<a href='ruledictionnaryperipheralmodel.php'>" . $LANG['rulesengine'][53] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.model.networking.php'>" . $LANG['rulesengine'][55] . "</a></td>";
+         "<a href='ruledictionnarynetworkequipmentmodel.php'>" . $LANG['rulesengine'][55] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.model.phone.php'>" . $LANG['rulesengine'][52] . "</a></td></tr>";
+         "<a href='ruledictionnaryphonemodel.php'>" . $LANG['rulesengine'][52] . "</a></td></tr>";
 }
 echo "</table></td>";
 
@@ -79,17 +79,17 @@ echo "<td class='top'><table class='tab_cadre'>";
 if (haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr><th>".$LANG['rulesengine'][66]."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.type.computer.php'>" . $LANG['rulesengine'][60] . "</a></td>";
+         "<a href='ruledictionnarycomputertype.php'>" . $LANG['rulesengine'][60] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.type.monitor.php'>" . $LANG['rulesengine'][61] . "</a></td>";
+         "<a href='ruledictionnarymonitortype.php'>" . $LANG['rulesengine'][61] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.type.printer.php'>" . $LANG['rulesengine'][64] . "</a></td>";
+         "<a href='ruledictionnaryprintertype.php'>" . $LANG['rulesengine'][64] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.type.peripheral.php'>" . $LANG['rulesengine'][63] . "</a></td>";
+         "<a href='ruledictionnaryperipheraltype.php'>" . $LANG['rulesengine'][63] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.type.networking.php'>" . $LANG['rulesengine'][65] . "</a></td>";
+         "<a href='ruledictionnarynetworkequipmenttype.php'>" . $LANG['rulesengine'][65] . "</a></td>";
    echo "</tr><tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.type.phone.php'>" . $LANG['rulesengine'][62] . "</a></td></tr>";
+         "<a href='ruledictionnaryphonetype.php'>" . $LANG['rulesengine'][62] . "</a></td></tr>";
 }
 echo "</table></td>";
 
@@ -97,11 +97,11 @@ echo "<td class='top'><table class='tab_cadre'>";
 if (haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr><th>".$LANG['computers'][9]."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.os.php'>" . $LANG['rulesengine'][67] . "</a></td></tr>";
+         "<a href='ruledictionnaryoperatingsystem.php'>" . $LANG['rulesengine'][67] . "</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.os_sp.php'>" . $LANG['rulesengine'][68] . "</a></td></tr>";
+         "<a href='ruledictionnaryoperatingsystemservicepack.php'>" . $LANG['rulesengine'][68] . "</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='rule.dictionnary.os_version.php'>" . $LANG['rulesengine'][69] . "</a></td></tr>";
+         "<a href='ruledictionnaryoperatingsystemversion.php'>" . $LANG['rulesengine'][69] . "</a></td></tr>";
 }
 echo "</table></td></tr>";
 

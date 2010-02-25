@@ -43,8 +43,8 @@ if ($argv) {
 		$arg=str_replace('\=','°',$argv[$i]);
 		$it = explode("=",$arg);
 		$it[0] = preg_replace('/^--/','',$it[0]);
-		
-		//Replace the ° by = the find the good filter 
+
+		//Replace the ° by = the find the good filter
 		$it=str_replace('°','=',$it);
 		$_GET[$it[0]] = $it[1];
 	}
@@ -60,7 +60,7 @@ if (isset($_GET["dictionnary"]))
 {
 	$rulecollection = RuleCollection::getClassByType($_GET["dictionnary"]);
 	if ($rulecollection)
-		if ($_GET["dictionnary"]==Rule::RULE_DICTIONNARY_SOFTWARE && isset($_GET["manufacturer"])) {
+		if ($_GET["dictionnary"]=='RuleDictionnarySoftware' && isset($_GET["manufacturer"])) {
 			$rulecollection->replayRulesOnExistingDB(0,0,array(),$_GET["manufacturer"]);
 		} else {
 			$rulecollection->replayRulesOnExistingDB();
@@ -68,27 +68,27 @@ if (isset($_GET["dictionnary"]))
 }
 else
 {
-	
+
 	echo "Usage : php -q -f compute_dictionnary.php dictionnary=<option>  [ manufacturer=ID ]\n";
 	echo "Options values :\n";
-	echo Rule::RULE_DICTIONNARY_SOFTWARE." : softwares\n";
-	echo Rule::RULE_DICTIONNARY_MANUFACTURER." : manufacturers\n";
+	echo "RuleDictionnarySoftware : softwares\n";
+	echo "RuleDictionnaryManufacturer : manufacturers\n";
 
 	echo "--- Models ---\n";
-	echo Rule::RULE_DICTIONNARY_MODEL_COMPUTER." : computers\n";
-	echo Rule::RULE_DICTIONNARY_MODEL_MONITOR." : monitors\n";
-	echo Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL." : peripherals\n";	
-	echo Rule::RULE_DICTIONNARY_MODEL_NETWORKING." : networking\n";	
-	echo Rule::RULE_DICTIONNARY_MODEL_PRINTER." : printers\n";
-	echo Rule::RULE_DICTIONNARY_MODEL_PHONE." : phones\n";
+	echo "RuleDictionnaryComputerModel : computers\n";
+	echo "RuleDictionnaryMonitorModel : monitors\n";
+	echo "RuleDictionnaryPeripheralModel : peripherals\n";
+	echo "RuleDictionnaryNetworkEquipmentModel : networking\n";
+	echo "RuleDictionnaryPrinterModel : printers\n";
+	echo "RuleDictonnaryPhoneModel : phones\n";
 
 	echo "--- Types ---\n";
-	echo Rule::RULE_DICTIONNARY_TYPE_COMPUTER." : computers\n";
-	echo Rule::RULE_DICTIONNARY_TYPE_MONITOR." : monitors\n";
-	echo Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL." : peripherals\n";	
-	echo Rule::RULE_DICTIONNARY_TYPE_NETWORKING." : networking\n";	
-	echo Rule::RULE_DICTIONNARY_TYPE_PRINTER." : printers\n";
-	echo Rule::RULE_DICTIONNARY_TYPE_PHONE." : phones\n";
-		
+	echo "RuleDictionnaryComputerType : computers\n";
+	echo "RuleDictionnaryMonitorType : monitors\n";
+	echo "RuleDictionnaryPeripheralType : peripherals\n";
+	echo "RuleDictionnaryNetworkEquipmentType : networking\n";
+	echo "RuleDictionnaryPrinterType : printers\n";
+	echo "RuleDictionnaryPhoneType : phones\n";
+
 }
 ?>

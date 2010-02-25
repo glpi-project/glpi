@@ -40,8 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    // From RuleCollection
-   public $sub_type = Rule::RULE_DICTIONNARY_SOFTWARE;
-   public $rule_class_name = 'RuleDictionnarySoftware';
+
    public $stop_on_first_match = true;
    public $right = 'rule_dictionnary_software';
    public $menu_type = 'dictionnary';
@@ -316,15 +315,15 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
          //Try to delete all the software that are not used anymore (which means that don't have version associated anymore)
          $res_countsoftinstall = $DB->query("SELECT `glpi_softwares`.`id`,
-                                                    COUNT(`glpi_softwareversions`.`softwares_id`) AS cpt
+                                                    COUNT(`glpi_softwareversions`.`softwares_id`) AS `cpt`
                                              FROM `glpi_softwares`
                                              LEFT JOIN `glpi_softwareversions`
                                                    ON `glpi_softwareversions`.`softwares_id`
-                                                      = `glpi_softwares.id`
-                                             WHERE `glpi_softwares`.id` IN ('$ids')
+                                                      = `glpi_softwares`.`id`
+                                             WHERE `glpi_softwares`.`id` IN ('$ids')
                                                    AND `is_deleted` = '0'
                                              GROUP BY `glpi_softwares`.`id`
-                                             HAVING cpt = '0'
+                                             HAVING `cpt` = '0'
                                              ORDER BY `cpt`");
          $software = new Software;
          while ($soft = $DB->fetch_array($res_countsoftinstall)) {

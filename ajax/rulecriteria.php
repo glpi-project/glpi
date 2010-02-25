@@ -48,7 +48,8 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 if (isset($_POST["sub_type"])) {
-   $rule=Rule::getClassByType($_POST["sub_type"]);
+   $type = $_POST["sub_type"];
+   $rule=new $type();
    $criterias=$rule->getCriterias();
    if (count($criterias)) {
       // First include -> first of the predefined array

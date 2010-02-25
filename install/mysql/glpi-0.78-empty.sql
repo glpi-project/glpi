@@ -3219,7 +3219,7 @@ DROP TABLE IF EXISTS `glpi_rules`;
 CREATE TABLE `glpi_rules` (
   `id` int(11) NOT NULL auto_increment,
   `entities_id` int(11) NOT NULL default '0',
-  `sub_type` int(11) NOT NULL default '0' COMMENT 'see define.php RULE_* constant',
+  `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT '',
   `ranking` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `description` text collate utf8_unicode_ci,
@@ -3234,8 +3234,8 @@ CREATE TABLE `glpi_rules` (
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rules` VALUES ('1','-1','0','0','Root','','AND','1',NULL,NULL);
-INSERT INTO `glpi_rules` VALUES ('2','-1','1','1','Root','','OR','1',NULL,NULL);
+INSERT INTO `glpi_rules` VALUES ('1','-1','RuleOcs','0','Root','','AND','1',NULL,NULL);
+INSERT INTO `glpi_rules` VALUES ('2','-1','RuleRight','1','Root','','OR','1',NULL,NULL);
 
 ### Dump table glpi_softwarecategories
 

@@ -40,21 +40,12 @@ if (!defined('GLPI_ROOT')) {
 class RuleCached extends Rule {
 
    /**
-   * Constructor
-   * @param sub_type the rule type used for the collection
-   **/
-   function __construct($sub_type=0) {
-      parent::__construct($sub_type);
-   }
-
-   /**
     * get the cache table name for this rule type
     *
     * @return string table name
     */
    function getCacheTable() {
-
-      $rulecollection = RuleCollection::getClassByType($this->sub_type);
+      $rulecollection = RuleCollection::getClassByType(get_class($this));
       return $rulecollection->cache_table;
    }
 
@@ -92,7 +83,7 @@ class RuleCached extends Rule {
 
       echo "<div class='center'>";
       echo "<table  class='tab_cadre_fixe'>";
-      $rulecollection = RuleCollection::getClassByType($this->sub_type);
+      $rulecollection = RuleCollection::getClassByType($this->getType());
 
       $query = "SELECT *
                 FROM `".$rulecollection->cache_table."`, `glpi_rules`

@@ -47,7 +47,6 @@ if (!defined('GLPI_ROOT')) {
 class RuleSoftwareCategory extends Rule {
 
    // From Rule
-   public $sub_type = Rule::RULE_SOFTWARE_CATEGORY;
    public $right='rule_softwarecategories';
    public $can_sort=true;
 
@@ -69,6 +68,31 @@ class RuleSoftwareCategory extends Rule {
       return 1;
    }
 
+   function getCriterias() {
+      global $LANG;
+      $criterias = array();
+      $criterias['name']['field'] = 'name';
+      $criterias['name']['name']  = $LANG['help'][31];
+      $criterias['name']['table'] = 'glpi_softwares';
+
+      $criterias['manufacturer']['field'] = 'name';
+      $criterias['manufacturer']['name']  = $LANG['common'][5];
+      $criterias['manufacturer']['table'] = 'glpi_manufacturers';
+
+      $criterias['comment']['field'] = 'comment';
+      $criterias['comment']['name']  = $LANG['common'][25];
+      $criterias['comment']['table'] = 'glpi_softwares';
+      return $criterias;
+   }
+
+   function getActions() {
+      global $LANG;
+      $actions = array();
+      $actions['softwarecategories_id']['name']  = $LANG['common'][36];
+      $actions['softwarecategories_id']['type']  = 'dropdown';
+      $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
+      return $actions;
+   }
 }
 
 ?>

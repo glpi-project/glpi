@@ -84,11 +84,14 @@ class RuleAction extends CommonDBTM {
    * Display a dropdown with all the possible actions
    **/
    static function dropdownActions($sub_type,$name,$value='') {
-      global $LANG,$CFG_GLPI,$RULES_ACTIONS;
+      global $LANG,$CFG_GLPI;
+
+      $rule = new $sub_type();
+      $actions_options = $rule->getActions();
 
       $actions=array("assign");
-      if (isset($RULES_ACTIONS[$sub_type][$value]['force_actions'])) {
-         $actions=$RULES_ACTIONS[$sub_type][$value]['force_actions'];
+      if (isset($actions_options[$value]['force_actions'])) {
+         $actions=$actions_options[$value]['force_actions'];
       }
 
       $elements=array();
@@ -168,12 +171,15 @@ class RuleAction extends CommonDBTM {
    }
 
    static function getAlreadyUsedForRuleID($rules_id,$sub_type) {
-      global $DB,$RULES_ACTIONS;
+      global $DB;
+
+      $rule = new $sub_type();
+      $actions_options = $rule->getActions();
 
       $actions = array();
       $res = $DB->query("SELECT field FROM glpi_ruleactions WHERE rules_id='".$rules_id."'");
       while ($action = $DB->fetch_array($res)) {
-         if (isset($RULES_ACTIONS[$sub_type][$action["field"]])) {
+         if (isset($actions_options[$action["field"]])) {
             $actions[$action["field"]] = $action["field"];
          }
       }

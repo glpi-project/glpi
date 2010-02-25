@@ -38,98 +38,17 @@ class RuleDictionnaryDropdown extends RuleCached {
    // From Rule
    public $right='rule_dictionnary_dropdown';
    public $can_sort=true;
+   public $show_cache = false;
 
-   /**
-    * Constructor
-    * @param $type dropdown type
-   **/
-   function __construct($type) {
-      parent::__construct($type);
-   }
 
    function maxActionsCount() {
       return 1;
    }
 
-   function getTitle() {
-      global $LANG;
-
-      switch ($this->sub_type) {
-         case Rule::RULE_DICTIONNARY_MANUFACTURER :
-            return $LANG['rulesengine'][36];
-            break;
-
-         case Rule::RULE_DICTIONNARY_MODEL_COMPUTER :
-            return $LANG['rulesengine'][50];
-            break;
-
-         case Rule::RULE_DICTIONNARY_TYPE_COMPUTER :
-            return $LANG['rulesengine'][60];
-            break;
-
-         case Rule::RULE_DICTIONNARY_MODEL_MONITOR :
-            return $LANG['rulesengine'][51];
-            break;
-
-         case Rule::RULE_DICTIONNARY_TYPE_MONITOR :
-            return $LANG['rulesengine'][61];
-            break;
-
-         case Rule::RULE_DICTIONNARY_MODEL_PRINTER :
-            return $LANG['rulesengine'][54];
-            break;
-
-         case Rule::RULE_DICTIONNARY_TYPE_PRINTER :
-            return $LANG['rulesengine'][64];
-            break;
-
-         case Rule::RULE_DICTIONNARY_MODEL_PHONE :
-            return $LANG['rulesengine'][52];
-            break;
-
-         case Rule::RULE_DICTIONNARY_TYPE_PHONE :
-            return $LANG['rulesengine'][62];
-            break;
-
-         case Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL :
-            return $LANG['rulesengine'][53];
-            break;
-
-         case Rule::RULE_DICTIONNARY_TYPE_PERIPHERAL :
-            return $LANG['rulesengine'][63];
-            break;
-
-         case Rule::RULE_DICTIONNARY_MODEL_NETWORKING :
-            return $LANG['rulesengine'][55];
-            break;
-
-         case Rule::RULE_DICTIONNARY_TYPE_NETWORKING :
-            return $LANG['rulesengine'][65];
-            break;
-
-         case Rule::RULE_DICTIONNARY_OS :
-            return $LANG['rulesengine'][67];
-            break;
-
-         case Rule::RULE_DICTIONNARY_OS_SP :
-            return $LANG['rulesengine'][68];
-            break;
-
-         case Rule::RULE_DICTIONNARY_OS_VERSION :
-            return $LANG['rulesengine'][69];
-            break;
-      }
-   }
-
    function showCacheRuleHeader() {
       global $LANG;
 
-      if (in_array($this->sub_type,array(Rule::RULE_DICTIONNARY_MODEL_COMPUTER,
-                                         Rule::RULE_DICTIONNARY_MODEL_MONITOR,
-                                         Rule::RULE_DICTIONNARY_MODEL_PRINTER,
-                                         Rule::RULE_DICTIONNARY_MODEL_PHONE,
-                                         Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL,
-                                         Rule::RULE_DICTIONNARY_MODEL_NETWORKING))) {
+      if ($this->show_cache) {
          echo "<tr><th colspan='3'>".$LANG['rulesengine'][100]."&nbsp;: ".$this->fields["name"]."</th></tr>";
          echo "<tr><td class='tab_bg_1 b'>".$LANG['rulesengine'][104]."</td>";
          echo "<td class='tab_bg_1 b'>".$LANG['common'][5]."</td>";
@@ -142,12 +61,7 @@ class RuleDictionnaryDropdown extends RuleCached {
    function showCacheRuleDetail($fields) {
       global $LANG;
 
-      if (in_array($this->sub_type,array(Rule::RULE_DICTIONNARY_MODEL_COMPUTER,
-                                         Rule::RULE_DICTIONNARY_MODEL_MONITOR,
-                                         Rule::RULE_DICTIONNARY_MODEL_PRINTER,
-                                         Rule::RULE_DICTIONNARY_MODEL_PHONE,
-                                         Rule::RULE_DICTIONNARY_MODEL_PERIPHERAL,
-                                         Rule::RULE_DICTIONNARY_MODEL_NETWORKING))) {
+      if ($this->show_cache) {
          echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
          echo "<td class='tab_bg_2'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'')."</td>";
          echo "<td class='tab_bg_2'>".
