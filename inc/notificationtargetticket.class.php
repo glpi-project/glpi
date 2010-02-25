@@ -300,6 +300,16 @@ class NotificationTargetTicket extends NotificationTarget {
      $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
      $this->datas['##ticket.closedate##'] = convDateTime($this->obj->getField('closedate'));
 
+     $entitydata = new EntityData;
+     if ($entitydata->getFromDB($this->obj->getField('entities_id'))
+            && $entitydata->getField('autoclose_delay') > 0) {
+         $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
+     }
+     else {
+        $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
+     }
+     $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
+
       if ($this->obj->getField('ticketcategories_id')) {
          $this->datas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
                                                                   $this->obj->getField('ticketcategories_id'));
