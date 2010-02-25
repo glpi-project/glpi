@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -37,20 +37,23 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
+
       return array ('alert' => $LANG['setup'][264]);
    }
 
-      /**
+
+   /**
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event, $options=array()) {
       global $LANG;
+
       $prefix = strtolower($item->getType());
-      $this->datas['##'.$prefix.'.entity##'] =
-                           Dropdown::getDropdownName('glpi_entities',
-                                                     $this->obj->getField('entities_id'));
+      $this->datas['##'.$prefix.'.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                               $this->obj->getField('entities_id'));
       $this->datas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $this->datas['##lang.'.$prefix.'.action##']= $LANG['mailing'][52];
+      $this->datas['##lang.'.$prefix.'.action##'] = $LANG['mailing'][52];
    }
+
 }
 ?>

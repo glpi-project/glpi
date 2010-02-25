@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -37,26 +37,32 @@ class NotificationTargetConsumable extends NotificationTarget {
 
    function __construct($entity='', $object = null) {
       parent::__construct($entity, $object);
+
       if ($object != null) {
          $this->getObjectItem();
       }
    }
+
 
    /**
     * Get item associated with the object on which the event was raised
     * @return the object associated with the itemtype
     */
    function getObjectItem() {
+
       $ci = new ConsumableItem;
-      if ($ci->getFromDB($this->obj->getField('consumableitems_id')))
-      {
+      if ($ci->getFromDB($this->obj->getField('consumableitems_id'))) {
          $this->target_object = $ci;
       }
    }
+
+
    function getEvents() {
       global $LANG;
+
       return array ('alert' => $LANG['mailing'][36]);
    }
+
 
       /**
     * Get all data needed for template processing
@@ -65,18 +71,18 @@ class NotificationTargetConsumable extends NotificationTarget {
       global $LANG;
 
       $prefix = strtolower($item->getType());
-      $this->datas['##'.$prefix.'.entity##'] =
-                           Dropdown::getDropdownName('glpi_entities',
-                                                     $this->obj->getField('entities_id'));
-      $this->datas['##'.$prefix.'.item##'] = $this->target_object->getField('name');
+      $this->datas['##'.$prefix.'.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                               $this->obj->getField('entities_id'));
+      $this->datas['##'.$prefix.'.item##']      = $this->target_object->getField('name');
       $this->datas['##'.$prefix.'.reference##'] = $this->target_object->getField('ref');
-      $this->datas['##'.$prefix.'.value##'] = Consumable::getUnusedNumber($this->getField('id'));
+      $this->datas['##'.$prefix.'.value##']     = Consumable::getUnusedNumber($this->getField('id'));
 
-      $this->datas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $this->datas['##lang.'.$prefix.'.action##']= $LANG['mailing'][36];
-      $this->datas['##lang.'.$prefix.'.item##'] = $LANG['mailing'][35];
+      $this->datas['##lang.'.$prefix.'.entity##']    = $LANG['entity'][0];
+      $this->datas['##lang.'.$prefix.'.action##']    = $LANG['mailing'][36];
+      $this->datas['##lang.'.$prefix.'.item##']      = $LANG['mailing'][35];
       $this->datas['##lang.'.$prefix.'.reference##'] = $LANG['consumables'][2];
-      $this->datas['##lang.'.$prefix.'.value##'] = $LANG['software'][20];
+      $this->datas['##lang.'.$prefix.'.value##']     = $LANG['software'][20];
    }
+
 }
 ?>

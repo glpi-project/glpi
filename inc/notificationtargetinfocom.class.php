@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -37,32 +37,34 @@ class NotificationTargetInfocom extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
+
       return array ('alert' => $LANG['setup'][247]);
    }
 
-      /**
+
+   /**
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event, $options=array()) {
       global $LANG;
 
       $prefix = strtolower($item->getType());
-      $this->datas['##'.$prefix.'.entity##'] =
-                           Dropdown::getDropdownName('glpi_entities',
-                                                     $this->obj->getField('entities_id'));
+      $this->datas['##'.$prefix.'.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                               $this->obj->getField('entities_id'));
       $this->datas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $this->datas['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
+      $this->datas['##lang.'.$prefix.'.action##'] = $LANG['mailing'][41];
 
-      $this->datas['##lang.'.$prefix.'.itemtype##']= $this->target_object->getTypeName();
-      $this->datas['##lang.'.$prefix.'.item##']= $this->target_object->getField('name');
-      $this->datas['##lang.'.$prefix.'.expirationdate##']=
+      $this->datas['##lang.'.$prefix.'.itemtype##'] = $this->target_object->getTypeName();
+      $this->datas['##lang.'.$prefix.'.item##']     = $this->target_object->getField('name');
+      $this->datas['##lang.'.$prefix.'.expirationdate##'] =
                                         getWarrantyExpir($this->obj->getField("buy_date"),
                                                          $this->obj->getField("warranty_duration"));
 
-      $this->datas['##lang.'.$prefix.'.action##']= $LANG['mailing'][41];
-      $this->datas['##lang.'.$prefix.'.itemtype##']= $LANG['reports'][12];
-      $this->datas['##lang.'.$prefix.'.item##']= $LANG['financial'][104];
-      $this->datas['##lang.'.$prefix.'.expirationdate##']= $LANG['mailing'][54];
+      $this->datas['##lang.'.$prefix.'.action##']         = $LANG['mailing'][41];
+      $this->datas['##lang.'.$prefix.'.itemtype##']       = $LANG['reports'][12];
+      $this->datas['##lang.'.$prefix.'.item##']           = $LANG['financial'][104];
+      $this->datas['##lang.'.$prefix.'.expirationdate##'] = $LANG['mailing'][54];
    }
+
 }
 ?>

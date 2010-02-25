@@ -28,32 +28,33 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
 // Class NotificationTarget
 class NotificationTargetReservation extends NotificationTarget {
 
-   function getSpecificAddresses($data,$options=array()) {
+   function getSpecificAddresses($data, $options=array()) {
 
-   //Look for all targets whose type is Notification::ITEM_USER
-   switch ($data['type']) {
+      //Look for all targets whose type is Notification::ITEM_USER
+      switch ($data['type']) {
+         case Notification::USER_TYPE :
 
-      case Notification::USER_TYPE:
-         switch ($data['items_id']) {
-           //Send to the author of the ticket
-            case Notification::AUTHOR:
-               $this->getItemAuthorAddress();
+            switch ($data['items_id']) {
+               //Send to the author of the ticket
+               case Notification::AUTHOR :
+                  $this->getItemAuthorAddress();
+                  break;
+            }
+
+         //Send to all the users of a profile
+         case Notification::PROFILE_TYPE :
+            $this->getUsersAddressesByProfile($data['items_id']);
             break;
       }
-
-      //Send to all the users of a profile
-      case Notification::PROFILE_TYPE:
-         $this->getUsersAddressesByProfile($data['items_id']);
-      break;
-      }
    }
+
 
 
    /**
@@ -61,9 +62,9 @@ class NotificationTargetReservation extends NotificationTarget {
     * @return the object associated with the itemtype
     */
    function getObjectItem() {
+
       $ri = new ReservationItem;
-      if ($ri->getFromDB($this->obj->getField('reservationitems_id')))
-      {
+      if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
          $itemtype = $ri->getField('itemtype');
          $item = new  $itemtype ();
          $item->getFromDB($ri->getField('items_id'));
@@ -71,12 +72,15 @@ class NotificationTargetReservation extends NotificationTarget {
       }
    }
 
+
    function getEvents() {
       global $LANG;
-      return array ('new' => $LANG['mailing'][19],
-                    'update'=> $LANG['mailing'][23],
-                    'delete'=>$LANG['mailing'][29]);
+
+      return array ('new'    => $LANG['mailing'][19],
+                    'update' => $LANG['mailing'][23],
+                    'delete' => $LANG['mailing'][29]);
    }
+
 
    function getAdditionalTargets() {
       global $LANG;
@@ -86,17 +90,18 @@ class NotificationTargetReservation extends NotificationTarget {
       $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
    }
 
+
    function getDatasForTemplate($event, $options=array()) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $LANG;
 
       //----------- Reservation infos -------------- //
 
       $events = $this->getAllEvents();
       $this->datas['##reservation.action##'] = $events[$event];
-      $this->datas['##reservation.user##'] = Dropdown::getDropdownName('glpi_users',
-                                                                $this->obj->getField('users_id'));
-      $this->datas['##reservation.begin##'] = convDateTime($this->obj->getField('begin'));
-      $this->datas['##reservation.end##'] = convDateTime($this->obj->getField('end'));
+      $this->datas['##reservation.user##']   = Dropdown::getDropdownName('glpi_users',
+                                                                  $this->obj->getField('users_id'));
+      $this->datas['##reservation.begin##']  = convDateTime($this->obj->getField('begin'));
+      $this->datas['##reservation.end##']    = convDateTime($this->obj->getField('end'));
 
       $reservationitem = new ReservationItem;
       $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
@@ -104,9 +109,9 @@ class NotificationTargetReservation extends NotificationTarget {
       if (class_exists($itemtype)) {
          $item = new $itemtype();
          $item->getFromDB($reservationitem->getField('items_id'));
-         $this->datas['##reservation.itemtype##'] = $item->getTypeName();
-         $this->datas['##reservation.item.name##'] = $item->getField('name');
-         $this->datas['##reservation.comment##'] = $item->getField('comment');
+         $this->datas['##reservation.itemtype##']    = $item->getTypeName();
+         $this->datas['##reservation.item.name##']   = $item->getField('name');
+         $this->datas['##reservation.comment##']     = $item->getField('comment');
          $this->datas['##reservation.item.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                     $item->getField('entities_id'));
          if ($item->isField('users_id_tech')) {
@@ -115,18 +120,19 @@ class NotificationTargetReservation extends NotificationTarget {
          }
       }
 
-      $fields = array('##lang.ticket.item.name##'=> $LANG['financial'][104],
-                      '##lang.reservation.user##'=>$LANG['common'][37],
-                      '##lang.reservation.begin##'=>$LANG['search'][8],
-                      '##lang.reservation.end##'=>$LANG['search'][9],
-                      '##lang.reservation.comment##'=>$LANG['common'][25],
-                      '##lang.reservation.item.entity##'=>$LANG['entity'][0],
-                      '##lang.reservation.item.name##'=>$LANG['financial'][104],
-                      '##lang.reservation.item.tech##'=> $LANG['common'][10]
-                      );
+      $fields = array('##lang.ticket.item.name##'        => $LANG['financial'][104],
+                      '##lang.reservation.user##'        => $LANG['common'][37],
+                      '##lang.reservation.begin##'       => $LANG['search'][8],
+                      '##lang.reservation.end##'         => $LANG['search'][9],
+                      '##lang.reservation.comment##'     => $LANG['common'][25],
+                      '##lang.reservation.item.entity##' => $LANG['entity'][0],
+                      '##lang.reservation.item.name##'   => $LANG['financial'][104],
+                      '##lang.reservation.item.tech##'   => $LANG['common'][10]);
+
       foreach ($fields as $name => $label) {
          $this->datas[$name] = $label;
       }
    }
+
 }
 ?>

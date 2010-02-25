@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -37,48 +37,49 @@ class NotificationTargetContract extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
-      return array ('end' => $LANG['financial'][98],
-                    'notice'=>$LANG['financial'][10]);
+
+      return array ('end'    => $LANG['financial'][98],
+                    'notice' => $LANG['financial'][10]);
    }
 
-      /**
+
+   /**
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event, $options=array()) {
       global $LANG,$CFG_GLPI;
 
-      $this->datas['##contract.entity##'] =
-                           Dropdown::getDropdownName('glpi_entities',
-                                                     $options['entities_id']);
-      $this->datas['##lang.contract.entity##'] =$LANG['entity'][0];
-      $this->datas['##contract.action##'] = ($event==ALERT_END?$LANG['mailing'][38]:
-                                                            $LANG['mailing'][37]);
-      $this->datas['##lang.contract.action##']= $LANG['mailing'][39];
-      $this->datas['##lang.contract.name##']= $LANG['common'][16];
+      $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                      $options['entities_id']);
+      $this->datas['##lang.contract.entity##'] = $LANG['entity'][0];
+      $this->datas['##contract.action##']      = ($event==ALERT_END?$LANG['mailing'][38]:
+                                                                    $LANG['mailing'][37]);
+      $this->datas['##lang.contract.action##'] = $LANG['mailing'][39];
+      $this->datas['##lang.contract.name##']   = $LANG['common'][16];
 
-      $this->datas['##lang.contract.time##']= ($event==ALERT_END?$LANG['contract'][0]:
-                                                             $LANG['contract'][1]);
-      $this->datas['##lang.contract.number##']= $LANG['financial'][4];
-      $this->datas['##lang.contract.type##']= $LANG['common'][17];
+      $this->datas['##lang.contract.time##']   = ($event==ALERT_END?$LANG['contract'][0]:
+                                                                    $LANG['contract'][1]);
+      $this->datas['##lang.contract.number##'] = $LANG['financial'][4];
+      $this->datas['##lang.contract.type##']   = $LANG['common'][17];
 
       foreach($options['contracts'] as $id => $contract) {
          $tmp = array();
-         $tmp['##contract.name##'] = $contract['name'];
+         $tmp['##contract.name##']   = $contract['name'];
          $tmp['##contract.number##'] = $contract['num'];
          if ($contract['contracttypes_id']) {
             $tmp['##contract.type##'] = Dropdown::getDropdownName('glpi_contracttypes',
                                                                   $contract['contracttypes_id']);
-         }
-         else {
+         } else {
             $tmp['##contract.type##'] = "";
          }
          $tmp['##contract.time##'] = convDateTime(getWarrantyExpir($contract["begin_date"],
-                                                      $contract["duration"],
-                                                      $contract["notice"]));
+                                                                   $contract["duration"],
+                                                                   $contract["notice"]));
          $tmp['##contract.url##'] = urldecode($CFG_GLPI["url_base"].
-                                                  "/index.php?redirect=contract_".$id);
+                                              "/index.php?redirect=contract_".$id);
          $this->datas['contracts'][] = $tmp;
       }
    }
+
 }
 ?>

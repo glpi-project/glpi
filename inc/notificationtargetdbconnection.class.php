@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -38,20 +38,25 @@ class NotificationTargetDBConnection extends NotificationTarget {
    //Overwrite the function in NotificationTarget because there's only one target to be notified
    function getNotificationTargets($entity) {
       global $LANG;
+
       $this->addTarget(Notification::GLOBAL_ADMINISTRATOR,$LANG['setup'][237]);
    }
 
+
    function getEvents() {
       global $LANG;
+
       return array ('desynchronization' => $LANG['setup'][810]);
    }
+
 
    function getDatasForTemplate($event, $options=array()) {
       global $LANG;
 
       $this->datas['##dbconnection.description##'] = $LANG['setup'][808];
-      $this->datas['##lang.dbconnection.delay##'] = $LANG['setup'][807];
-      $this->datas['##dbconnection.delay##'] = DBConnection::getReplicateDelay();
+      $this->datas['##lang.dbconnection.delay##']  = $LANG['setup'][807];
+      $this->datas['##dbconnection.delay##']       = DBConnection::getReplicateDelay();
    }
+
 }
 ?>
