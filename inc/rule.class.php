@@ -1322,7 +1322,7 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='sub_type' value='".get_class($this)."'>";
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
-      echo "<input type=hidden name='_method' value='add".get_class($this)."'>";
+      echo "<input type=hidden name='_method' value='addRule'>";
       echo "<input type='submit' name='execute' value=\"" . $LANG['buttons'][8] .
              "\" class='submit'>";
       echo "</td></tr>\n";
@@ -1362,7 +1362,7 @@ class Rule extends CommonDBTM {
                echo "</td>";
             }
             if ($canedit) {
-               echo "<td><a href=\"".getItemTypeFormURL(get_class($this))."id=" .
+               echo "<td><a href=\"".getItemTypeFormURL(get_class($this))."?id=" .
                       $rule->fields["id"] . "&amp;onglet=1\">" . $rule->fields["name"] . "</a></td>";
             } else {
                echo "<td>" . $rule->fields["name"] . "</td>";
