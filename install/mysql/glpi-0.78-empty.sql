@@ -3792,8 +3792,7 @@ CREATE TABLE `glpi_ticketvalidations` (
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_deleted` (`is_deleted`),
-  KEY `date_mod` (`date_mod`)
+  KEY `is_deleted` (`is_deleted`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_vlans`;
