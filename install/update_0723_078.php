@@ -2783,6 +2783,8 @@ function update0723to078($output='HTML') {
                VALUES(NULL, 'Reservations', 'Reservation', '2010-02-03 14:03:45','');";
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Tickets', 'Ticket', '2010-02-07 21:39:15','');";
+      $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplates`
+               VALUES(NULL, 'Tickets (Simple)', 'Ticket', '2010-02-07 21:39:15','');";
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Cartridges', 'Cartridge', '2010-02-16 13:17:24','');";
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplates`
@@ -2795,7 +2797,23 @@ function update0723to078($output='HTML') {
                VALUES(NULL, 'Contracts', 'Contract', '2010-02-16 13:18:12','');";
       foreach ($queries as $itemtype => $query) {
          $DB->query($query) or die("0.78 insert notification template for $itemtype " . $LANG['update'][90] . $DB->error());
-         $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='$itemtype'";
+         switch ($itemtype) {
+            default:
+               $query_id = "SELECT `id`
+                            FROM `glpi_notificationtemplates`
+                            WHERE `itemtype`='$itemtype'";
+               break;
+            case 'Ticket' :
+               $query_id = "SELECT `id`
+                            FROM `glpi_notificationtemplates`
+                            WHERE `itemtype`='Ticket' AND `name`='Tickets'";
+                break;
+            case 'Ticket2' :
+               $query_id = "SELECT `id`
+                            FROM `glpi_notificationtemplates`
+                            WHERE `itemtype`='Ticket' AND `name`='Tickets (Simple)'";
+            break;
+         }
          $result = $DB->query($query_id) or die ($DB->error());
          $templates[$itemtype] = $DB->result($result,0,'id');
       }
@@ -2963,6 +2981,46 @@ function update0723to078($output='HTML') {
                                 &lt;a href=\"##contract.url##\"&gt;
                                 ##contract.url##&lt;/a&gt;&lt;br /&gt;
                                 ##ENDFOREACHcontracts##&lt;/p&gt;');";
+
+      $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                             VALUES(NULL, ".$templates['Ticket2'].", '',
+                            '##ticket.action## ##ticket.title##',
+                            '##lang.ticket.url## : ##ticket.url## \r\n
+                             ##lang.ticket.description## \r\n\n
+                             ##lang.ticket.title## &#160;:##ticket.title## \n
+                             ##lang.ticket.author.name## ##IFticket.author.name##
+                             ##ticket.author.name## ##ENDIFticket.author.name##
+                             ##ELSEticket.author.name##--##ENDELSEticket.author.name## &#160; \n
+                             ##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category##
+                             ##ENDIFticket.category## ##ELSEticket.category##
+                             ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##\n
+                             ##lang.ticket.content## &#160;: ##ticket.content##\n##IFticket.itemtype##
+                             ##lang.ticket.item.name## &#160;: ##ticket.itemtype## - ##ticket.item.name##
+                             ##ENDIFticket.itemtype##',
+                            '&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##ticket.url##\"&gt;
+                             ##ticket.url##&lt;/a&gt;&lt;/div&gt;\r\n&lt;div class=\"description b\"&gt;
+                             ##lang.ticket.description##&lt;/div&gt;\r\n&lt;p&gt;&lt;span
+                             style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                             ##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
+                             &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                             ##lang.ticket.author.name##&lt;/span&gt;
+                             ##IFticket.author.name## ##ticket.author.name##
+                             ##ENDIFticket.author.name##
+                             ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+                             &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;&#160
+                            ;&lt;/span&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; &lt;/span&gt;
+                            ##IFticket.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                            ##lang.ticket.category## &lt;/span&gt;&#160;:##ticket.category##
+                            ##ENDIFticket.category## ##ELSEticket.category##
+                            ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+                            &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                            ##lang.ticket.content##&lt;/span&gt;&#160;:
+                            ##ticket.content##&lt;br /&gt;##IFticket.itemtype##
+                            &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                            ##lang.ticket.item.name##&lt;/span&gt;&#160;:
+                            ##ticket.itemtype## - ##ticket.item.name##
+                            ##ENDIFticket.itemtype##&lt;/p&gt;');";
+
       foreach ($queries as $itemtype => $query) {
          //echo $query."<br>";
          $DB->query($query) or die("0.78 insert notification template default translation

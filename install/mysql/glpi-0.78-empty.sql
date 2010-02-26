@@ -2105,6 +2105,7 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('5','Consumables','Consumable',
 INSERT INTO `glpi_notificationtemplates` VALUES ('6','Infocoms','Infocom','2010-02-16 13:17:55','');
 INSERT INTO `glpi_notificationtemplates` VALUES ('7','Licenses','SoftwareLicense','2010-02-16 13:18:12','');
 INSERT INTO `glpi_notificationtemplates` VALUES ('8','Contracts','Contract','2010-02-16 13:18:12','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('9','Tickets (Simple)','Ticket','2010-02-07 21:39:15','');
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -2290,6 +2291,50 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','8','','##contra
                                 &lt;a href=\"##contract.url##\"&gt;
                                 ##contract.url##&lt;/a&gt;&lt;br /&gt;
                                 ##ENDFOREACHcontracts##&lt;/p&gt;');
+
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','9','','##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url## 
+
+                             ##lang.ticket.description## 
+
+
+                             ##lang.ticket.title## &#160;:##ticket.title## 
+
+                             ##lang.ticket.author.name## ##IFticket.author.name##
+                             ##ticket.author.name## ##ENDIFticket.author.name##
+                             ##ELSEticket.author.name##--##ENDELSEticket.author.name## &#160; 
+
+                             ##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category##
+                             ##ENDIFticket.category## ##ELSEticket.category##
+                             ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+
+                             ##lang.ticket.content## &#160;: ##ticket.content##
+##IFticket.itemtype##
+                             ##lang.ticket.item.name## &#160;: ##ticket.itemtype## - ##ticket.item.name##
+                             ##ENDIFticket.itemtype##','&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##ticket.url##\"&gt;
+                             ##ticket.url##&lt;/a&gt;&lt;/div&gt;
+&lt;div class=\"description b\"&gt;
+                             ##lang.ticket.description##&lt;/div&gt;
+&lt;p&gt;&lt;span
+                             style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                             ##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
+                             &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                             ##lang.ticket.author.name##&lt;/span&gt;
+                             ##IFticket.author.name## ##ticket.author.name##
+                             ##ENDIFticket.author.name##
+                             ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+                             &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;&#160
+                            ;&lt;/span&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; &lt;/span&gt;
+                            ##IFticket.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                            ##lang.ticket.category## &lt;/span&gt;&#160;:##ticket.category##
+                            ##ENDIFticket.category## ##ELSEticket.category##
+                            ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+                            &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                            ##lang.ticket.content##&lt;/span&gt;&#160;:
+                            ##ticket.content##&lt;br /&gt;##IFticket.itemtype##
+                            &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+                            ##lang.ticket.item.name##&lt;/span&gt;&#160;:
+                            ##ticket.itemtype## - ##ticket.item.name##
+                            ##ENDIFticket.itemtype##&lt;/p&gt;');
 
 ### Dump table glpi_ocsadmininfoslinks
 
