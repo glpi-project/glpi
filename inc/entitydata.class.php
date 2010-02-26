@@ -360,7 +360,7 @@ class EntityData extends CommonDBTM {
 
       $sql = "SELECT `entities_id`
               FROM `glpi_entitydatas`
-              WHERE ".$field."='".$value."'";
+              WHERE `".$field."`='".$value."'";
 
       $result = $DB->query($sql);
       if ($DB->numrows($result)==1) {
@@ -376,6 +376,10 @@ class EntityData extends CommonDBTM {
 
    static function getEntityIDByTag($value) {
       return self::getEntityIDByField("tag",$value);
+   }
+
+   static function getEntityIDByDomain($value) {
+      return self::getEntityIDByField("mail_domain",$value);
    }
 
    static function isEntityDirectoryConfigured($entities_id) {

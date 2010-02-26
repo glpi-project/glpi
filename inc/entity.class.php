@@ -127,10 +127,12 @@ class Entity extends CommonTreeDropdown {
                Profile_User::showForEntity($this);
                $ocsrule = new RuleOcs;
                $ldaprule = new RuleRight;
+               $mailcollector = new RuleMailCollector;
                $ldaprule->showAndAddRuleForm($_POST["id"]);
                if ($CFG_GLPI["use_ocs_mode"]) {
                   $ocsrule->showAndAddRuleForm($_POST["id"]);
                }
+               $mailcollector->showAndAddRuleForm($_POST["id"]);
                Document::showAssociated($this);
                Plugin::displayAction($this, $tab);
                break;
@@ -146,10 +148,12 @@ class Entity extends CommonTreeDropdown {
             case 4 :
                $ocsrule = new RuleOcs;
                $ldaprule = new RuleRight;
+               $mailcollector = new RuleMailCollector;
                $ldaprule->showAndAddRuleForm($_POST["id"]);
                if ($CFG_GLPI["use_ocs_mode"]) {
                   $ocsrule->showAndAddRuleForm($_POST["id"]);
                }
+               $mailcollector->showAndAddRuleForm($_POST["id"]);
                break;
 
             case 5 :
@@ -407,7 +411,7 @@ class Entity extends CommonTreeDropdown {
       echo "</div>";
    }
 
-   function addOcsRule ($input) {
+   function addRuleOcs ($input) {
       global $LANG;
 
       $this->check($_POST["affectentity"],'w');
@@ -428,7 +432,7 @@ class Entity extends CommonTreeDropdown {
       glpi_header($_SERVER['HTTP_REFERER']);
    }
 
-   function addLdapRule ($input) {
+   function addRuleRight ($input) {
       global $LANG;
 
       $this->check($_POST["affectentity"],'w');
@@ -446,6 +450,26 @@ class Entity extends CommonTreeDropdown {
             $ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id", $_POST["profiles_id"]);
          }
          $ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive", $_POST["is_recursive"]);
+      }
+
+      Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      glpi_header($_SERVER['HTTP_REFERER']);
+   }
+
+   function addRuleMailCollector ($input) {
+      global $LANG;
+
+      $this->check($_POST["affectentity"],'w');
+
+      $rule = new RuleMailCollector;
+      $ruleid = $rule->add($_POST);
+
+      if ($ruleid) {
+         //Add an action associated to the rule
+         $ruleAction = new RuleAction;
+
+         //Action is : affect computer to this entity
+         $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
       }
 
       Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);

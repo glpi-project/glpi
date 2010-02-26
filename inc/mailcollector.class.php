@@ -66,6 +66,8 @@ class MailCollector  extends CommonDBTM {
    /// Max size for attached files
    var $filesize_max=0;
 
+   public $dohistory = true;
+
 
    static function getTypeName() {
       global $LANG;
@@ -107,6 +109,17 @@ class MailCollector  extends CommonDBTM {
       return $input;
    }
 
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $ong=array();
+      $ong[1]=$LANG['title'][26];
+      if ($this->fields['id'] > 0) {
+            $ong[12]=$LANG['title'][38];
+      }
+      return $ong;
+   }
+
    /**
     * Print the mailgate form
     *
@@ -129,18 +142,9 @@ class MailCollector  extends CommonDBTM {
          // Create item
          $this->check(-1,'w');
       }
-
-      echo "<div class='center'><form method='post' name=form action='".$this->getFormURL()."'>";
-      echo "<table class='tab_cadre'>";
-      echo "<tr><th class='center'>";
-      if (empty($ID)) {
-         echo $LANG['mailgate'][1];
-      } else {
-         echo $LANG['mailgate'][0]."&nbsp;: ".$this->fields["id"];
-      }
-      echo "</th><th>";
-      echo ($ID>0?$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]):'&nbsp;');
-      echo "</th></tr>";
+      $options['colspan']=1;
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       if (!function_exists('mb_list_encodings') || !function_exists('mb_convert_encoding')) {
          echo "<tr class='tab_bg_1'><td colspan='2'>";
@@ -151,10 +155,6 @@ class MailCollector  extends CommonDBTM {
       autocompletionTextField($this, "name");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['entity'][0]."&nbsp;:</td><td>";
-      Dropdown::show('Entity', array('value'  => $this->fields["entities_id"],
-                                     'entity' => $_SESSION['glpiactiveentities']));
-      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][60]."&nbsp;:</td><td>";
       Dropdown::showYesNo("is_active", $this->fields["is_active"]);
@@ -179,34 +179,28 @@ class MailCollector  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td><td>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
+
+      echo ($ID>0?"<br>".$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]):'&nbsp;');
       echo "</td></tr>";
 
-      if (haveRight("config","w")) {
-         echo "<tr class='tab_bg_2'>";
-         if (empty($ID)) {
-            echo "<td class='top' colspan='2'>";
-            echo "<div class='center'><input type='submit' name='add' value=\"".
-                                       $LANG['buttons'][8]."\" class='submit'></div>";
-            echo "</td></tr>";
-         } else {
-            echo "<td class='top center'>";
-            echo "<input type='hidden' name='id' value=\"$ID\">";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-            echo "</td>";
-            echo "<td class='top'><div class='center'>";
-            echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
-            echo "</div></td>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_2'><td colspan='2' class='center'>";
-            echo "<input type='submit' name='get_mails' value=\"".
-                   $LANG['mailgate'][2]."\" class='submit'>";
-            echo "</td></tr>";
-         }
-      }
-      echo "</table></form></div>";
+      $this->showFormButtons($options);
+
+      echo "<div id='tabcontent'></div>";
+      echo "<script type='text/javascript'>loadDefaultTab();</script>";
       return true;
    }
 
+   function showGetMessageForm($ID) {
+      global $LANG;
+      echo "<br><br><div class='center'>";
+      echo "<form name='form' method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+      echo "<table class='tab_cadre'>";
+      echo "<tr class='tab_bg_2'><td class='center'>";
+      echo "<input type='submit' name='get_mails' value=\"".$LANG['mailgate'][2]."\" class='submit'>";
+      echo "<input type='hidden' name='id' value='$ID'>";
+      echo "</td></tr>";
+      echo "</table></form></div>";
+   }
    function getSearchOptions() {
       global $LANG;
 
@@ -220,22 +214,27 @@ class MailCollector  extends CommonDBTM {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'MailCollector';
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
-
       $tab[2]['table']     = 'glpi_mailcollectors';
       $tab[2]['field']     = 'is_active';
       $tab[2]['linkfield'] = 'is_active';
       $tab[2]['name']      = $LANG['common'][60];
       $tab[2]['datatype']  = 'bool';
 
-      $tab[19]['table']     = 'glpi_mailcollectors';
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[3]['table']         = 'glpi_mailcollectors';
+      $tab[3]['field']         = 'host';
+      $tab[3]['linkfield']     = '';
+      $tab[3]['name']          = $LANG['setup'][170];
+
+      $tab[4]['table']         = 'glpi_mailcollectors';
+      $tab[4]['field']         = 'login';
+      $tab[4]['linkfield']     = '';
+      $tab[4]['name']          = $LANG['login'][6];
+
+      $tab[5]['table']     = 'glpi_mailcollectors';
+      $tab[5]['field']     = 'filesize_max';
+      $tab[5]['linkfield'] = '';
+      $tab[5]['name']      = $LANG['mailgate'][7];
+      $tab[5]['datatype']  = 'integer';
 
       $tab[16]['table']     = 'glpi_mailcollectors';
       $tab[16]['field']     = 'comment';
@@ -243,6 +242,11 @@ class MailCollector  extends CommonDBTM {
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
+      $tab[19]['table']     = 'glpi_mailcollectors';
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
 
       return $tab;
    }
@@ -269,6 +273,15 @@ class MailCollector  extends CommonDBTM {
             $error=0;
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
                $tkt= $this->buildTicket($i);
+               $rule_options = $tkt;
+               $rule_options['mailcollector'] = $mailgateID;
+               $rulecollection = new RuleMailCollectorCollection();
+               $output = array();
+               $output= $rulecollection->processAllRules(array(),array(),$rule_options);
+
+               if (isset($output['entities_id'])) {
+                  $tkt['entities_id'] = $output['entities_id'];
+               }
                $tkt['_mailgate']=$mailgateID;
                $this->deleteMails($i); // Delete Mail from Mail box
                $result=imap_fetchheader($this->marubox,$i);
@@ -427,7 +440,7 @@ class MailCollector  extends CommonDBTM {
          $tkt['user_email']=$head['from'];
          $tkt['use_email_notification']=1;
          // Which entity ?
-         $tkt['entities_id']=$this->fields['entities_id'];;
+         //$tkt['entities_id']=$this->fields['entities_id'];
          //$tkt['Subject']= $head['subject'];   // not use for the moment
          $tkt['name']=$this->textCleaner($head['subject']);
          // Medium
@@ -879,8 +892,7 @@ class MailCollector  extends CommonDBTM {
             while ($max>0 && $data=$DB->fetch_assoc($result)) {
                $mc->maxfetch_emails = $max;
 
-               $task->log("Collect mails from ".$data["host"]." for  ".
-                           Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."\n");
+               $task->log("Collect mails from ".$data["host"]."\n");
                $message=$mc->collect($data["id"]);
 
                $task->log("$message\n");

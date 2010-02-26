@@ -32,40 +32,34 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","rule",-1);
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
-if ($CFG_GLPI["use_ocs_mode"] && haveRight("rule_ocs","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleocs.php'>" . $LANG['rulesengine'][18] . "</a></td></tr>";
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-if (haveRight("rule_ldap","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleright.php'>" .$LANG['rulesengine'][19] . "</a></td> </tr>";
+/// OCS Rules collection class
+class RuleMailCollectorCollection extends RuleCollection {
+
+   // From RuleCollection
+   public $stop_on_first_match=true;
+   public $right = 'rule_mailcollector';
+   public $menu_option='mailcollector';
+
+   function getTitle() {
+      global $LANG;
+
+      return $LANG['rulesengine'][70];
+   }
+
+   function prepareInputDataForProcess($input,$params) {
+      $fields = array('mailcollector');
+      foreach ($fields as $field) {
+         if (isset($params[$field])) {
+            $input[$field] = $params[$field];
+         }
+      }
+      return $input;
+   }
 }
 
-if (haveRight("rule_mailcollector","r") && canUseImapPop()) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='rulemailcollector.php'>" . $LANG['rulesengine'][70] . "</a></td></tr>";
-}
-
-if (haveRight("rule_ticket","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleticket.php'>" . $LANG['rulesengine'][28] . "</a></td></tr>";
-}
-
-if (haveRight("rule_softwarecategories","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='rulesoftwarecategory.php'>&nbsp;" . $LANG['rulesengine'][37] . "&nbsp;</a></td></tr>";
-}
-
-echo "</table>";
-commonFooter();
 
 ?>

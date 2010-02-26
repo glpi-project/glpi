@@ -543,7 +543,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          || haveRight("rule_ocs","r")
             || haveRight("rule_ticket","r")
                || haveRight("rule_softwarecategories","r")
-                  || haveRight("rule_mailgate","r")) {
+                  || haveRight("rule_mailcollector","r")) {
 
       $menu['admin']['content']['rule']['title']=$LANG['rulesengine'][17];
       $menu['admin']['content']['rule']['shortcut']='r';
@@ -565,11 +565,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/ruleright.form.php';
          }
 
-         $menu['admin']['content']['rule']['options']['mailgate']['title']=$LANG['mailgate'][0];
-         $menu['admin']['content']['rule']['options']['mailgate']['page']='/front/rulemailgate.php';
-         $menu['admin']['content']['rule']['options']['mailgate']['links']['search']='/front/rulemailgate.php';
-         if (haveRight("rule_mailgate","w")) {
-            $menu['admin']['content']['rule']['options']['mailgate']['links']['add']='/front/rulemailgate.form.php';
+         $menu['admin']['content']['rule']['options']['mailcollector']['title']=$LANG['mailgate'][0];
+         $menu['admin']['content']['rule']['options']['mailcollector']['page']='/front/rulecollector.php';
+         $menu['admin']['content']['rule']['options']['mailcollector']['links']['search']='/front/rulemailcollector.php';
+         if (haveRight("rule_mailcollector","w")) {
+            $menu['admin']['content']['rule']['options']['mailcollector']['links']['add']='/front/rulemailcollector.form.php';
          }
 
          $menu['admin']['content']['rule']['options']['ticket']['title']=$LANG['Menu'][5];
@@ -2357,7 +2357,7 @@ function getActiveTab($itemtype) {
  *
  * @param $itemtype :item type
  * $param $tab : ID of the tab
- * 
+ *
  */
 function setActiveTab($itemtype, $tab) {
    $_SESSION['glpi_tabs'][$itemtype] = $tab;

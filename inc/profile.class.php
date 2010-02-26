@@ -903,7 +903,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".$LANG['rulesengine'][70]."&nbsp;:</td><td>";
-      Profile::dropdownNoneReadWrite("rule_mailgate",$this->fields["rule_mailgate"],1,1,1);
+      Profile::dropdownNoneReadWrite("rule_mailcollector",$this->fields["rule_mailcollector"],1,1,1);
       echo "</td>";
       echo "<td colspan='4'></td>";
       echo"</td></tr>\n";
