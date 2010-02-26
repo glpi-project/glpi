@@ -243,12 +243,17 @@ class EntityData extends CommonDBTM {
                    value='".$entdata->fields['entity_ldapfilter']."' size='100'>";
       echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>".$LANG['Menu'][33]."</th></tr>";
+      echo "<tr><th colspan='4'>".$LANG['common'][67]."</th></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['entity'][13]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($entdata, "tag");
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td>";
+      echo "<td>".$LANG['setup'][732]."&nbsp;:</td>";
+      echo "<td>";
+      autocompletionTextField($entdata, "mail_domain");
+      echo "</td>";
+      echo "</tr>";
 
 
       if ($canedit) {
