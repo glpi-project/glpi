@@ -349,7 +349,10 @@ class Entity extends CommonTreeDropdown {
       $tab[12]['linkfield'] = '';
       $tab[12]['name']      = $LANG['setup'][207];
 
-
+      $tab[13]['table']     = 'glpi_entitydatas';
+      $tab[13]['field']     = 'admin_reply';
+      $tab[13]['linkfield'] = '';
+      $tab[13]['name']      = $LANG['setup'][732];
 
       return $tab;
    }
@@ -411,33 +414,12 @@ class Entity extends CommonTreeDropdown {
       echo "</div>";
    }
 
-   function addRuleOcs ($input) {
+   function addRule($input) {
       global $LANG;
-
       $this->check($_POST["affectentity"],'w');
 
-      $rule = new RuleOcs;
-      $ruleid = $rule->add($_POST);
-
-      if ($ruleid) {
-         //Add an action associated to the rule
-         $ruleAction = new RuleAction;
-
-         //Action is : affect computer to this entity
-         $ruleAction->addActionByAttributes("assign", $ruleid,
-                                            "entities_id", $_POST["affectentity"]);
-      }
-
-      Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
-      glpi_header($_SERVER['HTTP_REFERER']);
-   }
-
-   function addRuleRight ($input) {
-      global $LANG;
-
-      $this->check($_POST["affectentity"],'w');
-
-      $rule = new RuleRight;
+      $collection = RuleCollection::getClassByType($_POST['sub_type']);
+      $rule = $collection->getRuleClass($_POST['sub_type']);
       $ruleid = $rule->add($_POST);
 
       if ($ruleid) {
@@ -446,30 +428,18 @@ class Entity extends CommonTreeDropdown {
 
          //Action is : affect computer to this entity
          $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
-         if ($_POST["profiles_id"]) {
-            $ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id", $_POST["profiles_id"]);
+
+         switch ($_POST['sub_type']) {
+            default:
+               break;
+            case 'RuleRight':
+               if ($_POST["profiles_id"]) {
+                  $ruleAction->addActionByAttributes("assign", $ruleid,
+                                                     "profiles_id", $_POST["profiles_id"]);
+               }
+               $ruleAction->addActionByAttributes("assign", $ruleid,
+                                                  "is_recursive", $_POST["is_recursive"]);
          }
-         $ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive", $_POST["is_recursive"]);
-      }
-
-      Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-      glpi_header($_SERVER['HTTP_REFERER']);
-   }
-
-   function addRuleMailCollector ($input) {
-      global $LANG;
-
-      $this->check($_POST["affectentity"],'w');
-
-      $rule = new RuleMailCollector;
-      $ruleid = $rule->add($_POST);
-
-      if ($ruleid) {
-         //Add an action associated to the rule
-         $ruleAction = new RuleAction;
-
-         //Action is : affect computer to this entity
-         $ruleAction->addActionByAttributes("assign", $ruleid, "entities_id", $_POST["affectentity"]);
       }
 
       Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
