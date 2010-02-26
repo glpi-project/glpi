@@ -36,30 +36,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class SingletonRuleList {
-   /// Items list
-   var $list = array();
-   /// Items loaded ?
-   var $load = 0;
-
-   /**
-   * get a unique instance of a SingletonRuleList for a type of RuleCollection
-   *
-   * @param $type of the Rule listed
-   * @return unique instance of an object
-   */
-   public static  function &getInstance($type) {
-      static $instances = array();
-
-      if (!isset($instances[$type])) {
-         $instances[$type] = new SingletonRuleList();
-      }
-      return $instances[$type];
-   }
-
-
-}
-
 class RuleCollection {
    /// Rule type
    public $sub_type;
