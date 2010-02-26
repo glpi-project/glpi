@@ -2276,7 +2276,21 @@ class Search {
             // Show all
             return $link." `$table`.`$field` >= '0' ";
             break;
-
+         case "glpi_ticketvalidations.status" :
+            $tocheck=array('waiting'=>array('waiting'),
+                           'rejected'=>array('rejected'),
+                           'accepted'=>array('accepted'));
+            if (isset($tocheck[$val])) {
+               foreach ($tocheck[$val] as $key=>$nval) {
+                  $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
+               }
+               return $link.'('.implode(' OR ',$tocheck[$val]).')';
+            } else {
+               if ($val=='all') {
+                  return "";
+               }
+            }
+            break;
 
       }
 
@@ -3320,6 +3334,10 @@ class Search {
             $out.= showToolTip(nl2br($data[$NAME.$num."_3"]),
                      array('applyto'=>'ticket'.$data[$NAME.$num."_2"],'display'=>false));
             return $out;
+         case 'glpi_ticketvalidations.status':
+            $status=TicketValidation::getStatus($data[$NAME.$num]);
+            $bgcolor=TicketValidation::getStatusColor($data[$NAME.$num]);
+            return "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
       }
 
 

@@ -3786,7 +3786,34 @@ function update0723to078($output='HTML') {
    }
 
 
-
+   if (!TableExists('glpi_ticketvalidations')) {
+      $query = "CREATE TABLE `glpi_ticketvalidations` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `name` varchar(255) collate utf8_unicode_ci default NULL,
+                  `entities_id` int(11) NOT NULL default '0',
+                  `users_id` int(11) NOT NULL default '0',
+                  `tickets_id` int(11) NOT NULL default '0',
+                  `users_id_approval` int(11) NOT NULL default '0',
+                  `comment_submission` text collate utf8_unicode_ci,
+                  `comment_approval` text collate utf8_unicode_ci,
+                  `status` varchar(255) collate utf8_unicode_ci default 'waiting',
+                  `submission_date` datetime default NULL,
+                  `approval_date` datetime default NULL,
+                  `is_deleted` tinyint(1) NOT NULL default '0',
+                  PRIMARY KEY  (`id`),
+                  KEY `name` (`name`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_deleted` (`is_deleted`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query) or die("0.78 create glpi_ticketvalidations " . $LANG['update'][90] . $DB->error());
+      
+      $ADDTODISPLAYPREF['TicketValidation']=array(3,2,8,4,9,7);
+   }
+   
+   if (!FieldExists('glpi_profiles','approve_ticket')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `approve_ticket` char(1) collate utf8_unicode_ci default NULL";
+      $DB->query($query) or die("0.78 add approve_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
+   }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
 
@@ -3863,6 +3890,7 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_entitydatas` ADD `autoclose_delay` int(11) NOT NULL default '0'";
       $DB->query($query) or die("0.78 add autoclose_delay to glpi_entitydatas " . $LANG['update'][90] . $DB->error());
    }
+   
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 

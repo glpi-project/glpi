@@ -764,7 +764,6 @@ $LANG['job'][48]="Type de solution";
 $LANG['job'][49]="Nouvelle tâche";
 $LANG['job'][50]="Pas de tâche pour ce ticket.";
 
-
 $LANG['joblist'][0]="Statut";
 $LANG['joblist'][1]="Seulement les miens";
 $LANG['joblist'][2]="Priorité";
@@ -1338,6 +1337,7 @@ $LANG['profiles'][44]="Modifier la priorité";
 $LANG['profiles'][45]="Ajouter une tâche à tous les tickets";
 $LANG['profiles'][46]="Éditer toutes les tâches";
 $LANG['profiles'][47]="Ajout d'utilisateur depuis une source externe";
+$LANG['profiles'][48] = "Approuver un ticket";
 
 $LANG['registry'][1]="Ruche";
 $LANG['registry'][2]="Chemin";
@@ -1481,7 +1481,6 @@ $LANG['rulesengine'][66]="Types";
 $LANG['rulesengine'][67]="Dictionnaire des OS";
 $LANG['rulesengine'][68]="Dictionnaire des service packs";
 $LANG['rulesengine'][69]="Dictionnaire des versions";
-$LANG['rulesengine'][70]="Règle d'affectation des tickets ouverts par email";
 
 $LANG['rulesengine'][76]="Rejouer le dictionnaire";
 $LANG['rulesengine'][77]="Dictionnaires";
@@ -1985,4 +1984,32 @@ $LANG['update'][142]="Redressement des données";
 
 $LANG['users'][1]= "Titre";
 $LANG['users'][2]="Catégorie";
+
+$LANG['validation'][0] = "Validation";
+$LANG['validation'][1] = "Envoyer une demande de validation";
+$LANG['validation'][2] = "Etat";
+$LANG['validation'][3] = "Date de la demande";
+$LANG['validation'][4] = "Date de validation";
+$LANG['validation'][5] = "Commentaire technicien";
+$LANG['validation'][6] = "Commentaire validation";
+$LANG['validation'][7] = "Validation(s) pour le ticket";
+$LANG['validation'][8] = "Annulé";
+$LANG['validation'][9] = "En attente d'approbation";
+$LANG['validation'][10] = "Non approuvé";
+$LANG['validation'][11] = "Approuvé";
+$LANG['validation'][12] = "Renvoyer un email";
+$LANG['validation'][13] = "Demande de validation envoyée à";
+$LANG['validation'][14] = "Approbateur";
+$LANG['validation'][15] = "Demande attendant votre validation";
+$LANG['validation'][16] = "Facultatif";
+$LANG['validation'][17] = "Approuver";
+$LANG['validation'][18] = "Refuser";
+$LANG['validation'][19] = "Demande approuvée";
+$LANG['validation'][20] = "Demande non approuvée";
+$LANG['validation'][21] = "";
+$LANG['validation'][22] = "Vous n'êtes pas l'approbateur désigné de cette demande";
+$LANG['validation'][23] = "n'a pas d'adresse email renseignée. Envoi d'une demande de validation impossible.";
+$LANG['validation'][24] = "Valider cette demande";
+$LANG['validation'][25] = "Aucune demande de validation en cours";
+
 ?>
