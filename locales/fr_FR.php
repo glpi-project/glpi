@@ -1528,6 +1528,12 @@ $LANG['rulesengine'][130]="Entité depuis LDAP";
 $LANG['rulesengine'][131]="Entité depuis TAG";
 $LANG['rulesengine'][132]="Ignorer l'import";
 
+$LANG['rulesengine'][133]="Entité depuis domaine";
+$LANG['rulesengine'][134]="Refuser email (pas de réponse par email)";
+$LANG['rulesengine'][135]="Refuser email (avec réponse email)";
+$LANG['rulesengine'][136]="Adresse de l'émetteur";
+$LANG['rulesengine'][137]="Adresse du destinataire";
+
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";
 $LANG['search'][2]="contient";
@@ -1823,6 +1829,7 @@ $LANG['setup'][722]="A copier/coller lors d'une demande d'assistance";
 
 $LANG['setup'][730]="Configuration des notifications";
 $LANG['setup'][731]="Valeur de la configuration générale";
+$LANG['setup'][732]="Domaine de messagerie";
 
 //MySQL Replicate
 $LANG['setup'][800]="Réplicat MySQL";

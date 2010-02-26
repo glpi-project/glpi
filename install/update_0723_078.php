@@ -2751,6 +2751,11 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 add ldapservers_id to glpi_entitydatas" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists ('glpi_entitydatas','mail_domain')) {
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `mail_domain` VARCHAR( 255 ) DEFAULT NULL";
+      $DB->query($query) or die("0.78 add mail_domain to glpi_entitydatas" . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists ('glpi_entitydatas','entity_ldapfilter')) {
       $query = "ALTER TABLE `glpi_entitydatas` ADD `entity_ldapfilter`  TEXT NULL collate utf8_unicode_ci";
       $DB->query($query) or die("0.78 add entity_ldapfilter to glpi_entitydatas" . $LANG['update'][90] . $DB->error());

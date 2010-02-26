@@ -300,12 +300,35 @@ class RuleMailgate extends Rule {
       $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
       $criterias['mailcollector']['type'] = 'dropdown';
 
+      $criterias['from_email']['name']  = $LANG['rulesengine'][136];
+      $criterias['from_email']['table'] = '';
+      $criterias['from_email']['type'] = 'text';
+
+      $criterias['to_email']['name']  = $LANG['rulesengine'][137];
+      $criterias['to_email']['table'] = '';
+      $criterias['to_email']['type'] = 'text';
+
       return $criterias;
    }
 
    function getActions() {
       global $LANG;
       $actions = array();
+      $actions['entities_id']['name']   = $LANG['entity'][0];
+      $actions['entities_id']['type']   = 'dropdown';
+      $actions['entities_id']['table']  = 'glpi_entities';
+
+      $actions['_affect_entity_by_domain']['name']   = $LANG['rulesengine'][133];
+      $actions['_affect_entity_by_domain']['type']   = 'text';
+      $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
+
+      $actions['_refuse_email_no_response']['name']   = $LANG['rulesengine'][134];
+      $actions['_refuse_email_no_response']['type']   = 'yesno';
+      $actions['_refuse_email_no_response']['table']   = '';
+
+      $actions['_refuse_email_with_response']['name']   = $LANG['rulesengine'][135];
+      $actions['_refuse_email_with_response']['type']   = 'yesno';
+      $actions['_refuse_email_with_response']['table']   = '';
       return $actions;
    }
 }
