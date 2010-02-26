@@ -1270,13 +1270,12 @@ INSERT INTO `glpi_displaypreferences` VALUES ('156','Ticket','3','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('157','Ticket','4','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('158','Ticket','5','6','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('159','Ticket','7','7','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('160','TicketValidation','2','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('161','TicketValidation','3','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('162','TicketValidation','4','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('161','TicketValidation','7','8','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('162','TicketValidation','8','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('163','TicketValidation','9','7','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('163','TicketValidation','10','9','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('160','TicketValidation','3','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('161','TicketValidation','2','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('162','TicketValidation','8','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('163','TicketValidation','4','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('164','TicketValidation','9','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('165','TicketValidation','7','6','0');
 
 ### Dump table glpi_documentcategories
 
