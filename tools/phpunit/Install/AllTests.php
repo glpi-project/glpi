@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
    error_reporting(E_ALL | E_STRICT);
    ini_set('display_errors','On');
 }
-require_once GLPI_ROOT . "/install/update_0723_080.php";
+require_once GLPI_ROOT . "/install/update_0723_078.php";
 
 function displayMigrationMessage ($id, $msg="") {
    // display nothing
@@ -75,19 +75,19 @@ define("POWER_DEVICE",12);
       $query = "UPDATE `glpi_users` SET language='fr_FR' ;";
       $this->assertTrue($DB->query($query), "Fail: can't set users language");
 
-      // Update to 0.80
-      $res = update0723to080(false);
+      // Update to 0.78
+      $res = update0723to078(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
 
-      $query = "UPDATE `glpi_configs` SET `version` = ' 0.80', language='fr_FR',founded_new_version='' ;";
+      $query = "UPDATE `glpi_configs` SET `version` = ' 0.78', language='fr_FR',founded_new_version='' ;";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
    }
 
    public function testInstall() {
 
-      // Install a fresh 0.80 DB
+      // Install a fresh 0.78 DB
       $DB = new DB();
-      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql");
+      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.78-empty.sql");
       $this->assertTrue($res, "Fail: SQL Error during install");
 
       // update default language

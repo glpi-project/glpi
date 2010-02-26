@@ -33,7 +33,7 @@ class Framework_Version extends PHPUnit_Framework_TestCase {
    public function testVersion() {
       global $CFG_GLPI;
 
-      $this->assertEquals('0.80', GLPI_VERSION, "Bad version in source page");
+      $this->assertEquals('0.78', GLPI_VERSION, "Bad version in source page");
       $this->assertEquals(GLPI_VERSION, $CFG_GLPI['version'], "Bad version in config");
    }
 
