@@ -353,12 +353,12 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(0, $ida[2], "Fail: can't create software rule action");
 
       // Apply Rule to manufacturer
-      $manu = processManufacturerName('the indepnet team');
+      $manu = Dropdown::import('Manufacturer','the indepnet team');
       $this->assertEquals('Indepnet', $manu, "Fail: manufacturer not altered");
 
       // Apply Rule to software
       $rulecollection = new RuleDictionnarySoftwareCollection;
-      $res_rule = $rulecollection->processAllRules(array("name"         => 'glpi 0.80',
+      $res_rule = $rulecollection->processAllRules(array("name"         => 'glpi 0.78',
                                                          "manufacturer" => $manu,
                                                          "old_version"  => ''),
                                                    array (), array());
@@ -366,7 +366,7 @@ class Framework_Dropdown_Import extends PHPUnit_Framework_TestCase {
       $this->assertEquals('GLPI', $res_rule['name'], "Fail: name not correct");
 
       $this->assertArrayHasKey('version', $res_rule, "Fail: name not altered");
-      $this->assertEquals('0.80', $res_rule['version'], "Fail: version not correct");
+      $this->assertEquals('0.78', $res_rule['version'], "Fail: version not correct");
 
       // Clean
       $this->assertTrue($rulem->delete(array('id'=>$idr[0])));
