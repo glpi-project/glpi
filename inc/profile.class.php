@@ -407,8 +407,11 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
-      //Dropdown::showYesNo("approve_ticket",$this->fields["approve_ticket"]);
-      Profile::dropdownNoneReadWrite("approve_ticket",$this->fields["approve_ticket"],1,1,1);
+      $options = array("" => $LANG['profiles'][12],
+                        "r" => $LANG['validation'][21], 
+                        "w"=>$LANG['Menu'][15]);
+      Dropdown::showFromArray("approve_ticket", $options,
+                                    array('value' => $this->fields["approve_ticket"]));
       echo "</td></tr>\n";
       
       echo "<tr class='tab_bg_2'>";
@@ -674,8 +677,11 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("update_priority",$this->fields["update_priority"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
-      //Dropdown::showYesNo("approve_ticket",$this->fields["approve_ticket"]);
-      Profile::dropdownNoneReadWrite("approve_ticket",$this->fields["approve_ticket"],1,1,1);
+      $options = array("" => $LANG['profiles'][12],
+                        "r" => $LANG['validation'][21], 
+                        "w"=>$LANG['Menu'][15]);
+      Dropdown::showFromArray("approve_ticket", $options,
+                                    array('value' => $this->fields["approve_ticket"]));
       echo "</td>";
       echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_tasks",$this->fields["update_tasks"]);

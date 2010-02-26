@@ -3813,6 +3813,12 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_profiles','approve_ticket')) {
       $query = "ALTER TABLE `glpi_profiles` ADD `approve_ticket` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add approve_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
+      
+      $query = "UPDATE `glpi_profiles` SET `approve_ticket`='w' WHERE `name` IN ('super-admin','admin')";
+		$DB->query($query) or die("0.78 add approve_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+
+		$query = "UPDATE `glpi_profiles` SET `approve_ticket`='r' WHERE `name`='normal'";
+		$DB->query($query) or die("0.78 add approve_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
