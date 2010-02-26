@@ -1889,7 +1889,7 @@ function update0723to078($output='HTML') {
                    14=>'RuleDictionnaryPeripheralModel',15=>'RuleDictionnaryPeripheralType',
                    16=>'RuleDictionnaryNetworkEquipmentModel',17=>'RuleDictionnaryNetworkEquipmentType',
                    18=>'RuleDictionnaryOperatingSystem',19=>'RuleDictionnaryOperatingSystemServicePack',
-                   20=>'RuleDictionnaryOperatingSystemVersion',21=>'RuleMailgate');
+                   20=>'RuleDictionnaryOperatingSystemVersion',21=>'RuleMailCollector');
 
    foreach ($subtypes as $old_subtype => $new_subtype) {
       $query = "UPDATE `glpi_rules` SET `sub_type`='$new_subtype' WHERE `sub_type`='$old_subtype'";
@@ -3410,12 +3410,12 @@ function update0723to078($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists('glpi_profiles','rule_mailgate')) {
-      $query = "ALTER TABLE `glpi_profiles` ADD `rule_mailgate` CHAR( 1 ) NULL ";
-      $DB->query($query) or die("0.78 add rule_mailgate to glpi_profiles" .
+   if (!FieldExists('glpi_profiles','rule_mailcollector')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `rule_mailcollector` CHAR( 1 ) NULL ";
+      $DB->query($query) or die("0.78 add rule_mailcollector to glpi_profiles" .
                                  $LANG['update'][90] . $DB->error());
-      $query = "UPDATE `glpi_profiles` SET `rule_mailgate`='w' WHERE `name` IN ('super-admin')";
-      $DB->query($query) or die("0.78 add rule_mailgate right to super-admin profile " . $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_profiles` SET `rule_mailcollector`='w' WHERE `name` IN ('super-admin')";
+      $DB->query($query) or die("0.78 add rule_mailcollector right to super-admin profile " . $LANG['update'][90] . $DB->error());
    }
    // Change search pref : add active / date_mod
    $ADDTODISPLAYPREF['MailCollector']=array(2,19);
@@ -3806,10 +3806,10 @@ function update0723to078($output='HTML') {
                   KEY `is_deleted` (`is_deleted`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.78 create glpi_ticketvalidations " . $LANG['update'][90] . $DB->error());
-      
+
       $ADDTODISPLAYPREF['TicketValidation']=array(3,2,8,4,9,7);
    }
-   
+
    if (!FieldExists('glpi_profiles','approve_ticket')) {
       $query = "ALTER TABLE `glpi_profiles` ADD `approve_ticket` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add approve_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
@@ -3896,7 +3896,50 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_entitydatas` ADD `autoclose_delay` int(11) NOT NULL default '0'";
       $DB->query($query) or die("0.78 add autoclose_delay to glpi_entitydatas " . $LANG['update'][90] . $DB->error());
    }
-   
+
+   if (FieldExists('glpi_mailcollectors','entities_id')) {
+      $ranking = 0;
+      foreach (getAllDatasFromTable('glpi_mailcollectors') as $collector) {
+         $query = "INSERT INTO `glpi_rules` VALUES(NULL, -1, 'RuleMailCollector', $ranking,
+                                                   '".$collector['name']."',
+                                                   '', 'AND', 1, NULL, NULL);";
+         $DB->query($query) or die("0.78 error inserting new maigate rule".
+                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
+         $query = "SELECT `id`
+                   FROM `glpi_rules`
+                   WHERE `sub_type`='RuleMailCollector' AND `ranking`=$ranking";
+         $result = $DB->query($query) or die("0.78 error getting new maigate rule".
+                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
+
+         if ($DB->numrows($result) > 0) {
+            $newID = $DB->result($result,0,'id');
+            $query = "INSERT INTO `glpi_rulecriterias` VALUES(NULL, $newID, 'mailcollector', 0,
+                                                              '".$collector['id']."');";
+            $DB->query($query)or die("0.78 error getting new criteria for rule".
+                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
+            $query = "INSERT INTO `glpi_ruleactions` VALUES(NULL, $newID, 'assign',
+                                                            'entities_id',
+                                                            '".$collector['entities_id']."');";
+            $DB->query($query) or die("0.78 error getting new action for rule".
+                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
+         }
+
+         $ranking++;
+      }
+
+      $query = "ALTER TABLE `glpi_mailcollectors` DROP INDEX `entities_id` ";
+      $DB->query($query) or die("0.78 drop index entities_id from glpi_mailcollectors".
+                                   $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_mailcollectors` DROP `entities_id` ";
+      $DB->query($query) or die("0.78 drop entities_id from glpi_mailcollectors".
+                                   $LANG['update'][90] . $DB->error());
+
+      $query = "DELETE FROM `glpi_displaypreferences` WHERE `itemtype`='MailCollector' AND `num`='80'";
+      $DB->query($query) or die("0.78 drop entities_id from collector's display preferences'".
+                                   $LANG['update'][90] . $DB->error());
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 

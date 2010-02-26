@@ -1749,7 +1749,6 @@ DROP TABLE IF EXISTS `glpi_mailcollectors`;
 CREATE TABLE `glpi_mailcollectors` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `entities_id` int(11) NOT NULL default '0',
   `host` varchar(255) collate utf8_unicode_ci default NULL,
   `login` varchar(255) collate utf8_unicode_ci default NULL,
   `password` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1758,7 +1757,6 @@ CREATE TABLE `glpi_mailcollectors` (
   `date_mod` datetime default NULL,
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
-  KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2823,7 +2821,7 @@ CREATE TABLE `glpi_profiles` (
   `budget` char(1) collate utf8_unicode_ci default NULL,
   `import_externalauth_users` char(1) collate utf8_unicode_ci default NULL,
   `notification` char(1) collate utf8_unicode_ci default NULL,
-  `rule_mailgate` char(1) collate utf8_unicode_ci default NULL,
+  `rule_mailcollector` char(1) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
   `comment` text collate utf8_unicode_ci,
   `approve_ticket` char(1) collate utf8_unicode_ci default NULL,

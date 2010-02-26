@@ -29,43 +29,42 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","rule",-1);
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
-if ($CFG_GLPI["use_ocs_mode"] && haveRight("rule_ocs","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleocs.php'>" . $LANG['rulesengine'][18] . "</a></td></tr>";
+if(!isset($_POST["id"])) {
+   exit();
 }
 
-if (haveRight("rule_ldap","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleright.php'>" .$LANG['rulesengine'][19] . "</a></td> </tr>";
+if(empty($_POST["id"])) {
+   $_POST["id"] = -1;
 }
 
-if (haveRight("rule_mailcollector","r") && canUseImapPop()) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='rulemailcollector.php'>" . $LANG['rulesengine'][70] . "</a></td></tr>";
-}
+$collector = new MailCollector();
+if ($_POST['id']>0 && $collector->can($_POST['id'],'r')) {
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         $collector->showGetMessageForm($_POST['id']);
+         Plugin::displayAction($collector,$_REQUEST['glpi_tab']);
+         break;
+      case 12 :
+            Log::showForItem($collector);
+         break;
 
-if (haveRight("rule_ticket","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleticket.php'>" . $LANG['rulesengine'][28] . "</a></td></tr>";
-}
+      default :
+         if (!Plugin::displayAction($collector, $_REQUEST['glpi_tab'])) {
+            $collector->showGetMessageForm($_POST['id']);
+         }
+         break;
+   }
 
-if (haveRight("rule_softwarecategories","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='rulesoftwarecategory.php'>&nbsp;" . $LANG['rulesengine'][37] . "&nbsp;</a></td></tr>";
 }
-
-echo "</table>";
-commonFooter();
+ajaxFooter();
 
 ?>
