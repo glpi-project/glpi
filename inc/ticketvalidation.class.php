@@ -51,7 +51,7 @@ class TicketValidation extends CommonDBTM{
       return haveRight('approve_ticket', 'w');
    }
 
-   function canView() {
+   function canUpdate() {
       return haveRight('approve_ticket', 'r');
    }
    
@@ -128,9 +128,9 @@ class TicketValidation extends CommonDBTM{
 
       $tab = array();
       $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['field']         = 'id';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['common'][2];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'TicketValidation';
 
@@ -280,7 +280,7 @@ class TicketValidation extends CommonDBTM{
       global $LANG;
       
       if (!haveRight('approve_ticket','r')) return false;
-      
+      $canedit = haveRight('approve_ticket','w');
       if ($ticket->canUpdateItem()) {
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -295,14 +295,18 @@ class TicketValidation extends CommonDBTM{
                               'right'  => 'all'));
          echo "</td>";
          echo "</tr>";
+         
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][25]."</td>";
          echo "<td><textarea cols='45' rows='3' name='comment_submission' maxlength='254'></textarea></td>"; 
          echo "</tr>";
-         echo "<tr class='tab_bg_2'>";
-         echo "<td colspan= '2' align='center'>";
-         echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
-         echo "</tr>";
+         
+         if ($canedit) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td colspan= '2' align='center'>";
+            echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
+            echo "</tr>";
+         }
          echo "</table>";
          echo "</form>";
       }
@@ -386,6 +390,8 @@ class TicketValidation extends CommonDBTM{
       $ticket = new Ticket();
       $ticket->getFromDB($this->fields["tickets_id"]);
      
+      $canedit = haveRight('approve_ticket','w');
+      
       echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['validation'][15]."</th></tr>";
@@ -433,15 +439,17 @@ class TicketValidation extends CommonDBTM{
       echo "</td>";
       echo "</tr>";
       
-      echo "<tr class='tab_bg_2 center'>";
-      echo "<td>";
-      echo "<input type='hidden' name='id' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='accept' value='".$LANG['validation'][17]."' class='submit'>";
-      echo "</td>";
-      echo "<td>";
-      echo "<input type='submit' name='reject' value='".$LANG['validation'][18]."' class='submit'>";
-      echo "</td>";
-      echo "</tr>";
+      if ($canedit) {
+         echo "<tr class='tab_bg_2 center'>";
+         echo "<td>";
+         echo "<input type='hidden' name='id' value='".$this->fields["id"]."'>";
+         echo "<input type='submit' name='accept' value='".$LANG['validation'][17]."' class='submit'>";
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='submit' name='reject' value='".$LANG['validation'][18]."' class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+      }
       echo "</table></div></form>";
    }
    
