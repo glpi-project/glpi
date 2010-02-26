@@ -62,7 +62,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             //Send to the user who's got the issue
             case Notification::TICKET_RECIPIENT :
-               $this->getReceipientAddress();
+               $this->getRecipientAddress();
                break;
 
             //Send to the supervisor of the requester's group
@@ -86,6 +86,10 @@ class NotificationTargetTicket extends NotificationTarget {
 
             case Notification::TICKET_ASSIGN_GROUP :
                $this->getAssignGroupAddresses();
+               break;
+            //Send to the ticket aprrover
+            case Notification::TICKET_APPROVER :
+               $this->getTicketApproverAddress();
                break;
          }
       }
@@ -149,7 +153,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
    //Get receipient
-   function getReceipientAddress() {
+   function getRecipientAddress() {
       return $this->getUserByField ("users_id_recipient");
   }
 
@@ -157,16 +161,35 @@ class NotificationTargetTicket extends NotificationTarget {
    /**
     * Get supplier related to the ticket
     */
-   function getTicketSupplierAddress($sendprivate=true) {
+   function getTicketSupplierAddress($sendprivate=false) {
       global $DB;
 
       if (!$sendprivate
-          && isset($ths->obj->fields["suppliers_id_assign"])
+          && isset($this->obj->fields["suppliers_id_assign"])
           && $this->obj->fields["suppliers_id_assign"]>0) {
 
          $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email
                    FROM `glpi_suppliers`
-                   WHERE `glpi_suppliers`.`id` = '".$ticket->fields["suppliers_id_assign"]."'";
+                   WHERE `glpi_suppliers`.`id` = '".$this->obj->fields["suppliers_id_assign"]."'";
+
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
+      }
+   }
+   
+   /**
+    * Get approuver related to the ticket
+    */
+   function getTicketApproverAddress($sendprivate=false) {
+      global $DB;
+
+      if (!$sendprivate) {
+
+         $query = "SELECT DISTINCT `glpi_users`.`email` AS email
+                   FROM `glpi_ticketvalidations`
+                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_approval`)
+                   WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
@@ -224,9 +247,10 @@ class NotificationTargetTicket extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('new'          => $LANG['mailing'][9],
+      return array ('new'         => $LANG['mailing'][9],
                     'update'       => $LANG['mailing'][30],
                     'solved'       => $LANG['mailing'][123],
+                    'approval'     => $LANG['validation'][26],
                     'add_followup' => $LANG['mailing'][10],
                     'add_task'     => $LANG['job'][49],
                     'closed'       => $LANG['mailing'][127],
@@ -253,6 +277,7 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
       $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
       $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
+      $this->addTarget(Notification::TICKET_APPROVER,$LANG['validation'][21]);
    }
 
 
@@ -477,6 +502,36 @@ class NotificationTargetTicket extends NotificationTarget {
       } else {
          $this->datas['##ticket.numberoffollowups##'] = 0;
       }
+      
+      //Approval infos
+      $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+      $restrict .= " ORDER BY `submission_date` DESC";
+      $approvals = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
+      
+      foreach ($approvals as $approval) {
+         $tmp = array();
+         $tmp['##lang.approval.title##'] = $LANG['validation'][27]." (".$LANG['job'][4].
+               " ".html_clean(getUserName($approval['users_id'])).")";
+               
+         $tmp['##approval.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_".
+                                                 $approval['id']);
+                                                 
+         $tmp['##approval.author##'] =  html_clean(getUserName($approval['users_id']));
+         $tmp['##lang.approval.approvalstatus##'] = $LANG['validation'][28]." : ".
+                                          TicketValidation::getStatus($approval['status']);
+         
+         $tmp['##approval.status##'] = TicketValidation::getStatus($approval['status']);
+         
+         $tmp['##approval.submissiondate##'] = convDateTime($approval['submission_date']);
+         
+         $tmp['##approval.commentsubmission##'] = $approval['comment_submission'];
+         
+         $tmp['##approval.approvaldate##'] = convDateTime($approval['approval_date']);
+         
+         $tmp['##approval.commentapproval##'] = $approval['comment_approval'];
+         
+         $this->datas['approvals'][] = $tmp;
+      }
 
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($this->obj,0,$CFG_GLPI['list_limit_max']) as $data) {
@@ -545,7 +600,13 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.followup.requesttype##'      => $LANG['job'][44],
                        '##lang.ticket.numberoffollowups##'  => $LANG['mailing'][4],
                        '##lang.ticket.numberoftasks##'      => $LANG['mailing'][122],
-                       '##lang.ticket.nocategoryassigned##' => $LANG['mailing'][100]);
+                       '##lang.ticket.nocategoryassigned##' => $LANG['mailing'][100],
+                       '##lang.approval.author##'           => $LANG['job'][4],
+                       '##lang.approval.status##'           => $LANG['joblist'][0],
+                       '##lang.approval.submissiondate##'   => $LANG['validation'][3],
+                       '##lang.approval.commentsubmission##'=> $LANG['validation'][5],
+                       '##lang.approval.approvaldate##'     => $LANG['validation'][4],
+                       '##lang.approval.commentapproval##'  => $LANG['validation'][6]);
 
       foreach ($labels as $tag => $label) {
          $this->datas[$tag] = $label;

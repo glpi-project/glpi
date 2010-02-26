@@ -81,7 +81,9 @@ class TicketValidation extends CommonDBTM{
    }
    
    function prepareInputForAdd($input) {
+		global $LANG;
 		
+		$input["name"] = addslashes($LANG['validation'][26]." - ".$LANG['job'][38]." ".$input["tickets_id"]);
 		$input["users_id"] = getLoginUserID();
 		$input["submission_date"] = $_SESSION["glpi_currenttime"];
 
@@ -89,28 +91,36 @@ class TicketValidation extends CommonDBTM{
 	}
    
    function post_addItem() {
-		global $LANG;
+		global $LANG,$CFG_GLPI;
 		
-      /*$job = new Ticket;
+      $job = new Ticket;
       $mailsend = false;
       if ($job->getFromDB($this->input["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $mailsend = NotificationEvent::raiseEvent('send_validation',$job,$options);
-      }*/
+         $options = array();
+         $mailsend = NotificationEvent::raiseEvent('approval',$job,$options);
+      }
+      if ($mailsend) {
+         $user = new User();
+         $user->getFromDB($this->fields["users_id_approval"]);
+         addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
+      }
 		// Add log entry in the ticket
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = $LANG['validation'][13]." ".getUserName($this->fields["users_id_approval"]);
-      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
+      $changes[2] = addslashes($LANG['validation'][13]." ".getUserName($this->fields["users_id_approval"]));
+      Log::history($this->getField('tickets_id'),'Ticket',
+                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
 	}
    
    function post_updateItem($history=1) {
-		global $LANG;
+		global $LANG,$CFG_GLPI;
 		
-		/*$job = new Ticket;
+		$job = new Ticket;
       $mailsend = false;
-      if ($job->getFromDB($this->input["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $mailsend = NotificationEvent::raiseEvent('send_validation',$job,$options);
-      }*/
+      if ($job->getFromDB($this->fields["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
+         $options = array();
+         $mailsend = NotificationEvent::raiseEvent('approval',$job,$options);
+      }
 		// Add log entry in the ticket
       $changes[0] = 0;
       $changes[1] = '';
@@ -120,7 +130,8 @@ class TicketValidation extends CommonDBTM{
          $validation = getUserName($this->fields["users_id_approval"]). " : ".$LANG['validation'][20];
       }  
       $changes[2] = $validation;
-      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
+      Log::history($this->getField('tickets_id'),'Ticket',
+                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
 	}
 	
    function getSearchOptions() {
@@ -128,8 +139,8 @@ class TicketValidation extends CommonDBTM{
 
       $tab = array();
       $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'id';
-      $tab[1]['linkfield']     = '';
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][2];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = 'TicketValidation';
@@ -176,13 +187,13 @@ class TicketValidation extends CommonDBTM{
       $tab[8]['field']     = 'submission_date';
       $tab[8]['linkfield'] = 'submission_date';
       $tab[8]['name']      = $LANG['validation'][3];
-      $tab[8]['datatype']  = 'date';
+      $tab[8]['datatype']  = 'datetime';
       
       $tab[9]['table']     = $this->getTable();
       $tab[9]['field']     = 'approval_date';
       $tab[9]['linkfield'] = 'approval_date';
       $tab[9]['name']      = $LANG['validation'][4];
-      $tab[9]['datatype']  = 'date';
+      $tab[9]['datatype']  = 'datetime';
       
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';
@@ -286,7 +297,7 @@ class TicketValidation extends CommonDBTM{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>".$LANG['validation'][1]."</th></tr>";
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][34]."</td>";
+         echo "<td>".$LANG['validation'][21]."</td>";
          echo "<td>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->getField('id')."'>";
          echo "<input type='hidden' name='entities_id' value='".$ticket->getField('entities_id')."'>";
@@ -443,6 +454,7 @@ class TicketValidation extends CommonDBTM{
          echo "<tr class='tab_bg_2 center'>";
          echo "<td>";
          echo "<input type='hidden' name='id' value='".$this->fields["id"]."'>";
+         echo "<input type='hidden' name='tickets_id' value='".$tickets_id."'>";
          echo "<input type='submit' name='accept' value='".$LANG['validation'][17]."' class='submit'>";
          echo "</td>";
          echo "<td>";

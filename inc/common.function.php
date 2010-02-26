@@ -1704,7 +1704,10 @@ function manageRedirect($where) {
                      glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".
                                  $data[1]);
                      break;
-
+                  case "ticketvalidation":
+                     glpi_header($CFG_GLPI["root_doc"]."/front/ticket.validation.php?id=".
+                                 $data[1]);
+                     break;
                   case "preference":
                      glpi_header($CFG_GLPI["root_doc"]."/front/preference.php");
                      break;

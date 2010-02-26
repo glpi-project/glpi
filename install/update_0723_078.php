@@ -2790,6 +2790,8 @@ function update0723to078($output='HTML') {
                VALUES(NULL, 'Tickets', 'Ticket', '2010-02-07 21:39:15','');";
       $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Tickets (Simple)', 'Ticket', '2010-02-07 21:39:15','');";
+      $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplates`
+               VALUES(NULL, 'Tickets Approval', 'Ticket', '2010-02-26 21:39:15','');";
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Cartridges', 'Cartridge', '2010-02-16 13:17:24','');";
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplates`
@@ -2812,12 +2814,17 @@ function update0723to078($output='HTML') {
                $query_id = "SELECT `id`
                             FROM `glpi_notificationtemplates`
                             WHERE `itemtype`='Ticket' AND `name`='Tickets'";
-                break;
+               break;
             case 'Ticket2' :
                $query_id = "SELECT `id`
                             FROM `glpi_notificationtemplates`
                             WHERE `itemtype`='Ticket' AND `name`='Tickets (Simple)'";
-            break;
+               break;
+            case 'TicketValidation' :
+               $query_id = "SELECT `id`
+                            FROM `glpi_notificationtemplates`
+                            WHERE `itemtype`='Ticket' AND `name`='Tickets Approval'";
+               break;
          }
          $result = $DB->query($query_id) or die ($DB->error());
          $templates[$itemtype] = $DB->result($result,0,'id');
@@ -3025,6 +3032,27 @@ function update0723to078($output='HTML') {
                             ##lang.ticket.item.name##&lt;/span&gt;&#160;:
                             ##ticket.itemtype## - ##ticket.item.name##
                             ##ENDIFticket.itemtype##&lt;/p&gt;');";
+                            
+      $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                             VALUES(NULL, ".$templates['TicketValidation'].", '',
+                            '##ticket.action## ##ticket.title##',
+                            '##FOREACHapprovals##
+                           ##lang.approval.title##
+                           ##lang.ticket.url## : ##approval.url## 
+
+                           ##IFapproval.status## ##lang.approval.approvalstatus## ##ENDIFapproval.status##
+                           ##IFapproval.commentapproval##
+                           ##lang.approval.commentapproval## :  ##approval.commentapproval##
+                           ##ENDIFapproval.commentapproval##
+                           ##ENDFOREACHapprovals##',
+                            '&lt;div&gt;##FOREACHapprovals##&lt;/div&gt;
+                           &lt;div&gt;##lang.approval.title##&lt;/div&gt;
+                           &lt;div&gt;##lang.ticket.url## : &lt;a href=\"##approval.url##\"&gt; ##approval.url##
+                           &lt;/a&gt;&lt;/div&gt;&lt;p&gt;##IFapproval.status## ##lang.approval.approvalstatus## 
+                           ##ENDIFapproval.status##&lt;br  /&gt;
+                           ##IFapproval.commentapproval##&lt;br /&gt;
+                           ##lang.approval.commentapproval## :&#160; ##approval.commentapproval##&lt;br /&gt;
+                           ##ENDIFapproval.commentapproval##&lt;br /&gt;##ENDFOREACHapprovals##&lt;/p&gt;');";
 
       foreach ($queries as $itemtype => $query) {
          //echo $query."<br>";
@@ -3076,6 +3104,10 @@ function update0723to078($output='HTML') {
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Ticket Solved', 0, 'Ticket', 'solved',
                                        'mail',".$templates['Ticket'].",
+                                       '', 1, '2010-02-16 16:41:39');";
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Ticket Approval', 0, 'Ticket', 'approval',
+                                       'mail',".$templates['TicketValidation'].",
                                        '', 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'New Reservation', 0, 'Reservation', 'new',

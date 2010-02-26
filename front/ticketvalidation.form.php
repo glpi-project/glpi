@@ -52,7 +52,6 @@ if (isset($_POST["add"])) {
    $user->getFromDB($_POST["users_id_approval"]);
    if (!empty($user->fields["email"])) {
 			$newID=$validation->add($_POST);
-			addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
    } else {
       addMessageAfterRedirect($user->getName()." ".$LANG['validation'][23],false,ERROR);
    }
