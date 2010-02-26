@@ -246,7 +246,7 @@ $CFG_GLPI["helpdesk_visible_types"] = array('Software');
 $CFG_GLPI["netport_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Peripheral',
                                    'Phone');
 
-$CFG_GLPI["massiveaction_noupdate_types"] = array('Entity', 'AuthLDAP', 'OcsServer', 'Profile');
+$CFG_GLPI["massiveaction_noupdate_types"] = array('Entity', 'AuthLDAP', 'OcsServer', 'Profile','TicketValidation');
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array('Entity', 'AuthLDAP', 'CronTask');
 

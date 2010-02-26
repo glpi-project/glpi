@@ -81,6 +81,8 @@ class Ticket extends CommonDBTM {
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
+      
+      $validation = new TicketValidation();
       return (haveRight("show_all_ticket","1")
               || $this->fields["users_id"] === getLoginUserID()
               || (haveRight("show_group_ticket",'1')
@@ -93,6 +95,7 @@ class Ticket extends CommonDBTM {
                       || (haveRight('assign_ticket',1) && $this->fields["status"]=='new')
                      )
                  )
+              || (haveRight("approve_ticket",'w') && $validation->canApprove($this->fields["id"]))
              );
    }
 
@@ -154,6 +157,8 @@ class Ticket extends CommonDBTM {
             $ong[1] = $LANG['Menu'][5];
             $ong[2] = $LANG['job'][7];
          }
+         if (haveRight("approve_ticket","r"))
+            $ong[7] = $LANG['validation'][0];
          $ong[4] = $LANG['jobresolution'][1];
          $ong[3] = $LANG['job'][47];
          $ong[5] = $LANG['Menu'][27];

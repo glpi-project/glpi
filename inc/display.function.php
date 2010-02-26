@@ -342,6 +342,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['maintain']['content']['helpdesk']['links']['add']='/front/ticket.form.php';
       $menu['maintain']['content']['tracking']['links']['add']='/front/ticket.form.php';
    }
+   if (haveRight("approve_ticket","r")) {
+      $menu['maintain']['content']['validation']['title']=$LANG['validation'][0];
+      $menu['maintain']['content']['validation']['shortcut']='v';
+      $menu['maintain']['content']['validation']['page']='/front/ticketvalidation.php';
+      $menu['maintain']['content']['validation']['links']['search']='/front/ticketvalidation.php';
+      $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticketvalidation.php';
+   }
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
       $menu['maintain']['content']['planning']['title']=$LANG['Menu'][29];
       $menu['maintain']['content']['planning']['shortcut']='l';
@@ -1322,6 +1329,13 @@ function helpHeader($title,$url='') {
       echo "<li id='menu2' >";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php\" title=\"".
              $LANG['title'][10]."\" class='itemP'>".$LANG['title'][28]."</a>";
+      echo "</li>";
+   }
+   //  Validation ticket
+   if (haveRight("approve_ticket","w")) {
+      echo "<li id='menu3' >";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticketvalidation.php\" title=\"".
+             $LANG['validation'][0]."\" class='itemP'>".$LANG['validation'][0]."</a>";
       echo "</li>";
    }
    // Reservation

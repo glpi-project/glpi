@@ -1270,6 +1270,13 @@ INSERT INTO `glpi_displaypreferences` VALUES ('156','Ticket','3','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('157','Ticket','4','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('158','Ticket','5','6','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('159','Ticket','7','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('160','TicketValidation','2','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('161','TicketValidation','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('162','TicketValidation','4','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('161','TicketValidation','7','8','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('162','TicketValidation','8','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('163','TicketValidation','9','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('163','TicketValidation','10','9','0');
 
 ### Dump table glpi_documentcategories
 
@@ -2799,6 +2806,7 @@ CREATE TABLE `glpi_profiles` (
   `show_assign_ticket` char(1) collate utf8_unicode_ci default NULL,
   `show_full_ticket` char(1) collate utf8_unicode_ci default NULL,
   `observe_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `approve_ticket` char(1) collate utf8_unicode_ci default NULL,
   `update_followups` char(1) collate utf8_unicode_ci default NULL,
   `update_tasks` char(1) collate utf8_unicode_ci default NULL,
   `show_planning` char(1) collate utf8_unicode_ci default NULL,
@@ -3765,8 +3773,28 @@ CREATE TABLE `glpi_usertitles` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_validations
 
-### Dump table glpi_vlans
+DROP TABLE IF EXISTS `glpi_ticketvalidations`;
+CREATE TABLE `glpi_ticketvalidations` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `entities_id` int(11) NOT NULL default '0',
+  `users_id` int(11) NOT NULL default '0',
+  `tickets_id` int(11) NOT NULL default '0',
+  `users_id_approval` int(11) NOT NULL default '0',
+  `comment_submission` text collate utf8_unicode_ci,
+  `comment_approval` text collate utf8_unicode_ci,
+  `status` varchar(255) collate utf8_unicode_ci default 'waiting',
+  `submission_date` datetime default NULL,
+  `approval_date` datetime default NULL,
+  `is_deleted` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_vlans`;
 CREATE TABLE `glpi_vlans` (

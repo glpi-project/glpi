@@ -108,6 +108,10 @@ if (isset($_REQUEST['searchtype'])) {
                                        'right'     => 'all'));
                   $display=true;
                   break;
+               case "glpi_ticketvalidations.status" :
+                  TicketValidation::dropdownStatus($inputname,$_REQUEST['value'],1);
+                  $display=true;
+                  break;
             }
 
             // Standard datatype usage

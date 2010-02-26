@@ -45,7 +45,7 @@ class Profile extends CommonDBTM {
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','add_followups',
                               'observe_ticket','password_update','helpdesk_hardware',
-                              'helpdesk_item_type','show_group_ticket','show_group_hardware');
+                              'helpdesk_item_type','show_group_ticket','show_group_hardware','approve_ticket');
 
    /// Common fields used for all profiles type
    static public $common_fields=array("id","name","interface","is_default");
@@ -403,10 +403,14 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td colspan='3'>";
+      echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td>";
       Dropdown::showYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
+      //Dropdown::showYesNo("approve_ticket",$this->fields["approve_ticket"]);
+      Profile::dropdownNoneReadWrite("approve_ticket",$this->fields["approve_ticket"],1,1,1);
       echo "</td></tr>\n";
-
+      
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td><td>";
       echo "<select name='helpdesk_hardware'>";
@@ -669,7 +673,10 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][44]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_priority",$this->fields["update_priority"]);
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
+      //Dropdown::showYesNo("approve_ticket",$this->fields["approve_ticket"]);
+      Profile::dropdownNoneReadWrite("approve_ticket",$this->fields["approve_ticket"],1,1,1);
+      echo "</td>";
       echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_tasks",$this->fields["update_tasks"]);
       echo "</td></tr>\n";
