@@ -260,7 +260,7 @@ class AuthMail extends CommonDBTM {
     * @param $auths_id : auths_id already used for the user
     * @return identification object
    **/
-   function tryMailAuth($auth, $login,$password,$auths_id = 0) {
+   static function tryMailAuth($auth, $login,$password,$auths_id = 0) {
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {
             if (!$auth->auth_succeded) {
