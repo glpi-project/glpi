@@ -49,13 +49,7 @@ $user = new User();
 if (isset($_POST["add"])) {
 	
 	$ticket->check($_POST['tickets_id'],'w');
-   $user->getFromDB($_POST["users_id_approval"]);
-   if (!empty($user->fields["email"])) {
-			$newID=$validation->add($_POST);
-   } else {
-      addMessageAfterRedirect($user->getName()." ".$LANG['validation'][23],false,ERROR);
-   }
-
+	$newID=$validation->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["reject"])) {

@@ -121,14 +121,18 @@ class TicketValidation extends CommonDBTM{
 		
       $job = new Ticket;
       $mailsend = false;
-      if ($job->getFromDB($this->input["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $options = array('approval_id' => $this->input["id"]);
+      if ($job->getFromDB($this->fields["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
+         $options = array('approval_id' => $this->fields["id"]);
          $mailsend = NotificationEvent::raiseEvent('approval',$job,$options);
       }
       if ($mailsend) {
          $user = new User();
          $user->getFromDB($this->fields["users_id_approval"]);
-         addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
+         if (!empty($user->fields["email"])) {
+            addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
+         } else {
+            addMessageAfterRedirect($LANG['validation'][23],false,ERROR);
+         }
       }
 		// Add log entry in the ticket
       $changes[0] = 0;
@@ -395,10 +399,19 @@ class TicketValidation extends CommonDBTM{
             echo "<tr class='tab_bg_1'>";
             echo "<td><div style=\"background-color:".$bgcolor.";\">".$status."</div></td>";
 				
-            echo "<td>".convDateTime($row["submission_date"])."</td>";
+				$link_approval=getItemTypeFormURL('TicketValidation');
+            echo "<td><a href=\"".$link_approval."?id=".$row["id"]."\">".
+                  convDateTime($row["submission_date"])."</a></td>";
             echo "<td>".$row["comment_submission"]."</td>";
             echo "<td>".convDateTime($row["approval_date"])."</td>";
-            echo "<td>".getUserName($row["users_id_approval"])."</td>";
+            $users_id_approval = $row["users_id_approval"];
+            $link=getItemTypeFormURL('User');
+            $out  = "<a href=\"".$link;
+            $out .= (strstr($link,'?') ?'&amp;' :  '?');
+            $out .= 'id='.$users_id_approval."\">";
+            $out .= getUserName($users_id_approval);
+            $out .= "</a>";
+            echo "<td>".$out."</td>";
             echo "<td>".$row["comment_approval"]."</td>";
             
             echo "<td>";
