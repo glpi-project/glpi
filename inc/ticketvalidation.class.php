@@ -126,19 +126,23 @@ class TicketValidation  extends CommonDBChild {
 		// Not attached to tickets -> not added
       if (!isset($input['tickets_id']) || $input['tickets_id'] <= 0) {
          return false;
-      }
+      } else {
       
-      $job = new Ticket;
-      if ($job->getFromDB($input["tickets_id"]) 
-            && strstr($job->fields["status"],"solved") 
-               || strstr($job->fields["status"],"closed")) {
-         return false;
+         $job = new Ticket;
+         $job->getFromDB($input["tickets_id"]);
+         if (strstr($job->fields["status"],"solved") 
+                  || strstr($job->fields["status"],"closed")) {
+            return false;
+         }
+         
+         if (!isset($input['entities_id'])) {
+            $input['entities_id'] = $job->fields["entities_id"];
+         }
+         
+         $input["name"] = addslashes($LANG['validation'][26]." - ".$LANG['job'][38]." ".$input["tickets_id"]);
+         $input["users_id"] = getLoginUserID();
+         $input["submission_date"] = $_SESSION["glpi_currenttime"];
       }
-      
-		$input["name"] = addslashes($LANG['validation'][26]." - ".$LANG['job'][38]." ".$input["tickets_id"]);
-		$input["users_id"] = getLoginUserID();
-		$input["submission_date"] = $_SESSION["glpi_currenttime"];
-
 		return $input;
 	}
    
