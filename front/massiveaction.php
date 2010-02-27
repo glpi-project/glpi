@@ -541,6 +541,31 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
+         case "submit_approval" :
+            $valid = new TicketValidation();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input=array('tickets_id'      => $key,
+                               'users_id_approval' => $_POST['users_id_approval'],
+                               'comment_submission' => $_POST['comment_submission']);
+                  if ($valid->can(-1,'w',$input)) {
+                     $valid->add($input);
+                  }
+               }
+            }
+            break;  
+         case "approve_ticket" :
+            $valid = new TicketValidation();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input=array('id'      => $key,
+                               'status'   => $_POST['status']);
+                  if ($valid->can(-1,'w',$input)) {
+                     $valid->update($input);
+                  }
+               }
+            }
+            break;
 
          case "add_task" :
             $task = new TicketTask();

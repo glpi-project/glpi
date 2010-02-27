@@ -1167,8 +1167,19 @@ class Dropdown {
                   if ($tmp->canCreate()) {
                      echo "<option value='add_task'>".$LANG['job'][30]."</option>";
                   }
+                  $tmp = new TicketValidation();
+                  if ($tmp->canCreate()) {
+                     echo "<option value='submit_approval'>".$LANG['validation'][26]."</option>";
+                  }
                   break;
-
+               
+               case 'TicketValidation' :
+                  $tmp = new TicketValidation();
+                  if ($tmp->canUpdate()) {
+                     echo "<option value='approve_ticket'>".$LANG['validation'][0]."</option>";
+                  }
+                  break;
+                  
                case 'CronTask' :
                   echo "<option value='reset'>".$LANG['buttons'][16].
                      " (".$LANG['crontask'][40].")</option>";
