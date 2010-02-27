@@ -48,24 +48,13 @@ $user = new User();
 
 if (isset($_POST["add"])) {
 	
-	$ticket->check($_POST['tickets_id'],'w');
+	$validation->check(-1,'w',$_POST);
 	$newID=$validation->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
    
-	if (!empty($_POST["id"])) {
-      $validation->check($_POST["id"],'w');
-		$validation->getFromDB($_POST["id"]);
-		if ($validation->fields["users_id_approval"]==getLoginUserID()) {
-			$validation->update(array("id" => $_POST["id"]
-                                    , "status" => $_POST["status"]
-                                    , "approval_date" => date("Y-m-d H:i:s")
-                                    , "comment_approval" => $_POST["comment_approval"]));
-		} else {
-         addMessageAfterRedirect($LANG['validation'][22],false,ERROR);
-      }
-	}
+   $validation->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
@@ -74,7 +63,7 @@ if (isset($_POST["add"])) {
 
    /*Event::log($task->getField('tickets_id'), "ticket", 4, "tracking",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);*/
-   glpi_header(getItemTypeFormURL('TicketValidation'));
+   glpi_header(getItemTypeSearchURL('TicketValidation'));
 
 /*
 } else if (isset($_GET["resend"])) {
@@ -98,18 +87,13 @@ if (isset($_POST["add"])) {
       commonHeader($LANG['validation'][0],'',"maintain","validation");
    }
    
-   if (!empty($_GET['id']) && $validation->getFromDB($_GET['id'])) {
-      if ($validation->fields["users_id_approval"]==getLoginUserID()) {
-         
-            $validation->showForm($_GET["id"]);
-
-      } else {
-         echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>"; 
-         echo "<b>".$LANG['validation'][22]."</b></div>"; 
-      }
-   }
+   $validation->showForm($_GET["id"]);
    
-   commonFooter();
+   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      helpFooter();
+   } else {
+      commonFooter();
+   }
 }
 
 
