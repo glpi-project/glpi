@@ -48,11 +48,37 @@ class TicketValidation extends CommonDBTM{
    }
 
    function canCreate() {
-      return haveRight('approve_ticket', 'w');
+      return haveRight('approve_ticket', 'r');
    }
 
    function canUpdate() {
-      return haveRight('approve_ticket', 'r');
+      return haveRight('approve_ticket', 'w');
+   }
+   
+   /**
+    * Is the current user have right to update the current approval ?
+    *
+    * @return boolean
+    */
+   function canUpdateItem() {
+
+      if ($this->fields["users_id_approval"] != getLoginUserID() && !haveRight('approve_ticket','w')) {
+         return false;
+      }
+      $ticket = new Ticket();
+      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+         return false;
+      }
+      return true;
+   }
+   
+   /**
+    * Is the current user have right to delete the current approval ?
+    *
+    * @return boolean
+    */
+   function canDeleteItem() {
+      return $this->canUpdateItem();
    }
    
    //TO BE CUSTOM
@@ -291,8 +317,9 @@ class TicketValidation extends CommonDBTM{
       global $LANG;
       
       if (!haveRight('approve_ticket','r')) return false;
-      $canedit = haveRight('approve_ticket','w');
-      if ($ticket->canUpdateItem()) {
+      
+      $canedit = haveRight('approve_ticket','r');
+      if ($ticket->canViewItem() && $canedit) {
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>".$LANG['validation'][1]."</th></tr>";
@@ -312,12 +339,11 @@ class TicketValidation extends CommonDBTM{
          echo "<td><textarea cols='45' rows='3' name='comment_submission' maxlength='254'></textarea></td>"; 
          echo "</tr>";
          
-         if ($canedit) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan= '2' align='center'>";
-            echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
-            echo "</tr>";
-         }
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan= '2' align='center'>";
+         echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
+         echo "</tr>";
+         
          echo "</table>";
          echo "</form>";
       }
@@ -359,7 +385,6 @@ class TicketValidation extends CommonDBTM{
          echo "</tr>";
                
          while ($row = $DB->fetch_assoc($result)) {
-            
             
             $bgcolor = $this->getStatusColor($row['status']);
             $status = $this->getStatus($row['status']);
