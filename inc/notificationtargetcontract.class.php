@@ -52,12 +52,12 @@ class NotificationTargetContract extends NotificationTarget {
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $this->datas['##lang.contract.entity##'] = $LANG['entity'][0];
-      $this->datas['##contract.action##']      = ($event==ALERT_END?$LANG['mailing'][38]:
+      $this->datas['##contract.action##']      = ($event==Alert::END?$LANG['mailing'][38]:
                                                                     $LANG['mailing'][37]);
       $this->datas['##lang.contract.action##'] = $LANG['mailing'][39];
       $this->datas['##lang.contract.name##']   = $LANG['common'][16];
 
-      $this->datas['##lang.contract.time##']   = ($event==ALERT_END?$LANG['contract'][0]:
+      $this->datas['##lang.contract.time##']   = ($event==Alert::END?$LANG['contract'][0]:
                                                                     $LANG['contract'][1]);
       $this->datas['##lang.contract.number##'] = $LANG['financial'][4];
       $this->datas['##lang.contract.type##']   = $LANG['common'][17];

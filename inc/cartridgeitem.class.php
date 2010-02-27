@@ -433,7 +433,7 @@ class CartridgeItem extends CommonDBTM {
                      addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity)."&nbsp;:  $msg");
                   }
 
-                  $input["type"] = ALERT_THRESHOLD;
+                  $input["type"] = Alert::THRESHOLD;
                   $input["itemtype"] = 'CartridgeItem';
 
                   //// add alerts
