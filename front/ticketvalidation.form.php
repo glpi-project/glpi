@@ -52,12 +52,14 @@ if (isset($_POST["add"])) {
 	$newID=$validation->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["reject"])) {
+} else if (isset($_POST["update"])) {
+   
 	if (!empty($_POST["id"])) {
+      $validation->check($_POST["id"],'w');
 		$validation->getFromDB($_POST["id"]);
-		if($validation->fields["users_id_approval"]==getLoginUserID()) {
+		if ($validation->fields["users_id_approval"]==getLoginUserID()) {
 			$validation->update(array("id" => $_POST["id"]
-                                    , "status" => "rejected"
+                                    , "status" => $_POST["status"]
                                     , "approval_date" => date("Y-m-d H:i:s")
                                     , "comment_approval" => $_POST["comment_approval"]));
 		} else {
@@ -65,20 +67,15 @@ if (isset($_POST["add"])) {
       }
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
-	
-} else if (isset($_POST["accept"])) {
-	if (!empty($_POST["id"])) {
-		$validation->getFromDB($_POST["id"]);
-		if($validation->fields["users_id_approval"]==getLoginUserID()) {
-			$validation->update(array("id" => $_POST["id"]
-                                    , "status" => "accepted"
-                                    , "approval_date" => date("Y-m-d H:i:s")
-                                    , "comment_approval" => $_POST["comment_approval"]));
-		} else {
-         addMessageAfterRedirect($LANG['validation'][22],false,ERROR);
-      }
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["delete"])) {
+   $validation->check($_POST['id'], 'd');
+   $validation->delete($_POST);
+
+   /*Event::log($task->getField('tickets_id'), "ticket", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);*/
+   glpi_header(getItemTypeFormURL('TicketValidation'));
+
 /*
 } else if (isset($_GET["resend"])) {
 	if (!empty($_GET["id"])) {
@@ -103,12 +100,9 @@ if (isset($_POST["add"])) {
    
    if (!empty($_GET['id']) && $validation->getFromDB($_GET['id'])) {
       if ($validation->fields["users_id_approval"]==getLoginUserID()) {
-         if ($validation->fields["status"] == 'waiting') {
-            $validation->showApprobationForm($_GET["id"]);
-         } else {
-            $validation->showValidation($_GET["id"]);
-            //glpi_header(getItemTypeSearchURL('TicketValidation'));
-         }
+         
+            $validation->showForm($_GET["id"]);
+
       } else {
          echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>"; 
          echo "<b>".$LANG['validation'][22]."</b></div>"; 
