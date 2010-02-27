@@ -92,7 +92,7 @@ class TicketValidation  extends CommonDBChild {
     * @return boolean
     */
    function canDeleteItem() {
-      return $this->canUpdateItem();
+      return $this->canUpdate();
    }
    
    //TO BE CUSTOM
@@ -125,6 +125,13 @@ class TicketValidation  extends CommonDBChild {
 		
 		// Not attached to tickets -> not added
       if (!isset($input['tickets_id']) || $input['tickets_id'] <= 0) {
+         return false;
+      }
+      
+      $job = new Ticket;
+      if ($job->getFromDB($input["tickets_id"]) 
+            && strstr($job->fields["status"],"solved") 
+               || strstr($job->fields["status"],"closed")) {
          return false;
       }
       
@@ -164,6 +171,8 @@ class TicketValidation  extends CommonDBChild {
 	function prepareInputForUpdate($input) {
 		global $LANG;
 		
+		$job = new Ticket;
+		
       if ($input["status"] == "rejected" && (!isset($input["comment_approval"]) || $input["comment_approval"] == '')) {
          addMessageAfterRedirect($LANG['validation'][29],false,ERROR);
          return false;
@@ -179,6 +188,7 @@ class TicketValidation  extends CommonDBChild {
       } else {
          $input["approval_date"] = $_SESSION["glpi_currenttime"];
       }
+      
 		return $input;
 	}
    
@@ -231,7 +241,7 @@ class TicketValidation  extends CommonDBChild {
       $tab[4]['table']     = 'glpi_users';
       $tab[4]['field']     = 'name';
       $tab[4]['linkfield'] = 'users_id_approval';
-      $tab[4]['name']      = $LANG['validation'][14];
+      $tab[4]['name']      = $LANG['validation'][21];
       $tab[4]['datatype']      = 'itemlink';
       $tab[4]['itemlink_type'] = 'User';
       
@@ -360,8 +370,6 @@ class TicketValidation  extends CommonDBChild {
    function showApprobationTicketForm($ticket) {
       global $LANG;
       
-      if (!haveRight('approve_ticket','r')) return false;
-      
       $canedit = haveRight('approve_ticket','r');
       if ($ticket->can($ticket->fields['id'], 'r') 
             && !strstr($ticket->fields["status"],"solved") 
@@ -373,10 +381,10 @@ class TicketValidation  extends CommonDBChild {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['validation'][21]."</td>";
          echo "<td>";
-         echo "<input type='hidden' name='tickets_id' value='".$ticket->getField('id')."'>";
-         echo "<input type='hidden' name='entities_id' value='".$ticket->getField('entities_id')."'>";
+         echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
+         echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
          User::dropdown(array('name'  => "users_id_approval",
-                              'entity' => $ticket->getField('entities_id'),
+                              'entity' => $ticket->fields['entities_id'],
                               'right'  => 'approve'));
          echo "</td>";
          echo "</tr>";
@@ -434,7 +442,7 @@ class TicketValidation  extends CommonDBChild {
                         $LANG['validation'][3],
                         $LANG['validation'][5],
                         $LANG['validation'][4],
-                        $LANG['validation'][14],
+                        $LANG['validation'][21],
                         $LANG['validation'][6]);
          $nb_colonnes = count($colonnes);
          
@@ -559,7 +567,7 @@ class TicketValidation  extends CommonDBChild {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['validation'][14].":</td>";
+      echo "<td>".$LANG['validation'][21].":</td>";
       echo "<td>".getUserName($this->fields["users_id_approval"])."</td>";
 
       echo "<td>".$LANG['validation'][28].":</td>";
