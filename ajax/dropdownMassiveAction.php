@@ -86,7 +86,17 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "add_task" :
          TicketTask::showFormMassiveAction();
          break;
-
+      
+      case "submit_approval" :
+         TicketValidation::showFormMassiveAction();
+         break;
+         
+      case "approve_ticket" :
+         TicketValidation::dropdownStatus("status");
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
+               $LANG['buttons'][2]."\" >\n";
+         break;
+         
       case "change_authtype" :
          $rand = Auth::dropdown(array('name'=>'authtype'));
          $paramsmassaction=array('authtype'=>'__VALUE__');

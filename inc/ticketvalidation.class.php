@@ -164,13 +164,21 @@ class TicketValidation  extends CommonDBChild {
 	function prepareInputForUpdate($input) {
 		global $LANG;
 		
-      if ($input["status"] == "rejected" && $input["comment_approval"] == '') {
+      if ($input["status"] == "rejected" && (!isset($input["comment_approval"]) || $input["comment_approval"] == '')) {
          addMessageAfterRedirect($LANG['validation'][29],false,ERROR);
          return false;
       }
       
-      $input["submission_date"] = $_SESSION["glpi_currenttime"];
+      if ($this->fields["users_id_approval"] != getLoginUserID()) {
+         return false;
+      }
       
+      if ($input["status"] == "waiting") {
+         $input["comment_approval"] ='';
+         $input["approval_date"] ='NULL';
+      } else {
+         $input["approval_date"] = $_SESSION["glpi_currenttime"];
+      }
 		return $input;
 	}
    
@@ -386,6 +394,23 @@ class TicketValidation  extends CommonDBChild {
          echo "</table>";
          echo "</form>";
       }
+   }
+   
+   /**
+    * Form for Followup on Massive action
+    */
+   static function showFormMassiveAction() {
+      global $LANG;
+
+      echo "&nbsp;".$LANG['validation'][21]."&nbsp;: ";
+       User::dropdown(array('name'  => "users_id_approval",
+                              'entity' => $_SESSION["glpiactive_entity"],
+                              'right'  => 'approve'));
+
+      echo "<br>".$LANG['common'][25]."&nbsp;: ";
+      echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
+
+      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
    }
    
    /**
