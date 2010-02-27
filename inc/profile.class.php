@@ -408,8 +408,8 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
       $options = array("" => $LANG['profiles'][12],
-                        "r" => $LANG['validation'][21], 
-                        "w"=>$LANG['Menu'][15]);
+                        "r" => $LANG['validation'][26], 
+                        "w" => $LANG['validation'][21]);
       Dropdown::showFromArray("approve_ticket", $options,
                                     array('value' => $this->fields["approve_ticket"]));
       echo "</td></tr>\n";
@@ -678,8 +678,8 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
       $options = array("" => $LANG['profiles'][12],
-                        "r" => $LANG['validation'][21], 
-                        "w"=>$LANG['Menu'][15]);
+                        "r" => $LANG['validation'][26], 
+                        "w" => $LANG['validation'][21]);
       Dropdown::showFromArray("approve_ticket", $options,
                                     array('value' => $this->fields["approve_ticket"]));
       echo "</td>";
