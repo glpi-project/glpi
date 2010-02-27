@@ -505,6 +505,9 @@ class NotificationTargetTicket extends NotificationTarget {
       
       //Approval infos
       $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+      if (isset($options['approval_id']) || $options['approval_id']) {
+         $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['approval_id']."'";
+      }
       $restrict .= " ORDER BY `submission_date` DESC";
       $approvals = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
       

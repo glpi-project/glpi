@@ -122,7 +122,7 @@ class TicketValidation extends CommonDBTM{
       $job = new Ticket;
       $mailsend = false;
       if ($job->getFromDB($this->input["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $options = array();
+         $options = array('approval_id' => $this->input["id"]);
          $mailsend = NotificationEvent::raiseEvent('approval',$job,$options);
       }
       if ($mailsend) {
@@ -144,7 +144,7 @@ class TicketValidation extends CommonDBTM{
 		$job = new Ticket;
       $mailsend = false;
       if ($job->getFromDB($this->fields["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $options = array();
+         $options = array('approval_id' => $this->input["id"]);
          $mailsend = NotificationEvent::raiseEvent('approval',$job,$options);
       }
 		// Add log entry in the ticket
