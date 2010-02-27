@@ -2002,9 +2002,9 @@ $LANG['validation'][12]="Renvoyer un email";
 $LANG['validation'][13]="Demande d'approbation envoyée à";
 $LANG['validation'][14]="Approbateur";
 $LANG['validation'][15]="Ticket attendant votre approbation";
-$LANG['validation'][16]="Facultatif";
-$LANG['validation'][17]="Approuver";
-$LANG['validation'][18]="Refuser";
+$LANG['validation'][16]="Facultatif en cas d'approbation";
+$LANG['validation'][17]="Demandeur du ticket";
+$LANG['validation'][18]="Demandeur de l'approbation";
 $LANG['validation'][19]="Ticket approuvé";
 $LANG['validation'][20]="Ticket non approuvé";
 $LANG['validation'][21]="Approbateur";
@@ -2015,5 +2015,6 @@ $LANG['validation'][25]="Aucune demande d'approbation en cours";
 $LANG['validation'][26]="Demande d'approbation";
 $LANG['validation'][27]="Une demande d'approbation a été soumise";
 $LANG['validation'][28]="Statut de la demande d'approbation";
+$LANG['validation'][29]="En cas de refus d'approbation, vous devez indiquer un motif";
 
 ?>

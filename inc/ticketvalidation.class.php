@@ -36,11 +36,15 @@ if (!defined('GLPI_ROOT')) {
 /**
  * TicketValidation class
  */
-class TicketValidation extends CommonDBTM{
+class TicketValidation  extends CommonDBChild {
 
    // From CommonDBTM
    public $dohistory = true;
-
+   
+   // From CommonDBChild
+   public $itemtype = 'Ticket';
+   public $items_id = 'tickets_id';
+   
    static function getTypeName() {
       global $LANG;
 
@@ -50,7 +54,11 @@ class TicketValidation extends CommonDBTM{
    function canCreate() {
       return haveRight('approve_ticket', 'r');
    }
-
+   
+   function canView() {
+      return haveRight('approve_ticket', 'w');
+   }
+   
    function canUpdate() {
       return haveRight('approve_ticket', 'w');
    }
@@ -109,6 +117,11 @@ class TicketValidation extends CommonDBTM{
    function prepareInputForAdd($input) {
 		global $LANG;
 		
+		// Not attached to tickets -> not added
+      if (!isset($input['tickets_id']) || $input['tickets_id'] <= 0) {
+         return false;
+      }
+      
 		$input["name"] = addslashes($LANG['validation'][26]." - ".$LANG['job'][38]." ".$input["tickets_id"]);
 		$input["users_id"] = getLoginUserID();
 		$input["submission_date"] = $_SESSION["glpi_currenttime"];
@@ -135,11 +148,21 @@ class TicketValidation extends CommonDBTM{
          }
       }
 		// Add log entry in the ticket
-      $changes[0] = 0;
+      /*$changes[0] = 0;
       $changes[1] = '';
       $changes[2] = addslashes($LANG['validation'][13]." ".getUserName($this->fields["users_id_approval"]));
       Log::history($this->getField('tickets_id'),'Ticket',
-                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
+                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);*/
+	}
+	
+	function prepareInputForUpdate($input) {
+		global $LANG;
+		
+      if ($input["status"] == "rejected" && $input["comment_approval"] == '') {
+         addMessageAfterRedirect($LANG['validation'][29],false,ERROR);
+         return false;
+      }
+		return $input;
 	}
    
    function post_updateItem($history=1) {
@@ -148,11 +171,11 @@ class TicketValidation extends CommonDBTM{
 		$job = new Ticket;
       $mailsend = false;
       if ($job->getFromDB($this->fields["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $options = array('approval_id' => $this->input["id"]);
+         $options = array('approval_id' => $this->fields["id"]);
          $mailsend = NotificationEvent::raiseEvent('approval',$job,$options);
       }
 		// Add log entry in the ticket
-      $changes[0] = 0;
+      /*$changes[0] = 0;
       $changes[1] = '';
       if ($this->fields["status"]=="accepted") {
          $validation = getUserName($this->fields["users_id_approval"]). " : ".$LANG['validation'][19];
@@ -161,7 +184,7 @@ class TicketValidation extends CommonDBTM{
       }  
       $changes[2] = $validation;
       Log::history($this->getField('tickets_id'),'Ticket',
-                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
+                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);*/
 	}
 	
    function getSearchOptions() {
@@ -432,30 +455,33 @@ class TicketValidation extends CommonDBTM{
     * @param $ID integer ID of the item
     *
     **/
-   function showApprobationForm($ID){
+   function showForm($ID, $options=array()) {
       global $LANG;
       
-      $this->getFromDB($ID);
       $ticket = new Ticket();
       $ticket->getFromDB($this->fields["tickets_id"]);
-     
-      $canedit = haveRight('approve_ticket','w');
-      
-      echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".$LANG['validation'][15]."</th></tr>";
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $input=array('tickets_id' => $ticket->getField('id'));
+         $this->check(-1,'w',$input);
+      }
+
+      $options['colspan'] = 1;
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][4].":</td>";
+      echo "<td>".$LANG['validation'][17].":</td>";
       echo "<td>".getUserName($ticket->fields["users_id"])."</td>";
       echo "</tr>";
-
-      if ($ticket->fields["users_id_assign"]) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][34].":</td>";
-         echo "<td>".getUserName($ticket->fields["users_id_assign"])."</td>";
-         echo "</tr>";
-      }
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['validation'][18].":</td>";
+      echo "<td>".getUserName($this->fields["users_id"])."</td>";
+      echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][57].":</td>";
@@ -483,24 +509,19 @@ class TicketValidation extends CommonDBTM{
       }
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['validation'][6]." (".$LANG['validation'][16]."):</td>";
-      echo "<td><textarea cols='70' rows='3' name='comment_approval' maxlength='254'></textarea>";
+      echo "<td>".$LANG['validation'][28].":</td>";
+      echo "<td>";
+      TicketValidation::dropdownStatus("status",$this->fields["status"]);
       echo "</td>";
       echo "</tr>";
       
-      if ($canedit) {
-         echo "<tr class='tab_bg_2 center'>";
-         echo "<td>";
-         echo "<input type='hidden' name='id' value='".$this->fields["id"]."'>";
-         echo "<input type='hidden' name='tickets_id' value='".$tickets_id."'>";
-         echo "<input type='submit' name='accept' value='".$LANG['validation'][17]."' class='submit'>";
-         echo "</td>";
-         echo "<td>";
-         echo "<input type='submit' name='reject' value='".$LANG['validation'][18]."' class='submit'>";
-         echo "</td>";
-         echo "</tr>";
-      }
-      echo "</table></div></form>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['validation'][6]." (".$LANG['validation'][16]."):</td>";
+      echo "<td><textarea cols='70' rows='3' name='comment_approval' maxlength='254'>".$this->fields["comment_approval"]."</textarea>";
+      echo "</td>";
+      echo "</tr>";
+      
+      $this->showFormButtons($options);
    }
    
    /**
