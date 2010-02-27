@@ -65,7 +65,7 @@ class SoftwareLicense extends CommonDBTM {
       // Clean end alert if expire is after old one
       if ((isset($this->oldvalues['expire']) && ($this->oldvalues['expire'] < $this->fields['expire']))) {
          $alert=new Alert();
-         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],Alert::END);
       }
    }
 
@@ -376,7 +376,7 @@ class SoftwareLicense extends CommonDBTM {
                 LEFT JOIN `glpi_alerts`
                      ON (`glpi_softwarelicenses`.`id` = `glpi_alerts`.`items_id`
                          AND `glpi_alerts`.`itemtype` = 'SoftwareLicense'
-                         AND `glpi_alerts`.`type` = '".ALERT_END."')
+                         AND `glpi_alerts`.`type` = '".Alert::END."')
                 WHERE `glpi_alerts`.`date` IS NULL
                       AND `glpi_softwarelicenses`.`expire` IS NOT NULL
                       AND `glpi_softwarelicenses`.`expire` < CURDATE()
@@ -418,7 +418,7 @@ class SoftwareLicense extends CommonDBTM {
                $alert=new Alert();
                $input["itemtype"] = 'SoftwareLicense';
 
-               $input["type"]=ALERT_END;
+               $input["type"]=Alert::END;
                if (isset($items[$entity])) {
                   foreach ($items[$entity] as $ID) {
                      $input["items_id"]=$ID;

@@ -104,7 +104,7 @@ class Contract extends CommonDBTM {
       if ((isset($this->oldvalues['begin_date']) && ($this->oldvalues['begin_date'] < $this->fields['begin_date']))
           || (isset($this->oldvalues['duration']) && ($this->oldvalues['duration'] < $this->fields['duration']))) {
          $alert=new Alert();
-         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],Alert::END);
       }
 
       // Clean notice alert if begin_date is after old one
@@ -114,7 +114,7 @@ class Contract extends CommonDBTM {
           || (isset($this->oldvalues['duration']) && ($this->oldvalues['duration'] < $this->fields['duration']))
           || (isset($this->oldvalues['notice']) && ($this->oldvalues['notice'] > $this->fields['notice']))) {
          $alert=new Alert();
-         $alert->clear($this->getType(),$this->fields['id'],ALERT_NOTICE);
+         $alert->clear($this->getType(),$this->fields['id'],Alert::NOTICE);
       }
    }
 
@@ -956,8 +956,8 @@ class Contract extends CommonDBTM {
               FROM `glpi_contracts`
               LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
                                           AND `glpi_alerts`.`itemtype` = 'Contract'
-                                          AND `glpi_alerts`.`type`='".ALERT_NOTICE."')
-              WHERE (`glpi_contracts`.`alert` & ".pow(2,ALERT_NOTICE).") >'0'
+                                          AND `glpi_alerts`.`type`='".Alert::NOTICE."')
+              WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::NOTICE).") >'0'
                     AND `glpi_contracts`.`is_deleted` = '0'
                     AND `glpi_contracts`.`begin_date` IS NOT NULL
                     AND `glpi_contracts`.`duration` <> '0'
@@ -973,8 +973,8 @@ class Contract extends CommonDBTM {
               FROM `glpi_contracts`
               LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
                                           AND `glpi_alerts`.`itemtype` = 'Contract'
-                                          AND `glpi_alerts`.`type`='".ALERT_END."')
-              WHERE (`glpi_contracts`.`alert` & ".pow(2,ALERT_END).") > '0'
+                                          AND `glpi_alerts`.`type`='".Alert::END."')
+              WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::END).") > '0'
                     AND `glpi_contracts`.`is_deleted` = '0'
                     AND `glpi_contracts`.`begin_date` IS NOT NULL
                     AND `glpi_contracts`.`duration` <> '0'
@@ -982,7 +982,7 @@ class Contract extends CommonDBTM {
                                          (`glpi_contracts`.`duration`) MONTH),CURDATE()) < '0'
                     AND `glpi_alerts`.`date` IS NULL";
 
-      $querys = array(ALERT_NOTICE=>$query_notice, ALERT_END=>$query_end);
+      $querys = array(Alert::NOTICE=>$query_notice, Alert::END=>$query_end);
 
       $contract_infos = array();
       $contract_messages = array();
@@ -994,7 +994,7 @@ class Contract extends CommonDBTM {
                         getWarrantyExpir($data["begin_date"],
                                          $data["duration"],
                                          $data["notice"])."<br>\n";
-            $contract_infos[$type][$entity][] = $data;
+            $contract_infos[$type][$entity][$data['id']] = $data;
 
             if (!isset($contract_messages[$type][$entity])) {
                $contract_messages[$type][$entity] = $LANG['mailing'][37]."<br />";
@@ -1006,7 +1006,7 @@ class Contract extends CommonDBTM {
 
       foreach ($querys as $type => $query) {
          foreach ($contract_infos[$type] as $entity => $contracts) {
-            if (NotificationEvent::raiseEvent(($type==ALERT_NOTICE?"notice":"end"),
+            if (NotificationEvent::raiseEvent(($type==Alert::NOTICE?"notice":"end"),
                                               new Contract(),
                                               array('entities_id'=>$entity,
                                                     'contracts'=>$contracts))) {
@@ -1025,8 +1025,18 @@ class Contract extends CommonDBTM {
                $input["itemtype"] = 'Contract';
                $input["type"]=$type;
                foreach ($contracts as $id => $contract) {
+                  if ($type == Alert::END) {
+                     $alert_id = Alert::alertExists('Contract',$id,$type);
+                  }
                   $input["items_id"]=$id;
-                  $alert->add($input);
+
+                  if ($type == Alert::NOTICE || (Alert::END && !$alert_id)) {
+                     $alert->add($input);
+                  }
+                  else {
+                     $input['id'] = $alert_id;
+                     $alert->update($input);
+                  }
                   unset($alert->fields['ID']);
                }
             } else {
@@ -1211,12 +1221,12 @@ class Contract extends CommonDBTM {
 
       echo "<select name='$myname'>";
       echo "<option value='0' ".($value==0?"selected":"")." >-------</option>";
-      echo "<option value='".pow(2,ALERT_END)."' ".($value==pow(2,ALERT_END)?"selected":"")." >".
+      echo "<option value='".pow(2,Alert::END)."' ".($value==pow(2,Alert::END)?"selected":"")." >".
              $LANG['buttons'][32]."</option>";
-      echo "<option value='".pow(2,ALERT_NOTICE)."' ".($value==pow(2,ALERT_NOTICE)?"selected":"")." >".
+      echo "<option value='".pow(2,Alert::NOTICE)."' ".($value==pow(2,Alert::NOTICE)?"selected":"")." >".
              $LANG['financial'][10]."</option>";
-      echo "<option value='".(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))."' ".
-             ($value==(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))?"selected":"")." >".
+      echo "<option value='".(pow(2,Alert::END)+pow(2,Alert::NOTICE))."' ".
+             ($value==(pow(2,Alert::END)+pow(2,Alert::NOTICE))?"selected":"")." >".
              $LANG['buttons'][32]." + ".$LANG['financial'][10]."</option>";
       echo "</select>";
    }

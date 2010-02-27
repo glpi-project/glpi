@@ -42,6 +42,11 @@ if (!defined('GLPI_ROOT')) {
  */
 class Alert extends CommonDBTM {
 
+   // ALERTS TYPE
+   const THRESHOLD = 1;
+   const END = 2;
+   const NOTICE = 3;
+
    function prepareInputForAdd($input) {
       if (!isset($input['date']) || empty($input['date'])) {
          $input['date']=date("Y-m-d H:i:s");;
@@ -95,6 +100,20 @@ class Alert extends CommonDBTM {
 
    }
 
+   static function alertExists($itemtype='',$items_id='',$type='') {
+      global $DB;
+      $query = "SELECT `id` FROM `glpi_alerts`
+                WHERE `itemtype`='$itemtype'
+                  AND `type`='$type'
+                     AND `items_id`='$items_id'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         return $DB->result($result,0,'id');
+      }
+      else {
+         return false;
+      }
+   }
 }
 
 ?>

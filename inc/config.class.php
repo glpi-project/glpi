@@ -233,8 +233,8 @@ class Config extends CommonDBTM {
       echo "<select name=\"default_infocom_alert\">";
       echo "<option value=\"0\" " . ($CFG_GLPI["default_infocom_alert"] == 0 ? " selected " : "") .
              " >-----</option>";
-      echo "<option value=\"" . pow(2, ALERT_END) . "\" " .
-             ($CFG_GLPI["default_infocom_alert"] == pow(2, ALERT_END) ? " selected " : "") . " >" .
+      echo "<option value=\"" . pow(2, Alert::END) . "\" " .
+             ($CFG_GLPI["default_infocom_alert"] == pow(2, Alert::END) ? " selected " : "") . " >" .
              $LANG['financial'][80] . " </option>";
       echo "</select>";
       echo "</td></tr>";

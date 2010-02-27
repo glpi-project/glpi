@@ -397,7 +397,7 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 drop table glpi_licenses" . $LANG['update'][90] . $DB->error());
 
 		// Drop alerts on licenses
-		$query = "DELETE FROM glpi_alerts WHERE glpi_alerts.device_type='".SOFTWARELICENSE_TYPE."' AND glpi_alerts.type='".ALERT_END."'";
+		$query = "DELETE FROM glpi_alerts WHERE glpi_alerts.device_type='".SOFTWARELICENSE_TYPE."' AND glpi_alerts.type='".Alert::END."'";
 		$DB->query($query) or die("0.72 clean alerts for licenses infocoms" . $LANG['update'][90] . $DB->error());
 
 	} // TableExists("glpi_licenses")

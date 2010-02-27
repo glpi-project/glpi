@@ -3216,20 +3216,20 @@ class Search {
             return $out;
 
          case "glpi_infocoms.alert" :
-            if ($data[$NAME.$num]==pow(2,ALERT_END)) {
+            if ($data[$NAME.$num]==pow(2,Alert::END)) {
                return $LANG['financial'][80];
             }
             return "";
 
          case "glpi_contracts.alert" :
             switch ($data[$NAME.$num]) {
-               case pow(2,ALERT_END);
+               case pow(2,Alert::END);
                   return $LANG['buttons'][32];
 
-               case pow(2,ALERT_NOTICE);
+               case pow(2,Alert::NOTICE);
                   return $LANG['financial'][10];
 
-               case pow(2,ALERT_END) + pow(2,ALERT_NOTICE);
+               case pow(2,Alert::END) + pow(2,Alert::NOTICE);
                   return $LANG['buttons'][32]." + ".$LANG['financial'][10];
             }
             return "";

@@ -146,7 +146,7 @@ class Infocom extends CommonDBTM {
           && ($this->oldvalues['warranty_duration'] < $this->fields['warranty_duration']))) {
 
          $alert=new Alert();
-         $alert->clear($this->getType(),$this->fields['id'],ALERT_END);
+         $alert->clear($this->getType(),$this->fields['id'],Alert::END);
       }
    }
 
@@ -244,8 +244,8 @@ class Infocom extends CommonDBTM {
               FROM `glpi_infocoms`
               LEFT JOIN `glpi_alerts` ON (`glpi_infocoms`.`id` = `glpi_alerts`.`items_id`
                                           AND `glpi_alerts`.`itemtype` = 'Infocom'
-                                          AND `glpi_alerts`.`type`='".ALERT_END."')
-              WHERE (`glpi_infocoms`.`alert` & ".pow(2,ALERT_END).") >'0'
+                                          AND `glpi_alerts`.`type`='".Alert::END."')
+              WHERE (`glpi_infocoms`.`alert` & ".pow(2,Alert::END).") >'0'
                     AND `glpi_infocoms`.`warranty_duration`>'0'
                     AND `glpi_infocoms`.`buy_date` IS NOT NULL
                     AND DATEDIFF(ADDDATE(`glpi_infocoms`.`buy_date`, INTERVAL
@@ -293,7 +293,7 @@ class Infocom extends CommonDBTM {
                      addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).": $msg");
                   }
 
-                  $input["type"] = ALERT_END;
+                  $input["type"] = Alert::END;
                   $input["itemtype"] = 'Infocom';
 
                   //// add alerts
@@ -328,7 +328,7 @@ class Infocom extends CommonDBTM {
 
       echo "<select name=\"$name\">";
       echo "<option value='0'".($value==0?" selected ":"")." >-----</option>";
-      echo "<option value=\"".pow(2,ALERT_END)."\" ".($value==pow(2,ALERT_END)?" selected ":"")." >".
+      echo "<option value=\"".pow(2,Alert::END)."\" ".($value==pow(2,Alert::END)?" selected ":"")." >".
              $LANG['financial'][80]." </option>";
       echo "</select>";
    }

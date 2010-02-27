@@ -354,7 +354,7 @@ class ConsumableItem extends CommonDBTM {
                      addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity)." :  $msg");
                   }
 
-                  $input["type"] = ALERT_THRESHOLD;
+                  $input["type"] = Alert::THRESHOLD;
                   $input["itemtype"] = 'ConsumableItem';
 
                   // add alerts
