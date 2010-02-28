@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Tiešām vēlies dzēst šo objektu no nomājamo sarak
 $LANG['reservation'][39]="Visas aktuālās rezervācijas tiks noņemtas."; 
 $LANG['reservation'][40]="Rezervācija veikta. E-pasts nosūtīts"; 
 
-$LANG['ruleldap'][1]="no LDAP kritērijiem"; 
-$LANG['ruleldap'][2]="Kritēriji nav definēti"; 
-$LANG['ruleldap'][3]="Pievienot LDAP kritēriju"; 
+$LANG['rulesengine'][138]="no LDAP kritērijiem"; 
+$LANG['rulesengine'][139]="Kritēriji nav definēti"; 
+$LANG['rulesengine'][140]="Pievienot LDAP kritēriju"; 
 
 $LANG['rulesengine'][0]="ir"; 
 $LANG['rulesengine'][1]="nav"; 

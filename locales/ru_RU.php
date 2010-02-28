@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Действительно удалить из спи�
 $LANG['reservation'][39]="Это удалит все текущие выдачи данной вещи."; 
 $LANG['reservation'][40]="Reservation done. Email sent to"; 
 
-$LANG['ruleldap'][1]="критериями LDAP"; 
-$LANG['ruleldap'][2]="No criteria defined"; 
-$LANG['ruleldap'][3]="Добавить критерий LDAP"; 
+$LANG['rulesengine'][138]="критериями LDAP"; 
+$LANG['rulesengine'][139]="No criteria defined"; 
+$LANG['rulesengine'][140]="Добавить критерий LDAP"; 
 
 $LANG['rulesengine'][0]="равен"; 
 $LANG['rulesengine'][1]="не равен"; 

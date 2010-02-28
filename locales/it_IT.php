@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Sei sicuro di voler rendere questo dispositivo non pre
 $LANG['reservation'][39]="Questa operazione eliminerà anche tutte le prenotazioni."; 
 $LANG['reservation'][40]="Prenotazione registrata. Una e-mail è stata inviata a"; 
 
-$LANG['ruleldap'][1]="dei criteri LDAP"; 
-$LANG['ruleldap'][2]="Nessun criterio definito"; 
-$LANG['ruleldap'][3]="Aggiungi criterio LDAP"; 
+$LANG['rulesengine'][138]="dei criteri LDAP"; 
+$LANG['rulesengine'][139]="Nessun criterio definito"; 
+$LANG['rulesengine'][140]="Aggiungi criterio LDAP"; 
 
 $LANG['rulesengine'][0]="è uguale a"; 
 $LANG['rulesengine'][1]="non è uguale a"; 

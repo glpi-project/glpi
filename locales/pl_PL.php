@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Czy jesteś pewny że chcesz usunąć tą pozycje z li
 $LANG['reservation'][39]="To spowoduje usunięcie wszystkich aktywnych rezerwacji."; 
 $LANG['reservation'][40]="Rezarwacja zakończona. Email wysłany do"; 
 
-$LANG['ruleldap'][1]="Kryteria LDAP"; 
-$LANG['ruleldap'][2]="Nie zdefiniowana kryterii"; 
-$LANG['ruleldap'][3]="Dodaj kryteria LDAP"; 
+$LANG['rulesengine'][138]="Kryteria LDAP"; 
+$LANG['rulesengine'][139]="Nie zdefiniowana kryterii"; 
+$LANG['rulesengine'][140]="Dodaj kryteria LDAP"; 
 
 $LANG['rulesengine'][0]="jest"; 
 $LANG['rulesengine'][1]="nie jest"; 

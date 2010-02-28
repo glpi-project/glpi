@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -29,38 +30,16 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
+// Original Author of file: Olivier Andreotti
 // Purpose of file:
 // ----------------------------------------------------------------------
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// OCS Rules collection class
-class RuleMailCollectorCollection extends RuleCollection {
-
-   // From RuleCollection
-   public $stop_on_first_match=true;
-   public $right = 'rule_mailcollector';
-   public $menu_option='mailcollector';
-   public $specific_parameters = true;
-
-   function getTitle() {
-      global $LANG;
-
-      return $LANG['rulesengine'][70];
-   }
-
-   function prepareInputDataForProcess($input,$params) {
-      $fields = array('mailcollector');
-      foreach ($fields as $field) {
-         if (isset($params[$field])) {
-            $input[$field] = $params[$field];
-         }
-      }
-      return $input;
-   }
+/// LDAP criteria class
+class RuleMailCollectorParameter extends RuleParameter {
+   public $menu_type = "mailcollector";
 }
-
 
 ?>

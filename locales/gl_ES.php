@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Está seguro de querer volver este elemento non reserv
 $LANG['reservation'][39]="Isto borrará todas as reservas en curso."; 
 $LANG['reservation'][40]="Reserva completada. Enviado un correo-e a"; 
 
-$LANG['ruleldap'][1]="dos criterios LDAP"; 
-$LANG['ruleldap'][2]="Non se definiron criterios"; 
-$LANG['ruleldap'][3]="Engadir un criterio LDAP"; 
+$LANG['rulesengine'][138]="dos criterios LDAP"; 
+$LANG['rulesengine'][139]="Non se definiron criterios"; 
+$LANG['rulesengine'][140]="Engadir un criterio LDAP"; 
 
 $LANG['rulesengine'][0]="é"; 
 $LANG['rulesengine'][1]="non é"; 

@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Tem a certeza que deseja eliminar este artigo da lista
 $LANG['reservation'][39]="Isto removerá todas as reservas em progresso."; 
 $LANG['reservation'][40]="Reserva efectuada. Email envaido a"; 
 
-$LANG['ruleldap'][1]="de critérios LDAP"; 
-$LANG['ruleldap'][2]="Critérios não definidos"; 
-$LANG['ruleldap'][3]="Adicionar critério LDAP"; 
+$LANG['rulesengine'][138]="de critérios LDAP"; 
+$LANG['rulesengine'][139]="Critérios não definidos"; 
+$LANG['rulesengine'][140]="Adicionar critério LDAP"; 
 
 $LANG['rulesengine'][0]="é"; 
 $LANG['rulesengine'][1]="não é"; 

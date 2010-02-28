@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="האם אתה בטוח שרוצה למחוק את הפ
 $LANG['reservation'][39]="הדבר יגרום לביטול של כל ההשאלות הנוכחיות."; 
 $LANG['reservation'][40]="השאלה בוצעה. הודעת מייל נשלחה אל"; 
 
-$LANG['ruleldap'][1]="of LDAP criteria"; 
-$LANG['ruleldap'][2]="No criteria defined"; 
-$LANG['ruleldap'][3]="Add an LDAP criteria"; 
+$LANG['rulesengine'][138]="of LDAP criteria"; 
+$LANG['rulesengine'][139]="No criteria defined"; 
+$LANG['rulesengine'][140]="Add an LDAP criteria"; 
 
 $LANG['rulesengine'][0]="is"; 
 $LANG['rulesengine'][1]="is not"; 

@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Είσθε σίγουροι ότι θέλετε να �
 $LANG['reservation'][39]="Θα αφαιρέσετε όλες τις κρατήσεις υπό εξέλιξη."; 
 $LANG['reservation'][40]="Reservation done. Email sent to"; 
 
-$LANG['ruleldap'][1]="των κριτηρίων LDAP"; 
-$LANG['ruleldap'][2]="δεν βρέθηκαν κριτήρια"; 
-$LANG['ruleldap'][3]="προσθήκη κριτηρίου LDAP"; 
+$LANG['rulesengine'][138]="των κριτηρίων LDAP"; 
+$LANG['rulesengine'][139]="δεν βρέθηκαν κριτήρια"; 
+$LANG['rulesengine'][140]="προσθήκη κριτηρίου LDAP"; 
 
 $LANG['rulesengine'][0]="είναι"; 
 $LANG['rulesengine'][1]="δεν είναι"; 

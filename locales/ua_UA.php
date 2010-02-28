@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Дійсно видалити зі списку обл
 $LANG['reservation'][39]="Це видалить всі поточні видачі даного обладнання."; 
 $LANG['reservation'][40]="Reservation done. Email sent to"; 
 
-$LANG['ruleldap'][1]="критеріями LDAP"; 
-$LANG['ruleldap'][2]="No criteria defined"; 
-$LANG['ruleldap'][3]="Додати критерій LDAP"; 
+$LANG['rulesengine'][138]="критеріями LDAP"; 
+$LANG['rulesengine'][139]="No criteria defined"; 
+$LANG['rulesengine'][140]="Додати критерій LDAP"; 
 
 $LANG['rulesengine'][0]="рівний"; 
 $LANG['rulesengine'][1]="не рівний"; 

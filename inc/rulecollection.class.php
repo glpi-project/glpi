@@ -58,6 +58,8 @@ class RuleCollection {
    /// Menu option
    var $menu_option="";
 
+   var $specific_parameters = false;
+
    /**
    * Get Collection Size : retrieve the number of rules
    *
@@ -525,7 +527,6 @@ class RuleCollection {
    * @return the output array updated by actions
    **/
    function testAllRules($input=array(),$output=array(),$params=array()) {
-      logDebug($this->RuleList);
       // Get Collection datas
       $this->getCollectionDatas(1,1);
 
@@ -717,6 +718,15 @@ class RuleCollection {
       else {
          return NULL;
       }
+   }
+
+   function specificParametersTitle() {
+      global $LANG,$CFG_GLPI;
+
+      $link = getItemTypeSearchURL($this->getRuleClassName()."Parameter");
+
+      displayTitle('','','',array($link=>$LANG['rulesengine'][138]));
+      echo "<br>";
    }
 }
 

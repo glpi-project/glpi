@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Er du sikker på at du vil slette dette objekt fra lå
 $LANG['reservation'][39]="Dette vil fjerne alle bestillinger pågår"; 
 $LANG['reservation'][40]="Antall ferdig. E-post sendt til"; 
 
-$LANG['ruleldap'][1]="av LDAP kriteriene"; 
-$LANG['ruleldap'][2]="Ingen kriterier definert"; 
-$LANG['ruleldap'][3]="Legg til en LDAP-kriteriene"; 
+$LANG['rulesengine'][138]="av LDAP kriteriene"; 
+$LANG['rulesengine'][139]="Ingen kriterier definert"; 
+$LANG['rulesengine'][140]="Legg til en LDAP-kriteriene"; 
 
 $LANG['rulesengine'][0]="er"; 
 $LANG['rulesengine'][1]="ikke"; 

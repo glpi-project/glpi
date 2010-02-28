@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Està segur de voler tornar aquest element no reservab
 $LANG['reservation'][39]="Això eliminarà totes les reserves en curs."; 
 $LANG['reservation'][40]="Reserva completada. Enviant un correu electrònic a"; 
 
-$LANG['ruleldap'][1]="dels criteris LDAP"; 
-$LANG['ruleldap'][2]="No s'han definit criteris"; 
-$LANG['ruleldap'][3]="Afegir un criteri LDAP"; 
+$LANG['rulesengine'][138]="dels criteris LDAP"; 
+$LANG['rulesengine'][139]="No s'han definit criteris"; 
+$LANG['rulesengine'][140]="Afegir un criteri LDAP"; 
 
 $LANG['rulesengine'][0]="és"; 
 $LANG['rulesengine'][1]="no es"; 

@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Ar tikrai norite pašalinti elementą iš nuomojamų s
 $LANG['reservation'][39]="Bus atšauktos vykdomos rezervacijos"; 
 $LANG['reservation'][40]="Rezervavimas atliktas. Laiškas išsiūstas"; 
 
-$LANG['ruleldap'][1]="LDAP kriterijus"; 
-$LANG['ruleldap'][2]="Neapibrėžtas kriterijus"; 
-$LANG['ruleldap'][3]="Pridėti LDAP kriterijų"; 
+$LANG['rulesengine'][138]="LDAP kriterijus"; 
+$LANG['rulesengine'][139]="Neapibrėžtas kriterijus"; 
+$LANG['rulesengine'][140]="Pridėti LDAP kriterijų"; 
 
 $LANG['rulesengine'][0]="yra"; 
 $LANG['rulesengine'][1]="nėra"; 

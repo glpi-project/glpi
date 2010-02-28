@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Bu öğeyi emanet öğelerden silmek istediğinize emi
 $LANG['reservation'][39]="Bu işlem şu anda devam eden rezervasyonları iptal edecek."; 
 $LANG['reservation'][40]="Rezervasyon yapıldı. Email şu kişiye gönderildi:"; 
 
-$LANG['ruleldap'][1]="of LDAP criteria"; 
-$LANG['ruleldap'][2]="Kıyas tanımlı değil"; 
-$LANG['ruleldap'][3]="Ldap kriteri ekle"; 
+$LANG['rulesengine'][138]="of LDAP criteria"; 
+$LANG['rulesengine'][139]="Kıyas tanımlı değil"; 
+$LANG['rulesengine'][140]="Ldap kriteri ekle"; 
 
 $LANG['rulesengine'][0]="is"; 
 $LANG['rulesengine'][1]="is not"; 

@@ -1416,9 +1416,6 @@ $LANG['reservation'][38]="Êtes-vous sur de vouloir rendre cet élément non ré
 $LANG['reservation'][39]="Cela supprimera toutes les réservations en cours.";
 $LANG['reservation'][40]="Réservation effectuée. Un mail a été envoyé à ";
 
-$LANG['ruleldap'][1]="des critères LDAP";
-$LANG['ruleldap'][2]="Aucun critère défini";
-$LANG['ruleldap'][3]="Ajout d'un critère LDAP";
 
 $LANG['rulesengine'][0]="est";
 $LANG['rulesengine'][1]="n'est pas";
@@ -1533,6 +1530,9 @@ $LANG['rulesengine'][134]="Refuser email (pas de réponse par email)";
 $LANG['rulesengine'][135]="Refuser email (avec réponse email)";
 $LANG['rulesengine'][136]="Adresse de l'émetteur";
 $LANG['rulesengine'][137]="Adresse du destinataire";
+$LANG['rulesengine'][138]="Gestion des critères";
+$LANG['rulesengine'][139]="Aucun critère défini";
+$LANG['rulesengine'][140]="Ajout d'un critère";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";

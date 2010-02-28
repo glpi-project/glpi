@@ -45,6 +45,7 @@ class RuleRightCollection extends RuleCollection {
    public $right = 'rule_ldap';
    public $orderby="name";
    public $menu_option='right';
+   public $specific_parameters = true;
 
    // Specific ones
    /// Array containing results : entity + right
@@ -255,13 +256,7 @@ class RuleRightCollection extends RuleCollection {
       return $fields;
    }
 
-   function title() {
-      global $LANG,$CFG_GLPI;
 
-      displayTitle('','','',array($CFG_GLPI["root_doc"].
-                        "/front/ruleldapparameter.php"=>$LANG['Menu'][26]." ".$LANG['ruleldap'][1]));
-      echo "<br>";
-   }
 
 }
 ?>

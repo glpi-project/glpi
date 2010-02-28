@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Opravdu si přejete smazat tuto položku ze seznamu p�
 $LANG['reservation'][39]="Odstraní všechny rezervace, na kterých se pracuje."; 
 $LANG['reservation'][40]="Reservation done. Email sent to"; 
 
-$LANG['ruleldap'][1]="kritéria LDAP"; 
-$LANG['ruleldap'][2]="Žádná kritéria nebyla definována"; 
-$LANG['ruleldap'][3]="Přidat kritérium LDAP"; 
+$LANG['rulesengine'][138]="kritéria LDAP"; 
+$LANG['rulesengine'][139]="Žádná kritéria nebyla definována"; 
+$LANG['rulesengine'][140]="Přidat kritérium LDAP"; 
 
 $LANG['rulesengine'][0]="je"; 
 $LANG['rulesengine'][1]="není"; 
