@@ -188,7 +188,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
          $query = "SELECT DISTINCT `glpi_users`.`email` AS email
                    FROM `glpi_ticketvalidations`
-                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_approval`)
+                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
                    WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
 
          foreach ($DB->request($query) as $data) {
@@ -250,7 +250,7 @@ class NotificationTargetTicket extends NotificationTarget {
       return array ('new'         => $LANG['mailing'][9],
                     'update'       => $LANG['mailing'][30],
                     'solved'       => $LANG['mailing'][123],
-                    'approval'     => $LANG['validation'][26],
+                    'validation'   => $LANG['validation'][26],
                     'add_followup' => $LANG['mailing'][10],
                     'add_task'     => $LANG['job'][49],
                     'closed'       => $LANG['mailing'][127],
@@ -503,37 +503,37 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.numberoffollowups##'] = 0;
       }
       
-      //Approval infos
+      //Validation infos
       $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
-      if (isset($options['approval_id']) || $options['approval_id']) {
-         $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['approval_id']."'";
+      if (isset($options['validation_id']) || $options['validation_id']) {
+         $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
       }
       $restrict .= " ORDER BY `submission_date` DESC";
-      $approvals = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
+      $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
       
-      foreach ($approvals as $approval) {
+      foreach ($validations as $validation) {
          $tmp = array();
-         $tmp['##lang.approval.title##'] = $LANG['validation'][27]." (".$LANG['job'][4].
-               " ".html_clean(getUserName($approval['users_id'])).")";
+         $tmp['##lang.validation.title##'] = $LANG['validation'][27]." (".$LANG['job'][4].
+               " ".html_clean(getUserName($validation['users_id'])).")";
                
-         $tmp['##approval.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_".
-                                                 $approval['id']);
+         $tmp['##validation.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_".
+                                                 $validation['id']);
                                                  
-         $tmp['##approval.author##'] =  html_clean(getUserName($approval['users_id']));
-         $tmp['##lang.approval.approvalstatus##'] = $LANG['validation'][28]." : ".
-                                          TicketValidation::getStatus($approval['status']);
+         $tmp['##validation.author##'] =  html_clean(getUserName($validation['users_id']));
+         $tmp['##lang.validation.validationstatus##'] = $LANG['validation'][28]." : ".
+                                          TicketValidation::getStatus($validation['status']);
          
-         $tmp['##approval.status##'] = TicketValidation::getStatus($approval['status']);
+         $tmp['##validation.status##'] = TicketValidation::getStatus($validation['status']);
          
-         $tmp['##approval.submissiondate##'] = convDateTime($approval['submission_date']);
+         $tmp['##validation.submissiondate##'] = convDateTime($validation['submission_date']);
          
-         $tmp['##approval.commentsubmission##'] = $approval['comment_submission'];
+         $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
          
-         $tmp['##approval.approvaldate##'] = convDateTime($approval['approval_date']);
+         $tmp['##validation.validationdate##'] = convDateTime($validation['validation_date']);
          
-         $tmp['##approval.commentapproval##'] = $approval['comment_approval'];
+         $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
          
-         $this->datas['approvals'][] = $tmp;
+         $this->datas['validations'][] = $tmp;
       }
 
       // Use list_limit_max or load the full history ?
@@ -604,12 +604,12 @@ class NotificationTargetTicket extends NotificationTarget {
                        '##lang.ticket.numberoffollowups##'  => $LANG['mailing'][4],
                        '##lang.ticket.numberoftasks##'      => $LANG['mailing'][122],
                        '##lang.ticket.nocategoryassigned##' => $LANG['mailing'][100],
-                       '##lang.approval.author##'           => $LANG['job'][4],
-                       '##lang.approval.status##'           => $LANG['joblist'][0],
-                       '##lang.approval.submissiondate##'   => $LANG['validation'][3],
-                       '##lang.approval.commentsubmission##'=> $LANG['validation'][5],
-                       '##lang.approval.approvaldate##'     => $LANG['validation'][4],
-                       '##lang.approval.commentapproval##'  => $LANG['validation'][6]);
+                       '##lang.validation.author##'           => $LANG['job'][4],
+                       '##lang.validation.status##'           => $LANG['joblist'][0],
+                       '##lang.validation.submissiondate##'   => $LANG['validation'][3],
+                       '##lang.validation.commentsubmission##'=> $LANG['validation'][5],
+                       '##lang.validation.validationdate##'     => $LANG['validation'][4],
+                       '##lang.validation.commentvalidation##'  => $LANG['validation'][6]);
 
       foreach ($labels as $tag => $label) {
          $this->datas[$tag] = $label;

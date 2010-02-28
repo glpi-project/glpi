@@ -87,11 +87,11 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          TicketTask::showFormMassiveAction();
          break;
       
-      case "submit_approval" :
+      case "submit_validation" :
          TicketValidation::showFormMassiveAction();
          break;
          
-      case "approve_ticket" :
+      case "validate_ticket" :
          TicketValidation::dropdownStatus("status");
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";

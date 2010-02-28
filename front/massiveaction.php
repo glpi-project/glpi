@@ -541,12 +541,12 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
-         case "submit_approval" :
+         case "submit_validation" :
             $valid = new TicketValidation();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   $input=array('tickets_id'      => $key,
-                               'users_id_approval' => $_POST['users_id_approval'],
+                               'users_id_validate' => $_POST['users_id_validate'],
                                'comment_submission' => $_POST['comment_submission']);
                   if ($valid->can(-1,'w',$input)) {
                      $valid->add($input);
@@ -554,7 +554,7 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;  
-         case "approve_ticket" :
+         case "validate_ticket" :
             $valid = new TicketValidation();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {

@@ -1169,14 +1169,14 @@ class Dropdown {
                   }
                   $tmp = new TicketValidation();
                   if ($tmp->canCreate()) {
-                     echo "<option value='submit_approval'>".$LANG['validation'][26]."</option>";
+                     echo "<option value='submit_validation'>".$LANG['validation'][26]."</option>";
                   }
                   break;
                
                case 'TicketValidation' :
                   $tmp = new TicketValidation();
                   if ($tmp->canUpdate()) {
-                     echo "<option value='approve_ticket'>".$LANG['validation'][0]."</option>";
+                     echo "<option value='validate_ticket'>".$LANG['validation'][0]."</option>";
                   }
                   break;
                   

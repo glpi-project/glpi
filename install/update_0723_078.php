@@ -2791,7 +2791,7 @@ function update0723to078($output='HTML') {
       $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Tickets (Simple)', 'Ticket', '2010-02-07 21:39:15','');";
       $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Tickets Approval', 'Ticket', '2010-02-26 21:39:15','');";
+               VALUES(NULL, 'Tickets Validation', 'Ticket', '2010-02-26 21:39:15','');";
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Cartridges', 'Cartridge', '2010-02-16 13:17:24','');";
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplates`
@@ -2823,7 +2823,7 @@ function update0723to078($output='HTML') {
             case 'TicketValidation' :
                $query_id = "SELECT `id`
                             FROM `glpi_notificationtemplates`
-                            WHERE `itemtype`='Ticket' AND `name`='Tickets Approval'";
+                            WHERE `itemtype`='Ticket' AND `name`='Tickets Validation'";
                break;
          }
          $result = $DB->query($query_id) or die ($DB->error());
@@ -3036,23 +3036,23 @@ function update0723to078($output='HTML') {
       $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                              VALUES(NULL, ".$templates['TicketValidation'].", '',
                             '##ticket.action## ##ticket.title##',
-                            '##FOREACHapprovals##
-                           ##lang.approval.title##
-                           ##lang.ticket.url## : ##approval.url## 
+                            '##FOREACHvalidations##
+                           ##lang.validation.title##
+                           ##lang.ticket.url## : ##validation.url## 
 
-                           ##IFapproval.status## ##lang.approval.approvalstatus## ##ENDIFapproval.status##
-                           ##IFapproval.commentapproval##
-                           ##lang.approval.commentapproval## :  ##approval.commentapproval##
-                           ##ENDIFapproval.commentapproval##
-                           ##ENDFOREACHapprovals##',
-                            '&lt;div&gt;##FOREACHapprovals##&lt;/div&gt;
-                           &lt;div&gt;##lang.approval.title##&lt;/div&gt;
-                           &lt;div&gt;##lang.ticket.url## : &lt;a href=\"##approval.url##\"&gt; ##approval.url##
-                           &lt;/a&gt;&lt;/div&gt;&lt;p&gt;##IFapproval.status## ##lang.approval.approvalstatus## 
-                           ##ENDIFapproval.status##&lt;br  /&gt;
-                           ##IFapproval.commentapproval##&lt;br /&gt;
-                           ##lang.approval.commentapproval## :&#160; ##approval.commentapproval##&lt;br /&gt;
-                           ##ENDIFapproval.commentapproval##&lt;br /&gt;##ENDFOREACHapprovals##&lt;/p&gt;');";
+                           ##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
+                           ##IFvalidation.commentvalidation##
+                           ##lang.validation.commentvalidation## :  ##validation.commentvalidation##
+                           ##ENDIFvalidation.commentvalidation##
+                           ##ENDFOREACHvalidations##',
+                            '&lt;div&gt;##FOREACHvalidations##&lt;/div&gt;
+                           &lt;div&gt;##lang.validation.title##&lt;/div&gt;
+                           &lt;div&gt;##lang.ticket.url## : &lt;a href=\"##validation.url##\"&gt; ##validation.url##
+                           &lt;/a&gt;&lt;/div&gt;&lt;p&gt;##IFvalidation.status## ##lang.validation.validationstatus## 
+                           ##ENDIFvalidation.status##&lt;br  /&gt;
+                           ##IFvalidation.commentvalidation##&lt;br /&gt;
+                           ##lang.validation.commentvalidation## :&#160; ##validation.commentvalidation##&lt;br /&gt;
+                           ##ENDIFvalidation.commentvalidation##&lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');";
 
       foreach ($queries as $itemtype => $query) {
          //echo $query."<br>";
@@ -3106,7 +3106,7 @@ function update0723to078($output='HTML') {
                                        'mail',".$templates['Ticket'].",
                                        '', 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
-                                VALUES (NULL, 'Ticket Approval', 0, 'Ticket', 'approval',
+                                VALUES (NULL, 'Ticket Validation', 0, 'Ticket', 'validation',
                                        'mail',".$templates['TicketValidation'].",
                                        '', 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
@@ -3825,12 +3825,12 @@ function update0723to078($output='HTML') {
                   `entities_id` int(11) NOT NULL default '0',
                   `users_id` int(11) NOT NULL default '0',
                   `tickets_id` int(11) NOT NULL default '0',
-                  `users_id_approval` int(11) NOT NULL default '0',
+                  `users_id_validate` int(11) NOT NULL default '0',
                   `comment_submission` text collate utf8_unicode_ci,
-                  `comment_approval` text collate utf8_unicode_ci,
+                  `comment_validation` text collate utf8_unicode_ci,
                   `status` varchar(255) collate utf8_unicode_ci default 'waiting',
                   `submission_date` datetime default NULL,
-                  `approval_date` datetime default NULL,
+                  `validation_date` datetime default NULL,
                   `is_deleted` tinyint(1) NOT NULL default '0',
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`),
@@ -3842,15 +3842,15 @@ function update0723to078($output='HTML') {
       $ADDTODISPLAYPREF['TicketValidation']=array(3,2,8,4,9,7);
    }
 
-   if (!FieldExists('glpi_profiles','approve_ticket')) {
-      $query = "ALTER TABLE `glpi_profiles` ADD `approve_ticket` char(1) collate utf8_unicode_ci default NULL";
-      $DB->query($query) or die("0.78 add approve_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
+   if (!FieldExists('glpi_profiles','validate_ticket')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `validate_ticket` char(1) collate utf8_unicode_ci default NULL";
+      $DB->query($query) or die("0.78 add validate_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
       
-      $query = "UPDATE `glpi_profiles` SET `approve_ticket`='w' WHERE `name` IN ('super-admin','admin')";
-		$DB->query($query) or die("0.78 add approve_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_profiles` SET `validate_ticket`='w' WHERE `name` IN ('super-admin','admin')";
+		$DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
 
-		$query = "UPDATE `glpi_profiles` SET `approve_ticket`='r' WHERE `name`='normal'";
-		$DB->query($query) or die("0.78 add approve_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `validate_ticket`='r' WHERE `name`='normal'";
+		$DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
