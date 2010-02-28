@@ -45,7 +45,7 @@ class Profile extends CommonDBTM {
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','add_followups',
                               'observe_ticket','password_update','helpdesk_hardware',
-                              'helpdesk_item_type','show_group_ticket','show_group_hardware','approve_ticket');
+                              'helpdesk_item_type','show_group_ticket','show_group_hardware','validate_ticket');
 
    /// Common fields used for all profiles type
    static public $common_fields=array("id","name","interface","is_default");
@@ -409,8 +409,8 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
       $options = array("" => $LANG['profiles'][12], 
                         "w" => $LANG['validation'][21]);
-      Dropdown::showFromArray("approve_ticket", $options,
-                                    array('value' => $this->fields["approve_ticket"]));
+      Dropdown::showFromArray("validate_ticket", $options,
+                                    array('value' => $this->fields["validate_ticket"]));
       echo "</td></tr>\n";
       
       echo "<tr class='tab_bg_2'>";
@@ -679,8 +679,8 @@ class Profile extends CommonDBTM {
       $options = array("" => $LANG['profiles'][12],
                         "r" => $LANG['validation'][26], 
                         "w" => $LANG['validation'][21]);
-      Dropdown::showFromArray("approve_ticket", $options,
-                                    array('value' => $this->fields["approve_ticket"]));
+      Dropdown::showFromArray("validate_ticket", $options,
+                                    array('value' => $this->fields["validate_ticket"]));
       echo "</td>";
       echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_tasks",$this->fields["update_tasks"]);

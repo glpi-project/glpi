@@ -95,7 +95,7 @@ class Ticket extends CommonDBTM {
                       || (haveRight('assign_ticket',1) && $this->fields["status"]=='new')
                      )
                  )
-              || (haveRight("approve_ticket",'w') && $validation->canValidate($this->fields["id"]))
+              || (haveRight("validate_ticket",'w') && $validation->canValidate($this->fields["id"]))
              );
    }
 
@@ -157,7 +157,7 @@ class Ticket extends CommonDBTM {
             $ong[1] = $LANG['Menu'][5];
             $ong[2] = $LANG['job'][7];
          }
-         if (haveRight("approve_ticket","r"))
+         if (haveRight("validate_ticket","r"))
             $ong[7] = $LANG['validation'][0];
          $ong[4] = $LANG['jobresolution'][1];
          $ong[3] = $LANG['job'][47];

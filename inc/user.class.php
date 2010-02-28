@@ -1660,8 +1660,8 @@ class User extends CommonDBTM {
             $where=" `glpi_users`.`id`='".getLoginUserID()."' ";
             break;
             
-         case "approve" :
-            $where=" `glpi_profiles`.`approve_ticket`='w' ";
+         case "validate" :
+            $where=" `glpi_profiles`.`validate_ticket`='w' ";
             $joinprofile=true;
             $where.=getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
             break;
