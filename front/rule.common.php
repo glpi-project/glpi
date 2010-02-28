@@ -153,6 +153,9 @@ commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecolle
              $rulecollection->menu_option);
 
 $rulecollection->title();
+if ($rulecollection->specific_parameters) {
+   $rulecollection->specificParametersTitle();
+}
 $rulecollection->showListRules($_SERVER['PHP_SELF']);
 commonFooter();
 

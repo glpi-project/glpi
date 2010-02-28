@@ -105,12 +105,8 @@ class RuleRight extends Rule {
     * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
     */
    function addLdapCriteriasToArray(&$criterias) {
-      global $DB;
 
-      $sql = "SELECT `name`, `value`
-              FROM `glpi_ruleldapparameters`";
-      $result = $DB->query($sql);
-      while ($datas = $DB->fetch_array($result)) {
+      foreach (RuleParameter::getByType(get_class($this)) as $datas ) {
          $criterias[$datas["value"]]['name']=$datas["name"];
          $criterias[$datas["value"]]['field']=$datas["value"];
          $criterias[$datas["value"]]['linkfield']='';

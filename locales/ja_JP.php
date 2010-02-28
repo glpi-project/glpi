@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="貸し出し品一覧からアイテムを削除しま
 $LANG['reservation'][39]="アイテムの予約も削除されます"; 
 $LANG['reservation'][40]="メール送信予約を完了しました"; 
 
-$LANG['ruleldap'][1]="LDAPの範囲内の"; 
-$LANG['ruleldap'][2]="定義された範囲が見つかりません"; 
-$LANG['ruleldap'][3]="LDAP基準を追加する"; 
+$LANG['rulesengine'][138]="LDAPの範囲内の"; 
+$LANG['rulesengine'][139]="定義された範囲が見つかりません"; 
+$LANG['rulesengine'][140]="LDAP基準を追加する"; 
 
 $LANG['rulesengine'][0]="である"; 
 $LANG['rulesengine'][1]="でない"; 

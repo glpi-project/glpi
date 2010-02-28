@@ -38,44 +38,32 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// LDAP criteria class
-class RuleLdapParameter extends CommonDBTM {
+class RuleParameter extends CommonDBTM {
+   var $menu_type = "";
 
-   /// Get parameters list
-   function getParametersList() {
-      global $DB;
-
-      $sql = "SELECT *
-              FROM `".$this->getTable()."`
-              ORDER BY `name` ASC";
-      $result = $DB->query($sql);
-      $parameters = array ();
-
-      while ($datas = $DB->fetch_array($result)) {
-         $parameters[] = $datas;
-      }
-
-      return $parameters;
+   static function getByType($sub_type) {
+      return getAllDatasFromTable("glpi_ruleparameters",
+                                         "`sub_type`='".$sub_type."' ORDER BY `name` ASC");
    }
-
    /**
     * Print the ldap criteria form
     *
     *@param $target filename : where to go when done.
     **/
-   function showForm($target) {
+   function showForm() {
       global $LANG,$CFG_GLPI;
 
       $canedit = haveRight("config", "w");
       $ID=-1;
-      $parameters = $this->getParametersList();
+      $parameters = RuleParameter::getByType($this->getSubType());
 
-      echo "<form name='entityaffectation_form' id='ldapcriterias_form' method='post' ".
-           "action=\"$target\">";
+      echo "<form name='criterias_form' id='criterias_form' method='post' ".
+           "action=\"".getItemTypeSearchURL(get_class($this))."\">";
 
       if ($canedit) {
          echo "<div class='center'>";
          echo "<table class='tab_cadrehov'>";
-         echo "<tr><th colspan='3'>" .$LANG['ruleldap'][3] . "</tr>";
+         echo "<tr><th colspan='3'>" .$LANG['rulesengine'][140] . "</tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>".$LANG['common'][16] . "&nbsp;:&nbsp";
          autocompletionTextField($this, "name",array('value'=>''));
@@ -88,10 +76,10 @@ class RuleLdapParameter extends CommonDBTM {
       }
 
       if (!count($parameters)) {
-         echo "<center>".$LANG['ruleldap'][2]."</center>";
+         echo "<center>".$LANG['rulesengine'][139]."</center>";
       } else {
          echo "<div class='center'><table class='tab_cadrehov'>";
-         echo "<tr><th colspan='3'>" . $LANG['common'][53]." ".$LANG['ruleldap'][1] . "</th></tr>";
+         echo "<tr><th colspan='3'>" . $LANG['rulesengine'][138] . "</th></tr>";
          echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" . $LANG['common'][16]."</td>";
          echo "<td class='tab_bg_2'>".$LANG['setup'][601] . "</td></tr>";
 
@@ -113,29 +101,29 @@ class RuleLdapParameter extends CommonDBTM {
          echo "</table></div>";
 
          if ($canedit) {
-            openArrowMassive("ldapcriterias_form");
+            openArrowMassive("criterias_form");
             closeArrowMassive('delete', $LANG['buttons'][6]);
          }
       }
       echo "</form>";
    }
 
-   function prepareInputForAdd($input) {
-
-      //LDAP parameters MUST be in lower case
-      //because the are retieved in lower case  from the directory
-      $input["value"] = utf8_strtolower($input["value"]);
-      return $input;
-   }
-
    function title() {
       global $LANG,$CFG_GLPI;
 
-      displayTitle('','','',array($CFG_GLPI["root_doc"].
-                        "/front/ruleright.php"=>$LANG['buttons'][13]));
+      $link = getItemTypeSearchURL($this->getSubType());
+      displayTitle('','','',array($link=>$LANG['buttons'][13]));
       echo "<br>";
    }
 
+   function getSubType() {
+      if (preg_match('/(.*)Parameter/',get_class($this),$rule_class)) {
+         return $rule_class[1];
+      }
+      else {
+         return "";
+      }
+   }
 }
 
 ?>

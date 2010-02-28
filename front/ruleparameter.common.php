@@ -32,35 +32,28 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
 
-/// OCS Rules collection class
-class RuleMailCollectorCollection extends RuleCollection {
-
-   // From RuleCollection
-   public $stop_on_first_match=true;
-   public $right = 'rule_mailcollector';
-   public $menu_option='mailcollector';
-   public $specific_parameters = true;
-
-   function getTitle() {
-      global $LANG;
-
-      return $LANG['rulesengine'][70];
-   }
-
-   function prepareInputDataForProcess($input,$params) {
-      $fields = array('mailcollector');
-      foreach ($fields as $field) {
-         if (isset($params[$field])) {
-            $input[$field] = $params[$field];
-         }
+if (isset($_POST["delete"])) {
+   if (count($_POST["item"])) {
+      foreach ($_POST["item"] as $key => $val) {
+         $input["id"] = $key;
+         $criteria->delete($input);
       }
-      return $input;
    }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset($_POST["add"])) {
+   $criteria->add($_POST);
 }
 
+checkRight("user","w");
+
+commonHeader($LANG['Menu'][26]." ".$LANG['rulesengine'][138],
+             $_SERVER['PHP_SELF'],"admin","rule",$criteria->menu_type);
+
+$criteria->title();
+$criteria->showForm();
+
+commonFooter();
 
 ?>

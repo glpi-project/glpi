@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Weet u het zeker, dat u dit item wilt verwijderen van 
 $LANG['reservation'][39]="Dit zal alle reserveringen verwijderen die bezig zijn"; 
 $LANG['reservation'][40]="Reservering klaar. E-mail verzonden aan"; 
 
-$LANG['ruleldap'][1]="van LDAP criteria"; 
-$LANG['ruleldap'][2]="Geen criterium gedefinieerd"; 
-$LANG['ruleldap'][3]="Een LDAP criterium toevoegen"; 
+$LANG['rulesengine'][138]="van LDAP criteria"; 
+$LANG['rulesengine'][139]="Geen criterium gedefinieerd"; 
+$LANG['rulesengine'][140]="Een LDAP criterium toevoegen"; 
 
 $LANG['rulesengine'][0]="is"; 
 $LANG['rulesengine'][1]="is not"; 

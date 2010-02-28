@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Jeste li sigurni da želite obrisati ovaj artikl iz op
 $LANG['reservation'][39]="Ovo će maknuti sve rezervacije u progresu."; 
 $LANG['reservation'][40]="Rezervacija učinjena- Poslati email na"; 
 
-$LANG['ruleldap'][1]="za LDAP kriterij"; 
-$LANG['ruleldap'][2]="Kriterij nije definiran"; 
-$LANG['ruleldap'][3]="Dodaj LDAP kriterij"; 
+$LANG['rulesengine'][138]="za LDAP kriterij"; 
+$LANG['rulesengine'][139]="Kriterij nije definiran"; 
+$LANG['rulesengine'][140]="Dodaj LDAP kriterij"; 
 
 $LANG['rulesengine'][0]="je"; 
 $LANG['rulesengine'][1]="nije"; 

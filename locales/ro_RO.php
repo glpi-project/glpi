@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Sigur doriti sa stergeti elementul din elementele impr
 $LANG['reservation'][39]="Aceasta comanda va elimina toate rezervarile in curs de desfasurare."; 
 $LANG['reservation'][40]="Rezervare incheiata. E-mail trimis la"; 
 
-$LANG['ruleldap'][1]="a criteriului LDAP"; 
-$LANG['ruleldap'][2]="criteriu nedefinit"; 
-$LANG['ruleldap'][3]="Adauga un criteriu LDAP"; 
+$LANG['rulesengine'][138]="a criteriului LDAP"; 
+$LANG['rulesengine'][139]="criteriu nedefinit"; 
+$LANG['rulesengine'][140]="Adauga un criteriu LDAP"; 
 
 $LANG['rulesengine'][0]="Exista"; 
 $LANG['rulesengine'][1]="Inexistent"; 

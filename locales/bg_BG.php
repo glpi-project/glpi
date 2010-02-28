@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Сигурни ли сте, че искате да и�
 $LANG['reservation'][39]="Това ще премахне всички резервации в процес на изпълнение"; 
 $LANG['reservation'][40]="Reservation done. Email sent to"; 
 
-$LANG['ruleldap'][1]="of LDAP criteria"; 
-$LANG['ruleldap'][2]="No criteria defined"; 
-$LANG['ruleldap'][3]="Add an LDAP criteria"; 
+$LANG['rulesengine'][138]="of LDAP criteria"; 
+$LANG['rulesengine'][139]="No criteria defined"; 
+$LANG['rulesengine'][140]="Add an LDAP criteria"; 
 
 $LANG['rulesengine'][0]="is"; 
 $LANG['rulesengine'][1]="is not"; 

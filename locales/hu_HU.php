@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Biztos, hogy törölhető a tétel a kölcsönzésekb�
 $LANG['reservation'][39]="Ezzel minden folyamatban levő foglalás törölve lesz."; 
 $LANG['reservation'][40]="Foglalás kész, email elküldve"; 
 
-$LANG['ruleldap'][1]="LDAP feltétel"; 
-$LANG['ruleldap'][2]="Nincsenek kritériumok"; 
-$LANG['ruleldap'][3]="LDAP feltétel"; 
+$LANG['rulesengine'][138]="LDAP feltétel"; 
+$LANG['rulesengine'][139]="Nincsenek kritériumok"; 
+$LANG['rulesengine'][140]="LDAP feltétel"; 
 
 $LANG['rulesengine'][0]="is"; 
 $LANG['rulesengine'][1]="nem"; 

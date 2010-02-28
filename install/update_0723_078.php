@@ -3032,13 +3032,13 @@ function update0723to078($output='HTML') {
                             ##lang.ticket.item.name##&lt;/span&gt;&#160;:
                             ##ticket.itemtype## - ##ticket.item.name##
                             ##ENDIFticket.itemtype##&lt;/p&gt;');";
-                            
+
       $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                              VALUES(NULL, ".$templates['TicketValidation'].", '',
                             '##ticket.action## ##ticket.title##',
                             '##FOREACHvalidations##
                            ##lang.validation.title##
-                           ##lang.ticket.url## : ##validation.url## 
+                           ##lang.ticket.url## : ##validation.url##
 
                            ##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
                            ##IFvalidation.commentvalidation##
@@ -3048,7 +3048,7 @@ function update0723to078($output='HTML') {
                             '&lt;div&gt;##FOREACHvalidations##&lt;/div&gt;
                            &lt;div&gt;##lang.validation.title##&lt;/div&gt;
                            &lt;div&gt;##lang.ticket.url## : &lt;a href=\"##validation.url##\"&gt; ##validation.url##
-                           &lt;/a&gt;&lt;/div&gt;&lt;p&gt;##IFvalidation.status## ##lang.validation.validationstatus## 
+                           &lt;/a&gt;&lt;/div&gt;&lt;p&gt;##IFvalidation.status## ##lang.validation.validationstatus##
                            ##ENDIFvalidation.status##&lt;br  /&gt;
                            ##IFvalidation.commentvalidation##&lt;br /&gt;
                            ##lang.validation.commentvalidation## :&#160; ##validation.commentvalidation##&lt;br /&gt;
@@ -3845,7 +3845,7 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_profiles','validate_ticket')) {
       $query = "ALTER TABLE `glpi_profiles` ADD `validate_ticket` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add validate_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
-      
+
       $query = "UPDATE `glpi_profiles` SET `validate_ticket`='w' WHERE `name` IN ('super-admin','admin')";
 		$DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
 
@@ -3972,6 +3972,22 @@ function update0723to078($output='HTML') {
                                    $LANG['update'][90] . $DB->error());
    }
 
+   if (TableExists('glpi_ruleldapparameters')) {
+      $query = "RENAME TABLE `glpi_ruleldapparameters`
+                   TO `glpi_ruleparameters` ;";
+      $DB->query($query) or die("0.78 rename glpi_ruleldapparameters to glpi_ruleparameters".
+                                   $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_ruleparameters`
+                  ADD `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
+      $DB->query($query) or die("0.78 add sub_type to glpi_ruleparameters".
+                                   $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_ruleparameters` SET `sub_type`='RuleRight'";
+      $DB->query($query) or die("0.78 set sub_type to 'RuleRight' in glpi_ruleparameters".
+                                   $LANG['update'][90] . $DB->error());
+
+   }
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 

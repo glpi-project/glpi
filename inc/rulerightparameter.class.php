@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -29,35 +30,25 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
+// Original Author of file: Olivier Andreotti
 // Purpose of file:
 // ----------------------------------------------------------------------
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-$criteria = new RuleLdapParameter;
-
-if (isset($_POST["delete"])) {
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         $input["id"] = $key;
-         $criteria->delete($input);
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["add"])) {
-   $criteria->add($_POST);
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-checkRight("user","w");
+/// LDAP criteria class
+class RuleRightParameter extends RuleParameter {
 
-commonHeader($LANG['Menu'][26]." ".$LANG['ruleldap'][1],$_SERVER['PHP_SELF'],"admin","rule","right");
+   public $menu_type = "right";
 
-$criteria->title();
-$criteria->showForm($_SERVER['PHP_SELF']);
+   function prepareInputForAdd($input) {
 
-commonFooter();
+      //LDAP parameters MUST be in lower case
+      //because the are retieved in lower case  from the directory
+      $input["value"] = utf8_strtolower($input["value"]);
+      return $input;
+   }
+}
 
 ?>

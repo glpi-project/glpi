@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Você quer deletar este item dos itens de empréstimo 
 $LANG['reservation'][39]="Isso removerá todas as reservas em andamento."; 
 $LANG['reservation'][40]="Empréstimo completado. E-mail enviado para"; 
 
-$LANG['ruleldap'][1]="de critérios LDAP"; 
-$LANG['ruleldap'][2]="Nenhum critério definido"; 
-$LANG['ruleldap'][3]="Adicionar critério LDAP"; 
+$LANG['rulesengine'][138]="de critérios LDAP"; 
+$LANG['rulesengine'][139]="Nenhum critério definido"; 
+$LANG['rulesengine'][140]="Adicionar critério LDAP"; 
 
 $LANG['rulesengine'][0]="é"; 
 $LANG['rulesengine'][1]="não é"; 

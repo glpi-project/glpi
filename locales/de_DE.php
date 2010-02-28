@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Sind Sie sicher, dass dieses Element aus der Verleihli
 $LANG['reservation'][39]="Das wird alle ausstehenden Reservierungen entfernen."; 
 $LANG['reservation'][40]="Reservierung ausgeführt. Eine Mail wurde versandt an"; 
 
-$LANG['ruleldap'][1]="der LDAP-Kriterien"; 
-$LANG['ruleldap'][2]="Keine Kriterien definiert"; 
-$LANG['ruleldap'][3]="LDAP-Kriterium hinzufügen"; 
+$LANG['rulesengine'][138]="der LDAP-Kriterien"; 
+$LANG['rulesengine'][139]="Keine Kriterien definiert"; 
+$LANG['rulesengine'][140]="LDAP-Kriterium hinzufügen"; 
 
 $LANG['rulesengine'][0]="ist gleich"; 
 $LANG['rulesengine'][1]="ist ungleich"; 

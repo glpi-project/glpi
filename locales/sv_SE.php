@@ -1273,9 +1273,9 @@ $LANG['reservation'][38]="Är du säker på att du vill radera denna post från 
 $LANG['reservation'][39]="Denna åtgärd kommer radera alla pågående reservationer!"; 
 $LANG['reservation'][40]="Bokning är gjord. E-post skickad till"; 
 
-$LANG['ruleldap'][1]="of LDAP criteria"; 
-$LANG['ruleldap'][2]="No criteria defined"; 
-$LANG['ruleldap'][3]="Lägg till ett LDAP-kriterium"; 
+$LANG['rulesengine'][138]="of LDAP criteria"; 
+$LANG['rulesengine'][139]="No criteria defined"; 
+$LANG['rulesengine'][140]="Lägg till ett LDAP-kriterium"; 
 
 $LANG['rulesengine'][0]="är"; 
 $LANG['rulesengine'][1]="är inte"; 
