@@ -95,7 +95,7 @@ class Ticket extends CommonDBTM {
                       || (haveRight('assign_ticket',1) && $this->fields["status"]=='new')
                      )
                  )
-              || (haveRight("approve_ticket",'w') && $validation->canApprove($this->fields["id"]))
+              || (haveRight("approve_ticket",'w') && $validation->canValidate($this->fields["id"]))
              );
    }
 

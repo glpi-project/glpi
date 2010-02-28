@@ -407,8 +407,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
-      $options = array("" => $LANG['profiles'][12],
-                        "r" => $LANG['validation'][26], 
+      $options = array("" => $LANG['profiles'][12], 
                         "w" => $LANG['validation'][21]);
       Dropdown::showFromArray("approve_ticket", $options,
                                     array('value' => $this->fields["approve_ticket"]));
