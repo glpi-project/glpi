@@ -92,6 +92,11 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          include "ldap.import.php";
          popFooter();
          break;
+      case "add_ruleparameter" :
+         popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
+         include strtolower($_GET['sub_type']."Parameter.php");
+         popFooter();
+         break;
    }
 }
 

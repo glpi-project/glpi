@@ -32,10 +32,10 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
+if (!defined('GLPI_ROOT')) {
+   define('GLPI_ROOT', '..');
+   include (GLPI_ROOT . "/inc/includes.php");
+}
 $criteria = new RuleMailCollectorParameter();
 
 include (GLPI_ROOT . "/front/ruleparameter.common.php");

@@ -277,7 +277,7 @@ class MailCollector  extends CommonDBTM {
                $rule_options['mailcollector'] = $mailgateID;
                $rulecollection = new RuleMailCollectorCollection();
                $output = array();
-               $output= $rulecollection->processAllRules(array(),array(),$rule_options);
+               $output= $rulecollection->processAllRules($tkt,array(),$rule_options);
 
                if (isset($output['entities_id'])) {
                   $tkt['entities_id'] = $output['entities_id'];

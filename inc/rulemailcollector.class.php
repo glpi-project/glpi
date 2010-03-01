@@ -157,6 +157,9 @@ class RuleMailCollector extends Rule {
       $criterias['content']['table'] = '';
       $criterias['content']['type'] = 'text';
 
+      //Dynamically add all the ldap criterias to the current list of rule's criterias
+      $this->addSpecificCriteriasToArray($criterias);
+
       return $criterias;
    }
 

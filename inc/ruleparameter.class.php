@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /// LDAP criteria class
 class RuleParameter extends CommonDBTM {
    var $menu_type = "";
+   var $table = "glpi_ruleparameters";
 
    static function getByType($sub_type) {
       return getAllDatasFromTable("glpi_ruleparameters",
@@ -65,12 +66,13 @@ class RuleParameter extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th colspan='3'>" .$LANG['rulesengine'][140] . "</tr>";
          echo "<tr class='tab_bg_1'>";
-         echo "<td class='center'>".$LANG['common'][16] . "&nbsp;:&nbsp";
+         echo "<td class='center'>".$LANG['rulesengine'][16] . "&nbsp;:&nbsp";
          autocompletionTextField($this, "name",array('value'=>''));
-         echo "</td><td>".$LANG['setup'][601] . "&nbsp;:&nbsp";
+         echo "</td><td>".$LANG['rulesengine'][16] . "&nbsp;";
          autocompletionTextField($this, "value",array('value'=>''));
          echo "</td><td><input type='submit' name='add' value=\"" . $LANG['buttons'][8] .
                      "\" class='submit'>";
+         echo "<input type='hidden' name='sub_type' value='".$this->getSubType()."'>";
          echo "</td></tr>";
          echo "</table></div><br>";
       }
@@ -80,8 +82,8 @@ class RuleParameter extends CommonDBTM {
       } else {
          echo "<div class='center'><table class='tab_cadrehov'>";
          echo "<tr><th colspan='3'>" . $LANG['rulesengine'][138] . "</th></tr>";
-         echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" . $LANG['common'][16]."</td>";
-         echo "<td class='tab_bg_2'>".$LANG['setup'][601] . "</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" . $LANG['rulesengine'][16]."</td>";
+         echo "<td class='tab_bg_2'>".$LANG['financial'][21] . "</td></tr>";
 
          foreach ($parameters as $parameter) {
             echo "<tr class='tab_bg_1'>";
