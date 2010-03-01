@@ -177,7 +177,8 @@ function displayMigrationMessage ($id, $msg="") {
  * @param interger (ID of the existing/new dropdown)
  */
 function update_importDropdown ($table, $name) {
-
+   global $DB;
+   
    $query = "SELECT `ID`
              FROM `".$table."`
              WHERE `name` = '".addslashes($name)."'";
