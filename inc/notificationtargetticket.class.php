@@ -177,7 +177,7 @@ class NotificationTargetTicket extends NotificationTarget {
          }
       }
    }
-   
+
    /**
     * Get approuver related to the ticket
     */
@@ -502,37 +502,37 @@ class NotificationTargetTicket extends NotificationTarget {
       } else {
          $this->datas['##ticket.numberoffollowups##'] = 0;
       }
-      
+
       //Validation infos
       $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
-      if (isset($options['validation_id']) || $options['validation_id']) {
+      if (isset($options['validation_id']) && $options['validation_id']) {
          $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
       }
       $restrict .= " ORDER BY `submission_date` DESC";
       $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
-      
+
       foreach ($validations as $validation) {
          $tmp = array();
          $tmp['##lang.validation.title##'] = $LANG['validation'][27]." (".$LANG['job'][4].
                " ".html_clean(getUserName($validation['users_id'])).")";
-               
+
          $tmp['##validation.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_".
                                                  $validation['id']);
-                                                 
+
          $tmp['##validation.author##'] =  html_clean(getUserName($validation['users_id']));
          $tmp['##lang.validation.validationstatus##'] = $LANG['validation'][28]." : ".
                                           TicketValidation::getStatus($validation['status']);
-         
+
          $tmp['##validation.status##'] = TicketValidation::getStatus($validation['status']);
-         
+
          $tmp['##validation.submissiondate##'] = convDateTime($validation['submission_date']);
-         
+
          $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
-         
+
          $tmp['##validation.validationdate##'] = convDateTime($validation['validation_date']);
-         
+
          $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
-         
+
          $this->datas['validations'][] = $tmp;
       }
 
