@@ -728,6 +728,11 @@ class RuleCollection {
       displayTitle('','','',array($link=>$LANG['rulesengine'][138]));
       echo "<br>";
    }
+
+   static function hasSpecificParameters($sub_type='') {
+      $rulecollection = RuleCollection::getClassByType($sub_type);
+      return $rulecollection->specific_parameters;
+   }
 }
 
 ?>

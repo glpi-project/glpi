@@ -38,22 +38,26 @@ if (isset($_POST["delete"])) {
       foreach ($_POST["item"] as $key => $val) {
          $input["id"] = $key;
          $criteria->delete($input);
+         refreshMainWindow();
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add"])) {
    $criteria->add($_POST);
+   refreshMainWindow();
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-checkRight("user","w");
+if (!strpos($_SERVER['PHP_SELF'],"popup")) {
+   commonHeader($LANG['Menu'][26]." ".$LANG['rulesengine'][138],
+                $_SERVER['PHP_SELF'],"admin","rule",$criteria->menu_type);
+   $criteria->title();
+}
 
-commonHeader($LANG['Menu'][26]." ".$LANG['rulesengine'][138],
-             $_SERVER['PHP_SELF'],"admin","rule",$criteria->menu_type);
-
-$criteria->title();
 $criteria->showForm();
 
-commonFooter();
-
+if (!strpos($_SERVER['PHP_SELF'],"popup")) {
+   commonFooter();
+}
 ?>

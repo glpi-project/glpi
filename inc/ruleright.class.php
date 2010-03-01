@@ -102,19 +102,6 @@ class RuleRight extends Rule {
    }
 
    /**
-    * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
-    */
-   function addLdapCriteriasToArray(&$criterias) {
-
-      foreach (RuleParameter::getByType(get_class($this)) as $datas ) {
-         $criterias[$datas["value"]]['name']=$datas["name"];
-         $criterias[$datas["value"]]['field']=$datas["value"];
-         $criterias[$datas["value"]]['linkfield']='';
-         $criterias[$datas["value"]]['table']='';
-      }
-   }
-
-   /**
     * Filter actions if needed
    *  @param $actions the actions array
     * @return the filtered actions array
@@ -290,7 +277,7 @@ class RuleRight extends Rule {
       $criterias['GROUPS']['id']        = 'groups';
 
       //Dynamically add all the ldap criterias to the current list of rule's criterias
-      $this->addLdapCriteriasToArray($criterias);
+      $this->addSpecificCriteriasToArray($criterias);
       return $criterias;
    }
 
