@@ -845,6 +845,7 @@ class Stat {
          switch ($param['type']) {
             case 'pie':
                // Check datas : sum must be > 0
+               reset($entrees);
                $sum=array_sum(current($entrees));
                while ($sum==0 && $data=next($entrees)) {
                   $sum+=array_sum($data);
