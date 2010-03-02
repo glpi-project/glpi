@@ -1025,19 +1025,10 @@ class Contract extends CommonDBTM {
                $input["itemtype"] = 'Contract';
                $input["type"]=$type;
                foreach ($contracts as $id => $contract) {
-                  if ($type == Alert::END) {
-                     $alert_id = Alert::alertExists('Contract',$id,$type);
-                  }
                   $input["items_id"]=$id;
 
-                  if ($type == Alert::NOTICE || (Alert::END && !$alert_id)) {
-                     $alert->add($input);
-                  }
-                  else {
-                     $input['id'] = $alert_id;
-                     $alert->update($input);
-                  }
-                  unset($alert->fields['ID']);
+                  $alert->add($input);
+                  unset($alert->fields['id']);
                }
             } else {
                if ($task) {
