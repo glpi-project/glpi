@@ -763,6 +763,7 @@ $LANG['job'][47]="Coûts";
 $LANG['job'][48]="Type de solution";
 $LANG['job'][49]="Nouvelle tâche";
 $LANG['job'][50]="Pas de tâche pour ce ticket.";
+$LANG['job'][51]="Approbation de la solution";
 
 $LANG['joblist'][0]="Statut";
 $LANG['joblist'][1]="Seulement les miens";

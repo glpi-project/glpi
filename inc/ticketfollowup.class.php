@@ -669,7 +669,7 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'> Approbation de la solution</th></tr>";
+         echo "<tr><th colspan='4'>". $LANG['job'][51]."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td class='middle right' colspan='2'>".$LANG['common'][25]."&nbsp;:</td>";
