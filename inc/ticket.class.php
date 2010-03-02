@@ -82,7 +82,6 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $validation = new TicketValidation();
       return (haveRight("show_all_ticket","1")
               || $this->fields["users_id"] === getLoginUserID()
               || (haveRight("show_group_ticket",'1')
@@ -95,7 +94,7 @@ class Ticket extends CommonDBTM {
                       || (haveRight('assign_ticket',1) && $this->fields["status"]=='new')
                      )
                  )
-              || (haveRight('validate_ticket','1') && $validation->canValidate($this->fields["id"]))
+              || (haveRight('validate_ticket','1') && TicketValidation::canValidate($this->fields["id"]))
              );
    }
 

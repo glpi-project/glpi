@@ -66,8 +66,7 @@ class TicketValidation  extends CommonDBChild {
    }
    
    function canDelete() {
-
-      return haveRight('validate_ticket', '1');
+      return haveRight('create_validation', 1);
    }
    
    /**
@@ -78,16 +77,13 @@ class TicketValidation  extends CommonDBChild {
    function canUpdateItem() {
       global $LANG;
       
-      if (!$this->canUpdate()) {
-         return false;
-      }
       if ($this->fields["users_id_validate"] != getLoginUserID()) {
          return false;
       }
-      $ticket = new Ticket();
+/*      $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;
-      }
+      }*/
  
       return true;
    }
@@ -98,23 +94,24 @@ class TicketValidation  extends CommonDBChild {
     * @return boolean
     */
    function canDeleteItem() {
-      return $this->canUpdate();
+      if ($this->fields["users_id"] != getLoginUserID()) {
+         return false;
+      }
+      return true;
    }
    
-   //TO BE CUSTOM
-   function canValidate($tickets_id) {
+   static function canValidate($tickets_id) {
       global $DB;
 
       $query = "SELECT `users_id_validate` 
-            FROM `".$this->getTable()."`
-            WHERE `tickets_id` = '".$tickets_id."' ";
+            FROM `glpi_ticketvalidations`
+            WHERE `tickets_id` = '".$tickets_id."' AND users_id_validate='".getLoginUserID()."'";
       $result = $DB->query($query);
-      $row = $DB->fetch_assoc($result);
-      
-      if ($row["users_id_validate"] == getLoginUserID())
+      if ($DB->numrows($result)) {
          return true;
-      else
-         return false;
+      }
+      
+      return false;
    }
 
    function defineTabs($options=array()) {
