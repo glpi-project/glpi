@@ -3846,11 +3846,14 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_profiles` ADD `validate_ticket` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add validate_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
 
-      $query = "UPDATE `glpi_profiles` SET `validate_ticket`='w' WHERE `name` IN ('super-admin','admin')";
+      $query = "UPDATE `glpi_profiles` SET `validate_ticket`='1' WHERE `name` IN ('super-admin','admin')";
 		$DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
-
-		$query = "UPDATE `glpi_profiles` SET `validate_ticket`='r' WHERE `name`='normal'";
-		$DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+      
+      $query = "ALTER TABLE `glpi_profiles` ADD `create_validation` char(1) collate utf8_unicode_ci default NULL";
+      $DB->query($query) or die("0.78 add create_validation to glpi_profiles " . $LANG['update'][90] . $DB->error());
+      
+		$query = "UPDATE `glpi_profiles` SET `create_validation`='1' WHERE `name`='normal'";
+		$DB->query($query) or die("0.78 add create_validation write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');

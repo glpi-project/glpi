@@ -342,7 +342,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['maintain']['content']['helpdesk']['links']['add']='/front/ticket.form.php';
       $menu['maintain']['content']['tracking']['links']['add']='/front/ticket.form.php';
    }
-   if (haveRight("validate_ticket","w")) {
+   if (haveRight("validate_ticket","1")) {
       $menu['maintain']['content']['validation']['title']=$LANG['validation'][0];
       $menu['maintain']['content']['validation']['shortcut']='v';
       $menu['maintain']['content']['validation']['page']='/front/ticketvalidation.php';
@@ -1332,7 +1332,7 @@ function helpHeader($title,$url='') {
       echo "</li>";
    }
    //  Validation ticket
-   if (haveRight("validate_ticket","w")) {
+   if (haveRight("validate_ticket","1")) {
       echo "<li id='menu3' >";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticketvalidation.php\" title=\"".
              $LANG['validation'][0]."\" class='itemP'>".$LANG['validation'][0]."</a>";

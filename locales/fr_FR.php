@@ -1340,7 +1340,8 @@ $LANG['profiles'][44]="Modifier la priorité";
 $LANG['profiles'][45]="Ajouter une tâche à tous les tickets";
 $LANG['profiles'][46]="Éditer toutes les tâches";
 $LANG['profiles'][47]="Ajout d'utilisateur depuis une source externe";
-$LANG['profiles'][48]="Approbation de ticket";
+$LANG['profiles'][48]="Faire une demande de validation de ticket";
+$LANG['profiles'][49]="Valider un ticket";
 
 $LANG['registry'][1]="Ruche";
 $LANG['registry'][2]="Chemin";

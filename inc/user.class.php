@@ -1663,7 +1663,7 @@ class User extends CommonDBTM {
             break;
             
          case "validate" :
-            $where=" `glpi_profiles`.`validate_ticket`='w' ";
+            $where=" `glpi_profiles`.`validate_ticket`='1' ";
             $joinprofile=true;
             $where.=getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
             break;
