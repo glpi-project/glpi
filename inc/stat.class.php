@@ -831,8 +831,10 @@ class Stat {
             }
          }
 
-         if (!count($entrees) && !empty($param['title'])) {
-            echo "<div class='center'>".$param['title']." : ".$LANG['stats'][2]."</div>";
+         if (!count($entrees))) {
+            if (!empty($param['title'])) {
+               echo "<div class='center'>".$param['title']." : ".$LANG['stats'][2]."</div>";
+            }
             return false;
          }
 
