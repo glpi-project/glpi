@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id: budget.class.php 10545 2010-02-16 03:02:15Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
