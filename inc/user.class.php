@@ -1565,11 +1565,13 @@ class User extends CommonDBTM {
       $tab[11]['linkfield'] = 'mobile';
       $tab[11]['name']      = $LANG['common'][42];
 
-      $tab[13]['table']        = 'glpi_groups';
-      $tab[13]['field']        = 'name';
-      $tab[13]['linkfield']    = '';
-      $tab[13]['name']         = $LANG['common'][35];
-      $tab[13]['forcegroupby'] = true;
+      $tab[13]['table']          = 'glpi_groups';
+      $tab[13]['field']          = 'name';
+      $tab[13]['linkfield']      = '';
+      $tab[13]['name']           = $LANG['common'][35];
+      $tab[13]['forcegroupby']   = true;
+      $tab[13]['datatype']       = 'itemlink';
+      $tab[13]['itemlink_type']  = 'Group';
 
       $tab[14]['table']     = 'glpi_users';
       $tab[14]['field']     = 'last_login';
