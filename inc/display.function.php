@@ -2187,8 +2187,6 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $rand=mt_rand();
    echo "<input type='hidden' id='showdate$rand' value=''>";
 
-   echo '<div id=test></div>';
-
    $minHour=0;
    $maxHour=23;
    $minMinute=0;
@@ -2205,8 +2203,8 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
          $maxMinute=59;
       }
    }
-   $output.="<table><tr><td><div id='_date$rand-date' name='_date$rand-date'></div></td><td>";
-   $output.="<select name='_date$rand-hour' id='_date$rand-hour'>";
+   $output.="<table><tr><td><div id='date$rand-date'></div></td><td>";
+   $output.="<select name='_date$rand-hour' id='date$rand-hour'>";
    for ($i=$minHour;$i<$maxHour;$i++) {
       if ($i<10 && strlen($i)==1) {
          $i='0'.$i;
@@ -2215,7 +2213,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    }
    $output.="</select>";
    $output.="</td><td>";
-   $output.="<select name='_date$rand-minute' id='_date$rand-minute'>";
+   $output.="<select name='_date$rand-minute' id='date$rand-minute'>";
    for ($i=$minMinute;$i<$maxMinute;$i+=$time_step) {
       if ($i<10  && strlen($i)==1) {
          $i='0'.$i;
@@ -2230,7 +2228,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $output .= "Ext.onReady(function(){
       var md$rand = new Ext.ux.form.DateTime({
          hiddenName: '$element'
-         ,id: '_date$rand'
+         ,id: 'date$rand'
          ,value: '$value'
          ,hiddenFormat:'Y-m-d H:i:s'
          ,applyTo: 'showdate$rand'
@@ -2311,7 +2309,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
          name: '$element'
          ,value: '".convDate($value)."'
          ,applyTo: 'showdate$rand'
-         ,id: '_date$rand'
+         ,id: 'date$rand'
          ,submitFormat:'Y-m-d'";
 
    switch ($_SESSION['glpidate_format']) {
