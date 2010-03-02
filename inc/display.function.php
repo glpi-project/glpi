@@ -2173,7 +2173,7 @@ function printAjaxPager($title,$start,$numrows) {
  * @param $maxDate maximum allowed date
  * @param $minTime minimum allowed time
  * @param $maxTime maximum allowed time
- * @return nothing
+ * @return rand value used
  */
 function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,$can_edit=true,
                               $minDate='',$maxDate='',$minTime='',$maxTime=''){
@@ -2187,6 +2187,8 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $rand=mt_rand();
    echo "<input type='hidden' id='showdate$rand' value=''>";
 
+   echo '<div id=test></div>';
+
    $minHour=0;
    $maxHour=23;
    $minMinute=0;
@@ -2199,16 +2201,25 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    }
    if (!empty($maxTime)) {
       list($maxHour,$maxMinute)=split(':',$maxTime);
+      if ($maxMinute==0) {
+         $maxMinute=59;
+      }
    }
    $output.="<table><tr><td><div id='_date$rand-date' name='_date$rand-date'></div></td><td>";
    $output.="<select name='_date$rand-hour' id='_date$rand-hour'>";
    for ($i=$minHour;$i<$maxHour;$i++) {
+      if ($i<10 && strlen($i)==1) {
+         $i='0'.$i;
+      }
       $output.="<option value='$i'>$i</option>";
    }
    $output.="</select>";
    $output.="</td><td>";
    $output.="<select name='_date$rand-minute' id='_date$rand-minute'>";
    for ($i=$minMinute;$i<$maxMinute;$i+=$time_step) {
+      if ($i<10  && strlen($i)==1) {
+         $i='0'.$i;
+      }
       $output.="<option value='$i'>$i</option>";
    }
    $output.="</select>";
@@ -2272,7 +2283,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $output .= "</script>\n";
 
    echo $output;
-
+   return $rand;
 
 }
 
@@ -2285,7 +2296,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
  * @param $can_edit could not modify element
  * @param $minDate minimum allowed date
  * @param $maxDate maximum allowed date
- * @return nothing
+ * @return rand value used
  */
 function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$minDate='',
                           $maxDate='') {
@@ -2336,6 +2347,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
    });";
    $output .= "</script>\n";
    echo $output;
+   return $rand;
 }
 
 /**

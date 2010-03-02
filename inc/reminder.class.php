@@ -58,11 +58,14 @@ class Reminder extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $LANG;
 
+      manageBeginAndEndPlanDates($input['plan']);
+
       $input["name"] = trim($input["name"]);
       if (empty($input["name"])) {
          $input["name"]=$LANG['reminder'][15];
       }
       $input["begin"] = $input["end"] = "NULL";
+
 
       if (isset($input['plan'])) {
          if (!empty($input['plan']["begin"]) && !empty($input['plan']["end"])
@@ -93,6 +96,8 @@ class Reminder extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $LANG;
+
+      manageBeginAndEndPlanDates($input['plan']);
 
       $input["name"] = trim($input["name"]);
       if (empty($input["name"])) {

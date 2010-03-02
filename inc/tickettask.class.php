@@ -157,6 +157,8 @@ class TicketTask  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
+      manageBeginAndEndPlanDates($input['plan']);
+
       $input["realtime"] = $input["hour"]+$input["minute"]/60;
       if ($uid=getLoginUserID()) {
          $input["users_id"] = $uid;
@@ -235,6 +237,9 @@ class TicketTask  extends CommonDBTM {
 
    function prepareInputForAdd($input) {
       global $LANG;
+
+
+      manageBeginAndEndPlanDates($input['plan']);
 
       $input["_isadmin"] = haveRight("global_add_tasks","1");
       $input["_job"] = new Ticket;
