@@ -58,8 +58,6 @@ class RuleCollection {
    /// Menu option
    var $menu_option="";
 
-   var $specific_parameters = false;
-
    /**
    * Get Collection Size : retrieve the number of rules
    *
@@ -718,20 +716,6 @@ class RuleCollection {
       else {
          return NULL;
       }
-   }
-
-   function specificParametersTitle() {
-      global $LANG,$CFG_GLPI;
-
-      $link = getItemTypeSearchURL($this->getRuleClassName()."Parameter");
-
-      displayTitle('','','',array($link=>$LANG['rulesengine'][138]));
-      echo "<br>";
-   }
-
-   static function hasSpecificParameters($sub_type='') {
-      $rulecollection = RuleCollection::getClassByType($sub_type);
-      return $rulecollection->specific_parameters;
    }
 }
 

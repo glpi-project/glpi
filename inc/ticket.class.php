@@ -81,7 +81,7 @@ class Ticket extends CommonDBTM {
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      
+
       $validation = new TicketValidation();
       return (haveRight("show_all_ticket","1")
               || $this->fields["users_id"] === getLoginUserID()
@@ -1043,8 +1043,7 @@ class Ticket extends CommonDBTM {
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
             $type = "finish";
          }
-         //$mail = new Mailing($type,$this,$user);
-         //$mail->send();
+
          NotificationEvent::raiseEvent($type,$this);
       }
    }

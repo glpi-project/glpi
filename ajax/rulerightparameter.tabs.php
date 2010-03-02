@@ -29,35 +29,15 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (isset($_POST["delete"])) {
-   if (count($_POST["item"])) {
-      foreach ($_POST["item"] as $key => $val) {
-         $input["id"] = $key;
-         $criteria->delete($input);
-         refreshMainWindow();
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["add"])) {
-   $criteria->add($_POST);
-   refreshMainWindow();
-   glpi_header($_SERVER['HTTP_REFERER']);
-}
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonHeader($LANG['Menu'][26]." ".$LANG['rulesengine'][138],
-                $_SERVER['PHP_SELF'],"admin","rule",$criteria->menu_type);
-   $criteria->title();
-}
+$dropdown = new OperatingSystem();
+include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
 
-$criteria->showForm();
-
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   commonFooter();
-}
 ?>

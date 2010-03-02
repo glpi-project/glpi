@@ -3977,17 +3977,12 @@ function update0723to078($output='HTML') {
 
    if (TableExists('glpi_ruleldapparameters')) {
       $query = "RENAME TABLE `glpi_ruleldapparameters`
-                   TO `glpi_ruleparameters` ;";
-      $DB->query($query) or die("0.78 rename glpi_ruleldapparameters to glpi_ruleparameters".
+                   TO `glpi_rulerightparameters` ;";
+      $DB->query($query) or die("0.78 rename glpi_ruleldapparameters to glpi_rulerightparameters".
                                    $LANG['update'][90] . $DB->error());
 
-      $query = "ALTER TABLE `glpi_ruleparameters`
-                  ADD `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
-      $DB->query($query) or die("0.78 add sub_type to glpi_ruleparameters".
-                                   $LANG['update'][90] . $DB->error());
-
-      $query = "UPDATE `glpi_ruleparameters` SET `sub_type`='RuleRight'";
-      $DB->query($query) or die("0.78 set sub_type to 'RuleRight' in glpi_ruleparameters".
+      $query = "ALTER TABLE `glpi_rulerightparameters` ADD `comment` TEXT NOT NULL ";
+      $DB->query($query) or die("0.78 add commentr to glpi_rulerightparameters".
                                    $LANG['update'][90] . $DB->error());
 
    }

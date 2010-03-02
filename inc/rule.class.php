@@ -58,6 +58,8 @@ class Rule extends CommonDBTM {
    /// field used to order rules
    var $orderby='ranking';
 
+   var $specific_parameters = false;
+
    const RULE_NOT_IN_CACHE = -1;
    const RULE_WILDCARD = '*';
 
@@ -445,18 +447,19 @@ class Rule extends CommonDBTM {
       }
       $rand=Dropdown::showFromArray("criteria", $items);
       $params = array('criteria' => '__VALUE__',
+                      'rand'=>$rand,
                       'sub_type' => $this->getType());
       ajaxUpdateItemOnSelectEvent("dropdown_criteria$rand","criteria_span",
                                   $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false);
-
-      if (RuleCollection::hasSpecificParameters(get_class($this))) {
-         echo "<img alt='' title='".$LANG['rulesengine'][140]."' src='".$CFG_GLPI["root_doc"].
-               "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
-               "/front/popup.php?popup=add_ruleparameter&rand=$rand&sub_type=".get_class($this)."' ,
-               'glpipopup', 'height=400, ".
-               "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+      if ($this->specific_parameters) {
+               $itemtype = get_class($this).'Parameter';
+               echo "<img alt='' title=\"".$LANG['rulesengine'][140]."\" src='".$CFG_GLPI["root_doc"].
+                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                     onClick=\"var w = window.open('".getItemTypeFormURL($itemtype).
+                     "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
+                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
+
       return key($items);
    }
 
@@ -464,14 +467,8 @@ class Rule extends CommonDBTM {
     * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
     */
    function addSpecificCriteriasToArray(&$criterias) {
-
-      foreach (RuleParameter::getByType(get_class($this)) as $datas ) {
-         $criterias[$datas["value"]]['name']=$datas["name"];
-         $criterias[$datas["value"]]['field']=$datas["value"];
-         $criterias[$datas["value"]]['linkfield']='';
-         $criterias[$datas["value"]]['table']='';
-      }
    }
+
    /**
     * Display the dropdown of the actions for the rule
     *

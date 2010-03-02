@@ -42,6 +42,7 @@ class RuleRight extends Rule {
    // From Rule
    public $right='rule_ldap';
    public $orderby="name";
+   public $specific_parameters = true;
 
    /**
     * Constructor
@@ -312,6 +313,19 @@ class RuleRight extends Rule {
       $actions['_ignore_user_import']['type']  = 'yesno';
       $actions['_ignore_user_import']['table'] = '';
       return $actions;
+   }
+
+   /**
+    * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
+    */
+   function addSpecificCriteriasToArray(&$criterias) {
+
+      foreach (getAllDatasFromTable('glpi_rulerightparameters') as $datas ) {
+         $criterias[$datas["value"]]['name']=$datas["name"];
+         $criterias[$datas["value"]]['field']=$datas["value"];
+         $criterias[$datas["value"]]['linkfield']='';
+         $criterias[$datas["value"]]['table']='';
+      }
    }
 }
 

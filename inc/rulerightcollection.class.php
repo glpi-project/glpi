@@ -45,7 +45,6 @@ class RuleRightCollection extends RuleCollection {
    public $right = 'rule_ldap';
    public $orderby="name";
    public $menu_option='right';
-   public $specific_parameters = true;
 
    // Specific ones
    /// Array containing results : entity + right

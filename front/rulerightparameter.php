@@ -37,7 +37,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$criteria = new RuleRightParameter();
-
-include (GLPI_ROOT . "/front/ruleparameter.common.php");
+$dropdown = new RuleRightParameter();
+include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>
