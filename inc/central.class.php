@@ -108,17 +108,21 @@ class Central extends CommonGLPI {
       }
       echo "<tr><td class='top'><table>";
 
+      echo "<tr><td class='top' width='450px'><br>";
+      Ticket::showCentralList(0,"toapprove",false);
+      echo "</td></tr>";
+      echo "<tr><td class='top' width='450px'>";
+      Ticket::showCentralList(0,"requestbyself",false);
+      echo "</td></tr>";
       if ($showticket) {
-         echo "<tr><td class='top' width='450px'><br>";
+         echo "<tr><td class='top' width='450px'>";
          Ticket::showCentralList(0,"process",false);
          echo "</td></tr>";
          echo "<tr><td class='top' width='450px'>";
          Ticket::showCentralList(0,"waiting",false);
          echo "</td></tr>";
-         echo "<tr><td class='top' width='450px'>";
-         Ticket::showCentralList(0,"requestbyself",false);
-         echo "</td></tr>";
       }
+
       echo "</table></td>";
       echo "<td class='top'><table><tr>";
       echo "<td class='top' width='450px'><br>";
@@ -174,7 +178,10 @@ class Central extends CommonGLPI {
 
       if (haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
-         Ticket::showCentralList(0,"requestbyselfgroup",true);
+         Ticket::showCentralList(0,"toapprove",true);
+         echo "</td></tr>";
+         echo "<tr><td  class='top' width='450px'>";
+         Ticket::showCentralList(0,"requestbyself",true);
          echo "</td></tr>";
       } else {
          echo "<tr><td  class='top' width='450px'><br>";
