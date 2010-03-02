@@ -264,44 +264,13 @@ class Entity extends CommonTreeDropdown {
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[14]['table']         = 'glpi_entities';
-      $tab[14]['field']         = 'name';
-      $tab[14]['linkfield']     = 'name';
-      $tab[14]['name']          = $LANG['common'][16];
-      $tab[14]['datatype']      = 'itemlink';
-      $tab[14]['itemlink_type'] = 'Entity';
 
-      $tab[16]['table']     = 'glpi_entities';
-      $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
 
       $tab[3]['table']     = 'glpi_entitydatas';
       $tab[3]['field']     = 'address';
       $tab[3]['linkfield'] = '';
       $tab[3]['name']      = $LANG['financial'][44];
 
-      $tab[10]['table']     = 'glpi_entitydatas';
-      $tab[10]['field']     = 'fax';
-      $tab[10]['linkfield'] = '';
-      $tab[10]['name']      = $LANG['financial'][30];
-
-      $tab[11]['table']     = 'glpi_entitydatas';
-      $tab[11]['field']     = 'town';
-      $tab[11]['linkfield'] = '';
-      $tab[11]['name']      = $LANG['financial'][101];
-
-      $tab[12]['table']     = 'glpi_entitydatas';
-      $tab[12]['field']     = 'state';
-
-      $tab[12]['linkfield'] = '';
-      $tab[12]['name']      = $LANG['financial'][102];
-
-      $tab[13]['table']     = 'glpi_entitydatas';
-      $tab[13]['field']     = 'country';
-      $tab[13]['linkfield'] = '';
-      $tab[13]['name']      = $LANG['financial'][103];
 
       $tab[4]['table']     = 'glpi_entitydatas';
       $tab[4]['field']     = 'website';
@@ -334,25 +303,60 @@ class Entity extends CommonTreeDropdown {
       $tab[9]['linkfield'] = '';
       $tab[9]['name']      = $LANG['entity'][15];
 
+
       $tab[10]['table']     = 'glpi_entitydatas';
-      $tab[10]['field']     = 'entity_ldapfilter';
+      $tab[10]['field']     = 'fax';
       $tab[10]['linkfield'] = '';
-      $tab[10]['name']      = $LANG['entity'][16];
+      $tab[10]['name']      = $LANG['financial'][30];
 
       $tab[11]['table']     = 'glpi_entitydatas';
-      $tab[11]['field']     = 'admin_email';
+      $tab[11]['field']     = 'town';
       $tab[11]['linkfield'] = '';
-      $tab[11]['name']      = $LANG['setup'][203];
+      $tab[11]['name']      = $LANG['financial'][101];
 
       $tab[12]['table']     = 'glpi_entitydatas';
-      $tab[12]['field']     = 'admin_reply';
+      $tab[12]['field']     = 'state';
+
       $tab[12]['linkfield'] = '';
-      $tab[12]['name']      = $LANG['setup'][207];
+      $tab[12]['name']      = $LANG['financial'][102];
 
       $tab[13]['table']     = 'glpi_entitydatas';
-      $tab[13]['field']     = 'admin_reply';
+      $tab[13]['field']     = 'country';
       $tab[13]['linkfield'] = '';
-      $tab[13]['name']      = $LANG['setup'][732];
+      $tab[13]['name']      = $LANG['financial'][103];
+
+      $tab[14]['table']         = 'glpi_entities';
+      $tab[14]['field']         = 'name';
+      $tab[14]['linkfield']     = 'name';
+      $tab[14]['name']          = $LANG['common'][16];
+      $tab[14]['datatype']      = 'itemlink';
+      $tab[14]['itemlink_type'] = 'Entity';
+
+      $tab[16]['table']     = 'glpi_entities';
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[17]['table']     = 'glpi_entitydatas';
+      $tab[17]['field']     = 'entity_ldapfilter';
+      $tab[17]['linkfield'] = '';
+      $tab[17]['name']      = $LANG['entity'][16];
+
+      $tab[18]['table']     = 'glpi_entitydatas';
+      $tab[18]['field']     = 'admin_email';
+      $tab[18]['linkfield'] = '';
+      $tab[18]['name']      = $LANG['setup'][203];
+
+      $tab[19]['table']     = 'glpi_entitydatas';
+      $tab[19]['field']     = 'admin_reply';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['setup'][207];
+
+      $tab[20]['table']     = 'glpi_entitydatas';
+      $tab[20]['field']     = 'mail_domain';
+      $tab[20]['linkfield'] = '';
+      $tab[20]['name']      = $LANG['setup'][732];
 
       return $tab;
    }
