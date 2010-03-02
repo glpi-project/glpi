@@ -465,9 +465,11 @@ class TicketValidation  extends CommonDBChild {
             echo "<th>".$colonne."</th>";
          }
          echo "</tr>";
-               
+         
+         initNavigateListItems('TicketValidation',$LANG['validation'][26]." = ".$ticket->fields['name']);
+             
          while ($row = $DB->fetch_assoc($result)) {
-            
+            addToNavigateListItems('TicketValidation',$row["id"]);
             $bgcolor = $this->getStatusColor($row['status']);
             $status = $this->getStatus($row['status']);
             if ($row['is_deleted'] == 1) {
