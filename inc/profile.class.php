@@ -45,7 +45,7 @@ class Profile extends CommonDBTM {
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights=array('faq','reservation_helpdesk','create_ticket','add_followups',
                               'observe_ticket','password_update','helpdesk_hardware',
-                              'helpdesk_item_type','show_group_ticket','show_group_hardware','validate_ticket');
+                              'helpdesk_item_type','show_group_ticket','show_group_hardware','create_validation','validate_ticket');
 
    /// Common fields used for all profiles type
    static public $common_fields=array("id","name","interface","is_default");
@@ -406,12 +406,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td>";
       Dropdown::showYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
-      $options = array("" => $LANG['profiles'][12], 
-                        "w" => $LANG['validation'][21]);
-      Dropdown::showFromArray("validate_ticket", $options,
-                                    array('value' => $this->fields["validate_ticket"]));
-      echo "</td></tr>\n";
+      echo "<td colspan='2'></td></tr>\n";
       
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td><td>";
@@ -448,7 +443,15 @@ class Profile extends CommonDBTM {
       }
       echo "</select></td>";
       echo "</tr>\n";
-
+      
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("create_validation",$this->fields["create_validation"]);
+      echo "<td>".$LANG['profiles'][49]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("validate_ticket",$this->fields["validate_ticket"]);
+      echo "</td>";
+      echo "</tr>\n";
+      
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>".$LANG['Menu'][18]."</strong></td>";
       echo "</tr>\n";
@@ -675,17 +678,21 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][44]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_priority",$this->fields["update_priority"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
-      $options = array("" => $LANG['profiles'][12],
-                        "r" => $LANG['validation'][26], 
-                        "w" => $LANG['validation'][21]);
-      Dropdown::showFromArray("validate_ticket", $options,
-                                    array('value' => $this->fields["validate_ticket"]));
-      echo "</td>";
+      echo "<td colspan='2'></td>";
       echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_tasks",$this->fields["update_tasks"]);
       echo "</td></tr>\n";
-
+      
+      echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['validation'][0]."</strong></td></tr>\n";
+      
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("create_validation",$this->fields["create_validation"]);
+      echo "<td>".$LANG['profiles'][49]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("validate_ticket",$this->fields["validate_ticket"]);
+      echo "</td>";
+      echo "<td colspan='2'></td></tr>\n";
+      
       echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][39]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";

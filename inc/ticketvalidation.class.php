@@ -52,16 +52,22 @@ class TicketValidation  extends CommonDBChild {
    }
 
    function canCreate() {
-      return haveRight('validate_ticket', 'r');
+      return haveRight('create_validation', '1');
    }
    
    function canView() {
-      return haveRight('validate_ticket', 'r');
+      return (haveRight('create_validation', 1)
+              || haveRight('validate_ticket', 1));
    }
    
    function canUpdate() {
 
-      return haveRight('validate_ticket', 'w');
+      return haveRight('validate_ticket', '1');
+   }
+   
+   function canDelete() {
+
+      return haveRight('validate_ticket', '1');
    }
    
    /**
@@ -374,39 +380,37 @@ class TicketValidation  extends CommonDBChild {
    function showValidationTicketForm($ticket) {
       global $LANG;
       
-      if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-         $canedit = haveRight('validate_ticket','r');
-         if ($ticket->can($ticket->fields['id'], 'r') 
-               && !strstr($ticket->fields["status"],"solved") 
-                  && !strstr($ticket->fields["status"],"closed") 
-                  && $canedit) {
-            echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='2'>".$LANG['validation'][1]."</th></tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['validation'][21]."</td>";
-            echo "<td>";
-            echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
-            echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
-            User::dropdown(array('name'  => "users_id_validate",
-                                 'entity' => $ticket->fields['entities_id'],
-                                 'right'  => 'validate'));
-            echo "</td>";
-            echo "</tr>";
-            
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['common'][25]."</td>";
-            echo "<td><textarea cols='45' rows='3' name='comment_submission'></textarea></td>"; 
-            echo "</tr>";
-            
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan= '2' align='center'>";
-            echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
-            echo "</tr>";
-            
-            echo "</table>";
-            echo "</form>";
-         }
+      $canedit = haveRight('create_validation','1');
+      if ($ticket->can($ticket->fields['id'], 'r') 
+            && !strstr($ticket->fields["status"],"solved") 
+               && !strstr($ticket->fields["status"],"closed") 
+               && $canedit) {
+         echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>".$LANG['validation'][1]."</th></tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['validation'][21]."</td>";
+         echo "<td>";
+         echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
+         echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
+         User::dropdown(array('name'  => "users_id_validate",
+                              'entity' => $ticket->fields['entities_id'],
+                              'right'  => 'validate'));
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['common'][25]."</td>";
+         echo "<td><textarea cols='45' rows='3' name='comment_submission'></textarea></td>"; 
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan= '2' align='center'>";
+         echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
+         echo "</tr>";
+         
+         echo "</table>";
+         echo "</form>";
       }
    }
    

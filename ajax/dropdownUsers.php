@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkCentralAccess();
+checkLoginUser();
 
 // Make a select box with all glpi users
 if (isset($_POST["helpdesk_ajax"])&& $_POST["helpdesk_ajax"]) {
