@@ -823,7 +823,7 @@ class Stat {
          }
 
          // Clean data
-         if (count($entrees)) {
+         if (is_array($entrees) && count($entrees)) {
             foreach ($entrees as $key => $val) {
                if (!is_array($val) || count($val)==0) {
                   unset($entrees[$key]);
@@ -831,7 +831,7 @@ class Stat {
             }
          }
 
-         if (!count($entrees)) {
+         if (!is_array($entrees) || count($entrees) == 0) {
             if (!empty($param['title'])) {
                echo "<div class='center'>".$param['title']." : ".$LANG['stats'][2]."</div>";
             }
