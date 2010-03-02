@@ -1767,7 +1767,7 @@ class Search {
             break;
 
          case "glpi_groups.name" :
-            if ($itemtype != 'Group') {
+            if ($itemtype != 'Group' && $itemtype != 'User') {
                $linkfield="";
                if (!empty($searchopt[$ID]["linkfield"])) {
                   $linkfield="_".$searchopt[$ID]["linkfield"];
