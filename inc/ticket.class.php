@@ -1798,9 +1798,9 @@ class Ticket extends CommonDBTM {
          'closed'       => $LANG['joblist'][33]);
 
       if ($withmetaforsearch) {
-         $tab['notold']  = $LANG['joblist'][24];
+         $tab['notold']  = $LANG['joblist'][34];
          $tab['process'] = $LANG['joblist'][21];
-         $tab['old']     = $LANG['joblist'][25];
+         $tab['old']     = $LANG['joblist'][32]." + ".$LANG['joblist'][33];
          $tab['all']     = $LANG['common'][66];
       }
       return $tab;
