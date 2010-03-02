@@ -231,14 +231,19 @@ class RuleTicket extends Rule {
       $actions['groups_id']['name']  = $LANG['job'][4]." - ".$LANG['common'][35];
       $actions['groups_id']['type']  = 'dropdown';
       $actions['groups_id']['table'] = 'glpi_groups';
-
+      
       $actions['users_id_assign']['name'] = $LANG['job'][5]." - ".$LANG['job'][6];
       $actions['users_id_assign']['type'] = 'dropdown_assign';
 
       $actions['groups_id_assign']['table'] = 'glpi_groups';
       $actions['groups_id_assign']['name']  = $LANG['job'][5]." - ".$LANG['common'][35];
       $actions['groups_id_assign']['type']  = 'dropdown';
-
+      
+      $actions['suppliers_id_assign']['table'] = 'glpi_suppliers';
+      $actions['suppliers_id_assign']['name']  = $LANG['job'][5]." - ".$LANG['financial'][26];
+      $actions['suppliers_id_assign']['type']  = 'dropdown';
+      
+      
       $actions['urgency']['name'] = $LANG['joblist'][29];
       $actions['urgency']['type'] = 'dropdown_urgency';
 
