@@ -3288,7 +3288,7 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 add notifications fields in glpi_entitydatas" . $LANG['update'][90] . $DB->error());
    }
 
-   if (TableExists('glpi_mailsettings')) {
+   if (TableExists('glpi_mailingsettings')) {
       $query = "DROP TABLE `glpi_mailingsettings`;";
       $DB->query($query) or die("0.78 drop table glpi_mailingsettings" . $LANG['update'][90] . $DB->error());
    }

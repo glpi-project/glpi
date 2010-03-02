@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetTicket extends NotificationTarget {
 
-   const VIEW_PRIVATE = 1;
-
    var $private_profiles = array();
 
    function getSubjectPrefix() {
@@ -614,6 +612,27 @@ class NotificationTargetTicket extends NotificationTarget {
       foreach ($labels as $tag => $label) {
          $this->datas[$tag] = $label;
       }
+   }
+
+
+   static function isAuthorMailingActivatedForHelpdesk() {
+      global $DB,$CFG_GLPI;
+
+      if ($CFG_GLPI['use_mailing']) {
+         $query = "SELECT COUNT(`glpi_notifications`.`id`)
+                 FROM `glpi_notifications` INNER JOIN `glpi_notificationtargets`
+                     ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id` )
+                 WHERE `glpi_notifications`.`itemtype` = 'Ticket'
+                       AND `glpi_notifications`.`mode` = 'mail'
+                       AND `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
+                       AND `glpi_notificationtargets`.`items_id` = '".Notification::AUTHOR."'";
+         if ($result = $DB->query($query)) {
+            if ($DB->result($result,0,0) >0) {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
 }
