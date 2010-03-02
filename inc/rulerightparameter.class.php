@@ -38,9 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// LDAP criteria class
-class RuleRightParameter extends RuleParameter {
-
-   public $menu_type = "right";
+class RuleRightParameter extends CommonDropdown {
 
    function prepareInputForAdd($input) {
 
@@ -49,6 +47,30 @@ class RuleRightParameter extends RuleParameter {
       $input["value"] = utf8_strtolower($input["value"]);
       return $input;
    }
+
+   function canCreate() {
+      return haveRight('rule_ldap','w');
+   }
+
+   function canView() {
+      return haveRight('rule_ldap','r');
+   }
+
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array(array('name'  => 'value',
+                         'label' => $LANG['rulesengine'][16],
+                         'type'  => 'text',
+                         'list'  => false));
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['rulesengine'][138];
+   }
+
 }
 
 ?>

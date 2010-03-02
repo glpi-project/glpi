@@ -68,62 +68,6 @@ class RuleMailCollector extends Rule {
       return 1;
    }
 
-
-   /**
-   * Execute the actions as defined in the rule
-   * @param $output the result of the actions
-   * @param $params the parameters
-   * @param $regex_results array results of the regex match if used in criteria
-   * @return the fields modified
-   */
-   /*
-   function executeActions($output,$params,$regex_results) {
-      global $CFG_GLPI;
-
-      $entity='';
-      $right='';
-      $is_recursive = 0;
-      $continue = true;
-      $output_src = $output;
-
-      if (count($this->actions)) {
-         foreach ($this->actions as $action) {
-            switch ($action->fields["action_type"]) {
-               case "assign" :
-                  switch ($action->fields["field"]) {
-                     case "entities_id" :
-                        $entity = $action->fields["value"];
-                        break;
-               case "regex_result" :
-                  switch ($action->fields["field"]) {
-                     case "_affect_entity_by_domain" :
-                        $match_entity = false;
-                        $entity = array();
-                        foreach ($regex_results as $regex_result) {
-                           $res = RuleAction::getRegexResultById($action->fields["value"],array($regex_result));
-                           if ($res != null) {
-                                $entity_found = EntityData::getEntityIDByDomain($res);
-                              //If an entity was found
-                              if ($entity > -1) {
-                                 array_push($entity, array($entity_found,
-                                                           $is_recursive));
-                                 $match_entity=true;
-                              }
-                           }
-                        }
-                        if (!$match_entity) {
-                           //Not entity assigned : action processing must be stopped for this rule
-                           $continue = false;
-                        }
-                        break;
-                  } // switch (field)
-                  break;
-               } // switch (action_type)
-            } // foreach (action)
-         } // count (actions)
-      }
-   }*/
-
    function getTitleRule($target) {
    }
 
@@ -141,24 +85,29 @@ class RuleMailCollector extends Rule {
       $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
       $criterias['mailcollector']['type'] = 'dropdown';
 
-      $criterias['from_email']['name']  = $LANG['rulesengine'][136];
-      $criterias['from_email']['table'] = '';
-      $criterias['from_email']['type'] = 'text';
+      $criterias['from']['name']  = $LANG['rulesengine'][136];
+      $criterias['from']['table'] = '';
+      $criterias['from']['type'] = 'text';
 
-      $criterias['to_email']['name']  = $LANG['rulesengine'][137];
-      $criterias['to_email']['table'] = '';
-      $criterias['to_email']['type'] = 'text';
+      $criterias['fromName']['name']  = 'fromName';
+      $criterias['fromName']['table'] = '';
+      $criterias['fromName']['type'] = 'text';
 
-      $criterias['title']['name']  = $LANG['common'][90];
-      $criterias['title']['table'] = '';
-      $criterias['title']['type'] = 'text';
+      $criterias['to']['name']  = $LANG['rulesengine'][137];
+      $criterias['to']['table'] = '';
+      $criterias['to']['type'] = 'text';
+
+      $criterias['toName']['name']  = 'toName';
+      $criterias['toName']['table'] = '';
+      $criterias['toName']['type'] = 'text';
+
+      $criterias['subject']['name']  = $LANG['common'][90];
+      $criterias['subject']['table'] = '';
+      $criterias['subject']['type'] = 'text';
 
       $criterias['content']['name']  = $LANG['mailing'][115];
       $criterias['content']['table'] = '';
       $criterias['content']['type'] = 'text';
-
-      //Dynamically add all the ldap criterias to the current list of rule's criterias
-      $this->addSpecificCriteriasToArray($criterias);
 
       return $criterias;
    }
@@ -182,6 +131,39 @@ class RuleMailCollector extends Rule {
       $actions['_refuse_email_with_response']['type']   = 'yesno';
       $actions['_refuse_email_with_response']['table']   = '';
       return $actions;
+   }
+
+   function executeActions($output,$params,$regex_results) {
+
+      if (count($this->actions)) {
+         foreach ($this->actions as $action) {
+            switch ($action->fields["action_type"]) {
+               case "assign" :
+                  $output[$action->fields["field"]] = $action->fields["value"];
+                  break;
+
+               case "regex_result" :
+                  switch ($action->fields["field"]) {
+                     case "_affect_entity_by_domain" :
+                        $match_entity = false;
+                        foreach ($regex_results as $regex_result) {
+                           $res = RuleAction::getRegexResultById($action->fields["value"],array($regex_result));
+                           if ($res != null) {
+                              $entity_found = EntityData::getEntityIDByDomain($res);
+                              //If an entity was found
+                              if ($entity_found > -1) {
+                                 $output['entities_id'] = $entity_found;
+                                 $match_entity = true;
+                                 break;
+                              }
+                           }
+                        }
+                        break;
+                  } // switch (field)
+            }
+         }
+      }
+      return $output;
    }
 }
 ?>

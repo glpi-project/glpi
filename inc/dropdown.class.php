@@ -563,7 +563,8 @@ class Dropdown {
                   $LANG['Menu'][4] => array('SoftwareCategory' => $LANG['softwarecategories'][5]),
 
                   $LANG['common'][34] => array('UserTitle'     => $LANG['users'][1],
-                                               'UserCategory'  => $LANG['users'][2])
+                                               'UserCategory'  => $LANG['users'][2]),
+                  $LANG['rulesengine'][19] => array('RuleRightParameter'=>$LANG['rulesengine'][138])
 
                  ); //end $opt
 
@@ -1172,14 +1173,14 @@ class Dropdown {
                      echo "<option value='submit_validation'>".$LANG['validation'][26]."</option>";
                   }
                   break;
-               
+
                case 'TicketValidation' :
                   $tmp = new TicketValidation();
                   if ($tmp->canUpdate()) {
                      echo "<option value='validate_ticket'>".$LANG['validation'][0]."</option>";
                   }
                   break;
-                  
+
                case 'CronTask' :
                   echo "<option value='reset'>".$LANG['buttons'][16].
                      " (".$LANG['crontask'][40].")</option>";

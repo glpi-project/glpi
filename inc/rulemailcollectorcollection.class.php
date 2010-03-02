@@ -43,7 +43,6 @@ class RuleMailCollectorCollection extends RuleCollection {
    public $stop_on_first_match=true;
    public $right = 'rule_mailcollector';
    public $menu_option='mailcollector';
-   public $specific_parameters = true;
 
    function getTitle() {
       global $LANG;
@@ -52,12 +51,16 @@ class RuleMailCollectorCollection extends RuleCollection {
    }
 
    function prepareInputDataForProcess($input,$params) {
-      $fields = array('mailcollector');
-      foreach ($fields as $field) {
-         if (isset($params[$field])) {
-            $input[$field] = $params[$field];
+      $parameters = RuleParameter::getByType($this->getRuleClassName());
+      foreach ($parameters as $ID => $parameter) {
+         if (isset($params['headers'][$parameter['name']])) {
+            $input[$parameter['name']] = $params['headers'][$parameter['name']];
          }
       }
+
+      $input['from'] = $params['ticket']['user_email'];
+      $input['mailcollector'] = $params['mailcollector'];
+
       return $input;
    }
 }

@@ -994,6 +994,7 @@ $LANG['mailgate'][5]="Fichier attaché invalide";
 $LANG['mailgate'][6]="Fichier attaché trop volumineux";
 $LANG['mailgate'][7]="Taille maximum des fichiers importés via les collecteurs mails (0 = pas d'import)";
 $LANG['mailgate'][8]="octets";
+$LANG['mailgate'][9]="Votre mail n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
 
 $LANG['mailing'][0]="----------------------------------------------------------";
 $LANG['mailing'][1]="======================================================================";
@@ -1534,7 +1535,7 @@ $LANG['rulesengine'][134]="Refuser email (pas de réponse par email)";
 $LANG['rulesengine'][135]="Refuser email (avec réponse email)";
 $LANG['rulesengine'][136]="Adresse de l'émetteur";
 $LANG['rulesengine'][137]="Adresse du destinataire";
-$LANG['rulesengine'][138]="Gestion des critères";
+$LANG['rulesengine'][138]="Critères LDAP";
 $LANG['rulesengine'][139]="Aucun critère défini";
 $LANG['rulesengine'][140]="Ajout d'un critère";
 

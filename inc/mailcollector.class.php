@@ -271,36 +271,42 @@ class MailCollector  extends CommonDBTM {
             // Get Total Number of Unread Email in mail box
             $tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
             $error=0;
+            $refused = 0;
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
-               $tkt= $this->buildTicket($i);
-               $rule_options = $tkt;
-               $rule_options['mailcollector'] = $mailgateID;
-               $rulecollection = new RuleMailCollectorCollection();
-               $output = array();
-               $output= $rulecollection->processAllRules($tkt,array(),$rule_options);
+               $tkt= $this->buildTicket($i,$mailgateID);
+               if (isset($tkt['enttiies_id'])
+                   || isset($tkt['_refuse_email_no_response'])
+                    || isset($tkt['_refuse_email_with_response'])) {
 
-               if (isset($output['entities_id'])) {
-                  $tkt['entities_id'] = $output['entities_id'];
-               }
-               $tkt['_mailgate']=$mailgateID;
-               $this->deleteMails($i); // Delete Mail from Mail box
-               $result=imap_fetchheader($this->marubox,$i);
-               // Is a mail responding of an already existgin ticket ?
-               if (isset($tkt['tickets_id']) ) {
-                  // Deletion of message with sucess
-                  if (false === is_array($result)) {
-                     $fup=new TicketFollowup();
-                     $fup->add($tkt);
-                  } else {
-                     $error++;
+                  if (isset($tkt['enttiies_id'])) {
+                     $tkt['_mailgate']=$mailgateID;
+                     $this->deleteMails($i); // Delete Mail from Mail box
+                     $result=imap_fetchheader($this->marubox,$i);
+                     // Is a mail responding of an already existgin ticket ?
+                     if (isset($tkt['tickets_id']) ) {
+                        // Deletion of message with sucess
+                        if (false === is_array($result)) {
+                           $fup=new TicketFollowup();
+                           $fup->add($tkt);
+                        } else {
+                           $error++;
+                        }
+                     } else { // New ticket
+                        // Deletion of message with sucess
+                        if (false === is_array($result)) {
+                           $track=new Ticket();
+                           $track->add($tkt);
+                        } else {
+                           $error++;
+                        }
+                     }
                   }
-               } else { // New ticket
-                  // Deletion of message with sucess
-                  if (false === is_array($result)) {
-                     $track=new Ticket();
-                     $track->add($tkt);
-                  } else {
-                     $error++;
+                  else {
+                     if (isset($tkt['_refuse_email_with_response'])) {
+                        $this->sendMailRefusedResponse($tkt['user_email'],$tkt['name']);
+                     }
+                     $refused++;
+                     $this->deleteMails($i); // Delete Mail from Mail box
                   }
                }
                $this->fetch_emails++;
@@ -317,7 +323,8 @@ class MailCollector  extends CommonDBTM {
                }
             } else {
                return "Number of messages: available=$tot, collected=".$this->fetch_emails.
-                       ($error>0?" ($error error(s))":"");
+                       ($error>0?" ($error error(s))":"".
+                       ($refused>0?" ($refused refused)":""));
             }
          } else {
             if ($display) {
@@ -339,7 +346,7 @@ class MailCollector  extends CommonDBTM {
    * @param $i mail ID
    * @return ticket fields array
    */
-   function buildTicket($i) {
+   function buildTicket($i,$options=array()) {
       global $DB,$LANG,$CFG_GLPI;
 
       $head=$this->getHeaders($i); // Get Header Info Return Array Of Headers
@@ -454,6 +461,15 @@ class MailCollector  extends CommonDBTM {
       }
       $tkt['requesttypes_id']=RequestType::getDefault('mail');
       $tkt['content']=clean_cross_side_scripting_deep(html_clean($tkt['content']));
+
+      $rule_options['ticket'] = $tkt;
+      $rule_options['headers'] = $head;
+      $rule_options['mailcollector'] = $options['mailgateID'];
+      $rulecollection = new RuleMailCollectorCollection();
+      $output= $rulecollection->processAllRules(array(),array(),$rule_options);
+      foreach ($output as $key => $value) {
+         $tkt[$key] = $value;
+      }
 
       $tkt=addslashes_deep($tkt);
       return $tkt;
@@ -951,6 +967,17 @@ class MailCollector  extends CommonDBTM {
          $msg .= " ".$LANG['common'][60].':'.($mc['is_active']?$LANG['choice'][1]:$LANG['choice'][0]);
          echo wordwrap($msg."\n", $width, "\n\t\t");
       }
+   }
+
+   function sendMailRefusedResponse($to='',$subject='') {
+      global $CFG_GLPI,$LANG;
+      $mmail= new NotificationMail;
+      $mmail->From = $to;
+      $mmail->FromName = $CFG_GLPI["admin_email"];
+      $mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
+      $mmail->Subject = 'Re: '.$subject;
+      $mmail->Body = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];
+      $mmail->Send();
    }
 }
 

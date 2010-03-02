@@ -3242,29 +3242,29 @@ INSERT INTO `glpi_rulecriterias` VALUES ('2','2','uid','0','*');
 INSERT INTO `glpi_rulecriterias` VALUES ('3','2','samaccountname','0','*');
 INSERT INTO `glpi_rulecriterias` VALUES ('4','2','MAIL_EMAIL','0','*');
 
-### Dump table glpi_ruleparameters
+### Dump table glpi_rulerightparameters
 
-DROP TABLE IF EXISTS `glpi_ruleparameters`;
-CREATE TABLE `glpi_ruleparameters` (
+DROP TABLE IF EXISTS `glpi_rulerightparameters`;
+CREATE TABLE `glpi_rulerightparameters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sub_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `comment` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_ruleparameters` VALUES ('1','(LDAP)Organization','o','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('2','(LDAP)Common Name','cn','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('3','(LDAP)Department Number','departmentnumber','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('4','(LDAP)Email','mail','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('5','Object Class','objectclass','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('6','(LDAP)User ID','uid','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('7','(LDAP)Telephone Number','phone','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('8','(LDAP)Employee Number','employeenumber','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('9','(LDAP)Manager','manager','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('10','(LDAP)DistinguishedName','dn','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('12','(AD)User ID','samaccountname','RuleRight');
-INSERT INTO `glpi_ruleparameters` VALUES ('13','(LDAP) Title','title','RuleRight');
+INSERT INTO `glpi_rulerightparameters` VALUES ('1','(LDAP)Organization','o','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('2','(LDAP)Common Name','cn','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('3','(LDAP)Department Number','departmentnumber','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('4','(LDAP)Email','mail','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('5','Object Class','objectclass','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('6','(LDAP)User ID','uid','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('7','(LDAP)Telephone Number','phone','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('8','(LDAP)Employee Number','employeenumber','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('9','(LDAP)Manager','manager','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('10','(LDAP)DistinguishedName','dn','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('12','(AD)User ID','samaccountname','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('13','(LDAP) Title','title','');
 
 ### Dump table glpi_rules
 
