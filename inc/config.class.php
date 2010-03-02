@@ -815,7 +815,7 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][110] . " </td><td>";
          Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
-         echo " </td><td>".$LANG['setup'][39]." </td><td>";
+         echo " </td><td class='center'>".$LANG['setup'][39]." </td><td>";
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
          echo "</td></tr>";
 
