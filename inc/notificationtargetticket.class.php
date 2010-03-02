@@ -358,8 +358,7 @@ class NotificationTargetTicket extends NotificationTarget {
      if ($entitydata->getFromDB($this->obj->getField('entities_id'))
             && $entitydata->getField('autoclose_delay') > 0) {
          $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
-     }
-     else {
+     } else {
         $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
      }
      $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
@@ -486,11 +485,11 @@ class NotificationTargetTicket extends NotificationTarget {
       $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
       foreach ($followups as $followup) {
          $tmp = array();
-         $tmp['##followup.isprivate##']   =  Dropdown::getYesNo($followup['is_private']);
-         $tmp['##followup.author##']      =  Dropdown::getDropdownName('glpi_users',
-                                                                       $followup['users_id']);
+         $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
+         $tmp['##followup.author##']      = Dropdown::getDropdownName('glpi_users',
+                                                                      $followup['users_id']);
          $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                      $followup['requesttypes_id']);
+                                                                       $followup['requesttypes_id']);
          $tmp['##followup.date##']        = convDateTime($followup['date']);
          $tmp['##followup.description##'] = $followup['content'];
          $this->datas['followups'][] = $tmp;
@@ -511,24 +510,22 @@ class NotificationTargetTicket extends NotificationTarget {
 
       foreach ($validations as $validation) {
          $tmp = array();
-         $tmp['##lang.validation.title##'] = $LANG['validation'][27]." (".$LANG['job'][4].
-               " ".html_clean(getUserName($validation['users_id'])).")";
+         $tmp['##lang.validation.title##'] 
+            = $LANG['validation'][27]." (".$LANG['job'][4].
+              " ".html_clean(getUserName($validation['users_id'])).")";
 
-         $tmp['##validation.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_".
-                                                 $validation['id']);
+         $tmp['##validation.url##'] 
+            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_". 
+              $validation['id']);
 
-         $tmp['##validation.author##'] =  html_clean(getUserName($validation['users_id']));
-         $tmp['##lang.validation.validationstatus##'] = $LANG['validation'][28]." : ".
-                                          TicketValidation::getStatus($validation['status']);
+         $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
+         $tmp['##lang.validation.validationstatus##'] 
+            = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
 
-         $tmp['##validation.status##'] = TicketValidation::getStatus($validation['status']);
-
-         $tmp['##validation.submissiondate##'] = convDateTime($validation['submission_date']);
-
+         $tmp['##validation.status##']            = TicketValidation::getStatus($validation['status']);
+         $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
          $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
-
-         $tmp['##validation.validationdate##'] = convDateTime($validation['validation_date']);
-
+         $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
          $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
 
          $this->datas['validations'][] = $tmp;
@@ -551,63 +548,63 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       //Locales
-      $labels = array ('##lang.ticket.id##'                 => $LANG['common'][2],
-                       '##lang.ticket.title##'              => $LANG['common'][16],
-                       '##lang.ticket.url##'                => 'URL',
-                       '##lang.ticket.entity##'             => $LANG['entity'][0],
-                       '##lang.ticket.category##'           => $LANG['common'][36],
-                       '##lang.ticket.content##'            => $LANG['joblist'][6],
-                       '##lang.ticket.description##'        => $LANG['mailing'][5],
-                       '##lang.ticket.status##'             => $LANG['joblist'][0],
-                       '##lang.ticket.creationdate##'       => $LANG['reports'][60],
-                       '##lang.ticket.closedate##'          => $LANG['reports'][61],
-                       '##lang.ticket.requesttype##'        => $LANG['job'][44],
-                       '##lang.ticket.author##'             => $LANG['common'][2].' '.$LANG['job'][4],
-                       '##lang.ticket.author.name##'        => $LANG['job'][4],
-                       '##lang.ticket.author.location##'    => $LANG['common'][15],
-                       '##lang.ticket.author.phone##'       => $LANG['help'][35],
-                       '##lang.ticket.openbyuser##'         => $LANG['job'][3],
-                       '##lang.ticket.group##'              => $LANG['common'][35],
-                       '##lang.ticket.assigntouser##'       => $LANG['job'][5]." - ".$LANG['job'][6],
+      $labels = array ('##lang.ticket.id##'                    => $LANG['common'][2],
+                       '##lang.ticket.title##'                 => $LANG['common'][16],
+                       '##lang.ticket.url##'                   => 'URL',
+                       '##lang.ticket.entity##'                => $LANG['entity'][0],
+                       '##lang.ticket.category##'              => $LANG['common'][36],
+                       '##lang.ticket.content##'               => $LANG['joblist'][6],
+                       '##lang.ticket.description##'           => $LANG['mailing'][5],
+                       '##lang.ticket.status##'                => $LANG['joblist'][0],
+                       '##lang.ticket.creationdate##'          => $LANG['reports'][60],
+                       '##lang.ticket.closedate##'             => $LANG['reports'][61],
+                       '##lang.ticket.requesttype##'           => $LANG['job'][44],
+                       '##lang.ticket.author##'        => $LANG['common'][2].' '.$LANG['job'][4],
+                       '##lang.ticket.author.name##'           => $LANG['job'][4],
+                       '##lang.ticket.author.location##'       => $LANG['common'][15],
+                       '##lang.ticket.author.phone##'          => $LANG['help'][35],
+                       '##lang.ticket.openbyuser##'            => $LANG['job'][3],
+                       '##lang.ticket.group##'                 => $LANG['common'][35],
+                       '##lang.ticket.assigntouser##'  => $LANG['job'][5]." - ".$LANG['job'][6],
                        '##lang.ticket.assigntogroup##' => $LANG['job'][5]." - ".$LANG['common'][35],
-                       '##lang.ticket.assigntosupplier##'   => $LANG['job'][5].
-                                                               " - ".$LANG['financial'][26],
-                       '##lang.ticket.itemtype##'           => $LANG['reports'][12],
-                       '##lang.ticket.item.name##'          => $LANG['financial'][104],
-                       '##lang.ticket.item.serial##'        => $LANG['common'][19],
-                       '##lang.ticket.item.otherserial##'   => $LANG['common'][20],
-                       '##lang.ticket.item.location##'      => $LANG['common'][15],
-                       '##lang.ticket.item.model##'         => $LANG['common'][22],
-                       '##lang.ticket.urgency##'            => $LANG['joblist'][29],
-                       '##lang.ticket.impact##'             => $LANG['joblist'][30],
-                       '##lang.ticket.priority##'           => $LANG['joblist'][2],
-                       '##lang.ticket.time##'               => $LANG['job'][20],
-                       '##lang.ticket.costtime##'           => $LANG['job'][40],
-                       '##lang.ticket.costfixed##'          => $LANG['job'][41],
-                       '##lang.ticket.costmaterial##'       => $LANG['job'][42],
-                       '##lang.ticket.solution.type##'      => $LANG['job'][48],
-                       '##lang.ticket.solution.comment##'   => $LANG['common'][25],
-                       '##lang.ticket.solution.name##'      => $LANG['jobresolution'][1],
-                       '##lang.task.author##'               => $LANG['job'][4],
-                       '##lang.task.isprivate##'            => $LANG['common'][77],
-                       '##lang.task.date##'                 => $LANG['reports'][60],
-                       '##lang.task.description##'          => $LANG['joblist'][6],
-                       '##lang.task.category##'             => $LANG['common'][36],
-                       '##lang.task.time##'                 => $LANG['job'][20],
-                       '##lang.followup.date##'             => $LANG['reports'][60],
-                       '##lang.followup.isprivate##'        => $LANG['common'][77],
-                       '##lang.followup.author##'           => $LANG['job'][4],
-                       '##lang.followup.description##'      => $LANG['joblist'][6],
-                       '##lang.followup.requesttype##'      => $LANG['job'][44],
-                       '##lang.ticket.numberoffollowups##'  => $LANG['mailing'][4],
-                       '##lang.ticket.numberoftasks##'      => $LANG['mailing'][122],
-                       '##lang.ticket.nocategoryassigned##' => $LANG['mailing'][100],
-                       '##lang.validation.author##'           => $LANG['job'][4],
-                       '##lang.validation.status##'           => $LANG['joblist'][0],
-                       '##lang.validation.submissiondate##'   => $LANG['validation'][3],
-                       '##lang.validation.commentsubmission##'=> $LANG['validation'][5],
-                       '##lang.validation.validationdate##'     => $LANG['validation'][4],
-                       '##lang.validation.commentvalidation##'  => $LANG['validation'][6]);
+                       '##lang.ticket.assigntosupplier##'      => $LANG['job'][5].
+                                                                  " - ".$LANG['financial'][26],
+                       '##lang.ticket.itemtype##'              => $LANG['reports'][12],
+                       '##lang.ticket.item.name##'             => $LANG['financial'][104],
+                       '##lang.ticket.item.serial##'           => $LANG['common'][19],
+                       '##lang.ticket.item.otherserial##'      => $LANG['common'][20],
+                       '##lang.ticket.item.location##'         => $LANG['common'][15],
+                       '##lang.ticket.item.model##'            => $LANG['common'][22],
+                       '##lang.ticket.urgency##'               => $LANG['joblist'][29],
+                       '##lang.ticket.impact##'                => $LANG['joblist'][30],
+                       '##lang.ticket.priority##'              => $LANG['joblist'][2],
+                       '##lang.ticket.time##'                  => $LANG['job'][20],
+                       '##lang.ticket.costtime##'              => $LANG['job'][40],
+                       '##lang.ticket.costfixed##'             => $LANG['job'][41],
+                       '##lang.ticket.costmaterial##'          => $LANG['job'][42],
+                       '##lang.ticket.solution.type##'         => $LANG['job'][48],
+                       '##lang.ticket.solution.comment##'      => $LANG['common'][25],
+                       '##lang.ticket.solution.name##'         => $LANG['jobresolution'][1],
+                       '##lang.task.author##'                  => $LANG['job'][4],
+                       '##lang.task.isprivate##'               => $LANG['common'][77],
+                       '##lang.task.date##'                    => $LANG['reports'][60],
+                       '##lang.task.description##'             => $LANG['joblist'][6],
+                       '##lang.task.category##'                => $LANG['common'][36],
+                       '##lang.task.time##'                    => $LANG['job'][20],
+                       '##lang.followup.date##'                => $LANG['reports'][60],
+                       '##lang.followup.isprivate##'           => $LANG['common'][77],
+                       '##lang.followup.author##'              => $LANG['job'][4],
+                       '##lang.followup.description##'         => $LANG['joblist'][6],
+                       '##lang.followup.requesttype##'         => $LANG['job'][44],
+                       '##lang.ticket.numberoffollowups##'     => $LANG['mailing'][4],
+                       '##lang.ticket.numberoftasks##'         => $LANG['mailing'][122],
+                       '##lang.ticket.nocategoryassigned##'    => $LANG['mailing'][100],
+                       '##lang.validation.author##'            => $LANG['job'][4],
+                       '##lang.validation.status##'            => $LANG['joblist'][0],
+                       '##lang.validation.submissiondate##'    => $LANG['validation'][3],
+                       '##lang.validation.commentsubmission##' => $LANG['validation'][5],
+                       '##lang.validation.validationdate##'    => $LANG['validation'][4],
+                       '##lang.validation.commentvalidation##' => $LANG['validation'][6]);
 
       foreach ($labels as $tag => $label) {
          $this->datas[$tag] = $label;
@@ -620,12 +617,13 @@ class NotificationTargetTicket extends NotificationTarget {
 
       if ($CFG_GLPI['use_mailing']) {
          $query = "SELECT COUNT(`glpi_notifications`.`id`)
-                 FROM `glpi_notifications` INNER JOIN `glpi_notificationtargets`
+                   FROM `glpi_notifications` INNER JOIN `glpi_notificationtargets`
                      ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id` )
-                 WHERE `glpi_notifications`.`itemtype` = 'Ticket'
-                       AND `glpi_notifications`.`mode` = 'mail'
-                       AND `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
-                       AND `glpi_notificationtargets`.`items_id` = '".Notification::AUTHOR."'";
+                   WHERE `glpi_notifications`.`itemtype` = 'Ticket'
+                         AND `glpi_notifications`.`mode` = 'mail'
+                         AND `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
+                         AND `glpi_notificationtargets`.`items_id` = '".Notification::AUTHOR."'";
+
          if ($result = $DB->query($query)) {
             if ($DB->result($result,0,0) >0) {
                return true;
