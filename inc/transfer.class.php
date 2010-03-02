@@ -580,7 +580,7 @@ class Transfer extends CommonDBTM {
                                 `glpi_contracts`.`is_recursive`
                          FROM `glpi_contracts_items`
                          LEFT JOIN `glpi_contracts`
-                               ON (`glpi_contracts_items`.`contracts_id` = `glpi_contracts`.id`)
+                               ON (`glpi_contracts_items`.`contracts_id` = `glpi_contracts`.`id`)
                          WHERE `glpi_contracts_items`.`itemtype` = '$itemtype'
                                AND `glpi_contracts_items`.`items_id` IN ".$this->item_search[$itemtype];
 
