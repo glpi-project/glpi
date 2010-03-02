@@ -176,7 +176,13 @@ class RuleTicket extends Rule {
       $criterias['groups_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
       $criterias['groups_id_assign']['linkfield'] = 'groups_id_assign';
       $criterias['groups_id_assign']['type']      = 'dropdown';
-
+      
+      $criterias['suppliers_id_assign']['table']     = 'glpi_suppliers';
+      $criterias['suppliers_id_assign']['field']     = 'name';
+      $criterias['suppliers_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
+      $criterias['suppliers_id_assign']['linkfield'] = 'suppliers_id_assign';
+      $criterias['suppliers_id_assign']['type']      = 'dropdown';
+      
       $criterias['requesttypes_id']['table']     = 'glpi_requesttypes';
       $criterias['requesttypes_id']['field']     = 'name';
       $criterias['requesttypes_id']['name']      = $LANG['job'][44];
