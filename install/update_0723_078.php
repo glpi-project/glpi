@@ -1961,11 +1961,8 @@ function update0723to078($output='HTML') {
 		$query = "ALTER TABLE `glpi_profiles` ADD `budget` CHAR( 1 ) NULL ";
 		$DB->query($query) or die("0.78 add budget in glpi_profiles" . $LANG['update'][90] . $DB->error());
 
-		$query = "UPDATE `glpi_profiles` SET `budget`='w' WHERE `name` IN ('super-admin','admin')";
-		$DB->query($query) or die("0.78 add budget write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
-
-		$query = "UPDATE `glpi_profiles` SET `budget`='r' WHERE `name`='normal'";
-		$DB->query($query) or die("0.78 add budget write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `budget`=`infocom`";
+		$DB->query($query) or die("0.78 update default budget rights" . $LANG['update'][90] . $DB->error());
 
 	}
 
@@ -2765,8 +2762,8 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_profiles` ADD `import_externalauth_users` CHAR( 1 ) NULL";
       $DB->query($query) or die("0.78 add import_externalauth_users in glpi_profiles". $LANG['update'][90] . $DB->error());
 
-      $query = "UPDATE `glpi_profiles` SET `import_externalauth_users`='w' WHERE `name` IN ('super-admin','admin')";
-      $DB->query($query) or die("0.78 add import_externalauth_users write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_profiles` SET `import_externalauth_users`='w' WHERE `user` ='w'";
+      $DB->query($query) or die("0.78 add import_externalauth_users right users which are able to write users " . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['setup'][704]); // Updating schema
@@ -3276,8 +3273,8 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_profiles` ADD `notification` CHAR( 1 ) NULL";
       $DB->query($query) or die("0.78 add notification in glpi_profiles". $LANG['update'][90] . $DB->error());
 
-      $query = "UPDATE `glpi_profiles` SET `notification`='w' WHERE `name` IN ('super-admin','admin')";
-      $DB->query($query) or die("0.78 add notification write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_profiles` SET `notification`='w' WHERE `config` ='w'";
+      $DB->query($query) or die("0.78 add notification write right user which have config right " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists('glpi_entitydatas','mailing_signature')) {
@@ -3446,8 +3443,8 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_profiles` ADD `rule_mailcollector` CHAR( 1 ) NULL ";
       $DB->query($query) or die("0.78 add rule_mailcollector to glpi_profiles" .
                                  $LANG['update'][90] . $DB->error());
-      $query = "UPDATE `glpi_profiles` SET `rule_mailcollector`='w' WHERE `name` IN ('super-admin')";
-      $DB->query($query) or die("0.78 add rule_mailcollector right to super-admin profile " . $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_profiles` SET `rule_mailcollector`=`rule_ticket`";
+      $DB->query($query) or die("0.78 set default rule_mailcollector same as rule_ticket " . $LANG['update'][90] . $DB->error());
    }
    // Change search pref : add active / date_mod
    $ADDTODISPLAYPREF['MailCollector']=array(2,19);
@@ -3846,14 +3843,14 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_profiles` ADD `validate_ticket` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add validate_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
 
-      $query = "UPDATE `glpi_profiles` SET `validate_ticket`='1' WHERE `name` IN ('super-admin','admin')";
+      $query = "UPDATE `glpi_profiles` SET `validate_ticket`='1' WHERE `interface` = 'central' ";
 		$DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
       
       $query = "ALTER TABLE `glpi_profiles` ADD `create_validation` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add create_validation to glpi_profiles " . $LANG['update'][90] . $DB->error());
       
-		$query = "UPDATE `glpi_profiles` SET `create_validation`='1' WHERE `name`='normal'";
-		$DB->query($query) or die("0.78 add create_validation write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `create_validation`=`own_ticket`";
+		$DB->query($query) or die("0.78 add create_validation right if can own ticket" . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
