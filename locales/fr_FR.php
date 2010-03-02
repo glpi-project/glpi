@@ -592,6 +592,7 @@ $LANG['financial'][109]="Total restant sur le budget";
 
 $LANG['gmt'][0]="GMT";
 $LANG['gmt'][1]="heure(s)";
+$LANG['gmt'][2]="h";
 
 // For priority
 $LANG['help'][1]="Matrice de calcul de la priorité";
@@ -1547,6 +1548,7 @@ $LANG['search'][8]="Date début";
 $LANG['search'][9]="Date fin";
 $LANG['search'][10]="dans";
 $LANG['search'][11]="Éléments Visualisés";
+$LANG['search'][12]="Spécifier une date de fin";
 $LANG['search'][15]="Pas d'élément trouvé";
 $LANG['search'][16]="Au moins";
 $LANG['search'][17]="Ajouter un critère de recherche";

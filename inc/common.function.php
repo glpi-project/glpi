@@ -2057,5 +2057,19 @@ function cleanParametersURL($url) {
    return preg_replace("/\?.*/","",$url);
    
 }
+/**
+*   Manage planning posted datas (must have begin + duration or end)
+*   Compute end if duration is set
+*
+*/
+function manageBeginAndEndPlanDates(&$data) {
+   if (!isset($data['end'])) {
+      if (isset($data['begin']) && isset($data['_duration'])) {
+         $begin_timestamp=strtotime($data['begin']);
+         $data['end']=date("Y-m-d H:i:s",$begin_timestamp+$data['_duration']);
+         unset($data['_duration']);
+      }
+   }
+}
 
 ?>
