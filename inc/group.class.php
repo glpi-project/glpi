@@ -278,8 +278,9 @@ class Group extends CommonDBTM {
          autocompletionTextField($this, "ldap_group_dn");
          echo "</td></tr>";
       }
-
-      $this->showFormButtons($ID,'',2, false);
+      
+      $options = array('colspan' => 1);
+      $this->showFormButtons($options);
 
       echo "</table></div></form>";
    }
