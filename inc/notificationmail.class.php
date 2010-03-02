@@ -154,26 +154,6 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    }
 
 
-   static function isAuthorMailingActivatedForHelpdesk() {
-      global $DB,$CFG_GLPI;
-
-      if ($CFG_GLPI['use_mailing']) {
-         $query = "SELECT COUNT(`id`)
-                 FROM `glpi_mailingsettings`
-                 WHERE `type` IN ('new','followup','update','finish')
-                       AND `mailingtype` = '".Notification::USER_TYPE."'
-                       AND `items_id` = '".Notification::AUTHOR."'";
-
-         if ($result = $DB->query($query)) {
-            if ($DB->result($result,0,0) >0) {
-               return true;
-            }
-         }
-      }
-      return false;
-   }
-
-
    static function testNotification() {
       global $CFG_GLPI,$LANG;
 
