@@ -73,8 +73,11 @@ class Notification extends CommonDBTM {
    const TICKET_SUPERVISOR_REQUESTER_GROUP = 12;
    //Notification to the ticket's requester group
    const TICKET_REQUESTER_GROUP = 13;
-   //Notification to the ticket's approver
-   const TICKET_APPROVER = 14;
+   //Notification to the ticket validation approver
+   const TICKET_VALIDATION_APPROVER = 14;
+   //Notification to the ticket validation requester
+   const TICKET_VALIDATION_REQUESTER = 15;
+   
    // From CommonDBTM
    public $dohistory = true;
 
