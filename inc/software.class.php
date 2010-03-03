@@ -341,14 +341,14 @@ class Software extends CommonDBTM {
       // Only use for History (not by search Engine)
       $tab = array();
 
-      $tab[1]['table']         = 'glpi_softwares';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Software';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']     = 'glpi_softwares';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
@@ -368,13 +368,13 @@ class Software extends CommonDBTM {
       $tab[7]['linkfield'] = '';
       $tab[7]['name']      = $LANG['common'][19];
 
-      $tab[16]['table']     = 'glpi_softwares';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = 'glpi_softwares';
+      $tab[90]['table']     = $this->getTable();
       $tab[90]['field']     = 'notepad';
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
@@ -384,7 +384,7 @@ class Software extends CommonDBTM {
       $tab[62]['linkfield'] = 'softwarecategories_id';
       $tab[62]['name']      = $LANG['common'][36];
 
-      $tab[19]['table']     = 'glpi_softwares';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
@@ -410,7 +410,7 @@ class Software extends CommonDBTM {
       $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
-      $tab[61]['table']     = 'glpi_softwares';
+      $tab[61]['table']     = $this->getTable();
       $tab[61]['field']     = 'is_helpdesk_visible';
       $tab[61]['linkfield'] = 'is_helpdesk_visible';
       $tab[61]['name']      = $LANG['software'][46];

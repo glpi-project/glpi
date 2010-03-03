@@ -510,14 +510,14 @@ class Printer  extends CommonDBTM {
       $tab = array();
       $tab['common']           = $LANG['common'][32];;
 
-      $tab[1]['table']         = 'glpi_printers';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Printer';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']     = 'glpi_printers';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
@@ -542,22 +542,22 @@ class Printer  extends CommonDBTM {
       $tab[31]['linkfield'] = 'states_id';
       $tab[31]['name']      = $LANG['state'][0];
 
-      $tab[5]['table']     = 'glpi_printers';
+      $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';
       $tab[5]['linkfield'] = 'serial';
       $tab[5]['name']      = $LANG['common'][19];
 
-      $tab[6]['table']     = 'glpi_printers';
+      $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'otherserial';
       $tab[6]['linkfield'] = 'otherserial';
       $tab[6]['name']      = $LANG['common'][20];
 
-      $tab[7]['table']     = 'glpi_printers';
+      $tab[7]['table']     = $this->getTable();
       $tab[7]['field']     = 'contact';
       $tab[7]['linkfield'] = 'contact';
       $tab[7]['name']      = $LANG['common'][18];
 
-      $tab[8]['table']     = 'glpi_printers';
+      $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'contact_num';
       $tab[8]['linkfield'] = 'contact_num';
       $tab[8]['name']      = $LANG['common'][21];
@@ -572,49 +572,49 @@ class Printer  extends CommonDBTM {
       $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
-      $tab[19]['table']     = 'glpi_printers';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
       $tab[19]['datatype']  = 'datetime';
 
-      $tab[16]['table']     = 'glpi_printers';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[42]['table']     = 'glpi_printers';
+      $tab[42]['table']     = $this->getTable();
       $tab[42]['field']     = 'have_serial';
       $tab[42]['linkfield'] = 'have_serial';
       $tab[42]['name']      = $LANG['printers'][14];
       $tab[42]['datatype']  = 'bool';
 
-      $tab[43]['table']     = 'glpi_printers';
+      $tab[43]['table']     = $this->getTable();
       $tab[43]['field']     = 'have_parallel';
       $tab[43]['linkfield'] = 'have_parallel';
       $tab[43]['name']      = $LANG['printers'][15];
       $tab[43]['datatype']  = 'bool';
 
-      $tab[44]['table']     = 'glpi_printers';
+      $tab[44]['table']     = $this->getTable();
       $tab[44]['field']     = 'have_usb';
       $tab[44]['linkfield'] = 'have_usb';
       $tab[44]['name']      = $LANG['printers'][27];
       $tab[44]['datatype']  = 'bool';
 
-      $tab[45]['table']     = 'glpi_printers';
+      $tab[45]['table']     = $this->getTable();
       $tab[45]['field']     = 'have_ethernet';
       $tab[45]['linkfield'] = 'have_ethernet';
       $tab[45]['name']      = $LANG['printers'][28];
       $tab[45]['datatype']  = 'bool';
 
-      $tab[46]['table']     = 'glpi_printers';
+      $tab[46]['table']     = $this->getTable();
       $tab[46]['field']     = 'have_wifi';
       $tab[46]['linkfield'] = 'have_wifi';
       $tab[46]['name']      = $LANG['printers'][29];
       $tab[46]['datatype']  = 'bool';
 
-      $tab[90]['table']     = 'glpi_printers';
+      $tab[90]['table']     = $this->getTable();
       $tab[90]['field']     = 'notepad';
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
@@ -644,7 +644,7 @@ class Printer  extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[86]['table']     = 'glpi_printers';
+      $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];

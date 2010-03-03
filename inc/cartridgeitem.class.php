@@ -290,19 +290,19 @@ class CartridgeItem extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_cartridgeitems';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'CartridgeItem';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']     = 'glpi_cartridgeitems';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[34]['table']     = 'glpi_cartridgeitems';
+      $tab[34]['table']     = $this->getTable();
       $tab[34]['field']     = 'ref';
       $tab[34]['linkfield'] = 'ref';
       $tab[34]['name']      = $LANG['consumables'][2];
@@ -327,19 +327,19 @@ class CartridgeItem extends CommonDBTM {
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
 
-      $tab[8]['table']     = 'glpi_cartridgeitems';
+      $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'alarm_threshold';
       $tab[8]['linkfield'] = 'alarm_threshold';
       $tab[8]['name']      = $LANG['consumables'][38];
       $tab[8]['datatype']  = 'number';
 
-      $tab[16]['table']     = 'glpi_cartridgeitems';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = 'glpi_cartridgeitems';
+      $tab[90]['table']     = $this->getTable();
       $tab[90]['field']     = 'notepad';
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];

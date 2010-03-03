@@ -230,7 +230,7 @@ class TicketValidation  extends CommonDBChild {
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][2];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'TicketValidation';
+      $tab[1]['itemlink_type'] = $this->getType();
 
       $tab[2]['table']     = 'glpi_users';
       $tab[2]['field']     = 'name';

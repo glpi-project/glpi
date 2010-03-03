@@ -1349,61 +1349,61 @@ class Ticket extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_tickets';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Ticket';
+      $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['searchtype']    = 'contains';
 
-      $tab[21]['table']         = 'glpi_tickets';
+      $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'content';
       $tab[21]['linkfield']     = '';
       $tab[21]['name']          = $LANG['joblist'][6];
 
-      $tab[2]['table']     = 'glpi_tickets';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[12]['table']     = 'glpi_tickets';
+      $tab[12]['table']     = $this->getTable();
       $tab[12]['field']     = 'status';
       $tab[12]['linkfield'] = 'status';
       $tab[12]['name']      = $LANG['joblist'][0];
       $tab[12]['searchtype']= 'equals';
 
-      $tab[10]['table']     = 'glpi_tickets';
+      $tab[10]['table']     = $this->getTable();
       $tab[10]['field']     = 'urgency';
       $tab[10]['linkfield'] = 'urgency';
       $tab[10]['name']      = $LANG['joblist'][29];
       $tab[10]['searchtype']= 'equals';
 
-      $tab[11]['table']     = 'glpi_tickets';
+      $tab[11]['table']     = $this->getTable();
       $tab[11]['field']     = 'impact';
       $tab[11]['linkfield'] = 'impact';
       $tab[11]['name']      = $LANG['joblist'][30];
       $tab[11]['searchtype']= 'equals';
 
-      $tab[3]['table']     = 'glpi_tickets';
+      $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'priority';
       $tab[3]['linkfield'] = 'priority';
       $tab[3]['name']      = $LANG['joblist'][2];
       $tab[3]['searchtype']= 'equals';
 
-      $tab[15]['table']     = 'glpi_tickets';
+      $tab[15]['table']     = $this->getTable();
       $tab[15]['field']     = 'date';
       $tab[15]['linkfield'] = '';
       $tab[15]['name']      = $LANG['reports'][60];
       $tab[15]['datatype'] = 'datetime';
 
-      $tab[16]['table']     = 'glpi_tickets';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'closedate';
       $tab[16]['linkfield'] = '';
       $tab[16]['name']      = $LANG['reports'][61];
       $tab[16]['datatype'] = 'datetime';
 
-      $tab[19]['table']     = 'glpi_tickets';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
@@ -1483,39 +1483,39 @@ class Ticket extends CommonDBTM {
          $tab[23]['linkfield'] = 'ticketsolutiontypes_id';
          $tab[23]['name']      = $LANG['job'][48];
 
-         $tab[24]['table']     = 'glpi_tickets';
+         $tab[24]['table']     = $this->getTable();
          $tab[24]['field']     = 'solution';
          $tab[24]['linkfield'] = '';
          $tab[24]['name']      = $LANG['jobresolution'][1];
 
          $tab['hardware'] = $LANG['common'][1];
 
-         $tab[40]['table']     = 'glpi_tickets';
+         $tab[40]['table']     = $this->getTable();
          $tab[40]['field']     = 'itemtype';
          $tab[40]['linkfield'] = '';
          $tab[40]['name']      = $LANG['common'][17];
          $tab[40]['datatype']     = 'itemtypename';
 
-         $tab[41]['table']     = 'glpi_tickets';
+         $tab[41]['table']     = $this->getTable();
          $tab[41]['field']     = 'items_id';
          $tab[41]['linkfield'] = '';
          $tab[41]['name']      = $LANG['common'][1];
 
          $tab['cost'] = $LANG['financial'][5];
 
-         $tab[42]['table']     = 'glpi_tickets';
+         $tab[42]['table']     = $this->getTable();
          $tab[42]['field']     = 'cost_time';
          $tab[42]['linkfield'] = 'cost_time';
          $tab[42]['name']      = $LANG['job'][40];
          $tab[42]['datatype'] = 'decimal';
 
-         $tab[43]['table']     = 'glpi_tickets';
+         $tab[43]['table']     = $this->getTable();
          $tab[43]['field']     = 'cost_fixed';
          $tab[43]['linkfield'] = 'cost_fixed';
          $tab[43]['name']      = $LANG['job'][41];
          $tab[43]['datatype'] = 'decimal';
 
-         $tab[44]['table']     = 'glpi_tickets';
+         $tab[44]['table']     = $this->getTable();
          $tab[44]['field']     = 'cost_material';
          $tab[44]['linkfield'] = 'cost_material';
          $tab[44]['name']      = $LANG['job'][42];
@@ -1524,13 +1524,13 @@ class Ticket extends CommonDBTM {
 
          $tab['notification'] = $LANG['setup'][704];
 
-         $tab[35]['table']     = 'glpi_tickets';
+         $tab[35]['table']     = $this->getTable();
          $tab[35]['field']     = 'use_email_notification';
          $tab[35]['linkfield'] = 'use_email_notification';
          $tab[35]['name']      = $LANG['job'][19];
          $tab[35]['datatype'] = 'bool';
 
-         $tab[34]['table']     = 'glpi_tickets';
+         $tab[34]['table']     = $this->getTable();
          $tab[34]['field']     = 'user_email';
          $tab[34]['linkfield'] = 'user_email';
          $tab[34]['name']      = $LANG['joblist'][27];

@@ -420,14 +420,14 @@ class NetworkEquipment extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_networkequipments';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'NetworkEquipment';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']     = 'glpi_networkequipments';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
@@ -452,22 +452,22 @@ class NetworkEquipment extends CommonDBTM {
       $tab[31]['linkfield'] = 'states_id';
       $tab[31]['name']      = $LANG['state'][0];
 
-      $tab[5]['table']     = 'glpi_networkequipments';
+      $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';
       $tab[5]['linkfield'] = 'serial';
       $tab[5]['name']      = $LANG['common'][19];
 
-      $tab[6]['table']     = 'glpi_networkequipments';
+      $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'otherserial';
       $tab[6]['linkfield'] = 'otherserial';
       $tab[6]['name']      = $LANG['common'][20];
 
-      $tab[7]['table']     = 'glpi_networkequipments';
+      $tab[7]['table']     = $this->getTable();
       $tab[7]['field']     = 'contact';
       $tab[7]['linkfield'] = 'contact';
       $tab[7]['name']      = $LANG['common'][18];
 
-      $tab[8]['table']     = 'glpi_networkequipments';
+      $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'contact_num';
       $tab[8]['linkfield'] = 'contact_num';
       $tab[8]['name']      = $LANG['common'][21];
@@ -482,19 +482,19 @@ class NetworkEquipment extends CommonDBTM {
       $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
-      $tab[19]['table']     = 'glpi_networkequipments';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
       $tab[19]['datatype']  = 'datetime';
 
-      $tab[16]['table']     = 'glpi_networkequipments';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = 'glpi_networkequipments';
+      $tab[90]['table']     = $this->getTable();
       $tab[90]['field']     = 'notepad';
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
@@ -504,18 +504,18 @@ class NetworkEquipment extends CommonDBTM {
       $tab[11]['linkfield'] = 'networkequipmentfirmwares_id';
       $tab[11]['name']      = $LANG['setup'][71];
 
-      $tab[14]['table']     = 'glpi_networkequipments';
+      $tab[14]['table']     = $this->getTable();
       $tab[14]['field']     = 'ram';
       $tab[14]['linkfield'] = 'ram';
       $tab[14]['name']      = $LANG['networking'][5];
       $tab[14]['datatype']  = 'number';
 
-      $tab[12]['table']     = 'glpi_networkequipments';
+      $tab[12]['table']     = $this->getTable();
       $tab[12]['field']     = 'ip';
       $tab[12]['linkfield'] = 'ip';
       $tab[12]['name']      = $LANG['networking'][14]." ".$LANG['help'][26];
 
-      $tab[13]['table']     = 'glpi_networkequipments';
+      $tab[13]['table']     = $this->getTable();
       $tab[13]['field']     = 'mac';
       $tab[13]['linkfield'] = 'mac';
       $tab[13]['name']      = $LANG['networking'][15]." ".$LANG['help'][26];
@@ -545,7 +545,7 @@ class NetworkEquipment extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[86]['table']     = 'glpi_networkequipments';
+      $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];

@@ -96,7 +96,7 @@ class ReservationItem extends CommonDBTM {
 
       $tab = array();
 
-      $tab[4]['table']     = 'glpi_reservationitems';
+      $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'comment';
       $tab[4]['linkfield'] = 'comment';
       $tab[4]['name']      = $LANG['common'][25];
