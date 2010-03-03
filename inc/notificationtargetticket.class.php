@@ -85,9 +85,13 @@ class NotificationTargetTicket extends NotificationTarget {
             case Notification::TICKET_ASSIGN_GROUP :
                $this->getAssignGroupAddresses();
                break;
-            //Send to the ticket aprrover
-            case Notification::TICKET_APPROVER :
-               $this->getTicketApproverAddress();
+            //Send to the ticket validation approver
+            case Notification::TICKET_VALIDATION_APPROVER :
+               $this->getTicketValidationApproverAddress();
+               break;
+            //Send to the ticket validation requester
+            case Notification::TICKET_VALIDATION_REQUESTER :
+               $this->getTicketValidationRequesterAddress();
                break;
          }
       }
@@ -177,21 +181,34 @@ class NotificationTargetTicket extends NotificationTarget {
    }
 
    /**
-    * Get approuver related to the ticket
+    * Get approuver related to the ticket validation
     */
-   function getTicketApproverAddress($sendprivate=false) {
+   function getTicketValidationApproverAddress() {
       global $DB;
 
-      if (!$sendprivate) {
+      $query = "SELECT DISTINCT `glpi_users`.`email` AS email
+                FROM `glpi_ticketvalidations`
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
+                WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
 
-         $query = "SELECT DISTINCT `glpi_users`.`email` AS email
-                   FROM `glpi_ticketvalidations`
-                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
-                   WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
+      foreach ($DB->request($query) as $data) {
+         $this->addToAddressesList($data);
+      }
+   }
+   
+   /**
+    * Get requester related to the ticket validation
+    */
+   function getTicketValidationRequesterAddress() {
+      global $DB;
 
-         foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($data);
-         }
+      $query = "SELECT DISTINCT `glpi_users`.`email` AS email
+                FROM `glpi_ticketvalidations`
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
+                WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
+
+      foreach ($DB->request($query) as $data) {
+         $this->addToAddressesList($data);
       }
    }
 
@@ -275,7 +292,8 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
       $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
       $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
-      $this->addTarget(Notification::TICKET_APPROVER,$LANG['validation'][21]);
+      $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,$LANG['validation'][14]);
+      $this->addTarget(Notification::TICKET_VALIDATION_REQUESTER,$LANG['validation'][18]);
    }
 
 
