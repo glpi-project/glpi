@@ -286,22 +286,22 @@ class SoftwareLicense extends CommonDBTM {
       // Only use for History (not by search Engine)
       $tab = array();
 
-      $tab[2]['table']     = 'glpi_softwarelicenses';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'name';
       $tab[2]['linkfield'] = 'name';
       $tab[2]['name']      = $LANG['common'][16];
 
-      $tab[3]['table']     = 'glpi_softwarelicenses';
+      $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'serial';
       $tab[3]['linkfield'] = 'serial';
       $tab[3]['name']      = $LANG['common'][19];
 
-      $tab[162]['table']     = 'glpi_softwarelicenses';
+      $tab[162]['table']     = $this->getTable();
       $tab[162]['field']     = 'otherserial';
       $tab[162]['linkfield'] = '';
       $tab[162]['name']      = $LANG['common'][20];
 
-      $tab[4]['table']     = 'glpi_softwarelicenses';
+      $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     =   'number';
       $tab[4]['linkfield'] = 'number';
       $tab[4]['name']      = $LANG['tracking'][29];
@@ -322,7 +322,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[7]['linkfield'] = 'softwareversions_id_use';
       $tab[7]['name']      = $LANG['software'][2];
 
-      $tab[8]['table']     = 'glpi_softwarelicenses';
+      $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'expire';
       $tab[8]['linkfield'] = 'expire';
       $tab[8]['name']      = $LANG['software'][32];
@@ -333,7 +333,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[9]['linkfield'] = 'computers_id';
       $tab[9]['name']      = $LANG['software'][50];
 
-      $tab[16]['table']     = 'glpi_softwarelicenses';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];

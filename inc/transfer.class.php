@@ -102,21 +102,21 @@ class Transfer extends CommonDBTM {
       $tab = array();
       $tab['common']           = $LANG['common'][16];
 
-      $tab[1]['table']         = 'glpi_transfers';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Transfer';
+      $tab[1]['itemlink_type'] = $this->getType();
 
 
-      $tab[19]['table']     = 'glpi_transfers';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
       $tab[19]['datatype']  = 'datetime';
 
-      $tab[16]['table']     = 'glpi_transfers';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];

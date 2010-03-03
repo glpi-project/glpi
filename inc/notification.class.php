@@ -166,19 +166,19 @@ class Notification extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_notifications';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Notification';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']         = 'glpi_notifications';
+      $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'event';
       $tab[2]['linkfield']     = 'event';
       $tab[2]['name']          = $LANG['mailing'][119];
 
-      $tab[3]['table']         = 'glpi_notifications';
+      $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'mode';
       $tab[3]['linkfield']     = '';
       $tab[3]['name']          = $LANG['mailing'][120];
@@ -190,7 +190,7 @@ class Notification extends CommonDBTM {
       $tab[4]['datatype']      = 'itemlink';
       $tab[4]['itemlink_type'] = 'NotificationTemplate';
 
-      $tab[5]['table']         = 'glpi_notifications';
+      $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'itemtype';
       $tab[5]['linkfield']     = '';
       $tab[5]['name']          = $LANG['common'][17];
@@ -201,7 +201,7 @@ class Notification extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[86]['table']     = 'glpi_notifications';
+      $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];

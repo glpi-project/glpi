@@ -252,14 +252,14 @@ class Entity extends CommonTreeDropdown {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_entities';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'completename';
       $tab[1]['linkfield']     = 'completename';
       $tab[1]['name']          = $LANG['common'][51];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Entity';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']     = 'glpi_entities';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
@@ -325,14 +325,14 @@ class Entity extends CommonTreeDropdown {
       $tab[13]['linkfield'] = '';
       $tab[13]['name']      = $LANG['financial'][103];
 
-      $tab[14]['table']         = 'glpi_entities';
+      $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'name';
       $tab[14]['linkfield']     = 'name';
       $tab[14]['name']          = $LANG['common'][16];
       $tab[14]['datatype']      = 'itemlink';
       $tab[14]['itemlink_type'] = 'Entity';
 
-      $tab[16]['table']     = 'glpi_entities';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];

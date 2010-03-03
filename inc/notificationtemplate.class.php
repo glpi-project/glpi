@@ -120,20 +120,20 @@ class NotificationTemplate extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_notificationtemplates';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'NotificationTemplate';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[4]['table']         = 'glpi_notificationtemplates';
+      $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'itemtype';
       $tab[4]['linkfield']     = '';
       $tab[4]['name']          = $LANG['common'][17];
       $tab[4]['datatype']      = 'itemtypename';
 
-      $tab[16]['table']     = 'glpi_notificationtemplates';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];

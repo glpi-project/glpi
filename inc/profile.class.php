@@ -979,32 +979,32 @@ class Profile extends CommonDBTM {
       $tab = array();
       $tab['common']           = $LANG['common'][16];
 
-      $tab[1]['table']         = 'glpi_profiles';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Profile';
+      $tab[1]['itemlink_type'] = $this->getType();
 
 
-      $tab[19]['table']     = 'glpi_profiles';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
       $tab[19]['datatype']  = 'datetime';
 
-      $tab[2]['table']     = 'glpi_profiles';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'interface';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['profiles'][2];
 
-      $tab[3]['table']     = 'glpi_profiles';
+      $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'is_default';
       $tab[3]['linkfield'] = '';
       $tab[3]['name']      = $LANG['profiles'][13];
       $tab[3]['datatype']  = 'bool';
 
-      $tab[16]['table']     = 'glpi_profiles';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];

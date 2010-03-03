@@ -209,60 +209,60 @@ class Supplier extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_suppliers';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Supplier';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']     = 'glpi_suppliers';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[3]['table']     = 'glpi_suppliers';
+      $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'address';
       $tab[3]['linkfield'] = 'address';
       $tab[3]['name']      = $LANG['financial'][44];
 
-      $tab[10]['table']     = 'glpi_suppliers';
+      $tab[10]['table']     = $this->getTable();
       $tab[10]['field']     = 'fax';
       $tab[10]['linkfield'] = 'fax';
       $tab[10]['name']      = $LANG['financial'][30];
 
-      $tab[11]['table']     = 'glpi_suppliers';
+      $tab[11]['table']     = $this->getTable();
       $tab[11]['field']     = 'town';
       $tab[11]['linkfield'] = 'town';
       $tab[11]['name']      = $LANG['financial'][101];
 
-      $tab[14]['table']     = 'glpi_suppliers';
+      $tab[14]['table']     = $this->getTable();
       $tab[14]['field']     = 'postcode';
       $tab[14]['linkfield'] = 'postcode';
       $tab[14]['name']      = $LANG['financial'][100];
 
-      $tab[12]['table']     = 'glpi_suppliers';
+      $tab[12]['table']     = $this->getTable();
       $tab[12]['field']     = 'state';
       $tab[12]['linkfield'] = 'state';
       $tab[12]['name']      = $LANG['financial'][102];
 
-      $tab[13]['table']     = 'glpi_suppliers';
+      $tab[13]['table']     = $this->getTable();
       $tab[13]['field']     = 'country';
       $tab[13]['linkfield'] = 'country';
       $tab[13]['name']      = $LANG['financial'][103];
 
-      $tab[4]['table']     = 'glpi_suppliers';
+      $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'website';
       $tab[4]['linkfield'] = 'website';
       $tab[4]['name']      = $LANG['financial'][45];
       $tab[4]['datatype']  = 'weblink';
 
-      $tab[5]['table']     = 'glpi_suppliers';
+      $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'phonenumber';
       $tab[5]['linkfield'] = 'phonenumber';
       $tab[5]['name']      = $LANG['help'][35];
 
-      $tab[6]['table']     = 'glpi_suppliers';
+      $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'email';
       $tab[6]['linkfield'] = 'email';
       $tab[6]['name']      = $LANG['setup'][14];
@@ -281,13 +281,13 @@ class Supplier extends CommonDBTM {
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Contact';
 
-      $tab[16]['table']     = 'glpi_suppliers';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = 'glpi_suppliers';
+      $tab[90]['table']     = $this->getTable();
       $tab[90]['field']     = 'notepad';
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
@@ -297,7 +297,7 @@ class Supplier extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[86]['table']     = 'glpi_suppliers';
+      $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];

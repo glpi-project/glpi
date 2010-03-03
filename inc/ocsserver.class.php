@@ -125,31 +125,31 @@ class OcsServer extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['login'][2];
 
-      $tab[1]['table']         = 'glpi_ocsservers';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'OcsServer';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']        = 'glpi_ocsservers';
+      $tab[2]['table']        = $this->getTable();
       $tab[2]['field']        = 'id';
       $tab[2]['linkfield']    = '';
       $tab[2]['name']         = $LANG['common'][2];
 
-      $tab[3]['table']         = 'glpi_ocsservers';
+      $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'ocs_db_host';
       $tab[3]['linkfield']     = 'ocs_db_host';
       $tab[3]['name']          = $LANG['common'][52];
 
 
-      $tab[19]['table']       = 'glpi_ocsservers';
+      $tab[19]['table']       = $this->getTable();
       $tab[19]['field']       = 'date_mod';
       $tab[19]['linkfield']   = '';
       $tab[19]['name']        = $LANG['common'][26];
       $tab[19]['datatype']    = 'datetime';
 
-      $tab[16]['table']     = 'glpi_ocsservers';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];

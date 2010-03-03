@@ -1510,30 +1510,30 @@ class User extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_users';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['setup'][18];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'User';
+      $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['forcegroupby']  = true;
 
-      $tab[2]['table']     = 'glpi_users';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[34]['table']     = 'glpi_users';
+      $tab[34]['table']     = $this->getTable();
       $tab[34]['field']     = 'realname';
       $tab[34]['linkfield'] = 'realname';
       $tab[34]['name']      = $LANG['common'][48];
 
-      $tab[9]['table']     = 'glpi_users';
+      $tab[9]['table']     = $this->getTable();
       $tab[9]['field']     = 'firstname';
       $tab[9]['linkfield'] = 'firstname';
       $tab[9]['name']      = $LANG['common'][43];
 
-      $tab[5]['table']     = 'glpi_users';
+      $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'email';
       $tab[5]['linkfield'] = 'email';
       $tab[5]['name']      = $LANG['setup'][14];
@@ -1544,23 +1544,23 @@ class User extends CommonDBTM {
       $tab[3]['linkfield'] = 'locations_id';
       $tab[3]['name']      = $LANG['common'][15];
 
-      $tab[8]['table']     = 'glpi_users';
+      $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'is_active';
       $tab[8]['linkfield'] = 'is_active';
       $tab[8]['name']      = $LANG['common'][60];
       $tab[8]['datatype']  = 'bool';
 
-      $tab[6]['table']     = 'glpi_users';
+      $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'phone';
       $tab[6]['linkfield'] = 'phone';
       $tab[6]['name']      = $LANG['help'][35];
 
-      $tab[10]['table']     = 'glpi_users';
+      $tab[10]['table']     = $this->getTable();
       $tab[10]['field']     = 'phone2';
       $tab[10]['linkfield'] = 'phone2';
       $tab[10]['name']      = $LANG['help'][35]." 2";
 
-      $tab[11]['table']     = 'glpi_users';
+      $tab[11]['table']     = $this->getTable();
       $tab[11]['field']     = 'mobile';
       $tab[11]['linkfield'] = 'mobile';
       $tab[11]['name']      = $LANG['common'][42];
@@ -1573,7 +1573,7 @@ class User extends CommonDBTM {
       $tab[13]['datatype']       = 'itemlink';
       $tab[13]['itemlink_type']  = 'Group';
 
-      $tab[14]['table']     = 'glpi_users';
+      $tab[14]['table']     = $this->getTable();
       $tab[14]['field']     = 'last_login';
       $tab[14]['linkfield'] = '';
       $tab[14]['name']      = $LANG['login'][0];
@@ -1584,19 +1584,19 @@ class User extends CommonDBTM {
       $tab[15]['linkfield'] = '';
       $tab[15]['name']      = $LANG['login'][10];
 
-      $tab[16]['table']     = 'glpi_users';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[17]['table']     = 'glpi_users';
+      $tab[17]['table']     = $this->getTable();
       $tab[17]['field']     = 'language';
       $tab[17]['linkfield'] = '';
       $tab[17]['name']      = $LANG['setup'][41];
       $tab[17]['datatype']  = 'language';
 
-      $tab[19]['table']     = 'glpi_users';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];

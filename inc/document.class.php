@@ -528,41 +528,41 @@ class Document extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = 'glpi_documents';
+      $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = 'Document';
+      $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[2]['table']     = 'glpi_documents';
+      $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[3]['table']     = 'glpi_documents';
+      $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'filename';
       $tab[3]['linkfield'] = '';
       $tab[3]['name']      = $LANG['document'][2];
 
-      $tab[4]['table']     = 'glpi_documents';
+      $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'link';
       $tab[4]['linkfield'] = 'link';
       $tab[4]['name']      = $LANG['document'][33];
       $tab[4]['datatype']  = 'weblink';
 
-      $tab[5]['table']     = 'glpi_documents';
+      $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'mime';
       $tab[5]['linkfield'] = 'mime';
       $tab[5]['name']      = $LANG['document'][4];
 
-      $tab[16]['table']     = 'glpi_documents';
+      $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = 'glpi_documents';
+      $tab[90]['table']     = $this->getTable();
       $tab[90]['field']     = 'notepad';
       $tab[90]['linkfield'] = '';
       $tab[90]['name']      = $LANG['title'][37];
@@ -577,13 +577,13 @@ class Document extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[86]['table']     = 'glpi_documents';
+      $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
 
-      $tab[19]['table']     = 'glpi_documents';
+      $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
       $tab[19]['linkfield'] = '';
       $tab[19]['name']      = $LANG['common'][26];
