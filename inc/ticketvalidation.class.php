@@ -66,7 +66,8 @@ class TicketValidation  extends CommonDBChild {
    }
    
    function canDelete() {
-      return haveRight('create_validation', 1);
+      return (haveRight('create_validation', 1)
+              || (haveRight('update_ticket', 1) && haveRight('show_all_ticket', 1)));
    }
    
    /**
