@@ -854,7 +854,7 @@ class Ticket extends CommonDBTM {
       }
 
       // No Auto set Import for external source
-      if ($uid=getLoginUserID() && !isset($input['_auto_import'])) {
+      if (($uid=getLoginUserID()) && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
       } else if ($input["users_id"]) {
          $input["users_id_recipient"] = $input["users_id"];
