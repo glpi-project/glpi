@@ -2753,13 +2753,31 @@ class Ticket extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
-      $valid = TicketValidation::getTicketStatus($ID);
+      $accepted_valid = TicketValidation::getTicketStatus($ID,"accepted");
+      $rejected_valid = TicketValidation::getTicketStatus($ID,"rejected");
+      $waiting_valid = TicketValidation::getTicketStatus($ID,"waiting");
          
-      if ($valid) {
+      if ($accepted_valid || $rejected_valid || $waiting_valid) {
          echo "<tr class='tab_bg_1'>";
          echo "<th class='center b' colspan='4'>";
-         echo "<div style=\"background-color:".TicketValidation::getStatusColor($valid).";\">";
-         echo $LANG['validation'][0].": ".TicketValidation::getStatus($valid);
+         
+         $bgcolor_valid = "";
+         if ($rejected_valid > 0) {
+            $valid_status ="rejected";
+         } elseif ($waiting_valid > 0) { 
+            $valid_status ="waiting";
+         } else {
+            $valid_status ="accepted";
+         }
+         echo "<div style=\"background-color:".TicketValidation::getStatusColor($valid_status).";\">";
+         echo $LANG['validation'][26].": ".TicketValidation::getNumberValidationForTicket($ID);
+         echo " (";
+         echo $accepted_valid."&nbsp;".$LANG['validation'][11];
+         echo " - ";
+         echo $rejected_valid."&nbsp;".$LANG['validation'][10];
+         echo " - ";
+         echo $waiting_valid."&nbsp;".$LANG['validation'][9];
+         echo ")";
          echo "</div>";
          echo "</th></tr>";
       }

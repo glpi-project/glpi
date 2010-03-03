@@ -368,21 +368,40 @@ class TicketValidation  extends CommonDBChild {
       return $style;
    }
    
-   
    /**
-    * Get Ticket validation status
+    * Get Ticket validation demands number 
     *
-    * @param $value status ID
+    * @param $value tickets_id
     */
-   static function getTicketStatus($tickets_id) {
+   static function getNumberValidationForTicket($tickets_id) {
       global $DB;
 
-      $query = "SELECT `status` 
+      $query = "SELECT COUNT(`id`) AS `total`
             FROM `glpi_ticketvalidations`
             WHERE `tickets_id` = '".$tickets_id."'";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         return $DB->result($result,0,"status");
+         return $DB->result($result,0,"total");
+      }
+      
+      return false;
+   }
+   
+   /**
+    * Get total status validation tickets_id
+    *
+    * @param $value status ID
+    */
+   static function getTicketStatus($tickets_id,$status) {
+      global $DB;
+
+      $query = "SELECT COUNT(`status`) AS `total`
+            FROM `glpi_ticketvalidations`
+            WHERE `tickets_id` = '".$tickets_id."' 
+            AND `status` = '".$status."'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         return $DB->result($result,0,"total");
       }
       
       return false;
