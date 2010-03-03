@@ -368,6 +368,26 @@ class TicketValidation  extends CommonDBChild {
       return $style;
    }
    
+   
+   /**
+    * Get Ticket validation status
+    *
+    * @param $value status ID
+    */
+   static function getTicketStatus($tickets_id) {
+      global $DB;
+
+      $query = "SELECT `status` 
+            FROM `glpi_ticketvalidations`
+            WHERE `tickets_id` = '".$tickets_id."'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         return $DB->result($result,0,"status");
+      }
+      
+      return false;
+   }
+   
    /**
     * Print the validation form into ticket
     *

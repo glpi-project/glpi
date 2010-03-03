@@ -2752,7 +2752,18 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-
+      
+      $valid = TicketValidation::getTicketStatus($ID);
+         
+      if ($valid) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th class='center b' colspan='4'>";
+         echo "<div style=\"background-color:".TicketValidation::getStatusColor($valid).";\">";
+         echo $LANG['validation'][0].": ".TicketValidation::getStatus($valid);
+         echo "</div>";
+         echo "</th></tr>";
+      }
+      
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
       echo "<th>";
