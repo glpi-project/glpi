@@ -156,7 +156,8 @@ class Ticket extends CommonDBTM {
             $ong[1] = $LANG['Menu'][5];
             $ong[2] = $LANG['job'][7];
          }
-         if (haveRight('create_validation','1'))
+         if (haveRight('create_validation','1')
+               ||haveRight('validate_ticket','1'))
             $ong[7] = $LANG['validation'][0];
          $ong[4] = $LANG['jobresolution'][1];
          $ong[3] = $LANG['job'][47];
