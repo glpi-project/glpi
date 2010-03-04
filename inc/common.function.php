@@ -1150,9 +1150,9 @@ function glpi_header($dest) {
 }
 
 /**
- * Call from a popup Windows, refresh the main Window
+ * Call from a popup Windows, refresh the dropdown in main window
  */
-function refreshMainWindow() {
+function refreshDropdownPopupInMainWindow() {
    if (isset($_SESSION["glpipopup"]["rand"])) {
       echo "<script type='text/javascript' >\n";
       echo "window.opener.update_results_".$_SESSION["glpipopup"]["rand"]."();";
