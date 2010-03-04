@@ -59,10 +59,8 @@ class RuleCriteria extends CommonDBChild {
 
    function getNameID($with_comment=0) {
       global $CFG_GLPI,$LANG;
-
-      $condition = $this->getConditionByID($this->fields['condition']);
-      $value = $this->getValueToMatch($this->fields['condition'],$this->fields['pattern']);
-      return $this->fields['criteria'].' '.$condition.' '.$value;
+      $rule = new $this->itemtype ();
+      return html_clean($rule->getMinimalCriteriaText($this->fields));
    }
 
    function getSearchOptions() {
