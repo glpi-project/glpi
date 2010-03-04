@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -31,31 +29,38 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-checkRight("config", "w");
-
-commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailgate");
-
-if (!canUseImapPop()) {
-   echo "<div class='center'>";
-   echo "<table class='tab_cadre_fixe'>";
-   echo "<tr><th colspan='2'>" . $LANG['Menu'][39] . "</th></tr>";
-   echo "<tr class='tab_bg_2'><td class='center red'>" . $LANG['setup'][165] . "</td></tr></table>";
-   echo "</div>";
-   commonFooter();
+if (!isset($_POST['id'])) {
    exit();
-
-} else {
-   $mailcollector = new MailCollector;
-   $mailcollector->title();
-   Search::show('MailCollector');
-   commonFooter();
 }
+
+
+if ($_POST['id'] >0 && $rule->can($_POST['id'],'r')) {
+
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         $rule->getRuleWithCriteriasAndActions($_POST['id'],1,1);
+         $rule->showCriteriasList($_POST["id"]);
+         $rule->showActionsList($_POST["id"]);
+         break;
+      case 1 :
+         $rule->getRuleWithCriteriasAndActions($_POST['id'],1,1);
+         $rule->showCriteriasList($_POST["id"]);
+         $rule->showActionsList($_POST["id"]);
+         break;
+      case 12 :
+            Log::showForItem($rule);
+         break;
+
+      default :
+         if (!Plugin::displayAction($rule, $_REQUEST['glpi_tab'])) {
+         }
+   }
+}
+
+ajaxFooter();
 
 ?>

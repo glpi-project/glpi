@@ -553,7 +553,7 @@ if (isset($_POST["itemtype"])) {
                   }
                }
             }
-            break;  
+            break;
          case "validate_ticket" :
             $valid = new TicketValidation();
             foreach ($_POST["item"] as $key => $val) {
@@ -605,6 +605,18 @@ if (isset($_POST["itemtype"])) {
             }
             break;
 
+         case 'delete_email':
+            $emails_ids = array();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $emails_ids[$key] = $key;
+               }
+            }
+            if (!empty($emails_ids)) {
+               $mailcollector = new MailCollector;
+               $mailcollector->deleteSeveralEmails($emails_ids);
+            }
+            break;
          default :
             // Plugin specific actions
             $split = explode('_',$_POST["action"]);

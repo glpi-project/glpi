@@ -37,7 +37,59 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Criteria Rule class
-class RuleCriteria extends CommonDBTM {
+class RuleCriteria extends CommonDBChild {
+
+   // From CommonDBChild
+   public $items_id  = 'rules_id';
+   public $dohistory = true;
+
+   function __construct($rule_type='Rule') {
+      $this->itemtype = $rule_type;
+   }
+
+   /**
+   * Get title used in rule
+   * @return Title of the rule
+   **/
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['rulesengine'][6];
+   }
+
+   function getNameID($with_comment=0) {
+      global $CFG_GLPI,$LANG;
+
+      $condition = $this->getConditionByID($this->fields['condition']);
+      $value = $this->getValueToMatch($this->fields['condition'],$this->fields['pattern']);
+      return $this->fields['criteria'].' '.$condition.' '.$value;
+   }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'criteria';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['rulesengine'][6];
+      $tab[1]['datatype']      = 'text';
+
+      $tab[2]['table']     = $this->getTable();
+      $tab[2]['field']     = 'condition';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['rulesengine'][14];
+      $tab[2]['datatype']  = 'text';
+
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'pattern';
+      $tab[3]['linkfield'] = '';
+      $tab[3]['name']      = $LANG['rulesengine'][15];
+      $tab[3]['datatype']  = 'text';
+
+
+      return $tab;
+   }
 
    /**
     * Get all criterias for a given rule

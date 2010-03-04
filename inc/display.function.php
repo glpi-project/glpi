@@ -861,6 +861,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['mailgate']['page']='/front/mailcollector.php';
       $menu['config']['content']['mailgate']['links']['search']='/front/mailcollector.php';
       $menu['config']['content']['mailgate']['links']['add']='/front/mailcollector.form.php';
+      $menu['config']['content']['mailgate']['options']['rejectedemails']['links']['search']='/front/rejectedemail.php';
    }
 
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("config","w")) {

@@ -39,7 +39,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
-   
+
 
    if (!class_exists($_POST['itemtype']) ) {
       exit();
@@ -86,17 +86,17 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "add_task" :
          TicketTask::showFormMassiveAction();
          break;
-      
+
       case "submit_validation" :
          TicketValidation::showFormMassiveAction();
          break;
-         
+
       case "validate_ticket" :
          TicketValidation::dropdownStatus("status");
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;
-         
+
       case "change_authtype" :
          $rand = Auth::dropdown(array('name'=>'authtype'));
          $paramsmassaction=array('authtype'=>'__VALUE__');
@@ -116,6 +116,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "purge" :
       case "restore" :
       case "add_transfer_list" :
+      case "delete_email" :
       case 'reset':
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
@@ -206,6 +207,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                $LANG['buttons'][2]."\" >";
          break;
 
+      case "import_email":
+         Dropdown::show('Entity');
+         break;
       case "update" :
          $first_group=true;
          $newgroup="";

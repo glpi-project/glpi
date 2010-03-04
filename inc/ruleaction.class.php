@@ -36,11 +36,61 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class RuleAction extends CommonDBTM {
+class RuleAction extends CommonDBChild {
+
+   // From CommonDBChild
+   public $items_id  = 'rules_id';
+   public $dohistory = true;
 
    // From CommonDBTM
    public $table = 'glpi_ruleactions';
 
+   function __construct($rule_type='Rule') {
+      $this->itemtype = $rule_type;
+   }
+
+   /**
+   * Get title used in rule
+   * @return Title of the rule
+   **/
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['rulesengine'][7];
+   }
+
+   function getNameID($with_comment=0) {
+      global $CFG_GLPI,$LANG;
+
+      $condition = RuleAction::getActionByID($this->fields['action_type']);
+      return $condition.' '.$this->fields['field'].' '.$this->fields['value'];
+   }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'action_type';
+      $tab[1]['linkfield']     = '';
+      $tab[1]['name']          = $LANG['rulesengine'][7];
+      $tab[1]['datatype']      = 'text';
+
+      $tab[2]['table']     = $this->getTable();
+      $tab[2]['field']     = 'field';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['rulesengine'][12];
+      $tab[2]['datatype']  = 'text';
+
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'value';
+      $tab[3]['linkfield'] = '';
+      $tab[3]['name']      = $LANG['rulesengine'][13];
+      $tab[3]['datatype']  = 'text';
+
+
+      return $tab;
+   }
    /**
     * Get all actions for a given rule
     * @param $ID the rule_description ID

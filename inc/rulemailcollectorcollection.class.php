@@ -51,18 +51,12 @@ class RuleMailCollectorCollection extends RuleCollection {
    }
 
    function prepareInputDataForProcess($input,$params) {
-      $parameters = RuleParameter::getByType($this->getRuleClassName());
-      foreach ($parameters as $ID => $parameter) {
-         if (isset($params['headers'][$parameter['name']])) {
-            $input[$parameter['name']] = $params['headers'][$parameter['name']];
-         }
-      }
-
       $input['from'] = $params['ticket']['user_email'];
       $input['mailcollector'] = $params['mailcollector'];
 
       return $input;
    }
+
 }
 
 

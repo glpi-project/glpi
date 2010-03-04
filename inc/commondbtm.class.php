@@ -1632,7 +1632,7 @@ class CommonDBTM extends CommonGLPI {
    *
    * @param $right Right to check : c / r / w / d
    * @return nothing
-   **/   
+   **/
    function canGlobal($right) {
       switch ($right) {
          case 'r' :
