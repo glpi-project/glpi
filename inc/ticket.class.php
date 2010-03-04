@@ -3321,7 +3321,9 @@ class Ticket extends CommonDBTM {
       $status = array('new'      => 0,
                      'assign'   => 0,
                      'plan'     => 0,
-                     'waiting'  => 0);
+                     'waiting'  => 0,
+                     'solved'  => 0,
+                     'closed'  => 0);
 
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_assoc($result)) {
@@ -3342,32 +3344,49 @@ class Ticket extends CommonDBTM {
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
             $LANG['title'][10]."</a></th></tr>";
       echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
+
+      $options['contains'][0]   = 'new';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      $options['contains'][0]   = 'new';
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
             $LANG['tracking'][30]."</a> </td>";
       echo "<td>".$status["new"]."</td></tr>";
+
+      $options['contains'][0]   = 'assign';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      $options['contains'][0]   = 'assign';
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
             $LANG['tracking'][31]."</a></td>";
       echo "<td>".$status["assign"]."</td></tr>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>";
 
       $options['contains'][0]   = 'plan';
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
             $LANG['tracking'][32]."</a></td>";
       echo "<td>".$status["plan"]."</td></tr>";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>";
 
       $options['contains'][0]   = 'waiting';
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
             $LANG['joblist'][26]."</a></td>";
       echo "<td>".$status["waiting"]."</td></tr>";
+
+      $options['contains'][0]   = 'solved';
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+            $LANG['joblist'][32]."</a></td>";
+      echo "<td>".$status["waiting"]."</td></tr>";
+
+      $options['contains'][0]   = 'closed';
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+            $LANG['joblist'][33]."</a></td>";
+      echo "<td>".$status["waiting"]."</td></tr>";
+
       echo "</table><br>";
    }
 
