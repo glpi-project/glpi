@@ -81,7 +81,7 @@ if ($newID = $track->add($_POST)){
       echo "<div class='center b'>";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br>";
       echo $LANG['help'][18]." (".$LANG['job'][38];
-      echo "<a href='helpdesk.public.php?show=user&amp;id=$newID'>$newID</a>)<br>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$newID'>$newID</a>)<br>";
       echo $LANG['help'][19]."</div>";
    }
 } else {
