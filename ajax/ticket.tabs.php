@@ -56,12 +56,11 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          break;
 
       case 4 :
-         $ticket->showSolutionForm();
-         echo "<p>&nbsp;</p>";
-         $suivi = new TicketFollowup();
          if ($ticket->canApprove()) {
+            $suivi = new TicketFollowup();
             $suivi->showApprobationForm($ticket);
          }
+         $ticket->showSolutionForm();
          break;
 
       case 5 :
