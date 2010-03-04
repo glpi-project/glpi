@@ -3307,6 +3307,7 @@ INSERT INTO `glpi_rulerightparameters` VALUES ('13','(LDAP) Title','title','');
 
 ### Dump table glpi_rules
 
+DROP TABLE IF EXISTS `glpi_rules`;
 CREATE TABLE `glpi_rules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `entities_id` int(11) NOT NULL DEFAULT '0',
