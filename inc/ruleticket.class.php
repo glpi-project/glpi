@@ -51,6 +51,10 @@ class RuleTicket extends Rule {
       return haveRight('rule_ticket', 'r');
    }
 
+   function maybeRecursive() {
+      return true;
+   }
+
    function maxActionsCount() {
       return count($this->getActions());
    }

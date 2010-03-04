@@ -435,6 +435,10 @@ class Rule extends CommonDBTM {
       return 0;
    }
 
+   function maybeRecursive() {
+      return false;
+   }
+
    /**
     * Display all rules criterias
     * @param $target
