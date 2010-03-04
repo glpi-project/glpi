@@ -689,6 +689,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<td class='tab_bg_2 center' colspan='2'>\n";
          echo "<input type='submit' name='add_reopen' value=\"".$LANG['jobresolution'][4]."\" class='submit'>";
          echo "</td></tr>\n";
+         echo "</table></form>";
       }
       return true;
    }

@@ -444,9 +444,9 @@ class Ticket extends CommonDBTM {
       }
 
       // Check dates change interval due to the fact that second are not displayed in form
-
       if (($key=array_search('date',$this->updates))!==false
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
+         
          unset($this->updates[$key]);
       }
       if (($key=array_search('closedate',$this->updates))!==false
@@ -2914,7 +2914,6 @@ class Ticket extends CommonDBTM {
                echo "&nbsp;";
             }
          }
-         echo "</td>";
       } else {
           echo "<td colspan='2'>&nbsp;";
       }
