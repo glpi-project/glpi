@@ -3338,6 +3338,8 @@ class Search {
             $status=TicketValidation::getStatus($data[$NAME.$num]);
             $bgcolor=TicketValidation::getStatusColor($data[$NAME.$num]);
             return "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
+         case 'glpi_notimportedemails.reason':
+            return NotImportedEmail::getReason($data[$NAME.$num]);
       }
 
 

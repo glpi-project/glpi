@@ -995,7 +995,11 @@ $LANG['mailgate'][5]="Fichier attaché invalide";
 $LANG['mailgate'][6]="Fichier attaché trop volumineux";
 $LANG['mailgate'][7]="Taille maximum des fichiers importés via les collecteurs mails (0 = pas d'import)";
 $LANG['mailgate'][8]="octets";
-$LANG['mailgate'][9]="Votre mail n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
+$LANG['mailgate'][9]="Votre email n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
+$LANG['mailgate'][10]="Email rejeté";
+$LANG['mailgate'][11]="Processus d'import d'emails";
+$LANG['mailgate'][12]="Impossible d'affecter l'email a une entité";
+$LANG['mailgate'][13]="Raison du refus";
 
 $LANG['mailing'][0]="----------------------------------------------------------";
 $LANG['mailing'][1]="======================================================================";
@@ -1075,6 +1079,10 @@ $LANG['mailing'][126]="Traduction d'un modèle";
 $LANG['mailing'][127]="Cloture du ticket";
 $LANG['mailing'][128]="laisser le champs vide pour une génération à partir du HTML";
 $LANG['mailing'][129]="Suppression d'un ticket";
+$LANG['mailing'][130]="Expéditeur";
+$LANG['mailing'][131]="Destinataire";
+$LANG['mailing'][132]="Entête de l'email";
+$LANG['mailing'][133]="Supprimer email(s)";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
@@ -1433,6 +1441,7 @@ $LANG['rulesengine'][6]="Critères";
 $LANG['rulesengine'][7]="Actions";
 $LANG['rulesengine'][8]="Gestion de règles";
 $LANG['rulesengine'][9]="Opérateur logique";
+$LANG['rulesengine'][10]="Classement";
 
 $LANG['rulesengine'][11]="Type d'action";
 $LANG['rulesengine'][12]="Champs";
@@ -1539,6 +1548,9 @@ $LANG['rulesengine'][137]="Adresse du destinataire";
 $LANG['rulesengine'][138]="Critères LDAP";
 $LANG['rulesengine'][139]="Aucun critère défini";
 $LANG['rulesengine'][140]="Ajout d'un critère";
+$LANG['rulesengine'][141]="Aucune règle vérifiée";
+$LANG['rulesengine'][142]="Liste des emails non importés";
+
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";

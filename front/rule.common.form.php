@@ -44,8 +44,8 @@ checkRight($rule->right,"r");
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-$rulecriteria = new RuleCriteria();
-$ruleaction = new RuleAction();
+$rulecriteria = new RuleCriteria(get_class($rule));
+$ruleaction = new RuleAction(get_class($rule));
 
 if (isset($_POST["delete_criteria"])) {
    checkRight($rule->right,"w");
@@ -93,21 +93,21 @@ if (isset($_POST["delete_criteria"])) {
                        'date_mod' => $_SESSION['glpi_currenttime']));
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["update_rule"])) {
+} else if (isset($_POST["update"])) {
    checkRight($rule->right,"w");
    $rule->update($_POST);
 
    Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} elseif (isset($_POST["add_rule"])) {
+} elseif (isset($_POST["add"])) {
    checkRight($rule->right,"w");
 
    $newID = $rule->add($_POST);
    Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 
-} elseif (isset($_POST["delete_rule"])) {
+} elseif (isset($_POST["delete"])) {
    checkRight($rule->right,"w");
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
    $rule->delete($_POST);
@@ -120,10 +120,6 @@ commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'], "admin",
              $rulecollection->menu_type, $rulecollection->menu_option);
 
 $rule->showForm($_GET["id"]);
-if (!empty($_GET["id"]) && $_GET["id"] >0) {
-   $rule->showCriteriasList($_SERVER['PHP_SELF'],$_GET["id"]);
-   $rule->showActionsList($_SERVER['PHP_SELF'],$_GET["id"]);
-}
 commonFooter();
 
 ?>

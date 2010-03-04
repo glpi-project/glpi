@@ -1193,6 +1193,11 @@ class Dropdown {
                      echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
                   }
                   break;
+               case 'NotImportedEmail':
+                     echo "<option value='delete_email'>".$LANG['mailing'][133]."</option>";
+                     echo "<option value='import_email'>".$LANG['buttons'][37]."</option>";
+                  break;
+
             }
 
             // Plugin Specific actions

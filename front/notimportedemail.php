@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -35,27 +33,16 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config", "w");
+checkRight("config","r");
 
-commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailgate");
+commonHeader($LANG['mailgate'][11],$_SERVER['PHP_SELF'],"config","mailcollector","rejectedemails");
 
-if (!canUseImapPop()) {
-   echo "<div class='center'>";
-   echo "<table class='tab_cadre_fixe'>";
-   echo "<tr><th colspan='2'>" . $LANG['Menu'][39] . "</th></tr>";
-   echo "<tr class='tab_bg_2'><td class='center red'>" . $LANG['setup'][165] . "</td></tr></table>";
-   echo "</div>";
-   commonFooter();
-   exit();
+Search::show('NotImportedEmail');
 
-} else {
-   $mailcollector = new MailCollector;
-   $mailcollector->title();
-   Search::show('MailCollector');
-   commonFooter();
-}
+commonFooter();
 
 ?>

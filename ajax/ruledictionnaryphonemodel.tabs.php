@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -31,31 +29,19 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
+
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config", "w");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailgate");
+checkRight('rule_dictionnary_dropdown','r');
 
-if (!canUseImapPop()) {
-   echo "<div class='center'>";
-   echo "<table class='tab_cadre_fixe'>";
-   echo "<tr><th colspan='2'>" . $LANG['Menu'][39] . "</th></tr>";
-   echo "<tr class='tab_bg_2'><td class='center red'>" . $LANG['setup'][165] . "</td></tr></table>";
-   echo "</div>";
-   commonFooter();
-   exit();
-
-} else {
-   $mailcollector = new MailCollector;
-   $mailcollector->title();
-   Search::show('MailCollector');
-   commonFooter();
-}
-
+$rule = new RuleDictionnaryPhoneModel();
+include ("rule.common.tabs.php");
 ?>

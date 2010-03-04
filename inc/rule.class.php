@@ -46,6 +46,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Rule extends CommonDBTM {
 
+   public $dohistory=true;
+
    // Specific ones
    ///Actions affected to this rule
    var $actions = array();
@@ -114,6 +116,67 @@ class Rule extends CommonDBTM {
       return $LANG['rulesengine'][8];
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = $this->getType();
+/*
+      $tab[19]['table']     = $this->getTable();
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+*/
+      $tab[8]['table']     = $this->getTable();
+      $tab[8]['field']     = 'is_active';
+      $tab[8]['linkfield'] = 'is_active';
+      $tab[8]['name']      = $LANG['common'][60];
+      $tab[8]['datatype']  = 'bool';
+
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'ranking';
+      $tab[3]['linkfield'] = '';
+      $tab[3]['name']      = $LANG['rulesengine'][10];
+      $tab[3]['datatype']  = 'bool';
+
+      $tab[4]['table']     = $this->getTable();
+      $tab[4]['field']     = 'description';
+      $tab[4]['linkfield'] = '';
+      $tab[4]['name']      = $LANG['joblist'][6];
+      $tab[4]['datatype']  = 'text';
+
+      $tab[5]['table']     = $this->getTable();
+      $tab[5]['field']     = 'match';
+      $tab[5]['linkfield'] = '';
+      $tab[5]['name']      = $LANG['rulesengine'][9];
+      $tab[5]['datatype']  = 'text';
+
+      $tab[16]['table']     = $this->getTable();
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      $tab[86]['table']     = $this->getTable();
+      $tab[86]['field']     = 'is_recursive';
+      $tab[86]['linkfield'] = 'is_recursive';
+      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['datatype']  = 'bool';
+
+      return $tab;
+   }
+
    /**
    * Show the rule
    *
@@ -127,20 +190,18 @@ class Rule extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      $canedit=haveRight($this->right,"w");
-      $new=false;
-      if (!empty($ID) && $ID>0) {
-         $this->getRuleWithCriteriasAndActions($ID,1,1);
+
+      if (!$this->isNewID($ID)) {
+         $this->check($ID,'r');
       } else {
-         $this->getEmpty();
-         $new=true;
+         // Create item
+         $this->check(-1,'w');
       }
-      $this->getTitleRule($this->getFormURL());
-      $this->showTabs($ID, $new);
-      echo "<form name='rule_form'  method='post' action='".$this->getFormURL()."'>\n";
-      echo "<div class='center' id='tabsbody' >";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $this->getTitle() . "</th></tr>\n";
+
+      $canedit=$this->can($this->right,"w");
+
+      $this->showTabs($options);
+      $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
@@ -165,40 +226,24 @@ class Rule extends CommonDBTM {
       echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td class='middle' colspan='3'>";
       echo "<textarea cols='110' rows='3' name='comment' >".$this->fields["comment"]."</textarea>";
-      if (!$new) {
+      if (!$this->isNewID($ID)) {
          echo "<br>".$LANG['common'][26]."&nbsp;: ";
          echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
       }
       echo"</td></tr>\n";
 
       if ($canedit) {
-         if ($new) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-            echo "<input type='hidden' name='sub_type' value='".$this->getType()."'>";
-            echo "<input type='submit' name='add_rule' value=\"" . $LANG['buttons'][8] .
-                   "\" class='submit'>";
-            echo "</td></tr>\n";
-         } else {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo "<input type='hidden' name='id' value='".$ID."'>";
-            echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
-            echo "<input type='submit' name='update_rule' value=\"" . $LANG['buttons'][7] .
-                   "\" class='submit'></td>";
-            echo "<td class='center' colspan='2'>";
-            echo "<input type='submit' name='delete_rule' value=\"" . $LANG['buttons'][6] .
-                   "\" class='submit'></td>";
-            echo "</tr>\n";
+         echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
 
-            echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-                   "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;rules_id=".
-                   $this->fields["id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100,".
-                   " scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>";
-            echo "</td></tr>\n";
-         }
+         echo "<tr><td class='tab_bg_2 center' colspan='4'>";
+         echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
+             "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;rules_id=".
+             $this->fields["id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100,".
+             " scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>";
+         echo "</td></tr>\n";
       }
-      echo "</table></div></form>";
 
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
@@ -282,21 +327,23 @@ class Rule extends CommonDBTM {
     * @param $target  where to go for action
     * @param $rules_id  rule ID
    **/
-   function showActionsList($target,$rules_id) {
+   function showActionsList($rules_id) {
       global $CFG_GLPI, $LANG;
 
       $canedit = haveRight($this->right, "w");
-      $this->getTitleAction($target);
+      $this->getTitleAction(getItemTypeFormURL(get_class($this)));
 
       if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount())
           && $canedit) {
 
-         echo "<form name='actionsaddform' method='post' action=\"$target\">\n";
+         echo "<form name='actionsaddform' method='post'
+                action=\"".getItemTypeFormURL(get_class($this))."\">\n";
          $this->addActionForm($rules_id);
          echo "</form>";
       }
 
-      echo "<form name='actionsform' id='actionsform' method='post' action=\"$target\">\n";
+      echo "<form name='actionsform' id='actionsform'
+             method='post' action=\"".getItemTypeFormURL(get_class($this))."\">\n";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][7] . "</th></tr>";
@@ -393,20 +440,22 @@ class Rule extends CommonDBTM {
     * @param $target
     * @param $rules_id
     */
-   function showCriteriasList($target,$rules_id) {
+   function showCriteriasList($rules_id) {
       global $CFG_GLPI, $LANG;
 
       $canedit = haveRight($this->right, "w");
-      $this->getTitleCriteria($target);
+      $this->getTitleCriteria(getItemTypeFormURL(get_class($this)));
 
       if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount())
           && $canedit) {
 
-         echo "<form name='criteriasaddform'method='post' action=\"$target\">\n";
+         echo "<form name='criteriasaddform'method='post'
+                action=\"".getItemTypeFormURL(get_class($this))."\">\n";
          $this->addCriteriaForm($rules_id);
          echo "</form>";
       }
-      echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">\n";
+      echo "<form name='criteriasform' id='criteriasform'
+             method='post' action=\"".getItemTypeFormURL(get_class($this))."\">\n";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][6] . "</th></tr>\n";
@@ -1395,6 +1444,16 @@ class Rule extends CommonDBTM {
             echo "</form>";
          }
       }
+   }
+
+   function defineTabs($options=array()) {
+      global $LANG,$CFG_GLPI;
+
+      $ong[1]=$LANG['title'][26];
+      if ($this->fields['id'] > 0) {
+         $ong[12]=$LANG['title'][38];
+      }
+      return $ong;
    }
 }
 

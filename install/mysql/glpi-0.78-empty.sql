@@ -1231,10 +1231,10 @@ INSERT INTO `glpi_displaypreferences` VALUES ('117','Group','16','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('118','States','31','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('119','ReservationItem','4','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('120','ReservationItem','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('125','Budget','3','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('122','Software','72','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('123','Software','163','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('124','Budget','2','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('125','Budget','3','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('126','Budget','4','3','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('127','Budget','19','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('128','Crontask','8','1','0');
@@ -1250,8 +1250,8 @@ INSERT INTO `glpi_displaypreferences` VALUES ('137','Notification','2','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('138','Notification','4','3','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('139','Notification','80','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('140','Notification','86','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('141','MailCollector','2','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('142','MailCollector','19','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('141','MailCollector','2','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('142','MailCollector','19','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('143','AuthLDAP','3','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('144','AuthLDAP','19','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('145','AuthMail','3','1','0');
@@ -1268,13 +1268,19 @@ INSERT INTO `glpi_displaypreferences` VALUES ('155','TicketValidation','8','3','
 INSERT INTO `glpi_displaypreferences` VALUES ('156','TicketValidation','4','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('157','TicketValidation','9','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('158','TicketValidation','7','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('159','Ticket','12','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('160','Ticket','19','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('161','Ticket','15','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('162','Ticket','3','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('163','Ticket','4','5','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('164','Ticket','5','6','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('165','Ticket','7','7','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('159','NotImportedEmail','2','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('160','NotImportedEmail','5','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('161','NotImportedEmail','4','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('162','NotImportedEmail','19','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('163','NotImportedEmail','16','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('164','Ticket','12','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('165','Ticket','19','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('166','Ticket','15','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('167','Ticket','3','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('168','Ticket','4','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('169','Ticket','5','6','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('170','Ticket','7','7','0');
+
 
 ### Dump table glpi_documentcategories
 
@@ -2359,6 +2365,21 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('6','5','','##ticket
                            ##lang.validation.commentvalidation## :&#160; ##validation.commentvalidation##&lt;br /&gt;
                            ##ENDIFvalidation.commentvalidation##&lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');
 
+### Dump table glpi_notimportedemails
+
+DROP TABLE IF EXISTS `glpi_notimportedemails`;
+CREATE TABLE `glpi_notimportedemails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) NOT NULL,
+  `to` varchar(255) NOT NULL,
+  `mailcollectors_id` int(11) NOT NULL DEFAULT '0',
+  `date` datetime NOT NULL,
+  `subject` text,
+  `messageid` varchar(255) NOT NULL,
+  `reason` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
 ### Dump table glpi_ocsadmininfoslinks
 
 DROP TABLE IF EXISTS `glpi_ocsadmininfoslinks`;
@@ -3286,27 +3307,27 @@ INSERT INTO `glpi_rulerightparameters` VALUES ('13','(LDAP) Title','title','');
 
 ### Dump table glpi_rules
 
-DROP TABLE IF EXISTS `glpi_rules`;
 CREATE TABLE `glpi_rules` (
-  `id` int(11) NOT NULL auto_increment,
-  `entities_id` int(11) NOT NULL default '0',
-  `sub_type` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-  `ranking` int(11) NOT NULL default '0',
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `description` text collate utf8_unicode_ci,
-  `match` char(10) collate utf8_unicode_ci default NULL COMMENT 'see define.php *_MATCHING constant',
-  `is_active` tinyint(1) NOT NULL default '1',
-  `comment` text collate utf8_unicode_ci,
-  `date_mod` datetime default NULL,
-  PRIMARY KEY  (`id`),
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `sub_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `ranking` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `match` char(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_active` (`is_active`),
   KEY `sub_type` (`sub_type`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rules` VALUES ('1','-1','RuleOcs','0','Root','','AND','1',NULL,NULL);
-INSERT INTO `glpi_rules` VALUES ('2','-1','RuleRight','1','Root','','OR','1',NULL,NULL);
+INSERT INTO `glpi_rules` VALUES ('1','0','RuleOcs','0','Root','','AND','1',NULL,NULL,'0');
+INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0');
 
 ### Dump table glpi_softwarecategories
 

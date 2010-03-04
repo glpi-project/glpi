@@ -252,6 +252,39 @@ class MailCollector  extends CommonDBTM {
    }
 
 
+   function deleteSeveralEmails($emails_ids = array()) {
+      global $DB;
+      $mailbox_id = 0;
+      $query = "SELECT * FROM `glpi_notimportedemails`
+                WHERE `id` IN (".implode(',',$emails_ids).") ORDER BY `mailcollectors_id`";
+
+      $todelete = array();
+      foreach ($DB->request($query) as $data) {
+         $todelete[$data['mailcollectors_id']][$data['messageid']] = $data['id'];
+      }
+
+      foreach ($todelete as $mailcollector_id => $rejected) {
+         if ($this->getFromDB($mailcollector_id)) {
+            $this->mid = -1;
+            $this->fetch_emails = 0;
+            //Connect to the Mail Box
+            $this->connect();
+
+            // Get Total Number of Unread Email in mail box
+            $tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
+            for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
+               $head=$this->getHeaders($i);
+               if (isset($rejected[$head['message_id']])) {
+                  if ($this->deleteMails($i)) {
+                     $rejectedmail = new NotImportedEmail();
+                     $rejectedmail->delete(array('id'=>$rejected[$head['message_id']]));
+                  }
+               }
+            }
+         }
+      }
+   }
+
    /**
    * Constructor
    * @param $mailgateID ID of the mailgate
@@ -266,6 +299,7 @@ class MailCollector  extends CommonDBTM {
          $this->fetch_emails = 0;
          //Connect to the Mail Box
          $this->connect();
+         $rejected = new NotImportedEmail;
 
          if ($this->marubox) {
             // Get Total Number of Unread Email in mail box
@@ -274,9 +308,12 @@ class MailCollector  extends CommonDBTM {
             $refused = 0;
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
                $tkt= $this->buildTicket($i,$mailgateID);
-               if (isset($tkt['enttiies_id'])
-                   || isset($tkt['_refuse_email_no_response'])
-                    || isset($tkt['_refuse_email_with_response'])) {
+
+               //If entity assigned, or email refused by rule, or no user associated with the email
+               if ((isset($tkt['enttiies_id'])
+                     && $tkt['users_id'])
+                        || isset($tkt['_refuse_email_no_response'])
+                           || isset($tkt['_refuse_email_with_response'])) {
 
                   if (isset($tkt['enttiies_id'])) {
                      $tkt['_mailgate']=$mailgateID;
@@ -308,6 +345,23 @@ class MailCollector  extends CommonDBTM {
                      $refused++;
                      $this->deleteMails($i); // Delete Mail from Mail box
                   }
+               }
+               else {
+                  $input = array();
+                  $input['mailcollectors_id'] = $mailgateID;
+                  $input['from'] = $tkt['user_email'];
+                  $input['to'] = $tkt['_to'];
+                  if (!$tkt['users_id']) {
+                     $input['reason'] = NotImportedEmail::USER_UNKNOWN;
+                  }
+                  else {
+                     $input['reason'] = NotImportedEmail::MATCH_NO_RULE;
+                  }
+
+                  $input['subject'] = $tkt['name'];
+                  $input['messageid'] = $tkt['_message_id'];
+                  $input['date'] = $_SESSION["glpi_currenttime"];
+                  $rejected->add($input);
                }
                $this->fetch_emails++;
             }
@@ -377,6 +431,8 @@ class MailCollector  extends CommonDBTM {
       $body=$this->getBody($i);
       // Do it before using charset variable
       $head['subject']=$this->decodeMimeString($head['subject']);
+      $tkt['_to'] = $head['to'];
+      $tkt['_message_id'] = $head['message_id'];
 
       if (!empty($this->charset)) {
          $body=encodeInUtf8($body,$this->charset);
@@ -578,7 +634,9 @@ class MailCollector  extends CommonDBTM {
           && utf8_strtolower($sender->mailbox)!='postmaster') {
 
          $mail_details=array('from'=>utf8_strtolower($sender->mailbox).'@'.$sender->host,
-                             'subject'=>$mail_header->subject);
+                             'subject'=>$mail_header->subject,
+                             'to'=>$mail_header->toaddress,
+                             'message_id'=>$mail_header->message_id);
          if (isset($mail_header->references)) {
             $mail_details['references'] = $mail_header->references;
          }
@@ -872,7 +930,7 @@ class MailCollector  extends CommonDBTM {
     * @param $mid : mail Id
     */
    function deleteMails($mid) {
-      imap_delete($this->marubox,$mid);
+      return imap_delete($this->marubox,$mid);
    }
 
    /**
@@ -897,6 +955,7 @@ class MailCollector  extends CommonDBTM {
    static function cronMailgate($task) {
       global $DB;
 
+      NotImportedEmail::deleteLog();
       $query = "SELECT *
                 FROM `glpi_mailcollectors`
                 WHERE `is_active` = '1'";
@@ -975,9 +1034,18 @@ class MailCollector  extends CommonDBTM {
       $mmail->From = $to;
       $mmail->FromName = $CFG_GLPI["admin_email"];
       $mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
-      $mmail->Subject = 'Re: '.$subject;
+      $mmail->Subject = $subject;
       $mmail->Body = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];
       $mmail->Send();
+   }
+
+  function title() {
+      global $LANG, $CFG_GLPI;
+
+      $buttons = array ();
+      $buttons["notimportedemail.php"] = $LANG['rulesengine'][142];
+      displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['rulesengine'][142],
+                   '',$buttons);
    }
 }
 
