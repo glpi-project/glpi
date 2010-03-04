@@ -1662,12 +1662,6 @@ class User extends CommonDBTM {
             $where=" `glpi_users`.`id`='".getLoginUserID()."' ";
             break;
             
-         case "validate" :
-            $where=" `glpi_profiles`.`validate_ticket`='1' ";
-            $joinprofile=true;
-            $where.=getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
-            break;
-            
          case "all" :
             $where=" `glpi_users`.`id` > '1' ".
                     getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
@@ -1675,9 +1669,13 @@ class User extends CommonDBTM {
 
          default :
             $joinprofile=true;
-            $where=" ( `glpi_profiles`.`".$right."`='1'
-                      AND `glpi_profiles`.`interface`='central' ".
-                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1)." ) ";
+            $where=" ( `glpi_profiles`.`".$right."`='1' ".
+                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1)." ";
+
+            if (!in_array($right,Profile::$helpdesk_rights)) {
+               $where.= " AND `glpi_profiles`.`interface`='central' ";
+            }
+            $where.=')';
             break;
       }
 

@@ -432,7 +432,7 @@ class TicketValidation  extends CommonDBChild {
          echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
          User::dropdown(array('name'  => "users_id_validate",
                               'entity' => $ticket->fields['entities_id'],
-                              'right'  => 'validate'));
+                              'right'  => 'validate_ticket'));
          echo "</td>";
          echo "</tr>";
          
@@ -460,7 +460,7 @@ class TicketValidation  extends CommonDBChild {
       echo "&nbsp;".$LANG['validation'][21]."&nbsp;: ";
        User::dropdown(array('name'  => "users_id_validate",
                               'entity' => $_SESSION["glpiactive_entity"],
-                              'right'  => 'validate'));
+                              'right'  => 'validate_ticket'));
 
       echo "<br>".$LANG['common'][25]."&nbsp;: ";
       echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
