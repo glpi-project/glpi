@@ -181,7 +181,7 @@ $LANG['central'][13]="Vue globale";
 $LANG['central'][14]="Vue groupe";
 $LANG['central'][16]="Les tickets en attente de vos groupes";
 $LANG['central'][17]="Vos tickets";
-$LANG['central'][18]="Vos tickets à approuver";
+$LANG['central'][18]="Vos tickets à clore";
 
 
 $LANG['choice'][0]="Non";
@@ -2010,8 +2010,8 @@ $LANG['validation'][1]="Envoyer une demande de validation";
 $LANG['validation'][2]="Etat";
 $LANG['validation'][3]="Date de la demande";
 $LANG['validation'][4]="Date de la validation";
-$LANG['validation'][5]="Commentaire technicien";
-$LANG['validation'][6]="Commentaire approbation";
+$LANG['validation'][5]="Commentaire de la de demande";
+$LANG['validation'][6]="Commentaire de l'approbation";
 $LANG['validation'][7]="Validation(s) pour le ticket";
 $LANG['validation'][8]="Annulé";
 $LANG['validation'][9]="En attente de validation";
