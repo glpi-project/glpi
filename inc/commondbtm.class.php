@@ -1421,7 +1421,13 @@ class CommonDBTM extends CommonGLPI {
       if ($this->can($ID,'w')) {
          echo "<form name='form' method='post' action='".$params['target']."' ".$params['formoptions'].">";
          if (isset($this->fields["entities_id"])) {
-            echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+            if ($this->isEntityAssign()) {
+               echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+            }
+            else {
+               echo "<input type='hidden' name='entities_id' value='0'>";
+
+            }
          }
          // No link on popup window
          if (isset($_GET['popup']) && $_GET['popup']) {
@@ -1449,7 +1455,7 @@ class CommonDBTM extends CommonGLPI {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID";
       }
 
-      if (isset($this->fields["entities_id"]) && isMultiEntitiesMode()) {
+      if (isMultiEntitiesMode() && $this->isEntityAssign()) {
          echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
       }
       echo "</th><th colspan='".$params['colspan']."'>";
