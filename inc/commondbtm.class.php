@@ -1455,7 +1455,8 @@ class CommonDBTM extends CommonGLPI {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID";
       }
 
-      if (isMultiEntitiesMode() && $this->isEntityAssign()) {
+      if (isset($this->fields["entities_id"])
+            && isMultiEntitiesMode() && $this->isEntityAssign()) {
          echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
       }
       echo "</th><th colspan='".$params['colspan']."'>";
