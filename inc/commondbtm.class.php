@@ -740,17 +740,18 @@ class CommonDBTM extends CommonGLPI {
             //   $this->oldvalues=array();
             //}
 
+            if(count($this->updates)) {
+               if ($this->updateInDB($this->updates, ($this->dohistory && $history ? $this->oldvalues : array()))) {
+                  $this->addMessageOnUpdateAction();
+                  doHook("item_update", $this);
 
-             if ($this->updateInDB($this->updates, ($this->dohistory && $history ? $this->oldvalues : array()))) {
-               $this->addMessageOnUpdateAction();
-               doHook("item_update", $this);
+                  // forward entity information if needed
+                  if (count($this->forward_entity_to) &&
+                        (in_array("entities_id",$this->updates) || in_array("is_recursive",$this->updates)) ) {
+                     $this->forwardEntityInformations();
+                  }
 
-               // forward entity information if needed
-               if (count($this->forward_entity_to) &&
-                     (in_array("entities_id",$this->updates) || in_array("is_recursive",$this->updates)) ) {
-                  $this->forwardEntityInformations();
                }
-
             }
          }
          $this->post_updateItem($history);
