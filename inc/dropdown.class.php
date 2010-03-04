@@ -606,7 +606,7 @@ class Dropdown {
       echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp;: ";
       echo "<select id='menu_nav'>";
       foreach($optgroup as $label => $dp) {
-         echo "<optgroup label='$label'>";
+         echo "<optgroup label=\"$label\">";
          foreach ($dp as $key => $val) {
             $search=getItemTypeSearchURL($key);
             if (basename($search) == basename($value)) {
