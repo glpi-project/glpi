@@ -87,7 +87,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
          unset($_SESSION["mode"]);
          unset($_SESSION["interface"]);
          $_SESSION['ldap_import']['action'] = 'show';
-         refreshMainWindow();
+         refreshDropdownPopupInMainWindow();
 
       }
  } else {
