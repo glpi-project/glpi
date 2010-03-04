@@ -139,6 +139,9 @@ class TicketFollowup  extends CommonDBTM {
       if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
          $this->fields['is_private'] = 1;
       }
+      if (isset ($_SESSION["glpiname"])) {
+         $this->fields['requesttypes_id'] = RequestType::getDefault('helpdesk');
+      }
    }
 
    function post_deleteFromDB() {
