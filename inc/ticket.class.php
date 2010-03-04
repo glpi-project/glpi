@@ -43,12 +43,14 @@ class Ticket extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
+   protected $forward_entity_to=array('TicketValidation');
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData
    var $hardwaredatas = NULL;
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
    var $computerfound = 0;
+
 
 
    static function getTypeName() {
