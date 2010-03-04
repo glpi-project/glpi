@@ -86,6 +86,10 @@ class Rule extends CommonDBTM {
       $this->forceTable('glpi_rules');
    }
 
+   function isEntityAssign() {
+      return false;
+   }
+
    function canCreate() {
       return haveRight('config', 'w');
    }
@@ -234,6 +238,8 @@ class Rule extends CommonDBTM {
 
       if ($canedit) {
          echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
+         echo "<input type='hidden' name='sub_type' value='".get_class($this)."'>";
+
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
          echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
@@ -1003,25 +1009,31 @@ class Rule extends CommonDBTM {
    * @param $fields datas used to display the criteria
    */
    function showMinimalCriteria($fields) {
-
-      echo "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      echo "<td>" . RuleCriteria::getConditionByID($fields["condition"]) . "</td>";
-      echo "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"],$fields["condition"],
-                                                     $fields["pattern"]) . "</td>";
+      echo $this->getMinimalCriteriaText($fields);
    }
 
+   function getMinimalCriteriaText($fields) {
+      $text="<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
+      $text.="<td>" . RuleCriteria::getConditionByID($fields["condition"]) . "</td>";
+      $text.="<td>" . $this->getCriteriaDisplayPattern($fields["criteria"],$fields["condition"],
+                                                     $fields["pattern"]) . "</td>";
+      return $text;
+   }
    /**
    * Show the minimal infos for the action rule
    * @param $fields datas used to display the action
    * @param $canedit right to edit ?
    */
    function showMinimalAction($fields,$canedit) {
-
-      echo "<td>" . $this->getActionName($fields["field"]) . "</td>";
-      echo "<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
-      echo "<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"])) . "</td>";
+      echo $this->getMinimalActionText($fields);
    }
 
+   function getMinimalActionText($fields) {
+      $text="<td>" . $this->getActionName($fields["field"]) . "</td>";
+      $text.="<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
+      $text.="<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"])) . "</td>";
+      return $text;
+   }
    /**
    * Return a value associated with a pattern associated to a criteria to display it
    * @param $ID the given criteria

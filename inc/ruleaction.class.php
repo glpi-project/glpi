@@ -60,10 +60,8 @@ class RuleAction extends CommonDBChild {
    }
 
    function getNameID($with_comment=0) {
-      global $CFG_GLPI,$LANG;
-
-      $condition = RuleAction::getActionByID($this->fields['action_type']);
-      return $condition.' '.$this->fields['field'].' '.$this->fields['value'];
+      $rule = new $this->itemtype ();
+      return html_clean($rule->getMinimalActionText($this->fields));
    }
 
    function getSearchOptions() {
