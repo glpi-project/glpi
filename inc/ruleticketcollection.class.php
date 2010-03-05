@@ -39,9 +39,13 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicketCollection extends RuleCollection {
 
    // From RuleCollection
-   public $right = 'rule_ticket';
+   public $right = 'entity_rule_ticket';
    public $use_output_rule_process_as_next_input=true;
    public $menu_option='ticket';
+
+   function __construct($entity=0) {
+      $this->entity = $entity;
+   }
 
    function getTitle() {
       global $LANG;

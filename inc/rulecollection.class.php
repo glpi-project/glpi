@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class RuleCollection {
+class RuleCollection extends CommonDBTM {
    /// Rule type
    public $sub_type;
    /// Name of the class used to rule
@@ -58,13 +58,44 @@ class RuleCollection {
    /// Menu option
    var $menu_option="";
 
+   var $entity = 0;
+
    /**
    * Get Collection Size : retrieve the number of rules
    *
    * @return : number of rules
    **/
-   function getCollectionSize() {
-      return countElementsInTable("glpi_rules", "sub_type='".$this->getRuleClassName()."'");
+   function getCollectionSize($recursive=true) {
+      return countElementsInTable("glpi_rules",
+                                  "sub_type='".$this->getRuleClassName()."'".
+                                  getEntitiesRestrictRequest(" AND",
+                                                     "glpi_rules",
+                                                     "entities_id",
+                                                     $this->entity,
+                                                     $recursive));
+   }
+
+   function getRuleListQuery($active=true,$start=0,$limit=0,$recursive=true) {
+      //Select all the rules of a different type
+      $sql = "SELECT *
+              FROM `glpi_rules`
+              WHERE `sub_type` = '".$this->getRuleClassName()."'";
+              $rule = $this->getRuleClass();
+               if ($rule->maybeRecursive()) {
+                  $sql .= getEntitiesRestrictRequest(" AND",
+                                                     "glpi_rules",
+                                                     "entities_id",
+                                                     $this->entity,
+                                                     $recursive);
+               }
+               if ($active) {
+                  $sql.=" AND `is_active` = '1'";
+               }
+      $sql.= " ORDER BY `".$this->orderby."` ASC";
+      if ($limit) {
+         $sql .= " LIMIT ".intval($start).",".intval($limit);
+      }
+      return $sql;
    }
 
    /**
@@ -73,22 +104,15 @@ class RuleCollection {
    * @param $start : first rule (in the result set)
    * @param $limit : max number of rules ti retrieve
    **/
-   function getCollectionPart($start=0,$limit=0) {
+   function getCollectionPart($start=0,$limit=0,$recursive=true) {
       global $DB;
 
-      $this->RuleList = new SingletonRuleList($this->getRuleClassName());
+      $this->RuleList = new SingletonRuleList($this->getRuleClassName(),$this->entity);
       $this->RuleList->list = array();
 
       //Select all the rules of a different type
-      $sql = "SELECT *
-              FROM `glpi_rules`
-              WHERE `sub_type` = '".$this->getRuleClassName()."'
-              ORDER BY ".$this->orderby." ASC";
-      if ($limit) {
-         $sql .= " LIMIT ".intval($start).",".intval($limit);
-      }
+      $sql= $this->getRuleListQuery(false,$start,$limit,$recursive);
       $result = $DB->query($sql);
-
       if ($result) {
          while ($data=$DB->fetch_assoc($result)) {
             //For each rule, get a Rule object with all the criterias and actions
@@ -108,20 +132,17 @@ class RuleCollection {
       global $DB;
 
       if ($this->RuleList === NULL) {
-         $this->RuleList = SingletonRuleList::getInstance($this->getRuleClassName());
+         $this->RuleList = SingletonRuleList::getInstance($this->getRuleClassName(),
+                                                          $this->entity);
       }
       $need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0);
 
       // check if load required
       if (($need & $this->RuleList->load) != $need) {
          //Select all the rules of a different type
-         $sql = "SELECT `id`
-                 FROM `glpi_rules`
-                 WHERE `is_active` = '1'
-                       AND `sub_type` = '".$this->getRuleClassName()."'
-                 ORDER BY ".$this->orderby." ASC";
-         $result = $DB->query($sql);
+         $sql= $this->getRuleListQuery(true);
 
+         $result = $DB->query($sql);
          if ($result) {
             $this->RuleList->list = array();
             while ($rule=$DB->fetch_array($result)) {
@@ -193,14 +214,23 @@ class RuleCollection {
    }
 
    /**
+    * Indicates if the rule can be affected to an entity or if it's global
+    */
+   function isRuleEntityAssigned() {
+      $rule = $this->getRuleClass();
+      return $rule->isEntityAssign();
+   }
+
+   /**
    * Show the list of rules
    * @param $target
    * @return nothing
    **/
    function showListRules($target) {
       global $CFG_GLPI, $LANG;
-
+      $options['recursive'] = $_SESSION['rule_ticket']['recursive'];
       $canedit = haveRight($this->right, "w");
+
       echo "<table class='tab_cadre_fixe'><tr><th>";
       //Display informations about the how the rules engine process the rules
       if ($this->stop_on_first_match) {
@@ -214,19 +244,21 @@ class RuleCollection {
          //The engine keep the result of a rule to be processed further
          echo "<span class='center b'>".$LANG['rulesengine'][122]."</span><br>";
       }
-      echo "</th></tr></table>\n";
+      echo "</th></tr>";
+      echo "</table>\n";
 
-      $nb = $this->getCollectionSize();
+      $nb = $this->getCollectionSize($options);
       $start = (isset($_GET["start"]) ? $_GET["start"] : 0);
       if ($start >= $nb) {
          $start = 0;
       }
       $limit = $_SESSION['glpilist_limit'];
-      $this->getCollectionPart($start,$limit);
+      $this->getCollectionPart($start,$limit,$options);
 
-      printPager($start,$nb,getItemTypeSearchURL($this->getRuleClassName()),"");
+      printPager($start,$nb,$target,"");
 
-      echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
+      echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post'
+             action=\"".$target."\">";
       echo "\n<div class='center'>";
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='6'>" . $this->getTitle() ."</th></tr>\n";

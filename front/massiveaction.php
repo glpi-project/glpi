@@ -606,6 +606,7 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case 'delete_email':
+         case 'import_email':
             $emails_ids = array();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
@@ -614,8 +615,22 @@ if (isset($_POST["itemtype"])) {
             }
             if (!empty($emails_ids)) {
                $mailcollector = new MailCollector;
-               $mailcollector->deleteSeveralEmails($emails_ids);
+               if ($_POST["action"] == 'delete_email') {
+                  $mailcollector->deleteOrImportSeveralEmails($emails_ids,0);
+               }
+               else {
+                  $mailcollector->deleteOrImportSeveralEmails($emails_ids,1,$_POST['entities_id']);
+               }
             }
+            break;
+         case 'add_user_to_email':
+            $emails_ids = array();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $emails_ids[$key] = $key;
+               }
+            }
+            NotImportedEmail::addUser($emails_ids,$_POST['users_id']);
             break;
          default :
             // Plugin specific actions

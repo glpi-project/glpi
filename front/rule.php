@@ -55,7 +55,7 @@ if (haveRight("rule_mailcollector","r") && canUseImapPop()) {
    echo "<a href='rulemailcollector.php'>" . $LANG['rulesengine'][70] . "</a></td></tr>";
 }
 
-if (haveRight("rule_ticket","r")) {
+if (haveRight("rule_ticket","r") || haveRight("entity_rule_ticket","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href='ruleticket.php'>" . $LANG['rulesengine'][28] . "</a></td></tr>";
 }

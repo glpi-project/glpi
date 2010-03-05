@@ -1421,9 +1421,20 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->can($ID,'w')) {
          echo "<form name='form' method='post' action='".$params['target']."' ".$params['formoptions'].">";
-         if (isset($this->fields["entities_id"])) {
+         //Should add an hidden entities_id field ?
+         //If the table has an entities_id field
+         if ($this->isField("entities_id")) {
+            //The object type can be assigned to an entity
             if ($this->isEntityAssign()) {
-               echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+               //It's a new object to be added
+               if ($ID) {
+                  $entity = $_SESSION['glpiactive_entity'];
+               }
+               else {
+                  //It's an existing object to be displayed
+                  $entity = $this->fields['entities_id'];
+               }
+               echo "<input type='hidden' name='entities_id' value='$entity'>";
             }
             else {
                echo "<input type='hidden' name='entities_id' value='0'>";

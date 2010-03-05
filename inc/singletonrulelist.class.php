@@ -48,13 +48,12 @@ class SingletonRuleList {
    * @param $type of the Rule listed
    * @return unique instance of an object
    */
-   public static  function &getInstance($type) {
+   public static  function &getInstance($type, $entity) {
       static $instances = array();
-
-      if (!isset($instances[$type])) {
-         $instances[$type] = new SingletonRuleList();
+      if (!isset($instances[$type][$entity])) {
+         $instances[$type][$entity] = new SingletonRuleList();
       }
-      return $instances[$type];
+      return $instances[$type][$entity];
    }
 }
 ?>

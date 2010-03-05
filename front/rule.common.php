@@ -154,6 +154,8 @@ commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecolle
 
 $rulecollection->title();
 $rulecollection->showListRules($_SERVER['PHP_SELF']);
+
+
 commonFooter();
 
 ?>

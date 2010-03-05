@@ -40,18 +40,26 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicket extends Rule {
 
    // From Rule
-   public $right='rule_ticket';
+   public $right='entity_rule_ticket';
    public $can_sort=true;
 
    function canCreate() {
-      return haveRight('rule_ticket', 'w');
+      return haveRight('entity_rule_ticket', 'w');
    }
 
    function canView() {
-      return haveRight('rule_ticket', 'r');
+      return haveRight('entity_rule_ticket', 'r');
    }
 
    function maybeRecursive() {
+      return true;
+   }
+
+   function isEntityAssign() {
+      return true;
+   }
+
+   function canUnrecurs() {
       return true;
    }
 

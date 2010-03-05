@@ -7,7 +7,6 @@
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
-
  LICENSE
 
  This file is part of GLPI.
@@ -541,7 +540,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    if (haveRight("rule_ldap","r")
          || haveRight("rule_ocs","r")
-            || haveRight("rule_ticket","r")
+            || haveRight("entity_rule_ticket","r")
                || haveRight("rule_softwarecategories","r")
                   || haveRight("rule_mailcollector","r")) {
 
@@ -566,7 +565,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          }
 
          $menu['admin']['content']['rule']['options']['mailcollector']['title']=$LANG['mailgate'][0];
-         $menu['admin']['content']['rule']['options']['mailcollector']['page']='/front/rulecollector.php';
+         $menu['admin']['content']['rule']['options']['mailcollector']['page']='/front/rulemailcollector.php';
          $menu['admin']['content']['rule']['options']['mailcollector']['links']['search']='/front/rulemailcollector.php';
          if (haveRight("rule_mailcollector","w")) {
             $menu['admin']['content']['rule']['options']['mailcollector']['links']['add']='/front/rulemailcollector.form.php';
@@ -575,7 +574,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          $menu['admin']['content']['rule']['options']['ticket']['title']=$LANG['Menu'][5];
          $menu['admin']['content']['rule']['options']['ticket']['page']='/front/ruleticket.php';
          $menu['admin']['content']['rule']['options']['ticket']['links']['search']='/front/ruleticket.php';
-         if (haveRight("rule_ticket","w")) {
+         if (haveRight("entity_rule_ticket","w")) {
             $menu['admin']['content']['rule']['options']['ticket']['links']['add']='/front/ruleticket.form.php';
          }
 

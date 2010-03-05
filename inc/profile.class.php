@@ -407,7 +407,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
       echo "</td>";
       echo "<td colspan='2'></td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td><td>";
       echo "<select name='helpdesk_hardware'>";
@@ -443,7 +443,7 @@ class Profile extends CommonDBTM {
       }
       echo "</select></td>";
       echo "</tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
       Dropdown::showYesNo("create_validation",$this->fields["create_validation"]);
@@ -451,7 +451,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("validate_ticket",$this->fields["validate_ticket"]);
       echo "</td>";
       echo "</tr>\n";
-      
+
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>".$LANG['Menu'][18]."</strong></td>";
       echo "</tr>\n";
@@ -682,9 +682,9 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_tasks",$this->fields["update_tasks"]);
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['validation'][0]."</strong></td></tr>\n";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
       Dropdown::showYesNo("create_validation",$this->fields["create_validation"]);
@@ -692,7 +692,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("validate_ticket",$this->fields["validate_ticket"]);
       echo "</td>";
       echo "<td colspan='2'></td></tr>\n";
-      
+
       echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][39]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -889,8 +889,8 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['rulesengine'][18]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("rule_ocs",$this->fields["rule_ocs"],1,1,1);
       echo "</td>";
-      echo "<td>".$LANG['rulesengine'][28]."&nbsp;:</td><td>";
-      Profile::dropdownNoneReadWrite("rule_ticket",$this->fields["rule_ticket"],1,1,1);
+      echo "<td>".$LANG['rulesengine'][70]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("rule_mailcollector",$this->fields["rule_mailcollector"],1,1,1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
@@ -908,10 +908,12 @@ class Profile extends CommonDBTM {
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['rulesengine'][70]."&nbsp;:</td><td>";
-      Profile::dropdownNoneReadWrite("rule_mailcollector",$this->fields["rule_mailcollector"],1,1,1);
+      echo "<td>".$LANG['rulesengine'][28]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("rule_ticket",$this->fields["rule_ticket"],1,1,1);
       echo "</td>";
-      echo "<td colspan='4'></td>";
+      echo "<td class='tab_bg_1'>".$LANG['rulesengine'][28]." (".$LANG['entity'][0].")&nbsp;:</td><td class='tab_bg_1'>";
+      Profile::dropdownNoneReadWrite("entity_rule_ticket",$this->fields["entity_rule_ticket"],1,1,1);
+      echo "</td><td class='tab_bg_1' colspan='2'>";
       echo"</td></tr>\n";
       // Configuration
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
