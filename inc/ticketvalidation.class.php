@@ -414,41 +414,39 @@ class TicketValidation  extends CommonDBChild {
     * @param $ticket class
     *
     **/
-   function showValidationTicketForm($ticket) {
+   function showForm($ID, $options=array()) {
       global $LANG;
       
-      $canedit = haveRight('create_validation','1');
-      if ($ticket->can($ticket->fields['id'], 'r') 
-            && !strstr($ticket->fields["status"],"solved") 
-               && !strstr($ticket->fields["status"],"closed") 
-               && $canedit) {
-         echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>".$LANG['validation'][1]."</th></tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['validation'][21]."</td>";
-         echo "<td>";
-         echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
-         echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
-         User::dropdown(array('name'  => "users_id_validate",
-                              'entity' => $ticket->fields['entities_id'],
-                              'right'  => 'validate_ticket'));
-         echo "</td>";
-         echo "</tr>";
-         
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][25]."</td>";
-         echo "<td><textarea cols='45' rows='3' name='comment_submission'></textarea></td>"; 
-         echo "</tr>";
-         
-         echo "<tr class='tab_bg_2'>";
-         echo "<td colspan= '2' align='center'>";
-         echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
-         echo "</tr>";
-         
-         echo "</table>";
-         echo "</form>";
+      if (isset($options['ticket']) && !empty($options['ticket'])) {
+         $ticket = $options['ticket'];
       }
+
+      echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>".$LANG['validation'][1]."</th></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['validation'][21]."</td>";
+      echo "<td>";
+      echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
+      echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
+      User::dropdown(array('name'  => "users_id_validate",
+                           'entity' => $ticket->fields['entities_id'],
+                           'right'  => 'validate_ticket'));
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][25]."</td>";
+      echo "<td><textarea cols='45' rows='3' name='comment_submission'></textarea></td>"; 
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan= '2' align='center'>";
+      echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
+      echo "</tr>";
+      
+      echo "</table>";
+      echo "</form>";
    }
    
    /**
@@ -476,7 +474,33 @@ class TicketValidation  extends CommonDBChild {
     **/
    function showSummary($ticket) {
       global $DB, $LANG, $CFG_GLPI;
+      
+      $tID = $ticket->fields['id'];
+      //$canadd = haveRight("create_validation", "1");
 
+      $tmp = array('tickets_id'=>$tID);
+      $canadd = $this->can(-1,'w',$tmp);
+      $rand = mt_rand();
+      
+      if ($canadd) {
+         echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
+      }
+      if ($canadd) {
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddValidation" . $tID . "$rand(){\n";
+         $params = array ('type'       => __CLASS__,
+                          'tickets_id' => $tID,
+                          'id'         => -1);
+         ajaxUpdateItemJsCode("viewfollowup" . $tID . "$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
+         echo "};";
+         echo "</script>\n";
+         if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
+            echo "<p><a href='javascript:viewAddValidation".$tID."$rand();'>";
+            echo $LANG['validation'][1]."</a></p><br>\n";
+         }
+      }
+      
       $query = "SELECT * 
             FROM `".$this->getTable()."`
             WHERE `tickets_id` = '".$ticket->getField('id')."'
@@ -570,7 +594,7 @@ class TicketValidation  extends CommonDBChild {
     * @param $ID integer ID of the item
     *
     **/
-   function showForm($ID, $options=array()) {
+   function showValidationTicketForm($ID, $options=array()) {
       global $LANG;
       
       $this->check($ID,'r');

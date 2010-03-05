@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
       commonHeader($LANG['validation'][0],'',"maintain","validation");
    }
    
-   $validation->showForm($_GET["id"]);
+   $validation->showValidationTicketForm($_GET["id"]);
    
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       helpFooter();

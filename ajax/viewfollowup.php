@@ -43,8 +43,10 @@ checkLoginUser();
 
 if ($_POST['type']=='TicketTask') {
    $item = new TicketTask();
-} else {
+} else if ($_POST['type']=='TicketFollowup') {
    $item = new TicketFollowup();
+} else if ($_POST['type']=='TicketValidation') {
+   $item = new TicketValidation();
 }
 $ticket = new Ticket();
 if (isset($_POST["tickets_id"]) && isset($_POST["id"]) && $ticket->getFromDB($_POST["tickets_id"])) {
