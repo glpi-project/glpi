@@ -146,16 +146,12 @@ class Ticket extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       if ($this->fields['id'] > 0) {
-         if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-            if ($this->canAddFollowups()) {
+         if (haveRight('observe_ticket','1')) {
+            if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
                $ong[1] = $LANG['job'][9];
-               $ong[2] = $LANG['job'][7];
+            } else {
+               $ong[1] = $LANG['Menu'][5];
             }
-         } else if (haveRight("add_followups","1")) {
-            if (!strstr($this->fields["status"],"closed") // TODO review this => to add "approbation"
-                && $this->fields["users_id"] === getLoginUserID()) {
-            }
-            $ong[1] = $LANG['Menu'][5];
             $ong[2] = $LANG['job'][7];
          }
          if (haveRight('create_validation','1')
@@ -2450,7 +2446,8 @@ class Ticket extends CommonDBTM {
          echo '<tr>';
          echo '<th colspan="4">';
          if ($ID) {
-            echo Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']);
+            echo $this->getTypeName()." - ".$LANG['common'][2]." $ID (";
+            echo Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']) . ")";
          } else {
             echo $LANG['job'][46]."&nbsp;:&nbsp;".Dropdown::getDropdownName("glpi_entities",
                                                                   $this->fields['entities_id']);
@@ -2766,7 +2763,7 @@ class Ticket extends CommonDBTM {
          $bgcolor_valid = "";
          if ($rejected_valid > 0) {
             $valid_status ="rejected";
-         } elseif ($waiting_valid > 0) { 
+         } else if ($waiting_valid > 0) { 
             $valid_status ="waiting";
          } else {
             $valid_status ="accepted";
@@ -2830,8 +2827,8 @@ class Ticket extends CommonDBTM {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='4'>".$LANG['joblist'][6]."</td>";
-      echo "<td class='left' rowspan='4'>";
+      echo "<td rowspan='2'>".$LANG['joblist'][6]."</td>";
+      echo "<td class='left' rowspan='2'>";
       if ($canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
@@ -2986,20 +2983,20 @@ class Ticket extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          if ($ID) {
             if (haveRight('delete_ticket',1)){
-               echo "<td class='center'>";
+               echo "<td class='tab_bg_2 center' colspan='2'>";
                echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
-               echo "</td><td class='center'>";
+               echo "</td><td class='tab_bg_2 center' colspan='2'>";
                echo "<input type='submit' class='submit' name='delete' value='".$LANG['buttons'][6]."'
                               OnClick='return window.confirm(\"".$LANG['common'][50]."\");'>";
             } else {
-               echo "<td colspan='2' class='center'>";
+               echo "<td class='tab_bg_2 center' colspan='4'>";
                echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
             }
          } else {
-            echo "<td colspan='1' class='center'>";
+            echo "<td class='tab_bg_2 center' colspan='2'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
             echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a></td>";
-            echo "<td colspan='2' class='center'>";
+            echo "<td class='tab_bg_2 center' colspan='2'>";
             echo "<input type='submit' name='add' value='".$LANG['buttons'][2]."' class='submit'>";
          }
          echo "</td></tr>";
