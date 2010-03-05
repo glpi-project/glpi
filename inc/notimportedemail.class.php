@@ -88,6 +88,11 @@ class NotImportedEmail extends CommonDBTM {
       $tab[5]['linkfield']     = '';
       $tab[5]['name']          = $LANG['mailing'][132].' : messageid';
 
+      $tab[6]['table']     = 'glpi_users';
+      $tab[6]['field']     = 'name';
+      $tab[6]['linkfield'] = 'users_id';
+      $tab[6]['name']      = 'GLPI :'.$LANG['job'][4];
+
       $tab[16]['table']     = 'glpi_notimportedemails';
       $tab[16]['field']     = 'reason';
       $tab[16]['linkfield'] = 'reason';
@@ -118,6 +123,16 @@ class NotImportedEmail extends CommonDBTM {
             return $LANG['login'][14];
          default :
             return '';
+      }
+   }
+
+   static function addUser($notimportedemails_ids, $users_id) {
+      global $DB;
+      if (!empty($notimportedemails_ids)) {
+         $sql = "UPDATE `glpi_notimportedemails`
+                 SET `users_id`='$users_id'
+                 WHERE `id` IN (".implode(',',$notimportedemails_ids).")";
+         $DB->query($sql);
       }
    }
 }

@@ -3893,13 +3893,22 @@ function update0723to078($output='HTML') {
                     `subject` text,
                     `messageid` varchar(255) NOT NULL,
                     `reason` int(11) NOT NULL DEFAULT '0',
+                    `users_id` int(11) NOT NULL DEFAULT '0',
                     PRIMARY KEY (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
          $DB->query($query) or die("0.78 add table glpi_notimportedemails".
                                    $LANG['update'][90] . $DB->error());
-         $ADDTODISPLAYPREF['NotImportedEmail']=array(2,5,4,19,16);
+         $ADDTODISPLAYPREF['NotImportedEmail']=array(2,5,4,6,16,19);
       }
 
+   if (!FieldExists("glpi_profiles","entity_rule_ticket")) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `entity_rule_ticket` CHAR( 1 ) NULL ";
+      $DB->query($query) or die("0.78 add entity_rule_ldap in glpi_profiles" . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `entity_rule_ticket`='w' WHERE `name` IN ('admin', 'superadmin')";
+      $DB->query($query) or die("0.78 update default entity_rule_ticket rights" . $LANG['update'][90] . $DB->error());
+
+   }
       $query = "ALTER TABLE `glpi_mailcollectors` DROP INDEX `entities_id` ";
       $DB->query($query) or die("0.78 drop index entities_id from glpi_mailcollectors".
                                    $LANG['update'][90] . $DB->error());
@@ -3997,7 +4006,7 @@ function update0723to078($output='HTML') {
                                    $LANG['update'][90] . $DB->error());
 
       $query = "ALTER TABLE `glpi_rulerightparameters` ADD `comment` TEXT NOT NULL ";
-      $DB->query($query) or die("0.78 add commentr to glpi_rulerightparameters".
+      $DB->query($query) or die("0.78 add comment to glpi_rulerightparameters".
                                    $LANG['update'][90] . $DB->error());
 
    }
@@ -4010,7 +4019,7 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 set entities_id to 0 where value is -1 in glpi_rules".
                                    $LANG['update'][90] . $DB->error());
       $query = "UPDATE `glpi_rules` SET `is_recursive`='1' WHERE `sub_type`='RuleTicket'";
-      $DB->query($query) or die("0.78 set is_recrusive to 1 for RuleTicket in glpi_rules".
+      $DB->query($query) or die("0.78 set is_recursive to 1 for RuleTicket in glpi_rules".
                                    $LANG['update'][90] . $DB->error());
    }
    // Display "Work ended." message - Keep this as the last action.

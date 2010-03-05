@@ -209,7 +209,16 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "import_email":
          Dropdown::show('Entity');
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
+               $LANG['buttons'][2]."\" >";
          break;
+
+      case "add_user_to_email":
+         User::dropdown();
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
+               $LANG['buttons'][2]."\" >";
+         break;
+
       case "update" :
          $first_group=true;
          $newgroup="";

@@ -255,7 +255,5 @@ class RuleRightCollection extends RuleCollection {
       return $fields;
    }
 
-
-
 }
 ?>

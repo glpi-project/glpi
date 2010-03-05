@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new RuleTicketCollection();
+$rulecollection = new RuleTicketCollection($_SESSION['glpiactive_entity']);
 
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

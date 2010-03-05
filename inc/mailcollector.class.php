@@ -252,7 +252,7 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   function deleteSeveralEmails($emails_ids = array()) {
+   function deleteOrImportSeveralEmails($emails_ids = array(),$action=0,$entity=0) {
       global $DB;
       $mailbox_id = 0;
       $query = "SELECT * FROM `glpi_notimportedemails`
@@ -260,9 +260,10 @@ class MailCollector  extends CommonDBTM {
 
       $todelete = array();
       foreach ($DB->request($query) as $data) {
-         $todelete[$data['mailcollectors_id']][$data['messageid']] = $data['id'];
+         $todelete[$data['mailcollectors_id']][$data['messageid']] = $data;
       }
 
+      $ticket = new Ticket;
       foreach ($todelete as $mailcollector_id => $rejected) {
          if ($this->getFromDB($mailcollector_id)) {
             $this->mid = -1;
@@ -275,9 +276,19 @@ class MailCollector  extends CommonDBTM {
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
                $head=$this->getHeaders($i);
                if (isset($rejected[$head['message_id']])) {
+                  if ($action == 1) {
+                        $tkt = array();
+                        $tkt= $this->buildTicket($i,
+                                                 array('mailcollectors_id'=>$mailcollector_id,
+                                                       'play_rules'=>false));
+                        $tkt['users_id'] = $rejected[$head['message_id']]['users_id'];
+                        $tkt['entities_id'] = $entity;
+                        $ticket->add($tkt);
+                  }
+                     //Delete email
                   if ($this->deleteMails($i)) {
                      $rejectedmail = new NotImportedEmail();
-                     $rejectedmail->delete(array('id'=>$rejected[$head['message_id']]));
+                     $rejectedmail->delete(array('id'=>$rejected[$head['message_id']]['id']));
                   }
                }
             }
@@ -307,15 +318,15 @@ class MailCollector  extends CommonDBTM {
             $error=0;
             $refused = 0;
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
-               $tkt= $this->buildTicket($i,$mailgateID);
+               $tkt= $this->buildTicket($i,array('mailgates_id'=>$mailgateID));
 
                //If entity assigned, or email refused by rule, or no user associated with the email
-               if ((isset($tkt['enttiies_id'])
+               if ((isset($tkt['entities_id'])
                      && $tkt['users_id'])
                         || isset($tkt['_refuse_email_no_response'])
                            || isset($tkt['_refuse_email_with_response'])) {
 
-                  if (isset($tkt['enttiies_id'])) {
+                  if (isset($tkt['entities_id'])) {
                      $tkt['_mailgate']=$mailgateID;
                      $this->deleteMails($i); // Delete Mail from Mail box
                      $result=imap_fetchheader($this->marubox,$i);
@@ -357,7 +368,7 @@ class MailCollector  extends CommonDBTM {
                   else {
                      $input['reason'] = NotImportedEmail::MATCH_NO_RULE;
                   }
-
+                  $input['users_id'] = $tkt['users_id'];
                   $input['subject'] = $tkt['name'];
                   $input['messageid'] = $tkt['_message_id'];
                   $input['date'] = $_SESSION["glpi_currenttime"];
@@ -402,6 +413,7 @@ class MailCollector  extends CommonDBTM {
    */
    function buildTicket($i,$options=array()) {
       global $DB,$LANG,$CFG_GLPI;
+      $play_rules = (isset($options['play_rules']) && $options['play_rules']);
 
       $head=$this->getHeaders($i); // Get Header Info Return Array Of Headers
                                    // **Key Are (subject,to,toOth,toNameOth,from,fromName)
@@ -518,13 +530,15 @@ class MailCollector  extends CommonDBTM {
       $tkt['requesttypes_id']=RequestType::getDefault('mail');
       $tkt['content']=clean_cross_side_scripting_deep(html_clean($tkt['content']));
 
-      $rule_options['ticket'] = $tkt;
-      $rule_options['headers'] = $head;
-      $rule_options['mailcollector'] = $options['mailgateID'];
-      $rulecollection = new RuleMailCollectorCollection();
-      $output= $rulecollection->processAllRules(array(),array(),$rule_options);
-      foreach ($output as $key => $value) {
-         $tkt[$key] = $value;
+      if ($play_rules) {
+         $rule_options['ticket'] = $tkt;
+         $rule_options['headers'] = $head;
+         $rule_options['mailcollector'] = $options['mailgates_id'];
+         $rulecollection = new RuleMailCollectorCollection();
+         $output= $rulecollection->processAllRules(array(),array(),$rule_options);
+         foreach ($output as $key => $value) {
+            $tkt[$key] = $value;
+         }
       }
 
       $tkt=addslashes_deep($tkt);

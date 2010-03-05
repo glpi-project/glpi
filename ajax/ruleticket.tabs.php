@@ -44,8 +44,8 @@ if (!isset($_POST['id'])) {
    exit();
 }
 
-checkRight('rule_ticket','r');
-
 $rule = new RuleTicket();
+checkRight($rule->right,'r');
+
 include ("rule.common.tabs.php");
 ?>

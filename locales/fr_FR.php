@@ -1000,6 +1000,7 @@ $LANG['mailgate'][10]="Email rejeté";
 $LANG['mailgate'][11]="Processus d'import d'emails";
 $LANG['mailgate'][12]="Impossible d'affecter l'email a une entité";
 $LANG['mailgate'][13]="Raison du refus";
+$LANG['mailgate'][14]="Demandeur GLPI";
 
 $LANG['mailing'][0]="----------------------------------------------------------";
 $LANG['mailing'][1]="======================================================================";
@@ -1550,7 +1551,6 @@ $LANG['rulesengine'][139]="Aucun critère défini";
 $LANG['rulesengine'][140]="Ajout d'un critère";
 $LANG['rulesengine'][141]="Aucune règle vérifiée";
 $LANG['rulesengine'][142]="Liste des emails non importés";
-
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";
