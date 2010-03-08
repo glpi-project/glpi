@@ -2246,6 +2246,7 @@ class Search {
          case "glpi_tickets.status" :
             $tocheck=array('new'=>array('new'),
                            'notold'=>array('new','plan','assign','waiting'),
+                           'notclosed'=>array('new','plan','assign','waiting','solved'),
                            'old'=>array('solved','closed'),
                            'process'=>array('plan','assign'),
                            'waiting'=>array('waiting'),
