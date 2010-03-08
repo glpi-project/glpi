@@ -294,89 +294,95 @@ class ConsumableItem extends CommonDBTM {
     **/
    static function cronConsumable($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
+      $cron_status = 1;
+      if ($CFG_GLPI["use_mailing"]) {
 
-      if (!$CFG_GLPI["use_mailing"] || !$CFG_GLPI["consumables_alert_repeat"]) {
-         return false;
-      }
-      loadLanguage($CFG_GLPI["language"]);
+         $message=array();
+         $items=array();
+         $alert=new Alert();
 
-      // Get cartridges type with alarm activated and last warning > config
-      $query="SELECT `glpi_consumableitems`.`id` AS consID,
-                     `glpi_consumableitems`.`entities_id` as entity,
-                     `glpi_consumableitems`.`ref` as consref,
-                     `glpi_consumableitems`.`name` AS consname,
-                     `glpi_consumableitems`.`alarm_threshold` AS threshold,
-                     `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
-             FROM `glpi_consumableitems`
-             LEFT JOIN `glpi_alerts` ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
-                                          AND `glpi_alerts`.`itemtype`='ConsumableItem')
-             WHERE `glpi_consumableitems`.`is_deleted`='0'
-                   AND `glpi_consumableitems`.`alarm_threshold`>='0'
-                   AND (`glpi_alerts`.`date` IS NULL
-                        OR (`glpi_alerts`.date+".$CFG_GLPI["consumables_alert_repeat"].
-                            ") < CURRENT_TIMESTAMP());";
+         $query = "SELECT `glpi_entities`.`entities_id` as `entity`,
+                     `glpi_entitydatas`.`consumables_alert_repeat`
+                   FROM `glpi_entities`
+                   LEFT JOIN `glpi_entitydatas` ON (
+                     `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
+          $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
 
-      $result=$DB->query($query);
-      $message=array();
-      $items=array();
-      $alert=new Alert();
+          foreach ($DB->request($query) as $data) {
+            if (!isset($data['consumables_alert_repeat']) ||
+                  $data['consumables_alert_repeat']==-1) {
+               $repeat = $CFG_GLPI["consumables_alert_repeat"];
+            }
+            else {
+               $repeat = $data["consumables_alert_repeat"];
+            }
 
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
-            if (($unused=getUnusedConsumablesNumber($data["consID"]))<=$data["threshold"]) {
-               if (!isset($message[$data["entity"]])) {
-                  $message[$data["entity"]]="";
-               }
-               if (!isset($items[$data["entity"]])) {
-                  $items[$data["entity"]]=array();
-               }
-               // define message alert
-               $message[$data["entity"]].=$LANG['mailing'][35]." ".$data["consname"]." - ".
-                                          $LANG['consumables'][2]."&nbsp;: ".$data["consref"]." - ".
-                                          $LANG['software'][20]."&nbsp;: ".$unused."<br>";
-               $items[$data["entity"]][]=$data["consID"];
+            $query_alert="SELECT `glpi_consumableitems`.`id` AS consID,
+                           `glpi_consumableitems`.`entities_id` as entity,
+                           `glpi_consumableitems`.`ref` as consref,
+                           `glpi_consumableitems`.`name` AS consname,
+                           `glpi_consumableitems`.`alarm_threshold` AS threshold,
+                           `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
+                   FROM `glpi_consumableitems`
+                   LEFT JOIN `glpi_alerts` ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
+                                                AND `glpi_alerts`.`itemtype`='ConsumableItem')
+                   WHERE `glpi_consumableitems`.`is_deleted`='0'
+                         AND `glpi_consumableitems`.`alarm_threshold`>='0'
+                           AND `glpi_consumableitems`.`entities_id`= '".$data['entity']."'
+                              AND (`glpi_alerts`.`date` IS NULL
+                              OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
+            $message = "";
+            $items=array();
+            foreach ($DB->request($query_alert) as $consumable) {
+               if (($unused=Consumable::getUnusedNumber($consumable["consID"]))<=$consumable["threshold"]) {
+                  // define message alert
+                  $message.=$LANG['mailing'][35]." ".$consumable["consname"]." - ".
+                            $LANG['consumables'][2]."&nbsp;: ".$consumable["consref"]." - ".
+                            $LANG['software'][20]."&nbsp;: ".$unused."<br>";
+                  $items[$consumable["consID"]]=$consumable;
 
-               // if alert exists -> delete
-               if (!empty($data["alertID"])) {
-                  $alert->delete(array("id"=>$data["alertID"]));
+                  // if alert exists -> delete
+                  if (!empty($consumable["alertID"])) {
+                     $alert->delete(array("id"=>$consumable["alertID"]));
+                  }
                }
             }
-         }
-         if (count($message)>0) {
-            foreach ($message as $entity => $msg) {
-               $mail=new MailingAlert("alertconsumable",$msg,$entity);
 
-               if ($mail->send()) {
+            if (!empty($items)) {
+               $options['entities_id'] = $data['entity'];
+               $options['consumables'] = $items;
+               if (NotificationEvent::raiseEvent('alert',new Consumable(),$options)) {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity)." :  $msg\n");
+                     $task->log(Dropdown::getDropdownName("glpi_entities",
+                                                          $data['entity'])." :  $message\n");
                      $task->addVolume(1);
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity)." :  $msg");
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                       $data['entity'])." :  $message");
                   }
 
                   $input["type"] = Alert::THRESHOLD;
                   $input["itemtype"] = 'ConsumableItem';
 
                   // add alerts
-                  foreach ($items[$entity] as $ID) {
+                  foreach ($items as $ID=>$consumable) {
                      $input["items_id"]=$ID;
                      $alert->add($input);
                      unset($alert->fields['id']);
                   }
                } else {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
+                     $task->log(Dropdown::getDropdownName("glpi_entities",$data['entity']).
                             " : Send consumable alert failed\n");
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$data['entity']).
                                              " : Send consumable alert failed",false,ERROR);
                   }
                }
             }
-            return 1;
-         }
+          }
       }
-      return 0;
+      return $cron_status;
    }
 
    function getEvents() {

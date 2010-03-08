@@ -35,54 +35,38 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetCartridge extends NotificationTarget {
 
-   function __construct($entity='', $object = null) {
-      parent::__construct($entity, $object);
-
-      if ($object != null) {
-         $this->getObjectItem();
-      }
-   }
-
-
-   /**
-    * Get item associated with the object on which the event was raised
-    * @return the object associated with the itemtype
-    */
-   function getObjectItem() {
-
-      $ci = new CartridgeItem;
-      if ($ci->getFromDB($this->obj->getField('cartridgeitems_id'))) {
-         $this->target_object = $ci;
-      }
-   }
-
-
    function getEvents() {
       global $LANG;
 
       return array ('alert' => $LANG['mailing'][33]);
    }
 
-
-   /**
+      /**
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
-      $prefix = strtolower($item->getType());
-      $this->datas['##'.$prefix.'.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->obj->getField('entities_id'));
-      $this->datas['##'.$prefix.'.item##']      = $this->target_object->getField('name');
-      $this->datas['##'.$prefix.'.reference##'] = $this->target_object->getField('ref');
-      $this->datas['##'.$prefix.'.value##']     = Cartridge::getUnusedNumber($this->getField('id'));
+      $this->datas['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                               $options['entities_id']);
+      $this->datas['##lang.cartridge.entity##'] = $LANG['entity'][0];
+      $this->datas['##cartridge.action##']      = $LANG['mailing'][33];
 
-      $this->datas['##lang.'.$prefix.'.entity##']    = $LANG['entity'][0];
-      $this->datas['##lang.'.$prefix.'.action##']    = $LANG['mailing'][33];
-      $this->datas['##lang.'.$prefix.'.item##']      = $LANG['mailing'][35];
-      $this->datas['##lang.'.$prefix.'.reference##'] = $LANG['consumables'][2];
-      $this->datas['##lang.'.$prefix.'.value##']     = $LANG['software'][20];
+      foreach ($options['cartridges'] as $id => $cartridge) {
+         $tmp = array();
+         $tmp['##cartridge.item##']      = $cartridge['cartname'];
+         $tmp['##cartridge.reference##'] = $cartridge['cartref'];
+         $tmp['##cartridge.remaining##']     = cartridge::getUnusedNumber($id);
+         $tmp['##cartridge.url##'] = urldecode($CFG_GLPI["url_base"].
+                                              "/index.php?redirect=cartridgeitem_".$id);
+         $this->datas['cartridges'][] = $tmp;
+      }
+
+      $this->datas['##lang.cartridge.entity##']    = $LANG['entity'][0];
+      $this->datas['##lang.cartridge.action##']    = $LANG['mailing'][36];
+      $this->datas['##lang.cartridge.item##']      = $LANG['mailing'][35];
+      $this->datas['##lang.cartridge.reference##'] = $LANG['consumables'][2];
+      $this->datas['##lang.cartridge.remaining##']     = $LANG['software'][20];
    }
-
 }
 ?>

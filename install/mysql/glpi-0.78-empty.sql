@@ -2364,6 +2364,41 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('6','5','','##ticket
                            ##IFvalidation.commentvalidation##&lt;br /&gt;
                            ##lang.validation.commentvalidation## :&#160; ##validation.commentvalidation##&lt;br /&gt;
                            ##ENDIFvalidation.commentvalidation##&lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##consumable.action##  ##consumable.entity##',
+                           '##lang.consumable.entity## :##consumable.entity##
+                           ##FOREACHconsumables##
+##lang.consumable.item## : ##consumable.item##
+                           ##lang.consumable.reference## : ##consumable.reference##
+                           ##lang.consumable.remaining## : ##consumable.remaining##
+                           ##consumable.url## 
+                           ##ENDFOREACHconsumables##','&lt;p&gt;
+                           ##lang.consumable.entity## :##consumable.entity##
+                           &lt;br /&gt; &lt;br /&gt;##FOREACHconsumables##
+                           &lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
+                           &lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
+                           ##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
+                           &lt;a href=\"##contract.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
+                            ##ENDFOREACHconsumables##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','',
+                           '##cartridge.action##  ##cartridge.entity##',
+                           '##lang.cartridge.entity## :##cartridge.entity##
+                            ##FOREACHcartridges##
+                            ##lang.cartridge.item## : ##cartridge.item##
+                            ##lang.cartridge.reference## : ##cartridge.reference##
+                            ##lang.cartridge.remaining## : ##cartridge.remaining##
+                            ##cartridge.url## 
+                            ##ENDFOREACHcartridges##','&lt;p&gt;
+                            ##lang.cartridge.entity## :##cartridge.entity##
+                            &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
+                            &lt;br /&gt;##lang.cartridge.item##   :
+                            ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
+                            ##lang.cartridge.reference##  :
+                            ##cartridge.reference##&lt;br /&gt;
+                            ##lang.cartridge.remaining## :
+                            ##cartridge.remaining##&lt;br /&gt;
+                            &lt;a href=\"##contract.url##\"&gt;
+                            ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
+                            ##ENDFOREACHcartridges##&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 

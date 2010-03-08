@@ -193,7 +193,8 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][264] . "</td><td>";
-      Dropdown::showYesNo("use_licenses_alert", $CFG_GLPI["use_licenses_alert"]);
+      Alert::dropdownYesNo(array('name'=>"use_licenses_alert",
+                                 'value'=>$CFG_GLPI["use_licenses_alert"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
