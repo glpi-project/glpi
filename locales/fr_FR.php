@@ -799,6 +799,7 @@ $LANG['joblist'][31]="Date d'échéance";
 $LANG['joblist'][32]="Résolu";
 $LANG['joblist'][33]="Clos";
 $LANG['joblist'][34]="Non résolu";
+$LANG['joblist'][35]="Non clos";
 
 $LANG['jobresolution'][1]="Solution";
 $LANG['jobresolution'][2]="Nouvelle solution";

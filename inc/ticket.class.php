@@ -1334,11 +1334,21 @@ class Ticket extends CommonDBTM {
    /** Get default values to search engine to override
    **/
    static function getDefaultSearchRequest() {
-         return array('field'      => array(0=>12),
-               'searchtype' => array(0=>'equals'),
-               'contains'   => array(0=>'notold'),
-               'sort'       => 19,
-               'order'      => 'DESC');
+
+         if (haveRight('show_all_ticket',1)) {
+            return array('field'      => array(0=>12),
+                  'searchtype' => array(0=>'equals'),
+                  'contains'   => array(0=>'notold'),
+                  'sort'       => 19,
+                  'order'      => 'DESC');
+         } else {
+            return array('field'      => array(0=>12),
+                  'searchtype' => array(0=>'equals'),
+                  'contains'   => array(0=>'notclosed'),
+                  'sort'       => 19,
+                  'order'      => 'DESC');
+
+         }
    }
 
    function getSearchOptions() {
@@ -1795,10 +1805,11 @@ class Ticket extends CommonDBTM {
          'closed'       => $LANG['joblist'][33]);
 
       if ($withmetaforsearch) {
-         $tab['notold']  = $LANG['joblist'][34];
-         $tab['process'] = $LANG['joblist'][21];
-         $tab['old']     = $LANG['joblist'][32]." + ".$LANG['joblist'][33];
-         $tab['all']     = $LANG['common'][66];
+         $tab['notold']    = $LANG['joblist'][34];
+         $tab['notclosed'] = $LANG['joblist'][35];
+         $tab['process']   = $LANG['joblist'][21];
+         $tab['old']       = $LANG['joblist'][32]." + ".$LANG['joblist'][33];
+         $tab['all']       = $LANG['common'][66];
       }
       return $tab;
    }
