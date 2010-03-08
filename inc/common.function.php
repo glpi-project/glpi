@@ -1676,44 +1676,49 @@ function getExpir($begin,$duration,$notice="0") {
 *
 * @param $where string: where to redirect ?
 **/
-function manageRedirect($where) {
+function manageRedirect($where,$forcetab='') {
    global $CFG_GLPI,$PLUGIN_HOOKS;
 
    if (!empty($where)) {
       $data=explode("_",$where);
       if (count($data)>=2 && isset($_SESSION["glpiactiveprofile"]["interface"])
           && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
+         $forcetab='';
+         if (isset($data[2])) {
+            $forcetab='forcetab='.$data[2];
+         }
 
          switch ($_SESSION["glpiactiveprofile"]["interface"]) {
             case "helpdesk" :
                switch ($data[0]) {
                   case "plugin":
+                     if (isset($data[3])) {
+                        $forcetab='forcetab='.$data[3];
+                     }
+
                      if (isset($data[2]) && $data[2]>0
                          && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
                          && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
 
-                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
+                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".
+                           $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]."&$forcetab");
                      } else {
-                        glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+                        glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
                      }
                      break;
 
                   // Use for compatibility with old name
                   case "tracking":
                   case "ticket":
-                     glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&id=".
-                                 $data[1]);
-                     break;
-                  case "ticketvalidation":
-                     glpi_header($CFG_GLPI["root_doc"]."/front/ticket.validation.php?id=".
-                                 $data[1]);
+                     glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+                                       $data[1]."&$forcetab");
                      break;
                   case "preference":
-                     glpi_header($CFG_GLPI["root_doc"]."/front/preference.php");
+                     glpi_header($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                      break;
 
                   default:
-                     glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+                     glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
                      break;
                }
                break;
@@ -1721,18 +1726,22 @@ function manageRedirect($where) {
             case "central" :
                switch ($data[0]) {
                   case "plugin":
+                     if (isset($data[3])) {
+                        $forcetab='forcetab='.$data[3];
+                     }
                      if (isset($data[2]) && $data[2]>0
                          && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
                          && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
 
-                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]);
+                        glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".
+                           $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]."&$forcetab");
                      } else {
-                        glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
+                        glpi_header($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                      }
                      break;
 
                   case "preference":
-                     glpi_header($CFG_GLPI["root_doc"]."/front/preference.php");
+                     glpi_header($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                      break;
 
                   // Use for compatibility with old name
@@ -1740,9 +1749,10 @@ function manageRedirect($where) {
                      $data[0] = "ticket";
                   default :
                      if (!empty($data[0] )&& $data[1]>0) {
-                        glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".$data[1]);
+                        glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
+                                          $data[1]."&$forcetab");
                      } else {
-                        glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
+                        glpi_header($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                      }
                      break;
                }
