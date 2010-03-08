@@ -1902,7 +1902,8 @@ class Search {
          case 'glpi_tickets.name' :
             return "`$table$addtable`.`$field` AS ".$NAME."_$num,
                         `$table$addtable`.`id` AS ".$NAME."_".$num."_2,
-                        `$table$addtable`.`content` AS ".$NAME."_".$num."_3, ";
+                        `$table$addtable`.`content` AS ".$NAME."_".$num."_3,
+                        `$table$addtable`.`status` AS ".$NAME."_".$num."_4,";
          case 'glpi_tickets.items_id':
             return "`$table$addtable`.`$field` AS ".$NAME."_$num,
                         `$table$addtable`.`itemtype` AS ".$NAME."_".$num."_2, ";
@@ -3325,8 +3326,12 @@ class Search {
             $link=getItemTypeFormURL('Ticket');
             $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
             $out .= (strstr($link,'?') ?'&amp;' :  '?');
-            $out .= 'id='.$data[$NAME.$num."_2"]."\">";
-            $out .= $data[$NAME.$num];
+            $out .= 'id='.$data[$NAME.$num."_2"];
+            // Force solution tab if solved
+            if ($data[$NAME.$num."_4"]=='solved') {
+               $out.="&amp;forcetab=4";
+            }
+            $out .= "\">".$data[$NAME.$num];
             if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
                $out .= " (".$data[$NAME.$num."_2"].")";
             }

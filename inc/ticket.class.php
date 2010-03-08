@@ -1361,9 +1361,6 @@ class Ticket extends CommonDBTM {
       $tab[1]['field']         = 'name';
       $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['searchtype']    = 'contains';
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'content';
@@ -2438,9 +2435,6 @@ class Ticket extends CommonDBTM {
          $this->check(-1,'w',$options);
       }
 
-      if ($this->fields['status'] == 'solved') {
-         setActiveTab('Ticket', 4);
-      }
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups()==0
