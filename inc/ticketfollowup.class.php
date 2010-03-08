@@ -147,6 +147,7 @@ class TicketFollowup  extends CommonDBTM {
    function post_deleteFromDB() {
 
       $job = new Ticket();
+      $job->getFromDB($this->fields["tickets_id"]);
       $job->updateDateMod($this->fields["tickets_id"]);
 
       // Add log entry in the ticket
@@ -154,6 +155,7 @@ class TicketFollowup  extends CommonDBTM {
       $changes[1] = addslashes($this->getName(true));
       $changes[2] = '';
       Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
+      NotificationEvent::raiseEvent('delete_followup',$job);
    }
 
 
@@ -189,11 +191,7 @@ class TicketFollowup  extends CommonDBTM {
                   $options = array();
                }
 
-               $mailsend = NotificationEvent::raiseEvent('add_followup',$job,$options);
-               //$mail = new Mailing("followup",$job,$user,
-               //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
-               //$mail->send();
-               //$mailsend = true;
+               NotificationEvent::raiseEvent("update_followup", $this->input["_job"]);
             }
          }
       }

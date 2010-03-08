@@ -77,7 +77,7 @@ class Notification extends CommonDBTM {
    const TICKET_VALIDATION_APPROVER = 14;
    //Notification to the ticket validation requester
    const TICKET_VALIDATION_REQUESTER = 15;
-   
+
    // From CommonDBTM
    public $dohistory = true;
 
@@ -120,9 +120,14 @@ class Notification extends CommonDBTM {
       autocompletionTextField($this, "name");
       echo "</td>";
 
-      echo "<td rowspan='5' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='5'><textarea cols='45' rows='9' name='comment' >"
+      echo "<td rowspan='6' class='middle right'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='6'><textarea cols='45' rows='9' name='comment' >"
             .$this->fields["comment"]."</textarea></td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][60] . "&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td>";
       echo "<td>";
@@ -154,6 +159,7 @@ class Notification extends CommonDBTM {
       NotificationTemplate::dropdownTemplates('notificationtemplates_id', $this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
       echo "</span></td></tr>";
+
       $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -195,6 +201,12 @@ class Notification extends CommonDBTM {
       $tab[5]['linkfield']     = '';
       $tab[5]['name']          = $LANG['common'][17];
       $tab[5]['datatype']      = 'itemtypename';
+
+      $tab[6]['table']     = $this->getTable();
+      $tab[6]['field']     = 'is_active';
+      $tab[6]['linkfield'] = 'is_active';
+      $tab[6]['name']      = $LANG['common'][60];
+      $tab[6]['datatype']  = 'bool';
 
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';
@@ -288,6 +300,7 @@ class Notification extends CommonDBTM {
                       AND `glpi_notifications`.`event` = '$event' ".
                       getEntitiesRestrictRequest(" AND", "glpi_notifications", 'entities_id',
                                                  $entity, true) ."
+                        AND `glpi_notifications`.`is_active`='1'
                 ORDER BY `glpi_entities`.`level` DESC";
       return $DB->request($query);
    }

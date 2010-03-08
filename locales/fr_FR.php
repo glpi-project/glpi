@@ -766,6 +766,8 @@ $LANG['job'][48]="Type de solution";
 $LANG['job'][49]="Nouvelle tâche";
 $LANG['job'][50]="Pas de tâche pour ce ticket.";
 $LANG['job'][51]="Approbation de la solution";
+$LANG['job'][52]="Mise à jour d'une tâche";
+$LANG['job'][53]="Suppression d'une tâche";
 
 $LANG['joblist'][0]="Statut";
 $LANG['joblist'][1]="Seulement les miens";
@@ -1084,6 +1086,8 @@ $LANG['mailing'][130]="Expéditeur";
 $LANG['mailing'][131]="Destinataire";
 $LANG['mailing'][132]="Entête de l'email";
 $LANG['mailing'][133]="Supprimer email(s)";
+$LANG['mailing'][134]="Mise à jour suivi";
+$LANG['mailing'][135]="Suppression suivi";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
