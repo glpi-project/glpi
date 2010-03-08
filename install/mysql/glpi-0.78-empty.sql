@@ -1,4 +1,4 @@
-#GLPI Dump database on 2010-03-02 17:00
+#GLPI Dump database on 2010-03-08 21:57
 
 ### Dump table glpi_alerts
 
@@ -890,7 +890,7 @@ INSERT INTO `glpi_crontasks` VALUES ('1','OcsServer','ocsng','300',NULL,'0','1',
 INSERT INTO `glpi_crontasks` VALUES ('2','CartridgeItem','cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3','ConsumableItem','consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4','SoftwareLicense','software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30','2010-03-08 21:57:30',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('6','InfoCom','infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('7','CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8','CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -1508,7 +1508,7 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-03-02 17:00:39','login','3','glpi IP connection: 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-03-08 21:57:32','login','3','glpi IP connection: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -2037,18 +2037,18 @@ CREATE TABLE `glpi_networks` (
 
 DROP TABLE IF EXISTS `glpi_notifications`;
 CREATE TABLE `glpi_notifications` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `entities_id` int(11) NOT NULL DEFAULT '0',
-  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `event` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `mode` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
-  `comment` text COLLATE utf8_unicode_ci,
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-  `is_active` tinyint(1) NOT NULL DEFAULT '0',
-  `date_mod` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `entities_id` int(11) NOT NULL default '0',
+  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
+  `event` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `mode` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `notificationtemplates_id` int(11) NOT NULL default '0',
+  `comment` text collate utf8_unicode_ci,
+  `is_recursive` tinyint(1) NOT NULL default '0',
+  `is_active` tinyint(1) NOT NULL default '0',
+  `date_mod` datetime default NULL,
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notifications` VALUES ('1','New Ticket','0','Ticket','new','mail','3','','1','1','2010-02-16 16:41:39');
@@ -2085,8 +2085,8 @@ CREATE TABLE `glpi_notificationtargets` (
   KEY `items` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notificationtargets` VALUES ('1','3','1','8');
-INSERT INTO `glpi_notificationtargets` VALUES ('2','1','1','8');
+INSERT INTO `glpi_notificationtargets` VALUES ('1','3','1','12');
+INSERT INTO `glpi_notificationtargets` VALUES ('2','1','1','12');
 INSERT INTO `glpi_notificationtargets` VALUES ('3','3','2','1');
 INSERT INTO `glpi_notificationtargets` VALUES ('4','1','1','1');
 INSERT INTO `glpi_notificationtargets` VALUES ('5','1','1','2');
@@ -2098,11 +2098,23 @@ INSERT INTO `glpi_notificationtargets` VALUES ('10','3','1','1');
 INSERT INTO `glpi_notificationtargets` VALUES ('11','3','1','2');
 INSERT INTO `glpi_notificationtargets` VALUES ('12','3','1','4');
 INSERT INTO `glpi_notificationtargets` VALUES ('13','3','1','3');
-INSERT INTO `glpi_notificationtargets` VALUES ('14','1','1','13');
-INSERT INTO `glpi_notificationtargets` VALUES ('15','3','1','9');
-INSERT INTO `glpi_notificationtargets` VALUES ('16','1','1','9');
-INSERT INTO `glpi_notificationtargets` VALUES ('17','3','1','10');
-INSERT INTO `glpi_notificationtargets` VALUES ('18','1','1','10');
+INSERT INTO `glpi_notificationtargets` VALUES ('14','1','1','17');
+INSERT INTO `glpi_notificationtargets` VALUES ('15','3','1','13');
+INSERT INTO `glpi_notificationtargets` VALUES ('16','1','1','13');
+INSERT INTO `glpi_notificationtargets` VALUES ('17','3','1','14');
+INSERT INTO `glpi_notificationtargets` VALUES ('18','1','1','14');
+INSERT INTO `glpi_notificationtargets` VALUES ('19','1','1','5');
+INSERT INTO `glpi_notificationtargets` VALUES ('20','3','1','5');
+INSERT INTO `glpi_notificationtargets` VALUES ('21','1','1','6');
+INSERT INTO `glpi_notificationtargets` VALUES ('22','3','1','6');
+INSERT INTO `glpi_notificationtargets` VALUES ('23','1','1','7');
+INSERT INTO `glpi_notificationtargets` VALUES ('24','3','1','7');
+INSERT INTO `glpi_notificationtargets` VALUES ('25','1','1','8');
+INSERT INTO `glpi_notificationtargets` VALUES ('26','3','1','8');
+INSERT INTO `glpi_notificationtargets` VALUES ('27','1','1','9');
+INSERT INTO `glpi_notificationtargets` VALUES ('28','3','1','9');
+INSERT INTO `glpi_notificationtargets` VALUES ('29','1','1','10');
+INSERT INTO `glpi_notificationtargets` VALUES ('30','3','1','10');
 
 ### Dump table glpi_notificationtemplates
 
@@ -2153,76 +2165,45 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('2','2','','##reserv
 ','&lt;!-- description{ color: inherit; background: #ebebeb;border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; } --&gt;
 &lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.user##:&lt;/span&gt;##reservation.user##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.item.name##:&lt;/span&gt;##reservation.itemtype## - ##reservation.item.name##&lt;br /&gt;##IFreservation.tech## ##lang.reservation.tech## ##reservation.tech####ENDIFreservation.tech##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.begin##:&lt;/span&gt; ##reservation.begin##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.end##:&lt;/span&gt;##reservation.end##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.comment##:&lt;/span&gt; ##reservation.comment##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url## 
+##lang.ticket.description## 
 
-                                  ##lang.ticket.description## 
+##lang.ticket.title## &#160;:##ticket.title##
+##lang.ticket.author.name####IFticket.author.name####ticket.author.name## ##ENDIFticket.author.name####ELSEticket.author.name##--##ENDELSEticket.author.name##
+##lang.ticket.creationdate## &#160;:##ticket.creationdate##
+##lang.ticket.closedate## &#160;:##ticket.closedate##
+#lang.ticket.requesttype## &#160;:##ticket.requesttype##
+##IFticket.itemtype## ##lang.ticket.item.name## &#160;:##ticket.itemtype## - ##ticket.item.name####IFticket.item.model## - ##ticket.item.model####ENDIFticket.item.model####IFticket.item.serial## -##ticket.item.serial####ENDIFticket.item.serial##&#160; ##IFticket.item.otherserial## -##ticket.item.otherserial####ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
+##IFticket.assigntouser## ##lang.ticket.assigntouser## &#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##
+##lang.ticket.status## &#160;: ##ticket.status##
+##IFticket.assigntogroup## ##lang.ticket.assigntogroup##&#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
+##lang.ticket.urgency## &#160;: ##ticket.urgency##
+##lang.ticket.impact## &#160;: ##ticket.impact##
+##lang.ticket.priority## &#160;: ##ticket.priority## 
+##IFticket.user.email## ##lang.ticket.user.email## &#160;:##ticket.user.email ##ENDIFticket.user.email## 
+##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category## ##ENDIFticket.category####ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category## 
+##lang.ticket.content## &#160;: ##ticket.content## 
+##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups## 
 
-
-                                  ##lang.ticket.title## &#160;:##ticket.title##
-
-                                  ##lang.ticket.author.name##
-                                  ##IFticket.author.name##
-                                  ##ticket.author.name## ##ENDIFticket.author.name##
-                                  ##ELSEticket.author.name##--##ENDELSEticket.author.name##
-
-                                  ##lang.ticket.creationdate## &#160;:##ticket.creationdate##
-
-                                  ##lang.ticket.closedate## &#160;:##ticket.closedate##
-
-                                  ##lang.ticket.requesttype## &#160;:##ticket.requesttype##
-
-                                  ##IFticket.itemtype## ##lang.ticket.item.name## &#160;: ##ticket.itemtype## - ##ticket.item.name##
-                                  ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model##
-                                  ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##
-                                 &#160; ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
-
-                                  ##IFticket.assigntouser## ##lang.ticket.assigntouser## &#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##
-
-                                  ##lang.ticket.status## &#160;: ##ticket.status##
-
-                                  ##IFticket.assigntogroup## ##lang.ticket.assigntogroup## &#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
-
-                                  ##lang.ticket.urgency## &#160;: ##ticket.urgency##
-
-                                  ##lang.ticket.impact## &#160;: ##ticket.impact##
-
-                                  ##lang.ticket.priority## &#160;: ##ticket.priority## 
-
-                                  ##IFticket.user.email## ##lang.ticket.user.email## &#160;: ##ticket.user.email ##ENDIFticket.user.email## 
-
-                                  ##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category## ##ENDIFticket.category##
-                                  ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category## 
-
-                                  ##lang.ticket.content## &#160;: ##ticket.content## 
-
-                                  ##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups## 
-
-
-                                 ##FOREACHfollowups## 
+##FOREACHfollowups## 
  
  [##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate## 
-
-                                  ##lang.followup.author## ##followup.author##
+##lang.followup.author## ##followup.author##
  ##lang.followup.description## ##followup.description##
-
-                                  ##lang.followup.date## ##followup.date##
+##lang.followup.date## ##followup.date##
  ##lang.followup.requesttype## ##followup.requesttype## 
 
-
-                                 ##ENDFOREACHfollowups## 
+##ENDFOREACHfollowups## 
  ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks## 
 
 ##FOREACHtasks## 
  
-
-                                  [##task.date##] ##lang.task.isprivate## : ##task.isprivate## 
+[##task.date##] ##lang.task.isprivate## : ##task.isprivate## 
  ##lang.task.author## ##task.author##
-
-                                  ##lang.task.description## ##task.description##
- ##lang.task.time## ##task.time##
+##lang.task.description## ##task.description##
+ ##lang.task.time####task.time##
  ##lang.task.category## ##task.category## 
 
-
-                                 ##ENDFOREACHtasks##','&lt;!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }
+##ENDFOREACHtasks##','&lt;!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }
                                   --&gt;
 &lt;div&gt;##lang.ticket.url## : &lt;a href=\'##ticket.url##
                                  \'&gt;##ticket.url##&lt;/a&gt;&lt;/div&gt;
@@ -2290,27 +2271,22 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##ticket
                                  ##ENDFOREACHtasks##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','10','','##contract.action##  ##contract.entity##','##lang.contract.entity## :##contract.entity##
 
-                                r
 ##FOREACHcontracts##
-
-                                ##lang.contract.name## : ##contract.name##
-
-                                ##lang.contract.number## : ##contract.number##
-
-                                ##lang.contract.time## : ##contract.time##
-
-                                ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##
-
-                                ##contract.url##
-
-                                ##ENDFOREACHcontracts##','&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
-                                &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## : ##contract.name##&lt;br /&gt;
-                                ##lang.contract.number## : ##contract.number##&lt;br /&gt;
-                                ##lang.contract.time## : ##contract.time##&lt;br /&gt;
-                                ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##&lt;br /&gt;
-                                &lt;a href=\"##contract.url##\"&gt;
-                                ##contract.url##&lt;/a&gt;&lt;br /&gt;
-                                ##ENDFOREACHcontracts##&lt;/p&gt;');
+##lang.contract.name## : ##contract.name##
+##lang.contract.number## : ##contract.number##
+##lang.contract.time## : ##contract.time##
+##IFcontract.type####lang.contract.type## : ##contract.type####ENDIFcontract.type##
+##contract.url##
+##ENDFOREACHcontracts##','&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
+                              &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## :
+                              ##contract.name##&lt;br /&gt;
+                              ##lang.contract.number## : ##contract.number##&lt;br /&gt;
+                              ##lang.contract.time## : ##contract.time##&lt;br /&gt;
+                              ##IFcontract.type####lang.contract.type## : ##contract.type##
+                              ##ENDIFcontract.type##&lt;br /&gt;
+                              &lt;a href=\"##contract.url##\"&gt;
+                              ##contract.url##&lt;/a&gt;&lt;br /&gt;
+                              ##ENDFOREACHcontracts##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','4','','##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url## 
 
                              ##lang.ticket.description## 
@@ -2370,13 +2346,19 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('6','5','','##ticket
                            ##IFvalidation.commentvalidation##&lt;br /&gt;
                            ##lang.validation.commentvalidation## :&#160; ##validation.commentvalidation##&lt;br /&gt;
                            ##ENDIFvalidation.commentvalidation##&lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##consumable.action##  ##consumable.entity##',
-                           '##lang.consumable.entity## :##consumable.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##consumable.action##  ##consumable.entity##','##lang.consumable.entity## :##consumable.entity##
+ 
+
                            ##FOREACHconsumables##
 ##lang.consumable.item## : ##consumable.item##
+ 
+
                            ##lang.consumable.reference## : ##consumable.reference##
+
                            ##lang.consumable.remaining## : ##consumable.remaining##
+
                            ##consumable.url## 
+
                            ##ENDFOREACHconsumables##','&lt;p&gt;
                            ##lang.consumable.entity## :##consumable.entity##
                            &lt;br /&gt; &lt;br /&gt;##FOREACHconsumables##
@@ -2385,26 +2367,29 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##consum
                            ##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
                            &lt;a href=\"##contract.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
                             ##ENDFOREACHconsumables##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','',
-                           '##cartridge.action##  ##cartridge.entity##',
-                           '##lang.cartridge.entity## :##cartridge.entity##
-                            ##FOREACHcartridges##
-                            ##lang.cartridge.item## : ##cartridge.item##
-                            ##lang.cartridge.reference## : ##cartridge.reference##
-                            ##lang.cartridge.remaining## : ##cartridge.remaining##
-                            ##cartridge.url## 
-                            ##ENDFOREACHcartridges##','&lt;p&gt;
-                            ##lang.cartridge.entity## :##cartridge.entity##
-                            &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
-                            &lt;br /&gt;##lang.cartridge.item##   :
-                            ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
-                            ##lang.cartridge.reference##  :
-                            ##cartridge.reference##&lt;br /&gt;
-                            ##lang.cartridge.remaining## :
-                            ##cartridge.remaining##&lt;br /&gt;
-                            &lt;a href=\"##contract.url##\"&gt;
-                            ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
-                            ##ENDFOREACHcartridges##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##cartridge.action##  ##cartridge.entity##','##lang.cartridge.entity## :##cartridge.entity##
+ 
+
+                                ##FOREACHcartridges##
+##lang.cartridge.item## : ##cartridge.item##
+ 
+
+                                ##lang.cartridge.reference## : ##cartridge.reference##
+
+                                ##lang.cartridge.remaining## : ##cartridge.remaining##
+
+                                ##cartridge.url## 
+ ##ENDFOREACHcartridges##','&lt;p&gt;##lang.cartridge.entity## :##cartridge.entity##
+                                 &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
+                                 &lt;br /&gt;##lang.cartridge.item##   :
+                                 ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
+                                 ##lang.cartridge.reference##  :
+                                 ##cartridge.reference##&lt;br /&gt;
+                                 ##lang.cartridge.remaining## :
+                                 ##cartridge.remaining##&lt;br /&gt;
+                                 &lt;a href=\"##contract.url##\"&gt;
+                                 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
+                                 ##ENDFOREACHcartridges##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','8','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## :##infocom.entity## 
  
 
@@ -2431,17 +2416,18 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','8','','##infoco
 
 DROP TABLE IF EXISTS `glpi_notimportedemails`;
 CREATE TABLE `glpi_notimportedemails` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL auto_increment,
   `from` varchar(255) NOT NULL,
   `to` varchar(255) NOT NULL,
-  `mailcollectors_id` int(11) NOT NULL DEFAULT '0',
+  `mailcollectors_id` int(11) NOT NULL default '0',
   `date` datetime NOT NULL,
   `subject` text,
   `messageid` varchar(255) NOT NULL,
-  `reason` int(11) NOT NULL DEFAULT '0',
-  `users_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  `reason` int(11) NOT NULL default '0',
+  `users_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 
 ### Dump table glpi_ocsadmininfoslinks
 
@@ -2837,106 +2823,107 @@ CREATE TABLE `glpi_printertypes` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_profiles
 
 DROP TABLE IF EXISTS `glpi_profiles`;
 CREATE TABLE `glpi_profiles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `interface` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'helpdesk',
-  `is_default` tinyint(1) NOT NULL DEFAULT '0',
-  `computer` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `monitor` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `software` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `networking` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `printer` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `peripheral` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cartridge` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `consumable` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `phone` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `notes` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contact_enterprise` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `document` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contract` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `infocom` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `knowbase` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `faq` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reservation_helpdesk` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reservation_central` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reports` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ocsng` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `view_ocsng` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sync_ocsng` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `dropdown` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `entity_dropdown` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `device` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `typedoc` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `link` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `config` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_ocs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_ldap` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_softwarecategories` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `search_config` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `search_config_global` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `check_update` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `profile` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `user` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `user_authtype` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `group` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `entity` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `transfer` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `logs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reminder_public` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `bookmark_public` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `backup` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `create_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `delete_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `add_followups` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `global_add_followups` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `global_add_tasks` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `update_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `update_priority` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `own_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `steal_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `assign_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `show_all_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `show_assign_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `show_full_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `observe_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `update_followups` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `update_tasks` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `show_planning` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `show_group_planning` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `show_all_planning` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `statistic` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `password_update` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `helpdesk_hardware` int(11) NOT NULL DEFAULT '0',
-  `helpdesk_item_type` text COLLATE utf8_unicode_ci,
-  `helpdesk_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
-  `show_group_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `show_group_hardware` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_dictionnary_software` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_dictionnary_dropdown` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `budget` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `import_externalauth_users` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `notification` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rule_mailcollector` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `date_mod` datetime DEFAULT NULL,
-  `comment` text COLLATE utf8_unicode_ci,
-  `validate_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `create_validation` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `entity_rule_ticket` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `interface` varchar(255) collate utf8_unicode_ci default 'helpdesk',
+  `is_default` tinyint(1) NOT NULL default '0',
+  `computer` char(1) collate utf8_unicode_ci default NULL,
+  `monitor` char(1) collate utf8_unicode_ci default NULL,
+  `software` char(1) collate utf8_unicode_ci default NULL,
+  `networking` char(1) collate utf8_unicode_ci default NULL,
+  `printer` char(1) collate utf8_unicode_ci default NULL,
+  `peripheral` char(1) collate utf8_unicode_ci default NULL,
+  `cartridge` char(1) collate utf8_unicode_ci default NULL,
+  `consumable` char(1) collate utf8_unicode_ci default NULL,
+  `phone` char(1) collate utf8_unicode_ci default NULL,
+  `notes` char(1) collate utf8_unicode_ci default NULL,
+  `contact_enterprise` char(1) collate utf8_unicode_ci default NULL,
+  `document` char(1) collate utf8_unicode_ci default NULL,
+  `contract` char(1) collate utf8_unicode_ci default NULL,
+  `infocom` char(1) collate utf8_unicode_ci default NULL,
+  `knowbase` char(1) collate utf8_unicode_ci default NULL,
+  `faq` char(1) collate utf8_unicode_ci default NULL,
+  `reservation_helpdesk` char(1) collate utf8_unicode_ci default NULL,
+  `reservation_central` char(1) collate utf8_unicode_ci default NULL,
+  `reports` char(1) collate utf8_unicode_ci default NULL,
+  `ocsng` char(1) collate utf8_unicode_ci default NULL,
+  `view_ocsng` char(1) collate utf8_unicode_ci default NULL,
+  `sync_ocsng` char(1) collate utf8_unicode_ci default NULL,
+  `dropdown` char(1) collate utf8_unicode_ci default NULL,
+  `entity_dropdown` char(1) collate utf8_unicode_ci default NULL,
+  `device` char(1) collate utf8_unicode_ci default NULL,
+  `typedoc` char(1) collate utf8_unicode_ci default NULL,
+  `link` char(1) collate utf8_unicode_ci default NULL,
+  `config` char(1) collate utf8_unicode_ci default NULL,
+  `rule_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `entity_rule_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `rule_ocs` char(1) collate utf8_unicode_ci default NULL,
+  `rule_ldap` char(1) collate utf8_unicode_ci default NULL,
+  `rule_softwarecategories` char(1) collate utf8_unicode_ci default NULL,
+  `search_config` char(1) collate utf8_unicode_ci default NULL,
+  `search_config_global` char(1) collate utf8_unicode_ci default NULL,
+  `check_update` char(1) collate utf8_unicode_ci default NULL,
+  `profile` char(1) collate utf8_unicode_ci default NULL,
+  `user` char(1) collate utf8_unicode_ci default NULL,
+  `user_authtype` char(1) collate utf8_unicode_ci default NULL,
+  `group` char(1) collate utf8_unicode_ci default NULL,
+  `entity` char(1) collate utf8_unicode_ci default NULL,
+  `transfer` char(1) collate utf8_unicode_ci default NULL,
+  `logs` char(1) collate utf8_unicode_ci default NULL,
+  `reminder_public` char(1) collate utf8_unicode_ci default NULL,
+  `bookmark_public` char(1) collate utf8_unicode_ci default NULL,
+  `backup` char(1) collate utf8_unicode_ci default NULL,
+  `create_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `delete_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `add_followups` char(1) collate utf8_unicode_ci default NULL,
+  `global_add_followups` char(1) collate utf8_unicode_ci default NULL,
+  `global_add_tasks` char(1) collate utf8_unicode_ci default NULL,
+  `update_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `update_priority` char(1) collate utf8_unicode_ci default NULL,
+  `own_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `steal_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `assign_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `show_all_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `show_assign_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `show_full_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `observe_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `update_followups` char(1) collate utf8_unicode_ci default NULL,
+  `update_tasks` char(1) collate utf8_unicode_ci default NULL,
+  `show_planning` char(1) collate utf8_unicode_ci default NULL,
+  `show_group_planning` char(1) collate utf8_unicode_ci default NULL,
+  `show_all_planning` char(1) collate utf8_unicode_ci default NULL,
+  `statistic` char(1) collate utf8_unicode_ci default NULL,
+  `password_update` char(1) collate utf8_unicode_ci default NULL,
+  `helpdesk_hardware` int(11) NOT NULL default '0',
+  `helpdesk_item_type` text collate utf8_unicode_ci,
+  `helpdesk_status` text collate utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
+  `show_group_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `show_group_hardware` char(1) collate utf8_unicode_ci default NULL,
+  `rule_dictionnary_software` char(1) collate utf8_unicode_ci default NULL,
+  `rule_dictionnary_dropdown` char(1) collate utf8_unicode_ci default NULL,
+  `budget` char(1) collate utf8_unicode_ci default NULL,
+  `import_externalauth_users` char(1) collate utf8_unicode_ci default NULL,
+  `notification` char(1) collate utf8_unicode_ci default NULL,
+  `rule_mailcollector` char(1) collate utf8_unicode_ci default NULL,
+  `date_mod` datetime default NULL,
+  `comment` text collate utf8_unicode_ci,
+  `validate_ticket` char(1) collate utf8_unicode_ci default NULL,
+  `create_validation` char(1) collate utf8_unicode_ci default NULL,
+  PRIMARY KEY  (`id`),
   KEY `interface` (`interface`),
   KEY `is_default` (`is_default`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_profiles` VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `glpi_profiles` VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,'r',NULL,NULL,NULL,NULL,'r','r',NULL,NULL,NULL,NULL,NULL,'w',NULL,'r',NULL,'r','r','r',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','0','0','0','0','1','0','0','1','1','0','1','0','0','1','0','0','1','1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'r',NULL,NULL,NULL,NULL,NULL,'1','1',NULL);
-INSERT INTO `glpi_profiles` VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w',NULL,NULL,NULL,NULL,NULL,'w','w','r','r','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'w','w',NULL,NULL,NULL,NULL,'1','1','w');
-INSERT INTO `glpi_profiles` VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','r','w','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0','w','w','w','w','w','w',NULL,NULL,'1','1',NULL);
+INSERT INTO `glpi_profiles` VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_profiles` VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,'r',NULL,NULL,NULL,NULL,'r','r',NULL,NULL,NULL,NULL,NULL,NULL,'w',NULL,'r',NULL,'r','r','r',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','0','0','0','0','1','0','0','1','1','0','1','0','0','1','0','0','1','1','1','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'r',NULL,NULL,NULL,NULL,NULL,'1','1');
+INSERT INTO `glpi_profiles` VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'w','w','r','r','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0',NULL,NULL,'w','w',NULL,NULL,NULL,NULL,'1','1');
+INSERT INTO `glpi_profiles` VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','r','w','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','[\"Computer\",\"Software\",\"Phone\"]',NULL,'0','0','w','w','w','w','w','w',NULL,NULL,'1','1');
 
 ### Dump table glpi_profiles_users
 
@@ -3372,18 +3359,18 @@ INSERT INTO `glpi_rulerightparameters` VALUES ('13','(LDAP) Title','title','');
 
 DROP TABLE IF EXISTS `glpi_rules`;
 CREATE TABLE `glpi_rules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `entities_id` int(11) NOT NULL DEFAULT '0',
-  `sub_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `ranking` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8_unicode_ci,
-  `match` char(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
-  `is_active` tinyint(1) NOT NULL DEFAULT '1',
-  `comment` text COLLATE utf8_unicode_ci,
-  `date_mod` datetime DEFAULT NULL,
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
+  `id` int(11) NOT NULL auto_increment,
+  `entities_id` int(11) NOT NULL default '0',
+  `sub_type` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+  `ranking` int(11) NOT NULL default '0',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `description` text collate utf8_unicode_ci,
+  `match` char(10) collate utf8_unicode_ci default NULL COMMENT 'see define.php *_MATCHING constant',
+  `is_active` tinyint(1) NOT NULL default '1',
+  `comment` text collate utf8_unicode_ci,
+  `date_mod` datetime default NULL,
+  `is_recursive` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_active` (`is_active`),
   KEY `sub_type` (`sub_type`),
@@ -3878,7 +3865,7 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-03-02 17:00:39','2010-03-02 17:00:39','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-03-08 21:57:32','2010-03-08 21:57:32','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
