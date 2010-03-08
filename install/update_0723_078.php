@@ -3305,6 +3305,19 @@ function update0723to078($output='HTML') {
           $DB->query($query) or die("0.78 add target for dbsynchronization " . $LANG['update'][90] . $DB->error());
       }
 
+
+      //Add validator as target for Ticket Validation
+      $query_type = "SELECT `id` FROM `glpi_notifications` WHERE `itemtype`='Ticket' AND event='validation'";
+      $result = $DB->query($query_type) or die("0.78 get notificationtargets_id " . $LANG['update'][90] . $DB->error());
+
+      if ($DB->numrows($result)) {
+         $id = $DB->result($result,0,'id');
+         $query = "INSERT INTO `glpi_notificationtargets`
+                     (`id`, `notifications_id`, `type`, `items_id`)
+                     VALUES (NULL, ".$id.", 1, 14);";
+          $DB->query($query) or die("0.78 add target for Ticket Validation " . $LANG['update'][90] . $DB->error());
+      }
+
       //Manage Reservation update & delete
       $query_type = "SELECT `id`
                      FROM `glpi_notifications`
