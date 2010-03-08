@@ -47,7 +47,6 @@ $setupdisplay = new DisplayPreference();
 if ($_POST["id"]<0) {
    switch($_REQUEST['glpi_tab']) {
       case 1 :
-         checkRight('search_config_global','w');
          $setupdisplay->showFormGlobal($_POST['target'],$_POST["displaytype"]);
          break;
 
