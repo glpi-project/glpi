@@ -157,12 +157,12 @@ class Infocom extends CommonDBTM {
     * @return boolean
    **/
 //    function isEntityAssign() {
-// 
+//
 //       if (isset($this->fields["itemtype"]) && class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          return $item->isEntityAssign();
 //       }
-// 
+//
 //       return false;
 //    }
 
@@ -172,7 +172,7 @@ class Infocom extends CommonDBTM {
     * @return ID of the entity
    **/
 //    function getEntityID () {
-// 
+//
 //       if (class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          if ($item->getFromDB($this->fields["items_id"])) {
@@ -188,12 +188,12 @@ class Infocom extends CommonDBTM {
     * @return boolean
    **/
 //    function maybeRecursive() {
-// 
+//
 //       if (class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          return $item->maybeRecursive();
 //       }
-// 
+//
 //       return false;
 //    }
 
@@ -205,12 +205,12 @@ class Infocom extends CommonDBTM {
     * @return integer (0/1)
    **/
 //    function isRecursive() {
-// 
+//
 //       if (class_exists($this->fields["itemtype"])) {
 //          $item = new $this->fields["itemtype"]();
 //          return $item->isRecursive();
 //       }
-// 
+//
 //       return false;
 //    }
 
@@ -231,16 +231,13 @@ class Infocom extends CommonDBTM {
       global $DB,$CFG_GLPI,$LANG;
 
       if (!$CFG_GLPI["use_mailing"]) {
-         return false;
+         return 0;
       }
 
-      loadLanguage($CFG_GLPI["language"]);
-
       $message=array();
-      $items=array();
+      $cron_status = 0;
 
-      // Check notice
-      $query="SELECT `glpi_infocoms`.*
+      $query_end = "SELECT `glpi_infocoms`.*
               FROM `glpi_infocoms`
               LEFT JOIN `glpi_alerts` ON (`glpi_infocoms`.`id` = `glpi_alerts`.`items_id`
                                           AND `glpi_alerts`.`itemtype` = 'Infocom'
@@ -251,70 +248,72 @@ class Infocom extends CommonDBTM {
                     AND DATEDIFF(ADDDATE(`glpi_infocoms`.`buy_date`, INTERVAL
                                          (`glpi_infocoms`.`warranty_duration`) MONTH),CURDATE() )<'0'
                     AND `glpi_alerts`.`date` IS NULL";
+      $querys = array(Alert::END=>$query_end);
 
-      $result=$DB->query($query);
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
-            if (!class_exists($data["itemtype"])) {
-               continue;
+      $items_infos = array();
+      $items_messages = array();
+      foreach ($querys as $type => $query) {
+         $items_infos[$type] = array();
+         foreach ($DB->request($query) as $data) {
+            $item_infocom = new $data["itemtype"]();
+            if ($item_infocom->getFromDB($data["items_id"])) {
+               $entity = $data['entities_id'];
+               $warranty = getWarrantyExpir($data["buy_date"],
+                                                      $data["warranty_duration"]);
+               $message = $LANG['mailing'][40]." ".
+                                     $item_infocom->getTypeName()." - ".$item_infocom->getName()." : ".
+                                     $warranty."<br>";
+               $data['warrantyexpiration'] = $warranty;
+               $data['item_name'] = $item_infocom->getName();
+               $items_infos[$type][$entity][$data['id']] = $data;
+
+               if (!isset($items_messages[$type][$entity])) {
+                  $items_messages[$type][$entity] = $LANG['mailing'][40]."<br />";
+               }
+               $items_messages[$type][$entity] .= $message;
             }
-            $item = new $data["itemtype"]();
-            if ($item->getFromDB($data["items_id"])) {
-               $entity = $item->getEntityID();
-               if (!isset($message[$entity])) {
-                  $message[$entity]="";
-               }
-               if (!isset($items[$entity])) {
-                  $items[$entity]=array();
-               }
-
-               // define message alert / Not for template items
-               if (!$item->isTemplate()) {
-                  $message[$entity].=$LANG['mailing'][40]." ".
-                                     $item->getTypeName()." - ".$item->getName()." : ".
-                                     getWarrantyExpir($data["buy_date"],$data["warranty_duration"])."<br>";
-                  $items[$entity][]=$data["id"];
-               }
-            }
-         }
-         if (count($message)>0) {
-            // Mark alert as done
-            $alert=new Alert();
-
-            foreach ($message as $entity => $msg) {
-
-               //$mail=new MailingAlert("alertinfocom",$msg,$entity);
-               //if ($mail->send()) {
-               if (NotificationEvent::raiseEvent('alert',$this)) {
-                  if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).": $msg\n");
-                     $task->addVolume(1);
-                  } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).": $msg");
-                  }
-
-                  $input["type"] = Alert::END;
-                  $input["itemtype"] = 'Infocom';
-
-                  //// add alerts
-                  foreach ($items[$entity] as $ID) {
-                     $input["items_id"]=$ID;
-                     $alert->add($input);
-                     unset($alert->fields['id']);
-                  }
-               } else {
-                  if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).": Send infocom alert failed\n");
-                  } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).":
-                                             Send infocom alert failed",false,ERROR);
-                  }
-               }
-            }
-            return 1;
          }
       }
-      return 0;
+
+      foreach ($querys as $type => $query) {
+         foreach ($items_infos[$type] as $entity => $items) {
+            if (NotificationEvent::raiseEvent("alert",
+                                              new Infocom(),
+                                              array('entities_id'=>$entity,
+                                                    'items'=>$items))) {
+               $message = $items_messages[$type][$entity];
+               $cron_status = 1;
+               if ($task) {
+                  $task->log(Dropdown::getDropdownName("glpi_entities",
+                                                       $entity).":  $message\n");
+                  $task->addVolume(1);
+               } else {
+                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                    $entity).":  $message");
+               }
+
+               $alert=new Alert();
+               $input["itemtype"] = 'Infocom';
+               $input["type"]=$type;
+               foreach ($items as $id => $item) {
+                  $input["items_id"]=$id;
+
+                  $alert->add($input);
+                  unset($alert->fields['id']);
+               }
+            } else {
+               if ($task) {
+                  $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
+                             ":  Send infocom alert failed\n");
+               } else {
+                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
+                                          ":  Send infocom alert failed",false,ERROR);
+               }
+            }
+         }
+      }
+
+      return $cron_status;
    }
 
    /**
@@ -674,7 +673,7 @@ class Infocom extends CommonDBTM {
             $input=array('itemtype' => $item->getType(),
                         'items_id' => $dev_ID,
                         'entities_id' => $item->getEntityID());
-            
+
             if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
                echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
 

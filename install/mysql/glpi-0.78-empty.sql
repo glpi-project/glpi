@@ -2399,6 +2399,27 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','',
                             &lt;a href=\"##contract.url##\"&gt;
                             ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
                             ##ENDFOREACHcartridges##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','8','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## :##infocom.entity## 
+ 
+
+                              ##FOREACHinfocoms## 
+
+                              ##lang.infocom.itemtype## : ##infocom.itemtype##
+
+                              ##lang.infocom.item## : ##infocom.item##
+ 
+
+                              ##lang.infocom.expirationdate## : ##infocom.expirationdate##
+
+                              ##infocom.url## 
+ ##ENDFOREACHinfocoms##','&lt;p&gt;##lang.infocom.entity##  :##infocom.entity##
+                              &lt;br /&gt; &lt;br /&gt;##FOREACHinfocoms##
+                              &lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
+                              ##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
+                              ##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
+                              &lt;br /&gt; &lt;a href=\"##contract.url##\"&gt;
+                              ##infocom.url##&lt;/a&gt;&lt;br /&gt;
+                              ##ENDFOREACHinfocoms##&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 
