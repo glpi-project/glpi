@@ -328,10 +328,25 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
        || haveRight("create_ticket","1")) {
 
       $menu['maintain']['default']='/front/ticket.php';
-      $menu['maintain']['content']['tracking']['title']=$LANG['Menu'][5];
-      $menu['maintain']['content']['tracking']['shortcut']='t';
-      $menu['maintain']['content']['tracking']['page']='/front/ticket.php';
-      $menu['maintain']['content']['tracking']['links']['search']='/front/ticket.php';
+      $menu['maintain']['content']['ticket']['title']=$LANG['Menu'][5];
+      $menu['maintain']['content']['ticket']['shortcut']='t';
+      $menu['maintain']['content']['ticket']['page']='/front/ticket.php';
+      $menu['maintain']['content']['ticket']['links']['search']='/front/ticket.php';
+      $menu['maintain']['content']['ticket']['links']['search']='/front/ticket.php';
+      $opt=array();
+      $opt['reset']  = 'reset';
+      $opt['field'][0]      = 55; // validation status
+      $opt['searchtype'][0] = 'equals';
+      $opt['contains'][0]   = 'waiting';
+      $opt['link'][0]        = 'AND';
+
+      $opt['field'][1]      = 59; // validation aprobator
+      $opt['searchtype'][1] = 'equals';
+      $opt['contains'][1]   = getLoginUserID();
+      $opt['link'][1]        = 'AND';
+
+
+      $menu['maintain']['content']['ticket']['links'][]='/front/ticket.php?'.append_params($opt);
       $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticket.php';
    }
    if (haveRight("create_ticket","1")) {
@@ -339,7 +354,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['maintain']['content']['helpdesk']['shortcut']='h';
       $menu['maintain']['content']['helpdesk']['page']='/front/ticket.form.php';
       $menu['maintain']['content']['helpdesk']['links']['add']='/front/ticket.form.php';
-      $menu['maintain']['content']['tracking']['links']['add']='/front/ticket.form.php';
+      $menu['maintain']['content']['ticket']['links']['add']='/front/ticket.form.php';
    }
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
       $menu['maintain']['content']['planning']['title']=$LANG['Menu'][29];

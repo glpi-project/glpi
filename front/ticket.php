@@ -42,7 +42,7 @@ checkLoginUser();
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    helpHeader($LANG['title'][10],'',$_SESSION["glpiname"]);
 } else {
-   commonHeader($LANG['title'][10],'',"maintain","tracking");
+   commonHeader($LANG['title'][10],'',"maintain","ticket");
 }
 
 Search::show('Ticket');
