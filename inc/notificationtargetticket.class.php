@@ -539,8 +539,8 @@ class NotificationTargetTicket extends NotificationTarget {
               " ".html_clean(getUserName($validation['users_id'])).")";
 
          $tmp['##validation.url##']
-            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_".
-              $validation['id']);
+            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+              $validation['tickets_id']."_7");
 
          $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
          $tmp['##lang.validation.validationstatus##']
