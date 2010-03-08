@@ -112,7 +112,7 @@ class TicketFollowup  extends CommonDBTM {
     * @return boolean
     */
    function canUpdateItem() {
-      if ($this->fields["users_id"]!=getLoginUserID() && !haveRight('update_followup',1)) {
+      if ($this->fields["users_id"]!=getLoginUserID() && !haveRight('update_followups',1)) {
          return false;
       }
       $ticket = new Ticket();
