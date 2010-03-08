@@ -2355,8 +2355,8 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
  * @return nothing
  */
 function getActiveTab($itemtype) {
-   if (isset($_SESSION['glpi_tabs'][$itemtype])) {
-      return $_SESSION['glpi_tabs'][$itemtype];
+   if (isset($_SESSION['glpi_tabs'][strtolower($itemtype)])) {
+      return $_SESSION['glpi_tabs'][strtolower($itemtype)];
    }
    return "";
 }
@@ -2370,7 +2370,7 @@ function getActiveTab($itemtype) {
  *
  */
 function setActiveTab($itemtype, $tab) {
-   $_SESSION['glpi_tabs'][$itemtype] = $tab;
+   $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
 }
 
 
