@@ -346,7 +346,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['maintain']['content']['validation']['shortcut']='v';
       $menu['maintain']['content']['validation']['page']='/front/ticketvalidation.php';
       $menu['maintain']['content']['validation']['links']['search']='/front/ticketvalidation.php';
-      $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticketvalidation.php';
+      //$menu['maintain']['content']['helpdesk']['links']['search']='/front/ticketvalidation.php';
    }
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
       $menu['maintain']['content']['planning']['title']=$LANG['Menu'][29];
@@ -1332,12 +1332,12 @@ function helpHeader($title,$url='') {
       echo "</li>";
    }
    //  Validation ticket
-   if (haveRight("validate_ticket","1")) {
+/*   if (haveRight("validate_ticket","1")) {
       echo "<li id='menu3' >";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticketvalidation.php\" title=\"".
              $LANG['validation'][0]."\" class='itemP'>".$LANG['validation'][0]."</a>";
       echo "</li>";
-   }
+   }*/
    // Reservation
    if (haveRight("reservation_helpdesk","1")) {
       echo "<li id='menu3' >";
