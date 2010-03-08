@@ -60,25 +60,9 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $validation->check($_POST['id'], 'd');
    $validation->delete($_POST);
-
-   /*Event::log($task->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);*/
-   glpi_header(getItemTypeSearchURL('TicketValidation'));
-
-/*
-} else if (isset($_GET["resend"])) {
-	if (!empty($_GET["id"])) {
-		if ($validation->getFromDB($_GET["id"])) {
-
-			$ticket->getFromDB($validation->fields["tickets_id"]);
-      
-			if (haveRight("config", "w") || ($job->fields["author"]==$_SESSION['glpiID'])) {
-				$validation->sendMail();
-			}
-		}
-	}
 	glpi_header($_SERVER['HTTP_REFERER']);
-*/
+
+
 } else {
    
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {

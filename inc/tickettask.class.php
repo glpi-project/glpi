@@ -441,7 +441,7 @@ class TicketTask  extends CommonDBTM {
          echo "};";
          echo "</script>\n";
       }
-      else echo "--no--";
+      //else echo "--no--";
       echo convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 

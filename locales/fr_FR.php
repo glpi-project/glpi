@@ -2043,5 +2043,7 @@ $LANG['validation'][26]="Demande de validation";
 $LANG['validation'][27]="Une demande de validation a été soumise";
 $LANG['validation'][28]="Statut de la demande de validation";
 $LANG['validation'][29]="En cas de refus de validation, vous devez indiquer un motif";
+$LANG['validation'][30]="Suppression de la demande de validation à";
+$LANG['validation'][31]="Mise à jour de la demande de validation à";
 
 ?>

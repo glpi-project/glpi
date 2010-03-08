@@ -147,16 +147,15 @@ class Ticket extends CommonDBTM {
 
       if ($this->fields['id'] > 0) {
          if (haveRight('observe_ticket','1')) {
-            if ($_SESSION["glpiactiveprofile"]["interface"]=="central") {
-               $ong[1] = $LANG['job'][9];
-            } else {
-               $ong[1] = $LANG['Menu'][5];
-            }
-            $ong[2] = $LANG['job'][7];
+            $ong[1] = $LANG['job'][9];
          }
          if (haveRight('create_validation','1')
-               ||haveRight('validate_ticket','1'))
+               ||haveRight('validate_ticket','1')) {
             $ong[7] = $LANG['validation'][0];
+         }
+         if (haveRight('observe_ticket','1')) {
+            $ong[2] = $LANG['job'][7];
+         }
          $ong[4] = $LANG['jobresolution'][1];
          $ong[3] = $LANG['job'][47];
          $ong[5] = $LANG['Menu'][27];
@@ -3011,7 +3010,7 @@ class Ticket extends CommonDBTM {
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</div>";
 
-      if (!$ID) {
+//       if (!$ID) {
    /* TODO to be fixed => task + solution
          $commentall = haveRight("update_followups","1");
          $prefix = "";
@@ -3035,8 +3034,8 @@ class Ticket extends CommonDBTM {
          showAddFollowupForm(-1,false);
          echo "</div>";
    */
-      }
-      echo "<input type='hidden' name='id' value='$ID'>";
+//       }
+//       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</form>";
 
       echo "<div id='tabcontent'></div>";

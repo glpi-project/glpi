@@ -3750,7 +3750,6 @@ CREATE TABLE `glpi_tickettasks` (
 DROP TABLE IF EXISTS `glpi_ticketvalidations`;
 CREATE TABLE `glpi_ticketvalidations` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
   `entities_id` int(11) NOT NULL default '0',
   `users_id` int(11) NOT NULL default '0',
   `tickets_id` int(11) NOT NULL default '0',
@@ -3760,11 +3759,8 @@ CREATE TABLE `glpi_ticketvalidations` (
   `status` varchar(255) collate utf8_unicode_ci default 'waiting',
   `submission_date` datetime default NULL,
   `validation_date` datetime default NULL,
-  `is_deleted` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `name` (`name`),
-  KEY `entities_id` (`entities_id`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `entities_id` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
