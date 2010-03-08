@@ -2060,7 +2060,7 @@ INSERT INTO `glpi_notifications` VALUES ('6','Update Followup','0','Ticket','upd
 INSERT INTO `glpi_notifications` VALUES ('7','Update Task','0','Ticket','update_task','mail','3','','1','1','2010-02-16 16:41:39');
 INSERT INTO `glpi_notifications` VALUES ('8','Delete Followup','0','Ticket','delete_followup','mail','3','','1','1','2010-02-16 16:41:39');
 INSERT INTO `glpi_notifications` VALUES ('9','Delete Task','0','Ticket','delete_task','mail','3','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('10','Ticket Solved','0','Ticket','solved','mail','3','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('10','Resolve ticket','0','Ticket','solved','mail','3','','1','1','2010-02-16 16:41:39');
 INSERT INTO `glpi_notifications` VALUES ('11','Ticket Validation','0','Ticket','validation','mail','5','','1','1','2010-02-16 16:41:39');
 INSERT INTO `glpi_notifications` VALUES ('12','New Reservation','0','Reservation','new','mail','2','','1','1','2010-02-16 16:41:39');
 INSERT INTO `glpi_notifications` VALUES ('13','Update Reservation','0','Reservation','update','mail','2','','1','1','2010-02-16 16:41:39');
