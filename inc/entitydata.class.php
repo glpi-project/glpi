@@ -334,7 +334,11 @@ class EntityData extends CommonDBTM {
 
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][264] . "</td><td>";
-      Dropdown::showYesNo("use_licenses_alert", $entitynotification->fields["use_licenses_alert"]);
+      $default_value = ($entitynotification->fields['use_licenses_alert']?
+                           $entitynotification->fields['use_licenses_alert']:-1);
+      Alert::dropdownYesNo(array('name'=>"use_licenses_alert",
+                                  'value'=>$default_value,
+                                  'inherit_global'=>1) );
       echo "<td colspan='2'></td>";
       echo "</td></tr>";
 

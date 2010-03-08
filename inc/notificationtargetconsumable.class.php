@@ -35,28 +35,6 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetConsumable extends NotificationTarget {
 
-   function __construct($entity='', $object = null) {
-      parent::__construct($entity, $object);
-
-      if ($object != null) {
-         $this->getObjectItem();
-      }
-   }
-
-
-   /**
-    * Get item associated with the object on which the event was raised
-    * @return the object associated with the itemtype
-    */
-   function getObjectItem() {
-
-      $ci = new ConsumableItem;
-      if ($ci->getFromDB($this->obj->getField('consumableitems_id'))) {
-         $this->target_object = $ci;
-      }
-   }
-
-
    function getEvents() {
       global $LANG;
 
@@ -68,21 +46,28 @@ class NotificationTargetConsumable extends NotificationTarget {
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
-      $prefix = strtolower($item->getType());
-      $this->datas['##'.$prefix.'.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->obj->getField('entities_id'));
-      $this->datas['##'.$prefix.'.item##']      = $this->target_object->getField('name');
-      $this->datas['##'.$prefix.'.reference##'] = $this->target_object->getField('ref');
-      $this->datas['##'.$prefix.'.value##']     = Consumable::getUnusedNumber($this->getField('id'));
+      $this->datas['##consumable.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                               $options['entities_id']);
+      $this->datas['##lang.consumable.entity##'] = $LANG['entity'][0];
+      $this->datas['##consumable.action##']      = $LANG['mailing'][36];
 
-      $this->datas['##lang.'.$prefix.'.entity##']    = $LANG['entity'][0];
-      $this->datas['##lang.'.$prefix.'.action##']    = $LANG['mailing'][36];
-      $this->datas['##lang.'.$prefix.'.item##']      = $LANG['mailing'][35];
-      $this->datas['##lang.'.$prefix.'.reference##'] = $LANG['consumables'][2];
-      $this->datas['##lang.'.$prefix.'.value##']     = $LANG['software'][20];
+      foreach ($options['consumables'] as $id => $consumable) {
+         $tmp = array();
+         $tmp['##consumable.item##']      = $consumable['consname'];
+         $tmp['##consumable.reference##'] = $consumable['consref'];
+         $tmp['##consumable.remaining##']     = Consumable::getUnusedNumber($id);
+         $tmp['##consumable.url##'] = urldecode($CFG_GLPI["url_base"].
+                                              "/index.php?redirect=consumableitem_".$id);
+         $this->datas['consumables'][] = $tmp;
+      }
+
+      $this->datas['##lang.consumable.entity##']    = $LANG['entity'][0];
+      $this->datas['##lang.consumable.action##']    = $LANG['mailing'][36];
+      $this->datas['##lang.consumable.item##']      = $LANG['mailing'][35];
+      $this->datas['##lang.consumable.reference##'] = $LANG['consumables'][2];
+      $this->datas['##lang.consumable.remaining##']     = $LANG['software'][20];
    }
-
 }
 ?>

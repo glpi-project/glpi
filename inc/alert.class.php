@@ -100,6 +100,29 @@ class Alert extends CommonDBTM {
 
    }
 
+   static function dropdownYesNo($options = array()) {
+      global $LANG;
+
+      if (!isset($options['value'])){
+         $value = 0;
+      }
+      else {
+         $value = $options['value'];
+      }
+
+      if (isset($options['inherit_global']) && $options['inherit_global']){
+         $times[-1] = $LANG['setup'][731];
+      }
+
+      $times[0] = $LANG['choice'][0];
+      $times[1] = $LANG['choice'][1];
+
+      Dropdown::showFromArray($options['name'],
+                              $times,
+                              array('value'=>$value));
+
+   }
+
    static function alertExists($itemtype='',$items_id='',$type='') {
       global $DB;
       $query = "SELECT `id` FROM `glpi_alerts`

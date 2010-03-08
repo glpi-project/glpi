@@ -3051,6 +3051,43 @@ function update0723to078($output='HTML') {
                            ##lang.validation.commentvalidation## :&#160; ##validation.commentvalidation##&lt;br /&gt;
                            ##ENDIFvalidation.commentvalidation##&lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');";
 
+      $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                           VALUES(NULL, ".$templates['Consumable'].", '',
+                           '##consumable.action##  ##consumable.entity##',
+                           '##lang.consumable.entity## :##consumable.entity##\n \n
+                           ##FOREACHconsumables##\n##lang.consumable.item## : ##consumable.item##\n \n
+                           ##lang.consumable.reference## : ##consumable.reference##\n
+                           ##lang.consumable.remaining## : ##consumable.remaining##\n
+                           ##consumable.url## \n
+                           ##ENDFOREACHconsumables##', '&lt;p&gt;
+                           ##lang.consumable.entity## :##consumable.entity##
+                           &lt;br /&gt; &lt;br /&gt;##FOREACHconsumables##
+                           &lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
+                           &lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
+                           ##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
+                           &lt;a href=\"##contract.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
+                            ##ENDFOREACHconsumables##&lt;/p&gt;');";
+
+      $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                               VALUES(NULL, ".$templates['Cartridge'].", '',
+                               '##cartridge.action##  ##cartridge.entity##',
+                               '##lang.cartridge.entity## :##cartridge.entity##\n \n
+                                ##FOREACHcartridges##\n##lang.cartridge.item## : ##cartridge.item##\n \n
+                                ##lang.cartridge.reference## : ##cartridge.reference##\n
+                                ##lang.cartridge.remaining## : ##cartridge.remaining##\n
+                                ##cartridge.url## \n ##ENDFOREACHcartridges##',
+                                '&lt;p&gt;##lang.cartridge.entity## :##cartridge.entity##
+                                 &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
+                                 &lt;br /&gt;##lang.cartridge.item##   :
+                                 ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
+                                 ##lang.cartridge.reference##  :
+                                 ##cartridge.reference##&lt;br /&gt;
+                                 ##lang.cartridge.remaining## :
+                                 ##cartridge.remaining##&lt;br /&gt;
+                                 &lt;a href=\"##contract.url##\"&gt;
+                                 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
+                                 ##ENDFOREACHcartridges##&lt;/p&gt;');
+";
       foreach ($queries as $itemtype => $query) {
          //echo $query."<br>";
          $DB->query($query) or die("0.78 insert notification template default translation

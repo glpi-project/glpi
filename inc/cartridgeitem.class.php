@@ -366,96 +366,94 @@ class CartridgeItem extends CommonDBTM {
     **/
    static function cronCartridge($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
+      $cron_status = 1;
+      if ($CFG_GLPI["use_mailing"]) {
 
-      //TODO check if cron is activated for cartridges !
-      if (!$CFG_GLPI["use_mailing"]) {
-         return false;
-      }
+         $message=array();
+         $items=array();
+         $alert=new Alert();
 
-      loadLanguage($CFG_GLPI["language"]);
+         $query = "SELECT `glpi_entities`.`entities_id` as `entity`,
+                     `glpi_entitydatas`.`cartridges_alert_repeat`
+                   FROM `glpi_entities`
+                   LEFT JOIN `glpi_entitydatas` ON (
+                     `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
+          $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
 
-      // Get cartridges type with alarm activated and last warning > X days depending on config
-      $query="SELECT `glpi_cartridgeitems`.`id` AS cartID,
-                     `glpi_cartridgeitems`.`entities_id` as entity,
-                     `glpi_cartridgeitems`.`ref` as cartref,
-                     `glpi_cartridgeitems`.`name` AS cartname,
-                     `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
-                     `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
-              FROM `glpi_cartridgeitems`
-              LEFT JOIN `glpi_alerts`
-                        ON (`glpi_cartridgeitems`.`id` = `glpi_alerts`.`items_id`
-                            AND `glpi_alerts`.`itemtype` = 'CartridgeItem')
-              WHERE `glpi_cartridgeitems`.`is_deleted` = '0'
-                    AND `glpi_cartridgeitems`.`alarm_threshold` >= '0'
-                    AND (`glpi_alerts`.`date` IS NULL
-                         OR (`glpi_alerts`.date+".$CFG_GLPI["cartridges_alert_repeat"].")
-                             < CURRENT_TIMESTAMP())
-             ORDER BY `cartname`;";
+          foreach ($DB->request($query) as $data) {
+            if (!isset($data['cartridges_alert_repeat']) ||
+                  $data['cartridges_alert_repeat']==-1) {
+               $repeat = $CFG_GLPI["cartridges_alert_repeat"];
+            }
+            else {
+               $repeat = $data["cartridges_alert_repeat"];
+            }
 
-      $result=$DB->query($query);
+            $query_alert="SELECT `glpi_cartridgeitems`.`id` AS cartID,
+                           `glpi_cartridgeitems`.`entities_id` as entity,
+                           `glpi_cartridgeitems`.`ref` as cartref,
+                           `glpi_cartridgeitems`.`name` AS cartname,
+                           `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
+                           `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
+                   FROM `glpi_cartridgeitems`
+                   LEFT JOIN `glpi_alerts` ON (`glpi_cartridgeitems`.`id` = `glpi_alerts`.`items_id`
+                                                AND `glpi_alerts`.`itemtype`='CartridgeItem')
+                   WHERE `glpi_cartridgeitems`.`is_deleted`='0'
+                         AND `glpi_cartridgeitems`.`alarm_threshold`>='0'
+                           AND `glpi_cartridgeitems`.`entities_id`= '".$data['entity']."'
+                              AND (`glpi_alerts`.`date` IS NULL
+                              OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
+            $message = "";
+            $items=array();
+            foreach ($DB->request($query_alert) as $cartridge) {
+               if (($unused=Cartridge::getUnusedNumber($cartridge["cartID"]))<=$cartridge["threshold"]) {
+                  // define message alert
+                  $message.=$LANG['mailing'][35]." ".$cartridge["cartname"]." - ".
+                            $LANG['consumables'][2]."&nbsp;: ".$cartridge["cartref"]." - ".
+                            $LANG['software'][20]."&nbsp;: ".$unused."<br>";
+                  $items[$cartridge["cartID"]]=$cartridge;
 
-      $message=array();
-      $items=array();
-      $alert=new Alert();
-
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
-            if (($unused= Cartridge::getUnusedNumber($data["cartID"]))<=$data["threshold"]) {
-               if (!isset($message[$data["entity"]])) {
-                  $message[$data["entity"]]="";
-               }
-               if (!isset($items[$data["entity"]])) {
-                  $items[$data["entity"]]=array();
-               }
-
-               // define message alert
-               $message[$data["entity"]].=$LANG['mailing'][34]." ".$data["cartname"]." - ".
-                                          $LANG['consumables'][2].": ".$data["cartref"]." - ".
-                                          $LANG['software'][20].": ".$unused."<br>\n";
-               $items[$data["entity"]][]=$data["cartID"];
-
-               // if alert exists -> delete
-               if (!empty($data["alertID"])) {
-                  $alert->delete(array("id"=>$data["alertID"]));
+                  // if alert exists -> delete
+                  if (!empty($cartridge["alertID"])) {
+                     $alert->delete(array("id"=>$cartridge["alertID"]));
+                  }
                }
             }
-         }
 
-         if (count($message)>0) {
-            foreach ($message as $entity => $msg) {
-               $mail=new MailingAlert("alertcartridge",$msg,$entity);
-
-               if ($mail->send()) {
+            if (!empty($items)) {
+               $options['entities_id'] = $data['entity'];
+               $options['cartridges'] = $items;
+               if (NotificationEvent::raiseEvent('alert',new Cartridge(),$options)) {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).":  $msg\n");
+                     $task->log(Dropdown::getDropdownName("glpi_entities",
+                                                          $data['entity'])." :  $message\n");
                      $task->addVolume(1);
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity)."&nbsp;:  $msg");
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                       $data['entity'])." :  $message");
                   }
 
                   $input["type"] = Alert::THRESHOLD;
                   $input["itemtype"] = 'CartridgeItem';
 
-                  //// add alerts
-                  foreach ($items[$entity] as $ID) {
+                  // add alerts
+                  foreach ($items as $ID=>$consumable) {
                      $input["items_id"]=$ID;
                      $alert->add($input);
                      unset($alert->fields['id']);
                   }
                } else {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
-                            "&nbsp;: Send cartdridge alert failed");
+                     $task->log(Dropdown::getDropdownName("glpi_entities",$data['entity']).
+                            " : Send cartidge alert failed\n");
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
-                                             "&nbsp;: Send cartridge alert failed",false,ERROR);
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$data['entity']).
+                                             " : Send cartidge alert failed",false,ERROR);
                   }
                }
             }
-            return 1;
-         }
+          }
       }
-      return 0;
    }
 
    /**
