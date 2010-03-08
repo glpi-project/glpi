@@ -3186,7 +3186,7 @@ function update0723to078($output='HTML') {
                                        'mail',".$templates['Ticket'].",
                                        '', 1, 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
-                                VALUES (NULL, 'Ticket Solved', 0, 'Ticket', 'solved',
+                                VALUES (NULL, 'Resolve ticket', 0, 'Ticket', 'solved',
                                        'mail',".$templates['Ticket'].",
                                        '', 1, 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
@@ -3355,7 +3355,7 @@ function update0723to078($output='HTML') {
          }
       }
 
-      //Manage Reservation update & delete
+      //Manage ticket tasks & followups
       $query_type = "SELECT `id`
                      FROM `glpi_notifications`
                      WHERE `itemtype`='Ticket'
@@ -3377,6 +3377,31 @@ function update0723to078($output='HTML') {
                                 ", ".$data_targets['type'].", ".
                                 $data_targets['items_id'].");";
              $DB->query($query_insert) or die("0.78 add target for tickets " .
+                                                 $LANG['update'][90] . $DB->error());
+         }
+      }
+
+      //Manage ticket solved
+      $query_type = "SELECT `id`
+                     FROM `glpi_notifications`
+                     WHERE `itemtype`='Ticket'
+                        AND `event`='solved'";
+      foreach ($DB->request($query_type) as $data_ticket) {
+
+        $query_targets = "SELECT `glpi_notificationtargets` . *
+                        FROM `glpi_notifications` , `glpi_notificationtargets`
+                        WHERE `glpi_notifications`.`itemtype` = 'Ticket'
+                           AND `glpi_notifications`.`event` = 'closed'
+                              AND `glpi_notificationtargets`.notifications_id =
+                                    `glpi_notifications`.id";
+
+         foreach ($DB->request($query_targets) as $data_targets) {
+            $query_insert = "INSERT INTO `glpi_notificationtargets`
+                        (`id`, `notifications_id`, `type`, `items_id`)
+                        VALUES (NULL, ".$data_ticket['id'].
+                                ", ".$data_targets['type'].", ".
+                                $data_targets['items_id'].");";
+             $DB->query($query_insert) or die("0.78 add target for tickets action solved" .
                                                  $LANG['update'][90] . $DB->error());
          }
       }
