@@ -957,6 +957,9 @@ $LANG['log'][94]="mise à jour d'une cartouche";
 $LANG['log'][95]="installation d'une cartouche";
 $LANG['log'][96]="désinstallation d'une cartouche";
 $LANG['log'][97]="sortie d'un consommable pour l'utilisateur";
+$LANG['log'][98]="ajout d'un élément";
+$LANG['log'][99]="modification d'un élément";
+$LANG['log'][100]="suppression d'un élément";
 
 $LANG['login'][0]="Dernière connexion";
 $LANG['login'][1]="Se reconnecter";

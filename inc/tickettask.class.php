@@ -150,9 +150,10 @@ class TicketTask  extends CommonDBTM {
 
       // Add log entry in the ticket
       $changes[0] = 0;
-      $changes[1] = addslashes($this->getName());
-      $changes[2] = '';
-      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
+      $changes[1] = '';
+      $changes[2] = $this->fields['id'];
+      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DELETE_SUBITEM);
+
       NotificationEvent::raiseEvent('delete_task',$job);
    }
 
@@ -176,6 +177,8 @@ class TicketTask  extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
+      $update_done=false;
+
       $job = new Ticket;
       $mailsend = false;
 
@@ -183,6 +186,7 @@ class TicketTask  extends CommonDBTM {
          $job->updateDateMod($this->input["tickets_id"]);
 
          if (count($this->updates)) {
+            $update_done=true;
             if ($CFG_GLPI["use_mailing"]
                 && (in_array("content",$this->updates) || isset($this->input['_need_send_mail']))) {
 
@@ -206,6 +210,7 @@ class TicketTask  extends CommonDBTM {
       }
 
       if (isset($this->input["_plan"])) {
+         $update_done=true;
          $pt = new TicketPlanning();
          // Update case
          if (isset($this->input["_plan"]["id"])) {
@@ -229,6 +234,14 @@ class TicketTask  extends CommonDBTM {
             unset($this->input["_plan"]);
             $this->input['_need_send_mail'] = true;
          }
+      
+      }
+      if ($update_done) {
+         // Add log entry in the ticket
+         $changes[0] = 0;
+         $changes[1] = '';
+         $changes[2] = $this->fields['id'];
+         Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_UPDATE_SUBITEM);
       }
    }
 
@@ -360,8 +373,9 @@ class TicketTask  extends CommonDBTM {
       // Add log entry in the ticket
       $changes[0] = 0;
       $changes[1] = '';
-      $changes[2] = addslashes($this->getName(true));
-      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_RELATION);
+      $changes[2] = $this->fields['id'];
+      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_SUBITEM);
+
    }
 
 
