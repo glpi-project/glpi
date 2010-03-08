@@ -945,8 +945,6 @@ class Contract extends CommonDBTM {
          return 0;
       }
 
-      loadLanguage($CFG_GLPI["language"]);
-
       $message=array();
       $items_notice=array();
       $items_end=array();
@@ -1001,7 +999,6 @@ class Contract extends CommonDBTM {
             }
             $contract_messages[$type][$entity] .= $message;
          }
-
       }
 
       foreach ($querys as $type => $query) {

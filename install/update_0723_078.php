@@ -2881,41 +2881,57 @@ function update0723to078($output='HTML') {
                                                    '$content_html_reservation');";
 
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplatetranslations`
-                                    VALUES(NULL, '".$templates['Ticket']."', '',
-                                    '##ticket.action## ##ticket.title##',
-                                    '##lang.ticket.url## : ##ticket.url## \r\n
-                                  ##lang.ticket.description## \r\n\n
-                                  ##lang.ticket.title## &#160;:##ticket.title##\n
-                                  ##lang.ticket.author.name##
-                                  ##IFticket.author.name##
-                                  ##ticket.author.name## ##ENDIFticket.author.name##
-                                  ##ELSEticket.author.name##--##ENDELSEticket.author.name##\n
-                                  ##lang.ticket.creationdate## &#160;:##ticket.creationdate##\n
-                                  ##lang.ticket.closedate## &#160;:##ticket.closedate##\n
-                                  ##lang.ticket.requesttype## &#160;:##ticket.requesttype##\n
-                                  ##IFticket.itemtype## ##lang.ticket.item.name## &#160;: ##ticket.itemtype## - ##ticket.item.name##
-                                  ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model##
-                                  ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##
-                                 &#160; ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##\n
-                                  ##IFticket.assigntouser## ##lang.ticket.assigntouser## &#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##\n
-                                  ##lang.ticket.status## &#160;: ##ticket.status##\n
-                                  ##IFticket.assigntogroup## ##lang.ticket.assigntogroup## &#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##\n
-                                  ##lang.ticket.urgency## &#160;: ##ticket.urgency##\n
-                                  ##lang.ticket.impact## &#160;: ##ticket.impact##\n
-                                  ##lang.ticket.priority## &#160;: ##ticket.priority## \n
-                                  ##IFticket.user.email## ##lang.ticket.user.email## &#160;: ##ticket.user.email ##ENDIFticket.user.email## \n
-                                  ##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category## ##ENDIFticket.category##
-                                  ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category## \n
-                                  ##lang.ticket.content## &#160;: ##ticket.content## \r\n
-                                  ##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups## \r\n\n
-                                 ##FOREACHfollowups## \r\n \n [##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate## \n
-                                  ##lang.followup.author## ##followup.author##\n ##lang.followup.description## ##followup.description##\n
-                                  ##lang.followup.date## ##followup.date##\n ##lang.followup.requesttype## ##followup.requesttype## \r\n\n
-                                 ##ENDFOREACHfollowups## \r\n ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks## \r\n\n##FOREACHtasks## \r\n \n
-                                  [##task.date##] ##lang.task.isprivate## : ##task.isprivate## \n ##lang.task.author## ##task.author##\n
-                                  ##lang.task.description## ##task.description##\n ##lang.task.time## ##task.time##\n ##lang.task.category## ##task.category## \r\n\n
-                                 ##ENDFOREACHtasks##',
-                                  '&lt;!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }
+                            VALUES(NULL, '".$templates['Ticket']."', '',
+                            '##ticket.action## ##ticket.title##',
+                            '##lang.ticket.url## : ##ticket.url## \r\n".
+                            "##lang.ticket.description## \r\n\n".
+                            "##lang.ticket.title## &#160;:##ticket.title##\n".
+                            "##lang.ticket.author.name##".
+                            "##IFticket.author.name##".
+                            "##ticket.author.name## ##ENDIFticket.author.name##".
+                            "##ELSEticket.author.name##--##ENDELSEticket.author.name##\n".
+                            "##lang.ticket.creationdate## &#160;:##ticket.creationdate##\n".
+                            "##lang.ticket.closedate## &#160;:##ticket.closedate##\n".
+                            "#lang.ticket.requesttype## &#160;:##ticket.requesttype##\n".
+                            "##IFticket.itemtype## ##lang.ticket.item.name## &#160;:".
+                            "##ticket.itemtype## - ##ticket.item.name##".
+                            "##IFticket.item.model## - ##ticket.item.model##".
+                            "##ENDIFticket.item.model##".
+                            "##IFticket.item.serial## -##ticket.item.serial##".
+                            "##ENDIFticket.item.serial##".
+                            "&#160; ##IFticket.item.otherserial## -##ticket.item.otherserial##".
+                            "##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##\n".
+                            "##IFticket.assigntouser## ##lang.ticket.assigntouser## &#160;: ".
+                            "##ticket.assigntouser## ##ENDIFticket.assigntouser##\n".
+                            "##lang.ticket.status## &#160;: ##ticket.status##\n".
+                            "##IFticket.assigntogroup## ##lang.ticket.assigntogroup##".
+                            "&#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##\n".
+                            "##lang.ticket.urgency## &#160;: ##ticket.urgency##\n".
+                            "##lang.ticket.impact## &#160;: ##ticket.impact##\n".
+                            "##lang.ticket.priority## &#160;: ##ticket.priority## \n".
+                            "##IFticket.user.email## ##lang.ticket.user.email## &#160;:".
+                            "##ticket.user.email ##ENDIFticket.user.email## \n".
+                            "##IFticket.category## ##lang.ticket.category## &#160;:".
+                            "##ticket.category## ##ENDIFticket.category##".
+                            "##ELSEticket.category## ##lang.ticket.nocategoryassigned## ".
+                            "##ENDELSEticket.category## \n".
+                            "##lang.ticket.content## &#160;: ##ticket.content## \r\n".
+                            "##lang.ticket.numberoffollowups##&#160;: ".
+                            "##ticket.numberoffollowups## \r\n\n".
+                            "##FOREACHfollowups## \r\n \n [##followup.date##] ".
+                            "##lang.followup.isprivate## : ##followup.isprivate## \n".
+                            "##lang.followup.author## ##followup.author##\n ".
+                            "##lang.followup.description## ##followup.description##\n".
+                            "##lang.followup.date## ##followup.date##\n ".
+                            "##lang.followup.requesttype## ##followup.requesttype## \r\n\n".
+                            "##ENDFOREACHfollowups## \r\n ##lang.ticket.numberoftasks##&#160;: ".
+                            "##ticket.numberoftasks## \r\n\n##FOREACHtasks## \r\n \n".
+                            "[##task.date##] ##lang.task.isprivate## : ##task.isprivate## \n ".
+                            "##lang.task.author## ##task.author##\n".
+                            "##lang.task.description## ##task.description##\n ##lang.task.time##".
+                            "##task.time##\n ##lang.task.category## ##task.category## \r\n\n".
+                            "##ENDFOREACHtasks##',
+                            '&lt;!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }
                                   --&gt;\r\n&lt;div&gt;##lang.ticket.url## : &lt;a href=''##ticket.url##
                                  ''&gt;##ticket.url##&lt;/a&gt;&lt;/div&gt;\r\n
                                  &lt;div class=\"description b\"&gt;##lang.ticket.description##
@@ -2973,23 +2989,26 @@ function update0723to078($output='HTML') {
 
       $queries['Contract'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                               VALUES(NULL, ".$templates['Contract'].", '',
-                               '##contract.action##  ##contract.entity##',
-                               '##lang.contract.entity## :##contract.entity##\r\n\
-                                r\n##FOREACHcontracts##\r\n
-                                ##lang.contract.name## : ##contract.name##\r\n
-                                ##lang.contract.number## : ##contract.number##\r\n
-                                ##lang.contract.time## : ##contract.time##\r\n
-                                ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##\r\n
-                                ##contract.url##\r\n
-                                ##ENDFOREACHcontracts##',
-                               '&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
-                                &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## : ##contract.name##&lt;br /&gt;
-                                ##lang.contract.number## : ##contract.number##&lt;br /&gt;
-                                ##lang.contract.time## : ##contract.time##&lt;br /&gt;
-                                ##IFcontract.type####lang.contract.type## : ##contract.type## ##ENDIFcontract.type##&lt;br /&gt;
-                                &lt;a href=\"##contract.url##\"&gt;
-                                ##contract.url##&lt;/a&gt;&lt;br /&gt;
-                                ##ENDFOREACHcontracts##&lt;/p&gt;');";
+                              '##contract.action##  ##contract.entity##',
+                              '##lang.contract.entity## :##contract.entity##\r\n".
+                              "\r\n##FOREACHcontracts##\r\n".
+                              "##lang.contract.name## : ##contract.name##\r\n".
+                              "##lang.contract.number## : ##contract.number##\r\n".
+                              "##lang.contract.time## : ##contract.time##\r\n".
+                              "##IFcontract.type####lang.contract.type## : ##contract.type##".
+                              "##ENDIFcontract.type##\r\n".
+                              "##contract.url##\r\n".
+                              "##ENDFOREACHcontracts##',
+                              '&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
+                              &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## :
+                              ##contract.name##&lt;br /&gt;
+                              ##lang.contract.number## : ##contract.number##&lt;br /&gt;
+                              ##lang.contract.time## : ##contract.time##&lt;br /&gt;
+                              ##IFcontract.type####lang.contract.type## : ##contract.type##
+                              ##ENDIFcontract.type##&lt;br /&gt;
+                              &lt;a href=\"##contract.url##\"&gt;
+                              ##contract.url##&lt;/a&gt;&lt;br /&gt;
+                              ##ENDFOREACHcontracts##&lt;/p&gt;');";
 
       $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                              VALUES(NULL, ".$templates['Ticket2'].", '',
@@ -3086,14 +3105,28 @@ function update0723to078($output='HTML') {
                                  ##cartridge.remaining##&lt;br /&gt;
                                  &lt;a href=\"##contract.url##\"&gt;
                                  ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
-                                 ##ENDFOREACHcartridges##&lt;/p&gt;');
-";
+                                 ##ENDFOREACHcartridges##&lt;/p&gt;');";
+       $queries['Infocom'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                              VALUES(NULL, ".$templates['Infocom'].", '',
+                             '##infocom.action##  ##infocom.entity##',
+                             '##lang.infocom.entity## :##infocom.entity## \n \n
+                              ##FOREACHinfocoms## \n
+                              ##lang.infocom.itemtype## : ##infocom.itemtype##\n
+                              ##lang.infocom.item## : ##infocom.item##\n \n
+                              ##lang.infocom.expirationdate## : ##infocom.expirationdate##\n
+                              ##infocom.url## \n ##ENDFOREACHinfocoms##',
+                             '&lt;p&gt;##lang.infocom.entity##  :##infocom.entity##
+                              &lt;br /&gt; &lt;br /&gt;##FOREACHinfocoms##
+                              &lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
+                              ##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
+                              ##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
+                              &lt;br /&gt; &lt;a href=\"##contract.url##\"&gt;
+                              ##infocom.url##&lt;/a&gt;&lt;br /&gt;
+                              ##ENDFOREACHinfocoms##&lt;/p&gt;');";
       foreach ($queries as $itemtype => $query) {
-         //echo $query."<br>";
          $DB->query($query) or die("0.78 insert notification template default translation
                                              for $itemtype " . $LANG['update'][90] . $DB->error());
       }
-
       unset($queries);
    }
 

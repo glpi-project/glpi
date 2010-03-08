@@ -46,24 +46,27 @@ class NotificationTargetInfocom extends NotificationTarget {
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
-      $prefix = strtolower($item->getType());
-      $this->datas['##'.$prefix.'.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->obj->getField('entities_id'));
-      $this->datas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $this->datas['##lang.'.$prefix.'.action##'] = $LANG['mailing'][41];
+      $this->datas['##infocom.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                               $options['entities_id']);
+      $this->datas['##lang.infocom.entity##'] = $LANG['entity'][0];
+      $this->datas['##infocom.action##'] = $LANG['mailing'][41];
+      foreach ($options['items'] as $id => $item) {
+         $tmp = array();
+         $obj = new $item['itemtype'] ();
+         $tmp['##infocom.itemtype##'] = $obj->getTypeName();
+         $tmp['##infocom.item##']     = $item['item_name'];
+         $tmp['##infocom.expirationdate##'] = convDateTime($item['warrantyexpiration']);
+         $tmp['##infocom.url##'] = urldecode($CFG_GLPI["url_base"].
+                                              "/index.php?redirect=".strtolower($item['itemtype'])."_$id");
+         $this->datas['infocoms'][] = $tmp;
+      }
 
-      $this->datas['##lang.'.$prefix.'.itemtype##'] = $this->target_object->getTypeName();
-      $this->datas['##lang.'.$prefix.'.item##']     = $this->target_object->getField('name');
-      $this->datas['##lang.'.$prefix.'.expirationdate##'] =
-                                        getWarrantyExpir($this->obj->getField("buy_date"),
-                                                         $this->obj->getField("warranty_duration"));
-
-      $this->datas['##lang.'.$prefix.'.action##']         = $LANG['mailing'][41];
-      $this->datas['##lang.'.$prefix.'.itemtype##']       = $LANG['reports'][12];
-      $this->datas['##lang.'.$prefix.'.item##']           = $LANG['financial'][104];
-      $this->datas['##lang.'.$prefix.'.expirationdate##'] = $LANG['mailing'][54];
+      $this->datas['##lang.infocom.action##']         = $LANG['mailing'][41];
+      $this->datas['##lang.infocom.itemtype##']       = $LANG['reports'][12];
+      $this->datas['##lang.infocom.item##']           = $LANG['financial'][104];
+      $this->datas['##lang.infocom.expirationdate##'] = $LANG['mailing'][54];
    }
 
 }
