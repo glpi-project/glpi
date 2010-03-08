@@ -3660,7 +3660,8 @@ class Search {
       $default_values["searchtype2"]=array(0=>"");
       $default_values["sort"]=1;
 
-      if (@class_exists($itemtype) && method_exists($itemtype,'getDefaultSearchRequest')) {
+      if ($itemtype!='States'
+         && class_exists($itemtype) && method_exists($itemtype,'getDefaultSearchRequest')) {
          $default_values=array_merge(call_user_func(array($itemtype, 'getDefaultSearchRequest')));
       }
 
