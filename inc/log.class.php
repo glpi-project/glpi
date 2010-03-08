@@ -443,7 +443,6 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][32]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                             $data["new_value"]."\"";
                   break;
-
                case HISTORY_DEL_RELATION :
                   $tmp['field']=NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
@@ -453,6 +452,34 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][33]."&nbsp;<strong>:</strong>&nbsp;"."\"".
                             $data["old_value"]."\"";
                   break;
+               case HISTORY_ADD_SUBITEM :
+                  $tmp['field']='';
+                  if (class_exists($data["itemtype_link"])) {
+                     $item = new $data["itemtype_link"]();
+                     $tmp['field'] = $item->getTypeName();
+                  }
+                  $tmp['change'] = $LANG['log'][98]."&nbsp;<strong>:</strong>&nbsp;".
+                            $tmp['field']." (".$LANG['common'][2]." ".$data["new_value"].")";
+                  break;
+               case HISTORY_UPDATE_SUBITEM :
+                  $tmp['field']='';
+                  if (class_exists($data["itemtype_link"])) {
+                     $item = new $data["itemtype_link"]();
+                     $tmp['field'] = $item->getTypeName();
+                  }
+                  $tmp['change'] = $LANG['log'][99]."&nbsp;<strong>:</strong>&nbsp;".
+                            $tmp['field']." (".$LANG['common'][2]." ".$data["new_value"].")";
+                  break;
+               case HISTORY_DELETE_SUBITEM :
+                  $tmp['field']='';
+                  if (class_exists($data["itemtype_link"])) {
+                     $item = new $data["itemtype_link"]();
+                     $tmp['field'] = $item->getTypeName();
+                  }
+                  $tmp['change'] = $LANG['log'][100]."&nbsp;<strong>:</strong>&nbsp;".
+                            $tmp['field']." (".$LANG['common'][2]." ".$data["new_value"].")";
+                  break;
+
             }
 
          } else {
