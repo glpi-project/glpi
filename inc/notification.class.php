@@ -181,7 +181,7 @@ class Notification extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'event';
-      $tab[2]['linkfield']     = 'event';
+      $tab[2]['linkfield']     = '';
       $tab[2]['name']          = $LANG['mailing'][119];
 
       $tab[3]['table']         = $this->getTable();
@@ -207,6 +207,12 @@ class Notification extends CommonDBTM {
       $tab[6]['linkfield'] = 'is_active';
       $tab[6]['name']      = $LANG['common'][60];
       $tab[6]['datatype']  = 'bool';
+
+      $tab[16]['table']     = $this->getTable();
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
 
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';
