@@ -230,68 +230,6 @@ class TicketValidation  extends CommonDBChild {
                   $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
 	}
 
-   function getSearchOptions() {
-      global $LANG;
-
-      $tab = array();
-
-      $tab[2]['table']     = 'glpi_users';
-      $tab[2]['field']     = 'name';
-      $tab[2]['linkfield'] = 'users_id';
-      $tab[2]['name']      = $LANG['job'][4];
-      $tab[2]['datatype']      = 'itemlink';
-      $tab[2]['itemlink_type'] = 'User';
-      
-      $tab[3]['table']     = 'glpi_tickets';
-      $tab[3]['field']     = 'name';
-      $tab[3]['linkfield'] = 'tickets_id';
-      $tab[3]['name']      = $LANG['job'][38];
-      $tab[3]['itemlink_type'] = 'Ticket';
-      
-      $tab[4]['table']     = 'glpi_users';
-      $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'users_id_validate';
-      $tab[4]['name']      = $LANG['validation'][21];
-      $tab[4]['datatype']      = 'itemlink';
-      $tab[4]['itemlink_type'] = 'User';
-      
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'comment_submission';
-      $tab[5]['linkfield'] = 'comment_submission';
-      $tab[5]['name']      = $LANG['validation'][5];
-      $tab[5]['datatype']  = 'text';
-      
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'comment_validation';
-      $tab[6]['linkfield'] = 'comment_validation';
-      $tab[6]['name']      = $LANG['validation'][6];
-      $tab[6]['datatype']  = 'text';
-
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'status';
-      $tab[7]['linkfield'] = 'status';
-      $tab[7]['name']      = $LANG['joblist'][0];
-      $tab[7]['searchtype']= 'equals';
-      
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'submission_date';
-      $tab[8]['linkfield'] = 'submission_date';
-      $tab[8]['name']      = $LANG['validation'][3];
-      $tab[8]['datatype']  = 'datetime';
-      
-      $tab[9]['table']     = $this->getTable();
-      $tab[9]['field']     = 'validation_date';
-      $tab[9]['linkfield'] = 'validation_date';
-      $tab[9]['name']      = $LANG['validation'][4];
-      $tab[9]['datatype']  = 'datetime';
-      
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
-
-      return $tab;
-   }
    
    /**
     * get the Ticket validation status list
@@ -409,33 +347,6 @@ class TicketValidation  extends CommonDBChild {
       
       return false;
    }
-   
-   /**
-    * Print the validation form into ticket
-    *
-    * @param $ticket class
-    *
-    **/
-/*   function showForm($ID, $options=array()) {
-      global $LANG;
-      
-      if (isset($options['ticket']) && !empty($options['ticket'])) {
-         $ticket = $options['ticket'];
-      }
-
-      echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".$LANG['validation'][1]."</th></tr>";
-
-      
-      echo "<tr class='tab_bg_2'>";
-      echo "<td colspan= '2' align='center'>";
-      echo "<input type=\"submit\" name=\"add\" class=\"submit\" value=\"".$LANG['help'][14]."\" ></td>";
-      echo "</tr>";
-      
-      echo "</table>";
-      echo "</form>";
-   }*/
    
    /**
     * Form for Followup on Massive action
@@ -677,66 +588,6 @@ class TicketValidation  extends CommonDBChild {
       return true;
    }
    
-   /**
-    * Print the pending validation list from helpdesk interface
-    **/
-//    function showPendingValidations() {
-//       global $DB, $CFG_GLPI, $LANG;
-// 
-//       $query = "SELECT `".$this->getTable()."`.*,
-//                         `glpi_tickets`.`name` AS `tname`, `glpi_tickets`.`content`
-//                  FROM `".$this->getTable()."` 
-//                  LEFT JOIN `glpi_tickets` ON (`glpi_tickets`.`id` = `".$this->getTable()."`.`tickets_id`)
-//                  WHERE `".$this->getTable()."`.`status` = 'waiting'
-//                  AND `".$this->getTable()."`.`is_deleted` <> '1'
-//                  AND `".$this->getTable()."`.`users_id_validate` = '".$_SESSION['glpiID']."' ";
-//       $query.= getEntitiesRestrictRequest(" AND", "glpi_tickets");
-// 
-//       $result = $DB->query($query);
-//       $number = $DB->numrows($result);
-//       
-//       if ($number) {
-//          echo "<table class='tab_cadre_fixe' align='center'>";
-//          echo "<tr><th colspan='4'>".$LANG['validation'][15]."</th></tr>";
-//          echo "<tr>";
-//          echo "<th>".$LANG['validation'][3]."</th>";
-//          echo "<th>".$LANG['job'][38]."</th>";
-//          echo "<th>".$LANG['validation'][5]."</th>";
-//          echo "<th></th>";
-//          echo "</tr>";
-//          
-//          while ($row=$DB->fetch_assoc($result)) {
-//             echo "<tr class='tab_bg_2'>";
-//             echo "<td>".convDateTime($row["submission_date"])."</td>";
-//             $tickets_id = $row["tickets_id"];
-//             $link=getItemTypeFormURL('Ticket');
-//             $out  = "<a id='ticketvalidation".$tickets_id."' href=\"".$link;
-//             $out .= (strstr($link,'?') ?'&amp;' :  '?');
-//             $out .= 'id='.$tickets_id."\">";
-//             $out .= $row["tname"];
-//             if ($_SESSION["glpiis_ids_visible"] || empty($row["tname"])) {
-//                $out .= " (".$tickets_id.")";
-//             }
-//             $out .= "</a>";
-//             $out.= showToolTip(nl2br($row["content"]),
-//                array('applyto'=>'ticketvalidation'.$tickets_id,'display'=>false));
-//             echo "<td>".$out."</td>";
-//             echo "<td>".$row["comment_submission"]."</td>";
-//             echo "<td>";
-//             echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticketvalidation.form.php?id=".$row["id"]."'>";
-//             echo $LANG['validation'][24];
-//             echo "</a>";
-//             echo "</td>";
-//             echo "</tr>";
-//          }
-//          echo "</table>";
-//       } else {
-//          echo "<div align='center'>";
-//          echo $LANG['validation'][25];
-//          echo "</div>";
-//       }
-//       
-//    }
 }
 
 ?>
