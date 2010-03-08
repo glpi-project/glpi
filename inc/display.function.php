@@ -346,7 +346,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $opt['link'][1]        = 'AND';
 
 
-      $menu['maintain']['content']['ticket']['links'][]='/front/ticket.php?'.append_params($opt);
+      $menu['maintain']['content']['ticket']['links']['summary']='/front/ticket.php?'.append_params($opt);
       $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticket.php';
    }
    if (haveRight("create_ticket","1")) {
