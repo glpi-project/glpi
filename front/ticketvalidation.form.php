@@ -53,6 +53,7 @@ if (isset($_POST["add"])) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
+	$validation->check($_POST['id'],'w');
    
    $validation->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -61,23 +62,6 @@ if (isset($_POST["add"])) {
    $validation->check($_POST['id'], 'd');
    $validation->delete($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
-
-
-} else {
-   
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      helpHeader($LANG['validation'][0],'',$_SESSION["glpiname"]);
-   } else {
-      commonHeader($LANG['validation'][0],'',"maintain","validation");
-   }
-   
-   $validation->showValidationTicketForm($_GET["id"]);
-   
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      helpFooter();
-   } else {
-      commonFooter();
-   }
 }
 
 
