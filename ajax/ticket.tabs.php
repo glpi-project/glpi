@@ -43,6 +43,7 @@ if (!isset($_POST["id"])) {
 }
 
 $ticket = new Ticket();
+
 if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
    switch($_REQUEST['glpi_tab']) {
 

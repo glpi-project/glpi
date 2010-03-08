@@ -62,6 +62,30 @@ if (isset($_REQUEST['searchtype'])) {
    switch ($_REQUEST['searchtype']) {
       case "equals" :
 
+
+        // Specific cases with linkfield
+        if (!$display && isset($searchopt['linkfield'])) {
+            // Specific cases
+            switch ($searchopt['table'].".".$searchopt['linkfield']) {
+               case "glpi_users_validation.users_id_validate":
+                  User::dropdown(array('name'      => $inputname,
+                                       'value'     => $_REQUEST['value'],
+                                       'comments'  => false,
+                                       'all'       => -1,
+                                       'right'     => 'validate_ticket'));
+                  $display=true;
+                  break;
+               case "glpi_users_validation.users_id":
+                  User::dropdown(array('name'      => $inputname,
+                                       'value'     => $_REQUEST['value'],
+                                       'comments'  => false,
+                                       'all'       => -1,
+                                       'right'     => 'create_validation'));
+                  $display=true;
+                  break;
+            }
+         }
+
         // Specific cases with linkfield
         if (isset($searchopt['linkfield'])) {
             switch ($_REQUEST['itemtype'].".".$searchopt['linkfield']) {
@@ -79,6 +103,7 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
             }
         }
+
 
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
