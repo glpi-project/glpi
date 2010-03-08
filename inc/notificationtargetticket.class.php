@@ -298,7 +298,7 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
       $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
       $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
-      $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,$LANG['validation'][14]);
+      $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,$LANG['validation'][21]);
       $this->addTarget(Notification::TICKET_VALIDATION_REQUESTER,$LANG['validation'][18]);
    }
 
