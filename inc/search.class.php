@@ -1753,15 +1753,19 @@ class Search {
                                  SEPARATOR '$$$$') AS ".$NAME."_$num, ";
             break;
 
+         case "glpi_users_validation.name" :
          case "glpi_users.name" :
             if ($itemtype != 'User') {
                $linkfield="";
                if (!empty($searchopt[$ID]["linkfield"])) {
                   $linkfield="_".$searchopt[$ID]["linkfield"];
                }
+               if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+                  return "GROUP_CONCAT( `$table$linkfield$addtable`.`id` SEPARATOR '$$$$') AS ".$NAME."_".$num.",";
+               }
                return "`$table$linkfield$addtable`.`$field` AS ".$NAME."_$num,
                      `$table$linkfield$addtable`.`realname` AS ".$NAME."_".$num."_2,
-                     `$table$linkfield$addtable`.`id` AS ".$NAME."_".$num."_3,
+                     `$table$linkfield$addtable`.`id`  AS ".$NAME."_".$num."_3,
                      `$table$linkfield$addtable`.`firstname` AS ".$NAME."_".$num."_4, ";
             }
             break;
@@ -2097,6 +2101,7 @@ class Search {
       }
 
       switch ($inittable.".".$field) {
+         case "glpi_users_validation.name" :
          case "glpi_users.name" :
             $linkfield="";
             if (!empty($searchopt[$ID]["linkfield"])) {
@@ -2481,7 +2486,8 @@ class Search {
       $nt = $new_table;
 
       // Multiple link possibilies case
-      if ($new_table=="glpi_users" || $new_table=="glpi_groups" ) {
+      if ($new_table=="glpi_users" || $new_table=="glpi_groups"
+            || $new_table=="glpi_users_validation") {
          if (!empty($linkfield)) {
             $nt .= "_".$linkfield;
             $AS .= " AS ".$nt;
@@ -2583,6 +2589,9 @@ class Search {
          case "glpi_tickettasks" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
 
+         case "glpi_ticketvalidations" :
+            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickets",$linkfield);
+            return $out." LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
          case "glpi_tickets" :
             if (!empty($linkfield)) {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
@@ -2594,6 +2603,11 @@ class Search {
 
          case "glpi_users" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+         case "glpi_users_validation" :
+            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_ticketvalidations",'');
+            return $out."
+                  LEFT JOIN `glpi_users` $AS
+                        ON (`glpi_ticketvalidations`.`$linkfield` = `$nt`.`id`) ";
 
          case "glpi_suppliers" :
             if ($itemtype == 'Contact') {
@@ -3035,11 +3049,30 @@ class Search {
       $linkfield=$searchopt[$ID]["linkfield"];
 
       switch ($table.'.'.$field) {
+         case "glpi_users_validation.name" :
          case "glpi_users.name" :
             // USER search case
-            if (!empty($linkfield)) {
-               return formatUserName($data[$NAME.$num."_3"],$data[$NAME.$num],$data[$NAME.$num."_2"],
-                                    $data[$NAME.$num."_4"],1);
+            if (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]) {
+               $out="";
+               $split=explode("$$$$",$data[$NAME.$num]);
+               $count_display=0;
+               $added=array();
+               for ($k=0 ; $k<count($split) ; $k++) {
+                  if ($split[$k]>0) {
+                     if ($count_display) {
+                        $out.= "<br>";
+                     }
+                     $count_display++;
+                     $out .= getUserName($split[$k],1);
+                  }
+               }
+               return $out;
+               
+            } else {
+               if (!empty($linkfield)) {
+                  return formatUserName($data[$NAME.$num."_3"],$data[$NAME.$num],$data[$NAME.$num."_2"],
+                                       $data[$NAME.$num."_4"],1);
+               }
             }
             break;
 
@@ -3341,9 +3374,15 @@ class Search {
                      array('applyto'=>'ticket'.$data[$NAME.$num."_2"],'display'=>false));
             return $out;
          case 'glpi_ticketvalidations.status':
-            $status=TicketValidation::getStatus($data[$NAME.$num]);
-            $bgcolor=TicketValidation::getStatusColor($data[$NAME.$num]);
-            return "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
+            $split=explode("$$$$",$data[$NAME.$num]);
+            $out='';
+            foreach($split as $val) {
+               $status=TicketValidation::getStatus($val);
+               $bgcolor=TicketValidation::getStatusColor($val);
+               $out .= (empty($out)?'':'<br>')."<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
+            }
+            return $out;
+
          case 'glpi_notimportedemails.reason':
             return NotImportedEmail::getReason($data[$NAME.$num]);
       }
@@ -3438,7 +3477,12 @@ class Search {
                return $out;
 
             case "datetime" :
-               return convDateTime($data[$NAME.$num]);
+               $split=explode("$$$$",$data[$NAME.$num]);
+               $out='';
+               foreach($split as $val) {
+                  $out .= (empty($out)?'':'<br>').convDateTime($val);
+               }
+               return $out;
 
             case "timestamp" :
                return timestampToString($data[$NAME.$num]);
@@ -4194,6 +4238,13 @@ class Search {
                               'equals'    => $LANG['rulesengine'][0],
                               'searchopt' => $searchopt[$field_num]);
             }
+         }
+
+         switch ($searchopt[$field_num]['table']) {
+            case 'glpi_users_validation' :
+               return array('equals'=>$LANG['rulesengine'][0],
+                        'searchopt'=>$searchopt[$field_num]);
+
          }
 
          switch ($searchopt[$field_num]['field']) {

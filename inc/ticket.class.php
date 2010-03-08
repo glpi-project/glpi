@@ -1423,12 +1423,65 @@ class Ticket extends CommonDBTM {
       $tab[9]['linkfield'] = 'requesttypes_id';
       $tab[9]['name']      = $LANG['job'][44];
 
-      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
 
-         $tab[80]['table']     = 'glpi_entities';
-         $tab[80]['field']     = 'completename';
-         $tab[80]['linkfield'] = 'entities_id';
-         $tab[80]['name']      = $LANG['entity'][0];
+      $tab['validation'] = $LANG['validation'][0];
+
+      $tab[53]['table']     = 'glpi_ticketvalidations';
+      $tab[53]['field']     = 'comment_submission';
+      $tab[53]['linkfield'] = '';
+      $tab[53]['name']      = $LANG['validation'][0]." - ".$LANG['validation'][5];
+      $tab[53]['datatype']  = 'text';
+      $tab[53]['forcegroupby'] = true;
+      
+      $tab[54]['table']     = 'glpi_ticketvalidations';
+      $tab[54]['field']     = 'comment_validation';
+      $tab[54]['linkfield'] = '';
+      $tab[54]['name']      = $LANG['validation'][0]." - ".$LANG['validation'][6];
+      $tab[54]['datatype']  = 'text';
+      $tab[54]['forcegroupby'] = true;
+
+      $tab[55]['table']     = 'glpi_ticketvalidations';
+      $tab[55]['field']     = 'status';
+      $tab[55]['linkfield'] = '';
+      $tab[55]['name']      = $LANG['validation'][0]." - ".$LANG['joblist'][0];
+      $tab[55]['searchtype']= 'equals';
+      $tab[55]['forcegroupby'] = true;
+      
+      $tab[56]['table']     = 'glpi_ticketvalidations';
+      $tab[56]['field']     = 'submission_date';
+      $tab[56]['linkfield'] = '';
+      $tab[56]['name']      = $LANG['validation'][0]." - ".$LANG['validation'][3];
+      $tab[56]['datatype']  = 'datetime';
+      $tab[56]['forcegroupby'] = true;
+
+      $tab[57]['table']     = 'glpi_ticketvalidations';
+      $tab[57]['field']     = 'validation_date';
+      $tab[57]['linkfield'] = '';
+      $tab[57]['name']      = $LANG['validation'][0]." - ".$LANG['validation'][4];
+      $tab[57]['datatype']  = 'datetime';
+      $tab[57]['forcegroupby'] = true;
+
+      $tab[58]['table']     = 'glpi_users_validation';
+      $tab[58]['field']     = 'name';
+      $tab[58]['linkfield'] = 'users_id';
+      $tab[58]['name']      = $LANG['validation'][0]." - ".$LANG['job'][4];
+      $tab[58]['datatype']      = 'itemlink';
+      $tab[58]['itemlink_type'] = 'User';
+      $tab[58]['forcegroupby'] = true;
+
+      $tab[59]['table']     = 'glpi_users_validation';
+      $tab[59]['field']     = 'name';
+      $tab[59]['linkfield'] = 'users_id_validate';
+      $tab[59]['name']      = $LANG['validation'][0]." - ".$LANG['validation'][21];
+      $tab[59]['datatype']      = 'itemlink';
+      $tab[59]['itemlink_type'] = 'User';
+      $tab[59]['forcegroupby'] = true;
+
+      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 
          $tab['requester'] = $LANG['job'][4];
 
