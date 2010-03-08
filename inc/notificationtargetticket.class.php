@@ -195,7 +195,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->addToAddressesList($data);
       }
    }
-   
+
    /**
     * Get requester related to the ticket validation
     */
@@ -262,14 +262,20 @@ class NotificationTargetTicket extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('new'         => $LANG['mailing'][9],
+      $events = array ('new'         => $LANG['mailing'][9],
                     'update'       => $LANG['mailing'][30],
                     'solved'       => $LANG['mailing'][123],
                     'validation'   => $LANG['validation'][26],
                     'add_followup' => $LANG['mailing'][10],
+                    'update_followup' => $LANG['job'][39],
+                    'delete_followup' => $LANG['mailing'][135],
                     'add_task'     => $LANG['job'][49],
+                    'update_task'     => $LANG['job'][52],
+                    'delete_task'     => $LANG['job'][53],
                     'closed'       => $LANG['mailing'][127],
                     'delete'       => $LANG['mailing'][129]);
+      asort($events);
+      return $events;
    }
 
 
@@ -528,16 +534,16 @@ class NotificationTargetTicket extends NotificationTarget {
 
       foreach ($validations as $validation) {
          $tmp = array();
-         $tmp['##lang.validation.title##'] 
+         $tmp['##lang.validation.title##']
             = $LANG['validation'][27]." (".$LANG['job'][4].
               " ".html_clean(getUserName($validation['users_id'])).")";
 
-         $tmp['##validation.url##'] 
-            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_". 
+         $tmp['##validation.url##']
+            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticketvalidation_".
               $validation['id']);
 
          $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
-         $tmp['##lang.validation.validationstatus##'] 
+         $tmp['##lang.validation.validationstatus##']
             = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
 
          $tmp['##validation.status##']            = TicketValidation::getStatus($validation['status']);

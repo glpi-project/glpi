@@ -144,6 +144,7 @@ class TicketTask  extends CommonDBTM {
    function post_deleteFromDB() {
 
       $job = new Ticket();
+      $job->getFromDB($this->fields['tickets_id']);
       $job->updateRealtime($this->fields['tickets_id']);
       $job->updateDateMod($this->fields["tickets_id"]);
 
@@ -152,6 +153,7 @@ class TicketTask  extends CommonDBTM {
       $changes[1] = addslashes($this->getName());
       $changes[2] = '';
       Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DEL_RELATION);
+      NotificationEvent::raiseEvent('delete_task',$job);
    }
 
 
@@ -194,11 +196,7 @@ class TicketTask  extends CommonDBTM {
                else {
                   $options = array();
                }
-               $mailsend = NotificationEvent::raiseEvent('add_followup',$job, $options);
-               //$mail = new Mailing("followup",$job,$user,
-               //                    (isset($this->input["is_private"]) && $this->input["is_private"]));
-               //$mail->send();
-               //$mailsend = true;
+               NotificationEvent::raiseEvent('update_task',$this->input["_job"]);
             }
 
             if (in_array("realtime",$this->updates)) {
