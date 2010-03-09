@@ -2365,7 +2365,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##consum
                            &lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
                            &lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
                            ##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
-                           &lt;a href=\"##contract.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
+                           &lt;a href=\"##consumable.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
                             ##ENDFOREACHconsumables##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##cartridge.action##  ##cartridge.entity##','##lang.cartridge.entity## :##cartridge.entity##
  
@@ -2387,7 +2387,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##cartri
                                  ##cartridge.reference##&lt;br /&gt;
                                  ##lang.cartridge.remaining## :
                                  ##cartridge.remaining##&lt;br /&gt;
-                                 &lt;a href=\"##contract.url##\"&gt;
+                                 &lt;a href=\"##cartridge.url##\"&gt;
                                  ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
                                  ##ENDFOREACHcartridges##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','8','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## :##infocom.entity## 
@@ -2408,7 +2408,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','8','','##infoco
                               &lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
                               ##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
                               ##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
-                              &lt;br /&gt; &lt;a href=\"##contract.url##\"&gt;
+                              &lt;br /&gt; &lt;a href=\"##infocom.url##\"&gt;
                               ##infocom.url##&lt;/a&gt;&lt;br /&gt;
                               ##ENDFOREACHinfocoms##&lt;/p&gt;');
 
