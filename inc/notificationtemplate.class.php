@@ -218,6 +218,7 @@ class NotificationTemplate extends CommonDBTM {
                                                                   $data).
                                     "\n\n".$this->signature;
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
+            //print_r($lang['content_text']);exit();
          }
       }
 
@@ -225,7 +226,7 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   static function process ($string, $data) {
+   static function process($string, $data) {
 
       $offset = $new_offset = 0;
       //Template processed
@@ -297,7 +298,7 @@ class NotificationTemplate extends CommonDBTM {
    static function processIf($string, $data) {
 
       if (preg_match_all("/##IF([a-z\.]*)[=]?(\w*)##/i",$string,$out)) {
-//         print_r($out);
+         //printCleanArray($out);
          foreach ($out[1] as $key => $tag_infos) {
             $if_field = $tag_infos;
             //Get the field tag value (if one)
@@ -324,6 +325,7 @@ class NotificationTemplate extends CommonDBTM {
                }
                
             }
+
             if ($condition_ok){ // Do IF
                $string = preg_replace($regex_if, "\\1", $string);
                $string = preg_replace($regex_else, "",  $string);

@@ -369,6 +369,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                                                $this->obj->getField('entities_id'));
       $events = $this->getAllEvents();
       $this->datas['##ticket.action##']      = $events[$event];
+      $this->datas['##ticket.storestatus##']      = $this->obj->getField('status');
       $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
       $this->datas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                             $this->obj->getField('requesttypes_id'));
@@ -538,9 +539,12 @@ class NotificationTargetTicket extends NotificationTarget {
 
       foreach ($validations as $validation) {
          $tmp = array();
-         $tmp['##lang.validation.title##']
+         $tmp['##lang.validation.submission.title##']
             = $LANG['validation'][27]." (".$LANG['job'][4].
               " ".html_clean(getUserName($validation['users_id'])).")";
+         $tmp['##lang.validation.answer.title##']
+            = $LANG['validation'][32]." (".$LANG['validation'][21].
+              " ".html_clean(getUserName($validation['users_id_validate'])).")";
 
          $tmp['##validation.url##']
             = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
@@ -551,6 +555,7 @@ class NotificationTargetTicket extends NotificationTarget {
             = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
 
          $tmp['##validation.status##']            = TicketValidation::getStatus($validation['status']);
+         $tmp['##validation.storestatus##']       = $validation['status'];
          $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
          $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
          $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
