@@ -186,7 +186,7 @@ class NotificationTargetTicket extends NotificationTarget {
    function getTicketValidationApproverAddress() {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_users`.`email` AS email
+      $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
                 FROM `glpi_ticketvalidations`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
                 WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
@@ -202,7 +202,7 @@ class NotificationTargetTicket extends NotificationTarget {
    function getTicketValidationRequesterAddress() {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_users`.`email` AS email
+      $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
                 FROM `glpi_ticketvalidations`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
                 WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
