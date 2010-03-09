@@ -105,7 +105,7 @@ $LANG['buttons'][52]="Charger";
 $LANG['buttons'][53]="Nettoyer";
 $LANG['buttons'][55]="Premier";
 $LANG['buttons'][56]="Dernier";
-$LANG['buttons'][57]="Executer";
+$LANG['buttons'][57]="Exécuter";
 $LANG['buttons'][58]="Mettre à jour";
 
 $LANG['calendarD'][0]="D";
