@@ -4015,6 +4015,15 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $ADDTODISPLAYPREF['TicketValidation']=array(3,2,8,4,9,7);
    }
 
+   if (!FieldExists('glpi_tickets','global_validation')) {
+      $query = "ALTER TABLE `glpi_tickets` ADD `global_validation` varchar(255) collate utf8_unicode_ci default 'accepted'";
+      $DB->query($query) or die("0.78 add global_validation to glpi_tickets " . $LANG['update'][90] . $DB->error());
+   }
+   if (!isIndex('glpi_tickets', 'global_validation')) {
+      $query=" ALTER TABLE `glpi_tickets` ADD INDEX `global_validation` (`global_validation`)";
+      $DB->query($query) or die("0.78 add global_validation index in glpi_tickets " . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists('glpi_profiles','validate_ticket')) {
       $query = "ALTER TABLE `glpi_profiles` ADD `validate_ticket` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add validate_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
