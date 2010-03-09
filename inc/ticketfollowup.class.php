@@ -155,7 +155,8 @@ class TicketFollowup  extends CommonDBTM {
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
       Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DELETE_SUBITEM);
-      NotificationEvent::raiseEvent('delete_followup',$job);
+      $options = array('followup_id' => $this->fields["id"]);
+      NotificationEvent::raiseEvent('delete_followup',$job,$options);
    }
 
 
@@ -190,8 +191,9 @@ class TicketFollowup  extends CommonDBTM {
                else {
                   $options = array();
                }
-
-               NotificationEvent::raiseEvent("update_followup", $this->input["_job"]);
+               $options['followup_id'] = $this->fields["id"];
+         
+               NotificationEvent::raiseEvent("update_followup", $job,$options);
             }
          }
          // Add log entry in the ticket
@@ -298,7 +300,8 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       if ($donotif) {
-         NotificationEvent::raiseEvent("add_followup", $this->input["_job"]);
+         $options = array('followup_id' => $this->fields["id"]);
+         NotificationEvent::raiseEvent("add_followup", $this->input["_job"],$options);
       }
 
       // Add log entry in the ticket

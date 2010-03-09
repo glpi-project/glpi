@@ -77,6 +77,12 @@ class Notification extends CommonDBTM {
    const TICKET_VALIDATION_APPROVER = 14;
    //Notification to the ticket validation requester
    const TICKET_VALIDATION_REQUESTER = 15;
+   //Notification to the task assign user
+   const TICKET_TASK_ASSIGN_TECH = 16;
+   //Notification to the task author
+   const TICKET_TASK_AUTHOR = 17;
+   //Notification to the followup author
+   const TICKET_FOLLOWUP_AUTHOR = 18;
 
    // From CommonDBTM
    public $dohistory = true;

@@ -154,7 +154,8 @@ class TicketTask  extends CommonDBTM {
       $changes[2] = $this->fields['id'];
       Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DELETE_SUBITEM);
 
-      NotificationEvent::raiseEvent('delete_task',$job);
+      $options = array('task_id' => $this->fields["id"]);
+      NotificationEvent::raiseEvent('delete_task',$job,$options);
    }
 
 
@@ -200,7 +201,10 @@ class TicketTask  extends CommonDBTM {
                else {
                   $options = array();
                }
-               NotificationEvent::raiseEvent('update_task',$this->input["_job"]);
+               $options['task_id'] = $this->fields["id"];
+               NotificationEvent::raiseEvent('update_task',$job,$options);
+               echo "u";exit();
+
             }
 
             if (in_array("realtime",$this->updates)) {
@@ -366,8 +370,8 @@ class TicketTask  extends CommonDBTM {
          if ($this->input["_close"]) {
             $this->input["_type"] = "finish";
          }
-
-         NotificationEvent::raiseEvent('add_task',$this->input["_job"]);
+         $options = array('task_id' => $this->fields["id"]);
+         NotificationEvent::raiseEvent('add_task',$this->input["_job"],$options);
       }
 
       // Add log entry in the ticket
