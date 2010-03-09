@@ -2037,6 +2037,10 @@ class Search {
                                                 IN ('".implode("','",$_SESSION['glpigroups'])."') ";
                      }
                   }
+                  if (haveRight("validate_ticket",1)) {
+                     $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".getLoginUserID()."'";
+                  }
+
                   return $condition;
                }
             }
@@ -2457,7 +2461,10 @@ class Search {
          // No link
          case 'User' :
             return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_profiles_users","");
-
+         case 'Ticket' :
+            if (haveRight("validate_ticket",1)) {
+               return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_ticketvalidations","");
+            }
          default :
             return "";
       }
