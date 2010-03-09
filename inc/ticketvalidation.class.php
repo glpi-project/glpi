@@ -340,9 +340,9 @@ class TicketValidation  extends CommonDBChild {
    }
    
    /**
-    * Get Ticket validation demands number 
+    * Get Ticket validation demands count
     *
-    * @param $value tickets_id
+    * @param $tickets_id ticket ID
     */
    static function getNumberValidationForTicket($tickets_id) {
       global $DB;
@@ -359,11 +359,12 @@ class TicketValidation  extends CommonDBChild {
    }
    
    /**
-    * Get total status validation tickets_id
+    * Get the number of validations attached to a ticket having a specified status
     *
-    * @param $value status ID
+    * @param $tickets_id ticket ID
+    * @param $status status 
     */
-   static function getTicketStatus($tickets_id,$status) {
+   static function getTicketStatusNumber($tickets_id,$status) {
       global $DB;
 
       $query = "SELECT COUNT(`status`) AS `total`
@@ -519,6 +520,7 @@ class TicketValidation  extends CommonDBChild {
     * Print the validation form
     *
     * @param $ID integer ID of the item
+    * @param $options array options used
     *
     **/
    function showForm($ID, $options=array()) {

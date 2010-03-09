@@ -127,6 +127,7 @@ class Plugin extends CommonDBTM {
    * Load lang file for a plugin
    *
    * @param $name Name of hook to use
+   * @param $forcelang force a specific lang
    *
    * @return nothing
    */

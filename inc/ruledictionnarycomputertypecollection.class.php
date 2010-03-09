@@ -44,7 +44,6 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
 
    /**
     * Constructor
-    * @param $type dropdown type
    **/
    function __construct() {
       parent::__construct();

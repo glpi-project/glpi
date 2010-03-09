@@ -38,7 +38,6 @@ class RuleDictionnaryNetworkEquipmentModel extends RuleDictionnaryDropdown {
 
    /**
     * Constructor
-    * @param $type dropdown type
    **/
    function __construct() {
       $this->show_cache = true;

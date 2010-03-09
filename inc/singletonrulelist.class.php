@@ -45,7 +45,8 @@ class SingletonRuleList {
    /**
    * get a unique instance of a SingletonRuleList for a type of RuleCollection
    *
-   * @param $type of the Rule listed
+   * @param $type type of the Rule listed
+   * @param $entity entity where the rule Rule is processed
    * @return unique instance of an object
    */
    public static  function &getInstance($type, $entity) {

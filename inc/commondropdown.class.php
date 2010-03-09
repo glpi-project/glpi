@@ -483,7 +483,6 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param itemtype itemtype to import
     * @param $value string : Value of the new dropdown.
     * @param $entities_id int : entity in case of specific dropdown
     * @param $external_params array (manufacturer)
