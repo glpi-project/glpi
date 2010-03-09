@@ -93,6 +93,18 @@ class NotificationTargetTicket extends NotificationTarget {
             case Notification::TICKET_VALIDATION_REQUESTER :
                $this->getTicketValidationRequesterAddress($options);
                break;
+            //Send to the ticket followup author
+            case Notification::TICKET_FOLLOWUP_AUTHOR :
+               $this->getTicketFollowupAuthor($options);
+               break;
+            //Send to the ticket followup author
+            case Notification::TICKET_TASK_AUTHOR :
+               $this->getTicketTaskAuthor($options);
+               break;
+            //Send to the ticket followup author
+            case Notification::TICKET_TASK_ASSIGN_TECH :
+               $this->getTicketTaskAssignUser($options);
+               break;
          }
       }
    }
@@ -208,7 +220,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
                   FROM `glpi_ticketvalidations`
                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
-                  WHERE `glpi_ticketvalidations`.`tickets_id` = '".$options['validation_id']."'";
+                  WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
@@ -216,6 +228,62 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
+   /**
+    * Get author related to the followup
+    */
+   function getTicketFollowupAuthor($options=array()) {
+      global $DB;
+
+      if (isset($options['followup_id'])) {
+         $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
+                  FROM `glpi_ticketfollowups`
+                  LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)
+                  WHERE `glpi_ticketfollowups`.`id` = '".$options['followup_id']."'";
+
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
+      }
+   }
+
+   /**
+    * Get author related to the followup
+    */
+   function getTicketTaskAuthor($options=array()) {
+      global $DB;
+
+      if (isset($options['task_id'])) {
+         $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
+                  FROM `glpi_tickettasks`
+                  LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)
+                  WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
+
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
+      }
+   }
+
+   /**
+    * Get author related to the followup
+    */
+   function getTicketTaskAssignUser($options=array()) {
+      global $DB;
+
+      if (isset($options['task_id'])) {
+         $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
+                  FROM `glpi_tickettasks`
+                  LEFT JOIN `glpi_ticketplannings`
+                     ON (`glpi_ticketplannings`.`tickettasks_id` = `glpi_tickettasks`.`id`)
+                  LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketplannings`.`users_id`)
+                  WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
+
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
+      }
+   }
+   
 
    function addAdditionnalUserInfo($data) {
       global $DB;
@@ -303,8 +371,15 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
       $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
       if ($event=='validation') {
-         $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,$LANG['validation'][21]);
-         $this->addTarget(Notification::TICKET_VALIDATION_REQUESTER,$LANG['validation'][18]);
+         $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,$LANG['validation'][0].' - '.$LANG['validation'][21]);
+         $this->addTarget(Notification::TICKET_VALIDATION_REQUESTER,$LANG['validation'][0].' - '.$LANG['validation'][18]);
+      }
+      if ($event=='update_task' || $event=='add_task' || $event=='delete_task') {
+         $this->addTarget(Notification::TICKET_TASK_ASSIGN_TECH,$LANG['job'][7]." - ".$LANG['job'][6]);
+         $this->addTarget(Notification::TICKET_TASK_AUTHOR,$LANG['job'][7]." - ".$LANG['common'][37]);
+      }
+      if ($event=='update_followup' || $event=='add_followup' || $event=='delete_followup') {
+         $this->addTarget(Notification::TICKET_FOLLOWUP_AUTHOR,$LANG['job'][9]." - ".$LANG['common'][37]);
       }
    }
 
