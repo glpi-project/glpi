@@ -237,6 +237,13 @@ $CFG_GLPI["link_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Moni
                                 'Contract', 'CartridgeItem', 'ConsumableItem', 'Phone',
                                 'Budget');
 
+$CFG_GLPI["dictionnary_types"] = array('ComputerModel','ComputerType','MonitorModel','MonitorType',
+                                       'PhoneModel','PhoneType','PrinterModel','PrinterType',
+                                       'PeripheralModel','PeripheralType','NetworkEquipmentModel',
+                                       'NetworkEquipmentType','Software','Manufacturer',
+                                       'OperatingSystem','OperatingSystemServicePack',
+                                       'OperatingSystemVersion');
+
 $CFG_GLPI["helpdesk_visible_types"] = array('Software');
 
 $CFG_GLPI["netport_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Peripheral',
