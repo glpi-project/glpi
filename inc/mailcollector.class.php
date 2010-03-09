@@ -1057,10 +1057,13 @@ class MailCollector  extends CommonDBTM {
   function title() {
       global $LANG, $CFG_GLPI;
 
-      $buttons = array ();
-      $buttons["notimportedemail.php"] = $LANG['rulesengine'][142];
-      displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['rulesengine'][142],
-                   '',$buttons);
+      if (countElementsInTable($this->getTable())){
+
+         $buttons = array ();
+         $buttons["notimportedemail.php"] = $LANG['rulesengine'][142];
+         displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['rulesengine'][142],
+                     '',$buttons);
+      }
    }
 }
 
