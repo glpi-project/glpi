@@ -1141,7 +1141,7 @@ class CronTask extends CommonDBTM{
          case 'session':
             return array('description' => $LANG['crontask'][12]);
          case 'graph':
-            return array('description' => $LANG['crontask'][12]);
+            return array('description' => $LANG['crontask'][13]);
       }
    }
 
