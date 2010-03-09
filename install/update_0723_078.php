@@ -3054,7 +3054,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                             '##ticket.action## ##ticket.title##',
 '##FOREACHvalidations##
 
-##IFvalidation.storestatus=waiting## 
+##IFvalidation.storestatus=waiting##
 ##lang.validation.submission.title##
 ##lang.validation.commentsubmission## : ##validation.commentsubmission##
 ##ENDIFvalidation.storestatus##
@@ -3062,7 +3062,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 ##lang.ticket.url## : ##validation.url##
 
-##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status## 
+##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
 ##IFvalidation.commentvalidation##
 ##lang.validation.commentvalidation## :   ##validation.commentvalidation##
 ##ENDIFvalidation.commentvalidation##
@@ -3096,7 +3096,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 &lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
 &lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
 ##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
-&lt;a href=\"##contract.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
+&lt;a href=\"##consumable.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
    ##ENDFOREACHconsumables##&lt;/p&gt;');";
 
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplatetranslations`
@@ -3115,7 +3115,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 ##cartridge.reference##&lt;br /&gt;
 ##lang.cartridge.remaining## :
 ##cartridge.remaining##&lt;br /&gt;
-&lt;a href=\"##contract.url##\"&gt;
+&lt;a href=\"##cartridge.url##\"&gt;
 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHcartridges##&lt;/p&gt;');";
        $queries['Infocom'] = "INSERT INTO `glpi_notificationtemplatetranslations`
@@ -3132,7 +3132,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 &lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
 ##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
 ##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
-&lt;br /&gt; &lt;a href=\"##contract.url##\"&gt;
+&lt;br /&gt; &lt;a href=\"##infocom.url##\"&gt;
 ##infocom.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHinfocoms##&lt;/p&gt;');";
       foreach ($queries as $itemtype => $query) {
