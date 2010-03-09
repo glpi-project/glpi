@@ -475,13 +475,11 @@ class Budget extends CommonDBTM{
 
          echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='".($colspan-2)."'>&nbsp;</td>";
-         echo "<td class='right'>".$LANG['financial'][108]."</td>";
+         echo "<td class='right'  colspan='".($colspan-1)."'>".$LANG['financial'][108]."</td>";
          echo "<td class='right b'>".formatNumber($total)."</td></tr>";
          if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='".($colspan-2)."'>&nbsp;</td>";
-            echo "<td class='right'>".$LANG['financial'][109]."</td>";
+            echo "<td class='right' colspan='".($colspan-1)."'>".$LANG['financial'][109]."</td>";
             echo "<td class='right b'>".formatNumber($budget->fields['value'] - $total)."</td></tr>";
          }
          echo "</table></div>";
