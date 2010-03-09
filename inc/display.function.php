@@ -1037,11 +1037,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
           && isset($menu[$sector]['content'][$item]['options'][$option]['page'])) {
          $with_option=true;
       }
-      echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
-                 ($with_option?"":"class='here'")." title='".
-                 $menu[$sector]['content'][$item]['title']."' >".
-                 $menu[$sector]['content'][$item]['title']." </a>".
-                 (!$with_option?"":" > ")."</li>";
+      if (isset($menu[$sector]['content'][$item]['page'])) {
+         echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
+                  ($with_option?"":"class='here'")." title='".
+                  $menu[$sector]['content'][$item]['title']."' >".
+                  $menu[$sector]['content'][$item]['title']." </a>".
+                  (!$with_option?"":" > ")."</li>";
+      }
 
       if ($with_option) {
          echo "<li><a href='".$CFG_GLPI["root_doc"].
