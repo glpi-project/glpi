@@ -228,7 +228,9 @@ class RuleCollection extends CommonDBTM {
    **/
    function showListRules($target) {
       global $CFG_GLPI, $LANG;
-      $options['recursive'] = $_SESSION['rule_ticket']['recursive'];
+
+      // Do not know what it is ?
+//      $options['recursive'] = $_SESSION['rule_ticket']['recursive'];
       $canedit = haveRight($this->right, "w");
 
       echo "<table class='tab_cadre_fixe'><tr><th>";
