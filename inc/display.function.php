@@ -2963,44 +2963,33 @@ function showToolTip($content,$options=array()){
 
 }
 
-
 /**
- * Display an "help" image and display a tooltip on mouseover
- * could also be a link to another page
- *
- * @param $message to de displayed on mouseover
- * @param $link
- * @param $ajax array of ajax option
- *    widget : name of widget to observe
- *    table : use to get comment
- *    value : to pass to ajax (__VALUE__)
- */
-/*function displayToolTip($message, $link='',$ajax=array()) {
+* Init the Editor System to a textarea
+*
+* @param $name name of the html textarea where to used
+* @return nothing
+*/
+function initEditorSystem($name) {
    global $CFG_GLPI;
 
-   $name="tooltip_".mt_rand();
-
-   if ($link) {
-      echo "<a id='link_$name' href='$link'>";
-      $ajax['withlink'] = "link_$name";
-   }
-   echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
-       onmouseout=\"cleanhide('comment_$name')\" onmouseover=\"cleandisplay('comment_$name')\" ";
-   if ($link) {
-      echo "style='cursor:pointer;'></a>";
-   } else {
-      echo ">";
-   }
-   echo "<span class='over_link' id='comment_$name'>".nl2br($message)."</span>\n";
-
-   if (isset($ajax['widget'])) {
-      $widget = $ajax['widget'];
-      unset($ajax['widget']);
-
-      ajaxUpdateItemOnSelectEvent($widget, "comment_$name",
-            $CFG_GLPI["root_doc"]."/ajax/comments.php", $ajax);
-   }
+   echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
+         "/lib/tiny_mce/tiny_mce.js'></script>";
+   echo "<script language='javascript' type='text/javascript'>";
+   echo "tinyMCE.init({
+      language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
+      mode : 'exact',
+      elements: '$name',
+      plugins : 'table,directionality,searchreplace',
+      theme : 'advanced',
+      entity_encoding : 'numeric', ";
+      // directionality + search replace plugin
+   echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
+   echo "theme_advanced_toolbar_location : 'top',
+      theme_advanced_toolbar_align : 'left',
+      theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
+      theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
+      theme_advanced_buttons3 : ''});";
+   echo "</script>";
 }
-*/
 
 ?>
