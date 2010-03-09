@@ -4061,14 +4061,6 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
          $ADDTODISPLAYPREF['NotImportedEmail']=array(2,5,4,6,16,19);
       }
 
-   if (!FieldExists("glpi_profiles","entity_rule_ticket")) {
-      $query = "ALTER TABLE `glpi_profiles` ADD `entity_rule_ticket` CHAR( 1 ) NULL AFTER `rule_ticket`";
-      $DB->query($query) or die("0.78 add entity_rule_ldap in glpi_profiles" . $LANG['update'][90] . $DB->error());
-
-      $query = "UPDATE `glpi_profiles` SET `entity_rule_ticket`='w' WHERE `rule_ticket`=`entity_rule_ticket`";
-      $DB->query($query) or die("0.78 update default entity_rule_ticket rights" . $LANG['update'][90] . $DB->error());
-
-   }
       $query = "ALTER TABLE `glpi_mailcollectors` DROP INDEX `entities_id` ";
       $DB->query($query) or die("0.78 drop index entities_id from glpi_mailcollectors".
                                    $LANG['update'][90] . $DB->error());
@@ -4080,6 +4072,14 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $query = "DELETE FROM `glpi_displaypreferences` WHERE `itemtype`='MailCollector' AND `num`='80'";
       $DB->query($query) or die("0.78 drop entities_id from collector's display preferences'".
                                    $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_profiles","entity_rule_ticket")) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `entity_rule_ticket` CHAR( 1 ) NULL AFTER `rule_ticket`";
+      $DB->query($query) or die("0.78 add entity_rule_ldap in glpi_profiles" . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `entity_rule_ticket`='w' WHERE `rule_ticket`=`entity_rule_ticket`";
+      $DB->query($query) or die("0.78 update default entity_rule_ticket rights" . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
