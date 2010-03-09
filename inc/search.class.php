@@ -2286,7 +2286,8 @@ class Search {
          case "glpi_ticketvalidations.status" :
             $tocheck=array('waiting'=>array('waiting'),
                            'rejected'=>array('rejected'),
-                           'accepted'=>array('accepted'));
+                           'accepted'=>array('accepted'),
+                           'all'=>array('waiting','rejected','accepted'));
             if (isset($tocheck[$val])) {
                foreach ($tocheck[$val] as $key=>$nval) {
                   $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
