@@ -339,7 +339,7 @@ class NotificationTargetTicket extends NotificationTarget {
                     'solved'       => $LANG['mailing'][123],
                     'validation'   => $LANG['validation'][26],
                     'add_followup' => $LANG['mailing'][10],
-                    'update_followup' => $LANG['job'][39],
+                    'update_followup' => $LANG['mailing'][134],
                     'delete_followup' => $LANG['mailing'][135],
                     'add_task'     => $LANG['job'][49],
                     'update_task'     => $LANG['job'][52],
