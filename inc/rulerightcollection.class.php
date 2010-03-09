@@ -161,10 +161,10 @@ class RuleRightCollection extends RuleCollection {
 
       $params = array();
       $sql = "SELECT DISTINCT `value`
-              FROM `glpi_rules`, `glpi_rulecriterias`, `glpi_ruleparameters`
+              FROM `glpi_rules`, `glpi_rulecriterias`, `glpi_rulerightparameters`
               WHERE `glpi_rules`.`sub_type` = 'RuleRight'
                     AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
-                    AND `glpi_rulecriterias`.`criteria` = `glpi_ruleparameters`.`value`";
+                    AND `glpi_rulecriterias`.`criteria` = `glpi_rulerightparameters`.`value`";
       $result = $DB->query($sql);
 
       while ($param = $DB->fetch_array($result)) {
