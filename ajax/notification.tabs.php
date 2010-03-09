@@ -43,7 +43,7 @@ $notification = new Notification;
 
 //checkRight("notification",'r');
 if ($_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
-   $target = NotificationTarget::getInstanceByType($notification->getField('itemtype'));
+   $target = NotificationTarget::getInstanceByType($notification->getField('itemtype'),$notification->fields['event']);
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
