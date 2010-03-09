@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: ticket.tabs.php 10781 2010-02-26 13:51:09Z tsmr $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
