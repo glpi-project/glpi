@@ -187,10 +187,10 @@ if ($item instanceof CommonTreeDropdown) {
                || (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"])))) {
 
                echo "<option class='tree' value='0'>--".$LANG['entity'][2]."--</option>";
-            }
-            // Entity=0 already add above
-            if ($_POST['value']==0) {
-               $display_selected=false;
+               // Entity=0 already add above
+               if ($_POST['value']==0) {
+                  $display_selected=false;
+               }
             }
             break;
 
