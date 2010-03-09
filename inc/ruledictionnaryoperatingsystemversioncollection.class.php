@@ -37,7 +37,6 @@ class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDro
 
    /**
     * Constructor
-    * @param $type dropdown type
    **/
    function __construct() {
       $this->item_table="glpi_operatingsystemversions";

@@ -37,7 +37,6 @@ class RuleDictionnaryPeripheralTypeCollection extends RuleDictionnaryDropdownCol
 
    /**
     * Constructor
-    * @param $type dropdown type
    **/
    function __construct() {
       $this->item_table="glpi_peripheraltypes";

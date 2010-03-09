@@ -410,6 +410,7 @@ class MailCollector  extends CommonDBTM {
 
    /** function buildTicket - Builds,and returns, the major structure of the ticket to be entered .
    * @param $i mail ID
+   * @param $options array options
    * @return ticket fields array
    */
    function buildTicket($i,$options=array()) {

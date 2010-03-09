@@ -37,7 +37,6 @@ class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollec
 
    /**
     * Constructor
-    * @param $type dropdown type
    **/
    function __construct() {
       $this->item_table="glpi_printertypes";

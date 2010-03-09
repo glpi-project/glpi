@@ -44,7 +44,6 @@ class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownColl
 
    /**
     * Constructor
-    * @param $type dropdown type
    **/
    function __construct() {
       $this->item_table="glpi_computermodels";

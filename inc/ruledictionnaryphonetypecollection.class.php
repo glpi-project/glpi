@@ -37,7 +37,6 @@ class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollecti
 
    /**
     * Constructor
-    * @param $type dropdown type
    **/
    function __construct() {
       $this->item_table="glpi_phonetypes";

@@ -124,6 +124,8 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get a notificationtarget class by giving the object which raises the event
     * @param $item the object which raises the event
+    * @param $event the event which will be used
+    * @param $options array of options
     *
     * @return a notificationtarget class or false
     */
@@ -150,6 +152,8 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get a notificationtarget class by giving an itemtype
     * @param $itemtype the itemtype of the object which raises the event
+    * @param $event the event which will be used
+    * @param $options array of options
     *
     * @return a notificationtarget class or false
     */

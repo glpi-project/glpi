@@ -103,6 +103,7 @@ class RuleCollection extends CommonDBTM {
    *
    * @param $start : first rule (in the result set)
    * @param $limit : max number of rules ti retrieve
+   * @param $recursive boolean : get recursive ?
    **/
    function getCollectionPart($start=0,$limit=0,$recursive=true) {
       global $DB;

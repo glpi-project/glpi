@@ -79,7 +79,6 @@ class Rule extends CommonDBTM {
    const OR_MATCHING = "OR";
    /**
    * Constructor
-   * @param sub_type the rule type used for the collection
    **/
    function __construct() {
       // Temproray hack for this class
@@ -330,7 +329,6 @@ class Rule extends CommonDBTM {
 
    /**
     * Display all rules actions
-    * @param $target  where to go for action
     * @param $rules_id  rule ID
    **/
    function showActionsList($rules_id) {
@@ -447,7 +445,6 @@ class Rule extends CommonDBTM {
 
    /**
     * Display all rules criterias
-    * @param $target
     * @param $rules_id
     */
    function showCriteriasList($rules_id) {

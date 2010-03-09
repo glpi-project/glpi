@@ -2372,7 +2372,7 @@ function getActiveTab($itemtype) {
  *  Force active Tab for an itemtype
  *
  * @param $itemtype :item type
- * $param $tab : ID of the tab
+ * @param $tab : ID of the tab
  *
  */
 function setActiveTab($itemtype, $tab) {

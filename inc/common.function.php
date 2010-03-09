@@ -1676,7 +1676,7 @@ function getExpir($begin,$duration,$notice="0") {
 *
 * @param $where string: where to redirect ?
 **/
-function manageRedirect($where,$forcetab='') {
+function manageRedirect($where) {
    global $CFG_GLPI,$PLUGIN_HOOKS;
 
    if (!empty($where)) {
