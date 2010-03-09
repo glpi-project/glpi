@@ -225,7 +225,11 @@ class ComputerDisk extends CommonDBChild {
                echo "<td class='right'>".formatNumber($data['freesize'], false, 0)."&nbsp;".
                       $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
                echo "<td>";
-               displayProgressBar('100',round(100*$data['freesize']/$data['totalsize']),
+               $percent=0;
+               if ($data['totalsize']>0) {
+                  $percent=round(100*$data['freesize']/$data['totalsize']);
+               }
+               displayProgressBar('100',$percent,
                                  array('simple'=>true,'forcepadding'=>false));
                echo "</td>";
 
