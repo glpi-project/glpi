@@ -346,7 +346,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $opt['link'][1]        = 'AND';
 
 
-      $menu['maintain']['content']['ticket']['links']['summary']='/front/ticket.php?'.append_params($opt);
+      $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt)."' ><img title=\"".
+                              $LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
+                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
+      $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt);
       $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticket.php';
    }
    if (haveRight("create_ticket","1")) {
@@ -1095,26 +1098,26 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                   break;
 
                case "template" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".
-                              $LANG['common'][8]."' alt='".$LANG['common'][8]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title=\"".
+                              $LANG['common'][8]."\" alt=\"".$LANG['common'][8]."\" src='".
                               $CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
                   break;
 
                case "showall" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".
-                              $LANG['buttons'][40]."' alt='".$LANG['buttons'][40]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title=\"".
+                              $LANG['buttons'][40]."\" alt=\"".$LANG['buttons'][40]."\" src='".
                               $CFG_GLPI["root_doc"]."/pics/menu_showall.png' > </a></li>";
                   break;
 
                case "summary" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".
-                              $LANG['state'][11]."' alt='".$LANG['state'][11]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title=\"".
+                              $LANG['state'][11]."\" alt=\"".$LANG['state'][11]."\" src='".
                               $CFG_GLPI["root_doc"]."/pics/menu_show.png' > </a></li>";
                   break;
 
                case "config" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".
-                              $LANG['common'][12]."' alt='".$LANG['common'][12]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title=\"".
+                              $LANG['common'][12]."\" alt=\"".$LANG['common'][12]."\" src='".
                               $CFG_GLPI["root_doc"]."/pics/menu_config.png' > </a></li>";
                   break;
 
