@@ -2287,6 +2287,7 @@ class Search {
             // Show all
             return $link." `$table`.`$field` >= '0' ";
             break;
+         case "glpi_tickets.global_validation" :
          case "glpi_ticketvalidations.status" :
             $tocheck=array('waiting'=>array('waiting'),
                            'rejected'=>array('rejected'),
@@ -3382,6 +3383,8 @@ class Search {
                      array('applyto'=>'ticket'.$data[$NAME.$num."_2"],'display'=>false));
             return $out;
          case 'glpi_ticketvalidations.status':
+         case "glpi_tickets.global_validation" :
+
             $split=explode("$$$$",$data[$NAME.$num]);
             $out='';
             foreach($split as $val) {

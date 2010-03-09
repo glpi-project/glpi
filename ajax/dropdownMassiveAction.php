@@ -249,11 +249,12 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
             } else {
                if ($key>1 && $key!=80) {// No entities_id massive action
                   // No ID
-                  if (!empty($val["linkfield"])
+                  if ((!empty($val["linkfield"])
                       ||($val["table"]=="glpi_infocoms" && $key!=120) // no end_warranty
                       ||$val["table"]=="glpi_suppliers_infocoms"
                       ||$val["table"]=="glpi_budgets"
-                      ||($val["table"]=="glpi_ocslinks" && $key==101)) { // auto_update_ocs
+                      ||($val["table"]=="glpi_ocslinks" && $key==101))
+                           &&$val["table"]!="glpi_users_validation") { // auto_update_ocs
                      if ($show_all) {
                         $newgroup.= "<option value='$key'>".$val["name"]."</option>";
                         $items_in_group++;

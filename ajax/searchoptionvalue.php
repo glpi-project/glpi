@@ -104,7 +104,6 @@ if (isset($_REQUEST['searchtype'])) {
             }
         }
 
-
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
@@ -123,6 +122,10 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
                case "glpi_tickets.urgency" :
                   Ticket::dropdownUrgency($inputname,$_REQUEST['value'],true);
+                  $display=true;
+                  break;
+               case "glpi_tickets.global_validation" :
+                  TicketValidation::dropdownStatus($inputname,array('value'=>$_REQUEST['value'],'all'=>1));
                   $display=true;
                   break;
                case "glpi_users.name":

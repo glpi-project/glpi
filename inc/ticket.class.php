@@ -1430,6 +1430,12 @@ class Ticket extends CommonDBTM {
 
       $tab['validation'] = $LANG['validation'][0];
 
+      $tab[52]['table']     = 'glpi_tickets';
+      $tab[52]['field']     = 'global_validation';
+      $tab[52]['linkfield'] = 'global_validation';
+      $tab[52]['name']      = $LANG['validation'][0];
+      $tab[52]['searchtype']= 'equals';
+
       $tab[53]['table']     = 'glpi_ticketvalidations';
       $tab[53]['field']     = 'comment_submission';
       $tab[53]['linkfield'] = '';

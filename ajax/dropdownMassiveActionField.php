@@ -90,6 +90,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          case "glpi_tickets.priority" :
             Ticket::dropdownPriority($search["linkfield"]);
             break;
+         case "glpi_tickets.global_validation" :
+            TicketValidation::dropdownStatus($search["linkfield"]);
+            $display=true;
+            break;
 
          default :
             // Specific plugin Type case
