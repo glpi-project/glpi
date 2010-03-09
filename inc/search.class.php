@@ -3774,12 +3774,13 @@ class Search {
    *
    * @param $itemtype item type to manage
    * @param $action action which is used to manupulate searchoption (r/w)
+   * @param $withplugins boolean get plugins options
    * @return clean $SEARCH_OPTION array
    */
-   static function getCleanedOptions($itemtype,$action='r') {
+   static function getCleanedOptions($itemtype,$action='r',$withplugins=true) {
       global $CFG_GLPI;
 
-      $options=&Search::getOptions($itemtype);
+      $options=&Search::getOptions($itemtype,$withplugins);
       $todel=array();
       if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
          $todel=array_merge($todel,array('financial',
@@ -3821,10 +3822,11 @@ class Search {
    * Get the SEARCH_OPTION array
    *
    * @param $itemtype
+   * @param $withplugins boolean get search options from plugins
    *
    * @return the reference to  array of search options for the given item type
    **/
-   static function &getOptions($itemtype) {
+   static function &getOptions($itemtype,$withplugins=true) {
       global $LANG, $CFG_GLPI;
 
       static $search = array();
@@ -4178,11 +4180,13 @@ class Search {
             $search[$itemtype][122]['forcegroupby'] = true;
          }
 
-         // Search options added by plugins
-         $plugsearch=getPluginSearchOptions($itemtype);
-         if (count($plugsearch)) {
-            $search[$itemtype] += array('plugins' => $LANG['common'][29]);
-            $search[$itemtype] += $plugsearch;
+         if ($withplugins) {
+            // Search options added by plugins
+            $plugsearch=getPluginSearchOptions($itemtype);
+            if (count($plugsearch)) {
+               $search[$itemtype] += array('plugins' => $LANG['common'][29]);
+               $search[$itemtype] += $plugsearch;
+            }
          }
       }
       return $search[$itemtype];

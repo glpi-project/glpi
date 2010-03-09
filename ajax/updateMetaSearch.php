@@ -48,7 +48,7 @@ $item->checkGlobal('r');
 $first_group=true;
 $newgroup="";
 $items_in_group=0;
-$searchopt=Search::getCleanedOptions($_POST["itemtype"]);
+$searchopt=Search::getCleanedOptions($_POST["itemtype"],'r',false);
 
 echo "<select id='Search2".$_POST["itemtype"].$_POST["num"]."' name='field2[".$_POST["num"]."]' size='1'>";
 foreach ($searchopt as $key => $val) {
