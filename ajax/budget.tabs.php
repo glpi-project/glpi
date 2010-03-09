@@ -50,6 +50,7 @@ $budget = new Budget();
 if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
+         $budget->showValuesByEntity();
          $budget->showDevices();
          Document::showAssociated($budget);
          Link::showForItem('Budget',$_POST["id"]);
