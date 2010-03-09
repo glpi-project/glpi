@@ -381,25 +381,30 @@ class Budget extends CommonDBTM{
          return false;
       }
 
+      // Type for which infocom are only template
+      $ignore = array('CartridgeItem', 'ConsumableItem', 'Software');
+
       $query = "SELECT DISTINCT `itemtype`
                FROM `glpi_infocoms`
                WHERE `budgets_id` = '$budgets_id'
+               AND `itemtype` NOT IN ('".implode("','",$ignore)."')
+               ".getEntitiesRestrictRequest(" AND",'glpi_infocoms',"entities_id")."
                GROUP BY `itemtype`";
 
       $result = $DB->query($query);
       $total = 0;
 
       $entities_values = array();
-
-      // Type for which infocom are only template
-      $ignore = array('CartridgeItem', 'ConsumableItem', 'Software');
+      $entitiestype_values = array();
+      $found_types=array();
 
       if ( $DB->numrows($result) ) {
          while ($types = $DB->fetch_array($result)) {
-            if (in_array($types['itemtype'], $ignore) || !class_exists($types['itemtype'])) {
+            if (!class_exists($types['itemtype'])) {
                continue;
             }
             $item=new $types['itemtype']();
+            $found_types[$types['itemtype']]=$item->getTypeName();
             $table = getTableForItemType($types['itemtype']);
             $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
                                  `$table`.`entities_id`
@@ -423,7 +428,11 @@ class Budget extends CommonDBTM{
                   if (!isset($entities_values[$values['entities_id']])) {
                      $entities_values[$values['entities_id']] = 0;
                   }
+                  if (!isset($entitiestype_values[$values['entities_id']][$types['itemtype']])) {
+                     $entitiestype_values[$values['entities_id']][$types['itemtype']] = 0;
+                  }
                   $entities_values[$values['entities_id']] += $values['sumvalue'];
+                  $entitiestype_values[$values['entities_id']][$types['itemtype']] += $values['sumvalue'];
                }
             }
 
@@ -432,26 +441,46 @@ class Budget extends CommonDBTM{
          $budget = new Budget();
          $budget->getFromDB($budgets_id);
 
+         $colspan=count($found_types)+2;
          echo "<br><br><div class='center'><table class='tab_cadre'>";
          echo "<tr>";
-         echo "<th colspan='2'>".$LANG['financial'][108]."</th></tr>";
-         echo "<tr><th>".$LANG['common'][17]."</th>";
-         echo "<th>".$LANG['financial'][21]."</th>";
+         echo "<th colspan='$colspan'>".$LANG['financial'][108]."</th></tr>";
+         echo "<tr><th>".$LANG['entity'][0]."</th>";
+         if (count($found_types)) {
+            foreach ($found_types as $type => $typename) {
+               echo "<th>$typename</th>";
+            }
+         }
+         echo "<th>".$LANG['common'][33]."</th>";
          echo "</tr>";
 
          foreach ($entities_values as $entity => $value) {
-            echo "<tr class='tab_bg_1'><td>".Dropdown::getDropdownName('glpi_entities',$entity)."</th>";
-            echo "<td class='right'>".formatNumber($value)."</td>";
+            echo "<tr class='tab_bg_1'><td class='b'>".Dropdown::getDropdownName('glpi_entities',$entity)."</th>";
+            if (count($found_types)) {
+               foreach ($found_types as $type => $typename) {
+                  echo "<td  class='right'>";
+                  $typevalue=0;
+                  if (isset($entitiestype_values[$entity][$type])){
+                     $typevalue=$entitiestype_values[$entity][$type];
+                  }
+                  echo formatNumber($typevalue);
+                  echo "</td>";
+               }
+            }
+
+            echo "<td class='right b'>".formatNumber($value)."</td>";
             echo "</tr>";
             $total += $value;
          }
 
-         echo "<tr class='tab_bg_1'><th colspan='2'><br></th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
          echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='".($colspan-2)."'>&nbsp;</td>";
          echo "<td class='right'>".$LANG['financial'][108]."</td>";
-         echo "<td class='right b' colspan='2'>".formatNumber($total)."</td></tr>";
+         echo "<td class='right b'>".formatNumber($total)."</td></tr>";
          if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
             echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='".($colspan-2)."'>&nbsp;</td>";
             echo "<td class='right'>".$LANG['financial'][109]."</td>";
             echo "<td class='right b'>".formatNumber($budget->fields['value'] - $total)."</td></tr>";
          }
