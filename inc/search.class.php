@@ -3052,7 +3052,7 @@ class Search {
          case "glpi_users_validation.name" :
          case "glpi_users.name" :
             // USER search case
-            if (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]) {
+            if ($itemtype != 'User' && isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]) {
                $out="";
                $split=explode("$$$$",$data[$NAME.$num]);
                $count_display=0;
