@@ -46,14 +46,29 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
     * Get all data needed for template processing
     */
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG;
+     global $LANG,$CFG_GLPI;
 
-      $prefix = strtolower($item->getType());
-      $this->datas['##'.$prefix.'.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->obj->getField('entities_id'));
-      $this->datas['##lang.'.$prefix.'.entity##'] = $LANG['entity'][0];
-      $this->datas['##lang.'.$prefix.'.action##'] = $LANG['mailing'][52];
+      $this->datas['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                               $options['entities_id']);
+      $this->datas['##lang.license.entity##'] = $LANG['entity'][0];
+      $this->datas['##license.action##']      = $LANG['setup'][264];
+
+      foreach ($options['licenses'] as $id => $license) {
+         $tmp = array();
+         $tmp['##license.item##']      = $license['softname'];
+         $tmp['##license.name##'] = $license['name'];
+         $tmp['##license.serial##']     = $license['serial'];
+         $tmp['##license.expirationdate##'] = convDate($license["expire"]);
+         $tmp['##license.url##'] = urldecode($CFG_GLPI["url_base"].
+                                             "/index.php?redirect=softwarelicense_".$id);
+         $this->datas['licenses'][] = $tmp;
+      }
+
+      $this->datas['##lang.license.entity##']    = $LANG['entity'][0];
+      $this->datas['##lang.license.action##']    = $LANG['mailing'][36];
+      $this->datas['##lang.license.item##']      = $LANG['help'][31];
+      $this->datas['##lang.license.serial##'] = $LANG['common'][19];
+      $this->datas['##lang.license.expirationdate##'] = $LANG['mailing'][51];
    }
-
 }
 ?>

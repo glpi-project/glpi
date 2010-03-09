@@ -301,7 +301,7 @@ class ConsumableItem extends CommonDBTM {
          $items=array();
          $alert=new Alert();
 
-         $query = "SELECT `glpi_entities`.`entities_id` as `entity`,
+         $query = "SELECT DISTINCT `glpi_entities`.`entities_id` as `entity`,
                      `glpi_entitydatas`.`consumables_alert_repeat`
                    FROM `glpi_entities`
                    LEFT JOIN `glpi_entitydatas` ON (

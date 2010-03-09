@@ -2411,6 +2411,26 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','8','','##infoco
                               &lt;br /&gt; &lt;a href=\"##infocom.url##\"&gt;
                               ##infocom.url##&lt;/a&gt;&lt;br /&gt;
                               ##ENDFOREACHinfocoms##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','9','',
+'##license.action##  ##license.entity##','##lang.license.entity## :##license.entity##
+
+##FOREACHlicenses## 
+
+##lang.license.item## : ##license.item##
+
+##lang.license.serial## : ##license.serial##
+
+##lang.license.expirationdate## : ##license.expirationdate##
+
+##license.url## 
+ ##ENDFOREACHlicenses##','&lt;p&gt;
+##lang.license.entity##  :##license.entity##&lt;br /&gt;
+##FOREACHlicenses##
+&lt;br /&gt;##lang.license.item##  :  ##license.item##&lt;br /&gt;
+##lang.license.serial##  :  ##license.serial##&lt;br /&gt;
+##lang.license.expirationdate## :   ##license.expirationdate##
+&lt;br /&gt; &lt;a href=\"##license.url##\"&gt; ##license.url##
+&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHlicenses##&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 

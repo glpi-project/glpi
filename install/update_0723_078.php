@@ -3135,6 +3135,22 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 &lt;br /&gt; &lt;a href=\"##infocom.url##\"&gt;
 ##infocom.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHinfocoms##&lt;/p&gt;');";
+      $queries['SoftwareLicense'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                                     VALUES(NULL, ".$templates['SoftwareLicense'].", '',
+                                    '##license.action##  ##license.entity##',
+'##lang.license.entity## :##license.entity##\r\n
+##FOREACHlicenses## \r\n
+##lang.license.item## : ##license.item##\r\n
+##lang.license.serial## : ##license.serial##\r\n
+##lang.license.expirationdate## : ##license.expirationdate##\r\n
+##license.url## \r\n ##ENDFOREACHlicenses##', '&lt;p&gt;
+##lang.license.entity##  :##license.entity##&lt;br /&gt;
+##FOREACHlicenses##
+&lt;br /&gt;##lang.license.item##  :  ##license.item##&lt;br /&gt;
+##lang.license.serial##  :  ##license.serial##&lt;br /&gt;
+##lang.license.expirationdate## :   ##license.expirationdate##
+&lt;br /&gt; &lt;a href=\"##license.url##\"&gt; ##license.url##
+&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHlicenses##&lt;/p&gt;');";
       foreach ($queries as $itemtype => $query) {
          $DB->query($query) or die("0.78 insert notification template default translation
                                              for $itemtype " . $LANG['update'][90] . $DB->error());
