@@ -3619,6 +3619,21 @@ class Search {
 
 
    /**
+   * Reset save searches
+   *
+   * @return nothing
+   */
+   static function resetSaveSearch() {
+      unset($_SESSION['glpisearch']);
+      $_SESSION['glpisearch']=array();
+      unset($_SESSION['glpisearchcount']);
+      $_SESSION['glpisearchcount']=array();
+      unset($_SESSION['glpisearchcount2']);
+      $_SESSION['glpisearchcount2']=array();
+   }
+
+
+   /**
    * Completion of the URL $_GET values with the $_SESSION values or define default values
    *
    * @param $itemtype item type to manage

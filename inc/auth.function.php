@@ -451,6 +451,7 @@ function changeProfile($ID) {
          $_SESSION['glpiactiveprofile'] = $data;
          $_SESSION['glpiactiveentities'] = array ();
 
+         Search::resetSaveSearch();
          $active_entity_done=false;
          // Try to load default entity if it is a root entity
          foreach ($data['entities'] as $key => $val) {
