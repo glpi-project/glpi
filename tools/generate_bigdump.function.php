@@ -891,7 +891,7 @@ function generate_entity($ID_entity){
 		$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
 		$date2=$date1+MONTH_TIMESTAMP*12*mt_rand(1,4); // + entre 1 et 4 ans
 
-		$query="INSERT INTO glpi_budgets VALUES (NULL,'Recrusive budget $i-$ID_entity','$ID_entity','1','comment $i-$ID_entity','0','".date("Y-m-d",intval($date1))."','".date("Y-m-d",intval($date2))."','0.0000','0','',NULL,'');";
+		$query="INSERT INTO glpi_budgets VALUES (NULL,'Recursive budget $i-$ID_entity','$ID_entity','1','comment $i-$ID_entity','0','".date("Y-m-d",intval($date1))."','".date("Y-m-d",intval($date2))."','0.0000','0','',NULL,'');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["document"]=getMaxItem("glpi_documents");
