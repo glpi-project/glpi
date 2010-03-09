@@ -2931,61 +2931,61 @@ function update0723to078($output='HTML') {
                             "##lang.task.description## ##task.description##\n ##lang.task.time##".
                             "##task.time##\n ##lang.task.category## ##task.category## \r\n\n".
                             "##ENDFOREACHtasks##',
-                            '&lt;!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }
-                                  --&gt;\r\n&lt;div&gt;##lang.ticket.url## : &lt;a href=''##ticket.url##
-                                 ''&gt;##ticket.url##&lt;/a&gt;&lt;/div&gt;\r\n
-                                 &lt;div class=\"description b\"&gt;##lang.ticket.description##
-                                 &lt;/div&gt;\r\n&lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                  ##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
-                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.author.name##&lt;/span&gt; ##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name##
-                                  ##ELSEticket.author.name##--##ENDELSEticket.author.name##
-                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.creationdate##&lt;/span&gt;&#160;:##ticket.creationdate##
-                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.closedate##&lt;/span&gt;&#160;:##ticket.closedate##
-                                 &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.requesttype##&lt;/span&gt;&#160;:##ticket.requesttype##&lt;br /&gt;
-                                  ##IFticket.itemtype## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.item.name##&lt;/span&gt;&#160;: ##ticket.itemtype## - ##ticket.item.name##
-                                  ##IFticket.item.model## - ##ticket.item.model##
-                                   ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##&#160;
-                                 ##IFticket.item.otherserial## -##ticket.item.otherserial##  ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
-                                 &lt;br /&gt; ##IFticket.assigntouser## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.assigntouser##&lt;/span&gt;&#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.ticket.status##
-                                 &lt;/span&gt;&#160;: ##ticket.status##&lt;br /&gt; ##IFticket.assigntogroup## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.assigntogroup##&lt;/span&gt;&#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.urgency##&lt;/span&gt;&#160;: ##ticket.urgency##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.impact##&lt;/span&gt;&#160;: ##ticket.impact##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.priority##&lt;/span&gt;&#160;: ##ticket.priority## &lt;br /&gt; ##IFticket.user.email##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.user.email##&lt;/span&gt;&#160;: ##ticket.user.email ##ENDIFticket.user.email##
-                                  &lt;br /&gt; ##IFticket.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.ticket.category##
-                                 &lt;/span&gt;&#160;:##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
-                                  &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.ticket.content##&lt;/span&gt;&#160;: ##ticket.content##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;
-                                 ##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups##
-                                 &lt;/div&gt;\r\n&lt;p&gt;##FOREACHfollowups##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;&lt;br /&gt; &lt;strong&gt;
-                                 [##followup.date##] &lt;em&gt;##lang.followup.isprivate## : ##followup.isprivate##
-                                 &lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.followup.author##
-                                 &lt;/span&gt; ##followup.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.followup.description##
-                                 &lt;/span&gt; ##followup.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.followup.date##
-                                 &lt;/span&gt; ##followup.date##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.followup.requesttype##
-                                 &lt;/span&gt; ##followup.requesttype##&lt;/div&gt;\r\n&lt;p&gt;
-                                 ##ENDFOREACHfollowups##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;
-                                 ##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##
-                                 &lt;/div&gt;\r\n&lt;p&gt;
-                                 ##FOREACHtasks##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;&lt;br /&gt; &lt;strong&gt;
-                                 [##task.date##] &lt;em&gt;##lang.task.isprivate## : ##task.isprivate##
-                                 &lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.task.author##&lt;/span&gt; ##task.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.task.description##&lt;/span&gt; ##task.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.task.time##&lt;/span&gt; ##task.time##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                                 ##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;\r\n&lt;p&gt;
-                                 ##ENDFOREACHtasks##&lt;/p&gt;');";
+'&lt;!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }
+   --&gt;\r\n&lt;div&gt;##lang.ticket.url## : &lt;a href=''##ticket.url##
+''&gt;##ticket.url##&lt;/a&gt;&lt;/div&gt;\r\n
+&lt;div class=\"description b\"&gt;##lang.ticket.description##
+&lt;/div&gt;\r\n&lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+   ##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
+&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.author.name##&lt;/span&gt; ##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name##
+   ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.creationdate##&lt;/span&gt;&#160;:##ticket.creationdate##
+&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.closedate##&lt;/span&gt;&#160;:##ticket.closedate##
+&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.requesttype##&lt;/span&gt;&#160;:##ticket.requesttype##&lt;br /&gt;
+   ##IFticket.itemtype## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.item.name##&lt;/span&gt;&#160;: ##ticket.itemtype## - ##ticket.item.name##
+   ##IFticket.item.model## - ##ticket.item.model##
+   ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##&#160;
+##IFticket.item.otherserial## -##ticket.item.otherserial##  ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
+&lt;br /&gt; ##IFticket.assigntouser## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.assigntouser##&lt;/span&gt;&#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.ticket.status##
+&lt;/span&gt;&#160;: ##ticket.status##&lt;br /&gt; ##IFticket.assigntogroup## &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.assigntogroup##&lt;/span&gt;&#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.urgency##&lt;/span&gt;&#160;: ##ticket.urgency##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.impact##&lt;/span&gt;&#160;: ##ticket.impact##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.priority##&lt;/span&gt;&#160;: ##ticket.priority## &lt;br /&gt; ##IFticket.user.email##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.user.email##&lt;/span&gt;&#160;: ##ticket.user.email ##ENDIFticket.user.email##
+   &lt;br /&gt; ##IFticket.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.ticket.category##
+&lt;/span&gt;&#160;:##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+   &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.content##&lt;/span&gt;&#160;: ##ticket.content##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;
+##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups##
+&lt;/div&gt;\r\n&lt;p&gt;##FOREACHfollowups##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;&lt;br /&gt; &lt;strong&gt;
+[##followup.date##] &lt;em&gt;##lang.followup.isprivate## : ##followup.isprivate##
+&lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.followup.author##
+&lt;/span&gt; ##followup.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.followup.description##
+&lt;/span&gt; ##followup.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.followup.date##
+&lt;/span&gt; ##followup.date##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.followup.requesttype##
+&lt;/span&gt; ##followup.requesttype##&lt;/div&gt;\r\n&lt;p&gt;
+##ENDFOREACHfollowups##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;
+##lang.ticket.numberoftasks##&#160;: ##ticket.numberoftasks##
+&lt;/div&gt;\r\n&lt;p&gt;
+##FOREACHtasks##&lt;/p&gt;\r\n&lt;div class=\"description b\"&gt;&lt;br /&gt; &lt;strong&gt;
+[##task.date##] &lt;em&gt;##lang.task.isprivate## : ##task.isprivate##
+&lt;/em&gt;&lt;/strong&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.task.author##&lt;/span&gt; ##task.author##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.task.description##&lt;/span&gt; ##task.description##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.task.time##&lt;/span&gt; ##task.time##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.task.category##&lt;/span&gt; ##task.category##&lt;/div&gt;\r\n&lt;p&gt;
+##ENDFOREACHtasks##&lt;/p&gt;');";
 
       $queries['Contract'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                               VALUES(NULL, ".$templates['Contract'].", '',
@@ -2999,55 +2999,55 @@ function update0723to078($output='HTML') {
                               "##ENDIFcontract.type##\r\n".
                               "##contract.url##\r\n".
                               "##ENDFOREACHcontracts##',
-                              '&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
-                              &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## :
-                              ##contract.name##&lt;br /&gt;
-                              ##lang.contract.number## : ##contract.number##&lt;br /&gt;
-                              ##lang.contract.time## : ##contract.time##&lt;br /&gt;
-                              ##IFcontract.type####lang.contract.type## : ##contract.type##
-                              ##ENDIFcontract.type##&lt;br /&gt;
-                              &lt;a href=\"##contract.url##\"&gt;
-                              ##contract.url##&lt;/a&gt;&lt;br /&gt;
-                              ##ENDFOREACHcontracts##&lt;/p&gt;');";
+'&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
+&lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## :
+##contract.name##&lt;br /&gt;
+##lang.contract.number## : ##contract.number##&lt;br /&gt;
+##lang.contract.time## : ##contract.time##&lt;br /&gt;
+##IFcontract.type####lang.contract.type## : ##contract.type##
+##ENDIFcontract.type##&lt;br /&gt;
+&lt;a href=\"##contract.url##\"&gt;
+##contract.url##&lt;/a&gt;&lt;br /&gt;
+##ENDFOREACHcontracts##&lt;/p&gt;');";
 
       $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                              VALUES(NULL, ".$templates['Ticket2'].", '',
                             '##ticket.action## ##ticket.title##',
-                            '##lang.ticket.url## : ##ticket.url## \r\n
-                             ##lang.ticket.description## \r\n\n
-                             ##lang.ticket.title## &#160;:##ticket.title## \n
-                             ##lang.ticket.author.name## ##IFticket.author.name##
-                             ##ticket.author.name## ##ENDIFticket.author.name##
-                             ##ELSEticket.author.name##--##ENDELSEticket.author.name## &#160; \n
-                             ##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category##
-                             ##ENDIFticket.category## ##ELSEticket.category##
-                             ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##\n
-                             ##lang.ticket.content## &#160;: ##ticket.content##\n##IFticket.itemtype##
-                             ##lang.ticket.item.name## &#160;: ##ticket.itemtype## - ##ticket.item.name##
-                             ##ENDIFticket.itemtype##',
-                            '&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##ticket.url##\"&gt;
-                             ##ticket.url##&lt;/a&gt;&lt;/div&gt;\r\n&lt;div class=\"description b\"&gt;
-                             ##lang.ticket.description##&lt;/div&gt;\r\n&lt;p&gt;&lt;span
-                             style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                             ##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
-                             &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                             ##lang.ticket.author.name##&lt;/span&gt;
-                             ##IFticket.author.name## ##ticket.author.name##
-                             ##ENDIFticket.author.name##
-                             ##ELSEticket.author.name##--##ENDELSEticket.author.name##
-                             &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;&#160
-                            ;&lt;/span&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; &lt;/span&gt;
-                            ##IFticket.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                            ##lang.ticket.category## &lt;/span&gt;&#160;:##ticket.category##
-                            ##ENDIFticket.category## ##ELSEticket.category##
-                            ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
-                            &lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                            ##lang.ticket.content##&lt;/span&gt;&#160;:
-                            ##ticket.content##&lt;br /&gt;##IFticket.itemtype##
-                            &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
-                            ##lang.ticket.item.name##&lt;/span&gt;&#160;:
-                            ##ticket.itemtype## - ##ticket.item.name##
-                            ##ENDIFticket.itemtype##&lt;/p&gt;');";
+'##lang.ticket.url## : ##ticket.url## \r\n
+##lang.ticket.description## \r\n\n
+##lang.ticket.title## &#160;:##ticket.title## \n
+##lang.ticket.author.name## ##IFticket.author.name##
+##ticket.author.name## ##ENDIFticket.author.name##
+##ELSEticket.author.name##--##ENDELSEticket.author.name## &#160; \n
+##IFticket.category## ##lang.ticket.category## &#160;:##ticket.category##
+##ENDIFticket.category## ##ELSEticket.category##
+##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##\n
+##lang.ticket.content## &#160;: ##ticket.content##\n##IFticket.itemtype##
+##lang.ticket.item.name## &#160;: ##ticket.itemtype## - ##ticket.item.name##
+##ENDIFticket.itemtype##',
+'&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##ticket.url##\"&gt;
+##ticket.url##&lt;/a&gt;&lt;/div&gt;\r\n&lt;div class=\"description b\"&gt;
+##lang.ticket.description##&lt;/div&gt;\r\n&lt;p&gt;&lt;span
+style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.title##&lt;/span&gt;&#160;:##ticket.title##
+&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.author.name##&lt;/span&gt;
+##IFticket.author.name## ##ticket.author.name##
+##ENDIFticket.author.name##
+##ELSEticket.author.name##--##ENDELSEticket.author.name##
+&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;&#160
+;&lt;/span&gt;&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt; &lt;/span&gt;
+##IFticket.category##&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.category## &lt;/span&gt;&#160;:##ticket.category##
+##ENDIFticket.category## ##ELSEticket.category##
+##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.content##&lt;/span&gt;&#160;:
+##ticket.content##&lt;br /&gt;##IFticket.itemtype##
+&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
+##lang.ticket.item.name##&lt;/span&gt;&#160;:
+##ticket.itemtype## - ##ticket.item.name##
+##ENDIFticket.itemtype##&lt;/p&gt;');";
 
       $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                              VALUES(NULL, ".$templates['TicketValidation'].", '',
@@ -3085,56 +3085,56 @@ function update0723to078($output='HTML') {
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                            VALUES(NULL, ".$templates['Consumable'].", '',
                            '##consumable.action##  ##consumable.entity##',
-                           '##lang.consumable.entity## :##consumable.entity##\n \n
-                           ##FOREACHconsumables##\n##lang.consumable.item## : ##consumable.item##\n \n
-                           ##lang.consumable.reference## : ##consumable.reference##\n
-                           ##lang.consumable.remaining## : ##consumable.remaining##\n
-                           ##consumable.url## \n
-                           ##ENDFOREACHconsumables##', '&lt;p&gt;
-                           ##lang.consumable.entity## :##consumable.entity##
-                           &lt;br /&gt; &lt;br /&gt;##FOREACHconsumables##
-                           &lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
-                           &lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
-                           ##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
-                           &lt;a href=\"##contract.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
-                            ##ENDFOREACHconsumables##&lt;/p&gt;');";
+'##lang.consumable.entity## :##consumable.entity##\n \n
+##FOREACHconsumables##\n##lang.consumable.item## : ##consumable.item##\n \n
+##lang.consumable.reference## : ##consumable.reference##\n
+##lang.consumable.remaining## : ##consumable.remaining##\n
+##consumable.url## \n
+##ENDFOREACHconsumables##', '&lt;p&gt;
+##lang.consumable.entity## :##consumable.entity##
+&lt;br /&gt; &lt;br /&gt;##FOREACHconsumables##
+&lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
+&lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
+##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
+&lt;a href=\"##contract.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
+   ##ENDFOREACHconsumables##&lt;/p&gt;');";
 
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                                VALUES(NULL, ".$templates['Cartridge'].", '',
                                '##cartridge.action##  ##cartridge.entity##',
-                               '##lang.cartridge.entity## :##cartridge.entity##\n \n
-                                ##FOREACHcartridges##\n##lang.cartridge.item## : ##cartridge.item##\n \n
-                                ##lang.cartridge.reference## : ##cartridge.reference##\n
-                                ##lang.cartridge.remaining## : ##cartridge.remaining##\n
-                                ##cartridge.url## \n ##ENDFOREACHcartridges##',
-                                '&lt;p&gt;##lang.cartridge.entity## :##cartridge.entity##
-                                 &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
-                                 &lt;br /&gt;##lang.cartridge.item##   :
-                                 ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
-                                 ##lang.cartridge.reference##  :
-                                 ##cartridge.reference##&lt;br /&gt;
-                                 ##lang.cartridge.remaining## :
-                                 ##cartridge.remaining##&lt;br /&gt;
-                                 &lt;a href=\"##contract.url##\"&gt;
-                                 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
-                                 ##ENDFOREACHcartridges##&lt;/p&gt;');";
+'##lang.cartridge.entity## :##cartridge.entity##\n \n
+##FOREACHcartridges##\n##lang.cartridge.item## : ##cartridge.item##\n \n
+##lang.cartridge.reference## : ##cartridge.reference##\n
+##lang.cartridge.remaining## : ##cartridge.remaining##\n
+##cartridge.url## \n ##ENDFOREACHcartridges##',
+'&lt;p&gt;##lang.cartridge.entity## :##cartridge.entity##
+&lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
+&lt;br /&gt;##lang.cartridge.item##   :
+##cartridge.item##&lt;br /&gt; &lt;br /&gt;
+##lang.cartridge.reference##  :
+##cartridge.reference##&lt;br /&gt;
+##lang.cartridge.remaining## :
+##cartridge.remaining##&lt;br /&gt;
+&lt;a href=\"##contract.url##\"&gt;
+##cartridge.url##&lt;/a&gt;&lt;br /&gt;
+##ENDFOREACHcartridges##&lt;/p&gt;');";
        $queries['Infocom'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                               VALUES(NULL, ".$templates['Infocom'].", '',
                              '##infocom.action##  ##infocom.entity##',
-                             '##lang.infocom.entity## :##infocom.entity## \n \n
-                              ##FOREACHinfocoms## \n
-                              ##lang.infocom.itemtype## : ##infocom.itemtype##\n
-                              ##lang.infocom.item## : ##infocom.item##\n \n
-                              ##lang.infocom.expirationdate## : ##infocom.expirationdate##\n
-                              ##infocom.url## \n ##ENDFOREACHinfocoms##',
-                             '&lt;p&gt;##lang.infocom.entity##  :##infocom.entity##
-                              &lt;br /&gt; &lt;br /&gt;##FOREACHinfocoms##
-                              &lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
-                              ##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
-                              ##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
-                              &lt;br /&gt; &lt;a href=\"##contract.url##\"&gt;
-                              ##infocom.url##&lt;/a&gt;&lt;br /&gt;
-                              ##ENDFOREACHinfocoms##&lt;/p&gt;');";
+'##lang.infocom.entity## :##infocom.entity## \n \n
+##FOREACHinfocoms## \n
+##lang.infocom.itemtype## : ##infocom.itemtype##\n
+##lang.infocom.item## : ##infocom.item##\n \n
+##lang.infocom.expirationdate## : ##infocom.expirationdate##\n
+##infocom.url## \n ##ENDFOREACHinfocoms##',
+'&lt;p&gt;##lang.infocom.entity##  :##infocom.entity##
+&lt;br /&gt; &lt;br /&gt;##FOREACHinfocoms##
+&lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
+##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
+##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
+&lt;br /&gt; &lt;a href=\"##contract.url##\"&gt;
+##infocom.url##&lt;/a&gt;&lt;br /&gt;
+##ENDFOREACHinfocoms##&lt;/p&gt;');";
       foreach ($queries as $itemtype => $query) {
          $DB->query($query) or die("0.78 insert notification template default translation
                                              for $itemtype " . $LANG['update'][90] . $DB->error());
