@@ -4103,7 +4103,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $query = "ALTER TABLE `glpi_profiles` ADD `entity_rule_ticket` CHAR( 1 ) NULL AFTER `rule_ticket`";
       $DB->query($query) or die("0.78 add entity_rule_ldap in glpi_profiles" . $LANG['update'][90] . $DB->error());
 
-      $query = "UPDATE `glpi_profiles` SET `entity_rule_ticket`='w' WHERE `rule_ticket`=`entity_rule_ticket`";
+      $query = "UPDATE `glpi_profiles` SET `entity_rule_ticket`=`rule_ticket`";
       $DB->query($query) or die("0.78 update default entity_rule_ticket rights" . $LANG['update'][90] . $DB->error());
    }
 
