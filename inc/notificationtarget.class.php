@@ -509,8 +509,10 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get addresses by a method not defined in NotificationTarget (specific to an itemtype)
+    * @param $data
+    * @param $options
     */
-   function getSpecificTargets ($data) {
+   function getSpecificTargets ($data,$options) {
    }
 
 
@@ -615,8 +617,9 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get addresses by type of notification
     * @param $data
+    * @param $options
     */
-   function getAddressesByTarget($data) {
+   function getAddressesByTarget($data,$options=array()) {
       //Look for all targets whose type is Notification::USER_TYPE
       switch ($data['type']) {
          //Notifications for one people
@@ -650,7 +653,7 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  $this->getSpecificTargets($data);
+                  $this->getSpecificTargets($data,$options);
             }
             break;
 
@@ -666,7 +669,7 @@ class NotificationTarget extends CommonDBChild {
 
          default :
             //Maybe a target specific to a type
-            $this->getSpecificTargets($data);
+            $this->getSpecificTargets($data,$options);
       }
    }
 

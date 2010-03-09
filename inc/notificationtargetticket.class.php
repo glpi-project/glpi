@@ -42,7 +42,7 @@ class NotificationTargetTicket extends NotificationTarget {
    }
 
 
-   function getSpecificTargets($data) {
+   function getSpecificTargets($data,$options) {
 
    //Look for all targets whose type is Notification::ITEM_USER
    switch ($data['type']) {
@@ -87,11 +87,11 @@ class NotificationTargetTicket extends NotificationTarget {
                break;
             //Send to the ticket validation approver
             case Notification::TICKET_VALIDATION_APPROVER :
-               $this->getTicketValidationApproverAddress();
+               $this->getTicketValidationApproverAddress($options);
                break;
             //Send to the ticket validation requester
             case Notification::TICKET_VALIDATION_REQUESTER :
-               $this->getTicketValidationRequesterAddress();
+               $this->getTicketValidationRequesterAddress($options);
                break;
          }
       }
@@ -183,32 +183,36 @@ class NotificationTargetTicket extends NotificationTarget {
    /**
     * Get approuver related to the ticket validation
     */
-   function getTicketValidationApproverAddress() {
+   function getTicketValidationApproverAddress($options=array()) {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
-                FROM `glpi_ticketvalidations`
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
-                WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
+      if (isset($options['validation_id'])) {
+         $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
+                  FROM `glpi_ticketvalidations`
+                  LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
+                  WHERE `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
 
-      foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data);
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
       }
    }
 
    /**
     * Get requester related to the ticket validation
     */
-   function getTicketValidationRequesterAddress() {
+   function getTicketValidationRequesterAddress($options=array()) {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
-                FROM `glpi_ticketvalidations`
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
-                WHERE `glpi_ticketvalidations`.`tickets_id` = '".$this->obj->fields["id"]."'";
+      if (isset($options['validation_id'])) {
+         $query = "SELECT DISTINCT `glpi_users`.`email` AS email, `glpi_users`.`language` AS language
+                  FROM `glpi_ticketvalidations`
+                  LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
+                  WHERE `glpi_ticketvalidations`.`tickets_id` = '".$options['validation_id']."'";
 
-      foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data);
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
       }
    }
 
