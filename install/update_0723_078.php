@@ -3052,23 +3052,35 @@ function update0723to078($output='HTML') {
       $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                              VALUES(NULL, ".$templates['TicketValidation'].", '',
                             '##ticket.action## ##ticket.title##',
-                            '##FOREACHvalidations##
-                           ##lang.validation.title##
-                           ##lang.ticket.url## : ##validation.url##
+'##FOREACHvalidations##
 
-                           ##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
-                           ##IFvalidation.commentvalidation##
-                           ##lang.validation.commentvalidation## :  ##validation.commentvalidation##
-                           ##ENDIFvalidation.commentvalidation##
-                           ##ENDFOREACHvalidations##',
-                            '&lt;div&gt;##FOREACHvalidations##&lt;/div&gt;
-                           &lt;div&gt;##lang.validation.title##&lt;/div&gt;
-                           &lt;div&gt;##lang.ticket.url## : &lt;a href=\"##validation.url##\"&gt; ##validation.url##
-                           &lt;/a&gt;&lt;/div&gt;&lt;p&gt;##IFvalidation.status## ##lang.validation.validationstatus##
-                           ##ENDIFvalidation.status##&lt;br  /&gt;
-                           ##IFvalidation.commentvalidation##&lt;br /&gt;
-                           ##lang.validation.commentvalidation## :&#160; ##validation.commentvalidation##&lt;br /&gt;
-                           ##ENDIFvalidation.commentvalidation##&lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');";
+##IFvalidation.storestatus=waiting## 
+##lang.validation.submission.title##
+##lang.validation.commentsubmission## : ##validation.commentsubmission##
+##ENDIFvalidation.storestatus##
+##ELSEvalidation.storestatus## ##lang.validation.answer.title## ##ENDELSEvalidation.storestatus##
+
+##lang.ticket.url## : ##validation.url##
+
+##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status## 
+##IFvalidation.commentvalidation##
+##lang.validation.commentvalidation## :   ##validation.commentvalidation##
+##ENDIFvalidation.commentvalidation##
+##ENDFOREACHvalidations##',
+'&lt;div&gt;##FOREACHvalidations##&lt;/div&gt;
+&lt;p&gt;##IFvalidation.storestatus=waiting##&lt;/p&gt;
+&lt;div&gt;##lang.validation.submission.title##&lt;/div&gt;
+&lt;div&gt;##lang.validation.commentsubmission## : ##validation.commentsubmission##&lt;/div&gt;
+&lt;div&gt;##ENDIFvalidation.storestatus##&lt;/div&gt;
+&lt;div&gt;##ELSEvalidation.storestatus## ##lang.validation.answer.title## ##ENDELSEvalidation.storestatus##&lt;/div&gt;
+&lt;div&gt;&lt;/div&gt;
+&lt;div&gt;
+&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##validation.url##\"&gt; ##validation.url## &lt;/a&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
+&lt;br /&gt; ##IFvalidation.commentvalidation##&lt;br /&gt; ##lang.validation.commentvalidation## :
+&#160; ##validation.commentvalidation##&lt;br /&gt; ##ENDIFvalidation.commentvalidation##
+&lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');";
 
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                            VALUES(NULL, ".$templates['Consumable'].", '',
