@@ -138,25 +138,33 @@ class TicketValidation  extends CommonDBChild {
 		
       $job = new Ticket;
       $mailsend = false;
-      if ($job->getFromDB($this->fields["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $options = array('validation_id' => $this->fields["id"]);
-         $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
-      }
-      if ($mailsend) {
-         $user = new User();
-         $user->getFromDB($this->fields["users_id_validate"]);
-         if (!empty($user->fields["email"])) {
-            addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
-         } else {
-            addMessageAfterRedirect($LANG['validation'][23],false,ERROR);
+      if ($job->getFromDB($this->fields["tickets_id"])) {
+         // Set global validation to waiting
+         if ($job->fields['global_validation']=='accepted') {
+            $input['id']=$this->fields["tickets_id"];
+            $input['global_validation']='waiting';
+            $job->update($input);
          }
+         if ($CFG_GLPI["use_mailing"]) {
+            $options = array('validation_id' => $this->fields["id"]);
+            $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
+         }
+         if ($mailsend) {
+            $user = new User();
+            $user->getFromDB($this->fields["users_id_validate"]);
+            if (!empty($user->fields["email"])) {
+               addMessageAfterRedirect($LANG['validation'][13]." ".$user->getName());
+            } else {
+               addMessageAfterRedirect($LANG['validation'][23],false,ERROR);
+            }
+         }
+         // Add log entry in the ticket
+         $changes[0] = 0;
+         $changes[1] = '';
+         $changes[2] = addslashes($LANG['validation'][13]." ".getUserName($this->fields["users_id_validate"]));
+         Log::history($this->getField('tickets_id'),'Ticket',
+                     $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
       }
-		// Add log entry in the ticket
-      $changes[0] = 0;
-      $changes[1] = '';
-      $changes[2] = addslashes($LANG['validation'][13]." ".getUserName($this->fields["users_id_validate"]));
-      Log::history($this->getField('tickets_id'),'Ticket',
-                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
 	}
 	
 	function prepareInputForUpdate($input) {
@@ -198,23 +206,38 @@ class TicketValidation  extends CommonDBChild {
 		
 		$job = new Ticket;
       $mailsend = false;
-      if (count($this->updates) && $job->getFromDB($this->fields["tickets_id"]) && $CFG_GLPI["use_mailing"]) {
-         $options = array('validation_id' => $this->fields["id"]);
-         $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
-      }
-		// Add log entry in the ticket
-      $changes[0] = 0;
-      $changes[1] = '';
-      if ($this->fields["status"]=="accepted") {
-         $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".$LANG['validation'][19];
-      } else if ($this->fields["status"]=="rejected") {
-         $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".$LANG['validation'][20];
-      } else if ($this->fields["status"]!="waiting") { // Simple update
-         $changes[2] = $LANG['validation'][31]." ".getUserName($this->fields["users_id_validate"]);
-      }
-      if (isset($changes[2])) {
-         Log::history($this->getField('tickets_id'),'Ticket',
-                  $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
+
+      if ($job->getFromDB($this->fields["tickets_id"])) {
+         if (count($this->updates) && $CFG_GLPI["use_mailing"]) {
+            $options = array('validation_id' => $this->fields["id"]);
+            $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
+         }
+         // Add log entry in the ticket
+         $changes[0] = 0;
+         $changes[1] = '';
+         if ($this->fields["status"]=="accepted") {
+            $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".$LANG['validation'][19];
+            // Set global validation to accepted
+            if ($job->fields['global_validation']=='waiting') {
+               $input['id']=$this->fields["tickets_id"];
+               $input['global_validation']='accepted';
+               $job->update($input);
+            }
+         } else if ($this->fields["status"]=="rejected") {
+            $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".$LANG['validation'][20];
+            // Set global validation to accepted
+            if ($job->fields['global_validation']=='waiting') {
+               $input['id']=$this->fields["tickets_id"];
+               $input['global_validation']='rejected';
+               $job->update($input);
+            }
+         } else if ($this->fields["status"]!="waiting") { // Simple update
+            $changes[2] = $LANG['validation'][31]." ".getUserName($this->fields["users_id_validate"]);
+         }
+         if (isset($changes[2])) {
+            Log::history($this->getField('tickets_id'),'Ticket',
+                     $changes,$this->getType(),HISTORY_LOG_SIMPLE_MESSAGE);
+         }
       }
 	}
 
@@ -252,21 +275,28 @@ class TicketValidation  extends CommonDBChild {
    }
    
    /**
-    * Dropdown of validation status
-    *
-    * @param $name select name
-    * @param $value default value
-    * @param $option list proposed 0:normal, 1:search, 2:allowed
-    *
-    * @return nothing (display)
-    */
-   static function dropdownStatus($name, $value='waiting', $option=0) {
+   * Dropdown of validation status
+   *
+   * @param $name select name
+   * @param $options array options
+   *   - possible values :
+   *      - value : default value (default waiting)
+   *      - all : display all (default false)
+   *
+   * @return nothing (display)
+   */
+   static function dropdownStatus($name,  $options=array()) {
 
-      if ($option == 1) {
-         $tab = self::getAllStatusArray(true);
-      } else {
-         $tab = self::getAllStatusArray(false);
+      $value='waiting';
+      $all=false;
+      if (isset($options['value'])) {
+         $value=$options['value'];
       }
+      if (isset($options['all'])) {
+         $all=$options['all'];
+      }
+      $tab = self::getAllStatusArray($all);
+
       echo "<select name='$name'>";
       foreach ($tab as $key => $val) {
          echo "<option value='$key' ".($value==$key?" selected ":"").">$val</option>";
@@ -559,7 +589,7 @@ class TicketValidation  extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['validation'][28].":</td>";
             echo "<td>";
-            TicketValidation::dropdownStatus("status",$this->fields["status"]);
+            TicketValidation::dropdownStatus("status",array('value'=>$this->fields["status"]));
             echo "</td></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['validation'][6]." (".$LANG['validation'][16]."):</td>";

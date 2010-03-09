@@ -2472,7 +2472,6 @@ class Ticket extends CommonDBTM {
 
    function showForm($ID, $options=array()) {
       global $DB,$CFG_GLPI,$LANG;
-
       $canupdate = haveRight('update_ticket','1');
       $canpriority = haveRight('update_priority','1');
       $showuserlink=0;
@@ -2780,8 +2779,8 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
+      echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
       if (haveRight("assign_ticket","1")) {
-         echo "<td class='left'>".$LANG['financial'][26]."&nbsp;: </td>";
          echo "<td>";
          Dropdown::show('Supplier',
                   array('name'   => 'suppliers_id_assign',
@@ -2790,7 +2789,9 @@ class Ticket extends CommonDBTM {
 
          echo "</td>";
       } else {
-         echo "<td colspan='2'>&nbsp;</td>";
+         echo "<td>";
+         echo Dropdown::getDropdownName("glpi_suppliers",$this->fields["suppliers_id_assign"]);
+         echo "</td>";
       }
       echo "</tr>\n";
 
@@ -2803,41 +2804,20 @@ class Ticket extends CommonDBTM {
          echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
          Dropdown::showInteger('minute',$options['minute'],0,59);
          echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
-      } else {
-         echo "<td colspan='2'>&nbsp;";
+      } else { // Display validation state
+         echo "<td>".$LANG['validation'][0]."</td>";
+         if ($canupdate){
+            echo "<td>";
+            TicketValidation::dropdownStatus('global_validation',
+                                       array('value'=>$this->fields['global_validation']));
+            echo "</td>";
+         } else {
+            echo "<td>".TicketValidation::getStatus($this->fields['global_validation'])."</td>";
+         }
       }
       echo "</td>";
       echo "</tr>";
-      
-      $accepted_valid = TicketValidation::getTicketStatus($ID,"accepted");
-      $rejected_valid = TicketValidation::getTicketStatus($ID,"rejected");
-      $waiting_valid = TicketValidation::getTicketStatus($ID,"waiting");
-         
-      if ($accepted_valid || $rejected_valid || $waiting_valid) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<th class='center b' colspan='4'>";
-         
-         $bgcolor_valid = "";
-         if ($rejected_valid > 0) {
-            $valid_status ="rejected";
-         } else if ($waiting_valid > 0) { 
-            $valid_status ="waiting";
-         } else {
-            $valid_status ="accepted";
-         }
-         echo "<div style=\"background-color:".TicketValidation::getStatusColor($valid_status).";\">";
-         echo $LANG['validation'][26].": ".TicketValidation::getNumberValidationForTicket($ID);
-         echo " (";
-         echo $accepted_valid."&nbsp;".$LANG['validation'][11];
-         echo " - ";
-         echo $rejected_valid."&nbsp;".$LANG['validation'][10];
-         echo " - ";
-         echo $waiting_valid."&nbsp;".$LANG['validation'][9];
-         echo ")";
-         echo "</div>";
-         echo "</th></tr>";
-      }
-      
+            
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
       echo "<th>";
@@ -2972,63 +2952,6 @@ class Ticket extends CommonDBTM {
           echo "<td colspan='2'>&nbsp;";
       }
       echo "</td></tr>";
-   /*
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>".$LANG['document'][21]."</th>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='top' colspan='2'>";
-
-      // File associated ?
-      $query2 = "SELECT *
-                 FROM `glpi_documents_items`
-                 WHERE `glpi_documents_items`.`items_id` = '".$this->fields["id"]."'
-                       AND `glpi_documents_items`.`itemtype` = 'Ticket' ";
-      $result2 = $DB->query($query2);
-      $numfiles=$DB->numrows($result2);
-
-      echo "<table width='100%'>";
-
-      if ($numfiles>0) {
-         $doc=new Document;
-         while ($data=$DB->fetch_array($result2)) {
-            $doc->getFromDB($data["documents_id"]);
-            echo "<tr><td>";
-            if (empty($doc->fields["filename"])) {
-               if (haveRight("document","r")) {
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?id=".
-                        $data["documents_id"]."'>".$doc->fields["name"]."</a>";
-               } else {
-                  echo $LANG['document'][37];
-               }
-            } else {
-               echo $doc->getDownloadLink("&tickets_id=$ID");
-            }
-            if (haveRight("document","w")) {
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deletedocumentitem=".
-                     "1&amp;id=".$data["id"]."&amp;documents_id=".$data["documents_id"]."'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG['buttons'][6]."'>";
-               echo "</a>";
-            }
-            echo "</td></tr>";
-         }
-      }
-
-      if ($canupdate || haveRight("global_add_followups","1")
-          || (haveRight("add_followups","1") && !strstr($this->fields["status"],'old_'))) {
-         echo "<tr>";
-         echo "<td colspan='2'>";
-         echo "<input type='file' name='filename' size='20'>";
-         if ($canupdate && haveRight("document","r")) {
-            echo "<br>";
-            Document::dropdown(array('name' => "document", 'entity' => $this->fields["entities_id"]));
-         }
-         echo "</td></tr>";
-      }
-      echo "</table>";
-     echo "</td></tr>";
-   */
 
       if ($canupdate
           || $canupdate_descr
@@ -3063,32 +2986,6 @@ class Ticket extends CommonDBTM {
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</div>";
 
-//       if (!$ID) {
-   /* TODO to be fixed => task + solution
-         $commentall = haveRight("update_followups","1");
-         $prefix = "";
-         $postfix = "";
-         $randfollow = mt_rand();
-         echo "<script type='text/javascript' >\n";
-         echo "function showFollow$randfollow(){\n";
-         echo "document.getElementById('follow$randfollow').style.display='block';\n";
-         echo "document.getElementById('followLink$randfollow').style.display='none';\n";
-         echo "}";
-         echo "</script>\n";
-
-         // Follow for add ticket
-         echo "<br/>";
-         echo "<div class='center'>";
-
-         echo "<div id='followLink$randfollow'>";
-         echo "<a href='javascript:onClick=showFollow$randfollow();'>".$LANG['job'][29]."</a></div>";
-
-         echo "<div id='follow$randfollow' style='display:none'>";
-         showAddFollowupForm(-1,false);
-         echo "</div>";
-   */
-//       }
-//       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</form>";
 
       echo "<div id='tabcontent'></div>";

@@ -134,7 +134,7 @@ if (isset($_REQUEST['searchtype'])) {
                   $display=true;
                   break;
                case "glpi_ticketvalidations.status" :
-                  TicketValidation::dropdownStatus($inputname,$_REQUEST['value'],1);
+                  TicketValidation::dropdownStatus($inputname,array('value'=>$_REQUEST['value'],'all'=>1));
                   $display=true;
                   break;
             }
