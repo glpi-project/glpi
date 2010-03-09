@@ -491,7 +491,7 @@ $LANG['entity'][14]="Informations avancées";
 $LANG['entity'][15]="Annuaire associé à l'entité"; 
 $LANG['entity'][16]="Filtre de recherche (si nécessaire)"; 
 $LANG['entity'][17]="Administrative closing configuration"; 
-$LANG['entity'][18]="Fermeture administrative des tickets résolus après"; 
+$LANG['entity'][18]="Fermeture administrative automatique des tickets résolus après"; 
 
 $LANG['event'][0]="פריט(ID)"; 
 $LANG['event'][2]="שרות"; 
@@ -757,6 +757,7 @@ $LANG['job'][50]="Pas de tâche pour ce ticket.";
 $LANG['job'][51]="Approbation de la solution"; 
 $LANG['job'][52]="Mise à jour d'une tâche"; 
 $LANG['job'][53]="Suppression d'une tâche"; 
+$LANG['job'][54]="Sans réponse de votre part, le ticket sera clos automatiquement après"; 
 
 $LANG['joblist'][0]="סטטוס"; 
 $LANG['joblist'][1]="שלי בלבד"; 
