@@ -292,6 +292,7 @@ class MailCollector  extends CommonDBTM {
                   }
                }
             }
+            $this->close_mailbox();
          }
       }
    }
