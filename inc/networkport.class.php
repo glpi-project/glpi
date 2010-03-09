@@ -502,9 +502,9 @@ class NetworkPort extends CommonDBChild {
          echo "</td></tr>\n";
       } else {
          echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
+         echo "<td>";
          echo "<input type='hidden' name='several' value='yes'>";
          echo "<input type='hidden' name='logical_number' value=''>\n";
-         echo "<td>";
          echo $LANG['networking'][47] . "&nbsp;:&nbsp;";
          Dropdown::showInteger('from_logical_number', 0, 0, 100);
          echo $LANG['networking'][48] . "&nbsp;:&nbsp;";
@@ -573,8 +573,6 @@ class NetworkPort extends CommonDBChild {
       }
 
       $this->showFormButtons($options);
-
-      echo "</table></div></form>\n";
 
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
