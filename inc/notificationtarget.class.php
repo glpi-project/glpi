@@ -95,7 +95,7 @@ class NotificationTarget extends CommonDBChild {
       $this->raiseevent = $event;
       $this->options = $options;
       $this->getNotificationTargets($entity);
-      $this->getAdditionalTargets();
+      $this->getAdditionalTargets($event);
       asort($this->notification_targets);
    }
 
@@ -502,8 +502,9 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Allows to add more notification targets
     * Can be overridden in some case (for example Ticket)
+    * @param $event specif event to get additional targets
     */
-   function getAdditionalTargets() {
+   function getAdditionalTargets($event='') {
    }
 
 

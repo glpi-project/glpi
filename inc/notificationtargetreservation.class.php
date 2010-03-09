@@ -82,7 +82,7 @@ class NotificationTargetReservation extends NotificationTarget {
    }
 
 
-   function getAdditionalTargets() {
+   function getAdditionalTargets($event='') {
       global $LANG;
 
       $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
