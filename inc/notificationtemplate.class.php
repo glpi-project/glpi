@@ -294,26 +294,40 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   private static function processIf($string, $data) {
+   static function processIf($string, $data) {
 
-      if (preg_match_all("/##IF([a-z\.]*)##/i",$string,$out)) {
-         foreach ($out[1] as $tag_infos) {
+      if (preg_match_all("/##IF([a-z\.]*)[=]?(\w*)##/i",$string,$out)) {
+//         print_r($out);
+         foreach ($out[1] as $key => $tag_infos) {
             $if_field = $tag_infos;
-
             //Get the field tag value (if one)
-            $regex_if = "/##IF".$if_field."##(.*)##ENDIF".$if_field."##/is";
+            $regex_if = "/##IF".$if_field."[=]?\w*##(.*)##ENDIF".$if_field."##/is";
 
             //Get the else tag value (if one)
-            $regex_else = "/##ELSE".$if_field."##(.*)##ENDELSE".$if_field."##/is";
+            $regex_else = "/##ELSE".$if_field."[=]?\w*##(.*)##ENDELSE".$if_field."##/is";
 
-            if (isset($data['##'.$if_field.'##'])
-                && $data['##'.$if_field.'##'] != ''
-                && $data['##'.$if_field.'##'] != '&nbsp;'
-                && !is_null($data['##'.$if_field.'##'])) {
-
+            if (empty($out[2][$key])){ // No = : check if ot empty or not null
+               if (isset($data['##'.$if_field.'##'])
+                  && $data['##'.$if_field.'##'] != ''
+                  && $data['##'.$if_field.'##'] != '&nbsp;'
+                  && !is_null($data['##'.$if_field.'##'])) {
+                  $condition_ok=true;
+               } else {
+                  $condition_ok=false;
+               }
+            } else { // check exact match
+               if (isset($data['##'.$if_field.'##'])
+                  && $data['##'.$if_field.'##'] == $out[2][$key]) {
+                  $condition_ok=true;
+               } else {
+                  $condition_ok=false;
+               }
+               
+            }
+            if ($condition_ok){ // Do IF
                $string = preg_replace($regex_if, "\\1", $string);
                $string = preg_replace($regex_else, "",  $string);
-            } else {
+            } else { // Do ELSE
                $string = preg_replace($regex_if, "", $string);
                $string = preg_replace($regex_else, "\\1",  $string);
             }
