@@ -349,8 +349,9 @@ class NotificationTarget extends CommonDBChild {
       global $CFG_GLPI;
 
       $new_mail = trim($data['email']);
-      if (isset($data['lang'])) {
-         $new_lang = trim($data['lang']);
+      $new_lang='';
+      if (isset($data['language'])) {
+         $new_lang = trim($data['language']);
       }
 
       $notificationoption = $this->addAdditionnalUserInfo($data);
@@ -388,7 +389,7 @@ class NotificationTarget extends CommonDBChild {
           && $user->getFromDB($this->obj->getField('users_id'))) {
 
          $this->addToAddressesList(array('email'    => $user->getField('email'),
-                                         'language' => $user->getField('email'),
+                                         'language' => $user->getField('language'),
                                          'id'       => $user->getField('id')));
       }
    }
@@ -428,7 +429,7 @@ class NotificationTarget extends CommonDBChild {
 
    function getDistinctUserSql() {
       return  "SELECT DISTINCT `glpi_users`.id AS id, `glpi_users`.`email` AS email,
-                               `glpi_users`.`language` AS lang";
+                               `glpi_users`.`language` AS language";
    }
 
 
@@ -535,7 +536,6 @@ class NotificationTarget extends CommonDBChild {
                   FROM `glpi_users`".
                   $this->getJoinProfileSql()."
                   WHERE `glpi_users`.`id` = '".$this->target_object->getField($field)."'";
-
          foreach ($DB->request($query) as $data) {
             //Add the user email and language in the notified users list
             $this->addToAddressesList($data);
@@ -618,7 +618,6 @@ class NotificationTarget extends CommonDBChild {
     */
    function getAddressesByTarget($data) {
       //Look for all targets whose type is Notification::USER_TYPE
-
       switch ($data['type']) {
          //Notifications for one people
          case Notification::USER_TYPE :
