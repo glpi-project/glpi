@@ -141,24 +141,7 @@ class KnowbaseItem extends CommonDBTM {
 
       if ($canedit) {
          echo "<div id='contenukb'>";
-         echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
-               "/lib/tiny_mce/tiny_mce.js'></script>";
-         echo "<script language='javascript' type='text/javascript''>";
-         echo "tinyMCE.init({
-            language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
-            mode : 'exact',
-            elements: 'answer',
-            plugins : 'table,directionality,searchreplace',
-            theme : 'advanced',
-            entity_encoding : 'numeric', ";
-            // directionality + search replace plugin
-         echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
-         echo "theme_advanced_toolbar_location : 'top',
-            theme_advanced_toolbar_align : 'left',
-            theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-            theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-            theme_advanced_buttons3 : ''});";
-         echo "</script>";
+         initEditorSystem('answer');
 
          echo "<form method='post' id='form_kb' name='form_kb' action=\"".$this->getFormUrl()."\">";
 
