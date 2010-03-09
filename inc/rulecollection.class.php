@@ -249,13 +249,13 @@ class RuleCollection extends CommonDBTM {
       echo "</th></tr>";
       echo "</table>\n";
 
-      $nb = $this->getCollectionSize($options);
+      $nb = $this->getCollectionSize();
       $start = (isset($_GET["start"]) ? $_GET["start"] : 0);
       if ($start >= $nb) {
          $start = 0;
       }
       $limit = $_SESSION['glpilist_limit'];
-      $this->getCollectionPart($start,$limit,$options);
+      $this->getCollectionPart($start,$limit);
 
       printPager($start,$nb,$target,"");
 
