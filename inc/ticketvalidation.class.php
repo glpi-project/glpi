@@ -465,8 +465,8 @@ class TicketValidation  extends CommonDBChild {
                         && !strstr($ticket->fields["status"],"closed")) {
                
                $link_validation=getItemTypeFormURL('TicketValidation');
-               echo "<td><a href=\"".$link_validation."?id=".$row["id"]."\">".
-                  convDateTime($row["submission_date"])."</a></td>";
+               echo "<td>".
+                  convDateTime($row["submission_date"])."</td>";
             } else {
                echo "<td>".convDateTime($row["submission_date"])."</a></td>";
             }
