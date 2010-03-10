@@ -66,7 +66,7 @@ class State extends CommonDropdown {
       $result = $DB->query($queryStateList);
       if ($DB->numrows($result) > 0) {
          while (($data = $DB->fetch_assoc($result))) {
-            $elements[$data["id"]] = $LANG['setup'][198] . ": " . $data["name"];
+            $elements[$data["id"]] = $LANG['setup'][198] . " : " . $data["name"];
          }
       }
       Dropdown::showFromArray($name, $elements, array('value' => $value));
