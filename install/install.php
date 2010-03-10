@@ -211,8 +211,8 @@ function step2($update)
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\">";
 	echo "<fieldset><legend>".$LANG['install'][29]."</legend>";
-	echo "<p><label class='block'>".$LANG['install'][30] .": </label><input type=\"text\" name=\"db_host\"><p>";
-	echo "<p ><label class='block'>".$LANG['install'][31] .": </label><input type=\"text\" name=\"db_user\"></p>";
+	echo "<p><label class='block'>".$LANG['install'][30] ." : </label><input type=\"text\" name=\"db_host\"><p>";
+	echo "<p ><label class='block'>".$LANG['install'][31] ." : </label><input type=\"text\" name=\"db_user\"></p>";
 	echo "<p ><label class='block'>".$LANG['install'][32]." : </label><input type=\"password\" name=\"db_pass\"></p></fieldset>";
 	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\">";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
