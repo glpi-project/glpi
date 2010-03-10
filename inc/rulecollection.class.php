@@ -60,6 +60,7 @@ class RuleCollection extends CommonDBTM {
 
    var $entity = 0;
 
+
    function setEntity($entity=0) {
       $this->entity = $entity;
    }
@@ -786,6 +787,10 @@ class RuleCollection extends CommonDBTM {
          }
       }
       return NULL;
+   }
+
+   function showAdditionnalTab() {
+      return false;
    }
 }
 
