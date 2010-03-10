@@ -60,6 +60,9 @@ class RuleCollection extends CommonDBTM {
 
    var $entity = 0;
 
+   function setEntity($entity=0) {
+      $this->entity = $entity;
+   }
    /**
    * Get Collection Size : retrieve the number of rules
    *
@@ -76,22 +79,32 @@ class RuleCollection extends CommonDBTM {
    }
 
    function getRuleListQuery($active=true,$start=0,$limit=0,$recursive=true) {
+
+      if ($active) {
+         $sql_active=" `is_active` = '1'";
+      }
+      else {
+         $sql_active = "1";
+      }
+
       //Select all the rules of a different type
-      $sql = "SELECT *
-              FROM `glpi_rules`
-              WHERE `sub_type` = '".$this->getRuleClassName()."'";
-              $rule = $this->getRuleClass();
-               if ($rule->maybeRecursive()) {
-                  $sql .= getEntitiesRestrictRequest(" AND",
-                                                     "glpi_rules",
-                                                     "entities_id",
-                                                     $this->entity,
-                                                     $recursive);
-               }
-               if ($active) {
-                  $sql.=" AND `is_active` = '1'";
-               }
-      $sql.= " ORDER BY `".$this->orderby."` ASC";
+      if ($this->isRuleRecursive()) {
+         $sql = "SELECT `glpi_rules`.*
+                FROM `glpi_rules`";
+         $sql.="LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_rules`.`entities_id`)";
+         $sql.="WHERE $sql_active AND `sub_type` = '".$this->getRuleClassName()."' ";
+         $sql .= getEntitiesRestrictRequest(" AND",
+                                            "glpi_rules",
+                                            "entities_id",
+                                            $this->entity,
+                                            $recursive);
+         $sql.= " ORDER BY `glpi_entities`.`level` ASC, `".$this->orderby."` ASC";
+      }
+      else {
+         $sql = "SELECT `glpi_rules`.*
+                 FROM `glpi_rules`";
+                 $sql.="WHERE $sql_active AND `sub_type` = '".$this->getRuleClassName()."'";
+      }
       if ($limit) {
          $sql .= " LIMIT ".intval($start).",".intval($limit);
       }
@@ -222,19 +235,17 @@ class RuleCollection extends CommonDBTM {
       return $rule->isEntityAssign();
    }
 
-   /**
-   * Show the list of rules
-   * @param $target
-   * @return nothing
-   **/
-   function showListRules($target) {
-      global $CFG_GLPI, $LANG;
+  /**
+    * Indicates if the rule can be affected to an entity or if it's global
+    */
+   function isRuleRecursive() {
+      $rule = $this->getRuleClass();
+      return $rule->maybeRecursive();
+   }
 
-      // Do not know what it is ?
-//      $options['recursive'] = $_SESSION['rule_ticket']['recursive'];
-      $canedit = haveRight($this->right, "w");
-
-      echo "<table class='tab_cadre_fixe'><tr><th>";
+   function showEngineSummary() {
+      global $LANG;
+           echo "<table class='tab_cadre_fixe'><tr><th>";
       //Display informations about the how the rules engine process the rules
       if ($this->stop_on_first_match) {
          //The engine stop on the first matched rule
@@ -249,14 +260,33 @@ class RuleCollection extends CommonDBTM {
       }
       echo "</th></tr>";
       echo "</table>\n";
+   }
 
-      $nb = $this->getCollectionSize();
+   /**
+   * Show the list of rules
+   * @param $target
+   * @return nothing
+   **/
+   function showListRules($target,$tab=0,$options=array()) {
+      global $CFG_GLPI, $LANG;
+
+      if ($options['inherited']== 1 && $this->isRuleRecursive()) {
+         $recursive = true;
+      }
+      else {
+         $recursive = false;
+      }
+
+      // Do not know what it is ?
+      $canedit = (haveRight($this->right, "w") && !$options['inherited']);
+
+      $nb = $this->getCollectionSize($recursive);
       $start = (isset($_GET["start"]) ? $_GET["start"] : 0);
       if ($start >= $nb) {
          $start = 0;
       }
       $limit = $_SESSION['glpilist_limit'];
-      $this->getCollectionPart($start,$limit);
+      $this->getCollectionPart($start,$limit,$recursive);
 
       printPager($start,$nb,$target,"");
 
@@ -268,14 +298,19 @@ class RuleCollection extends CommonDBTM {
       echo "<tr><td class='tab_bg_2 center' colspan='2'>".$LANG['common'][16]."</td>";
       echo "<td class='tab_bg_2 center'>".$LANG['joblist'][6]."</td>";
       echo "<td class='tab_bg_2 center'>".$LANG['common'][60]."</td>";
-      echo "<td class='tab_bg_2' colspan='2'></td></tr>\n";
+      if (!$options['inherited']) {
+         echo "<td class='tab_bg_2' colspan='2'></td></tr>\n";
+      }
+      else {
+         echo "<td class='tab_bg_2' colspan='2'>".$LANG['entity'][0]."</td></tr>\n";
+      }
 
       if (count($this->RuleList->list)) {
          $ruletype=$this->RuleList->list[0]->getType();
          initNavigateListItems($ruletype);
       }
       for ($i=$start,$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
-         $this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1);
+         $this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1,$options['inherited']);
          addToNavigateListItems($ruletype,$this->RuleList->list[$j]->fields['id']);
       }
       echo "</table>\n";

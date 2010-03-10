@@ -334,7 +334,7 @@ class Rule extends CommonDBTM {
    function showActionsList($rules_id) {
       global $CFG_GLPI, $LANG;
 
-      $canedit = haveRight($this->right, "w");
+      $canedit = $this->can($rules_id, "w");
       $this->getTitleAction(getItemTypeFormURL(get_class($this)));
 
       if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount())
@@ -450,7 +450,7 @@ class Rule extends CommonDBTM {
    function showCriteriasList($rules_id) {
       global $CFG_GLPI, $LANG;
 
-      $canedit = haveRight($this->right, "w");
+      $canedit = $this->can($rules_id, "w");
       $this->getTitleCriteria(getItemTypeFormURL(get_class($this)));
 
       if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount())
@@ -815,10 +815,10 @@ class Rule extends CommonDBTM {
    * @param $first is it the first rule ?
    * @param $last is it the last rule ?
    */
-   function showMinimalForm($target,$first=false,$last=false) {
+   function showMinimalForm($target,$first=false,$last=false,$inherit=false) {
       global $LANG,$CFG_GLPI;
 
-      $canedit = haveRight($this->right,"w");
+      $canedit = haveRight($this->right,"w") && !$inherit;
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
@@ -845,7 +845,13 @@ class Rule extends CommonDBTM {
                     $this->fields["id"]."\">";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
       } else {
-      echo "<td>&nbsp;</td>";
+         if ($inherit) {
+            echo Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']);
+         }
+         else {
+            echo "<td>&nbsp;</td>";
+         }
+
       }
       if ($this->can_sort && !$last && $canedit) {
          echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=down&amp;id=".
