@@ -441,7 +441,7 @@ class Ticket extends CommonDBTM {
       // Check dates change interval due to the fact that second are not displayed in form
       if (($key=array_search('date',$this->updates))!==false
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
-         
+
          unset($this->updates[$key]);
       }
       if (($key=array_search('closedate',$this->updates))!==false
@@ -987,7 +987,7 @@ class Ticket extends CommonDBTM {
       $this->addFiles($this->fields['id']);
 
       // Log this event
-      Event::log($this->fields['id'],"tracking",4,"tracking",
+      Event::log($this->fields['id'],"ticket",4,"tracking",
                   getUserName($this->input["users_id"])." ".$LANG['log'][20]);
 
       $already_mail=false;
@@ -1442,7 +1442,7 @@ class Ticket extends CommonDBTM {
       $tab[53]['name']      = $LANG['validation'][0]." - ".$LANG['validation'][5];
       $tab[53]['datatype']  = 'text';
       $tab[53]['forcegroupby'] = true;
-      
+
       $tab[54]['table']     = 'glpi_ticketvalidations';
       $tab[54]['field']     = 'comment_validation';
       $tab[54]['linkfield'] = '';
@@ -1456,7 +1456,7 @@ class Ticket extends CommonDBTM {
       $tab[55]['name']      = $LANG['validation'][0]." - ".$LANG['joblist'][0];
       $tab[55]['searchtype']= 'equals';
       $tab[55]['forcegroupby'] = true;
-      
+
       $tab[56]['table']     = 'glpi_ticketvalidations';
       $tab[56]['field']     = 'submission_date';
       $tab[56]['linkfield'] = '';
@@ -2823,7 +2823,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-            
+
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
       echo "<th>";
@@ -3115,7 +3115,7 @@ class Ticket extends CommonDBTM {
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
                         "\">".$LANG['central'][18]."</a>";
                   break;
-                  
+
                   case "process";
                      $options['field'][0]      = 12; // status
                      $options['searchtype'][0] = 'equals';
