@@ -156,7 +156,7 @@ commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecolle
                     'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
                     'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&inherited=0&itemtype=".get_class($rulecollection));
 
-   if (haveRight('rule_ticket','r') && $rulecollection->isRuleRecursive()) {
+   if ($rulecollection->showAdditionnalTab()) {
       $tabs[1] = array('title'  => $LANG['rulesengine'][20],
                        'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
                        'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&inherited=1&itemtype=".get_class($rulecollection));

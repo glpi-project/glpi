@@ -57,6 +57,9 @@ class RuleTicketCollection extends RuleCollection {
       return Ticket::showPreviewAssignAction($output);
    }
 
+   function showAdditionnalTab() {
+      return haveRight('rule_ticket','r');
+   }
 }
 
 ?>
