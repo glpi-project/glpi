@@ -47,6 +47,9 @@ if (isset($_POST["sub_type"])) {
 }
 
 $rulecollection = RuleCollection::getClassByType($sub_type);
+if ($rulecollection->isRuleRecursive()) {
+   $rulecollection->setEntity($_SESSION['glpiactive_entity']);
+}
 checkRight($rulecollection->right,"r");
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
