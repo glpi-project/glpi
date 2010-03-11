@@ -152,7 +152,11 @@ if (isset($_GET["action"])) {
 commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecollection->menu_type,
              $rulecollection->menu_option);
 
-   $tabs[0] = array('title'  => $LANG['rulesengine'][17],
+   $title = $LANG['rulesengine'][17];
+   if($rulecollection->isRuleRecursive()) {
+      $title.= ':'.Dropdown::getDropdownName('glpi_entities',$_SESSION['glpiactive_entity']);
+   }
+   $tabs[0] = array('title'  => $title,
                     'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
                     'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&inherited=0&itemtype=".get_class($rulecollection));
 
