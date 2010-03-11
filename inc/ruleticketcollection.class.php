@@ -57,8 +57,12 @@ class RuleTicketCollection extends RuleCollection {
       return Ticket::showPreviewAssignAction($output);
    }
 
-   function showAdditionnalTab() {
-      return haveRight('rule_ticket','r');
+   function showInheritedTab() {
+      return haveRight('rule_ticket','r') && ($this->entity);
+   }
+
+   function showChildrensTab() {
+      return haveRight('rule_ticket','r') && (count($_SESSION['glpiactiveentities']) > 1);
    }
 }
 

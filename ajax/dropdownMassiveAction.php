@@ -74,7 +74,13 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          echo "<option value='after' selected>".$LANG['buttons'][47]."</option>";
          echo "<option value='before'>".$LANG['buttons'][46]."</option>";
          echo "</select>&nbsp;";
-         Rule::dropdown(array('sub_type'=>$_POST['sub_type'],'name' => "ranking"));
+         if (isset($_POST['entity_restrict'])) {
+            $condition = $_POST['entity_restrict'];
+         }
+         else {
+            $condition = "";
+         }
+         Rule::dropdown(array('sub_type'=>$_POST['sub_type'],'name' => "ranking",'entity_restrict'=>$condition));
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" >\n";
          break;

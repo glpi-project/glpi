@@ -926,7 +926,7 @@ class Ticket extends CommonDBTM {
       }
 
       // Process Business Rules
-      $rules=new RuleTicketCollection();
+      $rules=new RuleTicketCollection($input['entities_id']);
 
       // Set unset variables with are needed
       $user=new User();
@@ -935,7 +935,7 @@ class Ticket extends CommonDBTM {
       }
 
 
-      $input=$rules->processAllRules($input,$input);
+      $input=$rules->processAllRules($input,$input,array('recursive'=>true));
 
       if (isset($input["use_email_notification"])
           && $input["use_email_notification"]

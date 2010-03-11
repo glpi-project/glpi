@@ -1418,6 +1418,7 @@ $LANG['rulesengine'][17]="Règles";
 $LANG['rulesengine'][18]="Règles d'affectation d'une machine à une entité";
 $LANG['rulesengine'][19]="Règles d'affectation d'entité et de droits";
 $LANG['rulesengine'][20]="Règles héritées";
+$LANG['rulesengine'][21]="Règles sous-entités";
 $LANG['rulesengine'][22]="Assigner";
 $LANG['rulesengine'][24]="Choix du type de règle";
 $LANG['rulesengine'][25]="Nom de la machine";

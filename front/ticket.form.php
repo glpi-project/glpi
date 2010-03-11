@@ -56,11 +56,8 @@ if (isset($_POST["add"])) {
          $_POST["items_id"] = $splitter[1];
       }
    }
-   /* TODO : Event::log done in Ticket->post_addItem(), is it ok ?
-   if ($newID=$track->add($_POST)) {
-      Event::log($newID, "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-   }
-   */
+
+   $track->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST['update'])) {

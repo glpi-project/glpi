@@ -815,10 +815,10 @@ class Rule extends CommonDBTM {
    * @param $first is it the first rule ?
    * @param $last is it the last rule ?
    */
-   function showMinimalForm($target,$first=false,$last=false,$inherit=false) {
+   function showMinimalForm($target,$first=false,$last=false,$readonly=false) {
       global $LANG,$CFG_GLPI;
 
-      $canedit = haveRight($this->right,"w") && !$inherit;
+      $canedit = haveRight($this->right,"w") && !$readonly;
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
@@ -845,7 +845,7 @@ class Rule extends CommonDBTM {
                     $this->fields["id"]."\">";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
       } else {
-         if ($inherit) {
+         if ($readonly) {
             echo Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']);
          }
          else {
@@ -1312,6 +1312,7 @@ class Rule extends CommonDBTM {
 
       $p['sub_type'] = '';
       $p['name']   = 'rules_id';
+      $p['entity_restrict'] = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1338,7 +1339,8 @@ class Rule extends CommonDBTM {
                   'myname'     => $p['name'],
                   'limit'      => $limit_length,
                   'rand'       => $rand,
-                  'type'       => $p['sub_type']);
+                  'type'       => $p['sub_type'],
+                  'entity_restrict'  => $p['entity_restrict']);
       $default ="<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
       $default.="<option value='0'>------</option></select>";
       ajaxDropdown($use_ajax,"/ajax/dropdownRules.php",$params,$default,$rand);

@@ -64,6 +64,9 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
 } else {
    $sql .= " AND `name` ".makeTextSearch($_POST['searchText']);
 }
+if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']!='') {
+   $sql.=" AND `glpi_rules`.`entities_id`='".$_POST['entity_restrict']."'";
+}
 $sql .= " ORDER BY `ranking` ASC " .
           $LIMIT;
 $result = $DB->query($sql);
