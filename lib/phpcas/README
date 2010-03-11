@@ -1,0 +1,45 @@
+README
+phpCAS - http://www.ja-sig.org/wiki/display/CASC/phpCAS
+This software contains a client library for PHP, which can be used to identify
+Central Authentication Service (CAS) authenticated users.
+
+Please see the phpCAS website for more information.
+
+http://www.ja-sig.org/wiki/display/CASC/phpCAS
+
+LICENSE
+Copyright © 2003-2010, The ESUP-Portail consortium & the JA-SIG Collaborative.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name of the ESUP-Portail consortium & the JA-SIG
+      Collaborative nor the names of its contributors may be used to endorse or
+      promote products derived from this software without specific prior
+      written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+In addition, phpCAS ships (for compatibility with PHP5) with an integrated copy 
+of domxml-php4-to-php5.php (http://alexandre.alapetite.net/doc-alex/domxml-php4-php5/),
+written by Alexandre Alapetite (http://alexandre.alapetite.net/cv/).
+
+domxml-php4-to-php5.php is distributed under the GNU Lesser General Public License,
+http://www.gnu.org/licenses/lgpl.html

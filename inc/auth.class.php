@@ -258,11 +258,14 @@ class Identification {
 		switch ($auth_method){
 			case AUTH_CAS:
 				include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-				$cas = new phpCas(); 
-				$cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]); 
-				// force CAS authentication
-				$cas->forceAuthentication(); 
-				$this->user->fields['name'] = $cas->getUser(); 
+            phpCAS::client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
+                         $CFG_GLPI["cas_uri"]);
+            // no SSL validation for the CAS server
+            phpCAS::setNoCasServerValidation();
+            
+            // force CAS authentication
+            phpCAS::forceAuthentication();
+            $this->user->fields['name'] = phpCAS::getUser();
 				return true;
 			break;
 			case AUTH_EXTERNAL:
@@ -320,11 +323,19 @@ class Identification {
 
 		
 		if ($this->auth_succeded) {
-			
-			// Restart GLPi session : complete destroy to prevent lost datas
-			$this->destroySession();
-			startGlpiSession();
 
+         // Restart GLPi session : complete destroy to prevent lost datas
+         $tosave=array('glpi_plugins','glpitest','phpCAS');
+         $save=array();
+         foreach ($tosave as $t) {
+            if (isset($_SESSION[$t])) {
+               $save[$t]=$_SESSION[$t];
+            }
+         }
+         $this->destroySession();
+         startGlpiSession();
+         $_SESSION = $save;
+			
 			// Normal mode for this request
 			$_SESSION["glpi_use_mode"] = NORMAL_MODE;
 			// Check ID exists and load complete user from DB (plugins...)
