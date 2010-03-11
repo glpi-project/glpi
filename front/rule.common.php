@@ -154,7 +154,7 @@ commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecolle
 
    $title = $LANG['rulesengine'][17];
    if($rulecollection->isRuleRecursive()) {
-      $title.= ':'.Dropdown::getDropdownName('glpi_entities',$_SESSION['glpiactive_entity']);
+      $title.= ' : '.Dropdown::getDropdownName('glpi_entities',$_SESSION['glpiactive_entity']);
    }
    $tabs[0] = array('title'  => $title,
                     'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
