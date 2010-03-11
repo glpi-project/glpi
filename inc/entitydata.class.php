@@ -346,7 +346,7 @@ class EntityData extends CommonDBTM {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
-         if (isset($entitynotification->fields["id"])) {
+         if ($entitynotification->fields["id"]) {
             echo "<input type='hidden' name='id' value=\"".$entitynotification->fields["id"]."\">";
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
          } else {
