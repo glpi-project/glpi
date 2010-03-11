@@ -250,12 +250,15 @@ class Auth {
       switch ($authtype) {
          case Auth::CAS :
             include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-            $cas = new phpCas();
-            $cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
+            phpCAS::setDebug();
+            phpCAS::client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
                          $CFG_GLPI["cas_uri"]);
+            // no SSL validation for the CAS server
+            phpCAS::setNoCasServerValidation();
+            
             // force CAS authentication
-            $cas->forceAuthentication();
-            $this->user->fields['name'] = $cas->getUser();
+            phpCAS::forceAuthentication();
+            $this->user->fields['name'] = phpCAS::getUser();
             return true;
             break;
 
@@ -312,10 +315,16 @@ class Auth {
 
       if ($this->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
-         $save = $_SESSION["glpi_plugins"];
+         $tosave=array('glpi_plugins','glpicookietest','phpCAS');
+         $save=array();
+         foreach ($tosave as $t) {
+            if (isset($_SESSION[$t])) {
+               $save[$t]=$_SESSION[$t];
+            }
+         }
          $this->destroySession();
          startGlpiSession();
-         $_SESSION["glpi_plugins"] = $save;
+         $_SESSION = $save;
 
          // Normal mode for this request
          $_SESSION["glpi_use_mode"] = NORMAL_MODE;
@@ -448,7 +457,7 @@ class Auth {
     *
     * @return boolean (success)
     */
-   function Login ($login_name, $login_password, $noauto=false) {
+   function Login($login_name, $login_password, $noauto=false) {
       global $DB, $CFG_GLPI, $LANG;
 
       $this->getAuthMethods();
@@ -459,16 +468,14 @@ class Auth {
       if (!$noauto && $authtype=Auth::checkAlternateAuthSystems()) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
-
+            
             $user=$this->user->fields['name'];
             // Used for log when login process failed
             $login_name=$user;
-
             $this->auth_succeded = true;
             $this->extauth = 1;
             $this->user_present = $this->user->getFromDBbyName(addslashes($user));
             $this->user->fields['authtype'] = $authtype;
-
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
             if (canUseLdap()) {
@@ -487,6 +494,7 @@ class Auth {
                   }
                }
             }
+
             // Reset to secure it
             $this->user->fields['name'] = $user;
             $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
@@ -494,13 +502,13 @@ class Auth {
             $this->addToError($LANG['login'][8]);
          }
       }
-
       if ($noauto) {
          $_SESSION["noAUTO"] = 1;
       }
 
       // If not already auth
       if (!$this->auth_succeded) {
+
          if (empty($login_name) || empty($login_password)) {
             $this->addToError($LANG['login'][8]);
          } else {
@@ -574,6 +582,7 @@ class Auth {
       // is not present on the DB, so we add him.
       // if not, we update him.
       if ($this->auth_succeded) {
+
          // Prepare data
          $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
          if ($this->extauth) {
@@ -618,8 +627,8 @@ class Auth {
             Event::log(-1, "system", 1, "login", $logged . ": " . $login_name . " ($ip)");
          }
       }
-      $this->initSession();
 
+      $this->initSession();
       return $this->auth_succeded;
    }
 
@@ -821,7 +830,6 @@ class Auth {
       if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
          return false;
       }
-
       $redir_string="";
       if (!empty($redirect_string)) {
          $redir_string="?redirect=".$redirect_string;

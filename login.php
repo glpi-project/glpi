@@ -37,7 +37,8 @@ define('GLPI_ROOT', '.');
 
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_SESSION["glpitest"]) || $_SESSION["glpitest"]!='testcookie') {
+
+if (!isset($_SESSION["glpicookietest"]) || $_SESSION["glpicookietest"]!='testcookie') {
    if (!is_writable(GLPI_SESSION_DIR)) {
       glpi_header($CFG_GLPI['root_doc'] . "/index.php?error=2");
    } else {
@@ -73,6 +74,8 @@ $auth = new Auth();
 if ($auth->Login($_POST['login_name'],
                         $_POST['login_password'], 
                         (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
+
+
    // Redirect to Command Central if not post-only
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
@@ -81,6 +84,7 @@ if ($auth->Login($_POST['login_name'],
    }
 
 } else {
+
    // we have done at least a good login? No, we exit.
    nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');
    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
