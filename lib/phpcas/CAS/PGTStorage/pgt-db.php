@@ -5,12 +5,6 @@
  * Basic class for PGT database storage
  */
 
-// include phpDB library (the test was introduced in release 0.4.8 for 
-// the integration into Tikiwiki).
-if (!class_exists('DB')) {
-  include_once('DB.php');
-}
-
 /**
  * @class PGTStorageDB
  * The PGTStorageDB class is a class for PGT database storage. An instance of 
@@ -171,10 +165,16 @@ class PGTStorageDB extends PGTStorage
       phpCAS::traceBegin();
       // if the storage has already been initialized, return immediatly
       if ( $this->isInitialized() )
-	return;
+		return;
       // call the ancestor's method (mark as initialized)
       parent::init();
       
+	  //include phpDB library (the test was introduced in release 0.4.8 for 
+	  //the integration into Tikiwiki).
+	  if (!class_exists('DB')) {
+		include_once('DB.php');
+	  }
+
       // try to connect to the database
       $this->_link = DB::connect($this->getURL());
       if ( DB::isError($this->_link) ) {

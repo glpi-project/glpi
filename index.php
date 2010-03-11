@@ -46,7 +46,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    $TRY_OLD_CONFIG_FIRST=true;
 
    include (GLPI_ROOT . "/inc/includes.php");
-   $_SESSION["glpitest"]='testcookie';
+   $_SESSION["glpicookietest"]='testcookie';
 
    // For compatibility reason
    if (isset($_GET["noCAS"])) {
