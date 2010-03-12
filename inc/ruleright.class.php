@@ -201,8 +201,8 @@ class RuleRight extends Rule {
                          *
                          * n results of m regex
                          *
-                         * The unshift solution try to allow use of #1 if action
-                         * latest case could intriduce race conditions.
+                         * The unshift solution try to allow use of #1 in action
+                         * latest case could introduce race conditions.
                          */
                         //foreach ($regex_results as $regex_result) {
                         while (count($regex_results)) {
