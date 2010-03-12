@@ -449,6 +449,43 @@ class Entity extends CommonTreeDropdown {
       Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
       glpi_header($_SERVER['HTTP_REFERER']);
    }
+
+   static function getEntitiesToNotify($field) {
+      global $DB,$CFG_GLPI;
+
+      $query = "SELECT `glpi_entities`.`id` as `entity`,
+               `glpi_entitydatas`.`$field`
+               FROM `glpi_entities`
+               LEFT JOIN `glpi_entitydatas` ON (
+               `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
+      $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
+
+      $entities = array();
+      foreach ($DB->request($query) as $entitydatas) {
+         if (!$entitydatas['entity']) {
+            $root_entity_found = true;
+         }
+         if ( ((!isset($entitydatas[$field]) || $entitydatas[$field]==-1) && $CFG_GLPI[$field])
+                 || $entitydatas[$field]) {
+            $entities[] = $entitydatas['entity'];
+         }
+      }
+
+      //If root entity doesn't have row in glpi_entitydatas
+      $query = "SELECT `$field` FROM `glpi_entitydatas` WHERE `entities_id`='0'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         if (($DB->result($result,0,$field) > 0)
+            || ($DB->result($result,0,$field) == -1 && $CFG_GLPI[$field])){
+            $entities[] = 0;
+         }
+      }
+      elseif ($CFG_GLPI[$field]) {
+            $entities[] = 0;
+      }
+
+      return $entities;
+   }
 }
 
 ?>

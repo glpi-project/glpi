@@ -961,8 +961,18 @@ class Contract extends CommonDBTM {
              LEFT JOIN `glpi_entitydatas` ON (
                `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
       $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
-      foreach ($DB->request($query) as $entitydatas) {
 
+      $entities[] = 0;
+      foreach ($DB->request($query) as $entitydatas) {
+         if ( ((!isset($entitydatas['use_contracts_alert'])
+              || $entitydatas['use_contracts_alert']==-1)
+                 && $CFG_GLPI["use_contracts_alert"])
+                    || $entitydatas['use_contracts_alert']) {
+            $entities[] = $entitydatas['entity'];
+         }
+      }
+
+      foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity) {
          $query_notice="SELECT `glpi_contracts`.*
                         FROM `glpi_contracts`
                         LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
@@ -979,7 +989,7 @@ class Contract extends CommonDBTM {
                                                   (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
                                                   MONTH),CURDATE()) < '0'
                                              AND `glpi_alerts`.`date` IS NULL
-                                                AND `glpi_contracts`.`entities_id`='".$entitydatas['entity']."'";
+                                                AND `glpi_contracts`.`entities_id`='".$entity."'";
 
          $query_end="SELECT `glpi_contracts`.*
                      FROM `glpi_contracts`
@@ -993,33 +1003,26 @@ class Contract extends CommonDBTM {
                                     AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                                 (`glpi_contracts`.`duration`) MONTH),CURDATE()) < '0'
                                        AND `glpi_alerts`.`date` IS NULL
-                                          AND `glpi_contracts`.`entities_id`='".$entitydatas['entity']."'";
+                                          AND `glpi_contracts`.`entities_id`='".$entity."'";
 
          $querys = array(Alert::NOTICE=>$query_notice, Alert::END=>$query_end);
 
-         if ( ((!isset($entitydatas['use_contracts_alert'])
-                 || $entitydatas['use_contracts_alert']==-1)
-                 && $CFG_GLPI["use_contracts_alert"])
-                    || $entitydatas['use_contracts_alert']) {
-            foreach ($querys as $type => $query) {
+         foreach ($querys as $type => $query) {
+            foreach ($DB->request($query) as $data) {
+               $entity = $data['entities_id'];
+               $message = $data["name"].": ".
+                           getWarrantyExpir($data["begin_date"],
+                                            $data["duration"],
+                                            $data["notice"])."<br>\n";
+               $contract_infos[$type][$entity][$data['id']] = $data;
 
-               foreach ($DB->request($query) as $data) {
-                  $entity = $data['entities_id'];
-                  $message = $data["name"].": ".
-                              getWarrantyExpir($data["begin_date"],
-                                               $data["duration"],
-                                               $data["notice"])."<br>\n";
-                  $contract_infos[$type][$entity][$data['id']] = $data;
-
-                  if (!isset($contract_messages[$type][$entity])) {
-                     $contract_messages[$type][$entity] = $LANG['mailing'][37]."<br />";
-                  }
-                  $contract_messages[$type][$entity] .= $message;
+                if (!isset($contract_messages[$type][$entity])) {
+                  $contract_messages[$type][$entity] = $LANG['mailing'][37]."<br />";
                }
+               $contract_messages[$type][$entity] .= $message;
             }
          }
       }
-
 
       foreach (array(Alert::NOTICE=>"notice",Alert::END=>"end") as $type=>$event) {
          foreach ($contract_infos[$type] as $entity => $contracts) {
