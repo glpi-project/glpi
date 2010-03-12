@@ -182,8 +182,31 @@ class RuleRight extends Rule {
                      case "_affect_entity_by_tag" :
                         $match_entity = false;
                         $entity = array();
-                        foreach ($regex_results as $regex_result) {
-                           $res = RuleAction::getRegexResultById($action->fields["value"],array($regex_result));
+                        /*
+                         * TODO : review this part.
+                         *
+                         * $regex_results is an array which can hold
+                         *
+                         * 1 result of 1 regex (simple case)
+                         *
+                         * n results of the regex against a single attribute
+                         *   ex pattern    /ĜLPI-(abc|def)-([0-9]*)/
+                         *      attrib     GLPI-abc-123
+                         *      result     abc, 123
+                         *
+                         * 1 result of the regex against a multi value attribute
+                         *   ex pattern    /ĜLPI-([0-9]*)/
+                         *      attrib     GLPI-123, GLPI-456, GLPI-789
+                         *      result     123, 456, 789
+                         *
+                         * n results of m regex
+                         *
+                         * The unshift solution try to allow use of #1 if action
+                         * latest case could intriduce race conditions.
+                         */
+                        //foreach ($regex_results as $regex_result) {
+                        while (count($regex_results)) {
+                           $res = RuleAction::getRegexResultById($action->fields["value"],$regex_results);
                            if ($res != null) {
                               if ($action->fields["field"] == "_affect_entity_by_dn") {
                                  $entity_found = EntityData::getEntityIDByDN($res);
@@ -197,6 +220,7 @@ class RuleRight extends Rule {
                                  $match_entity=true;
                               }
                            }
+                           array_shift($regex_results);
                         }
                         if (!$match_entity) {
                            //Not entity assigned : action processing must be stopped for this rule
