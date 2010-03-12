@@ -200,6 +200,9 @@ class NotificationTemplate extends CommonDBTM {
 
          //Restore default language
          loadLanguage();
+         if ($plug = isPluginItemType(get_class($target->obj))) {
+            Plugin::loadLang(strtolower($plug['plugin']));
+         }
 
          if ($template_datas = $this->getByLanguage($language)) {
             //Template processing
