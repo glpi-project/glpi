@@ -112,11 +112,11 @@ class RuleCriteria extends CommonDBChild {
       return $rules_list;
    }
 
-   /**
+   /* NO MORE USED
     * Process a criteria of a rule
     * @param $input the input data used to check criterias
     * @param $regex_result
-   **/
+   *
    function process(&$input,&$regex_result) {
 
       // Undefine criteria field : set to blank
@@ -157,7 +157,7 @@ class RuleCriteria extends CommonDBChild {
       }
       return $res;
    }
-
+*/
    /**
     * Return a value associated with a pattern associated to a criteria to compare it
     * @param $condition condition used
@@ -278,9 +278,13 @@ class RuleCriteria extends CommonDBChild {
          case Rule::REGEX_MATCH :
             $results = array();
             if (preg_match($pattern."i",$field,$results)>0) {
-               for ($i=1;$i<count($results);$i++) {
+               // Drop $result[0] : complete match result
+               array_shift($results);
+               // And add to $regex_result array
+               $regex_result[] = $results;
+/*               for ($i=1;$i<count($results);$i++) {
                   $regex_result[]=$results[$i];
-               }
+               }*/
                return true;
             }
             return false;
