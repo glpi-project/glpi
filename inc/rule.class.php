@@ -661,7 +661,7 @@ class Rule extends CommonDBTM {
       if ($this->fields["match"]==Rule::AND_MATCHING) {
          $doactions=true;
          foreach ($this->criterias as $criteria) {
-            $doactions &= $this->checkCriteria($criteria,$input,$partial_regex_result);
+            $doactions &= $this->checkCriteria($criteria,$input,$regex_result);
             if (!$doactions) {
                break;
             }
@@ -751,7 +751,6 @@ class Rule extends CommonDBTM {
             }
          }
       }
-
       // Found regex on this criteria
       if (count($partial_regex_result)) {
          // No regex existing : put found
