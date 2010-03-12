@@ -113,10 +113,11 @@ class RuleCollection extends CommonDBTM {
             $sons = getSonsOf('glpi_entities',$this->entity);
             $sql.=" AND `glpi_rules`.`entities_id` IN (".implode(',',$sons).")";
          }
-         $sql.= " ORDER BY `glpi_entities`.`level` ASC, `".$this->orderby."` ASC";
+         $sql.= " ORDER BY `glpi_entities`.`level` ASC, ".$this->orderby."` ASC";
       }
       else {
          $sql.="WHERE $sql_active AND `sub_type` = '".$this->getRuleClassName()."'";
+         $sql.= " ORDER BY `".$this->orderby."` ASC";
       }
       if ($p['limit']) {
          $sql .= " LIMIT ".intval($p['start']).",".intval($p['limit']);
