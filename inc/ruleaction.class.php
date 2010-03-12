@@ -99,7 +99,8 @@ class RuleAction extends CommonDBChild {
 
       $sql = "SELECT *
               FROM `glpi_ruleactions`
-              WHERE `rules_id` = '$ID'";
+              WHERE `rules_id` = '$ID'
+              ORDER BY `id`";
       $result = $DB->query($sql);
 
       $rules_actions = array ();

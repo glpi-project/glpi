@@ -99,7 +99,8 @@ class RuleCriteria extends CommonDBChild {
 
       $sql = "SELECT *
               FROM `glpi_rulecriterias`
-              WHERE `rules_id` = '$ID'";
+              WHERE `rules_id` = '$ID'
+              ORDER BY `id`";
       $result = $DB->query($sql);
 
       $rules_list = array ();
