@@ -106,7 +106,7 @@ class RuleTicket extends Rule {
                   if (!isset($output["entities_id"])) {
                      $output["entities_id"]=$params["entities_id"];
                   }
-                  $regexvalue = RuleAction::getRegexResultById($action->fields["value"],$regex_results);
+                  $regexvalue = RuleAction::getRegexResultById($action->fields["value"],$regex_results[0]);
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
                         $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",

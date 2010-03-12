@@ -661,7 +661,7 @@ class Rule extends CommonDBTM {
       if ($this->fields["match"]==Rule::AND_MATCHING) {
          $doactions=true;
          foreach ($this->criterias as $criteria) {
-            $doactions &= $this->checkCriteria($criteria,$input,$regex_result);
+            $doactions &= $this->checkCriteria($criteria,$input,$partial_regex_result);
             if (!$doactions) {
                break;
             }
@@ -675,6 +675,7 @@ class Rule extends CommonDBTM {
             }
          }
       }
+//      print_r($regex_result);
       return $doactions;
    }
 
@@ -706,6 +707,9 @@ class Rule extends CommonDBTM {
    **/
    function checkCriteria(&$criteria,&$input,&$regex_result) {
 
+
+      $partial_regex_result=array();
+
       // Undefine criteria field : set to blank
       if (!isset($input[$criteria->fields["criteria"]])) {
          $input[$criteria->fields["criteria"]]='';
@@ -716,7 +720,7 @@ class Rule extends CommonDBTM {
                                         $input[$criteria->fields["criteria"]]);
 
          $res = RuleCriteria::match($value,$criteria->fields["condition"],$criteria->fields["pattern"],
-                           $regex_result);
+                           $partial_regex_result);
       } else {
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
@@ -728,7 +732,7 @@ class Rule extends CommonDBTM {
                $value=$this->getCriteriaValue($criteria->fields["criteria"],
                                               $criteria->fields["condition"],$tmp);
                $res &= RuleCriteria::match($value,$criteria->fields["condition"],$criteria->fields["pattern"],
-                                  $regex_result);
+                                  $partial_regex_result);
                if (!$res) {
                   break;
                }
@@ -740,13 +744,30 @@ class Rule extends CommonDBTM {
                $value=$this->getCriteriaValue($criteria->fields["criteria"],
                                               $criteria->fields["condition"],$crit);
                $res |= RuleCriteria::match($value,$criteria->fields["condition"],$criteria->fields["pattern"],
-                                  $regex_result);
+                                  $partial_regex_result);
                //if ($res) {
                //   break;
                //}
             }
          }
       }
+
+      // Found regex on this criteria
+      if (count($partial_regex_result)) {
+         // No regex existing : put found
+         if (!count($regex_result)) {
+            $regex_result=$partial_regex_result;
+         } else { // Already existing regex : append found values
+            $temp_result=array();
+            foreach ($partial_regex_result as $new) {
+               foreach ($regex_result as $old) {
+                  $temp_result[]=array_merge($old,$new);
+               }
+            }
+            $regex_result=$temp_result;
+         }
+      }
+
       return $res;
    }
 
@@ -785,7 +806,7 @@ class Rule extends CommonDBTM {
                   } else {
                      $res="";
                   }
-                  $res .= RuleAction::getRegexResultById($action->fields["value"],$regex_results);
+                  $res .= RuleAction::getRegexResultById($action->fields["value"],$regex_results[0]);
                   $output[$action->fields["field"]]=$res;
                   break;
             }
@@ -979,7 +1000,7 @@ class Rule extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".$LANG['rulesengine'][85]."</td>";
          echo "<td>";
-         printCleanArray($regex_results);
+         printCleanArray($regex_results[0]);
          echo "</td></tr>\n";
       }
       echo "</tr>\n";
