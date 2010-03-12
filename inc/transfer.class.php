@@ -757,7 +757,7 @@ class Transfer extends CommonDBTM {
          $query = "SELECT `glpi_contacts_suppliers`.`id`
                    FROM `glpi_contacts_suppliers`
                    LEFT JOIN `glpi_suppliers`
-                         ON (`glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.id`)
+                         ON (`glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`)
                    WHERE `glpi_suppliers`.`id` IS NULL";
 
          if ($result = $DB->query($query)) {
