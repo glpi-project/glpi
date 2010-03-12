@@ -152,19 +152,20 @@ if (isset($_GET["action"])) {
 commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecollection->menu_type,
              $rulecollection->menu_option);
 
+   if ($rulecollection->showInheritedTab()) {
+      $tabs[0] = array('title'  => $LANG['rulesengine'][20],
+                       'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
+                       'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&inherited=1&itemtype=".get_class($rulecollection));
+   }
+
    $title = $LANG['rulesengine'][17];
    if($rulecollection->isRuleRecursive()) {
       $title.= ' : '.Dropdown::getDropdownName('glpi_entities',$_SESSION['glpiactive_entity']);
    }
-   $tabs[0] = array('title'  => $title,
+   $tabs[1] = array('title'  => $title,
                     'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
                     'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&inherited=0&itemtype=".get_class($rulecollection));
 
-   if ($rulecollection->showInheritedTab()) {
-      $tabs[1] = array('title'  => $LANG['rulesengine'][20],
-                       'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
-                       'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&inherited=1&itemtype=".get_class($rulecollection));
-   }
    if ($rulecollection->showChildrensTab()) {
       $tabs[2] = array('title'  => $LANG['rulesengine'][21],
                        'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",

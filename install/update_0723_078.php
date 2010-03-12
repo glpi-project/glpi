@@ -2883,47 +2883,47 @@ function update0723to078($output='HTML') {
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                             VALUES(NULL, '".$templates['Ticket']."', '',
                             '##ticket.action## ##ticket.title##',
-' ##IFticket.storestatus=solved## 
- ##lang.ticket.url## : ##ticket.urlapprove##   
- ##lang.ticket.autoclosewarning## ##ENDIFticket.storestatus## 
- ##ELSEticket.storestatus## ##lang.ticket.url## : ##ticket.url## ##ENDELSEticket.storestatus## 
- ##lang.ticket.description## 
+' ##IFticket.storestatus=solved##
+ ##lang.ticket.url## : ##ticket.urlapprove##
+ ##lang.ticket.autoclosewarning## ##ENDIFticket.storestatus##
+ ##ELSEticket.storestatus## ##lang.ticket.url## : ##ticket.url## ##ENDELSEticket.storestatus##
+ ##lang.ticket.description##
 
- ##lang.ticket.title##  :##ticket.title## 
- ##lang.ticket.author.name## ##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name## ##ELSEticket.author.name##--##ENDELSEticket.author.name## 
- ##lang.ticket.creationdate##  :##ticket.creationdate## 
- ##lang.ticket.closedate##  :##ticket.closedate## 
+ ##lang.ticket.title##  :##ticket.title##
+ ##lang.ticket.author.name## ##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name## ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+ ##lang.ticket.creationdate##  :##ticket.creationdate##
+ ##lang.ticket.closedate##  :##ticket.closedate##
  ##lang.ticket.requesttype##  :##ticket.requesttype##
- ##IFticket.itemtype## ##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype## 
+ ##IFticket.itemtype## ##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
  ##IFticket.assigntouser## ##lang.ticket.assigntouser##  : ##ticket.assigntouser## ##ENDIFticket.assigntouser##
  ##lang.ticket.status##  : ##ticket.status##
  ##IFticket.assigntogroup## ##lang.ticket.assigntogroup##  : ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
  ##lang.ticket.urgency##  : ##ticket.urgency##
  ##lang.ticket.impact##  : ##ticket.impact##
- ##lang.ticket.priority##  : ##ticket.priority## 
- ##IFticket.user.email## ##lang.ticket.user.email##  : ##ticket.user.email ##ENDIFticket.user.email## 
- ##IFticket.category## ##lang.ticket.category##  :##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category## 
- ##lang.ticket.content##  : ##ticket.content## 
- ##lang.ticket.numberoffollowups## : ##ticket.numberoffollowups## 
+ ##lang.ticket.priority##  : ##ticket.priority##
+ ##IFticket.user.email## ##lang.ticket.user.email##  : ##ticket.user.email ##ENDIFticket.user.email##
+ ##IFticket.category## ##lang.ticket.category##  :##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+ ##lang.ticket.content##  : ##ticket.content##
+ ##lang.ticket.numberoffollowups## : ##ticket.numberoffollowups##
 
-##FOREACHfollowups## 
- 
- [##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate## 
+##FOREACHfollowups##
+
+ [##followup.date##] ##lang.followup.isprivate## : ##followup.isprivate##
  ##lang.followup.author## ##followup.author##
  ##lang.followup.description## ##followup.description##
  ##lang.followup.date## ##followup.date##
- ##lang.followup.requesttype## ##followup.requesttype## 
+ ##lang.followup.requesttype## ##followup.requesttype##
 
-##ENDFOREACHfollowups## 
- ##lang.ticket.numberoftasks## : ##ticket.numberoftasks## 
+##ENDFOREACHfollowups##
+ ##lang.ticket.numberoftasks## : ##ticket.numberoftasks##
 
-##FOREACHtasks## 
- 
- [##task.date##] ##lang.task.isprivate## : ##task.isprivate## 
+##FOREACHtasks##
+
+ [##task.date##] ##lang.task.isprivate## : ##task.isprivate##
  ##lang.task.author## ##task.author##
  ##lang.task.description## ##task.description##
  ##lang.task.time## ##task.time##
- ##lang.task.category## ##task.category## 
+ ##lang.task.category## ##task.category##
 
 ##ENDFOREACHtasks##',
 '<!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }    -->
@@ -3416,8 +3416,19 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $query = "ALTER TABLE `glpi_entitydatas` ADD `mailing_signature` TEXT DEFAULT NULL ,
                                  ADD `cartridges_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
                                  ADD `consumables_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
-                                 ADD `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+                                 ADD `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                                 ADD `use_contracts_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                                 ADD `use_infocoms_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                                 ADD `use_reservations_alert` TINYINT( 1 ) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.78 add notifications fields in glpi_entitydatas" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_configs','use_reservations_alert')) {
+      $query = "ALTER TABLE `glpi_configs` ADD `use_infocoms_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                                           ADD `use_contracts_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                                           ADD `use_reservations_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                                           ADD `autoclose_delay` INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.78 add notifications fields in glpi_configs" . $LANG['update'][90] . $DB->error());
    }
 
    if (TableExists('glpi_mailingsettings')) {
@@ -3425,68 +3436,69 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 drop table glpi_mailingsettings" . $LANG['update'][90] . $DB->error());
    }
 
-   // Migrate infocoms entity information
-   if (!FieldExists('glpi_infocoms','entities_id')) {
-      displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['financial'][3]); // Updating schema
+   $tables = array('glpi_infocoms','glpi_reservationitems');
+   foreach ($tables as $table) {
+      // Migrate infocoms entity information
+      if (!FieldExists($table,'entities_id')) {
+         displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['financial'][3]); // Updating schema
 
-      $query = "ALTER TABLE `glpi_infocoms` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `itemtype`,
-                        ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`,
-                        ADD INDEX `entities_id` ( `entities_id` )";
-      $DB->query($query) or die("0.78 add entities_id and is_recursive in glpi_infocoms". $LANG['update'][90] . $DB->error());
+         $query = "ALTER TABLE `$table` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `itemtype`,
+                           ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`,
+                           ADD INDEX `entities_id` ( `entities_id` )";
+         $DB->query($query) or die("0.78 add entities_id and is_recursive in $table". $LANG['update'][90] . $DB->error());
 
 
-      $entities=getAllDatasFromTable('glpi_entities');
-      $entities[0]="Root";
+         $entities=getAllDatasFromTable('glpi_entities');
+         $entities[0]="Root";
 
-      $query = "SELECT DISTINCT itemtype FROM glpi_infocoms";
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['financial'][3].' - '.$data['itemtype']); // Updating schema
+         $query = "SELECT DISTINCT `itemtype` FROM `$table`";
+         if ($result=$DB->query($query)) {
+            if ($DB->numrows($result)>0) {
+               while ($data = $DB->fetch_assoc($result)) {
+                  displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['financial'][3].' - '.$data['itemtype']); // Updating schema
 
-               $itemtable=getTableForItemType($data['itemtype']);
-               // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
-               if (!TableExists($itemtable)) {
-                  if ($output) {
-                     echo "<p class='red'>*** Skip : no table $itemtable ***</p>";
+                  $itemtable=getTableForItemType($data['itemtype']);
+                  // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
+                  if (!TableExists($itemtable)) {
+                     if ($output) {
+                        echo "<p class='red'>*** Skip : no table $itemtable ***</p>";
+                     }
+                     continue;
                   }
-                  continue;
-               }
-               $do_recursive=false;
-               if (FieldExists($itemtable,'is_recursive')) {
-                  $do_recursive=true;
-               }
-               // This is duplicated in Plugin::migrateItemType() for plugin object
-               foreach ($entities as $entID => $val) {
-                  if ($do_recursive) {
-                     // Non recursive ones
-                     $query3="UPDATE `glpi_infocoms`
-                              SET `entities_id`=$entID, `is_recursive`=0
-                              WHERE `itemtype`='".$data['itemtype']."'
-                                 AND `items_id` IN (SELECT `id` FROM `$itemtable`
-                                 WHERE `entities_id`=$entID AND `is_recursive`=0)";
-                     $DB->query($query3) or die("0.78 update entities_id and is_recursive=0
-                           in glpi_infocoms for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
-
-                     // Recursive ones
-                     $query3="UPDATE `glpi_infocoms`
-                              SET `entities_id`=$entID, `is_recursive`=1
-                              WHERE `itemtype`='".$data['itemtype']."'
-                                 AND `items_id` IN (SELECT `id` FROM `$itemtable`
-                                 WHERE `entities_id`=$entID AND `is_recursive`=1)";
-                     $DB->query($query3) or die("0.78 update entities_id and is_recursive=1
-                           in glpi_infocoms for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
-                  } else {
-                     $query3="UPDATE `glpi_infocoms`
-                              SET `entities_id`=$entID
-                              WHERE `itemtype`='".$data['itemtype']."'
-                                 AND `items_id` IN (SELECT `id` FROM `$itemtable`
-                                 WHERE `entities_id`=$entID)";
-                     $DB->query($query3) or die("0.78 update entities_id in glpi_infocoms
-                           for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
-
+                  $do_recursive=false;
+                  if (FieldExists($itemtable,'is_recursive')) {
+                     $do_recursive=true;
                   }
+                  // This is duplicated in Plugin::migrateItemType() for plugin object
+                  foreach ($entities as $entID => $val) {
+                     if ($do_recursive) {
+                        // Non recursive ones
+                        $query3="UPDATE `$table`
+                                 SET `entities_id`=$entID, `is_recursive`=0
+                                 WHERE `itemtype`='".$data['itemtype']."'
+                                    AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                                    WHERE `entities_id`=$entID AND `is_recursive`=0)";
+                        $DB->query($query3) or die("0.78 update entities_id and is_recursive=0
+                              in $table for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
 
+                        // Recursive ones
+                        $query3="UPDATE `$table`
+                                 SET `entities_id`=$entID, `is_recursive`=1
+                                 WHERE `itemtype`='".$data['itemtype']."'
+                                    AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                                    WHERE `entities_id`=$entID AND `is_recursive`=1)";
+                        $DB->query($query3) or die("0.78 update entities_id and is_recursive=1
+                              in $table for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
+                     } else {
+                        $query3="UPDATE `$table`
+                                 SET `entities_id`=$entID
+                                 WHERE `itemtype`='".$data['itemtype']."'
+                                    AND `items_id` IN (SELECT `id` FROM `$itemtable`
+                                    WHERE `entities_id`=$entID)";
+                        $DB->query($query3) or die("0.78 update entities_id in $table
+                              for ".$data['itemtype']." ". $LANG['update'][90] . $DB->error());
+                     }
+                  }
                }
             }
          }

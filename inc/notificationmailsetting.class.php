@@ -197,6 +197,21 @@ class NotificationMailSetting extends CommonDBTM {
                                  'value'=>$CFG_GLPI["use_licenses_alert"]));
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][705] . "</td><td>";
+      Alert::dropdownYesNo(array('name'=>"use_contracts_alert",
+                                 'value'=>$CFG_GLPI["use_contracts_alert"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][706] . "</td><td>";
+      Alert::dropdownYesNo(array('name'=>"use_infocoms_alert",
+                                 'value'=>$CFG_GLPI["use_infocoms_alert"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][707] . "</td><td>";
+      Alert::dropdownYesNo(array('name'=>"use_reservations_alert",
+                                 'value'=>$CFG_GLPI["use_reservations_alert"]));
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
       echo "<input class='submit' type='submit' name='update' value='".$LANG['buttons'][2]."'>";
       echo "</td></tr>";

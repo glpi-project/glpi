@@ -59,7 +59,8 @@ class EntityData extends CommonDBTM {
                  // Notification
                  'notification' => array('admin_email', 'admin_reply', 'mailing_signature',
                                          'cartridges_alert_repeat', 'consumables_alert_repeat',
-                                         'use_licenses_alert'));
+                                         'use_licenses_alert','use_contracts_alert',
+                                         'use_reservations_alert','use_infocoms_alert'));
 /*
    function getEmpty() {
       global $CFG_GLPI;
@@ -273,6 +274,13 @@ class EntityData extends CommonDBTM {
       }
    }
 
+   function post_getEmpty() {
+      $this->fields['use_licenses_alert'] = -1;
+      $this->fields['use_contracts_alert'] = -1;
+      $this->fields['use_infocoms_alert'] = -1;
+      $this->fields['use_reservations_alert'] = -1;
+   }
+
    static function showNotificationOptions(Entity $entity) {
       global $DB, $LANG, $CFG_GLPI;
 
@@ -318,28 +326,43 @@ class EntityData extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][244] . "</td><td>";
 
-      $default_value = ($entitynotification->fields['cartridges_alert_repeat']?
-                           $entitynotification->fields['cartridges_alert_repeat']:-1);
+      $default_value = $entitynotification->fields['cartridges_alert_repeat'];
       Alert::dropdown(array('name'=>'cartridges_alert_repeat',
                             'value'=>$default_value,
                             'inherit_global'=>1));
 
       echo "</td>";
       echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][243] . "</td><td>";
-      $default_value = ($entitynotification->fields['consumables_alert_repeat']?
-                           $entitynotification->fields['consumables_alert_repeat']:-1);
+      $default_value = $entitynotification->fields['consumables_alert_repeat'];
       Alert::dropdown(array('name'=>'consumables_alert_repeat',
                             'value'=>$default_value,
                             'inherit_global'=>1));
 
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][264] . "</td><td>";
-      $default_value = ($entitynotification->fields['use_licenses_alert']?
-                           $entitynotification->fields['use_licenses_alert']:-1);
+      $default_value = $entitynotification->fields['use_licenses_alert'];
       Alert::dropdownYesNo(array('name'=>"use_licenses_alert",
                                   'value'=>$default_value,
                                   'inherit_global'=>1) );
-      echo "<td colspan='2'></td>";
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][705] . "</td><td>";
+      $default_value = $entitynotification->fields['use_contracts_alert'];
+      Alert::dropdownYesNo(array('name'=>"use_contracts_alert",
+                                  'value'=>$default_value,
+                                  'inherit_global'=>1) );
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][706] . "</td><td>";
+      $default_value = $entitynotification->fields['use_infocoms_alert'];
+      Alert::dropdownYesNo(array('name'=>"use_infocoms_alert",
+                                  'value'=>$default_value,
+                                  'inherit_global'=>1) );
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][707] . "</td><td>";
+      $default_value = $entitynotification->fields['use_reservations_alert'];
+      Alert::dropdownYesNo(array('name'=>"use_reservations_alert",
+                                  'value'=>$default_value,
+                                  'inherit_global'=>1) );
       echo "</td></tr>";
 
       if ($canedit) {

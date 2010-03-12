@@ -79,44 +79,64 @@ class NotificationTargetReservation extends NotificationTarget {
       return array ('new'    => $LANG['mailing'][19],
                     'update' => $LANG['mailing'][23],
                     'delete' => $LANG['mailing'][29]);
+                    //'end' => $LANG['mailing'][136]);
    }
 
 
    function getAdditionalTargets($event='') {
       global $LANG;
-
-      $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
-      $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
-      $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
+      if ($event != 'end') {
+         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
+         $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
+         $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
+      }
    }
 
 
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
       //----------- Reservation infos -------------- //
 
       $events = $this->getAllEvents();
+
       $this->datas['##reservation.action##'] = $events[$event];
       $this->datas['##reservation.user##']   = Dropdown::getDropdownName('glpi_users',
                                                                   $this->obj->getField('users_id'));
       $this->datas['##reservation.begin##']  = convDateTime($this->obj->getField('begin'));
       $this->datas['##reservation.end##']    = convDateTime($this->obj->getField('end'));
 
-      $reservationitem = new ReservationItem;
-      $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
-      $itemtype = $reservationitem->getField('itemtype');
-      if (class_exists($itemtype)) {
-         $item = new $itemtype();
-         $item->getFromDB($reservationitem->getField('items_id'));
-         $this->datas['##reservation.itemtype##']    = $item->getTypeName();
-         $this->datas['##reservation.item.name##']   = $item->getField('name');
-         $this->datas['##reservation.comment##']     = $item->getField('comment');
-         $this->datas['##reservation.item.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                                    $item->getField('entities_id'));
-         if ($item->isField('users_id_tech')) {
-             $this->datas['##reservation.item.tech##'] = Dropdown::getDropdownName('glpi_users',
-                                                                  $item->getField('users_id_tech'));
+      if ($event != 'end') {
+         $reservationitem = new ReservationItem;
+         $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
+         $itemtype = $reservationitem->getField('itemtype');
+         if (class_exists($itemtype)) {
+            $item = new $itemtype();
+            $item->getFromDB($reservationitem->getField('items_id'));
+            $this->datas['##reservation.itemtype##']    = $item->getTypeName();
+            $this->datas['##reservation.item.name##']   = $item->getField('name');
+            $this->datas['##reservation.comment##']     = $item->getField('comment');
+            $this->datas['##reservation.item.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                       $item->getField('entities_id'));
+            if ($item->isField('users_id_tech')) {
+                $this->datas['##reservation.item.tech##'] = Dropdown::getDropdownName('glpi_users',
+                                                                     $item->getField('users_id_tech'));
+            }
+            $tmp['##infocom.url##'] = urldecode($CFG_GLPI["url_base"].
+                                       "/index.php?redirect=".strtolower($itemtype)."_".
+                                                      $reservationitem->getField('id'));
+         }
+      }
+      else {
+         foreach ($options['items'] as $id => $item) {
+            $tmp = array();
+            $obj = new $item['itemtype'] ();
+            $tmp['##reservation.itemtype##'] = $obj->getTypeName();
+            $tmp['##reservation.item##']     = $item['item_name'];
+            $tmp['##reservation.expirationdate##'] = convDateTime($item['warrantyexpiration']);
+            $tmp['##reservation.url##'] = urldecode($CFG_GLPI["url_base"].
+                                                 "/index.php?redirect=reservation_".$id);
+            $this->datas['reservations'][] = $tmp;
          }
       }
 

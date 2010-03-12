@@ -1062,6 +1062,7 @@ $LANG['mailing'][132]="Entête de l'email";
 $LANG['mailing'][133]="Supprimer email(s)";
 $LANG['mailing'][134]="Mise à jour suivi";
 $LANG['mailing'][135]="Suppression suivi";
+$LANG['mailing'][136]="Expiration réservation";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
@@ -1395,6 +1396,7 @@ $LANG['reservation'][36]="Réservations passées";
 $LANG['reservation'][37]="Pas de réservations";
 $LANG['reservation'][38]="Êtes-vous sur de vouloir rendre cet élément non réservable ?";
 $LANG['reservation'][39]="Cela supprimera toutes les réservations en cours.";
+$LANG['reservation'][40]="Matériels dont la réservation expire aujourd'hui";
 
 $LANG['rulesengine'][0]="est";
 $LANG['rulesengine'][1]="n'est pas";
@@ -1793,6 +1795,9 @@ $LANG['setup'][661]="Configuration des notifications impossible : veuillez activ
 
 $LANG['setup'][703]="Générale";
 $LANG['setup'][704]="Notifications";
+$LANG['setup'][705]="Alertes sur les contrats";
+$LANG['setup'][706]="Alertes sur les informations financières";
+$LANG['setup'][707]="Alertes sur les réservations";
 
 $LANG['setup'][720]="Info. Système";
 $LANG['setup'][721]="Informations sur le système, l'installation et la configuration";
