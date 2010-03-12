@@ -4074,46 +4074,6 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 update default entity_rule_ticket rights" . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
-
-   // Add search values for tickets
-   $ADDTODISPLAYPREF['Ticket']=array(12,19,15,3,4,5,7);
-
-
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-
-      $query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype='$type';";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query="SELECT max(rank) FROM glpi_displaypreferences
-                           WHERE users_id='".$data['users_id']."' AND `itemtype`='$type';";
-               $result=$DB->query($query);
-               $rank=$DB->result($result,0,0);
-               $rank++;
-               foreach ($tab as $newval) {
-                  $query="SELECT * FROM glpi_displaypreferences
-                           WHERE users_id='".$data['users_id']."' AND num=$newval AND itemtype='$type';";
-                  if ($result2=$DB->query($query)) {
-                     if ($DB->numrows($result2)==0) {
-                        $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                 VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."');";
-                        $DB->query($query);
-                     }
-                  }
-               }
-            }
-         } else { // Add for default user
-            $rank=1;
-            foreach ($tab as $newval) {
-               $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
-                        VALUES ('$type', '$newval', '".$rank++."', '0');";
-               $DB->query($query);
-            }
-         }
-      }
-   }
-
    if (!FieldExists('glpi_authldaps','is_default')) {
       $query = "ALTER TABLE `glpi_authldaps` ADD `is_default` TINYINT( 1 ) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.78 add is_default to glpi_authldaps " . $LANG['update'][90] . $DB->error());
@@ -4161,6 +4121,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 add comment to glpi_rulerightparameters".
                                    $LANG['update'][90] . $DB->error());
 
+      $ADDTODISPLAYPREF['RuleRightParameter']=array(11);
+
    }
 
    if (!FieldExists('glpi_rules','is_recursive')) {
@@ -4174,6 +4136,48 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 set is_recursive to 1 for RuleTicket in glpi_rules".
                                    $LANG['update'][90] . $DB->error());
    }
+
+
+   displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
+
+   // Add search values for tickets
+   $ADDTODISPLAYPREF['Ticket']=array(12,19,15,3,4,5,7);
+
+
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+
+      $query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype='$type';";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query="SELECT max(rank) FROM glpi_displaypreferences
+                           WHERE users_id='".$data['users_id']."' AND `itemtype`='$type';";
+               $result=$DB->query($query);
+               $rank=$DB->result($result,0,0);
+               $rank++;
+               foreach ($tab as $newval) {
+                  $query="SELECT * FROM glpi_displaypreferences
+                           WHERE users_id='".$data['users_id']."' AND num=$newval AND itemtype='$type';";
+                  if ($result2=$DB->query($query)) {
+                     if ($DB->numrows($result2)==0) {
+                        $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
+                                 VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."');";
+                        $DB->query($query);
+                     }
+                  }
+               }
+            }
+         } else { // Add for default user
+            $rank=1;
+            foreach ($tab as $newval) {
+               $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
+                        VALUES ('$type', '$newval', '".$rank++."', '0');";
+               $DB->query($query);
+            }
+         }
+      }
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 

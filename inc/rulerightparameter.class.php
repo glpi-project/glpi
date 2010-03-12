@@ -65,6 +65,24 @@ class RuleRightParameter extends CommonDropdown {
                          'list'  => false));
    }
 
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      $tab[11]['table']         = $this->getTable();
+      $tab[11]['field']         = 'value';
+      $tab[11]['linkfield']     = 'value';
+      $tab[11]['name']          = $LANG['rulesengine'][16];
+
+      return $tab;
+   }
+
    static function getTypeName() {
       global $LANG;
 
