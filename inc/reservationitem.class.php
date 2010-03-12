@@ -322,6 +322,107 @@ class ReservationItem extends CommonDBTM {
       echo "<input type='hidden' name='id' value=''>";
       echo "</form></div>\n";
    }
+/*
+   static function cronInfo($name) {
+      global $LANG;
+
+      return array('description' => $LANG['setup'][707]);
+   }
+*/
+   /**
+    * Cron action on infocom : alert on expired warranty
+    *
+    * @param $task to log, if NULL use display
+    *
+    * @return 0 : nothing to do 1 : done with success
+    **//*
+   static function cronReservation($task=NULL) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      if (!$CFG_GLPI["use_mailing"]) {
+         return 0;
+      }
+
+      $message=array();
+      $cron_status = 0;
+      $items_infos = array();
+      $items_messages = array();
+
+      $query = "SELECT `glpi_entities`.`id` as `entity`,
+                  `glpi_entitydatas`.`use_reservations_alert`
+                FROM `glpi_entities`
+                LEFT JOIN `glpi_entitydatas` ON (
+                  `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)
+                ORDER BY `glpi_entities`.`entities_id` ASC";
+      foreach ($DB->request($query) as $entitydatas) {
+         if ( ((!isset($entitydatas['use_reservations_alert'])
+                 || $entitydatas['use_reservations_alert']==-1)
+                 && $CFG_GLPI["use_reservations_alert"])
+                    || $entitydatas['use_reservations_alert']) {
+         $query_end = "SELECT `glpi_reservationitems`.*
+                       FROM `glpi_reservationitems`
+                       LEFT JOIN `glpi_alerts` ON (`glpi_reservationitems`.`id` = `glpi_alerts`.`items_id`
+                                                     AND `glpi_alerts`.`itemtype` = 'ReservationItem'
+                                                     AND `glpi_alerts`.`type`='".Alert::END."')
+                       LEFT JOIN `glpi_reservations` ON (
+                                 `glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`)
+                       WHERE `glpi_reservationitems`.`entities_id`='".$entitydatas['entity']."'
+                             AND DATEDIFF(CURDATE(),`glpi_reservations`.`end`) > 0
+                                AND `glpi_alerts`.`date` IS NULL";
+            logDebug($query_end);
+            foreach ($DB->request($query_end) as $data) {
+               $item_infocom = new $data["itemtype"]();
+               if ($item_infocom->getFromDB($data["items_id"])) {
+                  $entity = $data['entities_id'];
+                  $message .= $LANG['reservation'][40]." ".
+                                 $item_infocom->getTypeName()." - ".$item_infocom->getName()."<br />";
+                  $data['item_name'] = $item_infocom->getName();
+                  $items_infos[$entity][$data['id']] = $data;
+
+                  if (!isset($items_messages[$entity])) {
+                     $items_messages[$entity] = $LANG['reservation'][40]."<br />";
+                  }
+                  $items_messages[$entity] .= $message;
+               }
+            }
+         }
+      }
+
+      foreach ($items_infos as $entity => $items) {
+
+         if (NotificationEvent::raiseEvent("alert",new Reservation(),
+                                           array('entities_id'=>$entity,'items'=>$items))) {
+            $message = $items_messages[$entity];
+            $cron_status = 1;
+            if ($task) {
+               $task->log(Dropdown::getDropdownName("glpi_entities",
+                                                      $entity).":  $message\n");
+               $task->addVolume(1);
+            } else {
+               addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                 $entity).":  $message");
+            }
+
+            $alert=new Alert();
+            $input["itemtype"] = 'ReservationItem';
+            $input["type"]=Alert::END;
+            foreach ($items as $id => $item) {
+               $input["items_id"]=$id;
+               $alert->add($input);
+               unset($alert->fields['id']);
+            }
+         } else {
+            if ($task) {
+               $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
+                          ":  Send reservationitem alert failed\n");
+            } else {
+               addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
+                                       ":  Send reservationitem alert failed",false,ERROR);
+            }
+         }
+      }
+      return $cron_status;
+   }*/
 
 }
 

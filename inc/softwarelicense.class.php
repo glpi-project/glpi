@@ -367,12 +367,12 @@ class SoftwareLicense extends CommonDBTM {
       $items_notice=array();
       $items_end=array();
 
-      $query = "SELECT DISTINCT `glpi_entities`.`entities_id` as `entity`,
+      $query = "SELECT `glpi_entities`.`id` as `entity`,
                   `glpi_entitydatas`.`use_licenses_alert`
                 FROM `glpi_entities`
                 LEFT JOIN `glpi_entitydatas` ON (
                   `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
-       $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
+      $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
        foreach ($DB->request($query) as $data) {
           if ( ((!isset($data['use_licenses_alert'])
                   || $data['use_licenses_alert']==-1)

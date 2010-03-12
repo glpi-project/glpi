@@ -950,60 +950,80 @@ class Contract extends CommonDBTM {
       $items_end=array();
       $cron_status = 0;
 
-      $query_notice="SELECT `glpi_contracts`.*
-              FROM `glpi_contracts`
-              LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                                          AND `glpi_alerts`.`itemtype` = 'Contract'
-                                          AND `glpi_alerts`.`type`='".Alert::NOTICE."')
-              WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::NOTICE).") >'0'
-                    AND `glpi_contracts`.`is_deleted` = '0'
-                    AND `glpi_contracts`.`begin_date` IS NOT NULL
-                    AND `glpi_contracts`.`duration` <> '0'
-                    AND `glpi_contracts`.`notice` <> '0'
-                    AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                         `glpi_contracts`.`duration` MONTH),CURDATE()) > '0'
-                    AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                         (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
-                                         MONTH),CURDATE()) < '0'
-                    AND `glpi_alerts`.`date` IS NULL";
 
-      $query_end="SELECT `glpi_contracts`.*
-              FROM `glpi_contracts`
-              LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
-                                          AND `glpi_alerts`.`itemtype` = 'Contract'
-                                          AND `glpi_alerts`.`type`='".Alert::END."')
-              WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::END).") > '0'
-                    AND `glpi_contracts`.`is_deleted` = '0'
-                    AND `glpi_contracts`.`begin_date` IS NOT NULL
-                    AND `glpi_contracts`.`duration` <> '0'
-                    AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
-                                         (`glpi_contracts`.`duration`) MONTH),CURDATE()) < '0'
-                    AND `glpi_alerts`.`date` IS NULL";
-
-      $querys = array(Alert::NOTICE=>$query_notice, Alert::END=>$query_end);
-
-      $contract_infos = array();
+      $contract_infos[Alert::END] = array();
+      $contract_infos[Alert::NOTICE] = array();
       $contract_messages = array();
-      foreach ($querys as $type => $query) {
-         $contract_infos[$type] = array();
-         foreach ($DB->request($query) as $data) {
-            $entity = $data['entities_id'];
-            $message = $data["name"].": ".
-                        getWarrantyExpir($data["begin_date"],
-                                         $data["duration"],
-                                         $data["notice"])."<br>\n";
-            $contract_infos[$type][$entity][$data['id']] = $data;
 
-            if (!isset($contract_messages[$type][$entity])) {
-               $contract_messages[$type][$entity] = $LANG['mailing'][37]."<br />";
+      $query = "SELECT `glpi_entities`.`id` as `entity`,
+               `glpi_entitydatas`.`use_contracts_alert`
+             FROM `glpi_entities`
+             LEFT JOIN `glpi_entitydatas` ON (
+               `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
+      $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
+      foreach ($DB->request($query) as $entitydatas) {
+
+         $query_notice="SELECT `glpi_contracts`.*
+                        FROM `glpi_contracts`
+                        LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
+                                                     AND `glpi_alerts`.`itemtype` = 'Contract'
+                                                        AND `glpi_alerts`.`type`='".Alert::NOTICE."')
+                       WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::NOTICE).") >'0'
+                             AND `glpi_contracts`.`is_deleted` = '0'
+                              AND `glpi_contracts`.`begin_date` IS NOT NULL
+                                 AND `glpi_contracts`.`duration` <> '0'
+                                    AND `glpi_contracts`.`notice` <> '0'
+                                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
+                                                  `glpi_contracts`.`duration` MONTH),CURDATE()) > '0'
+                                          AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
+                                                  (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
+                                                  MONTH),CURDATE()) < '0'
+                                             AND `glpi_alerts`.`date` IS NULL
+                                                AND `glpi_contracts`.`entities_id`='".$entitydatas['entity']."'";
+
+         $query_end="SELECT `glpi_contracts`.*
+                     FROM `glpi_contracts`
+                     LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
+                                                 AND `glpi_alerts`.`itemtype` = 'Contract'
+                                                   AND `glpi_alerts`.`type`='".Alert::END."')
+                     WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::END).") > '0'
+                           AND `glpi_contracts`.`is_deleted` = '0'
+                              AND `glpi_contracts`.`begin_date` IS NOT NULL
+                                 AND `glpi_contracts`.`duration` <> '0'
+                                    AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
+                                                (`glpi_contracts`.`duration`) MONTH),CURDATE()) < '0'
+                                       AND `glpi_alerts`.`date` IS NULL
+                                          AND `glpi_contracts`.`entities_id`='".$entitydatas['entity']."'";
+
+         $querys = array(Alert::NOTICE=>$query_notice, Alert::END=>$query_end);
+
+         if ( ((!isset($entitydatas['use_contracts_alert'])
+                 || $entitydatas['use_contracts_alert']==-1)
+                 && $CFG_GLPI["use_contracts_alert"])
+                    || $entitydatas['use_contracts_alert']) {
+            foreach ($querys as $type => $query) {
+
+               foreach ($DB->request($query) as $data) {
+                  $entity = $data['entities_id'];
+                  $message = $data["name"].": ".
+                              getWarrantyExpir($data["begin_date"],
+                                               $data["duration"],
+                                               $data["notice"])."<br>\n";
+                  $contract_infos[$type][$entity][$data['id']] = $data;
+
+                  if (!isset($contract_messages[$type][$entity])) {
+                     $contract_messages[$type][$entity] = $LANG['mailing'][37]."<br />";
+                  }
+                  $contract_messages[$type][$entity] .= $message;
+               }
             }
-            $contract_messages[$type][$entity] .= $message;
          }
       }
 
-      foreach ($querys as $type => $query) {
+
+      foreach (array(Alert::NOTICE=>"notice",Alert::END=>"end") as $type=>$event) {
          foreach ($contract_infos[$type] as $entity => $contracts) {
-            if (NotificationEvent::raiseEvent(($type==Alert::NOTICE?"notice":"end"),
+            if (NotificationEvent::raiseEvent($event,
                                               new Contract(),
                                               array('entities_id'=>$entity,
                                                     'contracts'=>$contracts))) {
