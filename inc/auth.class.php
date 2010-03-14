@@ -249,12 +249,12 @@ class Auth {
 
       switch ($authtype) {
          case Auth::CAS :
-            include (GLPI_ROOT . "/lib/phpcas/CAS.php");
+            include (GLPI_PHPCAS);
             phpCAS::client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
                          $CFG_GLPI["cas_uri"]);
             // no SSL validation for the CAS server
             phpCAS::setNoCasServerValidation();
-            
+
             // force CAS authentication
             phpCAS::forceAuthentication();
             $this->user->fields['name'] = phpCAS::getUser();
@@ -467,7 +467,7 @@ class Auth {
       if (!$noauto && $authtype=Auth::checkAlternateAuthSystems()) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
-            
+
             $user=$this->user->fields['name'];
             // Used for log when login process failed
             $login_name=$user;
