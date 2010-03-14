@@ -127,6 +127,14 @@ if (!defined("GLPI_EZC_BASE")) {
    # define("GLPI_EZC_BASE", "ezc/Base/base.php");
 }
 
+// Default phpCAS installation dir
+if (!defined("GLPI_PHPCAS")) {
+   define("GLPI_PHPCAS", GLPI_ROOT . "/lib/phpcas/CAS.php");
+
+   # if phpCAS installed as PEAR extension, use (in config_path.php)
+   # define("GLPI_PHPCAS", "CAS.php");
+}
+
 // Default path to FreeSans.ttf
 if (!defined("GLPI_FONT_FREESANS")) {
    define("GLPI_FONT_FREESANS", GLPI_ROOT . '/lib/ezcomponents/FreeSans.ttf');
