@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Pokaż wszystkie planowania";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Rezerwacja administracji"; 
 $LANG['profiles'][24]="Uaktualnij hasło"; 
+$LANG['profiles'][26]="Pokaż zgłoszenia utworzone w swojej grupie"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Rekursywnie"; 
 $LANG['profiles'][29]="Dynamiczny"; 

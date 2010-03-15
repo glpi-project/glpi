@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Показувати все планування";
 $LANG['profiles'][22]="Профіль"; 
 $LANG['profiles'][23]="Керування видачею в користування"; 
 $LANG['profiles'][24]="Зміна пароля"; 
+$LANG['profiles'][26]="Показувати заявки своєї групи"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Успадкування"; 
 $LANG['profiles'][29]="Динамічний"; 

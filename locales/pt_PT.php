@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Ver todos os planeamentos";
 $LANG['profiles'][22]="Perfil"; 
 $LANG['profiles'][23]="Administração das Reservas"; 
 $LANG['profiles'][24]="Actualizar senha"; 
+$LANG['profiles'][26]="Show tickets created by my groups"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursivo"; 
 $LANG['profiles'][29]="Dinâmico"; 

@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Bekijk gehele planning";
 $LANG['profiles'][22]="Profiel"; 
 $LANG['profiles'][23]="Reserveringen Administratie"; 
 $LANG['profiles'][24]="Wachtwoord aanpassen"; 
+$LANG['profiles'][26]="Laat alle tussenkomsten zien van Mijn groep"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursief"; 
 $LANG['profiles'][29]="Dynamisch"; 

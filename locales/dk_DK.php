@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Vis alt planlægning";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Resevation administration"; 
 $LANG['profiles'][24]="Opdater kode"; 
+$LANG['profiles'][26]="Show tickets created by my groups"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursive"; 
 $LANG['profiles'][29]="Dynamic"; 

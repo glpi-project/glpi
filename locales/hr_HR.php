@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Vidi sva planiranja";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Administracija rezervacija"; 
 $LANG['profiles'][24]="Ažuriraj zaporku"; 
+$LANG['profiles'][26]="Vidi tickete kreirane od moje grupe"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Rekurzivan"; 
 $LANG['profiles'][29]="Dinamičan"; 

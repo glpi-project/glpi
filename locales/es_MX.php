@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Ver todas las planificaciones";
 $LANG['profiles'][22]="Perfil"; 
 $LANG['profiles'][23]="Administración de reservas"; 
 $LANG['profiles'][24]="Cambiar la contraseña"; 
+$LANG['profiles'][26]="Ver las incidencias creadas por grupo asociado"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursivo"; 
 $LANG['profiles'][29]="Dinámico"; 

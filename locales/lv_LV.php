@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Skatīt visu plānojumu";
 $LANG['profiles'][22]="Profils"; 
 $LANG['profiles'][23]="Rezervāciju Administrēšana"; 
 $LANG['profiles'][24]="Mainīt paroli"; 
+$LANG['profiles'][26]="Rādīt manas grupas(u) izveidotos pieteikumus"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Rekursīvs"; 
 $LANG['profiles'][29]="Dinamisks"; 

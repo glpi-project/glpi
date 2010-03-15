@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Ver todos os planejamentos";
 $LANG['profiles'][22]="Perfil"; 
 $LANG['profiles'][23]="Administração dos empréstimos"; 
 $LANG['profiles'][24]="Atualizar senha"; 
+$LANG['profiles'][26]="Mostrar chamados do meu grupo"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursivo"; 
 $LANG['profiles'][29]="Dinâmico"; 
