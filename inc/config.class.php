@@ -634,12 +634,9 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][116] . " </td><td>";
       Dropdown::showYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
       echo "</td>";
-      /*
-      echo "<td class='center'>" . $LANG['setup'][405] . "</td><td>";
-      Dropdown::showYesNo("add_followup_on_update_ticket", $CFG_GLPI["add_followup_on_update_ticket"]);
-      echo "</td></tr>";
-      */
-      echo "<td colspan='2'>&nbsp;</td></tr>";
+      echo "<td>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
+      Dropdown::showInteger('autoclose_delay', $CFG_GLPI['autoclose_delay'],0,99,1);
+      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['tracking'][37] . "</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
@@ -1017,7 +1014,7 @@ class Config extends CommonDBTM {
          chdir($currentdir);
          $globaldir=cleanParametersURL($_SERVER['REQUEST_URI']);
          $globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
-         
+
          $CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
          $CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
          // urldecode for space redirect to encoded URL : change entity

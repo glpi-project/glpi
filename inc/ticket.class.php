@@ -4546,17 +4546,13 @@ class Ticket extends CommonDBTM {
       $ticket = new Ticket();
 
       // Recherche des entités
-      $query = "SELECT *
-                FROM `glpi_entitydatas`
-                WHERE `autoclose_delay` > 0";
-
       $tot = 0;
-      foreach ($DB->request($query) as $entity) {
+      foreach (Entity::getEntitiesToNotify('autoclose_delay') as $entity => $delay) {
          $query = "SELECT *
                    FROM `glpi_tickets`
-                   WHERE `entities_id` = '".$entity['entities_id']."'
+                   WHERE `entities_id` = '".$entity."'
                      AND `status` = 'solved'
-                     AND ADDDATE(`date_mod`, INTERVAL ".$entity['autoclose_delay']." DAY) < CURDATE()";
+                     AND ADDDATE(`date_mod`, INTERVAL ".$delay." DAY) < CURDATE()";
          $nb = 0;
          foreach ($DB->request($query) as $tick) {
             $ticket->update(array('id'     => $tick['id'],
@@ -4566,7 +4562,7 @@ class Ticket extends CommonDBTM {
          if ($nb) {
             $tot += $nb;
             $task->addVolume($nb);
-            $task->log(Dropdown::getDropdownName('glpi_entities',$entity['entities_id'])." : $nb");
+            $task->log(Dropdown::getDropdownName('glpi_entities',$entity)." : $nb");
          }
       }
 

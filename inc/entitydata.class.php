@@ -279,6 +279,7 @@ class EntityData extends CommonDBTM {
       $this->fields['use_contracts_alert'] = -1;
       $this->fields['use_infocoms_alert'] = -1;
       $this->fields['use_reservations_alert'] = -1;
+      $this->fields['autoclose_delay'] = -1;
    }
 
    static function showNotificationOptions(Entity $entity) {
@@ -451,11 +452,10 @@ class EntityData extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['entity'][18] . "&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'],0,99,1);
+      Dropdown::showInteger('autoclose_delay',
+                            $entdata->fields['autoclose_delay'],0,99,1,
+                            array(-1=>$LANG['setup'][731]));
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
-
-//      echo "<tr class='tab_bg_1'><td colspan='2' class='center'>" . $LANG['common'][26] . "&nbsp;: ";
-//      echo convDateTime($config->fields['date_mod'])."</td></tr>";
 
       if ($canedit) {
          echo "<tr>";

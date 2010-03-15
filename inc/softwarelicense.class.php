@@ -367,17 +367,7 @@ class SoftwareLicense extends CommonDBTM {
       $items_notice=array();
       $items_end=array();
 
-      $query = "SELECT `glpi_entities`.`id` as `entity`,
-                  `glpi_entitydatas`.`use_licenses_alert`
-                FROM `glpi_entities`
-                LEFT JOIN `glpi_entitydatas` ON (
-                  `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
-      $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
-       foreach ($DB->request($query) as $data) {
-          if ( ((!isset($data['use_licenses_alert'])
-                  || $data['use_licenses_alert']==-1)
-                  && $CFG_GLPI["use_licenses_alert"])
-                     || $data['use_licenses_alert']) {
+       foreach (Entity::getEntitiesToNotify('use_licenses_alert') as $entity => $value) {
             // Check licenses
             $query = "SELECT `glpi_softwarelicenses`.*, `glpi_softwares`.`name` AS softname
                       FROM `glpi_softwarelicenses`
@@ -392,48 +382,47 @@ class SoftwareLicense extends CommonDBTM {
                               AND `glpi_softwarelicenses`.`expire` < CURDATE()
                                  AND `glpi_softwares`.`is_template`='0'
                                     AND `glpi_softwares`.`is_deleted`='0'
-                                       AND `glpi_softwares`.`entities_id`='".$data['entity']."'";
+                                       AND `glpi_softwares`.`entities_id`='".$entity."'";
 
-            $message = "";
-            $items = array();
-            foreach($DB->request($query) as $license) {
-               $name = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
-               $message .= $LANG['mailing'][51]." ".$name.": ".
-                                                    convDate($license["expire"])."<br>\n";
-               $items[$license['id']] = $license;
-            }
+         $message = "";
+         $items = array();
+         foreach($DB->request($query) as $license) {
+            $name = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
+            $message .= $LANG['mailing'][51]." ".$name.": ".
+                                                 convDate($license["expire"])."<br>\n";
+            $items[$license['id']] = $license;
+         }
 
-            if (!empty($items)) {
-               $alert = new Alert();
-               $options['entities_id'] = $data['entity'];
-               $options['licenses'] = $items;
-               if (NotificationEvent::raiseEvent('alert',new SoftwareLicense(),$options)) {
-                  if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",
-                                                             $data['entity'])." :  $message\n");
-                     $task->addVolume(1);
-                  } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                       $data['entity'])." :  $message");
+         if (!empty($items)) {
+             $alert = new Alert();
+            $options['entities_id'] = $entity;
+            $options['licenses'] = $items;
+            if (NotificationEvent::raiseEvent('alert',new SoftwareLicense(),$options)) {
+               if ($task) {
+                  $task->log(Dropdown::getDropdownName("glpi_entities",
+                                                          $entity)." :  $message\n");
+                   $task->addVolume(1);
+                } else {
+                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
+                                                                    $entity)." :  $message");
+               }
+
+               $input["type"] = Alert::END;
+               $input["itemtype"] = 'SoftwareLicense';
+
+               // add alerts
+               foreach ($items as $ID=>$consumable) {
+                  $input["items_id"]=$ID;
+                  $alert->add($input);
+                  unset($alert->fields['id']);
                   }
-
-                  $input["type"] = Alert::END;
-                  $input["itemtype"] = 'SoftwareLicense';
-
-                  // add alerts
-                  foreach ($items as $ID=>$consumable) {
-                     $input["items_id"]=$ID;
-                     $alert->add($input);
-                     unset($alert->fields['id']);
-                     }
+               } else {
+                  if ($task) {
+                      $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
+                            " : Send licenses alert failed\n");
                   } else {
-                     if ($task) {
-                        $task->log(Dropdown::getDropdownName("glpi_entities",$data['entity']).
-                               " : Send licenses alert failed\n");
-                     } else {
-                        addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$data['entity']).
-                                                " : Send licenses alert failed",false,ERROR);
-                     }
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
+                                             " : Send licenses alert failed",false,ERROR);
                   }
                }
             }
