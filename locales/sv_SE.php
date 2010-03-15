@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Visa allas planering";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Reservationsadministrering"; 
 $LANG['profiles'][24]="Uppdatera lösenord"; 
+$LANG['profiles'][26]="Visa ärenden för mina grupper"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Rekursiv"; 
 $LANG['profiles'][29]="Dynamisk"; 

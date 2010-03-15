@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="全ての計画を見る";
 $LANG['profiles'][22]="プロフィール"; 
 $LANG['profiles'][23]="管理者固有の権限"; 
 $LANG['profiles'][24]="パスワードを更新する"; 
+$LANG['profiles'][26]="グループが作成したチケットを表示"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="反復的な"; 
 $LANG['profiles'][29]="動的な"; 

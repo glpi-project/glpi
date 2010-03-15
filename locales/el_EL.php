@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Δες όλα τα πλάνα";
 $LANG['profiles'][22]="Διάγραμμα Profile"; 
 $LANG['profiles'][23]="Κράτηση Διεχείρισης"; 
 $LANG['profiles'][24]="Ενημέρωση Κωδικού"; 
+$LANG['profiles'][26]="Δείξε τα αιτήματα της ομάδας μου"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Αναδρομικά"; 
 $LANG['profiles'][29]="Δυναμικά"; 

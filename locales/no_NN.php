@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Vis alle plannlegging";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Antall Administrasjoner"; 
 $LANG['profiles'][24]="Oppdater passord"; 
+$LANG['profiles'][26]="Vis opprettede oppgaver i mine grupper"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Rekursiv"; 
 $LANG['profiles'][29]="Dynamisk"; 

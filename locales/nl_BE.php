@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="View all planning";
 $LANG['profiles'][22]="Profiel"; 
 $LANG['profiles'][23]="Reservation Administration"; 
 $LANG['profiles'][24]="Wachtwoord aanpassen"; 
+$LANG['profiles'][26]="Show tickets created by my groups"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursive"; 
 $LANG['profiles'][29]="Dynamisch"; 

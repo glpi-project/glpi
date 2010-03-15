@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="לראות את כל תכנונים";
 $LANG['profiles'][22]="פרופיל"; 
 $LANG['profiles'][23]="ניהול השאלות"; 
 $LANG['profiles'][24]="עדכון סיסמה"; 
+$LANG['profiles'][26]="להציג את הקריאות שנוצרו ע'י חברי הקבוצות שלי"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="רקורסיבי"; 
 $LANG['profiles'][29]="דינמי"; 

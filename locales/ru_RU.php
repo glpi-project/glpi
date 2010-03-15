@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Показывать всё планирование";
 $LANG['profiles'][22]="Профиль"; 
 $LANG['profiles'][23]="Управление резервированием"; 
 $LANG['profiles'][24]="Смена пароля"; 
+$LANG['profiles'][26]="Показывать заявки своей группы"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Наследование"; 
 $LANG['profiles'][29]="Динамичный"; 

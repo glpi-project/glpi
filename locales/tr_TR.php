@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Tüm Planları Göster";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Rezervasyon Yöneticisi"; 
 $LANG['profiles'][24]="Parola Güncelle"; 
+$LANG['profiles'][26]="Show tickets created by my groups"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursive"; 
 $LANG['profiles'][29]="Dinamik"; 

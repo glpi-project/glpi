@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Prohlédnout všechna plánování";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Administrace rezervace"; 
 $LANG['profiles'][24]="Aktualizovat heslo"; 
+$LANG['profiles'][26]="Zobrazit oznámení mé skupiny"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Rekurzivně"; 
 $LANG['profiles'][29]="Dynamicky"; 

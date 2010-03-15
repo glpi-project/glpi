@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Vizualizeaza toata planificarea";
 $LANG['profiles'][22]="Profile"; 
 $LANG['profiles'][23]="Administrarea rezervarilor"; 
 $LANG['profiles'][24]="Actualizeaza parola"; 
+$LANG['profiles'][26]="Arata poblemele create de catre grup"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursiv"; 
 $LANG['profiles'][29]="Dinamic"; 

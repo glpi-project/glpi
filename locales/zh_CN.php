@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="观看所有计划";
 $LANG['profiles'][22]="个人配置"; 
 $LANG['profiles'][23]="保留管理"; 
 $LANG['profiles'][24]="更新密码"; 
+$LANG['profiles'][26]="Show tickets created by my groups"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursive"; 
 $LANG['profiles'][29]="Dynamic"; 

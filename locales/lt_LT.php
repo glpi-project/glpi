@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Suplanuoti veiksmai";
 $LANG['profiles'][22]="Profilis"; 
 $LANG['profiles'][23]="Rezervavimo administravimas"; 
 $LANG['profiles'][24]="Atnaujinti slaptažodį"; 
+$LANG['profiles'][26]="Mano grupėje sukurtos paraiškos"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Rekursinis"; 
 $LANG['profiles'][29]="Dinaminis"; 

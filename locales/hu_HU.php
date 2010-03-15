@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Minden terv megnézése";
 $LANG['profiles'][22]="Profil"; 
 $LANG['profiles'][23]="Foglalás adminisztráció"; 
 $LANG['profiles'][24]="Jelszó frissítése"; 
+$LANG['profiles'][26]="A saját csoport bejelentéseinek megnézése"; 
 $LANG['profiles'][27]="A csoport eszközeinek megjelenítése"; 
 $LANG['profiles'][28]="Rekurzív"; 
 $LANG['profiles'][29]="Dinamikus"; 

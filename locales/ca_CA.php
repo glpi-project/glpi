@@ -1288,6 +1288,7 @@ $LANG['profiles'][21]="Veure totes les planificacions";
 $LANG['profiles'][22]="Perfil"; 
 $LANG['profiles'][23]="Administració de reserves"; 
 $LANG['profiles'][24]="Actualització de contrasenya"; 
+$LANG['profiles'][26]="Veure les incidències creades per grup associat"; 
 $LANG['profiles'][27]="See hardware of my group(s)"; 
 $LANG['profiles'][28]="Recursiu"; 
 $LANG['profiles'][29]="Dinàmic"; 
