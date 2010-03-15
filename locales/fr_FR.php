@@ -1299,6 +1299,7 @@ $LANG['profiles'][21]="Voir tous les planning";
 $LANG['profiles'][22]="Profil";
 $LANG['profiles'][23]="Administration des réservations";
 $LANG['profiles'][24]="Mise à jour de mot de passe";
+$LANG['profiles'][26]="Voir les tickets créés par groupe(s) associé(s)";
 $LANG['profiles'][27]="Voir les matériels du ou des groupe(s) associé(s)";
 $LANG['profiles'][28]="Récursif";
 $LANG['profiles'][29]="Dynamique";
