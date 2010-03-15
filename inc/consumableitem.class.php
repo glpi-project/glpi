@@ -301,21 +301,7 @@ class ConsumableItem extends CommonDBTM {
          $items=array();
          $alert=new Alert();
 
-         $query = "SELECT `glpi_entities`.`id` as `entity`,
-                     `glpi_entitydatas`.`consumables_alert_repeat`
-                   FROM `glpi_entities`
-                   LEFT JOIN `glpi_entitydatas` ON (
-                     `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
-          $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
-
-          foreach ($DB->request($query) as $data) {
-            if (!isset($data['consumables_alert_repeat']) ||
-                  $data['consumables_alert_repeat']==-1) {
-               $repeat = $CFG_GLPI["consumables_alert_repeat"];
-            }
-            else {
-               $repeat = $data["consumables_alert_repeat"];
-            }
+          foreach (Entity::getEntitiesToNotify('consumables_alert_repeat') as $entity => $repeat) {
 
             $query_alert="SELECT `glpi_consumableitems`.`id` AS consID,
                            `glpi_consumableitems`.`entities_id` as entity,
@@ -328,7 +314,7 @@ class ConsumableItem extends CommonDBTM {
                                                 AND `glpi_alerts`.`itemtype`='ConsumableItem')
                    WHERE `glpi_consumableitems`.`is_deleted`='0'
                          AND `glpi_consumableitems`.`alarm_threshold`>='0'
-                           AND `glpi_consumableitems`.`entities_id`= '".$data['entity']."'
+                           AND `glpi_consumableitems`.`entities_id`= '".$entity."'
                               AND (`glpi_alerts`.`date` IS NULL
                               OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
             $message = "";
@@ -349,16 +335,16 @@ class ConsumableItem extends CommonDBTM {
             }
 
             if (!empty($items)) {
-               $options['entities_id'] = $data['entity'];
+               $options['entities_id'] = $entity;
                $options['consumables'] = $items;
                if (NotificationEvent::raiseEvent('alert',new Consumable(),$options)) {
                   if ($task) {
                      $task->log(Dropdown::getDropdownName("glpi_entities",
-                                                          $data['entity'])." :  $message\n");
+                                                          $entity)." :  $message\n");
                      $task->addVolume(1);
                   } else {
                      addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                       $data['entity'])." :  $message");
+                                                                       $entity)." :  $message");
                   }
 
                   $input["type"] = Alert::THRESHOLD;
@@ -372,10 +358,10 @@ class ConsumableItem extends CommonDBTM {
                   }
                } else {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$data['entity']).
+                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
                             " : Send consumable alert failed\n");
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$data['entity']).
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
                                              " : Send consumable alert failed",false,ERROR);
                   }
                }

@@ -239,49 +239,38 @@ class Infocom extends CommonDBTM {
       $items_infos = array();
       $items_messages = array();
 
-      $query = "SELECT `glpi_entities`.`id` as `entity`,
-                  `glpi_entitydatas`.`use_infocoms_alert`
-                FROM `glpi_entities`
-                LEFT JOIN `glpi_entitydatas` ON (
-                  `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)
-                ORDER BY `glpi_entities`.`entities_id` ASC";
-      foreach ($DB->request($query) as $entitydatas) {
-         if ( ((!isset($entitydatas['use_infocoms_alert'])
-                 || $entitydatas['use_infocoms_alert']==-1)
-                 && $CFG_GLPI["use_infocoms_alert"])
-                    || $entitydatas['use_infocoms_alert']) {
+      foreach (Entity::getEntitiesToNotify('use_infocoms_alert') as $entity => $value) {
+
          $query_end = "SELECT `glpi_infocoms`.*
                        FROM `glpi_infocoms`
                        LEFT JOIN `glpi_alerts` ON (`glpi_infocoms`.`id` = `glpi_alerts`.`items_id`
                                                      AND `glpi_alerts`.`itemtype` = 'Infocom'
                                                      AND `glpi_alerts`.`type`='".Alert::END."')
                        WHERE (`glpi_infocoms`.`alert` & ".pow(2,Alert::END).") >'0'
-                        AND `glpi_infocoms`.`entities_id`='".$entitydatas['entity']."'
+                        AND `glpi_infocoms`.`entities_id`='".$entity."'
                            AND `glpi_infocoms`.`warranty_duration`>'0'
                               AND `glpi_infocoms`.`buy_date` IS NOT NULL
                                  AND DATEDIFF(ADDDATE(`glpi_infocoms`.`buy_date`, INTERVAL
                                             (`glpi_infocoms`.`warranty_duration`) MONTH),CURDATE() )<'0'
                                     AND `glpi_alerts`.`date` IS NULL";
 
+         foreach ($DB->request($query_end) as $data) {
+            $item_infocom = new $data["itemtype"]();
+            if ($item_infocom->getFromDB($data["items_id"])) {
+               $entity = $data['entities_id'];
+               $warranty = getWarrantyExpir($data["buy_date"],
+                                                      $data["warranty_duration"]);
+               $message = $LANG['mailing'][40]." ".
+                              $item_infocom->getTypeName()." - ".$item_infocom->getName()." : ".
+                              $warranty."<br>";
+               $data['warrantyexpiration'] = $warranty;
+               $data['item_name'] = $item_infocom->getName();
+               $items_infos[$entity][$data['id']] = $data;
 
-            foreach ($DB->request($query_end) as $data) {
-               $item_infocom = new $data["itemtype"]();
-               if ($item_infocom->getFromDB($data["items_id"])) {
-                  $entity = $data['entities_id'];
-                  $warranty = getWarrantyExpir($data["buy_date"],
-                                                         $data["warranty_duration"]);
-                  $message = $LANG['mailing'][40]." ".
-                                 $item_infocom->getTypeName()." - ".$item_infocom->getName()." : ".
-                                 $warranty."<br>";
-                  $data['warrantyexpiration'] = $warranty;
-                  $data['item_name'] = $item_infocom->getName();
-                  $items_infos[$entity][$data['id']] = $data;
-
-                  if (!isset($items_messages[$entity])) {
-                     $items_messages[$entity] = $LANG['mailing'][40]."<br />";
-                  }
-                  $items_messages[$entity] .= $message;
+               if (!isset($items_messages[$entity])) {
+                  $items_messages[$entity] = $LANG['mailing'][40]."<br />";
                }
+               $items_messages[$entity] .= $message;
             }
          }
       }

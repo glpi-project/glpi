@@ -373,21 +373,7 @@ class CartridgeItem extends CommonDBTM {
          $items=array();
          $alert=new Alert();
 
-         $query = "SELECT `glpi_entities`.`id` as `entity`,
-                     `glpi_entitydatas`.`cartridges_alert_repeat`
-                   FROM `glpi_entities`
-                   LEFT JOIN `glpi_entitydatas` ON (
-                     `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
-          $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
-
-          foreach ($DB->request($query) as $data) {
-            if (!isset($data['cartridges_alert_repeat']) ||
-                  $data['cartridges_alert_repeat']==-1) {
-               $repeat = $CFG_GLPI["cartridges_alert_repeat"];
-            }
-            else {
-               $repeat = $data["cartridges_alert_repeat"];
-            }
+          foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
 
             $query_alert="SELECT `glpi_cartridgeitems`.`id` AS cartID,
                            `glpi_cartridgeitems`.`entities_id` as entity,
@@ -400,7 +386,7 @@ class CartridgeItem extends CommonDBTM {
                                                 AND `glpi_alerts`.`itemtype`='CartridgeItem')
                    WHERE `glpi_cartridgeitems`.`is_deleted`='0'
                          AND `glpi_cartridgeitems`.`alarm_threshold`>='0'
-                           AND `glpi_cartridgeitems`.`entities_id`= '".$data['entity']."'
+                           AND `glpi_cartridgeitems`.`entities_id`= '".$entity."'
                               AND (`glpi_alerts`.`date` IS NULL
                               OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
             $message = "";
@@ -421,16 +407,16 @@ class CartridgeItem extends CommonDBTM {
             }
 
             if (!empty($items)) {
-               $options['entities_id'] = $data['entity'];
+               $options['entities_id'] = $entity;
                $options['cartridges'] = $items;
                if (NotificationEvent::raiseEvent('alert',new Cartridge(),$options)) {
                   if ($task) {
                      $task->log(Dropdown::getDropdownName("glpi_entities",
-                                                          $data['entity'])." :  $message\n");
+                                                          $entity)." :  $message\n");
                      $task->addVolume(1);
                   } else {
                      addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                       $data['entity'])." :  $message");
+                                                                       $entity)." :  $message");
                   }
 
                   $input["type"] = Alert::THRESHOLD;
@@ -444,10 +430,10 @@ class CartridgeItem extends CommonDBTM {
                   }
                } else {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$data['entity']).
+                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
                             " : Send cartidge alert failed\n");
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$data['entity']).
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
                                              " : Send cartidge alert failed",false,ERROR);
                   }
                }

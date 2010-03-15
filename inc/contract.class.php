@@ -955,24 +955,7 @@ class Contract extends CommonDBTM {
       $contract_infos[Alert::NOTICE] = array();
       $contract_messages = array();
 
-      $query = "SELECT `glpi_entities`.`id` as `entity`,
-               `glpi_entitydatas`.`use_contracts_alert`
-             FROM `glpi_entities`
-             LEFT JOIN `glpi_entitydatas` ON (
-               `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
-      $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
-
-      $entities[] = 0;
-      foreach ($DB->request($query) as $entitydatas) {
-         if ( ((!isset($entitydatas['use_contracts_alert'])
-              || $entitydatas['use_contracts_alert']==-1)
-                 && $CFG_GLPI["use_contracts_alert"])
-                    || $entitydatas['use_contracts_alert']) {
-            $entities[] = $entitydatas['entity'];
-         }
-      }
-
-      foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity) {
+      foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
          $query_notice="SELECT `glpi_contracts`.*
                         FROM `glpi_contracts`
                         LEFT JOIN `glpi_alerts` ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`

@@ -450,7 +450,7 @@ class Entity extends CommonTreeDropdown {
       glpi_header($_SERVER['HTTP_REFERER']);
    }
 
-   static function getEntitiesToNotify($field) {
+   static function getEntitiesToNotify($field,$with_value=false) {
       global $DB,$CFG_GLPI;
 
       $query = "SELECT `glpi_entities`.`id` as `entity`,
@@ -462,30 +462,34 @@ class Entity extends CommonTreeDropdown {
 
       $entities = array();
       foreach ($DB->request($query) as $entitydatas) {
-         if (!$entitydatas['entity']) {
-            $root_entity_found = true;
-         }
-         if ( ((!isset($entitydatas[$field]) || $entitydatas[$field]==-1) && $CFG_GLPI[$field])
-                 || $entitydatas[$field]) {
-            $entities[] = $entitydatas['entity'];
-         }
+         Entity::getDefaultValueForNotification($field,$entities, $entitydatas);
       }
 
       //If root entity doesn't have row in glpi_entitydatas
       $query = "SELECT `$field` FROM `glpi_entitydatas` WHERE `entities_id`='0'";
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         if (($DB->result($result,0,$field) > 0)
-            || ($DB->result($result,0,$field) == -1 && $CFG_GLPI[$field])){
-            $entities[] = 0;
-         }
+      if ($DB->numrows($result)) {
+         Entity::getDefaultValueForNotification($field,
+                                                $entities,
+                                                array('entity'=>0,
+                                                      $field=>$DB->result($result,0,$field)));
       }
       elseif ($CFG_GLPI[$field]) {
-            $entities[] = 0;
+         $entities[0] = $field;
       }
 
       return $entities;
    }
-}
 
+   static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
+      global $CFG_GLPI;
+      if ((!isset($entitydatas[$field]) ||
+         $entitydatas[$field]==-1) && $CFG_GLPI[$field]) {
+         $entities[$entitydatas['entity']] = $CFG_GLPI[$field];
+      }
+      elseif(isset($entitydatas[$field]) && $entitydatas[$field]) {
+         $entities[$entitydatas['entity']] = $entitydatas[$field];
+      }
+   }
+}
 ?>
