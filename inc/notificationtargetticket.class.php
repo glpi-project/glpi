@@ -283,7 +283,7 @@ class NotificationTargetTicket extends NotificationTarget {
          }
       }
    }
-   
+
 
    function addAdditionnalUserInfo($data) {
       global $DB;
@@ -471,7 +471,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
          $this->datas['##lang.ticket.autoclosewarning##'] = $LANG['job'][54]." ".
                               $entitydata->fields['autoclose_delay']." ".$LANG['stats'][31];
-         
+
      } else {
         $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
      }
@@ -488,7 +488,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $user = new User;
          $user->getFromDB($this->obj->getField('users_id'));
          $this->datas['##ticket.author##']      = $user->getField('id');
-         $this->datas['##ticket.author.name##'] = $user->getField('name');
+         $this->datas['##ticket.author.name##'] = $user->getName();
          if ($user->getField('locations_id')) {
             $this->datas['##ticket.author.location##'] = Dropdown::getDropdownName('glpi_locations',
                                                                   $user->getField('locations_id'));
@@ -500,15 +500,17 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       if ($this->obj->getField('users_id_recipient')) {
-         $this->datas['##ticket.openbyuser##'] = Dropdown::getDropdownName('glpi_users',
-                                                         $this->obj->getField('users_id_recipient'));
+         $user_tmp = new User;
+         $user_tmp->getFromDB($this->obj->getField('users_id_recipient'));
+         $this->datas['##ticket.openbyuser##'] = $user_tmp->getName();
       } else {
          $this->datas['##ticket.openbyuser##'] = '';
       }
 
       if ($this->obj->getField('users_id_assign')) {
-         $this->datas['##ticket.assigntouser##'] = Dropdown::getDropdownName('glpi_users',
-                                                            $this->obj->getField('users_id_assign'));
+         $user_tmp = new User;
+         $user_tmp->getFromDB($this->obj->getField('users_id_assign'));
+         $this->datas['##ticket.assigntouser##'] = $user_tmp->getName();
       } else {
          $this->datas['##ticket.assigntouser##'] = '';
       }
