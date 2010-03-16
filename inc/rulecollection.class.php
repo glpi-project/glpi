@@ -100,8 +100,8 @@ class RuleCollection extends CommonDBTM {
 
       //Select all the rules of a different type
       if ($this->isRuleRecursive()) {
-         $sql.="LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_rules`.`entities_id`)";
-         $sql.="WHERE $sql_active AND `sub_type` = '".$this->getRuleClassName()."' ";
+         $sql.=" LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_rules`.`entities_id`)";
+         $sql.=" WHERE $sql_active AND `sub_type` = '".$this->getRuleClassName()."' ";
          if (!$p['childrens']) {
             $sql.= getEntitiesRestrictRequest(" AND",
                                               "glpi_rules",
@@ -113,7 +113,7 @@ class RuleCollection extends CommonDBTM {
             $sons = getSonsOf('glpi_entities',$this->entity);
             $sql.=" AND `glpi_rules`.`entities_id` IN (".implode(',',$sons).")";
          }
-         $sql.= " ORDER BY `glpi_entities`.`level` ASC, ".$this->orderby."` ASC";
+         $sql.= " ORDER BY `glpi_entities`.`level` ASC, `".$this->orderby."` ASC";
       }
       else {
          $sql.="WHERE $sql_active AND `sub_type` = '".$this->getRuleClassName()."'";
