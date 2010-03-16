@@ -1402,12 +1402,38 @@ function helpHeader($title,$url='') {
    // End headline
    ///Le sous menu contextuel 1
    echo "<div id='c_ssmenu1'>";
+   echo "&nbsp;";
    echo "</div>";
 
    //  Le fil d ariane
    echo "<div id='c_ssmenu2'>";
    echo "<ul>";
    echo "<li><a href='#' title=''>Helpdesk > </a></li>";
+   echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+
+   if (haveRight('validate_ticket',1)) {
+      $opt=array();
+      $opt['reset']  = 'reset';
+      $opt['field'][0]      = 55; // validation status
+      $opt['searchtype'][0] = 'equals';
+      $opt['contains'][0]   = 'waiting';
+      $opt['link'][0]        = 'AND';
+
+      $opt['field'][1]      = 59; // validation aprobator
+      $opt['searchtype'][1] = 'equals';
+      $opt['contains'][1]   = getLoginUserID();
+      $opt['link'][1]        = 'AND';
+
+
+      $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt)."' ><img title=\"".
+                              $LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
+                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
+      echo "<li>$pic_validate</li>\n";
+
+   }
+   echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+
+
    showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
    echo "</ul></div>";
 
