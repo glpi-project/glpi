@@ -333,23 +333,26 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['maintain']['content']['ticket']['page']='/front/ticket.php';
       $menu['maintain']['content']['ticket']['links']['search']='/front/ticket.php';
       $menu['maintain']['content']['ticket']['links']['search']='/front/ticket.php';
-      $opt=array();
-      $opt['reset']  = 'reset';
-      $opt['field'][0]      = 55; // validation status
-      $opt['searchtype'][0] = 'equals';
-      $opt['contains'][0]   = 'waiting';
-      $opt['link'][0]        = 'AND';
 
-      $opt['field'][1]      = 59; // validation aprobator
-      $opt['searchtype'][1] = 'equals';
-      $opt['contains'][1]   = getLoginUserID();
-      $opt['link'][1]        = 'AND';
+      if (haveRight('validate_ticket',1)) {
+         $opt=array();
+         $opt['reset']  = 'reset';
+         $opt['field'][0]      = 55; // validation status
+         $opt['searchtype'][0] = 'equals';
+         $opt['contains'][0]   = 'waiting';
+         $opt['link'][0]        = 'AND';
+
+         $opt['field'][1]      = 59; // validation aprobator
+         $opt['searchtype'][1] = 'equals';
+         $opt['contains'][1]   = getLoginUserID();
+         $opt['link'][1]        = 'AND';
 
 
-      $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt)."' ><img title=\"".
-                              $LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
-                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
-      $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt);
+         $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt)."' ><img title=\"".
+                                 $LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
+                                 $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
+         $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt);
+      }
       $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticket.php';
    }
    if (haveRight("create_ticket","1")) {
