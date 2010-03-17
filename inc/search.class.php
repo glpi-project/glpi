@@ -3655,7 +3655,9 @@ class Search {
       }
 
       if (isset($_GET["delete_search_count"]) && $_GET["delete_search_count"]) {
-         $_SESSION["glpisearchcount"][$itemtype]--;
+         if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
+            $_SESSION["glpisearchcount"][$itemtype]--;
+         }
          glpi_header(str_replace("delete_search_count=1&","",$_SERVER['REQUEST_URI']));
       }
 
@@ -3665,7 +3667,9 @@ class Search {
       }
 
       if (isset($_GET["delete_search_count2"]) && $_GET["delete_search_count2"]) {
-         $_SESSION["glpisearchcount2"][$itemtype]--;
+         if ($_SESSION["glpisearchcount2"][$itemtype] > 1) {
+            $_SESSION["glpisearchcount2"][$itemtype]--;
+         }
          glpi_header(str_replace("delete_search_count2=1&","",$_SERVER['REQUEST_URI']));
       }
 
