@@ -368,7 +368,7 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::TICKET_ASSIGN_TECH,$LANG['setup'][239]);
       $this->addTarget(Notification::TICKET_REQUESTER_GROUP,$LANG['setup'][249]);
       $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
-      $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
+      $this->addTarget(Notification::ITEM_USER,$LANG['mailing'][137]);
       $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
       if ($event=='validation') {
          $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,$LANG['validation'][0].' - '.$LANG['validation'][21]);

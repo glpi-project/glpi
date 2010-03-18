@@ -78,8 +78,8 @@ class NotificationTargetReservation extends NotificationTarget {
 
       return array ('new'    => $LANG['mailing'][19],
                     'update' => $LANG['mailing'][23],
-                    'delete' => $LANG['mailing'][29]);
-                    //'end' => $LANG['mailing'][136]);
+                    'delete' => $LANG['mailing'][29],
+                    'alert' => $LANG['mailing'][136]);
    }
 
 
@@ -87,7 +87,7 @@ class NotificationTargetReservation extends NotificationTarget {
       global $LANG;
       if ($event != 'end') {
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
-         $this->addTarget(Notification::ITEM_USER,$LANG['common'][34]);
+         $this->addTarget(Notification::ITEM_USER,$LANG['mailing'][137]);
          $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
       }
    }
