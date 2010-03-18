@@ -1063,6 +1063,7 @@ $LANG['mailing'][133]="Supprimer email(s)";
 $LANG['mailing'][134]="Mise à jour suivi";
 $LANG['mailing'][135]="Suppression suivi";
 $LANG['mailing'][136]="Expiration réservation";
+$LANG['mailing'][137]="Utilisateur du matériel";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
