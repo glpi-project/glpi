@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['mailing'][113],$_SERVER['PHP_SELF'],"config","mailing","notification");
+   commonHeader($LANG['setup'][704],$_SERVER['PHP_SELF'],"config","mailing","notification");
    $notification->showForm($_GET["id"]);
    commonFooter();
 }
