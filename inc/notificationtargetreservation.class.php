@@ -35,28 +35,27 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetReservation extends NotificationTarget {
 
-   function getSpecificAddresses($data, $options=array()) {
+   /**
+    * Get users emails by profile
+    * @param $profiles_id the profile ID to get users emails
+    *
+    * @return nothing
+    */
+   function getUsersAddressesByProfile($profiles_id) {
+      global $DB;
 
-      //Look for all targets whose type is Notification::ITEM_USER
-      switch ($data['type']) {
-         case Notification::USER_TYPE :
+      $query = $this->getDistinctUserSql().", glpi_profiles_users.entities_id AS entity
+               FROM `glpi_profiles_users`".
+               $this->getJoinProfileSql()."
+               INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
+               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."'".
+                     getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
+                                                $this->target_object->getEntityID(),true);
 
-            switch ($data['items_id']) {
-               //Send to the author of the ticket
-               case Notification::AUTHOR :
-                  $this->getItemAuthorAddress();
-                  break;
-            }
-
-         //Send to all the users of a profile
-         case Notification::PROFILE_TYPE :
-            $this->getUsersAddressesByProfile($data['items_id']);
-            break;
+      foreach ($DB->request($query) as $data) {
+         $this->addToAddressesList($data);
       }
    }
-
-
-
    /**
     * Get item associated with the object on which the event was raised
     * @return the object associated with the itemtype

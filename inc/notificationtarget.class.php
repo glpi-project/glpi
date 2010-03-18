@@ -534,15 +534,22 @@ class NotificationTarget extends CommonDBChild {
     * Add user to the notified users list
     * @param $field look for user looking for this field in the object which raises the event
     */
-   function getUserByField ($field) {
+   function getUserByField ($field,$search_in_object=false) {
       global $DB;
 
-      if ($this->target_object) {
+      $id = 0;
+      if (!$search_in_object) {
+         $id = $this->obj->getField($field);
+      }
+      elseif ($this->target_object) {
+         $id = $this->target_object->getField($field);
+      }
+      if ($id) {
          //Look for the user by his id
          $query = $this->getDistinctUserSql()."
                   FROM `glpi_users`".
                   $this->getJoinProfileSql()."
-                  WHERE `glpi_users`.`id` = '".$this->target_object->getField($field)."'";
+                  WHERE `glpi_users`.`id` = '$id'";
          foreach ($DB->request($query) as $data) {
             //Add the user email and language in the notified users list
             $this->addToAddressesList($data);
@@ -555,7 +562,7 @@ class NotificationTarget extends CommonDBChild {
     * Get technician in charge of the item
     */
    function getItemTechnicianInChargeAddress() {
-      $this->getUserByField('users_id_tech');
+      $this->getUserByField('users_id_tech',true);
    }
 
 
@@ -563,7 +570,7 @@ class NotificationTarget extends CommonDBChild {
     * Get user owner of the material
     */
    function getItemOwnerAddress() {
-      $this->getUserByField('users_id');
+      $this->getUserByField('users_id',true);
    }
 
 
