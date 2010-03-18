@@ -90,7 +90,7 @@ class NotificationTarget extends CommonDBChild {
 
       if ($object) {
          $this->obj = $object;
-         $this->getObjectItem();
+         $this->getObjectItem($event);
       }
       $this->raiseevent = $event;
       $this->options = $options;
@@ -525,7 +525,7 @@ class NotificationTarget extends CommonDBChild {
     * Get item associated with the object on which the event was raised
     * @return the object associated with the itemtype
     */
-   function getObjectItem() {
+   function getObjectItem($event='') {
       $this->target_object = $this->obj;
    }
 
@@ -601,11 +601,16 @@ class NotificationTarget extends CommonDBChild {
     * Get admin which sends the notification
     * @return the sender's address
     */
-   function getSender() {
+   function getSender($options = array()) {
       global $DB, $CFG_GLPI;
 
-      $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id'):
-                                                    $this->target_object->getField('entities_id'));
+      if (isset($options['entities_id'])) {
+         $entity = $options['entities_id'];
+      }
+      else {
+         $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id'):
+                                                       $this->target_object->getField('entities_id'));
+      }
 
       //If the entity administrator's address is defined, return it
       foreach ($DB->request('glpi_entitydatas', array('entities_id' => $entity)) as $data) {

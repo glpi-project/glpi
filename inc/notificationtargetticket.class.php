@@ -127,7 +127,7 @@ class NotificationTargetTicket extends NotificationTarget {
     * Get item associated with the object on which the event was raised
     * @return the object associated with the itemtype
     */
-   function getObjectItem() {
+   function getObjectItem($event='') {
 
       if ($this->obj) {
          $itemtype = $this->obj->getField('itemtype');

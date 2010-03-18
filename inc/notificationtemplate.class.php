@@ -326,7 +326,7 @@ class NotificationTemplate extends CommonDBTM {
                } else {
                   $condition_ok=false;
                }
-               
+
             }
 
             if ($condition_ok){ // Do IF
@@ -371,7 +371,7 @@ class NotificationTemplate extends CommonDBTM {
       $user_email = $user_infos['email'];
 
       $mailing_options['to']      = $user_email;
-      $mailing_options['from']    = $target->getSender();
+      $mailing_options['from']    = $target->getSender($options);
       $mailing_options['replyto'] = $target->getReplyTo();
 
       if (isset($user_infos['additionnaloption'])) {

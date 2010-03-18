@@ -280,6 +280,8 @@ class EntityData extends CommonDBTM {
       $this->fields['use_infocoms_alert'] = -1;
       $this->fields['use_reservations_alert'] = -1;
       $this->fields['autoclose_delay'] = -1;
+      $this->fields['consumable_alert_repeat'] = -1;
+      $this->fields['cartridge_alert_repeat'] = -1;
    }
 
    static function showNotificationOptions(Entity $entity) {
