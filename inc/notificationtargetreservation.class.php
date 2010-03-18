@@ -60,17 +60,20 @@ class NotificationTargetReservation extends NotificationTarget {
     * Get item associated with the object on which the event was raised
     * @return the object associated with the itemtype
     */
-   function getObjectItem() {
-
-      $ri = new ReservationItem;
-      if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
-         $itemtype = $ri->getField('itemtype');
-         $item = new  $itemtype ();
-         $item->getFromDB($ri->getField('items_id'));
-         $this->target_object = $item;
+   function getObjectItem($event='') {
+      if ($event != 'alert') {
+         $ri = new ReservationItem;
+         if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
+            $itemtype = $ri->getField('itemtype');
+            $item = new  $itemtype ();
+            $item->getFromDB($ri->getField('items_id'));
+            $this->target_object = $item;
+         }
+      }
+      else {
+         $this->target_object = $this->obj;
       }
    }
-
 
    function getEvents() {
       global $LANG;
@@ -84,7 +87,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
    function getAdditionalTargets($event='') {
       global $LANG;
-      if ($event != 'end') {
+      if ($event != 'alert') {
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
          $this->addTarget(Notification::ITEM_USER,$LANG['mailing'][137]);
          $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
@@ -100,12 +103,13 @@ class NotificationTargetReservation extends NotificationTarget {
       $events = $this->getAllEvents();
 
       $this->datas['##reservation.action##'] = $events[$event];
-      $this->datas['##reservation.user##']   = Dropdown::getDropdownName('glpi_users',
-                                                                  $this->obj->getField('users_id'));
-      $this->datas['##reservation.begin##']  = convDateTime($this->obj->getField('begin'));
-      $this->datas['##reservation.end##']    = convDateTime($this->obj->getField('end'));
 
-      if ($event != 'end') {
+      if ($event != 'alert') {
+         $this->datas['##reservation.user##']   = Dropdown::getDropdownName('glpi_users',
+                                                                     $this->obj->getField('users_id'));
+         $this->datas['##reservation.begin##']  = convDateTime($this->obj->getField('begin'));
+         $this->datas['##reservation.end##']    = convDateTime($this->obj->getField('end'));
+
          $reservationitem = new ReservationItem;
          $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
          $itemtype = $reservationitem->getField('itemtype');
@@ -127,24 +131,29 @@ class NotificationTargetReservation extends NotificationTarget {
          }
       }
       else {
+         $this->datas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                            $options['entities_id']);
+
          foreach ($options['items'] as $id => $item) {
             $tmp = array();
             $obj = new $item['itemtype'] ();
             $tmp['##reservation.itemtype##'] = $obj->getTypeName();
             $tmp['##reservation.item##']     = $item['item_name'];
-            $tmp['##reservation.expirationdate##'] = convDateTime($item['warrantyexpiration']);
+            $tmp['##reservation.expirationdate##'] = convDateTime($item['end']);
             $tmp['##reservation.url##'] = urldecode($CFG_GLPI["url_base"].
                                                  "/index.php?redirect=reservation_".$id);
             $this->datas['reservations'][] = $tmp;
          }
       }
 
-      $fields = array('##lang.ticket.item.name##'        => $LANG['financial'][104],
+      $fields = array('##lang.reservation.item##'        => $LANG['financial'][104],
+                      '##lang.reservation.itemtype##'        => $LANG['reports'][12],
                       '##lang.reservation.user##'        => $LANG['common'][37],
                       '##lang.reservation.begin##'       => $LANG['search'][8],
                       '##lang.reservation.end##'         => $LANG['search'][9],
                       '##lang.reservation.comment##'     => $LANG['common'][25],
                       '##lang.reservation.item.entity##' => $LANG['entity'][0],
+                      '##lang.reservation.entity##' => $LANG['entity'][0],
                       '##lang.reservation.item.name##'   => $LANG['financial'][104],
                       '##lang.reservation.item.tech##'   => $LANG['common'][10]);
 

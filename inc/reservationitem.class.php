@@ -273,6 +273,7 @@ class ReservationItem extends CommonDBTM {
          $item=new $itemtype();
          $itemtable=getTableForItemType($itemtype);
          $query = "SELECT `glpi_reservationitems`.`id`, `glpi_reservationitems`.`comment`,".
+                        "`glpi_reservations`.`begin`, `glpi_reservations`.`end` ".
                         "`$itemtable`.`name` AS name, ".
                         "`$itemtable`.`entities_id` AS entities_id,
                         `glpi_locations`.`completename` AS location,
@@ -322,20 +323,20 @@ class ReservationItem extends CommonDBTM {
       echo "<input type='hidden' name='id' value=''>";
       echo "</form></div>\n";
    }
-/*
+
    static function cronInfo($name) {
       global $LANG;
 
       return array('description' => $LANG['setup'][707]);
    }
-*/
+
    /**
     * Cron action on infocom : alert on expired warranty
     *
     * @param $task to log, if NULL use display
     *
     * @return 0 : nothing to do 1 : done with success
-    **//*
+    **/
    static function cronReservation($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
 
@@ -348,35 +349,30 @@ class ReservationItem extends CommonDBTM {
       $items_infos = array();
       $items_messages = array();
 
-      $query = "SELECT `glpi_entities`.`id` as `entity`,
-                  `glpi_entitydatas`.`use_reservations_alert`
-                FROM `glpi_entities`
-                LEFT JOIN `glpi_entitydatas` ON (
-                  `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)
-                ORDER BY `glpi_entities`.`entities_id` ASC";
-      foreach ($DB->request($query) as $entitydatas) {
-         if ( ((!isset($entitydatas['use_reservations_alert'])
-                 || $entitydatas['use_reservations_alert']==-1)
-                 && $CFG_GLPI["use_reservations_alert"])
-                    || $entitydatas['use_reservations_alert']) {
-         $query_end = "SELECT `glpi_reservationitems`.*
+      $delay_stamp_reservations= mktime(date("H")+1, date("i"), date("s"), date("m"), date("d"), date("y"));
+      $date_end_reservations=date("Y-m-d H:i:s",$delay_stamp_reservations);
+      $date_reservations=date("Y-m-d H:i:s");
+
+      foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
+         $query_end = "SELECT `glpi_reservationitems`.*, `glpi_reservations`.`end` as `end`
                        FROM `glpi_reservationitems`
                        LEFT JOIN `glpi_alerts` ON (`glpi_reservationitems`.`id` = `glpi_alerts`.`items_id`
                                                      AND `glpi_alerts`.`itemtype` = 'ReservationItem'
                                                      AND `glpi_alerts`.`type`='".Alert::END."')
                        LEFT JOIN `glpi_reservations` ON (
                                  `glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`)
-                       WHERE `glpi_reservationitems`.`entities_id`='".$entitydatas['entity']."'
-                             AND DATEDIFF(CURDATE(),`glpi_reservations`.`end`) > 0
-                                AND `glpi_alerts`.`date` IS NULL";
-            logDebug($query_end);
+                       WHERE `glpi_reservationitems`.`entities_id`='".$entity."'
+                             AND `glpi_reservations`.`end` < '$date_end_reservations'
+                                AND `glpi_reservations`.`end` > '$date_reservations'
+                                   AND `glpi_alerts`.`date` IS NULL";
+
             foreach ($DB->request($query_end) as $data) {
-               $item_infocom = new $data["itemtype"]();
-               if ($item_infocom->getFromDB($data["items_id"])) {
-                  $entity = $data['entities_id'];
+               $item_resa = new $data["itemtype"]();
+               if ($item_resa->getFromDB($data["items_id"])) {
                   $message .= $LANG['reservation'][40]." ".
-                                 $item_infocom->getTypeName()." - ".$item_infocom->getName()."<br />";
-                  $data['item_name'] = $item_infocom->getName();
+                                 $item_resa->getTypeName()." - ".$item_resa->getName()."<br />";
+                  $data['item_name'] = $item_resa->getName();
+                  $data['entity'] = $entity;
                   $items_infos[$entity][$data['id']] = $data;
 
                   if (!isset($items_messages[$entity])) {
@@ -385,10 +381,11 @@ class ReservationItem extends CommonDBTM {
                   $items_messages[$entity] .= $message;
                }
             }
-         }
       }
 
       foreach ($items_infos as $entity => $items) {
+
+         $resitem = new ReservationItem;
 
          if (NotificationEvent::raiseEvent("alert",new Reservation(),
                                            array('entities_id'=>$entity,'items'=>$items))) {
@@ -422,7 +419,7 @@ class ReservationItem extends CommonDBTM {
          }
       }
       return $cron_status;
-   }*/
+   }
 
 }
 
