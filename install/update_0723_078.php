@@ -2783,6 +2783,8 @@ function update0723to078($output='HTML') {
                VALUES(NULL, 'MySQL Synchronization', 'DBConnection', '2010-02-01 15:51:46','');";
       $queries['Reservation'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Reservations', 'Reservation', '2010-02-03 14:03:45','');";
+      $queries['Reservation2'] = "INSERT INTO `glpi_notificationtemplates`
+               VALUES(NULL, 'Alert Reservation', 'Reservation', '2010-02-03 14:03:45','');";
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Tickets', 'Ticket', '2010-02-07 21:39:15','');";
       $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplates`
@@ -2801,30 +2803,7 @@ function update0723to078($output='HTML') {
                VALUES(NULL, 'Contracts', 'Contract', '2010-02-16 13:18:12','');";
       foreach ($queries as $itemtype => $query) {
          $DB->query($query) or die("0.78 insert notification template for $itemtype " . $LANG['update'][90] . $DB->error());
-         switch ($itemtype) {
-            default:
-               $query_id = "SELECT `id`
-                            FROM `glpi_notificationtemplates`
-                            WHERE `itemtype`='$itemtype'";
-               break;
-            case 'Ticket' :
-               $query_id = "SELECT `id`
-                            FROM `glpi_notificationtemplates`
-                            WHERE `itemtype`='Ticket' AND `name`='Tickets'";
-               break;
-            case 'Ticket2' :
-               $query_id = "SELECT `id`
-                            FROM `glpi_notificationtemplates`
-                            WHERE `itemtype`='Ticket' AND `name`='Tickets (Simple)'";
-               break;
-            case 'TicketValidation' :
-               $query_id = "SELECT `id`
-                            FROM `glpi_notificationtemplates`
-                            WHERE `itemtype`='Ticket' AND `name`='Tickets Validation'";
-               break;
-         }
-         $result = $DB->query($query_id) or die ($DB->error());
-         $templates[$itemtype] = $DB->result($result,0,'id');
+         $templates[$itemtype] = $DB->insert_id();
       }
 
       $ADDTODISPLAYPREF['NotificationTemplate']=array(4,16);
@@ -2880,6 +2859,18 @@ function update0723to078($output='HTML') {
                                                    '$content_text_reservation',
                                                    '$content_html_reservation');";
 
+      $queries['Reservation2'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                                    VALUES(NULL, ".$templates['Reservation2'].", '',
+                                    '##reservation.action##  ##reservation.entity##',
+                                    '##lang.reservation.entity## :##reservation.entity## \r\n
+ \r\n##FOREACHreservations## \r\n##lang.reservation.itemtype## : ##reservation.itemtype##\r\n
+ ##lang.reservation.item## : ##reservation.item##\r\n \r\n ##reservation.url## \r\n
+ ##ENDFOREACHreservations##',
+ '&lt;p&gt;##lang.reservation.entity##  :##reservation.entity## &lt;br /&gt; &lt;br /&gt;
+##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype##  :  ##reservation.itemtype##&lt;br /&gt;
+ ##lang.reservation.item##  :  ##reservation.item##&lt;br /&gt; &lt;br /&gt;
+ &lt;a href=\"##reservation.url##\"&gt; ##reservation.url##&lt;/a&gt;&lt;br /&gt;
+ ##ENDFOREACHreservations##&lt;/p&gt;');";
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                             VALUES(NULL, '".$templates['Ticket']."', '',
                             '##ticket.action## ##ticket.title##',
@@ -3187,6 +3178,10 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Delete Reservation', 0, 'Reservation', 'delete',
                                        'mail',".$templates['Reservation'].",
+                                       '', 1, 1, '2010-02-16 16:41:39');";
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Alert Reservation', 0, 'Reservation', 'alert',
+                                       'mail',".$templates['Reservation2'].",
                                        '', 1, 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Contract Notice', 0, 'Contract', 'notice',
