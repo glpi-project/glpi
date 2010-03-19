@@ -153,6 +153,11 @@ class Log extends CommonDBTM {
                         $values[$key]
                      );
                   } else {
+
+                     if ($val2['table'] == 'glpi_users_validation') {
+                        $val2['table']='glpi_users';
+                     }
+
                      // other cases ; link field -> get data from dropdown
                      $changes = array (
                         $id_search_option,
