@@ -985,7 +985,7 @@ $LANG['mailgate'][8]="octets";
 $LANG['mailgate'][9]="Votre email n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
 $LANG['mailgate'][10]="Email rejeté";
 $LANG['mailgate'][11]="Processus d'import d'emails";
-$LANG['mailgate'][12]="Impossible d'affecter l'email a une entité";
+$LANG['mailgate'][12]="Impossible d'affecter l'email à une entité";
 $LANG['mailgate'][13]="Raison du refus";
 $LANG['mailgate'][14]="Demandeur GLPI";
 
