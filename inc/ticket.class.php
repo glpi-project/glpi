@@ -2816,13 +2816,11 @@ class Ticket extends CommonDBTM {
             echo "<td>";
             TicketValidation::dropdownStatus('global_validation',
                                        array('value'=>$this->fields['global_validation']));
-            echo "</td>";
          } else {
-            echo "<td>".TicketValidation::getStatus($this->fields['global_validation'])."</td>";
+            echo "<td>".TicketValidation::getStatus($this->fields['global_validation']);
          }
       }
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
