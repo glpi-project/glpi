@@ -47,22 +47,30 @@ $ticket = new Ticket();
 $user = new User();
 
 if (isset($_POST["add"])) {
-	
-	$validation->check(-1,'w',$_POST);
-	$newID=$validation->add($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   $validation->check(-1,'w',$_POST);
+   $validation->add($_POST);
+
+   Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
+              $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
-	$validation->check($_POST['id'],'w');
-   
+   $validation->check($_POST['id'],'w');
    $validation->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+
+   Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
    $validation->check($_POST['id'], 'd');
    $validation->delete($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+
+   Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
+displayErrorAndDie('Lost');
 
 ?>
