@@ -116,14 +116,15 @@ class TicketValidation  extends CommonDBChild {
          return false;
       } else {
       
-/*         $job = new Ticket;
-         $job->getFromDB($input["tickets_id"]);
-         if (strstr($job->fields["status"],"solved") 
+/*       if (strstr($job->fields["status"],"solved") 
                   || strstr($job->fields["status"],"closed")) {
             return false;
          }*/
          
-         if (!isset($input['entities_id'])) {
+         if (!isset($input['entities_id'])) { // Massive modif case
+            $job = new Ticket;
+            $job->getFromDB($input["tickets_id"]);
+   
             $input['entities_id'] = $job->fields["entities_id"];
          }
          
