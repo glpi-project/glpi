@@ -1427,7 +1427,7 @@ class CommonDBTM extends CommonGLPI {
             //The object type can be assigned to an entity
             if ($this->isEntityAssign()) {
                //It's a new object to be added
-               if ($ID) {
+               if ($this->isNewID($ID)) {
                   $entity = $_SESSION['glpiactive_entity'];
                }
                else {
