@@ -3312,12 +3312,14 @@ class Search {
 
          case "glpi_reservationitems.comment" :
             if (empty($data[$NAME.$num])) {
-               return "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                        $data["refID"]."' title='".$LANG['reservation'][22]."'>".$LANG['common'][49].
+               return "<a title='".$LANG['reservation'][22]."'
+                        href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
+                        $data["refID"]."' >".$LANG['common'][49].
                      "</a>";
             }
-            return "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                     $data['refID']."' title='".$LANG['reservation'][22]."'>".
+            return "<a title='".$LANG['reservation'][22]."'
+                     href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
+                     $data['refID']."' >".
                      resume_text($data[$NAME.$num])."</a>";
 
          case 'glpi_notifications.mode' :
@@ -3429,7 +3431,7 @@ class Search {
                   } else {
                      $link=getItemTypeFormURL($itemtype);
                   }
-                  $out  = "<a href=\"".$link;
+                  $out  = "<a id='".$itemtype."_".$data[$NAME.$num."_2"]."' href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');
                   $out .= 'id='.$data[$NAME.$num."_2"]."\">";
                   $out .= $data[$NAME.$num].$unit;
@@ -3459,7 +3461,8 @@ class Search {
                            $count_display++;
                            $page=getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                            $page .= (strpos($page,'?') ? '&id' : '?id');
-                           $out .= "<a href='$page=".$split2[1]."'>";
+                           $out .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$split2[1]."'
+                                       href='$page=".$split2[1]."'>";
                            $out .= $split2[0].$unit;
                            if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                               $out .= " (".$split2[1].")";
