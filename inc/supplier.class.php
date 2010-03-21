@@ -488,7 +488,7 @@ class Supplier extends CommonDBTM {
             $linktype = $itemtype;
             $linkfield = 'id';
             $itemtable=getTableForItemType($itemtype);
-            $query = "SELECT `entities_id`,`name`,`$itemtable`.*
+            $query = "SELECT `glpi_infocoms`.`entities_id`,`name`,`$itemtable`.*
                       FROM `glpi_infocoms`
                       INNER JOIN `$itemtable`
                             ON (`$itemtable`.`id` = `glpi_infocoms`.`items_id`) ";
@@ -510,7 +510,7 @@ class Supplier extends CommonDBTM {
             $query .= "WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                              AND `glpi_infocoms`.`suppliers_id` = '$instID' ".
                              getEntitiesRestrictRequest(" AND",$linktable) ."
-                       ORDER BY `entities_id`, `$linktable`.`name`";
+                       ORDER BY `glpi_infocoms`.`entities_id`, `$linktable`.`name`";
 
             $result_linked=$DB->query($query);
             $nb=$DB->numrows($result_linked);
