@@ -123,6 +123,26 @@ class Alert extends CommonDBTM {
 
    }
 
+   static function dropdownIntegerNever($name,$value,$options=array()) {
+      global $LANG;
+      $p['min'] = 0;
+      $p['max'] = 100;
+      $p['step'] = 1;
+      $p['toadd'] = array();
+      if (isset($options['inherit_global']) && $options['inherit_global']){
+         $p['toadd'][-1] = $LANG['setup'][731];
+      }
+      if (isset($options['never']) && $options['never']) {
+         $p['toadd'][0] = $LANG['setup'][307];
+      }
+
+      foreach ($options as $key=>$val) {
+         $p[$key] = $val;
+      }
+
+      Dropdown::showInteger($name,$value,$p['min'],$p['max'],$p['step'],$p['toadd']);
+   }
+
    static function alertExists($itemtype='',$items_id='',$type='') {
       global $DB;
       $query = "SELECT `id` FROM `glpi_alerts`

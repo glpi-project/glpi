@@ -349,11 +349,13 @@ class ReservationItem extends CommonDBTM {
       $items_infos = array();
       $items_messages = array();
 
-      $delay_stamp_reservations= mktime(date("H")+1, date("i"), date("s"), date("m"), date("d"), date("y"));
-      $date_end_reservations=date("Y-m-d H:i:s",$delay_stamp_reservations);
-      $date_reservations=date("Y-m-d H:i:s");
-
       foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
+         logDebug("entity=$entity value=$value");
+         $delay_stamp_reservations= mktime(date("H")+$value,
+                                           date("i"), date("s"), date("m"), date("d"), date("y"));
+         $date_end_reservations=date("Y-m-d H:i:s",$delay_stamp_reservations);
+         $date_reservations=date("Y-m-d H:i:s");
+
          $query_end = "SELECT `glpi_reservationitems`.*, `glpi_reservations`.`end` as `end`
                        FROM `glpi_reservationitems`
                        LEFT JOIN `glpi_alerts` ON (`glpi_reservationitems`.`id` = `glpi_alerts`.`items_id`

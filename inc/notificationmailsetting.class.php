@@ -208,8 +208,10 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][707] . "</td><td>";
-      Alert::dropdownYesNo(array('name'=>"use_reservations_alert",
-                                 'value'=>$CFG_GLPI["use_reservations_alert"]));
+      Alert::dropdownIntegerNever('use_reservations_alert',
+                                  $CFG_GLPI["use_reservations_alert"],
+                                  array('max'=>99));
+      echo "&nbsp;".$LANG['job'][21]."</td></tr>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
