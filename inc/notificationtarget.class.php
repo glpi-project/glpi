@@ -258,6 +258,24 @@ class NotificationTarget extends CommonDBChild {
             }
          }
 
+         // Get Group mailing
+         $query = "SELECT `glpi_notificationtargets`.`items_id`, `glpi_notificationtargets`.`id`,
+                          `glpi_groups`.`name` AS `name`
+                   FROM `glpi_notificationtargets`
+                   LEFT JOIN `glpi_groups`
+                        ON (`glpi_notificationtargets`.`items_id` = `glpi_groups`.`id`)
+                   WHERE `glpi_notificationtargets`.`notifications_id`='$notifications_id'
+                         AND `glpi_notificationtargets`.`type`='" . Notification::SUPERVISOR_GROUP_TYPE . "'
+                   ORDER BY `name`;";
+
+         foreach ($DB->request($query) as $data) {
+            $options.= "<option value='" . $data["id"] . "'>" . $LANG['common'][64].' '.$LANG['common'][35] . " " .
+                        $data["name"] . "</option>";
+            if (isset($this->notification_targets[Notification::SUPERVISOR_GROUP_TYPE."_".$data["items_id"]])) {
+               unset($this->notification_targets[Notification::SUPERVISOR_GROUP_TYPE."_".$data["items_id"]]);
+            }
+         }
+
          if ($canedit) {
             echo "<td class='right'>";
             if (count($this->notification_targets)) {
@@ -431,6 +449,24 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
+   /**
+    * Get targets for all the users of a group
+    */
+   function getSupervisorAddressByGroup($groups_id) {
+      global $DB;
+
+      $query = $this->getDistinctUserSql()."
+               FROM `glpi_groups`
+               LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)
+               WHERE `glpi_groups`.`id` = '".$groups_id."'";
+
+         foreach ($DB->request($query) as $data) {
+            $this->addToAddressesList($data);
+         }
+         $this->addToAddressesList($data);
+
+   }
+
    function getDistinctUserSql() {
       return  "SELECT DISTINCT `glpi_users`.id AS id, `glpi_users`.`email` AS email,
                                `glpi_users`.`language` AS language";
@@ -497,8 +533,12 @@ class NotificationTarget extends CommonDBChild {
                 ORDER BY `name`";
 
       foreach ($DB->request($query) as $data) {
+         //Add group
          $this->addTarget($data["id"], $LANG['common'][35] . " " .$data["name"],
                           Notification::GROUP_TYPE);
+         //Add group supervisor
+         $this->addTarget($data["id"], $LANG['common'][64].' '.$LANG['common'][35] . " " .$data["name"],
+                          Notification::SUPERVISOR_GROUP_TYPE);
       }
    }
 
@@ -677,6 +717,11 @@ class NotificationTarget extends CommonDBChild {
          //Send to all the users of a group
          case Notification::GROUP_TYPE :
             $this->getUsersAddressesByGroup($data['items_id']);
+            break;
+
+         //Send to all the users of a group
+         case Notification::SUPERVISOR_GROUP_TYPE :
+            $this->getSupervisorAddressByGroup($data['items_id']);
             break;
 
          //Send to all the users of a profile
