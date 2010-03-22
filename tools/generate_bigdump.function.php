@@ -106,14 +106,15 @@ function getNextMAC(){
 /**  Generate bigdump : make an item reservable
 * @param $type item type
 * @param $ID item ID
+* @param $ID_entity item entity ID
 */
-function addReservation($type,$ID){
+function addReservation($type,$ID,$ID_entity){
 	global $percent,$DB,$FIRST,$LAST;
 
 	$current_year=date("Y");
 
 	if (mt_rand(0,100)<$percent['reservationitems']){
-		$query="INSERT INTO glpi_reservationitems VALUES (NULL,'$type','$ID','comment $ID $type','1')";
+		$query="INSERT INTO glpi_reservationitems VALUES (NULL,'$type','$ID_entity','0','$ID','comment $ID $type','1')";
 		$DB->query($query) or die("PB REQUETE ".$query);
       $tID=$DB->insert_id();
 
@@ -1216,7 +1217,7 @@ function generate_entity($ID_entity){
 		// Add trackings
 		addTracking('Computer',$compID,$ID_entity);
 		// Add reservation
-		addReservation('Computer',$compID);
+		addReservation('Computer',$compID,$ID_entity);
 
 
 		// AJOUT INFOCOMS
@@ -1412,7 +1413,7 @@ function generate_entity($ID_entity){
 		// Add trackings
 		addTracking('Peripheral',$periphID,$ID_entity);
 		// Add reservation
-		addReservation('Peripheral',$periphID);
+		addReservation('Peripheral',$periphID,$ID_entity);
 
 		// Add connections
 		$val=mt_rand(1,$MAX['connect_for_peripherals']);
