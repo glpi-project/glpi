@@ -351,6 +351,7 @@ $LANG['crontask'][11]="Vérification de la présence de mises à jour";
 $LANG['crontask'][12]="Nettoyage des sessions expirées";
 $LANG['crontask'][13]="Nettoyage des graphiques générés";
 $LANG['crontask'][14]="Fermeture administrative des tickets";
+$LANG['crontask'][15]="Tickets non fermés";
 
 // keep >12 free additionnal task
 $LANG['crontask'][30]="Description";
@@ -1800,6 +1801,7 @@ $LANG['setup'][704]="Notifications";
 $LANG['setup'][705]="Alertes sur les contrats";
 $LANG['setup'][706]="Alertes sur les informations financières";
 $LANG['setup'][707]="Alertes sur les réservations";
+$LANG['setup'][708]="Alertes sur les tickets non fermés depuis";
 
 $LANG['setup'][720]="Info. Système";
 $LANG['setup'][721]="Informations sur le système, l'installation et la configuration";

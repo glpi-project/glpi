@@ -51,8 +51,6 @@ class Ticket extends CommonDBTM {
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
    var $computerfound = 0;
 
-
-
    static function getTypeName() {
       global $LANG;
 
@@ -4526,6 +4524,8 @@ class Ticket extends CommonDBTM {
       switch ($name) {
          case 'closeticket' :
             return array('description' => $LANG['crontask'][14]);
+         case 'alertnotclosed' :
+            return  array('description' => $LANG['crontask'][15]);
       }
       return array();
    }
@@ -4561,6 +4561,62 @@ class Ticket extends CommonDBTM {
             $tot += $nb;
             $task->addVolume($nb);
             $task->log(Dropdown::getDropdownName('glpi_entities',$entity)." : $nb");
+         }
+      }
+
+      return ($tot > 0);
+   }
+
+   /**
+    * Cron for ticket's automatic close
+    * @param $task : crontask object
+    *
+    * @return integer (0 : nothing done - 1 : done)
+    *
+    */
+   static function cronAlertNotClosed($task) {
+      global $DB,$CFG_GLPI;
+
+      if (!$CFG_GLPI["use_mailing"]) {
+         return 0;
+      }
+      // Recherche des entités
+      $tot = 0;
+
+      foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
+         $query = "SELECT `glpi_tickets`.*
+                   FROM `glpi_tickets`
+                        LEFT JOIN `glpi_alerts` ON (`glpi_tickets`.`id` = `glpi_alerts`.`items_id`
+                                                     AND `glpi_alerts`.`itemtype` = 'Ticket'
+                                                        AND `glpi_alerts`.`type`='".Alert::NOTCLOSED."')
+                   WHERE  `glpi_tickets`.`entities_id` = '".$entity."'
+                     AND  `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
+                        AND  `glpi_tickets`.`closedate` IS NULL
+                           AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()
+                              AND `glpi_alerts`.`date` IS NULL";
+         $tickets = array();
+         foreach ($DB->request($query) as $tick) {
+            $tickets[] = $tick;
+         }
+
+         if (!empty($tickets)) {
+            if (NotificationEvent::raiseEvent('alertnotclosed',
+                                              new Ticket(),
+                                              array('tickets'=>$tickets,
+                                                    'entities_id'=>$entity))) {
+               $alert=new Alert();
+               $input["itemtype"] = 'Ticket';
+               $input["type"]=Alert::NOTCLOSED;
+               foreach ($tickets as $ticket) {
+                  $input["items_id"]=$ticket['id'];
+                  $alert->add($input);
+                  unset($alert->fields['id']);
+               }
+
+               $tot += count($tickets);
+               $task->addVolume(count($tickets));
+               $task->log(Dropdown::getDropdownName('glpi_entities',$entity)." : ".count($tickets));
+            }
          }
       }
 

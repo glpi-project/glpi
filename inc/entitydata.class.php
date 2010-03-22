@@ -277,7 +277,7 @@ class EntityData extends CommonDBTM {
    function post_getEmpty() {
       $fields = array('use_licenses_alert','use_contracts_alert','use_infocoms_alert',
                      'use_reservations_alert', 'autoclose_delay', 'consumables_alert_repeat',
-                     'cartridges_alert_repeat');
+                     'cartridges_alert_repeat','notclosed_delay');
       foreach ($fields as $field) {
          $this->fields[$field] = -1;
       }
@@ -366,6 +366,13 @@ class EntityData extends CommonDBTM {
                                   array('max'=>99,'inherit_global'=>1));
       echo "&nbsp;".$LANG['job'][21]."</td></tr>";
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td >" . $LANG['setup'][708] . "</td><td>";
+      Alert::dropdownIntegerNever('notclosed_delay',
+                                  $entitynotification->fields["notclosed_delay"],
+                                  array('max'=>99,'inherit_global'=>1));
+      echo "&nbsp;".$LANG['stats'][31]."</td>";
+      echo "<td colspan='2'></td></tr>";
 
       if ($canedit) {
          echo "<tr>";

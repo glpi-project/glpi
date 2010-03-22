@@ -214,6 +214,13 @@ class NotificationMailSetting extends CommonDBTM {
       echo "&nbsp;".$LANG['job'][21]."</td></tr>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][708] . "</td><td>";
+      Alert::dropdownIntegerNever('notclosed_delay',
+                                  $CFG_GLPI["notclosed_delay"],
+                                  array('max'=>99));
+      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
       echo "<input class='submit' type='submit' name='update' value='".$LANG['buttons'][2]."'>";
       echo "</td></tr>";

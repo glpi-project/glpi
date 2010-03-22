@@ -2067,7 +2067,8 @@ function update0723to078($output='HTML') {
          ('CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('CronTask', 'graph', 3600, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('ReservationItem', 'reservation', 3600, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         ('Ticket','closeticket','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL)";
+         ('Ticket','closeticket','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL),
+         ('Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL)";
       $DB->query($query) or die("0.78 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
       $ADDTODISPLAYPREF['Crontask']=array(8,3,4,7);
@@ -2790,6 +2791,8 @@ function update0723to078($output='HTML') {
                VALUES(NULL, 'Tickets', 'Ticket', '2010-02-07 21:39:15','');";
       $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Tickets (Simple)', 'Ticket', '2010-02-07 21:39:15','');";
+      $queries['Ticket3'] = "INSERT INTO `glpi_notificationtemplates`
+               VALUES(NULL, 'Alert Tickets not closed', 'Ticket', '2010-02-07 21:39:15','');";
       $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplates`
                VALUES(NULL, 'Tickets Validation', 'Ticket', '2010-02-26 21:39:15','');";
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplates`
@@ -3029,6 +3032,17 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 &#160; ##validation.commentvalidation##&lt;br /&gt; ##ENDIFvalidation.commentvalidation##
 &lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');";
 
+      $queries['Ticket3'] = "INSERT INTO `glpi_notificationtemplatetranslations`
+                             VALUES(NULL, ".$templates['Ticket3'].", '',
+                             '##ticket.action## ##ticket.entity##',
+'##lang.ticket.entity## :##ticket.entity##\n \n##FOREACHtickets##\n
+##lang.ticket.title## : ##ticket.title##\n ##lang.ticket.status## : ##ticket.status##\n
+ ##ticket.url## \n ##ENDFOREACHtickets##',
+'##lang.ticket.entity## :##ticket.entity##&lt;br /&gt; &lt;br /&gt;##FOREACHtickets##&lt;br /&gt;
+##lang.ticket.title## : ##ticket.title##&lt;br /&gt; ##lang.ticket.status## : ##ticket.status##
+&lt;br /&gt; &lt;a href=\"##ticket.url##\"&gt; ##ticket.url##&lt;/a&gt;&lt;br /&gt;
+ ##ENDFOREACHtickets##&lt;/p&gt;');";
+
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                            VALUES(NULL, ".$templates['Consumable'].", '',
                            '##consumable.action##  ##consumable.entity##',
@@ -3124,6 +3138,10 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 create glpi_notifications" . $LANG['update'][90] . $DB->error());
 
       $queries = array();
+      $queries[] = "INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Alert Tickets not closed', 0, 'Ticket', 'alertnotclosed',
+                                       'mail',".$templates['Ticket3'].",
+                                       '', 1, 1, '2010-02-16 16:41:39');";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'New Ticket', 0, 'Ticket', 'new',
                                        'mail',".$templates['Ticket'].",
@@ -3410,12 +3428,14 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    if (!FieldExists('glpi_entitydatas','mailing_signature')) {
       $query = "ALTER TABLE `glpi_entitydatas` ADD `mailing_signature` TEXT DEFAULT NULL ,
-                                 ADD `cartridges_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
-                                 ADD `consumables_alert_repeat` INT( 11 ) NOT NULL DEFAULT '0',
-                                 ADD `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                                 ADD `use_contracts_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                                 ADD `use_infocoms_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                                 ADD `use_reservations_alert` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+                                 ADD `cartridges_alert_repeat` INT( 11 ) NOT NULL DEFAULT '-1',
+                                 ADD `consumables_alert_repeat` INT( 11 ) NOT NULL DEFAULT '-1',
+                                 ADD `use_licenses_alert` TINYINT( 1 ) NOT NULL DEFAULT '-1',
+                                 ADD `use_contracts_alert` TINYINT( 1 ) NOT NULL DEFAULT '-1',
+                                 ADD `use_infocoms_alert` TINYINT( 1 ) NOT NULL DEFAULT '-1',
+                                 ADD `use_reservations_alert` INT( 11 ) NOT NULL DEFAULT '-1',
+                                 ADD `autoclose_delay` INT( 11 ) NOT NULL DEFAULT '-1',
+                                 ADD `notclosed_delay` INT( 11 ) NOT NULL DEFAULT '-1'";
       $DB->query($query) or die("0.78 add notifications fields in glpi_entitydatas" . $LANG['update'][90] . $DB->error());
    }
 
@@ -3423,7 +3443,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $query = "ALTER TABLE `glpi_configs` ADD `use_infocoms_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
                                            ADD `use_contracts_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
                                            ADD `use_reservations_alert` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                                           ADD `autoclose_delay` INT( 11 ) NOT NULL DEFAULT '0'";
+                                           ADD `autoclose_delay` INT( 11 ) NOT NULL DEFAULT '0',
+                                           ADD `notclosed_delay` INT( 11 ) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.78 add notifications fields in glpi_configs" . $LANG['update'][90] . $DB->error());
    }
 
@@ -4100,12 +4121,6 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       }
 
    }
-
-   if (!FieldExists('glpi_entitydatas','autoclose_delay')) {
-      $query = "ALTER TABLE `glpi_entitydatas` ADD `autoclose_delay` int(11) NOT NULL default '0'";
-      $DB->query($query) or die("0.78 add autoclose_delay to glpi_entitydatas " . $LANG['update'][90] . $DB->error());
-   }
-
 
    if (TableExists('glpi_ruleldapparameters')) {
       $query = "RENAME TABLE `glpi_ruleldapparameters`

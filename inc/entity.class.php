@@ -475,7 +475,7 @@ class Entity extends CommonTreeDropdown {
                                                       $field=>$DB->result($result,0,$field)));
       }
       elseif ($CFG_GLPI[$field]) {
-         $entities[0] = $field;
+         $entities[0] = $CFG_GLPI[$field];
       }
 
       return $entities;
