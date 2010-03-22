@@ -1725,6 +1725,7 @@ $LANG['setup'][261]="DN du groupe";
 $LANG['setup'][262]="Utiliser le DN pour la recherche";
 $LANG['setup'][263]="Filtre de recherche des utilisateurs";
 $LANG['setup'][264]="Alertes sur expiration des licences";
+$LANG['setup'][265]="Groupe assigné";
 $LANG['setup'][270]="Restrictions sur la gestion manuelle des éléments";
 $LANG['setup'][271]="Restreindre la gestion des moniteurs";
 $LANG['setup'][272]="Restreindre la gestion des périphériques";

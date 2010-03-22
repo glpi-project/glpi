@@ -44,6 +44,8 @@ class Notification extends CommonDBTM {
    const GROUP_TYPE = 3;
    //Notification to the people in charge of the database synchronisation
    const MAILING_TYPE = 4;
+   //Notification to the supervisor of a group
+   const SUPERVISOR_GROUP_TYPE = 5;
 
    // MAILING USERS TYPE
 
