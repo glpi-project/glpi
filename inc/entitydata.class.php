@@ -275,13 +275,12 @@ class EntityData extends CommonDBTM {
    }
 
    function post_getEmpty() {
-      $this->fields['use_licenses_alert'] = -1;
-      $this->fields['use_contracts_alert'] = -1;
-      $this->fields['use_infocoms_alert'] = -1;
-      $this->fields['use_reservations_alert'] = -1;
-      $this->fields['autoclose_delay'] = -1;
-      $this->fields['consumable_alert_repeat'] = -1;
-      $this->fields['cartridge_alert_repeat'] = -1;
+      $fields = array('use_licenses_alert','use_contracts_alert','use_infocoms_alert',
+                     'use_reservations_alert', 'autoclose_delay', 'consumables_alert_repeat',
+                     'cartridges_alert_repeat');
+      foreach ($fields as $field) {
+         $this->fields[$field] = -1;
+      }
    }
 
    static function showNotificationOptions(Entity $entity) {
@@ -362,10 +361,10 @@ class EntityData extends CommonDBTM {
                                   'inherit_global'=>1) );
       echo "</td>";
       echo "<td>" . $LANG['setup'][707] . "</td><td>";
-      $default_value = $entitynotification->fields['use_reservations_alert'];
-      Alert::dropdownYesNo(array('name'=>"use_reservations_alert",
-                                  'value'=>$default_value,
-                                  'inherit_global'=>1) );
+      Alert::dropdownIntegerNever('use_reservations_alert',
+                                  $entitynotification->fields['use_reservations_alert'],
+                                  array('max'=>99,'inherit_global'=>1));
+      echo "&nbsp;".$LANG['job'][21]."</td></tr>";
       echo "</td></tr>";
 
       if ($canedit) {
@@ -454,9 +453,8 @@ class EntityData extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['entity'][18] . "&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger('autoclose_delay',
-                            $entdata->fields['autoclose_delay'],0,99,1,
-                            array(-1=>$LANG['setup'][731]));
+      Alert::dropdownIntegerNever('autoclose_delay',$entdata->fields['autoclose_delay'],
+                                  array('max'=>99,'inherit_global'=>1));
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
       if ($canedit) {

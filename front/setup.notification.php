@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkSeveralRightsOr(array('notification'=>'r','config'=>'w'));
 
-commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing",-1);
+commonHeader($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing",-1);
 
 
 if (!haveRight("config","r") && haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
