@@ -100,7 +100,7 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
-   function getSubjectPrefix() {
+   function getSubjectPrefix($event='') {
       return "[GLPI] ";
    }
 

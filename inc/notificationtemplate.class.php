@@ -206,7 +206,7 @@ class NotificationTemplate extends CommonDBTM {
 
          if ($template_datas = $this->getByLanguage($language)) {
             //Template processing
-            $lang['subject'] = $target->getSubjectPrefix() .
+            $lang['subject'] = $target->getSubjectPrefix($event) .
                                NotificationTemplate::process($template_datas['subject'], $data);
             $lang['content_html'] = '';
             //If no html content, then send only in text

@@ -651,10 +651,11 @@ CREATE TABLE `glpi_configs` (
   `use_contracts_alert` tinyint(1) NOT NULL DEFAULT '0',
   `use_reservations_alert` tinyint(1) NOT NULL DEFAULT '0',
   `autoclose_delay` int(11) NOT NULL DEFAULT '0',
+  `notclosed_delay` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_configs` VALUES ('1','0','250','15','50',' 0.78','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','#ff5555','2005-12-31','10','','443','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','','100','*','0','50','1','1','0','0','0','50','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1',NULL,'1',NULL,'0','1','0','2097152','0','0','1','0','svg','1','1','1','{\"1\":{\"1\":1,\"2\":1,\"3\":2,\"4\":2,\"5\":2},\"2\":{\"1\":1,\"2\":2,\"3\":2,\"4\":3,\"5\":3},\"3\":{\"1\":2,\"2\":2,\"3\":3,\"4\":4,\"5\":4},\"4\":{\"1\":2,\"2\":3,\"3\":4,\"4\":4,\"5\":5},\"5\":{\"1\":2,\"2\":3,\"3\":4,\"4\":5,\"5\":5}}','62','62','0','0','0','0');
+INSERT INTO `glpi_configs` VALUES ('1','0','250','15','50',' 0.78','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','#ff5555','2005-12-31','10','','443','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','','100','*','0','50','1','1','0','0','0','50','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1',NULL,'1',NULL,'0','1','0','2097152','0','0','1','0','svg','1','1','1','{\"1\":{\"1\":1,\"2\":1,\"3\":2,\"4\":2,\"5\":2},\"2\":{\"1\":1,\"2\":2,\"3\":2,\"4\":3,\"5\":3},\"3\":{\"1\":2,\"2\":2,\"3\":3,\"4\":4,\"5\":4},\"4\":{\"1\":2,\"2\":3,\"3\":4,\"4\":4,\"5\":5},\"5\":{\"1\":2,\"2\":3,\"3\":4,\"4\":5,\"5\":5}}','62','62','0','0','0','0','0');
 
 ### Dump table glpi_consumableitems
 
@@ -874,21 +875,21 @@ INSERT INTO `glpi_crontasklogs` VALUES ('2','5','1','2010-03-11 18:09:07','2','0
 
 DROP TABLE IF EXISTS `glpi_crontasks`;
 CREATE TABLE `glpi_crontasks` (
-  `id` int(11) NOT NULL auto_increment,
-  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
-  `name` varchar(150) collate utf8_unicode_ci NOT NULL COMMENT 'task name',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL COMMENT 'task name',
   `frequency` int(11) NOT NULL COMMENT 'second between launch',
-  `param` int(11) default NULL COMMENT 'task specify parameter',
-  `state` int(11) NOT NULL default '1' COMMENT '0:disabled, 1:waiting, 2:running',
-  `mode` int(11) NOT NULL default '1' COMMENT '1:internal, 2:external',
-  `allowmode` int(11) NOT NULL default '3' COMMENT '1:internal, 2:external, 3:both',
-  `hourmin` int(11) NOT NULL default '0',
-  `hourmax` int(11) NOT NULL default '24',
-  `logs_lifetime` int(11) NOT NULL default '30' COMMENT 'number of days',
-  `lastrun` datetime default NULL COMMENT 'last run date',
-  `lastcode` int(11) default NULL COMMENT 'last run return code',
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`),
+  `param` int(11) DEFAULT NULL COMMENT 'task specify parameter',
+  `state` int(11) NOT NULL DEFAULT '1' COMMENT '0:disabled, 1:waiting, 2:running',
+  `mode` int(11) NOT NULL DEFAULT '1' COMMENT '1:internal, 2:external',
+  `allowmode` int(11) NOT NULL DEFAULT '3' COMMENT '1:internal, 2:external, 3:both',
+  `hourmin` int(11) NOT NULL DEFAULT '0',
+  `hourmax` int(11) NOT NULL DEFAULT '24',
+  `logs_lifetime` int(11) NOT NULL DEFAULT '30' COMMENT 'number of days',
+  `lastrun` datetime DEFAULT NULL COMMENT 'last run date',
+  `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
@@ -896,7 +897,7 @@ INSERT INTO `glpi_crontasks` VALUES ('1','OcsServer','ocsng','300',NULL,'0','1',
 INSERT INTO `glpi_crontasks` VALUES ('2','CartridgeItem','cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3','ConsumableItem','consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4','SoftwareLicense','software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30','2010-03-22 13:18:51',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('6','InfoCom','infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('7','CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8','CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -907,6 +908,7 @@ INSERT INTO `glpi_crontasks` VALUES ('12','CronTask','session','86400',NULL,'1',
 INSERT INTO `glpi_crontasks` VALUES ('13','CronTask','graph','3600',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('14','ReservationItem','reservation','3600',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('15','Ticket','closeticket','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('16','Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 
 ### Dump table glpi_devicecases
 
@@ -1489,13 +1491,14 @@ CREATE TABLE `glpi_entitydatas` (
   `mail_domain` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entity_ldapfilter` text COLLATE utf8_unicode_ci,
   `mailing_signature` text COLLATE utf8_unicode_ci,
-  `cartridges_alert_repeat` int(11) NOT NULL DEFAULT '0',
-  `consumables_alert_repeat` int(11) NOT NULL DEFAULT '0',
-  `use_licenses_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `use_contracts_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `use_infocoms_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `use_reservations_alert` tinyint(1) NOT NULL DEFAULT '0',
-  `autoclose_delay` int(11) NOT NULL DEFAULT '0',
+  `cartridges_alert_repeat` int(11) NOT NULL DEFAULT '-1',
+  `consumables_alert_repeat` int(11) NOT NULL DEFAULT '-1',
+  `use_licenses_alert` tinyint(1) NOT NULL DEFAULT '-1',
+  `use_contracts_alert` tinyint(1) NOT NULL DEFAULT '-1',
+  `use_infocoms_alert` tinyint(1) NOT NULL DEFAULT '-1',
+  `use_reservations_alert` int(11) NOT NULL DEFAULT '-1',
+  `autoclose_delay` int(11) NOT NULL DEFAULT '-1',
+  `notclosed_delay` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -2046,97 +2049,98 @@ CREATE TABLE `glpi_networks` (
 
 DROP TABLE IF EXISTS `glpi_notifications`;
 CREATE TABLE `glpi_notifications` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `entities_id` int(11) NOT NULL default '0',
-  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
-  `event` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `mode` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `notificationtemplates_id` int(11) NOT NULL default '0',
-  `comment` text collate utf8_unicode_ci,
-  `is_recursive` tinyint(1) NOT NULL default '0',
-  `is_active` tinyint(1) NOT NULL default '0',
-  `date_mod` datetime default NULL,
-  PRIMARY KEY  (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `event` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `mode` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notifications` VALUES ('1','New Ticket','0','Ticket','new','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('2','Update Ticket','0','Ticket','update','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('3','Close Ticket','0','Ticket','closed','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('4','Add Followup','0','Ticket','add_followup','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('5','Add Task','0','Ticket','add_task','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('6','Update Followup','0','Ticket','update_followup','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('7','Update Task','0','Ticket','update_task','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('8','Delete Followup','0','Ticket','delete_followup','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('9','Delete Task','0','Ticket','delete_task','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('10','Resolve ticket','0','Ticket','solved','mail','4','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('11','Ticket Validation','0','Ticket','validation','mail','6','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('12','New Reservation','0','Reservation','new','mail','2','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('13','Update Reservation','0','Reservation','update','mail','2','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('14','Delete Reservation','0','Reservation','delete','mail','2','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('15','Alert Reservation','0','Reservation','alert','mail','3','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('16','Contract Notice','0','Contract','notice','mail','11','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('17','Contract End','0','Contract','end','mail','11','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('18','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('19','Cartridges','0','Cartridge','alert','mail','7','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('20','Consumables','0','Consumable','alert','mail','8','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('21','Infocoms','0','Infocom','alert','mail','9','','1','1','2010-02-16 16:41:39');
-INSERT INTO `glpi_notifications` VALUES ('22','Software Licenses','0','SoftwareLicense','alert','mail','10','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('1','Alert Tickets not closed','0','Ticket','alertnotclosed','mail','6','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('2','New Ticket','0','Ticket','new','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('3','Update Ticket','0','Ticket','update','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('4','Close Ticket','0','Ticket','closed','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('5','Add Followup','0','Ticket','add_followup','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('6','Add Task','0','Ticket','add_task','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('7','Update Followup','0','Ticket','update_followup','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('8','Update Task','0','Ticket','update_task','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('9','Delete Followup','0','Ticket','delete_followup','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('10','Delete Task','0','Ticket','delete_task','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('11','Resolve ticket','0','Ticket','solved','mail','4','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('12','Ticket Validation','0','Ticket','validation','mail','7','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('13','New Reservation','0','Reservation','new','mail','2','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('14','Update Reservation','0','Reservation','update','mail','2','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('15','Delete Reservation','0','Reservation','delete','mail','2','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('16','Alert Reservation','0','Reservation','alert','mail','3','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('17','Contract Notice','0','Contract','notice','mail','12','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('18','Contract End','0','Contract','end','mail','12','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('19','MySQL Synchronization','0','DBConnection','desynchronization','mail','1','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('20','Cartridges','0','Cartridge','alert','mail','8','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('21','Consumables','0','Consumable','alert','mail','9','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('22','Infocoms','0','Infocom','alert','mail','10','','1','1','2010-02-16 16:41:39');
+INSERT INTO `glpi_notifications` VALUES ('23','Software Licenses','0','SoftwareLicense','alert','mail','11','','1','1','2010-02-16 16:41:39');
 
 ### Dump table glpi_notificationtargets
 
 DROP TABLE IF EXISTS `glpi_notificationtargets`;
 CREATE TABLE `glpi_notificationtargets` (
-  `id` int(11) NOT NULL auto_increment,
-  `items_id` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0',
-  `notifications_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `type` int(11) NOT NULL DEFAULT '0',
+  `notifications_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `items` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_notificationtargets` VALUES ('1','3','1','12');
-INSERT INTO `glpi_notificationtargets` VALUES ('2','1','1','12');
-INSERT INTO `glpi_notificationtargets` VALUES ('3','3','2','1');
-INSERT INTO `glpi_notificationtargets` VALUES ('4','1','1','1');
-INSERT INTO `glpi_notificationtargets` VALUES ('5','1','1','2');
-INSERT INTO `glpi_notificationtargets` VALUES ('6','1','1','4');
-INSERT INTO `glpi_notificationtargets` VALUES ('7','1','1','3');
-INSERT INTO `glpi_notificationtargets` VALUES ('8','2','1','2');
-INSERT INTO `glpi_notificationtargets` VALUES ('9','4','1','2');
-INSERT INTO `glpi_notificationtargets` VALUES ('10','3','1','1');
-INSERT INTO `glpi_notificationtargets` VALUES ('11','3','1','2');
-INSERT INTO `glpi_notificationtargets` VALUES ('12','3','1','4');
-INSERT INTO `glpi_notificationtargets` VALUES ('13','3','1','3');
-INSERT INTO `glpi_notificationtargets` VALUES ('14','1','1','17');
-INSERT INTO `glpi_notificationtargets` VALUES ('15','14','1','11');
-INSERT INTO `glpi_notificationtargets` VALUES ('16','3','1','13');
-INSERT INTO `glpi_notificationtargets` VALUES ('17','1','1','13');
-INSERT INTO `glpi_notificationtargets` VALUES ('18','3','1','14');
-INSERT INTO `glpi_notificationtargets` VALUES ('19','1','1','14');
-INSERT INTO `glpi_notificationtargets` VALUES ('20','1','1','5');
-INSERT INTO `glpi_notificationtargets` VALUES ('21','3','1','5');
-INSERT INTO `glpi_notificationtargets` VALUES ('22','1','1','6');
-INSERT INTO `glpi_notificationtargets` VALUES ('23','3','1','6');
-INSERT INTO `glpi_notificationtargets` VALUES ('24','1','1','7');
-INSERT INTO `glpi_notificationtargets` VALUES ('25','3','1','7');
-INSERT INTO `glpi_notificationtargets` VALUES ('26','1','1','8');
-INSERT INTO `glpi_notificationtargets` VALUES ('27','3','1','8');
-INSERT INTO `glpi_notificationtargets` VALUES ('28','1','1','9');
-INSERT INTO `glpi_notificationtargets` VALUES ('29','3','1','9');
-INSERT INTO `glpi_notificationtargets` VALUES ('30','1','1','10');
-INSERT INTO `glpi_notificationtargets` VALUES ('31','3','1','10');
+INSERT INTO `glpi_notificationtargets` VALUES ('1','3','1','13');
+INSERT INTO `glpi_notificationtargets` VALUES ('2','1','1','13');
+INSERT INTO `glpi_notificationtargets` VALUES ('3','3','2','2');
+INSERT INTO `glpi_notificationtargets` VALUES ('4','1','1','2');
+INSERT INTO `glpi_notificationtargets` VALUES ('5','1','1','3');
+INSERT INTO `glpi_notificationtargets` VALUES ('6','1','1','5');
+INSERT INTO `glpi_notificationtargets` VALUES ('7','1','1','4');
+INSERT INTO `glpi_notificationtargets` VALUES ('8','2','1','3');
+INSERT INTO `glpi_notificationtargets` VALUES ('9','4','1','3');
+INSERT INTO `glpi_notificationtargets` VALUES ('10','3','1','2');
+INSERT INTO `glpi_notificationtargets` VALUES ('11','3','1','3');
+INSERT INTO `glpi_notificationtargets` VALUES ('12','3','1','5');
+INSERT INTO `glpi_notificationtargets` VALUES ('13','3','1','4');
+INSERT INTO `glpi_notificationtargets` VALUES ('14','1','1','19');
+INSERT INTO `glpi_notificationtargets` VALUES ('15','14','1','12');
+INSERT INTO `glpi_notificationtargets` VALUES ('16','3','1','14');
+INSERT INTO `glpi_notificationtargets` VALUES ('17','1','1','14');
+INSERT INTO `glpi_notificationtargets` VALUES ('18','3','1','15');
+INSERT INTO `glpi_notificationtargets` VALUES ('19','1','1','15');
+INSERT INTO `glpi_notificationtargets` VALUES ('20','1','1','6');
+INSERT INTO `glpi_notificationtargets` VALUES ('21','3','1','6');
+INSERT INTO `glpi_notificationtargets` VALUES ('22','1','1','7');
+INSERT INTO `glpi_notificationtargets` VALUES ('23','3','1','7');
+INSERT INTO `glpi_notificationtargets` VALUES ('24','1','1','8');
+INSERT INTO `glpi_notificationtargets` VALUES ('25','3','1','8');
+INSERT INTO `glpi_notificationtargets` VALUES ('26','1','1','9');
+INSERT INTO `glpi_notificationtargets` VALUES ('27','3','1','9');
+INSERT INTO `glpi_notificationtargets` VALUES ('28','1','1','10');
+INSERT INTO `glpi_notificationtargets` VALUES ('29','3','1','10');
+INSERT INTO `glpi_notificationtargets` VALUES ('30','1','1','11');
+INSERT INTO `glpi_notificationtargets` VALUES ('31','3','1','11');
 
 ### Dump table glpi_notificationtemplates
 
 DROP TABLE IF EXISTS `glpi_notificationtemplates`;
 CREATE TABLE `glpi_notificationtemplates` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
-  `date_mod` datetime default NULL,
-  `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtemplates` VALUES ('1','MySQL Synchronization','DBConnection','2010-02-01 15:51:46','');
@@ -2144,24 +2148,25 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('2','Reservations','Reservation
 INSERT INTO `glpi_notificationtemplates` VALUES ('3','Alert Reservation','Reservation','2010-02-03 14:03:45','');
 INSERT INTO `glpi_notificationtemplates` VALUES ('4','Tickets','Ticket','2010-02-07 21:39:15','');
 INSERT INTO `glpi_notificationtemplates` VALUES ('5','Tickets (Simple)','Ticket','2010-02-07 21:39:15','');
-INSERT INTO `glpi_notificationtemplates` VALUES ('6','Tickets Validation','Ticket','2010-02-26 21:39:15','');
-INSERT INTO `glpi_notificationtemplates` VALUES ('7','Cartridges','Cartridge','2010-02-16 13:17:24','');
-INSERT INTO `glpi_notificationtemplates` VALUES ('8','Consumables','Consumable','2010-02-16 13:17:38','');
-INSERT INTO `glpi_notificationtemplates` VALUES ('9','Infocoms','Infocom','2010-02-16 13:17:55','');
-INSERT INTO `glpi_notificationtemplates` VALUES ('10','Licenses','SoftwareLicense','2010-02-16 13:18:12','');
-INSERT INTO `glpi_notificationtemplates` VALUES ('11','Contracts','Contract','2010-02-16 13:18:12','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('6','Alert Tickets not closed','Ticket','2010-02-07 21:39:15','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('7','Tickets Validation','Ticket','2010-02-26 21:39:15','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('8','Cartridges','Cartridge','2010-02-16 13:17:24','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('9','Consumables','Consumable','2010-02-16 13:17:38','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('10','Infocoms','Infocom','2010-02-16 13:17:55','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('11','Licenses','SoftwareLicense','2010-02-16 13:18:12','');
+INSERT INTO `glpi_notificationtemplates` VALUES ('12','Contracts','Contract','2010-02-16 13:18:12','');
 
 ### Dump table glpi_notificationtemplatetranslations
 
 DROP TABLE IF EXISTS `glpi_notificationtemplatetranslations`;
 CREATE TABLE `glpi_notificationtemplatetranslations` (
-  `id` int(11) NOT NULL auto_increment,
-  `notificationtemplates_id` int(11) NOT NULL default '0',
-  `language` char(5) collate utf8_unicode_ci NOT NULL default '',
-  `subject` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `content_text` text collate utf8_unicode_ci,
-  `content_html` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
+  `language` char(5) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `content_text` text COLLATE utf8_unicode_ci,
+  `content_html` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('1','1','','##lang.dbconnection.title##','##lang.dbconnection.delay## : ##dbconnection.delay##
@@ -2248,7 +2253,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
 <p>##FOREACHtasks##</p>
 <div class=\"description b\"><br /> <strong> [##task.date##] <em>##lang.task.isprivate## : ##task.isprivate## </em></strong><br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.author##</span> ##task.author##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.description##</span> ##task.description##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.time##</span> ##task.time##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.category##</span> ##task.category##</div>
 <p>##ENDFOREACHtasks##</p>');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','11','','##contract.action##  ##contract.entity##','##lang.contract.entity## :##contract.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','12','','##contract.action##  ##contract.entity##','##lang.contract.entity## :##contract.entity##
 
 ##FOREACHcontracts##
 ##lang.contract.name## : ##contract.name##
@@ -2309,7 +2314,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 ##lang.ticket.item.name##&lt;/span&gt;&#160;:
 ##ticket.itemtype## - ##ticket.item.name##
 ##ENDIFticket.itemtype##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','6','','##ticket.action## ##ticket.title##','##FOREACHvalidations##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##ticket.action## ##ticket.title##','##FOREACHvalidations##
 
 ##IFvalidation.storestatus=waiting##
 ##lang.validation.submission.title##
@@ -2337,7 +2342,19 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','6','','##ticket
 &lt;br /&gt; ##IFvalidation.commentvalidation##&lt;br /&gt; ##lang.validation.commentvalidation## :
 &#160; ##validation.commentvalidation##&lt;br /&gt; ##ENDIFvalidation.commentvalidation##
 &lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','8','','##consumable.action##  ##consumable.entity##','##lang.consumable.entity## :##consumable.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket.action## ##ticket.entity##','##lang.ticket.entity## :##ticket.entity##
+ 
+##FOREACHtickets##
+
+##lang.ticket.title## : ##ticket.title##
+ ##lang.ticket.status## : ##ticket.status##
+
+ ##ticket.url## 
+ ##ENDFOREACHtickets##','##lang.ticket.entity## :##ticket.entity##&lt;br /&gt; &lt;br /&gt;##FOREACHtickets##&lt;br /&gt;
+##lang.ticket.title## : ##ticket.title##&lt;br /&gt; ##lang.ticket.status## : ##ticket.status##
+&lt;br /&gt; &lt;a href=\"##ticket.url##\"&gt; ##ticket.url##&lt;/a&gt;&lt;br /&gt;
+ ##ENDFOREACHtickets##&lt;/p&gt;');
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','9','','##consumable.action##  ##consumable.entity##','##lang.consumable.entity## :##consumable.entity##
  
 
 ##FOREACHconsumables##
@@ -2358,7 +2375,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','8','','##consum
 ##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
 &lt;a href=\"##consumable.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
    ##ENDFOREACHconsumables##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','7','','##cartridge.action##  ##cartridge.entity##','##lang.cartridge.entity## :##cartridge.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','8','','##cartridge.action##  ##cartridge.entity##','##lang.cartridge.entity## :##cartridge.entity##
  
 
 ##FOREACHcartridges##
@@ -2381,7 +2398,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','7','','##cartri
 &lt;a href=\"##cartridge.url##\"&gt;
 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHcartridges##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','9','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## :##infocom.entity## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## :##infocom.entity## 
  
 
 ##FOREACHinfocoms## 
@@ -2402,7 +2419,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','9','','##infoc
 &lt;br /&gt; &lt;a href=\"##infocom.url##\"&gt;
 ##infocom.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHinfocoms##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##license.action##  ##license.entity##','##lang.license.entity## :##license.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('12','11','','##license.action##  ##license.entity##','##lang.license.entity## :##license.entity##
 
 ##FOREACHlicenses## 
 
@@ -2421,6 +2438,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##lice
 ##lang.license.expirationdate## :   ##license.expirationdate##
 &lt;br /&gt; &lt;a href=\"##license.url##\"&gt; ##license.url##
 &lt;/a&gt;&lt;br /&gt; ##ENDFOREACHlicenses##&lt;/p&gt;');
+
 
 ### Dump table glpi_notimportedemails
 

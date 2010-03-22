@@ -46,6 +46,7 @@ class Alert extends CommonDBTM {
    const THRESHOLD = 1;
    const END = 2;
    const NOTICE = 3;
+   const NOTCLOSED = 4;
 
    function prepareInputForAdd($input) {
       if (!isset($input['date']) || empty($input['date'])) {

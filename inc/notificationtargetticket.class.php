@@ -37,8 +37,13 @@ class NotificationTargetTicket extends NotificationTarget {
 
    var $private_profiles = array();
 
-   function getSubjectPrefix() {
-      return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
+   function getSubjectPrefix($event='') {
+      if ($event !='alertnotclosed') {
+         return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
+      }
+      else {
+         parent::getSubjectPrefix();
+      }
    }
 
 
@@ -345,7 +350,8 @@ class NotificationTargetTicket extends NotificationTarget {
                     'update_task'     => $LANG['job'][52],
                     'delete_task'     => $LANG['job'][53],
                     'closed'       => $LANG['mailing'][127],
-                    'delete'       => $LANG['mailing'][129]);
+                    'delete'       => $LANG['mailing'][129],
+                    'alertnotclosed'=>$LANG['crontask'][15]);
       asort($events);
       return $events;
    }
@@ -429,241 +435,283 @@ class NotificationTargetTicket extends NotificationTarget {
 
       //----------- Ticket infos -------------- //
 
-      $fields = array ('ticket.title'        => 'name',
-                       'ticket.content'      => 'content',
-                       'ticket.costfixed'    => 'cost_fixed',
-                       'ticket.costmaterial' => 'cost_material',
-                       'ticket.useremail'    => 'user_email');
+      if ($event != 'alertnotclosed') {
+         $fields = array ('ticket.title'        => 'name',
+                          'ticket.content'      => 'content',
+                          'ticket.costfixed'    => 'cost_fixed',
+                          'ticket.costmaterial' => 'cost_material',
+                          'ticket.useremail'    => 'user_email');
 
-      foreach ($fields as $tag => $table_field) {
-         $this->datas['##'.$tag.'##'] = $this->obj->getField($table_field);
-      }
-      $this->datas['##ticket.id##']  = sprintf("%07d",$this->obj->getField("id"));
-      $this->datas['##ticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                                                 $this->obj->getField("id"));
-      $this->datas['##ticket.urlapprove##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                                                 $this->obj->getField("id")."_4");
+         foreach ($fields as $tag => $table_field) {
+            $this->datas['##'.$tag.'##'] = $this->obj->getField($table_field);
+         }
+         $this->datas['##ticket.id##']  = sprintf("%07d",$this->obj->getField("id"));
+         $this->datas['##ticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+                                                    $this->obj->getField("id"));
+         $this->datas['##ticket.urlapprove##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+                                                    $this->obj->getField("id")."_4");
 
-      $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->obj->getField('entities_id'));
-      $events = $this->getAllEvents();
-      $this->datas['##ticket.action##']      = $events[$event];
-      $this->datas['##ticket.storestatus##']      = $this->obj->getField('status');
-      $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
-      $this->datas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                            $this->obj->getField('requesttypes_id'));
+         $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                  $this->obj->getField('entities_id'));
+         $events = $this->getAllEvents();
+         $this->datas['##ticket.action##']      = $events[$event];
+         $this->datas['##ticket.storestatus##']      = $this->obj->getField('status');
+         $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
+         $this->datas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                               $this->obj->getField('requesttypes_id'));
 
-      $this->datas['##ticket.urgency##']  = Ticket::getUrgencyName($this->obj->getField('urgency'));
-      $this->datas['##ticket.impact##']   = Ticket::getImpactName($this->obj->getField('impact'));
-      $this->datas['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
-      $this->datas['##ticket.time##']     = convDateTime($this->obj->getField('realtime'));
-      $this->datas['##ticket.costtime##'] = $this->obj->getField('cost_time');
+         $this->datas['##ticket.urgency##']  = Ticket::getUrgencyName($this->obj->getField('urgency'));
+         $this->datas['##ticket.impact##']   = Ticket::getImpactName($this->obj->getField('impact'));
+         $this->datas['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
+         $this->datas['##ticket.time##']     = convDateTime($this->obj->getField('realtime'));
+         $this->datas['##ticket.costtime##'] = $this->obj->getField('cost_time');
 
-     $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
-     $this->datas['##ticket.closedate##']    = convDateTime($this->obj->getField('closedate'));
+        $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
+        $this->datas['##ticket.closedate##']    = convDateTime($this->obj->getField('closedate'));
 
-     $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
+        $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
 
-     $entitydata = new EntityData;
+        $entitydata = new EntityData;
 
-     if ($entitydata->getFromDB($this->obj->getField('entities_id'))
-            && $entitydata->getField('autoclose_delay') > 0) {
-         $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
-         $this->datas['##lang.ticket.autoclosewarning##'] = $LANG['job'][54]." ".
-                              $entitydata->fields['autoclose_delay']." ".$LANG['stats'][31];
+        if ($entitydata->getFromDB($this->obj->getField('entities_id'))
+               && $entitydata->getField('autoclose_delay') > 0) {
+            $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
+            $this->datas['##lang.ticket.autoclosewarning##'] = $LANG['job'][54]." ".
+                                 $entitydata->fields['autoclose_delay']." ".$LANG['stats'][31];
 
-     } else {
-        $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
-     }
-     $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
+        } else {
+           $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
+        }
+        $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
 
-      if ($this->obj->getField('ticketcategories_id')) {
-         $this->datas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
-                                                      $this->obj->getField('ticketcategories_id'));
-      } else {
-         $this->datas['##ticket.category##'] = '';
-      }
-
-      if ($this->obj->getField('users_id')) {
-         $user = new User;
-         $user->getFromDB($this->obj->getField('users_id'));
-         $this->datas['##ticket.author##']      = $user->getField('id');
-         $this->datas['##ticket.author.name##'] = $user->getName();
-         if ($user->getField('locations_id')) {
-            $this->datas['##ticket.author.location##'] = Dropdown::getDropdownName('glpi_locations',
-                                                                  $user->getField('locations_id'));
+         if ($this->obj->getField('ticketcategories_id')) {
+            $this->datas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
+                                                         $this->obj->getField('ticketcategories_id'));
          } else {
-            $this->datas['##ticket.author.location##'] = '';
-         }
-         $this->datas['##ticket.author.phone##']  = $user->getField('phone');
-         $this->datas['##ticket.author.phone2##'] = $user->getField('phone2');
-      }
-
-      if ($this->obj->getField('users_id_recipient')) {
-         $user_tmp = new User;
-         $user_tmp->getFromDB($this->obj->getField('users_id_recipient'));
-         $this->datas['##ticket.openbyuser##'] = $user_tmp->getName();
-      } else {
-         $this->datas['##ticket.openbyuser##'] = '';
-      }
-
-      if ($this->obj->getField('users_id_assign')) {
-         $user_tmp = new User;
-         $user_tmp->getFromDB($this->obj->getField('users_id_assign'));
-         $this->datas['##ticket.assigntouser##'] = $user_tmp->getName();
-      } else {
-         $this->datas['##ticket.assigntouser##'] = '';
-      }
-
-      if ($this->obj->getField('suppliers_id_assign')) {
-         $this->datas['##ticket.assigntosupplier##'] = Dropdown::getDropdownName('glpi_suppliers',
-                                                         $this->obj->getField('suppliers_id_assign'));
-      } else {
-         $this->datas['##ticket.assigntosupplier##'] = '';
-      }
-
-      if ($this->obj->getField('groups_id')) {
-         $this->datas['##ticket.group##'] = Dropdown::getDropdownName('glpi_groups',
-                                                                  $this->obj->getField('groups_id'));
-      } else {
-         $this->datas['##ticket.group##'] = '';
-      }
-
-      if ($this->obj->getField('groups_id_assign')) {
-         $this->datas['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
-                                                         $this->obj->getField('groups_id_assign'));
-      } else {
-         $this->datas['##ticket.group##'] = '';
-      }
-
-      //Hardware
-      if ($this->target_object != null) {
-         $this->datas['##ticket.itemtype##']  = $this->target_object->getTypeName();
-         $this->datas['##ticket.item.name##'] = $this->target_object->getField('name');
-
-         if ($this->target_object->isField('serial')) {
-            $this->datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
-         }
-         if ($this->target_object->isField('otherserial')) {
-            $this->datas['##ticket.item.otherserial##'] = $this->target_object->getField('otherserial');
-         }
-         if ($this->target_object->isField('location')) {
-            $this->datas['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations',
-                                                                   $user->getField('locations_id'));
-         }
-         $modeltable = getSingular($this->getTable())."models";
-         $modelfield = getForeignKeyFieldForTable($modeltable);
-         if ($this->target_object->isField($modelfield)) {
-            $this->datas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
+            $this->datas['##ticket.category##'] = '';
          }
 
-      } else {
-         $this->datas['##ticket.itemtype##']         = '';
-         $this->datas['##ticket.item.name##']        = '';
-         $this->datas['##ticket.item.serial##']      = '';
-         $this->datas['##ticket.item.otherserial##'] = '';
-         $this->datas['##ticket.item.location##']    = '';
-      }
+         if ($this->obj->getField('users_id')) {
+            $user = new User;
+            $user->getFromDB($this->obj->getField('users_id'));
+            $this->datas['##ticket.author##']      = $user->getField('id');
+            $this->datas['##ticket.author.name##'] = $user->getName();
+            if ($user->getField('locations_id')) {
+               $this->datas['##ticket.author.location##'] = Dropdown::getDropdownName('glpi_locations',
+                                                                     $user->getField('locations_id'));
+            } else {
+               $this->datas['##ticket.author.location##'] = '';
+            }
+            $this->datas['##ticket.author.phone##']  = $user->getField('phone');
+            $this->datas['##ticket.author.phone2##'] = $user->getField('phone2');
+         }
 
-      if ($this->obj->getField('ticketsolutiontypes_id')) {
-         $this->datas['##ticket.solution.type##'] = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                                      $this->obj->getField('ticketsolutiontypes_id'));
-         $this->datas['##ticket.solution.description##'] = $this->obj->getField('solution');
-      }
+         if ($this->obj->getField('users_id_recipient')) {
+            $user_tmp = new User;
+            $user_tmp->getFromDB($this->obj->getField('users_id_recipient'));
+            $this->datas['##ticket.openbyuser##'] = $user_tmp->getName();
+         } else {
+            $this->datas['##ticket.openbyuser##'] = '';
+         }
 
-      $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
-      if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
-         $restrict .= " AND `is_private` = '0'";
-      }
-      $restrict .= " ORDER BY `date` DESC";
+         if ($this->obj->getField('users_id_assign')) {
+            $user_tmp = new User;
+            $user_tmp->getFromDB($this->obj->getField('users_id_assign'));
+            $this->datas['##ticket.assigntouser##'] = $user_tmp->getName();
+         } else {
+            $this->datas['##ticket.assigntouser##'] = '';
+         }
 
-      //Task infos
-      $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
-      foreach ($tasks as $task) {
+         if ($this->obj->getField('suppliers_id_assign')) {
+            $this->datas['##ticket.assigntosupplier##'] = Dropdown::getDropdownName('glpi_suppliers',
+                                                            $this->obj->getField('suppliers_id_assign'));
+         } else {
+            $this->datas['##ticket.assigntosupplier##'] = '';
+         }
+
+         if ($this->obj->getField('groups_id')) {
+            $this->datas['##ticket.group##'] = Dropdown::getDropdownName('glpi_groups',
+                                                                     $this->obj->getField('groups_id'));
+         } else {
+            $this->datas['##ticket.group##'] = '';
+         }
+
+         if ($this->obj->getField('groups_id_assign')) {
+            $this->datas['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
+                                                            $this->obj->getField('groups_id_assign'));
+         } else {
+            $this->datas['##ticket.group##'] = '';
+         }
+
+         //Hardware
+         if ($this->target_object != null) {
+            $this->datas['##ticket.itemtype##']  = $this->target_object->getTypeName();
+            $this->datas['##ticket.item.name##'] = $this->target_object->getField('name');
+
+            if ($this->target_object->isField('serial')) {
+               $this->datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
+            }
+            if ($this->target_object->isField('otherserial')) {
+               $this->datas['##ticket.item.otherserial##'] = $this->target_object->getField('otherserial');
+            }
+            if ($this->target_object->isField('location')) {
+               $this->datas['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations',
+                                                                      $user->getField('locations_id'));
+            }
+            $modeltable = getSingular($this->getTable())."models";
+            $modelfield = getForeignKeyFieldForTable($modeltable);
+            if ($this->target_object->isField($modelfield)) {
+               $this->datas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
+            }
+
+         } else {
+            $this->datas['##ticket.itemtype##']         = '';
+            $this->datas['##ticket.item.name##']        = '';
+            $this->datas['##ticket.item.serial##']      = '';
+            $this->datas['##ticket.item.otherserial##'] = '';
+            $this->datas['##ticket.item.location##']    = '';
+         }
+
+         if ($this->obj->getField('ticketsolutiontypes_id')) {
+            $this->datas['##ticket.solution.type##'] = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                                         $this->obj->getField('ticketsolutiontypes_id'));
+            $this->datas['##ticket.solution.description##'] = $this->obj->getField('solution');
+         }
+
+         $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+         if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
+            $restrict .= " AND `is_private` = '0'";
+         }
+         $restrict .= " ORDER BY `date` DESC";
+
+         //Task infos
+         $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
+         foreach ($tasks as $task) {
+            $tmp = array();
+            $tmp['##task.isprivate##']   = Dropdown::getYesNo($task['is_private']);
+            $tmp['##task.author##']      = Dropdown::getDropdownName('glpi_users', $task['users_id']);
+            $tmp['##task.category##']    = Dropdown::getDropdownName('glpi_taskcategories',
+                                                                     $task['taskcategories_id']);
+            $tmp['##task.date##']        = convDateTime($task['date']);
+            $tmp['##task.description##'] = $task['content'];
+            $tmp['##task.time##']        = $task['realtime'];
+            $this->datas['tasks'][] = $tmp;
+         }
+         if (!empty($this->datas['tasks'])) {
+            $this->datas['##ticket.numberoftasks##'] = count($this->datas['tasks']);
+         } else {
+            $this->datas['##ticket.numberoftasks##'] = 0;
+         }
+
+         //Followup infos
+         $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
+         foreach ($followups as $followup) {
+            $tmp = array();
+            $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
+            $tmp['##followup.author##']      = Dropdown::getDropdownName('glpi_users',
+                                                                         $followup['users_id']);
+            $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                                          $followup['requesttypes_id']);
+            $tmp['##followup.date##']        = convDateTime($followup['date']);
+            $tmp['##followup.description##'] = $followup['content'];
+            $this->datas['followups'][] = $tmp;
+         }
+         if (isset($this->datas['followups'])) {
+            $this->datas['##ticket.numberoffollowups##'] = count($this->datas['followups']);
+         } else {
+            $this->datas['##ticket.numberoffollowups##'] = 0;
+         }
+
+         //Validation infos
+         $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+         if (isset($options['validation_id']) && $options['validation_id']) {
+            $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
+         }
+         $restrict .= " ORDER BY `submission_date` DESC";
+         $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
+
+         foreach ($validations as $validation) {
+            $tmp = array();
+            $tmp['##lang.validation.submission.title##']
+               = $LANG['validation'][27]." (".$LANG['job'][4].
+                 " ".html_clean(getUserName($validation['users_id'])).")";
+            $tmp['##lang.validation.answer.title##']
+               = $LANG['validation'][32]." (".$LANG['validation'][21].
+                 " ".html_clean(getUserName($validation['users_id_validate'])).")";
+
+            $tmp['##validation.url##']
+               = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+                 $validation['tickets_id']."_7");
+
+            $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
+            $tmp['##lang.validation.validationstatus##']
+               = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
+
+            $tmp['##validation.status##']            = TicketValidation::getStatus($validation['status']);
+            $tmp['##validation.storestatus##']       = $validation['status'];
+            $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
+            $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
+            $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
+            $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
+
+            $this->datas['validations'][] = $tmp;
+         }
+
+         // Use list_limit_max or load the full history ?
+         foreach (Log::getHistoryData($this->obj,0,$CFG_GLPI['list_limit_max']) as $data) {
+            $tmp = array();
+            $tmp['##ticket.log.date##']    = $data['date_mod'];
+            $tmp['##ticket.log.user##']    = $data['user_name'];
+            $tmp['##ticket.log.field##']   = $data['field'];
+            $tmp['##ticket.log.content##'] = $data['change'];
+            $this->datas['log'][] = $tmp;
+         }
+
+         if (isset($this->datas['log'])) {
+            $this->datas['##ticket.numberoflogs##'] = count($this->datas['log']);
+         } else {
+            $this->datas['##ticket.numberoflogs##'] = 0;
+         }
+      }
+      else {
+         $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                      $options['entities_id']);
+         $this->datas['##lang.ticket.entity##'] = $LANG['entity'][0];
+         $this->datas['##ticket.action##']      = $LANG['crontask'][15];
          $tmp = array();
-         $tmp['##task.isprivate##']   = Dropdown::getYesNo($task['is_private']);
-         $tmp['##task.author##']      = Dropdown::getDropdownName('glpi_users', $task['users_id']);
-         $tmp['##task.category##']    = Dropdown::getDropdownName('glpi_taskcategories',
-                                                                  $task['taskcategories_id']);
-         $tmp['##task.date##']        = convDateTime($task['date']);
-         $tmp['##task.description##'] = $task['content'];
-         $tmp['##task.time##']        = $task['realtime'];
-         $this->datas['tasks'][] = $tmp;
-      }
-      if (!empty($this->datas['tasks'])) {
-         $this->datas['##ticket.numberoftasks##'] = count($this->datas['tasks']);
-      } else {
-         $this->datas['##ticket.numberoftasks##'] = 0;
-      }
+         foreach ($options['tickets'] as $ticket) {
+            $tmp['##ticket.id##']  = sprintf("%07d",$ticket['id']);
+            $tmp['##ticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+                                                       $ticket['id']);
 
-      //Followup infos
-      $followups = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
-      foreach ($followups as $followup) {
-         $tmp = array();
-         $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
-         $tmp['##followup.author##']      = Dropdown::getDropdownName('glpi_users',
-                                                                      $followup['users_id']);
-         $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                       $followup['requesttypes_id']);
-         $tmp['##followup.date##']        = convDateTime($followup['date']);
-         $tmp['##followup.description##'] = $followup['content'];
-         $this->datas['followups'][] = $tmp;
-      }
-      if (isset($this->datas['followups'])) {
-         $this->datas['##ticket.numberoffollowups##'] = count($this->datas['followups']);
-      } else {
-         $this->datas['##ticket.numberoffollowups##'] = 0;
-      }
+            $tmp['##ticket.title##']      = $ticket['name'];
+            $tmp['##ticket.status##']      = Ticket::getStatus($ticket['status']);
+            $tmp['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
+                                                                  $ticket['requesttypes_id']);
 
-      //Validation infos
-      $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
-      if (isset($options['validation_id']) && $options['validation_id']) {
-         $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
-      }
-      $restrict .= " ORDER BY `submission_date` DESC";
-      $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
+            $tmp['##ticket.urgency##']  = Ticket::getUrgencyName($ticket['urgency']);
+            $tmp['##ticket.impact##']   = Ticket::getImpactName($ticket['impact']);
+            $tmp['##ticket.priority##'] = Ticket::getPriorityName($ticket['priority']);
+            $tmp['##ticket.time##']     = convDateTime($ticket['realtime']);
+            $tmp['##ticket.costtime##'] = $ticket['cost_time'];
+            $tmp['##ticket.creationdate##'] = convDateTime($ticket['date']);
 
-      foreach ($validations as $validation) {
-         $tmp = array();
-         $tmp['##lang.validation.submission.title##']
-            = $LANG['validation'][27]." (".$LANG['job'][4].
-              " ".html_clean(getUserName($validation['users_id'])).")";
-         $tmp['##lang.validation.answer.title##']
-            = $LANG['validation'][32]." (".$LANG['validation'][21].
-              " ".html_clean(getUserName($validation['users_id_validate'])).")";
-
-         $tmp['##validation.url##']
-            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-              $validation['tickets_id']."_7");
-
-         $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
-         $tmp['##lang.validation.validationstatus##']
-            = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
-
-         $tmp['##validation.status##']            = TicketValidation::getStatus($validation['status']);
-         $tmp['##validation.storestatus##']       = $validation['status'];
-         $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
-         $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
-         $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
-         $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
-
-         $this->datas['validations'][] = $tmp;
-      }
-
-      // Use list_limit_max or load the full history ?
-      foreach (Log::getHistoryData($this->obj,0,$CFG_GLPI['list_limit_max']) as $data) {
-         $tmp = array();
-         $tmp['##ticket.log.date##']    = $data['date_mod'];
-         $tmp['##ticket.log.user##']    = $data['user_name'];
-         $tmp['##ticket.log.field##']   = $data['field'];
-         $tmp['##ticket.log.content##'] = $data['change'];
-         $this->datas['log'][] = $tmp;
-      }
-
-      if (isset($this->datas['log'])) {
-         $this->datas['##ticket.numberoflogs##'] = count($this->datas['log']);
-      } else {
-         $this->datas['##ticket.numberoflogs##'] = 0;
+            if ($ticket['users_id']) {
+               $user = new User;
+               $user->getFromDB($ticket['users_id']);
+               $tmp['##ticket.author##']      = $ticket['users_id'];
+               $tmp['##ticket.author.name##'] = $user->getName();
+               if ($user->getField('locations_id')) {
+                  $tmp['##ticket.author.location##'] = Dropdown::getDropdownName('glpi_locations',
+                                                                        $user->getField('locations_id'));
+               } else {
+                  $tmp['##ticket.author.location##'] = '';
+               }
+               $tmp['##ticket.author.phone##']  = $user->getField('phone');
+               $tmp['##ticket.author.phone2##'] = $user->getField('phone2');
+            }
+            $this->datas['tickets'][] = $tmp;
+         }
       }
 
       //Locales
