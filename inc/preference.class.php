@@ -47,6 +47,8 @@ class Preference extends CommonGLPI {
       $tabs[1] = $LANG['title'][26];
       $tabs[2] = $LANG['setup'][6];
 
+      $tabs['no_all_tab'] = true;
+
       return $tabs;
    }
 }
