@@ -263,7 +263,7 @@ $LANG['common'][78]="Rendre public";
 $LANG['common'][79]="Rendre privé";
 $LANG['common'][80]="En cours de chargement...";
 $LANG['common'][81]="Sortir de la corbeille";
-$LANG['common'][82]="Mb";
+$LANG['common'][82]="Mio";
 $LANG['common'][83]="Vous n'avez pas les droits requis pour réaliser cette action.";
 $LANG['common'][84]="La présence d'éléments liés interdit la modification de cet attribut";
 $LANG['common'][85]="Modifier la visibilité dans les sous-entités";
@@ -1114,7 +1114,7 @@ $LANG['monitors'][21]="Taille";
 $LANG['monitors'][32]="DVI";
 $LANG['monitors'][33]="Pivot";
 
-$LANG['networking'][5]="RAM (MB)";
+$LANG['networking'][5]="RAM (Mio)";
 $LANG['networking'][6]="Ports réseaux";
 $LANG['networking'][13]="port(s) réseau trouvé(s)";
 $LANG['networking'][14]="IP";
