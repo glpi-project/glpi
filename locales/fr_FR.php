@@ -351,7 +351,7 @@ $LANG['crontask'][11]="Vérification de la présence de mises à jour";
 $LANG['crontask'][12]="Nettoyage des sessions expirées";
 $LANG['crontask'][13]="Nettoyage des graphiques générés";
 $LANG['crontask'][14]="Fermeture administrative des tickets";
-$LANG['crontask'][15]="Tickets non fermés";
+$LANG['crontask'][15]="Tickets non résolus";
 
 // keep >12 free additionnal task
 $LANG['crontask'][30]="Description";
