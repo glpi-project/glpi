@@ -46,44 +46,20 @@ if (!isset($_POST['id'])) {
 
 checkRight('config','r');
 
-$authldap = new AuthLDAP;
-if ($_POST['id'] >0 && $authldap->can($_POST['id'],'r')) {
+$authmail = new AuthMail;
+if ($_POST['id'] >0 && $authmail->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $authldap->showFormUserConfig($_POST['id'],$_POST['target']);
-         $authldap->showFormGroupsConfig($_POST['id'],$_POST['target']);
-         $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
-         $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
-         Log::showForItem($authldap);
-         break;
-
-      case 2 :
-         $authldap->showFormUserConfig($_POST['id'],$_POST['target']);
-         break;
-
-      case 3 :
-         $authldap->showFormGroupsConfig($_POST['id'],$_POST['target']);
-         break;
-
-      case 4 :
-         $authldap->showFormEntityConfig($_POST['id'],$_POST['target']);
-         break;
-
-      case 5 :
-         $authldap->showFormAdvancedConfig($_POST['id'],$_POST['target']);
-         break;
-
-      case 6 :
-         $authldap->showFormReplicatesConfig($_POST['id'], $_POST['target']);
+         Log::showForItem($authmail);
          break;
 
       case 12 :
-            Log::showForItem($authldap);
+            Log::showForItem($authmail);
          break;
 
       default :
-         if (!Plugin::displayAction($authldap, $_REQUEST['glpi_tab'])) {
-            $authldap->showFormTestLDAP ($_POST['id'], $_POST['target']);
+         if (!Plugin::displayAction($authmail, $_REQUEST['glpi_tab'])) {
+            $authmail->showFormTestMail ($_POST['id']);
          }
    }
 }

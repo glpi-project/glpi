@@ -38,6 +38,10 @@
 **/
 class AuthMail extends CommonDBTM {
 
+
+   // From CommonDBTM
+   public $dohistory = true;
+
    static function getTypeName() {
       global $LANG;
 
@@ -64,6 +68,19 @@ class AuthMail extends CommonDBTM {
          $input["connect_string"] = constructMailServerConfig($input);
       }
       return $input;
+   }
+
+
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $ong = array();
+      $ong[1] = $LANG['title'][26];
+
+      if ($this->fields['id'] > 0) {
+         $ong[12]=$LANG['title'][38];
+      }
+      return $ong;
    }
 
    function getSearchOptions() {
@@ -136,7 +153,11 @@ class AuthMail extends CommonDBTM {
       }
 
       if (canUseImapPop()) {
-         echo "<form action='".$this->getFormURL()."' method='post'>";
+         $options['colspan']=1;
+         $this->showTabs($options);
+         $this->showFormHeader($options);
+
+/*         echo "<form action='".$this->getFormURL()."' method='post'>";
          if (!empty ($ID)) {
             echo "<input type='hidden' name='id' value='$ID'>";
          }
@@ -144,10 +165,12 @@ class AuthMail extends CommonDBTM {
          echo "<table class='tab_cadre'>";
          echo "<tr><th>" . $LANG['login'][3] . "</th><th>";
          echo ($ID>0?$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]):'&nbsp;');
-         echo "</th></tr>";
+         echo "</th></tr>";*/
+
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input size='30' type='text' name='name' value='" . $this->fields["name"] . "'>";
          echo "</td></tr>";
+
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][164] . "&nbsp;:</td>";
          echo "<td><input size='30' type='text' name='host' value='" . $this->fields["host"] . "'>";
          echo "</td></tr>";
@@ -157,31 +180,19 @@ class AuthMail extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
          echo "<td>";
          echo "<textarea cols='40' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
+         if ($ID>0) {
+            echo "<br>".$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]);
+         }
+
          echo "</td></tr>";
 
-         if (empty ($ID)) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
-            echo "<input type='submit' name='add' class='submit'
-                   value=\"" . $LANG['buttons'][2] . "\" ></td></tr></table>";
-         } else {
-            echo "<tr class='tab_bg_2'><td class='center' colspan=2>";
-            echo "<input type='submit' name='update' class='submit'
-                   value=\"" . $LANG['buttons'][7] . "\" >";
-            echo "&nbsp<input type='submit' name='delete' class='submit'
-                        value=\"" . $LANG['buttons'][6] . "\" ></td></tr></table>";
 
-            echo "<br><table class='tab_cadre'>";
-            echo "<tr><th colspan='2'>" . $LANG['login'][21] . "</th></tr>";
-            echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][6] . "</td>";
-            echo "<td><input size='30' type='text' name='imap_login' value=''></td></tr>";
-            echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][7] . "</td>";
-            echo "<td><input size='30' type='password' name='imap_password' value=''
-                              autocomplete='off'></td>";
-            echo "</tr><tr class='tab_bg_2'><td class='center' colspan=2>";
-            echo "<input type='submit' name='test' class='submit'
-                   value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";
-            echo "</table>&nbsp;";
-         }
+         $this->showFormButtons($options);
+
+         echo "<div id='tabcontent'></div>";
+         echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
+
          echo "</div>";
       } else {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
@@ -192,6 +203,28 @@ class AuthMail extends CommonDBTM {
       }
       echo "</form>";
    }
+
+   function showFormTestMail ($ID) {
+      global $LANG;
+
+      if ($this->getFromDB($ID)) {
+         echo "<form method='post' action='".$this->getFormURL()."'>";
+         echo "<input type='hidden' name='imap_string' value=\"".$this->fields['connect_string']."\">";
+         echo "<div class='center'><table class='tab_cadre'>";
+         echo "<tr><th colspan='2'>" . $LANG['login'][21] . "</th></tr>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][6] . "</td>";
+         echo "<td><input size='30' type='text' name='imap_login' value=''></td></tr>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][7] . "</td>";
+         echo "<td><input size='30' type='password' name='imap_password' value=''
+                           autocomplete='off'></td>";
+         echo "</tr><tr class='tab_bg_2'><td class='center' colspan=2>";
+         echo "<input type='submit' name='test' class='submit'
+                  value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";
+         echo "</table></div></form>";
+      }
+
+   }
+
 
    /**
     * Is the Mail authentication used ?

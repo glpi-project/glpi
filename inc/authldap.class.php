@@ -377,22 +377,25 @@ class AuthLDAP extends CommonDBTM {
    }
 
    function showFormTestLDAP ($ID, $target) {
-      global $LANG,$CFG_GLPI;
+      global $LANG;
 
-      echo "<form method='post' action='$target'>";
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<input type='hidden' name='id' value='$ID'>";
-      echo "<tr><th colspan='4'>" . $LANG['ldap'][9] . "</th></tr>";
-      if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
+      if ($ID>0) {
+
+         echo "<form method='post' action='$target'>";
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<input type='hidden' name='id' value='$ID'>";
+         echo "<tr><th colspan='4'>" . $LANG['ldap'][9] . "</th></tr>";
+         if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
+            echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
+            echo $_SESSION["LDAP_TEST_MESSAGE"];
+            echo"</td></tr>";
+            unset($_SESSION["LDAP_TEST_MESSAGE"]);
+         }
          echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
-         echo $_SESSION["LDAP_TEST_MESSAGE"];
-         echo"</td></tr>";
-         unset($_SESSION["LDAP_TEST_MESSAGE"]);
+         echo "<input type='submit' name='test_ldap' class='submit' value='".
+               $LANG['buttons'][2]."'></td></tr>";
+         echo "</table></div></form>";
       }
-      echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
-      echo "<input type='submit' name='test_ldap' class='submit' value='".
-            $LANG['buttons'][2]."'></td></tr>";
-      echo "</table></div>";
    }
 
    function showFormUserConfig($ID,$target) {
@@ -443,7 +446,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<input type='submit' name='update' class='submit' value='".
                 $LANG['buttons'][2]."'></td>";
       echo "</td></tr>";
-      echo "</table></form></div>";
+      echo "</table></div></form>";
    }
 
 
@@ -469,7 +472,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<input type='submit' name='update' class='submit' value='".
                 $LANG['buttons'][2]."'></td>";
       echo "</td></tr>";
-      echo "</table></form></div>";
+      echo "</table></div></form>";
 
    }
    function defineTabs($options=array()) {
