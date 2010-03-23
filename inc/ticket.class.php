@@ -1549,19 +1549,6 @@ class Ticket extends CommonDBTM {
          $tab[24]['linkfield'] = '';
          $tab[24]['name']      = $LANG['jobresolution'][1];
 
-         $tab['hardware'] = $LANG['common'][1];
-
-         $tab[40]['table']     = $this->getTable();
-         $tab[40]['field']     = 'itemtype';
-         $tab[40]['linkfield'] = '';
-         $tab[40]['name']      = $LANG['common'][17];
-         $tab[40]['datatype']     = 'itemtypename';
-
-         $tab[41]['table']     = $this->getTable();
-         $tab[41]['field']     = 'items_id';
-         $tab[41]['linkfield'] = '';
-         $tab[41]['name']      = $LANG['common'][1];
-
          $tab['cost'] = $LANG['financial'][5];
 
          $tab[42]['table']     = $this->getTable();
