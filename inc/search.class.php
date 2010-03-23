@@ -3879,10 +3879,7 @@ class Search {
             $search['States'][31]['linkfield'] = 'states_id';
             $search['States'][31]['name']      = $LANG['state'][0];
 
-            $search['States'][3]['table']     = 'glpi_locations';
-            $search['States'][3]['field']     = 'completename';
-            $search['States'][3]['linkfield'] = 'locations_id';
-            $search['States'][3]['name']      = $LANG['common'][15];
+            $search['States']+=Location::getSearchOptionsToAdd();
 
             $search['States'][5]['table']     = 'state_types';
             $search['States'][5]['field']     = 'serial';

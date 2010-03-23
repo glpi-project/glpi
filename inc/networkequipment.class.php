@@ -432,10 +432,7 @@ class NetworkEquipment extends CommonDBTM {
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[3]['table']     = 'glpi_locations';
-      $tab[3]['field']     = 'completename';
-      $tab[3]['linkfield'] = 'locations_id';
-      $tab[3]['name']      = $LANG['common'][15];
+      $tab+=Location::getSearchOptionsToAdd();
 
       $tab[4]['table']     = 'glpi_networkequipmenttypes';
       $tab[4]['field']     = 'name';

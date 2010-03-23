@@ -317,10 +317,7 @@ class CartridgeItem extends CommonDBTM {
       $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
-      $tab[3]['table']     = 'glpi_locations';
-      $tab[3]['field']     = 'completename';
-      $tab[3]['linkfield'] = 'locations_id';
-      $tab[3]['name']      = $LANG['consumables'][36];
+      $tab+=Location::getSearchOptionsToAdd();
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';

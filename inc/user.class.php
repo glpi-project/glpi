@@ -1545,10 +1545,7 @@ class User extends CommonDBTM {
       $tab[5]['name']      = $LANG['setup'][14];
       $tab[5]['datatype']  = 'email';
 
-      $tab[3]['table']     = 'glpi_locations';
-      $tab[3]['field']     = 'completename';
-      $tab[3]['linkfield'] = 'locations_id';
-      $tab[3]['name']      = $LANG['common'][15];
+      $tab+=Location::getSearchOptionsToAdd();
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'is_active';
