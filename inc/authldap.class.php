@@ -223,6 +223,12 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<div id='tabcontent'></div>";
          echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      } else {
+         echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>" . $LANG['login'][2] . "</th></tr>";
+         echo "<tr class='tab_bg_2'><td class='center'>";
+         echo "<p class='red'>" . $LANG['setup'][157] . "</p>";
+         echo "<p>" . $LANG['setup'][158] . "</p></td></tr></table></div>";
       }
    }
 

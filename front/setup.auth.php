@@ -47,14 +47,14 @@ echo "<tr class='tab_bg_1'><td class='center b'>";
 if (canUseLdap()) {
    echo "<a href='authldap.php'>". $LANG['login'][2] ."</a>";
 } else {
-   echo $LANG['setup'][157] ."<br>".$LANG['setup'][158];
+   echo "<p class='red'>".$LANG['setup'][157] ."</p><p>".$LANG['setup'][158].'</p>';
 }
 echo "</td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (canUseImapPop()) {
    echo "<a href='authmail.php'>" .$LANG['login'][3] ."</a>";
 } else {
-   echo $LANG['setup'][165] ."<br>".$LANG['setup'][166];
+   echo "<p class='red'>".$LANG['setup'][165] ."</p><p>".$LANG['setup'][166].'</p>';
 }
 echo "</td> </tr>";
 echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . $LANG['common'][67] .
