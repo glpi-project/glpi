@@ -745,10 +745,15 @@ class User extends CommonDBTM {
     * @param $userdn Basedn of the user
     * @param $login User Login
     *
-    * @return String : basedn of the user / false if not founded
+    * @return nothing : false if not applicable
     */
    private function getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB,$CFG_GLPI;
+
+      // No group_member_field : unable to get group
+      if (empty($ldap_method["group_member_field"])) {
+         return false;
+      }
 
       if ($ldap_method["use_dn"]) {
          $user_tmp = $userdn;
@@ -778,6 +783,7 @@ class User extends CommonDBTM {
             }
          }
       }
+      return true;
    }
 
    /**
