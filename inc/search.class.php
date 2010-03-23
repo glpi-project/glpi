@@ -95,6 +95,22 @@ class Search {
          $p['start']=0;
       }
 
+      // Manage defautll seachtype value : for bookmark compatibility
+      if (count($p['contains'])) {
+         foreach ($p['contains'] as $key => $val) {
+            if (!isset($p['searchtype'][$key])) {
+               $p['searchtype'][$key]='contains';
+            }
+         }
+      }
+      if (count($p['contains2'])) {
+         foreach ($p['contains2'] as $key => $val) {
+            if (!isset($p['searchtype2'][$key])) {
+               $p['searchtype2'][$key]='contains';
+            }
+         }
+      }
+
       $target= getItemTypeSearchURL($itemtype);
 
       $limitsearchopt=Search::getCleanedOptions($itemtype);
@@ -1085,7 +1101,7 @@ class Search {
       $p['link']        = array();//
       $p['field']       = array();
       $p['contains']    = array();
-      $p['searchtype']  = '';
+      $p['searchtype']  = array();
       $p['sort']        = '';
       $p['is_deleted']  = 0;
       $p['link2']       = '';//
@@ -3685,12 +3701,12 @@ class Search {
       $default_values["link"]=array();
       $default_values["field"]=array(0=>"view");
       $default_values["contains"]=array(0=>"");
-      $default_values["searchtype"]=array(0=>"");
+      $default_values["searchtype"]=array(0=>"contains");
       $default_values["link2"]=array();
       $default_values["field2"]=array(0=>"view");
       $default_values["contains2"]=array(0=>"");
       $default_values["itemtype2"]="";
-      $default_values["searchtype2"]=array(0=>"");
+      $default_values["searchtype2"]="";
       $default_values["sort"]=1;
 
       if ($itemtype!='States'
