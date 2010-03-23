@@ -41,7 +41,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkRight("networking","w");
-logInFile('php-errors','Dropdown='.print_r($_POST,true),true);
+
 // Make a select box
 if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
    $table=getTableForItemType($_POST["itemtype"]);

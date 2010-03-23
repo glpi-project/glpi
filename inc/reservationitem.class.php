@@ -350,7 +350,6 @@ class ReservationItem extends CommonDBTM {
       $items_messages = array();
 
       foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
-         logDebug("entity=$entity value=$value");
          $delay_stamp_reservations= mktime(date("H")+$value,
                                            date("i"), date("s"), date("m"), date("d"), date("y"));
          $date_end_reservations=date("Y-m-d H:i:s",$delay_stamp_reservations);
