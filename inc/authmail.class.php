@@ -184,7 +184,6 @@ class AuthMail extends CommonDBTM {
          }
          echo "</div>";
       } else {
-         echo "<input type='hidden' name='IMAP_Test' value='1'>";
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][162] . "</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
