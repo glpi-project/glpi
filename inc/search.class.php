@@ -103,7 +103,7 @@ class Search {
             }
          }
       }
-      if (count($p['contains2'])) {
+      if (is_array($p['contains2']) && count($p['contains2'])) {
          foreach ($p['contains2'] as $key => $val) {
             if (!isset($p['searchtype2'][$key])) {
                $p['searchtype2'][$key]='contains';
