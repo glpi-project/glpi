@@ -113,38 +113,12 @@ class Event extends CommonDBTM {
          return array($logItemtype,$logService);
       }
       $logItemtype=array('system'      => $LANG['log'][1],
-                         'computers'   => $LANG['log'][2],
-                         'monitors'    => $LANG['log'][3],
-                         'printers'    => $LANG['log'][4],
-                         'software'    => $LANG['log'][5],
-                         'networking'  => $LANG['log'][6],
-                         'cartridges'  => $LANG['log'][7],
-                         'peripherals' => $LANG['log'][8],
-                         'consumables' => $LANG['log'][9],
-                         'ticket'      => $LANG['log'][10],
-                         'contacts'    => $LANG['log'][11],
-                         'enterprises' => $LANG['log'][12],
-                         'documents'   => $LANG['log'][13],
-                         'knowbase'    => $LANG['log'][14],
-                         'users'       => $LANG['log'][15],
-                         'infocom'     => $LANG['log'][19],
                          'devices'     => $LANG['log'][18],
-                         'links'       => $LANG['log'][38],
-                         'typedocs'    => $LANG['log'][39],
                          'planning'    => $LANG['log'][16],
                          'reservation' => $LANG['log'][42],
-                         'reservationitem' => $LANG['log'][42],
-                         'contracts'   => $LANG['log'][17],
-                         'phones'      => $LANG['log'][43],
                          'dropdown'    => $LANG['log'][44],
-                         'groups'      => $LANG['log'][47],
-                         'entity'      => $LANG['log'][63],
                          'rules'       => $LANG['log'][65],
-                         'reminder'    => $LANG['log'][81],
-                         'transfers'   => $LANG['transfer'][1],
-                         'notifications'=> $LANG['setup'][704],
-                         'notificationtemplates'=> $LANG['mailing'][113],
-                         'budget'      => $LANG['financial'][87]);
+                        );
 
       $logService=array('inventory'    => $LANG['Menu'][38],
                         'tracking'     => $LANG['Menu'][5],
@@ -191,11 +165,7 @@ class Event extends CommonDBTM {
                break;
 
             default :
-               if ($type[strlen($type)-1]=='s') {
-                  $show=substr($type,0,strlen($type)-1);
-               } else {
-                  $show=$type;
-               }
+               $show=getSingular($type);
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?id=".$items_id;
                echo "\">$items_id</a>";
                break;
@@ -264,7 +234,19 @@ class Event extends CommonDBTM {
          $service = $DB->result($result, $i, "service");
          $message = $DB->result($result, $i, "message");
 
-         echo "<tr class='tab_bg_2'><td>".$logItemtype[$type].":</td>";
+         $itemtype="&nbsp;";
+         if (isset($logItemtype[$type])) {
+            $itemtype=$logItemtype[$type];
+         } else {
+            $type=getSingular($type);
+            if (class_exists($type)) {
+               $item = new $type();
+               $itemtype = $item->getTypeName();
+            }
+         }
+
+
+         echo "<tr class='tab_bg_2'><td>$itemtype :</td>";
          echo "<td class='center'>";
          self::displayItemLogID($type,$items_id);
          echo "</td><td class='center'>".convDateTime($date)."</td>";
@@ -360,8 +342,19 @@ class Event extends CommonDBTM {
          $level = $DB->result($result, $i, "level");
          $message = $DB->result($result, $i, "message");
 
+         $itemtype="&nbsp;";
+         if (isset($logItemtype[$type])) {
+            $itemtype=$logItemtype[$type];
+         } else {
+            $type=getSingular($type);
+            if (class_exists($type)) {
+               $item = new $type();
+               $itemtype = $item->getTypeName();
+            }
+         }
+
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".(isset($logItemtype[$type])?$logItemtype[$type]:"&nbsp;").":</td>";
+         echo "<td>$itemtype :</td>";
          echo "<td class='center'><strong>";
          self::displayItemLogID($type,$items_id);
          echo "</strong></td><td>".convDateTime($date)."</td>";

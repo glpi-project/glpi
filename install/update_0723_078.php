@@ -3741,7 +3741,11 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    // Convert events
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_events');
 
-   $convert_types=array('tracking'=>'ticket');
+   $convert_types=array('tracking'=>'ticket',
+               'networking'=>'networkequipment',
+               'knowbase' => 'knowbaseitem',
+               'typedocs'=>'documenttype');
+
    //$convert_service=array('tracking'=>'ticket');
    foreach ($convert_types as $from =>$to) {
       $query2="UPDATE glpi_events SET type='$to' WHERE type='$from';";

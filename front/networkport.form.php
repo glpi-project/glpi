@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
 
    if (!isset($_POST["several"])) {
       $np->add($_POST);
-      Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][70]);
+      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][70]);
       glpi_header($_SERVER['HTTP_REFERER']);
 
    } else {
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
          unset($np->fields["id"]);
          $np->add($input);
       }
-      Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".
+      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".
                  ($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG['log'][71]);
       glpi_header($_SERVER['HTTP_REFERER']);
    }
@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
 } else if(isset($_POST["delete"])) {
    checkRight("networking","w");
    $np->delete($_POST);
-   Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][73]);
+   Event::log($_POST['id'], "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][73]);
    if (class_exists($np->fields['itemtype'])) {
       $item=new $np->fields['itemtype']();
       glpi_header($item->getFormURL().'?id='.$np->fields['items_id']);
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
          $np->delete(array("id" => $port_id));
       }
    }
-   Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][74]);
+   Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][74]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if(isset($_POST["move"])) {
@@ -114,13 +114,14 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][75]);
+   Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][75]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if(isset($_POST["update"])) {
    checkRight("networking","w");
 
    $np->update($_POST);
+   Event::log($_POST["id"], "networkport", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["connect"])) {
@@ -154,7 +155,7 @@ if (isset($_POST["add"])) {
             $npv->assignVlan($port_id,$_POST["vlans_id"]);
          }
       }
-      Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][78]);
+      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][78]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -163,7 +164,7 @@ if (isset($_POST["add"])) {
 
    if (isset($_POST["vlans_id"]) && $_POST["vlans_id"] >0) {
       $npv->assignVlan($_POST["id"],$_POST["vlans_id"]);
-      Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
+      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -176,7 +177,7 @@ if (isset($_POST["add"])) {
             $npv->unassignVlan($port_id,$_POST["vlans_id"]);
          }
       }
-      Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][80]);
+      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][80]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -184,7 +185,7 @@ if (isset($_POST["add"])) {
    checkRight("networking","w");
 
   $npv->unassignVlanbyID($_GET['id']);
-   Event::log(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
+   Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
