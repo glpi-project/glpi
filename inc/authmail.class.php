@@ -192,8 +192,6 @@ class AuthMail extends CommonDBTM {
          echo "<div id='tabcontent'></div>";
          echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
-
-         echo "</div>";
       } else {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][162] . "</th></tr>";
@@ -201,7 +199,6 @@ class AuthMail extends CommonDBTM {
          echo "<p class='red'>" . $LANG['setup'][165] . "</p>";
          echo "<p>" . $LANG['setup'][166] . "</p></td></tr></table></div>";
       }
-      echo "</form>";
    }
 
    function showFormTestMail ($ID) {
