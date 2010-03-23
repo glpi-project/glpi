@@ -3092,7 +3092,7 @@ class Search {
                   }
                }
                return $out;
-               
+
             } else {
                if (!empty($linkfield)) {
                   return formatUserName($data[$NAME.$num."_3"],$data[$NAME.$num],$data[$NAME.$num."_2"],
@@ -4338,7 +4338,7 @@ class Search {
 
          case PDF_OUTPUT_PORTRAIT :
             global $PDF_HEADER;
-            $PDF_HEADER[$num]=decodeFromUtf8(html_clean($value));
+            $PDF_HEADER[$num]=decodeFromUtf8(html_clean($value),'windows-1252');
             break;
 
          case SYLK_OUTPUT : //sylk
@@ -4396,7 +4396,7 @@ class Search {
          case PDF_OUTPUT_PORTRAIT :
             global $PDF_ARRAY,$PDF_HEADER;
             $value = weblink_extract($value);
-            $PDF_ARRAY[$row][$num]=decodeFromUtf8(html_clean($value));
+            $PDF_ARRAY[$row][$num]=decodeFromUtf8(html_clean($value),'windows-1252');
             break;
 
          case SYLK_OUTPUT : //sylk
@@ -4471,9 +4471,11 @@ class Search {
             global $PDF_HEADER,$PDF_ARRAY;
             $pdf= new Cezpdf('a4','landscape');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5])."- {PAGENUM}/{TOTALPAGENUM}");
+            $pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d")).
+               " - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5],'windows-1252').
+               " - {PAGENUM}/{TOTALPAGENUM}");
             $options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
-            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title),$options);
+            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title,'windows-1252'),$options);
             $pdf->ezStream();
             break;
 
@@ -4481,9 +4483,11 @@ class Search {
             global $PDF_HEADER,$PDF_ARRAY;
             $pdf= new Cezpdf('a4','portrait');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $pdf->ezStartPageNumbers(550,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5])."- {PAGENUM}/{TOTALPAGENUM}");
+            $pdf->ezStartPageNumbers(550,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d")).
+               " - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5],'windows-1252').
+               " - {PAGENUM}/{TOTALPAGENUM}");
             $options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>565,'titleFontSize'=>8,);
-            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title),$options);
+            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title,'windows-1252'),$options);
             $pdf->ezStream();
             break;
 
