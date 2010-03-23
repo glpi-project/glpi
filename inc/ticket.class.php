@@ -4558,7 +4558,7 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-    * Cron for ticket's automatic close
+    * Cron for alert old tickets which are not solved
     * @param $task : crontask object
     *
     * @return integer (0 : nothing done - 1 : done)
