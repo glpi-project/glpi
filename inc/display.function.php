@@ -2924,6 +2924,7 @@ function autocompletionTextField(CommonDBTM $item,$field,$options=array()) {
 *   - contentid : string / id for the content html container (default auto generated) (used for ajax)
 *   - link : string / link to put on displayed image if contentid is empty
 *   - linkid : string / html id to put to the link link (used for ajax)
+*   - linktarget : string / target for the link
 *   - display : boolean / display the item : false return the datas
 *
 * @param $content string data to put in the tooltip
@@ -2938,6 +2939,7 @@ function showToolTip($content,$options=array()){
    $param['contentid']  = '';
    $param['link']       = '';
    $param['linkid']     = '';
+   $param['linktarget']     = '';
    $param['ajax']       = '';
    $param['display']    = true;
 
@@ -2955,8 +2957,11 @@ function showToolTip($content,$options=array()){
    $out='';
    if (empty($param['applyto'])){
          if (!empty($param['link'])) {
-            $out.="<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'
-                     href='".$param['link']."'>";
+            $out.="<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'";
+            if (!empty($param['linktarget'])) {
+               $out.=" target='".$param['linktarget']."' ";
+            }
+            $out.=" href='".$param['link']."'>";
          }
 
          $out.= "<img id='tooltip$rand' alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
