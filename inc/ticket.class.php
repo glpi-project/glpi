@@ -40,7 +40,6 @@ if (!defined('GLPI_ROOT')) {
 /// Tracking class
 class Ticket extends CommonDBTM {
 
-
    // From CommonDBTM
    public $dohistory = true;
    protected $forward_entity_to=array('TicketValidation');
@@ -57,19 +56,24 @@ class Ticket extends CommonDBTM {
       return $LANG['job'][38];
    }
 
+
    function canCreate() {
       return haveRight('create_ticket', 1);
    }
 
+
    function canUpdate() {
+ 
       return haveRight('update_ticket', 1)
-            || haveRight('assign_ticket', 1)
-            || haveRight('steal_ticket', 1);
+             || haveRight('assign_ticket', 1)
+             || haveRight('steal_ticket', 1);
    }
+
 
    function canView() {
       return true;
    }
+
 
    /**
     * Is the current user have right to show the current ticket ?
@@ -98,17 +102,20 @@ class Ticket extends CommonDBTM {
              );
    }
 
+
    /**
     * Is the current user have right to create the current ticket ?
     *
     * @return boolean
     */
    function canCreateItem() {
+
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
       return haveRight('create_ticket', '1');
    }
+
 
    /**
     * Is the current user have right to update the current ticket ?
@@ -116,11 +123,13 @@ class Ticket extends CommonDBTM {
     * @return boolean
     */
    function canUpdateItem() {
+
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
       return $this->canUpdate();
    }
+
 
    /**
     * Is the current user have right to delete the current ticket ?
@@ -128,13 +137,16 @@ class Ticket extends CommonDBTM {
     * @return boolean
     */
    function canDeleteItem() {
+
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
       return haveRight('delete_ticket', '1');
    }
 
+
    function pre_deleteItem() {
+
       NotificationEvent::raiseEvent('delete',$this);
       return true;
    }
@@ -147,8 +159,7 @@ class Ticket extends CommonDBTM {
          if (haveRight('observe_ticket','1')) {
             $ong[1] = $LANG['job'][9];
          }
-         if (haveRight('create_validation','1')
-               ||haveRight('validate_ticket','1')) {
+         if (haveRight('create_validation','1') ||haveRight('validate_ticket','1')) {
             $ong[7] = $LANG['validation'][0];
          }
          if (haveRight('observe_ticket','1')) {
@@ -158,7 +169,7 @@ class Ticket extends CommonDBTM {
          $ong[3] = $LANG['job'][47];
          $ong[5] = $LANG['Menu'][27];
          $ong[6] = $LANG['title'][38];
-         $ong['no_all_tab']=true;
+         $ong['no_all_tab'] = true;
       } else {
          $ong[1] = $LANG['job'][13];
       }
@@ -250,6 +261,7 @@ class Ticket extends CommonDBTM {
                    || ($input["users_id_assign"]!=getLoginUserID())) {
                   unset($input["users_id_assign"]);
                }
+
             } else {
                // Can not steal or can steal and not assign to me
                if (!haveRight("steal_ticket","1")
@@ -272,22 +284,22 @@ class Ticket extends CommonDBTM {
          }
          // Manage assign and steal right
          if (isset($input["users_id_assign"])) {
-            $ret["users_id_assign"]=$input["users_id_assign"];
+            $ret["users_id_assign"] = $input["users_id_assign"];
          }
          if (isset($input["suppliers_id_assign"])) {
-            $ret["suppliers_id_assign"]=$input["suppliers_id_assign"];
+            $ret["suppliers_id_assign"] = $input["suppliers_id_assign"];
          }
          if (isset($input["groups_id_assign"])) {
-            $ret["groups_id_assign"]=$input["groups_id_assign"];
+            $ret["groups_id_assign"] = $input["groups_id_assign"];
          }
 
          // Can only update content if no followups already added
          $ret["id"]=$input["id"];
          if (isset($input["content"])) {
-            $ret["content"]=$input["content"];
+            $ret["content"] = $input["content"];
          }
          if (isset($input["name"])) {
-            $ret["name"]=$input["name"];
+            $ret["name"] = $input["name"];
          }
 
          $input=$ret;
@@ -333,15 +345,15 @@ class Ticket extends CommonDBTM {
       */
 
       if (isset($input["document"]) && $input["document"]>0) {
-         $doc=new Document();
+         $doc = new Document();
          if ($doc->getFromDB($input["document"])) {
-            $docitem=new Document_Item();
+            $docitem = new Document_Item();
             if ($docitem->add(array('documents_id' => $input["document"],
-                                    'itemtype' => $this->getType(),
-                                    'items_id' => $input["id"]))) {
+                                    'itemtype'     => $this->getType(),
+                                    'items_id'     => $input["id"]))) {
                // Force date_mod of tracking
-               $input["date_mod"]=$_SESSION["glpi_currenttime"];
-               $input['_doc_added'][]=$doc->fields["name"];
+               $input["date_mod"] = $_SESSION["glpi_currenttime"];
+               $input['_doc_added'][] = $doc->fields["name"];
             }
          }
          unset($input["document"]);
@@ -382,9 +394,9 @@ class Ticket extends CommonDBTM {
       global $LANG;
 
       if (((in_array("users_id_assign",$this->updates) && $this->input["users_id_assign"]>0)
-           || (in_array("suppliers_id_assign",$this->updates) && $this->input["suppliers_id_assign"]>0)
-           || (in_array("groups_id_assign",$this->updates) && $this->input["groups_id_assign"]>0)
-          )
+           || (in_array("suppliers_id_assign",$this->updates) 
+               && $this->input["suppliers_id_assign"]>0)
+           || (in_array("groups_id_assign",$this->updates) && $this->input["groups_id_assign"]>0))
           && $this->fields["status"]=="new") {
 
          if (!in_array('status', $this->updates)) {
@@ -395,11 +407,11 @@ class Ticket extends CommonDBTM {
       }
       if (isset($this->input["status"])) {
          if (isset($this->input["suppliers_id_assign"])
-             && $this->input["suppliers_id_assign"]==0
+             && $this->input["suppliers_id_assign"] == 0
              && isset($this->input["groups_id_assign"])
-             && $this->input["groups_id_assign"]==0
+             && $this->input["groups_id_assign"] == 0
              && isset($this->input["users_id_assign"])
-             && $this->input["users_id_assign"]==0
+             && $this->input["users_id_assign"] == 0
              && $this->input["status"]=="assign") {
 
             if (!in_array('status', $this->updates)) {
@@ -411,11 +423,11 @@ class Ticket extends CommonDBTM {
 
          if (in_array("status",$this->updates) && $this->input["status"]=="closed") {
             $this->updates[]="closedate";
-            $this->oldvalues['closedate']=$this->fields["closedate"];
-            $this->fields["closedate"]=$_SESSION["glpi_currenttime"];
+            $this->oldvalues['closedate'] = $this->fields["closedate"];
+            $this->fields["closedate"] = $_SESSION["glpi_currenttime"];
             // If invalid date : set open date
-            if ($this->fields["closedate"]<$this->fields["date"]){
-               $this->fields["closedate"]=$this->fields["date"];
+            if ($this->fields["closedate"] < $this->fields["date"]){
+               $this->fields["closedate"] = $this->fields["date"];
             }
          }
       }
@@ -426,43 +438,43 @@ class Ticket extends CommonDBTM {
 
          // Invalid dates : no change
          if ($this->fields["closedate"]<$this->fields["date"]) {
-            addMessageAfterRedirect($LANG['tracking'][3],false,ERROR);
-            if (($key=array_search('date',$this->updates))!==false) {
+            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
             }
-            if (($key=array_search('closedate',$this->updates))!==false) {
+            if (($key=array_search('closedate',$this->updates)) !== false) {
                unset($this->updates[$key]);
             }
          }
       }
 
       // Check dates change interval due to the fact that second are not displayed in form
-      if (($key=array_search('date',$this->updates))!==false
+      if (($key=array_search('date',$this->updates)) !== false
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
 
          unset($this->updates[$key]);
       }
-      if (($key=array_search('closedate',$this->updates))!==false
+      if (($key=array_search('closedate',$this->updates)) !== false
           && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
          unset($this->updates[$key]);
       }
 
       if (in_array("users_id",$this->updates)) {
-         $user=new User;
+         $user = new User;
          $user->getFromDB($this->input["users_id"]);
          if (!empty($user->fields["email"])) {
-            $this->updates[]="user_email";
-            $this->fields["user_email"]=$user->fields["email"];
+            $this->updates[] = "user_email";
+            $this->fields["user_email"] = $user->fields["email"];
          }
       }
-      if (($key=array_search('status',$this->updates))!==false
+      if (($key=array_search('status',$this->updates)) !== false
           && $this->oldvalues['status'] == $this->fields['status']) {
          unset($this->updates[$key]);
          unset($this->oldvalues['status']);
       }
 
       // Do not take into account date_mod if no update is done
-      if (count($this->updates)==1 && ($key=array_search('date_mod',$this->updates))!==false) {
+      if (count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false) {
          unset($this->updates[$key]);
       }
    }
@@ -486,10 +498,10 @@ class Ticket extends CommonDBTM {
              || in_array("cost_material",$this->updates)) {
 
             if ($this->fields["itemtype"] && class_exists($this->fields["itemtype"])) {
-               $item=new $this->fields["itemtype"]();
+               $item = new $this->fields["itemtype"]();
                if ($item->getFromDB($this->fields["items_id"])) {
-                  $newinput=array();
-                  $newinput['id']=$this->fields["items_id"];
+                  $newinput = array();
+                  $newinput['id'] = $this->fields["items_id"];
                   $newinput['ticket_tco'] = self::computeTco($item);
                   $item->update($newinput);
                }
@@ -755,7 +767,6 @@ class Ticket extends CommonDBTM {
              && $CFG_GLPI["use_mailing"]) {
 */
          if (count($this->updates)>0 && $CFG_GLPI["use_mailing"]) {
-
             $mailtype = "update";
 
             if (isset($this->input["status"])
@@ -763,7 +774,7 @@ class Ticket extends CommonDBTM {
                 && in_array("status",$this->updates)
                 && $this->input["status"]=="solved") {
 
-               $mailtype="solved";
+               $mailtype = "solved";
             }
 
             //TODO : manage assignation
@@ -787,35 +798,35 @@ class Ticket extends CommonDBTM {
 
       // Do not check mandatory on auto import (mailgates)
       if (!isset($input['_auto_import'])) {
-         $_SESSION["helpdeskSaved"]=$input;
+         $_SESSION["helpdeskSaved"] = $input;
 
          if (!isset($input["urgency"])) {
-            addMessageAfterRedirect($LANG['tracking'][4],false,ERROR);
-            $mandatory_ok=false;
+            addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
+            $mandatory_ok = false;
          }
          if ($CFG_GLPI["is_ticket_content_mandatory"]
              && (!isset($input['content']) || empty($input['content']))) {
 
-            addMessageAfterRedirect($LANG['tracking'][8],false,ERROR);
-            $mandatory_ok=false;
+            addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
+            $mandatory_ok = false;
          }
          if ($CFG_GLPI["is_ticket_title_mandatory"]
              && (!isset($input['name']) || empty($input['name']))) {
 
-            addMessageAfterRedirect($LANG['help'][40],false,ERROR);
-            $mandatory_ok=false;
+            addMessageAfterRedirect($LANG['help'][40], false, ERROR);
+            $mandatory_ok = false;
          }
          if ($CFG_GLPI["is_ticket_category_mandatory"]
              && (!isset($input['ticketcategories_id']) || empty($input['ticketcategories_id']))) {
 
-            addMessageAfterRedirect($LANG['help'][41],false,ERROR);
-            $mandatory_ok=false;
+            addMessageAfterRedirect($LANG['help'][41], false, ERROR);
+            $mandatory_ok = false;
          }
          if (isset($input['use_email_notification']) && $input['use_email_notification']
              && (!isset($input['user_email']) || empty($input['user_email']))) {
 
-            addMessageAfterRedirect($LANG['help'][16],false,ERROR);
-            $mandatory_ok=false;
+            addMessageAfterRedirect($LANG['help'][16], false, ERROR);
+            $mandatory_ok = false;
          }
 
          if (!$mandatory_ok) {
@@ -855,7 +866,7 @@ class Ticket extends CommonDBTM {
          $input["users_id_recipient"] = $input["users_id"];
       }
       if (!isset($input["requesttypes_id"])) {
-         $input["requesttypes_id"]=RequestType::getDefault('helpdesk');
+         $input["requesttypes_id"] = RequestType::getDefault('helpdesk');
       }
       if (!isset($input["status"])) {
          $input["status"]="new";
@@ -865,24 +876,24 @@ class Ticket extends CommonDBTM {
       }
 
       // Set default dropdown
-      $dropdown_fields = array('entities_id','groups_id','groups_id_assign', 'items_id',
-                               'users_id','users_id_assign', 'suppliers_id_assign',
+      $dropdown_fields = array('entities_id','groups_id', 'groups_id_assign', 'items_id',
+                               'users_id', 'users_id_assign', 'suppliers_id_assign',
                                'ticketcategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
-            $input[$field]=0;
+            $input[$field] = 0;
          }
       }
       if (!isset($input['itemtype']) || !($input['items_id']>0)) {
-         $input['itemtype']='';
+         $input['itemtype'] = '';
       }
 
-      $item=NULL;
+      $item = NULL;
       if ($input["items_id"]>0 && !empty($input["itemtype"])) {
          if (class_exists($input["itemtype"])) {
-            $item= new $input["itemtype"]();
+            $item = new $input["itemtype"]();
             if (!$item->getFromDB($input["items_id"])) {
-               $item=NULL;
+               $item = NULL;
             }
          }
       }
@@ -898,7 +909,7 @@ class Ticket extends CommonDBTM {
       if ($CFG_GLPI["use_auto_assign_to_tech"]) {
 
          // Auto assign tech from item
-         if ($input["users_id_assign"]==0 && $item != NULL) {
+         if ($input["users_id_assign"]==0 && $item!=NULL) {
 
             if ($item->isField('users_id_tech')) {
                $input["users_id_assign"] = $item->getField('users_id_tech');
@@ -924,29 +935,29 @@ class Ticket extends CommonDBTM {
       }
 
       // Process Business Rules
-      $rules=new RuleTicketCollection($input['entities_id']);
+      $rules = new RuleTicketCollection($input['entities_id']);
 
       // Set unset variables with are needed
-      $user=new User();
+      $user = new User();
       if ($user->getFromDB($input["users_id"])) {
-         $input['users_locations']=$user->fields['locations_id'];
+         $input['users_locations'] = $user->fields['locations_id'];
       }
 
 
-      $input=$rules->processAllRules($input,$input,array('recursive'=>true));
+      $input = $rules->processAllRules($input,$input,array('recursive'=>true));
 
       if (isset($input["use_email_notification"])
           && $input["use_email_notification"]
           && empty($input["user_email"])) {
 
-         $user=new User();
-         $user->getFromDB($input["users_id"]);
-         $input["user_email"] = $user->fields["email"];
+         if ($user->getFromDB($input["users_id"])) {
+            $input["user_email"] = $user->fields["email"];
+         }
       }
 
       if (($input["users_id_assign"]>0
-            || $input["groups_id_assign"]>0
-            || $input["suppliers_id_assign"]>0)
+           || $input["groups_id_assign"]>0
+           || $input["suppliers_id_assign"]>0)
           && $input["status"]=="new") {
 
          $input["status"] = "assign";
@@ -985,10 +996,10 @@ class Ticket extends CommonDBTM {
       $this->addFiles($this->fields['id']);
 
       // Log this event
-      Event::log($this->fields['id'],"ticket",4,"tracking",
+      Event::log($this->fields['id'], "ticket", 4, "tracking",
                   getUserName($this->input["users_id"])." ".$LANG['log'][20]);
 
-      $already_mail=false;
+      $already_mail = false;
       if (((isset($this->input["_followup"])
             && is_array($this->input["_followup"])
             && strlen($this->input["_followup"]['content']) > 0
@@ -1000,20 +1011,21 @@ class Ticket extends CommonDBTM {
               && isset($this->input["realtime"])
               && $this->input["realtime"]>0)) {
 
-         $fup=new TicketFollowup();
-         $type="new";
+         $fup = new TicketFollowup();
+         $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type="finish";
+            $type = "finish";
          }
-         $toadd = array("type"      => $type,
-                        "tickets_id"=> $this->input['id']);
+         $toadd = array("type"       => $type,
+                        "tickets_id" => $this->input['id']);
          if (isset($this->input["_hour"])) {
             $toadd["hour"] = $this->input["_hour"];
          }
          if (isset($this->input["_minute"])) {
             $toadd["minute"] = $this->input["_minute"];
          }
-         if (isset($this->input["_followup"]['content']) && strlen($this->input["_followup"]['content']) > 0) {
+         if (isset($this->input["_followup"]['content'])
+             && strlen($this->input["_followup"]['content']) > 0) {
             $toadd["content"] = $this->input["_followup"]['content'];
          }
          if (isset($this->input["_followup"]['is_private'])) {
@@ -1023,7 +1035,7 @@ class Ticket extends CommonDBTM {
             $toadd["plan"] = $this->input["plan"];
          }
          $fup->add($toadd);
-         $already_mail=true;
+         $already_mail = true;
       }
 
       // Processing Email
@@ -1090,8 +1102,7 @@ class Ticket extends CommonDBTM {
             $tot += $sum;
          }
       }
-      $query2 = "UPDATE `".
-                 $this->getTable()."`
+      $query2 = "UPDATE `".$this->getTable()."`
                  SET `realtime` = '$tot'
                  WHERE `id` = '$ID'";
 
@@ -1107,8 +1118,7 @@ class Ticket extends CommonDBTM {
    function updateDateMod($ID) {
       global $DB;
 
-      $query = "UPDATE `".
-                $this->getTable()."`
+      $query = "UPDATE `".$this->getTable()."`
                 SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'
                 WHERE `id` = '$ID'";
       $DB->query($query);
@@ -1131,29 +1141,31 @@ class Ticket extends CommonDBTM {
                    WHERE `tickets_id` = '".$this->fields["id"]."' ".
                          ($sendprivate?"":" AND `is_private` = '0' ")."
                    ORDER by `date` DESC";
-         $result=$DB->query($query);
-         $nbfollow=$DB->numrows($result);
 
-         if ($format=="html") {
+         $result = $DB->query($query);
+         $nbfollow = $DB->numrows($result);
+
+         $fup = new TicketFollowup();
+
+         if ($format == "html") {
             $message = "<div class='description b'>".$LANG['mailing'][4]."&nbsp;: $nbfollow<br></div>\n";
 
-            if ($nbfollow>0) {
-               $fup = new TicketFollowup();
-               while ($data=$DB->fetch_array($result)) {
+            if ($nbfollow > 0) {
+               while ($data = $DB->fetch_array($result)) {
                   $fup->getFromDB($data['id']);
                   $message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".
                                ($fup->fields["is_private"]?"<i>".$LANG['common'][77]."</i>":"").
                                "</strong>\n";
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['job'][4].":</span> ".
+                               "text-decoration:underline; '>".$LANG['job'][4]."&nbsp;:</span> ".
                                $fup->getAuthorName()."\n";
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['mailing'][3]."</span>:<br>".
+                               "text-decoration:underline; '>".$LANG['mailing'][3]."</span>&nbsp;:<br>".
                                str_replace("\n","<br>",$fup->fields["content"])."\n";
                   if ($fup->fields["realtime"]>0) {
                      $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                                  "text-decoration:underline; '>".$LANG['mailing'][104].":</span> ".
-                                  Ticket::getRealtime($fup->fields["realtime"])."\n";
+                                  "text-decoration:underline; '>".$LANG['mailing'][104]."&nbsp;:".
+                                  ".</span> ".Ticket::getRealtime($fup->fields["realtime"])."\n";
                   }
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                "text-decoration:underline; '>".$LANG['mailing'][25]."</span> ";
@@ -1179,16 +1191,15 @@ class Ticket extends CommonDBTM {
             $message = $LANG['mailing'][1]."\n".$LANG['mailing'][4]." : $nbfollow\n".
                        $LANG['mailing'][1]."\n";
 
-            if ($nbfollow>0) {
-               $fup=new TicketFollowup();
+            if ($nbfollow > 0) {
                while ($data=$DB->fetch_array($result)) {
                   $fup->getFromDB($data['id']);
                   $message .= "[ ".convDateTime($fup->fields["date"])." ]".
                                ($fup->fields["is_private"]?"\t".$LANG['common'][77] :"")."\n";
-                  $message .= $LANG['job'][4]." : ".$fup->getAuthorName()."\n";
-                  $message .= $LANG['mailing'][3]." :\n".$fup->fields["content"]."\n";
+                  $message .= $LANG['job'][4]."&nbsp;: ".$fup->getAuthorName()."\n";
+                  $message .= $LANG['mailing'][3]."&nbsp;:\n".$fup->fields["content"]."\n";
                   if ($fup->fields["realtime"]>0) {
-                     $message .= $LANG['mailing'][104]." : ".
+                     $message .= $LANG['mailing'][104]."&nbsp;: ".
                                  Ticket::getRealtime($fup->fields["realtime"])."\n";
                   }
                   $message .= $LANG['mailing'][25]." ";
@@ -1212,10 +1223,10 @@ class Ticket extends CommonDBTM {
             }
          }
          return $message;
-      } else {
-         return "";
       }
+      return "";
    }
+
 
    /**
     * Get users_id name
@@ -1255,13 +1266,9 @@ class Ticket extends CommonDBTM {
                   && isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
               || (haveRight("show_assign_ticket",'1')
-                  && ($this->fields["users_id_assign"]===getLoginUserID()
-                      )
+                  && ($this->fields["users_id_assign"]===getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
-                          && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"]))
-                     )
-                 )
-             );
+                          && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"])))));
    }
     */
 
@@ -1281,9 +1288,9 @@ class Ticket extends CommonDBTM {
       if (!isset($_FILES)) {
          return array();
       }
-      $docadded=array();
-      $doc=new Document();
-      $docitem=new Document_Item();
+      $docadded = array();
+      $doc = new Document();
+      $docitem = new Document_Item();
 
       // add Document if exists
       if (isset($_FILES['multiple']) ) {
@@ -1301,52 +1308,50 @@ class Ticket extends CommonDBTM {
                                          $_FILES['filename']['tmp_name'])) {
                $docID = $doc->fields["id"];
             } else {
-               $input2=array();
-               $input2["name"]         = addslashes($LANG['tracking'][24]." $id");
-               $input2["tickets_id"]   = $id;
-               $input2["entities_id"]  = $this->fields["entities_id"];
+               $input2 = array();
+               $input2["name"]                    = addslashes($LANG['tracking'][24]." $id");
+               $input2["tickets_id"]              = $id;
+               $input2["entities_id"]             = $this->fields["entities_id"];
                $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
-               $input2["_only_if_upload_succeed"]  = 1;
-               $input2["entities_id"]  = $this->fields["entities_id"];
+               $input2["_only_if_upload_succeed"] = 1;
+               $input2["entities_id"]             = $this->fields["entities_id"];
                $docID = $doc->add($input2);
             }
             if ($docID>0) {
                if ($docitem->add(array('documents_id' => $docID,
-                                       'itemtype' => $this->getType(),
-                                       'items_id' => $id))) {
-                  $docadded[]=stripslashes($doc->fields["name"] . " - " . $doc->fields["filename"]);
+                                       'itemtype'     => $this->getType(),
+                                       'items_id'     => $id))) {
+                  $docadded[] = stripslashes($doc->fields["name"] . " - " . $doc->fields["filename"]);
                }
             }
 
          } else if (!empty($_FILES['filename']['name'])
                     && isset($_FILES['filename']['error'])
-                    && $_FILES['filename']['error']){
-            addMessageAfterRedirect($LANG['document'][46],false,ERROR);
+                    && $_FILES['filename']['error']) {
+            addMessageAfterRedirect($LANG['document'][46], false, ERROR);
          }
       }
       unset ($_FILES);
       return $docadded;
    }
 
+
    /** Get default values to search engine to override
    **/
    static function getDefaultSearchRequest() {
 
-         if (haveRight('show_all_ticket',1)) {
-            return array('field'      => array(0=>12),
-                  'searchtype' => array(0=>'equals'),
-                  'contains'   => array(0=>'notold'),
-                  'sort'       => 19,
-                  'order'      => 'DESC');
-         } else {
-            return array('field'      => array(0=>12),
-                  'searchtype' => array(0=>'equals'),
-                  'contains'   => array(0=>'notclosed'),
-                  'sort'       => 19,
-                  'order'      => 'DESC');
-
-         }
+      $search = array('field'      => array(0 => 12),
+                      'searchtype' => array(0 => 'equals'),
+                      'contains'   => array(0 => 'notclosed'),
+                      'sort'       => 19,
+                      'order'      => 'DESC');
+       
+      if (haveRight('show_all_ticket',1)) {
+         $search['contains'] = array(0 => 'notold');
+      }
+     return $search;
    }
+
 
    function getSearchOptions() {
       global $LANG;
