@@ -368,10 +368,10 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::TICKET_SUPPLIER,$LANG['financial'][26]);
       $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." ".
                                                                     $LANG['setup'][248]);
-      $this->addTarget(Notification::TICKET_SUPERVISOR_REQUESTER_GROUP,$LANG['common'][64]." ".
+      $this->addTarget(Notification::TICKET_SUPERVISOR_REQUESTER_GROUP,$LANG['common'][64]." - ".
                                                                        $LANG['setup'][249]);
-      $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." ".
-                                                                       $LANG['setup'][265]);
+      $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." - ".
+                                                                       $LANG['setup'][248]);
       $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
       $this->addTarget(Notification::TICKET_ASSIGN_TECH,$LANG['setup'][239]);
       $this->addTarget(Notification::TICKET_REQUESTER_GROUP,$LANG['setup'][249]);
