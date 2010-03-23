@@ -2515,9 +2515,9 @@ class Ticket extends CommonDBTM {
       } else {
          showDateTimeFormItem("date",date("Y-m-d H:i:s"),1);
       }
-      echo "</td>";
+      echo "</td></tr>";
       if ($ID) {
-         echo "<td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp;: </span>";
+         echo "<tr><td><span class='tracking_small'>".$LANG['job'][2]." &nbsp;:</span></td><td>";
          if ($canupdate) {
             User::dropdown(array('name'   => 'users_id_recipient',
                                  'value'  => $this->fields["users_id_recipient"],
@@ -2526,26 +2526,29 @@ class Ticket extends CommonDBTM {
          } else {
             echo getUserName($this->fields["users_id_recipient"],$showuserlink);
          }
-         echo "</td>";
-         if (strstr($this->fields["status"],"old_")) {
-            echo "<td>";
-            echo "</tr><tr>";
-            echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </td>";
-            echo "<td>";
-            showDateTimeFormItem("closedate",$this->fields["closedate"],1,false,$canupdate);
-            echo "</span>";
-            echo "</td>";
-         }
-         echo "</tr>";
+         echo "</td></tr>";
       }
       echo "</table>";
       echo "</th>";
 
-      echo "<th colspan='2' width='50%'>";
+      echo "<th class='left'  colspan='2' width='50%'>";
       if ($ID) {
-         echo "<span class='tracking_small'>".$LANG['common'][26]."&nbsp;:<br>";
-         echo convDateTime($this->fields["date_mod"])."\n";
-         echo "</span>";
+         echo "<table>";
+
+         if ($this->fields["status"]=='closed') {
+            echo "<tr>";
+            echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
+            echo "<td>";
+            showDateTimeFormItem("closedate",$this->fields["closedate"],1,false,$canupdate);
+            echo "</td>";
+         }
+
+
+         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td><td>";
+         echo "<span class='tracking_small'>".convDateTime($this->fields["date_mod"])."</span>\n";
+         echo "</td></tr>";
+         echo "</table>";
+
       }
       echo "</th>";
       echo "</tr>";
