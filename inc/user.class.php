@@ -1664,7 +1664,7 @@ class User extends CommonDBTM {
          case "id" :
             $where=" `glpi_users`.`id`='".getLoginUserID()."' ";
             break;
-            
+
          case "all" :
             $where=" `glpi_users`.`id` > '1' ".
                     getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
@@ -2185,6 +2185,35 @@ class User extends CommonDBTM {
          }
          echo "</table></div><br>";
       }
+   }
+
+   static function getOrImportByEmail($email='') {
+      global $DB,$CFG_GLPI;
+      $query="SELECT `id`
+              FROM `glpi_users`
+              WHERE `email`='".$email."'";
+      $result=$DB->query($query);
+      //User still exists in DB
+      if ($result && $DB->numrows($result)) {
+         return $DB->result($result,0,"id");
+      }
+      else {
+         if ($CFG_GLPI["is_users_auto_add"]) {
+            //Get all ldap servers with email field configured
+            $ldaps = AuthLdap::getServersWithImportByEmailActive();
+            //Try to find the user by his email on each ldap server
+            foreach ($ldaps as $ldap) {
+               $params['method'] = AuthLdap::IDENTIFIER_EMAIL;
+               $params['value'] = $email;
+               $newID = AuthLdap::ldapImportUserByServerId($params,
+                                                           AuthLdap::ACTION_IMPORT,$ldap);
+               if ($newID) {
+                  return $newID;
+               }
+            }
+         }
+      }
+      return 0;
    }
 }
 

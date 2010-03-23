@@ -71,7 +71,8 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 
          displayProgressBar(400,$percent);
          $key = array_pop($_SESSION["ldap_process"]);
-         AuthLdap::ldapImportUserByServerId($key,
+         AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                                  'value'=>$key),
                                             $_SESSION['ldap_import']["mode"],
                                             $_SESSION['ldap_import']["ldapservers_id"],
                                             true);

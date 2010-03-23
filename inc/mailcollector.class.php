@@ -432,14 +432,8 @@ class MailCollector  extends CommonDBTM {
          }
       }
       //  Who is the user ?
-      $tkt['users_id']=0;
-      $query="SELECT `id`
-              FROM `glpi_users`
-              WHERE `email`='".$head['from']."'";
-      $result=$DB->query($query);
-      if ($result && $DB->numrows($result)) {
-         $tkt['users_id']=$DB->result($result,0,"id");
-      }
+      $tkt['users_id']=User::getOrImportByEmail($head['from']);
+
       // AUto_import
       $tkt['_auto_import']=1;
       // For followup : do not check users_id = login user

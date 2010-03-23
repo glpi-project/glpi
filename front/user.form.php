@@ -104,7 +104,9 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'],'w');
 
    $user->getFromDB($_POST["id"]);
-   AuthLdap::ldapImportUserByServerId($user->fields["name"],true,$user->fields["auths_id"],true);
+   AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                            'value'=>$user->fields["name"]),true,
+                                      $user->fields["auths_id"],true);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
@@ -173,7 +175,7 @@ if (isset($_REQUEST['getvcard'])) {
 
       if (isset($_GET['add_ext_auth_ldap'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {
-            AuthLdap::importUserFromServers($_GET['login']);
+            AuthLdap::importUserFromServers(array('name'=>$_GET['login']));
          }
          glpi_header($_SERVER['HTTP_REFERER']);
       }

@@ -81,12 +81,16 @@ class Auth {
     * @return 0 (Not in the DB -> check external auth), 1 ( Exist in the DB with a password -> check first local connection and external after), 2 (Exist in the DB with no password -> check only external auth)
     *
    **/
-   function userExists($name) {
+   function userExists($options=array()) {
       global $DB, $LANG;
 
       $query = "SELECT *
                 FROM `glpi_users`
-                WHERE `name` = '$name'";
+                WHERE ";
+      foreach ($options as $key => $value) {
+         $query.=" `$key`='$value'";
+      }
+
       $result = $DB->query($query);
       if ($DB->numrows($result) == 0) {
          $this->addToError($LANG['login'][14]);
@@ -151,8 +155,15 @@ class Auth {
       $this->ldap_connection = AuthLdap::tryToConnectToServer($ldap_method,$login,$password);
 
       if ($this->ldap_connection) {
-         $dn = AuthLdap::searchUserDn($this->ldap_connection, $ldap_method['basedn'],
-                                    $ldap_method['login_field'], $login, $ldap_method['condition']);
+         $params['method'] = AuthLDAP::IDENTIFIER_LOGIN;
+         $params['fields'][AuthLDAP::IDENTIFIER_LOGIN] = $ldap_method['login_field'];
+         $infos = AuthLdap::searchUserDn($this->ldap_connection, $ldap_method['basedn'],
+                                         $ldap_method['login_field'],
+                                         $params,
+                                         array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                               'value'=>$login),
+                                         $ldap_method['condition']);
+         $dn = $infos['dn'];
          if (@ldap_bind($this->ldap_connection, $dn, $password)) {
 
             //Hook to implement to restrict access by checking the ldap directory
@@ -484,9 +495,13 @@ class Auth {
                                      $ldap_method["rootdn_password"], $ldap_method["use_tls"],
                                      $ldap_method["deref_option"]);
                   if ($ds) {
-                     $user_dn = AuthLdap::searchUserDn($ds, $ldap_method["basedn"],
-                                                    $ldap_method["login_field"],
-                                                    $user, $ldap_method["condition"]);
+                     $params['method'] = AuthLdap::IDENTIFIER_LOGIN;
+                     $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
+                     $user_dn = AuthLdap::searchUserDn($ds,
+                                                       $ldap_method["basedn"],
+                                                       $ldap_method['login_field'],
+                                                       $params,
+                                                       $user, $ldap_method["condition"]);
                      if ($user_dn) {
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $user);
                      }
@@ -514,7 +529,7 @@ class Auth {
             // exists=0 -> no exist
             // exists=1 -> exist with password
             // exists=2 -> exist without password
-            $exists = $this->userExists(addslashes($login_name));
+            $exists = $this->userExists(array('name'=>addslashes($login_name)));
 
             // Pas en premier car sinon on ne fait pas le blankpassword
             // First try to connect via le DATABASE

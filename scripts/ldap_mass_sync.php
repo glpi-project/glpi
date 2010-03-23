@@ -95,7 +95,8 @@ function import($action, $datas,$filter='')
    $users = AuthLdap::getAllLdapUsers($action);
 
    foreach ($users as $user) {
-      AuthLdap::ldapImportUserByServerId($user["user"], $action, $datas["id"]);
+      AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                               'value'=>$user["user"]), $action, $datas["id"]);
       echo ".";
    }
 }
