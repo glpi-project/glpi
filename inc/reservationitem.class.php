@@ -115,10 +115,7 @@ class ReservationItem extends CommonDBTM {
       $tab[2]['linkfield'] = 'id';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab[3]['table']     = 'glpi_locations';
-      $tab[3]['field']     = 'completename';
-      $tab[3]['linkfield'] = 'locations_id';
-      $tab[3]['name']      = $LANG['common'][15];
+      $tab+=Location::getSearchOptionsToAdd();
 
       $tab[16]['table']     = 'reservation_types';
       $tab[16]['field']     = 'comment';

@@ -71,6 +71,27 @@ class Location extends CommonTreeDropdown {
       return $LANG['common'][15];
    }
 
+   static function getSearchOptionsToAdd () {
+      global $LANG;
+
+      $tab=array();
+      $tab[3]['table']     = 'glpi_locations';
+      $tab[3]['field']     = 'completename';
+      $tab[3]['linkfield'] = 'locations_id';
+      $tab[3]['name']      = $LANG['common'][15];
+
+      $tab[91]['table']     = 'glpi_locations';
+      $tab[91]['field']     = 'building';
+      $tab[91]['linkfield'] = 'locations_id';
+      $tab[91]['name']      = $LANG['common'][15]." - ".$LANG['setup'][99];
+
+      $tab[92]['table']     = 'glpi_locations';
+      $tab[92]['field']     = 'room';
+      $tab[92]['linkfield'] = 'locations_id';
+      $tab[92]['name']      = $LANG['common'][15]." - ".$LANG['setup'][100];
+
+      return $tab;
+   }
    /**
     * Get search function for the class
     *
