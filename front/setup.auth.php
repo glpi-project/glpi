@@ -43,10 +43,20 @@ commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth",-1);
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
-echo "<tr class='tab_bg_1'><td class='center b'><a href='authldap.php'>" . $LANG['login'][2] .
-      "</a></td></tr>";
-echo "<tr class='tab_bg_1'><td class='center b'><a href='authmail.php'>" .$LANG['login'][3] .
-      "</a></td> </tr>";
+echo "<tr class='tab_bg_1'><td class='center b'>";
+if (canUseLdap()) {
+   echo "<a href='authldap.php'>". $LANG['login'][2] ."</a>";
+} else {
+   echo $LANG['setup'][157] ."<br>".$LANG['setup'][158];
+}
+echo "</td></tr>";
+echo "<tr class='tab_bg_1'><td class='center b'>";
+if (canUseImapPop()) {
+   echo "<a href='authmail.php'>" .$LANG['login'][3] ."</a>";
+} else {
+   echo $LANG['setup'][165] ."<br>".$LANG['setup'][166];
+}
+echo "</td> </tr>";
 echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . $LANG['common'][67] .
       "</a></td></tr>";
 echo "</table>";
