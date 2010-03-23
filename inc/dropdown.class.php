@@ -170,6 +170,7 @@ class Dropdown {
       // Display comment
       if ($params['comments']) {
          $options_tooltip=array('contentid'=>"comment_".$params['name'].$params['rand']);
+
          if ($itemtype=='TicketCategory' && haveRight('knowbase','r')) {
             if ($params['value'] && $item->getFromDB($params['value'])) {
                if ($kbid=$item->getField('knowbaseitemcategories_id')) {
@@ -178,6 +179,11 @@ class Dropdown {
                }
             }
             $options_tooltip['linkid']="comment_link_".$params["name"].$params['rand'];
+         } else {
+            if ($item->canView()) {
+               $options_tooltip['link']=$item->getSearchUrl();
+               $options_tooltip['linktarget']='_blank';
+            }
          }
 
          showToolTip($comment,$options_tooltip);
