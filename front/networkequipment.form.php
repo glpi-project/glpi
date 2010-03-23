@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
    $netdevice->check(-1,'w',$_POST);
 
    $newID = $netdevice->add($_POST);
-   Event::log($newID, "networking", 4, "inventory",
+   Event::log($newID, "networkequipment", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $netdevice->check($_POST["id"],'d');
    $netdevice->delete($_POST);
 
-   Event::log($_POST["id"], "networking", 4, "inventory",
+   Event::log($_POST["id"], "networkequipment", 4, "inventory",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
 
    if (!empty($_POST["withtemplate"])) {
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    $netdevice->check($_POST["id"],'d');
 
    $netdevice->restore($_POST);
-   Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 
 } else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
@@ -87,14 +87,14 @@ if (isset($_POST["add"])) {
    $netdevice->check($input["id"],'d');
 
    $netdevice->delete($input,1);
-   Event::log($input["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($input["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 
 } else if (isset($_POST["update"])) {
    $netdevice->check($_POST["id"],'w');
 
    $netdevice->update($_POST);
-   Event::log($_POST["id"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {

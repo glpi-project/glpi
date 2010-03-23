@@ -101,9 +101,9 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $computer->check($_POST['id'],'w');
 
-   if ($computer->update($_POST)) {
-      Event::log($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-   }
+   $computer->update($_POST);
+   Event::log($_POST["id"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+
    glpi_header($_SERVER['HTTP_REFERER']);
 
 // Disconnect a computer from a printer/monitor/phone/peripheral
