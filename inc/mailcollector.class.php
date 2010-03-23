@@ -130,7 +130,7 @@ class MailCollector  extends CommonDBTM {
     *@return boolean item found
     **
     **/
-   function showForm ($ID, $options=array()) {
+   function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!haveRight("config","r")) {
@@ -180,7 +180,9 @@ class MailCollector  extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td><td>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
 
-      echo ($ID>0?"<br>".$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]):'&nbsp;');
+      if ($ID>0) {
+         echo "<br>".$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]);
+      }
       echo "</td></tr>";
 
       $this->showFormButtons($options);
