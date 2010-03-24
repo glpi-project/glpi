@@ -85,23 +85,24 @@ class RuleMailCollector extends Rule {
       $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
       $criterias['mailcollector']['type'] = 'dropdown';
 
-      $criterias['from']['name']  = $LANG['rulesengine'][136];
+      $criterias['from']['name']  = $LANG['mailing'][132].' : from';
       $criterias['from']['table'] = '';
       $criterias['from']['type'] = 'text';
 
-      $criterias['fromName']['name']  = 'fromName';
-      $criterias['fromName']['table'] = '';
-      $criterias['fromName']['type'] = 'text';
-
-      $criterias['to']['name']  = $LANG['rulesengine'][137];
+      $criterias['to']['name']  = $LANG['mailing'][132].' : to';
       $criterias['to']['table'] = '';
       $criterias['to']['type'] = 'text';
 
-      $criterias['toName']['name']  = 'toName';
-      $criterias['toName']['table'] = '';
-      $criterias['toName']['type'] = 'text';
+      $criterias['in_reply_to']['name']  = $LANG['mailing'][132].' : in_reply_to';
+      $criterias['in_reply_to']['table'] = '';
+      $criterias['in_reply_to']['type'] = 'text';
+
+      $criterias['size']['name']  = $LANG['mailing'][132].' : '.$LANG['mailgate'][15];
+      $criterias['size']['table'] = '';
+      $criterias['size']['type'] = 'text';
 
       $criterias['subject']['name']  = $LANG['common'][90];
+      $criterias['subject']['field'] = 'subject';
       $criterias['subject']['table'] = '';
       $criterias['subject']['type'] = 'text';
 
@@ -158,9 +159,8 @@ class RuleMailCollector extends Rule {
                   switch ($action->fields["field"]) {
                      case "_affect_entity_by_domain" :
                      case "_affect_entity_by_tag" :
-                        $match_entity = false;
                         foreach ($regex_results as $regex_result) {
-                           $res = RuleAction::getRegexResultById($action->fields["value"],array($regex_result));
+                           $res = RuleAction::getRegexResultById($action->fields["value"],$regex_result);
                            if ($res != null) {
                               if ($action->fields["field"] == "_affect_entity_by_domain") {
                                  $entity_found = EntityData::getEntityIDByDomain($res);
@@ -171,7 +171,6 @@ class RuleMailCollector extends Rule {
                               //If an entity was found
                               if ($entity_found > -1) {
                                  $output['entities_id'] = $entity_found;
-                                 $match_entity = true;
                                  break;
                               }
                            }

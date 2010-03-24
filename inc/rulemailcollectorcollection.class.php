@@ -57,6 +57,13 @@ class RuleMailCollectorCollection extends RuleCollection {
 
       $fields = $this->getFieldsToLookFor();
 
+      //Add needed headers for rules processing
+      foreach ($params['headers'] as $key => $value) {
+         if (in_array($key,$fields)) {
+            $input[$key] = $value;
+         }
+      }
+
       if (in_array('groups',$fields)) {
          foreach (Group_User::getUserGroups($input['users_id']) as $group) {
             $input['GROUPS'][] = $group['id'];

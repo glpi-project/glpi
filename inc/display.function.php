@@ -578,7 +578,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/ruleright.form.php';
          }
 
-         $menu['admin']['content']['rule']['options']['mailcollector']['title']=$LANG['mailgate'][0];
+         $menu['admin']['content']['rule']['options']['mailcollector']['title']=$LANG['rulesengine'][70];
          $menu['admin']['content']['rule']['options']['mailcollector']['page']='/front/rulemailcollector.php';
          $menu['admin']['content']['rule']['options']['mailcollector']['links']['search']='/front/rulemailcollector.php';
          if (haveRight("rule_mailcollector","w")) {
