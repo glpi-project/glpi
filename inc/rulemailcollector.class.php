@@ -109,6 +109,14 @@ class RuleMailCollector extends Rule {
       $criterias['content']['table'] = '';
       $criterias['content']['type'] = 'text';
 
+      $criterias['GROUPS']['table']     = 'glpi_groups';
+      $criterias['GROUPS']['field']     = 'name';
+      $criterias['GROUPS']['name']      = $LANG['rulesengine'][143];
+      $criterias['GROUPS']['linkfield'] = '';
+      $criterias['GROUPS']['type']      = 'dropdown';
+      $criterias['GROUPS']['virtual']   = true;
+      $criterias['GROUPS']['id']        = 'groups';
+
       return $criterias;
    }
 
@@ -122,6 +130,10 @@ class RuleMailCollector extends Rule {
       $actions['_affect_entity_by_domain']['name']   = $LANG['rulesengine'][133];
       $actions['_affect_entity_by_domain']['type']   = 'text';
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
+
+      $actions['_affect_entity_by_tag']['name']  = $LANG['rulesengine'][131];
+      $actions['_affect_entity_by_tag']['type']  = 'text';
+      $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
       $actions['_refuse_email_no_response']['name']   = $LANG['rulesengine'][134];
       $actions['_refuse_email_no_response']['type']   = 'yesno';
@@ -145,11 +157,17 @@ class RuleMailCollector extends Rule {
                case "regex_result" :
                   switch ($action->fields["field"]) {
                      case "_affect_entity_by_domain" :
+                     case "_affect_entity_by_tag" :
                         $match_entity = false;
                         foreach ($regex_results as $regex_result) {
                            $res = RuleAction::getRegexResultById($action->fields["value"],array($regex_result));
                            if ($res != null) {
-                              $entity_found = EntityData::getEntityIDByDomain($res);
+                              if ($action->fields["field"] == "_affect_entity_by_domain") {
+                                 $entity_found = EntityData::getEntityIDByDomain($res);
+                              }
+                              else {
+                                 $entity_found = EntityData::getEntityIDByTag($res);
+                              }
                               //If an entity was found
                               if ($entity_found > -1) {
                                  $output['entities_id'] = $entity_found;
@@ -163,6 +181,7 @@ class RuleMailCollector extends Rule {
             }
          }
       }
+
       return $output;
    }
 }

@@ -47,6 +47,21 @@ class Group_User extends CommonDBRelation{
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
+   static function getUserGroups($users_id) {
+      global $DB;
+      $groups = array();
+      $query = "SELECT `glpi_groups`.*,
+                       `glpi_groups_users`.`id` AS IDD,
+                       `glpi_groups_users`.`id`  as linkID
+                FROM `glpi_groups_users`
+                LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
+                WHERE `glpi_groups_users`.`users_id` = '$users_id'
+                ORDER BY `glpi_groups`.`name`";
+      foreach ($DB->request($query) as $data) {
+         $groups[] = $data;
+      }
+      return $groups;
+   }
    /**  Show groups of a user
     *
     * @param $target where to go on action
@@ -74,19 +89,11 @@ class Group_User extends CommonDBRelation{
       echo "<div class='center'><table class='tab_cadre_fixehov'>".
             "<tr><th colspan='$headerspan'>".$LANG['Menu'][36]."</th></tr>";
 
-      $query = "SELECT `glpi_groups`.*,
-                       `glpi_groups_users`.`id` AS IDD,
-                       `glpi_groups_users`.`id`  as linkID
-                FROM `glpi_groups_users`
-                LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                WHERE `glpi_groups_users`.`users_id` = '$ID'
-                ORDER BY `glpi_groups`.`name`";
-      $result = $DB->query($query);
-
+      $groups = Group_User::getUserGroups($ID);
       $used = array();
-      if ($DB->numrows($result) >0) {
+      if (!empty($groups)) {
          $i = 0;
-         while ($data = $DB->fetch_array($result)) {
+         foreach($groups as $data) {
             $used[] = $data["id"];
             if ($i%$nb_per_line == 0) {
                if ($i != 0) {

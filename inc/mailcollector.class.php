@@ -321,7 +321,8 @@ class MailCollector  extends CommonDBTM {
             $error=0;
             $refused = 0;
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
-               $tkt= $this->buildTicket($i,array('mailgates_id'=>$mailgateID));
+               $tkt= $this->buildTicket($i,array('mailgates_id'=>$mailgateID,
+                                                 'play_rules'=>true));
 
                //If entity assigned, or email refused by rule, or no user associated with the email
                if ((isset($tkt['entities_id'])
@@ -532,8 +533,10 @@ class MailCollector  extends CommonDBTM {
          $rule_options['ticket'] = $tkt;
          $rule_options['headers'] = $head;
          $rule_options['mailcollector'] = $options['mailgates_id'];
+         $rule_options['users_id'] = $tkt['users_id'];
          $rulecollection = new RuleMailCollectorCollection();
          $output= $rulecollection->processAllRules(array(),array(),$rule_options);
+
          foreach ($output as $key => $value) {
             $tkt[$key] = $value;
          }
