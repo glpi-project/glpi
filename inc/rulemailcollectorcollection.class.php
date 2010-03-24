@@ -53,6 +53,15 @@ class RuleMailCollectorCollection extends RuleCollection {
    function prepareInputDataForProcess($input,$params) {
       $input['from'] = $params['ticket']['user_email'];
       $input['mailcollector'] = $params['mailcollector'];
+      $input['users_id'] = $params['users_id'];
+
+      $fields = $this->getFieldsToLookFor();
+
+      if (in_array('groups',$fields)) {
+         foreach (Group_User::getUserGroups($input['users_id']) as $group) {
+            $input['GROUPS'][] = $group['id'];
+         }
+      }
 
       return $input;
    }
