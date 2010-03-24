@@ -989,6 +989,7 @@ $LANG['mailgate'][11]="Processus d'import d'emails";
 $LANG['mailgate'][12]="Impossible d'affecter l'email à une entité";
 $LANG['mailgate'][13]="Raison du refus";
 $LANG['mailgate'][14]="Demandeur GLPI";
+$LANG['mailgate'][15]="Taille de l'email";
 
 $LANG['mailing'][0]="----------------------------------------------------------";
 $LANG['mailing'][1]="======================================================================";

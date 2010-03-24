@@ -645,6 +645,7 @@ class MailCollector  extends CommonDBTM {
 
       $mail_header=imap_header($this->marubox,$mid);
       $sender=$mail_header->from[0];
+
       if (utf8_strtolower($sender->mailbox)!='mailer-daemon'
           && utf8_strtolower($sender->mailbox)!='postmaster') {
 
@@ -659,6 +660,7 @@ class MailCollector  extends CommonDBTM {
             $mail_details['in_reply_to'] = $mail_header->in_reply_to;
          }
       }
+
       return $mail_details;
    }
 
