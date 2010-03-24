@@ -202,7 +202,7 @@ class Location extends CommonTreeDropdown {
             addToNavigateListItems('Netpoint',$data["id"]);
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
-               echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+               echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
             }
             echo "<td><a href='".$netpoint->getFormURL();
             echo '?id='.$data['id']."'>".$data['name']."</a></td>";
