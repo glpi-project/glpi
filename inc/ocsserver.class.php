@@ -2136,7 +2136,8 @@ class OcsServer extends CommonDBTM {
             if ($start > 0) {
                array_splice($hardware, 0, $start);
             }
-            if (!$tolinked) {
+            //Show preview form only in import and in multi-entity mode
+            if (!$tolinked && isMultiEntitiesMode()) {
                echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode' action='" .
                       $target . "'>\n";
                echo "<table class='tab_cadre'>";
