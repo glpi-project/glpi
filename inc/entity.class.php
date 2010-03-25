@@ -134,6 +134,8 @@ class Entity extends CommonTreeDropdown {
                }
                $mailcollector->showAndAddRuleForm($_POST["id"]);
                Document::showAssociated($this);
+               EntityData::showNotificationOptions($this);
+               EntityData::showHelpForm($this);
                Plugin::displayAction($this, $tab);
                break;
 
