@@ -373,6 +373,39 @@ class Dropdown {
       return Dropdown::showFromArray($name,$options,array('value'  => $value,'used'  => $used));
    }
 
+   /**
+   *
+   * Make a select box for device type
+   *
+   *
+   * @param $name name of the select box
+   * @param $options array options : may be value (default value) / field (used field to search itemtype)
+   * @param $itemtype_ref string itemtype reference where to search in itemtype field
+   * @return nothing (print out an HTML select box)
+   */
+   static function dropdownUsedItemTypes($name,$itemtype_ref,$options=array()) {
+      global $DB;
+
+      $p['value'] = 0;
+      $p['field'] = 'itemtype';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
+         }
+      }
+
+      $query="SELECT DISTINCT `".$p['field']."` 
+               FROM `".getTableForItemType($itemtype_ref)."`";
+      $tabs=array();
+      if ($result=$DB->query($query)) {
+         while ($data=$DB->fetch_assoc($result)) {
+            $tabs[$data[$p['field']]]=$data[$p['field']];
+         }
+      }
+      
+      return Dropdown::dropdownTypes($name,$p['value'],$tabs);
+   }
 
    /**
     *

@@ -61,8 +61,6 @@ if (isset($_REQUEST['searchtype'])) {
    $display=false;
    switch ($_REQUEST['searchtype']) {
       case "equals" :
-
-
         // Specific cases with linkfield
         if (!$display && isset($searchopt['linkfield'])) {
             // Specific cases
@@ -150,6 +148,12 @@ if (isset($_REQUEST['searchtype'])) {
                      Dropdown::showYesNo(getItemTypeForTable($searchopt['table']),
                                     array('value'     => $_REQUEST['value'],
                                           'name'      => $inputname,
+                                          'comments'  => 0));
+                     $display=true;
+                     break;
+                  case "itemtypename":
+                     Dropdown::dropdownUsedItemTypes($inputname,getItemTypeForTable($searchopt['table']),
+                                    array('value'     => $_REQUEST['value'],
                                           'comments'  => 0));
                      $display=true;
                      break;
