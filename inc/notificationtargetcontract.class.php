@@ -72,9 +72,8 @@ class NotificationTargetContract extends NotificationTarget {
          } else {
             $tmp['##contract.type##'] = "";
          }
-         $tmp['##contract.time##'] = convDateTime(getWarrantyExpir($contract["begin_date"],
-                                                                   $contract["duration"],
-                                                                   $contract["notice"]));
+         $tmp['##contract.time##'] = getWarrantyExpir($contract["begin_date"],$contract["duration"],
+                                                      $contract["notice"]);
          $tmp['##contract.url##'] = urldecode($CFG_GLPI["url_base"].
                                               "/index.php?redirect=contract_".$id);
          $this->datas['contracts'][] = $tmp;
