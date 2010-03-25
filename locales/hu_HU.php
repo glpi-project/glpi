@@ -978,6 +978,7 @@ $LANG['mailgate'][11]="Process of emails import";
 $LANG['mailgate'][12]="Unable to affect the email to an entity"; 
 $LANG['mailgate'][13]="Visszautasítás oka"; 
 $LANG['mailgate'][14]="GLPI requester"; 
+$LANG['mailgate'][15]="Email size"; 
 
 $LANG['mailing'][0]="----------------------------------------------------------"; 
 $LANG['mailing'][1]="======================================================================"; 
@@ -1499,6 +1500,7 @@ $LANG['rulesengine'][139]="Nincs meghatározva kritérium";
 $LANG['rulesengine'][140]="Új feltétel"; 
 $LANG['rulesengine'][141]="Nincs ellenőrzött szabály"; 
 $LANG['rulesengine'][142]="List of not imported emails"; 
+$LANG['rulesengine'][143]="User group"; 
 
 $LANG['search'][0]="Keresés"; 
 $LANG['search'][1]="mindegyik"; 
