@@ -634,7 +634,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][116] . " </td><td>";
       Dropdown::showYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
       echo "</td>";
-      echo "<td>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
+      echo "<td class='center'>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
       Dropdown::showInteger('autoclose_delay', $CFG_GLPI['autoclose_delay'],0,99,1);
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
