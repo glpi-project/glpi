@@ -1985,23 +1985,21 @@ class AuthLDAP extends CommonDBTM {
       echo "<form method='post' action=\"".$_SERVER['PHP_SELF']."\">";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" .
+      echo "<tr><th colspan='4' class='middle'><div class='relative'><span>" .
                               ($_SESSION['ldap_import']['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]);
-      echo "</th></tr>";
 
       //If not coming from the ticket form, then give expert/simple link
-      if (!isset($_SESSION['ldap_import']['no_expert_mode']) && haveRight('config','w')) {
-         echo "<tr class='tab_bg_2'><td>".$LANG['common'][65].
-                              "</td><td colspan='3' align='left'>";
-         echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
-                      "&mode=".$_SESSION['ldap_import']['mode'].
-                      "&interface=".
-                       ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
-                           ?AuthLdap::EXPERT_INTERFACE:AuthLdap::SIMPLE_INTERFACE)."'>".
-                       ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
-                           ?$LANG['ldap'][39]:$LANG['ldap'][40])."</a>";
-         echo "</td></tr>";
-      }
+      echo "</span><span class='ldap_right'>".$LANG['common'][65]." : ";
+      echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
+                     "&mode=".$_SESSION['ldap_import']['mode'].
+                     "&interface=".
+                     ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
+                        ?AuthLdap::EXPERT_INTERFACE:AuthLdap::SIMPLE_INTERFACE)."'>".
+                     ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
+                        ?$LANG['ldap'][39]:$LANG['ldap'][40])."</a>";
+      echo "</span></div>";
+      echo "</th></tr>";
+
 
       switch ($_SESSION['ldap_import']['interface']) {
          case AuthLdap::SIMPLE_INTERFACE:
