@@ -1639,7 +1639,7 @@ class OcsServer extends CommonDBTM {
       if ($DBocs->numrows($result) == 1) {
          $line = $DBocs->fetch_assoc($result);
          $line = clean_cross_side_scripting_deep(addslashes_deep($line));
-         $compudate = array ();
+         $compupdate = array ();
          if ($cfg_ocs["import_os_serial"] && !in_array("os_license_number", $computer_updates)) {
             if (!empty ($line["WINPRODKEY"])) {
                $compupdate["os_license_number"] = $line["WINPRODKEY"];
@@ -2956,7 +2956,7 @@ class OcsServer extends CommonDBTM {
                      }
 
                      $processor["specif_default"] = $line["PROCESSORS"];
-                     print_r($import_device);
+
                      if (!in_array(self::PROCESSOR_DEVICE . self::FIELD_SEPARATOR . $processor["designation"],
                                    $import_device)) {
                         $DeviceProcessor = new DeviceProcessor();
@@ -3217,6 +3217,7 @@ class OcsServer extends CommonDBTM {
             }
             break;
       }
+
 
       // Delete Unexisting Items not found in OCS
       if ($do_clean && count($import_device)) {
