@@ -50,7 +50,9 @@ if (haveRight("rule_ldap","r")) {
    echo "<a href='ruleright.php'>" .$LANG['rulesengine'][19] . "</a></td> </tr>";
 }
 
-if (haveRight("rule_mailcollector","r") && canUseImapPop()) {
+if (haveRight("rule_mailcollector","r")
+      && canUseImapPop()
+         && MailCollector::getNumberOfMailCollectors()) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href='rulemailcollector.php'>" . $LANG['rulesengine'][70] . "</a></td></tr>";
 }
