@@ -269,10 +269,9 @@ class ReservationItem extends CommonDBTM {
          }
          $item=new $itemtype();
          $itemtable=getTableForItemType($itemtype);
-         $query = "SELECT `glpi_reservationitems`.`id`, `glpi_reservationitems`.`comment`,".
-                        "`glpi_reservations`.`begin`, `glpi_reservations`.`end` ".
-                        "`$itemtable`.`name` AS name, ".
-                        "`$itemtable`.`entities_id` AS entities_id,
+         $query = "SELECT `glpi_reservationitems`.`id`, `glpi_reservationitems`.`comment`,
+                        `$itemtable`.`name` AS name,
+                        `$itemtable`.`entities_id` AS entities_id,
                         `glpi_locations`.`completename` AS location,
                         `glpi_reservationitems`.`items_id` AS items_id
                   FROM `glpi_reservationitems`
