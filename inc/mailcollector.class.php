@@ -203,6 +203,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
       echo "</table></form></div>";
    }
+
    function getSearchOptions() {
       global $LANG;
 
@@ -1066,6 +1067,13 @@ class MailCollector  extends CommonDBTM {
          displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['rulesengine'][142],
                      '',$buttons);
       }
+   }
+
+   static function getNumberOfMailCollectors() {
+      global $DB;
+      $query = "SELECT COUNT(*) as cpt FROM `glpi_mailcollectors`";
+      $result = $DB->query($query);
+      return $DB->result($result,0,'cpt');
    }
 }
 
