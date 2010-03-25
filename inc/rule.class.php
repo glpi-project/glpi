@@ -1433,7 +1433,7 @@ class Rule extends CommonDBTM {
       echo "<input type='submit' name='execute' value=\"" . $LANG['buttons'][8] .
              "\" class='submit'>";
       echo "</td></tr>\n";
-      echo "</table></form><br>";
+      echo "</table></form>";
    }
 
    function showAndAddRuleForm($ID) {
@@ -1449,7 +1449,7 @@ class Rule extends CommonDBTM {
       $rules = $this->getRulesForEntity( $ID, 0, 1);
       if (empty ($rules)) {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>" . $LANG['entity'][5] . " - " . $LANG['search'][15] . "</th></tr>\n";
+         echo "<tr><th>" . $LANG['search'][15] . "</th></tr>\n";
          echo "</table><br>\n";
       } else {
          if ($canedit) {
