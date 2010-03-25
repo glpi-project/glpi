@@ -485,12 +485,18 @@ class Entity extends CommonTreeDropdown {
 
    static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
       global $CFG_GLPI;
-      if ((!isset($entitydatas[$field]) ||
-         $entitydatas[$field]==-1) && $CFG_GLPI[$field]) {
-         $entities[$entitydatas['entity']] = $CFG_GLPI[$field];
-      }
-      elseif(isset($entitydatas[$field]) && $entitydatas[$field]) {
+
+      //If there's a configuration for this entity & the value is not the one of the global config
+      if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
          $entities[$entitydatas['entity']] = $entitydatas[$field];
+      }
+      //No configuration for this entity : if global config allows notification then add the entity
+      //to the array of entities to be notified
+      elseif ((!isset($entitydatas[$field])
+               || (isset($entitydatas[$field])
+                  && $entitydatas[$field] == -1))
+                     && $CFG_GLPI[$field]) {
+            $entities[$entitydatas['entity']] = $CFG_GLPI[$field];
       }
    }
 }
