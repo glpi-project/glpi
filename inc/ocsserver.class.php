@@ -2868,7 +2868,7 @@ class OcsServer extends CommonDBTM {
                         if (!empty ($line2["DESCRIPTION"])) {
                            $mdm["comment"] = $line2["TYPE"] . "\r\n" . $line2["DESCRIPTION"];
                         }
-                        $DevicePci = DevicePci();
+                        $DevicePci = new DevicePci();
                         $mdm_id = $DevicePci->import($mdm);
                         if ($mdm_id) {
                            $devID = $CompDevice->add(array('computers_id' => $computers_id,
