@@ -59,12 +59,9 @@ if ($_POST['id'] > 0) {
          $target->showFormAlerts($_POST['target']);
          break;
 
-      case 4 :
-         $target->showFormTest($_POST['target']);
-         break;
-
       default :
          if (!Plugin::displayAction($target, $_REQUEST['glpi_tab'])) {
+            $target->showFormTest($_POST['target']);
          }
    }
 }

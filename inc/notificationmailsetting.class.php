@@ -57,7 +57,6 @@ class NotificationMailSetting extends CommonDBTM {
       $tabs[1] = $LANG['common'][12];
       $tabs[2] = $LANG['setup'][660];
       $tabs[3] = $LANG['setup'][242];
-      $tabs[4] = $LANG['mailing'][32];
 
       return $tabs;
    }
