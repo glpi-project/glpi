@@ -1481,6 +1481,7 @@ class Ticket extends CommonDBTM {
       $tab[58]['datatype']      = 'itemlink';
       $tab[58]['itemlink_type'] = 'User';
       $tab[58]['forcegroupby'] = true;
+      $tab[58]['massiveaction'] = false;
 
       $tab[59]['table']     = 'glpi_users_validation';
       $tab[59]['field']     = 'name';
@@ -1489,6 +1490,7 @@ class Ticket extends CommonDBTM {
       $tab[59]['datatype']      = 'itemlink';
       $tab[59]['itemlink_type'] = 'User';
       $tab[59]['forcegroupby'] = true;
+      $tab[59]['massiveaction'] = false;
 
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 

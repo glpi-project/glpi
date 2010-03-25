@@ -2347,6 +2347,10 @@ class Search {
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
+            case "itemtypename" :
+               if ($searchtype=='equals') {
+                  return " $link (`$table`.`$field`".$SEARCH.') ';
+               }
             case "date" :
             case "datetime" :
             case "date_delay" :
@@ -4287,6 +4291,9 @@ class Search {
                case 'bool' :
                   return array('contains' => $LANG['search'][2],
                               'equals'    => $LANG['rulesengine'][0],
+                              'searchopt' => $searchopt[$field_num]);
+               case 'itemtypename' :
+                  return array('equals'    => $LANG['rulesengine'][0],
                               'searchopt' => $searchopt[$field_num]);
             }
          }

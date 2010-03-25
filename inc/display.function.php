@@ -2595,12 +2595,12 @@ function displayProgressBar($width,$percent,$options=array()) {
    }
 
    $percentwidth=floor($percent*$width/100);
-   $output="<div class='center'><table class='tab_cadre' width='".$width."px'>";
+   $output="<div class='center'><table class='tab_cadre' width='".($width+20)."px'>";
    if (!$param['simple']) {
       $output.="<tr><th class='center'>".$param['title']."&nbsp;".$percent."%</th></tr>";
    }
    $output.="<tr><td>
-             <table ><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
+             <table><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
              "/pics/loader.png) repeat-x;' width='.$percentwidth' height='12'>";
    if ($param['simple']) {
       $output.=$percent."%";

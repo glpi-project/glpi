@@ -86,6 +86,7 @@ abstract class CommonDBRelation extends CommonDBTM {
          return false;
       }
       $item2 = new $type2();
+
       if (!($item2 instanceof CommonDropdown)
           && !$item2->can($input[$this->items_id_2],'r')) {
          return false;
@@ -98,6 +99,13 @@ abstract class CommonDBRelation extends CommonDBTM {
 
       // Check entity compatibility
       if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
+         // get items if needed : need to have entity set
+         if (!isset($item1->fields['id'])){
+            $item1->getFromDB($input[$this->items_id_1]);
+         }
+         if (!isset($item2->fields['id'])){
+            $item2->getFromDB($input[$this->items_id_2]);
+         }
          if ($item1->getEntityID() == $item2->getEntityID()) {
             $checkentity = true;
          } else if ($item1->isRecursive()
