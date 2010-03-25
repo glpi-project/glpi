@@ -529,7 +529,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 font-weight: bold;
 }
 
-.tracking_right, .reminder_right{
+.ldap_right, .reminder_right{
  position:absolute; 
 right:0;
  margin-right:5px;
