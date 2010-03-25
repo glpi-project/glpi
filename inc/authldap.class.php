@@ -1991,8 +1991,8 @@ class AuthLDAP extends CommonDBTM {
       //If not coming from the ticket form, then give expert/simple link
       echo "</span><span class='ldap_right'>".$LANG['common'][65]." : ";
       echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
-                     "&mode=".$_SESSION['ldap_import']['mode'].
-                     "&interface=".
+                     "&amp;mode=".$_SESSION['ldap_import']['mode'].
+                     "&amp;interface=".
                      ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
                         ?AuthLdap::EXPERT_INTERFACE:AuthLdap::SIMPLE_INTERFACE)."'>".
                      ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
