@@ -665,7 +665,7 @@ class OcsServer extends CommonDBTM {
           || isset ($tab["import_contact_num"])) {
 
          $adm = new OcsAdminInfosLink();
-         $adm->cleanDBonPurge();
+         $adm->cleanForOcsServer($tab["id"]);
          if (isset ($tab["import_location"])) {
             if ($tab["import_location"]!="") {
                $adm = new OcsAdminInfosLink();
@@ -2956,6 +2956,7 @@ class OcsServer extends CommonDBTM {
                      }
 
                      $processor["specif_default"] = $line["PROCESSORS"];
+                     print_r($import_device);
                      if (!in_array(self::PROCESSOR_DEVICE . self::FIELD_SEPARATOR . $processor["designation"],
                                    $import_device)) {
                         $DeviceProcessor = new DeviceProcessor();

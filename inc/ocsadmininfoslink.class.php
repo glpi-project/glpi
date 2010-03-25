@@ -41,12 +41,12 @@ if (!defined('GLPI_ROOT')){
  */
 class OcsAdminInfosLink extends CommonDBTM {
 
-   function cleanDBonPurge() {
+   function cleanForOcsServer($ID) {
       global $DB;
 
       $query = "DELETE
                 FROM `".$this->getTable()."`
-                WHERE `ocsservers_id` = '".$this->fields['id']."'";
+                WHERE `ocsservers_id` = '$ID'";
       $result = $DB->query($query);
    }
 }
