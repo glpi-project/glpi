@@ -134,8 +134,6 @@ class Reservation extends CommonDBTM {
 
       if ($CFG_GLPI["use_mailing"]) {
          NotificationEvent::raiseEvent("new",$this);
-         //$mail = new MailingResa($this,"new");
-         //$mail->send();
       }
    }
 

@@ -41,10 +41,6 @@ class NotificationTarget extends CommonDBChild {
    public $items_id = 'notifications_id';
 
    public $table = 'glpi_notificationtargets';
-   //Indicates that the object which raises the event is the object in which to look for
-   //users, technicians and so on
-   //False for items like Reservation, CartridgeItem, ConsumableItem
-   var $real_object = true;
 
    var $notification_targets = array();
 
@@ -80,9 +76,8 @@ class NotificationTarget extends CommonDBChild {
    const NO_OPTION = 0;
 
    function __construct($entity='', $event='', $object=null, $options=array()) {
-
-      if (!$entity == '') {
-         $this->entity = $_SESSION['glpiactive_entity'];
+      if ($entity == '') {
+         $this->entity = (isset($_SESSION['glpiactive_entity'])?$_SESSION['glpiactive_entity']:0);
       }
       else {
          $this->entity = $entity;
@@ -138,12 +133,17 @@ class NotificationTarget extends CommonDBChild {
          $name = 'NotificationTarget'.$item->getType();
       }
 
+      $entity = 0;
       if (class_exists($name)) {
-         if ($name != 'NotificationTargetDBConnection') {
-            return new $name (($item->isField('entities_id')?$item->getField('entities_id'):0),
-                               $event, $item);
+         //Item which raises the event contains an entityID
+         if ($item->getField('entities_id') != NOT_AVAILABLE) {
+            $entity = $item->getField('entities_id');
          }
-         return new $name(0, $item, $event, $options);
+         //Entity ID exists in the options array
+         elseif (isset($options['entities_id'])) {
+            $entity = $options['entities_id'];
+         }
+         return new $name($entity, $event, $item, $options);
       }
       return false;
    }
@@ -158,7 +158,6 @@ class NotificationTarget extends CommonDBChild {
     * @return a notificationtarget class or false
     */
    static function getInstanceByType($itemtype, $event='', $options=array()) {
-
       if ($itemtype != '' && class_exists($itemtype)) {
          return NotificationTarget::getInstance(new $itemtype (), $event, $options);
       }
@@ -629,7 +628,7 @@ class NotificationTarget extends CommonDBChild {
                INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
                WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."'".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                $this->obj->getEntityID(),true);
+                                                $this->getEntity(),true);
 
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
@@ -751,13 +750,15 @@ class NotificationTarget extends CommonDBChild {
 
 
    function getEntity() {
-
-      if ($this->obj->isField('entities_id')) {
+      /*
+      if ($this->obj->isField('entities_id') != NOT_AVAILABLE) {
          return $this->obj->getField('entities_id');
       } else if ($this->target_object) {
          return $this->target_object->getField('entities_id');
       }
       return 0;
+      */
+      return $this->entity;
    }
 
 
