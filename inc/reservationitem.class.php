@@ -283,7 +283,7 @@ class ReservationItem extends CommonDBTM {
                         ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                   WHERE `glpi_reservationitems`.`is_active` = '1'
                         AND `$itemtable`.`is_deleted` = '0'".
-                        getEntitiesRestrictRequest("AND",$itemtable,'',$_SESSION['glpiactiveentities'],$item->maybeRecursive())."
+                        getEntitiesRestrictRequest(" AND",$itemtable,'',$_SESSION['glpiactiveentities'],$item->maybeRecursive())."
                   ORDER BY `$itemtable`.`entities_id`,`$itemtable`.`name`";
 
          if ($result = $DB->query($query)) {
