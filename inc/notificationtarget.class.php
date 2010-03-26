@@ -52,6 +52,8 @@ class NotificationTarget extends CommonDBChild {
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
    var $datas = array();
 
+   var $tag_descriptions = array();
+
    // From CommonDBTM
    public $dohistory = true;
 
@@ -74,6 +76,9 @@ class NotificationTarget extends CommonDBChild {
    var $raiseevent = '';
 
    const NO_OPTION = 0;
+   const TAG_LANGUAGE = 'lang';
+   const TAG_VALUE = 'tag';
+   const TAG_FOR_ALL_EVENTS = 0;
 
    function __construct($entity='', $event='', $object=null, $options=array()) {
       if ($entity == '') {
@@ -778,10 +783,12 @@ class NotificationTarget extends CommonDBChild {
 
 
    function &getForTemplate($event, $options) {
-      global $CFG_GLPI;
+      global $CFG_GLPI,$LANG;
 
       $this->datas = array();
-      $this->datas['##glpi.url##'] = $CFG_GLPI['root_doc'];
+      $this->addTagToList(array('tag'=>'glpi.url',
+                                'value'=>$CFG_GLPI['root_doc'],
+                                'label'=>$LANG['setup'][227]));
 
       $this->getDatasForTemplate($event, $options);
       doHook('item_get_datas', $this);
@@ -789,5 +796,42 @@ class NotificationTarget extends CommonDBChild {
       return $this->datas;
    }
 
+   function getTags() {
+      global $LANG;
+      return $this->tag_descriptions;
+   }
+
+   function addTagToList($options = array()) {
+      global $LANG;
+      $p['tag'] = false;
+      $p['value'] = true;
+      $p['label'] = false;
+      $p['events'] = NotificationTarget::TAG_FOR_ALL_EVENTS;
+
+      foreach ($options as $key => $value) {
+         $p[$key] = $value;
+      }
+
+      if (is_array($p['events'])) {
+         $events = $this->getEvents();
+         $tmp = array();
+         foreach ($p['events'] as $event) {
+            $tmp[$event] = $events[$event];
+         }
+         $p['events'] = $tmp;
+      }
+      if ($p['tag']) {
+
+         if ($p['value']) {
+            $tag = "##".$p['tag']."##";
+            $this->tag_descriptions[NotificationTarget::TAG_VALUE][$tag] = $p;
+         }
+         if ($p['label']) {
+            $tag = "##lang.".$p['tag']."##";
+            $p['label'] = $p['label'];
+            $this->tag_descriptions[NotificationTarget::TAG_LANGUAGE][$tag] = $p;
+         }
+      }
+   }
 }
 ?>

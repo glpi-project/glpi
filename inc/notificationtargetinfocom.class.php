@@ -63,11 +63,25 @@ class NotificationTargetInfocom extends NotificationTarget {
          $this->datas['infocoms'][] = $tmp;
       }
 
-      $this->datas['##lang.infocom.action##']         = $LANG['mailing'][41];
-      $this->datas['##lang.infocom.itemtype##']       = $LANG['reports'][12];
-      $this->datas['##lang.infocom.item##']           = $LANG['financial'][104];
-      $this->datas['##lang.infocom.expirationdate##'] = $LANG['mailing'][54];
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         $this->datas[$tag] = $values['label'];
+      }
    }
 
+   function getTags() {
+      global $LANG;
+
+      $tags = array('infocom.action'          =>$LANG['mailing'][41],
+                    'infocom.itemtype'        =>$LANG['reports'][12],
+                    'infocom.item'            =>$LANG['financial'][104],
+                    'infocom.expirationdate'  =>$LANG['mailing'][54],
+                    'infocom.entity'          =>$LANG['entity'][0]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true,'events'=>array('alert')));
+      }
+      asort($this->tag_descriptions);
+   }
 }
 ?>
