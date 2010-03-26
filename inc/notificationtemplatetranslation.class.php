@@ -112,9 +112,13 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$template->getTypeName()."</td>";
-      echo "<td colspan='3'><a href='".getItemTypeFormURL('NotificationTemplate').
+      echo "<td colspan='2'><a href='".getItemTypeFormURL('NotificationTemplate').
             "?id=".$notificationtemplates_id."'>".$template->getField('name')."</a>";
-      echo "</td></tr>";
+      echo "</td><td><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
+             "/front/popup.php?popup=list_notificationtags&amp;sub_type=".
+             $template->getField('itemtype')."' ,
+             'glpipopup', 'height=400, width=1000, top=100, left=100,".
+             " scrollbars=yes' );w.focus();\">".$LANG['mailing'][138]."</a></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td colspan='3'>";
@@ -267,5 +271,32 @@ class NotificationTemplateTranslation extends CommonDBChild {
       return $used;
    }
 
+   static function showAvailableTags($itemtype) {
+      global $LANG;
+      $target = NotificationTarget::getInstanceByType($itemtype);
+      $target->getTags();
+
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th>".$LANG['mailing'][140]."</th>
+                <th>".$LANG['mailing'][139]."</th>
+                <th>".$LANG['mailing'][119]."</th></tr>";
+     foreach ($target->tag_descriptions as $tag_type => $infos)
+         foreach ($infos as $tag => $values) {
+            if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
+               $event = $LANG['common'][66];
+            }
+            else {
+               $event = implode(',',$values['events']);
+            }
+
+            echo "<tr class='tab_bg_1'><td>".$tag."</td>
+               <td>".($tag_type==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
+                  $values['label']."</td>
+               <td>$event</td></tr>";
+         }
+
+      echo "</table></div>";
+   }
 }
 ?>

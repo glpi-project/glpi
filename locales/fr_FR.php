@@ -1066,6 +1066,9 @@ $LANG['mailing'][134]="Mise à jour suivi";
 $LANG['mailing'][135]="Suppression suivi";
 $LANG['mailing'][136]="Expiration réservation";
 $LANG['mailing'][137]="Utilisateur du matériel";
+$LANG['mailing'][138]="Liste des tags disponibles";
+$LANG['mailing'][139]="Libellé";
+$LANG['mailing'][140]="TAG";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
@@ -1524,6 +1527,7 @@ $LANG['rulesengine'][140]="Ajout d'un critère";
 $LANG['rulesengine'][141]="Aucune règle vérifiée";
 $LANG['rulesengine'][142]="Liste des emails non importés";
 $LANG['rulesengine'][143]="Groupe de l'utilisateur";
+$LANG['rulesengine'][144]="Entité depuis entité de l'utilisateur";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";
