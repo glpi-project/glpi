@@ -85,7 +85,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             if ($data['id'] != $ID) {
                $tomove[$data['id']]=$ID;
                $type = GetItemTypeForTable($this->item_table);
-               if (class_exist($type)) {
+               if (class_exists($type)) {
                   $dropdown = new $type();
                   $dropdown->delete(array('id'          => $data['id'],
                                           '_replace_by' => $ID));
