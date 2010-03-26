@@ -52,8 +52,8 @@ $ok_slave=true;
 $ok=true;
 
 // Check slave server connection
-if (isDBSlaveActive()){
-	if (establishDBConnection(true,true,false)){
+if (DBConnection::isDBSlaveActive()){
+	if (DBConnection::establishDBConnection(true,true,false)){
 		echo "GLPI_DBSLAVE_OK\n";
 	} else {
 		echo "GLPI_DBSLAVE_PROBLEM\n";
@@ -64,7 +64,7 @@ if (isDBSlaveActive()){
 }
 
 // Check main server connection
-if (establishDBConnection(false,true,false)){
+if (DBConnection::establishDBConnection(false,true,false)){
 	echo "GLPI_DB_OK\n";
 } else {
 	echo "GLPI_DB_PROBLEM\n";
@@ -83,7 +83,7 @@ if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
 }
 
 // Reestablished DB connection
-if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
+if (( $ok_master || $ok_slave ) && DBConnection::establishDBConnection(false,false,false)){
 
 	// Check OCS connections
 	$query = "SELECT id, name FROM glpi_ocsservers";
