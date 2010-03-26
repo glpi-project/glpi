@@ -44,7 +44,7 @@ class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild
    public $itemtype='itemtype';
-   public $items_id='items_id'; 
+   public $items_id='items_id';
    public $dohistory = true;
 
    function canCreate() {
@@ -709,7 +709,7 @@ class NetworkPort extends CommonDBChild {
       $types = array('Computer', 'NetworkEquipment', 'Printer');
 
       foreach ($types as $itemtype) {
-         $result = getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
+         $result = $this->getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
          if (!empty ($result)) {
             return $result;
          }
