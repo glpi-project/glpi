@@ -1805,7 +1805,6 @@ $LANG['setup'][661]="Configuration des notifications impossible : veuillez activ
 $LANG['setup'][703]="Générale";
 $LANG['setup'][704]="Notifications";
 $LANG['setup'][705]="Alertes sur les contrats";
-$LANG['setup'][706]="Alertes sur les informations financières";
 $LANG['setup'][707]="Alertes sur les réservations";
 $LANG['setup'][708]="Alertes sur les tickets non fermés depuis";
 
