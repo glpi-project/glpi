@@ -347,7 +347,7 @@ class EntityData extends CommonDBTM {
                                   'value'=>$default_value,
                                   'inherit_global'=>1) );
       echo "</td>";
-      echo "<td>" . $LANG['setup'][705] . "</td><td>";
+      echo "<td>" . $LANG['setup'][246] . "</td><td>";
       $default_value = $entitynotification->fields['use_contracts_alert'];
       Alert::dropdownYesNo(array('name'=>"use_contracts_alert",
                                   'value'=>$default_value,
