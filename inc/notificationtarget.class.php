@@ -807,29 +807,37 @@ class NotificationTarget extends CommonDBChild {
       $p['value'] = true;
       $p['label'] = false;
       $p['events'] = NotificationTarget::TAG_FOR_ALL_EVENTS;
+      $p['foreach'] = false;
+      $p['lang'] = true;
 
       foreach ($options as $key => $value) {
          $p[$key] = $value;
       }
 
-      if (is_array($p['events'])) {
-         $events = $this->getEvents();
-         $tmp = array();
-         foreach ($p['events'] as $event) {
-            $tmp[$event] = $events[$event];
-         }
-         $p['events'] = $tmp;
-      }
       if ($p['tag']) {
-
-         if ($p['value']) {
-            $tag = "##".$p['tag']."##";
-            $this->tag_descriptions[NotificationTarget::TAG_VALUE][$tag] = $p;
+         if (is_array($p['events'])) {
+            $events = $this->getEvents();
+            $tmp = array();
+            foreach ($p['events'] as $event) {
+               $tmp[$event] = $events[$event];
+            }
+            $p['events'] = $tmp;
          }
-         if ($p['label']) {
-            $tag = "##lang.".$p['tag']."##";
-            $p['label'] = $p['label'];
-            $this->tag_descriptions[NotificationTarget::TAG_LANGUAGE][$tag] = $p;
+
+         if ($p['foreach']) {
+            $tag = "##FOREACH".$p['tag']."## ##ENDFOREACH".$p['tag']."##";
+            $this->tag_descriptions[NotificationTarget::TAG_VALUE][$tag] = $p;
+          }
+         else {
+            if ($p['value']) {
+               $tag = "##".$p['tag']."##";
+               $this->tag_descriptions[NotificationTarget::TAG_VALUE][$tag] = $p;
+            }
+            if ($p['label']&&$p['lang']) {
+               $tag = "##lang.".$p['tag']."##";
+               $p['label'] = $p['label'];
+               $this->tag_descriptions[NotificationTarget::TAG_LANGUAGE][$tag] = $p;
+            }
          }
       }
    }

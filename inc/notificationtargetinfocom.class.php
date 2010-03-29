@@ -79,8 +79,12 @@ class NotificationTargetInfocom extends NotificationTarget {
                     'infocom.entity'          =>$LANG['entity'][0]);
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true,'events'=>array('alert')));
+                                   'value'=>true));
       }
+
+      $this->addTagToList(array('tag'=>'items','label'=>$LANG['reports'][57],
+                                'value'=>false,'foreach'=>true));
+
       asort($this->tag_descriptions);
    }
 }

@@ -280,7 +280,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>".$LANG['mailing'][140]."</th>
                 <th>".$LANG['mailing'][139]."</th>
-                <th>".$LANG['mailing'][119]."</th></tr>";
+                <th>".$LANG['mailing'][119]."</th>
+                <th>".$LANG['rulesengine'][30]."</th>
+            </tr>";
      foreach ($target->tag_descriptions as $tag_type => $infos)
          foreach ($infos as $tag => $values) {
             if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
@@ -289,11 +291,21 @@ class NotificationTemplateTranslation extends CommonDBChild {
             else {
                $event = implode(',',$values['events']);
             }
+            $action = '';
+
+            if ($values['foreach']) {
+               $action = $LANG['mailing'][145];
+            }
+            else {
+               $action = $LANG['mailing'][146];
+            }
 
             echo "<tr class='tab_bg_1'><td>".$tag."</td>
                <td>".($tag_type==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
                   $values['label']."</td>
-               <td>$event</td></tr>";
+               <td>$event</td>
+               <td>".$action."</td>
+               </tr>";
          }
 
       echo "</table></div>";
