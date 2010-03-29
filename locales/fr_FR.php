@@ -1533,7 +1533,7 @@ $LANG['rulesengine'][140]="Ajout d'un critère";
 $LANG['rulesengine'][141]="Aucune règle vérifiée";
 $LANG['rulesengine'][142]="Liste des emails non importés";
 $LANG['rulesengine'][143]="Groupe de l'utilisateur";
-$LANG['rulesengine'][144]="Entité depuis entité de l'utilisateur";
+$LANG['rulesengine'][144]="Entité depuis profil de l'utilisateur";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";

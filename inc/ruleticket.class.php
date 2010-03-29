@@ -83,7 +83,7 @@ class RuleTicket extends Rule {
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
    }
 
-   function executeActions($output,$params,$regex_results) {
+   function executeActions($output,$params,$criterias_result,$regex_results) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {

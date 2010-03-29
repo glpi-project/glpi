@@ -85,6 +85,11 @@ class RuleMailCollector extends Rule {
       $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
       $criterias['mailcollector']['type'] = 'dropdown';
 
+      $criterias['username']['field'] = 'name';
+      $criterias['username']['name']  = $LANG['common'][34].' : '.$LANG['common'][16];
+      $criterias['username']['table'] = 'glpi_users';
+      $criterias['username']['type'] = 'dropdown';
+
       $criterias['from']['name']  = $LANG['mailing'][132].' : from';
       $criterias['from']['table'] = '';
       $criterias['from']['type'] = 'text';
@@ -118,6 +123,12 @@ class RuleMailCollector extends Rule {
       $criterias['GROUPS']['virtual']   = true;
       $criterias['GROUPS']['id']        = 'groups';
 
+      $criterias['PROFILES']['field'] = 'name';
+      $criterias['PROFILES']['name']  = $LANG['common'][34].' : '.$LANG['profiles'][22];
+      $criterias['PROFILES']['table'] = 'glpi_profiles';
+      $criterias['PROFILES']['type'] = 'dropdown';
+      $criterias['PROFILES']['virtual']   = true;
+      $criterias['PROFILES']['id']        = 'profiles';
       return $criterias;
    }
 
@@ -136,6 +147,10 @@ class RuleMailCollector extends Rule {
       $actions['_affect_entity_by_tag']['type']  = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
+      $actions['_affect_entity_by_user_entity']['name']  = $LANG['rulesengine'][144];
+      $actions['_affect_entity_by_user_entity']['type']  = 'yesno';
+      $actions['_affect_entity_by_user_entity']['table']  = '';
+
       $actions['_refuse_email_no_response']['name']   = $LANG['rulesengine'][134];
       $actions['_refuse_email_no_response']['type']   = 'yesno';
       $actions['_refuse_email_no_response']['table']   = '';
@@ -146,37 +161,58 @@ class RuleMailCollector extends Rule {
       return $actions;
    }
 
-   function executeActions($output,$params,$regex_results) {
+   function executeActions($output,$params,$criterias_result,$regex_results) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
                case "assign" :
-                  $output[$action->fields["field"]] = $action->fields["value"];
-                  break;
-
-               case "regex_result" :
                   switch ($action->fields["field"]) {
-                     case "_affect_entity_by_domain" :
-                     case "_affect_entity_by_tag" :
-                        foreach ($regex_results as $regex_result) {
-                           $res = RuleAction::getRegexResultById($action->fields["value"],$regex_result);
-                           if ($res != null) {
-                              if ($action->fields["field"] == "_affect_entity_by_domain") {
-                                 $entity_found = EntityData::getEntityIDByDomain($res);
-                              }
-                              else {
-                                 $entity_found = EntityData::getEntityIDByTag($res);
-                              }
-                              //If an entity was found
-                              if ($entity_found > -1) {
-                                 $output['entities_id'] = $entity_found;
-                                 break;
-                              }
+                     default:
+                        $output[$action->fields["field"]] = $action->fields["value"];
+                        break;
+                     case "_affect_entity_by_user_entity":
+                        $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
+                                                                              $criterias_result['PROFILES']);
+                        //User has right on only one entity
+
+                        if (count($entities) == 1) {
+                           $output['entities_id'] = $entities[0]['id'];
+                        }
+                        //Rights on more than one entity : get the user's prefered entity
+                        else {
+                           $user = new User;
+                           $user->getFromDB($params['users_id']);
+                           //If an entity is defined in user's preferences, use this one
+                           //else do not set the rule as matched
+                           if ($user->getField('entities_id')) {
+                              $output['entities_id'] = $user->getField('entities_id');
                            }
                         }
                         break;
+                  }
+                  break;
+               case "regex_result" :
+                  foreach ($regex_results as $regex_result) {
+                     $entity_found = -1;
+                     $res = RuleAction::getRegexResultById($action->fields["value"],$regex_result);
+                     if ($res != null) {
+                        switch ($action->fields["field"]) {
+                           case "_affect_entity_by_domain":
+                              $entity_found = EntityData::getEntityIDByDomain($res);
+                              break;
+                           case "_affect_entity_by_tag":
+                              $entity_found = EntityData::getEntityIDByTag($res);
+                              break;
+                        }
+                        //If an entity was found
+                        if ($entity_found > -1) {
+                           $output['entities_id'] = $entity_found;
+                           break;
+                         }
+                      }
                   } // switch (field)
+               break;
             }
          }
       }

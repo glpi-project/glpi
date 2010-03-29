@@ -70,6 +70,12 @@ class RuleMailCollectorCollection extends RuleCollection {
          }
       }
 
+      if (in_array('profiles',$fields)) {
+         foreach (Profile_User::getForUser($input['users_id']) as $profile) {
+            $input['PROFILES'][] = $profile['profiles_id'];
+         }
+      }
+
       return $input;
    }
 
