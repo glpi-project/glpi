@@ -1069,6 +1069,12 @@ $LANG['mailing'][137]="Utilisateur du matériel";
 $LANG['mailing'][138]="Liste des tags disponibles";
 $LANG['mailing'][139]="Libellé";
 $LANG['mailing'][140]="TAG";
+$LANG['mailing'][141]="Suivis";
+$LANG['mailing'][142]="Tâches";
+$LANG['mailing'][143]="Validations";
+$LANG['mailing'][144]="Historique";
+$LANG['mailing'][145]="Liste de valeurs";
+$LANG['mailing'][146]="Valeur unique";
 
 $LANG['Menu'][0]="Ordinateurs";
 $LANG['Menu'][1]="Réseaux";
