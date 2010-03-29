@@ -479,6 +479,19 @@ class Profile_User extends CommonDBTM {
       return array();
    }
 
+   static function getEntitiesForProfileByUser($users_id,$profiles_id) {
+      global $DB;
+      $query = "SELECT `entities_id`
+                FROM `glpi_profiles_users`
+                WHERE `users_id` = '$users_id'
+                  AND `profiles_id`='$profiles_id'";
+
+      $entities = array();
+      foreach ($DB->request($query) as $data) {
+         $entities[] = $data['entities_id'];
+      }
+      return $entities;
+   }
    /**
     * Get entities for which a user have a right
     *

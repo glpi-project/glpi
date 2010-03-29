@@ -67,7 +67,7 @@ class RuleOcs extends Rule {
       return $output;
    }
 
-   function executeActions($output,$params,$regex_results) {
+   function executeActions($output,$params,$criterias_result,$regex_results) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {

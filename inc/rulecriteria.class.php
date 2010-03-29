@@ -208,7 +208,10 @@ class RuleCriteria extends CommonDBChild {
    * @param $regex_result
    * @return true if the field match the rule, false if it doesn't match
    **/
-   static function match($field, $condition, $pattern,&$regex_result) {
+   static function match(RuleCriteria $criteria, $field, &$criterias_result, &$regex_result) {
+      $condition = $criteria->fields['condition'];
+      $pattern = $criteria->fields['pattern'];
+      $criteria = $criteria->fields['criteria'];
 
       //If pattern is wildcard, don't check the rule and return true
       if ($pattern == Rule::RULE_WILDCARD) {
@@ -228,12 +231,14 @@ class RuleCriteria extends CommonDBChild {
       switch ($condition) {
          case Rule::PATTERN_IS :
             if ($field == $pattern) {
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;
 
          case Rule::PATTERN_IS_NOT :
             if ($field != $pattern) {
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -241,6 +246,7 @@ class RuleCriteria extends CommonDBChild {
          case Rule::PATTERN_END :
             $value = "/".$pattern."$/";
             if (preg_match($value, $field) > 0) {
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -251,6 +257,7 @@ class RuleCriteria extends CommonDBChild {
             }
             $value = strpos($field,$pattern);
             if (($value !== false) && $value == 0) {
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -261,6 +268,7 @@ class RuleCriteria extends CommonDBChild {
             }
             $value = strpos($field,$pattern);
             if (($value !== false) && $value >= 0) {
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -271,6 +279,7 @@ class RuleCriteria extends CommonDBChild {
             }
             $value = strpos($field,$pattern);
             if ($value === false) {
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -282,15 +291,14 @@ class RuleCriteria extends CommonDBChild {
                array_shift($results);
                // And add to $regex_result array
                $regex_result[] = $results;
-/*               for ($i=1;$i<count($results);$i++) {
-                  $regex_result[]=$results[$i];
-               }*/
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;
 
          case Rule::REGEX_NOT_MATCH :
             if (preg_match($pattern."i", $field) == 0) {
+               $criterias_result[$criteria] = $pattern;
                return true;
             }
             return false;

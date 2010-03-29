@@ -139,7 +139,7 @@ class RuleRight extends Rule {
    * @param $regex_results array results of the regex match if used in criteria
    * @return the fields modified
    */
-   function executeActions($output,$params,$regex_results) {
+   function executeActions($output,$params,$criterias_result,$regex_results) {
       global $CFG_GLPI;
 
       $entity='';
