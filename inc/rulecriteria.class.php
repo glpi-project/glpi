@@ -341,24 +341,33 @@ class RuleCriteria extends CommonDBChild {
       }
    }
 
+   static function getConditions() {
+      global $LANG;
+      return array(Rule::PATTERN_IS=>$LANG['rulesengine'][0],
+                        Rule::PATTERN_IS_NOT=>$LANG['rulesengine'][1],
+                        Rule::PATTERN_CONTAIN=>$LANG['rulesengine'][2],
+                        Rule::PATTERN_NOT_CONTAIN=>$LANG['rulesengine'][3],
+                        Rule::PATTERN_BEGIN=>$LANG['rulesengine'][4],
+                        Rule::PATTERN_END=>$LANG['rulesengine'][5],
+                        Rule::REGEX_MATCH=>$LANG['rulesengine'][26],
+                        Rule::REGEX_NOT_MATCH=>$LANG['rulesengine'][27]);
+   }
    /**
    * Display a dropdown with all the criterias
    **/
-   static function dropdownConditions($type,$name,$value='') {
+   static function dropdownConditions($type,$name,$value='',$allow_condition=array()) {
       global $LANG;
 
-      $elements[Rule::PATTERN_IS]          = $LANG['rulesengine'][0];
-      $elements[Rule::PATTERN_IS_NOT]      = $LANG['rulesengine'][1];
-      $elements[Rule::PATTERN_CONTAIN]     = $LANG['rulesengine'][2];
-      $elements[Rule::PATTERN_NOT_CONTAIN] = $LANG['rulesengine'][3];
-      $elements[Rule::PATTERN_BEGIN]       = $LANG['rulesengine'][4];
-      $elements[Rule::PATTERN_END]         = $LANG['rulesengine'][5];
-      $elements[Rule::REGEX_MATCH]         = $LANG['rulesengine'][26];
-      $elements[Rule::REGEX_NOT_MATCH]     = $LANG['rulesengine'][27];
-
+      $elements = array();
+      foreach (RuleCriteria::getConditions() as $pattern => $label) {
+         if (empty($allow_condition)
+               || (!empty($allow_condition)
+                     && isset($allow_condition[$pattern]))) {
+            $elements[$pattern] = $label;
+         }
+      }
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
-
 }
 
 ?>
