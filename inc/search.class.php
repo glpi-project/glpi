@@ -903,8 +903,7 @@ class Search {
                foreach ($toview as $key => $val) {
                   echo Search::showItem($output_type,Search::giveItem($itemtype,$val,$data,$key),$item_num,
                                        $row_num,
-                           Search::displayConfigItem($itemtype,$searchopt[$itemtype][$val]["table"].".".
-                                                      $searchopt[$itemtype][$val]["field"]));
+                           Search::displayConfigItem($itemtype,$val,$data,$key));
                }
 
                // Print Meta Item
@@ -3005,15 +3004,23 @@ class Search {
    /**
    * Generic Function to display Items
    *
-   *@param $field field which have a specific display type
    *@param $itemtype item type
+   *@param $ID ID of the SEARCH_OPTION item
+   *@param $data retrieved data array
+   *@param $num number of the displayed item
    *
    *@return string to print
    *
    **/
-   static function displayConfigItem ($itemtype,$field) {
+   static function displayConfigItem ($itemtype,$ID,$data=array(),$num=0) {
 
-      switch ($field) {
+      $searchopt=&Search::getOptions($itemtype);
+
+      $NAME="ITEM_";
+      $table=$searchopt[$ID]["table"];
+      $field=$searchopt[$ID]["field"];
+
+      switch ($table.".".$field) {
          case "glpi_ocslinks.last_update" :
          case "glpi_ocslinks.last_ocs_update" :
          case "glpi_computers.date_mod" :
@@ -3030,6 +3037,9 @@ class Search {
             return " class='center'";
             break;
 
+         case "glpi_tickets.priority":
+            return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
+            break;
          default:
             return "";
             break;
@@ -3370,7 +3380,7 @@ class Search {
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
                         alt='$status' title='$status'><br>$status";
          case 'glpi_tickets.priority':
-            return "<div style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\">".Ticket::getPriorityName($data[$NAME.$num]).'</div>';
+            return Ticket::getPriorityName($data[$NAME.$num]);
 
          case 'glpi_tickets.urgency':
             return Ticket::getUrgencyName($data[$NAME.$num]);
@@ -3690,7 +3700,7 @@ class Search {
       }
 
       if (isset($_GET["delete_search_count2"]) && $_GET["delete_search_count2"]) {
-         if ($_SESSION["glpisearchcount2"][$itemtype] > 1) {
+         if ($_SESSION["glpisearchcount2"][$itemtype] >= 1) {
             $_SESSION["glpisearchcount2"][$itemtype]--;
          }
          glpi_header(str_replace("delete_search_count2=1&","",$_SERVER['REQUEST_URI']));
