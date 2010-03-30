@@ -614,7 +614,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
 
-      echo "<tr><th colspan='4' class='center'>" . $LANG['mailing'][9]. "</th></tr>";
+      echo "<tr><th colspan='4' class='center'>" . $LANG['job'][13]. "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][219] . " </td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);

@@ -63,7 +63,7 @@ class Ticket extends CommonDBTM {
 
 
    function canUpdate() {
- 
+
       return haveRight('update_ticket', 1)
              || haveRight('assign_ticket', 1)
              || haveRight('steal_ticket', 1);
@@ -394,7 +394,7 @@ class Ticket extends CommonDBTM {
       global $LANG;
 
       if (((in_array("users_id_assign",$this->updates) && $this->input["users_id_assign"]>0)
-           || (in_array("suppliers_id_assign",$this->updates) 
+           || (in_array("suppliers_id_assign",$this->updates)
                && $this->input["suppliers_id_assign"]>0)
            || (in_array("groups_id_assign",$this->updates) && $this->input["groups_id_assign"]>0))
           && $this->fields["status"]=="new") {
@@ -1160,7 +1160,7 @@ class Ticket extends CommonDBTM {
                                "text-decoration:underline; '>".$LANG['job'][4]."&nbsp;:</span> ".
                                $fup->getAuthorName()."\n";
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['mailing'][3]."</span>&nbsp;:<br>".
+                               "text-decoration:underline; '>".$LANG['knowbase'][15]."</span>&nbsp;:<br>".
                                str_replace("\n","<br>",$fup->fields["content"])."\n";
                   if ($fup->fields["realtime"]>0) {
                      $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
@@ -1168,7 +1168,7 @@ class Ticket extends CommonDBTM {
                                   ".</span> ".self::getRealtime($fup->fields["realtime"])."\n";
                   }
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['mailing'][25]."</span> ";
+                               "text-decoration:underline; '>".$LANG['job'][35]."&nbsp;:</span> ";
 
                   // Use tasks instead of followups
                   /*
@@ -1197,12 +1197,12 @@ class Ticket extends CommonDBTM {
                   $message .= "[ ".convDateTime($fup->fields["date"])." ]".
                                ($fup->fields["is_private"]?"\t".$LANG['common'][77] :"")."\n";
                   $message .= $LANG['job'][4]."&nbsp;: ".$fup->getAuthorName()."\n";
-                  $message .= $LANG['mailing'][3]."&nbsp;:\n".$fup->fields["content"]."\n";
+                  $message .= $LANG['knowbase'][15]."&nbsp;:\n".$fup->fields["content"]."\n";
                   if ($fup->fields["realtime"]>0) {
                      $message .= $LANG['mailing'][104]."&nbsp;: ".
                                  self::getRealtime($fup->fields["realtime"])."\n";
                   }
-                  $message .= $LANG['mailing'][25]." ";
+                  $message .= $LANG['job'][35]."&nbsp;: ";
 
                   // Use tasks instead of followups
                   /*
@@ -1345,7 +1345,7 @@ class Ticket extends CommonDBTM {
                       'contains'   => array(0 => 'notclosed'),
                       'sort'       => 19,
                       'order'      => 'DESC');
-       
+
       if (haveRight('show_all_ticket',1)) {
          $search['contains'] = array(0 => 'notold');
       }
@@ -3572,7 +3572,7 @@ class Ticket extends CommonDBTM {
             self::showShort($data, 0);
          }
          echo "</table></div>";
- 
+
       } else {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";

@@ -355,7 +355,7 @@ class NotificationTargetTicket extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      $events = array('new'             => $LANG['mailing'][9],
+      $events = array('new'             => $LANG['job'][13],
                       'update'          => $LANG['mailing'][30],
                       'solved'          => $LANG['mailing'][123],
                       'validation'      => $LANG['validation'][26],
