@@ -169,7 +169,7 @@ class Ticket extends CommonDBTM {
          $ong[3] = $LANG['job'][47];
          $ong[5] = $LANG['Menu'][27];
          $ong[6] = $LANG['title'][38];
-         $ong['no_all_tab'] = true;
+         //$ong['no_all_tab'] = true;
       } else {
          $ong[1] = $LANG['job'][13];
       }

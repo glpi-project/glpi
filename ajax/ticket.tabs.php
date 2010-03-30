@@ -47,6 +47,25 @@ $ticket = new Ticket();
 if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
    switch($_REQUEST['glpi_tab']) {
 
+      case -1 :
+         $fup = new TicketFollowup();
+         $fup->showSummary($ticket);
+         $validation = new Ticketvalidation();
+         $validation->showSummary($ticket);
+         $task = new TicketTask();
+         $task->showSummary($ticket);
+         $ticket->showCost($_POST['target']);
+         $ticket->showSolutionForm();
+         if ($ticket->canApprove()) {
+            $suivi = new TicketFollowup();
+            $suivi->showApprobationForm($ticket);
+         }
+         $ticket->showCost($_POST['target']);
+         Document::showAssociated($ticket);
+         Log::showForItem($ticket);
+         break;
+
+
       case 2 :
          $task = new TicketTask();
          $task->showSummary($ticket);
