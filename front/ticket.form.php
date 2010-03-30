@@ -92,13 +92,13 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       helpHeader($LANG['title'][1],'',$_SESSION["glpiname"]);
    } else {
-      commonHeader($LANG['Menu'][31],'',"maintain","helpdesk");
+      commonHeader($LANG['Menu'][31],'',"maintain","ticket");
    }
 
    $track->showForm($_GET["id"]);
 
 } else {
-   commonHeader($LANG['Menu'][31],'',"maintain","helpdesk");
+   commonHeader($LANG['Menu'][31],'',"maintain","ticket");
    // Set default value...
    $values = array('users_id'             => getLoginUserID(),
                    'groups_id'            => 0,
