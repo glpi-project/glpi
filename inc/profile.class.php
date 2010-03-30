@@ -656,7 +656,10 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4'>&nbsp;</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td>".$LANG['profiles'][4]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("group_add_followups",$this->fields["group_add_followups"]);
+      echo "</td>";
       echo "<td>".$LANG['profiles'][45]."&nbsp;:</td><td>";
       Dropdown::showYesNo("global_add_tasks",$this->fields["global_add_tasks"]);
       echo "</td></tr>\n";
