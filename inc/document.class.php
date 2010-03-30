@@ -263,7 +263,7 @@ class Document extends CommonDBTM {
       $max_size=round($max_size,1);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][2]." (".$max_size." Mb max)&nbsp;:</td>";
+      echo "<td>".$LANG['document'][2]." (".$max_size." ".$LANG['common'][45].")&nbsp;:</td>";
       echo "<td><input type='file' name='filename' value=\"".
                  $this->fields["filename"]."\" size='39'></td>";
       echo "</tr>";
