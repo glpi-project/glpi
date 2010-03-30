@@ -4193,6 +4193,15 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       }
    }
 
+   if (!FieldExists("glpi_profiles","group_add_followup")) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `group_add_followups` CHAR(1) NULL AFTER `add_followups`";
+      $DB->query($query) or die("0.78 add budget in glpi_profiles" . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `group_add_followups`=`global_add_followups`";
+      $DB->query($query) or die("0.78 update default budget rights" . $LANG['update'][90] . $DB->error());
+
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 
