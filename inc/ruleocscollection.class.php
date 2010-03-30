@@ -143,6 +143,7 @@ class RuleOcsCollection extends RuleCollection {
             $tables[$criteria['table']]=$criteria['linkfield'];
          }
       }
+
       return $tables;
    }
 
