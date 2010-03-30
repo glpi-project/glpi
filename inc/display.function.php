@@ -353,13 +353,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
                                  $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
          $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt);
       }
-      $menu['maintain']['content']['helpdesk']['links']['search']='/front/ticket.php';
    }
    if (haveRight("create_ticket","1")) {
-      $menu['maintain']['content']['helpdesk']['title']=$LANG['Menu'][31];
-      $menu['maintain']['content']['helpdesk']['shortcut']='h';
-      $menu['maintain']['content']['helpdesk']['page']='/front/ticket.form.php';
-      $menu['maintain']['content']['helpdesk']['links']['add']='/front/ticket.form.php';
       $menu['maintain']['content']['ticket']['links']['add']='/front/ticket.form.php';
    }
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
