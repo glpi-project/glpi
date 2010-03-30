@@ -294,6 +294,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[86]['name']      = $LANG['entity'][9];
          $tab[86]['datatype']  = 'bool';
       }
+      if ($this->isField('date_mod')) {
+         $tab[19]['table']     = $this->getTable();
+         $tab[19]['field']     = 'date_mod';
+         $tab[19]['linkfield'] = '';
+         $tab[19]['name']      = $LANG['common'][26];
+         $tab[19]['datatype']  = 'datetime';
+      }
+
       return $tab;
    }
 
