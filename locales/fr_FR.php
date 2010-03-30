@@ -29,559 +29,644 @@
  */
 //fr_FR
 
-$LANG=array();
+$LANG = array();
 
-$LANG['backup'][0]="Sauvegarde SQL";
-$LANG['backup'][1]="Sauvegarde XML";
-$LANG['backup'][11]="Taille";
-$LANG['backup'][13]="Voir/Télécharger";
-$LANG['backup'][16]="Remplacer la base de données actuelle par le fichier de sauvegarde :";
-$LANG['backup'][17]="Supprimer le fichier";
-$LANG['backup'][18]="Sauvegarder la base de données";
-$LANG['backup'][19]="Maintenant";
-$LANG['backup'][21]="Le fichier existe déjà";
-$LANG['backup'][22]="Impossible de trouver l'octet";
-$LANG['backup'][23]="Erreur Mysql à partir de";
-$LANG['backup'][24]="Redirection automatique, sinon cliquez";
+$LANG['backup'][0]  = "Sauvegarde SQL";
+$LANG['backup'][1]  = "Sauvegarde XML";
 
-$LANG['bookmark'][1]="marque-page";
-$LANG['bookmark'][3]="Vous n'avez pas encore enregistré de marque-pages.";
-$LANG['bookmark'][4]="Nouveau marque-page";
-$LANG['bookmark'][5]="Marque-page publics";
-$LANG['bookmark'][6]="Vue par défaut";
+$LANG['backup'][11] = "Taille";
+
+$LANG['backup'][13] = "Voir/Télécharger";
+
+$LANG['backup'][16] = "Remplacer la base de données actuelle par le fichier de sauvegarde :";
+$LANG['backup'][17] = "Supprimer le fichier";
+$LANG['backup'][18] = "Sauvegarder la base de données";
+$LANG['backup'][19] = "Maintenant";
+$LANG['backup'][21] = "Le fichier existe déjà";
+$LANG['backup'][22] = "Impossible de trouver l'octet";
+$LANG['backup'][23] = "Erreur Mysql à partir de";
+$LANG['backup'][24] = "Redirection automatique, sinon cliquez";
 
 
-$LANG['buttons'][0]="Rechercher";
-$LANG['buttons'][2]="Valider";
-$LANG['buttons'][3]="Attribuer";
-$LANG['buttons'][4]="Installer";
-$LANG['buttons'][5]="Désinstaller";
-$LANG['buttons'][6]="Supprimer";
-$LANG['buttons'][7]="Actualiser";
-$LANG['buttons'][8]="Ajouter";
-$LANG['buttons'][9]="Connecter";
-$LANG['buttons'][10]="Déconnecter";
-$LANG['buttons'][11]="Suivant";
-$LANG['buttons'][12]="Précédent";
-$LANG['buttons'][13]="Retour";
-$LANG['buttons'][14]="Modifier";
-$LANG['buttons'][15]="Calendrier";
-$LANG['buttons'][16]="Raz";
-$LANG['buttons'][17]="Inverser la sélection";
-$LANG['buttons'][18]="Tout cocher";
-$LANG['buttons'][19]="Tout décocher";
-$LANG['buttons'][20]="Déplacer";
-$LANG['buttons'][21]="Restaurer";
-$LANG['buttons'][22]="Purger";
-$LANG['buttons'][23]="Voir";
-$LANG['buttons'][24]="Monter";
-$LANG['buttons'][25]="Descendre";
-$LANG['buttons'][27]="Vue format PDF";
-$LANG['buttons'][28]="Vue format SLK";
-$LANG['buttons'][29]="Tout format PDF";
-$LANG['buttons'][30]="Tout format SLK";
-$LANG['buttons'][31]="Exporter";
-$LANG['buttons'][32]="Fin";
-$LANG['buttons'][33]="Début";
-$LANG['buttons'][34]="Annuler";
-$LANG['buttons'][35]="Avancée";
-$LANG['buttons'][36]="Basique";
-$LANG['buttons'][37]="Importer";
-$LANG['buttons'][38]="Déverrouiller";
-$LANG['buttons'][39]="Remplacer";
-$LANG['buttons'][40]="Voir Tous";
-$LANG['buttons'][41]="Activer";
-$LANG['buttons'][42]="Désactiver";
-$LANG['buttons'][43]="Naviguer";
-$LANG['buttons'][44]="Vue format CSV";
-$LANG['buttons'][45]="Tout format CSV";
-$LANG['buttons'][46]="Avant";
-$LANG['buttons'][47]="Après";
-$LANG['buttons'][48]="Transférer";
-$LANG['buttons'][49]="Conserver";
-$LANG['buttons'][50]="Tester";
-$LANG['buttons'][51]="Enregistrer";
-$LANG['buttons'][52]="Charger";
-$LANG['buttons'][53]="Nettoyer";
-$LANG['buttons'][55]="Premier";
-$LANG['buttons'][56]="Dernier";
-$LANG['buttons'][57]="Exécuter";
-$LANG['buttons'][58]="Mettre à jour";
+$LANG['bookmark'][1] = "marque-page";
 
-$LANG['calendarD'][0]="D";
-$LANG['calendarD'][1]="L";
-$LANG['calendarD'][2]="M";
-$LANG['calendarD'][3]="M";
-$LANG['calendarD'][4]="J";
-$LANG['calendarD'][5]="V";
-$LANG['calendarD'][6]="S";
-
-$LANG['calendarDay'][0]="Dimanche";
-$LANG['calendarDay'][1]="Lundi";
-$LANG['calendarDay'][2]="Mardi";
-$LANG['calendarDay'][3]="Mercredi";
-$LANG['calendarDay'][4]="Jeudi";
-$LANG['calendarDay'][5]="Vendredi";
-$LANG['calendarDay'][6]="Samedi";
-
-$LANG['calendarM'][0]="Janvier";
-$LANG['calendarM'][1]="Février";
-$LANG['calendarM'][2]="Mars";
-$LANG['calendarM'][3]="Avril";
-$LANG['calendarM'][4]="Mai";
-$LANG['calendarM'][5]="Juin";
-$LANG['calendarM'][6]="Juillet";
-$LANG['calendarM'][7]="Août";
-$LANG['calendarM'][8]="Septembre";
-$LANG['calendarM'][9]="Octobre";
-$LANG['calendarM'][10]="Novembre";
-$LANG['calendarM'][11]="Décembre";
-
-$LANG['cartridges'][0]="Cartouche";
-$LANG['cartridges'][7]="Pas de cartouche trouvée";
-$LANG['cartridges'][9]="Aucune cartouche";
-$LANG['cartridges'][10]="Toner";
-$LANG['cartridges'][11]="Jet-Encre";
-$LANG['cartridges'][12]="Type de Cartouche";
-$LANG['cartridges'][13]="Neuve(s)";
-$LANG['cartridges'][14]="Utilisée(s)";
-$LANG['cartridges'][15]="Usagée(s)";
-$LANG['cartridges'][16]="Cartouche(s)";
-$LANG['cartridges'][20]="Neuve";
-$LANG['cartridges'][21]="Utilisée";
-$LANG['cartridges'][22]="Usagée";
-$LANG['cartridges'][24]="Date ajout";
-$LANG['cartridges'][27]="Sur";
-$LANG['cartridges'][29]="Fin de vie";
-$LANG['cartridges'][32]="Modèles d'imprimantes compatibles";
-$LANG['cartridges'][33]="Cartouches utilisées";
-$LANG['cartridges'][34]="Pas de cartouche libre";
-$LANG['cartridges'][35]="Cartouche(s) usagée(s)";
-$LANG['cartridges'][37]="Ruban";
-$LANG['cartridges'][39]="Compteur imprimante";
-$LANG['cartridges'][40]="En stock en moyenne";
-$LANG['cartridges'][41]="Utilisation moyenne";
-$LANG['cartridges'][42]="Pages imprimées en moyenne";
-
-$LANG['central'][0]="Bienvenue";
-$LANG['central'][1]="vous êtes sur la console centrale.";
-$LANG['central'][2]="Derniers";
-$LANG['central'][4]="Pas d'événement";
-$LANG['central'][5]="Accueil";
-$LANG['central'][6]="Déconnexion";
-$LANG['central'][7]="Aide";
-$LANG['central'][8]="Ajouts";
-$LANG['central'][9]="Vos tickets en cours";
-$LANG['central'][10]="Les nouveaux tickets";
-$LANG['central'][12]="Vue personnelle";
-$LANG['central'][13]="Vue globale";
-$LANG['central'][14]="Vue groupe";
-$LANG['central'][18]="Vos tickets à clore";
+$LANG['bookmark'][3] = "Vous n'avez pas encore enregistré de marque-pages.";
+$LANG['bookmark'][4] = "Nouveau marque-page";
+$LANG['bookmark'][5] = "Marque-page publics";
+$LANG['bookmark'][6] = "Vue par défaut";
 
 
-$LANG['choice'][0]="Non";
-$LANG['choice'][1]="Oui";
+$LANG['buttons'][0]  = "Rechercher";
 
-$LANG['common'][0]="Sans nom";
-$LANG['common'][1]="Matériel";
-$LANG['common'][2]="ID";
-$LANG['common'][3]="Voir la corbeille";
-$LANG['common'][4]="Web";
-$LANG['common'][5]="Fabricant";
-$LANG['common'][6]="Nom du gabarit";
-$LANG['common'][7]="Choisissez un gabarit";
-$LANG['common'][8]="Gérer Gabarits...";
-$LANG['common'][9]="Ajouter un gabarit...";
-$LANG['common'][10]="Responsable technique";
-$LANG['common'][11]="Affichage limité";
-$LANG['common'][12]="Configuration";
-$LANG['common'][13]="Gabarit";
-$LANG['common'][14]="Gabarits";
-$LANG['common'][15]="Lieu";
-$LANG['common'][16]="Nom";
-$LANG['common'][17]="Type";
-$LANG['common'][18]="Contact";
-$LANG['common'][19]="Numéro de série";
-$LANG['common'][20]="Numéro d'inventaire";
-$LANG['common'][21]="Contact numéro";
-$LANG['common'][22]="Modèle";
-$LANG['common'][23]="Opération réalisée avec succès";
-$LANG['common'][24]="Aucun élément sélectionné ou opération mal définie";
-$LANG['common'][25]="Commentaires";
-$LANG['common'][26]="Dernière modification";
-$LANG['common'][27]="Date";
-$LANG['common'][28]="Supprimé";
-$LANG['common'][29]="Plugins";
-$LANG['common'][30]="Nouvel item";
-$LANG['common'][31]="Gabarit vide";
-$LANG['common'][32]="Caractéristiques";
-$LANG['common'][33]="Total";
-$LANG['common'][34]="Utilisateur";
-$LANG['common'][35]="Groupe";
-$LANG['common'][36]="Catégorie";
-$LANG['common'][37]="Auteur";
-$LANG['common'][38]="Déglobaliser";
-$LANG['common'][39]="Duplique l'élément autant de fois qu'il y a de connexions";
-$LANG['common'][40]="Êtes-vous sûr de vouloir déglobaliser cet élément ?";
-$LANG['common'][41]="Alertes par email";
-$LANG['common'][42]="Portable";
-$LANG['common'][43]="Prénom";
-$LANG['common'][44]="Valeur(s) par défaut";
-$LANG['common'][46]="Vcard";
-$LANG['common'][47]="Progression";
-$LANG['common'][48]="Nom de famille";
-$LANG['common'][49]="Aucun";
-$LANG['common'][50]="Confirmer la suppression définitive ?";
-$LANG['common'][51]="Nom complet";
-$LANG['common'][52]="Serveur";
-$LANG['common'][53]="Liste";
-$LANG['common'][54]="Élément introuvable";
-$LANG['common'][55]="Êtes-vous certain de vouloir supprimer cet élément ?";
-$LANG['common'][56]="Central";
-$LANG['common'][57]="Titre";
-$LANG['common'][58]="Valeur maximale";
-$LANG['common'][59]="Global";
-$LANG['common'][60]="Actif";
-$LANG['common'][61]="Erreur inconnue";
-$LANG['common'][62]="Autre";
-$LANG['common'][63]="Erreur(s)";
-$LANG['common'][64]="Superviseur";
-$LANG['common'][65]="Interface";
-$LANG['common'][66]="Tous";
-$LANG['common'][67]="Autres";
-$LANG['common'][68]="Paysage";
-$LANG['common'][69]="Portrait";
-$LANG['common'][70]="Élément ajouté avec succès";
-$LANG['common'][71]="Élément modifié avec succès";
-$LANG['common'][72]="Élément mis à la corbeille avec succès";
-$LANG['common'][73]="Élément supprimé définitivement avec succès";
-$LANG['common'][74]="Élément restauré avec succès";
-$LANG['common'][75]="Pas le droit de rendre cet élément récursif pour cette entité";
-$LANG['common'][76]="Public";
-$LANG['common'][77]="Privé";
-$LANG['common'][78]="Rendre public";
-$LANG['common'][79]="Rendre privé";
-$LANG['common'][80]="En cours de chargement...";
-$LANG['common'][81]="Sortir de la corbeille";
-$LANG['common'][82]="Mio";
-$LANG['common'][83]="Vous n'avez pas les droits requis pour réaliser cette action.";
-$LANG['common'][84]="La présence d'éléments liés interdit la modification de cet attribut";
-$LANG['common'][85]="Modifier la visibilité dans les sous-entités";
-$LANG['common'][86]="Vous n'avez pas les droits requis pour modifier la visibilité dans les sous-entités.";
-$LANG['common'][87]="Nouvelle fiche";
-$LANG['common'][88]="Identifiant interne du serveur (ID)";
-$LANG['common'][89]="Non installé";
-$LANG['common'][90]="Objet";
-$LANG['common'][91]="Cet élément est dépendant d'un autre. La modification de cet attribut est interdit.";
+$LANG['buttons'][2]  = "Valider";
+$LANG['buttons'][3]  = "Attribuer";
+$LANG['buttons'][4]  = "Installer";
+$LANG['buttons'][5]  = "Désinstaller";
+$LANG['buttons'][6]  = "Supprimer";
+$LANG['buttons'][7]  = "Actualiser";
+$LANG['buttons'][8]  = "Ajouter";
+$LANG['buttons'][9]  = "Connecter";
+$LANG['buttons'][10] = "Déconnecter";
+$LANG['buttons'][11] = "Suivant";
+$LANG['buttons'][12] = "Précédent";
+$LANG['buttons'][13] = "Retour";
+$LANG['buttons'][14] = "Modifier";
+$LANG['buttons'][15] = "Calendrier";
+$LANG['buttons'][16] = "Raz";
+$LANG['buttons'][17] = "Inverser la sélection";
+$LANG['buttons'][18] = "Tout cocher";
+$LANG['buttons'][19] = "Tout décocher";
+$LANG['buttons'][20] = "Déplacer";
+$LANG['buttons'][21] = "Restaurer";
+$LANG['buttons'][22] = "Purger";
+$LANG['buttons'][23] = "Voir";
+$LANG['buttons'][24] = "Monter";
+$LANG['buttons'][25] ="Descendre";
 
-$LANG['computers'][0]="Volume";
-$LANG['computers'][1]="Pourcentage libre";
-$LANG['computers'][2]="Taille libre";
-$LANG['computers'][3]="Taille totale";
-$LANG['computers'][4]="Système de fichiers";
-$LANG['computers'][5]="Point montage";
-$LANG['computers'][6]="Chemin physique";
-$LANG['computers'][7]="Ajouter un volume";
-$LANG['computers'][8]="Volumes";
-$LANG['computers'][9]="OS";
-$LANG['computers'][10]="OS Numéro de série";
-$LANG['computers'][11]="OS Product ID";
-$LANG['computers'][14]="Inséré";
-$LANG['computers'][21]="CPU";
-$LANG['computers'][23]="RAM Type";
-$LANG['computers'][24]="Quantité RAM";
-$LANG['computers'][25]="Taille HD";
-$LANG['computers'][36]="HD-Type";
-$LANG['computers'][37]="Pas d'écran connecté.";
-$LANG['computers'][38]="Pas d'imprimante connectée";
-$LANG['computers'][39]="Imprimante(s)";
-$LANG['computers'][40]="Moniteur(s)";
-$LANG['computers'][46]="Périphérique(s)";
-$LANG['computers'][47]="Pas de périphérique connecté";
-$LANG['computers'][48]="Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
-$LANG['computers'][49]="Modification du contact. Les éléments connectés ont pris comme contact celui de l'ordinateur.";
-$LANG['computers'][50]="Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les mêmes valeurs que l'ordinateur.";
-$LANG['computers'][51]="Source de mise à jour";
-$LANG['computers'][52]="OS Version";
-$LANG['computers'][53]="Service Pack";
-$LANG['computers'][54]="Pas de téléphone connecté";
-$LANG['computers'][55]="Téléphone(s)";
-$LANG['computers'][56]="Modification du statut. Les éléments connectés ont été mis à jour avec le statut l'ordinateur.";
+$LANG['buttons'][27] = "Vue format PDF";
+$LANG['buttons'][28] = "Vue format SLK";
+$LANG['buttons'][29] = "Tout format PDF";
+$LANG['buttons'][30] = "Tout format SLK";
+$LANG['buttons'][31] = "Exporter";
+$LANG['buttons'][32] = "Fin";
+$LANG['buttons'][33] = "Début";
+$LANG['buttons'][34] = "Annuler";
 
-$LANG['connect'][0]="Connexion(s) directe(s)";
-$LANG['connect'][1]="Non connecté.";
-$LANG['connect'][15]="Mise à jour automatique des éléments suivants";
-$LANG['connect'][16]="Attention !! Les éléments suivants des deux matériels ne correspondent pas";
+$LANG['buttons'][37] = "Importer";
+$LANG['buttons'][38] = "Déverrouiller";
+$LANG['buttons'][39] = "Remplacer";
+$LANG['buttons'][40] = "Voir Tous";
+$LANG['buttons'][41] = "Activer";
+$LANG['buttons'][42] = "Désactiver";
+$LANG['buttons'][43] = "Naviguer";
+$LANG['buttons'][44] = "Vue format CSV";
+$LANG['buttons'][45] = "Tout format CSV";
+$LANG['buttons'][46] = "Avant";
+$LANG['buttons'][47] = "Après";
+$LANG['buttons'][48] = "Transférer";
+$LANG['buttons'][49] = "Conserver";
+$LANG['buttons'][50] = "Tester";
+$LANG['buttons'][51] = "Enregistrer";
+$LANG['buttons'][52] = "Charger";
+$LANG['buttons'][53] = "Nettoyer";
 
-$LANG['contract'][0]="Contrat expiré depuis le";
-$LANG['contract'][1]="Contrat en préavis depuis le";
+$LANG['buttons'][55] = "Premier";
+$LANG['buttons'][56] = "Dernier";
+$LANG['buttons'][57] = "Exécuter";
+$LANG['buttons'][58] = "Mettre à jour";
 
-$LANG['consumables'][0]="Consommable";
-$LANG['consumables'][1]="En stock";
-$LANG['consumables'][2]="Référence";
-$LANG['consumables'][7]="Pas de consommable trouvé";
-$LANG['consumables'][9]="Aucun consommable";
-$LANG['consumables'][12]="Type de Consommable";
-$LANG['consumables'][13]="Neuf(s)";
-$LANG['consumables'][15]="Utilisé(s)";
-$LANG['consumables'][16]="Consommable(s)";
-$LANG['consumables'][20]="Neuf";
-$LANG['consumables'][22]="Utilisés";
-$LANG['consumables'][23]="État";
-$LANG['consumables'][26]="Date utilisation";
-$LANG['consumables'][32]="Donner";
-$LANG['consumables'][35]="Consommables usagés";
-$LANG['consumables'][36]="Lieu Stockage";
-$LANG['consumables'][37]="Réintégrer dans le stock";
-$LANG['consumables'][38]="Seuil d'alarme";
 
-$LANG['crontask'][0]="Tâches planifiées";
+$LANG['calendarD'][0] = "D";
+$LANG['calendarD'][1] = "L";
+$LANG['calendarD'][2] = "M";
+$LANG['calendarD'][3] = "M";
+$LANG['calendarD'][4] = "J";
+$LANG['calendarD'][5] = "V";
+$LANG['calendarD'][6] = "S";
+
+
+$LANG['calendarDay'][0] = "Dimanche";
+$LANG['calendarDay'][1] = "Lundi";
+$LANG['calendarDay'][2] = "Mardi";
+$LANG['calendarDay'][3] = "Mercredi";
+$LANG['calendarDay'][4] = "Jeudi";
+$LANG['calendarDay'][5] = "Vendredi";
+$LANG['calendarDay'][6] = "Samedi";
+
+
+$LANG['calendarM'][0]  = "Janvier";
+$LANG['calendarM'][1]  = "Février";
+$LANG['calendarM'][2]  = "Mars";
+$LANG['calendarM'][3]  = "Avril";
+$LANG['calendarM'][4]  = "Mai";
+$LANG['calendarM'][5]  = "Juin";
+$LANG['calendarM'][6]  = "Juillet";
+$LANG['calendarM'][7]  = "Août";
+$LANG['calendarM'][8]  = "Septembre";
+$LANG['calendarM'][9]  = "Octobre";
+$LANG['calendarM'][10] = "Novembre";
+$LANG['calendarM'][11] = "Décembre";
+
+
+$LANG['cartridges'][0]  = "Cartouche";
+
+$LANG['cartridges'][7]  = "Pas de cartouche trouvée";
+
+$LANG['cartridges'][9]  = "Aucune cartouche";
+$LANG['cartridges'][10] = "Toner";
+$LANG['cartridges'][11] = "Jet-Encre";
+$LANG['cartridges'][12] = "Type de Cartouche";
+$LANG['cartridges'][13] = "Neuve(s)";
+$LANG['cartridges'][14] = "Utilisée(s)";
+$LANG['cartridges'][15] = "Usagée(s)";
+$LANG['cartridges'][16] = "Cartouche(s)";
+
+$LANG['cartridges'][20] ="Neuve";
+$LANG['cartridges'][21] ="Utilisée";
+$LANG['cartridges'][22] ="Usagée";
+
+$LANG['cartridges'][24] = "Date ajout";
+
+$LANG['cartridges'][27] = "Sur";
+
+$LANG['cartridges'][29] = "Fin de vie";
+
+$LANG['cartridges'][32] = "Modèles d'imprimantes compatibles";
+$LANG['cartridges'][33] = "Cartouches utilisées";
+$LANG['cartridges'][34] = "Pas de cartouche libre";
+$LANG['cartridges'][35] = "Cartouche(s) usagée(s)";
+
+$LANG['cartridges'][37] = "Ruban";
+
+$LANG['cartridges'][39] = "Compteur imprimante";
+$LANG['cartridges'][40] = "En stock en moyenne";
+$LANG['cartridges'][41] = "Utilisation moyenne";
+$LANG['cartridges'][42] = "Pages imprimées en moyenne";
+
+
+$LANG['central'][0]  = "Bienvenue";
+$LANG['central'][1]  = "vous êtes sur la console centrale.";
+$LANG['central'][2]  = "Derniers";
+
+$LANG['central'][4]  = "Pas d'événement";
+$LANG['central'][5]  = "Accueil";
+$LANG['central'][6]  = "Déconnexion";
+$LANG['central'][7]  = "Aide";
+$LANG['central'][8]  = "Ajouts";
+$LANG['central'][9]  = "Vos tickets en cours";
+$LANG['central'][10] ="Les nouveaux tickets";
+
+$LANG['central'][12] = "Vue personnelle";
+$LANG['central'][13] = "Vue globale";
+$LANG['central'][14] = "Vue groupe";
+
+$LANG['central'][18] = "Vos tickets à clore";
+
+
+$LANG['choice'][0] = "Non";
+$LANG['choice'][1] = "Oui";
+
+
+$LANG['common'][0]  = "Sans nom";
+$LANG['common'][1]  = "Matériel";
+$LANG['common'][2]  = "ID";
+$LANG['common'][3]  = "Voir la corbeille";
+$LANG['common'][4]  = "Web";
+$LANG['common'][5]  = "Fabricant";
+$LANG['common'][6]  = "Nom du gabarit";
+$LANG['common'][7]  = "Choisissez un gabarit";
+$LANG['common'][8]  = "Gérer Gabarits...";
+$LANG['common'][9]  = "Ajouter un gabarit...";
+$LANG['common'][10] = "Responsable technique";
+$LANG['common'][11] = "Affichage limité";
+$LANG['common'][12] = "Configuration";
+$LANG['common'][13] = "Gabarit";
+$LANG['common'][14] = "Gabarits";
+$LANG['common'][15] = "Lieu";
+$LANG['common'][16] = "Nom";
+$LANG['common'][17] = "Type";
+$LANG['common'][18] = "Contact";
+$LANG['common'][19] = "Numéro de série";
+$LANG['common'][20] = "Numéro d'inventaire";
+$LANG['common'][21] = "Contact numéro";
+$LANG['common'][22] = "Modèle";
+$LANG['common'][23] = "Opération réalisée avec succès";
+$LANG['common'][24] = "Aucun élément sélectionné ou opération mal définie";
+$LANG['common'][25] = "Commentaires";
+$LANG['common'][26] = "Dernière modification";
+$LANG['common'][27] = "Date";
+$LANG['common'][28] = "Supprimé";
+$LANG['common'][29] = "Plugins";
+$LANG['common'][30] = "Nouvel item";
+$LANG['common'][31] = "Gabarit vide";
+$LANG['common'][32] = "Caractéristiques";
+$LANG['common'][33] = "Total";
+$LANG['common'][34] = "Utilisateur";
+$LANG['common'][35] = "Groupe";
+$LANG['common'][36] = "Catégorie";
+$LANG['common'][37] = "Auteur";
+$LANG['common'][38] = "Déglobaliser";
+$LANG['common'][39] = "Duplique l'élément autant de fois qu'il y a de connexions";
+$LANG['common'][40] = "Êtes-vous sûr de vouloir déglobaliser cet élément ?";
+$LANG['common'][41] = "Alertes par email";
+$LANG['common'][42] = "Portable";
+$LANG['common'][43] = "Prénom";
+$LANG['common'][44] = "Valeur(s) par défaut";
+
+$LANG['common'][46] = "Vcard";
+$LANG['common'][47] = "Progression";
+$LANG['common'][48] = "Nom de famille";
+$LANG['common'][49] = "Aucun";
+$LANG['common'][50] = "Confirmer la suppression définitive ?";
+$LANG['common'][51] = "Nom complet";
+$LANG['common'][52] = "Serveur";
+$LANG['common'][53] = "Liste";
+$LANG['common'][54] = "Élément introuvable";
+$LANG['common'][55] = "Êtes-vous certain de vouloir supprimer cet élément ?";
+$LANG['common'][56] = "Central";
+$LANG['common'][57] = "Titre";
+$LANG['common'][58] = "Valeur maximale";
+$LANG['common'][59] = "Global";
+$LANG['common'][60] = "Actif";
+$LANG['common'][61] = "Erreur inconnue";
+$LANG['common'][62] = "Autre";
+$LANG['common'][63] = "Erreur(s)";
+$LANG['common'][64] = "Superviseur";
+$LANG['common'][65] = "Interface";
+$LANG['common'][66] = "Tous";
+$LANG['common'][67] = "Autres";
+$LANG['common'][68] = "Paysage";
+$LANG['common'][69] = "Portrait";
+$LANG['common'][70] = "Élément ajouté avec succès";
+$LANG['common'][71] = "Élément modifié avec succès";
+$LANG['common'][72] = "Élément mis à la corbeille avec succès";
+$LANG['common'][73] = "Élément supprimé définitivement avec succès";
+$LANG['common'][74] = "Élément restauré avec succès";
+$LANG['common'][75] = "Pas le droit de rendre cet élément récursif pour cette entité";
+$LANG['common'][76] = "Public";
+$LANG['common'][77] = "Privé";
+$LANG['common'][78] = "Rendre public";
+$LANG['common'][79] = "Rendre privé";
+$LANG['common'][80] = "En cours de chargement...";
+$LANG['common'][81] = "Sortir de la corbeille";
+$LANG['common'][82] = "Mio";
+$LANG['common'][83] = "Vous n'avez pas les droits requis pour réaliser cette action.";
+$LANG['common'][84] = "La présence d'éléments liés interdit la modification de cet attribut";
+$LANG['common'][85] = "Modifier la visibilité dans les sous-entités";
+$LANG['common'][86] = "Vous n'avez pas les droits requis pour modifier la visibilité dans les sous-entités.";
+$LANG['common'][87] = "Nouvelle fiche";
+$LANG['common'][88] = "Identifiant interne du serveur (ID)";
+$LANG['common'][89] = "Non installé";
+$LANG['common'][90] = "Objet";
+$LANG['common'][91] = "Cet élément est dépendant d'un autre. La modification de cet attribut est interdit.";
+
+
+$LANG['computers'][0]  = "Volume";
+$LANG['computers'][1]  = "Pourcentage libre";
+$LANG['computers'][2]  = "Taille libre";
+$LANG['computers'][3]  = "Taille totale";
+$LANG['computers'][4]  = "Système de fichiers";
+$LANG['computers'][5]  = "Point montage";
+$LANG['computers'][6]  = "Chemin physique";
+$LANG['computers'][7]  = "Ajouter un volume";
+$LANG['computers'][8]  = "Volumes";
+$LANG['computers'][9]  = "OS";
+$LANG['computers'][10] = "OS Numéro de série";
+$LANG['computers'][11] = "OS Product ID";
+
+$LANG['computers'][14] = "Inséré";
+
+$LANG['computers'][21] = "CPU";
+
+$LANG['computers'][23] = "RAM Type";
+$LANG['computers'][24] = "Quantité RAM";
+$LANG['computers'][25] = "Taille HD";
+
+$LANG['computers'][36] = "HD-Type";
+$LANG['computers'][37] = "Pas d'écran connecté.";
+$LANG['computers'][38] = "Pas d'imprimante connectée";
+$LANG['computers'][39] = "Imprimante(s)";
+$LANG['computers'][40] = "Moniteur(s)";
+
+$LANG['computers'][46] = "Périphérique(s)";
+$LANG['computers'][47] = "Pas de périphérique connecté";
+$LANG['computers'][48] = "Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
+$LANG['computers'][49] = "Modification du contact. Les éléments connectés ont pris comme contact celui de l'ordinateur.";
+$LANG['computers'][50] = "Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les mêmes valeurs que l'ordinateur.";
+$LANG['computers'][51] = "Source de mise à jour";
+$LANG['computers'][52] = "OS Version";
+$LANG['computers'][53] = "Service Pack";
+$LANG['computers'][54] = "Pas de téléphone connecté";
+$LANG['computers'][55] = "Téléphone(s)";
+$LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut l'ordinateur.";
+
+
+$LANG['connect'][0]  = "Connexion(s) directe(s)";
+$LANG['connect'][1]  = "Non connecté.";
+
+$LANG['connect'][15] = "Mise à jour automatique des éléments suivants";
+$LANG['connect'][16] = "Attention !! Les éléments suivants des deux matériels ne correspondent pas";
+
+
+$LANG['contract'][0] = "Contrat expiré depuis le";
+$LANG['contract'][1] = "Contrat en préavis depuis le";
+
+
+$LANG['consumables'][0]  = "Consommable";
+$LANG['consumables'][1]  = "En stock";
+$LANG['consumables'][2]  = "Référence";
+
+$LANG['consumables'][7]  = "Pas de consommable trouvé";
+
+$LANG['consumables'][9]  = "Aucun consommable";
+
+$LANG['consumables'][12] = "Type de Consommable";
+$LANG['consumables'][13] = "Neuf(s)";
+
+$LANG['consumables'][15] = "Utilisé(s)";
+$LANG['consumables'][16] = "Consommable(s)";
+
+$LANG['consumables'][20] = "Neuf";
+
+$LANG['consumables'][22] = "Utilisés";
+$LANG['consumables'][23] = "État";
+
+$LANG['consumables'][26] = "Date utilisation";
+
+$LANG['consumables'][32] = "Donner";
+
+$LANG['consumables'][35] = "Consommables usagés";
+$LANG['consumables'][36] = "Lieu Stockage";
+$LANG['consumables'][37] = "Réintégrer dans le stock";
+$LANG['consumables'][38] = "Seuil d'alarme";
+
+
+$LANG['crontask'][0]  = "Tâches planifiées";
 // index if crontask id
-$LANG['crontask'][1]="Synchronisation des matériels depuis OCS Inventory NG";
-$LANG['crontask'][2]="Envoi des alertes sur les cartouches";
-$LANG['crontask'][3]="Envoi des alertes sur les consommables";
-$LANG['crontask'][4]="Envoi des alertes sur expiration des licences";
-$LANG['crontask'][5]="Envoi des alertes sur les contrats";
-$LANG['crontask'][6]="Envoi des alertes sur les informations financières";
-$LANG['crontask'][7]="Nettoyage des journaux";
-$LANG['crontask'][8]="Optimisation de la base de données";
-$LANG['crontask'][9]="Récupération des messages (Collecteurs)";
-$LANG['crontask'][10]="Vérification du réplicat MySQL";
-$LANG['crontask'][11]="Vérification de la présence de mises à jour";
-$LANG['crontask'][12]="Nettoyage des sessions expirées";
-$LANG['crontask'][13]="Nettoyage des graphiques générés";
-$LANG['crontask'][14]="Fermeture administrative des tickets";
-$LANG['crontask'][15]="Tickets non résolus";
+$LANG['crontask'][1]  = "Synchronisation des matériels depuis OCS Inventory NG";
+$LANG['crontask'][2]  = "Envoi des alertes sur les cartouches";
+$LANG['crontask'][3]  = "Envoi des alertes sur les consommables";
+$LANG['crontask'][4]  = "Envoi des alertes sur expiration des licences";
+$LANG['crontask'][5]  = "Envoi des alertes sur les contrats";
+$LANG['crontask'][6]  = "Envoi des alertes sur les informations financières";
+$LANG['crontask'][7]  = "Nettoyage des journaux";
+$LANG['crontask'][8]  = "Optimisation de la base de données";
+$LANG['crontask'][9]  = "Récupération des messages (Collecteurs)";
+$LANG['crontask'][10] = "Vérification du réplicat MySQL";
+$LANG['crontask'][11] = "Vérification de la présence de mises à jour";
+$LANG['crontask'][12] = "Nettoyage des sessions expirées";
+$LANG['crontask'][13] = "Nettoyage des graphiques générés";
+$LANG['crontask'][14] = "Fermeture administrative des tickets";
+$LANG['crontask'][15] = "Tickets non résolus";
 
 // keep >12 free additionnal task
-$LANG['crontask'][30]="Description";
-$LANG['crontask'][31]="Désactivée";
-$LANG['crontask'][32]="Programmée";
-$LANG['crontask'][33]="En cours d'exécution";
-$LANG['crontask'][34]="GLPI";
-$LANG['crontask'][35]="CLI";
-$LANG['crontask'][36]="Mode d'exécution";
-$LANG['crontask'][37]="Fréquence d'exécution";
-$LANG['crontask'][38]="Plage horaires d'exécution";
-$LANG['crontask'][39]="Nombre de messages à récupérer";
-$LANG['crontask'][40]="Dernière exécution";
-$LANG['crontask'][41]="Prochaine exécution";
-$LANG['crontask'][42]="Dès que possible";
-$LANG['crontask'][43]="Aucune tâche en attente";
-$LANG['crontask'][44]="Tâche terminée, traitement partiel";
-$LANG['crontask'][45]="Tâche terminée, traitement complet";
-$LANG['crontask'][46]="Tâche terminée, rien à faire";
-$LANG['crontask'][47]="Liste des dernières exécutions";
-$LANG['crontask'][48]="Lancement";
-$LANG['crontask'][49]="Fin";
-$LANG['crontask'][50]="Nombre d'exécutions";
-$LANG['crontask'][51]="Durée minimale";
-$LANG['crontask'][52]="Durée maximale";
-$LANG['crontask'][53]="Durée moyenne";
-$LANG['crontask'][54]="Durée totale";
-$LANG['crontask'][55]="Nombre minimun";
-$LANG['crontask'][56]="Nombre maximun";
-$LANG['crontask'][57]="Nombre moyen";
-$LANG['crontask'][58]="Nombre total";
-$LANG['crontask'][59]="Vitesse moyenne";
-$LANG['crontask'][60]="Verrou système";
-$LANG['crontask'][61]="Plugin désactivé";
-$LANG['crontask'][62]="Eléments";
+$LANG['crontask'][31] = "Désactivée";
+$LANG['crontask'][32] = "Programmée";
+$LANG['crontask'][33] = "En cours d'exécution";
+$LANG['crontask'][34] = "GLPI";
+$LANG['crontask'][35] = "CLI";
+$LANG['crontask'][36] = "Mode d'exécution";
+$LANG['crontask'][37] = "Fréquence d'exécution";
+$LANG['crontask'][38] = "Plage horaires d'exécution";
+$LANG['crontask'][39] = "Nombre de messages à récupérer";
+$LANG['crontask'][40] = "Dernière exécution";
+$LANG['crontask'][41] = "Prochaine exécution";
+$LANG['crontask'][42] = "Dès que possible";
+$LANG['crontask'][43] = "Aucune tâche en attente";
+$LANG['crontask'][44] = "Tâche terminée, traitement partiel";
+$LANG['crontask'][45] = "Tâche terminée, traitement complet";
+$LANG['crontask'][46] = "Tâche terminée, rien à faire";
+$LANG['crontask'][47] = "Liste des dernières exécutions";
+$LANG['crontask'][48] = "Lancement";
 
-$LANG['devices'][0]="Ajouter un nouveau composant";
-$LANG['devices'][1]="Disque dur";
-$LANG['devices'][2]="Carte graphique";
-$LANG['devices'][3]="Carte réseau";
-$LANG['devices'][4]="Processeur";
-$LANG['devices'][5]="Carte mère";
-$LANG['devices'][6]="Mémoire vive";
-$LANG['devices'][7]="Carte son";
-$LANG['devices'][19]="Lecteurs";
-$LANG['devices'][20]="Contrôleurs";
-$LANG['devices'][21]="Autres Composants";
-$LANG['devices'][22]="Boîtiers";
-$LANG['devices'][23]="Alimentation";
-$LANG['devices'][24]="par défaut";
-$LANG['devices'][25]="Ajout d'un composant";
-$LANG['devices'][26]="Suppression d'un composant";
+$LANG['crontask'][50] = "Nombre d'exécutions";
+$LANG['crontask'][51] = "Durée minimale";
+$LANG['crontask'][52] = "Durée maximale";
+$LANG['crontask'][53] = "Durée moyenne";
 
-$LANG['device_case'][0]="Format";
+$LANG['crontask'][55] = "Nombre minimum";
+$LANG['crontask'][56] = "Nombre maximum";
+$LANG['crontask'][57] = "Nombre moyen";
+$LANG['crontask'][58] = "Nombre total";
+$LANG['crontask'][59] = "Vitesse moyenne";
+$LANG['crontask'][60] = "Verrou système";
+$LANG['crontask'][61] = "Plugin désactivé";
+$LANG['crontask'][62] = "Eléments";
 
-$LANG['device_control'][0]="RAID";
 
-$LANG['device_drive'][0]="Écriture";
-$LANG['device_drive'][1]="Vitesse";
+$LANG['devices'][0]  = "Ajouter un nouveau composant";
+$LANG['devices'][1]  = "Disque dur";
+$LANG['devices'][2]  = "Carte graphique";
+$LANG['devices'][3]  = "Carte réseau";
+$LANG['devices'][4]  = "Processeur";
+$LANG['devices'][5]  = "Carte mère";
+$LANG['devices'][6]  = "Mémoire vive";
+$LANG['devices'][7]  = "Carte son";
 
-$LANG['device_gfxcard'][0]="Mémoire";
+$LANG['devices'][19] = "Lecteurs";
+$LANG['devices'][20] = "Contrôleurs";
+$LANG['devices'][21] = "Autres Composants";
+$LANG['devices'][22] = "Boîtiers";
+$LANG['devices'][23] = "Alimentation";
+$LANG['devices'][24] = "par défaut";
+$LANG['devices'][25] = "Ajout d'un composant";
+$LANG['devices'][26] = "Suppression d'un composant";
 
-$LANG['device_hdd'][0]="Rpm";
-$LANG['device_hdd'][1]="Cache";
-$LANG['device_hdd'][4]="Capacité";
 
-$LANG['device_iface'][0]="Débit";
-$LANG['device_iface'][2]="Adresse Mac";
+$LANG['device_case'][0] = "Format";
+
+
+$LANG['device_control'][0] = "RAID";
+
+
+$LANG['device_drive'][0] = "Écriture";
+$LANG['device_drive'][1] = "Vitesse";
+
+
+$LANG['device_gfxcard'][0] = "Mémoire";
+
+
+$LANG['device_hdd'][0] = "Rpm";
+$LANG['device_hdd'][1] = "Cache";
+
+$LANG['device_hdd'][4] = "Capacité";
+
+
+$LANG['device_iface'][0] = "Débit";
+
+$LANG['device_iface'][2] = "Adresse Mac";
+
 
 $LANG['device_moboard'][0]="Chipset";
 
-$LANG['device_power'][0]="Puissance";
-$LANG['device_power'][1]="ATX";
 
-$LANG['device_ram'][1]="Fréquence";
-$LANG['device_ram'][2]="Taille";
-
-$LANG['document'][1]="Somme de contrôle (SHA1)";
-$LANG['document'][2]="Fichier";
-$LANG['document'][3]="Rubrique";
-$LANG['document'][4]="Type MIME";
-$LANG['document'][7]="Type de document";
-$LANG['document'][9]="Extension";
-$LANG['document'][10]="Icône";
-$LANG['document'][11]="Téléchargement autorisé";
-$LANG['document'][15]="Téléchargement";
-$LANG['document'][16]="Ajouter un Document";
-$LANG['document'][18]="Document";
-$LANG['document'][19]="Éléments associés";
-$LANG['document'][21]="Document(s) associé(s)";
-$LANG['document'][22]="Fichier courant";
-$LANG['document'][24]="Suppression avec succès du fichier";
-$LANG['document'][25]="Échec de la suppression du fichier";
-$LANG['document'][26]="Le fichier est valide, et a été téléchargé avec succès.";
-$LANG['document'][27]="Attaque par upload potentielle. Ou fichier trop volumineux. Impossible de déplacer le fichier temporaire.";
-$LANG['document'][29]="Échec de la création du répertoire";
-$LANG['document'][30]="Vérifiez que vous avez les droits";
-$LANG['document'][31]="Répertoire de stockage des documents inexistant :";
-$LANG['document'][32]="Type de fichier non autorisé";
-$LANG['document'][33]="Lien Web";
-$LANG['document'][34]="Création du répertoire";
-$LANG['document'][35]="Répertoire d'upload inexistant";
-$LANG['document'][36]="Sélectionner un fichier installé par FTP";
-$LANG['document'][37]="Pas de fichier disponible";
-$LANG['document'][38]="Fichier introuvable";
-$LANG['document'][39]="Document déplacé avec succès";
-$LANG['document'][40]="Problème dans le déplacement du fichier";
-$LANG['document'][41]="Document copié avec succès";
-$LANG['document'][42]="Ajouté par";
-$LANG['document'][43]="Fichier inconnu";
-$LANG['document'][44]="Nom de fichier incorrect";
-$LANG['document'][45]="Vous n'avez pas le droit d'accéder à ce fichier";
-$LANG['document'][46]="Échec dans l'envoi du fichier (sûrement trop volumineux)";
-$LANG['document'][48]="Un document avec ce fichier est déjà disponible";
-$LANG['document'][49]="Fichier altéré (mauvaise somme de contrôle)";
-
-$LANG['entity'][0]="Entité";
-$LANG['entity'][1]="Hiérarchie";
-$LANG['entity'][2]="Entité Racine";
-$LANG['entity'][3]="Associer à une entité";
-$LANG['entity'][5]="Affectation automatique des machines";
-$LANG['entity'][6]="Affectation automatique des utilisateurs";
-$LANG['entity'][7]="arborescence";
-$LANG['entity'][8]="Par entité";
-$LANG['entity'][9]="Sous-entités";
-$LANG['entity'][10]="Sélectionnez l'entité souhaitée";
-$LANG['entity'][11]="pour voir l'entité et ses sous-entités";
-$LANG['entity'][12]="Information LDAP représentant l'entité";
-$LANG['entity'][13]="Information OCS représentant l'entité";
-$LANG['entity'][14]="Informations avancées";
-$LANG['entity'][15]="Annuaire associé à l'entité";
-$LANG['entity'][16]="Filtre de recherche (si nécessaire)";
-$LANG['entity'][17]="Configuration fermeture administrative";
-$LANG['entity'][18]="Fermeture administrative automatique des tickets résolus après";
+$LANG['device_power'][0] = "Puissance";
+$LANG['device_power'][1] = "ATX";
 
 
-$LANG['event'][0]="Item (ID)";
-$LANG['event'][2]="Service";
-$LANG['event'][3]="Niveau";
-$LANG['event'][4]="Message";
-$LANG['event'][18]="Champ";
-$LANG['event'][19]="Changement";
-$LANG['event'][20]="Pas d'historique";
+$LANG['device_ram'][1] = "Fréquence";
+$LANG['device_ram'][2] = "Taille";
 
-$LANG['financial'][1]="Contrat";
-$LANG['financial'][2]="A vie";
-$LANG['financial'][3]="Informations financières";
-$LANG['financial'][4]="Numéro";
-$LANG['financial'][5]="Coût";
-$LANG['financial'][6]="Type de contrat";
-$LANG['financial'][8]="Durée";
-$LANG['financial'][9]="an(s)";
-$LANG['financial'][10]="Préavis";
-$LANG['financial'][11]="Périodicité de facturation";
-$LANG['financial'][13]="Numéro comptable";
-$LANG['financial'][14]="Date d'achat";
-$LANG['financial'][15]="Durée de garantie";
-$LANG['financial'][16]="Informations garantie";
-$LANG['financial'][18]="Numéro de commande";
-$LANG['financial'][19]="Bon de livraison";
-$LANG['financial'][20]="Numéro d'immobilisation";
-$LANG['financial'][21]="Valeur";
-$LANG['financial'][22]="Type d'amortissement";
-$LANG['financial'][23]="Durée d'amortissement";
-$LANG['financial'][24]="Ajouter Contact...";
-$LANG['financial'][25]="Ajouter Fournisseur...";
-$LANG['financial'][26]="Fournisseur";
-$LANG['financial'][30]="Fax";
-$LANG['financial'][33]="Ajouter un Contact";
-$LANG['financial'][36]="Ajouter un Contrat";
-$LANG['financial'][42]="Commercial";
-$LANG['financial'][43]="Technicien";
-$LANG['financial'][44]="Adresse";
-$LANG['financial'][45]="Site Web";
-$LANG['financial'][46]="Contacts associés";
-$LANG['financial'][47]="Linéaire";
-$LANG['financial'][48]="Dégressif";
-$LANG['financial'][50]="Prêt";
-$LANG['financial'][51]="Location";
-$LANG['financial'][52]="Leasing";
-$LANG['financial'][53]="Assurances";
-$LANG['financial'][54]="Maintenance Hardware";
-$LANG['financial'][55]="Maintenance Software";
-$LANG['financial'][56]="Prestation";
-$LANG['financial'][57]="mois";
-$LANG['financial'][59]="Heures d'intervention";
-$LANG['financial'][60]="en semaine";
-$LANG['financial'][61]="le samedi";
-$LANG['financial'][62]="dimanche et fêtes";
-$LANG['financial'][65]="Fournisseurs associés";
-$LANG['financial'][66]="Contrat(s) associé(s)";
-$LANG['financial'][68]="Activer les informations financières";
-$LANG['financial'][69]="Périodicité du contrat";
-$LANG['financial'][76]="Date de mise en service";
-$LANG['financial'][77]="Coefficient d'amortissement";
-$LANG['financial'][78]="Valeur extension garantie";
-$LANG['financial'][79]="Type de Tiers";
-$LANG['financial'][80]="Expiration garantie";
-$LANG['financial'][81]="Valeur nette comptable";
-$LANG['financial'][82]="Numéro de facture";
-$LANG['financial'][83]="Nombre max d'éléments (0=illimité)";
-$LANG['financial'][84]="Pour ce type d'élément, les informations financières ne sont qu'un modèle pour les éléments que vous ajouterez ensuite.";
-$LANG['financial'][85]="Élément demandé introuvable";
-$LANG['financial'][87]="Budget";
-$LANG['financial'][88]="Expire le :";
-$LANG['financial'][89]="TCO (valeur+montant des interventions)";
-$LANG['financial'][90]="TCO mensuel";
-$LANG['financial'][91]="TCO";
-$LANG['financial'][92]="VNC";
-$LANG['financial'][93]="Contrat(s) expiré(s) depuis moins de 30 jours";
-$LANG['financial'][94]="Contrat(s) qui expire(nt) dans moins de 7 jours";
-$LANG['financial'][95]="Contrat(s) qui expire(nt) dans moins de 30 jours";
-$LANG['financial'][96]="Contrat(s) dont le préavis débute dans moins de 7 jours";
-$LANG['financial'][97]="Contrat(s) dont le préavis débute dans moins de 30 jours";
-$LANG['financial'][98]="Expiration";
-$LANG['financial'][99]="Expiration+préavis";
-$LANG['financial'][100]="Code Postal";
-$LANG['financial'][101]="Ville";
-$LANG['financial'][102]="État";
-$LANG['financial'][103]="Pays";
-$LANG['financial'][104]="Matériel rattaché";
-$LANG['financial'][105]="Tacite";
-$LANG['financial'][106]="Express";
-$LANG['financial'][107]="Reconduction";
-$LANG['financial'][108]="Total dépensé sur le budget";
-$LANG['financial'][109]="Total restant sur le budget";
 
-$LANG['gmt'][0]="GMT";
-$LANG['gmt'][1]="heure(s)";
-$LANG['gmt'][2]="h";
+$LANG['document'][1]  = "Somme de contrôle (SHA1)";
+$LANG['document'][2]  = "Fichier";
+$LANG['document'][3]  = "Rubrique";
+$LANG['document'][4]  = "Type MIME";
+
+$LANG['document'][7]  = "Type de document";
+
+$LANG['document'][9]  = "Extension";
+$LANG['document'][10] = "Icône";
+$LANG['document'][11] = "Téléchargement autorisé";
+
+$LANG['document'][15] = "Téléchargement";
+$LANG['document'][16] = "Ajouter un Document";
+
+$LANG['document'][18] = "Document";
+$LANG['document'][19] = "Éléments associés";
+
+$LANG['document'][21] = "Document(s) associé(s)";
+$LANG['document'][22] = "Fichier courant";
+
+$LANG['document'][24] = "Suppression avec succès du fichier";
+$LANG['document'][25] = "Échec de la suppression du fichier";
+$LANG['document'][26] = "Le fichier est valide, et a été téléchargé avec succès.";
+$LANG['document'][27] = "Attaque par upload potentielle. Ou fichier trop volumineux. Impossible de déplacer le fichier temporaire.";
+
+$LANG['document'][29] = "Échec de la création du répertoire";
+$LANG['document'][30] = "Vérifiez que vous avez les droits";
+$LANG['document'][31] = "Répertoire de stockage des documents inexistant :";
+$LANG['document'][32] = "Type de fichier non autorisé";
+$LANG['document'][33] = "Lien Web";
+$LANG['document'][34] = "Création du répertoire";
+$LANG['document'][35] = "Répertoire d'upload inexistant";
+$LANG['document'][36] = "Sélectionner un fichier installé par FTP";
+$LANG['document'][37] = "Pas de fichier disponible";
+$LANG['document'][38] = "Fichier introuvable";
+$LANG['document'][39] = "Document déplacé avec succès";
+$LANG['document'][40] = "Problème dans le déplacement du fichier";
+$LANG['document'][41] = "Document copié avec succès";
+$LANG['document'][42] = "Ajouté par";
+$LANG['document'][43] = "Fichier inconnu";
+$LANG['document'][44] = "Nom de fichier incorrect";
+$LANG['document'][45] = "Vous n'avez pas le droit d'accéder à ce fichier";
+$LANG['document'][46] = "Échec dans l'envoi du fichier (sûrement trop volumineux)";
+$LANG['document'][48] = "Un document avec ce fichier est déjà disponible";
+$LANG['document'][49] = "Fichier altéré (mauvaise somme de contrôle)";
+
+
+$LANG['entity'][0]  = "Entité";
+$LANG['entity'][1]  = "Hiérarchie";
+$LANG['entity'][2]  = "Entité Racine";
+$LANG['entity'][3]  = "Associer à une entité";
+$LANG['entity'][5]  = "Affectation automatique des machines";
+$LANG['entity'][6]  = "Affectation automatique des utilisateurs";
+$LANG['entity'][7]  = "arborescence";
+$LANG['entity'][8]  = "Par entité";
+$LANG['entity'][9]  = "Sous-entités";
+$LANG['entity'][10] = "Sélectionnez l'entité souhaitée";
+$LANG['entity'][11] = "pour voir l'entité et ses sous-entités";
+$LANG['entity'][12] = "Information LDAP représentant l'entité";
+$LANG['entity'][13] = "Information OCS représentant l'entité";
+$LANG['entity'][14] = "Informations avancées";
+$LANG['entity'][15] = "Annuaire associé à l'entité";
+$LANG['entity'][16] = "Filtre de recherche (si nécessaire)";
+$LANG['entity'][17] = "Configuration fermeture administrative";
+$LANG['entity'][18] = "Fermeture administrative automatique des tickets résolus après";
+
+
+$LANG['event'][0]  = "Item (ID)";
+
+$LANG['event'][2]  = "Service";
+$LANG['event'][3]  = "Niveau";
+$LANG['event'][4]  = "Message";
+
+$LANG['event'][18] = "Champ";
+$LANG['event'][19] = "Changement";
+$LANG['event'][20] = "Pas d'historique";
+
+
+$LANG['financial'][1]   = "Contrat";
+$LANG['financial'][2]   = "A vie";
+$LANG['financial'][3]   = "Informations financières";
+$LANG['financial'][4]   = "Numéro";
+$LANG['financial'][5]   = "Coût";
+$LANG['financial'][6]   = "Type de contrat";
+
+$LANG['financial'][8]   = "Durée";
+$LANG['financial'][9]   = "an(s)";
+$LANG['financial'][10]  = "Préavis";
+$LANG['financial'][11]  = "Périodicité de facturation";
+
+$LANG['financial'][13]  = "Numéro comptable";
+$LANG['financial'][14]  = "Date d'achat";
+$LANG['financial'][15]  = "Durée de garantie";
+$LANG['financial'][16]  = "Informations garantie";
+
+$LANG['financial'][18]  = "Numéro de commande";
+$LANG['financial'][19]  = "Bon de livraison";
+$LANG['financial'][20]  = "Numéro d'immobilisation";
+$LANG['financial'][21]  = "Valeur";
+$LANG['financial'][22]  = "Type d'amortissement";
+$LANG['financial'][23]  = "Durée d'amortissement";
+$LANG['financial'][24]  = "Ajouter Contact...";
+$LANG['financial'][25]  = "Ajouter Fournisseur...";
+$LANG['financial'][26]  = "Fournisseur";
+
+$LANG['financial'][30]  = "Fax";
+
+$LANG['financial'][33]  = "Ajouter un Contact";
+
+$LANG['financial'][36]  = "Ajouter un Contrat";
+
+$LANG['financial'][42]  = "Commercial";
+$LANG['financial'][43]  = "Technicien";
+$LANG['financial'][44]  = "Adresse";
+$LANG['financial'][45]  = "Site Web";
+$LANG['financial'][46]  = "Contacts associés";
+$LANG['financial'][47]  = "Linéaire";
+$LANG['financial'][48]  = "Dégressif";
+
+$LANG['financial'][50]  = "Prêt";
+$LANG['financial'][51]  = "Location";
+$LANG['financial'][52]  = "Leasing";
+$LANG['financial'][53]  = "Assurances";
+$LANG['financial'][54]  = "Maintenance Hardware";
+$LANG['financial'][55]  = "Maintenance Software";
+$LANG['financial'][56]  = "Prestation";
+$LANG['financial'][57]  = "mois";
+
+$LANG['financial'][59]  = "Heures d'intervention";
+$LANG['financial'][60]  = "en semaine";
+$LANG['financial'][61]  = "le samedi";
+$LANG['financial'][62]  = "dimanche et fêtes";
+
+$LANG['financial'][65]  = "Fournisseurs associés";
+$LANG['financial'][66]  = "Contrat(s) associé(s)";
+
+$LANG['financial'][68]  = "Activer les informations financières";
+$LANG['financial'][69]  = "Périodicité du contrat";
+
+$LANG['financial'][76]  = "Date de mise en service";
+$LANG['financial'][77]  = "Coefficient d'amortissement";
+$LANG['financial'][78]  = "Valeur extension garantie";
+$LANG['financial'][79]  = "Type de Tiers";
+$LANG['financial'][80]  = "Expiration garantie";
+$LANG['financial'][81]  = "Valeur nette comptable";
+$LANG['financial'][82]  = "Numéro de facture";
+$LANG['financial'][83]  = "Nombre max d'éléments (0=illimité)";
+$LANG['financial'][84]  = "Pour ce type d'élément, les informations financières ne sont qu'un modèle pour les éléments que vous ajouterez ensuite.";
+$LANG['financial'][85]  = "Élément demandé introuvable";
+
+$LANG['financial'][87]  = "Budget";
+$LANG['financial'][88]  = "Expire le :";
+$LANG['financial'][89]  = "TCO (valeur+montant des interventions)";
+$LANG['financial'][90]  = "TCO mensuel";
+$LANG['financial'][91]  = "TCO";
+$LANG['financial'][92]  = "VNC";
+$LANG['financial'][93]  = "Contrat(s) expiré(s) depuis moins de 30 jours";
+$LANG['financial'][94]  = "Contrat(s) qui expire(nt) dans moins de 7 jours";
+$LANG['financial'][95]  = "Contrat(s) qui expire(nt) dans moins de 30 jours";
+$LANG['financial'][96]  = "Contrat(s) dont le préavis débute dans moins de 7 jours";
+$LANG['financial'][97]  = "Contrat(s) dont le préavis débute dans moins de 30 jours";
+$LANG['financial'][98]  = "Expiration";
+$LANG['financial'][99]  = "Expiration+préavis";
+$LANG['financial'][100] = "Code Postal";
+$LANG['financial'][101] = "Ville";
+$LANG['financial'][102] = "État";
+$LANG['financial'][103] = "Pays";
+$LANG['financial'][104] = "Matériel rattaché";
+$LANG['financial'][105] = "Tacite";
+$LANG['financial'][106] = "Express";
+$LANG['financial'][107] = "Reconduction";
+$LANG['financial'][108] = "Total dépensé sur le budget";
+$LANG['financial'][109] = "Total restant sur le budget";
+
+
+$LANG['gmt'][0] = "GMT";
+$LANG['gmt'][1] = "heure(s)";
+$LANG['gmt'][2] = "h";
+
 
 // For priority
 $LANG['help'][1]="Matrice de calcul de la priorité";
@@ -1994,6 +2079,6 @@ $LANG['validation'][28]="Statut de la demande de validation";
 $LANG['validation'][29]="En cas de refus de validation, vous devez indiquer un motif";
 $LANG['validation'][30]="Suppression de la demande de validation à";
 $LANG['validation'][31]="Mise à jour de la demande de validation à";
-$LANG['validation'][32]="Une réponse à une demande de validation a été éffectuée";
+$LANG['validation'][32]="Une réponse à une demande de validation a été effectuée";
 
 ?>
