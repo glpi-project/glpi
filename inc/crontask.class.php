@@ -368,7 +368,7 @@ class CronTask extends CommonDBTM{
       echo "<td class='center middle' rowspan='6'>.<textarea cols='45' ".
          "rows='8' name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][30]." : </td><td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['joblist'][6]." : </td><td>";
       echo $this->getDescription($ID);
       echo "</td></tr>";
 
@@ -759,7 +759,7 @@ class CronTask extends CommonDBTM{
          echo $nbstart;
       } else {
          // This should not appen => task crash ?
-         echo $LANG['crontask'][48]." = $nbstart<br>".$LANG['crontask'][49]." = $nbstop";
+         echo $LANG['crontask'][48]." = $nbstart<br>".$LANG['buttons'][32]." = $nbstop";
       }
       echo "</td></tr>";
 
@@ -794,7 +794,7 @@ class CronTask extends CommonDBTM{
             echo "<td class='right'><strong>".number_format($data['elapsedavg'],2)." ".
                   $LANG['stats'][34]."</strong></td></tr>";
 
-            echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][54]."&nbsp;:</td>";
+            echo "<tr class='tab_bg_1'><td>".$LANG['job'][20]."&nbsp;:</td>";
             echo "<td class='right'>".number_format($data['elapsedtot'],2)." ".$LANG['stats'][34];
             echo "</td></tr>";
          }
@@ -868,7 +868,7 @@ class CronTask extends CommonDBTM{
             echo "<th>".$LANG['common'][27]."</th>"; // Date
             echo "<th>".$LANG['job'][20]."</th>"; // Duration
             echo "<th>".$LANG['tracking'][29]."</th>"; // Number
-            echo "<th>".$LANG['crontask'][30]."</th>"; // Dexcription
+            echo "<th>".$LANG['joblist'][6]."</th>"; // Dexcription
             echo "</tr>\n";
 
             do {
@@ -915,7 +915,7 @@ class CronTask extends CommonDBTM{
             echo "<th>".$LANG['joblist'][0]."</th>"; // statut
             echo "<th>".$LANG['job'][31]."</th>"; // Duration
             echo "<th>".$LANG['tracking'][29]."</th>"; // Number
-            echo "<th>".$LANG['crontask'][30]."</th>"; // Dexcription
+            echo "<th>".$LANG['joblist'][6]."</th>"; // Dexcription
             echo "</tr>\n";
 
             $first=true;
@@ -926,9 +926,11 @@ class CronTask extends CommonDBTM{
                   case CronTaskLog::STATE_START:
                      echo "<td>".$LANG['crontask'][48]."</td>";
                      break;
+ 
                   case CronTaskLog::STATE_STOP:
-                     echo "<td>".$LANG['crontask'][49]."</td>";
+                     echo "<td>".$LANG['buttons'][32]."</td>";
                      break;
+ 
                   default:
                      echo "<td>".$LANG['crontask'][33]."</td>";
                }
@@ -969,7 +971,7 @@ class CronTask extends CommonDBTM{
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'description';
       $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = $LANG['crontask'][30];
+      $tab[3]['name']      = $LANG['joblist'][6];
 
       $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'state';
