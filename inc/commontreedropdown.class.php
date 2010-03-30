@@ -83,7 +83,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
           && $input[$this->getForeignKeyField()]>0
           && $parent->getFromDB($input[$this->getForeignKeyField()])) {
          $input['level'] = $parent->fields['level']+1;
-         $input['completename'] = $parent->fields['completename'] . " > " . $input['name'];
+         $input['completename'] = addslashes($parent->fields['completename']) . " > " . $input['name'];
       } else {
          $input[$this->getForeignKeyField()] = 0;
          $input['level'] = 1;
