@@ -1485,6 +1485,7 @@ class Search {
          switch ($searchopt[$ID]["datatype"]) {
             case "number" :
             case "decimal" :
+            case "timestamp" :
                $search=array("/\&lt;/","/\&gt;/");
                $replace=array("<",">");
                $val=preg_replace($search,$replace,$val);
@@ -2407,6 +2408,7 @@ class Search {
 
             case "number" :
             case "decimal" :
+            case "timestamp" :
 
                $search=array("/\&lt;/",
                            "/\&gt;/");
