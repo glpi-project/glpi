@@ -126,7 +126,7 @@ class RuleOcs extends Rule {
       $criterias['IPADDRESS']['table']     = 'networks';
       $criterias['IPADDRESS']['field']     = 'IPADDRESS';
       $criterias['IPADDRESS']['name']      = $LANG['financial'][44]." ".
-                                                                             $LANG['networking'][14];
+                                                $LANG['networking'][14];
       $criterias['IPADDRESS']['linkfield'] = 'HARDWARE_ID';
 
       $criterias['MACHINE_NAME']['table']     = 'hardware';
@@ -138,6 +138,12 @@ class RuleOcs extends Rule {
       $criterias['DESCRIPTION']['field']     = 'DESCRIPTION';
       $criterias['DESCRIPTION']['name']      = $LANG['joblist'][6];
       $criterias['DESCRIPTION']['linkfield'] = '';
+
+      $criterias['SSN']['table']     = 'bios';
+      $criterias['SSN']['field']     = 'SSN';
+      $criterias['SSN']['name']      = $LANG['common'][19];
+      $criterias['SSN']['linkfield'] = 'HARDWARE_ID';
+
       return $criterias;
    }
 
@@ -151,6 +157,10 @@ class RuleOcs extends Rule {
       $actions['_affect_entity_by_tag']['name'] = $LANG['rulesengine'][131];
       $actions['_affect_entity_by_tag']['type'] = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
+
+      $actions['_ignore_ocs_import']['name'] = $LANG['ocsconfig'][6];
+      $actions['_ignore_ocs_import']['type'] = 'yesno';
+
       return $actions;
    }
 }
