@@ -4063,7 +4063,8 @@ class Search {
             $search[$itemtype][134]['forcegroupby']  = true;
             $search[$itemtype][134]['datatype']      = 'date_delay';
             $search[$itemtype][134]['datafields'][1] = 'begin_date';
-            $search[$itemtype][134]['searchunit']    = 'duration';
+            $search[$itemtype][134]['datafields'][2] = 'duration';
+            $search[$itemtype][134]['searchunit']    = 'MONTH';
             $search[$itemtype][134]['delayunit']     = 'MONTH';
 
             $search[$itemtype][135]['table']        = 'glpi_contracts';
