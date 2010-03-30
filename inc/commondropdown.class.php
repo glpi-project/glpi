@@ -199,6 +199,12 @@ abstract class CommonDropdown extends CommonDBTM {
             case 'bool' :
                Dropdown::showYesNo($field['name'], $this->fields[$field['name']]);
                break;
+            case 'date' :
+               showDateFormItem($field['name'], $this->fields[$field['name']]);
+               break;
+            case 'datetime' :
+               showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
+               break;
          }
          echo "</td></tr>\n";
       }
