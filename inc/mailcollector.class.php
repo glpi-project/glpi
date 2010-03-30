@@ -61,8 +61,8 @@ class MailCollector  extends CommonDBTM {
    var $addtobody;
    /// Number of fetched emails
    var $fetch_emails=0;
-   /// Maximim number of emails to fetch
-   var $maxfetch_emails=0;
+   /// Maximum number of emails to fetch : default to 10
+   var $maxfetch_emails=10;
    /// Max size for attached files
    var $filesize_max=0;
 
@@ -273,7 +273,6 @@ class MailCollector  extends CommonDBTM {
             $this->fetch_emails = 0;
             //Connect to the Mail Box
             $this->connect();
-
             // Get Total Number of Unread Email in mail box
             $tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
@@ -321,6 +320,7 @@ class MailCollector  extends CommonDBTM {
             $tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
             $error=0;
             $refused = 0;
+
             for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
                $tkt= $this->buildTicket($i,array('mailgates_id'=>$mailgateID,
                                                  'play_rules'=>true));
@@ -333,7 +333,6 @@ class MailCollector  extends CommonDBTM {
 
                   if (isset($tkt['entities_id'])) {
                      $tkt['_mailgate']=$mailgateID;
-                     $this->deleteMails($i); // Delete Mail from Mail box
                      $result=imap_fetchheader($this->marubox,$i);
                      // Is a mail responding of an already existgin ticket ?
                      if (isset($tkt['tickets_id']) ) {
@@ -359,10 +358,9 @@ class MailCollector  extends CommonDBTM {
                         $this->sendMailRefusedResponse($tkt['user_email'],$tkt['name']);
                      }
                      $refused++;
-                     $this->deleteMails($i); // Delete Mail from Mail box
                   }
-               }
-               else {
+                  $this->deleteMails($i); // Delete Mail from Mail box
+               } else {
                   $input = array();
                   $input['mailcollectors_id'] = $mailgateID;
                   $input['from'] = $tkt['user_email'];
@@ -435,7 +433,6 @@ class MailCollector  extends CommonDBTM {
       }
       //  Who is the user ?
       $tkt['users_id']=User::getOrImportByEmail($head['from']);
-
       // AUto_import
       $tkt['_auto_import']=1;
       // For followup : do not check users_id = login user

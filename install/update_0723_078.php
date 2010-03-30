@@ -3615,6 +3615,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 
 
+
    displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
 
    if (!FieldExists('glpi_authldaps','date_mod')) {
@@ -4027,51 +4028,48 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    }
 
    if (FieldExists('glpi_mailcollectors','entities_id')) {
-      $ranking = 0;
-      foreach (getAllDatasFromTable('glpi_mailcollectors') as $collector) {
-         $query = "INSERT INTO `glpi_rules` VALUES(NULL, -1, 'RuleMailCollector', $ranking,
-                                                   '".$collector['name']."',
-                                                   '', 'AND', 1, NULL, NULL);";
-         $DB->query($query) or die("0.78 error inserting new maigate rule".
-                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
-         $query = "SELECT `id`
-                   FROM `glpi_rules`
-                   WHERE `sub_type`='RuleMailCollector' AND `ranking`=$ranking";
-         $result = $DB->query($query) or die("0.78 error getting new maigate rule".
-                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
+      $ranking = 1;
 
-         if ($DB->numrows($result) > 0) {
-            $newID = $DB->result($result,0,'id');
-            $query = "INSERT INTO `glpi_rulecriterias` VALUES(NULL, $newID, 'mailcollector', 0,
-                                                              '".$collector['id']."');";
-            $DB->query($query)or die("0.78 error getting new criteria for rule".
-                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
-            $query = "INSERT INTO `glpi_ruleactions` VALUES(NULL, $newID, 'assign',
-                                                            'entities_id',
-                                                            '".$collector['entities_id']."');";
-            $DB->query($query) or die("0.78 error getting new action for rule".
-                                    $collector['name']." " . $LANG['update'][90] . $DB->error());
+      // No mailcollector : set a default rule
+      if (countElementsInTable('glpi_mailcollectors')==0){
+            $query = "INSERT INTO `glpi_rules` VALUES(NULL, -1, 'RuleMailCollector', $ranking,
+                                                      'Root',
+                                                      '', 'OR', 1, NULL, NULL);";
+            $DB->query($query) or die("0.78 error inserting new default maigate rule " .
+                                       $LANG['update'][90] . $DB->error());
+            if ($newID = $DB->insert_id()) {
+               $query = "INSERT INTO `glpi_rulecriterias` VALUES(NULL, $newID, 'subject', 6,
+                                                               '/.*/');";
+               $DB->query($query)or die("0.78 error getting new criteria for rule".
+                                       $LANG['update'][90] . $DB->error());
+               $query = "INSERT INTO `glpi_ruleactions` VALUES(NULL, $newID, 'assign',
+                                                               'entities_id',
+                                                               '0');";
+               $DB->query($query) or die("0.78 error getting new action for rule".
+                                             $LANG['update'][90] . $DB->error());
+            }
+
+      } else {
+         foreach (getAllDatasFromTable('glpi_mailcollectors') as $collector) {
+            $query = "INSERT INTO `glpi_rules` VALUES(NULL, -1, 'RuleMailCollector', $ranking,
+                                                      '".$collector['name']."',
+                                                      '', 'AND', 1, NULL, NULL);";
+            $DB->query($query) or die("0.78 error inserting new maigate rule".
+                                       $collector['name']." " . $LANG['update'][90] . $DB->error());
+            if ($newID = $DB->insert_id()) {
+               $query = "INSERT INTO `glpi_rulecriterias` VALUES(NULL, $newID, 'mailcollector', 0,
+                                                               '".$collector['id']."');";
+               $DB->query($query)or die("0.78 error getting new criteria for rule".
+                                       $collector['name']." " . $LANG['update'][90] . $DB->error());
+               $query = "INSERT INTO `glpi_ruleactions` VALUES(NULL, $newID, 'assign',
+                                                               'entities_id',
+                                                               '".$collector['entities_id']."');";
+               $DB->query($query) or die("0.78 error getting new action for rule".
+                                       $collector['name']." " . $LANG['update'][90] . $DB->error());
+            }
+
+            $ranking++;
          }
-
-         $ranking++;
-      }
-
-      if (!TableExists('glpi_notimportedemails')) {
-         $query = "CREATE TABLE `glpi_notimportedemails` (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `from` varchar(255) NOT NULL,
-                    `to` varchar(255) NOT NULL,
-                    `mailcollectors_id` int(11) NOT NULL DEFAULT '0',
-                    `date` datetime NOT NULL,
-                    `subject` text,
-                    `messageid` varchar(255) NOT NULL,
-                    `reason` int(11) NOT NULL DEFAULT '0',
-                    `users_id` int(11) NOT NULL DEFAULT '0',
-                    PRIMARY KEY (`id`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
-         $DB->query($query) or die("0.78 add table glpi_notimportedemails".
-                                   $LANG['update'][90] . $DB->error());
-         $ADDTODISPLAYPREF['NotImportedEmail']=array(2,5,4,6,16,19);
       }
 
       $query = "ALTER TABLE `glpi_mailcollectors` DROP INDEX `entities_id` ";
@@ -4086,6 +4084,25 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 drop entities_id from collector's display preferences'".
                                    $LANG['update'][90] . $DB->error());
    }
+
+   if (!TableExists('glpi_notimportedemails')) {
+      $query = "CREATE TABLE `glpi_notimportedemails` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `from` varchar(255) NOT NULL,
+                  `to` varchar(255) NOT NULL,
+                  `mailcollectors_id` int(11) NOT NULL DEFAULT '0',
+                  `date` datetime NOT NULL,
+                  `subject` text,
+                  `messageid` varchar(255) NOT NULL,
+                  `reason` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
+      $DB->query($query) or die("0.78 add table glpi_notimportedemails".
+                                 $LANG['update'][90] . $DB->error());
+      $ADDTODISPLAYPREF['NotImportedEmail']=array(2,5,4,6,16,19);
+   }
+
 
    if (!FieldExists("glpi_profiles","entity_rule_ticket")) {
       $query = "ALTER TABLE `glpi_profiles` ADD `entity_rule_ticket` CHAR( 1 ) NULL AFTER `rule_ticket`";
