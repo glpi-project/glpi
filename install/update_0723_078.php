@@ -1968,7 +1968,8 @@ function update0723to078($output='HTML') {
 
 
    if (!FieldExists("glpi_budgets","is_recursive")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `is_recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`";
+      $query = "ALTER TABLE `glpi_budgets` ADD `is_recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`,
+                                          ADD INDEX `is_recursive` (`is_recursive`)";
       $DB->query($query) or die("0.78 add is_recursive field in glpi_budgets" . $LANG['update'][90] . $DB->error());
 
       // budgets in 0.72 were global
@@ -1989,11 +1990,13 @@ function update0723to078($output='HTML') {
    }
 
    if (!FieldExists("glpi_budgets","begin_date")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `begin_date` DATE NULL";
+      $query = "ALTER TABLE `glpi_budgets` ADD `begin_date` DATE NULL,
+                                          ADD INDEX `begin_date` (`begin_date`)";
       $DB->query($query) or die("0.78 add begin_date field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_budgets","end_date")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD `end_date` DATE NULL";
+      $query = "ALTER TABLE `glpi_budgets` ADD `end_date` DATE NULL,
+                                          ADD INDEX `end_date` (`begin_date`)";
       $DB->query($query) or die("0.78 add end_date field in glpi_budgets" . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_budgets","value")) {
@@ -2045,7 +2048,8 @@ function update0723to078($output='HTML') {
         `lastcode` int(11) DEFAULT NULL COMMENT 'last run return code',
         `comment` text COLLATE utf8_unicode_ci,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `unicity` (`itemtype`,`name`)
+        UNIQUE KEY `unicity` (`itemtype`,`name`),
+        KEY `mode` (`mode`)
       ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
         COMMENT='Task run by internal / external cron.';";
       $DB->query($query) or die("0.78 create glpi_crontasks" . $LANG['update'][90] . $DB->error());
@@ -2085,8 +2089,8 @@ function update0723to078($output='HTML') {
         `volume` int(11) NOT NULL COMMENT 'for statistics',
         `content` varchar(255) COLLATE utf8_unicode_ci NULL COMMENT 'message',
         PRIMARY KEY (`id`),
+        KEY `date` (`date`),
         KEY `crontasks_id` (`crontasks_id`),
-        KEY `crontasklogs_id` (`crontasklogs_id`),
         KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
       $DB->query($query) or die("0.78 create glpi_crontasklogs" . $LANG['update'][90] . $DB->error());
@@ -2186,7 +2190,7 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_documents','sha1sum')) {
       $query="ALTER TABLE `glpi_documents`
                    ADD `sha1sum` CHAR(40) NULL DEFAULT NULL ,
-                   ADD INDEX (`sha1sum`)";
+                   ADD INDEX `sha1sum` (`sha1sum`)";
       $DB->query($query) or die("0.78 add sha1sum in glpi_documents" . $LANG['update'][90] . $DB->error());
    }
 
@@ -2212,7 +2216,7 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_ticketcategories`
                     ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
                     ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
-                    ADD INDEX (`entities_id`)";
+                    ADD INDEX `entities_id` (`entities_id`),ADD INDEX `is_recursive` (`is_recursive`)";
       $DB->query($query) or die("0.78 add entities_id,is_recursive in glpi_ticketcategories" .
                                  $LANG['update'][90] . $DB->error());
 
@@ -2225,7 +2229,7 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_ticketcategories','knowbaseitemcategories_id')) {
       $query = "ALTER TABLE `glpi_ticketcategories`
                       ADD `knowbaseitemcategories_id` INT NOT NULL DEFAULT '0',
-                      ADD INDEX ( `knowbaseitemcategories_id` )";
+                      ADD INDEX `knowbaseitemcategories_id` ( `knowbaseitemcategories_id` )";
 
       $DB->query($query) or die("0.78 add knowbaseitemcategories_id in glpi_ticketcategories" .
                                  $LANG['update'][90] . $DB->error());
@@ -2234,7 +2238,7 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_ticketcategories','users_id')) {
       $query = "ALTER TABLE `glpi_ticketcategories`
                         ADD `users_id` INT NOT NULL DEFAULT '0',
-                        ADD INDEX ( `users_id` ) ";
+                        ADD INDEX `users_id` ( `users_id` ) ";
 
       $DB->query($query) or die("0.78 add users_id in glpi_ticketcategories" .
                                  $LANG['update'][90] . $DB->error());
@@ -2243,7 +2247,7 @@ function update0723to078($output='HTML') {
    if (!FieldExists('glpi_ticketcategories','groups_id')) {
       $query = "ALTER TABLE `glpi_ticketcategories`
                         ADD `groups_id` INT NOT NULL DEFAULT '0',
-                        ADD INDEX ( `groups_id` ) ";
+                        ADD INDEX `groups_id` ( `groups_id` ) ";
 
       $DB->query($query) or die("0.78 add groups_id in glpi_ticketcategories" .
                                  $LANG['update'][90] . $DB->error());
@@ -2260,7 +2264,8 @@ function update0723to078($output='HTML') {
 
    if (!FieldExists('glpi_ticketcategories','is_helpdeskvisible')) {
       $query = "ALTER TABLE `glpi_ticketcategories`
-                        ADD `is_helpdeskvisible` TINYINT( 1 ) NOT NULL DEFAULT '1'";
+                        ADD `is_helpdeskvisible` TINYINT( 1 ) NOT NULL DEFAULT '1',
+                        ADD INDEX `is_helpdeskvisible` (`is_helpdeskvisible`)";
 
       $DB->query($query) or die("0.78 add cache in glpi_ticketcategories" .
                                  $LANG['update'][90] . $DB->error());
@@ -2363,7 +2368,9 @@ function update0723to078($output='HTML') {
            PRIMARY KEY  (`id`),
            KEY `name` (`name`),
            KEY `taskcategories_id` (`taskcategories_id`),
-           KEY `entities_id` (`entities_id`)
+           KEY `entities_id` (`entities_id`),
+           KEY `is_recursive` (`is_recursive`),
+           KEY `is_helpdeskvisible` (`is_helpdeskvisible`)
          ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->query($query) or die("0.78 create glpi_taskcategories" . $LANG['update'][90] . $DB->error());
    }
@@ -2391,7 +2398,7 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_tickets`
                   ADD `ticketsolutiontypes_id` INT( 11 ) NOT NULL DEFAULT '0',
                   ADD `solution` TEXT NULL,
-                  ADD INDEX ( `ticketsolutiontypes_id` ) ";
+                  ADD INDEX `ticketsolutiontypes_id` ( `ticketsolutiontypes_id` ) ";
       $DB->query($query) or die("0.78 create glpi_ticketsolutions" . $LANG['update'][90] . $DB->error());
 
       // Move old status "old_done"", "old_notdone" as solution
@@ -2417,7 +2424,8 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_locations`
                         ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
                         ADD `ancestors_cache` LONGTEXT NULL,
-                        ADD `sons_cache` LONGTEXT NULL";
+                        ADD `sons_cache` LONGTEXT NULL,
+                        ADD INDEX `is_recursive` (`is_recursive`)";
 
       $DB->query($query) or die("0.78 add recursive, cache in glpi_locations" .
                                  $LANG['update'][90] . $DB->error());
@@ -2438,7 +2446,9 @@ function update0723to078($output='HTML') {
               `is_mail_default` tinyint(1) NOT NULL DEFAULT '0',
               `comment` text COLLATE utf8_unicode_ci,
               PRIMARY KEY (`id`),
-              KEY `name` (`name`)
+              KEY `name` (`name`),
+              KEY `is_helpdesk_default` (`is_helpdesk_default`),
+              KEY `is_mail_default` (`is_mail_default`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.78 create glpi_requesttypes" . $LANG['update'][90] . $DB->error());
 
@@ -2777,7 +2787,10 @@ function update0723to078($output='HTML') {
                  `itemtype` VARCHAR( 100 ) NOT NULL,
                  `date_mod` DATETIME DEFAULT NULL ,
                  `comment` text collate utf8_unicode_ci,
-                 PRIMARY KEY ( `ID` )
+                 PRIMARY KEY ( `ID` ),
+                 KEY `itemtype` (`itemtype`),
+                 KEY `date_mod` (`date_mod`),
+                 KEY `name` (`name`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.78 create glpi_notificationtemplates" . $LANG['update'][90] . $DB->error());
 
@@ -2821,7 +2834,8 @@ function update0723to078($output='HTML') {
             `subject` VARCHAR( 255 ) NOT NULL ,
             `content_text` TEXT NULL ,
             `content_html` TEXT NULL ,
-            PRIMARY KEY ( `id` )
+            PRIMARY KEY ( `id` ),
+            KEY `notificationtemplates_id` (`notificationtemplates_id`)
             )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.78 create glpi_notificationtemplatetranslations" . $LANG['update'][90] . $DB->error());
 
@@ -3133,7 +3147,14 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                  `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0',
                  `is_active` TINYINT( 1 ) NOT NULL DEFAULT '0',
                  `date_mod` DATETIME DEFAULT NULL ,
-                  PRIMARY KEY ( `id` )
+                  PRIMARY KEY ( `id` ),
+                  KEY `name` (`name`),
+                  KEY `itemtype` (`itemtype`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_active` (`is_active`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `notificationtemplates_id` (`notificationtemplates_id`)
                   ) ENGINE = MYISAM CHARSET utf8 COLLATE utf8_unicode_ci;";
       $DB->query($query) or die("0.78 create glpi_notifications" . $LANG['update'][90] . $DB->error());
 
@@ -3244,7 +3265,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $query = "RENAME TABLE `glpi_mailingsettings`  TO `glpi_notificationtargets`;";
       $DB->query($query) or die("0.78 rename table glpi_mailingsettings in glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
 
-      $query = "ALTER TABLE `glpi_notificationtargets` ADD `notifications_id` INT( 11 ) NOT NULL DEFAULT '0'";
+      $query = "ALTER TABLE `glpi_notificationtargets` ADD `notifications_id` INT( 11 ) NOT NULL DEFAULT '0',
+                                             ADD INDEX `notifications_id` (`notifications_id`)";
       $DB->query($query) or die("0.78 add field notifications_id to glpi_notificationtargets" . $LANG['update'][90] . $DB->error());
 
       $query = "ALTER TABLE `glpi_notificationtargets` CHANGE `type` `oldtype` VARCHAR( 255 )
@@ -3461,7 +3483,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
          $query = "ALTER TABLE `$table` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `itemtype`,
                            ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`,
-                           ADD INDEX `entities_id` ( `entities_id` )";
+                           ADD INDEX `entities_id` ( `entities_id` ),
+                           ADD INDEX `is_recursive` (`is_recursive`)";
          $DB->query($query) or die("0.78 add entities_id and is_recursive in $table". $LANG['update'][90] . $DB->error());
 
 
@@ -3553,7 +3576,9 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       displayMigrationMessage("078", $LANG['update'][141].' - glpi_softwareversions'); // Updating schema
 
       $query = "ALTER TABLE `glpi_softwareversions` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
-                        ADD INDEX `entities_id` ( `entities_id` ), ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`";
+                        ADD INDEX `entities_id` ( `entities_id` ),
+                        ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`,
+                        ADD INDEX `is_recursive` ( `is_recursive` )";
       $DB->query($query) or die("0.78 add entities_id in glpi_softwareversion ". $LANG['update'][90] . $DB->error());
 
 
@@ -3583,7 +3608,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
 
    if (!FieldExists("glpi_mailcollectors", "is_active")) {
-      $query = "ALTER TABLE `glpi_mailcollectors` ADD `is_active` tinyint( 1 ) NOT NULL DEFAULT '1' ;";
+      $query = "ALTER TABLE `glpi_mailcollectors` ADD `is_active` tinyint( 1 ) NOT NULL DEFAULT '1',
+                           ADD INDEX `is_active` (`is_active`) ;";
       $DB->query($query) or die("0.78 add is_active in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
    }
 
@@ -3997,7 +4023,13 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                   `submission_date` datetime default NULL,
                   `validation_date` datetime default NULL,
                   PRIMARY KEY  (`id`),
-                  KEY `entities_id` (`entities_id`)
+                  KEY `entities_id` (`entities_id`),
+                  KEY `users_id` (`users_id`),
+                  KEY `users_id_validate` (`users_id_validate`),
+                  KEY `tickets_id` (`tickets_id`),
+                  KEY `submission_date` (`submission_date`),
+                  KEY `validation_date` (`validation_date`),
+                  KEY `status` (`status`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.78 create glpi_ticketvalidations " . $LANG['update'][90] . $DB->error());
 
@@ -4005,12 +4037,9 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    }
 
    if (!FieldExists('glpi_tickets','global_validation')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `global_validation` varchar(255) collate utf8_unicode_ci default 'accepted'";
+      $query = "ALTER TABLE `glpi_tickets` ADD `global_validation` varchar(255) collate utf8_unicode_ci default 'accepted',
+                                       ADD INDEX `global_validation` (`global_validation`)";
       $DB->query($query) or die("0.78 add global_validation to glpi_tickets " . $LANG['update'][90] . $DB->error());
-   }
-   if (!isIndex('glpi_tickets', 'global_validation')) {
-      $query=" ALTER TABLE `glpi_tickets` ADD INDEX `global_validation` (`global_validation`)";
-      $DB->query($query) or die("0.78 add global_validation index in glpi_tickets " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists('glpi_profiles','validate_ticket')) {
@@ -4096,7 +4125,9 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                   `messageid` varchar(255) NOT NULL,
                   `reason` int(11) NOT NULL DEFAULT '0',
                   `users_id` int(11) NOT NULL DEFAULT '0',
-                  PRIMARY KEY (`id`)
+                  PRIMARY KEY (`id`),
+                  KEY `users_id` (`users_id`),
+                  KEY `mailcollectors_id` (`mailcollectors_id`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
       $DB->query($query) or die("0.78 add table glpi_notimportedemails".
                                  $LANG['update'][90] . $DB->error());
@@ -4113,7 +4144,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    }
 
    if (!FieldExists('glpi_authldaps','is_default')) {
-      $query = "ALTER TABLE `glpi_authldaps` ADD `is_default` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+      $query = "ALTER TABLE `glpi_authldaps` ADD `is_default` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                                             ADD INDEX `is_default` (`is_default`)";
       $DB->query($query) or die("0.78 add is_default to glpi_authldaps " . $LANG['update'][90] . $DB->error());
 
       $query = "SELECT count(*) as cpt FROM `glpi_authldaps`";
@@ -4158,7 +4190,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    }
 
    if (!FieldExists('glpi_rules','is_recursive')) {
-      $query = "ALTER TABLE `glpi_rules` ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+      $query = "ALTER TABLE `glpi_rules` ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                           ADD INDEX `is_recursive` (`is_recursive`)";
       $DB->query($query) or die("0.78 add is_recursive to glpi_rules".
                                    $LANG['update'][90] . $DB->error());
       $query = "UPDATE `glpi_rules` SET `entities_id`='0' WHERE `entities_id`='-1'";

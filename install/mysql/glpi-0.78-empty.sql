@@ -1,4 +1,4 @@
-#GLPI Dump database on 2010-03-30 10:08
+#GLPI Dump database on 2010-03-30 14:08
 
 ### Dump table glpi_alerts
 
@@ -67,7 +67,8 @@ CREATE TABLE `glpi_authldaps` (
   `comment` text collate utf8_unicode_ci,
   `is_default` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `is_default` (`is_default`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -155,8 +156,11 @@ CREATE TABLE `glpi_budgets` (
   `notepad` longtext collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
+  KEY `is_recursive` (`is_recursive`),
   KEY `entities_id` (`entities_id`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `begin_date` (`begin_date`),
+  KEY `end_date` (`begin_date`),
   KEY `is_template` (`is_template`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -863,13 +867,13 @@ CREATE TABLE `glpi_crontasklogs` (
   `volume` int(11) NOT NULL COMMENT 'for statistics',
   `content` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'message',
   PRIMARY KEY  (`id`),
+  KEY `date` (`date`),
   KEY `crontasks_id` (`crontasks_id`),
-  KEY `crontasklogs_id` (`crontasklogs_id`),
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','5','0','2010-03-30 10:08:50','0','0','0','Mode d\'exécution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','5','1','2010-03-30 10:08:50','2','0.002285','0','Tâche terminée, rien à faire');
+INSERT INTO `glpi_crontasklogs` VALUES ('1','5','0','2010-03-30 14:07:57','0','0','0','Mode d\'exécution : GLPI');
+INSERT INTO `glpi_crontasklogs` VALUES ('2','5','1','2010-03-30 14:07:57','2','0.00233197','0','Tâche terminée, rien à faire');
 
 ### Dump table glpi_crontasks
 
@@ -890,14 +894,15 @@ CREATE TABLE `glpi_crontasks` (
   `lastcode` int(11) default NULL COMMENT 'last run return code',
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `unicity` (`itemtype`,`name`)
+  UNIQUE KEY `unicity` (`itemtype`,`name`),
+  KEY `mode` (`mode`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Task run by internal / external cron.';
 
 INSERT INTO `glpi_crontasks` VALUES ('1','OcsServer','ocsng','300',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('2','CartridgeItem','cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3','ConsumableItem','consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4','SoftwareLicense','software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30','2010-03-30 10:08:50',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30','2010-03-30 14:07:57',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('6','InfoCom','infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('7','CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8','CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -1522,7 +1527,7 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-03-30 10:08:52','login','3','glpi connexion de l\'IP: 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-03-30 14:07:59','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -1626,7 +1631,8 @@ CREATE TABLE `glpi_infocoms` (
   KEY `alert` (`alert`),
   KEY `budgets_id` (`budgets_id`),
   KEY `suppliers_id` (`suppliers_id`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1738,7 +1744,8 @@ CREATE TABLE `glpi_locations` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`locations_id`,`name`),
   KEY `locations_id` (`locations_id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1777,6 +1784,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `date_mod` datetime default NULL,
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
+  KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -2062,7 +2070,14 @@ CREATE TABLE `glpi_notifications` (
   `is_recursive` tinyint(1) NOT NULL default '0',
   `is_active` tinyint(1) NOT NULL default '0',
   `date_mod` datetime default NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `name` (`name`),
+  KEY `itemtype` (`itemtype`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_active` (`is_active`),
+  KEY `date_mod` (`date_mod`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `notificationtemplates_id` (`notificationtemplates_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notifications` VALUES ('1','Alert Tickets not closed','0','Ticket','alertnotclosed','mail','6','','1','1','2010-02-16 16:41:39');
@@ -2098,7 +2113,8 @@ CREATE TABLE `glpi_notificationtargets` (
   `type` int(11) NOT NULL default '0',
   `notifications_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `items` (`type`,`items_id`)
+  KEY `items` (`type`,`items_id`),
+  KEY `notifications_id` (`notifications_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtargets` VALUES ('1','3','1','13');
@@ -2142,7 +2158,10 @@ CREATE TABLE `glpi_notificationtemplates` (
   `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL,
   `date_mod` datetime default NULL,
   `comment` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `date_mod` (`date_mod`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtemplates` VALUES ('1','MySQL Synchronization','DBConnection','2010-02-01 15:51:46','');
@@ -2168,7 +2187,8 @@ CREATE TABLE `glpi_notificationtemplatetranslations` (
   `subject` varchar(255) collate utf8_unicode_ci NOT NULL,
   `content_text` text collate utf8_unicode_ci,
   `content_html` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `notificationtemplates_id` (`notificationtemplates_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('1','1','','##lang.dbconnection.title##','##lang.dbconnection.delay## : ##dbconnection.delay##
@@ -2454,7 +2474,9 @@ CREATE TABLE `glpi_notimportedemails` (
   `messageid` varchar(255) NOT NULL,
   `reason` int(11) NOT NULL default '0',
   `users_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `mailcollectors_id` (`mailcollectors_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -3034,7 +3056,9 @@ CREATE TABLE `glpi_requesttypes` (
   `is_mail_default` tinyint(1) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `is_helpdesk_default` (`is_helpdesk_default`),
+  KEY `is_mail_default` (`is_mail_default`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','0',NULL);
@@ -3058,7 +3082,8 @@ CREATE TABLE `glpi_reservationitems` (
   PRIMARY KEY  (`id`),
   KEY `is_active` (`is_active`),
   KEY `item` (`itemtype`,`items_id`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3409,7 +3434,8 @@ CREATE TABLE `glpi_rules` (
   KEY `entities_id` (`entities_id`),
   KEY `is_active` (`is_active`),
   KEY `sub_type` (`sub_type`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_rules` VALUES ('1','0','RuleOcs','0','Root','','AND','1',NULL,NULL,'0');
@@ -3532,7 +3558,8 @@ CREATE TABLE `glpi_softwareversions` (
   KEY `name` (`name`),
   KEY `softwares_id` (`softwares_id`),
   KEY `states_id` (`states_id`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3607,7 +3634,9 @@ CREATE TABLE `glpi_taskcategories` (
   PRIMARY KEY  (`id`),
   KEY `name` (`name`),
   KEY `taskcategories_id` (`taskcategories_id`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `is_helpdeskvisible` (`is_helpdeskvisible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3633,9 +3662,11 @@ CREATE TABLE `glpi_ticketcategories` (
   KEY `name` (`name`),
   KEY `ticketcategories_id` (`ticketcategories_id`),
   KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
   KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
   KEY `users_id` (`users_id`),
-  KEY `groups_id` (`groups_id`)
+  KEY `groups_id` (`groups_id`),
+  KEY `is_helpdeskvisible` (`is_helpdeskvisible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3785,7 +3816,13 @@ CREATE TABLE `glpi_ticketvalidations` (
   `submission_date` datetime default NULL,
   `validation_date` datetime default NULL,
   PRIMARY KEY  (`id`),
-  KEY `entities_id` (`entities_id`)
+  KEY `entities_id` (`entities_id`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_validate` (`users_id_validate`),
+  KEY `tickets_id` (`tickets_id`),
+  KEY `submission_date` (`submission_date`),
+  KEY `validation_date` (`validation_date`),
+  KEY `status` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3903,7 +3940,7 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-03-30 10:08:52','2010-03-30 10:08:52','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-03-30 14:07:59','2010-03-30 14:07:59','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
