@@ -123,12 +123,14 @@ class RuleMailCollector extends Rule {
       $criterias['GROUPS']['virtual']   = true;
       $criterias['GROUPS']['id']        = 'groups';
 
-      $criterias['PROFILES']['field'] = 'name';
-      $criterias['PROFILES']['name']  = $LANG['common'][34].' : '.$LANG['profiles'][22];
-      $criterias['PROFILES']['table'] = 'glpi_profiles';
-      $criterias['PROFILES']['type'] = 'dropdown';
-      $criterias['PROFILES']['virtual']   = true;
-      $criterias['PROFILES']['id']        = 'profiles';
+      $criterias['PROFILES']['field']   = 'name';
+      $criterias['PROFILES']['name']    = $LANG['common'][34].' : '.$LANG['profiles'][22];
+      $criterias['PROFILES']['table']   = 'glpi_profiles';
+      $criterias['PROFILES']['type']    = 'dropdown';
+      $criterias['PROFILES']['virtual'] = true;
+      $criterias['PROFILES']['id']      = 'profiles';
+      $criterias['PROFILES']['allow_condition'] = array(Rule::PATTERN_IS);
+
       return $criterias;
    }
 
