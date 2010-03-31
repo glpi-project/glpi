@@ -102,10 +102,6 @@ class RuleMailCollector extends Rule {
       $criterias['in_reply_to']['table'] = '';
       $criterias['in_reply_to']['type'] = 'text';
 
-      $criterias['size']['name']  = $LANG['mailing'][132].' : '.$LANG['mailgate'][15];
-      $criterias['size']['table'] = '';
-      $criterias['size']['type'] = 'text';
-
       $criterias['subject']['name']  = $LANG['common'][90];
       $criterias['subject']['field'] = 'subject';
       $criterias['subject']['table'] = '';
