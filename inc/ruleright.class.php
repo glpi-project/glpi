@@ -310,7 +310,7 @@ class RuleRight extends Rule {
       $actions['is_active']['table'] = '';
 
       $actions['_ignore_user_import']['name']  = $LANG['rulesengine'][132];
-      $actions['_ignore_user_import']['type']  = 'yesno';
+      $actions['_ignore_user_import']['type']  = 'yesonly';
       $actions['_ignore_user_import']['table'] = '';
       return $actions;
    }

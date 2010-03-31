@@ -480,15 +480,19 @@ class Dropdown {
     *
     * @param $name select name
     * @param $value preselected value.
+    * @param $restrict_to allows to display only yes or no in the dropdown (default is yes & no)
     * @return nothing (print out an HTML select box)
     */
-   static function showYesNo($name,$value=0) {
+   static function showYesNo($name,$value=0,$restrict_to=-1) {
       global $LANG;
 
-      echo "<select name='$name' id='dropdownyesno_$name'>";
-      echo "<option value='0' ".(!$value?" selected ":"").">".$LANG['choice'][0]."</option>";
-      echo "<option value='1' ".($value?" selected ":"").">".$LANG['choice'][1]."</option>";
-      echo "</select>";
+      if ($restrict_to != 0) {
+         $options[0] =$LANG['choice'][0];
+      }
+      if ($restrict_to != 1) {
+         $options[1] =$LANG['choice'][1];
+      }
+      Dropdown::showFromArray($name,$options,$value);
    }
 
    /**

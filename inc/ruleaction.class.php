@@ -236,6 +236,73 @@ class RuleAction extends CommonDBChild {
       return $actions;
    }
 
+   function displayActionSelectPattern($options = array()) {
+   	switch ($_POST["action_type"]) {
+   //If a regex value is used, then always display an autocompletiontextfield
+   case "regex_result" :
+   case "append_regex_result" :
+      autocompletionTextField($this,"value");
+      break;
+
+   default :
+      $actions = Rule::getActionsByType($options["sub_type"]);
+      if (isset($actions[$options["field"]]['type'])) {
+         switch($actions[$options["field"]]['type']) {
+            case "dropdown" :
+               $table=$actions[$options["field"]]['table'];
+               Dropdown::show(getItemTypeForTable($table), array('name' => "value"));
+               $display=true;
+               break;
+
+            case "dropdown_assign" :
+               User::dropdown(array('name' => 'value','right' => 'own_ticket'));
+               $display=true;
+               break;
+
+            case "dropdown_users" :
+               User::dropdown(array('name'   => 'value',
+                                    'right'  => 'all'));
+               $display=true;
+               break;
+
+            case "dropdown_urgency" :
+               Ticket::dropdownUrgency("value");
+               $display=true;
+               break;
+
+            case "dropdown_impact" :
+               Ticket::dropdownImpact("value");
+               $display=true;
+               break;
+
+            case "dropdown_priority" :
+               if ($_POST["action_type"]!='compute') {
+                  Ticket::dropdownPriority("value");
+               }
+               $display=true;
+               break;
+
+            case "dropdown_status" :
+               Ticket::dropdownStatus("value");
+               $display=true;
+               break;
+
+            case "yesonly" :
+               Dropdown::showYesNo("value",0,0);
+               $display=true;
+               break;
+
+            case "yesno" :
+               Dropdown::showYesNo("value");
+               $display=true;
+               break;
+         }
+      }
+      if (!$display) {
+         autocompletionTextField($this, "value");
+      }
+}
+   }
 }
 
 ?>

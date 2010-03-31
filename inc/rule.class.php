@@ -1067,6 +1067,7 @@ class Rule extends CommonDBTM {
       if (isset($crit['type'])
           && ($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
          switch ($crit['type']) {
+            case "yesonly":
             case "yesno":
                return Dropdown::getYesNo($pattern);
             case "dropdown" :
@@ -1114,6 +1115,10 @@ class Rule extends CommonDBTM {
       if (isset($crit['type'])
           && ($test||$condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
          switch ($crit['type']) {
+            case "yesonly":
+               Dropdown::showYesNo($name,$crit['table'],0);
+               $display=true;
+               break;
             case "yesno":
                Dropdown::showYesNo($name,$crit['table']);
                $display=true;
@@ -1180,6 +1185,7 @@ class Rule extends CommonDBTM {
             case "dropdown_users" :
                return getUserName($value);
 
+            case "yesonly":
             case "yesno" :
                if ($value) {
                   return $LANG['choice'][1];
@@ -1220,6 +1226,7 @@ class Rule extends CommonDBTM {
             case "dropdown_users" :
                return getUserName($value);
 
+            case "yesonly":
             case "yesno" :
                if ($value) {
                   return $LANG['choice'][1];
