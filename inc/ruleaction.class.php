@@ -212,7 +212,8 @@ class RuleAction extends CommonDBChild {
          if (preg_match_all("/#([0-9])/",$action,$results)>0) {
             foreach($results[1] as $result) {
                $action=str_replace("#$result",
-                                 (isset($regex_result[$result])?$regex_result[$result]:''),$action);
+                                 (isset($regex_result[$result])?
+                                    $regex_result[$result]:''),$action);
             }
          }
       }

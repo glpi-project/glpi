@@ -83,7 +83,7 @@ class RuleTicket extends Rule {
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
    }
 
-   function executeActions($output,$params,$criterias_result,$regex_results) {
+   function executeActions($output,$params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -106,7 +106,8 @@ class RuleTicket extends Rule {
                   if (!isset($output["entities_id"])) {
                      $output["entities_id"]=$params["entities_id"];
                   }
-                  $regexvalue = RuleAction::getRegexResultById($action->fields["value"],$regex_results[0]);
+                  $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
+                                                               $this->regex_results[0]);
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
                         $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",
@@ -114,7 +115,8 @@ class RuleTicket extends Rule {
                         break;
 
                      case "affectbyfqdn" :
-                        $result= NetworkPort::getUniqueObjectIDByFQDN($regexvalue,$output["entities_id"]);
+                        $result= NetworkPort::getUniqueObjectIDByFQDN($regexvalue,
+                                                                      $output["entities_id"]);
                         break;
 
                      case "affectbymac" :

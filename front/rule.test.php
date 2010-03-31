@@ -81,7 +81,7 @@ if (isset($_POST["test_rule"])) {
    $params = $rule->addSpecificParamsForPreview($_POST,$params);
 
    $input = $rule->prepareInputDataForProcess($_POST,$params);
-   $regex_results = array();
+   //$rule->regex_results = array();
    echo "<br>";
    $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'],$input,$params);
 }

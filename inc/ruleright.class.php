@@ -136,10 +136,9 @@ class RuleRight extends Rule {
    * Execute the actions as defined in the rule
    * @param $output the result of the actions
    * @param $params the parameters
-   * @param $regex_results array results of the regex match if used in criteria
    * @return the fields modified
    */
-   function executeActions($output,$params,$criterias_result,$regex_results) {
+   function executeActions($output,$params) {
       global $CFG_GLPI;
 
       $entity='';
@@ -182,8 +181,9 @@ class RuleRight extends Rule {
                      case "_affect_entity_by_tag" :
                         $match_entity = false;
                         $entity = array();
-                        foreach ($regex_results as $regex_result) {
-                           $res = RuleAction::getRegexResultById($action->fields["value"],$regex_result);
+                        foreach ($this->regex_results as $regex_result) {
+                           $res = RuleAction::getRegexResultById($action->fields["value"],
+                                                                 $regex_result);
                            if ($res != null) {
                               if ($action->fields["field"] == "_affect_entity_by_dn") {
                                  $entity_found = EntityData::getEntityIDByDN($res);

@@ -67,7 +67,7 @@ class RuleOcs extends Rule {
       return $output;
    }
 
-   function executeActions($output,$params,$criterias_result,$regex_results) {
+   function executeActions($output,$params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -80,7 +80,8 @@ class RuleOcs extends Rule {
                   //Assign entity using the regex's result
                   if ($action->fields["field"] == "_affect_entity_by_tag") {
                      //Get the TAG from the regex's results
-                     $res = RuleAction::getRegexResultById($action->fields["value"],$regex_results);
+                     $res = RuleAction::getRegexResultById($action->fields["value"],
+                                                           $this->regex_results);
                      if ($res != null) {
                         //Get the entity associated with the TAG
                         $target_entity = EntityData::getEntityIDByTag($res);

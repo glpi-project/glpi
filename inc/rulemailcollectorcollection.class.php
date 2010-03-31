@@ -64,16 +64,24 @@ class RuleMailCollectorCollection extends RuleCollection {
          }
       }
 
+      //Add all user's groups
       if (in_array('groups',$fields)) {
          foreach (Group_User::getUserGroups($input['users_id']) as $group) {
             $input['GROUPS'][] = $group['id'];
          }
       }
 
+      //Add all user's profiles
       if (in_array('profiles',$fields)) {
          foreach (Profile_User::getForUser($input['users_id']) as $profile) {
             $input['PROFILES'][] = $profile['profiles_id'];
          }
+      }
+
+      //Store the number of profiles of which the user belongs to
+      if (in_array('one_profile',$fields)
+            && count(Profile_User::getForUser($input['users_id'])) == 1) {
+            $input['ONE_PROFILE'] = 1;
       }
 
       return $input;

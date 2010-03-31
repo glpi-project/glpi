@@ -112,52 +112,6 @@ class RuleCriteria extends CommonDBChild {
       return $rules_list;
    }
 
-   /* NO MORE USED
-    * Process a criteria of a rule
-    * @param $input the input data used to check criterias
-    * @param $regex_result
-   *
-   function process(&$input,&$regex_result) {
-
-      // Undefine criteria field : set to blank
-      if (!isset($input[$this->fields["criteria"]])) {
-         $input[$this->fields["criteria"]]='';
-      }
-
-      //If the value is not an array
-      if (!is_array($input[$this->fields["criteria"]])) {
-         $value=$this->getValueToMatch($this->fields["condition"],$input[$this->fields["criteria"]]);
-         $res = self::match($value,$this->fields["condition"],$this->fields["pattern"],$regex_result);
-      } else {
-         //If the value if, in fact, an array of values
-         // Negative condition : Need to match all condition (never be)
-         if (in_array($this->fields["condition"],array(Rule::PATTERN_IS_NOT,
-                                                       Rule::PATTERN_NOT_CONTAIN,
-                                                       Rule::REGEX_NOT_MATCH))) {
-            $res = true;
-            foreach($input[$this->fields["criteria"]] as $tmp) {
-               $value=$this->getValueToMatch($this->fields["condition"],$tmp);
-               $res &= self::match($value,$this->fields["condition"],$this->fields["pattern"],
-                                  $regex_result);
-            }
-
-         // Positive condition : Need to match one
-         } else {
-            $res = false;
-            foreach($input[$this->fields["criteria"]] as $tmp) {
-               $value=$this->getValueToMatch($this->fields["condition"],$tmp);
-               $res |= self::match($value,$this->fields["condition"],$this->fields["pattern"],
-                                  $regex_result);
-               if ($res) {
-                  break;
-               }
-            }
-         }
-         return $value;
-      }
-      return $res;
-   }
-*/
    /**
     * Return a value associated with a pattern associated to a criteria to compare it
     * @param $condition condition used
@@ -208,7 +162,8 @@ class RuleCriteria extends CommonDBChild {
    * @param $regex_result
    * @return true if the field match the rule, false if it doesn't match
    **/
-   static function match(RuleCriteria $criteria, $field, &$criterias_result, &$regex_result) {
+   static function match(RuleCriteria $criteria, $field, &$criterias_results, &$regex_result) {
+
       $condition = $criteria->fields['condition'];
       $pattern = $criteria->fields['pattern'];
       $criteria = $criteria->fields['criteria'];
@@ -231,14 +186,14 @@ class RuleCriteria extends CommonDBChild {
       switch ($condition) {
          case Rule::PATTERN_IS :
             if ($field == $pattern) {
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
 
          case Rule::PATTERN_IS_NOT :
             if ($field != $pattern) {
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -246,7 +201,7 @@ class RuleCriteria extends CommonDBChild {
          case Rule::PATTERN_END :
             $value = "/".$pattern."$/";
             if (preg_match($value, $field) > 0) {
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -257,7 +212,7 @@ class RuleCriteria extends CommonDBChild {
             }
             $value = strpos($field,$pattern);
             if (($value !== false) && $value == 0) {
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -268,7 +223,7 @@ class RuleCriteria extends CommonDBChild {
             }
             $value = strpos($field,$pattern);
             if (($value !== false) && $value >= 0) {
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -279,7 +234,7 @@ class RuleCriteria extends CommonDBChild {
             }
             $value = strpos($field,$pattern);
             if ($value === false) {
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
@@ -291,14 +246,14 @@ class RuleCriteria extends CommonDBChild {
                array_shift($results);
                // And add to $regex_result array
                $regex_result[] = $results;
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
 
          case Rule::REGEX_NOT_MATCH :
             if (preg_match($pattern."i", $field) == 0) {
-               $criterias_result[$criteria] = $pattern;
+               $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
