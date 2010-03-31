@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// LDAP criteria class
 class RuleRightParameter extends CommonDropdown {
 
+   var $refresh_page = true;
+
    function prepareInputForAdd($input) {
 
       //LDAP parameters MUST be in lower case
