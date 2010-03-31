@@ -92,18 +92,12 @@ class TicketFollowup  extends CommonDBTM {
     * @return boolean
     */
    function canCreateItem() {
+
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;
       }
-      // From canAddFollowup
-      $right=((haveRight("add_followups","1") && $ticket->fields["users_id"] === getLoginUserID())
-              || haveRight("global_add_followups","1")
-              || ($ticket->fields["users_id_assign"] === getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
-
-      return $right;
+      return $ticket->canAddFollowups();
    }
 
    /**
@@ -192,7 +186,7 @@ class TicketFollowup  extends CommonDBTM {
                   $options = array();
                }
                $options['followup_id'] = $this->fields["id"];
-         
+
                NotificationEvent::raiseEvent("update_followup", $job,$options);
             }
          }

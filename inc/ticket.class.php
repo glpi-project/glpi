@@ -1248,6 +1248,9 @@ class Ticket extends CommonDBTM {
 
       return ((haveRight("add_followups","1") && $this->fields["users_id"]===getLoginUserID())
               || haveRight("global_add_followups","1")
+              || (haveRight("group_add_followups","1")
+                  && isset($_SESSION["glpigroups"])
+                  && in_array($this->fields["groups_id"],$_SESSION['glpigroups']))
               || ($this->fields["users_id_assign"]===getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups'])));
