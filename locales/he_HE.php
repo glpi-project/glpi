@@ -223,7 +223,7 @@ $LANG['common'][41]="התראות אימייל";
 $LANG['common'][42]="טלפון נייד"; 
 $LANG['common'][43]="שם פרטי"; 
 $LANG['common'][44]="ערכי ברירת מחדל"; 
-$LANG['common'][45]="Mio max"; 
+$LANG['common'][45]="max MB"; 
 $LANG['common'][46]="Vcard"; 
 $LANG['common'][47]="התקדמות"; 
 $LANG['common'][48]="שם משפחה"; 
@@ -1504,6 +1504,7 @@ $LANG['rulesengine'][141]="No rule verified";
 $LANG['rulesengine'][142]="List of not imported emails"; 
 $LANG['rulesengine'][143]="User group"; 
 $LANG['rulesengine'][144]="Entity based on user's profile"; 
+$LANG['rulesengine'][145]="User with a single profile"; 
 
 $LANG['search'][0]="חיפוש"; 
 $LANG['search'][1]="for all"; 

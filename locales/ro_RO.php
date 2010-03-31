@@ -223,7 +223,7 @@ $LANG['common'][41]="Avertizari prin E-mail";
 $LANG['common'][42]="Mobil"; 
 $LANG['common'][43]="Prenume"; 
 $LANG['common'][44]="Valoare implicită"; 
-$LANG['common'][45]="Mio max"; 
+$LANG['common'][45]="max MB"; 
 $LANG['common'][46]="Vcard"; 
 $LANG['common'][47]="In curs de desfasurare"; 
 $LANG['common'][48]="Nume"; 
@@ -1504,6 +1504,7 @@ $LANG['rulesengine'][141]="No rule verified";
 $LANG['rulesengine'][142]="List of not imported emails"; 
 $LANG['rulesengine'][143]="User group"; 
 $LANG['rulesengine'][144]="Entity based on user's profile"; 
+$LANG['rulesengine'][145]="User with a single profile"; 
 
 $LANG['search'][0]="Cauta"; 
 $LANG['search'][1]="for all"; 

@@ -223,7 +223,7 @@ $LANG['common'][41]="Perspėjimai e-paštu";
 $LANG['common'][42]="Mobilus tel."; 
 $LANG['common'][43]="Vardas"; 
 $LANG['common'][44]="Numatytoji reikšmė(s)"; 
-$LANG['common'][45]="Mio max"; 
+$LANG['common'][45]="max MB"; 
 $LANG['common'][46]="Vcard"; 
 $LANG['common'][47]="Eiga"; 
 $LANG['common'][48]="Pavardė"; 
@@ -1504,6 +1504,7 @@ $LANG['rulesengine'][141]="No rule verified";
 $LANG['rulesengine'][142]="List of not imported emails"; 
 $LANG['rulesengine'][143]="User group"; 
 $LANG['rulesengine'][144]="Entity based on user's profile"; 
+$LANG['rulesengine'][145]="User with a single profile"; 
 
 $LANG['search'][0]="Paieška"; 
 $LANG['search'][1]="for all"; 

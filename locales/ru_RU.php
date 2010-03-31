@@ -223,7 +223,7 @@ $LANG['common'][41]="Уведомления на Email";
 $LANG['common'][42]="Мобильный"; 
 $LANG['common'][43]="ФИО или Имя"; 
 $LANG['common'][44]="Цена по умолчанию"; 
-$LANG['common'][45]="Mio max"; 
+$LANG['common'][45]="max MB"; 
 $LANG['common'][46]="Vcard"; 
 $LANG['common'][47]="Прогресс"; 
 $LANG['common'][48]="Фамилия"; 
@@ -1504,6 +1504,7 @@ $LANG['rulesengine'][141]="Никто не проверил правило";
 $LANG['rulesengine'][142]="Список не импортированных emails"; 
 $LANG['rulesengine'][143]="User group"; 
 $LANG['rulesengine'][144]="Entity based on user's profile"; 
+$LANG['rulesengine'][145]="User with a single profile"; 
 
 $LANG['search'][0]="Поиск"; 
 $LANG['search'][1]="для всех"; 

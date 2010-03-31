@@ -223,7 +223,7 @@ $LANG['common'][41]="Υπενθυμίσεις ηλεκτρονικής αλλη�
 $LANG['common'][42]="Κινητό"; 
 $LANG['common'][43]="Όνομα"; 
 $LANG['common'][44]="Default value(s)"; 
-$LANG['common'][45]="Mio max"; 
+$LANG['common'][45]="max MB"; 
 $LANG['common'][46]="Ηλεκτρονική καρτέλα επαφής"; 
 $LANG['common'][47]="Πρόοδος"; 
 $LANG['common'][48]="Επίθετο"; 
@@ -1504,6 +1504,7 @@ $LANG['rulesengine'][141]="No rule verified";
 $LANG['rulesengine'][142]="List of not imported emails"; 
 $LANG['rulesengine'][143]="User group"; 
 $LANG['rulesengine'][144]="Entity based on user's profile"; 
+$LANG['rulesengine'][145]="User with a single profile"; 
 
 $LANG['search'][0]="Αναζήτηση"; 
 $LANG['search'][1]="for all"; 
