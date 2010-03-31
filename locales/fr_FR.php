@@ -1684,6 +1684,7 @@ $LANG['rulesengine'][141]="Aucune règle vérifiée";
 $LANG['rulesengine'][142]="Liste des emails non importés";
 $LANG['rulesengine'][143]="Groupe de l'utilisateur";
 $LANG['rulesengine'][144]="Entité depuis profil de l'utilisateur";
+$LANG['rulesengine'][145]="Utilisateur possédant un seul profil";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";
