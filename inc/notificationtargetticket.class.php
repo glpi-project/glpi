@@ -38,6 +38,7 @@ class NotificationTargetTicket extends NotificationTarget {
    var $private_profiles = array();
 
    function getSubjectPrefix($event='') {
+
       if ($event !='alertnotclosed') {
          return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
       }
@@ -382,7 +383,7 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE,$LANG['setup'][236]);
       $this->addTarget(Notification::TICKET_RECIPIENT,$LANG['job'][3]);
       $this->addTarget(Notification::TICKET_SUPPLIER,$LANG['financial'][26]);
-      $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." ".
+      $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." - ".
                                                                     $LANG['setup'][248]);
       $this->addTarget(Notification::TICKET_SUPERVISOR_REQUESTER_GROUP,$LANG['common'][64]." - ".
                                                                        $LANG['setup'][249]);
@@ -669,7 +670,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             $tmp['##validation.url##']
                = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                 $validation['tickets_id']."_7");
+                  $validation['tickets_id']."_7");
 
             $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
             $tmp['##lang.validation.validationstatus##']
@@ -771,66 +772,69 @@ class NotificationTargetTicket extends NotificationTarget {
       return false;
    }
 
+
    function getTags() {
       global $LANG;
 
       //Locales
       $tags = array ('ticket.id'                    => $LANG['common'][2],
-                       'ticket.title'                 => $LANG['common'][16],
-                       'ticket.url'                   => 'URL',
-                       'ticket.entity'                => $LANG['entity'][0],
-                       'ticket.category'              => $LANG['common'][36],
-                       'ticket.content'               => $LANG['joblist'][6],
-                       'ticket.description'           => $LANG['mailing'][5],
-                       'ticket.status'                => $LANG['joblist'][0],
-                       'ticket.creationdate'          => $LANG['reports'][60],
-                       'ticket.closedate'             => $LANG['reports'][61],
-                       'ticket.requesttype'           => $LANG['job'][44],
-                       'ticket.author'        => $LANG['common'][2].' '.$LANG['job'][4],
-                       'ticket.author.name'           => $LANG['job'][4],
-                       'ticket.author.location'       => $LANG['common'][15],
-                       'ticket.author.phone'          => $LANG['help'][35],
-                       'ticket.author.phone2'          => $LANG['help'][35].' 2',
-                       'ticket.openbyuser'            => $LANG['job'][3],
-                       'ticket.group'                 => $LANG['common'][35],
-                       'ticket.assigntouser'  => $LANG['job'][5]." - ".$LANG['job'][6],
-                       'ticket.assigntogroup' => $LANG['job'][5]." - ".$LANG['common'][35],
-                       'ticket.assigntosupplier'      => $LANG['job'][5].
-                                                                  " - ".$LANG['financial'][26],
-                       'ticket.itemtype'              => $LANG['reports'][12],
-                       'ticket.item.name'             => $LANG['financial'][104],
-                       'ticket.item.serial'           => $LANG['common'][19],
-                       'ticket.item.otherserial'      => $LANG['common'][20],
-                       'ticket.item.location'         => $LANG['common'][15],
-                       'ticket.item.model'            => $LANG['common'][22],
-                       'ticket.urgency'               => $LANG['joblist'][29],
-                       'ticket.impact'                => $LANG['joblist'][30],
-                       'ticket.priority'              => $LANG['joblist'][2],
-                       'ticket.time'                  => $LANG['job'][20],
-                       'ticket.costtime'              => $LANG['job'][40],
-                       'ticket.costfixed'             => $LANG['job'][41],
-                       'ticket.costmaterial'          => $LANG['job'][42],
-                       'ticket.solution.type'         => $LANG['job'][48],
-                       'ticket.solution.comment'      => $LANG['common'][25],
-                       'ticket.solution.name'         => $LANG['jobresolution'][1],
-                       'task.author'                  => $LANG['job'][4],
-                       'task.isprivate'               => $LANG['common'][77],
-                       'task.date'                    => $LANG['reports'][60],
-                       'task.description'             => $LANG['joblist'][6],
-                       'task.category'                => $LANG['common'][36],
-                       'task.time'                    => $LANG['job'][20],
-                       'followup.date'                => $LANG['reports'][60],
-                       'followup.isprivate'           => $LANG['common'][77],
-                       'followup.author'              => $LANG['job'][4],
-                       'followup.description'         => $LANG['joblist'][6],
-                       'followup.requesttype'         => $LANG['job'][44],
-                       'ticket.numberoffollowups'     => $LANG['mailing'][4],
-                       'ticket.numberoftasks'         => $LANG['mailing'][122],
-                       'ticket.nocategoryassigned'    => $LANG['mailing'][100]);
+                     'ticket.title'                 => $LANG['common'][16],
+                     'ticket.url'                   => 'URL',
+                     'ticket.entity'                => $LANG['entity'][0],
+                     'ticket.category'              => $LANG['common'][36],
+                     'ticket.content'               => $LANG['joblist'][6],
+                     'ticket.description'           => $LANG['mailing'][5],
+                     'ticket.status'                => $LANG['joblist'][0],
+                     'ticket.creationdate'          => $LANG['reports'][60],
+                     'ticket.closedate'             => $LANG['reports'][61],
+                     'ticket.requesttype'           => $LANG['job'][44],
+                     'ticket.author'                => $LANG['common'][2].' '.$LANG['job'][4],
+                     'ticket.author.name'           => $LANG['job'][4],
+                     'ticket.author.location'       => $LANG['common'][15],
+                     'ticket.author.phone'          => $LANG['help'][35],
+                     'ticket.author.phone2'         => $LANG['help'][35].' 2',
+                     'ticket.openbyuser'            => $LANG['job'][3],
+                     'ticket.group'                 => $LANG['common'][35],
+                     'ticket.assigntouser'          => $LANG['job'][5]." - ".$LANG['job'][6],
+                     'ticket.assigntogroup'         => $LANG['job'][5]." - ".$LANG['common'][35],
+                     'ticket.assigntosupplier'      => $LANG['job'][5]." - ".$LANG['financial'][26],
+                     'ticket.itemtype'              => $LANG['reports'][12],
+                     'ticket.item.name'             => $LANG['financial'][104],
+                     'ticket.item.serial'           => $LANG['common'][19],
+                     'ticket.item.otherserial'      => $LANG['common'][20],
+                     'ticket.item.location'         => $LANG['common'][15],
+                     'ticket.item.model'            => $LANG['common'][22],
+                     'ticket.urgency'               => $LANG['joblist'][29],
+                     'ticket.impact'                => $LANG['joblist'][30],
+                     'ticket.priority'              => $LANG['joblist'][2],
+                     'ticket.time'                  => $LANG['job'][20],
+                     'ticket.costtime'              => $LANG['job'][40],
+                     'ticket.costfixed'             => $LANG['job'][41],
+                     'ticket.costmaterial'          => $LANG['job'][42],
+                     'ticket.solution.type'         => $LANG['job'][48],
+                     'ticket.solution.comment'      => $LANG['common'][25],
+                     'ticket.solution.name'         => $LANG['jobresolution'][1],
+                     'task.author'                  => $LANG['job'][4],
+                     'task.isprivate'               => $LANG['common'][77],
+                     'task.date'                    => $LANG['reports'][60],
+                     'task.description'             => $LANG['joblist'][6],
+                     'task.category'                => $LANG['common'][36],
+                     'task.time'                    => $LANG['job'][20],
+                     'followup.date'                => $LANG['reports'][60],
+                     'followup.isprivate'           => $LANG['common'][77],
+                     'followup.author'              => $LANG['job'][4],
+                     'followup.description'         => $LANG['joblist'][6],
+                     'followup.requesttype'         => $LANG['job'][44],
+                     'ticket.numberoffollowups'     => $LANG['mailing'][4],
+                     'ticket.numberoftasks'         => $LANG['mailing'][122],
+                     'ticket.nocategoryassigned'    => $LANG['mailing'][100]);
+
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true,'events'=>NotificationTarget::TAG_FOR_ALL_EVENTS,
-                                   'ifelse'=>true));
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => true,
+                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS,
+                                   'ifelse' => true));
       }
 
      $tags = array('validation.author'            => $LANG['job'][4],
@@ -839,37 +843,41 @@ class NotificationTargetTicket extends NotificationTarget {
                    'validation.commentsubmission' => $LANG['validation'][5],
                    'validation.validationdate'    => $LANG['validation'][4],
                    'validation.commentvalidation' => $LANG['validation'][6]);
+
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true,'events'=>array('validation')));
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => true,
+                                   'events' => array('validation')));
       }
 
      $tags = array('followups'   => $LANG['mailing'][141],
                    'tasks'       => $LANG['mailing'][142],
                    'log'         => $LANG['mailing'][144],
                    'validation'  => $LANG['mailing'][143]);
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,
-                                   'label'=>$label,
-                                   'value'=>false,
-                                   'foreach'=>true));
-      }
-      $this->addTagToList(array('tag'=>'tickets',
-                                'label'=>$LANG['crontask'][15],
-                                'value'=>false,
-                                'foreach'=>true,
-                                'events'=>array('alertnotclosed')));
 
-
-      $tags = array('validation.submission.title'=>$LANG['validation'][27],
-                    'validation.answer.title'=>$LANG['validation'][32]);
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,
-                                   'label'=>$label,
-                                   'value'=>true,
-                                   'lang'=>false));
+         $this->addTagToList(array('tag'     => $tag,
+                                   'label'   => $label,
+                                   'value'   => false,
+                                   'foreach' => true));
       }
 
+      $this->addTagToList(array('tag'     => 'tickets',
+                                'label'   => $LANG['crontask'][15],
+                                'value'   => false,
+                                'foreach' => true,
+                                'events'  => array('alertnotclosed')));
+
+      $tags = array('validation.submission.title' => $LANG['validation'][27],
+                    'validation.answer.title'     => $LANG['validation'][32]);
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true,
+                                   'lang'  => false));
+      }
       asort($this->tag_descriptions);
    }
 }
