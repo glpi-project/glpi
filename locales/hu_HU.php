@@ -223,7 +223,7 @@ $LANG['common'][41]="Email riasztások";
 $LANG['common'][42]="Mobil"; 
 $LANG['common'][43]="Vezetéknév"; 
 $LANG['common'][44]="Alapértelmezett érték"; 
-$LANG['common'][45]="Mio max"; 
+$LANG['common'][45]="max MB"; 
 $LANG['common'][46]="Vcard"; 
 $LANG['common'][47]="Folyamatban"; 
 $LANG['common'][48]="Keresztnév"; 
@@ -1504,6 +1504,7 @@ $LANG['rulesengine'][141]="Nincs ellenőrzött szabály";
 $LANG['rulesengine'][142]="Nem importált levelek listája"; 
 $LANG['rulesengine'][143]="Felhasználói csoport"; 
 $LANG['rulesengine'][144]="Entity based on user's profile"; 
+$LANG['rulesengine'][145]="User with a single profile"; 
 
 $LANG['search'][0]="Keresés"; 
 $LANG['search'][1]="mindegyik"; 

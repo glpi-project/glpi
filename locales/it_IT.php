@@ -223,7 +223,7 @@ $LANG['common'][41]="Avvisi per e-mail";
 $LANG['common'][42]="Cellulare"; 
 $LANG['common'][43]="Nome"; 
 $LANG['common'][44]="valore predefinito"; 
-$LANG['common'][45]="Mio max"; 
+$LANG['common'][45]="max MB"; 
 $LANG['common'][46]="Vcard"; 
 $LANG['common'][47]="Avanzamento"; 
 $LANG['common'][48]="Cognome"; 
@@ -1504,6 +1504,7 @@ $LANG['rulesengine'][141]="Nessuna regola verificata";
 $LANG['rulesengine'][142]="Lista delle e-mail non importate"; 
 $LANG['rulesengine'][143]="Gruppo dell'utente"; 
 $LANG['rulesengine'][144]="Entità dal profilo utente"; 
+$LANG['rulesengine'][145]="User with a single profile"; 
 
 $LANG['search'][0]="Cerca"; 
 $LANG['search'][1]="per tutti"; 
