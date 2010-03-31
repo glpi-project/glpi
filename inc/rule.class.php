@@ -62,6 +62,9 @@ class Rule extends CommonDBTM {
 
    var $specific_parameters = false;
 
+   var $regex_results = array();
+   var $criterias_results = array();
+
    const RULE_NOT_IN_CACHE = -1;
    const RULE_WILDCARD = '*';
 
@@ -129,18 +132,6 @@ class Rule extends CommonDBTM {
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
-/*
-      $tab[19]['table']     = $this->getTable();
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
-*/
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'is_active';
-      $tab[8]['linkfield'] = 'is_active';
-      $tab[8]['name']      = $LANG['common'][60];
-      $tab[8]['datatype']  = 'bool';
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'ranking';
@@ -159,6 +150,12 @@ class Rule extends CommonDBTM {
       $tab[5]['linkfield'] = '';
       $tab[5]['name']      = $LANG['rulesengine'][9];
       $tab[5]['datatype']  = 'text';
+
+      $tab[8]['table']     = $this->getTable();
+      $tab[8]['field']     = 'is_active';
+      $tab[8]['linkfield'] = 'is_active';
+      $tab[8]['name']      = $LANG['common'][60];
+      $tab[8]['datatype']  = 'bool';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
@@ -629,12 +626,12 @@ class Rule extends CommonDBTM {
    function process(&$input,&$output,&$params) {
 
       if (count($this->criterias)) {
-         $regex_result=array();
-         $criterias_result = array();
+         $this->regex_results = array();
+         $this->criterias_results = array();
          $input=$this->prepareInputDataForProcess($input,$params);
 
-         if ($this->checkCriterias($input,$criterias_result, $regex_result)) {
-            $output=$this->executeActions($output,$params,$criterias_result, $regex_result);
+         if ($this->checkCriterias($input)) {
+            $output=$this->executeActions($output,$params);
 
             //Hook
             $hook_params["sub_type"]=$this->getType();
@@ -655,14 +652,14 @@ class Rule extends CommonDBTM {
     * @param $regex_result
     * @return boolean if criterias match
    **/
-   function checkCriterias($input,&$criterias_result, &$regex_result) {
+   function checkCriterias($input) {
 
       $doactions=false;
       reset($this->criterias);
       if ($this->fields["match"]==Rule::AND_MATCHING) {
          $doactions=true;
          foreach ($this->criterias as $criteria) {
-            $doactions &= $this->checkCriteria($criteria,$input,$criterias_result, $regex_result);
+            $doactions &= $this->checkCriteria($criteria,$input);
             if (!$doactions) {
                break;
             }
@@ -670,29 +667,27 @@ class Rule extends CommonDBTM {
       } else { // OR MATCHING
          $doactions=false;
          foreach ($this->criterias as $criteria) {
-            $doactions |= $this->checkCriteria($criteria,$input,$criterias_result, $regex_result);
+            $doactions |= $this->checkCriteria($criteria,$input);
             if ($doactions) {
                break;
             }
          }
       }
-//      print_r($regex_result);
       return $doactions;
    }
 
    /**
    * Check criterias
    * @param $input the input data used to check criterias
-   * @param $regex_result
    * @param $check_results
    * @return boolean if criterias match
    */
-   function testCriterias($input,&$regex_result,&$check_results) {
+   function testCriterias($input,&$check_results) {
 
       reset($this->criterias);
 
       foreach ($this->criterias as $criteria) {
-         $result = $this->checkCriteria($criteria,$input,$regex_result);
+         $result = $this->checkCriteria($criteria,$input);
          $check_results[$criteria->fields["id"]]["name"]=$criteria->fields["criteria"];
          $check_results[$criteria->fields["id"]]["value"]=$criteria->fields["pattern"];
          $check_results[$criteria->fields["id"]]["result"]=((!$result)?0:1);
@@ -704,10 +699,8 @@ class Rule extends CommonDBTM {
     * Process a criteria of a rule
     * @param $criteria criteria to check
     * @param $input the input data used to check criterias
-    * @param $regex_result
    **/
-   function checkCriteria(&$criteria,&$input,&$criterias_result, &$regex_result) {
-
+   function checkCriteria(&$criteria,&$input) {
 
       $partial_regex_result=array();
 
@@ -723,7 +716,7 @@ class Rule extends CommonDBTM {
 
          $res = RuleCriteria::match($criteria,
                                     $value,
-                                    $criterias_result,
+                                    $this->criterias_results,
                                     $partial_regex_result);
       } else {
          //If the value if, in fact, an array of values
@@ -737,7 +730,7 @@ class Rule extends CommonDBTM {
                                               $criteria->fields["condition"],$tmp);
                $res &= RuleCriteria::match($criteria,
                                            $value,
-                                           $criterias_result,
+                                           $this->criterias_results,
                                            $partial_regex_result);
                if (!$res) {
                   break;
@@ -751,7 +744,7 @@ class Rule extends CommonDBTM {
                                               $criteria->fields["condition"],$crit);
                $res |= RuleCriteria::match($criteria,
                                            $value,
-                                           $criterias_result,
+                                           $this->criterias_results,
                                            $partial_regex_result);
             }
          }
@@ -759,16 +752,16 @@ class Rule extends CommonDBTM {
       // Found regex on this criteria
       if (count($partial_regex_result)) {
          // No regex existing : put found
-         if (!count($regex_result)) {
-            $regex_result=$partial_regex_result;
+         if (!count($this->regex_results)) {
+            $this->regex_results=$partial_regex_result;
          } else { // Already existing regex : append found values
             $temp_result=array();
             foreach ($partial_regex_result as $new) {
-               foreach ($regex_result as $old) {
+               foreach ($this->regex_results as $old) {
                   $temp_result[]=array_merge($old,$new);
                }
             }
-            $regex_result=$temp_result;
+            $this->regex_results=$temp_result;
          }
       }
 
@@ -789,10 +782,9 @@ class Rule extends CommonDBTM {
    * Execute the actions as defined in the rule
    * @param $output the fields to manipulate
    * @param $params parameters
-   * @param $regex_results
    * @return the $output array modified
    */
-   function executeActions($output,$params,$criterias_result,$regex_results) {
+   function executeActions($output,$params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -810,7 +802,8 @@ class Rule extends CommonDBTM {
                   } else {
                      $res="";
                   }
-                  $res .= RuleAction::getRegexResultById($action->fields["value"],$regex_results[0]);
+                  $res .= RuleAction::getRegexResultById($action->fields["value"],
+                                                         $this->regex_results[0]);
                   $output[$action->fields["field"]]=$res;
                   break;
             }
@@ -948,12 +941,11 @@ class Rule extends CommonDBTM {
       global $LANG;
 
       $actions = $this->getActions();
-      $regex_results = array();
       $check_results = array();
       $output = array();
 
       //Test all criterias, without stopping at the first good one
-      $this->testCriterias($input,$regex_results,$check_results);
+      $this->testCriterias($input,$check_results);
 
       //Process the rule
       $this->process($input,$output,$params,false);
@@ -1000,11 +992,11 @@ class Rule extends CommonDBTM {
       }
 
       //If a regular expression was used, and matched, display the results
-      if (count($regex_results)) {
+      if (count($this->regex_results)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".$LANG['rulesengine'][85]."</td>";
          echo "<td>";
-         printCleanArray($regex_results[0]);
+         printCleanArray($this->regex_results[0]);
          echo "</td></tr>\n";
       }
       echo "</tr>\n";
@@ -1075,6 +1067,8 @@ class Rule extends CommonDBTM {
       if (isset($crit['type'])
           && ($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
          switch ($crit['type']) {
+            case "yesno":
+               return Dropdown::getYesNo($pattern);
             case "dropdown" :
                return Dropdown::getDropdownName($crit["table"],$pattern);
 
@@ -1120,6 +1114,10 @@ class Rule extends CommonDBTM {
       if (isset($crit['type'])
           && ($test||$condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
          switch ($crit['type']) {
+            case "yesno":
+               Dropdown::showYesNo($name,$crit['table']);
+               $display=true;
+               break;
             case "dropdown" :
                Dropdown::show(getItemTypeForTable($crit['table']),
                         array('name' => $name,'value' => $value));

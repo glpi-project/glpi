@@ -131,6 +131,14 @@ class RuleMailCollector extends Rule {
       $criterias['PROFILES']['id']      = 'profiles';
       $criterias['PROFILES']['allow_condition'] = array(Rule::PATTERN_IS);
 
+      $criterias['ONE_PROFILE']['field']   = 'name';
+      $criterias['ONE_PROFILE']['name']    = $LANG['rulesengine'][145];
+      $criterias['ONE_PROFILE']['table']   = '';
+      $criterias['ONE_PROFILE']['type']    = 'yesno';
+      $criterias['ONE_PROFILE']['virtual'] = true;
+      $criterias['ONE_PROFILE']['id']      = 'profiles';
+      $criterias['ONE_PROFILE']['allow_condition'] = array(Rule::PATTERN_IS);
+
       return $criterias;
    }
 
@@ -163,7 +171,7 @@ class RuleMailCollector extends Rule {
       return $actions;
    }
 
-   function executeActions($output,$params,$criterias_result,$regex_results) {
+   function executeActions($output,$params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -174,30 +182,39 @@ class RuleMailCollector extends Rule {
                         $output[$action->fields["field"]] = $action->fields["value"];
                         break;
                      case "_affect_entity_by_user_entity":
-                        $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
-                                                                              $criterias_result['PROFILES']);
-                        //User has right on only one entity
-
-                        if (count($entities) == 1) {
-                           $output['entities_id'] = $entities[0]['id'];
-                        }
-                        //Rights on more than one entity : get the user's prefered entity
-                        else {
-                           $user = new User;
-                           $user->getFromDB($params['users_id']);
-                           //If an entity is defined in user's preferences, use this one
-                           //else do not set the rule as matched
-                           if ($user->getField('entities_id')) {
-                              $output['entities_id'] = $user->getField('entities_id');
+                        //Affect entity if user has a specific profile
+                        if (isset($this->regex_results['criterias']['PROFILES'])) {
+                           $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
+                                                                                 $this->criterias_results['PROFILES']);
+                           //User has right on only one entity
+                           if (count($entities) == 1) {
+                              $output['entities_id'] = $entities[0]['id'];
                            }
+                           //Rights on more than one entity : get the user's prefered entity
+                           else {
+                              $user = new User;
+                              $user->getFromDB($params['users_id']);
+                              //If an entity is defined in user's preferences, use this one
+                              //else do not set the rule as matched
+                              if ($user->getField('entities_id')) {
+                                 $output['entities_id'] = $user->getField('entities_id');
+                              }
+                           }
+                        }
+                        else {
+                           //Affect entity is user has one profile on one entity only
+                           $entities = Profile_User::getForUser($params['users_id']);
+                           $entity = array_pop($entities);
+                           $output['entities_id'] = $entity['id'];
                         }
                         break;
                   }
                   break;
                case "regex_result" :
-                  foreach ($regex_results as $regex_result) {
+                  foreach ($this->regex_results as $regex_result) {
                      $entity_found = -1;
-                     $res = RuleAction::getRegexResultById($action->fields["value"],$regex_result);
+                     $res = RuleAction::getRegexResultById($action->fields["value"],
+                                                           $this->regex_results);
                      if ($res != null) {
                         switch ($action->fields["field"]) {
                            case "_affect_entity_by_domain":
