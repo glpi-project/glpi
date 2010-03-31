@@ -48,68 +48,6 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 $display=false;
 
-
 $ra = new RuleAction();
-
-switch ($_POST["action_type"]) {
-   //If a regex value is used, then always display an autocompletiontextfield
-   case "regex_result" :
-   case "append_regex_result" :
-      autocompletionTextField($ra,"value");
-      break;
-
-   default :
-      $actions = Rule::getActionsByType($_POST["sub_type"]);
-      if (isset($actions[$_POST["field"]]['type'])) {
-         switch($actions[$_POST["field"]]['type']) {
-            case "dropdown" :
-               $table=$actions[$_POST["field"]]['table'];
-               Dropdown::show(getItemTypeForTable($table), array('name' => "value"));
-               $display=true;
-               break;
-
-            case "dropdown_assign" :
-               User::dropdown(array('name' => 'value','right' => 'own_ticket'));
-               $display=true;
-               break;
-
-            case "dropdown_users" :
-               User::dropdown(array('name'   => 'value',
-                                    'right'  => 'all'));
-               $display=true;
-               break;
-
-            case "dropdown_urgency" :
-               Ticket::dropdownUrgency("value");
-               $display=true;
-               break;
-
-            case "dropdown_impact" :
-               Ticket::dropdownImpact("value");
-               $display=true;
-               break;
-
-            case "dropdown_priority" :
-               if ($_POST["action_type"]!='compute') {
-                  Ticket::dropdownPriority("value");
-               }
-               $display=true;
-               break;
-
-            case "dropdown_status" :
-               Ticket::dropdownStatus("value");
-               $display=true;
-               break;
-
-            case "yesno" :
-               Dropdown::showYesNo("value");
-               $display=true;
-               break;
-         }
-      }
-      if (!$display) {
-         autocompletionTextField($ra, "value");
-      }
-}
-
+$ra->displayActionSelectPattern($_POST);
 ?>

@@ -134,7 +134,7 @@ class RuleMailCollector extends Rule {
       $criterias['ONE_PROFILE']['field']   = 'name';
       $criterias['ONE_PROFILE']['name']    = $LANG['rulesengine'][145];
       $criterias['ONE_PROFILE']['table']   = '';
-      $criterias['ONE_PROFILE']['type']    = 'yesno';
+      $criterias['ONE_PROFILE']['type']    = 'yesonly';
       $criterias['ONE_PROFILE']['virtual'] = true;
       $criterias['ONE_PROFILE']['id']      = 'profiles';
       $criterias['ONE_PROFILE']['allow_condition'] = array(Rule::PATTERN_IS);
@@ -158,15 +158,15 @@ class RuleMailCollector extends Rule {
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
       $actions['_affect_entity_by_user_entity']['name']  = $LANG['rulesengine'][144];
-      $actions['_affect_entity_by_user_entity']['type']  = 'yesno';
+      $actions['_affect_entity_by_user_entity']['type']  = 'yesonly';
       $actions['_affect_entity_by_user_entity']['table']  = '';
 
       $actions['_refuse_email_no_response']['name']   = $LANG['rulesengine'][134];
-      $actions['_refuse_email_no_response']['type']   = 'yesno';
+      $actions['_refuse_email_no_response']['type']   = 'yesonly';
       $actions['_refuse_email_no_response']['table']   = '';
 
       $actions['_refuse_email_with_response']['name']   = $LANG['rulesengine'][135];
-      $actions['_refuse_email_with_response']['type']   = 'yesno';
+      $actions['_refuse_email_with_response']['type']   = 'yesonly';
       $actions['_refuse_email_with_response']['table']   = '';
       return $actions;
    }

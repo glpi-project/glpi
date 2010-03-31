@@ -120,7 +120,7 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['name']['force_actions'] = array('assign','regex_result');
 
       $actions['_ignore_ocs_import']['name'] = $LANG['ocsconfig'][6];
-      $actions['_ignore_ocs_import']['type'] = 'yesno';
+      $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
       $actions['version']['name']          = $LANG['rulesengine'][78];
       $actions['version']['force_actions'] = array('assign','regex_result','append_regex_result');

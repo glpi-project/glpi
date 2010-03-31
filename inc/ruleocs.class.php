@@ -160,7 +160,7 @@ class RuleOcs extends Rule {
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
       $actions['_ignore_ocs_import']['name'] = $LANG['ocsconfig'][6];
-      $actions['_ignore_ocs_import']['type'] = 'yesno';
+      $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
       return $actions;
    }
