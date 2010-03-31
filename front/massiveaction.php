@@ -607,6 +607,27 @@ if (isset($_POST["itemtype"])) {
             }
             break;
 
+         case 'merge' :
+            $fk = $item->getForeignKeyField();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val==1 && $item->can($key,'w') && $item->getEntityID()!=$_SESSION['glpiactive_entity']) {
+                  $input = $item->fields;
+                  if($item instanceof CommonTreeDropdown) {
+                     unset($input['id'], $input['name'], $input[$fk]);
+                  } else {
+                     unset($input['id']);
+                  }
+                  $input['entities_id']  = $_SESSION['glpiactive_entity'];
+                  $input['is_recursive'] = 1;
+                  $newid = $item->import($input);
+                  if ($newid > 0) {
+                     $item->delete(array('id' => $key,
+                                         '_replace_by' => $newid));
+                  }
+               }
+            }
+            break;
+
          case 'delete_email':
          case 'import_email':
             $emails_ids = array();

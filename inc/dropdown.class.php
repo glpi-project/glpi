@@ -1237,6 +1237,14 @@ class Dropdown {
                   echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
                }
             }
+            if ($itemtype!='Entity'
+                && ($item instanceof CommonDropdown)
+                && $item->maybeRecursive()){
+               if ($isadmin) {
+                  echo "<option value='merge'>".$LANG['buttons'][48]." - ".$LANG['software'][48];
+                  echo "</option>";
+               }
+            }
 
             // Plugin Specific actions
             if (isset($PLUGIN_HOOKS['use_massive_action'])) {

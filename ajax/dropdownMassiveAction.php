@@ -69,6 +69,12 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                $LANG['buttons'][2]."\" >\n";
          break;
 
+      case 'merge' :
+         echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
+               $LANG['buttons'][2]."\" >\n";
+         break;
+
       case "move_rule" :
          echo "<select name='move_type'>";
          echo "<option value='after' selected>".$LANG['buttons'][47]."</option>";
@@ -262,7 +268,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                       ||($_POST["itemtype"]!='Budget' && $val["table"]=="glpi_budgets")
                       ||($val["table"]=="glpi_ocslinks" && $key==101))// auto_update_ocs
                            &&(!isset($val['massiveaction']) || $val['massiveaction'])
-                     ) { 
+                     ) {
                      if ($show_all) {
                         $newgroup.= "<option value='$key'>".$val["name"]."</option>";
                         $items_in_group++;
