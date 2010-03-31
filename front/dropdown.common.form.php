@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    $dropdown->check(-1,'w',$_POST);
 
    if ($newID=$dropdown->add($_POST)) {
-      refreshDropdownPopupInMainWindow();
+      $dropdown->refreshParentInfos();
       if ($dropdown instanceof CommonDevice) {
          Event::log($newID, strtolower(get_class($dropdown)), 4, "inventory",
                     $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
       commonFooter();
    } else {
       $dropdown->delete($_POST, 1);
-      refreshDropdownPopupInMainWindow();
+      $dropdown->refreshParentInfos();
 
       Event::log($_POST["id"], strtolower(get_class($dropdown)), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
       glpi_header($dropdown->getSearchURL());
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["replace"])) {
    $dropdown->check($_POST["id"],'w');
    $dropdown->delete($_POST, 1);
-   refreshDropdownPopupInMainWindow();
+   $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], strtolower(get_class($dropdown)), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($dropdown->getSearchURL());
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $dropdown->check($_POST["id"],'w');
    $dropdown->update($_POST);
-   refreshDropdownPopupInMainWindow();
+   $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], strtolower(get_class($dropdown)), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);

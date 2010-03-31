@@ -1162,6 +1162,17 @@ function refreshDropdownPopupInMainWindow() {
 }
 
 /**
+ * Call from a popup Windows, refresh the dropdown in main window
+ */
+function refreshPopupMainWindow() {
+   if (isset($_SESSION["glpipopup"]["rand"])) {
+      echo "<script type='text/javascript' >\n";
+      echo "window.opener.location.reload(true)";
+      echo "</script>";
+   }
+
+}
+/**
  * Call cron without time check
  *
  * @return boolean : true if launched
@@ -2065,7 +2076,7 @@ function sylk_clean($value) {
 function cleanParametersURL($url) {
    $url=preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/","$1",$url);
    return preg_replace("/\?.*/","",$url);
-   
+
 }
 /**
 *   Manage planning posted datas (must have begin + duration or end)
