@@ -274,19 +274,22 @@ class EntityData extends CommonDBTM {
       }
    }
 
+
    function post_getEmpty() {
-      $fields = array('use_licenses_alert','use_contracts_alert','use_infocoms_alert',
-                     'use_reservations_alert', 'autoclose_delay', 'consumables_alert_repeat',
-                     'cartridges_alert_repeat','notclosed_delay');
+
+      $fields = array('use_licenses_alert', 'use_contracts_alert', 'use_infocoms_alert',
+                      'use_reservations_alert', 'autoclose_delay', 'consumables_alert_repeat',
+                      'cartridges_alert_repeat', 'notclosed_delay');
       foreach ($fields as $field) {
          $this->fields[$field] = -1;
       }
    }
 
+
    static function showNotificationOptions(Entity $entity) {
       global $DB, $LANG, $CFG_GLPI;
 
-      $con_spotted=false;
+      $con_spotted = false;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r')) {
@@ -329,48 +332,48 @@ class EntityData extends CommonDBTM {
       echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][244] . "</td><td>";
 
       $default_value = $entitynotification->fields['cartridges_alert_repeat'];
-      Alert::dropdown(array('name'=>'cartridges_alert_repeat',
-                            'value'=>$default_value,
-                            'inherit_global'=>1));
-
+      Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
+                            'value'          => $default_value,
+                            'inherit_global' => 1));
       echo "</td>";
       echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][243] . "</td><td>";
       $default_value = $entitynotification->fields['consumables_alert_repeat'];
-      Alert::dropdown(array('name'=>'consumables_alert_repeat',
-                            'value'=>$default_value,
-                            'inherit_global'=>1));
-
+      Alert::dropdown(array('name'           => 'consumables_alert_repeat',
+                            'value'          => $default_value,
+                            'inherit_global' => 1));
       echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][264] . "</td><td>";
       $default_value = $entitynotification->fields['use_licenses_alert'];
-      Alert::dropdownYesNo(array('name'=>"use_licenses_alert",
-                                  'value'=>$default_value,
-                                  'inherit_global'=>1) );
+      Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
+                                 'value'          => $default_value,
+                                 'inherit_global' => 1));
       echo "</td>";
       echo "<td>" . $LANG['setup'][246] . "</td><td>";
       $default_value = $entitynotification->fields['use_contracts_alert'];
-      Alert::dropdownYesNo(array('name'=>"use_contracts_alert",
-                                  'value'=>$default_value,
-                                  'inherit_global'=>1) );
+      Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
+                                 'value'          => $default_value,
+                                 'inherit_global' => 1));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][247] . "</td><td>";
       $default_value = $entitynotification->fields['use_infocoms_alert'];
-      Alert::dropdownYesNo(array('name'=>"use_infocoms_alert",
-                                  'value'=>$default_value,
-                                  'inherit_global'=>1) );
+      Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
+                                 'value'          => $default_value,
+                                 'inherit_global' => 1));
       echo "</td>";
       echo "<td>" . $LANG['setup'][707] . "</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert',
                                   $entitynotification->fields['use_reservations_alert'],
-                                  array('max'=>99,'inherit_global'=>1));
+                                  array('max'            => 99,
+                                        'inherit_global' => 1));
       echo "&nbsp;".$LANG['job'][21]."</td></tr>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td >" . $LANG['setup'][708] . "</td><td>";
-      Alert::dropdownIntegerNever('notclosed_delay',
-                                  $entitynotification->fields["notclosed_delay"],
-                                  array('max'=>99,'inherit_global'=>1));
+      Alert::dropdownIntegerNever('notclosed_delay', $entitynotification->fields["notclosed_delay"],
+                                  array('max'            => 99,
+                                        'inherit_global' => 1));
       echo "&nbsp;".$LANG['stats'][31]."</td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -460,8 +463,9 @@ class EntityData extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['entity'][18] . "&nbsp;:</td>";
       echo "<td>";
-      Alert::dropdownIntegerNever('autoclose_delay',$entdata->fields['autoclose_delay'],
-                                  array('max'=>99,'inherit_global'=>1));
+      Alert::dropdownIntegerNever('autoclose_delay', $entdata->fields['autoclose_delay'],
+                                  array('max'            => 99,
+                                        'inherit_global' => 1));
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
       if ($canedit) {
