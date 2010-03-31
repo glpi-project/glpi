@@ -395,7 +395,7 @@ class Dropdown {
          }
       }
 
-      $query="SELECT DISTINCT `".$p['field']."` 
+      $query="SELECT DISTINCT `".$p['field']."`
                FROM `".getTableForItemType($itemtype_ref)."`";
       $tabs=array();
       if ($result=$DB->query($query)) {
@@ -403,7 +403,7 @@ class Dropdown {
             $tabs[$data[$p['field']]]=$data[$p['field']];
          }
       }
-      
+
       return Dropdown::dropdownTypes($name,$p['value'],$tabs);
    }
 
@@ -1225,19 +1225,17 @@ class Dropdown {
                      " (".$LANG['crontask'][40].")</option>";
                   break;
 
-               case 'TicketCategory' :
-               case 'TaskCategory' :
-               case 'Location' :
-                  if ($isadmin) {
-                     echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
-                  }
-                  break;
                case 'NotImportedEmail':
                      echo "<option value='delete_email'>".$LANG['mailing'][133]."</option>";
                      echo "<option value='import_email'>".$LANG['buttons'][37]."</option>";
                      echo "<option value='add_user_to_email'>".$LANG['mailgate'][14]."</option>";
                   break;
 
+            }
+            if ($item instanceof CommonTreeDropdown) {
+               if ($isadmin) {
+                  echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
+               }
             }
 
             // Plugin Specific actions

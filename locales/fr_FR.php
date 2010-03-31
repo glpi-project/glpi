@@ -81,7 +81,7 @@ $LANG['buttons'][21] = "Restaurer";
 $LANG['buttons'][22] = "Purger";
 $LANG['buttons'][23] = "Voir";
 $LANG['buttons'][24] = "Monter";
-$LANG['buttons'][25] ="Descendre";
+$LANG['buttons'][25] = "Descendre";
 
 $LANG['buttons'][27] = "Vue format PDF";
 $LANG['buttons'][28] = "Vue format SLK";
