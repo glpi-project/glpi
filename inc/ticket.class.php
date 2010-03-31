@@ -2448,6 +2448,25 @@ class Ticket extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
+
+      if (!$ID && haveRight("update_ticket","1")) {
+         //Get all the user's entities
+         $all_entities = Profile_User::getUserEntities($options["users_id"], true);
+         $values = array();
+         //For each user's entity, check if the technician which creates the ticket have access to it
+         foreach ($all_entities as $tmp => $ID_entity) {
+            if (haveAccessToEntity($ID_entity)) {
+               $values[] = $ID_entity;
+            }
+         }
+         $count = count($values);
+         if ($count>0 && !in_array($this->fields["entities_id"],$values)) {
+            // If entity is not in the list of user's entities,
+            // then use as default value the first value of the user's entites list
+            $this->fields["entities_id"] = $values[0];
+         }
+      }
+
       // Optional line
       if (isMultiEntitiesMode()) {
          echo '<tr><th colspan="4">';
@@ -2540,32 +2559,14 @@ class Ticket extends CommonDBTM {
          echo $LANG['job'][4]."&nbsp;: </td>";
          echo "<td>";
 
-         //List all users in the active entity (and all it's sub-entities if needed)
+         //List all users in the active entities 
          User::dropdown(array('value'         => $options["users_id"],
-                              'entity'        => $this->fields["entities_id"],
-                              'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
+                              'entity'        => $_SESSION['glpiactiveentities'],
+                              //'entity'        => $this->fields["entities_id"],
+                              //'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
                               'right'         => 'all',
                               'helpdesk_ajax' => 1,
                               'ldap_import'   => true));
-
-         //Get all the user's entities
-         $all_entities = Profile_User::getUserEntities($options["users_id"], true);
-         $values = array();
-
-         //For each user's entity, check if the technician which creates the ticket have access to it
-         foreach ($all_entities as $tmp => $ID_entity) {
-            if (haveAccessToEntity($ID_entity)) {
-               $values[] = $ID_entity;
-            }
-         }
-
-         $count = count($values);
-
-         if ($count>0 && !in_array($this->fields["entities_id"],$values)) {
-            // If entity is not in the list of user's entities,
-            // then use as default value the first value of the user's entites list
-            $this->fields["entities_id"] = $values[0];
-         }
 
          //If user have access to more than one entity, then display a combobox
          if ($count > 1) {
