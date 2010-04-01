@@ -1115,7 +1115,6 @@ class Search {
    static function computeWhereHaving ($itemtype,$p,$meta_type='',$toview=array()) {
       global $CFG_GLPI;
 
-      $searchopt = &Search::getOptions($itemtype);
 
       // Instanciate an object to access method
       $item = NULL;
@@ -1149,6 +1148,7 @@ class Search {
          $searchtype=$itemtype;
          $meta=false;
       }
+      $searchopt = &Search::getOptions($searchtype);
 
       // hack for States
       if (isset($CFG_GLPI['union_search_type'][$searchtype])) {
@@ -1223,8 +1223,7 @@ class Search {
                   } else {
                      $tmplink=" AND ";
                   }
-
-                  if (!$meta && isset($searchopt[$field[$key]]["usehaving"])) {
+                  if (isset($searchopt[$field[$key]]["usehaving"])) {
                      // Manage Link if not first item
                      if (!empty($HAVING)) {
                         $LINK=$tmplink;
@@ -3136,6 +3135,21 @@ class Search {
             }
          }
 
+         $SELECT="";
+         $GROUPBY='';
+         // Add usehaving select
+         for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$from_type] ; $i++) {
+            if (isset($p['itemtype2'][$i]) && !empty($p['itemtype2'][$i]) && isset($p['contains2'][$i])
+               && strlen($p['contains2'][$i])>0 
+               && isset($searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["usehaving"])) {
+
+               $SELECT .= Search::addSelect($p['itemtype2'][$i],$p['field2'][$i],$i,1,$p['itemtype2'][$i]);
+               $GROUPBY="GROUP BY `$totable`.`id`";
+            }
+         }
+         $SELECT="SELECT ".$SELECT."`$totable`.`id` AS ID ";
+
+         
          if (!empty($WHERE) || !empty($COMMONWHERE)) {
             if (!empty($COMMONWHERE)) {
                $WHERE =' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
@@ -3151,15 +3165,17 @@ class Search {
 
 
          $TOADD=" AND `$totable`.`id` IN (
-                     SELECT `$totable`.`id`
-                     $FROM $WHERE $HAVING
+                     SELECT ID FROM (
+                        $SELECT
+                        $FROM $WHERE $GROUPBY $HAVING
+                     ) AS SUB
                   )";
          $CONDITIONLINK = " INNER JOIN ";
       }
-//       echo "COMMONWHERE = ".$COMMONWHERE.'<br><br>';
-//       echo "WHERE = ".$WHERE.'<br><br>';
-//       echo "HAVING = ".$HAVING.'<br><br>';
-//       echo "TOADD = ".$TOADD.'<br><br>';
+//        echo "COMMONWHERE = ".$COMMONWHERE.'<br><br>';
+//        echo "WHERE = ".$WHERE.'<br><br>';
+//         echo "HAVING = ".$HAVING.'<br><br>';
+//        echo "TOADD = ".$TOADD.'<br><br>';
 
       switch ($from_type) {
          case 'Ticket' :
