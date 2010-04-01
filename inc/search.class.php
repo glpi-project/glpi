@@ -132,12 +132,12 @@ class Search {
             $LIST_LIMIT=GLOBAL_SEARCH_DISPLAY_COUNT;
          }
       }
-      // hack for States
-      if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
-         $entity_restrict = true;
-      } else {
-         $entity_restrict = $item->isEntityAssign();
-      }
+//       // hack for States
+//       if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
+//          $entity_restrict = true;
+//       } else {
+//          $entity_restrict = $item->isEntityAssign();
+//       }
 
       $names = array('Computer'   => $LANG['Menu'][0],
                      'Printer'    => $LANG['Menu'][2],
@@ -1118,8 +1118,24 @@ class Search {
          $searchtype = $p['searchtype'];
       }
 
-      $item = new $itemtype();
-      $itemtable= $item->getTable();
+      // Instanciate an object to access method
+      $item = NULL;
+      if ($itemtype!='States' && class_exists($itemtype)) {
+         $item = new $itemtype();
+      }
+      if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
+         $itemtable=$CFG_GLPI['union_search_type'][$itemtype];
+      } else {
+         $itemtable=getTableForItemType($itemtype);
+      }
+
+      // hack for States
+      if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
+         $entity_restrict = true;
+      } else {
+         $entity_restrict = $item->isEntityAssign();
+      }
+
       // default string
       $COMMONWHERE = Search::addDefaultWhere($itemtype);
       $first=empty($COMMONWHERE);
@@ -1145,7 +1161,7 @@ class Search {
       }
 
       // Add Restrict to current entities
-      if ($item->isEntityAssign()) {
+      if ($entity_restrict) {
          $LINK= " AND " ;
          if ($first) {
             $LINK=" ";
