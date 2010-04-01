@@ -2780,7 +2780,7 @@ class Search {
          case "glpi_softwarelicensetypes" :
             return Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwarelicenses",$linkfield,
                               $meta,$meta_type) ."
-                  LEFT JOIN `$new_table` $AS ON (`glpi_softwarelicenses`.`softwarelicensetypes_id` = `$nt`.`id`)";
+                  LEFT JOIN `$new_table` $AS ON (`glpi_softwarelicenses$addmetanum`.`softwarelicensetypes_id` = `$nt`.`id`)";
 
          case "glpi_softwarelicenses" :
             if (!$meta) {
