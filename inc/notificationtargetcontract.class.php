@@ -57,8 +57,8 @@ class NotificationTargetContract extends NotificationTarget {
       $this->datas['##lang.contract.action##'] = $LANG['mailing'][39];
       $this->datas['##lang.contract.name##']   = $LANG['common'][16];
 
-      $this->datas['##lang.contract.time##']   = ($event==Alert::END?$LANG['contract'][1]:
-                                                                    $LANG['contract'][2]);
+      $this->datas['##lang.contract.time##']   = ($event==Alert::END?$LANG['contract'][0]:
+                                                                    $LANG['contract'][1]);
       $this->datas['##lang.contract.number##'] = $LANG['financial'][4];
       $this->datas['##lang.contract.type##']   = $LANG['common'][17];
 
