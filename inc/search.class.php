@@ -388,7 +388,7 @@ class Search {
 //       echo "WHERE = ".$WHERE.'<br><br>';
 //       echo "HAVING = ".$HAVING.'<br><br>';
 
-      list($COMMONWHERE,$WHERE,$HAVING)=self::computeWhereHaving($itemtype,false,$p,$toview);
+      list($COMMONWHERE,$WHERE,$HAVING)=self::computeWhereHaving($itemtype,$p,'',$toview);
 
       //// 4 - ORDER
       $ORDER=" ORDER BY `id` ";
@@ -471,7 +471,7 @@ class Search {
       }
 
       // Specific search for others item linked  (META search)
-      if (is_array($p['itemtype2'])) {
+/*      if (is_array($p['itemtype2'])) {
          for ($key=0 ; $key<$_SESSION["glpisearchcount2"][$itemtype] ; $key++) {
             if (isset($p['itemtype2'][$key]) && !empty($p['itemtype2'][$key]) && isset($p['contains2'][$key])
                && strlen($p['contains2'][$key])>0) {
@@ -512,7 +512,7 @@ class Search {
             }
          }
       }
-
+*/
       // If no research limit research to display item and compute number of item using simple request
       $nosearch=true;
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
@@ -819,13 +819,19 @@ class Search {
 
             // Display columns Headers for meta items
             if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($p['itemtype2'])) {
+               $already_printmeta=array();
                for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
                   if (isset($p['itemtype2'][$i]) && !empty($p['itemtype2'][$i]) && isset($p['contains2'][$i])
                      && strlen($p['contains2'][$i])>0) {
 
-                     echo Search::showHeaderItem($output_type,$names[$p['itemtype2'][$i]]." - ".
-                                                $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
-                                                $header_num);
+                     $metatodisplay=$p['itemtype2'][$i].'.'.$p['field2'][$i];
+                     if (!in_array($metatodisplay,$already_printmeta)) {
+                        $already_printmeta[]=$metatodisplay;
+
+                        echo Search::showHeaderItem($output_type,$names[$p['itemtype2'][$i]]." - ".
+                                                   $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
+                                                   $header_num);
+                     }
                   }
                }
             }
@@ -912,56 +918,60 @@ class Search {
                }
 
                // Print Meta Item
+               $already_printmeta=array();
                if ($_SESSION["glpisearchcount2"][$itemtype]>0 && is_array($p['itemtype2'])) {
                   for ($j=0 ; $j<$_SESSION["glpisearchcount2"][$itemtype] ; $j++) {
                      if (isset($p['itemtype2'][$j]) && !empty($p['itemtype2'][$j]) && isset($p['contains2'][$j])
                         && strlen($p['contains2'][$j])>0) {
-
-                        // General case
-                        if (strpos($data["META_$j"],"$$$$")===false) {
-                           $out=Search::giveItem ($p['itemtype2'][$j],$p['field2'][$j],$data,$j,1);
-                           echo Search::showItem($output_type,$out,$item_num,$row_num);
-
-                        // Case of GROUP_CONCAT item : split item and multilline display
-                        } else {
-                           $split=explode("$$$$",$data["META_$j"]);
-                           $count_display=0;
-                           $out="";
-                           $unit="";
-                           $separate='<br>';
-                           if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
-                              && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
-                              $separate='<hr>';
-                           }
-
-                           if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'])) {
-                              $unit=$searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'];
-                           }
-                           for ($k=0 ; $k<count($split) ; $k++) {
-                              if ($p['contains2'][$j]=="NULL" || strlen($p['contains2'][$j])==0
-                                 ||preg_match('/'.$p['contains2'][$j].'/i',$split[$k])
-                                 || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
-
-                                 if ($count_display) {
-                                    $out.= $separate;
-                                 }
-                                 $count_display++;
-
-                                 // Manage Link to item
-                                 $split2=explode("$$",$split[$k]);
-                                 if (isset($split2[1])) {
-                                    $out .= "<a href=\"".getItemTypeFormURL($p['itemtype2'][$j])."?id=".$split2[1]."\">";
-                                    $out .= $split2[0].$unit;
-                                    if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                                       $out .= " (".$split2[1].")";
+                        $metatodisplay=$p['itemtype2'][$j].'.'.$p['field2'][$j];
+                        if (!in_array($metatodisplay,$already_printmeta)) {
+                           $already_printmeta[]=$metatodisplay;
+                           // General case
+                           if (strpos($data["META_$j"],"$$$$")===false) {
+                              $out=Search::giveItem ($p['itemtype2'][$j],$p['field2'][$j],$data,$j,1);
+                              echo Search::showItem($output_type,$out,$item_num,$row_num);
+   
+                           // Case of GROUP_CONCAT item : split item and multilline display
+                           } else {
+                              $split=explode("$$$$",$data["META_$j"]);
+                              $count_display=0;
+                              $out="";
+                              $unit="";
+                              $separate='<br>';
+                              if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
+                                 && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
+                                 $separate='<hr>';
+                              }
+   
+                              if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'])) {
+                                 $unit=$searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'];
+                              }
+                              for ($k=0 ; $k<count($split) ; $k++) {
+                                 if ($p['contains2'][$j]=="NULL" || strlen($p['contains2'][$j])==0
+                                    ||preg_match('/'.$p['contains2'][$j].'/i',$split[$k])
+                                    || isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['forcegroupby'])) {
+   
+                                    if ($count_display) {
+                                       $out.= $separate;
                                     }
-                                    $out .= "</a>";
-                                 } else {
-                                    $out .= $split[$k].$unit;
+                                    $count_display++;
+   
+                                    // Manage Link to item
+                                    $split2=explode("$$",$split[$k]);
+                                    if (isset($split2[1])) {
+                                       $out .= "<a href=\"".getItemTypeFormURL($p['itemtype2'][$j])."?id=".$split2[1]."\">";
+                                       $out .= $split2[0].$unit;
+                                       if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
+                                          $out .= " (".$split2[1].")";
+                                       }
+                                       $out .= "</a>";
+                                    } else {
+                                       $out .= $split[$k].$unit;
+                                    }
                                  }
                               }
+                              echo Search::showItem($output_type,$out,$item_num,$row_num);
                            }
-                           echo Search::showItem($output_type,$out,$item_num,$row_num);
                         }
                      }
                   }
@@ -1094,54 +1104,62 @@ class Search {
    * Generic function to construct SQL condition for search engine 
    *
    *@param $itemtype string item type
-   *@param $meta boolean is it a meta search ?
+   *@param $meta_type string meta type to search in case of meta search
    *@param $p array search parameters
    *@param $toview array toview array when not meta case
    *
    *@return Nothing (display)
    *
    **/
-   static function computeWhereHaving ($itemtype,$meta,$p,$toview=array()) {
+   static function computeWhereHaving ($itemtype,$p,$meta_type='',$toview=array()) {
       global $CFG_GLPI;
 
       $searchopt = &Search::getOptions($itemtype);
 
-      if ($meta) {
+      // Instanciate an object to access method
+      $item = NULL;
+
+      if (!empty($meta_type)) {
          $num_of_param=$_SESSION["glpisearchcount2"][$itemtype];
          $contains = $p['contains2'];
          $field = $p['field2'];
+         $link = $p['link2'];
          $searchtype = $p['searchtype2'];
+         if (class_exists($meta_type)) {
+            $item = new $meta_type();
+         }
+         $itemtable=getTableForItemType($meta_type);
+         $searchtype=$meta_type;
       } else {
          $num_of_param=$_SESSION["glpisearchcount"][$itemtype];
          $contains=$p['contains'];
          $field = $p['field'];
+         $link = $p['link'];
          $searchtype = $p['searchtype'];
-      }
-
-      // Instanciate an object to access method
-      $item = NULL;
-      if ($itemtype!='States' && class_exists($itemtype)) {
-         $item = new $itemtype();
-      }
-      if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
-         $itemtable=$CFG_GLPI['union_search_type'][$itemtype];
-      } else {
-         $itemtable=getTableForItemType($itemtype);
+         if ($itemtype!='States' && class_exists($itemtype)) {
+            $item = new $itemtype();
+         }
+         if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
+            $itemtable=$CFG_GLPI['union_search_type'][$itemtype];
+         } else {
+            $itemtable=getTableForItemType($itemtype);
+         }
+         $searchtype=$itemtype;
       }
 
       // hack for States
-      if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
+      if (isset($CFG_GLPI['union_search_type'][$searchtype])) {
          $entity_restrict = true;
       } else {
          $entity_restrict = $item->isEntityAssign();
       }
 
       // default string
-      $COMMONWHERE = Search::addDefaultWhere($itemtype);
+      $COMMONWHERE = Search::addDefaultWhere($searchtype);
       $first=empty($COMMONWHERE);
 
       // Add deleted if item have it
-      if (!$meta && $item && $item->maybeDeleted()) {
+      if (empty($meta_type) && $item && $item->maybeDeleted()) {
          $LINK= " AND " ;
          if ($first) {
             $LINK=" ";
@@ -1168,7 +1186,7 @@ class Search {
             $first=false;
          }
 
-         if ($itemtype == 'Entity') {
+         if ($searchtype == 'Entity') {
             $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'id','',true);
          } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
 
@@ -1192,12 +1210,12 @@ class Search {
                   $LINK=" ";
                   $NOT=0;
                   $tmplink="";
-                  if (is_array($p['link']) && isset($p['link'][$key])) {
-                     if (strstr($p['link'][$key],"NOT")) {
-                        $tmplink=" ".str_replace(" NOT","",$p['link'][$key]);
+                  if (is_array($link) && isset($link[$key])) {
+                     if (strstr($link[$key],"NOT")) {
+                        $tmplink=" ".str_replace(" NOT","",$link[$key]);
                         $NOT=1;
                      } else {
-                        $tmplink=" ".$p['link'][$key];
+                        $tmplink=" ".$link[$key];
                      }
                   } else {
                      $tmplink=" AND ";
@@ -1209,18 +1227,18 @@ class Search {
                         $LINK=$tmplink;
                      }
                      // Find key
-                     if (!$meta) {
+                     if (empty($meta_type)) {
                         $item_num = array_search($field[$key],$toview);
                      } else {
                         $item_num = $key;
                      }
-                     $HAVING .= Search::addHaving($LINK,$NOT,$itemtype,$field[$key],$searchtype[$key],$contains[$key],$meta,$item_num);
+                     $HAVING .= Search::addHaving($LINK,$NOT,$searchtype,$field[$key],$searchtype[$key],$contains[$key],$meta,$item_num);
                   } else {
                      // Manage Link if not first item
                      if (!empty($WHERE)) {
                         $LINK=$tmplink;
                      }
-                     $WHERE .= Search::addWhere($LINK,$NOT,$itemtype,$field[$key],$searchtype[$key],$contains[$key]);
+                     $WHERE .= Search::addWhere($LINK,$NOT,$searchtype,$field[$key],$searchtype[$key],$contains[$key]);
                   }
 
                // view and all search
@@ -1228,8 +1246,8 @@ class Search {
                   $LINK=" OR ";
                   $NOT=0;
                   $globallink=" AND ";
-                  if (is_array($p['link']) && isset($p['link'][$key])) {
-                     switch ($p['link'][$key]) {
+                  if (is_array($link) && isset($link[$key])) {
+                     switch ($link[$key]) {
                         case "AND" :
                            $LINK=" OR ";
                            $globallink=" AND ";
@@ -1264,7 +1282,7 @@ class Search {
                   $first2=true;
 
                   $items=array();
-                  if ($p['field'][$key]=="all") {
+                  if ($field[$key]=="all") {
                      $items=$searchopt;
                   } else { // toview case : populate toview
                      foreach ($toview as $key2 => $val2) {
@@ -1281,7 +1299,7 @@ class Search {
                               $tmplink=" ";
                               $first2=false;
                            }
-                           $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$key2,$searchtype[$key],$contains[$key]);
+                           $WHERE .= Search::addWhere($tmplink,$NOT,$searchtype,$key2,$searchtype[$key],$contains[$key]);
                         }
                      }
                   }
@@ -3080,60 +3098,79 @@ class Search {
    *@return Meta Left join string
    *
    **/
-   static function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott,$params) {
+   static function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott,$p) {
 
       $LINK=" INNER JOIN ";
       if ($nullornott) {
          $LINK=" LEFT JOIN ";
       }
 
+      $totable=getTableForItemType($to_type);
+
+      $TOADD="";
+      list($COMMONWHERE,$WHERE,$HAVING)=self::computeWhereHaving($from_type,$p,$to_type);
+
+      if (!empty($COMMONWHERE) 
+         || !empty($WHERE) 
+         || !empty($HAVING) ) {
+         $already_link_tables_meta=array($totable);
+         $FROM = " FROM `$totable` ";
+         // Link items tables
+         for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$from_type] ; $i++) {
+            if (isset($p['itemtype2'][$i]) && !empty($p['itemtype2'][$i]) && isset($p['contains2'][$i])
+               && strlen($p['contains2'][$i])>0) {
+               if (!isset($searchopt[$p['itemtype2'][$i]])) {
+                  $searchopt[$p['itemtype2'][$i]]=&Search::getOptions($p['itemtype2'][$i]);
+               }
+               if (!in_array($searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"]."_".$p['itemtype2'][$i],
+                           $already_link_tables_meta)) {
+
+                  $FROM .= Search::addLeftJoin($p['itemtype2'][$i],getTableForItemType($p['itemtype2'][$i]),$already_link_tables_meta,
+                                       $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"],
+                                       $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["linkfield"],
+                                       0,$p['itemtype2'][$i]);
+               }
+            }
+         }
+
+         if (!empty($WHERE) || !empty($COMMONWHERE)) {
+            if (!empty($COMMONWHERE)) {
+               $WHERE =' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
+            } else {
+               $WHERE =' WHERE '.$WHERE.' ';
+            }
+            $first=false;
+         }
+   
+         if (!empty($HAVING)) {
+            $HAVING=' HAVING '.$HAVING;
+         }
+
+
+         $TOADD=" AND `$totable`.`id` IN (
+                     SELECT `$totable`.`id`
+                     $FROM $WHERE $HAVING
+                  )";
+
+      }
+//       echo "COMMONWHERE = ".$COMMONWHERE.'<br><br>';
+//       echo "WHERE = ".$WHERE.'<br><br>';
+//       echo "HAVING = ".$HAVING.'<br><br>';
+//       echo "TOADD = ".$TOADD.'<br><br>';
+
       switch ($from_type) {
          case 'Ticket' :
-            $totable=getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
-
-            $TOADD="SELECT `id` FROM `glpi_tickets`";
 
             return " $LINK `$totable`
                         ON (`$totable`.`id` = `glpi_tickets`.`items_id`
                            AND `glpi_tickets`.`itemtype` = '$to_type'
-                           AND `glpi_tickets`.`id` IN (SELECT `id` FROM `glpi_tickets`
-                                                      )";
+                           $TOADD
+                           )";
 
          case 'Computer' :
+
             switch ($to_type) {
-               case 'Printer' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_print_$to_type
-                              ON (`conn_print_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_print_$to_type`.`itemtype` = '$to_type')
-                           $LINK `glpi_printers`
-                              ON (`conn_print_$to_type`.`items_id` = `glpi_printers`.`id`) ";
-
-               case 'Monitor' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_mon_$to_type
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_mon_$to_type`.`itemtype` = '$to_type')
-                           $LINK `glpi_monitors`
-                              ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
-
-               case 'Peripheral' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_periph_$to_type
-                              ON (`conn_periph_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_periph_$to_type`.`itemtype` = '$to_type')
-                           $LINK `glpi_peripherals`
-                              ON (`conn_periph_$to_type`.`items_id` = `glpi_peripherals`.`id`) ";
-
-               case 'Phone' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_phones_$to_type
-                              ON (`conn_phones_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                 AND `conn_phones_$to_type`.`itemtype` = '$to_type')
-                           $LINK `glpi_phones`
-                              ON (`conn_phones_$to_type`.`items_id` = `glpi_phones`.`id`) ";
-
                case 'Software' :
                   /// TODO: link licenses via installed software OR by affected/computers_id ???
                   array_push($already_link_tables2,getTableForItemType($to_type));
@@ -3144,11 +3181,19 @@ class Search {
                                  = `glpi_softwareversions_$to_type`.`id`)
                            $LINK `glpi_softwares`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
-                                 = `glpi_softwares`.`id`)
+                                 = `glpi_softwares`.`id` $TOADD)
                            LEFT JOIN `glpi_softwarelicenses` AS glpi_softwarelicenses_$to_type
-                              ON (`glpi_softwares`.`id` = `glpi_softwarelicenses_$to_type`.`softwares_id`" .
+                              ON (`glpi_softwares`.`id` = `glpi_softwarelicenses_$to_type`.`softwares_id` " .
                                  getEntitiesRestrictRequest(' AND',"glpi_softwarelicenses_$to_type",
                                                             '','',true).") ";
+               default : // Phone / Peripheral / printer / MOnitor
+                  array_push($already_link_tables2,$totable);
+                  return " $LINK `glpi_computers_items` AS conn_$to_type
+                              ON (`conn_$to_type`.`computers_id` = `glpi_computers`.`id`
+                                 AND `conn_$to_type`.`itemtype` = '$to_type')
+                           $LINK `$totable`
+                              ON (`conn_$to_type`.`items_id` = `$totable`.`id` $TOADD ) ";
+        
             }
             break;
 
@@ -3160,7 +3205,7 @@ class Search {
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
+                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD) ";
             }
             break;
 
@@ -3172,7 +3217,7 @@ class Search {
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_printers`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` ".
+                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD ".
                                  getEntitiesRestrictRequest("AND",'glpi_computers').") ";
             }
             break;
@@ -3185,7 +3230,7 @@ class Search {
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_peripherals`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
+                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD) ";
             }
             break;
 
@@ -3197,7 +3242,7 @@ class Search {
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_phones`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers.id`) ";
+                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers.id` $TOADD) ";
             }
             break;
 
@@ -3211,7 +3256,7 @@ class Search {
                               ON (`inst_$to_type`.`softwareversions_id`
                                  = `glpi_softwareversions_$to_type`.`id`)
                            $LINK `glpi_computers`
-                              ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id` ".
+                              ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD ".
                                  getEntitiesRestrictRequest("AND",'glpi_computers').") ";
             }
             break;
