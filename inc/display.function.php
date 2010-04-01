@@ -2223,19 +2223,36 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $maxMinute=59;
 
    $output="";
-
+   $date_value='';
+   $hour_value='';
+   if (!empty($value)) {
+      list($date_value,$hour_value)= explode(' ',$value);
+   }
    if (!empty($minTime)) {
       list($minHour,$minMinute)=split(':',$minTime);
+      // Check time in interval
+      if (!empty($hour_value) && $hour_value<$minTime) {
+         $hour_value=$minTime;
+      }
    }
    if (!empty($maxTime)) {
       list($maxHour,$maxMinute)=split(':',$maxTime);
       if ($maxMinute==0) {
          $maxMinute=59;
       }
+      // Check time in interval
+      if (!empty($hour_value) && $hour_value>$maxTime) {
+         $hour_value=$maxTime;
+      }
    }
+   // reconstruct value to be valid
+   if (!empty($value)) {
+      $value= $date_value.' '.$hour_value.':00';
+   }
+
    $output.="<table><tr><td><div id='date$rand-date'></div></td><td>";
    $output.="<select name='_date$rand-hour' id='date$rand-hour'>";
-   for ($i=$minHour;$i<$maxHour;$i++) {
+   for ($i=$minHour;$i<=$maxHour;$i++) {
       if ($i<10 && strlen($i)==1) {
          $i='0'.$i;
       }
@@ -2244,7 +2261,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $output.="</select>";
    $output.="</td><td>";
    $output.="<select name='_date$rand-minute' id='date$rand-minute'>";
-   for ($i=$minMinute;$i<$maxMinute;$i+=$time_step) {
+   for ($i=$minMinute;$i<=$maxMinute;$i+=$time_step) {
       if ($i<10  && strlen($i)==1) {
          $i='0'.$i;
       }
