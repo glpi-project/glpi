@@ -324,6 +324,9 @@ class Planning {
       $hour_begin=$tmp[0];
       $tmp=explode(":",$CFG_GLPI["planning_end"]);
       $hour_end=$tmp[0];
+      if ($tmp[1]>0) {
+         $hour_end++;
+      }
 
       switch ($type) {
          case "week" :

@@ -91,12 +91,12 @@ class Config extends CommonDBTM {
          unset($input["proxy_password"]);
       }
 
-      if (isset($input["planning_begin"])) {
-         $input["planning_begin"]=$input["planning_begin"].":00:00";
-      }
-      if (isset($input["planning_end"])) {
-         $input["planning_end"]=$input["planning_end"].":00:00";
-      }
+//       if (isset($input["planning_begin"])) {
+//          $input["planning_begin"]=$input["planning_begin"].":00:00";
+//       }
+//       if (isset($input["planning_end"])) {
+//          $input["planning_end"]=$input["planning_end"].":00:00";
+//       }
 
       // Manage DB Slave process
       if (isset($input['_dbslave_status'])) {
@@ -314,12 +314,10 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][112] . "</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
       echo "</td>";
-      $plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
-      $plan_end = explode(":", $CFG_GLPI["planning_end"]);
       echo "<td class='center'>" . $LANG['setup'][223] . "</td><td>";
-      Dropdown::showInteger('planning_begin', $plan_begin[0], 0, 24);
+      Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
       echo "&nbsp;->&nbsp;";
-      Dropdown::showInteger('planning_end', $plan_end[0], 0, 24);
+      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
       echo " </td></tr>";
 
       echo "<tr class='tab_bg_2'>";
