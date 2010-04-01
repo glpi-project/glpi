@@ -204,7 +204,7 @@ class Planning {
       echo "</td>\n";
 
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front:planning.php?type=".$type."&amp;uID=".$uID."&amp;date=$next\">";
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID."&amp;date=$next\">";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11].
             "' title='".$LANG['buttons'][11]."'></a>";
       echo "</td>";
