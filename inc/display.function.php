@@ -2225,24 +2225,25 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    $output="";
    $date_value='';
    $hour_value='';
+
    if (!empty($value)) {
       list($date_value,$hour_value)= explode(' ',$value);
    }
    if (!empty($minTime)) {
-      list($minHour,$minMinute)=split(':',$minTime);
+      list($minHour,$minMinute,$minSec)=split(':',$minTime);
       $minMinute=0;
       // Check time in interval
       if (!empty($hour_value) && $hour_value<$minTime) {
-         $hour_value=$minTime.':00';
+         $hour_value=$minTime;
       }
    }
 
    if (!empty($maxTime)) {
-      list($maxHour,$maxMinute)=split(':',$maxTime);
+      list($maxHour,$maxMinute,$maxSec)=split(':',$maxTime);
       $maxMinute=59;
       // Check time in interval
       if (!empty($hour_value) && $hour_value>$maxTime) {
-         $hour_value=$maxTime.':00';
+         $hour_value=$maxTime;
       }
    }
    // reconstruct value to be valid
