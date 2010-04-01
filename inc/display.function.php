@@ -2233,7 +2233,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
       $minMinute=0;
       // Check time in interval
       if (!empty($hour_value) && $hour_value<$minTime) {
-         $hour_value=$minTime;
+         $hour_value=$minTime.':00';
       }
    }
 
@@ -2242,7 +2242,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
       $maxMinute=59;
       // Check time in interval
       if (!empty($hour_value) && $hour_value>$maxTime) {
-         $hour_value=$maxTime;
+         $hour_value=$maxTime.':00';
       }
    }
    // reconstruct value to be valid
