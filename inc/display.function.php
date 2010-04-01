@@ -2236,6 +2236,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
          $hour_value=$minTime;
       }
    }
+
    if (!empty($maxTime)) {
       list($maxHour,$maxMinute)=split(':',$maxTime);
       $maxMinute=59;
@@ -2245,8 +2246,8 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
       }
    }
    // reconstruct value to be valid
-   if (!empty($value)) {
-      $value= $date_value.' '.$hour_value.':00';
+   if (!empty($date_value)) {
+      $value= $date_value.' '.$hour_value;
    }
 
    $output.="<table><tr><td><div id='date$rand-date'></div></td><td>";
