@@ -3010,7 +3010,7 @@ class Search {
          case "glpi_softwarelicensetypes" :
             return Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwarelicenses",$linkfield,
                               $meta,$meta_type) ."
-                  LEFT JOIN `$new_table` $AS ON (`glpi_softwarelicenses`.`softwarelicensetypes_id` = `$nt`.`id`)";
+                  LEFT JOIN `$new_table` $AS ON (`glpi_softwarelicenses$addmetanum`.`softwarelicensetypes_id` = `$nt`.`id`)";
 
          case "glpi_softwarelicenses" :
             if (!$meta) {
@@ -3111,11 +3111,11 @@ class Search {
 
       $TOADD="";
       list($COMMONWHERE,$WHERE,$HAVING)=self::computeWhereHaving($from_type,$p,$to_type);
-
+      $already_link_tables_meta=array();
       if (!empty($COMMONWHERE) 
          || !empty($WHERE) 
          || !empty($HAVING) ) {
-         $already_link_tables_meta=array($totable);
+         array_push($already_link_tables_meta,$totable);
          $FROM = " FROM `$totable` ";
          // Link items tables
          for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$from_type] ; $i++) {
@@ -3143,7 +3143,7 @@ class Search {
                && strlen($p['contains2'][$i])>0 
                && isset($searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["usehaving"])) {
 
-               $SELECT .= Search::addSelect($p['itemtype2'][$i],$p['field2'][$i],$i,1,$p['itemtype2'][$i]);
+               $SELECT .= Search::addSelect($p['itemtype2'][$i],$p['field2'][$i],$i,0,$p['itemtype2'][$i]);
                $GROUPBY="GROUP BY `$totable`.`id`";
             }
          }
@@ -3193,10 +3193,10 @@ class Search {
                case 'Software' :
                   /// TODO: link licenses via installed software OR by affected/computers_id ???
                   array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_softwareversions` AS inst_$to_type
-                              ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id`)
+                  return " $LINK `glpi_computers_softwareversions` AS glpi_computers_softwareversions_$to_type
+                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id` = `glpi_computers`.`id`)
                            $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
-                              ON (`inst_$to_type`.`softwareversions_id`
+                              ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                  = `glpi_softwareversions_$to_type`.`id`)
                            $CONDITIONLINK `glpi_softwares`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
@@ -3271,11 +3271,11 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return " $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`glpi_softwareversions_$to_type`.`softwares_id` = `glpi_softwares`.`id`)
-                           $LINK `glpi_computers_softwareversions` AS inst_$to_type
-                              ON (`inst_$to_type`.`softwareversions_id`
+                           $LINK `glpi_computers_softwareversions` AS glpi_computers_softwareversions_$to_type
+                              ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                  = `glpi_softwareversions_$to_type`.`id`)
                            $CONDITIONLINK `glpi_computers`
-                              ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD ".
+                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD ".
                                  getEntitiesRestrictRequest("AND",'glpi_computers').") ";
             }
             break;
