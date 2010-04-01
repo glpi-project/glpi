@@ -425,6 +425,7 @@ class Software extends CommonDBTM {
       $tab[72]['forcegroupby'] = true;
       $tab[72]['usehaving']    = true;
       $tab[72]['datatype']     = 'number';
+      $tab[72]['nometa']       = true;
 
 
       $tab['versions'] = $LANG['software'][5];
