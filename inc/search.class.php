@@ -3107,7 +3107,7 @@ class Search {
       if ($nullornott) {
          $LINK=" LEFT JOIN ";
       }
-
+      $CONDITIONLINK=$LINK;
       $totable=getTableForItemType($to_type);
 
       $TOADD="";
@@ -3154,7 +3154,7 @@ class Search {
                      SELECT `$totable`.`id`
                      $FROM $WHERE $HAVING
                   )";
-
+         $CONDITIONLINK = " INNER JOIN ";
       }
 //       echo "COMMONWHERE = ".$COMMONWHERE.'<br><br>';
 //       echo "WHERE = ".$WHERE.'<br><br>';
@@ -3182,7 +3182,7 @@ class Search {
                            $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`inst_$to_type`.`softwareversions_id`
                                  = `glpi_softwareversions_$to_type`.`id`)
-                           $LINK `glpi_softwares`
+                           $CONDITIONLINK `glpi_softwares`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
                                  = `glpi_softwares`.`id` $TOADD) 
                            LEFT JOIN `glpi_softwarelicenses` AS glpi_softwarelicenses_$to_type
@@ -3194,7 +3194,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS conn_$to_type
                               ON (`conn_$to_type`.`computers_id` = `glpi_computers`.`id`
                                  AND `conn_$to_type`.`itemtype` = '$to_type')
-                           $LINK `$totable`
+                           $CONDITIONLINK `$totable`
                               ON (`conn_$to_type`.`items_id` = `$totable`.`id` $TOADD ) ";
         
             }
@@ -3207,7 +3207,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
-                           $LINK `glpi_computers`
+                           $CONDITIONLINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD) ";
             }
             break;
@@ -3219,7 +3219,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_printers`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
-                           $LINK `glpi_computers`
+                           $CONDITIONLINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD ".
                                  getEntitiesRestrictRequest("AND",'glpi_computers').") ";
             }
@@ -3232,7 +3232,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_peripherals`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
-                           $LINK `glpi_computers`
+                           $CONDITIONLINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD) ";
             }
             break;
@@ -3244,7 +3244,7 @@ class Search {
                   return " $LINK `glpi_computers_items` AS conn_mon_$to_type
                               ON (`conn_mon_$to_type`.`items_id` = `glpi_phones`.`id`
                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
-                           $LINK `glpi_computers`
+                           $CONDITIONLINK `glpi_computers`
                               ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers.id` $TOADD) ";
             }
             break;
@@ -3258,7 +3258,7 @@ class Search {
                            $LINK `glpi_computers_softwareversions` AS inst_$to_type
                               ON (`inst_$to_type`.`softwareversions_id`
                                  = `glpi_softwareversions_$to_type`.`id`)
-                           $LINK `glpi_computers`
+                           $CONDITIONLINK `glpi_computers`
                               ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id` $TOADD ".
                                  getEntitiesRestrictRequest("AND",'glpi_computers').") ";
             }
