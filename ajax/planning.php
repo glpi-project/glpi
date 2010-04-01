@@ -40,10 +40,10 @@ header_nocache();
 
 checkCentralAccess();
 
-$split=explode(":",$CFG_GLPI["planning_begin"]);
-$global_begin=$split[0].":".$split[1];
-$split=explode(":",$CFG_GLPI["planning_end"]);
-$global_end=$split[0].":".$split[1];
+// $split=explode(":",$CFG_GLPI["planning_begin"]);
+// $global_begin=$split[0].":".$split[1];
+// $split=explode(":",$CFG_GLPI["planning_end"]);
+// $global_end=$split[0].":".$split[1];
 
 if (isset($_POST["id"]) && $_POST["id"]>0) {
    echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
@@ -91,7 +91,7 @@ echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
 
-$rand_begin=showDateTimeFormItem("plan[begin]",$begin,-1,false,true,'','',$global_begin,$global_end);
+$rand_begin=showDateTimeFormItem("plan[begin]",$begin,-1,false,true,'','',$CFG_GLPI["planning_begin"],$CFG_GLPI["planning_end"]);
 echo "</td></tr>\n";
 
 echo "<tr class='tab_bg_2'><td>".$LANG['financial'][8]."&nbsp;:</td><td>";
@@ -133,8 +133,8 @@ echo "<br><div id='date_end$rand'></div>";
 
 $params=array('duration' => '__VALUE__',
                'end'=>$end,
-               'global_begin'=>$global_begin,
-               'global_end'=>$global_end,);
+               'global_begin'=>$CFG_GLPI["planning_begin"],
+               'global_end'=>$CFG_GLPI["planning_end"]);
 ajaxUpdateItemOnSelectEvent("dropdown_plan[_duration]$rand",
          "date_end$rand",$CFG_GLPI["root_doc"]."/ajax/planningend.php",$params,false);
 
