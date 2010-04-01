@@ -233,9 +233,8 @@ class Search {
 
 
       //// 3 - WHERE
-
       // default string
-      $COMMONWHERE = Search::addDefaultWhere($itemtype);
+/*      $COMMONWHERE = Search::addDefaultWhere($itemtype);
       $first=empty($COMMONWHERE);
 
       // Add deleted if item have it
@@ -384,6 +383,12 @@ class Search {
             }
          }
       }
+*/
+//       echo "COMMONWHERE = ".$COMMONWHERE.'<br><br>';
+//       echo "WHERE = ".$WHERE.'<br><br>';
+//       echo "HAVING = ".$HAVING.'<br><br>';
+
+      list($COMMONWHERE,$WHERE,$HAVING)=self::computeWhereHaving($itemtype,false,$p,$toview);
 
       //// 4 - ORDER
       $ORDER=" ORDER BY `id` ";
@@ -416,7 +421,7 @@ class Search {
                && strlen($p['contains2'][$i])>0) {
                if (!in_array(getTableForItemType($p['itemtype2'][$i]),$already_link_tables2)) {
                   $FROM .= Search::addMetaLeftJoin($itemtype,$p['itemtype2'][$i],$already_link_tables2,
-                                          (($p['contains2'][$i]=="NULL")||(strstr($p['link2'][$i],"NOT"))));
+                                          (($p['contains2'][$i]=="NULL")||(strstr($p['link2'][$i],"NOT"))),$p);
                }
             }
          }
@@ -1082,6 +1087,195 @@ class Search {
       }
       // Clean selection
       $_SESSION['glpimassiveactionselected']=array();
+   }
+
+
+   /**
+   * Generic function to construct SQL condition for search engine 
+   *
+   *@param $itemtype string item type
+   *@param $meta boolean is it a meta search ?
+   *@param $p array search parameters
+   *@param $toview array toview array when not meta case
+   *
+   *@return Nothing (display)
+   *
+   **/
+   static function computeWhereHaving ($itemtype,$meta,$p,$toview=array()) {
+      global $CFG_GLPI;
+
+      $searchopt = &Search::getOptions($itemtype);
+
+      if ($meta) {
+         $num_of_param=$_SESSION["glpisearchcount2"][$itemtype];
+         $contains = $p['contains2'];
+         $field = $p['field2'];
+         $searchtype = $p['searchtype2'];
+      } else {
+         $num_of_param=$_SESSION["glpisearchcount"][$itemtype];
+         $contains=$p['contains'];
+         $field = $p['field'];
+         $searchtype = $p['searchtype'];
+      }
+
+      $item = new $itemtype();
+      $itemtable= $item->getTable();
+      // default string
+      $COMMONWHERE = Search::addDefaultWhere($itemtype);
+      $first=empty($COMMONWHERE);
+
+      // Add deleted if item have it
+      if (!$meta && $item && $item->maybeDeleted()) {
+         $LINK= " AND " ;
+         if ($first) {
+            $LINK=" ";
+            $first=false;
+         }
+         $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = '".$p['is_deleted']."' ";
+      }
+
+      // Remove template items
+      if ($item && $item->maybeTemplate()) {
+         $LINK= " AND " ;
+         if ($first) {
+            $LINK=" ";
+            $first=false;
+         }
+         $COMMONWHERE .= $LINK."`$itemtable`.`is_template` = '0' ";
+      }
+
+      // Add Restrict to current entities
+      if ($item->isEntityAssign()) {
+         $LINK= " AND " ;
+         if ($first) {
+            $LINK=" ";
+            $first=false;
+         }
+
+         if ($itemtype == 'Entity') {
+            $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'id','',true);
+         } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
+
+            // Will be replace below in Union/Recursivity Hack
+            $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
+         } else {
+            $COMMONWHERE .= getEntitiesRestrictRequest($LINK,$itemtable,'','',$item->maybeRecursive());
+         }
+      }
+      $WHERE="";
+      $HAVING="";
+
+      // Add search conditions
+      // If there is search items
+      if ($num_of_param>0 && count($contains)>0) {
+         for ($key=0 ; $key<$num_of_param ; $key++) {
+            // if real search (strlen >0) and not all and view search
+            if (isset($contains[$key]) && strlen($contains[$key])>0) {
+               // common search
+               if ($field[$key]!="all" && $field[$key]!="view") {
+                  $LINK=" ";
+                  $NOT=0;
+                  $tmplink="";
+                  if (is_array($p['link']) && isset($p['link'][$key])) {
+                     if (strstr($p['link'][$key],"NOT")) {
+                        $tmplink=" ".str_replace(" NOT","",$p['link'][$key]);
+                        $NOT=1;
+                     } else {
+                        $tmplink=" ".$p['link'][$key];
+                     }
+                  } else {
+                     $tmplink=" AND ";
+                  }
+
+                  if (isset($searchopt[$field[$key]]["usehaving"])) {
+                     // Manage Link if not first item
+                     if (!empty($HAVING)) {
+                        $LINK=$tmplink;
+                     }
+                     // Find key
+                     if (!$meta) {
+                        $item_num = array_search($field[$key],$toview);
+                     } else {
+                        $item_num = $key;
+                     }
+                     $HAVING .= Search::addHaving($LINK,$NOT,$itemtype,$field[$key],$searchtype[$key],$contains[$key],$meta,$item_num);
+                  } else {
+                     // Manage Link if not first item
+                     if (!empty($WHERE)) {
+                        $LINK=$tmplink;
+                     }
+                     $WHERE .= Search::addWhere($LINK,$NOT,$itemtype,$field[$key],$searchtype[$key],$contains[$key]);
+                  }
+
+               // view and all search
+               } else {
+                  $LINK=" OR ";
+                  $NOT=0;
+                  $globallink=" AND ";
+                  if (is_array($p['link']) && isset($p['link'][$key])) {
+                     switch ($p['link'][$key]) {
+                        case "AND" :
+                           $LINK=" OR ";
+                           $globallink=" AND ";
+                           break;
+
+                        case "AND NOT" :
+                           $LINK=" AND ";
+                           $NOT=1;
+                           $globallink=" AND ";
+                           break;
+
+                        case "OR" :
+                           $LINK=" OR ";
+                           $globallink=" OR ";
+                           break;
+
+                        case "OR NOT" :
+                           $LINK=" AND ";
+                           $NOT=1;
+                           $globallink=" OR ";
+                           break;
+                     }
+                  } else {
+                     $tmplink=" AND ";
+                  }
+
+                  // Manage Link if not first item
+                  if (!empty($WHERE)) {
+                     $WHERE .= $globallink;
+                  }
+                  $WHERE.= " ( ";
+                  $first2=true;
+
+                  $items=array();
+                  if ($p['field'][$key]=="all") {
+                     $items=$searchopt;
+                  } else { // toview case : populate toview
+                     foreach ($toview as $key2 => $val2) {
+                        $items[$val2]=$searchopt[$val2];
+                     }
+                  }
+
+                  foreach ($items as $key2 => $val2) {
+                     if (is_array($val2)) {
+                        // Add Where clause if not to be done in HAVING CLAUSE
+                        if (!isset($val2["usehaving"])) {
+                           $tmplink=$LINK;
+                           if ($first2) {
+                              $tmplink=" ";
+                              $first2=false;
+                           }
+                           $WHERE .= Search::addWhere($tmplink,$NOT,$itemtype,$key2,$searchtype[$key],$contains[$key]);
+                        }
+                     }
+                  }
+                  $WHERE.=" ) ";
+               }
+            }
+         }
+      }
+
+      return array($COMMONWHERE,$WHERE,$HAVING);
    }
 
    /**
@@ -2865,11 +3059,12 @@ class Search {
    *@param $to_type item type to add
    *@param $already_link_tables2 array of tables already joined
    *@param $nullornott Used LEFT JOIN (null generation) or INNER JOIN for strict join
+   *@param $params all parameters
    *
    *@return Meta Left join string
    *
    **/
-   static function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott) {
+   static function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott,$params) {
 
       $LINK=" INNER JOIN ";
       if ($nullornott) {
@@ -2880,9 +3075,14 @@ class Search {
          case 'Ticket' :
             $totable=getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
+
+            $TOADD="SELECT `id` FROM `glpi_tickets`";
+
             return " $LINK `$totable`
                         ON (`$totable`.`id` = `glpi_tickets`.`items_id`
-                           AND `glpi_tickets`.`itemtype` = '$to_type')";
+                           AND `glpi_tickets`.`itemtype` = '$to_type'
+                           AND `glpi_tickets`.`id` IN (SELECT `id` FROM `glpi_tickets`
+                                                      )";
 
          case 'Computer' :
             switch ($to_type) {
