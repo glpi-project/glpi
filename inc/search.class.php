@@ -938,6 +938,7 @@ class Search {
                               $out="";
                               $unit="";
                               $separate='<br>';
+
                               if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
                                  && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
                                  $separate='<hr>';
@@ -1130,6 +1131,7 @@ class Search {
          }
          $itemtable=getTableForItemType($meta_type);
          $searchtype=$meta_type;
+         $meta=true;
       } else {
          $num_of_param=$_SESSION["glpisearchcount"][$itemtype];
          $contains=$p['contains'];
@@ -1145,6 +1147,7 @@ class Search {
             $itemtable=getTableForItemType($itemtype);
          }
          $searchtype=$itemtype;
+         $meta=false;
       }
 
       // hack for States
@@ -1159,7 +1162,7 @@ class Search {
       $first=empty($COMMONWHERE);
 
       // Add deleted if item have it
-      if (empty($meta_type) && $item && $item->maybeDeleted()) {
+      if (!$meta && $item && $item->maybeDeleted()) {
          $LINK= " AND " ;
          if ($first) {
             $LINK=" ";
@@ -1221,13 +1224,13 @@ class Search {
                      $tmplink=" AND ";
                   }
 
-                  if (isset($searchopt[$field[$key]]["usehaving"])) {
+                  if (!$meta && isset($searchopt[$field[$key]]["usehaving"])) {
                      // Manage Link if not first item
                      if (!empty($HAVING)) {
                         $LINK=$tmplink;
                      }
                      // Find key
-                     if (empty($meta_type)) {
+                     if (!$meta) {
                         $item_num = array_search($field[$key],$toview);
                      } else {
                         $item_num = $key;
@@ -3181,7 +3184,7 @@ class Search {
                                  = `glpi_softwareversions_$to_type`.`id`)
                            $LINK `glpi_softwares`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
-                                 = `glpi_softwares`.`id` $TOADD)
+                                 = `glpi_softwares`.`id` $TOADD) 
                            LEFT JOIN `glpi_softwarelicenses` AS glpi_softwarelicenses_$to_type
                               ON (`glpi_softwares`.`id` = `glpi_softwarelicenses_$to_type`.`softwares_id` " .
                                  getEntitiesRestrictRequest(' AND',"glpi_softwarelicenses_$to_type",
