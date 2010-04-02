@@ -128,9 +128,11 @@ class RuleCollection extends CommonDBTM {
    /**
    * Get Collection Part : retrieve descriptions of a range of rules
    *
-   * @param $start : first rule (in the result set)
-   * @param $limit : max number of rules ti retrieve
-   * @param $recursive boolean : get recursive ?
+   * @param $options array of options may be :
+   *         - start : first rule (in the result set - default 0)
+   *         - limit : max number of rules to retrieve (default 0)
+   *         - recursive : boolean get recursive rules 
+   *         - childirens : boolean get childrens rules
    **/
    function getCollectionPart($options=array()) {
       global $DB;
@@ -287,6 +289,8 @@ class RuleCollection extends CommonDBTM {
    /**
    * Show the list of rules
    * @param $target
+   * @param $tab
+   * @param $options
    * @return nothing
    **/
    function showListRules($target,$tab=0,$options=array()) {

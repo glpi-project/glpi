@@ -649,7 +649,6 @@ class Rule extends CommonDBTM {
    /**
     * Check criterias
     * @param $input the input data used to check criterias
-    * @param $regex_result
     * @return boolean if criterias match
    **/
    function checkCriterias($input) {
@@ -832,6 +831,7 @@ class Rule extends CommonDBTM {
    * @param $target link to the form page
    * @param $first is it the first rule ?
    * @param $last is it the last rule ?
+   * @param $readonly read only display ?
    */
    function showMinimalForm($target,$first=false,$last=false,$readonly=false) {
       global $LANG,$CFG_GLPI;
