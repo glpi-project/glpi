@@ -492,7 +492,7 @@ class Dropdown {
       if ($restrict_to != 1) {
          $options[1] =$LANG['choice'][1];
       }
-      Dropdown::showFromArray($name,$options,$value);
+      Dropdown::showFromArray($name,$options,array('value'=>$value));
    }
 
    /**
