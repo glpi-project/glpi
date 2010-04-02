@@ -1490,7 +1490,7 @@ class AuthLDAP extends CommonDBTM {
 
    /** Import a user from a specific ldap server
     *
-    * @param   $login  dn of the user to import
+    * @param   $params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
     * @param   $mode synchoronise (true) or import (false)
     * @param   $ldap_server ID of the LDAP server to use
     * @param   $display display message information on redirect
@@ -1721,7 +1721,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Import a user from ldap
     * Check all the directories. When the user is found, then import it
-    * @param $login : user login
+    * @param $options array containing condition : array ('name'=>'glpi') or array ('email' => 'test at test.com')
    **/
    static function importUserFromServers($options=array()) {
       global $LANG;
@@ -1803,8 +1803,9 @@ class AuthLDAP extends CommonDBTM {
     *
     * @param $ds : LDAP link
     * @param $basedn : base dn used to search
-    * @param $login_attr : attribute to store login
-    * @param $login : user login
+    * @param $login_field : attribute to store login
+    * @param $search_parameters array of search parameters
+    * @param $user_params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
     * @param $condition : ldap condition used
     * @return dn of the user, else false
    **/

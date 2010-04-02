@@ -577,6 +577,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Add user to the notified users list
     * @param $field look for user looking for this field in the object which raises the event
+    * @param $search_in_object search is done in the object ? if not  in target object.
     */
    function getUserByField ($field,$search_in_object=false) {
       global $DB;

@@ -77,7 +77,7 @@ class Auth {
 
    /**
     * Is the user exists in the DB
-    * @param $name user login to check
+    * @param $options array containing condition : array ('name'=>'glpi') or array ('email' => 'test at test.com')
     * @return 0 (Not in the DB -> check external auth), 1 ( Exist in the DB with a password -> check first local connection and external after), 2 (Exist in the DB with no password -> check only external auth)
     *
    **/
@@ -87,7 +87,13 @@ class Auth {
       $query = "SELECT *
                 FROM `glpi_users`
                 WHERE ";
+      $first=true;
       foreach ($options as $key => $value) {
+         if ($first) {
+            $first = false;
+         } else {
+            $query.= " AND ";
+         }
          $query.=" `$key`='$value'";
       }
 
