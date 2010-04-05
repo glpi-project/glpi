@@ -626,6 +626,21 @@ class MailCollector  extends CommonDBTM {
       }
    }
 
+   function getAdditionnalHeaders($mid) {
+      $head = array();
+      $header = explode("\n", imap_fetchheader($this->marubox,$mid));
+      if (is_array($header) && count($header)) {
+         foreach($header as $line) {
+            // is line with additional header?
+            if (eregi("^X-", $line)) {
+                // separate name and value
+                eregi("^([^:]*): (.*)", $line, $arg);
+                $head[$arg[1]] = $arg[2];
+            }
+         }
+      }
+      return $head;
+   }
    /**
    *This function is use full to Get Header info from particular mail
    *
@@ -657,8 +672,12 @@ class MailCollector  extends CommonDBTM {
          if (isset($mail_header->in_reply_to)) {
             $mail_details['in_reply_to'] = $mail_header->in_reply_to;
          }
-      }
 
+         //Add additional headers in X-
+         foreach ($this->getAdditionnalHeaders($mid) as $header => $value) {
+            $mail_details[$header] = $value;
+         }
+      }
       return $mail_details;
    }
 
