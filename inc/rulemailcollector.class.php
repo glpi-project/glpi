@@ -102,6 +102,10 @@ class RuleMailCollector extends Rule {
       $criterias['in_reply_to']['table'] = '';
       $criterias['in_reply_to']['type'] = 'text';
 
+      $criterias['X-Priority']['name']  = $LANG['mailing'][132].' : '.$LANG['joblist'][2];
+      $criterias['X-Priority']['table'] = '';
+      $criterias['X-Priority']['type'] = 'text';
+
       $criterias['subject']['name']  = $LANG['common'][90];
       $criterias['subject']['field'] = 'subject';
       $criterias['subject']['table'] = '';
@@ -231,7 +235,6 @@ class RuleMailCollector extends Rule {
             }
          }
       }
-
       return $output;
    }
 }
