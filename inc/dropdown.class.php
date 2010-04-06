@@ -84,6 +84,7 @@ class Dropdown {
       $params['condition']='';
       $params['rand']=mt_rand();
       $params['displaywith']=array();
+      $params['emptylabel'] = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -161,7 +162,8 @@ class Dropdown {
                     'update_item'      => $params['toupdate'],
                     'used'             => $params['used'],
                     'auto_submit'      => $params['auto_submit'],
-                    'condition'        => $params['condition']);
+                    'condition'        => $params['condition'],
+                    'emptylabel'       => $params['emptylabel']);
 
       $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$params['rand']."'>";
       $default.="<option value='".$params['value']."'>$name</option></select>";

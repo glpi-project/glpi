@@ -74,6 +74,10 @@ if (isset($_POST['condition']) && !empty($_POST['condition'])) {
    $_POST['condition']=rawurldecode(stripslashes($_POST['condition']));
 }
 
+if (!isset($_POST['emptylabel']) || $_POST['emptylabel'] == '') {
+   $_POST['emptylabel'] = '-----';
+}
+
 if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
 
@@ -195,7 +199,7 @@ if ($item instanceof CommonTreeDropdown) {
             break;
 
          default :
-            echo "<option class='tree' value='0'>-----</option>";
+            echo "<option class='tree' value='0'>".$_POST['emptylabel']."</option>";
             break;
       }
 
@@ -404,7 +408,7 @@ if ($item instanceof CommonTreeDropdown) {
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
          echo "<option value='0'>--".$LANG['common'][11]."--</option>";
       }
-      echo "<option value='0'>------</option>";
+      echo "<option value='0'>".$_POST["emptylabel"]."</option>";
 
       $output=Dropdown::getDropdownName($table,$_POST['value']);
       if (!empty($output) && $output!="&nbsp;") {

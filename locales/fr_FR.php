@@ -351,7 +351,6 @@ $LANG['connect'][16] = "Attention !! Les éléments suivants des deux matériels
 $LANG['contract'][0] = "Contrat expiré depuis le";
 $LANG['contract'][1] = "Contrat en préavis depuis le";
 
-
 $LANG['consumables'][0]  = "Consommable";
 $LANG['consumables'][1]  = "En stock";
 $LANG['consumables'][2]  = "Référence";
