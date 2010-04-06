@@ -50,7 +50,6 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
       $this->datas['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                $options['entities_id']);
-      $this->datas['##lang.license.entity##'] = $LANG['entity'][0];
       $this->datas['##license.action##']      = $LANG['setup'][264];
 
       foreach ($options['licenses'] as $id => $license) {
@@ -64,11 +63,29 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
          $this->datas['licenses'][] = $tmp;
       }
 
-      $this->datas['##lang.license.entity##']    = $LANG['entity'][0];
-      $this->datas['##lang.license.action##']    = $LANG['mailing'][36];
-      $this->datas['##lang.license.item##']      = $LANG['help'][31];
-      $this->datas['##lang.license.serial##'] = $LANG['common'][19];
-      $this->datas['##lang.license.expirationdate##'] = $LANG['mailing'][51];
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         $this->datas[$tag] = $values['label'];
+      }
+   }
+
+   function getTags() {
+      global $LANG;
+
+      $tags = array('license.action'          =>$LANG['setup'][264],
+                    'license.expirationdate'  =>$LANG['mailing'][51],
+                    'license.item'            =>$LANG['help'][31],
+                    'license.serial'          =>$LANG['common'][19],
+                    'license.entity'          =>$LANG['entity'][0]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true));
+      }
+
+      $this->addTagToList(array('tag'=>'licenses','label'=>$LANG['reports'][57],
+                                'value'=>false,'foreach'=>true));
+
+      asort($this->tag_descriptions);
    }
 }
 ?>
