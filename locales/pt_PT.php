@@ -545,6 +545,7 @@ $LANG['financial'][82]="Numero da requisição";
 $LANG['financial'][83]="Número máximo de artigos (0=ilimitado)"; 
 $LANG['financial'][84]="Para este tipo de elemento, informações financeiras são apenas um modelo para os elementos que irá adicionar."; 
 $LANG['financial'][85]="Elemento requerido não encontrado"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Orçamento"; 
 $LANG['financial'][88]="Expira em:"; 
 $LANG['financial'][89]="TCO (value + tracking cost)"; 

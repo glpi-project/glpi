@@ -545,6 +545,7 @@ $LANG['financial'][82]="請求書番号";
 $LANG['financial'][83]="アイテム最大数（0＝無制限）"; 
 $LANG['financial'][84]="このタイプの財務情報は、モデル種別に依存し、ただ一つであるべきです"; 
 $LANG['financial'][85]="アイテムが見付かりませんでした"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="予算"; 
 $LANG['financial'][88]="終了日"; 
 $LANG['financial'][89]="TCO （価格 + 運用価格）"; 

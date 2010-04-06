@@ -545,6 +545,7 @@ $LANG['financial'][82]="Factuurnr.";
 $LANG['financial'][83]="Max. aantal items (0 = oneindig)"; 
 $LANG['financial'][84]="Voor dit type is commerciële informatie enkel een model voor de onderdelen die je toevoegt."; 
 $LANG['financial'][85]="Gevraagde item niet gevonden"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Budget"; 
 $LANG['financial'][88]="vervallen op:"; 
 $LANG['financial'][89]="TCO (value + tracking cost)"; 

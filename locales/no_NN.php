@@ -545,6 +545,7 @@ $LANG['financial'][82]="Fakturanummer";
 $LANG['financial'][83]="Maks antall elementer (0 = ubegrenset)"; 
 $LANG['financial'][84]="For denne typen element, finansiell informasjon er bare en modell for de elementene som du bør legge til."; 
 $LANG['financial'][85]="Valgte elementet ikke funnet"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Budsjett"; 
 $LANG['financial'][88]="Gyldig til"; 
 $LANG['financial'][89]="TCO (verdi + sporingen kostnad)"; 

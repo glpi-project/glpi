@@ -545,6 +545,7 @@ $LANG['financial'][82]="Číslo faktury";
 $LANG['financial'][83]="Maximální počet položek (0=nekonečno)"; 
 $LANG['financial'][84]="Tohoto typu položky, informace o financích jsou pouze ukázkou elementu, které můžete přidat."; 
 $LANG['financial'][85]="Požadovaná položka nebyla nalezena"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Rozpočet"; 
 $LANG['financial'][88]="Platnost do:"; 
 $LANG['financial'][89]="TCO (hodnota + cena sledování)"; 

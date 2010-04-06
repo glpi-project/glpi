@@ -545,6 +545,7 @@ $LANG['financial'][82]="Fatura (Hesap) numarası";
 $LANG['financial'][83]="En fazla öğe sayısı (0=Sınırsız)"; 
 $LANG['financial'][84]="For this type of element, the financial information is only a model for the elements which you should add."; 
 $LANG['financial'][85]="Talep edilen öğe bulunamadı!"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Bütçe"; 
 $LANG['financial'][88]="Valid to:"; 
 $LANG['financial'][89]="TCO(miktar+takip maliyeti)"; 

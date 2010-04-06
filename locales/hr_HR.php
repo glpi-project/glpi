@@ -545,6 +545,7 @@ $LANG['financial'][82]="Broj računa";
 $LANG['financial'][83]="Maksimalni broj artikala (0=neograničeno)"; 
 $LANG['financial'][84]="Za ovaj tip elementa, financijske informacije su samo ogledne te pokazuju način na koji ih trebate dodati."; 
 $LANG['financial'][85]="Traženi artikl nije nađen"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Proračun"; 
 $LANG['financial'][88]="Vrijedi do:"; 
 $LANG['financial'][89]="TCO (vrijednost + popratni troškovi)"; 

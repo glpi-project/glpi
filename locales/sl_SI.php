@@ -545,6 +545,7 @@ $LANG['financial'][82]="Številka fakture";
 $LANG['financial'][83]="Maksimalno število predmetov (0=neskončno)"; 
 $LANG['financial'][84]="Za ta tip artikla, finančna informacija je le model za elemente za katere bi jih moral dodati."; 
 $LANG['financial'][85]="Zahtevanega predmeta ni bilo mogoče najti"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Proračun"; 
 $LANG['financial'][88]="Veljavno do:"; 
 $LANG['financial'][89]="TCO (vrednost + stroški sledenja)"; 
