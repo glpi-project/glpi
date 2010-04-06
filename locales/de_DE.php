@@ -545,6 +545,7 @@ $LANG['financial'][82]="Rechnungsnummer";
 $LANG['financial'][83]="max. Anzahl einzelner Posten (0=unbegrenzt)"; 
 $LANG['financial'][84]="Buchhalterische Einträge an dieser Stelle gelten nur als Vorlage - sie werden für alle zukünftig eingefügten Elemente übernommen."; 
 $LANG['financial'][85]="angeforderter Eintrag nicht gefunden"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Budget"; 
 $LANG['financial'][88]="Gültig bis:"; 
 $LANG['financial'][89]="TCO (Wert + Laufende Kosten)"; 
@@ -1504,7 +1505,7 @@ $LANG['rulesengine'][141]="Keine Regel überprüft";
 $LANG['rulesengine'][142]="Liste der nicht-importierten E-Mails"; 
 $LANG['rulesengine'][143]="Gruppe des Benutzers"; 
 $LANG['rulesengine'][144]="Entität ab Benutzerprofil"; 
-$LANG['rulesengine'][145]="User with a single profile"; 
+$LANG['rulesengine'][145]="Benutzer mit einem einzigen Profil"; 
 
 $LANG['search'][0]="Suchen"; 
 $LANG['search'][1]="für alle"; 

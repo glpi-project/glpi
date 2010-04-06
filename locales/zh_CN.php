@@ -545,6 +545,7 @@ $LANG['financial'][82]="发case号";
 $LANG['financial'][83]="项目(0=无限的)最大数字"; 
 $LANG['financial'][84]="为元素的这个类型，财政信息是仅一个模型为您将添加的元素。"; 
 $LANG['financial'][85]="没建立的请求的项目"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="预算"; 
 $LANG['financial'][88]="到期："; 
 $LANG['financial'][89]="TCO (价值+追踪费用)"; 

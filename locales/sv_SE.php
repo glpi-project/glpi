@@ -545,6 +545,7 @@ $LANG['financial'][82]="Fakturanummer";
 $LANG['financial'][83]="Max antal objekt (0=obegränsat)"; 
 $LANG['financial'][84]="För denna typ av element är den finansiella informationen bara en modell för de element du bör lägga till."; 
 $LANG['financial'][85]="Begärt objekt kunde ej hittas"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Budget"; 
 $LANG['financial'][88]="Giltig till:"; 
 $LANG['financial'][89]="TCO (Värde + spårnings kostnad)"; 

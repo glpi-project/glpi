@@ -545,6 +545,7 @@ $LANG['financial'][82]="Faktura nr.";
 $LANG['financial'][83]="Maks antal af emner (0=ubegrænset)"; 
 $LANG['financial'][84]="Finans informationerne for dette element er kun en model for de elementer du burde tilføje"; 
 $LANG['financial'][85]="Det ønskede emne blev ikke fundet"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Budget"; 
 $LANG['financial'][88]="Udløber den:"; 
 $LANG['financial'][89]="TCO ( værdi + forsendelses pris )"; 

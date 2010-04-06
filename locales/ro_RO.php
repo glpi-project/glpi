@@ -545,6 +545,7 @@ $LANG['financial'][82]="Numar factura";
 $LANG['financial'][83]="Numar maxim de obiecte(0=nelimitat)"; 
 $LANG['financial'][84]="Pentru acest tip de element informatia financiara este numai un model pentru elementele pe care le veti adauga."; 
 $LANG['financial'][85]="Obiectul cautat nu a fost gasit"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Buget"; 
 $LANG['financial'][88]="Activ pana la:"; 
 $LANG['financial'][89]="TCO (valoare + costul de urmarire)"; 

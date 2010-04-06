@@ -545,6 +545,7 @@ $LANG['financial'][82]="Número do invoice";
 $LANG['financial'][83]="Número máximo de itens (0=ilimitado)"; 
 $LANG['financial'][84]="Para este tipo de elemento, a informaçao financeira é apenas um modelo para os elementos que deverão ser adicionados."; 
 $LANG['financial'][85]="Item requisitado não encontrado"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Orçamento"; 
 $LANG['financial'][88]="Expira em:"; 
 $LANG['financial'][89]="TCO (valor + custo de eventos)"; 

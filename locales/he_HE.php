@@ -545,6 +545,7 @@ $LANG['financial'][82]="מספר חשבונית";
 $LANG['financial'][83]="מספר מקסימלי של פריטים (0=לא מוגבל)"; 
 $LANG['financial'][84]="עבור סוג זה של פריט, המידע הפיננסי היא רק מודל עבור הפריטים שאתה מוסיף מאוחר יותר."; 
 $LANG['financial'][85]="הפריט המבוקש לא נמצא"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="תקציב"; 
 $LANG['financial'][88]="תקף עד:"; 
 $LANG['financial'][89]="TCO (ערך + עלות תחזוקה)"; 

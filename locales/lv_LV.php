@@ -545,6 +545,7 @@ $LANG['financial'][82]="Pavadzīmes nr.";
 $LANG['financial'][83]="Maksimālais objektu skaits (0 = neierobežots)"; 
 $LANG['financial'][84]="Šī tipa elementam finansiālā informācija ir tikai modelis elementiem kurus Jums būs jāpievieno."; 
 $LANG['financial'][85]="Pieprasītais objekts nav atrasts"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Budžets"; 
 $LANG['financial'][88]="Derīgs līdz:"; 
 $LANG['financial'][89]="Kopējās lietošanas izmaksas (vērtība + tracking izmaksas)"; 

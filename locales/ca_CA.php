@@ -545,6 +545,7 @@ $LANG['financial'][82]="Número de factura";
 $LANG['financial'][83]="Quantitat màxima d'elements (0=sense límits)"; 
 $LANG['financial'][84]="Per aquest tipus d'element, les dades financeres no son més que un model pels elements que afegiràs a continuació."; 
 $LANG['financial'][85]="No s'ha trobat l'element sol·licitat"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Pressupost"; 
 $LANG['financial'][88]="Expira el:"; 
 $LANG['financial'][89]="CTP (preu de compra + cost d'incidències)"; 

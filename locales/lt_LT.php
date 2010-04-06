@@ -545,6 +545,7 @@ $LANG['financial'][82]="Sąskaitos numeris";
 $LANG['financial'][83]="Maksimalus elementų skaičius (0 - neribotas)"; 
 $LANG['financial'][84]="Finansinė informacija bus ruošiniu pridedamiems elementams"; 
 $LANG['financial'][85]="Reikalingas elementas nerastas"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Budžetas"; 
 $LANG['financial'][88]="Baigiasi:"; 
 $LANG['financial'][89]="TCO (value + tracking cost)"; 

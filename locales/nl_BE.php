@@ -545,6 +545,7 @@ $LANG['financial'][82]="Invoice Number";
 $LANG['financial'][83]="Max number of items (0=unlimited)"; 
 $LANG['financial'][84]="For this type of element, the financial information is only a model for the elements which you should add."; 
 $LANG['financial'][85]="Requested item not found"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Buget"; 
 $LANG['financial'][88]="Valid to:"; 
 $LANG['financial'][89]="TCO (value + tracking cost)"; 

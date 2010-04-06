@@ -545,6 +545,7 @@ $LANG['financial'][82]="Számlaszám";
 $LANG['financial'][83]="Tételek max száma (0=korlátlan)"; 
 $LANG['financial'][84]="Ehhez az elemhez a pénzügyi infók csak minták azokhoz, amiket Te adsz hozzá"; 
 $LANG['financial'][85]="A keresett tétel nem található"; 
+$LANG['financial'][86]="End of contract"; 
 $LANG['financial'][87]="Költségvetés"; 
 $LANG['financial'][88]="Lejár:"; 
 $LANG['financial'][89]="TCO (érték+követés költsége)"; 
