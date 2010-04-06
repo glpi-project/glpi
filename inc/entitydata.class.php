@@ -224,25 +224,27 @@ class EntityData extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>".$LANG['entity'][14]."</th></tr>";
+      if (canUseLdap()) {
+         echo "<tr><th colspan='4'>".$LANG['login'][2]."</th></tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['entity'][15]."&nbsp;:</td>";
+         echo "<td>";
+         Dropdown::show('AuthLDAP',
+                        array ('name'=>'ldapservers_id',
+                               'value'=> $entdata->fields['ldapservers_id'],
+                               'emptylabel'=>$LANG['ldap'][44]));
+         echo "</td>";
+         echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
+         echo "<td>";
+         autocompletionTextField($entdata, "ldap_dn");
+         echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>".$LANG['login'][2]."</th></tr>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][15]."&nbsp;:</td>";
-      echo "<td>";
-      Dropdown::show('AuthLDAP',
-                     array ('name'=>'ldapservers_id',
-                            'value'=> $entdata->fields['ldapservers_id']));
-      echo "</td>";
-      echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
-      echo "<td>";
-      autocompletionTextField($entdata, "ldap_dn");
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][16]."&nbsp;:</td>";
-      echo "<td colspan='3'><input type='text' name='entity_ldapfilter'
-                   value='".$entdata->fields['entity_ldapfilter']."' size='100'>";
-      echo "</td></tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['entity'][16]."&nbsp;:</td>";
+         echo "<td colspan='3'><input type='text' name='entity_ldapfilter'
+                      value='".$entdata->fields['entity_ldapfilter']."' size='100'>";
+         echo "</td></tr>";
+      }
 
       echo "<tr><th colspan='4'>".$LANG['common'][67]."</th></tr>";
       echo "<tr class='tab_bg_1'>";
