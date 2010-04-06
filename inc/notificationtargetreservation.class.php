@@ -125,7 +125,7 @@ class NotificationTargetReservation extends NotificationTarget {
                 $this->datas['##reservation.item.tech##'] = Dropdown::getDropdownName('glpi_users',
                                                                      $item->getField('users_id_tech'));
             }
-            $tmp['##infocom.url##'] = urldecode($CFG_GLPI["url_base"].
+            $tmp['##reservation.url##'] = urldecode($CFG_GLPI["url_base"].
                                        "/index.php?redirect=".strtolower($itemtype)."_".
                                                       $reservationitem->getField('id'));
          }
@@ -146,21 +146,36 @@ class NotificationTargetReservation extends NotificationTarget {
          }
       }
 
-      $fields = array('##lang.reservation.item##'        => $LANG['financial'][104],
-                      '##lang.reservation.itemtype##'        => $LANG['reports'][12],
-                      '##lang.reservation.user##'        => $LANG['common'][37],
-                      '##lang.reservation.begin##'       => $LANG['search'][8],
-                      '##lang.reservation.end##'         => $LANG['search'][9],
-                      '##lang.reservation.comment##'     => $LANG['common'][25],
-                      '##lang.reservation.item.entity##' => $LANG['entity'][0],
-                      '##lang.reservation.entity##' => $LANG['entity'][0],
-                      '##lang.reservation.item.name##'   => $LANG['financial'][104],
-                      '##lang.reservation.item.tech##'   => $LANG['common'][10]);
-
-      foreach ($fields as $name => $label) {
-         $this->datas[$name] = $label;
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         $this->datas[$tag] = $values['label'];
       }
    }
 
+   function getTags() {
+      global $LANG;
+
+      $tags = array('reservation.item'        => $LANG['financial'][104],
+                    'reservation.itemtype'    => $LANG['reports'][12],
+                    'reservation.user'        => $LANG['common'][37],
+                    'reservation.begin'       => $LANG['search'][8],
+                    'reservation.end'         => $LANG['search'][9],
+                    'reservation.comment'     => $LANG['common'][25],
+                    'reservation.item.entity' => $LANG['entity'][0],
+                    'reservation.entity'      => $LANG['entity'][0],
+                    'reservation.item.name'   => $LANG['financial'][104],
+                    'reservation.item.tech'   => $LANG['common'][10]);
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true));
+      }
+
+      $this->addTagToList(array('tag'=>'items','label'=>$LANG['reports'][57],
+                                'value'=>false,'foreach'=>true,
+                                'events'=>array('alert')));
+
+      asort($this->tag_descriptions);
+   }
 }
 ?>

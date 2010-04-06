@@ -63,11 +63,29 @@ class NotificationTargetConsumable extends NotificationTarget {
          $this->datas['consumables'][] = $tmp;
       }
 
-      $this->datas['##lang.consumable.entity##']    = $LANG['entity'][0];
-      $this->datas['##lang.consumable.action##']    = $LANG['mailing'][36];
-      $this->datas['##lang.consumable.item##']      = $LANG['mailing'][35];
-      $this->datas['##lang.consumable.reference##'] = $LANG['consumables'][2];
-      $this->datas['##lang.consumable.remaining##']     = $LANG['software'][20];
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         $this->datas[$tag] = $values['label'];
+      }
+   }
+
+   function getTags() {
+      global $LANG;
+
+      $tags = array('consumable.action'          =>$LANG['mailing'][36],
+                    'consumable.reference'       =>$LANG['consumables'][2],
+                    'consumable.item'            =>$LANG['financial'][104],
+                    'consumable.remaining'       =>$LANG['software'][20],
+                    'consumable.entity'          =>$LANG['entity'][0]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true));
+      }
+
+      $this->addTagToList(array('tag'=>'consumables','label'=>$LANG['reports'][57],
+                                'value'=>false,'foreach'=>true));
+
+      asort($this->tag_descriptions);
    }
 }
 ?>

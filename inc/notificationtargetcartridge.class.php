@@ -49,8 +49,6 @@ class NotificationTargetCartridge extends NotificationTarget {
 
       $this->datas['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                $options['entities_id']);
-      $this->datas['##lang.cartridge.entity##'] = $LANG['entity'][0];
-      $this->datas['##cartridge.action##']      = $LANG['mailing'][33];
 
       foreach ($options['cartridges'] as $id => $cartridge) {
          $tmp = array();
@@ -62,11 +60,29 @@ class NotificationTargetCartridge extends NotificationTarget {
          $this->datas['cartridges'][] = $tmp;
       }
 
-      $this->datas['##lang.cartridge.entity##']    = $LANG['entity'][0];
-      $this->datas['##lang.cartridge.action##']    = $LANG['mailing'][36];
-      $this->datas['##lang.cartridge.item##']      = $LANG['mailing'][35];
-      $this->datas['##lang.cartridge.reference##'] = $LANG['consumables'][2];
-      $this->datas['##lang.cartridge.remaining##']     = $LANG['software'][20];
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         $this->datas[$tag] = $values['label'];
+      }
+   }
+
+   function getTags() {
+      global $LANG;
+
+      $tags = array('cartridge.action'          =>$LANG['mailing'][41],
+                    'cartridge.reference'       =>$LANG['consumables'][2],
+                    'cartridge.item'            =>$LANG['financial'][104],
+                    'cartridge.remaining'       =>$LANG['software'][20],
+                    'cartridge.entity'          =>$LANG['entity'][0]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true));
+      }
+
+      $this->addTagToList(array('tag'=>'cartridges','label'=>$LANG['reports'][57],
+                                'value'=>false,'foreach'=>true));
+
+      asort($this->tag_descriptions);
    }
 }
 ?>

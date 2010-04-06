@@ -52,15 +52,7 @@ class NotificationTargetContract extends NotificationTarget {
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $events = $this->getEvents();
-      $this->datas['##lang.contract.entity##'] = $LANG['entity'][0];
       $this->datas['##contract.action##']      = $events[$event];
-      $this->datas['##lang.contract.action##'] = $LANG['mailing'][39];
-      $this->datas['##lang.contract.name##']   = $LANG['common'][16];
-
-      $this->datas['##lang.contract.time##']   = ($event==Alert::END?$LANG['contract'][0]:
-                                                                    $LANG['contract'][1]);
-      $this->datas['##lang.contract.number##'] = $LANG['financial'][4];
-      $this->datas['##lang.contract.type##']   = $LANG['common'][17];
 
       foreach($options['contracts'] as $id => $contract) {
          $tmp = array();
@@ -78,7 +70,35 @@ class NotificationTargetContract extends NotificationTarget {
                                               "/index.php?redirect=contract_".$id);
          $this->datas['contracts'][] = $tmp;
       }
+
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         $this->datas[$tag] = $values['label'];
+      }
+
+      $this->datas['##lang.contract.time##']   = ($event==Alert::END?$LANG['contract'][0]:
+                                                                     $LANG['contract'][1]);
+
    }
 
+   function getTags() {
+      global $LANG;
+
+      $tags = array('contract.action'          =>$LANG['mailing'][39],
+                    'contract.name'            =>$LANG['common'][16],
+                    'contract.number'          =>$LANG['financial'][4],
+                    'contrat.type'             =>$LANG['common'][17],
+                    'contract.time'            =>$LANG['contract'][0].'/'.$LANG['contract'][1],
+                    'contract.entity'          =>$LANG['entity'][0]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true));
+      }
+
+      $this->addTagToList(array('tag'=>'contracts','label'=>$LANG['reports'][57],
+                                'value'=>false,'foreach'=>true));
+
+      asort($this->tag_descriptions);
+   }
 }
 ?>
