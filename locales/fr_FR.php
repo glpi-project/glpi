@@ -637,6 +637,7 @@ $LANG['financial'][82]  = "Numéro de facture";
 $LANG['financial'][83]  = "Nombre max d'éléments (0=illimité)";
 $LANG['financial'][84]  = "Pour ce type d'élément, les informations financières ne sont qu'un modèle pour les éléments que vous ajouterez ensuite.";
 $LANG['financial'][85]  = "Élément demandé introuvable";
+$LANG['financial'][86]  = "Expiration contrat";
 
 $LANG['financial'][87]  = "Budget";
 $LANG['financial'][88]  = "Expire le :";
