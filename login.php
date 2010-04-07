@@ -53,7 +53,7 @@ if (!isset($_SESSION["glpitest"])||$_SESSION["glpitest"]!='testcookie'){
 	} else {
 		glpi_header($CFG_GLPI['root_doc'] . "/index.php?error=1");
 	}
-	
+
 }
 
 $_POST = array_map('stripslashes', $_POST);
@@ -83,14 +83,14 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
 		$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($user));
-		$identificat->user->fields['auth_method'] = $auth_method; 
+		$identificat->user->fields['auth_method'] = $auth_method;
 
 		// if LDAP enabled too, get user's infos from LDAP
 		$identificat->user->fields["id_auth"]=$CFG_GLPI['extra_ldap_server'];
 		if (canUseLdap()){
 			if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
 				$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
-				
+
 				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"],$ldap_method["ldap_opt_deref"]);
 				if ($ds) {
 					$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
@@ -113,20 +113,20 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	}
 
 	// If not already auth
-	if (!$identificat->auth_succeded){ 
+	if (!$identificat->auth_succeded){
 		if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
 			$identificat->addToError($LANG['login'][8]);
 		} else {
-	
+
 			// exists=0 -> no exist
 			// exists=1 -> exist with password
 			// exists=2 -> exist without password
 			$exists = $identificat->userExists(addslashes($_POST['login_name']));
-	
+
 			// Pas en premier car sinon on ne fait pas le blankpassword
 			// First try to connect via le DATABASE
 			if ($exists == 1) {
-				
+
 				// Without UTF8 decoding
 				if (!$identificat->auth_succeded){
 					$identificat->auth_succeded = $identificat->connection_db(addslashes($_POST['login_name']), $_POST['login_password']);
@@ -135,15 +135,15 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 						$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
 						$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
 						$identificat->user->fields["password"] = $_POST['login_password'];
-					} 
-	
+					}
+
 				}
 			}
 			elseif ($exists == 2) {
 				//The user is not authenticated on the GLPI DB, but we need to get informations about him
 				//The determine authentication method
 				$identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
-				
+
 				//If the user has already been logged, the method_auth and id_auth are already set
 				//so we test this connection first
 				switch ($identificat->user->fields["auth_method"]) {
@@ -165,20 +165,21 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 						break;
 				}
 			}
-	
-			//If the last good auth method is not valid anymore, we test all the methods !
-			//test all the ldap servers
-			if (!$identificat->auth_succeded && canUseLdap()){
-				error_reporting(0);
-				$identificat = try_ldap_auth($identificat,$_POST['login_name'],$_POST['login_password']);
-			}
-	
-			//test all the imap/pop servers
-			if (!$identificat->auth_succeded && canUseImapPop()){
-				$identificat = try_mail_auth($identificat,$_POST['login_name'],$_POST['login_password']);
-			}
+         //Test other servers only if user is not present in the DB
+         elseif (!$exists) {
+            //test all the ldap servers
+            if (!$identificat->auth_succeded && canUseLdap()){
+               error_reporting(0);
+               $identificat = try_ldap_auth($identificat,$_POST['login_name'],$_POST['login_password']);
+            }
+
+            //test all the imap/pop servers
+            if (!$identificat->auth_succeded && canUseImapPop()){
+               $identificat = try_mail_auth($identificat,$_POST['login_name'],$_POST['login_password']);
+            }
+         }
 			// Fin des tests de connexion
-	
+
 		}
 	}
 
@@ -186,11 +187,11 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	// are not present on the DB, so we add it.
 	// if not, we update it.
 	if (!$DB->isSlave() && $identificat->auth_succeded) {
-		
+
 		// Prepare data
 		$identificat->user->fields["last_login"]=$_SESSION["glpi_currenttime"];
 		if ($identificat->extauth){
-			$identificat->user->fields["_extauth"] = 1;			
+			$identificat->user->fields["_extauth"] = 1;
 		}
 		// Need auto add user ?
 		if (!$identificat->user_present && $CFG_GLPI["auto_add_users"]) {
@@ -232,7 +233,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		} else {
 			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG['log'][40] . " : " . $ip);
 		}
-		
+
 		// Redirect to Command Central if not post-only
 		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 			glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
@@ -241,7 +242,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		}
 
 	} else {
-		// we have done at least a good login? No, we exit. 
+		// we have done at least a good login? No, we exit.
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
       // Logout whit noAUto to manage auto_login with errors
@@ -253,5 +254,5 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		}
 		nullFooter();
 		exit();
-	} 
+	}
 ?>
