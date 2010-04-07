@@ -87,7 +87,7 @@ class NotificationTargetContract extends NotificationTarget {
       $tags = array('contract.action'          =>$LANG['mailing'][39],
                     'contract.name'            =>$LANG['common'][16],
                     'contract.number'          =>$LANG['financial'][4],
-                    'contrat.type'             =>$LANG['common'][17],
+                    'contract.type'            =>$LANG['common'][17],
                     'contract.time'            =>$LANG['contract'][0].'/'.$LANG['contract'][1],
                     'contract.entity'          =>$LANG['entity'][0]);
       foreach ($tags as $tag => $label) {
