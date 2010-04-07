@@ -554,7 +554,7 @@ class Auth {
                }
             } else if ($exists == 2) {
                //The user is not authenticated on the GLPI DB, but we need to get informations about him
-               //The determine authentication method
+               //to determine authentication method
                $this->user->getFromDBbyName(addslashes($login_name));
 
                //If the user has already been logged, the method_auth and auths_id are already set
@@ -581,18 +581,19 @@ class Auth {
                      break;
                }
             }
+            elseif (!$exists) {
+               //If the last good auth method is not valid anymore, we test all methods !
+               //test all ldap servers
+               if (!$this->auth_succeded && canUseLdap()) {
+                  $oldlevel = error_reporting(0);
+                  AuthLdap::tryLdapAuth($this,$login_name,$login_password);
+                  error_reporting($oldlevel);
+               }
 
-            //If the last good auth method is not valid anymore, we test all methods !
-            //test all ldap servers
-            if (!$this->auth_succeded && canUseLdap()) {
-               $oldlevel = error_reporting(0);
-               AuthLdap::tryLdapAuth($this,$login_name,$login_password);
-               error_reporting($oldlevel);
-            }
-
-            //test all imap/pop servers
-            if (!$this->auth_succeded && canUseImapPop()) {
-               AuthMail::tryMailAuth($this,$login_name,$login_password);
+               //test all imap/pop servers
+               if (!$this->auth_succeded && canUseImapPop()) {
+                  AuthMail::tryMailAuth($this,$login_name,$login_password);
+               }
             }
             // Fin des tests de connexion
          }
