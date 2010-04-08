@@ -1108,8 +1108,11 @@ class AuthLDAP extends CommonDBTM {
       $values['ldap_filter'] = '';
       $values['basedn'] = $config_ldap->fields['basedn'];
 
+      logDebug($options);
       foreach ($options as $option => $value) {
+         if ($value != '') {
          $values[$option] = $value;
+         }
       }
 
       $ldap_users = array ();
