@@ -2215,6 +2215,44 @@ class User extends CommonDBTM {
       }
       return 0;
    }
+
+   static function manageDeletedUserInLdap($users_id) {
+      global $CFG_GLPI;
+      //User is present in DB but not in the directory : it's been deleted in LDAP
+      $tmp['id'] = $users_id;
+      $myuser = new User;
+      switch ($CFG_GLPI['user_deleted_ldap']) {
+         //DO nothing
+         case 0:
+            break;
+         //Put user in trash
+         case 1:
+            $tmp['is_deleted'] = 1;
+            $myuser->update($tmp);
+            break;
+         //Delete user rights
+         case 2:
+            Profile_User::deleteRights($users_id);
+            break;
+         //Deactivate the user
+         case 3:
+            $tmp['is_active'] = 0;
+            $myuser->update($tmp);
+            break;
+      }
+   }
+
+   static function getIdByName($login) {
+      global $DB;
+      $query = "SELECT `id` FROM `glpi_users` WHERE `name`='$login'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)==1) {
+         return $DB->result($result,0,'id');
+      }
+      else {
+         return false;
+      }
+   }
 }
 
 ?>

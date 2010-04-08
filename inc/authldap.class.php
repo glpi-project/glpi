@@ -1104,7 +1104,7 @@ class AuthLDAP extends CommonDBTM {
       $res = $config_ldap->getFromDB($options['ldapservers_id']);
 
       $values['order'] = 'DESC';
-      $values['mode'] = 0;
+      $values['mode'] = AuthLDAP::ACTION_SYNCHRONIZE;
       $values['ldap_filter'] = '';
       $values['basedn'] = $config_ldap->fields['basedn'];
 
@@ -1172,30 +1172,33 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $glpi_users = array ();
-      $sql = "SELECT `name`, `date_mod`
+      $sql = "SELECT `id`, `name`, `date_mod`
               FROM `glpi_users` ";
-      if ($values['mode']) {
-         $sql.=" WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.") ";
+      if ($values['mode'] == AuthLDAP::ACTION_SYNCHRONIZE) {
+         $sql.=" WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.") ";
+         $sql.= " AND `auths_id`='".$options['ldapservers_id']."'";
       }
-      $sql.="ORDER BY `name` ".$values['order'];
+      $sql.=" ORDER BY `name` ".$values['order'];
 
-      $result = $DB->query($sql);
-      if ($DB->numrows($result) > 0) {
-         while ($user = $DB->fetch_array($result)) {
-            //Ldap add : fill the array with the login of the user
-            if (!$values['mode']) {
-               $glpi_users[$user['name']] = $user['name'];
-            } else {
-               //Ldap synchronisation : look if the user exists in the directory
-               //and compares the modifications dates (ldap and glpi db)
-               if (!empty ($ldap_users[$user['name']])) {
-                  //If entry was modified or if script should synchronize all the users
-                  if ( ($values['order'] ==2) || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)) {
-                     $glpi_users[] = array("user" => $user['name'],
-                                           "timestamp"=>$user_infos[$user['name']]['timestamp'],
-                                           "date_mod"=>$user['date_mod']);
-                  }
+      foreach ($DB->request($sql) as $user) {
+         //Ldap add : fill the array with the login of the user
+         if ($values['mode'] == AuthLDAP::ACTION_IMPORT) {
+            $glpi_users[$user['name']] = $user['name'];
+         } else {
+            //Ldap synchronisation : look if the user exists in the directory
+            //and compares the modifications dates (ldap and glpi db)
+            if (!empty ($ldap_users[$user['name']])) {
+               //If entry was modified or if script should synchronize all the users
+               if ( ($values['order'] ==2)
+                     || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)) {
+                  $glpi_users[] = array("user" => $user['name'],
+                                        "timestamp"=>$user_infos[$user['name']]['timestamp'],
+                                        "date_mod"=>$user['date_mod']);
                }
+            }
+            else {
+               //If user is marked as coming from LDAP, but is not present in it anymore
+               User::manageDeletedUserInLdap($user['id']);
             }
          }
       }
@@ -1536,6 +1539,7 @@ class AuthLDAP extends CommonDBTM {
             //Get informations from LDAP
             if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login))) {
                //Add the auth method
+
                if ($mode == AuthLdap::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
@@ -1555,9 +1559,10 @@ class AuthLDAP extends CommonDBTM {
                   return $user->fields["id"];
                } else {
                   $input=$user->fields;
-                  $query = "SELECT `id` FROM `glpi_users` WHERE `name`='$login'";
-                  $result = $DB->query($query);
-                  $input['id'] = $DB->result($result,0,'id');
+                  $input['id'] = User::getIdByName($login);
+                  //$query = "SELECT `id` FROM `glpi_users` WHERE `name`='$login'";
+                  //$result = $DB->query($query);
+                  //$input['id'] = $DB->result($result,0,'id');
 
                   if ($display) {
                      $input['update']=1;
@@ -1568,6 +1573,10 @@ class AuthLDAP extends CommonDBTM {
             } else {
                return false;
             }
+         }
+         else {
+            User::manageDeletedUserInLdap(User::getIdByName($params['value']));
+            return false;
          }
       } else {
          return false;
@@ -2209,6 +2218,14 @@ class AuthLDAP extends CommonDBTM {
       return $input;
    }
 
+   static function dropdownUserDeletedActions($value=0) {
+      global $LANG;
+      $options[0] = $LANG['buttons'][49];
+      $options[1] = $LANG['ldap'][47];
+      $options[2] = $LANG['ldap'][46];
+      $options[3] = $LANG['buttons'][42];
+      return Dropdown::showFromArray('user_deleted_ldap',$options,array('value'=>$value));
+   }
 
    /**
     * Return all the ldap servers where email field is configured

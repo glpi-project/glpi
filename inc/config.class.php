@@ -440,6 +440,11 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
       echo " </td></tr>";
 
+      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['ldap'][45] . " </td><td>";
+      AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
+      echo "</td>";
+      echo "<td class='center' colspan='2'></td></tr>";
+
       echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][20] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][117] . " </td><td>";

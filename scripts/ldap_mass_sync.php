@@ -50,6 +50,15 @@ if ($argv) {
    }
 }
 
+if (in_array('help',$argv) || isset($_GET['help'])) {
+   echo "Usage : php -q -f ldap_mass_sync.php [action=<option>]  [ldapservers_id=ID]\n";
+   echo "Options values :\n";
+   echo "0 : import users only\n";
+   echo "1 : synchronize existing users only\n";
+   echo "2 : import & synchronize users\n";
+   exit (0);
+}
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -58,28 +67,33 @@ include (GLPI_ROOT . "/inc/includes.php");
 //   - 0 : import new users
 //  - 1 : synchronize users
 //  - 2 : force synchronization of all the users (even if ldap timestamp wasn't modified)
-if (!isset($_GET["action"])) $_GET["action"]=1;
+$options['action'] = AuthLDAP::ACTION_SYNCHRONIZE;
+$options['ldapservers_id'] = NOT_AVAILABLE;
+$options['filter'] = '';
+foreach ($_GET as $key => $value) {
+   $options[$key] = $value;
+}
 
-//If no ldap_server ID is given, then use all the available servers
-if (!isset($_GET["server_id"])) $_GET["server_id"]='';
+if (!canUseLdap() || !countElementsInTable('glpi_authldaps')) {
+   echo "LDAP extension is not active or no LDAP directory defined";
+}
 
-//If not filter given
-if (!isset($_GET["filter"])) $_GET["filter"]='';
-
+$sql = "SELECT `id`, `name` FROM  `glpi_authldaps`";
 //Get the ldap server's id by his name
-if ($_GET["server_id"] != '')
-   $sql = "SELECT id, name from glpi_auth_ldap WHERE id=" . $_GET["server_id"];
-else
-   $sql = "SELECT id, name from glpi_auth_ldap";
+if ($_GET["ldapservers_id"] != '') {
+   $sql.= " WHERE id=" . $options['ldapservers_id'];
+}
 
 $result = $DB->query($sql);
-if ($DB->numrows($result) == 0 && $_GET["server_id"] != '')
+if ($DB->numrows($result) == 0 && $_GET["ldapservers_id"] != NOT_AVAILABLE) {
    echo "LDAP Server not found";
+}
 else
 {
-   while ($datas = $DB->fetch_array($result))
-      import ($_GET["action"],$datas,$_GET["filter"]);
-
+   foreach($DB->request($sql) as $datas) {
+      $options['ldapservers_id'] = $datas['id'];
+      import ($options);
+   }
 }
 
 /**
@@ -87,16 +101,16 @@ else
  * @param action the action to perform (add/sync)
  * @param datas the ldap connection's datas
  */
-function import($action, $datas,$filter='')
+function import($options)
 {
    //The ldap server id is passed in the script url (parameter server_id)
-   $action['ldapservers_id'] = $datas["id"];
-   $action['ldap_filter'] = $filter;
-   $users = AuthLdap::getAllLdapUsers($action);
+   $users = AuthLdap::getAllLdapUsers($options);
 
    foreach ($users as $user) {
       AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                               'value'=>$user["user"]), $action, $datas["id"]);
+                                               'value'=>$user["user"]),
+                                         $options['action'],
+                                         $options['ldapservers_id']);
       echo ".";
    }
 }
