@@ -968,7 +968,9 @@ $LANG['ldap'][41] = "Changer";
 $LANG['ldap'][42] = "Aucun annuaire sélectionné";
 $LANG['ldap'][43] = "Pas d'utilisateurs à synchroniser";
 $LANG['ldap'][44] = "Serveur par défaut";
-
+$LANG['ldap'][45] = "Action lorsqu'un utilisateur est supprimé de l'annuaire";
+$LANG['ldap'][46] = "Supprimer les droits";
+$LANG['ldap'][47] = "Mettre à la corbeille";
 
 $LANG['links'][1] = "Lien ou Nom du fichier";
 

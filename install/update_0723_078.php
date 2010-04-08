@@ -4202,6 +4202,11 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                                    $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_configs','user_deleted_ldap')) {
+      $query = "ALTER TABLE `glpi_configs` ADD `user_deleted_ldap` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.78 add user_deleted_ldap to glpi_configs".
+                                   $LANG['update'][90] . $DB->error());
+   }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
 

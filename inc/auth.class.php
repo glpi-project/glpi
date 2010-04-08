@@ -479,7 +479,8 @@ class Auth {
       $this->getAuthMethods();
       $this->user_present=1;
       $this->auth_succeded = false;
-
+      //In case the user was deleted in the LDAP directory
+      $user_deleted_ldap = false;
 
       if (!$noauto && $authtype=Auth::checkAlternateAuthSystems()) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
@@ -500,6 +501,7 @@ class Auth {
                   $ds = AuthLdap::connectToServer($ldap_method["host"], $ldap_method["port"], $ldap_method["rootdn"],
                                      $ldap_method["rootdn_password"], $ldap_method["use_tls"],
                                      $ldap_method["deref_option"]);
+
                   if ($ds) {
                      $params['method'] = AuthLdap::IDENTIFIER_LOGIN;
                      $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
@@ -511,6 +513,7 @@ class Auth {
                      if ($user_dn) {
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $user);
                      }
+
                   }
                }
             }
@@ -566,6 +569,9 @@ class Auth {
                         $oldlevel = error_reporting(0);
                         AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                       $this->user->fields["auths_id"]);
+                        if (!$this->auth_succeded) {
+                           $user_deleted_ldap = true;
+                        }
                         error_reporting($oldlevel);
                      }
                      break;
@@ -582,8 +588,7 @@ class Auth {
                }
             }
             elseif (!$exists) {
-               //If the last good auth method is not valid anymore, we test all methods !
-               //test all ldap servers
+               //test all ldap servers only is user is not present in glpi's DB
                if (!$this->auth_succeded && canUseLdap()) {
                   $oldlevel = error_reporting(0);
                   AuthLdap::tryLdapAuth($this,$login_name,$login_password);
@@ -599,6 +604,9 @@ class Auth {
          }
       }
 
+      if ($user_deleted_ldap) {
+         User::manageDeletedUserInLdap($this->user->fields["id"]);
+      }
       // Ok, we have gathered sufficient data, if the first return false the user
       // is not present on the DB, so we add him.
       // if not, we update him.

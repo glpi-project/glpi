@@ -511,5 +511,11 @@ class Profile_User extends CommonDBTM {
 
       return getAllDatasFromTable('glpi_profiles_users',$condition);
    }
+
+   static function deleteRights($user_ID) {
+      global $DB;
+      $query = "DELETE FROM `glpi_profiles_users` WHERE `users_id`='$user_ID'";
+      $DB->query($query);
+   }
 }
 ?>
