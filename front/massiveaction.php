@@ -610,26 +610,32 @@ if (isset($_POST["itemtype"])) {
          case 'merge' :
             $fk = $item->getForeignKeyField();
             foreach ($_POST["item"] as $key => $val) {
-               if ($val==1 && $item->can($key,'w') && $item->getEntityID()!=$_SESSION['glpiactive_entity']) {
-                  $input = $item->fields;
-
-                  // Remove keys (and name, tree dropdown will use completename)
-                  if($item instanceof CommonTreeDropdown) {
-                     unset($input['id'], $input['name'], $input[$fk]);
+               if ($val==1 && $item->can($key,'w')) {
+                  if ($item->getEntityID()==$_SESSION['glpiactive_entity']) {
+                        $item->update(array('id'           => $key,
+                                            'is_recursive' => 1));
                   } else {
-                     unset($input['id']);
-                  }
-                  // Change entity
-                  $input['entities_id']  = $_SESSION['glpiactive_entity'];
-                  $input['is_recursive'] = 1;
 
-                  // Import new
-                  $newid = $item->import($input);
+                     $input = $item->fields;
 
-                  // Delete old
-                  if ($newid > 0) {
-                     $item->delete(array('id' => $key,
-                                         '_replace_by' => $newid));
+                     // Remove keys (and name, tree dropdown will use completename)
+                     if($item instanceof CommonTreeDropdown) {
+                        unset($input['id'], $input['name'], $input[$fk]);
+                     } else {
+                        unset($input['id']);
+                     }
+                     // Change entity
+                     $input['entities_id']  = $_SESSION['glpiactive_entity'];
+                     $input['is_recursive'] = 1;
+
+                     // Import new
+                     $newid = $item->import($input);
+
+                     // Delete old
+                     if ($newid > 0) {
+                        $item->delete(array('id'          => $key,
+                                            '_replace_by' => $newid));
+                     }
                   }
                }
             }
