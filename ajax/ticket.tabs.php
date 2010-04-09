@@ -54,7 +54,6 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $validation->showSummary($ticket);
          $task = new TicketTask();
          $task->showSummary($ticket);
-         $ticket->showCost($_POST['target']);
          $ticket->showSolutionForm();
          if ($ticket->canApprove()) {
             $suivi = new TicketFollowup();

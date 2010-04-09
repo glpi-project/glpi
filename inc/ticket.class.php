@@ -2354,7 +2354,7 @@ class Ticket extends CommonDBTM {
          echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td'>".$LANG['job'][42]."&nbsp;: </td>";
+         echo "<td>".$LANG['job'][42]."&nbsp;: </td>";
 
          echo "<td><input type='text' maxlength='100' size='15' name='cost_material' value='".
                     formatNumber($this->fields["cost_material"],true)."'></td>";
@@ -2559,7 +2559,7 @@ class Ticket extends CommonDBTM {
          echo $LANG['job'][4]."&nbsp;: </td>";
          echo "<td>";
 
-         //List all users in the active entities 
+         //List all users in the active entities
          User::dropdown(array('value'         => $options["users_id"],
                               'entity'        => $_SESSION['glpiactiveentities'],
                               //'entity'        => $this->fields["entities_id"],
