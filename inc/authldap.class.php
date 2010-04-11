@@ -43,6 +43,7 @@ class AuthLDAP extends CommonDBTM {
 
    const ACTION_IMPORT = 0;
    const ACTION_SYNCHRONIZE = 1;
+   const ACTION_ALL = 2;
 
    //Import user by giving his login
    const IDENTIFIER_LOGIN = 'login';
@@ -267,7 +268,7 @@ class AuthLDAP extends CommonDBTM {
       Dropdown::showGMT("time_offset",$this->fields["time_offset"]);
       echo"</td></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['ldap'][30] . "&nbsp;:</td><td colspan='3'>";
+      echo "<td>" . $LANG['ldap'][30] . "&nbsp;:</td><td colspan='4'>";
       $alias_options[LDAP_DEREF_NEVER] = $LANG['ldap'][31];
       $alias_options[LDAP_DEREF_ALWAYS] = $LANG['ldap'][32];
       $alias_options[LDAP_DEREF_SEARCHING] = $LANG['ldap'][33];
@@ -980,7 +981,7 @@ class AuthLDAP extends CommonDBTM {
          $values[$option] = $value;
       }
 
-      $ldap_users = AuthLdap::getAllLdapUsers($values);
+      $ldap_users = AuthLdap::getAllUsers($values);
 
       if (is_array($ldap_users)) {
          $numrows = count($ldap_users);
@@ -1097,18 +1098,17 @@ class AuthLDAP extends CommonDBTM {
     *          - order display order
     * @return  array of the user
     */
-   static function getAllLdapUsers($options = array()) {
+   static function getAllUsers($options = array()) {
       global $DB, $LANG,$CFG_GLPI;
 
       $config_ldap = new AuthLDAP();
       $res = $config_ldap->getFromDB($options['ldapservers_id']);
 
       $values['order'] = 'DESC';
-      $values['mode'] = AuthLDAP::ACTION_SYNCHRONIZE;
+      $values['action'] = AuthLDAP::ACTION_SYNCHRONIZE;
       $values['ldap_filter'] = '';
       $values['basedn'] = $config_ldap->fields['basedn'];
 
-      logDebug($options);
       foreach ($options as $option => $value) {
          if ($value != '') {
          $values[$option] = $value;
@@ -1140,14 +1140,17 @@ class AuthLDAP extends CommonDBTM {
             $filter = $values['ldap_filter'];
          }
 
-         $sr = @ldap_search($ds, $values['basedn'],$filter , $attrs);
+         $sr = @ldap_search($ds,
+                           $values['basedn'],
+                           $filter ,
+                           $attrs);
          if ($sr) {
             $info = ldap_get_entries($ds, $sr);
             $user_infos = array();
 
             for ($ligne = 0; $ligne < $info["count"]; $ligne++) {
                //If ldap add
-               if (!$values['mode']) {
+               if ($values['action'] == AuthLDAP::ACTION_IMPORT) {
                   if (in_array($config_ldap->fields['login_field'],$info[$ligne])) {
                      $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]] =
                         $info[$ligne][$config_ldap->fields['login_field']][0];
@@ -1176,8 +1179,8 @@ class AuthLDAP extends CommonDBTM {
 
       $glpi_users = array ();
       $sql = "SELECT `id`, `name`, `date_mod`
-              FROM `glpi_users` ";
-      if ($values['mode'] == AuthLDAP::ACTION_SYNCHRONIZE) {
+              FROM `glpi_users`";
+      if ($values['action'] == AuthLDAP::ACTION_SYNCHRONIZE) {
          $sql.=" WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.") ";
          $sql.= " AND `auths_id`='".$options['ldapservers_id']."'";
       }
@@ -1185,14 +1188,14 @@ class AuthLDAP extends CommonDBTM {
 
       foreach ($DB->request($sql) as $user) {
          //Ldap add : fill the array with the login of the user
-         if ($values['mode'] == AuthLDAP::ACTION_IMPORT) {
+         if ($values['action'] == AuthLDAP::ACTION_IMPORT) {
             $glpi_users[$user['name']] = $user['name'];
          } else {
             //Ldap synchronisation : look if the user exists in the directory
             //and compares the modifications dates (ldap and glpi db)
             if (!empty ($ldap_users[$user['name']])) {
                //If entry was modified or if script should synchronize all the users
-               if ( ($values['order'] ==2)
+               if ( ($values['action']==AuthLDAP::ACTION_ALL)
                      || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)) {
                   $glpi_users[] = array("user" => $user['name'],
                                         "timestamp"=>$user_infos[$user['name']]['timestamp'],
@@ -1201,12 +1204,16 @@ class AuthLDAP extends CommonDBTM {
             }
             else {
                //If user is marked as coming from LDAP, but is not present in it anymore
-               User::manageDeletedUserInLdap($user['id']);
+               if (!$user['is_deleted'] && !$user['is_active']
+                     && $user['auths_id'] == $options['ldapservers_id']) {
+                  User::manageDeletedUserInLdap($user['id']);
+               }
             }
          }
       }
+
       //If add, do the difference between ldap users and glpi users
-      if (!$values['mode']) {
+      if ($values['action'] == AuthLDAP::ACTION_IMPORT) {
          $diff = array_diff_ukey($ldap_users,$glpi_users,'strcasecmp');
          $list = array();
 
@@ -1220,6 +1227,7 @@ class AuthLDAP extends CommonDBTM {
          } else {
             sort($list);
          }
+
          return $list;
       } else {
          return $glpi_users;
@@ -1420,7 +1428,10 @@ class AuthLDAP extends CommonDBTM {
             $filter = (!empty($config_ldap->fields['condition'])?
                        $config_ldap->fields['condition']:"(objectclass=*)");
          }
-         $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'],$filter , $attrs);
+         $sr = @ldap_search($ldap_connection,
+                            $config_ldap->fields['basedn'],
+                            $filter ,
+                            $attrs);
 
          if ($sr) {
             $infos = ldap_get_entries($ldap_connection, $sr);
@@ -1497,12 +1508,12 @@ class AuthLDAP extends CommonDBTM {
    /** Import a user from a specific ldap server
     *
     * @param   $params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
-    * @param   $mode synchoronise (true) or import (false)
+    * @param   $action synchoronize (true) or import (false)
     * @param   $ldap_server ID of the LDAP server to use
     * @param   $display display message information on redirect
     * @return  nothing
     */
-   static function ldapImportUserByServerId($params=array(), $mode,$ldap_server,$display=false) {
+   static function ldapImportUserByServerId($params=array(), $action,$ldap_server,$display=false) {
       global $DB, $LANG;
 
       $params = stripslashes_deep($params);
@@ -1521,19 +1532,26 @@ class AuthLDAP extends CommonDBTM {
       $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
                          $config_ldap->fields['rootdn'], $config_ldap->fields['rootdn_password'],
                          $config_ldap->fields['use_tls'],$config_ldap->fields['deref_option']);
+
       if ($ds) {
 
          $search_parameters['method'] = $params['method'];
-         $search_parameters['fields'][AuthLdap::IDENTIFIER_LOGIN] = $config_ldap->fields['login_field'];
+         $search_parameters['fields'][AuthLdap::IDENTIFIER_LOGIN] =
+                                                               $config_ldap->fields['login_field'];
          if ($params['method'] == AuthLdap::IDENTIFIER_EMAIL) {
-            $search_parameters['fields'][AuthLdap::IDENTIFIER_EMAIL] = $config_ldap->fields['email_field'];
+            $search_parameters['fields'][AuthLdap::IDENTIFIER_EMAIL] =
+                                                               $config_ldap->fields['email_field'];
          }
 
+
          //Get the user's dn & login
-         $infos = AuthLdap::searchUserDn($ds, $config_ldap->fields['basedn'],
-                                        $search_parameters['fields'][$search_parameters['method']],
-                                        $search_parameters, $params,
-                                        $config_ldap->fields['condition']);
+         $attribs = array('basedn'=>$config_ldap->fields['basedn'],
+                          'login_field'=>$search_parameters['fields'][$search_parameters['method']],
+                          'search_parameters'=>$search_parameters,
+                          'user_params'=>$params,
+                          'condition'=>$config_ldap->fields['condition']);
+
+         $infos = AuthLdap::searchUserDn($ds,$attribs);
          if ($infos && $infos['dn']) {
             $user_dn = $infos['dn'];
             $login = $infos[$config_ldap->fields['login_field']];
@@ -1542,15 +1560,12 @@ class AuthLDAP extends CommonDBTM {
             //Get informations from LDAP
             if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login))) {
                //Add the auth method
-
-               if ($mode == AuthLdap::ACTION_IMPORT) {
-                  $user->fields["authtype"] = Auth::LDAP;
-                  $user->fields["auths_id"] = $ldap_server;
-               }
                // Force date mod
                $user->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 
-               if ($mode == AuthLdap::ACTION_IMPORT) {
+               if ($action == AuthLdap::ACTION_IMPORT) {
+                  $user->fields["authtype"] = Auth::LDAP;
+                  $user->fields["auths_id"] = $ldap_server;
                   //Save informations in database !
                   $input = $user->fields;
                   unset ($user->fields);
@@ -1563,9 +1578,6 @@ class AuthLDAP extends CommonDBTM {
                } else {
                   $input=$user->fields;
                   $input['id'] = User::getIdByName($login);
-                  //$query = "SELECT `id` FROM `glpi_users` WHERE `name`='$login'";
-                  //$result = $DB->query($query);
-                  //$input['id'] = $DB->result($result,0,'id');
 
                   if ($display) {
                      $input['update']=1;
@@ -1577,7 +1589,7 @@ class AuthLDAP extends CommonDBTM {
                return false;
             }
          }
-         else {
+         elseif ($action != AuthLDAP::ACTION_IMPORT) {
             User::manageDeletedUserInLdap(User::getIdByName($params['value']));
             return false;
          }
@@ -1821,33 +1833,45 @@ class AuthLDAP extends CommonDBTM {
     * @param $condition : ldap condition used
     * @return dn of the user, else false
    **/
-   static function searchUserDn($ds, $basedn, $login_field, $search_parameters, $user_params, $condition) {
+   static function searchUserDn($ds, $options=array()) {
+
+      $values['basedn'] = '';
+      $values['login_field'] = '';
+      $values['search_parameters'] = array();
+      $values['user_params'] = '';
+      $values['condition'] = '';
+      foreach  ($options as $key => $value) {
+         $values[$key] = $value;
+      }
 
       //By default authentify users by login
       $authentification_value = '';
 
-      $login_attr = $search_parameters['fields'][AuthLDAP::IDENTIFIER_LOGIN];
+      $login_attr = $values['search_parameters']['fields'][AuthLDAP::IDENTIFIER_LOGIN];
       $ldap_parameters = array("dn");
-      foreach ($search_parameters['fields'] as $parameter) {
+      foreach ($values['search_parameters']['fields'] as $parameter) {
          $ldap_parameters[] = $parameter;
       }
 
-      $authentification_value = $user_params['value'];
+      $authentification_value = $values['user_params']['value'];
       // Tenter une recherche pour essayer de retrouver le DN
-      $filter = "($login_field=".$user_params['value'].")";
+      $filter = "(".$values['login_field']."=".$values['user_params']['value'].")";
 
-      if (!empty ($condition)) {
-         $filter = "(& $filter $condition)";
+      if (!empty ($values['condition'])) {
+         $filter = "(& $filter ".$values['condition'].")";
       }
 
-      if ($result = ldap_search($ds, $basedn, $filter, $ldap_parameters,0,0)){
+      if ($result = ldap_search($ds,
+                                $values['basedn'],
+                                $filter,
+                                $ldap_parameters)){
          $info = ldap_get_entries($ds, $result);
          if (is_array($info) AND $info['count'] == 1) {
             return array('dn'=>$info[0]['dn'],$login_attr=>$info[0][$login_attr][0]);
          } else { // Si echec, essayer de deviner le DN / Flat LDAP
-            if ($search_parameters['method'] == AuthLDAP::IDENTIFIER_LOGIN) {
-               $dn = "$login_attr=$authentification_value," . $basedn;
-               return array('dn'=>$dn,$login_attr=>$user_params['value']);
+            if ($values['search_parameters']['method'] == AuthLDAP::IDENTIFIER_LOGIN) {
+               $dn = "$login_attr=$authentification_value," . $values['basedn'];
+               return array('dn'=>$dn,$login_attr=>$values['user_params']['value']);
             }
             else {
                return false;
