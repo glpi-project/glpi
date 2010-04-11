@@ -163,12 +163,13 @@ class Auth {
       if ($this->ldap_connection) {
          $params['method'] = AuthLDAP::IDENTIFIER_LOGIN;
          $params['fields'][AuthLDAP::IDENTIFIER_LOGIN] = $ldap_method['login_field'];
-         $infos = AuthLdap::searchUserDn($this->ldap_connection, $ldap_method['basedn'],
-                                         $ldap_method['login_field'],
-                                         $params,
-                                         array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                               'value'=>$login),
-                                         $ldap_method['condition']);
+         $infos = AuthLdap::searchUserDn($this->ldap_connection,
+                                         array('basedn'=>$ldap_method['basedn'],
+                                               'login_field'=>$ldap_method['login_field'],
+                                               'search_parameters'=>$params,
+                                               'user_params'=>array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                                                     'value'=>$login),
+                                                'condition'=>$ldap_method['condition']));
          $dn = $infos['dn'];
          if (@ldap_bind($this->ldap_connection, $dn, $password)) {
 
@@ -498,18 +499,22 @@ class Auth {
             if (canUseLdap()) {
                if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])) {
                   $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
-                  $ds = AuthLdap::connectToServer($ldap_method["host"], $ldap_method["port"], $ldap_method["rootdn"],
-                                     $ldap_method["rootdn_password"], $ldap_method["use_tls"],
-                                     $ldap_method["deref_option"]);
+                  $ds = AuthLdap::connectToServer($ldap_method["host"],
+                                                  $ldap_method["port"],
+                                                  $ldap_method["rootdn"],
+                                                  $ldap_method["rootdn_password"],
+                                                  $ldap_method["use_tls"],
+                                                  $ldap_method["deref_option"]);
 
                   if ($ds) {
                      $params['method'] = AuthLdap::IDENTIFIER_LOGIN;
                      $params['fields'][AuthLdap::IDENTIFIER_LOGIN] = $ldap_method["login_field"];
                      $user_dn = AuthLdap::searchUserDn($ds,
-                                                       $ldap_method["basedn"],
-                                                       $ldap_method['login_field'],
-                                                       $params,
-                                                       $user, $ldap_method["condition"]);
+                                                       array('basedn'=>$ldap_method["basedn"],
+                                                             'login_field'=>$ldap_method['login_field'],
+                                                             'search_parameters'=>$params,
+                                                             'user_params'=>$user,
+                                                             'condition'=>$ldap_method["condition"]));
                      if ($user_dn) {
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $user);
                      }

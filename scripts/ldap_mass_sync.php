@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -50,7 +48,7 @@ if ($argv) {
    }
 }
 
-if (in_array('help',$argv) || isset($_GET['help'])) {
+if ((isset($argv) && in_array('help',$argv)) || isset($_GET['help'])) {
    echo "Usage : php -q -f ldap_mass_sync.php [action=<option>]  [ldapservers_id=ID]\n";
    echo "Options values :\n";
    echo "0 : import users only\n";
@@ -104,9 +102,7 @@ else
 function import($options)
 {
    //The ldap server id is passed in the script url (parameter server_id)
-   $users = AuthLdap::getAllLdapUsers($options);
-
-   foreach ($users as $user) {
+   foreach (AuthLdap::getAllUsers($options) as $user) {
       AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
                                                'value'=>$user["user"]),
                                          $options['action'],
