@@ -2217,18 +2217,21 @@ class User extends CommonDBTM {
    }
 
    static function manageDeletedUserInLdap($users_id) {
-      global $CFG_GLPI;
+      global $CFG_GLPI,$LANG;
       //User is present in DB but not in the directory : it's been deleted in LDAP
       $tmp['id'] = $users_id;
       $myuser = new User;
+
       switch ($CFG_GLPI['user_deleted_ldap']) {
          //DO nothing
+         default:
          case 0:
             break;
          //Put user in trash
          case 1:
             $tmp['is_deleted'] = 1;
             $myuser->update($tmp);
+
             break;
          //Delete user rights
          case 2:
@@ -2240,6 +2243,10 @@ class User extends CommonDBTM {
             $myuser->update($tmp);
             break;
       }
+      $changes[0] = '0';
+      $changes[1] = '';
+      $changes[2] = addslashes($LANG['ldap'][48]);
+      Log::history($users_id,'User',$changes,0,HISTORY_LOG_SIMPLE_MESSAGE);
    }
 
    static function getIdByName($login) {
