@@ -1868,7 +1868,13 @@ class AuthLDAP extends CommonDBTM {
          $info = ldap_get_entries($ds, $result);
          if (is_array($info) AND $info['count'] == 1) {
             return array('dn'=>$info[0]['dn'],$login_attr=>$info[0][$login_attr][0]);
-         } else { // Si echec, essayer de deviner le DN / Flat LDAP
+         }
+         else {
+            return false;
+         }
+         //Why this code ? When do we need to guess the user's dn ?
+         /*
+          else { // Si echec, essayer de deviner le DN / Flat LDAP
             if ($values['search_parameters']['method'] == AuthLDAP::IDENTIFIER_LOGIN) {
                $dn = "$login_attr=$authentification_value," . $values['basedn'];
                return array('dn'=>$dn,$login_attr=>$values['user_params']['value']);
@@ -1876,7 +1882,7 @@ class AuthLDAP extends CommonDBTM {
             else {
                return false;
             }
-         }
+         }*/
       } else {
          return false;
       }
