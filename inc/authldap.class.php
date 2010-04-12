@@ -45,6 +45,10 @@ class AuthLDAP extends CommonDBTM {
    const ACTION_SYNCHRONIZE = 1;
    const ACTION_ALL = 2;
 
+   const USER_IMPORTED = 0;
+   const USER_SYNCHRONIZED = 1;
+   const USER_DELETED_LDAP = 2;
+
    //Import user by giving his login
    const IDENTIFIER_LOGIN = 'login';
 
@@ -1098,7 +1102,7 @@ class AuthLDAP extends CommonDBTM {
     *          - order display order
     * @return  array of the user
     */
-   static function getAllUsers($options = array()) {
+   static function getAllUsers($options = array(),&$results) {
       global $DB, $LANG,$CFG_GLPI;
 
       $config_ldap = new AuthLDAP();
@@ -1178,9 +1182,9 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $glpi_users = array ();
-      $sql = "SELECT `id`, `name`, `date_mod`
+      $sql = "SELECT *
               FROM `glpi_users`";
-      if ($values['action'] == AuthLDAP::ACTION_SYNCHRONIZE) {
+      if ($values['action'] != AuthLDAP::ACTION_IMPORT) {
          $sql.=" WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.") ";
          $sql.= " AND `auths_id`='".$options['ldapservers_id']."'";
       }
@@ -1204,9 +1208,10 @@ class AuthLDAP extends CommonDBTM {
             }
             else {
                //If user is marked as coming from LDAP, but is not present in it anymore
-               if (!$user['is_deleted'] && !$user['is_active']
+               if (!$user['is_deleted'] && $user['is_active']
                      && $user['auths_id'] == $options['ldapservers_id']) {
                   User::manageDeletedUserInLdap($user['id']);
+                  $results[AuthLDAP::USER_DELETED_LDAP] ++;
                }
             }
          }
@@ -1552,6 +1557,7 @@ class AuthLDAP extends CommonDBTM {
                           'condition'=>$config_ldap->fields['condition']);
 
          $infos = AuthLdap::searchUserDn($ds,$attribs);
+
          if ($infos && $infos['dn']) {
             $user_dn = $infos['dn'];
             $login = $infos[$config_ldap->fields['login_field']];
@@ -1574,7 +1580,7 @@ class AuthLDAP extends CommonDBTM {
                      $input['add']=1;
                   }
                   $user->fields["id"] = $user->add($input);
-                  return $user->fields["id"];
+                  return array('action'=>AuthLDAP::USER_IMPORTED,'id'=>$user->fields["id"]);
                } else {
                   $input=$user->fields;
                   $input['id'] = User::getIdByName($login);
@@ -1583,15 +1589,16 @@ class AuthLDAP extends CommonDBTM {
                      $input['update']=1;
                   }
                   $user->update($input);
-                  return true;
+                  return array('action'=>AuthLDAP::USER_SYNCHRONIZED,'id'=>$input['id']);
                }
             } else {
                return false;
             }
          }
          elseif ($action != AuthLDAP::ACTION_IMPORT) {
-            User::manageDeletedUserInLdap(User::getIdByName($params['value']));
-            return false;
+            $users_id = User::getIdByName($params['value']);
+            User::manageDeletedUserInLdap($users_id);
+            return array('action'=>AuthLDAP::USER_DELETED_LDAP,'id'=>$users_id);
          }
       } else {
          return false;
