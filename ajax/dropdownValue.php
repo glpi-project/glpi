@@ -199,7 +199,9 @@ if ($item instanceof CommonTreeDropdown) {
             break;
 
          default :
-            echo "<option class='tree' value='0'>".$_POST['emptylabel']."</option>";
+            if ($_POST['display_emptychoice']) {
+               echo "<option class='tree' value='0'>".$_POST['emptylabel']."</option>";
+            }
             break;
       }
 
@@ -408,7 +410,9 @@ if ($item instanceof CommonTreeDropdown) {
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
          echo "<option value='0'>--".$LANG['common'][11]."--</option>";
       }
-      echo "<option value='0'>".$_POST["emptylabel"]."</option>";
+      elseif ($_POST['display_emptychoice']) {
+         echo "<option value='0'>".$_POST["emptylabel"]."</option>";
+      }
 
       $output=Dropdown::getDropdownName($table,$_POST['value']);
       if (!empty($output) && $output!="&nbsp;") {

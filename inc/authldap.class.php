@@ -737,9 +737,9 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<div class='center'>";
       echo "<form method='post' action=\"$target\">";
-      echo "<table class='tab_cadre'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>" . ($users?$LANG['setup'][263]:$LANG['setup'][253]) . "</th></tr>";
-      echo "<tr class='tab_bg_2'><td>";
+      echo "<tr class='tab_bg_2'><td class='center'>";
       echo "<input type='text' name='ldap_filter' value='" . $_SESSION[$filter_var] . "' size='70'>";
 
       //Only display when looking for groups in users AND groups
@@ -1264,6 +1264,7 @@ class AuthLDAP extends CommonDBTM {
          $action = "toimport";
          $form_action = "import_ok";
 
+         $colspan = (isMultiEntitiesMode()?5:4);
          if ($numrows > 0) {
             $parameters = "check=$check";
             printPager($start, $numrows, $target, $parameters);
@@ -1288,7 +1289,12 @@ class AuthLDAP extends CommonDBTM {
             echo Search::showHeaderItem(HTML_OUTPUT,$LANG['common'][35],$header_num,$target.
                                          "?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
             echo "<th>".$LANG['setup'][261]."</th>";
-            echo"<th>".$LANG['ocsng'][36]."</th></tr>";
+            echo"<th>".$LANG['ocsng'][36]."</th>";
+            if (isMultiEntitiesMode()) {
+               echo"<th>".$LANG['entity'][9]."</th>";
+            }
+
+            echo "</tr>";
 
             foreach ($ldap_groups as $groupinfos) {
                $group = $groupinfos["cn"];
@@ -1306,10 +1312,18 @@ class AuthLDAP extends CommonDBTM {
                               array('value'  => $entity,
                                     'name'   => "toimport_entities[" .$group_dn . "]=".$entity));
                echo "</td>";
+               if (isMultiEntitiesMode()) {
+                  echo "<td>";
+                  Dropdown::showYesNo("toimport_recursive[" .$group_dn . "]",0);
+                  echo "</td>";
+               }
+               else {
+                  echo "<input type='hidden' name=\"toimport_resursive[".$group_dn."]\" value='0'>";
+               }
                echo "<input type='hidden' name=\"toimport_type[".$group_dn."]\" value=\"".
                         $search_type."\"></tr>";
             }
-            echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
+            echo "<tr class='tab_bg_1'><td colspan='$colspan' class='center'>";
             echo "<input class='submit' type='submit' name='" . $form_action . "' value='" .
                    $LANG['buttons'][37] . "'>";
             echo "</td></tr>";
@@ -1489,17 +1503,15 @@ class AuthLDAP extends CommonDBTM {
       echo "<form action=\"$target\" method=\"post\">";
       echo "<div class='center'>";
       echo "<p >" . $LANG['ldap'][5] . "</p>";
-      echo "<table class='tab_cadre'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ldap'][4] . "</th></tr>";
       //If more than one ldap server
       if ($DB->numrows($result) > 1) {
          echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td>";
          echo "<td class='center'>";
-         echo "<select name='ldap_server'>";
-         while ($ldap = $DB->fetch_array($result)) {
-            echo "<option value=" . $ldap["id"] . ">" . $ldap["name"] . "</option>";
-         }
-         echo "</select></td></tr>";
+         Dropdown::show('AuthLDAP',array('name'=>'ldap_server','display_emptychoice'=>false,
+                                         'comment'=>true));
+         echo "</td></tr>";
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='ldap_showusers' value='" .
                 $LANG['buttons'][2] . "'></td></tr>";
@@ -1613,10 +1625,10 @@ class AuthLDAP extends CommonDBTM {
     * @param   $type the type of import (groups, users, users & groups)
     * @return  nothing
     */
-   static function ldapImportGroup ($group_dn,$ldap_server,$entity,$type) {
+   static function ldapImportGroup ($group_dn,$options=array()) {
 
       $config_ldap = new AuthLDAP();
-      $res = $config_ldap->getFromDB($ldap_server);
+      $res = $config_ldap->getFromDB($options['ldapservers_id']);
       $ldap_users = array ();
       $group_dn = $group_dn;
 
@@ -1633,15 +1645,17 @@ class AuthLDAP extends CommonDBTM {
          $group_infos = AuthLdap::getGroupByDn($ds, $config_ldap->fields['basedn'],
                            stripslashes($group_dn),$config_ldap->fields["group_condition"]);
          $group = new Group();
-         if ($type == "groups") {
+         if ($options['type'] == "groups") {
             $group->add(array("name"=>addslashes($group_infos["cn"][0]),
                               "ldap_group_dn"=>addslashes($group_infos["dn"]),
-                              "entities_id"=>$entity));
+                              "entities_id"=>$options['entities_id'],
+                              "is_recursive"=>$options['is_recursive']));
          } else {
             $group->add(array("name"=>addslashes($group_infos["cn"][0]),
                               "ldap_field"=>$config_ldap->fields["group_field"],
                               "ldap_value"=>addslashes($group_infos["dn"]),
-                              "entities_id"=>$entity));
+                              "entities_id"=>$options['entities_id'],
+                              "is_recursive"=>$options['is_recursive']));
          }
       }
    }

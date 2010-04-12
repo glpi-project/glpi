@@ -536,6 +536,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['admin']['content']['group']['links']['search']='/front/group.php';
       if (haveRight("group","w")) {
          $menu['admin']['content']['group']['links']['add']="/front/group.form.php";
+         $menu['admin']['content']['group']['options']['ldap']['title']=$LANG['login'][2];
+         $menu['admin']['content']['group']['options']['ldap']['page']="/front/ldap.group.php";
       }
    }
 
