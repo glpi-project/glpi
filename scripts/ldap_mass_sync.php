@@ -89,6 +89,7 @@ if ($DB->numrows($result) == 0 && $_GET["ldapservers_id"] != NOT_AVAILABLE) {
 else
 {
    foreach($DB->request($sql) as $datas) {
+      echo "Processing LDAP Server: ".$datas['name']."\n";
       $options['ldapservers_id'] = $datas['id'];
       import ($options);
    }
@@ -101,13 +102,23 @@ else
  */
 function import($options)
 {
+   $results = array(AuthLDAP::USER_IMPORTED=>0,
+                    AuthLDAP::USER_SYNCHRONIZED=>0,
+                    AuthLDAP::USER_DELETED_LDAP=>0);
    //The ldap server id is passed in the script url (parameter server_id)
-   foreach (AuthLdap::getAllUsers($options) as $user) {
-      AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                               'value'=>$user["user"]),
+   foreach (AuthLdap::getAllUsers($options,$results) as $user) {
+      $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                                         'value'=>$user["user"]),
                                          $options['action'],
                                          $options['ldapservers_id']);
+      if ($result) {
+         $results[$result['action']] += 1;
+      }
       echo ".";
    }
+   echo "\nImported : ".$results[AuthLDAP::USER_IMPORTED]."\n";
+   echo "Synchronized : ".$results[AuthLDAP::USER_SYNCHRONIZED]."\n";
+   echo "Deleted from LDAP : ".$results[AuthLDAP::USER_DELETED_LDAP]."\n";
+   echo "\n\n";
 }
 ?>

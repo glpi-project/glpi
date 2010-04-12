@@ -879,7 +879,8 @@ class User extends CommonDBTM {
             $rule = new RuleRightCollection();
 
             //Process affectation rules :
-            //we don't care about the function's return because all the datas are stored in session temporary
+            //we don't care about the function's return because all
+            //the datas are stored in session temporary
             if (isset($this->fields["_groups"])) {
                $groups = $this->fields["_groups"];
             } else {
