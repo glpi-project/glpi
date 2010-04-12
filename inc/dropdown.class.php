@@ -84,7 +84,11 @@ class Dropdown {
       $params['condition']='';
       $params['rand']=mt_rand();
       $params['displaywith']=array();
+      //Parameters about choice 0
+      //Empty choice's label
       $params['emptylabel'] = '';
+      //Display emptychoice ?
+      $params['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -151,19 +155,20 @@ class Dropdown {
          }
       }
 
-      $param=array('searchText'        => '__VALUE__',
-                    'value'            => $params['value'],
-                    'itemtype'         => $itemtype,
-                    'myname'           => $params['name'],
-                    'limit'            => $limit_length,
-                    'comment'          => $params['comments'],
-                    'rand'             => $params['rand'],
-                    'entity_restrict'  => $params['entity'],
-                    'update_item'      => $params['toupdate'],
-                    'used'             => $params['used'],
-                    'auto_submit'      => $params['auto_submit'],
-                    'condition'        => $params['condition'],
-                    'emptylabel'       => $params['emptylabel']);
+      $param=array('searchText'           => '__VALUE__',
+                    'value'               => $params['value'],
+                    'itemtype'            => $itemtype,
+                    'myname'              => $params['name'],
+                    'limit'               => $limit_length,
+                    'comment'             => $params['comments'],
+                    'rand'                => $params['rand'],
+                    'entity_restrict'     => $params['entity'],
+                    'update_item'         => $params['toupdate'],
+                    'used'                => $params['used'],
+                    'auto_submit'         => $params['auto_submit'],
+                    'condition'           => $params['condition'],
+                    'emptylabel'          => $params['emptylabel'],
+                    'display_emptychoice' => $params['display_emptychoice']);
 
       $default="<select name='".$params['name']."' id='dropdown_".$params['name'].$params['rand']."'>";
       $default.="<option value='".$params['value']."'>$name</option></select>";

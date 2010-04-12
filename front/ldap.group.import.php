@@ -61,7 +61,11 @@ if (isset($_GET['next'])) {
          $entity = $_SESSION["glpiactive_entity"];
          }
 
-         AuthLdap::ldapImportGroup($key,$_SESSION["ldap_server"],$entity,$_SESSION["ldap_import_type"][$key]);
+         AuthLdap::ldapImportGroup($key,
+                                   array("ldapservers_id"=>$_SESSION["ldap_server"],
+                                         "entities_id"=>$entity,
+                                         "is_recursive"=>$_SESSION["ldap_import_recursive"][$key],
+                                         "type"=>$_SESSION["ldap_import_type"][$key]));
          glpi_header($_SERVER['PHP_SELF']);
 
       } else {
@@ -132,6 +136,7 @@ if (isset($_GET['next'])) {
                $_SESSION["ldap_import_count"]++;
                $_SESSION["ldap_import_entities"][$key]=$_POST["toimport_entities"][$key];
                $_SESSION["ldap_import_type"][$key]=$_POST["toimport_type"][$key];
+               $_SESSION["ldap_import_recursive"][$key]=$_POST["toimport_recursive"][$key];
             }
          }
       }
