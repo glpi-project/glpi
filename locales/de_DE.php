@@ -836,6 +836,10 @@ $LANG['ldap'][41]="&Auml;ndern";
 $LANG['ldap'][42]="Kein Verzeichnis gewählt"; 
 $LANG['ldap'][43]="Kein zu synchronisierender Benutzer"; 
 $LANG['ldap'][44]="Standardserver"; 
+$LANG['ldap'][45]="Action when a user is deleted from the directory"; 
+$LANG['ldap'][46]="Delete rights"; 
+$LANG['ldap'][47]="Put in trash"; 
+$LANG['ldap'][48]="Deleted user in LDAP"; 
 
 $LANG['links'][1]="Link oder Dateiname"; 
 $LANG['links'][4]="Verknüpfter Hardwaretyp"; 

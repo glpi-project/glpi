@@ -836,6 +836,10 @@ $LANG['ldap'][41]="To change";
 $LANG['ldap'][42]="No directory selected"; 
 $LANG['ldap'][43]="No users to be synchronized"; 
 $LANG['ldap'][44]="Default server"; 
+$LANG['ldap'][45]="Action when a user is deleted from the directory"; 
+$LANG['ldap'][46]="Delete rights"; 
+$LANG['ldap'][47]="Put in trash"; 
+$LANG['ldap'][48]="Deleted user in LDAP"; 
 
 $LANG['links'][1]="Nuoroda arba rinkmenos vardas"; 
 $LANG['links'][4]="Susietas įrangos tipas"; 
