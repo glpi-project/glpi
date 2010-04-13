@@ -1920,20 +1920,21 @@ function canUseImapPop() {
  * @return  string  : Query string to append to a URL.
  * @param   $array  array: parameters to append to the query string.
  * @param   $parent This should be left blank (it is used internally by the function).
+ * @param   $separator separator : default is & : may be defined as &amp; to display purpose
  */
-function append_params($array, $parent='') {
+function append_params($array,$separator='&', $parent='') {
 
    $params = array();
    foreach ($array as $k => $v) {
       if (is_array($v)) {
-         $params[] = append_params($v, (empty($parent) ? rawurlencode($k) : $parent . '[' .
+         $params[] = append_params($v,$separator, (empty($parent) ? rawurlencode($k) : $parent . '[' .
                      rawurlencode($k) . ']'));
       } else {
          $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']' :
                       rawurlencode($k)) . '=' . rawurlencode($v);
       }
    }
-   return implode('&', $params);
+   return implode($separator, $params);
 }
 
 /** Format a size passing a size in octet
