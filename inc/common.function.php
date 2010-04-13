@@ -1933,7 +1933,7 @@ function append_params($array, $parent='') {
                       rawurlencode($k)) . '=' . rawurlencode($v);
       }
    }
-   return implode('&amp;', $params);
+   return implode('&', $params);
 }
 
 /** Format a size passing a size in octet
