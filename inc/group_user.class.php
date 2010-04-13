@@ -222,7 +222,7 @@ class Group_User extends CommonDBRelation{
             }
 
             $used[$data["id"]]=$data["id"];
-            echo "<td".($data["is_deleted"]=='1'?"_2":"")."'>";
+            echo "<td>";
             echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
             echo "</td>";
             $i++;
