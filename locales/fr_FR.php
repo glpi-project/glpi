@@ -873,7 +873,7 @@ $LANG['joblist'][8]  = "Pas de ticket trouvé.";
 $LANG['joblist'][9]  = "Nouveau";
 $LANG['joblist'][10] = "Fermé (résolu)";
 $LANG['joblist'][11] = "Ouvert le";
-$LANG['joblist'][12] = "Fermé le";
+$LANG['joblist'][12] = "Clos le";
 $LANG['joblist'][13] = "Tickets à traiter";
 
 $LANG['joblist'][16] = "Pas de ticket en cours.";
