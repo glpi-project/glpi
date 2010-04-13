@@ -1366,6 +1366,7 @@ class Ticket extends CommonDBTM {
       $tab[1]['field']     = 'name';
       $tab[1]['linkfield'] = 'name';
       $tab[1]['name']      = $LANG['common'][57];
+      $tab[1]['searchtype']= 'contains';
 
       $tab[21]['table']     = $this->getTable();
       $tab[21]['field']     = 'content';
