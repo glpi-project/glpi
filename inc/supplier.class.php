@@ -177,7 +177,7 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"postcode",array('size'=>7));
+      autocompletionTextField($this,"postcode",array('size'=>10));
       echo "&nbsp;&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
       autocompletionTextField($this,"town",array('size'=>25));
       echo "</td></tr>";
