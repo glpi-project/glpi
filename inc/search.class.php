@@ -3567,7 +3567,7 @@ class Search {
                   if (utf8_strlen($link)>30) {
                      $link=utf8_substr($link,0,30)."...";
                   }
-                  return "<a href=\"$orig_link\" target='_blank'>$link</a>";
+                  return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
                return "&nbsp;";
 
