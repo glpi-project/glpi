@@ -350,7 +350,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
          $pic_validate="<img title=\"".$LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
                                  $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
-         $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt);
+         $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt,'&amp;');
       }
    }
    if (haveRight("create_ticket","1")) {
@@ -1421,7 +1421,7 @@ function helpHeader($title,$url='') {
       $opt['link'][1]        = 'AND';
 
 
-      $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt)."' ><img title=\"".
+      $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt,'&amp;')."' ><img title=\"".
                               $LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
                               $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
       echo "<li>$pic_validate</li>\n";

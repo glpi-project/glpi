@@ -2718,8 +2718,8 @@ class Ticket extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
-      echo "<td rowspan='2'>";
+      echo "<td class='left'>".$LANG['common'][1]."&nbsp;: </td>";
+      echo "<td>";
       if ($canupdate) {
          if ($ID && $this->fields['itemtype'] && class_exists($this->fields['itemtype'])) {
             $item = new $this->fields['itemtype']();
@@ -2760,7 +2760,16 @@ class Ticket extends CommonDBTM {
       }
       echo "</tr>\n";
 
+      // Display validation state
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['validation'][0]."</td>";
+      if ($canupdate){
+         echo "<td>";
+         TicketValidation::dropdownStatus('global_validation',
+                                          array('value'=>$this->fields['global_validation']));
+      } else {
+         echo "<td>".TicketValidation::getStatus($this->fields['global_validation']);
+      }
       // Need comment right to add a followup with the realtime
       if (haveRight("global_add_followups","1") && !$ID) {
          echo "<td>".$LANG['job'][20]."&nbsp;: </td>";
@@ -2769,17 +2778,14 @@ class Ticket extends CommonDBTM {
          echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
          Dropdown::showInteger('minute',$options['minute'],0,59);
          echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
-      } else { // Display validation state
-         echo "<td>".$LANG['validation'][0]."</td>";
-         if ($canupdate){
-            echo "<td>";
-            TicketValidation::dropdownStatus('global_validation',
-                                             array('value'=>$this->fields['global_validation']));
-         } else {
-            echo "<td>".TicketValidation::getStatus($this->fields['global_validation']);
-         }
+         echo "</td>";
+      } else {
+         echo "<td colspan='2'>&nbsp;</td>";
       }
-      echo "</td></tr>";
+
+      echo "</tr>";
+
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
@@ -3046,7 +3052,7 @@ class Ticket extends CommonDBTM {
                   }
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options)."\">".$LANG['joblist'][13].
+                        append_params($options,'&amp;')."\">".$LANG['joblist'][13].
                         " (".$LANG['joblist'][26].")"."</a>";
                   break;
 
@@ -3066,7 +3072,7 @@ class Ticket extends CommonDBTM {
                   }
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options)."\">".$LANG['central'][18]."</a>";
+                        append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
                   break;
 
                   case "process" :
@@ -3085,7 +3091,7 @@ class Ticket extends CommonDBTM {
                      }
 
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           append_params($options)."\">".$LANG['joblist'][13]."</a>";
+                           append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
                      break;
 
                   case "requestbyself" :
@@ -3105,7 +3111,7 @@ class Ticket extends CommonDBTM {
                      }
 
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           append_params($options)."\">".$LANG['central'][9]."</a>";
+                           append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
             }
 
          } else {
@@ -3122,7 +3128,7 @@ class Ticket extends CommonDBTM {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options)."\">".$LANG['joblist'][13].
+                        append_params($options,'&amp;')."\">".$LANG['joblist'][13].
                         " (".$LANG['joblist'][26].")"."</a>";
                   break;
 
@@ -3138,7 +3144,7 @@ class Ticket extends CommonDBTM {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options)."\">".$LANG['joblist'][13]."</a>";
+                        append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
                   break;
 
                case "toapprove" :
@@ -3159,7 +3165,7 @@ class Ticket extends CommonDBTM {
 
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options)."\">".$LANG['central'][18]."</a>";
+                        append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
                   break;
 
                case "requestbyself" :
@@ -3175,7 +3181,7 @@ class Ticket extends CommonDBTM {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        append_params($options)."\">".$LANG['central'][9]."</a>";
+                        append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
             }
          }
 
@@ -3253,49 +3259,49 @@ class Ticket extends CommonDBTM {
       echo "<tr><th colspan='2'>";
 
       $options['contains'][0]   = 'process';
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['title'][10]."</a></th></tr>";
       echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
 
       $options['contains'][0]   = 'new';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['tracking'][30]."</a> </td>";
       echo "<td>".$status["new"]."</td></tr>";
 
       $options['contains'][0]   = 'assign';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['tracking'][31]."</a></td>";
       echo "<td>".$status["assign"]."</td></tr>";
 
       $options['contains'][0]   = 'plan';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['tracking'][32]."</a></td>";
       echo "<td>".$status["plan"]."</td></tr>";
 
       $options['contains'][0]   = 'waiting';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['joblist'][26]."</a></td>";
       echo "<td>".$status["waiting"]."</td></tr>";
 
       $options['contains'][0]   = 'solved';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['joblist'][32]."</a></td>";
       echo "<td>".$status["waiting"]."</td></tr>";
 
       $options['contains'][0]   = 'closed';
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">".
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['joblist'][33]."</a></td>";
       echo "<td>".$status["waiting"]."</td></tr>";
 
@@ -3330,7 +3336,7 @@ class Ticket extends CommonDBTM {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options).
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;').
                "'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
@@ -3441,7 +3447,7 @@ class Ticket extends CommonDBTM {
 
 
          echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;: &nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."'>".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."'>".
                $LANG['buttons'][40]."</a>";
          echo "</th></tr>";
       } else {
@@ -3527,7 +3533,7 @@ class Ticket extends CommonDBTM {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;:&nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."'>".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."'>".
                $LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
@@ -3578,7 +3584,7 @@ class Ticket extends CommonDBTM {
          $options['contains'][0]   = $userID;
          $options['link'][0]       = 'AND';
 
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."'>".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."'>".
                $LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
