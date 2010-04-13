@@ -348,9 +348,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
          $opt['link'][1]        = 'AND';
 
 
-         $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt)."' ><img title=\"".
-                                 $LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
-                                 $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
+         $pic_validate="<img title=\"".$LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
+                                 $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
          $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt);
       }
    }
