@@ -836,6 +836,10 @@ $LANG['ldap'][41]="Változtatni";
 $LANG['ldap'][42]="Nincs kiválasztott könyvtár"; 
 $LANG['ldap'][43]="Nincs szinkronizálandó felhasználó"; 
 $LANG['ldap'][44]="Alapértelmezett szerver"; 
+$LANG['ldap'][45]="Action when a user is deleted from the directory"; 
+$LANG['ldap'][46]="Delete rights"; 
+$LANG['ldap'][47]="Put in trash"; 
+$LANG['ldap'][48]="Deleted user in LDAP"; 
 
 $LANG['links'][1]="Hivatkozás vagy fájlnév"; 
 $LANG['links'][4]="Hozzárendelt hardverfajta"; 
