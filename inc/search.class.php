@@ -1832,9 +1832,10 @@ class Search {
             break;
 
          case "glpi_tickets.count" :
-            return " COUNT(DISTINCT `glpi_tickets$addtable`.`id`) AS ".$NAME."_".$num.", ";
+         case "glpi_ticketfollowups.count" :
+         case "glpi_tickettasks.count" :
+            return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.", ";
             break;
-
          case "glpi_networkports.mac" :
             $port = " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
                         AS ".$NAME."_$num, ";

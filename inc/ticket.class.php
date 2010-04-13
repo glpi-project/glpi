@@ -1365,7 +1365,7 @@ class Ticket extends CommonDBTM {
       $tab[1]['table']     = $this->getTable();
       $tab[1]['field']     = 'name';
       $tab[1]['linkfield'] = 'name';
-      $tab[1]['name']      = $LANG['common'][16];
+      $tab[1]['name']      = $LANG['common'][57];
 
       $tab[21]['table']     = $this->getTable();
       $tab[21]['field']     = 'content';
@@ -1540,12 +1540,24 @@ class Ticket extends CommonDBTM {
          $tab[25]['forcegroupby'] = true;
          $tab[25]['splititems']   = true;
 
+         $tab[27]['table']        = 'glpi_ticketfollowups';
+         $tab[27]['field']        = 'count';
+         $tab[27]['linkfield']    = '';
+         $tab[27]['name']         = $LANG['tracking'][29]." ".$LANG['job'][9];
+         $tab[27]['forcegroupby'] = true;
+
          $tab[26]['table']        = 'glpi_tickettasks';
          $tab[26]['field']        = 'content';
          $tab[26]['linkfield']    = '';
          $tab[26]['name']         = $LANG['job'][7];
          $tab[26]['forcegroupby'] = true;
          $tab[26]['splititems']   = true;
+
+         $tab[28]['table']        = 'glpi_tickettasks';
+         $tab[28]['field']        = 'count';
+         $tab[28]['linkfield']    = '';
+         $tab[28]['name']         = $LANG['tracking'][29]." ".$LANG['job'][7];
+         $tab[28]['forcegroupby'] = true;
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
