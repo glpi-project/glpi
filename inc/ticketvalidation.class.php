@@ -123,7 +123,7 @@ class TicketValidation  extends CommonDBChild {
          return false;
       } else {
 
-/*       if (strstr($job->fields["status"],"solved") 
+/*       if (strstr($job->fields["status"],"solved")
                   || strstr($job->fields["status"],"closed")) {
             return false;
          }*/
@@ -131,7 +131,7 @@ class TicketValidation  extends CommonDBChild {
          if (!isset($input['entities_id'])) { // Massive modif case
             $job = new Ticket;
             $job->getFromDB($input["tickets_id"]);
-   
+
             $input['entities_id'] = $job->fields["entities_id"];
          }
 
@@ -185,7 +185,7 @@ class TicketValidation  extends CommonDBChild {
       $forbid_fields = array();
 
       if ($this->fields["users_id_validate"] == getLoginUserID()) {
-         if ($input["status"] == "rejected" 
+         if ($input["status"] == "rejected"
              && (!isset($input["comment_validation"]) || $input["comment_validation"] == '')) {
             addMessageAfterRedirect($LANG['validation'][29],false,ERROR);
             return false;
@@ -211,7 +211,7 @@ class TicketValidation  extends CommonDBChild {
             }
          }
       }
-      
+
       return $input;
    }
 
@@ -386,7 +386,7 @@ class TicketValidation  extends CommonDBChild {
     * Get the number of validations attached to a ticket having a specified status
     *
     * @param $tickets_id ticket ID
-    * @param $status status 
+    * @param $status status
     */
    static function getTicketStatusNumber($tickets_id, $status) {
       global $DB;
@@ -432,7 +432,6 @@ class TicketValidation  extends CommonDBChild {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight('validate_ticket',1) && !haveRight('create_validation	',1)) {
-         echo "u";
          return false;
       }
       $tID = $ticket->fields['id'];
@@ -441,7 +440,7 @@ class TicketValidation  extends CommonDBChild {
       $tmp = array('tickets_id' => $tID);
       $canadd = $this->can(-1,'w',$tmp);
       $rand = mt_rand();
-      
+
       if ($canadd) {
          echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
       }
@@ -461,7 +460,7 @@ class TicketValidation  extends CommonDBChild {
          }
       }
 
-      $query = "SELECT * 
+      $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `tickets_id` = '".$ticket->getField('id')."'";
       if (!$canadd) {
@@ -499,7 +498,7 @@ class TicketValidation  extends CommonDBChild {
             $bgcolor = $this->getStatusColor($row['status']);
             $status = $this->getStatus($row['status']);
 
-            echo "<tr class='tab_bg_1' ".($canedit 
+            echo "<tr class='tab_bg_1' ".($canedit
                   ? "style='cursor:pointer' onClick=\"viewEditValidation".$ticket->fields['id'].
                      $row["id"]."$rand();\""
                   : '') ." id='viewfollowup" . $this->fields['tickets_id'] . $row["id"] . "$rand'>";
