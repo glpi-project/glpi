@@ -4,6 +4,14 @@ glpi-ldap.ldif provides :
 - groups : groupOfNames & posixGroup
 - a lot of users in order to test ldap sizelimit
 
+- rootdn : cn=admin,dc=glpi,dc=org
+- rootpw : secret
+
+- user's passwords : for ou=ldap3, all user's password are 'password'
+- for other users, password is the same as the login
+
+Create your own directory :
+- add a new database with prefix dc=glpi,dc=org
 
 =================================================
 In glpi_authldaps :
