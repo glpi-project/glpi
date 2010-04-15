@@ -2481,17 +2481,22 @@ class Ticket extends CommonDBTM {
       }
 
       // Optional line
-      if (isMultiEntitiesMode()) {
-         echo '<tr><th colspan="4">';
-         if ($ID) {
-            echo $this->getTypeName()." - ".$LANG['common'][2]." $ID (";
-            echo Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']) . ")";
-         } else {
-            echo $LANG['job'][46]."&nbsp;:&nbsp;".Dropdown::getDropdownName("glpi_entities",
-                                                                     $this->fields['entities_id']);
+      $ismultientities=isMultiEntitiesMode();
+      echo '<tr><th colspan="4">';
+      if ($ID) {
+         echo $this->getTypeName()." - ".$LANG['common'][2]." $ID ";
+         if ($ismultientities) {
+            echo "(".Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']) . ")";
          }
-         echo '</th></tr>';
+      } else {
+         if ($ismultientities) {
+            echo $LANG['job'][46]."&nbsp;:&nbsp;".Dropdown::getDropdownName("glpi_entities",
+                                                                  $this->fields['entities_id']);
+         } else {
+            echo $LANG['job'][13];
+         }
       }
+      echo '</th></tr>';
 
       echo "<tr>";
       echo "<th class='left' colspan='2' width='50%'>";
