@@ -422,7 +422,6 @@ class MailCollector  extends CommonDBTM {
       $head=$this->getHeaders($i); // Get Header Info Return Array Of Headers
                                    // **Key Are (subject,to,toOth,toNameOth,from,fromName)
       $tkt= array ();
-
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max']>0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
@@ -1068,7 +1067,7 @@ class MailCollector  extends CommonDBTM {
       $mmail->From = $to;
       $mmail->FromName = $CFG_GLPI["admin_email"];
       $mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
-      $mmail->Subject = $subject;
+      $mmail->Subject = $LANG['mailgate'][16].' '.$subject;
       $mmail->Body = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];
       $mmail->Send();
    }
