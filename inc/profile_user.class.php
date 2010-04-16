@@ -485,7 +485,6 @@ class Profile_User extends CommonDBTM {
                 FROM `glpi_profiles_users`
                 WHERE `users_id` = '$users_id'
                   AND `profiles_id`='$profiles_id'";
-
       $entities = array();
       foreach ($DB->request($query) as $data) {
          $entities[] = $data['entities_id'];
