@@ -1063,10 +1063,11 @@ class MailCollector  extends CommonDBTM {
 
    function sendMailRefusedResponse($to='',$subject='') {
       global $CFG_GLPI,$LANG;
+
       $mmail= new NotificationMail;
-      $mmail->From = $to;
-      $mmail->FromName = $CFG_GLPI["admin_email"];
-      $mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
+      $mmail->From = $CFG_GLPI["admin_email"];
+      $mmail->FromName = "GLPI";
+      $mmail->AddAddress($to);
       $mmail->Subject = $LANG['mailgate'][16].' '.$subject;
       $mmail->Body = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];
       $mmail->Send();
