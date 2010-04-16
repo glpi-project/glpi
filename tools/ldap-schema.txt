@@ -15,7 +15,7 @@ Create your own directory :
 
 =================================================
 In glpi_authldaps :
-INSERT INTO `glpi_authldaps` VALUES(1, 'GLPI1', 'localhost', 'ou=glpi1,dc=glpi,dc=org', '', '', 389, '(objectclass=person)', 'cn', 0, '', '', 0, '', 'mail', 'cn', 'givenname', '', '', '', 'description', 0, 0, 0, '', '', '', '(objectclass=organizationalUnit)', 'ou', '2010-04-13 22:48:22', NULL, 1, 0);
+INSERT INTO `glpi_authldaps` VALUES(1, 'GLPI1', 'localhost', 'ou=ldap1,dc=glpi,dc=org', '', '', 389, '(objectclass=person)', 'cn', 0, '', '', 0, '', 'mail', 'cn', 'givenname', '', '', '', 'description', 0, 0, 0, '', '', '', '(objectclass=organizationalUnit)', 'ou', '2010-04-13 22:48:22', NULL, 1, 0);
 INSERT INTO `glpi_authldaps` VALUES(3, 'GLPI2', 'localhost', 'ou=ldap2,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=inetOrgPerson)', 'uid', 0, '', '(objectclass=groupOfNames)', 1, 'member', 'mail', 'cn', 'sn', 'telephonenumber', '', '', 'description', 1, 0, 0, 'title', 'businesscategory', 'description', '', '', '2010-04-13 22:35:17', '', 0, 0);
 INSERT INTO `glpi_authldaps` VALUES(4, 'GLPI3', 'localhost', 'ou=ldap3,dc=glpi,dc=org', 'cn=admin,dc=glpi,dc=org', 'secret', 389, '(objectclass=inetOrgPerson)', 'uid', 0, '', '(objectclass=posixGroup)', 1, 'memberUid', 'mail', 'cn', 'sn', 'telephonenumber', '', '', 'description', 0, 0, 0, 'title', 'businesscategory', 'description', '(objectclass=inetOrgPerson)', 'o', '2010-04-13 22:30:29', '', 0, 300);
 
