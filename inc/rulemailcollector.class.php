@@ -173,7 +173,6 @@ class RuleMailCollector extends Rule {
    }
 
    function executeActions($output,$params) {
-
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
@@ -183,30 +182,64 @@ class RuleMailCollector extends Rule {
                         $output[$action->fields["field"]] = $action->fields["value"];
                         break;
                      case "_affect_entity_by_user_entity":
-                        //Affect entity if user has a specific profile
-                        if (isset($this->regex_results['criterias']['PROFILES'])) {
-                           $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
-                                                                                 $this->criterias_results['PROFILES']);
-                           //User has right on only one entity
-                           if (count($entities) == 1) {
-                              $output['entities_id'] = $entities[0]['id'];
+                        //3 cases :
+                        //1 - rule contains a criteria like : Profil is XXXX
+                        //    -> in this case, profiles_id is stored in
+                        //       $this->criterias_results['PROFILES'] (one value possible)
+                        //2 - rule contains a criteria like : Profil regex checks /XXXX/
+                        //    -> in this case, profiles_id are stored in
+                        //       $this->regex_results['criterias']['PROFILES']
+                        //       (one or more value possible and maybe several
+                        //       criterias with different regex)
+                        //3-   rule contains criteria "User has only one profile"
+                        //    -> in this case, profiles_id is stored in
+                        //       $this->criterias_results['PROFILES'] (one value possible) (same as 1)
+
+                        //Case 2 : profiles_id are stored in
+                        //$this->regex_results['criterias']['PROFILES']
+                        //Put it into $this->criterias_results['PROFILES']
+                        if (!isset($this->criterias_results['PROFILES'])
+                              && isset($this->regex_results['criterias']['PROFILES'])) {
+                           $this->criterias_results['PROFILES'] =
+                                                      $this->regex_results['criterias']['PROFILES'];
+                        }
+                        if (isset($this->criterias_results['PROFILES'])) {
+                           $continue = true;
+                           if (!is_array($this->criterias_results['PROFILES'])) {
+                              $this->criterias_results['PROFILES'] =
+                                                      array($this->criterias_results['PROFILES']);
                            }
-                           //Rights on more than one entity : get the user's prefered entity
-                           else {
-                              $user = new User;
-                              $user->getFromDB($params['users_id']);
-                              //If an entity is defined in user's preferences, use this one
-                              //else do not set the rule as matched
-                              if ($user->getField('entities_id')) {
-                                 $output['entities_id'] = $user->getField('entities_id');
+                           //Iterator all the profiles until we found on that the user has
+                           foreach ($this->criterias_results['PROFILES'] as $profile) {
+                             $entities = Profile_User::getEntitiesForProfileByUser(
+                                                                           $params['users_id'],
+                                                                           $profile);
+                              //Case 3 : check if there's only one profile for this user
+                              if ((isset($this->criterias_results['ONEPROFILE'])
+                                    && count($entities) != 1)
+                                       || !isset($this->criterias_results['ONEPROFILE'])) {
+                                 //User has right on only one entity
+                                 if (count($entities) == 1) {
+                                    $output['entities_id'] = $entities[0]['id'];
+                                    $continue = false;
+                                 }
+                                 //Rights on more than one entity : get the user's prefered entity
+                                 else {
+                                    $user = new User;
+                                    $user->getFromDB($params['users_id']);
+                                    //If an entity is defined in user's preferences, use this one
+                                    //else do not set the rule as matched
+                                    if ($user->getField('entities_id') > 0) {
+                                       $output['entities_id'] = $user->fields['entities_id'];
+                                       $continue = false;
+                                    }
+                                 }
+                              }
+                              //Entity found, do not continue
+                              if (!$continue) {
+                                 break;
                               }
                            }
-                        }
-                        else {
-                           //Affect entity is user has one profile on one entity only
-                           $entities = Profile_User::getForUser($params['users_id']);
-                           $entity = array_pop($entities);
-                           $output['entities_id'] = $entity['id'];
                         }
                         break;
                   }
