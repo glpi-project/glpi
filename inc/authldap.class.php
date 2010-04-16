@@ -193,11 +193,16 @@ class AuthLDAP extends CommonDBTM {
          echo "<td><input id='port' type='text' name='port' value='" . $this->fields["port"] . "'>";
          echo "</td></tr>";
 
+         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][159] . "&nbsp;:</td>";
+         echo "<td colspan='3'><input type='text' name='condition' value='".
+                                 $this->fields["condition"]."' size='100'></td></tr>";
+
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][154] . "&nbsp;:</td>";
-         echo "<td><input type='text' name='basedn' value='" . $this->fields["basedn"] . "'>";
-         echo "</td>";
-         echo "<td>" . $LANG['setup'][155] . "&nbsp;:</td>";
-         echo "<td><input type='text' name='rootdn' value='" . $this->fields["rootdn"] . "'>";
+         echo "<td colspan='3'><input type='text' name='basedn' size='100' value='" . $this->fields["basedn"] . "'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][155] . "&nbsp;:</td>";
+         echo "<td colspan='3'><input type='text' name='rootdn' size='100' value='" . $this->fields["rootdn"] . "'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
@@ -205,10 +210,6 @@ class AuthLDAP extends CommonDBTM {
          echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][159] . "&nbsp;:</td>";
-         echo "<td colspan='3'><input type='text' name='condition' value='".
-                                 $this->fields["condition"]."' size='100'></td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
          echo "<td colspan='3'>";
@@ -469,14 +470,14 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<th class='center' colspan='4'>" . $LANG['setup'][623] . "</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][621] . "&nbsp;:</td>";
-      echo "<td colspan='3'><input type='text' name='entity_field' value='".
-         $this->fields["entity_field"]."'>";
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][622] . "&nbsp;:</td>";
       echo "<td colspan='3'><input type='text' name='entity_condition' value='".
-             $this->fields["entity_condition"]."' size='100'>";
+         $this->fields["entity_condition"]."'>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][621] . "&nbsp;:</td>";
+      echo "<td colspan='3'><input type='text' name='entity_field' value='".
+             $this->fields["entity_field"]."' size='100'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
@@ -985,7 +986,8 @@ class AuthLDAP extends CommonDBTM {
          $values[$option] = $value;
       }
 
-      $ldap_users = AuthLdap::getAllUsers($values);
+      $results = array();
+      $ldap_users = AuthLdap::getAllUsers($values,$results);
 
       if (is_array($ldap_users)) {
          $numrows = count($ldap_users);
