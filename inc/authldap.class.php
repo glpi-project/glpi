@@ -2283,15 +2283,18 @@ class AuthLDAP extends CommonDBTM {
 
    /**
     * Return all the ldap servers where email field is configured
+    *
+    * @return array of LDAP server's ID
     */
    static function getServersWithImportByEmailActive() {
       global $DB;
+
       $ldaps = array();
       $query = "SELECT `id` FROM `glpi_authldaps` WHERE `email_field` <> ''";
       foreach ($DB->request($query) as $data) {
          $ldaps[] = $data['id'];
       }
-      return (!empty($ldaps)?$ldaps:false);
+      return $ldaps;
    }
 }
 ?>
