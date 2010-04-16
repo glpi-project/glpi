@@ -1359,7 +1359,7 @@ class Rule extends CommonDBTM {
 
       $use_ajax=false;
       if ($CFG_GLPI["use_ajax"]) {
-         $nb=countElementsInTable("glpi_rules", "sub_type=".$p['sub_type']);
+         $nb=countElementsInTable("glpi_rules", "`sub_type`='".$p['sub_type']."'");
 
          if ($nb>$CFG_GLPI["ajax_limit_count"]) {
             $use_ajax=true;

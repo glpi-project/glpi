@@ -42,6 +42,7 @@ class RuleMailCollector extends Rule {
    // From Rule
    public $right='rule_mailcollector';
    public $orderby="name";
+   public $can_sort=true;
 
    /**
     * Constructor

@@ -1628,7 +1628,7 @@ $LANG['rulesengine'][66]="Types";
 $LANG['rulesengine'][67]="Dictionnaire des OS";
 $LANG['rulesengine'][68]="Dictionnaire des service packs";
 $LANG['rulesengine'][69]="Dictionnaire des versions";
-$LANG['rulesengine'][70]="Règle d'affectation des tickets ouverts par email";
+$LANG['rulesengine'][70]="Règles d'affectation des tickets ouverts par email";
 
 $LANG['rulesengine'][76]="Rejouer le dictionnaire";
 $LANG['rulesengine'][77]="Dictionnaires";
