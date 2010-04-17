@@ -410,7 +410,9 @@ if ($item instanceof CommonTreeDropdown) {
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
          echo "<option value='0'>--".$LANG['common'][11]."--</option>";
       }
-      elseif ($_POST['display_emptychoice']) {
+      elseif (!isset($_POST['display_emptychoice'])
+               || ($_POST['display_emptychoice'])
+                  && $_POST['display_emptychoice']) {
          echo "<option value='0'>".$_POST["emptylabel"]."</option>";
       }
 
