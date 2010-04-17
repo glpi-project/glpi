@@ -63,7 +63,8 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
                          'rand'        => $rand,
                          'myname'      => $_POST["myname"],
                          'displaywith' => array('serial',
-                                                'otherserial')
+                                                'otherserial'),
+                         'display_emptychoice'=>true
                         );
 
    if (isset($_POST['value'])) {
