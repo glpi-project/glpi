@@ -51,6 +51,7 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormMain($_POST['target']);
       $config->showFormDisplay($_POST['target']);
       $config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
+      $config->showFormAuthentication($_POST['target']);
       $config->showFormRestrict($_POST['target']);
       $config->showFormHelpdesk($_POST['target']);
       $config->showFormConnection($_POST['target']);
@@ -68,22 +69,26 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    case 4 :
-      $config->showFormRestrict($_POST['target']);
+      $config->showFormAuthentication($_POST['target']);
       break;
 
    case 5 :
-      $config->showFormHelpdesk($_POST['target']);
+      $config->showFormRestrict($_POST['target']);
       break;
 
    case 6 :
-      $config->showFormConnection($_POST['target']);
+      $config->showFormHelpdesk($_POST['target']);
       break;
 
    case 7 :
-      $config->showFormDBSlave($_POST['target']);
+      $config->showFormConnection($_POST['target']);
       break;
 
    case 8 :
+      $config->showFormDBSlave($_POST['target']);
+      break;
+
+   case 9 :
       $config->showSystemInformations();
       break;
 
