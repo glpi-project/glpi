@@ -57,12 +57,12 @@ class Config extends CommonDBTM {
       $tabs[1] = $LANG['setup'][70];   // Main
       $tabs[2] = $LANG['setup'][119];  // Display
       $tabs[3] = $LANG['setup'][6];    // Prefs
-      $tabs[4] = $LANG['setup'][184];  // Restrict
-      $tabs[5] = $LANG['title'][24];   // Helpdesk
-      $tabs[6] = $LANG['connect'][0];  // Conection
-      $tabs[7] = $LANG['setup'][800];  // Slave
-      $tabs[8] = $LANG['setup'][720];  // SysInfo
-
+      $tabs[4] = $LANG['login'][10]; //Authentication
+      $tabs[5] = $LANG['setup'][184];  // Restrict
+      $tabs[6] = $LANG['title'][24];   // Helpdesk
+      $tabs[7] = $LANG['connect'][0];  // Conection
+      $tabs[8] = $LANG['setup'][800];  // Slave
+      $tabs[9] = $LANG['setup'][720];  // SysInfo
       return $tabs;
    }
 
@@ -431,8 +431,38 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
       echo "</td><td class='center'colspan='2'></tr>";
 
-      echo "<tr><th colspan='4' class='center'>" . $LANG['login'][10] . "</th></tr>";
+      echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][20] . "</th></tr>";
 
+      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][117] . " </td><td>";
+      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
+      echo " </td><td class='center' colspan='2'></td></tr>";
+
+      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
+      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
+             $LANG['buttons'][2] . "\" ></td></tr>";
+      echo "</table></div>";
+      echo "</form>";
+   }
+
+   /**
+    * Print the config form for restrictions
+    *
+    *@param $target filename : where to go when done.
+    *
+    *@return Nothing (display)
+    *
+   **/
+   function showFormAuthentication($target) {
+      global $DB, $LANG, $CFG_GLPI;
+
+      if (!haveRight("config", "w")) {
+         return false;
+      }
+
+      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<div class='center' id='tabsbody'>";
+      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][124] . " </td><td>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
       echo "</td>";
@@ -444,12 +474,6 @@ class Config extends CommonDBTM {
       AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
       echo "</td>";
       echo "<td class='center' colspan='2'></td></tr>";
-
-      echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][20] . "</th></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][117] . " </td><td>";
-      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
-      echo " </td><td class='center' colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
