@@ -654,7 +654,6 @@ class MailCollector  extends CommonDBTM {
    * fromName  => Form Name of Mail
    */
    function getHeaders($mid) { // Get Header info
-
       $mail_header=imap_header($this->marubox,$mid);
       $sender=$mail_header->from[0];
 

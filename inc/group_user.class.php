@@ -192,8 +192,10 @@ class Group_User extends CommonDBRelation{
       }
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
-      $query="SELECT `glpi_users`.*, `glpi_groups_users`.`id` AS linkID
+      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14].
+         "(D=".$LANG['profiles'][29].")</th></tr>";
+      $query="SELECT `glpi_users`.*, `glpi_groups_users`.`id` AS linkID,
+                     `glpi_groups_users`.`is_dynamic` AS is_dynamic
               FROM `glpi_groups_users`
               LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
               WHERE `glpi_groups_users`.`groups_id`='$ID'
@@ -224,6 +226,10 @@ class Group_User extends CommonDBRelation{
             $used[$data["id"]]=$data["id"];
             echo "<td>";
             echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
+            if ($data["is_dynamic"]) {
+               echo "<strong>&nbsp;(D)";
+            }
+
             echo "</td>";
             $i++;
          }
@@ -263,6 +269,7 @@ class Group_User extends CommonDBRelation{
                User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>$group->fields["entities_id"],'used'=>$used));
             }
             echo "</td><td class='tab_bg_2 center'>";
+            echo "<input type='hidden' name'is_dynamic' value='0'>";
             echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td></tr>";
             echo "</table></div>";

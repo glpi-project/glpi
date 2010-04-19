@@ -572,10 +572,11 @@ class User extends CommonDBTM {
    function syncLdapGroups() {
       global $DB;
 
-      if (isset($this->input["authtype"])
-          && ($this->input["authtype"] == Auth::LDAP || Auth::isAlternateAuthWithLdap($this->input['authtype']))) {
+      if (isset($this->fields["authtype"])
+          && ($this->fields["authtype"] == Auth::LDAP
+            || Auth::isAlternateAuthWithLdap($this->fields['authtype']))) {
          if (isset ($this->fields["id"]) && $this->fields["id"]>0) {
-            $authtype = Auth::getMethodsByID($this->input["authtype"], $this->input["auths_id"]);
+            $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
 
             if (count($authtype)) {
                if (!isset($this->input["_groups"])) {
@@ -615,6 +616,7 @@ class User extends CommonDBTM {
                          LEFT JOIN `glpi_groups`
                               ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
                          WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'
+                           AND `glpi_groups_users`.`is_dynamic`='1'
                                $WHERE";
                $result = $DB->query($query);
 
@@ -634,7 +636,8 @@ class User extends CommonDBTM {
                if (count($this->input["_groups"])>0) {
                   foreach ($this->input["_groups"] as $group) {
                      $groupuser->add(array('users_id'    => $this->fields["id"],
-                                           'groups_id'   => $group));
+                                           'groups_id'   => $group,
+                                           'is_dynamic'  => 1));
                   }
                   unset ($this->input["_groups"]);
                }
@@ -766,8 +769,6 @@ class User extends CommonDBTM {
                                        $ldap_method["group_condition"],
                                        $ldap_method["group_member_field"],$ldap_method["use_dn"],
                                        $ldap_method["login_field"]);
-      //logInFile("debug","Groupes discrets LDAP : ".print_r($v,true));
-
       foreach ($v as $result) {
          if (isset($result[$ldap_method["group_member_field"]])
              && is_array($result[$ldap_method["group_member_field"]])
