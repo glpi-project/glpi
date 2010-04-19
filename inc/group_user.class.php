@@ -52,7 +52,8 @@ class Group_User extends CommonDBRelation{
       $groups = array();
       $query = "SELECT `glpi_groups`.*,
                        `glpi_groups_users`.`id` AS IDD,
-                       `glpi_groups_users`.`id`  as linkID
+                       `glpi_groups_users`.`id`  as linkID,
+                        `glpi_groups_users`.`is_dynamic`  as is_dynamic
                 FROM `glpi_groups_users`
                 LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
                 WHERE `glpi_groups_users`.`users_id` = '$users_id'
@@ -87,7 +88,8 @@ class Group_User extends CommonDBRelation{
       }
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>".
-            "<tr><th colspan='$headerspan'>".$LANG['Menu'][36]."</th></tr>";
+            "<tr><th colspan='$headerspan'>".$LANG['Menu'][36].
+               "&nbsp;(D=".$LANG['profiles'][29].")</th></tr>";
 
       $groups = Group_User::getUserGroups($ID);
       $used = array();
@@ -114,6 +116,9 @@ class Group_User extends CommonDBRelation{
             echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".
                   $data["name"].($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"")."</a>";
             echo "&nbsp;";
+            if ($data["is_dynamic"]) {
+               echo "<strong>&nbsp;(D)";
+            }
             echo "</td>";
             $i++;
          }
@@ -141,7 +146,7 @@ class Group_User extends CommonDBRelation{
          }
 
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</th></tr>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
 
