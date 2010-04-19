@@ -1594,6 +1594,7 @@ CREATE TABLE `glpi_groups_users` (
   `id` int(11) NOT NULL auto_increment,
   `users_id` int(11) NOT NULL default '0',
   `groups_id` int(11) NOT NULL default '0',
+  `is_dynamic` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `unicity` (`users_id`,`groups_id`),
   KEY `groups_id` (`groups_id`)

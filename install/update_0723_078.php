@@ -4257,6 +4257,21 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    }
 
+   if (!FieldExists("glpi_groups","is_dynamic")) {
+      $query = "ALTER TABLE `glpi_groups_users` ADD `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.78 add is_dynamic in glpi_groups_users " .
+                                    $LANG['update'][90] . $DB->error());
+      //If group comes from an LDAP directory, then update users belonging to it
+      //by setting is_dynamic to 1
+      $query ="UPDATE `glpi_groups_users` SET `is_dynamic`='1'
+               WHERE groups_id IN (
+                  SELECT `id`
+                  FROM `glpi_groups`
+                  WHERE `ldap_group_dn` IS NOT NULL
+                    OR (`ldap_field` IS NOT NULL
+                       AND `ldap_value` IS NOT NULL))";
+      $DB->query($query) or die("0.78 update is_dynamic in glpi_groups_users " . $LANG['update'][90] . $DB->error());
+   }
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 
