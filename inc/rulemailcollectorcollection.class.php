@@ -79,11 +79,13 @@ class RuleMailCollectorCollection extends RuleCollection {
       }
 
       //Store the number of profiles of which the user belongs to
-      if (in_array('one_profile',$fields)
-            && count(Profile_User::getForUser($input['users_id'])) == 1) {
-            $input['ONE_PROFILE'] = 1;
+      if (in_array('one_profile',$fields)) {
+         $profiles = Profile_User::getForUser($input['users_id']);
+         if (count($profiles) == 1) {
+            $tmp = array_pop($profiles);
+            $input['ONE_PROFILE'] = $tmp['profiles_id'];
+         }
       }
-
       return $input;
    }
 
