@@ -248,7 +248,7 @@ class RuleMailCollector extends Rule {
                   foreach ($this->regex_results as $regex_result) {
                      $entity_found = -1;
                      $res = RuleAction::getRegexResultById($action->fields["value"],
-                                                           $this->regex_results[0]);
+                                                           $regex_result);
                      if ($res != null) {
                         switch ($action->fields["field"]) {
                            case "_affect_entity_by_domain":
