@@ -1497,7 +1497,7 @@ class Profile extends CommonDBTM {
       if ($write) {
          $values['w'] = $LANG['profiles'][11];
       }
-      Dropdown::showFromArray($name,$values,$value);
+      Dropdown::showFromArray($name,$values,array('value'=>$value));
    }
 
    /**

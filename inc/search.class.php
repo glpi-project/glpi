@@ -2401,6 +2401,9 @@ class Search {
                   return makeTextCriteria($date_computation,$val,$nott,$link);
                }
                break;
+            case "right" :
+               return $link." $tocompute = '$val' ";
+               break;
 
             case "bool" :
                if (!is_numeric($val)) {
@@ -2415,7 +2418,6 @@ class Search {
             case "number" :
             case "decimal" :
             case "timestamp" :
-
                $search=array("/\&lt;/",
                            "/\&gt;/");
                $replace=array("<",
@@ -4311,8 +4313,11 @@ class Search {
          if (isset($searchopt[$field_num]['datatype'])) {
             switch ($searchopt[$field_num]['datatype']) {
                case 'bool' :
-                  return array('contains' => $LANG['search'][2],
-                              'equals'    => $LANG['rulesengine'][0],
+                  return array('equals'    => $LANG['rulesengine'][0],
+                              'contains' => $LANG['search'][2],
+                              'searchopt' => $searchopt[$field_num]);
+               case 'right' :
+                  return array('equals'    => $LANG['rulesengine'][0],
                               'searchopt' => $searchopt[$field_num]);
                case 'itemtypename' :
                   return array('equals'    => $LANG['rulesengine'][0],
