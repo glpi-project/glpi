@@ -134,7 +134,7 @@ class Printer  extends CommonDBTM {
                  WHERE `glpi_networkports_networkports`.$endb = `glpi_networkports`.`id`
                        AND `glpi_networkports_networkports`.$enda IN (SELECT `id`
                                                                       FROM `glpi_networkports`
-                                                                      WHERE `itemtype`=".$this->getType()."
+                                                                      WHERE `itemtype`='".$this->getType()."'
                                                                             AND `items_id`='$ID')
                  GROUP BY `itemtype`";
          $res = $DB->query($sql);
