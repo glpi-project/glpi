@@ -304,7 +304,7 @@ class MailCollector  extends CommonDBTM {
    * @return if $display = false return messages result string
    */
    function collect($mailgateID,$display=0) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
       if ($this->getFromDB($mailgateID)) {
          $this->mid = -1;
@@ -324,8 +324,10 @@ class MailCollector  extends CommonDBTM {
                                                  'play_rules'=>true));
 
                //If entity assigned, or email refused by rule, or no user associated with the email
+               $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"] ||$tkt['users_id'] > 0);
+
                if ((isset($tkt['entities_id'])
-                     && $tkt['users_id'])
+                     && $user_condition)
                         || isset($tkt['_refuse_email_no_response'])
                            || isset($tkt['_refuse_email_with_response'])) {
 
