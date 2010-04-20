@@ -180,7 +180,7 @@ function update0723to078($output='HTML') {
       'glpi_rule_cache_type_printer'      => 'glpi_rulecacheprintertypes',
       'glpi_rule_cache_software'          => 'glpi_rulecachesoftwares',
       'glpi_rules_criterias'              => 'glpi_rulecriterias',
-      'glpi_rules_ldap_parameters'        => 'glpi_ruleldapparameters',
+      'glpi_rules_ldap_parameters'        => 'glpi_rulerightparameters',
       'glpi_software'                     => 'glpi_softwares',
       'glpi_dropdown_software_category'   => 'glpi_softwarecategories',
       'glpi_softwarelicenses'             => 'glpi_softwarelicenses',
@@ -1373,8 +1373,8 @@ function update0723to078($output='HTML') {
       $changes['glpi_users'][]="DROP `tracking_order`";
    }
 
-   if (FieldExists('glpi_ruleldapparameters', 'sub_type')) {
-      $changes['glpi_ruleldapparameters'][]="DROP `sub_type`";
+   if (FieldExists('glpi_rulerightparameters', 'sub_type')) {
+      $changes['glpi_rulerightparameters'][]="DROP `sub_type`";
    }
 
    if (FieldExists('glpi_softwares', 'oldstate')) {
@@ -4175,12 +4175,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    }
 
-   if (TableExists('glpi_ruleldapparameters')) {
-      $query = "RENAME TABLE `glpi_ruleldapparameters`
-                   TO `glpi_rulerightparameters` ;";
-      $DB->query($query) or die("0.78 rename glpi_ruleldapparameters to glpi_rulerightparameters".
-                                   $LANG['update'][90] . $DB->error());
-
+   if (TableExists('glpi_rulerightparameters')) {
       $query = "ALTER TABLE `glpi_rulerightparameters` ADD `comment` TEXT NOT NULL ";
       $DB->query($query) or die("0.78 add comment to glpi_rulerightparameters".
                                    $LANG['update'][90] . $DB->error());
@@ -4206,6 +4201,32 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $query = "ALTER TABLE `glpi_configs` ADD `user_deleted_ldap` TINYINT( 1 ) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.78 add user_deleted_ldap to glpi_configs".
                                    $LANG['update'][90] . $DB->error());
+   }
+
+
+   if (!FieldExists("glpi_profiles","group_add_followup")) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `group_add_followups` CHAR(1) NULL AFTER `add_followups`";
+      $DB->query($query) or die("0.78 add budget in glpi_profiles" . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `group_add_followups`=`global_add_followups`";
+      $DB->query($query) or die("0.78 update default budget rights" . $LANG['update'][90] . $DB->error());
+
+   }
+
+   if (!FieldExists("glpi_groups","is_dynamic")) {
+      $query = "ALTER TABLE `glpi_groups_users` ADD `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.78 add is_dynamic in glpi_groups_users " .
+                                    $LANG['update'][90] . $DB->error());
+      //If group comes from an LDAP directory, then update users belonging to it
+      //by setting is_dynamic to 1
+      $query ="UPDATE `glpi_groups_users` SET `is_dynamic`='1'
+               WHERE groups_id IN (
+                  SELECT `id`
+                  FROM `glpi_groups`
+                  WHERE `ldap_group_dn` IS NOT NULL
+                    OR (`ldap_field` IS NOT NULL
+                       AND `ldap_value` IS NOT NULL))";
+      $DB->query($query) or die("0.78 update is_dynamic in glpi_groups_users " . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
@@ -4248,30 +4269,9 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       }
    }
 
-   if (!FieldExists("glpi_profiles","group_add_followup")) {
-      $query = "ALTER TABLE `glpi_profiles` ADD `group_add_followups` CHAR(1) NULL AFTER `add_followups`";
-      $DB->query($query) or die("0.78 add budget in glpi_profiles" . $LANG['update'][90] . $DB->error());
 
-      $query = "UPDATE `glpi_profiles` SET `group_add_followups`=`global_add_followups`";
-      $DB->query($query) or die("0.78 update default budget rights" . $LANG['update'][90] . $DB->error());
 
-   }
 
-   if (!FieldExists("glpi_groups","is_dynamic")) {
-      $query = "ALTER TABLE `glpi_groups_users` ADD `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.78 add is_dynamic in glpi_groups_users " .
-                                    $LANG['update'][90] . $DB->error());
-      //If group comes from an LDAP directory, then update users belonging to it
-      //by setting is_dynamic to 1
-      $query ="UPDATE `glpi_groups_users` SET `is_dynamic`='1'
-               WHERE groups_id IN (
-                  SELECT `id`
-                  FROM `glpi_groups`
-                  WHERE `ldap_group_dn` IS NOT NULL
-                    OR (`ldap_field` IS NOT NULL
-                       AND `ldap_value` IS NOT NULL))";
-      $DB->query($query) or die("0.78 update is_dynamic in glpi_groups_users " . $LANG['update'][90] . $DB->error());
-   }
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("078"); // End
 
