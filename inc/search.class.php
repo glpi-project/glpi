@@ -139,12 +139,7 @@ class Search {
          $entity_restrict = $item->isEntityAssign();
       }
 
-      $names = array('Computer'   => $LANG['Menu'][0],
-                     'Printer'    => $LANG['Menu'][2],
-                     'Monitor'    => $LANG['Menu'][3],
-                     'Peripheral' => $LANG['Menu'][16],
-                     'Software'   => $LANG['Menu'][4],
-                     'Phone'      => $LANG['Menu'][34]);
+      $metanames = array();
 
       // Get the items to display
       $toview=Search::addDefaultToView($itemtype);
@@ -818,7 +813,12 @@ class Search {
                   if (isset($p['itemtype2'][$i]) && !empty($p['itemtype2'][$i]) && isset($p['contains2'][$i])
                      && strlen($p['contains2'][$i])>0) {
 
-                     echo Search::showHeaderItem($output_type,$names[$p['itemtype2'][$i]]." - ".
+                     if (!isset($metanames[$p['itemtype2'][$i]])) {
+                        $metaitem = new $p['itemtype2'][$i]();
+                        $metanames[$p['itemtype2'][$i]]=$metaitem->getTypeName();
+                     }
+
+                     echo Search::showHeaderItem($output_type,$metanames[$p['itemtype2'][$i]]." - ".
                                                 $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["name"],
                                                 $header_num);
                   }
@@ -1047,7 +1047,7 @@ class Search {
                         if (isset($p['link2'][$key])) {
                            $title .= " ".$p['link2'][$key]." ";
                         }
-                        $title .= $names[$p['itemtype2'][$key]]."/";
+                        $title .= $metanames[$p['itemtype2'][$key]]."/";
                         $title .= $searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["name"];
                         $title .= " = ".$p['contains2'][$key];
                      }
@@ -1124,7 +1124,7 @@ class Search {
 
 
       // Meta search names
-      $names = array('Computer'   => $LANG['Menu'][0],
+      $metaactivated = array('Computer'   => $LANG['Menu'][0],
                      'Printer'    => $LANG['Menu'][2],
                      'Monitor'    => $LANG['Menu'][3],
                      'Peripheral' => $LANG['Menu'][16],
@@ -1154,7 +1154,7 @@ class Search {
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".
                      $LANG['search'][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             }
-            if (isset($names[$itemtype])) {
+            if (isset($metaactivated[$itemtype])) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2' value='1'>";
                echo "<a href='#' onClick = \"document.getElementById('add_search_count2').disabled=false;document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".
@@ -1296,6 +1296,7 @@ class Search {
                break;
          }
       }
+      $metanames=array();
 
       if (is_array($linked) && count($linked)>0) {
          for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
@@ -1333,7 +1334,11 @@ class Search {
             echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
             echo "<option value=''>------</option>";
             foreach ($linked as $key) {
-               echo "<option value='$key'>".utf8_substr($names[$key],0,20)."</option>\n";
+               if (!isset($metanames[$key])) {
+                  $linkitem=new $key();
+                  $metanames[$key]=$linkitem->getTypeName();
+               }
+               echo "<option value='$key'>".utf8_substr($metanames[$key],0,20)."</option>\n";
             }
             echo "</select>&nbsp;";
 
