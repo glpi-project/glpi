@@ -145,10 +145,12 @@ if (isset($_REQUEST['searchtype'])) {
                switch ($searchopt['datatype']) {
       
                   case "bool":
-                     Dropdown::showYesNo(getItemTypeForTable($searchopt['table']),
-                                    array('value'     => $_REQUEST['value'],
-                                          'name'      => $inputname,
-                                          'comments'  => 0));
+                     Dropdown::showYesNo($inputname,$_REQUEST['value']);
+                     $display=true;
+                     break;
+                  case "right":
+                     // No access not displayed because empty not take into account for search
+                     Profile::dropdownNoneReadWrite($inputname,$_REQUEST['value'],0,1,1);
                      $display=true;
                      break;
                   case "itemtypename":
