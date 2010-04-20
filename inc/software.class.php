@@ -320,9 +320,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
 
       return true;
    }

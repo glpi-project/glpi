@@ -2903,8 +2903,7 @@ class Transfer extends CommonDBTM {
       if (haveRight("transfer","w")) {
          if ($edit_form) {
             $this->showFormButtons($options);
-            echo "<div id='tabcontent'></div>";
-            echo "<script type='text/javascript'>loadDefaultTab();</script>";
+            $this->addDivForTabs();
          } else {
             echo "</table></div></form>";
          }

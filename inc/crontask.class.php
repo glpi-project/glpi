@@ -481,9 +481,7 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
 
       return true;
    }
@@ -945,11 +943,11 @@ class CronTask extends CommonDBTM{
                   case CronTaskLog::STATE_START:
                      echo "<td>".$LANG['crontask'][48]."</td>";
                      break;
- 
+
                   case CronTaskLog::STATE_STOP:
                      echo "<td>".$LANG['buttons'][32]."</td>";
                      break;
- 
+
                   default:
                      echo "<td>".$LANG['crontask'][33]."</td>";
                }

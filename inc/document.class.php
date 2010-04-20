@@ -297,11 +297,9 @@ class Document extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
+      $this->addDivForTabs();
 
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-   return true;
+      return true;
    }
 
    /**
