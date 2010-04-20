@@ -132,6 +132,15 @@ class AuthLDAP extends CommonDBTM {
       if (isset($input["rootdn_password"]) && empty($input["rootdn_password"])) {
          unset($input["rootdn_password"]);
       }
+
+      // Set attributes in lower case
+      if (count($input)) {
+         foreach ($input as $key => $val) {
+            if (preg_match('/_field$/',$key)) {
+               $input[$key]=utf8_strtolower($val);
+            }
+         }
+      }
       return $input;
    }
 
@@ -469,13 +478,13 @@ class AuthLDAP extends CommonDBTM {
       echo "<th class='center' colspan='4'>" . $LANG['setup'][623] . "</th></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][622] . "&nbsp;:</td>";
-      echo "<td colspan='3'><input type='text' name='entity_condition' value='".
-         $this->fields["entity_condition"]."'>";
+      echo "<td colspan='3'><input type='text' name='entity_field' value='".
+         $this->fields["entity_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][621] . "&nbsp;:</td>";
-      echo "<td colspan='3'><input type='text' name='entity_field' value='".
-             $this->fields["entity_field"]."' size='100'>";
+      echo "<td colspan='3'><input type='text' name='entity_condition' value='".
+             $this->fields["entity_condition"]."' size='100'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
