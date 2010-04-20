@@ -2075,8 +2075,8 @@ function update0723to078($output='HTML') {
          ('Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30',NULL,NULL,NULL)";
       $DB->query($query) or die("0.78 populate glpi_crontasks" . $LANG['update'][90] . $DB->error());
 
-      $ADDTODISPLAYPREF['Crontask']=array(8,3,4,7);
    }
+   $ADDTODISPLAYPREF['Crontask']=array(8,3,4,7);
 
    if (!TableExists('glpi_crontasklogs')) {
       $query = "CREATE TABLE `glpi_crontasklogs` (
@@ -2464,9 +2464,10 @@ function update0723to078($output='HTML') {
                   addslashes($LANG['tracking'][35])."', 0, 0, NULL)");
       $DB->query("INSERT INTO `glpi_requesttypes` VALUES(6, '".
                   addslashes($LANG['common'][62])."', 0, 0, NULL)");
-      // Add default display
-      $ADDTODISPLAYPREF['RequestType']=array(14,15);
    }
+   // Add default display
+   $ADDTODISPLAYPREF['RequestType']=array(14,15);
+
    if (FieldExists('glpi_tickets','request_type')) {
       $query = "ALTER TABLE `glpi_tickets`
                       CHANGE `request_type` `requesttypes_id` INT( 11 ) NOT NULL DEFAULT '0'";
@@ -4179,10 +4180,9 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $query = "ALTER TABLE `glpi_rulerightparameters` ADD `comment` TEXT NOT NULL ";
       $DB->query($query) or die("0.78 add comment to glpi_rulerightparameters".
                                    $LANG['update'][90] . $DB->error());
-
       $ADDTODISPLAYPREF['RuleRightParameter']=array(11);
-
    }
+
 
    if (!FieldExists('glpi_rules','is_recursive')) {
       $query = "ALTER TABLE `glpi_rules` ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0',
