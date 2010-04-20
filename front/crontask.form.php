@@ -50,7 +50,14 @@ if (isset($_POST["update"])) {
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else {
+} else if (isset($_GET['resetstate']) && isset($_GET["id"])) {
+   checkRight('config','w');
+   if ($crontask->getFromDB($_GET["id"])) {
+       $crontask->resetState();
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+}else {
    if (!isset($_GET["id"]) || empty($_GET["id"])) {
       exit();
    }
