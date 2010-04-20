@@ -188,7 +188,7 @@ function current_time() {
 * @param $limit limit to
 */
 function get_content($DB, $table,$from,$limit) {
-logInFile('php-errors',"get_content($table,$from,$limit)\n");
+//logInFile('php-errors',"get_content($table,$from,$limit)\n");
    $content = "";
    $gmqr = "";
    $result = $DB->query("SELECT *
