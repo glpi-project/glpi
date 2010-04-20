@@ -1489,7 +1489,7 @@ class Profile extends CommonDBTM {
       global $LANG;
 
       if ($none) {
-         $values[''] = $LANG['profiles'][12];
+         $values['NULL'] = $LANG['profiles'][12];
       }
       if ($read) {
          $values['r'] = $LANG['profiles'][10];

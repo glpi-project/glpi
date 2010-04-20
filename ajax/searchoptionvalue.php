@@ -150,7 +150,7 @@ if (isset($_REQUEST['searchtype'])) {
                      break;
                   case "right":
                      // No access not displayed because empty not take into account for search
-                     Profile::dropdownNoneReadWrite($inputname,$_REQUEST['value'],0,1,1);
+                     Profile::dropdownNoneReadWrite($inputname,$_REQUEST['value'],1,1,1);
                      $display=true;
                      break;
                   case "itemtypename":
