@@ -952,7 +952,9 @@ class Stat {
             default:
                $graph->render( $param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename );
                echo "<object data='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
-                     type='image/svg+xml'>You need a browser capeable of SVG to display this image.
+                     type='image/svg+xml' width='".$param['width']."' height='".$param['height']."'>
+                     <param name='src' value='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'>
+                     You need a browser capeable of SVG to display this image.
                      </object> ";
 
             break;
