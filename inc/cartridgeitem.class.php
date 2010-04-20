@@ -277,10 +277,7 @@ class CartridgeItem extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
+      $this->addDivForTabs();
       return true;
    }
 

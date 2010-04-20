@@ -500,23 +500,9 @@ class OcsServer extends CommonDBTM {
 
       }
       $out .= "</tr>\n";
-
-      if ($ID == '') {
-         $out .= "<tr class='tab_bg_2'><td class='center' colspan=4>";
-         $out .= "<input type='submit' name='add' class='submit' value=\"" .
-                   $LANG['buttons'][2] . "\" ></td></tr>\n";
-      } else {
-         $out .= "<tr class='tab_bg_2'><td class='center' colspan=4>";
-         $out .= "<input type='hidden' name='id' value='$ID'>\n";
-         $out .= "<input type='submit' name='update' class='submit' value=\"" .
-                   $LANG['buttons'][2] . "\" >&nbsp;";
-         $out .= "<input type='submit' name='delete' class='submit' value=\"" .
-                   $LANG['buttons'][6] . "\" ></td></tr>\n";
-      }
-      $out .= "</table></form></div>\n";
-      $out .= "<div id='tabcontent'></div>";
-      $out .= "<script type='text/javascript'>loadDefaultTab();</script>";
       echo $out;
+      $this->showFormButtons($options);
+      $this->addDivForTabs();
    }
 
    function showDBConnectionStatus($ID) {

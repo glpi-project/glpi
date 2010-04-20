@@ -188,10 +188,7 @@ class AuthMail extends CommonDBTM {
 
 
          $this->showFormButtons($options);
-
-         echo "<div id='tabcontent'></div>";
-         echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
+         $this->addDivForTabs();
       } else {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][162] . "</th></tr>";

@@ -150,9 +150,7 @@ class ComputerDisk extends CommonDBChild {
       echo "&nbsp;".$LANG['common'][82]."</td></tr>";
 
       $this->showFormButtons($options);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
 
       return true;
 

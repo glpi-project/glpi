@@ -2962,8 +2962,7 @@ class Ticket extends CommonDBTM {
 
       echo "</form>";
 
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
 
       return true;
    }
