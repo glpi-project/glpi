@@ -721,7 +721,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##ticket.urgency##']      = Ticket::getUrgencyName($ticket['urgency']);
             $tmp['##ticket.impact##']       = Ticket::getImpactName($ticket['impact']);
             $tmp['##ticket.priority##']     = Ticket::getPriorityName($ticket['priority']);
-            $tmp['##ticket.time##']         = convDateTime($ticket['realtime']);
+            $tmp['##ticket.time##']         = Ticket::getRealTime($ticket['realtime']);
             $tmp['##ticket.costtime##']     = $ticket['cost_time'];
             $tmp['##ticket.creationdate##'] = convDateTime($ticket['date']);
 
