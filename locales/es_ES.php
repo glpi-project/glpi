@@ -756,7 +756,7 @@ $LANG['joblist'][8]="No se han hallado incidencias.";
 $LANG['joblist'][9]="Nueva"; 
 $LANG['joblist'][10]="Cerrada (resuelta)"; 
 $LANG['joblist'][11]="Abierta el"; 
-$LANG['joblist'][12]="Closed on"; 
+$LANG['joblist'][12]="Cerrada el"; 
 $LANG['joblist'][13]="Incidencias a procesar"; 
 $LANG['joblist'][16]="No hay incidencias pendientes."; 
 $LANG['joblist'][17]="Cerrada (no resuelta)"; 
@@ -979,6 +979,7 @@ $LANG['mailgate'][12]="No se puede asociar el correo electrónico a una entidad"
 $LANG['mailgate'][13]="Razón del rechazo"; 
 $LANG['mailgate'][14]="Solicitante GLPI"; 
 $LANG['mailgate'][15]="Tamaño correo electrónico"; 
+$LANG['mailgate'][16]="Re:"; 
 
 $LANG['mailing'][0]="----------------------------------------------------------"; 
 $LANG['mailing'][1]="======================================================================"; 
@@ -1458,7 +1459,7 @@ $LANG['rulesengine'][66]="Tipos";
 $LANG['rulesengine'][67]="Diccionario de S.O."; 
 $LANG['rulesengine'][68]="Diccionario de Service Packs"; 
 $LANG['rulesengine'][69]="Diccionario de versiones"; 
-$LANG['rulesengine'][70]="Reglas de asignación de una incidenca creada por correoa a una entidad"; 
+$LANG['rulesengine'][70]="Rules for assigning a ticket created through a mail receiver"; 
 $LANG['rulesengine'][76]="Retocar diccionario"; 
 $LANG['rulesengine'][77]="Diccionarios"; 
 $LANG['rulesengine'][78]="Versión"; 
