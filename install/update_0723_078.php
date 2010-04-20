@@ -4213,7 +4213,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    }
 
-   if (!FieldExists("glpi_groups","is_dynamic")) {
+   if (!FieldExists("glpi_groups_users","is_dynamic")) {
       $query = "ALTER TABLE `glpi_groups_users` ADD `is_dynamic` TINYINT( 1 ) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.78 add is_dynamic in glpi_groups_users " .
                                     $LANG['update'][90] . $DB->error());
