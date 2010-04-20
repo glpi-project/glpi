@@ -360,7 +360,9 @@ class Stat {
          case "technicien_followup" :
             $WHERE .= " AND `glpi_ticketfollowups`.`users_id` = '$value'";
             $LEFTJOIN = "LEFT JOIN `glpi_ticketfollowups`
-                              ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)";
+                              ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
+                        LEFT JOIN `glpi_tickettasks`
+                              ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)";
             break;
 
          case "enterprise" :
@@ -480,7 +482,7 @@ class Stat {
 
          case "inter_avgrealtime" :
             if ($param=="technicien_followup") {
-               $realtime_table = "glpi_ticketfollowups";
+               $realtime_table = "glpi_tickettasks";
             } else {
                $realtime_table = "glpi_tickets";
             }
@@ -509,10 +511,15 @@ class Stat {
                            MIN(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`)
                                  - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
                            MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`)
-                                 - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST
+                                 - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
+                           MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`)
+                                 - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
+
                      FROM `glpi_tickets`
                      LEFT JOIN `glpi_ticketfollowups`
-                           ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`) ";
+                           ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
+                     LEFT JOIN `glpi_tickettasks`
+                           ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`) ";
 
             if (!strstr($LEFTJOIN,"glpi_ticketfollowups")) {
                $query .= $LEFTJOIN;
