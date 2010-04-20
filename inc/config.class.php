@@ -692,6 +692,7 @@ class Config extends CommonDBTM {
       for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
          echo "<td class='center'>".$LANG['help'][$msg]."&nbsp;: ";
          if ($impact==3) {
+            $isimpact[3] = 1;
             echo "<input type='hidden' name='_impact_3' value='1'>";
          } else {
             $isimpact[$impact] = (($CFG_GLPI['impact_mask']&(1<<$impact)) >0);
