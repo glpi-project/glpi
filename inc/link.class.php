@@ -161,7 +161,7 @@ class Link extends CommonDBTM {
    * @param $name string : name used for multi link generation
    * @return array of link contents (may have several when item have several IP / MAC cases)
    */
-   static function generateLinkContents($link, CommonDBTM $item, $name) {
+   static function generateLinkContents($link, CommonDBTM $item, $name='') {
       global $DB;
 
       if (strstr($link,"[ID]")) {
