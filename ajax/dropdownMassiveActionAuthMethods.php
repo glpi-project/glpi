@@ -41,19 +41,24 @@ header_nocache();
 
 checkRight("user","w");
 if ($_POST["authtype"] > 0) {
+   $name='massiveaction';
+   if (isset($_POST['name'])) {
+      $name=$_POST['name'];
+   }
+
    switch($_POST["authtype"]) {
       case Auth::DB_GLPI :
-         echo "<input type='hidden' name='auth_server' value='0'>";
+         echo "<input type='hidden' name='auths_id' value='0'>";
          break;
       case Auth::LDAP :
       case Auth::EXTERNAL :
-         Dropdown::show('AuthLDAP', array('name' => "auth_server"));
+         Dropdown::show('AuthLDAP', array('name' => "auths_id"));
          break;
 
       case Auth::MAIL :
-         Dropdown::show('AuthMail', array('name' => "auth_server"));
+         Dropdown::show('AuthMail', array('name' => "auths_id"));
          break;
    }
-   echo "<input type='submit' name='massiveaction' class='submit' value=\"".$LANG['buttons'][2]."\" >";
+   echo "&nbsp;<input type='submit' name='$name' class='submit' value=\"".$LANG['buttons'][2]."\" >";
 }
 ?>

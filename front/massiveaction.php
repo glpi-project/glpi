@@ -376,7 +376,7 @@ if (isset($_POST["itemtype"])) {
                   $ids[] = $key;
                }
             }
-            User::changeAuthMethod($ids,$_POST["authtype"],$_POST["auth_server"]);
+            User::changeAuthMethod($ids,$_POST["authtype"],$_POST["auths_id"]);
             break;
 
          case "unlock_ocsng_field" :

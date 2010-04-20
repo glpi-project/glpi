@@ -116,7 +116,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
                                      $paramsmassaction);
          echo "<span id='show_massiveaction_field'>";
-         echo "<input type='submit' name='massiveaction' class='submit' value=\"".
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
                $LANG['buttons'][2]."\" ></span>\n";
          break;
 
