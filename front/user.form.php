@@ -53,7 +53,7 @@ if (!isset($_GET["order"])) {
 
 $user = new User();
 $groupuser = new Group_User();
-
+//print_r($_POST);exit();
 if (empty($_GET["id"]) && isset($_GET["name"])) {
 
    $user->getFromDBbyName($_GET["name"]);
@@ -133,34 +133,16 @@ if (isset($_REQUEST['getvcard'])) {
    Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if (isset($_POST["switch_auth_internal"])) {
+} else if (isset($_POST["change_auth_method"])) {
    checkRight('user_authtype','w');
    $user->check($_POST['id'],'w');
 
-   $input["id"] = $_POST["id"];
-   $input["authtype"] = Auth::DB_GLPI;
-   $input["auths_id"] = 0;
-   $user->update($input);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} elseif (isset($_POST["switch_auth_ldap"])) {
-   checkRight('user_authtype','w');
-   $user->check($_POST['id'],'w');
-
-   $input["id"] = $_POST["id"];
-   $input["authtype"] = Auth::LDAP;
-   $input["auths_id"] = $_POST["auths_id"];
-   $user->update($input);
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} elseif (isset($_POST["switch_auth_mail"])) {
-   checkRight('user_authtype','w');
-   $user->check($_POST['id'],'w');
-
-   $input["id"] = $_POST["id"];
-   $input["authtype"] = Auth::MAIL;
-   $input["auths_id"] = $_POST["auths_id"];
-   $user->update($input);
+   if (isset($_POST["auths_id"])) {
+      $input["id"] = $_POST["id"];
+      $input["authtype"] = $_POST["authtype"];
+      $input["auths_id"] = $_POST["auths_id"];
+      $user->update($input);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
