@@ -979,6 +979,7 @@ $LANG['mailgate'][12]="Unable to affect the email to an entity";
 $LANG['mailgate'][13]="Reason of rebuff"; 
 $LANG['mailgate'][14]="GLPI requester"; 
 $LANG['mailgate'][15]="Email size"; 
+$LANG['mailgate'][16]="Re:"; 
 
 $LANG['mailing'][0]="----------------------------------------------------------"; 
 $LANG['mailing'][1]="======================================================================"; 
@@ -1458,7 +1459,7 @@ $LANG['rulesengine'][66]="Τύποι";
 $LANG['rulesengine'][67]="Λεξικό OS"; 
 $LANG['rulesengine'][68]="Πακέτο διόρθωσης Λεξικού"; 
 $LANG['rulesengine'][69]="Λεξικό εκδόσεων OS"; 
-$LANG['rulesengine'][70]="Rules for assigning a ticket created through a mail receiver to an entity"; 
+$LANG['rulesengine'][70]="Rules for assigning a ticket created through a mail receiver"; 
 $LANG['rulesengine'][76]="Επανάληψη Λεξικού"; 
 $LANG['rulesengine'][77]="Λεξικά"; 
 $LANG['rulesengine'][78]="Έκδοση"; 

@@ -979,6 +979,7 @@ $LANG['mailgate'][12]="Unable to affect the email to an entity";
 $LANG['mailgate'][13]="Reason of rebuff"; 
 $LANG['mailgate'][14]="GLPI requester"; 
 $LANG['mailgate'][15]="Email size"; 
+$LANG['mailgate'][16]="Re:"; 
 
 $LANG['mailing'][0]="----------------------------------------------------------"; 
 $LANG['mailing'][1]="======================================================================"; 
@@ -1458,7 +1459,7 @@ $LANG['rulesengine'][66]="Типи";
 $LANG['rulesengine'][67]="словник OS"; 
 $LANG['rulesengine'][68]="словник Service Pack"; 
 $LANG['rulesengine'][69]="словник версій OS"; 
-$LANG['rulesengine'][70]="Rules for assigning a ticket created through a mail receiver to an entity"; 
+$LANG['rulesengine'][70]="Rules for assigning a ticket created through a mail receiver"; 
 $LANG['rulesengine'][76]="Застосувати правила"; 
 $LANG['rulesengine'][77]="Критерії відбору"; 
 $LANG['rulesengine'][78]="Версія"; 
