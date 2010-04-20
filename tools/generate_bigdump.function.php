@@ -715,7 +715,7 @@ function generate_entity($ID_entity){
 		$user_id=$DB->insert_id();
 		$query="INSERT INTO glpi_profiles_users VALUES (NULL,'$user_id','4','$ID_entity','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
+		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."',0);";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["users_sadmin"]=getMaxItem("glpi_users");
@@ -727,7 +727,7 @@ function generate_entity($ID_entity){
 		$query="INSERT INTO glpi_profiles_users VALUES (NULL,'$user_id','3','$ID_entity','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$group=mt_rand($FIRST['groups'],$LAST['groups']);
-		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','$group');";
+		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','$group',0);";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$query="UPDATE glpi_groups SET users_id='$user_id' WHERE users_id='$group'";
 		$DB->query($query) or die("PB REQUETE ".$query);
@@ -741,7 +741,7 @@ function generate_entity($ID_entity){
 		$LAST["users_normal"]=$user_id;
 		$query="INSERT INTO glpi_profiles_users VALUES (NULL,'$user_id','2','$ID_entity','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
+		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."',0);";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["users_normal"]=getMaxItem("glpi_users");
@@ -753,7 +753,7 @@ function generate_entity($ID_entity){
 		$LAST["users_postonly"]=$user_id;
 		$query="INSERT INTO glpi_profiles_users VALUES (NULL,'$user_id','1','$ID_entity','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
+		$query="INSERT INTO glpi_groups_users VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."',0);";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["users_postonly"]=getMaxItem("glpi_users");
