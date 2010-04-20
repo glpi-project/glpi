@@ -2402,7 +2402,11 @@ class Search {
                }
                break;
             case "right" :
-               return $link." $tocompute = '$val' ";
+               if ($val=='NULL'){
+                  return $link." $tocompute IS ".($nott?'NOT':'')." NULL ";
+               } else {
+                  return $link." $tocompute = '$val' ";
+               }
                break;
 
             case "bool" :
