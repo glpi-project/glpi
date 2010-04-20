@@ -377,6 +377,15 @@ function loadLanguage($forcelang='') {
 
    include (GLPI_ROOT . $file);
 
+   // Load plugin dicts
+   if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
+      if (count($_SESSION['glpi_plugins'])) {
+         foreach ($_SESSION['glpi_plugins'] as $plug) {
+               Plugin::loadLang($plug,$forcelang);
+         }
+      }
+   }
+
    // Debug display lang element with item
    if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
       foreach ($LANG as $module => $tab) {
