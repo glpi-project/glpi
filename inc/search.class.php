@@ -3617,6 +3617,9 @@ class Search {
             case "bool" :
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;
 
+            case "right":
+               return Profile::getRightValue($data[$NAME.$num]);
+
             case "itemtypename":
                if (class_exists($data[$NAME.$num])) {
                   $obj = new $data[$NAME.$num] ();
