@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-logInFile('php-errors',"requete0=".print_r($_REQUEST,true)."\n",true);
+//logInFile('php-errors',"requete0=".print_r($_REQUEST,true)."\n",true);
 
 checkRight("backup","w");
 

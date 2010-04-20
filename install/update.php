@@ -519,15 +519,15 @@ function updateDbUpTo031()
 		echo "<p class='center'>Version > 0.31  </p>";
 	}
 
-   // >= 0.78
-   if (TableExists("glpi_configs")) {
-      // Get current version
-      $query="SELECT version FROM glpi_configs";
-      $result=$DB->query($query) or die("get current version".$DB->error());
-      $current_version=trim($DB->result($result,0,0));
-   } else { // < 0.78
+   // < 0.78
+   if (TableExists("glpi_config")) {
       // Get current version
       $query="SELECT version FROM glpi_config";
+      $result=$DB->query($query) or die("get current version".$DB->error());
+      $current_version=trim($DB->result($result,0,0));
+   } else { // >= 0.78
+      // Get current version
+      $query="SELECT version FROM glpi_configs";
       $result=$DB->query($query) or die("get current version".$DB->error());
       $current_version=trim($DB->result($result,0,0));
    }
