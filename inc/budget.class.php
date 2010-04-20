@@ -287,31 +287,33 @@ class Budget extends CommonDBTM{
                default :
                   $query = "SELECT ".$item->getTable().".*
                            FROM `glpi_infocoms`
-                           INNER JOIN ".$item->getTable()."
-                                       ON (".$item->getTable().".`id` = `glpi_infocoms`.`items_id`)
+                           INNER JOIN `".$item->getTable()."`
+                                       ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
                            WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                     getEntitiesRestrictRequest(" AND",$item->getTable())."
                            ORDER BY `entities_id`, ".$item->getTable().".`name`";
                break;
                case 'Cartridge':
-                  $query = "SELECT ".$item->getTable().".*, `glpi_cartridgeitems`.`name`
-                           FROM `glpi_infocoms`, `glpi_cartridgeitems`
-                           INNER JOIN ".$item->getTable()."
-                                       ON (".$item->getTable().".`id` = `glpi_infocoms`.`items_id`)
+                  $query = "SELECT `".$item->getTable()."`.*, `glpi_cartridgeitems`.`name`
+                           FROM `glpi_infocoms`
+                           INNER JOIN `".$item->getTable()."`
+                                       ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
+                           INNER JOIN `glpi_cartridgeitems`
+                                       ON (`".$item->getTable()."`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`)
                            WHERE `glpi_infocoms`.`itemtype`='$itemtype'
-                                    AND `".$item->getTable()."`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
                                     AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                     getEntitiesRestrictRequest(" AND",$item->getTable())."
                            ORDER BY `entities_id`, `glpi_cartridgeitems`.`name`";
                break;
                case 'Consumable':
-                  $query = "SELECT ".$item->getTable().".*, `glpi_consumableitems`.`name`
-                           FROM `glpi_infocoms`, `glpi_consumableitems`,
-                           INNER JOIN ".$item->getTable()."
-                                       ON (".$item->getTable().".`id` = `glpi_infocoms`.`items_id`)
+                  $query = "SELECT `".$item->getTable()."`.*, `glpi_consumableitems`.`name`
+                           FROM `glpi_infocoms`
+                           INNER JOIN `".$item->getTable()."`
+                                       ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
+                           INNER JOIN `glpi_consumableitems`
+                                       ON (`".$item->getTable()."`.`consumableitems_id` = `glpi_consumableitems`.`id`)
                            WHERE `glpi_infocoms`.`itemtype`='$itemtype'
-                                    AND `".$item->getTable()."`.`consumableitems_id` = `glpi_consumableitems`.`id`
                                     AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                     getEntitiesRestrictRequest(" AND",$item->getTable())."
                            ORDER BY `entities_id`, `glpi_consumableitems`.`name`";
