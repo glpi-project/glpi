@@ -487,7 +487,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.urgency##']  = Ticket::getUrgencyName($this->obj->getField('urgency'));
          $this->datas['##ticket.impact##']   = Ticket::getImpactName($this->obj->getField('impact'));
          $this->datas['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
-         $this->datas['##ticket.time##']     = convDateTime($this->obj->getField('realtime'));
+         $this->datas['##ticket.time##']     = Ticket::getRealTime($this->obj->getField('realtime'));
          $this->datas['##ticket.costtime##'] = $this->obj->getField('cost_time');
 
          $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
@@ -623,7 +623,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                                                      $task['taskcategories_id']);
             $tmp['##task.date##']        = convDateTime($task['date']);
             $tmp['##task.description##'] = $task['content'];
-            $tmp['##task.time##']        = $task['realtime'];
+            $tmp['##task.time##']        = Ticket::getRealTime($task['realtime']);
             $this->datas['tasks'][] = $tmp;
          }
          if (!empty($this->datas['tasks'])) {
