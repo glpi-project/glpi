@@ -321,7 +321,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree) {
 function backupMySql($DB,$dumpFile, $duree,$rowlimit) {
    global $TPSCOUR,$offsettable,$offsetrow,$cpt,$LANG;
 
-logInFile('php-errors',"backupMySql($dumpFile, $duree,$rowlimit)\n");
+//logInFile('php-errors',"backupMySql($dumpFile, $duree,$rowlimit)\n");
    // $dumpFile, fichier source
    // $duree=timeout pour changement de page (-1 = aucun)
 
@@ -399,7 +399,7 @@ logInFile('php-errors',"backupMySql($dumpFile, $duree,$rowlimit)\n");
 
 
 // #################" DUMP sql#################################
-logInFile('php-errors',"requete1=".print_r($_REQUEST,true)."\n");
+//logInFile('php-errors',"requete1=".print_r($_REQUEST,true)."\n");
 
 if (isset($_GET["dump"]) && $_GET["dump"] != "") {
    $time_file = date("Y-m-d-H-i");
