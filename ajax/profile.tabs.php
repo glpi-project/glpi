@@ -57,6 +57,9 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
          case 4 :
             Profile_User::showForProfile($prof);
             break;
+         case 12 :
+            Log::showForItem($prof);
+         break;
          default :
             if (!Plugin::displayAction($prof, $_REQUEST['glpi_tab'])) {
                $prof->showFormHelpdesk($_POST['target']);
@@ -83,6 +86,10 @@ if ($_POST["id"]>0 && $prof->getFromDB($_POST["id"])) {
          case 4 :
             Profile_User::showForProfile($prof);
             break;
+
+         case 12 :
+            Log::showForItem($prof);
+         break;
 
          default :
             if (!Plugin::displayAction($prof, $_REQUEST['glpi_tab'])) {
