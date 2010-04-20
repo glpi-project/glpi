@@ -474,6 +474,10 @@ class CronTask extends CommonDBTM{
          echo " - <a href='".GLPI_ROOT."/front/crontask.php?execute=".$this->fields["name"]."'>";
          echo $LANG['buttons'][57]."</a>";
       }
+      if ($tmpstate == self::STATE_RUNNING) {
+         echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetstate=1'><img src='".GLPI_ROOT."/pics/reset.png' ";
+         echo " alt='".$LANG['buttons'][16]."' title='".$LANG['buttons'][16]."'></a>";
+      }
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -497,6 +501,21 @@ class CronTask extends CommonDBTM{
       return $this->update(array(
             'id'        => $this->fields['id'],
             'lastrun'   => 'NULL'));
+   }
+
+   /**
+    * reset the current state
+    *
+    */
+   function resetState () {
+      global $DB;
+
+      if (!isset($this->fields['id'])) {
+         return false;
+      }
+      return $this->update(array(
+            'id'        => $this->fields['id'],
+            'state'   => self::STATE_WAITING));
    }
 
    /**
