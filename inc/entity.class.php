@@ -195,9 +195,6 @@ class Entity extends CommonTreeDropdown {
       $buttons=array();
       $title=$LANG['Menu'][37];
       $buttons["entity.form.php?id=0"]=$LANG['entity'][2];
-      if (canUseLdap() && haveRight('entity','w')) {
-         $buttons["ldap.entity.php"] = $LANG['setup'][3];
-      }
       displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG['Menu'][37],$title,$buttons);
    }
 
