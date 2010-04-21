@@ -516,5 +516,46 @@ class Profile_User extends CommonDBTM {
       $query = "DELETE FROM `glpi_profiles_users` WHERE `users_id`='$user_ID'";
       $DB->query($query);
    }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[2]['table']     = $this->getTable();
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'is_dynamic';
+      $tab[3]['linkfield'] = 'is_dynamic';
+      $tab[3]['name']      = $LANG['profiles'][29];
+      $tab[3]['datatype']  = 'bool';
+
+      $tab[4]['table']     = 'glpi_profiles';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'profiles_id';
+      $tab[4]['name']      = $LANG['profiles'][22];
+
+      $tab[5]['table']     = 'glpi_users';
+      $tab[5]['field']     = 'name';
+      $tab[5]['linkfield'] = 'users_id';
+      $tab[5]['name']      = $LANG['common'][34];
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      $tab[86]['table']     = $this->getTable();
+      $tab[86]['field']     = 'is_recursive';
+      $tab[86]['linkfield'] = 'is_recursive';
+      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['datatype']  = 'bool';
+
+      return $tab;
+   }
 }
 ?>
