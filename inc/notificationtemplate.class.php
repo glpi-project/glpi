@@ -372,7 +372,7 @@ class NotificationTemplate extends CommonDBTM {
 
       $mailing_options['to']      = $user_email;
       $mailing_options['from']    = $target->getSender($options);
-      $mailing_options['replyto'] = $target->getReplyTo();
+      $mailing_options['replyto'] = $target->getReplyTo($options);
 
       if (isset($user_infos['additionnaloption'])) {
          $additionnaloption =  $user_infos['additionnaloption'];

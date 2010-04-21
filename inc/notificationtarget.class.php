@@ -651,16 +651,15 @@ class NotificationTarget extends CommonDBChild {
 
       if (isset($options['entities_id'])) {
          $entity = $options['entities_id'];
-      }
-      else {
+      } else {
          $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id'):
                                                        $this->target_object->getField('entities_id'));
       }
 
       //If the entity administrator's address is defined, return it
       foreach ($DB->request('glpi_entitydatas', array('entities_id' => $entity)) as $data) {
-         if (NotificationMail::isUserAddressValid($data['email'])) {
-            return $data['email'];
+         if (NotificationMail::isUserAddressValid($data['admin_email'])) {
+            return $data['admin_email'];
          }
       }
       //Entity admin is not defined, return the global admin's address
@@ -672,7 +671,24 @@ class NotificationTarget extends CommonDBChild {
     * Get the reply to address
     * @return the reply to address
     */
-   function getReplyTo() {
+   function getReplyTo($options = array()) {
+      global $DB, $CFG_GLPI;
+
+      if (isset($options['entities_id'])) {
+         $entity = $options['entities_id'];
+      } else {
+         $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id'):
+                                                       $this->target_object->getField('entities_id'));
+      }
+
+      //If the entity administrator's address is defined, return it
+      foreach ($DB->request('glpi_entitydatas', array('entities_id' => $entity)) as $data) {
+         if (NotificationMail::isUserAddressValid($data['admin_reply'])) {
+            return $data['admin_reply'];
+         }
+      }
+      //Entity admin is not defined, return the global admin's address
+      return $CFG_GLPI["admin_reply"];
    }
 
 
