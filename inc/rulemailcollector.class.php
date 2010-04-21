@@ -200,19 +200,17 @@ class RuleMailCollector extends Rule {
                         }
 
                         if ($profile) {
-                           $entities = Profile_User::getEntitiesForProfileByUser(
-                                                                                 $params['users_id'],
+                           $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
                                                                                  $profile);
                            //Case 2 : check if there's only one profile for this user
                            if ((isset($this->criterias_results['ONE_PROFILE'])
                                  && count($entities) == 1)
                                     || !isset($this->criterias_results['ONE_PROFILE'])) {
-                              //User has right on only one entity
                               if (count($entities) == 1) {
-                                 $output['entities_id'] = $entities[0]['id'];
-                              }
-                              //Rights on more than one entity : get the user's prefered entity
-                              else {
+                                 //User has right on only one entity
+                                 $output['entities_id'] = $entities[0];
+                              } else {
+                                 //Rights on more than one entity : get the user's prefered entity
                                  $user = new User;
                                  $user->getFromDB($params['users_id']);
                                  //If an entity is defined in user's preferences, use this one
