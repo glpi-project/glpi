@@ -2231,7 +2231,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
       list($date_value,$hour_value)= explode(' ',$value);
    }
    if (!empty($minTime)) {
-      list($minHour,$minMinute,$minSec)=split(':',$minTime);
+      list($minHour,$minMinute,$minSec)=explode(':',$minTime);
       $minMinute=0;
       // Check time in interval
       if (!empty($hour_value) && $hour_value<$minTime) {
@@ -2240,7 +2240,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
    }
 
    if (!empty($maxTime)) {
-      list($maxHour,$maxMinute,$maxSec)=split(':',$maxTime);
+      list($maxHour,$maxMinute,$maxSec)=explode(':',$maxTime);
       $maxMinute=59;
       // Check time in interval
       if (!empty($hour_value) && $hour_value>$maxTime) {

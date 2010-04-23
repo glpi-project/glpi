@@ -41,7 +41,7 @@ if ($argv) {
 		//To be able to use = in search filters, enter \= instead in command line
 		//Replace the \= by ° not to match the split function
 		$arg=str_replace('\=','°',$argv[$i]);
-		$it = split("=",$arg);
+		$it = explode("=",$arg);
 		$it[0] = eregi_replace('^--','',$it[0]);
 
 		//Replace the ° by = the find the good filter
