@@ -74,7 +74,7 @@ class RuleMailCollectorCollection extends RuleCollection {
       //Add all user's profiles
       if (in_array('profiles',$fields)) {
          foreach (Profile_User::getForUser($input['users_id']) as $profile) {
-            $input['PROFILES'][] = $profile['profiles_id'];
+            $input['PROFILES'][$profile['profiles_id']] = $profile['profiles_id'];
          }
       }
 

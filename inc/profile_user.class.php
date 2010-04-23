@@ -487,7 +487,7 @@ class Profile_User extends CommonDBTM {
                   AND `profiles_id`='$profiles_id'";
       $entities = array();
       foreach ($DB->request($query) as $data) {
-         $entities[] = $data['entities_id'];
+         $entities[$data['entities_id']] = $data['entities_id'];
       }
       return $entities;
    }
