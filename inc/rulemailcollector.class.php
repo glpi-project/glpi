@@ -208,7 +208,7 @@ class RuleMailCollector extends Rule {
                                     || !isset($this->criterias_results['ONE_PROFILE'])) {
                               if (count($entities) == 1) {
                                  //User has right on only one entity
-                                 $output['entities_id'] = $entities[0];
+                                 $output['entities_id'] = array_pop($entities);
                               } else {
                                  //Rights on more than one entity : get the user's prefered entity
                                  $user = new User;
