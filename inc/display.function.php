@@ -908,10 +908,14 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       echo "?noAUTO=1";
    }
    echo "\"  title=\"".$LANG['central'][6]."\">".$LANG['central'][6]."  </a>";
-   echo "(";
-   echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],
-                        $_SESSION["glpifirstname"],0,20);
-   echo ")</li>\n";
+   // check user id : header used for display messages when session logout
+   if (getLoginUserID()) {
+      echo "(";
+      echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],
+                           $_SESSION["glpifirstname"],0,20);
+      echo ")";
+   }
+   echo "</li>\n";
 
 
 
@@ -1192,7 +1196,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' ".
           "onclick=\"completecleandisplay('show_all_menu')\">";
    echo "</li>";
-   showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");
+   // check user id : header used for display messages when session logout
+   if (getLoginUserID()) {
+      showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");
+   }
    echo "</ul>";
    echo "</div>";
 
@@ -1304,10 +1311,15 @@ function helpHeader($title,$url='') {
    echo "<div id='c_preference' >";
    echo "<ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".
                $LANG['central'][6]."\">".$LANG['central'][6]."</a>";
-   echo "(";
-   echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],
-                        0,20);
-   echo ")</li>\n";
+
+   // check user id : header used for display messages when session logout
+   if (getLoginUserID()) {
+      echo "(";
+      echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],
+                           0,20);
+      echo ")";
+   }
+   echo "</li>\n";
 
    echo "<li><a href='".(empty($CFG_GLPI["helpdesk_doc_url"])?
               "http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdesk_doc_url"]).
@@ -1429,8 +1441,10 @@ function helpHeader($title,$url='') {
    }
    echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-
-   showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+   // check user id : header used for display messages when session logout
+   if (getLoginUserID()) {
+      showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+   }
    echo "</ul></div>";
 
    echo "</div>"; // fin header
