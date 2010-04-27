@@ -3486,11 +3486,13 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 drop table glpi_mailingsettings" . $LANG['update'][90] . $DB->error());
    }
 
-   $tables = array('glpi_infocoms','glpi_reservationitems','glpi_networkports');
-   foreach ($tables as $table) {
+   $tables = array('glpi_infocoms'           => $LANG['financial'][3],
+                   'glpi_reservationitems'   => $LANG['Menu'][17],
+                   'glpi_networkports'       => $LANG['networking'][6]);
+   foreach ($tables as $table => $label) {
       // Migrate infocoms entity information
       if (!FieldExists($table,'entities_id')) {
-         displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['financial'][3]); // Updating schema
+         displayMigrationMessage("078", $LANG['update'][141].' - '.$label); // Updating schema
 
          $query = "ALTER TABLE `$table` ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `itemtype`,
                            ADD `is_recursive` tinyint(1) NOT NULL DEFAULT 0 AFTER `entities_id`,
@@ -3506,7 +3508,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['financial'][3].' - '.$data['itemtype']); // Updating schema
+                  displayMigrationMessage("078", $LANG['update'][141].' - '.$label.' - '.$data['itemtype']); // Updating schema
 
                   $itemtable=getTableForItemType($data['itemtype']);
                   // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
