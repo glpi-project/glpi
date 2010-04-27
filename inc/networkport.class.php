@@ -137,6 +137,8 @@ class NetworkPort extends CommonDBChild {
       global $LANG, $CFG_GLPI;
 
       $ong[1] = $LANG['title'][26];
+      $ong[12]=$LANG['title'][38];
+
       return $ong;
    }
 
