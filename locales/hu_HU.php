@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Nyitás dátuma";
 $LANG['reports'][61]="Befejezés dátuma"; 
 $LANG['reports'][62]="Hardverek pénzügyi információi"; 
 $LANG['reports'][63]="Egyebek pénzügyi adatai (licencek, patronok, kellékek)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Foglalható tételek"; 
 $LANG['reservation'][2]="Eszköz átmenetileg nem érhető el"; 

@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="開始日付";
 $LANG['reports'][61]="終了日付"; 
 $LANG['reports'][62]="ハードウェアポート"; 
 $LANG['reports'][63]="その他の財務情報（ライセンス・カートリッジ・消耗品）"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="貸し出し品"; 
 $LANG['reservation'][2]="デバイスは一時的に利用できない"; 

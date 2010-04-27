@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Fecha de apertura";
 $LANG['reports'][61]="Fecha de cierre"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Otros datos financieros (licencias, insumos, cartuchos)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Material reservable"; 
 $LANG['reservation'][2]="Material temporariamente no disponible"; 

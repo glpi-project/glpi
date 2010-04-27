@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Åpner dato";
 $LANG['reports'][61]="Søknadsfrist"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Andre Finans (konsesjoner, patroner, forbruksvarer)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Reserverbare enheter"; 
 $LANG['reservation'][2]="Enhet midlertidig utilgjengelig"; 

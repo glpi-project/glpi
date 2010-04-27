@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Pradžios data";
 $LANG['reports'][61]="Pabaigos data"; 
 $LANG['reports'][62]="Įrangos finansinė informacija"; 
 $LANG['reports'][63]="Kita finansinė informacija"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Rezervuojami elementai"; 
 $LANG['reservation'][2]="Įrenginys laikinai neprienamas"; 

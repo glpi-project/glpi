@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="termin otwarcia";
 $LANG['reports'][61]="Data zamknięcia"; 
 $LANG['reports'][62]="Informacje finansowe o sprzęcie"; 
 $LANG['reports'][63]="Inne informacje finansowe (licencje, kardlidże, materiały eksploatacyjne)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Pozycje możliwe do rezerwacji"; 
 $LANG['reservation'][2]="Urządzenie tymczasowo niedostępne"; 

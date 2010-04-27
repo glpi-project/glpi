@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Datum odpiranja";
 $LANG['reports'][61]="Datum zapiranja"; 
 $LANG['reports'][62]="Finančni podatki strojne opreme"; 
 $LANG['reports'][63]="Ostali finančni podatki (licence, kartuše, consumables)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Rezervirani predmeti"; 
 $LANG['reservation'][2]="Naprave trenutno nedostopna"; 

@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Дата на откриване";
 $LANG['reports'][61]="Дата на закриване"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Друга финансова информация (лицензи, касети, консумативи)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Елементи за резервиране"; 
 $LANG['reservation'][2]="Device temporarily unavailable"; 

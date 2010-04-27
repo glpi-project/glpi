@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Begindatum";
 $LANG['reports'][61]="Afsluitdatum"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Andere commerciële info (licenties,inktpatronen,verbruiksartikelen)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Items die geboekt kunnen worden"; 
 $LANG['reservation'][2]="Apparaat tijdelijk niet beschikbaar"; 
