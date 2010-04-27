@@ -208,13 +208,14 @@ function addTracking($type,$ID,$ID_entity){
 			$users[1]=mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
 		}
 		$enterprise=0;
-		if (mt_rand(0,100)<20)
+		if (mt_rand(0,100)<20) {
 			$enterprise=mt_rand($FIRST["enterprises"],$LAST['enterprises']);
+      }
 		$realtime=(mt_rand(0,3)+mt_rand(0,100)/100);
 		$hour_cost=100;
 		$tco+=$realtime*$hour_cost;
 
-		$query="INSERT INTO glpi_tickets VALUES (NULL,'$ID_entity','Title ".getRandomString(20)."','".date("Y-m-d H:i:s",intval($date1))."','".date("Y-m-d H:i:s",intval($date2))."','".date("Y-m-d H:i:s",intval($date1))."','$status','".$users[0]."','".$users[0]."','".mt_rand($FIRST["groups"],$LAST['groups'])."','".mt_rand(0,6)."','".$users[1]."','$enterprise','".mt_rand($FIRST["groups"],$LAST['groups'])."','$type','$ID','tracking ".getRandomString(15)."','".mt_rand(1,5)."','".mt_rand(1,5)."','".mt_rand(1,5)."','','0','$realtime','".mt_rand(0,$MAX['tracking_category'])."','$hour_cost','0','0','".mt_rand(0,$MAX['ticketsolutions'])."','Solution ".getRandomString(20)."','accepted')";
+		$query="INSERT INTO glpi_tickets VALUES (NULL,'$ID_entity','Title ".getRandomString(20)."','".date("Y-m-d H:i:s",intval($date1))."','".date("Y-m-d H:i:s",intval($date1))."','".date("Y-m-d H:i:s",intval($date2))."','".date("Y-m-d H:i:s",intval($date1))."','$status','".$users[0]."','".$users[0]."','".mt_rand($FIRST["groups"],$LAST['groups'])."','".mt_rand(0,6)."','".$users[1]."','$enterprise','".mt_rand($FIRST["groups"],$LAST['groups'])."','$type','$ID','tracking ".getRandomString(15)."','".mt_rand(1,5)."','".mt_rand(1,5)."','".mt_rand(1,5)."','','0','$realtime','".mt_rand(0,$MAX['tracking_category'])."','$hour_cost','0','0','".mt_rand(0,$MAX['ticketsolutions'])."','Solution ".getRandomString(20)."','accepted')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$tID=$DB->insert_id();
 		// Add followups

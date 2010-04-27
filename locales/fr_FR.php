@@ -1534,6 +1534,7 @@ $LANG['reports'][60]="Date d'ouverture";
 $LANG['reports'][61]="Date de fermeture";
 $LANG['reports'][62]="Informations financières inventaire matériel";
 $LANG['reports'][63]="Informations financières autres (licences, consommables, cartouches)";
+$LANG['reports'][64]="Date de résolution";
 
 $LANG['reservation'][1]="Matériel réservable";
 $LANG['reservation'][2]="Matériel temporairement indisponible";

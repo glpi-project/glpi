@@ -1,4 +1,4 @@
-#GLPI Dump database on 2010-04-27 09:37
+#GLPI Dump database on 2010-04-27 13:54
 
 ### Dump table glpi_alerts
 
@@ -873,8 +873,8 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','5','0','2010-04-27 09:37:23','0','0','0','Run mode : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','5','1','2010-04-27 09:37:23','2','0.0023551','0','Ended task, nothing to do');
+INSERT INTO `glpi_crontasklogs` VALUES ('1','5','0','2010-04-27 13:54:49','0','0','0','Run mode : GLPI');
+INSERT INTO `glpi_crontasklogs` VALUES ('2','5','1','2010-04-27 13:54:49','2','0.00232601','0','Ended task, nothing to do');
 
 ### Dump table glpi_crontasks
 
@@ -903,7 +903,7 @@ INSERT INTO `glpi_crontasks` VALUES ('1','OcsServer','ocsng','300',NULL,'0','1',
 INSERT INTO `glpi_crontasks` VALUES ('2','CartridgeItem','cartridge','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('3','ConsumableItem','consumable','86400','10','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('4','SoftwareLicense','software','86400',NULL,'0','1','3','0','24','30',NULL,NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30','2010-04-27 09:37:23',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('5','Contract','contract','86400',NULL,'1','1','3','0','24','30','2010-04-27 13:54:49',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('6','InfoCom','infocom','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('7','CronTask','logs','86400','30','0','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('8','CronTask','optimize','604800',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -1528,7 +1528,7 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-04-27 09:37:25','login','3','glpi IP connection: 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-04-27 13:54:51','login','3','glpi IP connection: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -3724,6 +3724,7 @@ CREATE TABLE `glpi_tickets` (
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `date` datetime default NULL,
   `closedate` datetime default NULL,
+  `solvedate` datetime default NULL,
   `date_mod` datetime default NULL,
   `status` varchar(255) collate utf8_unicode_ci default 'new',
   `users_id` int(11) NOT NULL default '0',
@@ -3765,6 +3766,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `groups_id` (`groups_id`),
   KEY `users_id_recipient` (`users_id_recipient`),
   KEY `item` (`itemtype`,`items_id`),
+  KEY `solvedate` (`solvedate`),
   KEY `ticketsolutiontypes_id` (`ticketsolutiontypes_id`),
   KEY `urgency` (`urgency`),
   KEY `impact` (`impact`),
@@ -3946,7 +3948,7 @@ CREATE TABLE `glpi_users` (
   KEY `authitem` (`authtype`,`auths_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-04-27 09:37:25','2010-04-27 09:37:25','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2010-04-27 13:54:51','2010-04-27 13:54:51','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0',NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,'0','0','0','0','0',NULL,NULL,'0',NULL,'0','0',NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0',NULL,NULL);
