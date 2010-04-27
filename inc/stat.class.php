@@ -450,34 +450,34 @@ class Stat {
          case "inter_solved" :
             $WHERE .= " AND (`glpi_tickets`.`status` = 'closed'
                            OR `glpi_tickets`.`status` = 'solved')
-                        AND `glpi_tickets`.`closedate` IS NOT NULL ";
-            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+                        AND `glpi_tickets`.`solvedate` IS NOT NULL ";
+            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`solvedate`",$begin,$end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
                            COUNT(`glpi_tickets`.`id`) AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
                      GROUP BY date_unix
-                     ORDER BY `glpi_tickets`.`closedate`";
+                     ORDER BY `glpi_tickets`.`solvedate`";
             break;
 
          case "inter_avgsolvedtime" :
             $WHERE .= " AND (`glpi_tickets`. `status` = 'solved'
                            OR `glpi_tickets`.`status` = 'closed')
-                        AND `glpi_tickets`.`closedate` IS NOT NULL ";
-            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+                        AND `glpi_tickets`.`solvedate` IS NOT NULL ";
+            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`solvedate`",$begin,$end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           AVG(TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`closedate`, `glpi_tickets`.`date`))
+                           AVG(TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`solvedate`, `glpi_tickets`.`date`))
                            /".HOUR_TIMESTAMP.") AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
                      GROUP BY date_unix
-                     ORDER BY `glpi_tickets`.`closedate`";
+                     ORDER BY `glpi_tickets`.`solvedate`";
             break;
 
          case "inter_avgrealtime" :
@@ -487,28 +487,28 @@ class Stat {
                $realtime_table = "glpi_tickets";
             }
             $WHERE .= " AND `$realtime_table`.`realtime` > '0' ";
-            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`solvedate`",$begin,$end);
 
-            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
                            ".MINUTE_TIMESTAMP." * AVG(`$realtime_table`.`realtime`) AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
                      GROUP BY date_unix
-                     ORDER BY `glpi_tickets`.`closedate`";
+                     ORDER BY `glpi_tickets`.`solvedate`";
             break;
 
          case "inter_avgtakeaccount" :
             $WHERE .= " AND (`glpi_tickets`.`status` = 'solved'
                            OR `glpi_tickets`.`status` = 'closed')
-                        AND `glpi_tickets`.`closedate` IS NOT NULL ";
-            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+                        AND `glpi_tickets`.`solvedate` IS NOT NULL ";
+            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`solvedate`",$begin,$end);
 
             $query = "SELECT `glpi_tickets`.`id`,
-                           FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+                           FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           MIN(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`)
+                           MIN(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`)
                                  - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
                            MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`)
                                  - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
