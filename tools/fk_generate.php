@@ -42,7 +42,7 @@ $numtab=0;
 while ($t=$DB->fetch_array($result)){
 
 	// on se  limite aux tables prefixees _glpi
-	if (ereg("glpi_",$t[0])){
+	if (strstr($t[0],"glpi_")){
 		$query="ALTER TABLE `$t[0]` TYPE = innodb";
 		$DB->query($query);
 	}

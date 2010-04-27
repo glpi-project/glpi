@@ -42,7 +42,7 @@ if ($argv) {
 		//Replace the \= by ° not to match the split function
 		$arg=str_replace('\=','°',$argv[$i]);
 		$it = explode("=",$arg);
-		$it[0] = eregi_replace('^--','',$it[0]);
+		$it[0] = preg_replace('/^--/','',$it[0]);
 
 		//Replace the ° by = the find the good filter
 		$it=str_replace('°','=',$it);
