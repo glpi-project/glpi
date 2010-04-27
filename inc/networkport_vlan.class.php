@@ -105,10 +105,15 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       $np = new NetworkPort();
       if ($contact_id=$np->getContact($port)) {
-         $query = "INSERT INTO
-                   `glpi_networkports_vlans` (`networkports_id`,`vlans_id`)
-                   VALUES ('$contact_id','$vlan')";
-         $DB->query($query);
+         if ($np->getFromDB($contact_id)) {
+            $vlans=self::getVlansForNetworkPort($port);
+            if (!in_array($vlan,$vlans)) {
+               $query = "INSERT INTO
+                        `glpi_networkports_vlans` (`networkports_id`,`vlans_id`)
+                        VALUES ('$contact_id','$vlan')";
+               $DB->query($query);
+            }
+         }
       }
    }
 
@@ -171,7 +176,19 @@ class NetworkPort_Vlan extends CommonDBRelation {
       }
    }
 
+   static function getVlansForNetworkPort($portID) {
+      global $DB;
 
+      $vlans=array();
+      $query = "SELECT `vlans_id`
+               FROM `glpi_networkports_vlans`
+               WHERE `networkports_id` = '$portID'";
+      foreach ($DB->request($query) as $data) {
+         $vlans[$data['vlans_id']] = $data['vlans_id'];
+      }
+
+      return $vlans;
+   }
 }
 
 ?>
