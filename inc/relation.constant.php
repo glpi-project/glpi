@@ -171,7 +171,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
 
                 "glpi_phonemodels" => array("glpi_phones"=>"phonemodels_id"),
 
-                "glpi_printermodels" => array("glpi_printers"=>"printermodels",
+                "glpi_printermodels" => array("glpi_printers"=>"printermodels_id",
                                                "glpi_cartridges_printermodels"=>"printermodels_id"),
 
                 "glpi_netpoints" => array("glpi_networkports"=>"netpoints_id"),
