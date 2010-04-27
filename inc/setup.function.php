@@ -54,92 +54,23 @@ function listTemplates($itemtype, $target, $add = 0) {
       return false;
    }
 
-   $query = "SELECT * ";
-   $where = " WHERE `is_template` = '1'";
-   $whereentity = " AND `entities_id` = '" . $_SESSION["glpiactive_entity"] . "'";
-   $order = " ORDER by `template_name`";
-   switch ($itemtype) {
-      case 'Computer' :
-         $title = $LANG['Menu'][0];
-         $query .= "FROM `glpi_computers`
-                    $where
-                        $whereentity
-                    $order";
-         break;
-
-      case 'NetworkEquipment' :
-         $title = $LANG['Menu'][1];
-         $query .= "FROM `glpi_networkequipments`
-                    $where
-                        $whereentity
-                    $order";
-         break;
-
-      case 'Monitor' :
-         $title = $LANG['Menu'][3];
-         $query .= "FROM `glpi_monitors`
-                    $where
-                        $whereentity
-                    $order";
-         break;
-
-      case 'Printer' :
-         $title = $LANG['Menu'][2];
-         $query .= "FROM `glpi_printers`
-                    $where
-                        $whereentity
-                    $order";
-         break;
-
-      case 'Peripheral' :
-         $title = $LANG['Menu'][16];
-         $query .= "FROM `glpi_peripherals`
-                    $where
-                        $whereentity
-                    $order";
-         break;
-
-      case 'Software' :
-         $title = $LANG['Menu'][4];
-         $query .= "FROM `glpi_softwares`
-                    $where
-                        $whereentity
-                    $order";
-         break;
-
-      case 'Phone' :
-         $title = $LANG['Menu'][34];
-         $query .= "FROM `glpi_phones`
-                    $where
-                        $whereentity
-                    $order";
-         break;
-
-      case 'OcsServer' :
-         $title = $LANG['Menu'][33];
-         $query .= "FROM `glpi_ocsservers`
-                    $where
-                    $order";
-         break;
-
-      case 'Budget' :
-         $title = $LANG['financial'][87];
-         $query .= "FROM `glpi_budgets`
-                    $where
-                        $whereentity
-                    $order";
-         break;
+   $query = "SELECT * FROM `".$item->getTable()."`
+            WHERE `is_template` = '1' ";
+   if ($item->isEntityAssign()) {
+      $query .= getEntitiesRestrictRequest('AND',$item->getTable(),'entities_id','',$item->maybeRecursive());
    }
+   $query .= " ORDER by `template_name`";
+
    if ($result = $DB->query($query)) {
       echo "<div class='center'><table class='tab_cadre' width='50%'>";
       if ($add) {
-         echo "<tr><th>" . $LANG['common'][7] . " - $title:</th></tr>";
+         echo "<tr><th>" . $LANG['common'][7] . " - ".$item->getTypeName()." :</th></tr>";
          echo "<tr><td class='tab_bg_1 center'>";
          echo "<a href=\"$target?id=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" .
                 $LANG['common'][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
          echo "</tr>";
       } else {
-         echo "<tr><th colspan='2'>" . $LANG['common'][14] . " - $title:</th></tr>";
+         echo "<tr><th colspan='2'>" . $LANG['common'][14] . " - ".$item->getTypeName()." :</th></tr>";
       }
 
       while ($data = $DB->fetch_array($result)) {

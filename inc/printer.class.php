@@ -203,6 +203,8 @@ class Printer  extends CommonDBTM {
             if (empty($ic->fields['buy_date'])) {
                unset($ic->fields['buy_date']);
             }
+            $ic->fields["entities_id"]=$this->fields['entities_id'];
+            $ic->fields["is_recursive"]=$this->fields['is_recursive'];
             $ic->addToDB();
          }
 
@@ -222,6 +224,9 @@ class Printer  extends CommonDBTM {
                unset($np->fields["mac"]);
                unset($np->fields["netpoints_id"]);
                $np->fields["items_id"]=$this->fields['id'];
+               $np->fields["entities_id"]=$this->fields['entities_id'];
+               $np->fields["is_recursive"]=$this->fields['is_recursive'];
+
                $portid=$np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
                                      array('networkports_id'=>$data["id"])) as $vlan) {
