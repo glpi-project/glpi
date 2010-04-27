@@ -751,10 +751,11 @@ class NetworkPort extends CommonDBChild {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['name']['table'] = $this->getTable();
-      $tab[1]['name']['field'] = 'name';
-      $tab[1]['name']['name'] = $LANG["common"][16];
-      $tab[1]['name']['type'] = 'text';
+      $tab[1]['table'] = $this->getTable();
+      $tab[1]['field'] = 'name';
+      $tab[1]['linkfield'] = '';
+      $tab[1]['name'] = $LANG["common"][16];
+      $tab[1]['type'] = 'text';
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
@@ -763,51 +764,61 @@ class NetworkPort extends CommonDBChild {
 
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'logical_number';
+      $tab[3]['linkfield'] = '';
       $tab[3]['name'] = $LANG["networking"][21];
       $tab[3]['datatype'] = 'integer';
 
       $tab[4]['table'] = $this->getTable();
       $tab[4]['field'] = 'mac';
+      $tab[4]['linkfield'] = '';
       $tab[4]['name'] = $LANG["device_iface"][2];
       $tab[4]['datatype'] = 'text';
 
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'ip';
+      $tab[5]['linkfield'] = '';
       $tab[5]['name'] = $LANG["networking"][14];
       $tab[5]['datatype'] = 'text';
 
       $tab[6]['table'] = $this->getTable();
       $tab[6]['field'] = 'netmask';
+      $tab[6]['linkfield'] = '';
       $tab[6]['name'] = $LANG["networking"][60];
       $tab[6]['datatype'] = 'text';
 
       $tab[7]['table'] = $this->getTable();
       $tab[7]['field'] = 'subnet';
+      $tab[7]['linkfield'] = '';
       $tab[7]['name'] = $LANG["networking"][61];
       $tab[7]['datatype'] = 'text';
 
       $tab[8]['table'] = $this->getTable();
       $tab[8]['field'] = 'gateway';
+      $tab[8]['linkfield'] = '';
       $tab[8]['name'] = $LANG["networking"][59];
       $tab[8]['datatype'] = 'text';
 
       $tab[9]['table'] = 'glpi_netpoints';
-      $tab[9]['field'] = 'netpoints_id';
+      $tab[9]['field'] = 'name';
+      $tab[6]['linkfield'] = 'netpoints_id';
       $tab[9]['netpoint']['name'] = $LANG["networking"][51];
       $tab[9]['netpoint']['datatype'] = 'text';
 
       $tab[10]['table'] = 'glpi_networkinterfaces';
-      $tab[10]['field'] = 'networkinterfaces_id';
+      $tab[10]['field'] = 'name';
+      $tab[10]['linkfield'] = 'networkinterfaces_id';
       $tab[10]['name'] = $LANG["networking"][51];
       $tab[10]['datatype'] = 'text';
 
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'itemtype';
+      $tab[20]['linkfield'] = '';
       $tab[20]['name'] = $LANG['common'][17];
       $tab[20]['datatype'] = 'itemtype';
 
       $tab[21]['table'] = $this->getTable();
       $tab[21]['field'] = 'items_id';
+      $tab[21]['linkfield'] = '';
       $tab[21]['name'] = 'id';
       $tab[21]['datatype'] = 'integer';
 
