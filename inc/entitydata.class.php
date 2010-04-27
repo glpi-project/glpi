@@ -442,7 +442,7 @@ class EntityData extends CommonDBTM {
    }
 
 
-   static function showHelpForm(Entity $entity) {
+   static function showHelpdeskOptions(Entity $entity) {
       global $LANG;
 
       $ID = $entity->getField('id');
