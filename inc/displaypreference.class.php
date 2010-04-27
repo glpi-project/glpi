@@ -206,6 +206,12 @@ class DisplayPreference extends CommonDBTM {
          return false;
       }
 
+      $item = NULL;
+      if ($itemtype!='States' && class_exists($itemtype)) {
+         $item = new $itemtype();
+      }
+
+
       $IDuser=getLoginUserID();
 
       echo "<div class='center' id='tabsbody' >";
@@ -229,6 +235,8 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='submit' name='activate' value=\"".$LANG['buttons'][2]."\" class='submit' >";
          echo "</form></th></tr></table>\n";
       } else {
+         $already_added = self::getForTypeUser($itemtype,$IDuser);
+
          echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
          echo $LANG['setup'][252]."&nbsp;: </th></tr>";
          echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
@@ -246,7 +254,7 @@ class DisplayPreference extends CommonDBTM {
                   $first_group=false;
                }
                echo "<optgroup label='$val'>";
-            } else if ($key!=1) {
+            } else if ($key!=1 && !in_array($key,$already_added)) {
                echo "<option value='$key'>".$val["name"]."</option>\n";
             }
          }
@@ -263,10 +271,24 @@ class DisplayPreference extends CommonDBTM {
          echo "<td class='center' width='50%'>".$searchopt[1]["name"]."</td>";
          echo "<td colspan='3'>&nbsp;</td>";
          echo "</tr>";
+
+
+         // print entity
+         if (isMultiEntitiesMode()
+         && (isset($CFG_GLPI["union_search_type"][$itemtype])
+            || ($item && $item->maybeRecursive())
+            || count($_SESSION["glpiactiveentities"])>1)) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center' width='50%'>".$searchopt[80]["name"]."</td>";
+            echo "<td colspan='3'>&nbsp;</td>";
+            echo "</tr>";
+         }
+
          $i=0;
          if ($numrows) {
             while ($data=$DB->fetch_array($result)) {
-               if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
+               if ($data["num"]!=1
+                     && isset($searchopt[$data["num"]])) {
                   echo "<tr class='tab_bg_2'>";
                   echo "<td class='center' width='50%' >";
                   echo $searchopt[$data["num"]]["name"]."</td>";
@@ -334,6 +356,11 @@ class DisplayPreference extends CommonDBTM {
       }
       $IDuser=0;
 
+      $item = NULL;
+      if ($itemtype!='States' && class_exists($itemtype)) {
+         $item = new $itemtype();
+      }
+
       $global_write=haveRight("search_config_global","w");
 
       echo "<div class='center' id='tabsbody' >";
@@ -350,6 +377,8 @@ class DisplayPreference extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
       echo $LANG['setup'][252]."&nbsp;: </th></tr>\n";
       if ($global_write) {
+         $already_added = self::getForTypeUser($itemtype,$IDuser);
+
          echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
          echo "<form method='post' action=\"$target\">";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -365,7 +394,7 @@ class DisplayPreference extends CommonDBTM {
                   $first_group=false;
                }
                echo "<optgroup label='$val'>";
-            } else if ($key!=1) {
+            } else if ($key!=1 && !in_array($key,$already_added)) {
                echo "<option value='$key'>".$val["name"]."</option>";
             }
          }
@@ -385,6 +414,19 @@ class DisplayPreference extends CommonDBTM {
          echo "</td><td colspan='3'>&nbsp;</td>";
       }
       echo "</tr>";
+
+      // print entity
+      if (isMultiEntitiesMode()
+      && (isset($CFG_GLPI["union_search_type"][$itemtype])
+         || ($item && $item->maybeRecursive())
+         || count($_SESSION["glpiactiveentities"])>1)) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' width='50%'>".$searchopt[80]["name"]."</td>";
+         echo "<td colspan='3'>&nbsp;</td>";
+         echo "</tr>";
+      }
+
+
       $i=0;
       if ($numrows) {
          while ($data=$DB->fetch_array($result)) {
