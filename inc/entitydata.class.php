@@ -463,8 +463,8 @@ class EntityData extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['entity'][18] . "&nbsp;:</td>";
-      echo "<td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][18] . "&nbsp;:</td>";
+      echo "<td colspan='2'>";
       Alert::dropdownIntegerNever('autoclose_delay', $entdata->fields['autoclose_delay'],
                                   array('max'            => 99,
                                         'inherit_global' => 1));
