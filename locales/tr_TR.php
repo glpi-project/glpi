@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Kayıt tarihi";
 $LANG['reports'][61]="Kapanış tarihi"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Diğer Finansal Bilgiler (Lisans, Kartuş, Sarf vs)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Rezerv Edilebilir Öğeler"; 
 $LANG['reservation'][2]="Device temporarily unavailable"; 

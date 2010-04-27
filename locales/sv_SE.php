@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Startdatum";
 $LANG['reports'][61]="Slutdatum"; 
 $LANG['reports'][62]="Finansiell information hårdvara"; 
 $LANG['reports'][63]="Finansiell information övrigt"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Reserverbara objekt"; 
 $LANG['reservation'][2]="Device temporarily unavailable"; 

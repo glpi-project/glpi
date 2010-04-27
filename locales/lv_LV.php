@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Pieteikšanas datums";
 $LANG['reports'][61]="Aizvēršanas datums"; 
 $LANG['reports'][62]="Aparatūras finansu informācija"; 
 $LANG['reports'][63]="Cita finansu informācija (licences, kasetnes, uc. )"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Rezervējamie objekti"; 
 $LANG['reservation'][2]="Ierīce īslaicīgi nav pieejama"; 

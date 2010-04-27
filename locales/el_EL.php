@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Ημερομηνία έναρξης";
 $LANG['reports'][61]="Ημερομηνία κλεισίματος"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Άλλες οικονομικές πληροφορίες υλικού(άδειες χρήσης, Φυσίγγια, αναλώσιμα)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Συσκευή διαθέσιμη"; 
 $LANG['reservation'][2]="Συσκευή προσωρινά μη διαθέσιμη"; 

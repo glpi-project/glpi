@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Opening date";
 $LANG['reports'][61]="Closing date"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Other Financial Information (licences, cartridges, consumables)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Reservable Items"; 
 $LANG['reservation'][2]="Device temporarily unavailable"; 

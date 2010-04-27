@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="开始日期";
 $LANG['reports'][61]="截止日期"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="其他财政信息(使用许可、墨盒，消费品)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="预定的设备"; 
 $LANG['reservation'][2]="Device temporarily unavailable"; 

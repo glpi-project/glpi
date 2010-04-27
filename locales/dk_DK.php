@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Åbnings dato";
 $LANG['reports'][61]="Lukke dato"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Andre finans informationer (licenser, patroner, forbrugs stoffer)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Emner der kan reseveres"; 
 $LANG['reservation'][2]="Device temporarily unavailable"; 

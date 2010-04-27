@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="תאריך פתיחה";
 $LANG['reports'][61]="תאריך סגירה"; 
 $LANG['reports'][62]="מידע פיננסי עבור חומרה"; 
 $LANG['reports'][63]="מידע פיננסי אחר (רישיונות, טונרים/דיו, מתכלים)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="פריטים זמינים להשאלה"; 
 $LANG['reservation'][2]="מכשיר אינו זמין זמנית"; 

@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Datum otevření";
 $LANG['reports'][61]="Datum uzavření"; 
 $LANG['reports'][62]="Finanční informace o Hardware"; 
 $LANG['reports'][63]="Další informace o financích (licence, náplně, spotřební materiál)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Zamluvitelných položek"; 
 $LANG['reservation'][2]="Zařízení není dočasně k dispozici"; 

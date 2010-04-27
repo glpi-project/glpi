@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Data d'obertura";
 $LANG['reports'][61]="Data de tancament"; 
 $LANG['reports'][62]="Dades financeres de material inventariat"; 
 $LANG['reports'][63]="Altres dades financeres (llicencies, consumibles, cartutxos)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Material reservable"; 
 $LANG['reservation'][2]="Material no disponible temporalment"; 

@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Data deschiderii";
 $LANG['reports'][61]="Data de inchidere"; 
 $LANG['reports'][62]="Informații financiare despre hardware"; 
 $LANG['reports'][63]="Alte informatii financiare (licente, cartuse, consumabile)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Element de rezervat"; 
 $LANG['reservation'][2]="Dispozitiv temporar inaccesibil"; 

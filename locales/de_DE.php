@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Erstellungsdatum";
 $LANG['reports'][61]="Enddatum"; 
 $LANG['reports'][62]="Finanzbericht zur Hardware"; 
 $LANG['reports'][63]="Weitere Finanzinformationen (Lizenzen, Kartuschen, Verbrauchsmaterial)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Reservierbare Geräte"; 
 $LANG['reservation'][2]="Gerät im Augenblick nicht verfügbar"; 

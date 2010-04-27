@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Datum otvaranja";
 $LANG['reports'][61]="Datum zatvaranja"; 
 $LANG['reports'][62]="Hardware Financial Information"; 
 $LANG['reports'][63]="Ostale financijske informacije (licence, toneri, potrošni)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Artikli za rezervirati"; 
 $LANG['reservation'][2]="Uređaj privremeno nedostupan"; 

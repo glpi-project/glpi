@@ -1368,6 +1368,7 @@ $LANG['reports'][60]="Data apertura";
 $LANG['reports'][61]="Data chiusura"; 
 $LANG['reports'][62]="Informazioni contabili sull'hardware"; 
 $LANG['reports'][63]="Altre informazioni contabili (licenze, cartucce, materiali di consumo)"; 
+$LANG['reports'][64]="Resolution date"; 
 
 $LANG['reservation'][1]="Dispositivi prenotabili"; 
 $LANG['reservation'][2]="Dispositivo temporaneamente non disponibile"; 
