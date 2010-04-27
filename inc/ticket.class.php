@@ -1546,6 +1546,7 @@ class Ticket extends CommonDBTM {
          $tab[27]['linkfield']    = '';
          $tab[27]['name']         = $LANG['tracking'][29]." ".$LANG['job'][9];
          $tab[27]['forcegroupby'] = true;
+         $tab[27]['usehaving']    = true;
 
          $tab[26]['table']        = 'glpi_tickettasks';
          $tab[26]['field']        = 'content';
@@ -1559,6 +1560,7 @@ class Ticket extends CommonDBTM {
          $tab[28]['linkfield']    = '';
          $tab[28]['name']         = $LANG['tracking'][29]." ".$LANG['job'][7];
          $tab[28]['forcegroupby'] = true;
+         $tab[28]['usehaving']   = true;
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
