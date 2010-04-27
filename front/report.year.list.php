@@ -108,7 +108,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                   $first = false;
                }
                $query[$val] .= " YEAR(`glpi_infocoms`.`buy_date`) = '$val2'
-               $                 OR YEAR(`glpi_contracts`.`begin_date`) = '$val2'";
+                                OR YEAR(`glpi_contracts`.`begin_date`) = '$val2'";
             }
             $query[$val] .= ")";
          }
