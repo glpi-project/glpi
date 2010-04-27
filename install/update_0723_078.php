@@ -3476,7 +3476,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 drop table glpi_mailingsettings" . $LANG['update'][90] . $DB->error());
    }
 
-   $tables = array('glpi_infocoms','glpi_reservationitems');
+   $tables = array('glpi_infocoms','glpi_reservationitems','glpi_networkports');
    foreach ($tables as $table) {
       // Migrate infocoms entity information
       if (!FieldExists($table,'entities_id')) {

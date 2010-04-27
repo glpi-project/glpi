@@ -43,7 +43,7 @@ class Phone extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory=true;
-   protected $forward_entity_to=array('Infocom','ReservationItem');
+   protected $forward_entity_to=array('Infocom','ReservationItem','NetworkPort');
 
    static function getTypeName() {
       global $LANG;
