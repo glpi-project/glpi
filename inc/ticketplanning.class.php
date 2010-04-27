@@ -404,30 +404,32 @@ class TicketPlanning extends CommonDBTM {
       $interv=array();
       if ($DB->numrows($result)>0) {
          for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
-            $fup->getFromDB($data["tickettasks_id"]);
-            $job->getFromDBwithData($fup->fields["tickets_id"],0);
-            if (haveAccessToEntity($job->fields["entities_id"])) {
-               $interv[$data["begin"]."$$$".$i]["tickettasks_id"]=$data["tickettasks_id"];
-               $interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
-               $interv[$data["begin"]."$$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
-               $interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
-               $interv[$data["begin"]."$$$".$i]["id"]=$data["id"];
-               if (strcmp($begin,$data["begin"])>0) {
-                  $interv[$data["begin"]."$$$".$i]["begin"]=$begin;
-               } else {
-                  $interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
+            if ($fup->getFromDB($data["tickettasks_id"])) {
+               if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
+                  if (haveAccessToEntity($job->fields["entities_id"])) {
+                     $interv[$data["begin"]."$$$".$i]["tickettasks_id"]=$data["tickettasks_id"];
+                     $interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
+                     $interv[$data["begin"]."$$$".$i]["tickets_id"]=$fup->fields["tickets_id"];
+                     $interv[$data["begin"]."$$$".$i]["users_id"]=$data["users_id"];
+                     $interv[$data["begin"]."$$$".$i]["id"]=$data["id"];
+                     if (strcmp($begin,$data["begin"])>0) {
+                        $interv[$data["begin"]."$$$".$i]["begin"]=$begin;
+                     } else {
+                        $interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
+                     }
+                     if (strcmp($end,$data["end"])<0) {
+                        $interv[$data["begin"]."$$$".$i]["end"]=$end;
+                     } else {
+                        $interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
+                     }
+                     $interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
+                     $interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["content"],
+                                                                           $CFG_GLPI["cut"]);
+                     $interv[$data["begin"]."$$$".$i]["device"]=($job->hardwaredatas ?$job->hardwaredatas->getName():'');
+                     $interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
+                     $interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
+                  }
                }
-               if (strcmp($end,$data["end"])<0) {
-                  $interv[$data["begin"]."$$$".$i]["end"]=$end;
-               } else {
-                  $interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
-               }
-               $interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
-               $interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["content"],
-                                                                       $CFG_GLPI["cut"]);
-               $interv[$data["begin"]."$$$".$i]["device"]=($job->hardwaredatas ?$job->hardwaredatas->getName():'');
-               $interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
-               $interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
             }
          }
       }
