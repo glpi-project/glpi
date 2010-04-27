@@ -2212,6 +2212,13 @@ function update0723to078($output='HTML') {
    }
 
    displayMigrationMessage("078", $LANG['update'][141] . ' - ' . $LANG['setup'][79]); // Updating schema
+
+   if (!FieldExists('glpi_tickets','solvedate')) {
+      $query = "ALTER TABLE `glpi_tickets` ADD `solvedate` datetime default NULL AFTER `closedate`,
+                                       ADD INDEX `solvedate` (`solvedate`)";
+      $DB->query($query) or die("0.78 add solvedate to glpi_tickets " . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists('glpi_ticketcategories','entities_id')) {
       $query = "ALTER TABLE `glpi_ticketcategories`
                     ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,

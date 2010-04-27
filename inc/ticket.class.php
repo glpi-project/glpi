@@ -251,6 +251,10 @@ class Ticket extends CommonDBTM {
          unset($input["closedate"]);
       }
 
+      if (isset($input["solvedate"]) && empty($input["solvedate"])) {
+         unset($input["solvedate"]);
+      }
+
       // Security checks
       if (!haveRight("assign_ticket","1")) {
          if (isset($input["users_id_assign"])) {
@@ -421,6 +425,15 @@ class Ticket extends CommonDBTM {
             $this->fields['status'] = 'new';
          }
 
+         if (in_array("status",$this->updates) && $this->input["status"]=="solved") {
+            $this->updates[]="solvedate";
+            $this->oldvalues['solvedate'] = $this->fields["solvedate"];
+            $this->fields["solvedate"] = $_SESSION["glpi_currenttime"];
+            // If invalid date : set open date
+            if ($this->fields["solvedate"] < $this->fields["date"]){
+               $this->fields["solvedate"] = $this->fields["date"];
+            }
+         }
          if (in_array("status",$this->updates) && $this->input["status"]=="closed") {
             $this->updates[]="closedate";
             $this->oldvalues['closedate'] = $this->fields["closedate"];
@@ -429,7 +442,14 @@ class Ticket extends CommonDBTM {
             if ($this->fields["closedate"] < $this->fields["date"]){
                $this->fields["closedate"] = $this->fields["date"];
             }
+            // Set solvedate to closedate
+            if (empty($this->fields["solvedate"])) {
+               $this->updates[]="solvedate";
+               $this->oldvalues['solvedate'] = $this->fields["solvedate"];
+               $this->fields["solvedate"] = $this->fields["closedate"];
+            }
          }
+
       }
 
       // Status close : check dates
@@ -456,6 +476,11 @@ class Ticket extends CommonDBTM {
       }
       if (($key=array_search('closedate',$this->updates)) !== false
           && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
+         unset($this->updates[$key]);
+      }
+
+      if (($key=array_search('solvedate',$this->updates)) !== false
+          && (substr($this->fields["solvedate"],0,16) == substr($this->oldvalues['solvedate'],0,16))) {
          unset($this->updates[$key]);
       }
 
@@ -977,6 +1002,7 @@ class Ticket extends CommonDBTM {
          } else {
             $input["closedate"] = $_SESSION["glpi_currenttime"];
          }
+         $input['solvedate']=$input["closedate"];
       }
 
       // No name set name
@@ -1413,6 +1439,12 @@ class Ticket extends CommonDBTM {
       $tab[16]['linkfield'] = '';
       $tab[16]['name']      = $LANG['reports'][61];
       $tab[16]['datatype']  = 'datetime';
+
+      $tab[17]['table']     = $this->getTable();
+      $tab[17]['field']     = 'solvedate';
+      $tab[17]['linkfield'] = '';
+      $tab[17]['name']      = $LANG['reports'][64];
+      $tab[17]['datatype']  = 'datetime';
 
       $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
