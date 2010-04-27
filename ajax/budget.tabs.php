@@ -42,6 +42,11 @@ if(!isset($_POST["id"])) {
    exit();
 }
 
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
+
+
 if(empty($_POST["id"])) {
    $_POST["id"] = -1;
 }

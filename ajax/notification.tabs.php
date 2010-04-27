@@ -42,7 +42,11 @@ header_nocache();
 $notification = new Notification;
 
 //checkRight("notification",'r');
-if ($_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
+if (isset($_POST['id']) && $_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
+
+   if (!isset($_REQUEST['glpi_tab'])) {
+      exit();
+   }
 
    $target = NotificationTarget::getInstanceByType($notification->getField('itemtype'),
                                                    $notification->getField('event'),

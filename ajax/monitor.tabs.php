@@ -43,6 +43,10 @@ checkRight("monitor","r");
 if (empty($_POST["id"])) {
    exit();
 }
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
+
 if (!isset($_POST["sort"])) {
    $_POST["sort"] = "";
 }

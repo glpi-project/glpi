@@ -38,10 +38,15 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
+
 checkLoginUser();
 
 $user = new User();
 $pref = new Preference();
+
 
 switch ($_REQUEST['glpi_tab']) {
    case 2 :

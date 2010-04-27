@@ -40,10 +40,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!isset($_POST['id'])) {
-   exit();
-}
-
 checkRight('rule_ticket','r');
 
 $rule = new RuleOcs();

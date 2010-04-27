@@ -41,6 +41,9 @@ header_nocache();
 if (!isset($_POST["id"]) || !isset($_POST["itemtype"])) {
    exit();
 }
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
 
 $setupdisplay = new DisplayPreference();
 
