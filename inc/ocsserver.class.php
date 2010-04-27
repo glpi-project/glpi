@@ -3933,7 +3933,7 @@ class OcsServer extends CommonDBTM {
                               `softwares`.`VERSION` AS VERSION, `softwares`.`PUBLISHER` AS PUBLISHER,
                               `softwares`.`COMMENTS` AS COMMENTS
                        FROM `softwares`
-                       INNER JOIN `dico_soft` ON (INITNAME = dico_soft.EXTRACTED)
+                       INNER JOIN `dico_soft` ON (`softwares`.`NAME` = dico_soft.EXTRACTED)
                        WHERE `softwares`.`HARDWARE_ID` = '$ocsid'";
          } else {
             $query2 = "SELECT `softwares`.`NAME` AS INITNAME, `softwares`.`NAME` AS NAME,
