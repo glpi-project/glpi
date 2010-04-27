@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["deleteuser"])) {
-   if (count($_POST["item"])) {
+   if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
             $groupuser->delete(array('id'=>$key));
