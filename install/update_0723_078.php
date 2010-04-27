@@ -2217,6 +2217,9 @@ function update0723to078($output='HTML') {
       $query = "ALTER TABLE `glpi_tickets` ADD `solvedate` datetime default NULL AFTER `closedate`,
                                        ADD INDEX `solvedate` (`solvedate`)";
       $DB->query($query) or die("0.78 add solvedate to glpi_tickets " . $LANG['update'][90] . $DB->error());
+
+      $query="UPDATE `glpi_tickets` SET `solvedate` = `closedate`";
+      $DB->query($query) or die("0.78 update solvedate values in glpi_tickets " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists('glpi_ticketcategories','entities_id')) {
