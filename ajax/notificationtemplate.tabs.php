@@ -41,7 +41,11 @@ header_nocache();
 
 checkRight("config",'r');
 
-if ($_POST['id'] > 0) {
+if (isset($_POST['id']) && $_POST['id'] > 0) {
+   if (!isset($_REQUEST['glpi_tab'])) {
+      exit();
+   }
+
    $template = new NotificationTemplate();
    $template->getFromDB($_POST['id']);
    $templatelanguage = new NotificationTemplateTranslation;

@@ -46,6 +46,12 @@ checkRight("cartridge","r");
 
 $cartridge = new CartridgeItem();
 if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
+
+   if (!isset($_REQUEST['glpi_tab'])) {
+      exit();
+   }
+
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $cartridge->showCompatiblePrinters();

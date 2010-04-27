@@ -41,6 +41,9 @@ header_nocache();
 if (!isset($_POST["id"])) {
    exit();
 }
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
 
 $crontask=new CronTask();
 if ($_POST['id']>0 && $crontask->getFromDB($_POST['id'])) {

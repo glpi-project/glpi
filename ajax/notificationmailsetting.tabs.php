@@ -40,6 +40,12 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkRight("config",'r');
+if (!isset($_POST['id'])) {
+   exit();
+}
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
 
 if ($_POST['id'] > 0) {
    $target = new NotificationMailSetting();

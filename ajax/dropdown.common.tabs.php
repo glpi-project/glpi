@@ -43,6 +43,10 @@ header_nocache();
 if (!isset($_POST["id"])) {
    exit();
 }
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
+
 if ($dropdown->can($_POST["id"],'r')) {
    $dropdown->showTabContent($_POST["id"],$_REQUEST['glpi_tab']);
 }

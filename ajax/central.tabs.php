@@ -42,6 +42,10 @@ checkCentralAccess();
 
 $central = new Central();
 
+if (!isset($_REQUEST['glpi_tab'])) {
+   exit();
+}
+
 switch ($_REQUEST['glpi_tab']) {
    case 2 :
       $central->showGroupView();
