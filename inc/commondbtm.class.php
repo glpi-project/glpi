@@ -1419,6 +1419,12 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
+      // Template case : clean entities data
+      if ($params['withtemplate'] == 2 && $this->isEntityAssign()) {
+         $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
+         $this->fields["is_recursive"] = 0;
+      }
+
       if ($this->can($ID,'w')) {
          echo "<form name='form' method='post' action='".$params['target']."' ".$params['formoptions'].">";
          //Should add an hidden entities_id field ?
@@ -1427,16 +1433,14 @@ class CommonDBTM extends CommonGLPI {
             //The object type can be assigned to an entity
             if ($this->isEntityAssign()) {
                //It's a new object to be added
-               if ($this->isNewID($ID)) {
+               if ($this->isNewID($ID) || $params['withtemplate'] == 2) {
                   $entity = $_SESSION['glpiactive_entity'];
-               }
-               else {
+               } else {
                   //It's an existing object to be displayed
                   $entity = $this->fields['entities_id'];
                }
                echo "<input type='hidden' name='entities_id' value='$entity'>";
-            }
-            else {
+            } else {
                echo "<input type='hidden' name='entities_id' value='0'>";
 
             }

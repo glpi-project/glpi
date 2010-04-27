@@ -154,6 +154,8 @@ class Software extends CommonDBTM {
             if (empty($ic->fields['buy_date'])) {
                unset($ic->fields['buy_date']);
             }
+            $ic->fields["entities_id"]=$this->fields['entities_id'];
+            $ic->fields["is_recursive"]=$this->fields['is_recursive'];
             $ic->addToDB();
          }
 
