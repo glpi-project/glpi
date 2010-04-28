@@ -195,6 +195,8 @@ class MailCollect {
 	var $addtobody; 
 	/// Number of ferchs emails
 	var $fetch_emails=0;
+        /// Body converted 
+        var $body_converted=false;
 
 	/**
 	* Constructor
@@ -316,8 +318,9 @@ class MailCollect {
 		// Do it before using charset variable
 		$head['subject']=$this->decodeMimeString($head['subject']);
 
-		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
+		if (!$this->body_converted&&!empty($this->charset)&&function_exists('mb_convert_encoding')){
 			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
+			$this->body_converted=true;
 		}
 		if (!seems_utf8($body)){
 			$tkt['contents']= utf8_encode($body);	
@@ -588,7 +591,8 @@ class MailCollect {
 				if (count($structure->parameters)>0){ 
    				  foreach ($structure->parameters as $param){ 
 				    if ((strtoupper($param->attribute)=='CHARSET') && function_exists('mb_convert_encoding') && strtoupper($param->value) != 'UTF-8'){ 
-                                       $text = mb_convert_encoding($text, 'utf-8',$param->value); 
+                                       $text = mb_convert_encoding($text, 'utf-8',$param->value);
+				       $this->body_converted=true; 
                                        } 
                                    } 
                                 } 
