@@ -99,7 +99,9 @@ class Profile extends CommonDBTM{
 			$input["helpdesk_hardware_type"]=0;
 			foreach ($types as $val)
 				$input["helpdesk_hardware_type"]+=pow(2,$val);
-		}
+		} else if (isset($input["_helpdesk_hardware_type_present"])) {
+                     $input["helpdesk_hardware_type"]=0;
+                }
 		return $input;
 	}
 
@@ -367,6 +369,7 @@ class Profile extends CommonDBTM{
 		echo "</td><td>".$LANG['setup'][352]."</td>";
 		echo "<td>";
 
+                echo "<input type='hidden' name='_helpdesk_hardware_type_present' value='1'>";
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
 		$ci = new CommonItem();
 		foreach($CFG_GLPI["helpdesk_types"] as $type){
@@ -573,6 +576,7 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG['setup'][352].":</td>";
 		echo "<td>";
 
+                echo "<input type='hidden' name='_helpdesk_hardware_type_present' value='1'>";
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
 		$ci = new CommonItem();
 		foreach($CFG_GLPI["helpdesk_types"] as $type){
