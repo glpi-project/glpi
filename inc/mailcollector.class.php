@@ -65,6 +65,8 @@ class MailCollector  extends CommonDBTM {
    var $maxfetch_emails=10;
    /// Max size for attached files
    var $filesize_max=0;
+   /// Body converted 
+   var $body_converted=false;
 
    public $dohistory = true;
 
@@ -442,8 +444,9 @@ class MailCollector  extends CommonDBTM {
       $tkt['_to'] = $head['to'];
       $tkt['_message_id'] = $head['message_id'];
 
-      if (!empty($this->charset)) {
+      if (!empty($this->charset) && !$this->body_converted) {
          $body=encodeInUtf8($body,$this->charset);
+         $this->body_converted = true;
       }
       if (!seems_utf8($body)) {
          $tkt['content']= encodeInUtf8($body);
@@ -732,6 +735,7 @@ class MailCollector  extends CommonDBTM {
                       && function_exists('mb_convert_encoding')
                       && strtoupper($param->value) != 'UTF-8') {
                      $text = mb_convert_encoding($text, 'utf-8',$param->value);
+		     $this->body_converted=true; 
                   }
                }
             }
