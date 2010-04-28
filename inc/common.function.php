@@ -1989,12 +1989,15 @@ function initNavigateListItems($itemtype,$title="") {
    if (empty($title)) {
       $title=$LANG['common'][53];
    }
+   $url='';
    if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
-      $url=$_SERVER['HTTP_REFERER'];
-   } else if (strpos($_SERVER['PHP_SELF'],"dropdown")>0) {
-      $url=$_SERVER['PHP_SELF']."?itemtype=$itemtype";
+      if (isset($_SERVER['HTTP_REFERER'])) {
+         $url=$_SERVER['HTTP_REFERER'];
+      }
    } else {
-      $url=$_SERVER['PHP_SELF'];
+      if (isset($_SERVER['HTTP_REFERER'])) {
+         $url=$_SERVER['PHP_SELF'];
+      }
    }
    $_SESSION['glpilisttitle'][$itemtype]=$title;
    $_SESSION['glpilistitems'][$itemtype]=array();

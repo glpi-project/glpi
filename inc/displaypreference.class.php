@@ -277,7 +277,8 @@ class DisplayPreference extends CommonDBTM {
          if (isMultiEntitiesMode()
          && (isset($CFG_GLPI["union_search_type"][$itemtype])
             || ($item && $item->maybeRecursive())
-            || count($_SESSION["glpiactiveentities"])>1)) {
+            || count($_SESSION["glpiactiveentities"])>1)
+      	 && isset($searchopt[80])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' width='50%'>".$searchopt[80]["name"]."</td>";
             echo "<td colspan='3'>&nbsp;</td>";
@@ -419,7 +420,8 @@ class DisplayPreference extends CommonDBTM {
       if (isMultiEntitiesMode()
       && (isset($CFG_GLPI["union_search_type"][$itemtype])
          || ($item && $item->maybeRecursive())
-         || count($_SESSION["glpiactiveentities"])>1)) {
+         || count($_SESSION["glpiactiveentities"])>1)
+      && isset($searchopt[80])) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' width='50%'>".$searchopt[80]["name"]."</td>";
          echo "<td colspan='3'>&nbsp;</td>";
