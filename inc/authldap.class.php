@@ -792,72 +792,7 @@ class AuthLDAP extends CommonDBTM {
       return $stamp;
    }
 
-   /** Form part to change mail auth method of a user
-    *
-    * @param   $ID ID of the user
-    * @return nothing
-    */
-   static function formChangeAuthMethodToMail($ID) {
-      global $LANG,$DB;
 
-      $sql = "SELECT `id`
-              FROM `glpi_authmails`";
-      $result = $DB->query($sql);
-      if ($DB->numrows($result) > 0) {
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][3]."</th></tr>";
-         echo "<tr class='tab_bg_1'><td><input type='hidden' name='id' value='" . $ID . "'>";
-         echo $LANG['login'][33]."</td><td>";
-         Dropdown::show('AuthMail', array('name' => "auths_id"));
-         echo "</td>";
-         echo "<tr class='tab_bg_2'><td colspan='2'class='center'>";
-         echo "<input class=submit type='submit' name='switch_auth_mail' value='" .
-                $LANG['buttons'][2] . "'>";
-         echo "</td></tr></table>";
-      }
-   }
-
-   /** Form part to change ldap auth method of a user
-    *
-    * @param   $ID ID of the user
-    * @return nothing
-    */
-   static function formChangeAuthMethodToLDAP($ID) {
-      global $LANG,$DB;
-
-      $sql = "SELECT `id`
-              FROM `glpi_authldaps`";
-      $result = $DB->query($sql);
-      if ($DB->numrows($result) > 0) {
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][2]."</th></tr>";
-         echo "<tr class='tab_bg_1'><td><input type='hidden' name='id' value='" . $ID . "'>";
-         echo $LANG['login'][31]."</td><td>";
-         Dropdown::show('AuthLDAP', array('name' => "auths_id"));
-         echo "</td>";
-         echo "<tr class='tab_bg_2'><td colspan='2'class='center'>";
-         echo "<input class=submit type='submit' name='switch_auth_ldap' value='" .
-                $LANG['buttons'][2] . "'>";
-         echo "</td></tr></table>";
-      }
-   }
-
-   /** Form part to change auth method of a user
-    *
-    * @param   $ID ID of the user
-    * @return nothing
-    */
-   static function formChangeAuthMethodToDB($ID) {
-      global $LANG;
-
-      echo "<br><table class='tab_cadre'>";
-      echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]."</th></tr>";
-      echo "<input type='hidden' name='id' value='" . $ID . "'>";
-      echo "<tr class='tab_bg_2'><td colspan='2'class='center'>";
-      echo "<input class=submit type='submit' name='switch_auth_internal' value='" .
-             $LANG['login'][32] . "'>";
-      echo "</td></tr></table>";
-   }
 
    /** Display refresh button in the user page
     *
@@ -889,26 +824,16 @@ class AuthLDAP extends CommonDBTM {
                   $result = $DB->query($sql);
                   if ($DB->numrows($result) > 0) {
                      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-                     echo "<input type='hidden' name='id' value='" . $ID . "'>";
                      echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                             $LANG['ocsng'][24] . "'>";
                      echo "</td></tr></table>";
                   }
-                  AuthLdap::formChangeAuthMethodToDB($ID);
-                  echo "<br>";
-                  AuthLdap::formChangeAuthMethodToMail($ID);
                   break;
 
                case Auth::DB_GLPI :
-                  AuthLdap::formChangeAuthMethodToLDAP($ID);
-                  echo "<br>";
-                  AuthLdap::formChangeAuthMethodToMail($ID);
                   break;
 
                case Auth::MAIL :
-                  AuthLdap::formChangeAuthMethodToDB($ID);
-                  echo "<br>";
-                  AuthLdap::formChangeAuthMethodToLDAP($ID);
                   break;
 
                case Auth::CAS :
@@ -922,20 +847,25 @@ class AuthLDAP extends CommonDBTM {
 
                      if ($DB->numrows($result) > 0) {
                         echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-                        echo "<input type='hidden' name='id' value='" . $ID . "'>";
                         echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                                $LANG['ocsng'][24] . "'>";
                         echo "</td></tr></table>";
                      }
-                     echo "<br>";
                   }
-                  AuthLdap::formChangeAuthMethodToDB($ID);
-                  echo "<br>";
-                  AuthLdap::formChangeAuthMethodToLDAP($ID);
-                  echo "<br>";
-                  AuthLdap::formChangeAuthMethodToMail($ID);
                   break;
             }
+            echo "<br><div><span class='b'>".$LANG['login'][30]."&nbsp:</span><br>";
+            $rand = Auth::dropdown(array('name'=>'authtype'));
+            $paramsmassaction=array('authtype'=>'__VALUE__','name'=>'change_auth_method');
+            ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand","show_massiveaction_field",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
+                                       $paramsmassaction);
+            echo "<input type='hidden' name='id' value='" . $ID . "'>";
+            echo "<span id='show_massiveaction_field'>";
+            echo "&nbsp;<input type='submit' name='change_auth_method' class='submit' value=\"".
+                  $LANG['buttons'][2]."\" ></span>\n";
+            echo "</div>";
+
             echo "</form></div>";
          }
       }
