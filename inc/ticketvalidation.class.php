@@ -236,7 +236,7 @@ class TicketValidation  extends CommonDBChild {
             // Set global validation to accepted
             if ($job->fields['global_validation'] == 'waiting') {
                $input['id'] = $this->fields["tickets_id"];
-               $input['global_validation'] =' accepted';
+               $input['global_validation'] ='accepted';
                $job->update($input);
             }
          } else if ($this->fields["status"] == 'rejected') {
