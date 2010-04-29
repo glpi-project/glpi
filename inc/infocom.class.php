@@ -865,19 +865,19 @@ class Infocom extends CommonDBTM {
 
       $tab[4]['table'] = $this->getTable();
       $tab[4]['field'] = 'buy_date';
-      $tab[4]['linkfield'] = '';
+      $tab[4]['linkfield'] = 'buy_date';
       $tab[4]['name'] = $LANG["financial"][14];
       $tab[4]['datatype'] = 'date';
 
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'use_date';
-      $tab[5]['linkfield'] = '';
+      $tab[5]['linkfield'] = 'use_date';
       $tab[5]['name'] = $LANG["financial"][76];
       $tab[5]['datatype'] = 'date';
 
       $tab[6]['table'] = $this->getTable();
       $tab[6]['field'] = 'warranty_duration';
-      $tab[6]['linkfield'] = '';
+      $tab[6]['linkfield'] = 'warranty_duration';
       $tab[6]['name'] = $LANG["financial"][15];
       $tab[6]['datatype'] = 'integer';
 
@@ -902,19 +902,19 @@ class Infocom extends CommonDBTM {
 
       $tab[10]['table'] = $this->getTable();
       $tab[10]['field'] = 'order_number';
-      $tab[10]['linkfield'] = '';
+      $tab[10]['linkfield'] = 'order_number';
       $tab[10]['name'] = $LANG["financial"][18];
       $tab[10]['datatype'] = 'text';
 
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'delivry_number';
-      $tab[11]['linkfield'] = '';
+      $tab[11]['linkfield'] = 'delivry_number';
       $tab[11]['name'] = $LANG["financial"][19];
       $tab[11]['datatype'] = 'text';
 
       $tab[12]['table'] = $this->getTable();
       $tab[12]['field'] = 'immo_number';
-      $tab[12]['linkfield'] = '';
+      $tab[12]['linkfield'] = 'order_number';
       $tab[12]['name'] = $LANG["financial"][20];
       $tab[12]['datatype'] = 'text';
 
