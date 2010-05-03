@@ -1276,6 +1276,7 @@ $LANG['monitors'][21]="Taille";
 $LANG['monitors'][32]="DVI";
 $LANG['monitors'][33]="Pivot";
 
+$LANG['networking'][4]="Port réseau";
 $LANG['networking'][5]="RAM (Mio)";
 $LANG['networking'][6]="Ports réseaux";
 $LANG['networking'][13]="port(s) réseau trouvé(s)";
