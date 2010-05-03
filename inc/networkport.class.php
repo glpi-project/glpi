@@ -768,7 +768,7 @@ class NetworkPort extends CommonDBChild {
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = 'id';
+      $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
       $tab[3]['table'] = $this->getTable();
