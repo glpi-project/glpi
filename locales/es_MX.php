@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="Tamaño";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Pivote"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Puertos de red"; 
 $LANG['networking'][13]="puertos de red encontrados"; 

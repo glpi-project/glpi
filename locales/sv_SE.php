@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="Storlek";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Pivå"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Nätverksport"; 
 $LANG['networking'][13]="nätverksportar funna"; 

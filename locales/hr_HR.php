@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="Veličina";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Pivotiranje"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Mrežni port"; 
 $LANG['networking'][13]="mrežni portovi nađeni"; 

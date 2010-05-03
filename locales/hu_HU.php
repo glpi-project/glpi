@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="Méret";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Forgatás"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Hálózati port"; 
 $LANG['networking'][13]="hálózati portot találtam"; 
@@ -1368,7 +1369,7 @@ $LANG['reports'][60]="Nyitás dátuma";
 $LANG['reports'][61]="Befejezés dátuma"; 
 $LANG['reports'][62]="Hardverek pénzügyi információi"; 
 $LANG['reports'][63]="Egyebek pénzügyi adatai (licencek, patronok, kellékek)"; 
-$LANG['reports'][64]="Resolution date"; 
+$LANG['reports'][64]="Megoldás dátuma"; 
 
 $LANG['reservation'][1]="Foglalható tételek"; 
 $LANG['reservation'][2]="Eszköz átmenetileg nem érhető el"; 
