@@ -199,6 +199,10 @@ class TicketPlanning extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
+      if (!isset($input["begin"]) || !isset($input["end"]) ){
+         return false;
+      }
+
       // Needed for test already planned
       $this->fields["users_id"] = $input["users_id"];
       $this->fields["begin"] = $input["begin"];

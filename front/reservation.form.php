@@ -124,8 +124,10 @@ if (isset($_POST["update"])) {
    if (!isset($_GET['date'])) {
       $_GET['date'] = date('Y-m-d');
    }
-   $rr->showForm($_GET['id'], array('item' => $_GET['item'],
-                                    'date' => $_GET['date']));
+   if (isset($_GET['item']) && isset($_GET['date'])) {
+      $rr->showForm($_GET['id'], array('item' => $_GET['item'],
+                                       'date' => $_GET['date']));
+   }
 }
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {

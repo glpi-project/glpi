@@ -42,7 +42,7 @@ checkLoginUser();
 // Make a select box
 
 
-if (Ticket::isPossibleToAssignType($_POST["itemtype"])) {
+if (isset($_POST["itemtype"]) && Ticket::isPossibleToAssignType($_POST["itemtype"])) {
 
    $table=getTableForItemType($_POST["itemtype"]);
 
