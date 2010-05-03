@@ -50,7 +50,7 @@ if (isset($_POST["rubdoc"])) {
    }
    $used=array();
    // Clean used array
-   if (count($_POST['used'])>0) {
+   if (is_array($_POST['used']) && count($_POST['used'])>0) {
       $query="SELECT id FROM glpi_documents WHERE id IN (".implode(',',$_POST['used']).") AND documentcategories_id='".$_POST["rubdoc"]."'";
       foreach ($DB->request($query) AS $data) {
          $used[$data['id']]=$data['id'];
