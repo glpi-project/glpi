@@ -42,11 +42,13 @@ $inst = new Computer_SoftwareVersion();
 // From Computer - Software tab (add form or from not installed license)
 if (isset($_REQUEST["install"])){
    checkRight("software","w");
-   $inst->add(array('computers_id'        => $_REQUEST["computers_id"],
-                    'softwareversions_id' => $_REQUEST["softwareversions_id"]));
+   if (isset($_REQUEST["softwareversions_id"]) && isset($_REQUEST["computers_id"])) {
+      $inst->add(array('computers_id'        => $_REQUEST["computers_id"],
+                     'softwareversions_id' => $_REQUEST["softwareversions_id"]));
 
-   Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." installed software.");
+      Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
+               $_SESSION["glpiname"]." installed software.");
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 // From Computer - Software tab (installed software)
