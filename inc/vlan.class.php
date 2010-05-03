@@ -60,7 +60,7 @@ class Vlan extends CommonDropdown {
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = 'id';
+      $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
       $tab[16]['table']     = $this->getTable();
