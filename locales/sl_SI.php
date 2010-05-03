@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="Velikost";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Pivot - zasuk"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Omrežna vrata"; 
 $LANG['networking'][13]="omrežna vrata najdena"; 

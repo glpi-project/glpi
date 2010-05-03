@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="Izmērs";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Pivot funkcija"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Tīkla ligzda"; 
 $LANG['networking'][13]="tīkla ligzdas atrastas"; 

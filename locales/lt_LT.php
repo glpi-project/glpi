@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="Dydis";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Suvestinė"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Tinklo prievadas"; 
 $LANG['networking'][13]="Surasti tinklo prievadai"; 

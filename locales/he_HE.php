@@ -1111,6 +1111,7 @@ $LANG['monitors'][21]="גודל";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="מסתובב"; 
 
+$LANG['networking'][4]="Network port"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="יציאת רשת"; 
 $LANG['networking'][13]="יציאות רשת נמצאו"; 
