@@ -1177,6 +1177,8 @@ class User extends CommonDBTM {
             echo "<td>" . $LANG['login'][10] . "&nbsp;:</td><td>";
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"], 1);
             echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
          }
       } else {
          echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
