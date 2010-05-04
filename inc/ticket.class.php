@@ -2564,12 +2564,23 @@ class Ticket extends CommonDBTM {
       if ($ID) {
          echo "<table>";
 
-         if ($this->fields["status"] == 'closed') {
-            echo "<tr>";
-            echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
-            echo "<td>";
-            showDateTimeFormItem("closedate",$this->fields["closedate"],1,false,$canupdate);
-            echo "</td></tr>";
+         switch ($this->fields["status"]) {
+            case 'closed' :
+               echo "<tr>";
+               echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
+               echo "<td>";
+               showDateTimeFormItem("closedate",$this->fields["closedate"],1,false,$canupdate);
+               echo "</td></tr>";
+               break;
+
+            case 'solved' :
+               echo "<tr>";
+               echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
+               echo "<td>";
+               showDateTimeFormItem("solvedate",$this->fields["solvedate"],1,false,$canupdate);
+               echo "</td></tr>";
+               break;
+         
          }
 
          echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td><td>";
