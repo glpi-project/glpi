@@ -4583,19 +4583,20 @@ class OcsServer extends CommonDBTM {
                         }
                         if ($id_periph) {
                            $conn = new Computer_Item();
-                           $connID = $conn->add(array('computers_id' => $computers_id,
+                           if ($connID = $conn->add(array('computers_id' => $computers_id,
                                                       'itemtype'     => 'Peripheral',
-                                                      'items_id'     => $id_periph));
-                           OcsServer::addToOcsArray($computers_id, array($connID => $periph["name"]),
-                                         "import_peripheral");
-                           //Update column "is_deleted" set value to 0 and set status to default
-                           $input = array ();
-                           $input["id"] = $id_periph;
-                           $input["is_deleted"] = 0;
-                           if ($cfg_ocs["states_id_default"]>0) {
-                              $input["states_id"] = $cfg_ocs["states_id_default"];
+                                                      'items_id'     => $id_periph))) {
+                              OcsServer::addToOcsArray($computers_id, array($connID => $periph["name"]),
+                                          "import_peripheral");
+                              //Update column "is_deleted" set value to 0 and set status to default
+                              $input = array ();
+                              $input["id"] = $id_periph;
+                              $input["is_deleted"] = 0;
+                              if ($cfg_ocs["states_id_default"]>0) {
+                                 $input["states_id"] = $cfg_ocs["states_id_default"];
+                              }
+                              $p->update($input);
                            }
-                           $p->update($input);
                         }
                      } else {
                         $id = array_search($periph["name"], $import_periph);
