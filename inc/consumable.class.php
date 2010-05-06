@@ -533,10 +533,9 @@ class Consumable extends CommonDBTM {
       $query = "SELECT COUNT(*) AS COUNT, `consumableitems_id`
                 FROM `glpi_consumables`
                 WHERE `date_out` IS NULL
-                      AND `consumableitems_id` IN (SELECT `id`
-                                                    FROM `glpi_consumableitems`
-                                                    ".getEntitiesRestrictRequest(
-                                                    "WHERE","`glpi_consumableitems`").")
+                  AND `consumableitems_id` IN (SELECT `id`
+                                               FROM `glpi_consumableitems`
+                                                ".getEntitiesRestrictRequest("WHERE","glpi_consumableitems").")
                 GROUP BY `consumableitems_id`";
       $new=array();
 
