@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Lezárva (megoldva)";
 $LANG['joblist'][11]="megnyílt"; 
 $LANG['joblist'][12]="Lezárva"; 
 $LANG['joblist'][13]="Feldolgozandó bejelentések"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Nincs folyamatban levő bejelentés."; 
 $LANG['joblist'][17]="Lezárva (nincs megoldva)"; 
 $LANG['joblist'][18]="Feldolgozás (kiadva)"; 

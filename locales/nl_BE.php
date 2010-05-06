@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Oud";
 $LANG['joblist'][11]="Geopend op"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="No ticket in progress."; 
 $LANG['joblist'][17]="Afgesloten (niet opgelost)"; 
 $LANG['joblist'][18]="Bezig met verwerken (toegewezen)"; 

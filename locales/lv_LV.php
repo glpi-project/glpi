@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Slēgts (atrisināts)";
 $LANG['joblist'][11]="Atvērts"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Neviens pieteikums nav apstrādē."; 
 $LANG['joblist'][17]="Slēgts (neatrisināts)"; 
 $LANG['joblist'][18]="Apstrādā (piesaistīts)"; 

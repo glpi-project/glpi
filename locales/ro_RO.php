@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Inchise (Rezolvate)";
 $LANG['joblist'][11]="Deschis"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Nu sunt probleme în curs de rezolvare."; 
 $LANG['joblist'][17]="Inchise (Nerezolvate)"; 
 $LANG['joblist'][18]="In curs de repartizare"; 

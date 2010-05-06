@@ -758,6 +758,7 @@ $LANG['joblist'][10]="完了（解決）";
 $LANG['joblist'][11]="発生日"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="処理中のチケットはありません"; 
 $LANG['joblist'][17]="完了（未解決）"; 
 $LANG['joblist'][18]="対応中（担当者割り当て済み）"; 
