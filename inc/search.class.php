@@ -2352,6 +2352,7 @@ class Search {
       $tocompute="`$table`.`$field`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute=$searchopt[$ID]["computation"];
+         $tocompute = str_replace("TABLE","`$table`",$tocompute);
       }
 
       // Preformat items
