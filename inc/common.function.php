@@ -901,6 +901,9 @@ function html_clean($value) {
 
    $value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
 
+   $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
+   $value = preg_replace($specialfilter, ' ', $value);
+
    $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
                    '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip style tags properly
                    '@<[\/\!]*?[^<>]*?>@si',              // Strip out HTML tags

@@ -3079,7 +3079,7 @@ class Search {
       $searchopt=&Search::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
          && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
-         return Search::giveItem ($data["TYPE"],$ID,$data,$num);
+         return Search::giveItem ($data["TYPE"],$ID,$data,$num,$meta,$output_type);
       }
 
       // Plugin can override core definition for its type
@@ -3116,15 +3116,32 @@ class Search {
                         $out.= "<br>";
                      }
                      $count_display++;
-                     $out .= getUserName($split[$k],1);
+                     if ($itemtype=='Ticket') {
+                        $userdata = getUserName($split[$k],2);
+                        $out .= $userdata['name']."&nbsp;".showToolTip($userdata["comment"],
+                                                   array('link'    => $userdata["link"],
+                                                         'display' => false));
+
+                     } else {
+                        $out .= getUserName($split[$k],1);
+                     }
                   }
                }
                return $out;
 
             } else {
                if (!empty($linkfield)) {
+                  $toadd='';
+                  if ($itemtype=='Ticket') {
+                     $userdata = getUserName($data[$NAME.$num."_3"],2);
+                     $toadd = "&nbsp;".showToolTip($userdata["comment"],
+                                                array('link'    => $userdata["link"],
+                                                      'display' => false));
+
+                  }
+
                   return formatUserName($data[$NAME.$num."_3"],$data[$NAME.$num],$data[$NAME.$num."_2"],
-                                       $data[$NAME.$num."_4"],1);
+                                       $data[$NAME.$num."_4"],1).$toadd;
                }
             }
             break;
