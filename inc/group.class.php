@@ -292,7 +292,9 @@ class Group extends CommonDBTM {
 
       $ID = $this->fields['id'];
 
-      echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG['common'][17]."</th>";
+      echo "<form name='group_form' id='group_form' method='post' action='".$this->getFormURL()."'>";
+      echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
+      echo "<th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
       foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
          if (!class_exists($itemtype)) {
@@ -308,19 +310,31 @@ class Group extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $type_name = $item->getTypeName();
             $cansee = $item->canView();
+            $canedit = $item->canUpdate();
             while ($data=$DB->fetch_array($result)) {
+               echo "<tr class='tab_bg_1'><td>";
+               if ($canedit) {
+                  echo "<input type='checkbox' name='item[$itemtype][".$data["id"]."]' value='1'>";
+               }
                $link=($data["name"] ? $data["name"] : "(".$data["id"].")");
                if ($cansee) {
                   $link="<a href='".$item->getFormURL()."?id=".
                            $data["id"]."'>".$link."</a>";
                }
-               $linktype="";
-               echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
+               echo "</td><td>$type_name</td><td>$link</td>";
                echo "<td>".Dropdown::getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";
             }
          }
       }
-      echo "</table></div>";
+      echo "</table>";
+
+      openArrowMassive("group_form",true);
+      echo $LANG['common'][35]."&nbsp;: ";
+      Dropdown::show('Group', array('entity' => $this->fields["entities_id"],
+                                    'used'   => array($this->fields["id"])));
+      closeArrowMassive('changegroup', $LANG['buttons'][14]);
+
+      echo "</form>";
    }
 }
 
