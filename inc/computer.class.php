@@ -962,7 +962,7 @@ class Computer extends CommonDBTM {
       $tab[151]['linkfield']    = '';
       $tab[151]['name']         = $LANG['computers'][2];
       $tab[151]['forcegroupby'] = true;
-      $tab[151]['usehaving']    = true;
+//      $tab[151]['usehaving']    = false;
       $tab[151]['datatype']     = 'number';
       $tab[151]['width']        = 1000;
 
@@ -971,7 +971,7 @@ class Computer extends CommonDBTM {
       $tab[152]['linkfield']    = '';
       $tab[152]['name']         = $LANG['computers'][1];
       $tab[152]['forcegroupby'] = true;
-      $tab[152]['usehaving']    = true;
+//      $tab[152]['usehaving']    = true;
       $tab[152]['datatype']     = 'decimal';
       $tab[152]['width']        = 2;
       $tab[152]['computation']  = "ROUND(100*TABLE.freesize/TABLE.totalsize)";
