@@ -876,6 +876,18 @@ function update0723to078($output='HTML') {
             $NULL="NOT NULL";
             if (isset($update['maybenull']) && $update['maybenull']) {
                $NULL="NULL";
+
+               // Manage not zero values
+               $query="UPDATE `$table` SET `$oldname`=1 WHERE `$oldname` <> 0 AND `$oldname` IS NOT NULL; ";
+               $DB->query($query) or die("0.78 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+            } else {
+               // Manage NULL fields
+               $query="UPDATE `$table` SET `$oldname`=0 WHERE `$oldname` IS NULL ;";
+               $DB->query($query) or die("0.78 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+
+               // Manage not zero values
+               $query="UPDATE `$table` SET `$oldname`=1 WHERE `$oldname` <> 0; ";
+               $DB->query($query) or die("0.78 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
             }
 
             $default="DEFAULT NULL";
@@ -883,13 +895,6 @@ function update0723to078($output='HTML') {
                $default="DEFAULT ".$update['default'];
             }
 
-            // Manage NULL fields
-            $query="UPDATE `$table` SET `$oldname`=0 WHERE `$oldname` IS NULL ;";
-            $DB->query($query) or die("0.78 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
-
-            // Manage not zero values
-            $query="UPDATE `$table` SET `$oldname`=1 WHERE `$oldname` <> 0; ";
-            $DB->query($query) or die("0.78 prepare datas for update $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
 
             $changes[$table][]="CHANGE `$oldname` `$newname` TINYINT( 1 ) $NULL $default";
 
