@@ -3084,7 +3084,7 @@ class Search {
       $searchopt=&Search::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
          && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
-         return Search::giveItem ($data["TYPE"],$ID,$data,$num,$meta,$output_type);
+         return Search::giveItem ($data["TYPE"],$ID,$data,$num,$meta);
       }
 
       // Plugin can override core definition for its type
