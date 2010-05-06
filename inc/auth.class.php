@@ -897,6 +897,83 @@ class Auth {
       }
    return false;
    }
+
+   /** Display refresh button in the user page
+    *
+    * @param   $target target for the form
+    * @param   $ID ID of the user
+    * @return nothing
+    */
+   static function showSynchronizationForm($target, $ID) {
+      global $LANG, $DB, $CFG_GLPI;
+
+      if (haveRight("user", "w")) {
+         //Look it the user's auth method is LDAP
+         $sql = "SELECT `authtype`, `auths_id`
+                 FROM `glpi_users`
+                 WHERE `id`='" . $ID."'";
+         $result = $DB->query($sql);
+
+         if ($DB->numrows($result) == 1) {
+            $data = $DB->fetch_array($result);
+            echo "<div class='center'>";
+            echo "<form method='post' action=\"$target\">";
+            switch($data["authtype"]) {
+               case Auth::LDAP :
+                  //Look it the auth server still exists !
+                  // <- Bad idea : id not exists unable to change anything
+                  $sql = "SELECT `name`
+                          FROM `glpi_authldaps`
+                          WHERE `id`='" . $data["auths_id"]."'";
+                  $result = $DB->query($sql);
+                  if ($DB->numrows($result) > 0) {
+                     echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+                     echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
+                            $LANG['ocsng'][24] . "'>";
+                     echo "</td></tr></table>";
+                  }
+                  break;
+
+               case Auth::DB_GLPI :
+                  break;
+
+               case Auth::MAIL :
+                  break;
+
+               case Auth::CAS :
+               case Auth::EXTERNAL :
+               case Auth::X509 :
+                  if ($CFG_GLPI['authldaps_id_extra']) {
+                     $sql = "SELECT `name`
+                             FROM `glpi_authldaps`
+                             WHERE `id`='" .$CFG_GLPI['authldaps_id_extra']."'";
+                     $result = $DB->query($sql);
+
+                     if ($DB->numrows($result) > 0) {
+                        echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+                        echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
+                               $LANG['ocsng'][24] . "'>";
+                        echo "</td></tr></table>";
+                     }
+                  }
+                  break;
+            }
+            echo "<br><div><span class='icon_consol'>".$LANG['login'][30]."&nbsp:</span><br><br>";
+            $rand = Auth::dropdown(array('name'=>'authtype'));
+            $paramsmassaction=array('authtype'=>'__VALUE__','name'=>'change_auth_method');
+            ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand","show_massiveaction_field",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
+                                       $paramsmassaction);
+            echo "<input type='hidden' name='id' value='" . $ID . "'>";
+            echo "<span id='show_massiveaction_field'>";
+            echo "&nbsp;<input type='submit' name='change_auth_method' class='submit' value=\"".
+                  $LANG['buttons'][2]."\" ></span>\n";
+            echo "</div>";
+
+            echo "</form></div>";
+         }
+      }
+   }
 }
 
 
