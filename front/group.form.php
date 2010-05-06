@@ -81,6 +81,22 @@ if (isset($_POST["add"])) {
    Event::log($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
+} else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"])) {
+   if ($_POST["groups_id"] > 0) {
+      foreach ($_POST['item'] as $type => $ids) {
+         if (class_exists($type)) {
+            $item = new $type();
+            foreach ($ids as $id => $val) {
+               if ($val && $item->can($id,'w')) {
+                  $item->update(array('id'        => $id,
+                                      'groups_id' => $_POST["groups_id"]));
+               }
+            }
+         }
+      }
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 } else {
    commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
    $group->showForm($_GET["id"]);
