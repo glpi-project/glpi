@@ -45,7 +45,7 @@ if (isset($_GET['multiple_actions'])) {
    }
 }
 
-if (!class_exists($_POST["itemtype"])) {
+if (!isset($_POST["itemtype"]) || !class_exists($_POST["itemtype"])) {
    exit();
 }
 $item = new $_POST["itemtype"]();
