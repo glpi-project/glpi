@@ -217,7 +217,7 @@ class Budget extends CommonDBTM{
       $tab[4]['field']     = 'value';
       $tab[4]['linkfield'] = 'value';
       $tab[4]['name']      = $LANG['financial'][21];
-      $tab[4]['datatype']  = 'integer';
+      $tab[4]['datatype']  = 'decimal';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
