@@ -65,10 +65,10 @@ $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
    $LIMIT="";
 }
-
+$location_restrict=false;
 if (!(isset($_POST["devtype"]) && $_POST["devtype"] != 'NetworkEquipment'
     && isset($_POST["locations_id"]) && $_POST["locations_id"]>0)) {
-
+   
    if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"]>=0) {
       $where.= " AND `glpi_netpoints`.`entities_id`='".$_POST["entity_restrict"]."'";
    } else {
@@ -91,12 +91,14 @@ if (isset($_POST["devtype"]) && $_POST["devtype"]>0) {
    } else {
       $query .= " != 'NetworkEquipment' )";
       if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0) {
+         $location_restrict=true;
          $where.=" AND `glpi_netpoints`.`locations_id`='".$_POST["locations_id"]."' ";
       }
    }
    $where.=" AND `glpi_networkports`.`netpoints_id` IS NULL ";
 
 } else if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0) {
+   $location_restrict=true;
    $where.=" AND `glpi_netpoints`.`locations_id`='".$_POST["locations_id"]."' ";
 }
 
@@ -124,10 +126,14 @@ if ($DB->numrows($result)) {
       $ID = $data['id'];
       $addcomment="";
       if (isset($data["comment"])) {
-         $addcomment=" - ".$data["comment"];
+         $addcomment=" - ".$loc." - ".$data["comment"];
       }
+      if (!$location_restrict) {
+         $output.=" ($loc)";
+      }
+
       echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\"";
-      echo ">".$output." ($loc)</option>";
+      echo ">".$output."</option>";
    }
 }
 echo "</select>\n";
