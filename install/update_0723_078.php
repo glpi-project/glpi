@@ -1794,6 +1794,16 @@ function update0723to078($output='HTML') {
    }
 
    // Update bookmarks for new columns fields
+   if (FieldExists('glpi_bookmarks', 'is_private')) {
+      $query="UPDATE glpi_bookmarks SET entities_id=-1 WHERE is_private = 1";
+      $DB->query($query) or die("0.78 update value of entities_id in glpi_bookmarks " . $LANG['update'][90] . $DB->error());
+   }
+   if (FieldExists('glpi_reminders', 'is_private')) {
+      $query="UPDATE glpi_reminders SET entities_id=-1 WHERE is_private = 1";
+      $DB->query($query) or die("0.78 update value of entities_id in glpi_reminders " . $LANG['update'][90] . $DB->error());
+   }
+
+   // Update bookmarks for new columns fields
    if (FieldExists('glpi_bookmarks', 'query')) {
       // All search
       $olds = array("deleted",);
@@ -4245,6 +4255,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                        AND `ldap_value` IS NOT NULL))";
       $DB->query($query) or die("0.78 update is_dynamic in glpi_groups_users " . $LANG['update'][90] . $DB->error());
    }
+
+
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
 
