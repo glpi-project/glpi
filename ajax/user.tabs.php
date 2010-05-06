@@ -97,7 +97,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         AuthLdap::showSynchronizationForm($_POST['target'],$_POST["id"]);
+         Auth::showSynchronizationForm($_POST['target'],$_POST["id"]);
          break;
 
       case 13 :
