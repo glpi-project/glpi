@@ -3136,7 +3136,7 @@ class Search {
             } else {
                if (!empty($linkfield)) {
                   $toadd='';
-                  if ($itemtype=='Ticket') {
+                  if ($itemtype=='Ticket' && $data[$NAME.$num."_3"]>0) {
                      $userdata = getUserName($data[$NAME.$num."_3"],2);
                      $toadd = "&nbsp;".showToolTip($userdata["comment"],
                                                 array('link'    => $userdata["link"],
