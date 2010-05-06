@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Закрыта (решено)";
 $LANG['joblist'][11]="Открыта"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Заявки требующие уточнения"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Нет заявки в работе."; 
 $LANG['joblist'][17]="Закрыта (не решено)"; 
 $LANG['joblist'][18]="В работе (назначена)"; 

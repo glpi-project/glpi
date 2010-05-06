@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Fechado (resolvido)";
 $LANG['joblist'][11]="Aberto sobre"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="No ticket in progress."; 
 $LANG['joblist'][17]="Fechado (não resolvido)"; 
 $LANG['joblist'][18]="A processar (atribuido)"; 

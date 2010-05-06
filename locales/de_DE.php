@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Abgeschlossen (Gelöst)";
 $LANG['joblist'][11]="eröffnet am"; 
 $LANG['joblist'][12]="Abgeschlossen am"; 
 $LANG['joblist'][13]="Zu bearbeitende Tickets"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Kein Supportticket in Bearbeitung"; 
 $LANG['joblist'][17]="Abgeschlossen (Ungelöst)"; 
 $LANG['joblist'][18]="in Bearbeitung (zugewiesen)"; 

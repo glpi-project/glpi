@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Stengd (løyst)";
 $LANG['joblist'][11]="Opna"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Inga sak pågår"; 
 $LANG['joblist'][17]="Stengd (vert ikkje løyst)"; 
 $LANG['joblist'][18]="Handsamast (tildelt)"; 

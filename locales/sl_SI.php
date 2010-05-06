@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Zaprto (Rešeno)";
 $LANG['joblist'][11]="Odprto"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Nobeno naročilo ni v teku."; 
 $LANG['joblist'][17]="Zaprto (ni rešeno)"; 
 $LANG['joblist'][18]="V teku (dodeljeno)"; 

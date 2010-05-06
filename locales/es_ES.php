@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Cerrada (resuelta)";
 $LANG['joblist'][11]="Abierta el"; 
 $LANG['joblist'][12]="Cerrada el"; 
 $LANG['joblist'][13]="Incidencias a procesar"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="No hay incidencias pendientes."; 
 $LANG['joblist'][17]="Cerrada (no resuelta)"; 
 $LANG['joblist'][18]="En curso (asignada)"; 

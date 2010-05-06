@@ -758,6 +758,7 @@ $LANG['joblist'][10]="סגור (פתור)";
 $LANG['joblist'][11]="נפתחה ב-"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="אין קריאות בביצוע"; 
 $LANG['joblist'][17]="סגור (לא פתור)"; 
 $LANG['joblist'][18]="מתבצע (מוקצה)"; 

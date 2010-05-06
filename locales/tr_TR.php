@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Kapandı (Çözüldü)";
 $LANG['joblist'][11]="Kayıt tarihi"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="No ticket in progress."; 
 $LANG['joblist'][17]="Kapandı (Çözülmedi)"; 
 $LANG['joblist'][18]="İşlemde (atanmış)"; 

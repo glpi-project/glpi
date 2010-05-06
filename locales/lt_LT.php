@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Uždarytas (išspręstas)";
 $LANG['joblist'][11]="Atidaryta"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="Nėra vykdomų paraiškų."; 
 $LANG['joblist'][17]="Uždarytas (neišspręsta)"; 
 $LANG['joblist'][18]="Vykdomas (priskirta)"; 

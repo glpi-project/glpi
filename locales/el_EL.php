@@ -758,6 +758,7 @@ $LANG['joblist'][10]="Κλειστό (επιλυμένο)";
 $LANG['joblist'][11]="Ανοίχτηκε στις"; 
 $LANG['joblist'][12]="Closed on"; 
 $LANG['joblist'][13]="Tickets to be processed"; 
+$LANG['joblist'][14]="Solved on"; 
 $LANG['joblist'][16]="No ticket in progress."; 
 $LANG['joblist'][17]="Κλειστό (χωρίς λύση)"; 
 $LANG['joblist'][18]="Σε πρόοδο (ανατέθηκε)"; 
