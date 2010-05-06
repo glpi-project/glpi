@@ -2300,14 +2300,18 @@ class Search {
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
          case "glpi_tickets.urgency" :
-            if ($val>0) {
-               return $link." `$table`.`$field` = '$val'";
+            if (is_integer($val)) {
+               if ($val>0) {
+                  return $link." `$table`.`$field` = '$val'";
+               }
+               if ($val<0) {
+                  return $link." `$table`.`$field` >= '".abs($val)."'";
+               }
+               // Show all
+               return $link." `$table`.`$field` >= '0' ";
+            } else {
+               return "";
             }
-            if ($val<0) {
-               return $link." `$table`.`$field` >= '".abs($val)."'";
-            }
-            // Show all
-            return $link." `$table`.`$field` >= '0' ";
             break;
          case "glpi_tickets.global_validation" :
          case "glpi_ticketvalidations.status" :

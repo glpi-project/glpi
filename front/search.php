@@ -42,18 +42,33 @@ checkCentralAccess();
 commonHeader($LANG['search'][0],$_SERVER['PHP_SELF']);
 
 if (isset($_GET["globalsearch"])) {
-   $_GET["reset"] = 'reset';
-   $_GET["display_type"] = GLOBAL_SEARCH;
-   $types = array('Computer', 'Monitor', 'Software', 'NetworkEquipment', 'Peripheral', 'Printer',
+   $searchtext=$_GET["globalsearch"];
+   $types = array('Ticket','Computer', 'Monitor', 'Software', 'NetworkEquipment', 'Peripheral', 'Printer',
                   'Phone', 'Contact', 'Supplier', 'Document');
 
    foreach($types as $itemtype) {
       $item = new $itemtype();
       if ($item->canView()) {
+         $_GET["reset"] = 'reset';
+         $_GET["display_type"] = GLOBAL_SEARCH;
+
          Search::manageGetValues($itemtype,false,false);
-         $_GET["contains"][0] = $_GET["globalsearch"];
+
+         if ($_GET["field"][0] =='view'){
+            $_GET["contains"][0] = $searchtext;
+            $_GET["searchtype"][0] = 'contains';
+            $_SESSION["glpisearchcount"][$itemtype]=1;
+         } else {
+            $_GET["field"][1] = 'view';
+            $_GET["contains"][1] = $searchtext;
+            $_GET["searchtype"][1] = 'contains';
+            $_SESSION["glpisearchcount"][$itemtype]=2;
+         }
          Search::showList($itemtype,$_GET);
+         unset($_GET["contains"]);
+         unset($_GET["searchtype"]);
          echo "<hr>";
+         $_GET=array();
       }
    }
 }
