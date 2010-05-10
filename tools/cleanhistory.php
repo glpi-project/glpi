@@ -58,7 +58,7 @@ if (!isset($_GET['delay'])) {
    Do a full backup before use.
 *******************************************
 
-Usage : php cleanhistory.php [ --item=# ] [ --type=# ] --delay=# [ --run=1 ]
+Usage : php cleanhistory.php [ --item=# ] [ --type=# ] --delay=# [ --run=1 ] [ --optimize=1 ]
 
    With item value in  (optionnal):
       1 : Computer          6 : Software
@@ -92,7 +92,7 @@ if (isset($_GET['type'])) {
 //echo "SQL = $where\n";
 
 if (isset($_GET['run'])) {
-   $query = "DELETE FROM `$table` WHERE $where";
+   $query = "DELETE QUICK FROM `$table` WHERE $where";
    $res = $DB->query($query);
    if (!$res) {
       die("SQL request: $query\nSQL error: ".$DB->error()."\n");
@@ -100,6 +100,12 @@ if (isset($_GET['run'])) {
 
    echo "  Deleted entries in history : ".$DB->affected_rows()."\n";
    echo "Remaining entries in history : ".countElementsInTable($table)."\n";
+
+   if (isset($_GET['optimize'])) {
+      foreach ($DB->request("OPTIMIZE TABLE `$table`") as $data) {
+         echo "Talbe Optimization for ".$data['Table'].": ".$data['Msg_type']." = ".$data['Msg_text']."\n";
+      }
+   }
 
 } else {
    echo " Selected entries in history : ".countElementsInTable($table, $where)."\n";
