@@ -962,12 +962,6 @@ class Infocom extends CommonDBTM {
       $tab[19]['datatype']  = 'itemlink';
 
       $tab[20]['table']     = $this->getTable();
-      $tab[20]['field']     = 'alert';
-      $tab[20]['linkfield'] = 'alert';
-      $tab[20]['name']      = $LANG["setup"][247];
-      $tab[20]['datatype']  = 'integer';
-
-      $tab[20]['table']     = $this->getTable();
       $tab[20]['field']     = 'itemtype';
       $tab[20]['linkfield'] = '';
       $tab[20]['name']      = $LANG['common'][17];
@@ -978,6 +972,12 @@ class Infocom extends CommonDBTM {
       $tab[21]['linkfield'] = '';
       $tab[21]['name']      = 'ID';
       $tab[21]['datatype']  = 'integer';
+
+      $tab[22]['table']     = $this->getTable();
+      $tab[22]['field']     = 'alert';
+      $tab[22]['linkfield'] = 'alert';
+      $tab[22]['name']      = $LANG["setup"][247];
+      $tab[22]['datatype']  = 'integer';
 
       $tab[80]['table']     = 'glpi_entities';
       $tab[80]['field']     = 'completename';
