@@ -197,7 +197,7 @@ class TicketValidation  extends CommonDBChild {
             $input["validation_date"] = $_SESSION["glpi_currenttime"];
          }
          $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate',
-                                'comment_submission', 'sibmussion_date');
+                                'comment_submission', 'submission_date');
 
       } else if (haveRight('create_validation',1)) { // Update validation request
          $forbid_fields = array('entities_id', 'tickets_id', 'status', 'comment_validation',
@@ -631,7 +631,7 @@ class TicketValidation  extends CommonDBChild {
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
-            echo "<td>".$this->fields["comment_submission"]."</td></tr>";
+            echo "<td>".$this->fields["comment_validation"]."</td></tr>";
          }
       }
 
