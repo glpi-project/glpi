@@ -3045,6 +3045,7 @@ class OcsServer extends CommonDBTM {
                                                array($data["id"] => $data["ip"] . self::FIELD_SEPARATOR .
                                                                     $line2["MACADDR"]),
                                                "import_ip");
+                                 // TODO : review this. Should be:  $data["ip"].self::FIELD_SEPARATOR.$line2["MACADDR"] ??
                                  $import_ip[$data["id"]] = $data["ip"];
                               }
                            }
