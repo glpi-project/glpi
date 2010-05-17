@@ -92,6 +92,12 @@ class Location extends CommonTreeDropdown {
       $tab[92]['name']      = $LANG['common'][15]." - ".$LANG['setup'][100];
       $tab[92]['massiveaction'] = false;
 
+      $tab[93]['table']     = 'glpi_locations';
+      $tab[93]['field']     = 'comment';
+      $tab[93]['linkfield'] = 'locations_id';
+      $tab[93]['name']      = $LANG['common'][15]." - ".$LANG['common'][25];
+      $tab[93]['massiveaction'] = false;
+
       return $tab;
    }
    /**
