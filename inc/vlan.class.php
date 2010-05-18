@@ -46,6 +46,15 @@ class Vlan extends CommonDropdown {
       return $LANG['setup'][90];
    }
 
+   function cleanDBonPurge() {
+      global $DB;
+
+      // Temporary solution to clean wrong updated items
+      $query = "DELETE
+                FROM `glpi_networkports_vlans`
+                WHERE `vlans_id` = '".$this->fields['id']."'";
+      $result = $DB->query($query);
+   }
 
 }
 
