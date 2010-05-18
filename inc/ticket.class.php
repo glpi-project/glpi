@@ -261,7 +261,7 @@ class Ticket extends CommonDBTM {
       }
 
       // Security checks
-      if (!haveRight("assign_ticket","1")) {
+      if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
          if (isset($input["users_id_assign"])) {
             $this->getFromDB($input['id']);
             // must own_ticket to grab a non assign ticket
@@ -287,7 +287,7 @@ class Ticket extends CommonDBTM {
          }
       }
 
-      if (!haveRight("update_ticket","1")) {
+      if (is_numeric(getLoginUserID(false)) && !haveRight("update_ticket","1")) {
          if ($this->canApprove()) {
             $ret["status"] = $input["status"];
          }
