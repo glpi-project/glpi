@@ -916,7 +916,7 @@ class Stat {
             $pretoadd="";
             $posttoadd="";
             if (!empty($param['unit'])) {
-               $posttoadd = $param['unit'];
+               $posttoadd = " ".$param['unit'];
                $pretoadd = " - ";
             }
             // Add to title
