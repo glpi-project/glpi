@@ -969,13 +969,37 @@ class Stat {
          // Render CSV
          if ($param['csv']) {
             if ($fp = fopen(GLPI_GRAPH_DIR.'/'.$csvfilename, 'w')) {
+               // reformat datas
+               $values=array();
+               $labels=array();
+               $row_num=0;
                foreach ($entrees as $label => $data) {
+                  $labels[$row_num]=$label;
                   if (is_array($data) && count($data)) {
                      foreach ($data as $key => $val) {
-                        fwrite($fp,$label.';'.$key.';'.$val.";\n");
+                        if (!isset($values[$key])) {
+                           $values[$key]=array();
+                        }
+                        $values[$key][$row_num]=$val;
                      }
                   }
+                  $row_num++;
                }
+               ksort($values);
+               // Print labels
+               fwrite($fp,";");
+               foreach ($labels as $val) {
+                  fwrite($fp,"$val;");
+               }
+               fwrite($fp,"\n");
+               foreach ($values as $key => $data) {
+                  fwrite($fp,"$key;");
+                  foreach ($data as $value) {
+                     fwrite($fp,"$value;");
+                  }
+                  fwrite($fp,"\n");
+               }
+               
                fclose($fp);
             }
          }
