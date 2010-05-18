@@ -233,7 +233,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
          echo "<td>".$LANG['common'][16]."&nbsp;: ";
-         autocompletionTextField($this,"name");
+         autocompletionTextField($this,"name",array('value'=>''));
          if ($entity_assign){
             echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          }
