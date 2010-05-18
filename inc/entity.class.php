@@ -119,7 +119,7 @@ class Entity extends CommonTreeDropdown {
    function showTabContent ($ID, $tab) {
       global $CFG_GLPI;
 
-      if ($ID>=0) {
+      if (!$this->isNewID($ID)) {
          switch ($tab) {
             case -1 :   // All
                $this->showChildren($ID);
