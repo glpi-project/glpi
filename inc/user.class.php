@@ -1346,7 +1346,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-           if (!GLPI_DEMO_MODE){
+         if (!GLPI_DEMO_MODE){
             echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
             /// Use sesion variable because field in table may be null if same of the global config
             Dropdown::showLanguages("language", array('value'=>$_SESSION["glpilanguage"]));
@@ -1368,7 +1368,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-          if (count($_SESSION['glpiprofiles']) >1) {
+         if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
             $options = array(0=>'----');
             foreach ($_SESSION['glpiprofiles'] as $ID => $prof) {
@@ -1392,7 +1392,7 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-        if (count($_SESSION['glpiactiveentities'])>1) {
+        if (!GLPI_DEMO_MODE && count($_SESSION['glpiactiveentities'])>1) {
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
             Dropdown::show('Entity',
                      array('value'  => $_SESSION["glpidefault_entity"],
