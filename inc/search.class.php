@@ -2210,9 +2210,10 @@ class Search {
             if ($nott && $val!="NULL") {
                $ADD = " OR `$table`.`$field` IS NULL";
             }
-            if (preg_match("/$val/i",Infocom::getAmortTypeName(1))) {
+            
+            if (stristr($val,Infocom::getAmortTypeName(1))) {
                $val=1;
-            } else if (preg_match("/$val/i",Infocom::getAmortTypeName(2))) {
+            } else if (stristr($val,Infocom::getAmortTypeName(2))) {
                $val=2;
             }
             if (is_int($val) && $val>0) {
@@ -2722,7 +2723,7 @@ class Search {
                return Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_consumables",
                                  $linkfield) ."
                      LEFT JOIN `$new_table` $AS
-                           ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
+                           ON (glpi_consumables.`id` = `$nt`.`items_id`
                               AND `$nt`.`itemtype` = 'Consumable') ";
             }
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`

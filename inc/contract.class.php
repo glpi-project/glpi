@@ -1194,9 +1194,9 @@ class Contract extends CommonDBTM {
    static function getContractRenewalIDByName($value) {
       global $LANG;
 
-      if (preg_match("/^$value\$/i",$LANG['financial'][105])) {
+      if (stristr($value,$LANG['financial'][105])) {
          return 1;
-      } else if (preg_match("/^$value\$/i",$LANG['financial'][106])){
+      } else if (stristr($value,$LANG['financial'][106])){
          return 2;
       }
       return 0;

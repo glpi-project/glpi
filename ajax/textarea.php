@@ -42,9 +42,11 @@ header_nocache();
 
 checkLoginUser();
 
-echo "<textarea ".(isset($_POST['rows'])?" rows='".$_POST['rows']."' ":"")." ".
-       (isset($_POST['cols'])?" cols='".$_POST['cols']."' ":"")."  name='".$_POST['name']."'>";
-echo cleanPostForTextArea(rawurldecode($_POST["data"]));
-echo "</textarea>";
+if (isset($_POST['name'])) {
+   echo "<textarea ".(isset($_POST['rows'])?" rows='".$_POST['rows']."' ":"")." ".
+         (isset($_POST['cols'])?" cols='".$_POST['cols']."' ":"")."  name='".$_POST['name']."'>";
+   echo cleanPostForTextArea(rawurldecode($_POST["data"]));
+   echo "</textarea>";
+}
 
 ?>
