@@ -758,7 +758,7 @@ $LANG['joblist'][10]="Lezárva (megoldva)";
 $LANG['joblist'][11]="megnyílt"; 
 $LANG['joblist'][12]="Lezárva"; 
 $LANG['joblist'][13]="Feldolgozandó bejelentések"; 
-$LANG['joblist'][14]="Solved on"; 
+$LANG['joblist'][14]="Megoldva"; 
 $LANG['joblist'][16]="Nincs folyamatban levő bejelentés."; 
 $LANG['joblist'][17]="Lezárva (nincs megoldva)"; 
 $LANG['joblist'][18]="Feldolgozás (kiadva)"; 
@@ -1112,7 +1112,7 @@ $LANG['monitors'][21]="Méret";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Forgatás"; 
 
-$LANG['networking'][4]="Network port"; 
+$LANG['networking'][4]="Hálózati csatlakozó"; 
 $LANG['networking'][5]="RAM (MB)"; 
 $LANG['networking'][6]="Hálózati port"; 
 $LANG['networking'][13]="hálózati portot találtam"; 
