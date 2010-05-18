@@ -2604,6 +2604,8 @@ class Search {
 
          case "glpi_operatingsystems" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`operatingsystems_id` = `$nt`.`id`) ";
+         case "glpi_locations" :
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`locations_id` = `$nt`.`id`) ";
 
          case "glpi_vlans" :
             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_networkports",$linkfield);
