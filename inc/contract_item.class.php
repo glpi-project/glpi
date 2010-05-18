@@ -92,12 +92,12 @@ class Contract_Item extends CommonDBRelation{
 
       $tab[3]['table']        = $this->getTable();
       $tab[3]['field']        = 'items_id';
-      $tab[3]['linkfield']    = 'items_id';
+      $tab[3]['linkfield']    = '';
       $tab[3]['name']         = $LANG['common'][2].' '.$LANG['financial'][104];
 
       $tab[4]['table']        = $this->getTable();
       $tab[4]['field']        = 'itemtype';
-      $tab[4]['linkfield']    = 'itemtype';
+      $tab[4]['linkfield']    = '';
       $tab[4]['name']         = $LANG['common'][17];
 
       return $tab;
