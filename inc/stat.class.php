@@ -913,20 +913,32 @@ class Stat {
 
 
          if (!empty($param['title'])) {
-            // Only when one dataset
-            if ($param['showtotal']==1 && count($entrees)==1) {
-               reset($entrees);
-               $param['title'] .= " - ".array_sum(current($entrees));
-               if (!empty($param['unit'])) {
-                  $param['title'] .= " ".$param['unit'];
+            $pretoadd="";
+            $posttoadd="";
+            if (!empty($param['unit'])) {
+               $posttoadd = $param['unit'];
+               $pretoadd = " - ";
+            }
+            // Add to title
+            if (count($entrees)==1) {
+               $param['title'] .= $pretoadd;
+               if ($param['showtotal']==1) {
+                  reset($entrees);
+                  $param['title'] .= array_sum(current($entrees));
                }
-            } else {
-               if (!empty($param['unit']) && count($entrees)==1) {
-                  $param['title'] .= " - ".$param['unit'];
+               $param['title'] .= $posttoadd;
+            } else { // add sum to legend and unit to title
+               $param['title'] .=$pretoadd.$posttoadd;
+               $entree_tmp=$entrees;
+               $entrees=array();
+               foreach ($entree_tmp as $key => $data) {
+                  $entrees[$key." (".array_sum($data).")"]=$data;
                }
             }
+
             $graph->title = $param['title'];
          }
+
          if (count($entrees)==1) {
             $graph->legend = false;
          }
