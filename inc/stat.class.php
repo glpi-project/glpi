@@ -929,10 +929,12 @@ class Stat {
                $param['title'] .= $posttoadd;
             } else { // add sum to legend and unit to title
                $param['title'] .=$pretoadd.$posttoadd;
-               $entree_tmp=$entrees;
-               $entrees=array();
-               foreach ($entree_tmp as $key => $data) {
-                  $entrees[$key." (".array_sum($data).")"]=$data;
+               if ($param['showtotal']==1) {
+                  $entree_tmp=$entrees;
+                  $entrees=array();
+                  foreach ($entree_tmp as $key => $data) {
+                     $entrees[$key." (".array_sum($data).")"]=$data;
+                  }
                }
             }
 
