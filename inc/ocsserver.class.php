@@ -869,10 +869,12 @@ class OcsServer extends CommonDBTM {
                 WHERE `computers_id` = '$computers_id'";
 
       $result = $DB->query($query);
-      $ocs_exists = true;
+      $ocs_id_change = false;
+      $ocs_link_exists = false;
       $numrows = $DB->numrows($result);
       // Already link - check if the OCS computer already exists
       if ($numrows > 0) {
+         $ocs_link_exists = false;
          $data = $DB->fetch_assoc($result);
          $query = "SELECT *
                    FROM `hardware`
@@ -880,20 +882,23 @@ class OcsServer extends CommonDBTM {
          $result_ocs = $DBocs->query($query);
          // Not found
          if ($DBocs->numrows($result_ocs) == 0) {
-            $ocs_exists = false;
-            $query = "DELETE
-                      FROM `glpi_ocslinks`
-                      WHERE `id` = '" . $data["ID"] . "'";
+            $ocs_id_change = true;
+            $idlink=$data["id"];
+            $query = "UPDATE `glpi_ocslinks`
+                      SET `ocsid` = $ocsid
+                      WHERE `id` = '" . $data["id"] . "'";
             $DB->query($query);
+            //Add history to indicates that the ocsid changed
+            $changes[0]='0';
+            //Old ocsid
+            $changes[1]=$data["ocsid"];
+            //New ocsid
+            $changes[2]=$ocsid;
+            Log::history($computers_id,'Computer',$changes,0,HISTORY_OCS_IDCHANGED);
          }
       }
-
-      // TODO : if OCS ID change :
-      // ocs_link exists but not hardware in OCS so update only ocs_link
-      // and do not reset items before updateComputer
-
-      // No ocs_link or ocs computer does not exists so can link
-      if (!$ocs_exists || $numrows == 0) {
+      // No ocs_link or ocs id change does not exists so can link
+      if ($ocs_id_change || !$ocs_link_exists) {
          $ocsConfig = OcsServer::getConfig($ocsservers_id);
          // Set OCS checksum to max value
          $query = "UPDATE
@@ -902,13 +907,15 @@ class OcsServer extends CommonDBTM {
                    WHERE `ID` = '$ocsid'";
          $DBocs->query($query);
 
-         if ($idlink = OcsServer::ocsLink($ocsid, $ocsservers_id, $computers_id)) {
+         if ($ocs_id_change || $idlink = OcsServer::ocsLink($ocsid, $ocsservers_id, $computers_id)) {
             $comp = new Computer;
             $comp->getFromDB($computers_id);
             $input["id"] = $computers_id;
             $input["is_ocs_import"] = 1;
             // Not already import from OCS / mark default state
-            if ($link_auto || (!$comp->fields['is_ocs_import'] && $ocsConfig["states_id_default"]>0)) {
+            if (!$ocs_id_change
+                  && ($link_auto
+                     || (!$comp->fields['is_ocs_import'] && $ocsConfig["states_id_default"]>0))) {
                $input["states_id"] = $ocsConfig["states_id_default"];
             }
             $comp->update($input);
@@ -918,61 +925,64 @@ class OcsServer extends CommonDBTM {
             }
             // Reset using GLPI Config
             $cfg_ocs = OcsServer::getConfig($ocsservers_id);
-            $query = "SELECT *
-                      FROM `hardware`
-                      WHERE `ID` = '$ocsid'";
-            $result = $DBocs->query($query);
-            $line = $DBocs->fetch_array($result);
+//             $query = "SELECT *
+//                       FROM `hardware`
+//                       WHERE `ID` = '$ocsid'";
+//             $result = $DBocs->query($query);
+//             $line = $DBocs->fetch_array($result);
 
-            if ($cfg_ocs["import_general_os"]) {
-               OcsServer::resetDropdown($computers_id, "operatingsystems_id", "glpi_operatingsystems");
+            // Reset only if not in ocs id change case
+            if (!$ocs_id_change) {
+               if ($cfg_ocs["import_general_os"]) {
+                  OcsServer::resetDropdown($computers_id, "operatingsystems_id", "glpi_operatingsystems");
+               }
+               if ($cfg_ocs["import_device_processor"]) {
+                  Computer_Device::resetDevices($computers_id, 'DeviceProcessor');
+               }
+               if ($cfg_ocs["import_device_iface"]) {
+                  Computer_Device::resetDevices($computers_id, 'DeviceNetworkCard');
+               }
+               if ($cfg_ocs["import_device_memory"]) {
+                  Computer_Device::resetDevices($computers_id, 'DeviceMemory');
+               }
+               if ($cfg_ocs["import_device_hdd"]) {
+                  Computer_Device::resetDevices($computers_id, 'DeviceHardDrive');
+               }
+               if ($cfg_ocs["import_device_sound"]) {
+                  Computer_Device::resetDevices($computers_id, 'DeviceSoundCard');
+               }
+               if ($cfg_ocs["import_device_gfxcard"]) {
+                  Computer_Device::resetDevices($computers_id, 'DeviceGraphicCard');
+               }
+               if ($cfg_ocs["import_device_drive"]) {
+                  Computer_Device::resetDevices($computers_id, 'DeviceDrive');
+               }
+               if ($cfg_ocs["import_device_modem"] || $cfg_ocs["import_device_port"]) {
+                  Computer_Device::resetDevices($computers_id, 'DevicePci');
+               }
+               if ($cfg_ocs["import_software"]) {
+                  OcsServer::resetSoftwares($computers_id);
+               }
+               if ($cfg_ocs["import_disk"]) {
+                  OcsServer::resetDisks($computers_id);
+               }
+               if ($cfg_ocs["import_periph"]) {
+                  OcsServer::resetPeripherals($computers_id);
+               }
+               if ($cfg_ocs["import_monitor"] == 1) { // Only reset monitor as global in unit management
+                  OcsServer::resetMonitors($computers_id);    // try to link monitor with existing
+               }
+               if ($cfg_ocs["import_printer"]) {
+                  OcsServer::resetPrinters($computers_id);
+               }
+               if ($cfg_ocs["import_registry"]) {
+                  OcsServer::resetRegistry($computers_id);
+               }
+               $changes[0]='0';
+               $changes[1]="";
+               $changes[2]=$ocsid;
+               Log::history($computers_id,'Computer',$changes,0,HISTORY_OCS_LINK);
             }
-            if ($cfg_ocs["import_device_processor"]) {
-               Computer_Device::resetDevices($computers_id, 'DeviceProcessor');
-            }
-            if ($cfg_ocs["import_device_iface"]) {
-               Computer_Device::resetDevices($computers_id, 'DeviceNetworkCard');
-            }
-            if ($cfg_ocs["import_device_memory"]) {
-               Computer_Device::resetDevices($computers_id, 'DeviceMemory');
-            }
-            if ($cfg_ocs["import_device_hdd"]) {
-               Computer_Device::resetDevices($computers_id, 'DeviceHardDrive');
-            }
-            if ($cfg_ocs["import_device_sound"]) {
-               Computer_Device::resetDevices($computers_id, 'DeviceSoundCard');
-            }
-            if ($cfg_ocs["import_device_gfxcard"]) {
-               Computer_Device::resetDevices($computers_id, 'DeviceGraphicCard');
-            }
-            if ($cfg_ocs["import_device_drive"]) {
-               Computer_Device::resetDevices($computers_id, 'DeviceDrive');
-            }
-            if ($cfg_ocs["import_device_modem"] || $cfg_ocs["import_device_port"]) {
-               Computer_Device::resetDevices($computers_id, 'DevicePci');
-            }
-            if ($cfg_ocs["import_software"]) {
-               OcsServer::resetSoftwares($computers_id);
-            }
-            if ($cfg_ocs["import_disk"]) {
-               OcsServer::resetDisks($computers_id);
-            }
-            if ($cfg_ocs["import_periph"]) {
-               OcsServer::resetPeripherals($computers_id);
-            }
-            if ($cfg_ocs["import_monitor"] == 1) { // Only reset monitor as global in unit management
-               OcsServer::resetMonitors($computers_id);    // try to link monitor with existing
-            }
-            if ($cfg_ocs["import_printer"]) {
-               OcsServer::resetPrinters($computers_id);
-            }
-            if ($cfg_ocs["import_registry"]) {
-               OcsServer::resetRegistry($computers_id);
-            }
-            $changes[0]='0';
-            $changes[1]="";
-            $changes[2]=$ocsid;
-            Log::history($computers_id,'Computer',$changes,0,HISTORY_OCS_LINK);
 
             OcsServer::updateComputer($idlink, $ocsservers_id, 0);
             return true;
