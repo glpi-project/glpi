@@ -126,6 +126,7 @@ function doHookFunction($name,$parm=NULL) {
  * @return mixed $data
  */
 function doOneHook($plugname,$hook,$options=array()) {
+   $plugname=strtolower($plugname);
    if (!is_array($hook)) {
       $hook = "plugin_" . $plugname . "_" . $hook;
       if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
