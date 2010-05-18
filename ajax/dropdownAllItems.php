@@ -74,10 +74,10 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $paramsallitems['entity_restrict']=$_POST['entity_restrict'];
    }
    if (isset($_POST['condition'])) {
-      $paramsallitems['condition']=$_POST['condition'];
+      $paramsallitems['condition']=stripslashes($_POST['condition']);
    }
 
-   $default="--<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
+   $default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
    ajaxDropdown($use_ajax,"/ajax/$link",$paramsallitems,$default,$rand);
 }
 

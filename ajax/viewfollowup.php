@@ -41,6 +41,10 @@ header_nocache();
 
 checkLoginUser();
 
+if (!isset($_POST['type'])) {
+   exit();
+}
+
 if ($_POST['type']=='TicketTask') {
    $item = new TicketTask();
 } else if ($_POST['type']=='TicketFollowup') {

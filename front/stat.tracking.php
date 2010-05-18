@@ -160,7 +160,7 @@ if (!$_REQUEST['showgraph']) {
    Stat::show($_REQUEST["type"],$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val);
 } else {
    $data=Stat::getDatas($_REQUEST["type"],$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val);
-   if (is_array($data['opened'])) {
+   if (isset($data['opened']) && is_array($data['opened'])) {
       foreach($data['opened'] as $key => $val){
          $newkey=html_clean($key);
          $cleandata[$newkey]=$val;
@@ -171,7 +171,7 @@ if (!$_REQUEST['showgraph']) {
                            'unit'      => $LANG['stats'][35],
                            'type'      => 'pie'));
    }
-   if (is_array($data['solved'])) {
+   if (isset($data['solved']) && is_array($data['solved'])) {
       foreach($data['solved'] as $key => $val){
          $newkey=html_clean($key);
          $cleandata[$newkey]=$val;

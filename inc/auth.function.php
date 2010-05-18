@@ -500,44 +500,46 @@ function changeActiveEntities($ID="all",$is_recursive=false) {
 
    $newentities=array();
    $newroots=array();
-   if ($ID=="all") {
-      $ancestors=array();
-      foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-         $ancestors=array_unique(array_merge(getAncestorsOf("glpi_entities",$val['id']),$ancestors));
-         $newroots[$val['id']]=$val['is_recursive'];
-         $newentities[$val['id']] = $val['id'];
-         if ($val['is_recursive']) {
-            $entities = getSonsOf("glpi_entities", $val['id']);
+   if (isset($_SESSION['glpiactiveprofile'])) {
+      if ($ID=="all") {
+         $ancestors=array();
+         foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+            $ancestors=array_unique(array_merge(getAncestorsOf("glpi_entities",$val['id']),$ancestors));
+            $newroots[$val['id']]=$val['is_recursive'];
+            $newentities[$val['id']] = $val['id'];
+            if ($val['is_recursive']) {
+               $entities = getSonsOf("glpi_entities", $val['id']);
+               if (count($entities)) {
+                  foreach ($entities as $key2 => $val2) {
+                     $newentities[$key2] = $key2;
+                  }
+               }
+            }
+         }
+      } else {
+         /// Check entity validity
+         $ancestors=getAncestorsOf("glpi_entities",$ID);
+         $ok=false;
+         foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+            if ($val['id']== $ID || in_array($val['id'], $ancestors)) {
+               // Not recursive or recursive and root entity is recursive
+               if (! $is_recursive || $val['is_recursive']) {
+                  $ok=true;
+               }
+            }
+         }
+         if (!$ok) {
+            return false;
+         }
+   
+         $newroots[$ID]=$is_recursive;
+         $newentities[$ID] = $ID;
+         if ($is_recursive) {
+            $entities = getSonsOf("glpi_entities", $ID);
             if (count($entities)) {
                foreach ($entities as $key2 => $val2) {
                   $newentities[$key2] = $key2;
                }
-            }
-         }
-      }
-   } else {
-      /// Check entity validity
-      $ancestors=getAncestorsOf("glpi_entities",$ID);
-      $ok=false;
-      foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-         if ($val['id']== $ID || in_array($val['id'], $ancestors)) {
-            // Not recursive or recursive and root entity is recursive
-            if (! $is_recursive || $val['is_recursive']) {
-               $ok=true;
-            }
-         }
-      }
-      if (!$ok) {
-         return false;
-      }
-
-      $newroots[$ID]=$is_recursive;
-      $newentities[$ID] = $ID;
-      if ($is_recursive) {
-         $entities = getSonsOf("glpi_entities", $ID);
-         if (count($entities)) {
-            foreach ($entities as $key2 => $val2) {
-               $newentities[$key2] = $key2;
             }
          }
       }
