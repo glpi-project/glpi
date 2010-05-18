@@ -758,7 +758,7 @@ $LANG['joblist'][10]="Abgeschlossen (Gelöst)";
 $LANG['joblist'][11]="eröffnet am"; 
 $LANG['joblist'][12]="Abgeschlossen am"; 
 $LANG['joblist'][13]="Zu bearbeitende Tickets"; 
-$LANG['joblist'][14]="Solved on"; 
+$LANG['joblist'][14]="Gelöst am"; 
 $LANG['joblist'][16]="Kein Supportticket in Bearbeitung"; 
 $LANG['joblist'][17]="Abgeschlossen (Ungelöst)"; 
 $LANG['joblist'][18]="in Bearbeitung (zugewiesen)"; 
@@ -1112,7 +1112,7 @@ $LANG['monitors'][21]="Größe";
 $LANG['monitors'][32]="DVI"; 
 $LANG['monitors'][33]="Pivot"; 
 
-$LANG['networking'][4]="Network port"; 
+$LANG['networking'][4]="Netzwerk Port"; 
 $LANG['networking'][5]="Arbeitsspeicher (MB)"; 
 $LANG['networking'][6]="Netzwerkanschluss"; 
 $LANG['networking'][13]="Netzwerkanschlüsse"; 
@@ -1370,7 +1370,7 @@ $LANG['reports'][60]="Erstellungsdatum";
 $LANG['reports'][61]="Enddatum"; 
 $LANG['reports'][62]="Finanzbericht zur Hardware"; 
 $LANG['reports'][63]="Weitere Finanzinformationen (Lizenzen, Kartuschen, Verbrauchsmaterial)"; 
-$LANG['reports'][64]="Resolution date"; 
+$LANG['reports'][64]="Datum der Lösung"; 
 
 $LANG['reservation'][1]="Reservierbare Geräte"; 
 $LANG['reservation'][2]="Gerät im Augenblick nicht verfügbar"; 

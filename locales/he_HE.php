@@ -163,7 +163,7 @@ $LANG['cartridges'][42]="ממוצע הדפים המודפסים";
 $LANG['central'][0]="ברוך הבא"; 
 $LANG['central'][1]="זהו לוח בקרה המרכזי"; 
 $LANG['central'][2]="אחרונות"; 
-$LANG['central'][4]="No Event"; 
+$LANG['central'][4]="אין אירועים"; 
 $LANG['central'][5]="דף הבית"; 
 $LANG['central'][6]="התנתק"; 
 $LANG['central'][7]="עזרה"; 
@@ -173,7 +173,7 @@ $LANG['central'][10]="קריאות חדשות";
 $LANG['central'][12]="תצוגה אישית"; 
 $LANG['central'][13]="תצוגה גלובלית"; 
 $LANG['central'][14]="תצוגה קבוצתית"; 
-$LANG['central'][18]="Your tickets to close"; 
+$LANG['central'][18]="פניותך שממתינות לסגירה"; 
 
 $LANG['choice'][0]="לא"; 
 $LANG['choice'][1]="כן"; 
@@ -1101,7 +1101,7 @@ $LANG['Menu'][37]="יחידות ארגוניות";
 $LANG['Menu'][38]="מלאי"; 
 $LANG['Menu'][39]="מקבלי דואר"; 
 $LANG['Menu'][40]="סימניות"; 
-$LANG['Menu'][41]="Rights"; 
+$LANG['Menu'][41]="הרשאות"; 
 
 $LANG['monitors'][14]="מיקרופון"; 
 $LANG['monitors'][15]="רמקולים"; 
