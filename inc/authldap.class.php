@@ -2066,14 +2066,22 @@ class AuthLDAP extends CommonDBTM {
          && $_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE) {
          foreach ($_SESSION['ldap_import']['criterias'] as $criteria => $value) {
             if ($value!='') {
-               if (preg_match('/\^(.*)/',$value,$result)) {
-                  $value = $result[1].'*';
+               $begin=0;
+               $end=0;
+               if (($length=strlen($value))>0) {
+                  if (($value[0]=='^')) {
+                     $begin=1;
+                  }
+                  if ($value[$length-1]=='$'){
+                     $end=1;
+                  }
                }
-               if (preg_match('/(.*)\$/',$value,$result)) {
-                  $value = '*'.$result[1];
+               if ($begin||$end) {
+                  // no utf8_substr, to be consistent with strlen result
+                  $value=substr($value,$begin,$length-$end-$begin);
                }
                $counter++;
-                $filter.="(".$authldap->fields[$criteria]."=$value)";
+               $filter.='('.$authldap->fields[$criteria].'='.($begin?'':'*').$value.($end?'':'*').')';
              }
           }
       }
