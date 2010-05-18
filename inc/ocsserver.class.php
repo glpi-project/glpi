@@ -3028,7 +3028,7 @@ class OcsServer extends CommonDBTM {
                         $ocs_ips = array_unique($ocs_ips);
                         sort($ocs_ips);
 
-                        //if never imported in 0.70, insert id in the array
+                        //if never imported (only 0.72 tag in array), check if existing ones match
                         if ($count_ip == 1) {
                            //get old IP in DB
                            $querySelectIDandIP = "SELECT `id`, `ip`
@@ -3045,8 +3045,7 @@ class OcsServer extends CommonDBTM {
                                                array($data["id"] => $data["ip"] . self::FIELD_SEPARATOR .
                                                                     $line2["MACADDR"]),
                                                "import_ip");
-                                 // TODO : review this. Should be:  $data["ip"].self::FIELD_SEPARATOR.$line2["MACADDR"] ??
-                                 $import_ip[$data["id"]] = $data["ip"];
+                                 $import_ip[$data["id"]] = $data["ip"].self::FIELD_SEPARATOR.$line2["MACADDR"];
                               }
                            }
                         }
