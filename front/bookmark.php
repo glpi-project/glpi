@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    $_GET["action"] = "load";
 
 } else if (isset($_POST["delete_several"])) {
-   if (isset($_POST["bookmark"]) {
+   if (isset($_POST["bookmark"])) {
       foreach ($_POST["bookmark"] as $ID=>$value) {
          if ($bookmark->can($ID,'w')) {
             $bookmark->delete(array("id" => $ID));
