@@ -45,6 +45,17 @@ class PrinterModel extends CommonDropdown {
 
       return $LANG['setup'][96];
    }
+
+   function cleanDBonPurge() {
+      global $DB;
+
+      // Temporary solution to clean wrong updated items
+      $query = "DELETE
+                FROM `glpi_cartridges_printermodels`
+                WHERE `printermodels_id` = '".$this->fields['id']."'";
+      $result = $DB->query($query);
+   }
+
 }
 
 ?>
