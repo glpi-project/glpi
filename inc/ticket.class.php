@@ -222,7 +222,7 @@ class Ticket extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `id`
-                FROM `glpi_ticketfollowups`
+                FROM `glpi_tickettasks`
                 WHERE `tickets_id` = '".$this->fields['id']."'";
       $result=$DB->query($query);
 
@@ -234,6 +234,11 @@ class Ticket extends CommonDBTM {
             $DB->query($querydel);
          }
       }
+      $query1 = "DELETE
+                 FROM `glpi_tickettasks`
+                 WHERE `tickets_id` = '".$this->fields['id']."'";
+      $DB->query($query1);
+
       $query1 = "DELETE
                  FROM `glpi_ticketfollowups`
                  WHERE `tickets_id` = '".$this->fields['id']."'";
