@@ -50,7 +50,7 @@ if (isset($_GET["redirect"])){
 	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
 	if (isset($_POST["edit_resa"])){
-		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
+		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
 		$id_item=key($_POST["items"]);
 		if ($_SESSION["glpiID"]==$_POST["id_user"]){
 			$_POST['_target']=$_SERVER['PHP_SELF'];
