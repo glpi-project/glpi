@@ -114,4 +114,12 @@ if (!defined("GLPI_PHPMAILER_DIR")){
 	# if PHPMailer installed, use (in config_path.php)
 	# define("GLPI_PHPMAILER_DIR", "/usr/share/php/phpmailer");
 }
+
+// Default phpCAS installation dir
+if (!defined("GLPI_PHPCAS")) {
+   define("GLPI_PHPCAS", GLPI_ROOT . "/lib/phpcas/CAS.php");
+
+   # if phpCAS installed as PEAR extension, use (in config_path.php)
+   # define("GLPI_PHPCAS", "CAS.php");
+}
 ?>
