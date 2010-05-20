@@ -1344,9 +1344,10 @@ class CommonDBTM extends CommonGLPI {
       }
       echo "<tr>";
 
-      if (get_class($this)=='Entity' && !$ID) {
+      //if (get_class($this)=='Entity' && !$ID) {
          // Very special case ;)
-      } else if ($params['withtemplate'] || $ID<=0) {
+      //} else
+      if ($params['withtemplate'] || $ID<=0) {
          echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
          if ($ID<=0 || $params['withtemplate']==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
