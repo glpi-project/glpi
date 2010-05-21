@@ -41,6 +41,37 @@ abstract class CommonDBRelation extends CommonDBTM {
    var $itemtype_2; // Type ref or field name (must start with itemtype)
    var $items_id_2; // Field name
 
+
+      /**
+   * Get search function for the class
+   *
+   * @return array of search option
+   */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common']           = $LANG['common'][32];;
+
+      $tab[2]['table']     = $this->getTable();
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = getTableForItemType($this->itemtype_1);
+      $tab[3]['field']     = $this->items_id_1;
+      $tab[3]['linkfield'] = '';
+      $tab[3]['name']      = call_user_func(array($this->itemtype_1,'getTypeName'));
+      $tab[3]['datatype']  = 'text';
+
+      $tab[4]['table']     = getTableForItemType($this->itemtype_2);
+      $tab[4]['field']     = $this->items_id_2;
+      $tab[4]['linkfield'] = '';
+      $tab[4]['name']      = call_user_func(array($this->itemtype_2,'getTypeName'));
+      $tab[4]['datatype']  = 'text';
+
+      return $tab;
+   }
    /**
     * Check right on an item
     *
