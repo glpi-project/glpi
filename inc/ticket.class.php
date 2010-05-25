@@ -2335,13 +2335,13 @@ class Ticket extends CommonDBTM {
             $types = self::getAllTypesForHelpdesk();
             echo "<select id='search_$myname$rand' name='$myname'>\n";
             echo "<option value='-1' >-----</option>\n";
-            echo "<option value='' ".(empty($itemtype)?" selected":"").">".$LANG['help'][30]."</option>";
+            echo "<option value='' ".((empty($itemtype)|| $itemtype==0)?" selected":"").">".$LANG['help'][30]."</option>";
             $found_type = false;
             foreach ($types as $type => $label) {
-               if ($type == $itemtype) {
+               if (strcmp($type,$itemtype)==0) {
                   $found_type = true;
                }
-               echo "<option value='".$type."' ".(($type==$itemtype)?" selected":"").">".$label;
+               echo "<option value='".$type."' ".(strcmp($type,$itemtype)==0?" selected":"").">".$label;
                echo "</option>\n";
             }
             echo "</select>";

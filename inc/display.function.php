@@ -1847,7 +1847,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
       $use_email_notification=0;
    }
    $itemtype = 0;
-   $computer="";
+   $items_id="";
    $content="";
    $title="";
    $ticketcategories_id = 0;
@@ -1861,6 +1861,9 @@ function printHelpDesk ($ID,$from_helpdesk) {
    }
    if (isset($_SESSION["helpdeskSaved"]["itemtype"])) {
       $itemtype = stripslashes($_SESSION["helpdeskSaved"]["itemtype"]);
+   }
+   if (isset($_SESSION["helpdeskSaved"]["items_id"])) {
+      $items_id = stripslashes($_SESSION["helpdeskSaved"]["items_id"]);
    }
    if (isset($_SESSION["helpdeskSaved"]["content"])) {
       $content = cleanPostForTextArea($_SESSION["helpdeskSaved"]["content"]);
@@ -1918,7 +1921,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
       echo "<td>".$LANG['help'][24]."&nbsp;: </td>";
       echo "<td>";
       Ticket::dropdownMyDevices(getLoginUserID(),$_SESSION["glpiactive_entity"]);
-      Ticket::dropdownAllDevices("itemtype",$itemtype,0,0,$_SESSION["glpiactive_entity"]);
+      Ticket::dropdownAllDevices("itemtype",$itemtype,$items_id,0,$_SESSION["glpiactive_entity"]);
       echo "</td></tr>";
    }
 
