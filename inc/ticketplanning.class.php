@@ -192,6 +192,9 @@ class TicketPlanning extends CommonDBTM {
 
          $user=new User;
          $user->getFromDB(getLoginUserID());
+
+
+         //TODO class Mailing not exist
          $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
          $mail->send();
       }
