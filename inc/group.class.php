@@ -250,7 +250,7 @@ class Group extends CommonDBTM {
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action=\"$target\">";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
-      if (AuthLdap::useAuthLdap()) {
+      if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>".$LANG['setup'][256]."&nbsp;:</td></tr>";
 
