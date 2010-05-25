@@ -2118,7 +2118,7 @@ class Ticket extends CommonDBTM {
                       LEFT JOIN `glpi_groups`
                            ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
                       WHERE `glpi_groups_users`.`users_id` = '$userID' ".
-                            getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
+                            getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict,true);
             $result = $DB->query($query);
             $first = true;
             if ($DB->numrows($result)>0) {
