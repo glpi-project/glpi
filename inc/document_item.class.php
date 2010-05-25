@@ -50,6 +50,10 @@ class Document_Item extends CommonDBRelation{
 
    function prepareInputForAdd($input) {
 
+      if (empty($input['itemtype']) || empty($input['items_id']) || $input['items_id']==0) {
+         return false;
+      }
+
       // Do not insert circular link for document
       if ($input['itemtype'] == 'Document' && $input['items_id']==$input['documents_id']) {
          return false;
