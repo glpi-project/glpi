@@ -2,6 +2,29 @@ This document duplicates reference information found at http://www.ja-sig.org/wi
 for interested parties, in the case the wiki wouldn't be available.
 
 ----
+Changes in version 1.1.1
+Improvement
+    * On Single Sign Out destroy any existing application session before deleting the phpcas session [PHPCAS-58] (Joachim Fritschi)
+    
+Changes in version 1.1.1RC2
+Bug fixes
+    * Fix bug in handling urls containing parameters without values [PHPCAS-57] (Joe Lencioni)
+    * New XSS patch for PHPCAS-52 that was undone in r48507 [PHPCAS-57] (Joachim Fritschi)
+
+Changes in version 1.1.1RC1
+Bug fixes
+    * Fix bug in restoring an existing session [PHPCAS-55] (Joachim Fritschi)
+    
+Changes in version 1.1.0
+Improvement
+    * Replace deprecated split() with explode(). [PHPCAS-42] (Joe Lencioni)
+
+Changes in version 1.1.0RC8
+Bug fixes
+    * Add additional comments regarding the use of serviceValidate and proxyValdiate [PHPCAS-44] (Joachim Fritschi)
+    * Revert all changes made to the ticket parsing in r47347 r48210 [PHPCAS-44] (Joachim Fritschi)
+    * Fix warning when destroying uninitialized session [PHPCAS-53] (Yann Richard,Joachim Fritschi)
+
 Changes in version 1.1.0RC7
 Security fixes
     * Fix XSS Vulnerability. Sanatize parameters before using the url submitted by a client [PHPCAS-52] (Joachim Fritschi)
