@@ -323,7 +323,7 @@ $LANG['computers'][24] = "Quantité RAM";
 $LANG['computers'][25] = "Taille HD";
 
 $LANG['computers'][36] = "HD-Type";
-$LANG['computers'][37] = "Pas d'écran connecté.";
+$LANG['computers'][37] = "Pas de moniteur connecté.";
 $LANG['computers'][38] = "Pas d'imprimante connectée";
 $LANG['computers'][39] = "Imprimante(s)";
 $LANG['computers'][40] = "Moniteur(s)";
@@ -984,7 +984,7 @@ $LANG['links'][9] = "Contenu du fichier";
 
 $LANG['log'][1]   = "système";
 $LANG['log'][2]   = "ordinateur";
-$LANG['log'][3]   = "écran";
+$LANG['log'][3]   = "moniteur";
 $LANG['log'][4]   = "imprimante";
 $LANG['log'][5]   = "logiciel";
 $LANG['log'][6]   = "réseau";
