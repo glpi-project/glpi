@@ -3012,7 +3012,8 @@ function showToolTip($content,$options=array()){
    $out.= "new Ext.ToolTip({
             target: '".$param['applyto']."',
             anchor: 'left',
-            autoShow: true";
+            autoShow: true,
+            autoHide: true";
    if (!empty($param['title'])) {
       $out.= ",title: \"".$param['title']."\"";
    }
