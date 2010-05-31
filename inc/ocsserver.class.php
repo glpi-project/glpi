@@ -57,7 +57,7 @@ class OcsServer extends CommonDBTM {
    const FIELD_SEPARATOR = '$$$$$';
    const IMPORT_TAG_070 = '_version_070_';
    const IMPORT_TAG_072 = '_version_072_';
-   const IMPORT_TAG_080 = '_version_080_';
+   const IMPORT_TAG_078 = '_version_078_';
 
    // Class constants - OCSNG Flags on Checksum
    const HARDWARE_FL    = 0;
@@ -1497,7 +1497,7 @@ class OcsServer extends CommonDBTM {
             if ($mixed_checksum) {
                // Get updates on computers :
                $computer_updates = importArrayFromDB($line["computer_update"]);
-               if (!in_array(self::IMPORT_TAG_080,$computer_updates)) {
+               if (!in_array(self::IMPORT_TAG_078,$computer_updates)) {
                   $computer_updates = OcsServer::migrateComputerUpdates($line["computers_id"],
                                                                         $computer_updates);
                }
@@ -2261,10 +2261,29 @@ class OcsServer extends CommonDBTM {
                    "groups_id"=>$LANG['common'][35]);
    }
 
-   static function migrateComputerUpdates($computers_id,$computer_update) {
-      global $DB;
 
-      $new_computer_update=array(self::IMPORT_TAG_080);
+   static function migrateImportDevice($computers_id,$import_device) {
+      $new_import_device=array(self::IMPORT_TAG_078);
+      if (count($import_device)) {
+         foreach ($import_device as $key=>$val) {
+            $tmp=explode(self::FIELD_SEPARATOR,$val);
+            if (isset($tmp[1])) {
+               $new_import_device[$tmp[0].self::FIELD_SEPARATOR.$key]=$val;
+            } else {
+               $new_import_device[$key]=$val;
+            }
+
+         }
+      }
+      //Add the new tag as the first occurence in the array
+      OcsServer::replaceOcsArray($computers_id,$new_import_device,"import_device");
+      return $new_import_device;
+
+   }
+
+   static function migrateComputerUpdates($computers_id,$computer_update) {
+
+      $new_computer_update=array(self::IMPORT_TAG_078);
 
       $updates=array('ID' => 'id',
                      'FK_entities' => 'entities_id',
@@ -2405,7 +2424,7 @@ class OcsServer extends CommonDBTM {
          $lockable_fields = OcsServer::getLockableFields();
          $locked = importArrayFromDB($data["computer_update"]);
 
-         if (!in_array(self::IMPORT_TAG_080,$locked)) {
+         if (!in_array(self::IMPORT_TAG_078,$locked)) {
             $locked=OcsServer::migrateComputerUpdates($ID,$locked);
          }
          if (count($locked)>0) {
@@ -2656,6 +2675,13 @@ class OcsServer extends CommonDBTM {
                              $import_device, $import_ip, $dohistory) {
       global $DB, $DBocs;
 
+      // Migrate import device to manage several link tables
+      if (!in_array(self::IMPORT_TAG_078,$import_device)) {
+         $import_device = OcsServer::migrateImportDevice($computers_id, $import_device);
+      }
+
+      $prevalue=$devicetype.self::FIELD_SEPARATOR;
+
       OcsServer::checkOCSconnection($ocsservers_id);
       $types = Computer_Device::getDeviceTypes();
       $CompDevice = new Computer_Device($types[$devicetype]);
@@ -2679,14 +2705,14 @@ class OcsServer extends CommonDBTM {
                      // Clean memories for this computer
                      if (count($import_device)) {
                         $dohistory=false;
-                        foreach ($import_device as $import_ID => $val) {
-                           $tmp=explode(self::FIELD_SEPARATOR,$val);
+                        foreach ($import_device as $key => $val) {
+                           $tmp=explode(self::FIELD_SEPARATOR,$key);
                            if (isset($tmp[1]) && $tmp[0] == self::RAM_DEVICE) {
-                              $CompDevice->delete(array('id'          => $import_ID,
+                              $CompDevice->delete(array('id'          => $tmp[1],
                                                         '_no_history' => true,
                                                          '_itemtype'     => 'DeviceMemory',));
-                              OcsServer::deleteInOcsArray($computers_id, $import_ID, "import_device");
-                              unset($import_device[$import_ID]);
+                              OcsServer::deleteInOcsArray($computers_id, $key, "import_device");
+                              unset($import_device[$key]);
                            }
                         }
                      }
@@ -2709,8 +2735,7 @@ class OcsServer extends CommonDBTM {
                         }
 
                         $ram["specif_default"] = $line2["CAPACITY"];
-                        if (!in_array(self::RAM_DEVICE . self::FIELD_SEPARATOR . $ram["designation"],
-                                      $import_device)) {
+                        if (!in_array($prevalue . $ram["designation"], $import_device)) {
                            $ram["frequence"] = $line2["SPEED"];
                            $ram["devicememorytypes_id"]
                                  = Dropdown::importExternal('DeviceMemoryType', $line2["TYPE"]);
@@ -2724,17 +2749,16 @@ class OcsServer extends CommonDBTM {
                                                               'specificity'  => $line2["CAPACITY"],
                                                               '_no_history'  => !$dohistory));
                               OcsServer::addToOcsArray($computers_id,
-                                            array($devID => self::RAM_DEVICE .
-                                                            self::FIELD_SEPARATOR . $ram["designation"]),
+                                 array($prevalue.$devID => $prevalue.$ram["designation"]),
                                             "import_device");
                            }
                         } else {
-                           $id = array_search(self::RAM_DEVICE . self::FIELD_SEPARATOR . $ram["designation"],
-                                              $import_device);
+                           $tmp = array_search($prevalue.$ram["designation"], $import_device);
+                           list($type,$id)=explode(self::FIELD_SEPARATOR,$tmp);
                            $CompDevice->update(array('id'          => $id,
                                                      'specificity' => $line2["CAPACITY"],
                                                      '_itemtype'     => 'DeviceMemory',));
-                           unset ($import_device[$id]);
+                           unset ($import_device[$tmp]);
                         }
                      }
                   }
@@ -2767,8 +2791,7 @@ class OcsServer extends CommonDBTM {
                         if (!is_numeric($line2["DISKSIZE"])) {
                            $line2["DISKSIZE"]=0;
                         }
-                        if (!in_array(self::HDD_DEVICE . self::FIELD_SEPARATOR . $dd["designation"],
-                                      $import_device)) {
+                        if (!in_array($prevalue.$dd["designation"], $import_device)) {
 
                            $dd["specif_default"] = $line2["DISKSIZE"];
                            $DeviceHardDrive = new DeviceHardDrive();
@@ -2780,17 +2803,17 @@ class OcsServer extends CommonDBTM {
                                                               'specificity'  => $line2["DISKSIZE"],
                                                               '_no_history'  => !$dohistory));
                               OcsServer::addToOcsArray($computers_id,
-                                            array($devID => self::HDD_DEVICE .
-                                                            self::FIELD_SEPARATOR . $dd["designation"]),
+                                 array($prevalue.$devID => $prevalue.$dd["designation"]),
                                             "import_device");
                            }
                         } else {
-                           $id = array_search(self::HDD_DEVICE . self::FIELD_SEPARATOR . $dd["designation"],
+                           $tmp = array_search($prevalue . $dd["designation"],
                                               $import_device);
+                           list($type,$id)=explode(self::FIELD_SEPARATOR,$tmp);
                            $CompDevice->update(array('id'          => $id,
                                                      'specificity' => $line2["DISKSIZE"],
                                                      '_itemtype'     => 'DeviceHardDrive',));
-                           unset ($import_device[$id]);
+                           unset ($import_device[$tmp]);
                         }
                      }
                   }
@@ -2820,8 +2843,7 @@ class OcsServer extends CommonDBTM {
                               $stor["designation"] = "Unknown";
                            }
                         }
-                        if (!in_array(self::DRIVE_DEVICE . self::FIELD_SEPARATOR . $stor["designation"],
-                                      $import_device)) {
+                        if (!in_array($prevalue.$stor["designation"], $import_device)) {
                            $stor["specif_default"] = $line2["DISKSIZE"];
                            $DeviceDrive = new DeviceDrive();
                            $stor_id = $DeviceDrive->import($stor);
@@ -2831,14 +2853,12 @@ class OcsServer extends CommonDBTM {
                                                               'devicedrives_id'     => $stor_id,
                                                               '_no_history'  => !$dohistory));
                               OcsServer::addToOcsArray($computers_id,
-                                            array($devID => self::DRIVE_DEVICE . self::FIELD_SEPARATOR .
-                                                            $stor["designation"]),
-                                            "import_device");
+                                          array($prevalue.$devID =>$prevalue.$stor["designation"]),
+                                          "import_device");
                            }
                         } else {
-                           $id = array_search(self::DRIVE_DEVICE . self::FIELD_SEPARATOR . $stor["designation"],
-                                              $import_device);
-                           unset ($import_device[$id]);
+                           $tmp = array_search($prevalue.$stor["designation"], $import_device);
+                           unset ($import_device[$tmp]);
                         }
                      }
                   }
@@ -2859,8 +2879,7 @@ class OcsServer extends CommonDBTM {
                   while ($line2 = $DBocs->fetch_array($result2)) {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
                      $mdm["designation"] = $line2["NAME"];
-                     if (!in_array(self::PCI_DEVICE . self::FIELD_SEPARATOR . $mdm["designation"],
-                                   $import_device)) {
+                     if (!in_array($prevalue.$mdm["designation"], $import_device)) {
                         if (!empty ($line2["DESCRIPTION"])) {
                            $mdm["comment"] = $line2["TYPE"] . "\r\n" . $line2["DESCRIPTION"];
                         }
@@ -2872,14 +2891,12 @@ class OcsServer extends CommonDBTM {
                                                            'devicepcis_id'     => $mdm_id,
                                                            '_no_history'  => !$dohistory));
                            OcsServer::addToOcsArray($computers_id,
-                                         array($devID => self::PCI_DEVICE . self::FIELD_SEPARATOR .
-                                                         $mdm["designation"]),
+                                         array($prevalue.$devID => $prevalue.$mdm["designation"]),
                                          "import_device");
                         }
                      } else {
-                        $id = array_search(self::PCI_DEVICE . self::FIELD_SEPARATOR . $mdm["designation"],
-                                           $import_device);
-                        unset ($import_device[$id]);
+                        $tmp = array_search($prevalue.$mdm["designation"], $import_device);
+                        unset ($import_device[$tmp]);
                      }
                   }
                }
@@ -2904,8 +2921,7 @@ class OcsServer extends CommonDBTM {
                         $port["designation"] .= " " . $line2["CAPTION"];
                      }
                      if (!empty ($port["designation"])) {
-                        if (!in_array(self::PCI_DEVICE . self::FIELD_SEPARATOR . $port["designation"],
-                                      $import_device)) {
+                        if (!in_array($prevalue.$port["designation"], $import_device)) {
                            if (!empty ($line2["DESCRIPTION"]) && $line2["DESCRIPTION"] != "None") {
                               $port["comment"] = $line2["DESCRIPTION"];
                            }
@@ -2917,14 +2933,12 @@ class OcsServer extends CommonDBTM {
                                                            'devicepcis_id'     => $port_id,
                                                            '_no_history'  => !$dohistory));
                               OcsServer::addToOcsArray($computers_id,
-                                            array($devID => self::PCI_DEVICE . self::FIELD_SEPARATOR .
-                                                            $port["designation"]),
-                                            "import_device");
+                                          array($prevalue.$devID =>$prevalue.$port["designation"]),
+                                          "import_device");
                            }
                         } else {
-                           $id = array_search(self::PCI_DEVICE . self::FIELD_SEPARATOR . $port["designation"],
-                                              $import_device);
-                           unset ($import_device[$id]);
+                           $tmp = array_search($prevalue.$port["designation"], $import_device);
+                           unset ($import_device[$tmp]);
                         }
                      }
                   }
@@ -2953,8 +2967,7 @@ class OcsServer extends CommonDBTM {
 
                      $processor["specif_default"] = $line["PROCESSORS"];
 
-                     if (!in_array(self::PROCESSOR_DEVICE . self::FIELD_SEPARATOR . $processor["designation"],
-                                   $import_device)) {
+                     if (!in_array($prevalue.$processor["designation"], $import_device)) {
                         $DeviceProcessor = new DeviceProcessor();
                         $proc_id = $DeviceProcessor->import($processor);
                         if ($proc_id) {
@@ -2964,17 +2977,16 @@ class OcsServer extends CommonDBTM {
                                                            'specificity'  => $line["PROCESSORS"],
                                                            '_no_history'  => !$dohistory));
                            OcsServer::addToOcsArray($computers_id,
-                                         array($devID => self::PROCESSOR_DEVICE . self::FIELD_SEPARATOR .
-                                                         $processor["designation"]),
-                                         "import_device");
+                                    array($prevalue.$devID => $prevalue.$processor["designation"]),
+                                    "import_device");
                         }
                      } else {
-                        $id = array_search(self::PROCESSOR_DEVICE . self::FIELD_SEPARATOR .
-                                           $processor["designation"], $import_device);
+                        $tmp = array_search($prevalue.$processor["designation"], $import_device);
+                        list($type,$id)=explode(self::FIELD_SEPARATOR,$tmp);
                         $CompDevice->update(array('id'          => $id,
                                                   'specificity' => $line["PROCESSORS"],
                                                    '_itemtype'     => 'DeviceProcessor',));
-                        unset ($import_device[$id]);
+                        unset ($import_device[$tmp]);
                      }
                   }
                }
@@ -3006,8 +3018,7 @@ class OcsServer extends CommonDBTM {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
                      if ($cfg_ocs["import_device_iface"]) {
                         $network["designation"] = $line2["DESCRIPTION"];
-                        if (!in_array(self::NETWORK_DEVICE . self::FIELD_SEPARATOR . $network["designation"],
-                                      $import_device)) {
+                        if (!in_array($prevalue.$network["designation"], $import_device)) {
                            if (!empty ($line2["SPEED"])) {
                               $network["bandwidth"] = $line2["SPEED"];
                            }
@@ -3020,17 +3031,16 @@ class OcsServer extends CommonDBTM {
                                                               'specificity'  => $line2["MACADDR"],
                                                               '_no_history'  => !$dohistory));
                               OcsServer::addToOcsArray($computers_id,
-                                            array($devID => self::NETWORK_DEVICE . self::FIELD_SEPARATOR .
-                                                            $network["designation"]),
+                                            array($prevalue.$devID => $prevalue.$network["designation"]),
                                             "import_device");
                            }
                         } else {
-                           $id = array_search(self::NETWORK_DEVICE . self::FIELD_SEPARATOR .
-                                              $network["designation"], $import_device);
+                           $tmp = array_search($prevalue.$network["designation"], $import_device);
+                           list($type,$id)=explode(self::FIELD_SEPARATOR,$tmp);
                            $CompDevice->update(array('id'          => $id,
                                                      'specificity' => $line2["MACADDR"],
                                                    '_itemtype'     => 'DeviceNetworkCard',));
-                           unset ($import_device[$id]);
+                           unset ($import_device[$tmp]);
                         }
                      }
                      if (!empty ($line2["IPADDRESS"]) && $cfg_ocs["import_ip"]) {
@@ -3143,8 +3153,7 @@ class OcsServer extends CommonDBTM {
                      if (!is_numeric($line2["MEMORY"])) {
                         $line2["MEMORY"]=0;
                      }
-                     if (!in_array(self::GFX_DEVICE . self::FIELD_SEPARATOR . $video["designation"],
-                                   $import_device)) {
+                     if (!in_array($prevalue.$video["designation"], $import_device)) {
                         $video["specif_default"] = $line2["MEMORY"];
                         $DeviceGraphicCard = new DeviceGraphicCard();
                         $video_id = $DeviceGraphicCard->import($video);
@@ -3155,17 +3164,16 @@ class OcsServer extends CommonDBTM {
                                                            'specificity'  => $line2["MEMORY"],
                                                            '_no_history'  => !$dohistory));
                            OcsServer::addToOcsArray($computers_id,
-                                         array($devID => self::GFX_DEVICE . self::FIELD_SEPARATOR .
-                                                         $video["designation"]),
+                                         array($prevalue.$devID =>$prevalue.$video["designation"]),
                                          "import_device");
                         }
                      } else {
-                        $id = array_search(self::GFX_DEVICE . self::FIELD_SEPARATOR . $video["designation"],
-                                           $import_device);
+                        $tmp = array_search($prevalue.$video["designation"], $import_device);
+                        list($type,$id)=explode(self::FIELD_SEPARATOR,$tmp);
                         $CompDevice->update(array('id'          => $id,
                                                   'specificity' => $line2["MEMORY"],
                                                   '_itemtype'     => 'DeviceGraphicCard',));
-                        unset ($import_device[$id]);
+                        unset ($import_device[$tmp]);
                      }
                   }
                }
@@ -3186,8 +3194,7 @@ class OcsServer extends CommonDBTM {
                   while ($line2 = $DBocs->fetch_array($result2)) {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
                      $snd["designation"] = $line2["NAME"];
-                     if (!in_array(self::SND_DEVICE . self::FIELD_SEPARATOR . $snd["designation"],
-                                   $import_device)) {
+                     if (!in_array($prevalue.$snd["designation"], $import_device)) {
                         if (!empty ($line2["DESCRIPTION"])) {
                            $snd["comment"] = $line2["DESCRIPTION"];
                         }
@@ -3199,13 +3206,11 @@ class OcsServer extends CommonDBTM {
                                                            'devicesoundcards_id'     => $snd_id,
                                                            '_no_history'  => !$dohistory));
                            OcsServer::addToOcsArray($computers_id,
-                                         array($devID => self::SND_DEVICE . self::FIELD_SEPARATOR .
-                                                         $snd["designation"]),
+                                         array($prevalue.$devID => $prevalue.$snd["designation"]),
                                          "import_device");
                         }
                      } else {
-                        $id = array_search(self::SND_DEVICE . self::FIELD_SEPARATOR . $snd["designation"],
-                                           $import_device);
+                        $id = array_search($prevalue.$snd["designation"], $import_device);
                         unset ($import_device[$id]);
                      }
                   }
@@ -3218,8 +3223,9 @@ class OcsServer extends CommonDBTM {
       // Delete Unexisting Items not found in OCS
       if ($do_clean && count($import_device)) {
          foreach ($import_device as $key => $val) {
-            if (!(strpos($val, $devicetype . '$$') === false)) {
-               $CompDevice->delete(array('id'          => $key,
+            if (!(strpos($key, $devicetype . '$$') === false)) {
+               list($type,$id)=explode(self::FIELD_SEPARATOR,$key);
+               $CompDevice->delete(array('id'          => $id,
                                           '_itemtype' => $types[$devicetype],
                                          '_no_history' => !$dohistory));
                OcsServer::deleteInOcsArray($computers_id, $key, "import_device");

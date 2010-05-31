@@ -150,7 +150,7 @@ class Computer_Device extends CommonDBTM {
       $changes[2] = $this->fields['specificity'];
       // history log
       Log::history($this->fields['computers_id'],'Computer',$changes,
-                   get_class($this->input['_itemtype']),HISTORY_UPDATE_DEVICE);
+                   $this->input['_itemtype'],HISTORY_UPDATE_DEVICE);
    }
 
    /**
