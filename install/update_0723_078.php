@@ -3799,7 +3799,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $convert_types=array('tracking'=>'ticket',
                'networking'=>'networkequipment',
                'knowbase' => 'knowbaseitem',
-               'typedocs'=>'documenttype');
+               'typedocs'=>'documenttype'
+               'mailgate'=>'mailcollector');
 
    //$convert_service=array('tracking'=>'ticket');
    foreach ($convert_types as $from =>$to) {

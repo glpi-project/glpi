@@ -866,11 +866,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             break;
       }
 
-      $menu['config']['content']['mailgate']['title']=$LANG['Menu'][39];
-      $menu['config']['content']['mailgate']['page']='/front/mailcollector.php';
-      $menu['config']['content']['mailgate']['links']['search']='/front/mailcollector.php';
-      $menu['config']['content']['mailgate']['links']['add']='/front/mailcollector.form.php';
-      $menu['config']['content']['mailgate']['options']['rejectedemails']['links']['search']='/front/rejectedemail.php';
+      $menu['config']['content']['mailcollector']['title']=$LANG['Menu'][39];
+      $menu['config']['content']['mailcollector']['page']='/front/mailcollector.php';
+      $menu['config']['content']['mailcollector']['links']['search']='/front/mailcollector.php';
+      $menu['config']['content']['mailcollector']['links']['add']='/front/mailcollector.form.php';
+      $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']='/front/rejectedemail.php';
    }
 
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("config","w")) {
