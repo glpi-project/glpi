@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
-commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailgate");
+commonHeader($LANG['Menu'][39], $_SERVER['PHP_SELF'], "config","mailcollector");
 
 if (!canUseImapPop()) {
    echo "<div class='center'>";
