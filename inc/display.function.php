@@ -3013,7 +3013,8 @@ function showToolTip($content,$options=array()){
             target: '".$param['applyto']."',
             anchor: 'left',
             autoShow: true,
-            autoHide: true";
+            autoHide: true,
+            dismissDelay: 0";
    if (!empty($param['title'])) {
       $out.= ",title: \"".$param['title']."\"";
    }
