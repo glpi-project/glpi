@@ -113,7 +113,10 @@ class Log extends CommonDBTM {
             // Parsing $SEARCHOPTION to find changed field
             foreach ($searchopt as $key2 => $val2) {
                // Linkfield or standard field not massive action enable
-               if ($val2["linkfield"] == $key || (empty ($val2["linkfield"]) && $key == $val2["field"])) {
+               if ($val2["linkfield"] == $key
+                  || (empty ($val2["linkfield"])
+                     && $key == $val2["field"]
+                     && $val2["table"] == $item->getTable())) {
 
                   $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
