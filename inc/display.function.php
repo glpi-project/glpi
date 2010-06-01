@@ -894,6 +894,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['plugins']['title']=$LANG['common'][29];
       $menu['config']['content']['plugins']['page']='/front/plugin.php';
    }
+
+
+   // Special items
+   $menu['preference']['title'] = $LANG['Menu'][11];
+   $menu['preference']['default'] = '/front/preference.php';
+
    echo "<div id='header'>";
    echo "<div id='c_logo' ><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".
                             $LANG['central'][5]."\"></a></div>";
