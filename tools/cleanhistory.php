@@ -58,7 +58,8 @@ if (!isset($_GET['delay'])) {
    Do a full backup before use.
 *******************************************
 
-Usage : php cleanhistory.php [ --item=name ] [ --type=# ] --delay=# [ --run=1 ] [ --optimize=1 ]
+Usage : php cleanhistory.php [ --item=# ] [ --type=# ] [ --old=<regex> ] [ --new=<regex> ]
+                             [ --run=1 ] [ --optimize=1 ] --delay=#
 
    With item a string value in  (optionnal):
       Computer                Software
@@ -78,7 +79,9 @@ Usage : php cleanhistory.php [ --item=name ] [ --type=# ] --delay=# [ --run=1 ] 
       8 : OCS Import             17 : Add sub item
       9 : OCS Delete             18 : Update sub item
      10 : OCS ID Changed         19 : Delete sub item
-   With delay in month.\n\n";
+   With old an optional regex pattern on old_value
+   With new an optional regex pattern on new_value
+   With delay in month (mandatory).\n\n";
    die();
 }
 
@@ -91,6 +94,12 @@ if (isset($_GET['item'])) {
 }
 if (isset($_GET['type'])) {
    $where .= " AND `linked_action`=".intval($_GET['type']);
+}
+if (isset($_GET['old'])) {
+   $where .= " AND `old_value` REGEXP '".$_GET['old']."'";
+}
+if (isset($_GET['new'])) {
+   $where .= " AND `new_value` REGEXP '".$_GET['new']."'";
 }
 //echo "SQL = $where\n";
 
@@ -106,7 +115,7 @@ if (isset($_GET['run'])) {
 
    if (isset($_GET['optimize'])) {
       foreach ($DB->request("OPTIMIZE TABLE `$table`") as $data) {
-         echo "Talbe Optimization for ".$data['Table'].": ".$data['Msg_type']." = ".$data['Msg_text']."\n";
+         echo "Table Optimization for ".$data['Table'].": ".$data['Msg_type']." = ".$data['Msg_text']."\n";
       }
    }
 
