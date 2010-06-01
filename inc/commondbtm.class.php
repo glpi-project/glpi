@@ -543,8 +543,6 @@ class CommonDBTM extends CommonGLPI {
    function add($input) {
       global $DB;
 
-      $addMessAfterRedirect = false;
-
       if ($DB->isSlave()) {
          return false;
       }
