@@ -310,6 +310,8 @@ class NotificationTargetTicket extends NotificationTarget {
    function addAdditionnalUserInfo($data) {
       global $DB;
 
+      // TODO problem : use all profiles having right but not limited to working entity. User can have this right to another entity.
+      
       if (!isset($data['id'])) {
          return 1;
       } else {
