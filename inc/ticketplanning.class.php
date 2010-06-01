@@ -190,13 +190,20 @@ class TicketPlanning extends CommonDBTM {
       if ((!isset($this->input["_nomail"]) || $this->input["_nomail"]==0)
           && count($this->updates)>0 && $CFG_GLPI["use_mailing"]) {
 
-         $user=new User;
-         $user->getFromDB(getLoginUserID());
+//          $user=new User;
+//          $user->getFromDB(getLoginUserID());
 
-
-         //TODO class Mailing not exist
-         $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
-         $mail->send();
+         //TODO class Mailing not exist : TO BE TESTED
+/*         if (isset($fup->fields["is_private"]) && $fup->fields["is_private"]) {
+            $options['is_private'] = true;
+         } else {
+            $options = array();
+         }*/
+         $options = array('task_id' => $this->fields["id"]);
+         NotificationEvent::raiseEvent('update_task',$job,$options);
+         
+//          $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
+//          $mail->send();
       }
    }
 
@@ -254,15 +261,18 @@ class TicketPlanning extends CommonDBTM {
          $fup->updateInDB($updates2);
          $job->updateRealTime($this->input["tickets_id"]);
       }
-
+      
       if ((!isset($this->input["_nomail"]) || $this->input["_nomail"]==0)
           && $CFG_GLPI["use_mailing"]) {
-
+         
          $user=new User;
          $user->getFromDB(getLoginUserID());
-         //TODO class Mailing not exist
-         $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
-         $mail->send();
+         //TODO class Mailing not exist : TO BE TESTED
+         $options = array('task_id' => $this->fields["id"]);
+         NotificationEvent::raiseEvent('update_task',$job,$options);
+
+/*         $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
+         $mail->send();*/
       }
    }
 
