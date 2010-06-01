@@ -48,7 +48,7 @@ if (isset ($_POST["update"]) && $_POST["id"] === getLoginUserID()) {
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      commonHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
+      commonHeader($LANG['title'][13], $_SERVER['PHP_SELF'],'preference');
    } else {
       helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
    }
