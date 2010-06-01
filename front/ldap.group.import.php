@@ -122,6 +122,8 @@ if (isset($_GET['next'])) {
             $_SESSION["ldap_sortorder"] = (!isset($_GET["order"])?"DESC":$_GET["order"]);
          }
 
+         AuthLdap::displayLdapFilter($_SERVER['PHP_SELF'],false);
+
          AuthLdap::showLdapGroups($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,
                         $_SESSION["ldap_group_filter"],$_SESSION["ldap_group_filter2"],
                         $_SESSION["glpiactive_entity"],$_SESSION["ldap_sortorder"]);
