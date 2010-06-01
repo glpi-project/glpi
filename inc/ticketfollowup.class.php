@@ -176,16 +176,16 @@ class TicketFollowup  extends CommonDBTM {
             if ($CFG_GLPI["use_mailing"]
                 && (in_array("content",$this->updates) || isset($this->input['_need_send_mail']))) {
 
-               $user = new User;
-               $user->getFromDB(getLoginUserID());
+//                $user = new User;
+//                $user->getFromDB(getLoginUserID());
 
-               if (isset($this->input["is_private"]) && $this->input["is_private"]) {
+/*               if (isset($this->input["is_private"]) && $this->input["is_private"]) {
                   $options['is_private'] = true;
                }
                else {
                   $options = array();
-               }
-               $options['followup_id'] = $this->fields["id"];
+               }*/
+               $options = array('followup_id' => $this->fields["id"]);
 
                NotificationEvent::raiseEvent("update_followup", $job,$options);
             }

@@ -189,22 +189,21 @@ class TicketTask  extends CommonDBTM {
          if (count($this->updates)) {
             $update_done=true;
             if ($CFG_GLPI["use_mailing"]
-                && (in_array("content",$this->updates) || isset($this->input['_need_send_mail']))) {
+                && (in_array("content",$this->updates))) {
 
-               $user = new User;
-               $user->getFromDB(getLoginUserID());
+//                $user = new User;
+//                $user->getFromDB(getLoginUserID());
 
-               $ticket = new Ticket;
-               if (isset($this->input["is_private"]) && $this->input["is_private"]) {
+//                $ticket = new Ticket;
+/*               if (isset($this->input["is_private"]) && $this->input["is_private"]) {
                   $options['is_private'] = true;
                }
                else {
                   $options = array();
-               }
-               $options['task_id'] = $this->fields["id"];
+               }*/
+               $options = array('task_id' => $this->fields["id"]);
                NotificationEvent::raiseEvent('update_task',$job,$options);
-               echo "u";exit();
-
+               $mailsend=true;
             }
 
             if (in_array("realtime",$this->updates)) {
@@ -230,13 +229,12 @@ class TicketTask  extends CommonDBTM {
          } else {
             $this->input["_plan"]['tickettasks_id'] = $this->input["id"];
             $this->input["_plan"]['tickets_id'] = $this->input['tickets_id'];
-            $this->input["_plan"]['_nomail'] = 1;
+            $this->input["_plan"]['_nomail'] = $mailsend;
 
             if (!$pt->add($this->input["_plan"])) {
                return false;
             }
             unset($this->input["_plan"]);
-            $this->input['_need_send_mail'] = true;
          }
       
       }
