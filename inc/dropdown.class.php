@@ -1202,9 +1202,9 @@ class Dropdown {
                   if ($isadmin) {
                      echo "<option value='add_group'>".$LANG['setup'][604]."</option>";
                      echo "<option value='add_userprofile'>".$LANG['setup'][607]."</option>";
-                     echo "<option value='change_authtype'>".$LANG['login'][30]."</option>";
                   }
-                  if (haveRight("user","w")) {
+                  if (haveRight("user_authtype","w")) {
+                     echo "<option value='change_authtype'>".$LANG['login'][30]."</option>";
                      echo "<option value='force_user_ldap_update'>".$LANG['ocsng'][24]."</option>";
                   }
                   break;
