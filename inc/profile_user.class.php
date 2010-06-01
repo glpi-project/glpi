@@ -36,6 +36,9 @@ if (!defined('GLPI_ROOT')) {
 /// Profile_User class
 class Profile_User extends CommonDBTM {
 
+   // From CommonDBTM
+   var $auto_message_on_action = false;
+
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
