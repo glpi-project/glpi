@@ -1115,8 +1115,7 @@ class AuthLDAP extends CommonDBTM {
    static function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='',
                            $entity,$order='DESC') {
       global $DB, $CFG_GLPI, $LANG;
-
-      AuthLdap::displayLdapFilter($target,false);
+	
       echo "<br>";
       $ldap_groups = AuthLdap::getAllGroups($_SESSION["ldap_server"],$filter,$filter2,$entity,$order);
 
@@ -1214,7 +1213,7 @@ class AuthLDAP extends CommonDBTM {
       $res = $config_ldap->getFromDB($auths_id);
       $infos = array();
       $groups = array();
-
+      
       $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
                          $config_ldap->fields['rootdn'], $config_ldap->fields['rootdn_password'],
                          $config_ldap->fields['use_tls'], $config_ldap->fields['deref_option']);
@@ -1308,31 +1307,31 @@ class AuthLDAP extends CommonDBTM {
             $filter = (!empty($config_ldap->fields['condition'])?
                        $config_ldap->fields['condition']:"(objectclass=*)");
          }
-         $sr = @ldap_search($ldap_connection,
-                            $config_ldap->fields['basedn'],
-                            $filter ,
-                            $attrs);
+      }
+      $sr = @ldap_search($ldap_connection,
+                           $config_ldap->fields['basedn'],
+                           $filter ,
+                           $attrs);
 
-         if ($sr) {
-            $infos = ldap_get_entries($ldap_connection, $sr);
-            for ($ligne=0; $ligne < $infos["count"];$ligne++) {
-               if ($search_in_groups) {
-                  // No cn : not a real object
-                  if (isset($infos[$ligne]["cn"][0])) {
-                     $cn = $infos[$ligne]["cn"][0];
-                     $groups[$infos[$ligne]["dn"]]= (array("cn"=>$infos[$ligne]["cn"][0],
-                                                           "search_type" => "groups"));
-                  }
-               } else {
-                  if (isset($infos[$ligne][$extra_attribute])) {
-                     for ($ligne_extra=0; $ligne_extra < $infos[$ligne][$extra_attribute]["count"];
-                          $ligne_extra++) {
+      if ($sr) {
+         $infos = ldap_get_entries($ldap_connection, $sr);
+         for ($ligne=0; $ligne < $infos["count"];$ligne++) {
+            if ($search_in_groups) {
+               // No cn : not a real object
+               if (isset($infos[$ligne]["cn"][0])) {
+                  $cn = $infos[$ligne]["cn"][0];
+                  $groups[$infos[$ligne]["dn"]]= (array("cn"=>$infos[$ligne]["cn"][0],
+                                                         "search_type" => "groups"));
+               }
+            } else {
+               if (isset($infos[$ligne][$extra_attribute])) {
+                  for ($ligne_extra=0; $ligne_extra < $infos[$ligne][$extra_attribute]["count"];
+                        $ligne_extra++) {
 
-                        $groups[$infos[$ligne][$extra_attribute][$ligne_extra]]=
-                           array("cn"=>AuthLdap::getGroupCNByDn($ldap_connection,
-                                                      $infos[$ligne][$extra_attribute][$ligne_extra]),
-                                 "search_type" => "users");
-                     }
+                     $groups[$infos[$ligne][$extra_attribute][$ligne_extra]]=
+                        array("cn"=>AuthLdap::getGroupCNByDn($ldap_connection,
+                                                   $infos[$ligne][$extra_attribute][$ligne_extra]),
+                              "search_type" => "users");
                   }
                }
             }
