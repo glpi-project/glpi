@@ -49,6 +49,13 @@ else {
    commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 }
 
+if (isset($_GET['start'])) {
+   $_SESSION['ldap_import']['start'] = $_GET['start'];
+}
+if (isset($_GET['order'])) {
+   $_SESSION['ldap_import']['order'] = $_GET['order'];
+}
+
 if ($_SESSION['ldap_import']['action'] == 'show') {
    $_REQUEST['target']=$_SERVER['PHP_SELF'];
 

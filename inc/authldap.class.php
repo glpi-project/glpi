@@ -844,7 +844,6 @@ class AuthLDAP extends CommonDBTM {
       foreach ($_SESSION['ldap_import'] as $option => $value) {
          $values[$option] = $value;
       }
-
       $results = array();
       $ldap_users = AuthLdap::getAllUsers($values,$results);
 
@@ -852,10 +851,10 @@ class AuthLDAP extends CommonDBTM {
          $numrows = count($ldap_users);
          $action = "toprocess";
          $form_action = "process_ok";
-
+         
          if ($numrows > 0) {
             printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
-
+            
             // delete end
             array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
             // delete begin
@@ -970,7 +969,7 @@ class AuthLDAP extends CommonDBTM {
       $res = $config_ldap->getFromDB($options['ldapservers_id']);
 
       $values['order'] = 'DESC';
-      $values['action'] = AuthLDAP::ACTION_SYNCHRONIZE;
+      $values['mode'] = AuthLDAP::ACTION_SYNCHRONIZE;
       $values['ldap_filter'] = '';
       $values['basedn'] = $config_ldap->fields['basedn'];
 
@@ -979,7 +978,7 @@ class AuthLDAP extends CommonDBTM {
          $values[$option] = $value;
          }
       }
-
+      
       $ldap_users = array ();
 
       // we prevent some delay...
@@ -1004,7 +1003,6 @@ class AuthLDAP extends CommonDBTM {
          } else {
             $filter = $values['ldap_filter'];
          }
-
          $sr = @ldap_search($ds,
                            $values['basedn'],
                            $filter ,
@@ -1015,7 +1013,7 @@ class AuthLDAP extends CommonDBTM {
 
             for ($ligne = 0; $ligne < $info["count"]; $ligne++) {
                //If ldap add
-               if ($values['action'] == AuthLDAP::ACTION_IMPORT) {
+               if ($values['mode'] == AuthLDAP::ACTION_IMPORT) {
                   if (in_array($config_ldap->fields['login_field'],$info[$ligne])) {
                      $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]] =
                         $info[$ligne][$config_ldap->fields['login_field']][0];
@@ -2107,7 +2105,6 @@ class AuthLDAP extends CommonDBTM {
 
    static function searchUser(AuthLDAP $authldap) {
       global $LANG;
-
       if (AuthLdap::connectToServer($authldap->getField('host'),
                                       $authldap->getField('port'),
                                       $authldap->getField('rootdn'),
