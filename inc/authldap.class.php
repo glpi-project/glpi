@@ -1633,8 +1633,18 @@ class AuthLDAP extends CommonDBTM {
       global $LANG;
 
       $auth = new Auth;
-      $auth->user_present = $auth->userExists($options);
+      $params=array();
+      if (isset($options['name'])) {
+         $params['value']=$options['name'];
+         $params['method']=self::IDENTIFIER_LOGIN;
+      }
+      if (isset($options['email'])) {
+         $params['value']=$options['email'];
+         $params['method']=self::IDENTIFIER_EMAIL;
+      }
 
+      $auth->user_present = $auth->userExists($options);
+      
       //If the user does not exists
       if ($auth->user_present == 0) {
          $auth->getAuthMethods();
@@ -1642,7 +1652,7 @@ class AuthLDAP extends CommonDBTM {
          $userid = -1;
 
          foreach ($ldap_methods as $ldap_method) {
-            $result=AuthLdap::ldapImportUserByServerId($options, 0,$ldap_method["id"],true);
+            $result=AuthLdap::ldapImportUserByServerId($params, 0,$ldap_method["id"],true);
             if ($result != false) {
                return $result;
             }
@@ -1727,7 +1737,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //By default authentify users by login
-      $authentification_value = '';
+      //$authentification_value = '';
 
       $login_attr = $values['search_parameters']['fields'][AuthLDAP::IDENTIFIER_LOGIN];
       $ldap_parameters = array("dn");
@@ -1735,7 +1745,7 @@ class AuthLDAP extends CommonDBTM {
          $ldap_parameters[] = $parameter;
       }
 
-      $authentification_value = $values['user_params']['value'];
+      //$authentification_value = $values['user_params']['value'];
       // Tenter une recherche pour essayer de retrouver le DN
       $filter = "(".$values['login_field']."=".$values['user_params']['value'].")";
 
