@@ -914,7 +914,7 @@ class Infocom extends CommonDBTM {
 
       $tab[12]['table']     = $this->getTable();
       $tab[12]['field']     = 'immo_number';
-      $tab[12]['linkfield'] = 'order_number';
+      $tab[12]['linkfield'] = 'immo_number';
       $tab[12]['name']      = $LANG["financial"][20];
       $tab[12]['datatype']  = 'text';
 
