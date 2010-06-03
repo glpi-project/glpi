@@ -706,6 +706,9 @@ class Plugin extends CommonDBTM {
          43 => "TicketFollowup",
          44 => "Budget");
 
+      //Add plugins types
+      $typetoname = doHookFunction("migratetypes",$typetoname);
+
       foreach ($types as $num => $name) {
          $typetoname[$num]=$name;
          foreach ($glpitables as $table) {
