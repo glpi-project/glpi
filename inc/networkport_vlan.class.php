@@ -45,6 +45,18 @@ class NetworkPort_Vlan extends CommonDBRelation {
    public $itemtype_2 = 'Vlan';
    public $items_id_2 = 'vlans_id';
 
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = parent::getSearchOptions();
+
+      return $tab;
+   }
 
    function unassignVlanbyID($ID) {
       global $DB;
@@ -154,7 +166,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $port=new NetworkPort();
 
       if ($ID && $port->can($ID,'w')) {
-         
+
          echo "\n<div class='center'>";
          echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>";
          echo "<input type='hidden' name='id' value='$ID'>\n";
