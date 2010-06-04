@@ -287,6 +287,41 @@ class Group_User extends CommonDBRelation{
       }
    }
 
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+    */
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[2]['table']     = $this->getTable();
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'is_dynamic';
+      $tab[3]['linkfield'] = 'is_dynamic';
+      $tab[3]['name']      = $LANG['profiles'][29];
+      $tab[3]['datatype']  = 'bool';
+
+      $tab[4]['table']     = 'glpi_groups';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'groups_id';
+      $tab[4]['name']      = $LANG['common'][35];
+
+      $tab[5]['table']     = 'glpi_users';
+      $tab[5]['field']     = 'name';
+      $tab[5]['linkfield'] = 'users_id';
+      $tab[5]['name']      = $LANG['common'][34];
+
+      return $tab;
+   }
+
 }
 
 ?>
