@@ -115,8 +115,7 @@ if (( $ok_master || $ok_slave ) && DBConnection::establishDBConnection(false,fal
 		foreach ($ldap_methods as $method){
 			echo " ".$method['name'];
 
-			if (AuthLdap::tryToConnectToServer($method['host'],$method['port'],
-				 $method["rootdn"], $method["rootdn_password"], $method["use_tls"],"","",$method["deref_option"],$method['id'])){
+			if (AuthLdap::tryToConnectToServer($method, $method["rootdn"], $method["rootdn_password"])){
 				echo "_OK";
 			} else {
 				echo "_PROBLEM";
