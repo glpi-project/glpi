@@ -1239,7 +1239,6 @@ class Dropdown {
                case 'NotImportedEmail':
                      echo "<option value='delete_email'>".$LANG['mailing'][133]."</option>";
                      echo "<option value='import_email'>".$LANG['buttons'][37]."</option>";
-                     echo "<option value='add_user_to_email'>".$LANG['mailgate'][14]."</option>";
                   break;
 
             }

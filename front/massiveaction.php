@@ -659,15 +659,6 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
-         case 'add_user_to_email':
-            $emails_ids = array();
-            foreach ($_POST["item"] as $key => $val) {
-               if ($val == 1) {
-                  $emails_ids[$key] = $key;
-               }
-            }
-            NotImportedEmail::addUser($emails_ids,$_POST['users_id']);
-            break;
          default :
             // Plugin specific actions
             $split = explode('_',$_POST["action"]);
