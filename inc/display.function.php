@@ -1026,8 +1026,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    echo "<ul>";
 
    // Display item
-   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG['common'][56]."' >".
-              $LANG['common'][56]." </a> ></li>";
+   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG['central'][5]."' >".
+              $LANG['central'][5]." </a> ></li>";
 
    if (isset($menu[$sector])) {
       $link="/front/central.php";

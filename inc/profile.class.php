@@ -344,7 +344,7 @@ class Profile extends CommonDBTM {
       echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".
              $LANG['Menu'][31]."</option>\n";
       echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".
-             $LANG['title'][0]."</option>";
+             $LANG['common'][56]."</option>";
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
