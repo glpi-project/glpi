@@ -1806,20 +1806,27 @@ function update0723to078($output='HTML') {
    // Update bookmarks for new columns fields
    if (FieldExists('glpi_bookmarks', 'query')) {
       // All search
-      $olds = array("deleted",);
+      $olds = array("deleted");
 
-      $news   = array("is_deleted",);
+      $news   = array("is_deleted");
       foreach ($olds as $key => $val) {
-         $olds[$key]="&$val=";
+         $olds[$key]="/&$val=/";
       }
       foreach ($news as $key => $val) {
-         $news[$key]="&$val=";
+         $news[$key]="/&$val=/";
       }
+
+      // Manage meta search
+      foreach ($typetoname as $key => $val) {
+         $olds[$key]="/&type2\[(\d+)\]=$key/";
+         $news[$key]="&itemtype2[\\1]=$val";
+      }
+
       $query="SELECT id, query FROM glpi_bookmarks WHERE type=".BOOKMARK_SEARCH." ;";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
-               $query2="UPDATE glpi_bookmarks SET query='".addslashes(str_replace($olds,$news,$data['query']))."' WHERE id=".$data['id'].";";
+               $query2="UPDATE glpi_bookmarks SET query='".addslashes(preg_replace($olds,$news,$data['query']))."' WHERE id=".$data['id'].";";
                $DB->query($query2) or die("0.78 update all bookmarks " . $LANG['update'][90] . $DB->error());
             }
          }
