@@ -249,7 +249,7 @@ $CFG_GLPI["netport_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'P
                                    'Phone');
 
 $CFG_GLPI["massiveaction_noupdate_types"] = array('Entity', 'OcsServer',
-                                                  'Profile','TicketValidation', 'NotImportedEmail');
+                                                  'Profile','TicketValidation');
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array('Entity', 'CronTask', 'NotImportedEmail');
 

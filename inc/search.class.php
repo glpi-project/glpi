@@ -2597,6 +2597,8 @@ class Search {
 
          case "glpi_entitydatas" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
+         case "glpi_mailcollectors" :
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`mailcollectors_id` = `$nt`.`id`) ";
 
          case "glpi_ocslinks" :
          case "glpi_registrykeys":
