@@ -63,7 +63,7 @@ if (isset($_GET["active_entity"])) {
    }
 }
 
-commonHeader($LANG['title'][0],$_SERVER['PHP_SELF']);
+commonHeader($LANG['common'][56],$_SERVER['PHP_SELF']);
 
 // Redirect management
 if (isset($_GET["redirect"])) {
