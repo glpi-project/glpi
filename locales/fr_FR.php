@@ -2016,7 +2016,7 @@ $LANG['stats'][47]="Par ticket";
 $LANG['stats'][48]="(assigné)";
 $LANG['stats'][49]="(suivis)";
 
-$LANG['title'][1]="Accès au Helpdesk seulement";
+$LANG['title'][1]="Accès à l'interface simplifié seulement";
 $LANG['title'][5]="Base de connaissances";
 $LANG['title'][6]="Matériels Réseau";
 $LANG['title'][9]="Statuts des matériels";
@@ -2052,7 +2052,7 @@ $LANG['tracking'][34]="Directe";
 $LANG['tracking'][35]="Écrite";
 $LANG['tracking'][37]="Conserver les tickets à la purge d'un élément de l'inventaire";
 $LANG['tracking'][38]="Un mail de suivi a été envoyé à";
-$LANG['tracking'][39]="Visible dans l'interface Helpdesk";
+$LANG['tracking'][39]="Visible dans l'interface simplifiée";
 
 $LANG['transfer'][1]="Transfert";
 $LANG['transfer'][3]="si n'est plus utilisé";
