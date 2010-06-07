@@ -506,7 +506,7 @@ class Config extends CommonDBTM {
       echo "<tr><th>&nbsp;</th><th>" . $LANG['setup'][281] . "</th>";
       echo "<th>" . $LANG['setup'][282] . "</th><th>&nbsp;</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][18] . " </td>";
+      echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][92] . " </td>";
       echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_contact_autoupdate", $CFG_GLPI["is_contact_autoupdate"]);
       echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
