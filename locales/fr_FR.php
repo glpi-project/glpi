@@ -2015,7 +2015,7 @@ $LANG['stats'][47]="Par ticket";
 $LANG['stats'][48]="(assigné)";
 $LANG['stats'][49]="(suivis)";
 
-$LANG['title'][1]="Accès à l'interface simplifié seulement";
+$LANG['title'][1]="Accès à l'interface simplifiée seulement";
 $LANG['title'][5]="Base de connaissances";
 $LANG['title'][6]="Matériels Réseau";
 $LANG['title'][9]="Statuts des matériels";
