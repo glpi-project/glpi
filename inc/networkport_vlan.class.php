@@ -148,7 +148,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
                echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?unassign_vlan=".
                      "unassigned&amp;id=" . $line["id"] . "'>";
                echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete2.png\" alt='" .
-                     $LANG['buttons'][6] . "' title='" . $LANG['buttons'][6] . "'></a>";
+                     $LANG['buttons'][59] . "' title='" . $LANG['buttons'][59] . "'></a>";
             } else {
                echo "&nbsp;";
             }
