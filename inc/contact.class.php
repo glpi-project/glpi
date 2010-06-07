@@ -48,7 +48,7 @@ class Contact extends CommonDBTM{
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['common'][18];
+      return $LANG['common'][92];
    }
 
    function canCreate() {
@@ -357,7 +357,7 @@ class Contact extends CommonDBTM{
 
       $used=array();
       if ($number>0) {
-         initNavigateListItems('Supplier',$LANG['common'][18]." = ".$this->fields['name']);
+         initNavigateListItems('Supplier',$LANG['common'][92]." = ".$this->fields['name']);
          while ($data= $DB->fetch_array($result)) {
             $ID=$data["id"];
             addToNavigateListItems('Supplier',$data["entID"]);
