@@ -383,7 +383,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $LANG;
 
       $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE,$LANG['setup'][236]);
-      $this->addTarget(Notification::TICKET_RECIPIENT,$LANG['job'][3]);
+      $this->addTarget(Notification::TICKET_RECIPIENT,$LANG['common'][37]);
       $this->addTarget(Notification::TICKET_SUPPLIER,$LANG['financial'][26]);
       $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." - ".
                                                                     $LANG['setup'][248]);
@@ -795,7 +795,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.author.location'       => $LANG['common'][15],
                      'ticket.author.phone'          => $LANG['help'][35],
                      'ticket.author.phone2'         => $LANG['help'][35].' 2',
-                     'ticket.openbyuser'            => $LANG['job'][3],
+                     'ticket.openbyuser'            => $LANG['common'][37],
                      'ticket.group'                 => $LANG['common'][35],
                      'ticket.assigntouser'          => $LANG['job'][5]." - ".$LANG['job'][6],
                      'ticket.assigntogroup'         => $LANG['job'][5]." - ".$LANG['common'][35],

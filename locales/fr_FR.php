@@ -244,7 +244,7 @@ $LANG['common'][33] = "Total";
 $LANG['common'][34] = "Utilisateur";
 $LANG['common'][35] = "Groupe";
 $LANG['common'][36] = "Catégorie";
-$LANG['common'][37] = "Auteur";
+$LANG['common'][37] = "Rédacteur";
 $LANG['common'][38] = "Déglobaliser";
 $LANG['common'][39] = "Duplique l'élément autant de fois qu'il y a de connexions";
 $LANG['common'][40] = "Êtes-vous sûr de vouloir déglobaliser cet élément ?";
@@ -817,7 +817,6 @@ $LANG['install'][106] = "Test d'écriture des fichiers de graphiques";
 
 
 $LANG['job'][2]  = "par";
-$LANG['job'][3]  = "Receveur";
 $LANG['job'][4]  = "Demandeur";
 $LANG['job'][5]  = "Attribué à";
 $LANG['job'][6]  = "Technicien";
