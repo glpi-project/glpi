@@ -70,13 +70,6 @@ if (isset($_GET["redirect"])) {
    manageRedirect($_GET["redirect"]);
 }
 
-// Greet the user
-echo "<br><span class='icon_consol'>".$LANG['central'][0]." ";
-echo formatUserName(getLoginUserID(), $_SESSION["glpiname"], $_SESSION["glpirealname"],
-                    $_SESSION["glpifirstname"]);
-echo ", ".$LANG['central'][1]."</span>";
-echo "<br><br>";
-
 $central = new Central();
 $central->show();
 
