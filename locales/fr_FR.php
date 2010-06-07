@@ -59,7 +59,7 @@ $LANG['bookmark'][6] = "Vue par défaut";
 $LANG['buttons'][0]  = "Rechercher";
 
 $LANG['buttons'][2]  = "Valider";
-$LANG['buttons'][3]  = "Attribuer";
+$LANG['buttons'][3]  = "Associer";
 $LANG['buttons'][4]  = "Installer";
 $LANG['buttons'][5]  = "Désinstaller";
 $LANG['buttons'][6]  = "Supprimer";
@@ -114,6 +114,7 @@ $LANG['buttons'][55] = "Premier";
 $LANG['buttons'][56] = "Dernier";
 $LANG['buttons'][57] = "Exécuter";
 $LANG['buttons'][58] = "Mettre à jour";
+$LANG['buttons'][59] = "Dissocier";
 
 
 $LANG['calendarD'][0] = "D";
@@ -1025,10 +1026,10 @@ $LANG['log'][73]  = "suppression d'un port réseau";
 $LANG['log'][74]  = "suppression de plusieurs ports réseau";
 $LANG['log'][75]  = "déplacement d'un port réseau";
 
-$LANG['log'][77]  = "assignation d'un vlan à un port réseau";
-$LANG['log'][78]  = "assignation d'un vlan à plusieurs ports réseau";
-$LANG['log'][79]  = "désassignation d'un vlan à un port réseau";
-$LANG['log'][80]  = "désassignation d'un vlan à plusieurs ports réseau";
+$LANG['log'][77]  = "association d'un vlan à un port réseau";
+$LANG['log'][78]  = "association d'un vlan à plusieurs ports réseau";
+$LANG['log'][79]  = "dissociation d'un vlan à un port réseau";
+$LANG['log'][80]  = "dissociation d'un vlan à plusieurs ports réseau";
 $LANG['log'][82]  = "ajout de la version";
 $LANG['log'][83]  = "modification de la version";
 $LANG['log'][84]  = "suppression de la version";
@@ -1267,7 +1268,7 @@ $LANG['networking'][51]="Prise réseau";
 $LANG['networking'][55]="Associer un VLAN";
 $LANG['networking'][56]="VLAN";
 $LANG['networking'][57]="Choisissez une adresse MAC dans la liste ou spécifiez-la ci-dessous.";
-$LANG['networking'][58]="Supprimer un VLAN";
+$LANG['networking'][58]="Dissocier un VLAN";
 $LANG['networking'][59]="Passerelle";
 $LANG['networking'][60]="Masque";
 $LANG['networking'][61]="Sous-réseau";
