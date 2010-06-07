@@ -1547,6 +1547,11 @@ class Ticket extends CommonDBTM {
          $tab[71]['linkfield'] = 'groups_id';
          $tab[71]['name']      = $LANG['common'][35];
 
+         $tab[22]['table']     = 'glpi_users';
+         $tab[22]['field']     = 'name';
+         $tab[22]['linkfield'] = 'users_id_recipient';
+         $tab[22]['name']      = $LANG['job'][3];
+
          $tab['assign'] = $LANG['job'][5];
 
          $tab[5]['table']     = 'glpi_users';
@@ -1563,11 +1568,6 @@ class Ticket extends CommonDBTM {
          $tab[8]['field']     = 'name';
          $tab[8]['linkfield'] = 'groups_id_assign';
          $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
-
-         $tab[22]['table']     = 'glpi_users';
-         $tab[22]['field']     = 'name';
-         $tab[22]['linkfield'] = 'users_id_recipient';
-         $tab[22]['name']      = $LANG['job'][3];
 
          $tab['followup'] = $LANG['job'][9];
 
