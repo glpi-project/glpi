@@ -898,8 +898,9 @@ class User extends CommonDBTM {
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])
                //or use matches no rules & do not import users with no rights
-                || (isset($this->fields["_no_rule_matches"]))
-                && !$CFG_GLPI["use_noright_users_add"]) {
+                || (isset($this->fields["_no_rule_matches"])
+                    && $this->fields["_no_rule_matches"]
+                    && !$CFG_GLPI["use_noright_users_add"])) {
                return false;
             }
             //Hook to retrieve more informations for ldap

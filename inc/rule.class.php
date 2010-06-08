@@ -640,8 +640,7 @@ class Rule extends CommonDBTM {
             $hook_params["output"]=$output;
             doHook("rule_matched",$hook_params);
             $output["_rule_process"]=true;
-         } else {
-            $output["_no_rule_matches"] = true;
+            unset($output["_no_rule_matches"]);
          }
       }
    }
