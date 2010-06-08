@@ -1073,6 +1073,7 @@ class Dropdown {
       if (!class_exists($itemtype)) {
          return false;
       }
+
       if ($itemtype=='NetworkPort') {
          echo "<select name='massiveaction' id='massiveaction'>";
 
@@ -1118,7 +1119,11 @@ class Dropdown {
                && (($isadmin && $itemtype != 'Ticket')
                   || ($itemtype == 'Ticket' && haveRight('delete_ticket',1)))) {
 
-               echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
+               if ($item->maybeDeleted()) {
+                  echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
+               } else {
+                  echo "<option value='purge'>".$LANG['buttons'][22]."</option>";
+               }
             }
             if ($isadmin && in_array($itemtype,array('Phone', 'Printer', 'Peripheral', 'Monitor'))) {
 
