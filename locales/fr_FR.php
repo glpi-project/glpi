@@ -155,7 +155,7 @@ $LANG['cartridges'][7]  = "Pas de cartouche trouvée";
 
 $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
-$LANG['cartridges'][11] = "Jet-Encre";
+$LANG['cartridges'][11] = "Jet d'encre";
 $LANG['cartridges'][12] = "Type de Cartouche";
 $LANG['cartridges'][13] = "Neuve(s)";
 $LANG['cartridges'][14] = "Utilisée(s)";
@@ -535,7 +535,6 @@ $LANG['document'][49] = "Fichier altéré (mauvaise somme de contrôle)";
 
 
 $LANG['entity'][0]  = "Entité";
-$LANG['entity'][1]  = "Hiérarchie";
 $LANG['entity'][2]  = "Entité Racine";
 $LANG['entity'][3]  = "Associer à une entité";
 $LANG['entity'][5]  = "Affectation automatique des machines";

@@ -376,7 +376,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if (in_array(0,$_SESSION["glpiactiveentities"])) {
          $nb = self::countForVersion($softwareversions_id,0);
          if ($nb>0) {
-            echo "<tr class='tab_bg_2'><td>" . $LANG['entity'][1] . "</td>";
+            echo "<tr class='tab_bg_2'><td>" . $LANG['entity'][2] . "</td>";
             echo "<td class='right'>" . $nb . "</td></tr>\n";
             $tot+=$nb;
          }
