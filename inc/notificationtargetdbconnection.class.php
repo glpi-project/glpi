@@ -36,9 +36,11 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetDBConnection extends NotificationTarget {
 
    //Overwrite the function in NotificationTarget because there's only one target to be notified
+
    function getNotificationTargets($entity) {
       global $LANG;
-
+      $this->addProfilesToTargets();
+      $this->addGroupsToTargets($entity);
       $this->addTarget(Notification::GLOBAL_ADMINISTRATOR,$LANG['setup'][237]);
    }
 
