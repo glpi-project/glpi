@@ -49,7 +49,7 @@ class DeviceGraphicCard extends CommonDevice {
    static function getSpecifityLabel() {
       global $LANG;
 
-      return array('specificity'=>$LANG['device_gfxcard'][0]);
+      return array('specificity'=>$LANG['devices'][6]);
    }
 
    function getAdditionalFields() {
@@ -58,7 +58,7 @@ class DeviceGraphicCard extends CommonDevice {
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
-                                     'label' => $LANG['device_gfxcard'][0]." ".$LANG['devices'][24],
+                                     'label' => $LANG['devices'][6]." ".$LANG['devices'][24],
                                      'type'  => 'text'),
                                array('name'  => 'interfacetypes_id',
                                      'label' => $LANG['common'][65],
@@ -73,7 +73,7 @@ class DeviceGraphicCard extends CommonDevice {
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'specif_default';
       $tab[12]['linkfield']     = 'specif_default';
-      $tab[12]['name']          = $LANG['device_gfxcard'][0]." ".$LANG['devices'][24];
+      $tab[12]['name']          = $LANG['devices'][6]." ".$LANG['devices'][24];
       $tab[12]['datatype']      = 'text';
 
       $tab[14]['table']         = 'glpi_interfacetypes';
@@ -99,7 +99,7 @@ class DeviceGraphicCard extends CommonDevice {
                                                       $this->fields["interfacetypes_id"]);
       }
       // Specificity
-      $data['label'][] = $LANG['device_gfxcard'][0];
+      $data['label'][] = $LANG['devices'][6];
       $data['size'] = 10;
 
       return $data;

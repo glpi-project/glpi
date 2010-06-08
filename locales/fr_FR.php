@@ -460,10 +460,6 @@ $LANG['device_control'][0] = "RAID";
 $LANG['device_drive'][0] = "Écriture";
 $LANG['device_drive'][1] = "Vitesse";
 
-
-$LANG['device_gfxcard'][0] = "Mémoire";
-
-
 $LANG['device_hdd'][0] = "Rpm";
 $LANG['device_hdd'][1] = "Cache";
 
@@ -901,15 +897,13 @@ $LANG['jobresolution'][5] = "En cas de rejet de la solution, vous devez indiquer
 
 $LANG['knowbase'][1]  = "Foire aux questions";
 
-$LANG['knowbase'][3]  = "Question";
-$LANG['knowbase'][4]  = "Réponse";
-$LANG['knowbase'][5]  = "Placer cet item dans la FAQ publique";
+$LANG['knowbase'][5]  = "Placer cet item dans la FAQ";
 $LANG['knowbase'][6]  = "Sélectionner une catégorie pour cet item :";
-$LANG['knowbase'][7]  = "Retirer cet item de la FAQ publique";
+$LANG['knowbase'][7]  = "Retirer cet item de la FAQ";
 $LANG['knowbase'][8]  = "Modifier cet item";
 $LANG['knowbase'][9]  = "Supprimer cet item";
-$LANG['knowbase'][10] = "Cet item fait partie de la FAQ publique";
-$LANG['knowbase'][11] = "Cet item ne fait pas partie de la FAQ publique";
+$LANG['knowbase'][10] = "Cet item fait partie de la FAQ";
+$LANG['knowbase'][11] = "Cet item ne fait pas partie de la FAQ";
 $LANG['knowbase'][12] = "Racine";
 $LANG['knowbase'][13] = "Nom de la catégorie";
 $LANG['knowbase'][14] = "Sujet";
@@ -1208,7 +1202,7 @@ $LANG['Menu'][5]  = "Tickets";
 $LANG['Menu'][6]  = "Rapports";
 
 $LANG['Menu'][11] = "Préférences";
-$LANG['Menu'][12] = "Données";
+$LANG['Menu'][12] = "Sauvegarde";
 $LANG['Menu'][13] = "Statistiques";
 $LANG['Menu'][14] = "Utilisateurs";
 $LANG['Menu'][15] = "Administration";
@@ -1957,6 +1951,7 @@ $LANG['software'][2]="Version d'utilisation";
 $LANG['software'][3]="Plateforme";
 $LANG['software'][4]="Illimité";
 $LANG['software'][5]="Versions";
+$LANG['software'][6]="Editeur";
 $LANG['software'][7]="Ajouter une version";
 $LANG['software'][8]="Ajouter une licence";
 $LANG['software'][11]="Licences";

@@ -261,7 +261,7 @@ class Software extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>" . $LANG['common'][5] . "&nbsp;:</td><td>";
+      echo "<td>" . $LANG['common'][5] . " / ".$LANG['software'][6]."&nbsp;:</td><td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 

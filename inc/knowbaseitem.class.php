@@ -350,13 +350,13 @@ class KnowbaseItem extends CommonDBTM {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
-      echo ($this->fields["is_faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
+      echo $LANG['knowbase'][14];
       echo "</h2>";
       echo $this->fields["question"];
 
       echo "</td></tr>";
       echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
-      echo ($this->fields["is_faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
+      echo $LANG['knowbase'][15];
       echo "</h2>\n";
 
       $answer = unclean_cross_side_scripting_deep($this->fields["answer"]);
@@ -544,8 +544,8 @@ class KnowbaseItem extends CommonDBTM {
 
             if ($output_type!=HTML_OUTPUT) {
                $header_num=1;
-               echo Search::showHeaderItem($output_type,$LANG['knowbase'][3],$header_num);
-               echo Search::showHeaderItem($output_type,$LANG['knowbase'][4],$header_num);
+               echo Search::showHeaderItem($output_type,$LANG['knowbase'][14],$header_num);
+               echo Search::showHeaderItem($output_type,$LANG['knowbase'][15],$header_num);
             }
 
             // Num of the row (1=header_line)
