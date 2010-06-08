@@ -552,7 +552,7 @@ $LANG['entity'][17] = "Configuration clôture automatique";
 $LANG['entity'][18] = "Clôture automatique des tickets résolus après";
 
 
-$LANG['event'][0]  = "Item (ID)";
+$LANG['event'][0]  = "Source";
 
 $LANG['event'][2]  = "Service";
 $LANG['event'][3]  = "Niveau";
