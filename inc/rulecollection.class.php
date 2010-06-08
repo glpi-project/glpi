@@ -839,7 +839,8 @@ class RuleCollection extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_rulecriterias`.`criteria` as `criteria`
               FROM `glpi_rules`, `glpi_rulecriterias`
               WHERE `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'
-                    AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`";
+                    AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
+                       AND `glpi_rules`.`is_active`='1'";
 
       foreach ($DB->request($query) as $param) {
              $params[]=utf8_strtolower($param["criteria"]);

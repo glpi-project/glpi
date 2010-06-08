@@ -1158,7 +1158,7 @@ $LANG['mailing'][109] = "Pas de groupe";
 $LANG['mailing'][110] = "Email invalide";
 
 $LANG['mailing'][113] = "Modèles de notifications";
-
+$LANG['mailing'][114] = "Corps";
 $LANG['mailing'][115] = "Corps de l'email";
 $LANG['mailing'][116] = "HTML";
 $LANG['mailing'][117] = "texte";
@@ -1648,9 +1648,11 @@ $LANG['rulesengine'][135]="Refuser email (avec réponse email)";
 $LANG['rulesengine'][138]="Critères LDAP";
 $LANG['rulesengine'][140]="Ajout d'un critère";
 $LANG['rulesengine'][142]="Liste des emails non importés";
-$LANG['rulesengine'][143]="Groupe de l'utilisateur";
 $LANG['rulesengine'][144]="Entité depuis profil de l'utilisateur";
 $LANG['rulesengine'][145]="Utilisateur possédant un seul profil";
+$LANG['rulesengine'][146]="Utilisateur possèdant le profil";
+$LANG['rulesengine'][147]="Utilisateur possèdant une seule fois le profil";
+
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";
