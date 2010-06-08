@@ -376,7 +376,7 @@ $LANG['consumables'][32] = "Donner";
 $LANG['consumables'][35] = "Consommables usagés";
 $LANG['consumables'][36] = "Lieu Stockage";
 $LANG['consumables'][37] = "Réintégrer dans le stock";
-$LANG['consumables'][38] = "Seuil d'alarme";
+$LANG['consumables'][38] = "Seuil d'alerte";
 
 
 $LANG['crontask'][0]  = "Tâches planifiées";
