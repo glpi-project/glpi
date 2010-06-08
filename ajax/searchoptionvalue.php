@@ -46,13 +46,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 checkLoginUser();
-//print_r($_REQUEST);
+// echo "value";print_r($_REQUEST);
 if (isset($_REQUEST['searchtype'])) {
    $searchopt=unserialize(stripslashes($_REQUEST['searchopt']));
    $_REQUEST['value']=rawurldecode(stripslashes($_REQUEST['value']));
 
    $addmeta="";
-   if (isset($_POST['meta'])&&$_POST['meta']) {
+   if (isset($_REQUEST['meta'])&&$_REQUEST['meta']) {
       $addmeta='2';
    }
 
