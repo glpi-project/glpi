@@ -379,7 +379,7 @@ $LANG['consumables'][37] = "Réintégrer dans le stock";
 $LANG['consumables'][38] = "Seuil d'alerte";
 
 
-$LANG['crontask'][0]  = "Tâches planifiées";
+$LANG['crontask'][0]  = "Actions automatiques";
 // index if crontask id
 $LANG['crontask'][1]  = "Synchronisation des matériels depuis OCS Inventory NG";
 $LANG['crontask'][2]  = "Envoi des alertes sur les cartouches";
@@ -410,10 +410,10 @@ $LANG['crontask'][39] = "Nombre de messages à récupérer";
 $LANG['crontask'][40] = "Dernière exécution";
 $LANG['crontask'][41] = "Prochaine exécution";
 $LANG['crontask'][42] = "Dès que possible";
-$LANG['crontask'][43] = "Aucune tâche en attente";
-$LANG['crontask'][44] = "Tâche terminée, traitement partiel";
-$LANG['crontask'][45] = "Tâche terminée, traitement complet";
-$LANG['crontask'][46] = "Tâche terminée, rien à faire";
+$LANG['crontask'][43] = "Aucune action en attente";
+$LANG['crontask'][44] = "Action terminée, traitement partiel";
+$LANG['crontask'][45] = "Action terminée, traitement complet";
+$LANG['crontask'][46] = "Action terminée, rien à faire";
 $LANG['crontask'][47] = "Liste des dernières exécutions";
 $LANG['crontask'][48] = "Lancement";
 
@@ -760,7 +760,7 @@ $LANG['install'][48]  = "Erreur lors de la création de la base !";
 $LANG['install'][49]  = "Vous n'avez pas sélectionné de base de données !";
 $LANG['install'][50]  = "Test d'écriture des fichiers de sessions";
 
-$LANG['install'][52]  = "Test d'écriture des fichiers de cron";
+$LANG['install'][52]  = "Test d'écriture des fichiers des actions automatiques";
 $LANG['install'][53]  = "Test d'écriture des fichiers de log";
 
 $LANG['install'][55]  = "L'installation est terminée";
@@ -1009,7 +1009,7 @@ $LANG['log'][49]  = "suppression utilisateur au groupe";
 
 $LANG['log'][55]  = "Connexion";
 
-$LANG['log'][59]  = "Cron";
+$LANG['log'][59]  = "Action automatique";
 $LANG['log'][60]  = "passage en gestion unitaire de l'item";
 $LANG['log'][61]  = "ajout utilisateur à l'entité";
 $LANG['log'][62]  = "suppression utilisateur à l'entité";
@@ -1294,7 +1294,7 @@ $LANG['ocsconfig'][36]="Modems";
 $LANG['ocsconfig'][37]="Ports";
 $LANG['ocsconfig'][38]="Utiliser le dictionnaire logiciel d'OCS";
 $LANG['ocsconfig'][39]="TAG OCS";
-$LANG['ocsconfig'][40]="Nombre d'éléments à synchroniser via le cron";
+$LANG['ocsconfig'][40]="Nombre d'éléments à synchroniser via l'action automatique ocsng";
 $LANG['ocsconfig'][41]="Base de registre";
 $LANG['ocsconfig'][43]="Informations Administratives OCS";
 $LANG['ocsconfig'][48]="Comportement lors de la déconnexion";
@@ -1758,7 +1758,7 @@ $LANG['setup'][126]="Ajouter directement un utilisateur d'une source externe";
 $LANG['setup'][127]="Autocomplétion des champs textes avec l'affichage dynamique";
 $LANG['setup'][128]="Format des dates";
 $LANG['setup'][129]="Afficher les ID GLPI";
-$LANG['setup'][130]="Temps en jours de conservation des journaux de cette tâche (0 pour infini)";
+$LANG['setup'][130]="Temps en jours de conservation des journaux de cette action (0 pour infini)";
 $LANG['setup'][131]="Nombre de caractères limite pour les listes déroulantes";
 $LANG['setup'][132]="Listes déroulantes arborescentes à plat";
 $LANG['setup'][133]="Activer le mode OCSNG";
@@ -1800,7 +1800,7 @@ $LANG['setup'][180]="Utiliser TLS";
 $LANG['setup'][181]="Fonction ldap_start_tls inexistante";
 $LANG['setup'][182]="Url de retour à la deconnexion (logout)";
 $LANG['setup'][184]="Restrictions";
-$LANG['setup'][185]="Traceurs dans fichiers (SQL, mail, cron...)";
+$LANG['setup'][185]="Traceurs dans fichiers (SQL, mail, action automatique...)";
 $LANG['setup'][186]="Fuseau horaire";
 $LANG['setup'][190]="Certificat x509";
 $LANG['setup'][191]="Attribut mail pour x509";
