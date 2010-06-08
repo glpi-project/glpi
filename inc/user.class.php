@@ -199,16 +199,17 @@ class User extends CommonDBTM {
                 FROM `glpi_groups_users`
                 WHERE `users_id` = '".$this->fields['id']."'";
       $DB->query($query);
+      if ($this->fields['id']>0) { // Security
+         $query = "DELETE
+                  FROM `glpi_displaypreferences`
+                  WHERE `users_id` = '".$this->fields['id']."'";
+         $DB->query($query);
 
-      $query = "DELETE
-                FROM `glpi_displaypreferences`
-                WHERE `users_id` = '".$this->fields['id']."'";
-      $DB->query($query);
-
-      $query = "DELETE
-                FROM `glpi_bookmarks_users`
-                WHERE `users_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+         $query = "DELETE
+                  FROM `glpi_bookmarks_users`
+                  WHERE `users_id` = '".$this->fields['id']."'";
+         $DB->query($query);
+      }
 
       // Delete private reminder
       $query = "DELETE
