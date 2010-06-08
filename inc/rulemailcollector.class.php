@@ -86,11 +86,6 @@ class RuleMailCollector extends Rule {
       $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
       $criterias['mailcollector']['type'] = 'dropdown';
 
-      $criterias['username']['field'] = 'name';
-      $criterias['username']['name']  = $LANG['common'][34].' : '.$LANG['common'][16];
-      $criterias['username']['table'] = 'glpi_users';
-      $criterias['username']['type'] = 'dropdown';
-
       $criterias['from']['name']  = $LANG['mailing'][132].' : from';
       $criterias['from']['table'] = '';
       $criterias['from']['type'] = 'text';
@@ -107,30 +102,45 @@ class RuleMailCollector extends Rule {
       $criterias['X-Priority']['table'] = '';
       $criterias['X-Priority']['type'] = 'text';
 
-      $criterias['subject']['name']  = $LANG['common'][90];
+      $criterias['username']['field'] = 'name';
+      $criterias['username']['name']  = $LANG['common'][34].' : '.$LANG['common'][16];
+      $criterias['username']['table'] = 'glpi_users';
+      $criterias['username']['type'] = 'dropdown';
+
+      $criterias['subject']['name']  = $LANG['mailing'][118].' : '.$LANG['common'][90];
       $criterias['subject']['field'] = 'subject';
       $criterias['subject']['table'] = '';
       $criterias['subject']['type'] = 'text';
 
-      $criterias['content']['name']  = $LANG['mailing'][115];
+      $criterias['content']['name']  = $LANG['mailing'][118].' : '.$LANG['mailing'][114];
       $criterias['content']['table'] = '';
       $criterias['content']['type'] = 'text';
 
       $criterias['GROUPS']['table']     = 'glpi_groups';
       $criterias['GROUPS']['field']     = 'name';
-      $criterias['GROUPS']['name']      = $LANG['rulesengine'][143];
+      $criterias['GROUPS']['name']      = $LANG['common'][34].' : '.$LANG['common'][35];
       $criterias['GROUPS']['linkfield'] = '';
       $criterias['GROUPS']['type']      = 'dropdown';
       $criterias['GROUPS']['virtual']   = true;
       $criterias['GROUPS']['id']        = 'groups';
 
       $criterias['PROFILES']['field']   = 'name';
-      $criterias['PROFILES']['name']    = $LANG['common'][34].' : '.$LANG['profiles'][22];
+      $criterias['PROFILES']['name']    = $LANG['rulesengine'][146];
       $criterias['PROFILES']['table']   = 'glpi_profiles';
       $criterias['PROFILES']['type']    = 'dropdown';
       $criterias['PROFILES']['virtual'] = true;
       $criterias['PROFILES']['id']      = 'profiles';
       $criterias['PROFILES']['allow_condition'] = array(Rule::PATTERN_IS);
+
+      if (isMultiEntitiesMode()) {
+         $criterias['UNIQUE_PROFILE']['field']   = 'name';
+         $criterias['UNIQUE_PROFILE']['name']    = $LANG['rulesengine'][147];
+         $criterias['UNIQUE_PROFILE']['table']   = 'glpi_profiles';
+         $criterias['UNIQUE_PROFILE']['type']    = 'dropdown';
+         $criterias['UNIQUE_PROFILE']['virtual'] = true;
+         $criterias['UNIQUE_PROFILE']['id']      = 'profiles';
+         $criterias['UNIQUE_PROFILE']['allow_condition'] = array(Rule::PATTERN_IS);
+      }
 
       $criterias['ONE_PROFILE']['field']   = 'name';
       $criterias['ONE_PROFILE']['name']    = $LANG['rulesengine'][145];
@@ -182,17 +192,22 @@ class RuleMailCollector extends Rule {
                         $output[$action->fields["field"]] = $action->fields["value"];
                         break;
                      case "_affect_entity_by_user_entity":
-                        //2 cases :
+                        //3 cases :
                         //1 - rule contains a criteria like : Profil is XXXX
                         //    -> in this case, profiles_id is stored in
                         //       $this->criterias_results['PROFILES'] (one value possible)
                         //2-   rule contains criteria "User has only one profile"
                         //    -> in this case, profiles_id is stored in
                         //       $this->criterias_results['PROFILES'] (one value possible) (same as 1)
+                        //3   -> rule contains only one profile
                         $profile = 0;
                         //Case 2:
                         if (isset($this->criterias_results['ONE_PROFILE'])) {
                            $profile = $this->criterias_results['ONE_PROFILE'];
+                        }
+                        //Case 3
+                        elseif (isset($this->criterias_results['UNIQUE_PROFILE'])) {
+                           $profile = $this->criterias_results['UNIQUE_PROFILE'];
                         }
                         //Case 1
                         elseif (isset($this->criterias_results['PROFILES'])) {
@@ -202,12 +217,15 @@ class RuleMailCollector extends Rule {
                         if ($profile) {
                            $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
                                                                                  $profile);
+
                            //Case 2 : check if there's only one profile for this user
                            if ((isset($this->criterias_results['ONE_PROFILE'])
                                  && count($entities) == 1)
                                     || !isset($this->criterias_results['ONE_PROFILE'])) {
                               if (count($entities) == 1) {
                                  //User has right on only one entity
+                                 $output['entities_id'] = array_pop($entities);
+                              } elseif (isset($this->criterias_results['UNIQUE_PROFILE'])) {
                                  $output['entities_id'] = array_pop($entities);
                               } else {
                                  //Rights on more than one entity : get the user's prefered entity

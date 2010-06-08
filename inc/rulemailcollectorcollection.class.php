@@ -78,6 +78,17 @@ class RuleMailCollectorCollection extends RuleCollection {
          }
       }
 
+      //If the criteria is "user has only one time the profile xxx"
+      if (in_array('unique_profile',$fields)) {
+         //Get all profiles
+         $profiles = Profile_User::getForUser($input['users_id']);
+         foreach ($profiles as $profile) {
+            if (Profile_User::haveUniqueRight($input['users_id'], $profile['profiles_id'])) {
+               $input['UNIQUE_PROFILE'] = $profile['profiles_id'];
+            }
+         }
+      }
+
       //Store the number of profiles of which the user belongs to
       if (in_array('one_profile',$fields)) {
          $profiles = Profile_User::getForUser($input['users_id']);

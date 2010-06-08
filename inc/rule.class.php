@@ -236,13 +236,14 @@ class Rule extends CommonDBTM {
          echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
          echo "<input type='hidden' name='sub_type' value='".get_class($this)."'>";
 
-
-         echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-         echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-             "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;rules_id=".
-             $this->fields["id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100,".
-             " scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>";
-         echo "</td></tr>\n";
+         if ($ID > 0) {
+            echo "<tr><td class='tab_bg_2 center' colspan='4'>";
+            echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
+                "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;rules_id=".
+                $this->fields["id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100,".
+                " scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>";
+            echo "</td></tr>\n";
+         }
       }
 
       $this->showFormButtons($options);
@@ -498,6 +499,7 @@ class Rule extends CommonDBTM {
       foreach ($this->getCriterias() as $ID => $crit) {
          $items[$ID]=$crit['name'];
       }
+      asort($items);
       $rand=Dropdown::showFromArray("criteria", $items);
       $params = array('criteria' => '__VALUE__',
                       'rand'=>$rand,
@@ -540,6 +542,7 @@ class Rule extends CommonDBTM {
             $value=$ID;
          }
       }
+      asort($items);
 
       $rand=Dropdown::showFromArray("field", $items, array('value' => $value, 'used' => $used));
       $params = array('field'    => '__VALUE__',
