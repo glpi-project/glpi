@@ -510,6 +510,31 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
+   function addProfilesToTargets() {
+      global $LANG,$DB;
+      foreach ($DB->request('glpi_profiles') as $data) {
+         $this->addTarget($data["id"],$LANG['profiles'][22] . " " .$data["name"],
+                          Notification::PROFILE_TYPE);
+      }
+   }
+
+   function addGroupsToTargets($entity) {
+      global $LANG,$DB;
+      $query = "SELECT `id`, `name`
+                FROM `glpi_groups`".
+                getEntitiesRestrictRequest(" WHERE",'glpi_groups','entities_id',$entity,true)."
+                ORDER BY `name`";
+
+      foreach ($DB->request($query) as $data) {
+         //Add group
+         $this->addTarget($data["id"], $LANG['common'][35] . " " .$data["name"],
+                          Notification::GROUP_TYPE);
+         //Add group supervisor
+         $this->addTarget($data["id"], $LANG['common'][64].' '.$LANG['common'][35] . " " .$data["name"],
+                          Notification::SUPERVISOR_GROUP_TYPE);
+      }
+   }
+
    /**
     * Return all the targets for this notification
     * Values returned by this method are the ones for the alerts
@@ -526,24 +551,8 @@ class NotificationTarget extends CommonDBChild {
       $this->addTarget(Notification::ENTITY_ADMINISTRATOR,
                        $LANG['setup'][237]." ".$LANG['entity'][0]);
 
-      foreach ($DB->request('glpi_profiles') as $data) {
-         $this->addTarget($data["id"],$LANG['profiles'][22] . " " .$data["name"],
-                          Notification::PROFILE_TYPE);
-      }
-
-      $query = "SELECT `id`, `name`
-                FROM `glpi_groups`".
-                getEntitiesRestrictRequest(" WHERE",'glpi_groups','entities_id',$entity,true)."
-                ORDER BY `name`";
-
-      foreach ($DB->request($query) as $data) {
-         //Add group
-         $this->addTarget($data["id"], $LANG['common'][35] . " " .$data["name"],
-                          Notification::GROUP_TYPE);
-         //Add group supervisor
-         $this->addTarget($data["id"], $LANG['common'][64].' '.$LANG['common'][35] . " " .$data["name"],
-                          Notification::SUPERVISOR_GROUP_TYPE);
-      }
+      $this->addProfilesToTargets();
+      $this->addGroupsToTargets($entity);
    }
 
 
