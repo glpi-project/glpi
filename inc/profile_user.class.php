@@ -514,6 +514,14 @@ class Profile_User extends CommonDBTM {
       return getAllDatasFromTable('glpi_profiles_users',$condition);
    }
 
+   static function haveUniqueRight($user_ID, $profile_id) {
+      global $DB;
+      $query = "SELECT COUNT(*) as cpt FROM `glpi_profiles_users`
+                WHERE `users_id`='$user_ID' AND `profiles_id`='$profile_id'";
+      $result = $DB->query($query);
+      return $DB->result($result,0,'cpt');
+   }
+
    static function deleteRights($user_ID) {
       global $DB;
       $query = "DELETE FROM `glpi_profiles_users` WHERE `users_id`='$user_ID'";
