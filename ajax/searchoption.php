@@ -48,6 +48,7 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 // Non define case
+
 if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
 
    $addmeta="";
@@ -74,6 +75,15 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
                            $actions,array('value' => $_POST["searchtype"]));
    }
    echo "&nbsp;<span id='span$dropdownname'>\n";
+
+   $_REQUEST['searchtype']=$_POST["searchtype"];
+   $_REQUEST['field']=$_POST["field"];
+   $_REQUEST['itemtype']=$_POST["itemtype"];
+   $_REQUEST['num']=$_POST["num"];
+   $_REQUEST['value']=stripslashes($_POST['value']);
+   $_REQUEST['meta']=$_POST['meta'];
+   $_REQUEST['searchopt']=serialize($searchopt);
+   include(GLPI_ROOT."/ajax/searchoptionvalue.php");
    echo "</span>\n";
 
    $paramsaction=array( 'searchtype'   => '__VALUE__',
@@ -86,8 +96,8 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
 
    ajaxUpdateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch","span$dropdownname",
                                  $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",$paramsaction,false);
-   ajaxUpdateItem("span$dropdownname",$CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
-                     $paramsaction, false,"dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch");
+//    ajaxUpdateItem("span$dropdownname",$CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
+//                      $paramsaction, false,"dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch");
 
 }
 
