@@ -1717,7 +1717,6 @@ $LANG['setup'][83]="Statut des matériels";
 $LANG['setup'][84]="Types de cartouches";
 $LANG['setup'][85]="Types de contrats";
 $LANG['setup'][86]="Types de mémoire vive";
-$LANG['setup'][87]="Liens externes protocolés";
 $LANG['setup'][88]="Réseau";
 $LANG['setup'][89]="Domaine";
 $LANG['setup'][90]="VLANs";

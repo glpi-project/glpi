@@ -66,7 +66,7 @@ if (haveRight("device","w")) {
    $data[$CFG_GLPI["root_doc"]."/front/device.php"] = $LANG['title'][30];
 }
 if (haveRight("link","r")) {
-   $data[$CFG_GLPI["root_doc"]."/front/link.php"] = $LANG['setup'][87];
+   $data[$CFG_GLPI["root_doc"]."/front/link.php"] = $LANG['title'][33];
 }
 
 echo "<tr class='tab_bg_1'>";

@@ -951,7 +951,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['document'][7]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("typedoc",$this->fields["typedoc"],1,1,1);
       echo "</td>";
-      echo "<td>".$LANG['setup'][87]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['title'][33]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("link",$this->fields["link"],1,1,1);
       echo "</td>";
       echo "<td>".$LANG['setup'][306]."&nbsp;:</td><td>";
@@ -1174,7 +1174,7 @@ class Profile extends CommonDBTM {
 
       $tab[46]['table'] = $this->getTable();
       $tab[46]['field'] = 'link';
-      $tab[46]['name'] = $LANG['setup'][87];
+      $tab[46]['name'] = $LANG['title'][33];
       $tab[46]['linkfield'] = 'link';
       $tab[46]['datatype'] = 'right';
 

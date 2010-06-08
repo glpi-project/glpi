@@ -43,7 +43,7 @@ class Link extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['setup'][87];
+      return $LANG['title'][33];
    }
 
    function canCreate() {
