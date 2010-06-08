@@ -227,7 +227,7 @@ class ReservationItem extends CommonDBTM {
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='2'>".$LANG['reservation'][22]."</th></tr>";
          // Ajouter le nom du materiel
-         echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>".$LANG['common'][1]."&nbsp;:</td>";
          echo "<td><strong>$type - $name</strong></td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td>";

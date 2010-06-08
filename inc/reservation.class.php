@@ -298,6 +298,7 @@ class Reservation extends CommonDBTM {
             if ($item->getFromDB($m->fields["items_id"])) {
                $name=$item->getName();
             }
+            $name=$type." - ".$name;
          }
 
          $all="<a href='reservation.php?reservationitems_id=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
@@ -309,7 +310,7 @@ class Reservation extends CommonDBTM {
 
       echo "<div class='center'><table class='tab_glpi'><tr><td>";
       echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td>";
-      echo "<td><strong><span class='icon_consol'>".$type." - ".$name."</span></strong></td></tr>";
+      echo "<td><strong><span class='icon_consol'>".$name."</span></strong></td></tr>";
       echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div>\n";
 
       // Check bisextile years
@@ -483,7 +484,7 @@ class Reservation extends CommonDBTM {
       // Add Hardware name
       $r=new ReservationItem;
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][1]."&nbsp;:</td>";
       echo "<td>";
       foreach ($options['item'] as $itemID) {
          $r->getFromDB($itemID);
