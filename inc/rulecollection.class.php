@@ -131,7 +131,7 @@ class RuleCollection extends CommonDBTM {
    * @param $options array of options may be :
    *         - start : first rule (in the result set - default 0)
    *         - limit : max number of rules to retrieve (default 0)
-   *         - recursive : boolean get recursive rules 
+   *         - recursive : boolean get recursive rules
    *         - childirens : boolean get childrens rules
    **/
    function getCollectionPart($options=array()) {
@@ -552,6 +552,7 @@ class RuleCollection extends CommonDBTM {
       // Get Collection datas
       $this->getCollectionDatas(1,1);
       $input=$this->prepareInputDataForProcess($input,$params);
+      $output["_no_rule_matches"] = true;
       if (count($this->RuleList->list)) {
          foreach ($this->RuleList->list as $rule) {
             //If the rule is active, process it
@@ -629,6 +630,7 @@ class RuleCollection extends CommonDBTM {
       // Get Collection datas
       $this->getCollectionDatas(1,1);
 
+      $output["_no_rule_matches"] = true;
       if (count($this->RuleList->list)) {
          foreach ($this->RuleList->list as $rule) {
             //If the rule is active, process it
