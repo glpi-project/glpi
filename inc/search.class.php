@@ -1233,7 +1233,7 @@ class Search {
                }
                echo "<optgroup label='$val'>";
             } else {
-               echo "<option value='$key'";
+               echo "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
                if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
                   echo "selected";
                   $selected=$key;
