@@ -471,7 +471,7 @@ class OcsServer extends CommonDBTM {
       $out  = "\n<div class='center' id='tabsbody'>";
       $out .= "<form name='formdbconfig' action='".$this->getFormURL()."' method='post'>";
       $out .= "<table class='tab_cadre_fixe'>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][88] . "&nbsp;: </td>\n";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][2] . "&nbsp;: </td>\n";
       $out .= "<td><strong>" . $this->fields["id"] . "</strong></td>\n";
 
       $out .= "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
