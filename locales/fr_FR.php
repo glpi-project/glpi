@@ -317,8 +317,8 @@ $LANG['computers'][14] = "Inséré";
 
 $LANG['computers'][21] = "CPU";
 
-$LANG['computers'][23] = "RAM Type";
-$LANG['computers'][24] = "Quantité RAM";
+$LANG['computers'][23] = "Type de mémoire";
+$LANG['computers'][24] = "Mémoire (Mio)";
 $LANG['computers'][25] = "Taille HD";
 
 $LANG['computers'][36] = "HD-Type";
@@ -438,7 +438,7 @@ $LANG['devices'][2]  = "Carte graphique";
 $LANG['devices'][3]  = "Carte réseau";
 $LANG['devices'][4]  = "Processeur";
 $LANG['devices'][5]  = "Carte mère";
-$LANG['devices'][6]  = "Mémoire vive";
+$LANG['devices'][6]  = "Mémoire";
 $LANG['devices'][7]  = "Carte son";
 
 $LANG['devices'][19] = "Lecteurs";
@@ -1249,7 +1249,7 @@ $LANG['monitors'][32]="DVI";
 $LANG['monitors'][33]="Pivot";
 
 $LANG['networking'][4]="Port réseau";
-$LANG['networking'][5]="RAM (Mio)";
+$LANG['networking'][5]="Mémoire (Mio)";
 $LANG['networking'][6]="Ports réseaux";
 $LANG['networking'][13]="port(s) réseau trouvé(s)";
 $LANG['networking'][14]="IP";
@@ -1715,7 +1715,7 @@ $LANG['setup'][82]="Types de Contacts";
 $LANG['setup'][83]="Statut des matériels";
 $LANG['setup'][84]="Types de cartouches";
 $LANG['setup'][85]="Types de contrats";
-$LANG['setup'][86]="Types de mémoire vive";
+$LANG['setup'][86]="Types de mémoire";
 $LANG['setup'][88]="Réseau";
 $LANG['setup'][89]="Domaine";
 $LANG['setup'][90]="VLANs";
