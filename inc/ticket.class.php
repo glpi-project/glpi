@@ -3023,7 +3023,8 @@ class Ticket extends CommonDBTM {
 
       if (!haveRight("show_all_ticket","1")
           && !haveRight("show_assign_ticket","1")
-          && !haveRight("create_ticket","1")) {
+          && !haveRight("create_ticket","1")
+          && !haveRight("validate_ticket","1")) {
          return false;
       }
 
@@ -3041,7 +3042,7 @@ class Ticket extends CommonDBTM {
          }
       }
 
-      $query = "SELECT `id`
+      $query = "SELECT `glpi_tickets`.`id`
                 FROM `glpi_tickets`";
 
       switch ($status) {
@@ -3064,6 +3065,13 @@ class Ticket extends CommonDBTM {
                $query .= " OR `glpi_tickets`.users_id_recipient = '".getLoginUserID()."' ";
             }
             $query .= ")".getEntitiesRestrictRequest("AND","glpi_tickets");
+            break;
+         case "tovalidate" : // on affiche les tickets à valider
+            $query .= "LEFT JOIN `glpi_ticketvalidations`
+                           ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
+                        WHERE `users_id_validate` = '".getLoginUserID()."'
+                              AND `glpi_ticketvalidations`.`status` = 'waiting' ";
+            $query .= getEntitiesRestrictRequest("AND","glpi_tickets");
             break;
 
          case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
@@ -3201,6 +3209,22 @@ class Ticket extends CommonDBTM {
                         append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
                   break;
 
+               case "tovalidate" :
+                  $options['field'][0]      = 55; // validation status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'waiting';
+                  $options['link'][0]        = 'AND';
+
+                  $options['field'][1]      = 59; // validation aprobator
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = getLoginUserID();
+                  $options['link'][1]        = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                        append_params($options,'&amp;')."\">".$LANG['central'][19]."</a>";
+
+                  break;
+
                case "toapprove" :
                   $options['field'][0]      = 12; // status
                   $options['searchtype'][0] = 'equals';
@@ -3260,6 +3284,10 @@ class Ticket extends CommonDBTM {
 
             case 'process' :
                echo $LANG['joblist'][13];
+               break;
+
+            case 'tovalidate' :
+               echo $LANG['central'][19];
                break;
 
             case 'toapprove' :

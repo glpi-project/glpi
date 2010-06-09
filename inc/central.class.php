@@ -108,7 +108,12 @@ class Central extends CommonGLPI {
       }
       echo "<tr><td class='top'><table>";
 
-      echo "<tr><td class='top' width='450px'><br>";
+      if (haveRight('validate_ticket',1)) {
+         echo "<tr><td class='top' width='450px'><br>";
+         Ticket::showCentralList(0,"tovalidate",false);
+         echo "</td></tr>";
+      }
+      echo "<tr><td class='top' width='450px'>";
       Ticket::showCentralList(0,"toapprove",false);
       echo "</td></tr>";
       echo "<tr><td class='top' width='450px'>";

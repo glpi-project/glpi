@@ -200,7 +200,7 @@ $LANG['central'][13] = "Vue globale";
 $LANG['central'][14] = "Vue groupe";
 
 $LANG['central'][18] = "Vos tickets à clore";
-
+$LANG['central'][19] = "Vos tickets à valider";
 
 $LANG['choice'][0] = "Non";
 $LANG['choice'][1] = "Oui";
