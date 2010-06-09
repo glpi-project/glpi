@@ -1564,13 +1564,13 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 *
 * @return string explaining the result
 **/
-function checkNewVersionAvailable($auto=true) {
+function checkNewVersionAvailable($auto=true,$messageafterredirect=false) {
    global $DB,$LANG,$CFG_GLPI;
 
    if (!$auto && !haveRight("check_update","r")) {
       return false;
    }
-   if (!$auto) {
+   if (!$auto && !$messageafterredirect) {
       echo "<br>";
    }
 
@@ -1579,7 +1579,12 @@ function checkNewVersionAvailable($auto=true) {
 
    if (strlen(trim($latest_version))==0) {
       if (!$auto) {
-         echo "<div class='center'> $error </div>";
+         if ($messageafterredirect) {
+            addMessageAfterRedirect($error,true,ERROR);
+         }
+         else {
+            echo "<div class='center'> $error </div>";
+         }
       } else {
          return $error;
       }
@@ -1621,16 +1626,36 @@ function checkNewVersionAvailable($auto=true) {
          $input["founded_new_version"]=$latest_version;
          $config_object->update($input);
          if (!$auto) {
-            echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
-            echo "<div class='center'>".$LANG['setup'][302]."</div>";
+            if ($messageafterredirect) {
+               addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version.$LANG['setup'][302]);
+            }
+            else {
+               echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
+               echo "<div class='center'>".$LANG['setup'][302]."</div>";
+            }
          } else {
-            return $LANG['setup'][301]." ".$latest_version;
+            if ($messageafterredirect) {
+               addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version);
+            }
+            else {
+               return $LANG['setup'][301]." ".$latest_version;
+            }
          }
       } else {
          if (!$auto) {
-            echo "<div class='center'>".$LANG['setup'][303]."</div>";
+            if ($messageafterredirect) {
+               addMessageAfterRedirect($LANG['setup'][303]);
+            }
+            else {
+               echo "<div class='center'>".$LANG['setup'][303]."</div>";
+            }
          } else {
-            return $LANG['setup'][303];
+            if ($messageafterredirect) {
+               addMessageAfterRedirect($LANG['setup'][303]);
+            }
+            else {
+               return $LANG['setup'][303];
+            }
          }
       }
    }

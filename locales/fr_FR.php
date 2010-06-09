@@ -1200,7 +1200,7 @@ $LANG['Menu'][5]  = "Tickets";
 $LANG['Menu'][6]  = "Rapports";
 
 $LANG['Menu'][11] = "Préférences";
-$LANG['Menu'][12] = "Sauvegarde";
+$LANG['Menu'][12] = "Maintenance";
 $LANG['Menu'][13] = "Statistiques";
 $LANG['Menu'][14] = "Utilisateurs";
 $LANG['Menu'][15] = "Administration";

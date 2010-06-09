@@ -54,15 +54,16 @@ class Config extends CommonDBTM {
    function defineTabs($options=array()){
       global $LANG;
 
-      $tabs[1] = $LANG['setup'][70];   // Main
-      $tabs[2] = $LANG['setup'][119];  // Display
-      $tabs[3] = $LANG['setup'][6];    // Prefs
-      $tabs[4] = $LANG['login'][10]; //Authentication
-      $tabs[5] = $LANG['setup'][184];  // Restrict
-      $tabs[6] = $LANG['title'][24];   // Helpdesk
-      $tabs[7] = $LANG['connect'][0];  // Conection
-      $tabs[8] = $LANG['setup'][800];  // Slave
-      $tabs[9] = $LANG['setup'][720];  // SysInfo
+      $tabs[1]  = $LANG['setup'][70];   // Main
+      $tabs[2]  = $LANG['setup'][119];  // Display
+      $tabs[3]  = $LANG['setup'][6];    // Prefs
+      $tabs[4]  = $LANG['login'][10]; //Authentication
+      $tabs[5]  = $LANG['setup'][184];  // Restrict
+      $tabs[6]  = $LANG['title'][24];   // Helpdesk
+      $tabs[7]  = $LANG['connect'][0];  // Conection
+      $tabs[8]  = $LANG['setup'][800];  // Slave
+      $tabs[9]  = $LANG['setup'][720];  // SysInfo
+      $tabs[10] = $LANG['install'][4]; //Look for updates
       return $tabs;
    }
 
@@ -147,14 +148,14 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormMain($target) {
+   function showFormMain() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
@@ -232,22 +233,6 @@ class Config extends CommonDBTM {
       echo "</td><td colspan='2'></td>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['setup'][306] . "</strong></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][401] . " </td>";
-      echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
-      echo "</td>";
-      echo "<td class='center'>" . $LANG['setup'][402] . " </td>";
-      echo "<td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\">";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][403] . " </td>";
-      echo "<td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\">";
-      echo "</td>";
-      echo "<td class='center'>" . $LANG['setup'][404] . " </td>";
-      echo "<td><input type=\"password\" name=\"proxy_password\" value=\"\"  autocomplete='off'></td></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['rulesengine'][77] . "</strong></td></tr>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['rulesengine'][86] . " </td><td>";
       Dropdown::show('SoftwareCategory',
@@ -271,14 +256,14 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormDisplay($target) {
+   function showFormDisplay() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -365,14 +350,14 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormRestrict($target) {
+   function showFormRestrict() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -425,14 +410,14 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormAuthentication($target) {
+   function showFormAuthentication() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -466,14 +451,14 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormConnection($target) {
+   function showFormConnection() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -535,14 +520,14 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormDBSlave($target) {
+   function showFormDBSlave() {
       global $DB, $LANG, $CFG_GLPI, $DBSlave;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -605,14 +590,14 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormHelpdesk($target) {
+   function showFormHelpdesk() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -730,7 +715,45 @@ class Config extends CommonDBTM {
       echo "</form>";
    }
 
+   function showFormUpdate() {
+      global $DB, $LANG, $CFG_GLPI;
+
+      if (!haveRight("config","r")) {
+         return false;
+      }
+
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
+      echo "<div class='center' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
+      echo "<strong>" . $LANG['setup'][306] . "</strong></td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][401] . " </td>";
+      echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
+      echo "</td>";
+      echo "<td class='center'>" . $LANG['setup'][402] . " </td>";
+      echo "<td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\">";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][403] . " </td>";
+      echo "<td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\">";
+      echo "</td>";
+      echo "<td class='center'>" . $LANG['setup'][404] . " </td>";
+      echo "<td><input type=\"password\" name=\"proxy_password\" value=\"\"  autocomplete='off'></td></tr>";
+
+
+      echo "<tr class='tab_bg_2'><td colspan='7' class='center'>";
+      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
+      echo "<input type='submit' name='update' class='submit' value=\"" .
+             $LANG['buttons'][2] . "\"></td></tr></table>";
+
+      echo "</div>";
+      echo "</form>";
+   }
+
    /**
+
     * Print the config form for default user prefs
     *
     *@param $target filename : where to go when done.
@@ -739,7 +762,7 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormUserPrefs($target,$data=array()) {
+   function showFormUserPrefs($data=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       $oncentral=($_SESSION["glpiactiveprofile"]["interface"]=="central");
@@ -748,7 +771,7 @@ class Config extends CommonDBTM {
          $userpref=true;
       }
 
-      echo "<form name='form' action=\"$target\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";

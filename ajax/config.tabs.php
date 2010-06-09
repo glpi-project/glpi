@@ -48,53 +48,57 @@ $config = new Config();
 
 switch($_REQUEST['glpi_tab']) {
    case -1 :
-      $config->showFormMain($_POST['target']);
-      $config->showFormDisplay($_POST['target']);
-      $config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
-      $config->showFormAuthentication($_POST['target']);
-      $config->showFormRestrict($_POST['target']);
-      $config->showFormHelpdesk($_POST['target']);
-      $config->showFormConnection($_POST['target']);
-      $config->showFormDBSlave($_POST['target']);
+      $config->showFormMain();
+      $config->showFormDisplay();
+      $config->showFormUserPrefs($CFG_GLPI);
+      $config->showFormAuthentication();
+      $config->showFormRestrict();
+      $config->showFormHelpdesk();
+      $config->showFormConnection();
+      $config->showFormDBSlave();
       $config->showSystemInformations();
       Plugin::displayAction($config,$_REQUEST['glpi_tab']);
       break;
 
    case 2 :
-      $config->showFormDisplay($_POST['target']);
+      $config->showFormDisplay();
       break;
 
    case 3 :
-      $config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
+      $config->showFormUserPrefs($CFG_GLPI);
       break;
 
    case 4 :
-      $config->showFormAuthentication($_POST['target']);
+      $config->showFormAuthentication();
       break;
 
    case 5 :
-      $config->showFormRestrict($_POST['target']);
+      $config->showFormRestrict();
       break;
 
    case 6 :
-      $config->showFormHelpdesk($_POST['target']);
+      $config->showFormHelpdesk();
       break;
 
    case 7 :
-      $config->showFormConnection($_POST['target']);
+      $config->showFormConnection();
       break;
 
    case 8 :
-      $config->showFormDBSlave($_POST['target']);
+      $config->showFormDBSlave();
       break;
 
    case 9 :
       $config->showSystemInformations();
       break;
 
+   case 10 :
+      $config->showFormUpdate();
+      break;
+
    default :
       if (!Plugin::displayAction($config,$_REQUEST['glpi_tab'])) {
-         $config->showFormMain($_POST['target']);
+         $config->showFormMain();
       }
 }
 

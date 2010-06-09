@@ -42,15 +42,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("config", "w");
 $config = new Config();
 
-
 if (!empty ($_POST["update"])) {
    $config->update($_POST);
    if (isset($_POST["use_ocs_mode"])
        && $_POST["use_ocs_mode"]
        && !$CFG_GLPI["use_ocs_mode"]) {
-      glpi_header($CFG_GLPI["root_doc"] ."/front/ocsserver.php");
+      glpi_header(getItemTypeSearchURL('OcsServer'));
    } else {
-      glpi_header($CFG_GLPI["root_doc"] ."/front/config.form.php");
+      glpi_header(getItemTypeFormURL('Config'));
    }
 }
 
