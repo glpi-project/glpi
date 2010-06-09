@@ -63,6 +63,7 @@ if (!isCommandLine()) {
    CronTask::launch(CronTask::MODE_INTERNAL);
 
 } else if (isset($_SERVER['argc']) && $_SERVER['argc']>1){
+   // TODO Warning : command line is cron.php 1 2 3 4 : will produce cron.php 10 !
    // Parse command line options
    for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
       if (is_numeric($_SERVER['argv'][$i])) {
