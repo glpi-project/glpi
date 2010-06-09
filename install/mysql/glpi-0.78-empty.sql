@@ -538,8 +538,6 @@ CREATE TABLE `glpi_computertypes` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_computertypes` VALUES ('1','Serveur',NULL);
-
 ### Dump table glpi_configs
 
 DROP TABLE IF EXISTS `glpi_configs`;
@@ -872,9 +870,6 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasks_id` (`crontasks_id`),
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_crontasklogs` VALUES ('1','5','0','2010-05-06 09:31:02','0','0','0','Run mode : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','5','1','2010-05-06 09:31:02','2','0.00235987','0','Ended task, nothing to do');
 
 ### Dump table glpi_crontasks
 
@@ -1527,8 +1522,6 @@ CREATE TABLE `glpi_events` (
   KEY `level` (`level`),
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-05-06 09:31:04','login','3','glpi IP connection: 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -3784,9 +3777,6 @@ CREATE TABLE `glpi_ticketsolutiontypes` (
   PRIMARY KEY  (`id`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_ticketsolutiontypes` VALUES ('1','Closed (not solved)',NULL);
-INSERT INTO `glpi_ticketsolutiontypes` VALUES ('2','Closed (solved)',NULL);
 
 ### Dump table glpi_tickettasks
 
