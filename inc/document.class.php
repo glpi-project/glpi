@@ -109,16 +109,20 @@ class Document extends CommonDBTM {
          $input["users_id"] = getLoginUserID();
       }
 
-      if (isset($input["item"]) && isset($input["itemtype"])
-          && class_exists($input["itemtype"]) && $input["item"]>0) {
+      // Create a doc only selecting a file from a item form
+      $create_from_item=false;
+
+      if (isset($input["items_id"]) && isset($input["itemtype"])
+          && class_exists($input["itemtype"]) && $input["items_id"]>0) {
          $item=new $input["itemtype"]();
          $typename = $item->getTypeName();
          $name=NOT_AVAILABLE;
-         if ($item->getFromDB($input["item"])) {
+         if ($item->getFromDB($input["items_id"])) {
             $name=$item->getNameID();
          }
          $input["name"]=addslashes(resume_text($LANG['document'][18]." $typename - ".
                                                $name,200));
+         $create_from_item=true;
       }
 
       if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
@@ -127,9 +131,12 @@ class Document extends CommonDBTM {
 
       } else if (isset($_FILES) && isset($_FILES['filename'])) {
          // Move doc send with form
-         $this->uploadDocument($input,$_FILES['filename']);
+         $upload_result=$this->uploadDocument($input,$_FILES['filename']);
+         // Upload failed : do not create document
+         if ($create_from_item && !$upload_result) {
+            return false;
+         }
       }
-
       // Default document name
       if ((!isset($input['name']) || empty($input['name']))
           && isset($input['filename'])){
