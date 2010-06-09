@@ -480,7 +480,7 @@ class TicketValidation  extends CommonDBChild {
                            $LANG['validation'][6]);
          $nb_colonnes = count($colonnes);
 
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='".$nb_colonnes."'>".$LANG['validation'][7]."</th></tr>";
 
          echo "<tr>";
