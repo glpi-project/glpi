@@ -763,11 +763,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    $config=array();
    $addconfig=array();
    $menu['config']['title']=$LANG['common'][12];
-   $menu['config']['default']='/front/setup.php';
 
    if (haveRight("dropdown","r") || haveRight("entity_dropdown","r")) {
       $menu['config']['content']['dropdowns']['title']=$LANG['setup'][0];
       $menu['config']['content']['dropdowns']['page']='/front/dropdown.php';
+      $menu['config']['default']='/front/dropdown.php';
 
       if ($item=="dropdowns") {
          $dps = Dropdown::getStandardDropdownItemTypes();

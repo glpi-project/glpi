@@ -36,7 +36,11 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-//logInFile('php-errors',"requete0=".print_r($_REQUEST,true)."\n",true);
+if (isset($_GET['action']) && $_GET['action'] == 'check_version') {
+   checkRight("check_update","r");
+   checkNewVersionAvailable(0,true);
+   glpi_header($_SERVER['HTTP_REFERER']);
+}
 
 checkRight("backup","w");
 
@@ -543,6 +547,13 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
       unlink($path."/".$_GET["delfile"]);
       echo "<div class ='center'>".$filename." ".$LANG['common'][28]."</div>";
    }
+}
+
+if (haveRight("check_update","r")) {
+   echo "<div class='center'><table class='tab_glpi'><tr><td>";
+   echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>";
+   echo "<a href=\"backup.php?action=check_version\" class='icon_consol b'>".$LANG['setup'][300]."</a>";
+   echo "</td></tr></table></div><br>";
 }
 
 // Title backup
