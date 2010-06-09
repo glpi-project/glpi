@@ -146,6 +146,9 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "</td>";
       echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
       echo "</td></tr>";
+      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][175] . "</td>";
+      echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
+      echo "</td></tr>";
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][234] . "</td>";
       echo "<td><input type='text' name='smtp_username' size='40' value=\"" .
                  $CFG_GLPI["smtp_username"] . "\"></td></tr>";
