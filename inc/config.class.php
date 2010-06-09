@@ -195,29 +195,20 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'> " . $LANG['setup'][186] . " </td><td>";
-      Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
-      echo "</td>";
       echo "<td class='center'> " . $LANG['setup'][185] . " </td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td></tr>";
+      echo "</td><td colspan='2'></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][115] . "</td><td>";
-      Dropdown::showInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
-      echo "</td>";
-      echo "<td class='center'>" . $LANG['setup'][221] . "</td><td>";
-      showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
-      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][360] . "</td><td>";
       $tab=array(0=>$LANG['common'][59],1=>$LANG['entity'][8]);
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
                         array('value' => $CFG_GLPI["use_autoname_by_entity"]));
       echo "</td>";
-      echo "<td class='center'>&nbsp;</td><td>&nbsp;";
+      echo "<td class='center'>" . $LANG['setup'][221] . "</td><td>";
+      showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
@@ -236,6 +227,9 @@ class Config extends CommonDBTM {
              $LANG['financial'][80] . " </option>";
       echo "</select>";
       echo "</td></tr>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][115] . "</td><td>";
+      Dropdown::showInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
+      echo "</td><td colspan='2'></td>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['setup'][306] . "</strong></td></tr>";
@@ -294,33 +288,15 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][149] . " </td><td>";
       Dropdown::showInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
       echo "</td>";
-      echo "<td class='center'>" . $LANG['setup'][148] . "</td><td>";
-      echo "<select name='time_step'>";
-      $steps = array (5,
-                     10,
-                     15,
-                     20,
-                     30,
-                     60);
-      foreach ($steps as $step) {
-         echo "<option value='$step'" . ($CFG_GLPI["time_step"] == $step ? " selected " : "") . ">";
-         echo "$step</option>";
-      }
-      echo "</select>&nbsp;" . $LANG['job'][22];
+      echo "<td class='center'>" . $LANG['setup'][47]."</td><td>";
+      Dropdown::showFromArray("default_graphtype",
+                              array('png'=>'PNG','svg'=>'SVG'),
+                              array('value'=>$CFG_GLPI["default_graphtype"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][112] . "</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
       echo "</td>";
-      echo "<td class='center'>" . $LANG['setup'][223] . "</td><td>";
-      Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
-      echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
-      echo " </td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . $LANG['setup'][111]." <br> ".$LANG['common'][58]."</td><td>";
-      Dropdown::showInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
       echo "</td><td class='center'>".$LANG['setup'][10]."</td><td>&nbsp;";
       $values = array (REALNAME_BEFORE=>$LANG['common'][48]." ".$LANG['common'][43],
                        FIRSTNAME_BEFORE=>$LANG['common'][43]." ".$LANG['common'][48]);
@@ -330,13 +306,12 @@ class Config extends CommonDBTM {
          echo "$val</option>";
       }
       echo "</select>";
-      echo "</td></tr>";
+      echo " </td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . $LANG['setup'][47]."</td><td>";
-      Dropdown::showFromArray("default_graphtype",array('png'=>'PNG','svg'=>'SVG'),array('value'=>$CFG_GLPI["default_graphtype"]));
-      echo "</td><td class='center' colspan='2'>&nbsp;";
-      echo "</td></tr>";
+      echo "<td class='center'>" . $LANG['setup'][111]." <br> ".$LANG['common'][58]."</td><td>";
+      Dropdown::showInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
+      echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['setup'][6] . "</strong></td></tr>";
@@ -471,7 +446,10 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['ldap'][45] . " </td><td>";
       AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
       echo "</td>";
-      echo "<td class='center' colspan='2'></td></tr>";
+      echo "<td class='center'> " . $LANG['setup'][186] . " </td><td>";
+      Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
@@ -681,6 +659,17 @@ class Config extends CommonDBTM {
              $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".
              $LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>" . $LANG['setup'][223] . "</td><td>";
+      Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
+      echo "&nbsp;->&nbsp;";
+      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
+      echo "</td><td class='center'>" . $LANG['setup'][148] . "</td><td>";
+      Dropdown::showInteger('time_step',$CFG_GLPI["time_step"],30,60,30,array(5, 10, 15,20));
+      echo "&nbsp;" . $LANG['job'][22];
+      echo "</td></tr>";
+
 
       echo "</table><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>" . $LANG['help'][1];

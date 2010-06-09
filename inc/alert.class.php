@@ -126,15 +126,12 @@ class Alert extends CommonDBTM {
 
    static function dropdownIntegerNever($name,$value,$options=array()) {
       global $LANG;
-      $p['min'] = 0;
+      $p['min'] = $LANG['setup'][307];
       $p['max'] = 100;
       $p['step'] = 1;
       $p['toadd'] = array();
       if (isset($options['inherit_global']) && $options['inherit_global']){
          $p['toadd'][-1] = $LANG['setup'][731];
-      }
-      if (isset($options['never']) && $options['never']) {
-         $p['toadd'][0] = $LANG['setup'][307];
       }
 
       foreach ($options as $key=>$val) {
