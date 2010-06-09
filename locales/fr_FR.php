@@ -748,9 +748,7 @@ $LANG['install'][40]  = "Veuillez sélectionner la base de données à mettre à
 $LANG['install'][41]  = "Impossible d'utiliser la base :";
 
 $LANG['install'][43]  = "OK - La base a bien été initialisée";
-$LANG['install'][44]  = "Des valeurs par défaut ont été entrées, n'hésitez pas à supprimer ces dernières";
 
-$LANG['install'][46]  = "A la première connexion vous pouvez utiliser l'identifiant 'glpi' et le mot de passe 'glpi' pour accéder à l'application avec des droits administrateur";
 $LANG['install'][47]  = "Impossible d'écrire le fichier de configuration de votre base de données";
 $LANG['install'][48]  = "Erreur lors de la création de la base !";
 $LANG['install'][49]  = "Vous n'avez pas sélectionné de base de données !";
