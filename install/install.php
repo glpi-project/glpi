@@ -116,6 +116,8 @@ function acceptLicence() {
 	readfile("../COPYING.txt");
 	echo "</textarea>";
 
+   echo "<br><a target='_blank' href='http://www.gnu.org/licenses/old-licenses/gpl-2.0-translations.html'>".$LANG['install'][18]."</a>";
+
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<p>";
 	echo " <input type=\"radio\" name=\"install\" id=\"agree\" value=\"Licence\">";
@@ -170,7 +172,6 @@ function step1($update)
 	echo "</table>";
 	switch ($error) {
 		case 0 :
-			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\">";
@@ -207,7 +208,7 @@ function step1($update)
 function step2($update)
 {
 	global $LANG;
-	echo "<p class='center'>".$LANG['install'][28]."</p>";
+	echo "<h3>".$LANG['install'][28]."</h3>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\">";
 	echo "<fieldset><legend>".$LANG['install'][29]."</legend>";
@@ -291,6 +292,8 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	global $LANG;
 	//display the form to return to the previous step.
 
+   echo "<h3>".$LANG['install'][24]."</h3>";
+
 	function prev_form($host,$user,$password) {
 		global $LANG;
 
@@ -348,8 +351,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			if (create_conn_file($host,$user,$password,$databasename)) {
 				fill_db();
 				echo "<p>".$LANG['install'][43]."</p>";
-				echo "<p>".$LANG['install'][44]."</p>";
-				echo "<p>".$LANG['install'][46]."</p>";
 				next_form();
 			}
 			else { // can't create config_db file
@@ -365,8 +366,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			if (create_conn_file($host,$user,$password,$newdatabasename)){
 				fill_db();
 				echo "<p>".$LANG['install'][43]."</p>";
-				echo "<p>".$LANG['install'][44]."</p>";
-				echo "<p>".$LANG['install'][46]."</p>";
 				next_form();
 			} else { // can't create config_db file
 				echo "<p>".$LANG['install'][47]."</p>";
@@ -380,8 +379,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				if (mysql_select_db($newdatabasename, $link)&&create_conn_file($host,$user,$password,$newdatabasename)) {
 					fill_db();
 					echo "<p>".$LANG['install'][43]."</p>";
-					echo "<p>".$LANG['install'][44]."</p>";
-					echo "<p>".$LANG['install'][46]."</p>";
 					next_form();
 
 				}
