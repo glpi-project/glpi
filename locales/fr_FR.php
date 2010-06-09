@@ -967,7 +967,7 @@ $LANG['ldap'][48] = "Utilisateur supprimé de l'annuaire";
 $LANG['links'][1] = "Lien ou Nom du fichier";
 
 $LANG['links'][4] = "Types de matériel associés";
-$LANG['links'][6] = "Tags valides";
+$LANG['links'][6] = "Balises valides";
 $LANG['links'][7] = "Aucun lien défini";
 $LANG['links'][9] = "Contenu du fichier";
 
@@ -1182,9 +1182,9 @@ $LANG['mailing'][134] = "Mise à jour suivi";
 $LANG['mailing'][135] = "Suppression suivi";
 $LANG['mailing'][136] = "Expiration réservation";
 $LANG['mailing'][137] = "Utilisateur du matériel";
-$LANG['mailing'][138] = "Liste des tags disponibles";
+$LANG['mailing'][138] = "Liste des balises disponibles";
 $LANG['mailing'][139] = "Libellé";
-$LANG['mailing'][140] = "TAG";
+$LANG['mailing'][140] = "Balise";
 $LANG['mailing'][141] = "Suivis";
 $LANG['mailing'][142] = "Tâches";
 $LANG['mailing'][143] = "Validations";
@@ -1652,6 +1652,7 @@ $LANG['rulesengine'][144]="Entité depuis profil de l'utilisateur";
 $LANG['rulesengine'][145]="Utilisateur possédant un seul profil";
 $LANG['rulesengine'][146]="Utilisateur possèdant le profil";
 $LANG['rulesengine'][147]="Utilisateur possèdant une seule fois le profil";
+$LANG['rulesengine'][148]="Domaine de messagerie connu";
 
 
 $LANG['search'][0]="Recherche";
