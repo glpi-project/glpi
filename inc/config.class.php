@@ -727,7 +727,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['setup'][306] . "</strong></td></tr>";
+      echo "<strong>" . $LANG['setup'][306] .' : '.$LANG['setup'][400]. "</strong></td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][401] . " </td>";
       echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
