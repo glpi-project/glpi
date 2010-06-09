@@ -722,13 +722,13 @@ $LANG['install'][14]  = "Le support des sessions est opérationnel - Parfait !";
 $LANG['install'][15]  = "Vérifiez que le support des sessions est bien activé dans votre php.ini";
 $LANG['install'][16]  = "Test d'écriture de fichiers dump";
 $LANG['install'][17]  = "Le fichier n'a pas pu être créé.";
-
+$LANG['install'][18]  = "Des traductions non officielles sont également disponibles";
 $LANG['install'][19]  = "Le fichier a été créé mais n'a pas pu être supprimé.";
 $LANG['install'][20]  = "Un fichier et un dossier ont été créés et supprimés - Parfait !";
 $LANG['install'][21]  = "Test d'écriture de fichiers documents";
 $LANG['install'][22]  = "Un fichier a été créé - Parfait !";
 $LANG['install'][23]  = "Test d'écriture du fichier de configuration";
-
+$LANG['install'][24]  = "Initialisation de la base de données.";
 $LANG['install'][25]  = "Continuer ?";
 $LANG['install'][26]  = "Continuer";
 $LANG['install'][27]  = "Réessayer";
@@ -764,9 +764,9 @@ $LANG['install'][55]  = "L'installation est terminée";
 $LANG['install'][57]  = "Les identifiants et mots de passe par défaut sont :";
 $LANG['install'][58]  = "glpi/glpi pour le compte administrateur";
 $LANG['install'][59]  = "tech/tech pour le compte technicien";
-$LANG['install'][60]  = "normal pour le compte normal";
-$LANG['install'][61]  = "post-only/post-only pour le compte postonly";
-$LANG['install'][62]  = "Vous pouvez supprimer ou modifier ces comptes ainsi que les premières entrées dans la base de données.";
+$LANG['install'][60]  = "normal/normal pour le compte normal";
+$LANG['install'][61]  = "post-only/postonly pour le compte postonly";
+$LANG['install'][62]  = "Vous pouvez supprimer ou modifier ces comptes ainsi que les données initiales.";
 
 $LANG['install'][64]  = "Utiliser GLPI";
 $LANG['install'][65]  = "Test sur l'extension magic_quotes_sybase";
