@@ -917,7 +917,7 @@ $LANG['knowbase'][29] = "Sujets les plus récents";
 $LANG['knowbase'][30] = "Sujets les plus populaires";
 
 
-$LANG['ldap'][0]  = "Import en masse d'utilisateurs depuis un annuaire";
+$LANG['ldap'][0]  = "Import en masse d'utilisateurs depuis un annuaire LDAP";
 $LANG['ldap'][1]  = "Synchronisation des utilisateurs déjà importés";
 $LANG['ldap'][2]  = "Importation de nouveaux utilisateurs";
 $LANG['ldap'][3]  = "Pas d'utilisateurs à importer";
@@ -929,17 +929,17 @@ $LANG['ldap'][7]  = "Aucun annuaire LDAP défini dans GLPI";
 $LANG['ldap'][9]  = "Test de connexion à l'annuaire LDAP";
 
 $LANG['ldap'][12] = "Synchronisation";
-$LANG['ldap'][13] = "dans LDAP";
+$LANG['ldap'][13] = "dans l'annuaire LDAP";
 $LANG['ldap'][14] = "dans GLPI";
 $LANG['ldap'][15] = "Synchroniser";
 $LANG['ldap'][16] = "Préconfiguration";
 $LANG['ldap'][17] = "Active Directory";
-$LANG['ldap'][18] = "Liste des réplicats LDAP";
+$LANG['ldap'][18] = "Liste des réplicats d'annuaires LDAP";
 $LANG['ldap'][19] = "Réplicat";
-$LANG['ldap'][20] = "Ajout d'un réplicat LDAP";
+$LANG['ldap'][20] = "Ajout d'un réplicat d'annuaire LDAP";
 $LANG['ldap'][21] = "Serveur principal";
 $LANG['ldap'][22] = "Réplicat(s)";
-$LANG['ldap'][23] = "Import en masse de groupes depuis un annuaire";
+$LANG['ldap'][23] = "Import en masse de groupes depuis un annuaire LDAP";
 $LANG['ldap'][24] = "Importation de nouveaux groupes";
 $LANG['ldap'][25] = "Pas de groupes à importer";
 
@@ -958,10 +958,10 @@ $LANG['ldap'][41] = "Changer";
 $LANG['ldap'][42] = "Aucun annuaire sélectionné";
 $LANG['ldap'][43] = "Pas d'utilisateurs à synchroniser";
 $LANG['ldap'][44] = "Serveur par défaut";
-$LANG['ldap'][45] = "Action lorsqu'un utilisateur est supprimé de l'annuaire";
+$LANG['ldap'][45] = "Action lorsqu'un utilisateur est supprimé de l'annuaire LDAP";
 $LANG['ldap'][46] = "Retirer les habilitations";
 $LANG['ldap'][47] = "Mettre à la corbeille";
-$LANG['ldap'][48] = "Utilisateur supprimé de l'annuaire";
+$LANG['ldap'][48] = "Utilisateur supprimé de l'annuaire LDAP";
 
 $LANG['links'][1] = "Lien ou Nom du fichier";
 
@@ -1045,7 +1045,7 @@ $LANG['log'][100] = "suppression d'un élément";
 
 $LANG['login'][0]  = "Dernière connexion";
 $LANG['login'][1]  = "Se reconnecter";
-$LANG['login'][2]  = "LDAP";
+$LANG['login'][2]  = "Annuaire LDAP";
 $LANG['login'][3]  = "IMAP/POP";
 $LANG['login'][4]  = "CAS";
 $LANG['login'][5]  = "Accès refusé";
@@ -1073,7 +1073,7 @@ $LANG['login'][26] = "Vous devez activer la fonction JavaScript de votre navigat
 $LANG['login'][27] = "Vous devez autoriser les cookies pour accéder à cette application";
 
 $LANG['login'][30] = "Changement de la méthode d'authentification";
-$LANG['login'][31] = "Authentification sur l'annuaire";
+$LANG['login'][31] = "Authentification sur un annuaire LDAP";
 $LANG['login'][32] = "Authentification sur la base GLPI";
 $LANG['login'][33] = "Authentification sur le serveur POP/IMAP";
 
@@ -1672,7 +1672,7 @@ $LANG['search'][20]="Supprimer un critère global de recherche";
 
 $LANG['setup'][0]="Intitulés";
 $LANG['setup'][2]="Ajouter utilisateur...";
-$LANG['setup'][3]="Liaison LDAP";
+$LANG['setup'][3]="Liaison annuaire LDAP";
 $LANG['setup'][4]="Types d'ordinateurs";
 $LANG['setup'][5]="Système d'exploitation";
 $LANG['setup'][6]="Personnalisation";
@@ -1780,12 +1780,12 @@ $LANG['setup'][162]="IMAP/POP configuration";
 $LANG['setup'][164]="Nom domaine IMAP/POP <br>(email de type identifiant@domaine)";
 $LANG['setup'][165]="L'extension IMAP de votre parseur PHP n'est pas installée";
 $LANG['setup'][166]="Impossible d'utiliser IMAP/POP comme source de connexion externe";
-$LANG['setup'][167]="Liaisons GLPI/LDAP";
+$LANG['setup'][167]="Liaisons GLPI/Annuaire LDAP";
 $LANG['setup'][168]="Options de connexion";
 $LANG['setup'][169]="Dossier des messages (optionnel, souvent INBOX)";
 $LANG['setup'][170]="Chaîne de connexion";
 $LANG['setup'][171]="Port (optionnel)";
-$LANG['setup'][172]="LDAP Port (default=389)";
+$LANG['setup'][172]="Port (par défaut 389)";
 $LANG['setup'][174]="Hôte CAS";
 $LANG['setup'][175]="Port";
 $LANG['setup'][176]="Répertoire de base (optionnel)";
@@ -1802,7 +1802,7 @@ $LANG['setup'][190]="Certificat x509";
 $LANG['setup'][191]="Attribut mail pour x509";
 $LANG['setup'][192]="Activé";
 $LANG['setup'][193]="Champ de stockage de l'identifiant dans la variable _SERVER";
-$LANG['setup'][194]="Récupération d'informations complémentaires via annuaire LDAP";
+$LANG['setup'][194]="Récupération d'informations complémentaires via un annuaire LDAP";
 $LANG['setup'][195]="Conserver le statut";
 $LANG['setup'][196]="Effacer le statut";
 $LANG['setup'][197]="Prendre le statut de l'ordinateur";
@@ -1825,7 +1825,7 @@ $LANG['setup'][227]="Addresse web de l'application";
 $LANG['setup'][228]="Champ de l'identifiant";
 $LANG['setup'][229]="Tester l'envoi de mail vers l'administrateur";
 $LANG['setup'][231]="Mode d'envoi des mails";
-$LANG['setup'][232]="Hôte(s) SMTP[:Port] (séparateur ;)";
+$LANG['setup'][232]="Hôte SMTP";
 $LANG['setup'][234]="Identifiant (login) SMTP (optionnel)";
 $LANG['setup'][235]="Mot de passe SMTP (optionnel)";
 $LANG['setup'][236]="Ancien technicien chargé du ticket";
@@ -1884,6 +1884,7 @@ $LANG['setup'][350]="Liaison avec les matériels pour la création de tickets";
 $LANG['setup'][351]="Tous les matériels";
 $LANG['setup'][352]="Matériels associables à un ticket";
 $LANG['setup'][360]="Champs automatiques (marqués par *)";
+$LANG['setup'][400]="Configuration du proxy";
 $LANG['setup'][401]="Adresse Proxy";
 $LANG['setup'][402]="Port Proxy";
 $LANG['setup'][403]="Utilisateur Proxy";
@@ -1906,7 +1907,7 @@ $LANG['setup'][609]="Ajout impossible. Le serveur OCS existe déjà.";
 $LANG['setup'][610]="Titre du ticket obligatoire";
 $LANG['setup'][611]="Contenu du ticket obligatoire";
 $LANG['setup'][612]="Catégorie du ticket obligatoire";
-$LANG['setup'][613]="Ajouter un utilisateur LDAP qui n'a pas d'habilitation";
+$LANG['setup'][613]="Ajouter un utilisateur d'un annuaire LDAP qui n'a pas d'habilitation";
 $LANG['setup'][614]="Modification du login impossible. Un utilisateur existe déjà.";
 $LANG['setup'][615]="Cycle de vie des tickets";
 $LANG['setup'][616]="Depuis \ Vers";
@@ -1915,7 +1916,7 @@ $LANG['setup'][620]="Liaison";
 
 $LANG['setup'][621]="Filtre de recherche des entités";
 $LANG['setup'][622]="Attribut représentant l'entité";
-$LANG['setup'][623]="Importation des entités depuis LDAP";
+$LANG['setup'][623]="Importation des entités depuis un annuaire LDAP";
 
 $LANG['setup'][650]="PHP";
 $LANG['setup'][651]="SMTP";
