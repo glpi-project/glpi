@@ -73,7 +73,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
          $this->Mailer = "smtp";
-         $this->Host = $CFG_GLPI['smtp_host'];
+         $this->Host = $CFG_GLPI['smtp_host'].':'.$CFG_GLPI['smtp_port'];
          if ($CFG_GLPI['smtp_username'] != '') {
             $this->SMTPAuth = true;
             $this->Username = $CFG_GLPI['smtp_username'];

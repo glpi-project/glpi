@@ -2857,6 +2857,18 @@ function update0723to078($output='HTML') {
       }
 
       $ADDTODISPLAYPREF['NotificationTemplate']=array(4,16);
+
+      //There was a problem with GLPI < 0.78 : smtp_port field wans'nt used : migrate it
+      $query = "SELECT `smtp_host` FROM `glpi_configs` WHERE `id`='1'";
+      $result = $DB->query($query);
+      $host = $DB->result($result,0,'smtp_host');
+      $results = array();
+      preg_match("/(.*):([0-9]*)/",$host,$results);
+      if (!empty($results)) {
+         $query = "UPDATE `glpi_configs` SET `smtp_host`='".$results[1]."' ,
+                                             `smtp_port`='".$results[2]."' WHERE `id`='1'";
+         $DB->query($query);
+      }
    }
 
    if (!TableExists('glpi_notificationtemplatetranslations')) {
