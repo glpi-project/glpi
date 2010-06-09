@@ -655,6 +655,7 @@ $LANG['financial'][106] = "Express";
 $LANG['financial'][107] = "Reconduction";
 $LANG['financial'][108] = "Total dépensé sur le budget";
 $LANG['financial'][109] = "Total restant sur le budget";
+$LANG['financial'][110]  = "Budgets";
 
 
 $LANG['gmt'][0] = "GMT";

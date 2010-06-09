@@ -388,7 +388,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    }
 
    if (haveRight("budget","r")) {
-      $menu['financial']['content']['budget']['title']=$LANG['financial'][87];
+      $menu['financial']['content']['budget']['title']=$LANG['financial'][110];
       $menu['financial']['content']['budget']['shortcut']='n';
       $menu['financial']['content']['budget']['page']='/front/budget.php';
       $menu['financial']['content']['budget']['links']['search']='/front/budget.php';
