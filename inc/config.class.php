@@ -463,39 +463,39 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";
+      echo "<tr><th colspan='3'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";
       echo "</tr>";
 
       echo "<tr><th>&nbsp;</th><th>" . $LANG['setup'][281] . "</th>";
-      echo "<th>" . $LANG['setup'][282] . "</th><th>&nbsp;</th></tr>";
+      echo "<th>" . $LANG['setup'][282] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][92] . " </td>";
       echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_contact_autoupdate", $CFG_GLPI["is_contact_autoupdate"]);
       echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_contact_autoclean", $CFG_GLPI["is_contact_autoclean"]);
-      echo "</td><td>&nbsp;</td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][34] . " </td>";
       echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_user_autoupdate", $CFG_GLPI["is_user_autoupdate"]);
       echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_user_autoclean", $CFG_GLPI["is_user_autoclean"]);
-      echo " </td><td>&nbsp;</td></tr>";
+      echo " </td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][35] . " </td>";
       echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_group_autoupdate", $CFG_GLPI["is_group_autoupdate"]);
       echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_group_autoclean", $CFG_GLPI["is_group_autoclean"]);
-      echo "</td><td>&nbsp;</td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['common'][15] . " </td>";
       echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_location_autoupdate", $CFG_GLPI["is_location_autoupdate"]);
       echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
       Dropdown::showYesNo("is_location_autoclean", $CFG_GLPI["is_location_autoclean"]);
-      echo " </td><td>&nbsp;</td></tr>";
+      echo " </td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['state'][0] . " </td><td>";
       State::dropdownBehaviour("state_autoupdate_mode", $LANG['setup'][197],
@@ -503,9 +503,9 @@ class Config extends CommonDBTM {
       echo "</td><td>";
       State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
                              $CFG_GLPI["state_autoclean_mode"]);
-      echo " </td><td>&nbsp;</td></tr>";
+      echo " </td></tr>";
 
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
+      echo "<tr class='tab_bg_2'><td colspan='3' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
@@ -555,14 +555,6 @@ class Config extends CommonDBTM {
          echo "<td class='center'>" . $LANG['install'][32] . "</td><td>";
          echo "<input type=\"password\" name=\"_dbreplicate_dbpassword\" value=\"" .
                 $DBSlave->dbpassword . "\">";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][704] . "</th></tr>";
-
-         echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][203] . " </td>";
-         echo "<td colspan='3'>";
-         echo "<input type=\"text\" size='50' name=\"dbreplicate_email\" value=\"" .
-                $CFG_GLPI["dbreplicate_email"] . "\">";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
