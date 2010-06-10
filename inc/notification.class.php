@@ -100,7 +100,9 @@ class Notification extends CommonDBTM {
       global $LANG;
 
       $tabs[1]  = $LANG['common'][12];
-      $tabs[12] = $LANG['title'][38];
+      if ($this->fields['id'] > 0) {
+         $tabs[12] = $LANG['title'][38];
+      }
 
       return $tabs;
    }
