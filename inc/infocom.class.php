@@ -647,7 +647,6 @@ class Infocom extends CommonDBTM {
          return false;
       }
 
-
       if (!$item) {
          echo "<div class='center'><br><br>".$LANG['financial'][85]."</div>";
       } else {
@@ -660,34 +659,35 @@ class Infocom extends CommonDBTM {
          }
 
          if (!strpos($_SERVER['PHP_SELF'],"infocoms-show")
-            && in_array($item->getType(),array('Software','CartridgeItem','ConsumableItem'))) {
+             && in_array($item->getType(),array('Software','CartridgeItem','ConsumableItem'))) {
             echo "<div class='center'>".$LANG['financial'][84]."</div>";
          }
          if (!$ic->getFromDBforDevice($item->getType(),$dev_ID)) {
-            //$input=array('entities_id'=>$entity);
-            $input=array('itemtype' => $item->getType(),
-                        'items_id' => $dev_ID,
+            $input=array('itemtype'   => $item->getType(),
+                        'items_id'    => $dev_ID,
                         'entities_id' => $item->getEntityID());
 
             if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
                echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
 
                echo "<table class='tab_cadre'><tr><th>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".$item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".
-                     $LANG['financial'][68]."</a></th></tr></table>";
+               echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".$item->getType().
+                     "&amp;items_id=$dev_ID&amp;add=add'>".$LANG['financial'][68]."</a></th></tr></table>";
             }
          } else { // getFromDBforDevice
             echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
             $canedit = ($ic->can($ic->fields['id'], "w") && $withtemplate!=2);
             if ($canedit) {
-               echo "<form name='form_ic' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/infocom.form.php\">";
+               echo "<form name='form_ic' method='post' action='".$CFG_GLPI["root_doc"].
+                     "/front/infocom.form.php'>";
             }
             echo "<div class='center'>";
             echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],"infocoms-show")?"_fixe":"")."'>";
 
             echo "<tr><th colspan='4'>".$LANG['financial'][3]."</th></tr>";
 
-            echo "<tr class='tab_bg_1'><td>".$LANG['financial'][26]."&nbsp;:</td>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][26]."&nbsp;:</td>";
             echo "<td>";
             if ($withtemplate==2) {
                echo Dropdown::getDropdownName("glpi_suppliers",$ic->fields["suppliers_id"]);
@@ -697,131 +697,144 @@ class Infocom extends CommonDBTM {
                                     'entity' => $item->getEntityID()));
             }
             echo "</td>";
+            echo "<td>".$LANG['financial'][20]."*&nbsp;:</td>";
+            echo "<td>";
+            $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate==2),
+                                   'Infocom',$item->getEntityID());
+            autocompletionTextField($ic, "immo_number",array('value' => $objectName,
+                                                             'option' => $option));
+            echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][82]."&nbsp;:</td>";
             echo "<td >";
             autocompletionTextField($ic, "bill",array('option' => $option));
+            echo "</td>";
+            echo "<td>".$LANG['financial'][22]."&nbsp;:</td><td >";
+            if ($withtemplate == 2) {
+               echo Infocom::getAmortTypeName($ic->fields["sink_type"]);
+            } else {
+               Infocom::dropdownAmortType("sink_type",$ic->fields["sink_type"]);
+            }
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['financial'][18]."&nbsp;:</td>";
             echo "<td >";
             autocompletionTextField($ic, "order_number",array('option' => $option));
             echo "</td>";
+            echo "<td>".$LANG['financial'][23]."&nbsp;:</td><td>";
+            if ($withtemplate == 2) {
+               echo $ic->fields["sink_time"];
+            } else {
+               Dropdown::showInteger("sink_time",$ic->fields["sink_time"],0,15);
+            }
+            echo " ".$LANG['financial'][9]."</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][19]."&nbsp;:</td><td>";
             autocompletionTextField($ic, "delivery_number",array('option' => $option));
+            echo "</td>";
+            echo "<td>".$LANG['financial'][77]."&nbsp;:</td>";
+            echo "<td>";
+            autocompletionTextField($ic, "sink_coeff", array('size'   => 14,
+                                                             'option' => $option));
             echo "</td></tr>";
 
             // Can edit calendar ?
-            $editcalendar=($withtemplate!=2);
+            $editcalendar = ($withtemplate!=2);
 
-            echo "<tr class='tab_bg_1'><td>".$LANG['financial'][14]."&nbsp;:</td><td>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][14]."&nbsp;:</td><td>";
             showDateFormItem("buy_date",$ic->fields["buy_date"],true,$editcalendar);
             echo "</td>";
-            echo "<td>".$LANG['financial'][76]."&nbsp;:</td><td>";
-            showDateFormItem("use_date",$ic->fields["use_date"],true,$editcalendar);
+            //TCO
+            if (!in_array($item->getType(), array('Software', 'CartridgeItem', 'ConsumableItem',
+                                                  'Consumable', 'Cartridge', 'SoftwareLicense'))) {
+               echo "<td>".$LANG['financial'][89]."&nbsp;:</td><td>";
+               echo Infocom::showTco($item->getField('ticket_tco'),$ic->fields["value"]);
+            } else {
+                echo "<td colspan='2'>";
+            }
             echo "</td></tr>";
 
-               echo "<tr class='tab_bg_1'><td>".$LANG['financial'][15]."&nbsp;:</td><td>";
-               if ($withtemplate==2) {
-                  // -1 = life
-                  if ($ic->fields["warranty_duration"]==-1) {
-                     echo $LANG['financial'][2];
-                  } else {
-                     echo $ic->fields["warranty_duration"];
-                  }
-               } else {
-                  Dropdown::showInteger("warranty_duration",$ic->fields["warranty_duration"],0,120,1,
-                                 array(-1=>$LANG['financial'][2]));
-               }
-               if ($ic->fields["warranty_duration"]>=0) {
-                  echo " ".$LANG['financial'][57];
-               }
-               echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG['financial'][88]."&nbsp;";
-               echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
-               echo "</td>";
-
-               if (haveRight("budget","r")) {
-                  echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td >";
-                  Dropdown::show('Budget',
-                                 array('value'     => $ic->fields["budgets_id"],
-                                       'entity'    => $item->getEntityID(),
-                                       'comments'  => 0));
-                  echo "</td></tr>";
-               } else {
-                  echo "<td colspan='2'></td></tr>";
-               }
-
-               echo "<tr class='tab_bg_1'><td>".$LANG['financial'][78]."&nbsp;:</td>";
-               echo "<td><input type='text' $option name='warranty_value' value=\"".
-                        formatNumber($ic->fields["warranty_value"],true)."\" size='14'></td>";
-               echo "<td>".$LANG['financial'][16]."&nbsp;:</td>";
-               echo "<td >";
-               autocompletionTextField($ic, "warranty_info",array('option' => $option));
-               echo "</td></tr>";
-            echo "<tr class='tab_bg_1'><td>".$LANG['financial'][21]."&nbsp;:</td>";
-            echo "<td >
-                  <input type='text' name='value' $option value=\"".
-                  formatNumber($ic->fields["value"],true)."\" size='14'></td>";
-               echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
-               echo formatNumber(Infocom::Amort($ic->fields["sink_type"],$ic->fields["value"],
-                     $ic->fields["sink_time"],$ic->fields["sink_coeff"],$ic->fields["buy_date"],
-                     $ic->fields["use_date"],$date_tax,"n"));
-               echo "</td>";
-            echo "</tr>";
-
-               echo "<tr class='tab_bg_1'><td>".$LANG['financial'][20]."*&nbsp;:</td>";
-               echo "<td >";
-               $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate==2),
-                                    'Infocom',$item->getEntityID());
-               autocompletionTextField($ic, "immo_number",array('value' => $objectName,
-                                                               'option' => $option));
-               echo "</td>";
-               echo "<td>".$LANG['financial'][22]."&nbsp;:</td><td >";
-               if ($withtemplate==2) {
-                  echo Infocom::getAmortTypeName($ic->fields["sink_type"]);
-               } else {
-                  Infocom::dropdownAmortType("sink_type",$ic->fields["sink_type"]);
-               }
-               echo "</td></tr>";
-
-               echo "<tr class='tab_bg_1'><td>".$LANG['financial'][23]."&nbsp;:</td><td>";
-               if ($withtemplate==2) {
-                  echo $ic->fields["sink_time"];
-               } else {
-                  Dropdown::showInteger("sink_time",$ic->fields["sink_time"],0,15);
-               }
-               echo " ".$LANG['financial'][9];
-               echo "</td>";
-               echo "<td>".$LANG['financial'][77]."&nbsp;:</td>";
-               echo "<td >";
-               autocompletionTextField($ic, "sink_coeff",array('size'=>14,'option' => $option));
-               echo "</td></tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][76]."&nbsp;:</td><td>";
+            showDateFormItem("use_date",$ic->fields["use_date"],true,$editcalendar);
+            echo "</td>";
             //TCO
-            if (!in_array($item->getType(), array('Software','CartridgeItem','ConsumableItem',
-                                             'Consumable', 'Cartridge', 'SoftwareLicense'))) {
-
-               echo "<tr class='tab_bg_1'><td>";
-               echo $LANG['financial'][89]."&nbsp;:</td><td>";
-               echo Infocom::showTco($item->getField('ticket_tco'),$ic->fields["value"]);
-               echo "</td><td>".$LANG['financial'][90]."&nbsp;:</td><td>";
+            if (!in_array($item->getType(), array('Software', 'CartridgeItem', 'ConsumableItem',
+                                                  'Consumable', 'Cartridge', 'SoftwareLicense'))) {
+               echo "<td>".$LANG['financial'][90]."&nbsp;:</td><td>";
                echo Infocom::showTco($item->getField('ticket_tco'),$ic->fields["value"],$ic->fields["buy_date"]);
-               echo "</td></tr>";
+            } else {
+                echo "<td colspan='2'>";
             }
+            echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            if (haveRight("budget","r")) {
+               echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td >";
+               Dropdown::show('Budget', array('value'    => $ic->fields["budgets_id"],
+                                              'entity'   => $item->getEntityID(),
+                                              'comments' => 0));
+            } else {
+               echo "<td colspan='2'>";
+            }
+            echo "</td>";
+            echo "<td rowspan='7'>".$LANG['common'][25]."&nbsp;:</td>";
+            echo "<td rowspan='7' class='middle'>";
+            echo "<textarea cols='45' rows='11' name='comment' >".$ic->fields["comment"]."</textarea>";
+            echo "</td></tr>\n";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][21]."&nbsp;:</td>";
+            echo "<td><input type='text' name='value' $option value='".
+                  formatNumber($ic->fields["value"],true)."' size='14'></td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
+            echo formatNumber(Infocom::Amort($ic->fields["sink_type"], $ic->fields["value"],
+                              $ic->fields["sink_time"], $ic->fields["sink_coeff"],
+                              $ic->fields["buy_date"], $ic->fields["use_date"],$date_tax,"n"));
+            echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][15]."&nbsp;:</td><td>";
+            if ($withtemplate == 2) {
+               // -1 = life
+               if ($ic->fields["warranty_duration"] == -1) {
+                  echo $LANG['financial'][2];
+               } else {
+                  echo $ic->fields["warranty_duration"];
+               }
+            } else {
+               Dropdown::showInteger("warranty_duration", $ic->fields["warranty_duration"], 0, 120,
+                                     1, array(-1 => $LANG['financial'][2]));
+            }
+            if ($ic->fields["warranty_duration"] >= 0) {
+               echo " ".$LANG['financial'][57];
+            }
+            echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG['financial'][88]."&nbsp;";
+            echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
+            echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][78]."&nbsp;:</td>";
+            echo "<td><input type='text' $option name='warranty_value' value='".
+                     formatNumber($ic->fields["warranty_value"],true)."' size='14'></td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$LANG['financial'][16]."&nbsp;:</td>";
+            echo "<td >";
+            autocompletionTextField($ic, "warranty_info",array('option' => $option));
+            echo "</td></tr>";
 
             if ($CFG_GLPI['use_mailing']) {
                echo "<tr class='tab_bg_1'><td>".$LANG['setup'][247]."&nbsp;:</td>";
                echo "<td>";
                echo Infocom::dropdownAlert("alert",$ic->fields["alert"]);
-               echo "</td>";
-               echo "<td>&nbsp;</td>";
-               echo "<td >&nbsp;</td></tr>";
+               echo "</td></tr>";
             }
-            // commment
-            echo "<tr class='tab_bg_1'><td class='middle'>";
-            echo $LANG['common'][25]."&nbsp;:</td>";
-            echo "<td class='left' colspan='3'>
-                  <textarea cols='116' $option rows='2' name='comment' >".$ic->fields["comment"];
-            echo "</textarea>";
-            echo "</td></tr>";
 
             if ($canedit) {
                echo "<tr>";
