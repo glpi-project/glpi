@@ -40,7 +40,7 @@ class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown {
     * Constructor
    **/
    function __construct() {
-      $this->show_cache = true;
+      parent::__construct('RuleDictionnaryPrinterModel');
    }
 
    function getCriterias() {
