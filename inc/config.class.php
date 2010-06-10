@@ -298,9 +298,6 @@ class Config extends CommonDBTM {
       Dropdown::showInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['setup'][6] . "</strong></td></tr>";
-
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][118] . " </td>";
       echo "<td colspan='3' class='center'>";
       echo "<textarea cols='70' rows='4' name='text_login' >";
@@ -421,6 +418,8 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>" . $LANG['login'][10] . "</th></tr>";
+
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][124] . " </td><td>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
       echo "</td>";
@@ -770,7 +769,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][119] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . $LANG['setup'][6] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
