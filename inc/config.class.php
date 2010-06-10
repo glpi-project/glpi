@@ -587,33 +587,33 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-
-      echo "<tr><th colspan='4' class='center'>" . $LANG['job'][13]. "</th></tr>";
+      echo "<tr><th colspan='4'>" . $LANG['title'][24] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][219] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
-      echo "</td><td>" . $LANG['setup'][610] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("is_ticket_title_mandatory", $CFG_GLPI["is_ticket_title_mandatory"]);
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][148] . "&nbsp;:</td><td>";
+      Dropdown::showInteger('time_step',$CFG_GLPI["time_step"],30,60,30,array(5 => 5,
+                                                                              10 => 10,
+                                                                              15 => 15,
+                                                                              20 => 20));
+      echo "&nbsp;" . $LANG['job'][22];
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td> " .
+                           $LANG['mailgate'][7] . " (".$LANG['common'][44].")&nbsp;:</td><td>";
+      echo "<input type=\"text\" size='8' name=\"default_mailcollector_filesize_max\" value=\"" .
+             $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".
+             $LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][223] . "&nbsp;:</td><td>";
+      Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
+      echo "&nbsp;->&nbsp;";
+      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][611] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("is_ticket_content_mandatory", $CFG_GLPI["is_ticket_content_mandatory"]);
-      echo "</td><td>" . $LANG['setup'][612] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("is_ticket_category_mandatory", $CFG_GLPI["is_ticket_category_mandatory"]);
-      echo "</td></tr>";
-
-
-      echo "<tr><th colspan='4'>" . $LANG['title'][24] . "</th></tr>";
-
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][116] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
-      echo "</td>";
-      echo "<td>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('autoclose_delay', $CFG_GLPI['autoclose_delay'],0,99,1);
-      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['tracking'][37] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
       echo "</td>";
       echo "<td>" . $LANG['setup'][409] . "&nbsp;:</td><td>";
       Dropdown::show('DocumentCategory',
@@ -621,28 +621,30 @@ class Config extends CommonDBTM {
                            'name' => "documentcategories_id_forticket"));
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][610] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("is_ticket_title_mandatory", $CFG_GLPI["is_ticket_title_mandatory"]);
+      echo "</td>";
+      echo "<td> " . $LANG['setup'][116] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][612] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("is_ticket_category_mandatory", $CFG_GLPI["is_ticket_category_mandatory"]);
+      echo "</td>";
+      echo "<td>" . $LANG['entity'][18] . "&nbsp;:</td><td>";
+      Dropdown::showInteger("autoclose_delay", $CFG_GLPI['autoclose_delay'],0,99,1);
+      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+
       echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][608] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
                     $CFG_GLPI["default_software_helpdesk_visible"]);
       echo "</td>";
-      echo "<td> " . $LANG['mailgate'][7] . " (".$LANG['common'][44].")&nbsp;:</td><td>";
-      echo "<input type=\"text\" size='8' name=\"default_mailcollector_filesize_max\" value=\"" .
-             $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".
-             $LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
+      echo "<td>" . $LANG['tracking'][37] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
       echo "</td></tr>";
+      echo "</table><br>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][223] . "&nbsp;:</td><td>";
-      Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
-      echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
-      echo "</td><td>" . $LANG['setup'][148] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('time_step',$CFG_GLPI["time_step"],30,60,30,array(5, 10, 15,20));
-      echo "&nbsp;" . $LANG['job'][22];
-      echo "</td></tr>";
-
-
-      echo "</table><table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>" . $LANG['help'][1];
       echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 

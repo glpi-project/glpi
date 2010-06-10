@@ -1086,7 +1086,7 @@ $LANG['mailgate'][3]  = "Nombre de messages disponibles et récupérés";
 $LANG['mailgate'][4]  = "Extension mbstring indisponible. Attention aux jeux de caractères utilisés.";
 $LANG['mailgate'][5]  = "Fichier attaché invalide";
 $LANG['mailgate'][6]  = "Fichier attaché trop volumineux";
-$LANG['mailgate'][7]  = "Taille maximum des fichiers importés via les collecteurs mails (0 = pas d'import)";
+$LANG['mailgate'][7]  = "Taille maximum des fichiers importés par les collecteurs (0 = pas d'import)";
 $LANG['mailgate'][8]  = "octets";
 $LANG['mailgate'][9]  = "Votre email n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
 $LANG['mailgate'][10] = "Email rejeté";
