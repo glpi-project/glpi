@@ -592,21 +592,12 @@ class Cartridge extends CommonDBTM {
                        `glpi_cartridges`.`date_use` as date_use,
                        `glpi_cartridges`.`date_out` as date_out,
                        `glpi_cartridges`.`date_in` as date_in";
-      if ($old==0) {
-         $query.= " FROM `glpi_cartridges`, `glpi_cartridgeitems`
-                    WHERE `glpi_cartridges`.`date_out` IS NULL
-                          AND `glpi_cartridges`.`printers_id` = '$instID'
-                          AND `glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
-                    ORDER BY `glpi_cartridges`.`date_out` ASC, `glpi_cartridges`.`date_use` DESC,
-                             `glpi_cartridges`.`date_in`";
-      } else {
-         $query.= " FROM `glpi_cartridges`, `glpi_cartridgeitems`
-                    WHERE `glpi_cartridges`.`date_out` IS NOT NULL
-                          AND `glpi_cartridges`.`printers_id` = '$instID'
-                          AND `glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
-                    ORDER BY `glpi_cartridges`.`date_out` ASC, `glpi_cartridges`.`date_use` DESC,
-                             `glpi_cartridges`.`date_in`";
-      }
+      $query.= " FROM `glpi_cartridges`, `glpi_cartridgeitems`
+                  WHERE `glpi_cartridges`.`date_out` IS ".($old?"NOT":"")." NULL
+                        AND `glpi_cartridges`.`printers_id` = '$instID'
+                        AND `glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
+                  ORDER BY `glpi_cartridges`.`date_out` ASC, `glpi_cartridges`.`date_use` DESC,
+                           `glpi_cartridges`.`date_in`";
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -616,16 +607,16 @@ class Cartridge extends CommonDBTM {
 
       echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
       if ($old==0) {
-         echo "<tr><th colspan='7'>".$LANG['cartridges'][33]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='5'>".$LANG['cartridges'][33]."&nbsp;:</th></tr>";
       } else {
-         echo "<tr><th colspan='8'>".$LANG['cartridges'][35]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='7'>".$LANG['cartridges'][35]."&nbsp;:</th></tr>";
       }
 
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['cartridges'][12]."</th>";
-      echo "<th>".$LANG['consumables'][23]."</th><th>".$LANG['cartridges'][24]."</th>";
-      echo "<th>".$LANG['consumables'][26]."</th><th>".$LANG['search'][9]."</th>";
+      echo "<th>".$LANG['cartridges'][24]."</th>";
+      echo "<th>".$LANG['consumables'][26]."</th>";
       if ($old!=0) {
-         echo "<th>".$LANG['cartridges'][39]."</th>";
+         echo "<th>".$LANG['search'][9]."</th><th>".$LANG['cartridges'][39]."</th>";
       }
 
       echo "<th>&nbsp;</th></tr>";
@@ -645,11 +636,11 @@ class Cartridge extends CommonDBTM {
          echo $data["type"]." - ".$data["ref"];
          echo "</a>";
          echo "</strong></td><td class='center'>";
-         echo Cartridge::getStatus($data["date_use"],$data["date_out"]);
-         echo "</td><td class='center'>";
          echo $date_in;
-         echo "</td><td class='center'>";
-         echo $date_use;
+         if ($old!=0) {
+            echo "</td><td class='center'>";
+            echo $date_use;
+         }
 
          $tmp_dbeg=explode("-",$data["date_in"]);
          $tmp_dend=explode("-",$data["date_use"]);
@@ -707,7 +698,7 @@ class Cartridge extends CommonDBTM {
          }
       }
       if ($old==0 && $canedit) {
-         echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='5'>";
+         echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='3'>";
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
          echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
          if (CartridgeItem::dropdownForPrinter($printer)) {
@@ -721,7 +712,7 @@ class Cartridge extends CommonDBTM {
             if ($nb_pages_printed==0) {
                $nb_pages_printed=1;
             }
-            echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+            echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "<td class='center'>".$LANG['cartridges'][40]."&nbsp;:<br>";
             echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
             echo "<td class='center'>".$LANG['cartridges'][41].":<br>";
