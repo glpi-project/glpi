@@ -180,26 +180,42 @@ class ReservationItem extends CommonDBTM {
       }
       $ri=new ReservationItem;
 
+      echo "<div><form method='post' name=form action='reservationitem.form.php'>";
       if ($ri->getFromDBbyItem($itemtype,$items_id)) {
          // Rendre le matériel réservable ou non
-         echo "<br><div>";
+         echo "<input type='hidden' name='id' value='".$ri->fields['id']."'>";
          if ($ri->fields["is_active"]) {
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".$ri->fields['id'].
-                  "&amp;is_active=0&amp;update=update\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
+            echo "<input type='hidden' name='is_active' value='0'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['reservation'][3]."\" class='submit'>";
+/*            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".$ri->fields['id'].
+                  "&amp;is_active=0&amp;update=update\" class='icon_consol'>".$LANG['reservation'][3]."</a>";*/
          } else {
-            echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".$ri->fields['id'].
-                  "&amp;is_active=1&amp;update=update\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
+            echo "<input type='hidden' name='is_active' value='1'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['reservation'][5]."\" class='submit'>";
+//             echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".$ri->fields['id'].
+//                   "&amp;is_active=1&amp;update=update\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
          }
          echo "&nbsp;&nbsp;&nbsp;";
-         echo "<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".
-               addslashes($LANG['reservation'][39])."','".$CFG_GLPI["root_doc"].
-               "/front/reservationitem.form.php?id=".$ri->fields['id']."&amp;delete=delete')\" class='icon_consol'>".
-               $LANG['reservation'][6]."</a></div>\n";
+
+         echo "<input type='submit' name='delete' value=\"".$LANG['reservation'][6]."\"
+               class='submit' OnClick='return window.confirm(\"".$LANG['reservation'][38]. "\")'>";
+
+//           echo "<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".
+//                 addslashes($LANG['reservation'][39])."','".$CFG_GLPI["root_doc"].
+//                 "/front/reservationitem.form.php?id=".$ri->fields['id']."&amp;delete=delete')\" class='icon_consol'>".
+//                 $LANG['reservation'][6]."</a></div>\n";
+
+
       } else {
-         echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?";
+         echo "<input type='hidden' name='items_id' value='$items_id'>";
+         echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['reservation'][7]."\" class='submit'>";
+
+/*         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?";
          echo "items_id=$items_id&amp;itemtype=$itemtype&amp;add=add\" class='icon_consol' >".
-               $LANG['reservation'][7]."</a></div>\n";
+               $LANG['reservation'][7]."</a></div>\n";*/
       }
+      echo "</form></div>";
    }
 
    function showForm($ID, $options=array()) {
