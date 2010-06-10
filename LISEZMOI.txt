@@ -1,0 +1,120 @@
+ ----------------------------------------------------------------------
+GLPI - Gestionnaire libre de parc informatique
+ Copyright (C) 2002 by the INDEPNET Development Team.
+ http://indepnet.net/   http://glpi.indepnet.org
+ ----------------------------------------------------------------------
+ Based on:
+IRMA, Information Resource-Management and Administration
+Christian Bauer, turin@incubus.de 
+
+ ----------------------------------------------------------------------
+ LICENSE
+
+ This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ ----------------------------------------------------------------------
+ 
+Contenu :
+
+- Qu'est ce que c'est ?
+- Dépendances
+- Installation
+- Configuration
+- Test
+
+--- Qu'est-ce que c'est ?
+
+GLPI est un gestionnaire de parc informatique.
+Il permet de recenser et de gérer l'intégralité des composantes matérielles
+ou logicielles d'un parc informatique, et ainsi d'optimiser le travail des
+techniciens grâce à une maintenance plus cohérente.
+Les fonctionnalités principales de l'application s'articulent autour de deux
+axes :
+
+1) L'inventaire précis de toutes les ressources techniques, matérielles et
+logicielles, existantes dont les caractéristiques seront stockées dans
+une base de données.
+
+
+2) La gestion et l'historisation, des diverses opérations de maintenance et
+des procédures liées, réalisées sur ces ressources techniques.
+
+Enfin, cette application a pour but d'être dynamique et directement reliée
+aux utilisateurs. Une interface autorise donc ces derniers à éventuellement
+prévenir le service de maintenance et à répertorier un problème rencontré
+avec l'une des ressources techniques à laquelle ils ont accès.
+
+
+
+--- Dépendances (uniquement testé avec ces configurations)
+
+
+1) Apache 1.3.>6 with PHP 4.03Pl1 (
+2) MySQL 3.22.32
+
+
+
+
+--- Installation
+
+1) Aprés avoir décompacté le paquet, copier l'intégralité des fichiers sur votre serveur web
+dans DOCUMENT_ROOT.
+
+
+2) Créer une nouvelle base de données nomée "glpidb" et importer le fichier
+sql/GLPI-version-defaults.sql  dans cette base.
+Cela générerera la structure de la base pour GLPI et configurera cinq utilisateurs par défaut :
+
+- Heldesk : Password "help", Helpdesk-Injector qui n'apparait pas dans la liste des utilisateurs
+ de l'application. Ne pas le supprimer de la base de données.
+ 
+- glpi : Password "glpi", se loguer en premier avec cet utilisateur afin de compléter le setup.
+Ne pas supprimer cet utilisateur avant d'avoir crée un autre utilisateur ayant les droits Admin.
+
+- post-only : Password "postonly", il est conseillé de supprimer ou modifier cet utilisateur
+ avant la mise en production.
+
+- normal : Password "normal", il est conseillé de supprimer ou modifier cet utilisateur
+ avant la mise en production.
+
+- tech : Password "tech", il est conseillé de supprimer ou modifier cet utilisateur
+ avant la mise en production.
+
+
+Certaines entrées sont également générées (à titre d'exemple) dans chaque table de la base de données
+,vous pouvez effacer ce que vous désirez sauf "Helpdesk" et l'utilisateur qui a les droits
+d'administrateur (par défaut GLPI).
+
+
+--- Configuration
+
+1) Editez le fichier config.php  dans  /glpi/config/.
+
+Indiquez vos paramètres.
+
+2) Editez le fichier helpdesk.html dans /glpi/, vous pouvez déplacer ce fichier dans votre intranet
+ou ailleurs. Vous pouvez le modifier comme bon vous semble à condition que les paramètres du formulaire
+restent intacts. L'injecteur nécessite, pour fonctionner, l'utilisateur Helpdesk créé par défaut.
+
+
+--- Test
+
+
+Vous pouvez tester l'installation en pointant votre navigateur sur le serveur contenant GLPI.
+Aprés vous être logué sous "glpi", il est conseillé de se familiariser avec les fonctionnalités
+puis d'aller dans le menu "configuration" afin de compléter les modèles de saisie.
+
+
+
