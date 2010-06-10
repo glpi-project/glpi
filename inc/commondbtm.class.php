@@ -972,7 +972,7 @@ class CommonDBTM extends CommonGLPI {
          $addMessAfterRedirect=false;
       }
       if ($addMessAfterRedirect) {
-         addMessageAfterRedirect($LANG['common'][73] . "&nbsp;: " . $this->getLink());
+         addMessageAfterRedirect($LANG['common'][73]);
       }
    }
 
