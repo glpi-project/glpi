@@ -298,6 +298,8 @@ class Config extends CommonDBTM {
       Dropdown::showInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
       echo "</td><td colspan='2'></td></tr>";
 
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
+      echo "<strong>" . $LANG['setup'][6] . "</strong></td></tr>";
 
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][118] . " </td>";
       echo "<td colspan='3' class='center'>";
@@ -419,7 +421,6 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $LANG['login'][10] . "</th></tr>";
       echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][124] . " </td><td>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
       echo "</td>";
@@ -758,17 +759,16 @@ class Config extends CommonDBTM {
 
       $oncentral=($_SESSION["glpiactiveprofile"]["interface"]=="central");
       $userpref=false;
-      $url=getItemTypeFormURL(__CLASS__);
       if (isset($data['last_login'])) {
          $userpref=true;
-         $url=$CFG_GLPI['root_doc']."/front/preference.php";
       }
-      echo "<form name='form' action=\"$url\" method=\"post\">";
+
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][6] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . $LANG['setup'][119] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
@@ -794,13 +794,13 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . $LANG['setup'][131] . "&nbsp;</td><td>";
+         echo "<td>" . $LANG['setup'][131] . "&nbsp;:</td><td>";
             Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
        } else {
         echo "<td colspan='2'></td>";
       }
-      echo "<td>" . $LANG['setup'][150] . "&nbsp;</td>";
+      echo "<td>" . $LANG['setup'][150] . "&nbsp;:</td>";
       echo "<td><select name='number_format'>";
       echo "<option value='0'";
       if ($data["number_format"] == 0) {
@@ -821,7 +821,7 @@ class Config extends CommonDBTM {
 
       if ($oncentral) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . $LANG['setup'][132] . "&nbsp;</td><td>";
+         echo "<td>" . $LANG['setup'][132] . "&nbsp;:</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
          echo "</td><td colspan='2'></td></tr>";
       }
