@@ -282,7 +282,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
       echo "</td>";
-      echo "</td><td>".$LANG['setup'][10]."&nbsp;</td><td>";
+      echo "</td><td>".$LANG['setup'][10]."&nbsp;:</td><td>";
       $values = array (REALNAME_BEFORE=>$LANG['common'][48]." ".$LANG['common'][43],
                        FIRSTNAME_BEFORE=>$LANG['common'][43]." ".$LANG['common'][48]);
       Dropdown::showFromArray('names_format',$values,$CFG_GLPI["names_format"]);
