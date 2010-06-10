@@ -61,7 +61,7 @@ if (!empty($_POST["withtemplate"])) {
    if ($_POST["id"]>0) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($netdevice,1,$_POST["withtemplate"]);
+            Infocom::showForItem($netdevice,$_POST["withtemplate"]);
             Contract::showAssociated($netdevice,$_POST["withtemplate"]);
             break;
 

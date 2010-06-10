@@ -61,7 +61,7 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($periph,1,$_POST["withtemplate"]);
+            Infocom::showForItem($periph,$_POST["withtemplate"]);
             Contract::showAssociated($periph,$_POST["withtemplate"]);
             break;
 

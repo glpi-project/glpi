@@ -66,7 +66,7 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($phone,1,$_POST["withtemplate"]);
+            Infocom::showForItem($phone,$_POST["withtemplate"]);
             Contract::showAssociated($phone,$_POST["withtemplate"]);
             break;
 
