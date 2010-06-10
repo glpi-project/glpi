@@ -53,7 +53,7 @@ switch ($_REQUEST['glpi_tab']) {
       $config = new Config();
       $user->getFromDB(getLoginUserID());
       $user->computePreferences();
-      $config->showFormUserPrefs($_POST['target'],$user->fields);
+      $config->showFormUserPrefs($user->fields);
       break;
 
    default :
