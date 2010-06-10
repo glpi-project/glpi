@@ -759,11 +759,13 @@ class Config extends CommonDBTM {
 
       $oncentral=($_SESSION["glpiactiveprofile"]["interface"]=="central");
       $userpref=false;
+      $url=getItemTypeFormURL(__CLASS__);
       if (isset($data['last_login'])) {
          $userpref=true;
+         $url=$CFG_GLPI['root_doc']."/front/preference.php";
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
+      echo "<form name='form' action=\"$url\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";

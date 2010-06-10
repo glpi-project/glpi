@@ -1753,10 +1753,10 @@ $LANG['setup'][125]="... Depuis une source externe";
 $LANG['setup'][126]="Ajouter directement un utilisateur d'une source externe";
 $LANG['setup'][127]="Autocomplétion des champs textes avec l'affichage dynamique";
 $LANG['setup'][128]="Format des dates";
-$LANG['setup'][129]="Afficher les ID GLPI";
+$LANG['setup'][129]="Montrer les ID GLPI";
 $LANG['setup'][130]="Temps en jours de conservation des journaux de cette action (0 pour infini)";
 $LANG['setup'][131]="Nombre de caractères limite pour les listes déroulantes";
-$LANG['setup'][132]="Listes déroulantes arborescentes à plat";
+$LANG['setup'][132]="Afficher le nom complet dans les listes déroulantes arborescentes";
 $LANG['setup'][133]="Activer le mode OCSNG";
 $LANG['setup'][134]="Mode OCSNG";
 $LANG['setup'][135]="Normal";
@@ -1975,8 +1975,8 @@ $LANG['software'][50]="Affectée à l'ordinateur";
 $LANG['software'][51]="Le nombre doit être 1 pour pouvoir affecter";
 
 $LANG['softwarecategories'][2]="Logiciels sans catégorie";
-$LANG['softwarecategories'][3]="Logiciels non catégorisés dépliés";
-$LANG['softwarecategories'][4]="Logiciels catégorisés dépliés";
+$LANG['softwarecategories'][3]="Déplier les logiciels sans catégorie";
+$LANG['softwarecategories'][4]="Déplier les logiciels appartenant à une catégorie";
 $LANG['softwarecategories'][5]="Catégorie de logiciels";
 
 $LANG['state'][0]="Statut";
