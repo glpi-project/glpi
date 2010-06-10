@@ -770,33 +770,49 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . $LANG['setup'][6] . "</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][128] . " </td>";
-      echo "<td><select name=\"date_format\">";
-
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
+      // Limit using global config
+      Dropdown::showInteger('list_limit',
+                            ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit']
+                                                                       : $CFG_GLPI['list_limit_max']),
+                            5,$CFG_GLPI['list_limit_max'],5);
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][128] ."&nbsp;:</td>";
+      echo "<td><select name='date_format'>";
       $date_formats=array(0 => "YYYY-MM-DD",
                           1 => "DD-MM-YYYY",
                           2 => "MM-DD-YYYY");
       foreach ($date_formats as $key => $val) {
-         echo "<option value=\"$key\"";
+         echo "<option value='$key'";
          if ($data["date_format"] == $key) {
             echo " selected";
          }
          echo ">$val</option>";
       }
-      echo "</select></td>";
-      echo "<td class='center'>" . $LANG['setup'][150] . " </td>";
-      echo "<td><select name=\"number_format\">";
-      echo "<option value=\"0\"";
+      echo "</select></td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      if ($oncentral) {
+         echo "<td>" . $LANG['setup'][131] . "&nbsp;</td><td>";
+            Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
+         echo "</td>";
+       } else {
+        echo "<td colspan='2'></td>";
+      }
+      echo "<td>" . $LANG['setup'][150] . "&nbsp;</td>";
+      echo "<td><select name='number_format'>";
+      echo "<option value='0'";
       if ($data["number_format"] == 0) {
          echo " selected";
       }
       echo ">1 234.56</option>";
-      echo "<option value=\"1\"";
+      echo "<option value='1'";
       if ($data["number_format"] == 1) {
          echo " selected";
       }
       echo ">1,234.56</option>";
-      echo "<option value=\"2\"";
+      echo "<option value='2'";
       if ($data["number_format"] == 2) {
          echo " selected";
       }
@@ -804,59 +820,49 @@ class Config extends CommonDBTM {
       echo "</select></td></tr>";
 
       if ($oncentral) {
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][129] . " </td><td>";
-         Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"]);
-         echo "</td>";
-         echo "<td class='center'>" . $LANG['setup'][131] . "</td><td>";
-         Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][132] . "</td><td>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . $LANG['setup'][132] . "&nbsp;</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
-         echo "</td><td class='center'>&nbsp;</td><td>&nbsp;";
-         echo "</td></tr>";
+         echo "</td><td colspan='2'></td></tr>";
       }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . $LANG['setup'][111]."</td><td>";
-      // Limit using global config
-      Dropdown::showInteger('list_limit',
-                      ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit']
-                                                                       : $CFG_GLPI['list_limit_max']),
-                      5,$CFG_GLPI['list_limit_max'],5);
-      echo "</td>";
-      echo "<td class='center'>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . " </td><td>";
-
+      if ($oncentral) {
+         echo "<td>" . $LANG['setup'][129] . "&nbsp;:</td><td>";
+         Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"]);
+         echo "</td>";
+      } else {
+         echo "<td colspan='2'></td>";
+      }
+      echo "<td>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . "&nbsp;:</td><td>";
       if (haveRight("config","w") || ! GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value'=>$data["language"]));
       } else {
          echo "&nbsp;";
       }
-
       echo "</td></tr>";
 
       if ($oncentral) {
-         echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-         echo "<strong>" . $LANG['title'][24] . "</strong></td></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['title'][24]."</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][110] . " </td><td>";
-         Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
-         echo " </td><td class='center'>".$LANG['setup'][39]." </td><td>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".$LANG['setup'][39]."&nbsp;:</td><td>";
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
-         echo "</td></tr>";
+         echo "</td><td> " . $LANG['setup'][110] . "&nbsp;:</td><td>";
+         Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
+         echo " </td></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][40] . " </td><td>";
+         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][40] . "&nbsp;:</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
          echo "</td>";
-         echo "<td class='center'> " . $LANG['job'][44] . " </td><td>";
+         echo "<td> " . $LANG['job'][44] . "&nbsp;:</td><td>";
          Dropdown::show('RequestType',
                         array('value'  => $data["default_requesttypes_id"],
                               'name' => "default_requesttypes_id"));
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][114] . "</td>";
+         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][114] . "&nbsp;:</td>";
          echo "<td colspan='3'>";
-
          echo "<table><tr>";
          echo "<td bgcolor='" . $data["priority_1"] . "'>1&nbsp;:&nbsp;";
          echo "<input type='text' name='priority_1' size='7' value='" .
@@ -877,22 +883,22 @@ class Config extends CommonDBTM {
          echo "<input type='text' name='priority_6' size='7' value='" .
                 $data["priority_6"] . "'></td>";
          echo "</tr></table>";
-
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-         echo "<strong>" . $LANG['softwarecategories'][5] . "</strong></td></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['softwarecategories'][4]."</td>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['softwarecategories'][5] ."</th></tr>";
+
+         echo "<tr class='tab_bg_2'><td>" . $LANG['softwarecategories'][4]."&nbsp;:</td>";
          echo "<td>";
          Dropdown::showYesNo("is_categorized_soft_expanded", $data["is_categorized_soft_expanded"]);
-         echo "</td><td class='center'>" . $LANG['softwarecategories'][3] . "</td><td>";
-         Dropdown::showYesNo("is_not_categorized_soft_expanded", $data["is_not_categorized_soft_expanded"]);
+         echo "</td><td>" . $LANG['softwarecategories'][3] . "&nbsp;:</td><td>";
+         Dropdown::showYesNo("is_not_categorized_soft_expanded",
+                             $data["is_not_categorized_soft_expanded"]);
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
-             $LANG['buttons'][2] . "\" ></td></tr>";
+      echo "<input type='submit' name='update' class='submit' value='" .
+             $LANG['buttons'][2] . "' ></td></tr>";
       echo "</table></div>";
       echo "</form>";
    }
