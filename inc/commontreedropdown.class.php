@@ -180,9 +180,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($entity_assign && $this->getForeignKeyField()!='entities_id') {
             echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          }
-         if ($entity_assign) {
-            echo "&nbsp;".$LANG['entity'][9]."&nbsp;";
-            Dropdown::showYesNo('is_recursive');
+         if ($entity_assign && $this->fields['is_recursive']) {
+            echo "<input type='hidden' name='is_recursive' value='1'>";
          }
          echo "<input type='hidden' name='".$this->getForeignKeyField()."' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\"".
