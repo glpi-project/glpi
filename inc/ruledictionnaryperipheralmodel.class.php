@@ -40,7 +40,7 @@ class RuleDictionnaryPeripheralModel extends RuleDictionnaryDropdown {
     * Constructor
    **/
    function __construct() {
-      $this->show_cache = true;
+      parent::__construct('RuleDictionnaryPeripheralModel');
    }
 
    function getCriterias() {
