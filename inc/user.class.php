@@ -1335,28 +1335,6 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'></tr>";
          }
-
-
-
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
-         if ($extauth && isset ($authtype['mobile_field']) && !empty ($authtype['mobile_field'])) {
-            echo $this->fields["mobile"];
-         } else {
-            autocompletionTextField($this, "mobile");
-         }
-         echo "</td>";
-
-         if (!GLPI_DEMO_MODE){
-            echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
-            /// Use sesion variable because field in table may be null if same of the global config
-            Dropdown::showLanguages("language", array('value'=>$_SESSION["glpilanguage"]));
-         } else {
-            echo "<td colspan='2'>&nbsp;";
-         }
-
-
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14] . "&nbsp;:</td><td>";
@@ -1367,6 +1345,23 @@ class User extends CommonDBTM {
             if (!NotificationMail::isUserAddressValid($this->fields["email"])) {
                echo "<br><span class='red'>".$LANG['mailing'][110]."</span>";
             }
+         }
+         echo "</td>";
+
+         if (!GLPI_DEMO_MODE){
+            echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td><td>";
+            /// Use sesion variable because field in table may be null if same of the global config
+            Dropdown::showLanguages("language", array('value'=>$_SESSION["glpilanguage"]));
+         } else {
+            echo "<td colspan='2'>&nbsp;";
+         }
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][42] . "&nbsp;:</td><td>";
+         if ($extauth && isset ($authtype['mobile_field']) && !empty ($authtype['mobile_field'])) {
+            echo $this->fields["mobile"];
+         } else {
+            autocompletionTextField($this, "mobile");
          }
          echo "</td>";
 
@@ -1381,9 +1376,6 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-
-
-
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
@@ -1402,9 +1394,6 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-
-
-
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2 : </td><td>";
@@ -1430,11 +1419,9 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
-
          echo "</td></tr>";
 
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<tr><td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
          echo "</td></tr>";
 
