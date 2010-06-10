@@ -637,10 +637,8 @@ class Cartridge extends CommonDBTM {
          echo "</a>";
          echo "</strong></td><td class='center'>";
          echo $date_in;
-         if ($old!=0) {
-            echo "</td><td class='center'>";
-            echo $date_use;
-         }
+         echo "</td><td class='center'>";
+         echo $date_use;
 
          $tmp_dbeg=explode("-",$data["date_in"]);
          $tmp_dend=explode("-",$data["date_use"]);
@@ -649,8 +647,10 @@ class Cartridge extends CommonDBTM {
             - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);
          $stock_time+=$stock_time_tmp;
 
-         echo "</td><td class='center'>";
-         echo $date_out;
+         if ($old!=0) {
+            echo "</td><td class='center'>";
+            echo $date_out;
+         }
 
          if ($old!=0) {
             $tmp_dbeg=explode("-",$data["date_use"]);
