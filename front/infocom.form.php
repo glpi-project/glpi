@@ -82,7 +82,7 @@ if (isset($_GET["add"])) {
    } else {
       $withtemplate = 2;
    }
-   Infocom::showForItem($item,1,$withtemplate);
+   Infocom::showForItem($item,$withtemplate);
 
    popFooter();
 }

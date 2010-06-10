@@ -61,7 +61,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($monitor,1,$_POST["withtemplate"]);
+            Infocom::showForItem($monitor,$_POST["withtemplate"]);
             Contract::showAssociated($monitor,$_POST["withtemplate"]);
             break;
 

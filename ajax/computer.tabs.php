@@ -69,7 +69,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($computer,1,$_POST["withtemplate"]);
+            Infocom::showForItem($computer,$_POST["withtemplate"]);
             Contract::showAssociated($computer,$_POST["withtemplate"]);
             break;
 

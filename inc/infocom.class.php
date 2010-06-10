@@ -639,7 +639,7 @@ class Infocom extends CommonDBTM {
     * @param $show_immo boolean: show immobilisation infos
     * @param $withtemplate integer: template or basic item
     **/
-   static function showForItem(CommonDBTM $item, $show_immo=true, $withtemplate='') {
+   static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $CFG_GLPI,$LANG;
 
       // Show Infocom or blank form
@@ -720,7 +720,6 @@ class Infocom extends CommonDBTM {
             showDateFormItem("use_date",$ic->fields["use_date"],true,$editcalendar);
             echo "</td></tr>";
 
-            if ($show_immo) {
                echo "<tr class='tab_bg_1'><td>".$LANG['financial'][15]."&nbsp;:</td><td>";
                if ($withtemplate==2) {
                   // -1 = life
@@ -758,22 +757,17 @@ class Infocom extends CommonDBTM {
                echo "<td >";
                autocompletionTextField($ic, "warranty_info",array('option' => $option));
                echo "</td></tr>";
-            }
-
             echo "<tr class='tab_bg_1'><td>".$LANG['financial'][21]."&nbsp;:</td>";
-            echo "<td ".($show_immo?"":" colspan='3'").">
+            echo "<td >
                   <input type='text' name='value' $option value=\"".
                   formatNumber($ic->fields["value"],true)."\" size='14'></td>";
-            if ($show_immo) {
                echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
                echo formatNumber(Infocom::Amort($ic->fields["sink_type"],$ic->fields["value"],
                      $ic->fields["sink_time"],$ic->fields["sink_coeff"],$ic->fields["buy_date"],
                      $ic->fields["use_date"],$date_tax,"n"));
                echo "</td>";
-            }
             echo "</tr>";
 
-            if ($show_immo) {
                echo "<tr class='tab_bg_1'><td>".$LANG['financial'][20]."*&nbsp;:</td>";
                echo "<td >";
                $objectName = autoName($ic->fields["immo_number"], "immo_number", ($withtemplate==2),
@@ -801,7 +795,6 @@ class Infocom extends CommonDBTM {
                echo "<td >";
                autocompletionTextField($ic, "sink_coeff",array('size'=>14,'option' => $option));
                echo "</td></tr>";
-            }
             //TCO
             if (!in_array($item->getType(), array('Software','CartridgeItem','ConsumableItem',
                                              'Consumable', 'Cartridge', 'SoftwareLicense'))) {

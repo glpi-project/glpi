@@ -62,7 +62,7 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($soft,1,$_POST["withtemplate"]);
+            Infocom::showForItem($soft,$_POST["withtemplate"]);
             Contract::showAssociated($soft,$_POST["withtemplate"]);
             break;
 

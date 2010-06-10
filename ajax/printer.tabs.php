@@ -63,7 +63,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($printer, 1, $_POST["withtemplate"]);
+            Infocom::showForItem($printer,$_POST["withtemplate"]);
             Contract::showAssociated($printer,$_POST["withtemplate"]);
             break;
 
