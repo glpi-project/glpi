@@ -298,6 +298,7 @@ $LANG['common'][89] = "Non installé";
 $LANG['common'][90] = "Objet";
 $LANG['common'][91] = "Cet élément est dépendant d'un autre. La modification de cet attribut est interdit.";
 $LANG['common'][92] = "Contact";
+$LANG['common'][93] = "Nouvel intitulé enfant";
 
 
 $LANG['computers'][0]  = "Volume";

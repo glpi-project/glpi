@@ -169,6 +169,28 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $nb=count($fields);
       $entity_assign=$this->isEntityAssign();
 
+      // Minimal form for quick input.
+      if ($this->canCreate()) {
+         $link=$this->getFormURL();
+         echo "<form action='".$link."' method='post'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>".$LANG['common'][93]."</th></tr>";
+         echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;: ";
+         autocompletionTextField($this,"name",array('value'=>''));
+         if ($entity_assign && $this->getForeignKeyField()!='entities_id') {
+            echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
+         }
+         if ($entity_assign) {
+            echo "&nbsp;".$LANG['entity'][9]."&nbsp;";
+            Dropdown::showYesNo('is_recursive');
+         }
+         echo "<input type='hidden' name='".$this->getForeignKeyField()."' value='$ID'></td>";
+         echo "<td><input type='submit' name='add' value=\"".
+              $LANG['buttons'][8]."\" class='submit'></td>";
+         echo "</tr>\n";
+         echo "</table></form>\n";
+      }
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][75]."&nbsp;: ";
       echo $this->getTreeLink();
@@ -226,23 +248,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
       echo "</table>\n";
 
-      // Minimal form for quick input.
-      if ($this->canCreate()) {
-         $link=$this->getFormURL();
-         echo "<form action='".$link."' method='post'>";
-         echo "<br><table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
-         echo "<td>".$LANG['common'][16]."&nbsp;: ";
-         autocompletionTextField($this,"name",array('value'=>''));
-         if ($entity_assign && $this->getForeignKeyField()!='entities_id') {
-            echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
-         }
-         echo "<input type='hidden' name='".$this->getForeignKeyField()."' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\"".
-              $LANG['buttons'][8]."\" class='submit'></td>";
-         echo "</tr>\n";
-         echo "</table></form>\n";
-      }
    }
 
    /**
