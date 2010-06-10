@@ -1,0 +1,49 @@
+<!-- Sample Helpdesk Frontend -->
+
+<html>
+<head>
+	<title>Helpdesk</title>
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"></head>
+<body>
+
+<!-- Edit the next line to fit your installation -->
+<form method=post name="helpdeskform" action="tracking/tracking-injector.php">
+
+<center>
+    <table border=0 cellspacing="1">
+      <tr> 
+        <th bgcolor=#D2F2D5 colspan=2>Formulaire de signalement au support technique</th>
+      <br></tr>
+      <tr> 
+        <td bgcolor="#CCCCCC" width="215">Le problème doit être résolu : </td>
+        <td bgcolor="#CCCCCC" width="183"> <select name=priority>
+            <option value=5>Hier 
+            <option value=4>Tres vite 
+            <option value=3 selected>Dans la journée 
+            <option value=2>La semaine prochaine 
+            <option value=1>Si vous avez le temps </select> </td>
+      </tr>
+      <tr> 
+        <td bgcolor="#CCCCCC">Mon numéro de machine:&nbsp;&nbsp;<a href="#" onClick="window.open('find_num.php','help','width=400,height=400,scrollbars=1,resizable=1')"><img src="/glpi/pics/aide.png" border=0 alt="help"></a>
+</td>
+        <td bgcolor="#CCCCCC"> <input name=computer size=10> </td>
+      </tr>
+      <tr> 
+        <td bgcolor="#CCCCCC" colspan=2 align=center>Décrivez votre problème:</td>
+      </tr>
+      <tr> 
+        <td colspan=2 bgcolor="#CCCCCC"> <textarea name=contents cols=60 rows=20 wrap=soft></textarea> 
+        </td>
+      </tr>
+      <tr> 
+        <td bgcolor="#CCCCCC" colspan=2 align=center> <input type=submit value="Envoyer"> </td>
+      </tr>
+    </table>
+</center>
+</form>
+
+</body>
+</html>

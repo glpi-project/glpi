@@ -1,0 +1,48 @@
+
+
+
+**** GLPI 0.21 ***
+
+02/12/2003
+Implémentation d'un peu de javascript sur proposition de Patrice AYMONIN.
+Le formulaire findnum.php communique désormais avec le helpdesk.
+
+02/12/2003
+Changement dans la base de donnée...
+Le champs user.can_assign_job passe de enum('0','1') à enum('yes','no')
+Les fonctions can_assign_job($IRMname) (/glpi/common/functions.php) et
+showFormAssign() (/glpi/setup/functions.php) prennent en compte ces changements.
+La structure de la base de donnée par defaut est modifiée.
+
+02/12/2003
+Changement de la fonction showFormAssign() (/glpi/setup/functions.php) est modifiée
+Désormais un admin qui a le droit de decider qui peux assigner, ne peux pas toucher SES propres
+droits (pour eviter de se retrouver avec un users.can_assign_job = 'no' pour toutes les
+occurences de users.
+
+  
+30/11/2003 : 
+
+Si on ne donne pas de nom à un port, il n'y as pas de lien pour modifier ou supprimer 
+le port en question...
+Correction de ce bug dans /glpi/networking/functions.php proposée par Patrice AYMONIN
+insérée au projet.    
+
+30/11/2003 :
+
+Lors de la création d'un ordinateur, la date de création (ou dernière modif) n'est pas attribuée,
+il faut revenir sur l'ordinateur et cliquer sur actualiser pour avoir une date.
+Correction de ce bug dans glpi/computers/functions.php proposée par Patrice AYMONIN
+insérée au projet.   
+
+ 30/11/2003 :
+
+Changement mineur dans le formulaire de recherche d'ordinateurs...
+Dans /glpi/computers/functions.php
+Passage du champs ID en haut de liste du select...
+
+
+
+*** GLPI 0.2 ****
+
+Version stable
