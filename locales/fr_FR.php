@@ -1392,6 +1392,8 @@ $LANG['plugins'][3]="Installé / non activé";
 $LANG['plugins'][4]="Erreur / à nettoyer";
 $LANG['plugins'][5]="Fonction(s) inexistante(s)";
 $LANG['plugins'][6]="A mettre à jour";
+$LANG['plugins'][7]="Aucun plugin installé";
+$LANG['plugins'][8]="Voir le catalogue des plugins";
 
 $LANG['printers'][14]="Série";
 $LANG['printers'][15]="Parallèle";

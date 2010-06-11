@@ -275,195 +275,209 @@ class Plugin extends CommonDBTM {
       $this->checkStates();
       echo "<div class='center'><table class='tab_cadrehov'>";
 
-      // ligne a modifier en fonction de la modification des fichiers de langues
-      echo "<tr><th colspan='7'>".$LANG['plugins'][0]."</th></tr>\n";
-      echo "<tr><th>".$LANG['common'][16]."</th><th>".$LANG['rulesengine'][78]."</th>";
-      echo "<th>".$LANG['state'][0]."</th><th>".$LANG['common'][37]."</th>";
-      echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
       $pluglist=$this->find("","name, directory");
       $i=0;
       $PLUGIN_HOOKS_SAVE=$PLUGIN_HOOKS;
-      foreach ($pluglist as $ID => $plug) {
-         if (function_exists("plugin_".$plug['directory']."_check_config")) {
-            // init must not be called for incompatible plugins
-            self::load($plug['directory'],true);
-         }
-         $i++;
-         $class='tab_bg_1';
-         if ($i%2==0){
-            $class='tab_bg_2';
-         }
-         echo "<tr class='$class'>";
-         echo "<td>";
-         $name=trim($plug['name']);
-         if (empty($name)) {
-            $plug['name']=$plug['directory'];
-         }
+      echo "<tr><th colspan='7'>".$LANG['plugins'][0]."</th></tr>\n";
 
-         // Only config for install plugins
-         if (in_array($plug['state'],array(self::ACTIVATED,
-                                           self::TOBECONFIGURED,
-                                           self::NOTACTIVATED))
-             && isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
+      if (!empty($pluglist)) {
+         // ligne a modifier en fonction de la modification des fichiers de langues
+         echo "<tr><th>".$LANG['common'][16]."</th><th>".$LANG['rulesengine'][78]."</th>";
+         echo "<th>".$LANG['state'][0]."</th><th>".$LANG['common'][37]."</th>";
+         echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
 
-            echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".
-                   $PLUGIN_HOOKS['config_page'][$plug['directory']]."'><strong>".$plug['name'].
-                  "</strong></a>";
-         } else {
-            echo $plug['name'];
-         }
-         echo "</td>";
-         echo "<td>".$plug['version']."</td>";
-         echo "<td>";
-         switch ($plug['state']) {
-            case self::ANEW :
-               echo $LANG['joblist'][9];
-               break;
+         foreach ($pluglist as $ID => $plug) {
+            if (function_exists("plugin_".$plug['directory']."_check_config")) {
+               // init must not be called for incompatible plugins
+               self::load($plug['directory'],true);
+            }
+            $i++;
+            $class='tab_bg_1';
+            if ($i%2==0){
+               $class='tab_bg_2';
+            }
+            echo "<tr class='$class'>";
+            echo "<td>";
+            $name=trim($plug['name']);
+            if (empty($name)) {
+               $plug['name']=$plug['directory'];
+            }
 
-            case self::ACTIVATED :
-               echo $LANG['setup'][192];
-               break;
+            // Only config for install plugins
+            if (in_array($plug['state'],array(self::ACTIVATED,
+                                              self::TOBECONFIGURED,
+                                              self::NOTACTIVATED))
+                && isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
 
-            case self::NOTINSTALLED :
-               echo $LANG['common'][89];
-               break;
+               echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".
+                      $PLUGIN_HOOKS['config_page'][$plug['directory']]."'><strong>".$plug['name'].
+                     "</strong></a>";
+            } else {
+               echo $plug['name'];
+            }
+            echo "</td>";
+            echo "<td>".$plug['version']."</td>";
+            echo "<td>";
+            switch ($plug['state']) {
+               case self::ANEW :
+                  echo $LANG['joblist'][9];
+                  break;
 
-            case self::NOTUPDATED :
-               echo $LANG['plugins'][6];
-               break;
+               case self::ACTIVATED :
+                  echo $LANG['setup'][192];
+                  break;
 
-            case self::TOBECONFIGURED :
-               echo $LANG['plugins'][2];
-               break;
+               case self::NOTINSTALLED :
+                  echo $LANG['common'][89];
+                  break;
 
-            case self::NOTACTIVATED :
-               echo $LANG['plugins'][3];
-               break;
+               case self::NOTUPDATED :
+                  echo $LANG['plugins'][6];
+                  break;
 
-            case self::TOBECLEANED :
-            default:
-               echo $LANG['plugins'][4];
-               break;
-         }
-         echo "</td>";
-         echo "<td>".$plug['author']."</td>";
-         $weblink=trim($plug['homepage']);
-         echo "<td>";
-         if (!empty($weblink)) {
-            echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".
-                   $LANG['common'][4]."' title='".$LANG['common'][4]."' ></a>";
-         } else {
-            echo "&nbsp;";
-         }
-         echo "</td>";
+               case self::TOBECONFIGURED :
+                  echo $LANG['plugins'][2];
+                  break;
 
-         switch ($plug['state']) {
-            case self::ACTIVATED :
-               echo "<td>";
-               echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=unactivate'>".
-                      $LANG['buttons'][42]."</a>";
-               echo "</td><td>";
-               if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                         $LANG['buttons'][5]."</a>";
-               } else {
-                  echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
-               }
-               echo "</td>";
-               break;
+               case self::NOTACTIVATED :
+                  echo $LANG['plugins'][3];
+                  break;
 
-            case self::ANEW :
-            case self::NOTINSTALLED :
-            case self::NOTUPDATED :
-               echo "<td>";
-               if (function_exists("plugin_".$plug['directory']."_install")
-                   && function_exists("plugin_".$plug['directory']."_check_config")) {
+               case self::TOBECLEANED :
+               default:
+                  echo $LANG['plugins'][4];
+                  break;
+            }
+            echo "</td>";
+            echo "<td>".$plug['author']."</td>";
+            $weblink=trim($plug['homepage']);
+            echo "<td>";
+            if (!empty($weblink)) {
+               echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".
+                      $LANG['common'][4]."' title='".$LANG['common'][4]."' ></a>";
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td>";
 
-                  $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
-                  $do_install=true;
-                  if (function_exists($function)) {
-                     $do_install=$function();
-                  }
-                  if ($plug['state']==self::NOTUPDATED) {
-                     $msg = $LANG['buttons'][58];
-                  } else {
-                     $msg = $LANG['buttons'][4];
-                  }
-                  if ($do_install) {
-                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".
-                            $msg."</a>";
-                  }
-               } else {
-                  echo $LANG['plugins'][5]."&nbsp;:";
-                  if (!function_exists("plugin_".$plug['directory']."_install")) {
-                     echo " plugin_".$plug['directory']."_install";
-                  }
-                  if (!function_exists("plugin_".$plug['directory']."_check_config")) {
-                     echo " plugin_".$plug['directory']."_check_config";
-                  }
-               }
-               echo "</td><td>";
-               if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                  if (function_exists("plugin_".$plug['directory']."_check_config")) {
+            switch ($plug['state']) {
+               case self::ACTIVATED :
+                  echo "<td>";
+                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=unactivate'>".
+                         $LANG['buttons'][42]."</a>";
+                  echo "</td><td>";
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             $LANG['buttons'][5]."</a>";
                   } else {
-                     // This is an incompatible plugin (0.71), uninstall fonction could crash
-                     echo "&nbsp;";
+                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
                   }
-               } else {
-                  echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
-               }
-               echo "</td>";
-               break;
+                  echo "</td>";
+                  break;
 
-            case self::TOBECONFIGURED :
-               echo "<td>";
-               $function = 'plugin_' . $plug['directory'] . '_check_config';
-               if (function_exists($function)) {
-                  if ($function(true)) {
-                     $this->update(array('id'=>$ID,
-                                         'state'=>self::NOTACTIVATED));
-                     glpi_header($this->getSearchURL());
+               case self::ANEW :
+               case self::NOTINSTALLED :
+               case self::NOTUPDATED :
+                  echo "<td>";
+                  if (function_exists("plugin_".$plug['directory']."_install")
+                      && function_exists("plugin_".$plug['directory']."_check_config")) {
+
+                     $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
+                     $do_install=true;
+                     if (function_exists($function)) {
+                        $do_install=$function();
+                     }
+                     if ($plug['state']==self::NOTUPDATED) {
+                        $msg = $LANG['buttons'][58];
+                     } else {
+                        $msg = $LANG['buttons'][4];
+                     }
+                     if ($do_install) {
+                        echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".
+                               $msg."</a>";
+                     }
+                  } else {
+                     echo $LANG['plugins'][5]."&nbsp;:";
+                     if (!function_exists("plugin_".$plug['directory']."_install")) {
+                        echo " plugin_".$plug['directory']."_install";
+                     }
+                     if (!function_exists("plugin_".$plug['directory']."_check_config")) {
+                        echo " plugin_".$plug['directory']."_check_config";
+                     }
                   }
-               } else {
-                  echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_check_config";
-               }
-               echo "</td><td>";
-               if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                         $LANG['buttons'][5]."</a>";
-               } else {
-                  echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
-               }
-               echo "</td>";
-               break;
+                  echo "</td><td>";
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
+                     if (function_exists("plugin_".$plug['directory']."_check_config")) {
+                        echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
+                               $LANG['buttons'][5]."</a>";
+                     } else {
+                        // This is an incompatible plugin (0.71), uninstall fonction could crash
+                        echo "&nbsp;";
+                     }
+                  } else {
+                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
+                  }
+                  echo "</td>";
+                  break;
 
-            case self::NOTACTIVATED :
-               echo "<td>";
-               echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
-                      $LANG['buttons'][41]."</a>";
-               echo "</td><td>";
-               if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                         $LANG['buttons'][5]."</a>";
-               } else {
-                  echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
-               }
-               echo "</td>";
-               break;
+               case self::TOBECONFIGURED :
+                  echo "<td>";
+                  $function = 'plugin_' . $plug['directory'] . '_check_config';
+                  if (function_exists($function)) {
+                     if ($function(true)) {
+                        $this->update(array('id'=>$ID,
+                                            'state'=>self::NOTACTIVATED));
+                        glpi_header($this->getSearchURL());
+                     }
+                  } else {
+                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_check_config";
+                  }
+                  echo "</td><td>";
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
+                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
+                            $LANG['buttons'][5]."</a>";
+                  } else {
+                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
+                  }
+                  echo "</td>";
+                  break;
 
-            case self::TOBECLEANED :
-            default :
-               echo "<td colspan='2'>";
-               echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
-                      $LANG['buttons'][53]."</a>";
-               echo "</td>";
+               case self::NOTACTIVATED :
+                  echo "<td>";
+                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
+                         $LANG['buttons'][41]."</a>";
+                  echo "</td><td>";
+                  if (function_exists("plugin_".$plug['directory']."_uninstall")) {
+                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
+                            $LANG['buttons'][5]."</a>";
+                  } else {
+                     echo $LANG['plugins'][5]."&nbsp;: "."plugin_".$plug['directory']."_uninstall";
+                  }
+                  echo "</td>";
+                  break;
+
+               case self::TOBECLEANED :
+               default :
+                  echo "<td colspan='2'>";
+                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
+                         $LANG['buttons'][53]."</a>";
+                  echo "</td>";
+            }
+            echo "</tr>\n";
          }
-         echo "</tr>\n";
+      }
+      else {
+         echo "<tr class='tab_bg_1'><td align='center' colspan='7'>".$LANG['plugins'][7]."</td></tr>";
       }
       echo "</table></div>";
+      echo "<br>";
+      echo "<div class='center'><p>";
+      echo "<a href=\"http://plugins.glpi-project.org\"  class='icon_consol b' target='_blank'>".
+            $LANG['plugins'][8]."</a></p>";
+      echo "</div>";
+
+
       $PLUGIN_HOOKS=$PLUGIN_HOOKS_SAVE;
    }
 
