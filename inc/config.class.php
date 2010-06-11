@@ -328,7 +328,7 @@ class Config extends CommonDBTM {
       }
       echo "<td>";
       State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][197],
-                               $CFG_GLPI["state_autoupdate_mode"]);
+                               $CFG_GLPI["state_autoclean_mode"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='6' class='center'>";
@@ -476,10 +476,13 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td> " .
-                           $LANG['mailgate'][7] . " (".$LANG['common'][44].")&nbsp;:</td><td>";
-      echo "<input type=\"text\" size='8' name=\"default_mailcollector_filesize_max\" value=\"" .
-             $CFG_GLPI["default_mailcollector_filesize_max"] . "\">&nbsp;".
-             $LANG['mailgate'][8]." - ".getSize($CFG_GLPI["default_mailcollector_filesize_max"]);
+                           $LANG['mailgate'][7] . " (".$LANG['setup'][46].")&nbsp;:</td><td>";
+      $sizes[0] = $LANG['ocsconfig'][11];
+      for ($index = 1; $index < 100; $index++) {
+         $sizes[$index*1048576] =  $index. ' '.$LANG['common'][82];
+      }
+      Dropdown::showFromArray('default_mailcollector_filesize_max',$sizes,
+                              array('value'=>$CFG_GLPI["default_mailcollector_filesize_max"]));
       echo "</td>";
       echo "<td>" . $LANG['setup'][223] . "&nbsp;:</td><td>";
       Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
