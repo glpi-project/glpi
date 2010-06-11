@@ -324,17 +324,24 @@ class RuleCollection extends CommonDBTM {
              action=\"".$target."\">";
       echo "\n<div class='center'>";
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='6'>" . $this->getTitle() ."</th></tr>\n";
-      echo "<tr><td class='tab_bg_2 center' colspan='2'>".$LANG['common'][16]."</td>";
-      echo "<td class='tab_bg_2 center'>".$LANG['joblist'][6]."</td>";
-      echo "<td class='tab_bg_2 center'>".$LANG['common'][60]."</td>";
-      if (!$display_entities) {
-         echo "<td class='tab_bg_2' colspan='2'></td></tr>\n";
+      $colspan=4;
+      if ($display_entities) {
+         $colspan++;
       }
-      else {
-         echo "<td class='tab_bg_2' colspan='2'>".$LANG['entity'][0]."</td></tr>\n";
+      if ($canedit) {
+         $colspan+=2;
       }
-
+      echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
+      echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['joblist'][6]."</th>";
+      echo "<th>".$LANG['common'][60]."</th>";
+      if ($display_entities) {
+         echo "<th>".$LANG['entity'][0]."</th>\n";
+      }
+      if ($canedit) {
+         echo "<th colspan='2'>&nbsp;</th>";
+      }
+      echo "</tr>\n";
       if (count($this->RuleList->list)) {
          $ruletype=$this->RuleList->list[0]->getType();
          initNavigateListItems($ruletype);

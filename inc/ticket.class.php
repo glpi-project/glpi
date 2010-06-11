@@ -1574,28 +1574,28 @@ class Ticket extends CommonDBTM {
          $tab[25]['table']        = 'glpi_ticketfollowups';
          $tab[25]['field']        = 'content';
          $tab[25]['linkfield']    = '';
-         $tab[25]['name']         = $LANG['job'][9];
+         $tab[25]['name']         = $LANG['job'][9]." - ".$LANG['joblist'][6];
          $tab[25]['forcegroupby'] = true;
          $tab[25]['splititems']   = true;
 
          $tab[27]['table']        = 'glpi_ticketfollowups';
          $tab[27]['field']        = 'count';
          $tab[27]['linkfield']    = '';
-         $tab[27]['name']         = $LANG['tracking'][29]." ".$LANG['job'][9];
+         $tab[27]['name']         = $LANG['job'][9]." - ".$LANG['tracking'][29];
          $tab[27]['forcegroupby'] = true;
          $tab[27]['usehaving']    = true;
 
          $tab[26]['table']        = 'glpi_tickettasks';
          $tab[26]['field']        = 'content';
          $tab[26]['linkfield']    = '';
-         $tab[26]['name']         = $LANG['job'][7];
+         $tab[26]['name']         = $LANG['job'][7]." - ".$LANG['joblist'][6];
          $tab[26]['forcegroupby'] = true;
          $tab[26]['splititems']   = true;
 
          $tab[28]['table']        = 'glpi_tickettasks';
          $tab[28]['field']        = 'count';
          $tab[28]['linkfield']    = '';
-         $tab[28]['name']         = $LANG['tracking'][29]." ".$LANG['job'][7];
+         $tab[28]['name']         = $LANG['job'][7]." - ".$LANG['tracking'][29];
          $tab[28]['forcegroupby'] = true;
          $tab[28]['usehaving']   = true;
 
@@ -1609,7 +1609,7 @@ class Ticket extends CommonDBTM {
          $tab[24]['table']     = $this->getTable();
          $tab[24]['field']     = 'solution';
          $tab[24]['linkfield'] = '';
-         $tab[24]['name']      = $LANG['jobresolution'][1];
+         $tab[24]['name']      = $LANG['jobresolution'][1]." - ".$LANG['joblist'][6];
 
          $tab['cost'] = $LANG['financial'][5];
 
@@ -1999,7 +1999,7 @@ class Ticket extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][48]."</td><td colspan='3'>";
+      echo "<td>".$LANG['job'][48]."&nbsp;:</td><td colspan='3'>";
 
       $current = $this->fields['status'];
       if (!$canedit
@@ -2016,9 +2016,9 @@ class Ticket extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['joblist'][6]."</td><td colspan='3'>";
+      echo "<td>".$LANG['joblist'][6]." (".$LANG['validation'][16].")&nbsp;:</td><td colspan='3'>";
       if ($canedit) {
-         echo "<textarea name='solution' rows='12' cols='100'>";
+         echo "<textarea name='solution' rows='12' cols='80'>";
          echo $this->getField('solution') . "</textarea>";
       } else {
          echo nl2br($this->getField('solution'));

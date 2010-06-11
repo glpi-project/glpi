@@ -232,6 +232,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                   case 'UserDropdown' :
                      echo getUserName($data[$field['name']]);
                      break;
+                  case 'bool' :
+                     echo Dropdown::getYesNo($data[$field['name']]);
+                     break;
                   case 'dropdownValue' :
                      echo Dropdown::getDropdownName(getTableNameForForeignKeyField($field['name']),
                                      $data[$field['name']]);
