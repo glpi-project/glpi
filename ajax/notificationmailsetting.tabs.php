@@ -52,22 +52,20 @@ if ($_POST['id'] > 0) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $target->showFormMailServerConfig($_POST['target']);
-         $target->showFormTest($_POST['target']);
          $target->showFormAlerts($_POST['target']);
          Plugin::displayAction($target, $_REQUEST['glpi_tab']);
          break;
 
-      case 2 :
+      case 1 :
          $target->showFormMailServerConfig($_POST['target']);
          break;
 
-      case 3 :
+      case 2 :
          $target->showFormAlerts($_POST['target']);
          break;
 
       default :
          if (!Plugin::displayAction($target, $_REQUEST['glpi_tab'])) {
-            $target->showFormTest($_POST['target']);
          }
    }
 }
