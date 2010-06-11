@@ -86,7 +86,7 @@ switch($_REQUEST['glpi_tab']) {
 
    default :
       if (!Plugin::displayAction($config,$_REQUEST['glpi_tab'])) {
-         $config->showFormMain();
+      $config->showFormDisplay();
       }
 }
 

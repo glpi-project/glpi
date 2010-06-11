@@ -863,14 +863,14 @@ class Computer extends CommonDBTM {
       $tab[7]['table']        = 'glpi_deviceprocessors';
       $tab[7]['field']        = 'designation';
       $tab[7]['linkfield']    = '';
-      $tab[7]['name']         = $LANG['computers'][21];
+      $tab[7]['name']         = $LANG['devices'][4];
       $tab[7]['forcegroupby'] = true;
       $tab[7]['usehaving']    = true;
 
       $tab[36]['table']        = 'glpi_computers_deviceprocessors';
       $tab[36]['field']        = 'specificity';
       $tab[36]['linkfield']    = '';
-      $tab[36]['name']         = $LANG['computers'][21]." ".$LANG['setup'][35];
+      $tab[36]['name']         = $LANG['devices'][4]." ".$LANG['setup'][35];
       $tab[36]['forcegroupby'] = true;
       $tab[36]['usehaving']    = true;
       $tab[36]['datatype']     = 'number';
