@@ -383,7 +383,8 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][40] . " </td>\n<td>";
-      Dropdown::showInteger('cron_sync_number', $this->fields["cron_sync_number"], 0, 100);
+      Dropdown::showInteger('cron_sync_number', $this->fields["cron_sync_number"], 1, 100, 1,
+                            array (0 => $LANG['common'][49]));
       echo "</td></tr></table>\n";
 
       echo "<br>" . $LANG['ocsconfig'][15];
