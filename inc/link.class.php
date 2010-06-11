@@ -320,18 +320,14 @@ class Link extends CommonDBTM {
       $result=$DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['title'][33]."</th></tr>";
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['title'][33]."</th></tr>";
          while ($data=$DB->fetch_assoc($result)) {
             $name=$data["name"];
             if (empty($name)) {
                $name=$data["link"];
             }
             $file=trim($data["data"]);
-
-
-//                 else {
-//                   echo "<tr class='tab_bg_2'><td><a target='_blank' href='$link'>$name</a></td></tr>";
-//                }
 
             $tosend=false;
             if (empty($file)) {
@@ -356,7 +352,7 @@ class Link extends CommonDBTM {
                            $data['id']."&amp;itemtype=$itemtype&amp;id=$ID";
                   }
                echo "<tr class='tab_bg_2'>";
-               echo "<td><a href='$url' target='_blank'>".
+               echo "<td align='center'><a href='$url' target='_blank'>".
                            $clean_name[0]."</a></td></tr>";
 
                }
@@ -364,7 +360,10 @@ class Link extends CommonDBTM {
          }
          echo "</table></div>";
       } else {
-         echo "<div class='center'><strong>".$LANG['links'][7]."</strong></div>";
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th>".$LANG['title'][33]."</th></tr>";
+         echo "<tr class='tab_bg_2'><td align='center'><strong>".$LANG['links'][7]."</strong></td></tr>";
+         echo "</table></div>";
       }
    }
 }
