@@ -930,7 +930,7 @@ class Auth {
                      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                      echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                             $LANG['ocsng'][24] . "'>";
-                     echo "</td></tr></table>";
+                     echo "</td></tr></table><br>";
                   }
                   break;
 
@@ -953,22 +953,24 @@ class Auth {
                         echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                         echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                                $LANG['ocsng'][24] . "'>";
-                        echo "</td></tr></table>";
+                        echo "</td></tr></table><br>";
                      }
                   }
                   break;
             }
-            echo "<br><div><span class='icon_consol'>".$LANG['login'][30]."&nbsp:</span><br><br>";
+            echo "<table class='tab_cadre'>";
+            echo "<tr><th colspan='2'>".$LANG['login'][30]."&nbsp:</th></tr>";
+            echo "<tr class='tab_bg_2'><td>";
             $rand = Auth::dropdown(array('name'=>'authtype'));
             $paramsmassaction=array('authtype'=>'__VALUE__','name'=>'change_auth_method');
             ajaxUpdateItemOnSelectEvent("dropdown_authtype$rand","show_massiveaction_field",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
                                        $paramsmassaction);
             echo "<input type='hidden' name='id' value='" . $ID . "'>";
-            echo "<span id='show_massiveaction_field'>";
-            echo "&nbsp;<input type='submit' name='change_auth_method' class='submit' value=\"".
+            echo "</td><td>";
+            echo "<input type='submit' name='change_auth_method' class='submit' value=\"".
                   $LANG['buttons'][2]."\" ></span>\n";
-            echo "</div>";
+            echo "</td></tr></table>";
 
             echo "</form></div>";
          }
