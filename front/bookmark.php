@@ -105,7 +105,7 @@ if ($_GET["action"] == "edit") {
    }
 } else {
    echo '<br>';
-   $tabs[1] = array('title'  => $LANG['common'][77],
+   $tabs[1] = array('title'  => $LANG['common'][88],
                     'url'    => $CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
                     'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&itemtype=Bookmark");
 

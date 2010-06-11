@@ -51,7 +51,7 @@ if (isset($_POST['is_private'])) {
          echo "<input type='hidden' name='is_private' value='1'>\n";
          echo "<input type='hidden' name='entities_id' value='-1'>\n";
          echo "<input type='hidden' name='is_recursive' value='0'>\n";
-         echo $LANG['common'][77]. " - ";
+         echo $LANG['common'][88]. " - ";
          echo "<a onClick='setPublic".$_POST['rand']."()'>".$LANG['common'][78]."</a>";
          break;
 
