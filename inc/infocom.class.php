@@ -668,14 +668,15 @@ class Infocom extends CommonDBTM {
                         'entities_id' => $item->getEntityID());
 
             if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
-               echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
-
-               echo "<table class='tab_cadre'><tr><th>";
+               echo "<div class='center b'>";
+               echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><th>";
+               echo $item->getTypeName()." - ".$item->getName()."</th></tr>";
+               echo "<tr class='tab_bg_1'><td align='center'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".$item->getType().
-                     "&amp;items_id=$dev_ID&amp;add=add'>".$LANG['financial'][68]."</a></th></tr></table>";
+                     "&amp;items_id=$dev_ID&amp;add=add'>".$LANG['financial'][68]."</a>";
+               echo "</td></tr></table></div>";
             }
          } else { // getFromDBforDevice
-            echo "<div class='center b'><br><br>".$item->getTypeName()." - ".$item->getName()."</div>";
             $canedit = ($ic->can($ic->fields['id'], "w") && $withtemplate!=2);
             if ($canedit) {
                echo "<form name='form_ic' method='post' action='".$CFG_GLPI["root_doc"].
