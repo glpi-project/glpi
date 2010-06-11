@@ -57,13 +57,11 @@ class Config extends CommonDBTM {
       $tabs[1]  = $LANG['setup'][70];   // Main
       $tabs[2]  = $LANG['setup'][119];  // Display
       $tabs[3]  = $LANG['setup'][6];    // Prefs
-      $tabs[4]  = $LANG['login'][10]; //Authentication
-      $tabs[5]  = $LANG['setup'][184];  // Restrict
+      //$tabs[4]  = $LANG['login'][10]; //Authentication
+      $tabs[5]  = $LANG['Menu'][38];  // Restrict
       $tabs[6]  = $LANG['title'][24];   // Helpdesk
-      $tabs[7]  = $LANG['connect'][0];  // Conection
       $tabs[8]  = $LANG['setup'][800];  // Slave
       $tabs[9]  = $LANG['setup'][720];  // SysInfo
-      $tabs[10] = $LANG['install'][4]; //Look for updates
       return $tabs;
    }
 
@@ -90,19 +88,12 @@ class Config extends CommonDBTM {
          unset($input["proxy_password"]);
       }
 
-//       if (isset($input["planning_begin"])) {
-//          $input["planning_begin"]=$input["planning_begin"].":00:00";
-//       }
-//       if (isset($input["planning_end"])) {
-//          $input["planning_end"]=$input["planning_end"].":00:00";
-//       }
-
       // Manage DB Slave process
       if (isset($input['_dbslave_status'])) {
          $already_active=DBConnection::isDBSlaveActive();
          if ($input['_dbslave_status']) {
             DBConnection::changeCronTaskStatus(true);
-         	if (!$already_active) {
+            if (!$already_active) {
                DBConnection::createDBSlaveConfig();
             } else {
                DBConnection::saveDBSlaveConf($input["_dbreplicate_dbhost"],$input["_dbreplicate_dbuser"],
@@ -183,23 +174,20 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
+      echo "<strong>" . $LANG['setup'][306] .' : '.$LANG['setup'][400]. "</strong></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][360] . "&nbsp;:</td><td>";
-      $tab=array(0=>$LANG['common'][59],1=>$LANG['entity'][8]);
-      Dropdown::showFromArray('use_autoname_by_entity', $tab,
-                        array('value' => $CFG_GLPI["use_autoname_by_entity"]));
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][401] . "&nbsp;:</td>";
+      echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
       echo "</td>";
-      echo "<td>" . $LANG['setup'][221] . "&nbsp;:</td><td>";
-      showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
+      echo "<td>" . $LANG['setup'][402] . "&nbsp;:</td>";
+      echo "<td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\">";
       echo "</td></tr>";
 
-     echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][86] . "&nbsp;:</td><td>";
-      Dropdown::show('SoftwareCategory',
-                     array('value'  => $CFG_GLPI["softwarecategories_id_ondelete"],
-                           'name' => "softwarecategories_id_ondelete"));
-
-      echo "</td><td colspan='2'></td></tr>";
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][403] . "&nbsp;:</td>";
+      echo "<td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\">";
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][404] . "&nbsp;:</td>";
+      echo "<td><input type=\"password\" name=\"proxy_password\" value=\"\"  autocomplete='off'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
@@ -261,7 +249,10 @@ class Config extends CommonDBTM {
       echo "<td>";
       echo "<input size='22' type=\"text\" name=\"central_doc_url\" value=\"" .
                  $CFG_GLPI["central_doc_url"] . "\">";
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td>";
+      echo "<td> " . $LANG['setup'][117] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
+      echo " </td></tr>";
 
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][118] . "&nbsp;:</td>";
       echo "<td colspan='3'>";
@@ -309,7 +300,7 @@ class Config extends CommonDBTM {
     *@return Nothing (display)
     *
    **/
-   function showFormRestrict() {
+   function showFormInventory() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!haveRight("config", "w")) {
@@ -321,39 +312,106 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][270] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . $LANG['Menu'][38] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['setup'][221] . "&nbsp;:</td><td>";
+      showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
+      echo "</td>";
       echo "<td> " . $LANG['setup'][271] . "&nbsp;:</td>";
       echo "<td>";
       $this->dropdownGlobalManagement ("monitors_management_restrict",
                                        $CFG_GLPI["monitors_management_restrict"]);
+      echo "</td</tr>";
+
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][360] . "&nbsp;:</td><td>";
+      $tab=array(0=>$LANG['common'][59],1=>$LANG['entity'][8]);
+      Dropdown::showFromArray('use_autoname_by_entity', $tab,
+                        array('value' => $CFG_GLPI["use_autoname_by_entity"]));
+      echo "</td>";
       echo "</td><td> " . $LANG['setup'][272] . "&nbsp;:</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+     echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][86] . "&nbsp;:</td><td>";
+      Dropdown::show('SoftwareCategory',
+                     array('value'  => $CFG_GLPI["softwarecategories_id_ondelete"],
+                           'name' => "softwarecategories_id_ondelete"));
+      echo "</td>";
       echo "<td> " . $LANG['setup'][273] . "&nbsp;:</td><td>";
       $this->dropdownGlobalManagement ("phones_management_restrict",
                                        $CFG_GLPI["phones_management_restrict"]);
-      echo "</td><td> " . $LANG['setup'][275] . "&nbsp;:</td><td>";
-      $this->dropdownGlobalManagement("printers_management_restrict",
-                                      $CFG_GLPI["printers_management_restrict"]);
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td colspan='2'></td>";
+      echo "<td> " . $LANG['setup'][275] . "&nbsp;:</td><td>";
+      $this->dropdownGlobalManagement("printers_management_restrict",
+                                      $CFG_GLPI["printers_management_restrict"]);
+      echo "</td></tr></table>";
 
-      echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][20] . "</th></tr>";
+      echo "<br><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][117] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
-      echo " </td><td colspan='2'></td></tr>";
+/*
+      echo "<tr><th>&nbsp;</th>";
+      echo "<th>" . $LANG['common'][92] . "</th>";
+      echo "<th>" . $LANG['common'][34] . "</th>";
+      echo "<th>" . $LANG['common'][35] . "</th>";
+      echo "<th>" . $LANG['common'][15] . "</th>";
+      echo "<th>" . $LANG['state'][0] . "</th>";
+      echo "</tr>";
+*/
+      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][92] . "&nbsp;:</td>";
+
+      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][92] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_contact_autoupdate", $CFG_GLPI["is_contact_autoupdate"]);
+      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_contact_autoclean", $CFG_GLPI["is_contact_autoclean"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][34] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_user_autoupdate", $CFG_GLPI["is_user_autoupdate"]);
+      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_user_autoclean", $CFG_GLPI["is_user_autoclean"]);
+      echo " </td></tr>";
+
+      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][35] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_group_autoupdate", $CFG_GLPI["is_group_autoupdate"]);
+      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_group_autoclean", $CFG_GLPI["is_group_autoclean"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][15] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_location_autoupdate", $CFG_GLPI["is_location_autoupdate"]);
+      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
+      Dropdown::showYesNo("is_location_autoclean", $CFG_GLPI["is_location_autoclean"]);
+      echo " </td></tr>";
+
+      echo "<tr class='tab_bg_2'><td> " . $LANG['state'][0] . "&nbsp;:</td><td>";
+      State::dropdownBehaviour("state_autoupdate_mode", $LANG['setup'][197],
+                             $CFG_GLPI["state_autoupdate_mode"]);
+      echo "</td><td>";
+      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
+                             $CFG_GLPI["state_autoclean_mode"]);
+      echo " </td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
+   }
+
+   static function showConnectionDropdown($name,$value=0) {
+      global $LANG;
+      $values[0] = $LANG['setup'][285];
+      $values[1] = $LANG['setup'][283];
    }
 
    /**
@@ -393,75 +451,6 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
-             $LANG['buttons'][2] . "\" ></td></tr>";
-      echo "</table></div>";
-      echo "</form>";
-   }
-
-   /**
-    * Print the config form for connections
-    *
-    *@param $target filename : where to go when done.
-    *
-    *@return Nothing (display)
-    *
-   **/
-   function showFormConnection() {
-      global $DB, $LANG, $CFG_GLPI;
-
-      if (!haveRight("config", "w")) {
-         return false;
-      }
-
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
-      echo "<div class='center' id='tabsbody'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
-      echo "<table class='tab_cadre_fixe'>";
-
-      echo "<tr><th colspan='3'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";
-      echo "</tr>";
-
-      echo "<tr><th>&nbsp;</th><th>" . $LANG['setup'][281] . "</th>";
-      echo "<th>" . $LANG['setup'][282] . "</th></tr>";
-
-      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][92] . "&nbsp;:</td>";
-      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_contact_autoupdate", $CFG_GLPI["is_contact_autoupdate"]);
-      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_contact_autoclean", $CFG_GLPI["is_contact_autoclean"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][34] . "&nbsp;:</td>";
-      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_user_autoupdate", $CFG_GLPI["is_user_autoupdate"]);
-      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_user_autoclean", $CFG_GLPI["is_user_autoclean"]);
-      echo " </td></tr>";
-
-      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][35] . "&nbsp;:</td>";
-      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_group_autoupdate", $CFG_GLPI["is_group_autoupdate"]);
-      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_group_autoclean", $CFG_GLPI["is_group_autoclean"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td> " . $LANG['common'][15] . "&nbsp;:</td>";
-      echo "<td>" . $LANG['setup'][283] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_location_autoupdate", $CFG_GLPI["is_location_autoupdate"]);
-      echo "</td><td>" . $LANG['setup'][284] . "&nbsp;:&nbsp;";
-      Dropdown::showYesNo("is_location_autoclean", $CFG_GLPI["is_location_autoclean"]);
-      echo " </td></tr>";
-
-      echo "<tr class='tab_bg_2'><td> " . $LANG['state'][0] . "&nbsp;:</td><td>";
-      State::dropdownBehaviour("state_autoupdate_mode", $LANG['setup'][197],
-                             $CFG_GLPI["state_autoupdate_mode"]);
-      echo "</td><td>";
-      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
-                             $CFG_GLPI["state_autoclean_mode"]);
-      echo " </td></tr>";
-
-      echo "<tr class='tab_bg_2'><td colspan='3' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
@@ -666,43 +655,6 @@ class Config extends CommonDBTM {
       echo "</form>";
    }
 
-   function showFormUpdate() {
-      global $DB, $LANG, $CFG_GLPI;
-
-      if (!haveRight("config","r")) {
-         return false;
-      }
-
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
-      echo "<div class='center' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe'>";
-
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['setup'][306] .' : '.$LANG['setup'][400]. "</strong></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][401] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][402] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\">";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][403] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\">";
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][404] . "&nbsp;:</td>";
-      echo "<td><input type=\"password\" name=\"proxy_password\" value=\"\"  autocomplete='off'></td></tr>";
-
-
-      echo "<tr class='tab_bg_2'><td colspan='7' class='center'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
-      echo "<input type='submit' name='update' class='submit' value=\"" .
-             $LANG['buttons'][2] . "\"></td></tr></table>";
-
-      echo "</div>";
-      echo "</form>";
-   }
-
    /**
 
     * Print the config form for default user prefs
@@ -879,6 +831,8 @@ class Config extends CommonDBTM {
       echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
 
+      $oldlang = $_SESSION['glpilanguage'];
+      loadLanguage('en_GB');
       echo "GLPI ".$CFG_GLPI['version']." (".$CFG_GLPI['root_doc']." => ".
             dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
 
@@ -920,6 +874,7 @@ class Config extends CommonDBTM {
       	$tmp = new $type;
          $tmp->showSystemInformations($width);
       }
+      loadLanguage($oldlang);
 
       echo "\n</td></tr>";
       echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";

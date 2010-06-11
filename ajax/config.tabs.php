@@ -52,9 +52,8 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormDisplay();
       $config->showFormUserPrefs($CFG_GLPI);
       $config->showFormAuthentication();
-      $config->showFormRestrict();
+      $config->showFormInventory();
       $config->showFormHelpdesk();
-      $config->showFormConnection();
       $config->showFormDBSlave();
       $config->showSystemInformations();
       Plugin::displayAction($config,$_REQUEST['glpi_tab']);
@@ -73,15 +72,11 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    case 5 :
-      $config->showFormRestrict();
+      $config->showFormInventory();
       break;
 
    case 6 :
       $config->showFormHelpdesk();
-      break;
-
-   case 7 :
-      $config->showFormConnection();
       break;
 
    case 8 :
@@ -90,10 +85,6 @@ switch($_REQUEST['glpi_tab']) {
 
    case 9 :
       $config->showSystemInformations();
-      break;
-
-   case 10 :
-      $config->showFormUpdate();
       break;
 
    default :
