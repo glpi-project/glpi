@@ -56,7 +56,6 @@ class Config extends CommonDBTM {
 
       $tabs[1]  = $LANG['setup'][119];  // Display
       $tabs[3]  = $LANG['setup'][6];    // Prefs
-      //$tabs[4]  = $LANG['login'][10]; //Authentication
       $tabs[5]  = $LANG['Menu'][38];  // Restrict
       $tabs[6]  = $LANG['title'][24];   // Helpdesk
       $tabs[8]  = $LANG['setup'][800];  // Slave
@@ -376,7 +375,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
+      echo "<input type=\"submit\" name=\"update_auth\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
       echo "</table></div>";
       echo "</form>";
