@@ -92,7 +92,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       helpHeader($LANG['title'][1],'',$_SESSION["glpiname"]);
    } else {
-      commonHeader($LANG['Menu'][31],'',"maintain","ticket");
+      commonHeader($LANG['common'][56],'',"maintain","ticket");
    }
 
    $track->showForm($_GET["id"]);
