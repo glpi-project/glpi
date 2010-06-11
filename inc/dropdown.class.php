@@ -187,8 +187,11 @@ class Dropdown {
             }
             $options_tooltip['linkid']="comment_link_".$params["name"].$params['rand'];
          } else {
-            if ($item->canView()) {
-               $options_tooltip['link']=$item->getSearchUrl();
+            if ($item->canView()
+               && $params['value'] && $item->getFromDB($params['value'])
+               && $item->canViewItem()) {
+               $options_tooltip['link']=$item->getLinkURL();
+
                $options_tooltip['linktarget']='_blank';
             }
          }

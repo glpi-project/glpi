@@ -374,7 +374,7 @@ $LANG['consumables'][26] = "Date utilisation";
 
 $LANG['consumables'][32] = "Donner";
 
-$LANG['consumables'][35] = "Consommables usagés";
+$LANG['consumables'][35] = "Consommables utilisés";
 $LANG['consumables'][36] = "Lieu Stockage";
 $LANG['consumables'][37] = "Réintégrer dans le stock";
 $LANG['consumables'][38] = "Seuil d'alerte";

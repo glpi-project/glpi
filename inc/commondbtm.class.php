@@ -610,6 +610,27 @@ class CommonDBTM extends CommonGLPI {
       return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
    }
 
+
+   /**
+    * Get the link url to an item
+    *
+    * @return string : HTML link
+    */
+   function getLinkURL() {
+      global $CFG_GLPI;
+
+      if (!isset($this->fields['id'])) {
+         return '';
+      }
+      $link_item = $this->getFormURL();
+
+      $link  = $link_item;
+      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
+      $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
+
+      return $link;
+   }
+
    /**
    * Add a message on add action
    *
