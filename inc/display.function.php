@@ -818,7 +818,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    }
 
 
-   if (haveRight("config","w") || haveRight("notification","r")) {
+   if (haveRight("config","w") || haveRight("notification","r") && canUseImapPop()) {
 
       $menu['config']['content']['mailing']['title']=$LANG['setup'][704];
       $menu['config']['content']['mailing']['page']='/front/setup.notification.php';
