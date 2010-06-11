@@ -156,7 +156,7 @@ $LANG['cartridges'][7]  = "Pas de cartouche trouvée";
 $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
 $LANG['cartridges'][11] = "Jet d'encre";
-$LANG['cartridges'][12] = "Type de Cartouche";
+$LANG['cartridges'][12] = "Type de cartouche";
 $LANG['cartridges'][13] = "Neuve(s)";
 $LANG['cartridges'][14] = "Utilisée(s)";
 $LANG['cartridges'][15] = "Usagée(s)";
@@ -317,13 +317,11 @@ $LANG['computers'][11] = "Product ID du système d'exploitation";
 
 $LANG['computers'][14] = "Inséré";
 
-$LANG['computers'][21] = "CPU";
-
 $LANG['computers'][23] = "Type de mémoire";
 $LANG['computers'][24] = "Mémoire (Mio)";
-$LANG['computers'][25] = "Taille HD";
+$LANG['computers'][25] = "Taille du disque dur";
 
-$LANG['computers'][36] = "HD-Type";
+$LANG['computers'][36] = "Type de disque dur";
 $LANG['computers'][37] = "Pas de moniteur connecté.";
 $LANG['computers'][38] = "Pas d'imprimante connectée";
 $LANG['computers'][39] = "Imprimante(s)";
@@ -336,7 +334,7 @@ $LANG['computers'][49] = "Modification de l'usager. Les éléments connectés on
 $LANG['computers'][50] = "Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les mêmes valeurs que l'ordinateur.";
 $LANG['computers'][51] = "Source de mise à jour";
 $LANG['computers'][52] = "Version du système d'exploitation";
-$LANG['computers'][53] = "Service Pack";
+$LANG['computers'][53] = "Service pack";
 $LANG['computers'][54] = "Pas de téléphone connecté";
 $LANG['computers'][55] = "Téléphone(s)";
 $LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut l'ordinateur.";
@@ -360,7 +358,7 @@ $LANG['consumables'][7]  = "Pas de consommable trouvé";
 
 $LANG['consumables'][9]  = "Aucun consommable";
 
-$LANG['consumables'][12] = "Type de Consommable";
+$LANG['consumables'][12] = "Type de consommable";
 $LANG['consumables'][13] = "Neuf(s)";
 
 $LANG['consumables'][15] = "Utilisé(s)";
@@ -445,7 +443,7 @@ $LANG['devices'][7]  = "Carte son";
 
 $LANG['devices'][19] = "Lecteurs";
 $LANG['devices'][20] = "Contrôleurs";
-$LANG['devices'][21] = "Autres Composants";
+$LANG['devices'][21] = "Autres composants";
 $LANG['devices'][22] = "Boîtiers";
 $LANG['devices'][23] = "Alimentation";
 $LANG['devices'][24] = "par défaut";
@@ -626,7 +624,7 @@ $LANG['financial'][69]  = "Périodicité du contrat";
 $LANG['financial'][76]  = "Date de mise en service";
 $LANG['financial'][77]  = "Coefficient d'amortissement";
 $LANG['financial'][78]  = "Valeur extension garantie";
-$LANG['financial'][79]  = "Type de Tiers";
+$LANG['financial'][79]  = "Type de tiers";
 $LANG['financial'][80]  = "Expiration garantie";
 $LANG['financial'][81]  = "Valeur nette comptable";
 $LANG['financial'][82]  = "Numéro de facture";
