@@ -295,7 +295,7 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $SEARCHOPTION=Search::getOptions($itemtype);
-
+      
       $query="SELECT *
               FROM `glpi_logs`
               WHERE `items_id`='".$items_id."'
@@ -314,6 +314,7 @@ class Log extends CommonDBTM {
          $tmp['user_name'] = $data["user_name"];
          $tmp['field']= "";
          $tmp['change']= "";
+         $tmp['datatype']= "";
          // This is an internal device ?
          if ($data["linked_action"]) {
             // Yes it is an internal device
@@ -501,6 +502,9 @@ class Log extends CommonDBTM {
                   if (isset($val2['shorthistory'])) {
                      $shorthistory = $val2['shorthistory'];
                   }
+                  if (isset($val2['datatype'])) {
+                     $tmp['datatype']= $val2["datatype"];
+                  }
                }
             }
             switch ($fieldname) {
@@ -515,8 +519,14 @@ class Log extends CommonDBTM {
                      $tmp['change'] = $LANG['log'][64];
                   }
                   else {
-                     $tmp['change'] = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".
-                               $data[ "new_value"]."\"";
+                     switch ($tmp['datatype']) {
+                        case "bool" :
+                           $data["old_value"]=Dropdown::getYesNo($data["old_value"]);
+                           $data["new_value"]=Dropdown::getYesNo($data["new_value"]);
+                           break;
+                     }
+                     $tmp['change'] = "\"".$data["old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".
+                               $data["new_value"]."\"";
                   }
             }
          }// fin du else
