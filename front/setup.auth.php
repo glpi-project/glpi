@@ -43,7 +43,9 @@ commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth",-1);
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>&nbsp;" . $LANG['setup'][67] . "&nbsp;</th></tr>";
-echo "<tr class='tab_bg_1'><td class='center b'><a href='auth.settings.php'>";
+if (haveRight("config","w")) {
+   echo "<tr class='tab_bg_1'><td class='center b'><a href='auth.settings.php'>";
+}
 echo $LANG['common'][12]. ' ' . $LANG['login'][10]."</a></td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (canUseLdap()) {
