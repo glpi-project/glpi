@@ -266,12 +266,13 @@ class Budget extends CommonDBTM{
       echo "<br><br><div class='center'><table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
-      echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
+      echo "</th><th colspan='4'>".$LANG['document'][19]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th>";
+      echo "<th>".$LANG['financial'][21]."</th>";
       echo "</tr>";
 
       $num=0;
@@ -285,7 +286,7 @@ class Budget extends CommonDBTM{
          if ($item->canView()) {
             switch ($itemtype) {
                default :
-                  $query = "SELECT ".$item->getTable().".*
+                  $query = "SELECT ".$item->getTable().".*, `glpi_infocoms`.`value`
                            FROM `glpi_infocoms`
                            INNER JOIN `".$item->getTable()."`
                                        ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
@@ -331,7 +332,7 @@ class Budget extends CommonDBTM{
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
                         rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
                         $LANG['reports'][57]."</a></td>";
-                  echo "<td class='center'>-</td><td class='center'>-</td></tr>";
+                  echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-</td></tr>";
                } else if ($nb) {
                   for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false) {
                      $ID="";
@@ -354,6 +355,9 @@ class Budget extends CommonDBTM{
                      echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-");
                      echo "</td><td class='center'>".
                                  (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+                     echo "<td class='center'>".(isset($data["value"])? "".formatNumber($data["value"],true)."" :"-");
+
+                     echo "</td>";
                      echo "</tr>";
                   }
                }
@@ -361,7 +365,7 @@ class Budget extends CommonDBTM{
             }
          }
       }
-      echo "<tr class='tab_bg_2'><td class='center'>$num</td><td colspan='4'>&nbsp;</td></tr> ";
+      echo "<tr class='tab_bg_2'><td class='center'>$num</td><td colspan='5'>&nbsp;</td></tr> ";
       echo "</table></div>";
    }
 
