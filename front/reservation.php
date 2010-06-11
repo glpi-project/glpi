@@ -43,7 +43,7 @@ if (!isset($_GET["reservationitems_id"])) {
 }
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   helpHeader($LANG['Menu'][31],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 } else {
    commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 }
