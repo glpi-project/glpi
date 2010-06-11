@@ -735,7 +735,7 @@ class Reservation extends CommonDBTM {
                   ORDER BY `begin`";
          $result=$DB->query($query);
 
-         echo "<table class='tab_cadre_fixe'><tr><th colspan='5'>";
+         echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".$ri->fields['id']."' >".
                   $LANG['reservation'][35]."</a>";
@@ -776,7 +776,7 @@ class Reservation extends CommonDBTM {
                   ORDER BY `begin` DESC";
          $result=$DB->query($query);
 
-         echo "<table class='tab_cadre_fixe'><tr><th colspan='5'>";
+         echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".$ri->fields['id']."' >".
                   $LANG['reservation'][36]."</a>";
