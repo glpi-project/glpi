@@ -55,11 +55,13 @@ class Config extends CommonDBTM {
       global $LANG;
 
       $tabs[1]  = $LANG['setup'][119];  // Display
-      $tabs[3]  = $LANG['setup'][6];    // Prefs
-      $tabs[5]  = $LANG['Menu'][38];  // Restrict
-      $tabs[6]  = $LANG['title'][24];   // Helpdesk
-      $tabs[8]  = $LANG['setup'][800];  // Slave
-      $tabs[9]  = $LANG['setup'][720];  // SysInfo
+      $tabs[2]  = $LANG['setup'][6];    // Prefs
+      $tabs[3]  = $LANG['Menu'][38];  // Inventory
+      $tabs[4]  = $LANG['title'][24];   // Helpdesk
+      $tabs[5]  = $LANG['setup'][720];  // SysInfo
+      if (DBConnection::isDBSlaveActive()) {
+         $tabs[6]  = $LANG['setup'][800];  // Slave
+      }
       return $tabs;
    }
 
@@ -290,7 +292,6 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='6'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";
       echo "</tr>";
 
-
       echo "<tr><th>&nbsp;</th>";
       echo "<th>" . $LANG['common'][92] . "</th>";
       echo "<th>" . $LANG['common'][34] . "</th>";
@@ -403,38 +404,31 @@ class Config extends CommonDBTM {
       $active = DBConnection::isDBSlaveActive();
 
       echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][800] . "</th></tr>";
+      $DBSlave = DBConnection::getDBSlaveConf();
 
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][801] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("_dbslave_status", $active);
-      echo " </td><td colspan='2'></td></tr>";
+      echo "<tr class='tab_bg_2'><td>" . $LANG['install'][30] . "&nbsp;:</td>";
+      echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" .
+                 $DBSlave->dbhost . "\"></td>";
+      echo "<td>" . $LANG['setup'][802] . "&nbsp;:</td><td>";
+      echo "<input type=\"text\" name=\"_dbreplicate_dbdefault\" value=\"" .
+             $DBSlave->dbdefault . "\">";
+      echo "</td></tr>";
 
-      if ($active){
-         $DBSlave = DBConnection::getDBSlaveConf();
+      echo "<tr class='tab_bg_2'><td>" . $LANG['install'][31] . "&nbsp;:</td><td>";
+      echo "<input type=\"text\" name=\"_dbreplicate_dbuser\" value=\"" . $DBSlave->dbuser . "\">";
+      echo "<td>" . $LANG['install'][32] . "&nbsp;:</td><td>";
+      echo "<input type=\"password\" name=\"_dbreplicate_dbpassword\" value=\"" .
+             $DBSlave->dbpassword . "\">";
+      echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>" . $LANG['install'][30] . "&nbsp;:</td>";
-         echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" .
-                    $DBSlave->dbhost . "\"></td>";
-         echo "<td>" . $LANG['setup'][802] . "&nbsp;:</td><td>";
-         echo "<input type=\"text\" name=\"_dbreplicate_dbdefault\" value=\"" .
-                $DBSlave->dbdefault . "\">";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'><td>" . $LANG['install'][31] . "&nbsp;:</td><td>";
-         echo "<input type=\"text\" name=\"_dbreplicate_dbuser\" value=\"" . $DBSlave->dbuser . "\">";
-         echo "<td>" . $LANG['install'][32] . "&nbsp;:</td><td>";
-         echo "<input type=\"password\" name=\"_dbreplicate_dbpassword\" value=\"" .
-                $DBSlave->dbpassword . "\">";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'>";
-         if ($DBSlave->connected && !$DB->isSlave()) {
-            echo "<td colspan='4' class='center'>" . $LANG['setup'][803] . "&nbsp;:";
-            echo timestampToString(DBConnection::getReplicateDelay(),1);
-            echo "</td>";
-         } else
-            echo "<td colspan='4'></td>";
-         echo "</tr>";
-      }
+      echo "<tr class='tab_bg_2'>";
+      if ($DBSlave->connected && !$DB->isSlave()) {
+         echo "<td colspan='4' class='center'>" . $LANG['setup'][803] . "&nbsp;:";
+         echo timestampToString(DBConnection::getReplicateDelay(),1);
+         echo "</td>";
+      } else
+      echo "<td colspan='4'></td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
@@ -775,7 +769,11 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td>";
+      echo "<td> " . $LANG['setup'][801] . "&nbsp;:</td><td>";
+      $active = DBConnection::isDBSlaveActive();
+      Dropdown::showYesNo("_dbslave_status", $active);
+      echo " </td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['setup'][306] .' - '.$LANG['setup'][400]. "</strong></td></tr>";
