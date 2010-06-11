@@ -65,7 +65,7 @@ class MailCollector  extends CommonDBTM {
    var $maxfetch_emails=10;
    /// Max size for attached files
    var $filesize_max=0;
-   /// Body converted 
+   /// Body converted
    var $body_converted=false;
 
    public $dohistory = true;
@@ -174,9 +174,7 @@ class MailCollector  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='200px'> " . $LANG['mailgate'][7] . "&nbsp;:</td><td>";
-      echo "<input type='text' size='15' name='filesize_max' value=\"" .
-             $this->fields["filesize_max"] . "\">&nbsp;".$LANG['mailgate'][8]." - ".
-             getSize($this->fields["filesize_max"]);
+      MailCollector::showMaxFilesize('filesize_max',$this->fields["filesize_max"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td><td>";
@@ -735,7 +733,7 @@ class MailCollector  extends CommonDBTM {
                       && function_exists('mb_convert_encoding')
                       && strtoupper($param->value) != 'UTF-8') {
                      $text = mb_convert_encoding($text, 'utf-8',$param->value);
-		     $this->body_converted=true; 
+		     $this->body_converted=true;
                   }
                }
             }
@@ -1093,6 +1091,16 @@ class MailCollector  extends CommonDBTM {
       $query = "SELECT COUNT(*) as cpt FROM `glpi_mailcollectors`";
       $result = $DB->query($query);
       return $DB->result($result,0,'cpt');
+   }
+
+   static function showMaxFilesize($name, $value = 0) {
+      global $LANG, $CFG_GLPI;
+      $sizes[0] = $LANG['ocsconfig'][11];
+      for ($index = 1; $index < 100; $index++) {
+         $sizes[$index*1048576] =  $index. ' '.$LANG['common'][82];
+      }
+      Dropdown::showFromArray($name,$sizes,array('value'=>$value));
+
    }
 }
 
