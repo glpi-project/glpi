@@ -791,7 +791,8 @@ class Software extends CommonDBTM {
                // Move version to destination software
                $sql = "UPDATE
                        `glpi_softwareversions`
-                       SET `softwares_id` = '$ID'
+                       SET `softwares_id` = '$ID',
+                           `entities_id` = '".$this->getField('entities_id')."'
                        WHERE `id` = '".$from["id"]."'";
             }
             if ($DB->query($sql)) {
