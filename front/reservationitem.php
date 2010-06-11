@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkSeveralRightsOr(array("reservation_central"=>"r","reservation_helpdesk"=>"1"));
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   helpHeader($LANG['Menu'][31],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 } else {
    commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 }

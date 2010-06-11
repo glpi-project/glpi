@@ -98,7 +98,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    $track->showForm($_GET["id"]);
 
 } else {
-   commonHeader($LANG['title'][1],'',"maintain","ticket");
+   commonHeader($LANG['Menu'][31],'',"maintain","ticket");
    // Set default value...
    $values = array('users_id'             => getLoginUserID(),
                    'groups_id'            => 0,
