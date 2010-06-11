@@ -87,18 +87,53 @@ class Group_User extends CommonDBRelation{
          $headerspan = $nb_per_line;
       }
 
+      $groups = Group_User::getUserGroups($ID);
+      $used = array();
+      if (!empty($groups)) {
+         foreach($groups as $data) {
+            $used[$data["id"]] = $data["id"];
+         }
+      }
+
+      if ($canedit) {
+         echo "<div class='center'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</th></tr>";
+         echo "<tr><td class='tab_bg_2 center'>";
+         echo "<input type='hidden' name='users_id' value='$ID'>";
+
+         // All entities "edited user" have access
+         $strict_entities = Profile_User::getUserEntities($ID,true);
+
+         // Keep only entities "connected user" have access
+         foreach ($strict_entities as $key => $val) {
+            if (!haveAccessToEntity($val)) {
+               unset($strict_entities[$key]);
+            }
+         }
+
+         if (countElementsInTableForEntity("glpi_groups",$strict_entities) > count($used)) {
+            Dropdown::show('Group', array('entity' => $strict_entities, 'used' => $used));
+            echo "</td><td class='tab_bg_2 center'>";
+            echo "<input type='submit' name='addgroup' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         } else {
+            echo $LANG['common'][49];
+         }
+         echo "</td></tr>";
+         echo "</table></div><br>";
+      }
+
       echo "<div class='center'><table class='tab_cadre_fixehov'>".
             "<tr><th colspan='$headerspan'>".$LANG['Menu'][36].
                "&nbsp;(D=".$LANG['profiles'][29].")</th></tr>";
 
-      $groups = Group_User::getUserGroups($ID);
-      $used = array();
+
       if (!empty($groups)) {
          initNavigateListItems('Group',$user->getTypeName()." = ".$user->getName());
          $i = 0;
          foreach($groups as $data) {
             addToNavigateListItems('Group',$data["id"]);
-            $used[] = $data["id"];
             if ($i%$nb_per_line == 0) {
                if ($i != 0) {
                   echo "</tr>";
@@ -143,34 +178,8 @@ class Group_User extends CommonDBRelation{
          if (count($used)) {
             openArrowMassive("groupuser_form$rand",true);
             closeArrowMassive('deletegroup', $LANG['buttons'][6]);
-         } else {
-            echo "<br>";
          }
-
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</th></tr>";
-         echo "<tr><td class='tab_bg_2 center'>";
-         echo "<input type='hidden' name='users_id' value='$ID'>";
-
-         // All entities "edited user" have access
-         $strict_entities = Profile_User::getUserEntities($ID,true);
-
-         // Keep only entities "connected user" have access
-         foreach ($strict_entities as $key => $val) {
-            if (!haveAccessToEntity($val)) {
-               unset($strict_entities[$key]);
-            }
-         }
-
-         if (countElementsInTableForEntity("glpi_groups",$strict_entities) > count($used)) {
-            Dropdown::show('Group', array('entity' => $strict_entities, 'used' => $used));
-            echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addgroup' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         } else {
-            echo $LANG['common'][49];
-         }
-         echo "</td></tr>";
-         echo "</table></div></form>";
+         echo "</div></form>";
       }
    }
 
@@ -191,16 +200,8 @@ class Group_User extends CommonDBRelation{
 
       $rand=mt_rand();
       $nb_per_line=3;
-      if ($canedit) {
-         $headerspan=$nb_per_line*2;
-         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
-      } else {
-         $headerspan=$nb_per_line;
-      }
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14].
-         "(D=".$LANG['profiles'][29].")</th></tr>";
+
       $query="SELECT `glpi_users`.*, `glpi_groups_users`.`id` AS linkID,
                      `glpi_groups_users`.`is_dynamic` AS is_dynamic
               FROM `glpi_groups_users`
@@ -208,13 +209,55 @@ class Group_User extends CommonDBRelation{
               WHERE `glpi_groups_users`.`groups_id`='$ID'
               ORDER BY `glpi_users`.`name`, `glpi_users`.`realname`, `glpi_users`.`firstname`";
 
-      $used = array();
-
+      $used=array();
       $result=$DB->query($query);
       if ($DB->numrows($result)>0) {
+         while ($data=$DB->fetch_array($result)) {
+            $used[$data["id"]]=$data;
+         }
+      }
+      $used_ids=array_keys($used);
+      if ($canedit) {
+         $headerspan=$nb_per_line*2;
+         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
+
+         if ($group->fields["is_recursive"]) {
+            $res=User::getSqlSearchResult (true, "all", getSonsOf("glpi_entities",
+                                      $group->fields["entities_id"]), 0, $used_ids);
+         } else {
+            $res=User::getSqlSearchResult (true, "all", $group->fields["entities_id"], 0, $used_ids);
+         }
+         $nb=($res ? $DB->result($res,0,"CPT") : 0);
+
+         if ($nb) {
+            echo "<div class='center'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
+            echo "<tr><td class='tab_bg_2 center'>";
+            if ($group->fields["is_recursive"]) {
+               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>getSonsOf("glpi_entities",
+                                                        $group->fields["entities_id"]),'used'=>$used_ids));
+            } else {
+               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>$group->fields["entities_id"],'used'=>$used_ids));
+            }
+            echo "</td><td class='tab_bg_2 center'>";
+            echo "<input type='hidden' name'is_dynamic' value='0'>";
+            echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "</td></tr>";
+            echo "</table></div><br>";
+         }
+      } else {
+         $headerspan=$nb_per_line;
+      }
+
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14].
+         "(D=".$LANG['profiles'][29].")</th></tr>";
+
+      if (count($used)) {
          initNavigateListItems('User',$group->getTypeName()." = ".$group->getName());
          $i=0;
-         while ($data=$DB->fetch_array($result)) {
+         foreach  ($used as $id => $data) {
             addToNavigateListItems('User',$data["id"]);
             if ($i%$nb_per_line==0) {
                if ($i!=0) {
@@ -232,7 +275,6 @@ class Group_User extends CommonDBRelation{
                echo "</td>";
             }
 
-            $used[$data["id"]]=$data["id"];
             echo "<td>";
             echo formatUserName($data["id"],$data["name"],$data["realname"],$data["firstname"],1);
             if ($data["is_dynamic"]) {
@@ -258,31 +300,6 @@ class Group_User extends CommonDBRelation{
          echo "<input type='hidden' name='groups_id' value='$ID'>";
          closeArrowMassive('deleteuser', $LANG['buttons'][6]);
 
-         if ($group->fields["is_recursive"]) {
-            $res=User::getSqlSearchResult (true, "all", getSonsOf("glpi_entities",
-                                      $group->fields["entities_id"]), 0, $used);
-         } else {
-            $res=User::getSqlSearchResult (true, "all", $group->fields["entities_id"], 0, $used);
-         }
-         $nb=($res ? $DB->result($res,0,"CPT") : 0);
-
-         if ($nb) {
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
-            echo "<tr><td class='tab_bg_2 center'>";
-            if ($group->fields["is_recursive"]) {
-               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>getSonsOf("glpi_entities",
-                                                        $group->fields["entities_id"]),'used'=>$used));
-            } else {
-               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>$group->fields["entities_id"],'used'=>$used));
-            }
-            echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='hidden' name'is_dynamic' value='0'>";
-            echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-            echo "</td></tr>";
-            echo "</table></div>";
-         }
          echo "</form>";
       }
    }
