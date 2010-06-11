@@ -340,7 +340,6 @@ class Computer_Item extends CommonDBRelation{
    static function showForComputer($target, Computer $comp, $withtemplate='') {
       global $DB,$CFG_GLPI, $LANG;
 
-      $used = array();
       $items = array('Printer'    => $LANG['computers'][39],
                      'Monitor'    => $LANG['computers'][40],
                      'Peripheral' => $LANG['computers'][46],
@@ -375,6 +374,8 @@ class Computer_Item extends CommonDBRelation{
          echo "<tr class='tab_bg_1'>";
          $items_displayed=0;
          foreach ($items as $itemtype=>$title) {
+            $used = array();
+
             if ($items_displayed==2) {
                echo "</tr><tr>";
                $header_displayed=0;
