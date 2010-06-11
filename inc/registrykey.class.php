@@ -109,7 +109,10 @@ class RegistryKey extends CommonDBTM {
             }
             echo "</table></div>\n\n";
          } else {
-            echo "<div class='center'><strong>".$LANG['registry'][5]."</strong></div>\n";
+            echo "<div class='center'><table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2'><th>".$LANG['ocsconfig'][41]."</th></tr>";
+            echo "<tr class='tab_bg_2'><td align='center'><strong>".$LANG['registry'][5]."</strong></td></tr>";
+            echo "</table></div>";
          }
       }
    }
