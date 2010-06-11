@@ -2413,7 +2413,9 @@ class OcsServer extends CommonDBTM {
             echo "\n<div class='center'>";
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='id' value='$ID'>";
-            echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><th>".$LANG['ocsng'][0]."</th></tr>";
+            echo "<tr class='tab_bg_1'><td align='center'>";
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
             echo "<input class=submit type='submit' name='force_ocs_resynch' value='" .
                    $LANG['ocsng'][24] . "'>";
@@ -2438,24 +2440,24 @@ class OcsServer extends CommonDBTM {
          if (count($locked)) {
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='id' value='$ID'>\n";
-            echo "<table class='tab_cadre'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='2'>" . $LANG['ocsng'][16] . "&nbsp;:</th></tr>\n";
             foreach ($locked as $key => $val) {
-               echo "<tr class='tab_bg_1'><td>" . $lockable_fields[$val] . "</td>";
-               echo "<td><input type='checkbox' name='lockfield[" . $key . "]'></td></tr>\n";
+               echo "<tr class='tab_bg_1'><td align='right' width='50%'>" .
+                                                                  $lockable_fields[$val] . "</td>";
+               echo "<td align='left' width='50%'>";
+               echo "<input type='checkbox' name='lockfield[" . $key . "]'></td></tr>\n";
             }
             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
             echo "<input class='submit' type='submit' name='unlock_field' value='" .
                   $LANG['buttons'][38] . "'></td></tr>";
             echo "</table></form>";
-         } else {
-            echo "<strong>" . $LANG['ocsng'][15] . "</strong>";
          }
          echo "</div>\n";
 
          //Search locked monitors
          $header = false;
-         echo "<br><div width='50%'>";
+         echo "<div width='50%'>";
          $locked_monitor = importArrayFromDB($data["import_monitor"]);
          foreach ($locked_monitor as $key => $val) {
             if ($val != "_version_070_") {
@@ -2468,11 +2470,12 @@ class OcsServer extends CommonDBTM {
                      $header = true;
                      echo "<form method='post' action=\"$target\">";
                      echo "<input type='hidden' name='id' value='$ID'>\n";
-                     echo "<table class='tab_cadre'>";
+                     echo "<table class='tab_cadre_fixe'>";
                      echo "<tr><th colspan='2'>" . $LANG['ocsng'][30] . "&nbsp;:</th></tr>\n";
                   }
-                  echo "<tr class='tab_bg_1'><td>" . $val . "</td>";
-                  echo "<td><input type='checkbox' name='lockmonitor[" . $key . "]'></td></tr>\n";
+                  echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
+                  echo "<td align='left' width='50%'>";
+                  echo "<input type='checkbox' name='lockmonitor[" . $key . "]'></td></tr>\n";
                }
             }
          }
@@ -2481,14 +2484,12 @@ class OcsServer extends CommonDBTM {
             echo "<input class='submit' type='submit' name='unlock_monitor' value='" .
                   $LANG['buttons'][38] . "'></td></tr>";
             echo "</table></form>";
-         } else {
-            echo "<strong>" . $LANG['ocsng'][31] . "</strong>";
          }
          echo "</div>\n";
 
          //Search locked printers
          $header = false;
-         echo "<br><div class='center'>";
+         echo "<div class='center'>";
          $locked_printer = importArrayFromDB($data["import_printer"]);
          foreach ($locked_printer as $key => $val) {
             $querySearchLockedPrinter = "SELECT `items_id`
@@ -2500,11 +2501,12 @@ class OcsServer extends CommonDBTM {
                   $header = true;
                   echo "<form method='post' action=\"$target\">";
                   echo "<input type='hidden' name='id' value='$ID'>\n";
-                  echo "<table class='tab_cadre'>";
+                  echo "<table class='tab_cadre_fixe'>";
                   echo "<tr><th colspan='2'>" . $LANG['ocsng'][34] . "</th></tr>\n";
                }
-               echo "<tr class='tab_bg_1'><td>" . $val . "</td>";
-               echo "<td><input type='checkbox' name='lockprinter[" . $key . "]'></td></tr>\n";
+               echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
+               echo "<td align='left' width='50%'>";
+               echo "<input type='checkbox' name='lockprinter[" . $key . "]'></td></tr>\n";
             }
          }
          if ($header) {
@@ -2512,14 +2514,12 @@ class OcsServer extends CommonDBTM {
             echo "<input class='submit' type='submit' name='unlock_printer' value='" .
                   $LANG['buttons'][38] . "'></td></tr>";
             echo "</table></form>";
-         } else {
-            echo "<strong>" . $LANG['ocsng'][35] . "</strong>";
          }
          echo "</div>\n";
 
          // Search locked peripherals
          $header = false;
-         echo "<br><div class='center'>";
+         echo "<div class='center'>";
          $locked_printer = importArrayFromDB($data["import_peripheral"]);
          foreach ($locked_printer as $key => $val) {
             $querySearchLockedPeriph = "SELECT `items_id`
@@ -2531,11 +2531,12 @@ class OcsServer extends CommonDBTM {
                   $header = true;
                   echo "<form method='post' action=\"$target\">";
                   echo "<input type='hidden' name='id' value='$ID'>\n";
-                  echo "<table class='tab_cadre'>";
+                  echo "<table class='tab_cadre_fixe'>";
                   echo "<tr><th colspan='2'>" . $LANG['ocsng'][32] . "</th></tr>\n";
                }
-               echo "<tr class='tab_bg_1'><td>" . $val . "</td>";
-               echo "<td><input type='checkbox' name='lockperiph[" . $key . "]'></td></tr>\n";
+               echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
+               echo "<td align='left' width='50%'>";
+               echo "<input type='checkbox' name='lockperiph[" . $key . "]'></td></tr>\n";
             }
          }
          if ($header) {
@@ -2543,14 +2544,12 @@ class OcsServer extends CommonDBTM {
             echo "<input class='submit' type='submit' name='unlock_periph' value='" .
                   $LANG['buttons'][38] . "'></td></tr>";
             echo "</table></form>";
-         } else {
-            echo "<strong>" . $LANG['ocsng'][33] . "</strong>";
          }
          echo "</div>\n";
 
          // Search locked IP
          $header = false;
-         echo "<br><div class='center'>";
+         echo "<div class='center'>";
          $locked_ip = importArrayFromDB($data["import_ip"]);
 
          if (!in_array(self::IMPORT_TAG_072,$locked_ip)) {
@@ -2572,11 +2571,12 @@ class OcsServer extends CommonDBTM {
                      $header = true;
                      echo "<form method='post' action=\"$target\">";
                      echo "<input type='hidden' name='id' value='$ID'>\n";
-                     echo "<table class='tab_cadre'>";
+                     echo "<table class='tab_cadre_fixe'>";
                      echo "<tr><th colspan='2'>" . $LANG['ocsng'][50] . "</th></tr>\n";
                   }
-                  echo "<tr class='tab_bg_1'><td>" . $val . "</td>";
-                  echo "<td><input type='checkbox' name='lockip[" . $key . "]'></td></tr>\n";
+                  echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
+                  echo "<td align='left' width='50%'>";
+                  echo "<input type='checkbox' name='lockip[" . $key . "]'></td></tr>\n";
                }
             }
          }
@@ -2585,14 +2585,12 @@ class OcsServer extends CommonDBTM {
             echo "<input class='submit' type='submit' name='unlock_ip' value='" .
                   $LANG['buttons'][38] . "'></td></tr>";
             echo "</table></form>";
-         } else {
-            echo "<strong>" . $LANG['ocsng'][51] . "</strong>";
          }
          echo "</div>\n";
 
          // Search locked softwares
          $header = false;
-         echo "<br><div class='center'>";
+         echo "<div class='center'>";
          $locked_software = importArrayFromDB($data["import_software"]);
          foreach ($locked_software as $key => $val) {
             if ($val != "_version_070_") {
@@ -2605,11 +2603,13 @@ class OcsServer extends CommonDBTM {
                      $header = true;
                      echo "<form method='post' action=\"$target\">";
                      echo "<input type='hidden' name='id' value='$ID'>\n";
-                     echo "<table class='tab_cadre'>";
+                     echo "<table class='tab_cadre_fixe'>";
                      echo "<tr><th colspan='2'>" . $LANG['ocsng'][52] . "</th></tr>\n";
                   }
-                  echo "<tr class='tab_bg_1'><td>" . str_replace('$$$$$',' v. ',$val) . "</td>";
-                  echo "<td><input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
+                  echo "<tr class='tab_bg_1'><td align='right'width='50%'>" .
+                                                       str_replace('$$$$$',' v. ',$val) . "</td>";
+                  echo "<td align='left'width='50%'>";
+                  echo "<input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
                }
             }
          }
@@ -2618,14 +2618,12 @@ class OcsServer extends CommonDBTM {
             echo "<input class='submit' type='submit' name='unlock_soft' value='" .
                   $LANG['buttons'][38] . "'></td></tr>";
             echo "</table></form>";
-         } else {
-            echo "<strong>" . $LANG['ocsng'][53] . "</strong>";
          }
          echo "</div>\n";
 
          // Search locked computerdisks
          $header = false;
-         echo "<br><div class='center'>";
+         echo "<div class='center'>";
          $locked = importArrayFromDB($data["import_disk"]);
          foreach ($locked as $key => $val) {
             $querySearchLocked = "SELECT `id`
@@ -2637,11 +2635,12 @@ class OcsServer extends CommonDBTM {
                   $header = true;
                   echo "<form method='post' action=\"$target\">";
                   echo "<input type='hidden' name='id' value='$ID'>\n";
-                  echo "<table class='tab_cadre'>";
+                  echo "<table class='tab_cadre_fixe'>";
                   echo "<tr><th colspan='2'>" . $LANG['ocsng'][55] . "</th></tr>\n";
                }
-               echo "<tr class='tab_bg_1'><td>" . $val . "</td>";
-               echo "<td><input type='checkbox' name='lockdisk[" . $key . "]'></td></tr>\n";
+               echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
+               echo "<td align='left' width='50%'>";
+               echo "<input type='checkbox' name='lockdisk[" . $key . "]'></td></tr>\n";
             }
          }
          if ($header) {
@@ -2649,8 +2648,6 @@ class OcsServer extends CommonDBTM {
             echo "<input class='submit' type='submit' name='unlock_disk' value='" .
                   $LANG['buttons'][38] . "'></td></tr>";
             echo "</table></form>";
-         } else {
-            echo "<strong>" . $LANG['ocsng'][56] . "</strong>";
          }
          echo "</div>\n";
       }
