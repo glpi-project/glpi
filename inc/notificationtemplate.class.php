@@ -212,7 +212,14 @@ class NotificationTemplate extends CommonDBTM {
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
                $lang['content_html'] =
-                     "<html><body>".NotificationTemplate::process($template_datas['content_html'],
+                     "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+                              \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">".
+                     "<html>
+                        <head>
+                         <META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">
+                         <title>".$lang['subject']."</title>
+                        </head>
+                        <body>".NotificationTemplate::process($template_datas['content_html'],
                                                                   $data).
                      "<br /><br />".nl2br($this->signature)."</body></html>";
             }
