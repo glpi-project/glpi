@@ -44,7 +44,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['title'][5];
+      return $LANG['setup'][87];
    }
 
    /**

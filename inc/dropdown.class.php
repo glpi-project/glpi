@@ -594,7 +594,7 @@ class Dropdown {
                   $LANG['Menu'][26] => array('DocumentCategory' => $LANG['setup'][81],
                                              'DocumentType'     => $LANG['document'][7]),
 
-                  $LANG['Menu'][18] => array('KnowbaseItemCategory' => $LANG['title'][5]),
+                  $LANG['Menu'][18] => array('KnowbaseItemCategory' => $LANG['setup'][87]),
 
                   $LANG['title'][24] => array ('TicketCategory'     => $LANG['setup'][79],
                                                'TaskCategory'       => $LANG['setup'][98],

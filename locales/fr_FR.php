@@ -1708,6 +1708,7 @@ $LANG['setup'][83]="Statut des matériels";
 $LANG['setup'][84]="Types de cartouches";
 $LANG['setup'][85]="Types de contrats";
 $LANG['setup'][86]="Types de mémoire";
+$LANG['setup'][87]="Catégorie de la base de connaissances";
 $LANG['setup'][88]="Réseau";
 $LANG['setup'][89]="Domaine";
 $LANG['setup'][90]="VLANs";
