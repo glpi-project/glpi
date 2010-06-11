@@ -833,12 +833,12 @@ class Rule extends CommonDBTM {
    * @param $target link to the form page
    * @param $first is it the first rule ?
    * @param $last is it the last rule ?
-   * @param $readonly read only display ?
+   * @param $display_entities display entities / make it read only display
    */
-   function showMinimalForm($target,$first=false,$last=false,$readonly=false) {
+   function showMinimalForm($target,$first=false,$last=false,$display_entities=false) {
       global $LANG,$CFG_GLPI;
 
-      $canedit = haveRight($this->right,"w") && !$readonly;
+      $canedit = haveRight($this->right,"w") && !$display_entities;
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
@@ -849,7 +849,7 @@ class Rule extends CommonDBTM {
          echo "<input type='checkbox' name='item[" . $this->fields["id"] . "]' value='1' $sel>";
          echo "</td>";
       } else {
-         echo "<td></td>";
+         echo "<td>&nbsp;</td>";
       }
       echo "<td><a id='rules".$this->fields["id"]."' href=\"".str_replace(".php",".form.php",$target)."?id=".$this->fields["id"].
                  "&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
@@ -860,25 +860,27 @@ class Rule extends CommonDBTM {
       echo "<td>".$this->fields["description"]."</td>";
       echo "<td>".Dropdown::getYesNo($this->fields["is_active"])."</td>";
 
-      if ($this->can_sort && !$first && $canedit) {
-         echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;id=".
-                    $this->fields["id"]."\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
-      } else {
-         if ($readonly) {
-            echo Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']);
-         }
-         else {
+      if ($display_entities) {
+         echo "<td>".Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id'])."</td>";
+      }
+
+      if (!$display_entities) {
+         if ($this->can_sort && !$first && $canedit) {
+            echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;id=".
+                     $this->fields["id"]."\">";
+            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
+         } else {
             echo "<td>&nbsp;</td>";
          }
-
       }
-      if ($this->can_sort && !$last && $canedit) {
-         echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=down&amp;id=".
-                    $this->fields["id"]."\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
-      } else {
-         echo "<td>&nbsp;</td>";
+      if (!$display_entities) {
+         if ($this->can_sort && !$last && $canedit) {
+            echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=down&amp;id=".
+                     $this->fields["id"]."\">";
+            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
+         } else {
+            echo "<td>&nbsp;</td>";
+         }
       }
       echo "</tr>\n";
    }
