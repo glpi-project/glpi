@@ -160,7 +160,12 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
       echo "<table class='tab_cadre_fixe'>";
+
       echo "<tr><th colspan='4'>" . $LANG['setup'][70] . "</th></tr>";
+
+      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][133] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
+      echo "</td>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][102] . " &nbsp;:</td><td>";
       $values[1] = $LANG['setup'][103];
@@ -170,14 +175,14 @@ class Config extends CommonDBTM {
       $values[5] = $LANG['setup'][107];
       Dropdown::showFromArray('event_loglevel',$values,array('value'=>$CFG_GLPI["event_loglevel"]));
       echo "</td>";
+
+      echo "<td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
+      echo "</td></tr>";
+
       echo "<td>".$LANG['setup'][101]."&nbsp;:</td><td>";
       Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
       echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td><td colspan='2'></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
@@ -341,11 +346,6 @@ class Config extends CommonDBTM {
                                       $CFG_GLPI["printers_management_restrict"]);
       echo "</td></tr>";
 
-      echo "<tr><th colspan='2'>" . $LANG['setup'][134]. "</th><th colspan='2'></th></tr>";
-
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][133] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
-      echo "</td><td colspan='2'></tr>";
 
       echo "<tr><th colspan='4' class='center'>" . $LANG['Menu'][20] . "</th></tr>";
 
