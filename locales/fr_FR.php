@@ -1943,7 +1943,7 @@ $LANG['setup'][810]="Désynchronisation du réplicat MySQL";
 
 $LANG['software'][1]="Version d'achat";
 $LANG['software'][2]="Version d'utilisation";
-$LANG['software'][3]="Licence affectée et non installée";
+$LANG['software'][3]="Licences affectées et non installées";
 $LANG['software'][4]="Illimité";
 $LANG['software'][5]="Versions";
 $LANG['software'][6]="Editeur";
