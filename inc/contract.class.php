@@ -216,7 +216,8 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][83]."&nbsp;:</td><td>";
-      Dropdown::showInteger("max_links_allowed",$this->fields["max_links_allowed"],0,200);
+      Dropdown::showInteger("max_links_allowed",$this->fields["max_links_allowed"],1,200,1,
+                            array(0 => $LANG['software'][4]));
       echo "</td>";
       echo "<td>".$LANG['common'][41]."</td>";
       echo "<td>";
