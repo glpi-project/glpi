@@ -1670,13 +1670,12 @@ class User extends CommonDBTM {
       if ($entity_restrict < 0) {
          $entity_restrict = $_SESSION["glpiactive_entity"];
       }
-
       $joinprofile = false;
       switch ($right) {
          case "interface" :
             $where = " `glpi_profiles`.`interface` = 'central' ";
             $joinprofile = true;
-            $where = getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
+            $where .= getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
             break;
 
          case "id" :
