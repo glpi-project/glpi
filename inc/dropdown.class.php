@@ -304,7 +304,7 @@ class Dropdown {
 
                      case "glpi_softwares" :
                         if ($data["operatingsystems_id"]!=0 && $data["is_helpdesk_visible"] != 0)
-                           $comment.="<br>".$LANG['software'][3]."&nbsp;: ".
+                           $comment.="<br>".$LANG['setup'][5]."&nbsp;: ".
                                     Dropdown::getDropdownName("glpi_operatingsystems",$data["operatingsystems_id"]);
                         break;
                   }

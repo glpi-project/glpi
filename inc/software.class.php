@@ -281,7 +281,7 @@ class Software extends CommonDBTM {
                            'right'  => 'interface',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>" . $LANG['software'][3] . "&nbsp;:</td><td>";
+      echo "<td>" . $LANG['setup'][5] . "&nbsp;:</td><td>";
       Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
@@ -358,7 +358,7 @@ class Software extends CommonDBTM {
       $tab[4]['table']     = 'glpi_operatingsystems';
       $tab[4]['field']     = 'name';
       $tab[4]['linkfield'] = 'operatingsystems_id';
-      $tab[4]['name']      = $LANG['software'][3];
+      $tab[4]['name']      = $LANG['setup'][5];
 
       $tab[7]['table']     = 'glpi_softwarelicenses';
       $tab[7]['field']     = 'name';
