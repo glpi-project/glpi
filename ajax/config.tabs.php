@@ -52,8 +52,10 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormUserPrefs($CFG_GLPI);
       $config->showFormInventory();
       $config->showFormHelpdesk();
-      $config->showFormDBSlave();
       $config->showSystemInformations();
+      if (DBConnection::isDBSlaveActive()) {
+         $config->showFormDBSlave();
+      }
       Plugin::displayAction($config,$_REQUEST['glpi_tab']);
       break;
 
@@ -61,25 +63,26 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormDisplay();
       break;
 
-   case 3 :
+   case 2 :
       $config->showFormUserPrefs($CFG_GLPI);
       break;
 
-   case 5 :
+   case 3 :
       $config->showFormInventory();
       break;
 
-   case 6 :
+   case 4 :
       $config->showFormHelpdesk();
       break;
 
-   case 8 :
+   case 5 :
+      $config->showSystemInformations();
+      break;
+
+   case 6 :
       $config->showFormDBSlave();
       break;
 
-   case 9 :
-      $config->showSystemInformations();
-      break;
 
    default :
       if (!Plugin::displayAction($config,$_REQUEST['glpi_tab'])) {

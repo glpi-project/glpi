@@ -1938,7 +1938,7 @@ $LANG['setup'][732]="Domaine de messagerie";
 
 //MySQL Replicate
 $LANG['setup'][800]="Réplicat MySQL";
-$LANG['setup'][801]="Activer le réplicat";
+$LANG['setup'][801]="Activer le réplicat MySQL";
 $LANG['setup'][802]="Base";
 $LANG['setup'][803]="Écart entre le maître et l'esclave";
 $LANG['setup'][806]="Durée maximum de désynchronisation (en minutes)";
