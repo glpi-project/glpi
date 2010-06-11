@@ -774,17 +774,17 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['setup'][306] .' - '.$LANG['setup'][400]. "</strong></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][401] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
       echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
       echo "</td>";
-      echo "<td>" . $LANG['setup'][402] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['setup'][175] . "&nbsp;:</td>";
       echo "<td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\">";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][403] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>" . $LANG['login'][6] . "&nbsp;:</td>";
       echo "<td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\">";
       echo "</td>";
-      echo "<td>" . $LANG['setup'][404] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['login'][7] . "&nbsp;:</td>";
       echo "<td><input type=\"password\" name=\"proxy_password\" value=\"\"  autocomplete='off'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
