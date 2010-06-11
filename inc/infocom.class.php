@@ -777,7 +777,7 @@ class Infocom extends CommonDBTM {
                echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td >";
                Dropdown::show('Budget', array('value'    => $ic->fields["budgets_id"],
                                               'entity'   => $item->getEntityID(),
-                                              'comments' => 0));
+                                              'comments' => 1));
             } else {
                echo "<td colspan='2'>";
             }
