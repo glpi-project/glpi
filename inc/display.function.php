@@ -20,7 +20,6 @@
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
-
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -818,7 +817,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    }
 
 
-   if (haveRight("config","w") || haveRight("notification","r") && canUseImapPop()) {
+   if (haveRight("config","w") || haveRight("notification","r")) {
 
       $menu['config']['content']['mailing']['title']=$LANG['setup'][704];
       $menu['config']['content']['mailing']['page']='/front/setup.notification.php';
@@ -866,11 +865,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             break;
       }
 
-      $menu['config']['content']['mailcollector']['title']=$LANG['Menu'][39];
-      $menu['config']['content']['mailcollector']['page']='/front/mailcollector.php';
-      $menu['config']['content']['mailcollector']['links']['search']='/front/mailcollector.php';
-      $menu['config']['content']['mailcollector']['links']['add']='/front/mailcollector.form.php';
-      $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']='/front/rejectedemail.php';
+      if (canUseImapPop()) {
+         $menu['config']['content']['mailcollector']['title']=$LANG['Menu'][39];
+         $menu['config']['content']['mailcollector']['page']='/front/mailcollector.php';
+         $menu['config']['content']['mailcollector']['links']['search']='/front/mailcollector.php';
+         $menu['config']['content']['mailcollector']['links']['add']='/front/mailcollector.form.php';
+         $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']='/front/rejectedemail.php';
+      }
    }
 
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("config","w")) {
