@@ -48,7 +48,6 @@ $config = new Config();
 
 switch($_REQUEST['glpi_tab']) {
    case -1 :
-      $config->showFormMain();
       $config->showFormDisplay();
       $config->showFormUserPrefs($CFG_GLPI);
       $config->showFormAuthentication();
@@ -59,7 +58,7 @@ switch($_REQUEST['glpi_tab']) {
       Plugin::displayAction($config,$_REQUEST['glpi_tab']);
       break;
 
-   case 2 :
+   case 1 :
       $config->showFormDisplay();
       break;
 
