@@ -166,22 +166,20 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][133] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
       echo "</td>";
+      echo "<td>".$LANG['setup'][101]."&nbsp;:</td><td>";
+      Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][102] . " &nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][102] . " &nbsp;:</td><td>";
       $values[1] = $LANG['setup'][103];
       $values[2] = $LANG['setup'][104];
       $values[3] = $LANG['setup'][105];
       $values[4] = $LANG['setup'][106];
       $values[5] = $LANG['setup'][107];
       Dropdown::showFromArray('event_loglevel',$values,array('value'=>$CFG_GLPI["event_loglevel"]));
-      echo "</td>";
-
-      echo "<td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td></tr>";
-
-      echo "<td>".$LANG['setup'][101]."&nbsp;:</td><td>";
-      Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
@@ -196,9 +194,7 @@ class Config extends CommonDBTM {
       showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['rulesengine'][77] . "</strong></td></tr>";
-      echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][86] . "&nbsp;:</td><td>";
+     echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][86] . "&nbsp;:</td><td>";
       Dropdown::show('SoftwareCategory',
                      array('value'  => $CFG_GLPI["softwarecategories_id_ondelete"],
                            'name' => "softwarecategories_id_ondelete"));
