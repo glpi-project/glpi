@@ -87,7 +87,7 @@ class Document extends CommonDBTM {
 
       $ong=array();
       if ($this->fields['id'] > 0) {
-         $ong[1]=$LANG['financial'][104];
+         $ong[1]=$LANG['document'][50];
          $ong[5]=$LANG['document'][21];
          if (haveRight("notes","r")) {
             $ong[10]=$LANG['title'][37];

@@ -528,6 +528,7 @@ $LANG['document'][45] = "Vous n'avez pas le droit d'accéder à ce fichier";
 $LANG['document'][46] = "Échec dans l'envoi du fichier (sûrement trop volumineux)";
 $LANG['document'][48] = "Un document avec ce fichier est déjà disponible";
 $LANG['document'][49] = "Fichier altéré (mauvaise somme de contrôle)";
+$LANG['document'][50] = "Élément(s) rattaché(s)";
 
 
 $LANG['entity'][0]  = "Entité";
