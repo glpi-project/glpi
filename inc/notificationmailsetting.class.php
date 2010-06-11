@@ -55,8 +55,7 @@ class NotificationMailSetting extends CommonDBTM {
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
-      $tabs[2] = $LANG['setup'][660];
-      $tabs[3] = $LANG['setup'][242];
+      $tabs[2] = $LANG['setup'][242];
 
       return $tabs;
    }
@@ -143,7 +142,10 @@ class NotificationMailSetting extends CommonDBTM {
                             MAIL_SMTPSSL => $LANG['setup'][652],
                             MAIL_SMTPTLS => $LANG['setup'][653]);
       Dropdown::showFromArray("smtp_mode", $mail_methods, array('value' => $CFG_GLPI["smtp_mode"]));
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td><td colspan='2' align='center'>";
+      echo "<input class='submit' type='submit' name='test_smtp_send'
+                                                            value=\"".$LANG['setup'][229]."\">";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "</td>";
       echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
@@ -164,20 +166,6 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</td></tr>";
       echo "</table></form>";
    }
-
-
-   function showFormTest($target) {
-      global $LANG;
-
-      echo "<form action='$target' method='post'>";
-      echo "<input type='hidden' name='id' value='1'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>" . $LANG['setup'][229] . "</th></tr>";
-      echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input class='submit' type='submit' name='test_smtp_send' value='".$LANG['buttons'][2]."'>";
-      echo "</td></tr></table></form>";
-   }
-
 
    function showFormAlerts($target) {
       global $LANG,$CFG_GLPI;
