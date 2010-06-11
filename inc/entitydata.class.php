@@ -331,14 +331,14 @@ class EntityData extends CommonDBTM {
 
       echo "<tr><th colspan='4'>".$LANG['setup'][242]."</th></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][244] . "</td><td>";
+      echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][244] . "</td><td>";
 
       $default_value = $entitynotification->fields['cartridges_alert_repeat'];
       Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
                             'inherit_global' => 1));
       echo "</td>";
-      echo "<td>" . $LANG['setup'][245] . " " . $LANG['setup'][243] . "</td><td>";
+      echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][243] . "</td><td>";
       $default_value = $entitynotification->fields['consumables_alert_repeat'];
       Alert::dropdown(array('name'           => 'consumables_alert_repeat',
                             'value'          => $default_value,
