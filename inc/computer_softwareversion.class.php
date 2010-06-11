@@ -596,9 +596,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if ($canedit) {
          echo "<th>&nbsp;</th>";
       }
-      echo "<th>" . $LANG['common'][16] . "</th><th>" . $LANG['state'][0] . "</th><th>" .
-         (isset($data["softwarecategories_id"]) ? $LANG['software'][5] : $LANG['software'][1]) .
-         "</th><th>" . $LANG['software'][11] . "</th></tr>\n";
+      echo "<th>" . $LANG['common'][16] . "</th><th>" . $LANG['state'][0] . "</th>";
+      echo "<th>" .$LANG['rulesengine'][78]."</th><th>" . $LANG['install'][92] . "</th></tr>\n";
 
       return $cat;
    }
