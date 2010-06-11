@@ -574,7 +574,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       } else {
          // Not installed
          $cat = '';
-         $catname = $LANG['software'][50] . " - " . $LANG['common'][89];
+         $catname = $LANG['software'][3];
          $display = true;
       }
 
