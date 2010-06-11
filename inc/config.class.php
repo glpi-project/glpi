@@ -162,35 +162,14 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $LANG['setup'][70] . "</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][102] . " &nbsp;:</td>";
-      echo "<td><select name=\"event_loglevel\">";
-      $level = $CFG_GLPI["event_loglevel"];
-      echo "<option value=\"1\"";
-      if ($level == 1) {
-         echo " selected";
-      }
-      echo ">" . $LANG['setup'][103] . " </option>";
-      echo "<option value=\"2\"";
-      if ($level == 2) {
-         echo " selected";
-      }
-      echo ">" . $LANG['setup'][104] . "</option>";
-      echo "<option value=\"3\"";
-      if ($level == 3) {
-         echo " selected";
-      }
-      echo ">" . $LANG['setup'][105] . "</option>";
-      echo "<option value=\"4\"";
-      if ($level == 4) {
-         echo " selected";
-      }
-      echo ">" . $LANG['setup'][106] . " </option>";
-      echo "<option value=\"5\"";
-      if ($level == 5) {
-         echo " selected";
-      }
-      echo ">" . $LANG['setup'][107] . "</option>";
-      echo "</select></td>";
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][102] . " &nbsp;:</td><td>";
+      $values[1] = $LANG['setup'][103];
+      $values[2] = $LANG['setup'][104];
+      $values[3] = $LANG['setup'][105];
+      $values[4] = $LANG['setup'][106];
+      $values[5] = $LANG['setup'][107];
+      Dropdown::showFromArray('event_loglevel',$values,array('value'=>$CFG_GLPI["event_loglevel"]));
+      echo "</td>";
       echo "<td>".$LANG['setup'][101]."&nbsp;:</td><td>";
       Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
       echo "</td></tr>";
@@ -211,26 +190,6 @@ class Config extends CommonDBTM {
       echo "<td>" . $LANG['setup'][221] . "&nbsp;:</td><td>";
       showDateFormItem("date_tax",$CFG_GLPI["date_tax"],false);
       echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['common'][41] . "</strong></td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][246] . " (" . $LANG['common'][44] . ")&nbsp;:</td><td>";
-      Contract::dropdownAlert("default_contract_alert", $CFG_GLPI["default_contract_alert"]);
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][247] . " (" . $LANG['common'][44] . ")&nbsp;:</td><td>";
-      echo "<select name=\"default_infocom_alert\">";
-      echo "<option value=\"0\" " . ($CFG_GLPI["default_infocom_alert"] == 0 ? " selected " : "") .
-             " >-----</option>";
-      echo "<option value=\"" . pow(2, Alert::END) . "\" " .
-             ($CFG_GLPI["default_infocom_alert"] == pow(2, Alert::END) ? " selected " : "") . " >" .
-             $LANG['financial'][80] . " </option>";
-      echo "</select>";
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][115] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('default_alarm_threshold', $CFG_GLPI["default_alarm_threshold"], -1, 100);
-      echo "</td><td colspan='2'></td>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['rulesengine'][77] . "</strong></td></tr>";
