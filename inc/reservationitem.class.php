@@ -180,10 +180,12 @@ class ReservationItem extends CommonDBTM {
       }
       $ri=new ReservationItem;
 
-      echo "<div><form method='post' name=form action='reservationitem.form.php'>";
-      echo "<table class='tab_cadre'><tr class='tab_bg_1'>";
+      echo "<div><form method='post' name=form action='".getItemTypeFormURL('ReservationItem')."'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th>".$LANG['reservation'][9]."</th></tr>";
+      echo "<tr class='tab_bg_1'>";
       if ($ri->getFromDBbyItem($itemtype,$items_id)) {
-         echo "<td>";
+         echo "<td align='center'>";
          //Switch reservation state
          echo "<input type='hidden' name='id' value='".$ri->fields['id']."'>";
          if ($ri->fields["is_active"]) {
@@ -193,12 +195,12 @@ class ReservationItem extends CommonDBTM {
             echo "<input type='hidden' name='is_active' value='1'>";
             echo "<input type='submit' name='update' value=\"".$LANG['reservation'][5]."\" class='submit'>";
          }
-         echo "</td><td>";
+         echo "&nbsp;&nbsp;&nbsp;";
          echo "<input type='submit' name='delete' value=\"".$LANG['reservation'][6]."\"
                class='submit' OnClick='return window.confirm(\"".$LANG['reservation'][38]. "\")'>";
          echo "</td>";
       } else {
-         echo "<td colspan='2'>";
+         echo "<td align='center'>";
          echo "<input type='hidden' name='items_id' value='$items_id'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='submit' name='add' value=\"".$LANG['reservation'][7]."\" class='submit'>";
