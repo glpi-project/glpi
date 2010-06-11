@@ -135,6 +135,23 @@ if (isset($_POST["add"])) {
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["unlock"])) {
+   $computer->check($_POST['id'],'w');
+
+   $actions = array("lockprinter"=> "import_printer",
+                    "locksoft"   => "import_software",
+                    "lockdisk"   => "import_disk",
+                    "lockperiph" => "import_peripheral",
+                    "lockip"     => "import_ip",
+                    "lockfield"  => "computer_update");
+   foreach ($actions as $lock => $field) {
+      if (isset($_POST[$lock]) && count($_POST[$lock])) {
+         foreach ($_POST[$lock] as $key => $val) {
+            OcsServer::deleteInOcsArray($_POST["id"],$key,$field);
+         }
+      }
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["unlock_printer"])) {
    $computer->check($_POST['id'],'w');
