@@ -865,9 +865,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             break;
       }
 
+      $menu['config']['content']['mailcollector']['title']=$LANG['Menu'][39];
+      $menu['config']['content']['mailcollector']['page']='/front/mailcollector.php';
       if (canUseImapPop()) {
-         $menu['config']['content']['mailcollector']['title']=$LANG['Menu'][39];
-         $menu['config']['content']['mailcollector']['page']='/front/mailcollector.php';
          $menu['config']['content']['mailcollector']['links']['search']='/front/mailcollector.php';
          $menu['config']['content']['mailcollector']['links']['add']='/front/mailcollector.form.php';
          $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']='/front/rejectedemail.php';
