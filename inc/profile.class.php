@@ -643,7 +643,8 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
       echo "<strong>".$LANG['title'][24]."</strong></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][41]."</strong></td></tr>\n";
+      echo "<tr class='tab_bg_5'><td colspan='6' align='center'>";
+      echo "<strong>".$LANG['profiles'][41]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][5]."&nbsp;:</td><td>";
@@ -665,7 +666,8 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("global_add_tasks",$this->fields["global_add_tasks"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][40]."</strong></td></tr>\n";
+      echo "<tr class='tab_bg_5'><td colspan='6' align='center'>";
+      echo "<strong>".$LANG['profiles'][40]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][18]."&nbsp;:</td><td>";
@@ -687,7 +689,8 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("update_tasks",$this->fields["update_tasks"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['validation'][0]."</strong></td></tr>\n";
+      echo "<tr class='tab_bg_5'><td colspan='6' align='center'>";
+      echo "<strong>".$LANG['validation'][0]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][48]."&nbsp;:</td><td>";
@@ -697,7 +700,8 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][39]."</strong></td></tr>\n";
+      echo "<tr class='tab_bg_5'><td colspan='6' align='center'>";
+      echo "<strong>".$LANG['profiles'][39]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][16]."&nbsp;:</td><td>";
@@ -709,7 +713,8 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("assign_ticket",$this->fields["assign_ticket"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][42]."</strong></td></tr>\n";
+      echo "<tr class='tab_bg_5'><td colspan='6' align='center'>";
+      echo "<strong>".$LANG['profiles'][42]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td>";
@@ -751,7 +756,8 @@ class Profile extends CommonDBTM {
       echo "</select></td>";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_5'><td colspan='6'><strong>".$LANG['profiles'][38]."</strong></td></tr>\n";
+      echo "<tr class='tab_bg_5'><td colspan='6' align='center'>";
+      echo "<strong>".$LANG['profiles'][38]."</strong></td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['profiles'][32]."&nbsp;:</td><td>";
@@ -786,7 +792,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_all_planning",$this->fields["show_all_planning"]);
       echo "</td></tr>\n";
 
-      echo "</table><table class='tab_cadre_fixe'>";
+      echo "</table><br><table class='tab_cadre_fixe'>";
       $tabstatus = Ticket::getAllStatusArray();
 
       echo "<th colspan='".(count($tabstatus)+1)."'>".$LANG['setup'][615]."</th>";
