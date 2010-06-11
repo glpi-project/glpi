@@ -1439,7 +1439,8 @@ function helpHeader($title,$url='') {
       $opt['link'][1]        = 'AND';
 
 
-      $pic_validate="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt,'&amp;')."' ><img title=\"".
+      $url_validate=$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt,'&amp;');
+      $pic_validate="<a href='$url_validate' ><img title=\"".
                               $LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
                               $CFG_GLPI["root_doc"]."/pics/menu_showall.png' ></a>";
       echo "<li>$pic_validate</li>\n";
@@ -1840,6 +1841,30 @@ function printHelpDesk ($ID,$from_helpdesk) {
    if (!haveRight("create_ticket","1")) {
       return false;
    }
+
+
+   if (haveRight('validate_ticket',1)) {
+      $opt=array();
+      $opt['reset']  = 'reset';
+      $opt['field'][0]      = 55; // validation status
+      $opt['searchtype'][0] = 'equals';
+      $opt['contains'][0]   = 'waiting';
+      $opt['link'][0]        = 'AND';
+
+      $opt['field'][1]      = 59; // validation aprobator
+      $opt['searchtype'][1] = 'equals';
+      $opt['contains'][1]   = getLoginUserID();
+      $opt['link'][1]        = 'AND';
+
+
+      $url_validate=$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt,'&amp;');
+
+      if (TicketValidation::getNumberTicketsToValidate(getLoginUserID()) >0) {
+         echo "<a href='$url_validate' title=\"".$LANG['validation'][15]."\"
+                  alt=\"".$LANG['validation'][15]."\">".$LANG['validation'][33]."</a><br><br>";
+      }
+   }
+
 
    $query = "SELECT `email`, `realname`, `firstname`, `name`
              FROM `glpi_users`

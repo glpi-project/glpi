@@ -381,6 +381,24 @@ class TicketValidation  extends CommonDBChild {
       return false;
    }
 
+   /**
+    * Get Ticket validation demands count for a user
+    *
+    * @param $users_id User ID
+    */
+   static function getNumberTicketsToValidate($users_id) {
+      global $DB;
+
+      $query = "SELECT COUNT(`id`) AS 'total'
+                FROM `glpi_ticketvalidations`
+                WHERE `users_id_validate` = '$users_id' AND `status` = 'waiting'";
+
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         return $DB->result($result,0,"total");
+      }
+      return false;
+   }
 
    /**
     * Get the number of validations attached to a ticket having a specified status

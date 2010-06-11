@@ -2113,5 +2113,6 @@ $LANG['validation'][29]="En cas de refus de validation, vous devez indiquer un m
 $LANG['validation'][30]="Suppression de la demande de validation à";
 $LANG['validation'][31]="Mise à jour de la demande de validation à";
 $LANG['validation'][32]="Une réponse à une demande de validation a été effectuée";
+$LANG['validation'][33]="Des tickets sont en attente de votre validation";
 
 ?>
