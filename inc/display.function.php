@@ -847,9 +847,15 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
       $menu['config']['content']['extauth']['title']=$LANG['login'][10];
       $menu['config']['content']['extauth']['page']='/front/setup.auth.php';
+
       $menu['config']['content']['extauth']['options']['ldap']['title']=$LANG['login'][2];
       $menu['config']['content']['extauth']['options']['ldap']['page']='/front/authldap.php';
 
+      $menu['config']['content']['extauth']['options']['others']['title']=$LANG['common'][67];
+      $menu['config']['content']['extauth']['options']['others']['page']='/front/auth.others.php';
+
+      $menu['config']['content']['extauth']['options']['settings']['title']=$LANG['common'][12];
+      $menu['config']['content']['extauth']['options']['settings']['page']='/front/auth.settings.php';
 
       switch ($option) {
          case "ldap" : // LDAP
