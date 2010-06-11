@@ -50,7 +50,6 @@ switch($_REQUEST['glpi_tab']) {
    case -1 :
       $config->showFormDisplay();
       $config->showFormUserPrefs($CFG_GLPI);
-      $config->showFormAuthentication();
       $config->showFormInventory();
       $config->showFormHelpdesk();
       $config->showFormDBSlave();
@@ -64,10 +63,6 @@ switch($_REQUEST['glpi_tab']) {
 
    case 3 :
       $config->showFormUserPrefs($CFG_GLPI);
-      break;
-
-   case 4 :
-      $config->showFormAuthentication();
       break;
 
    case 5 :
