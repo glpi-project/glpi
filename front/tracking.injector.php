@@ -54,10 +54,10 @@ if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
    nullHeader($LANG['title'][10]);
 
 } else if ($_POST["_from_helpdesk"]) {
-   helpHeader($LANG['title'][1],'',$_SESSION["glpiname"]);
+   helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
 
 } else {
-   commonHeader($LANG['title'][1],'',$_SESSION["glpiname"],"maintain","tracking");
+   commonHeader($LANG['Menu'][31],'',$_SESSION["glpiname"],"maintain","tracking");
 }
 
 if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
