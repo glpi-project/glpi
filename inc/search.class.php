@@ -989,7 +989,7 @@ class Search {
                         echo Search::showItem($output_type,
                               "<a href=\"".getItemTypeFormURL($itemtype)."?id=".$data["refID"].
                               "&amp;is_active=".($data["ACTIVE"]?0:1)."&amp;update=update\" ".
-                              "title='".$LANG['buttons'][42]."'><img src=\"".
+                              "title='".($data["ACTIVE"]?$LANG['buttons'][42]:$LANG['buttons'][41])."'><img src=\"".
                               $CFG_GLPI["root_doc"]."/pics/".($data["ACTIVE"]?"moins":"plus").
                               ".png\" alt='' title=''></a>",
                               $item_num,$row_num,"class='center'");
