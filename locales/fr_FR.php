@@ -545,7 +545,7 @@ $LANG['entity'][13] = "TAG représentant l'entité";
 $LANG['entity'][14] = "Informations avancées";
 $LANG['entity'][15] = "Annuaire associé à l'entité";
 $LANG['entity'][16] = "Filtre de recherche (si nécessaire)";
-$LANG['entity'][17] = "Configuration clôture automatique";
+$LANG['entity'][17] = "Configuration de la clôture automatique";
 $LANG['entity'][18] = "Clôture automatique des tickets résolus après";
 
 
@@ -1805,7 +1805,7 @@ $LANG['setup'][199]="Supprimer le domaine des identifiants de la forme identifia
 $LANG['setup'][200]="Infini";
 
 $LANG['setup'][201]="Configuration de la fonction";
-$LANG['setup'][202]="Utiliser le suivi par mail";
+$LANG['setup'][202]="Activer le suivi par email";
 $LANG['setup'][203]="Courriel de l'administrateur";
 $LANG['setup'][204]="Signature des messages";
 $LANG['setup'][205]="Mail de test envoyé à l'administrateur";
