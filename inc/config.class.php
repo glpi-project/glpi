@@ -54,8 +54,8 @@ class Config extends CommonDBTM {
    function defineTabs($options=array()){
       global $LANG;
 
-      $tabs[1]  = $LANG['setup'][119];  // Display
-      $tabs[2]  = $LANG['setup'][6];    // Prefs
+      $tabs[1]  = $LANG['setup'][70];  // Display
+      $tabs[2]  = $LANG['setup'][48];    // Prefs
       $tabs[3]  = $LANG['Menu'][38];  // Inventory
       $tabs[4]  = $LANG['title'][24];   // Helpdesk
       $tabs[5]  = $LANG['setup'][720];  // SysInfo
@@ -151,43 +151,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . $LANG['setup'][119] . "</th></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][47]."&nbsp;:</td><td>";
-      Dropdown::showFromArray("default_graphtype",
-                              array('png'=>'PNG','svg'=>'SVG'),
-                              array('value'=>$CFG_GLPI["default_graphtype"]));
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][149] . "&nbsp;:</td><td>";
-      Dropdown::showInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
-      $values = array (REALNAME_BEFORE  =>$LANG['common'][48]." ".$LANG['common'][43],
-                       FIRSTNAME_BEFORE =>$LANG['common'][43]." ".$LANG['common'][48]);
-      Dropdown::showFromArray('names_format',$values,$CFG_GLPI["names_format"]);
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
-      echo " </td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][407] . "&nbsp;:</td>";
-      echo "<td><input size='22' type=\"text\" name=\"helpdesk_doc_url\" value=\"" .
-                 $CFG_GLPI["helpdesk_doc_url"] . "\"></td>";
-      echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
-      Dropdown::showInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][408] . "&nbsp;:</td>";
-      echo "<td>";
-      echo "<input size='22' type=\"text\" name=\"central_doc_url\" value=\"" .
-                 $CFG_GLPI["central_doc_url"] . "\">";
-      echo "</td>";
-      echo "<td> " . $LANG['setup'][117] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
-      echo " </td></tr>";
+      echo "<tr><th colspan='4'>" . $LANG['setup'][70] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][118] . "&nbsp;:</td>";
       echo "<td colspan='3'>";
@@ -196,30 +160,68 @@ class Config extends CommonDBTM {
       echo "</textarea>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][117] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][407] . "&nbsp;:</td>";
+      echo "<td><input size='22' type=\"text\" name=\"helpdesk_doc_url\" value=\"" .
+                 $CFG_GLPI["helpdesk_doc_url"] . "\">";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
+      Dropdown::showInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][408] . "&nbsp;:</td>";
+      echo "<td>";
+      echo "<input size='22' type=\"text\" name=\"central_doc_url\" value=\"" .
+                 $CFG_GLPI["central_doc_url"] . "\">";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
+      Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
+      echo "</td>";
+      echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
+      $values = array (REALNAME_BEFORE  =>$LANG['common'][48]." ".$LANG['common'][43],
+                       FIRSTNAME_BEFORE =>$LANG['common'][43]." ".$LANG['common'][48]);
+      Dropdown::showFromArray('names_format',$values,$CFG_GLPI["names_format"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][149] . "&nbsp;:</td><td>";
+      Dropdown::showInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][47]."&nbsp;:</td><td>";
+      Dropdown::showFromArray("default_graphtype",
+                              array('png'=>'PNG','svg'=>'SVG'),
+                              array('value'=>$CFG_GLPI["default_graphtype"]));
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
       echo "<strong>" . $LANG['setup'][147] . "</strong></td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][120] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
       echo "</td>";
-      echo "<td>" . $LANG['setup'][123] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
-                            array(0 => $LANG['setup'][307]));
-      echo "</td></tr>";
+      echo "<td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][127] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][122] . "&nbsp;:</td><td>";
-      Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
-      echo "</td></tr>";
+      if ($CFG_GLPI["use_ajax"]) {
+         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][123] . "&nbsp;:</td><td>";
+         Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
+                               array(0 => $LANG['setup'][307]));
+         echo "</td>";
+         echo "<td>" . $LANG['setup'][122] . "&nbsp;:</td><td>";
+         Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
+         echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][121] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" .
-                 $CFG_GLPI["ajax_wildcard"] . "\"></td>";
-      echo "<td colspan='2'></td>";
-
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . $LANG['setup'][127] . "&nbsp;:</td><td>";
+         Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
+         echo "</td>";
+         echo "<td>" . $LANG['setup'][121] . "&nbsp;:</td>";
+         echo "<td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" .
+                    $CFG_GLPI["ajax_wildcard"] . "\"></td></tr>";
+      }
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
              $LANG['buttons'][2] . "\" ></td></tr>";
@@ -624,7 +626,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . $LANG['setup'][131] . "&nbsp;:</td><td>";
+         echo "<td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
             Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
        } else {
