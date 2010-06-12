@@ -52,10 +52,12 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
       $tabs[1] = $LANG['common'][12];
-      $tabs[2] = $LANG['setup'][242];
+      if ($CFG_GLPI['use_mailing']) {
+         $tabs[2] = $LANG['setup'][242];
+      }
 
       return $tabs;
    }
@@ -78,42 +80,12 @@ class NotificationMailSetting extends CommonDBTM {
       if (!haveRight("config", "w")) {
          return false;
       }
+      if (!$CFG_GLPI['use_mailing']) {
+         $options['colspan'] = 1;
+      }
+
       $this->getFromDB($ID);
       $this->showTabs($options);
-      $this->showFormHeader($options);
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][202] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][203] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='admin_email' size='40' value=\"" .
-                 $CFG_GLPI["admin_email"] . "\">";
-      if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_email"])) {
-          echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
-      }
-      echo " </td></tr>";
-
-      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][227] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='url_base' size='40' value='".$CFG_GLPI["url_base"]."'>";
-      echo "</td>";
-      echo "<td >" . $LANG['setup'][207] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='admin_reply' size='40' value=\"" .
-                 $CFG_GLPI["admin_reply"] . "\">";
-      if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_reply"])) {
-         echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
-      }
-      echo " </td></tr>";
-      if (!function_exists('mail')) {
-          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-          echo "<span class='red'>" . $LANG['setup'][217] . "&nbsp;:</span>";
-          echo "<span>" . $LANG['setup'][218] . "</span></td></tr>";
-      }
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][204] . "&nbsp;:</td>";
-      echo "<td colspan='3'><textarea cols='60' rows='3' name='mailing_signature'>".
-                 $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
-
-      $options['candel'] = false;
-      $this->showFormButtons($options);
       $this->addDivForTabs();
       return true;
    }
@@ -129,48 +101,94 @@ class NotificationMailSetting extends CommonDBTM {
    }
 
 
-   function showFormMailServerConfig($target) {
+   function showFormMailServerConfig() {
       global $LANG,$CFG_GLPI;
 
-      echo "<form action='$target' method='post'>";
+      echo "<div>";
+      echo "<form action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='1'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][660]."</th></tr>";
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][231] . "&nbsp;:</td><td>";
-      $mail_methods = array(MAIL_MAIL   => $LANG['setup'][650],
-                            MAIL_SMTP    => $LANG['setup'][651],
-                            MAIL_SMTPSSL => $LANG['setup'][652],
-                            MAIL_SMTPTLS => $LANG['setup'][653]);
-      Dropdown::showFromArray("smtp_mode", $mail_methods, array('value' => $CFG_GLPI["smtp_mode"]));
-      echo "</td><td colspan='2' align='center'>";
-      echo "<input class='submit' type='submit' name='test_smtp_send'
-                                                            value=\"".$LANG['setup'][229]."\">";
-      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
+      echo "<strong>" . $LANG['setup'][704] . "</strong></td></tr>";
+
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][202] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
       echo "</td>";
-      echo "<td >" . $LANG['setup'][234] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='smtp_username' size='40' value=\"" .
-                 $CFG_GLPI["smtp_username"] . "\"></td></tr>";
 
-      echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][175] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
-      echo "</td>";
-      echo "<td >" . $LANG['setup'][235] . "&nbsp;:</td>";
-      echo "<td><input type='password' name='smtp_password' size='40' value='' autocomplete='off'>";
-      echo "</td></tr>";
+      if ($CFG_GLPI['use_mailing']) {
+         echo "<td>" . $LANG['setup'][203] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='admin_email' size='40' value=\"" .
+                    $CFG_GLPI["admin_email"] . "\">";
+         if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_email"])) {
+             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+         }
+         echo " </td></tr>";
 
+         echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][227] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='url_base' size='40' value='".$CFG_GLPI["url_base"]."'>";
+         echo "</td>";
+         echo "<td >" . $LANG['setup'][207] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='admin_reply' size='40' value=\"" .
+                    $CFG_GLPI["admin_reply"] . "\">";
+         if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_reply"])) {
+            echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+         }
+         echo " </td></tr>";
+         if (!function_exists('mail')) {
+             echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
+             echo "<span class='red'>" . $LANG['setup'][217] . "&nbsp;:</span>";
+             echo "<span>" . $LANG['setup'][218] . "</span></td></tr>";
+         }
+
+         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][204] . "&nbsp;:</td>";
+         echo "<td colspan='3'><textarea cols='60' rows='3' name='mailing_signature'>".
+                    $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
+
+         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][660]."</th></tr>";
+         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][231] . "&nbsp;:</td><td>";
+         $mail_methods = array(MAIL_MAIL   => $LANG['setup'][650],
+                               MAIL_SMTP    => $LANG['setup'][651],
+                               MAIL_SMTPSSL => $LANG['setup'][652],
+                               MAIL_SMTPTLS => $LANG['setup'][653]);
+         Dropdown::showFromArray("smtp_mode", $mail_methods, array('value' => $CFG_GLPI["smtp_mode"]));
+         echo "</td><td colspan='2' align='center'>";
+         echo "<input class='submit' type='submit' name='test_smtp_send'
+                                                               value=\"".$LANG['setup'][229]."\">";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
+         echo "</td>";
+         echo "<td >" . $LANG['setup'][234] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='smtp_username' size='40' value=\"" .
+                    $CFG_GLPI["smtp_username"] . "\"></td></tr>";
+
+         echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][175] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
+         echo "</td>";
+         echo "<td >" . $LANG['setup'][235] . "&nbsp;:</td>";
+         echo "<td><input type='password' name='smtp_password' size='40' value='' autocomplete='off'>";
+         echo "</td></tr>";
+
+      }
+      else {
+         echo "</tr>";
+      }
+      $options['candel'] = false;
+      $this->showFormButtons($options);
+
+      /*
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input class='submit' type='submit' name='update' value='".$LANG['buttons'][2]."'>";
       echo "</td></tr>";
-      echo "</table></form>";
+      echo "</table></form>";*/
    }
 
-   function showFormAlerts($target) {
+   function showFormAlerts() {
       global $LANG,$CFG_GLPI;
 
-      echo "<form action='$target' method='post'>";
+      echo "<form action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
 

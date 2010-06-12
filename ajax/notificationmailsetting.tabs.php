@@ -51,21 +51,25 @@ if ($_POST['id'] > 0) {
    $target = new NotificationMailSetting();
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $target->showFormMailServerConfig($_POST['target']);
-         $target->showFormAlerts($_POST['target']);
-         Plugin::displayAction($target, $_REQUEST['glpi_tab']);
+         $target->showFormMailServerConfig();
+         if ($CFG_GLPI['use_mailing']) {
+            $target->showFormAlerts();
+            Plugin::displayAction($_POST['target'], $_REQUEST['glpi_tab']);
+         }
          break;
 
       case 1 :
-         $target->showFormMailServerConfig($_POST['target']);
+         $target->showFormMailServerConfig();
          break;
 
       case 2 :
-         $target->showFormAlerts($_POST['target']);
+         if ($CFG_GLPI['use_mailing']) {
+            $target->showFormAlerts();
+         }
          break;
 
       default :
-         if (!Plugin::displayAction($target, $_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($_POST['target'], $_REQUEST['glpi_tab'])) {
          }
    }
 }
