@@ -1392,6 +1392,7 @@ $LANG['plugins'][5]="Fonction(s) inexistante(s)";
 $LANG['plugins'][6]="A mettre à jour";
 $LANG['plugins'][7]="Aucun plugin installé";
 $LANG['plugins'][8]="Voir le catalogue des plugins";
+$LANG['plugins'][9]="Auteurs";
 
 $LANG['printers'][14]="Série";
 $LANG['printers'][15]="Parallèle";
@@ -1804,7 +1805,7 @@ $LANG['setup'][198]="Prendre le statut";
 $LANG['setup'][199]="Supprimer le domaine des identifiants de la forme identifiants@domaine";
 $LANG['setup'][200]="Infini";
 
-$LANG['setup'][201]="Configuration de la fonction";
+$LANG['setup'][201]="Configuration des suivis par emails et des alertes";
 $LANG['setup'][202]="Activer le suivi par email";
 $LANG['setup'][203]="Courriel de l'administrateur";
 $LANG['setup'][204]="Signature des messages";
