@@ -47,7 +47,7 @@ class NotificationMailSetting extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['setup'][201]. ' '.$LANG['mailing'][118];
+      return $LANG['setup'][201];
    }
 
 

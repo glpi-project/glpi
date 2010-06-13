@@ -49,7 +49,7 @@ if (!empty($_POST["test_smtp_send"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG['setup'][201] . " ".$LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing","config");
+commonHeader($LANG['setup'][704], $_SERVER['PHP_SELF'],"config","mailing","config");
 
 $notificationmail->showForm(1);
 
