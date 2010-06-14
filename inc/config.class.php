@@ -816,7 +816,8 @@ class Config extends CommonDBTM {
       $msg = $LANG['common'][12].": ";
       foreach (array('memory_limit',
                      'max_execution_time',
-                     'safe_mode') as $key) {
+                     'safe_mode',
+                     'session.save_handler') as $key) {
          $msg.= $key.'="'.ini_get($key).'" ';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
