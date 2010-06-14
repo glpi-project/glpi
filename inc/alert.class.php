@@ -126,10 +126,10 @@ class Alert extends CommonDBTM {
 
    static function dropdownIntegerNever($name,$value,$options=array()) {
       global $LANG;
-      $p['min'] = $LANG['setup'][307];
       $p['max'] = 100;
       $p['step'] = 1;
       $p['toadd'] = array();
+      $p['toadd'][0] = $LANG['setup'][307];
       if (isset($options['inherit_global']) && $options['inherit_global']){
          $p['toadd'][-1] = $LANG['setup'][731];
       }
@@ -137,8 +137,7 @@ class Alert extends CommonDBTM {
       foreach ($options as $key=>$val) {
          $p[$key] = $val;
       }
-
-      Dropdown::showInteger($name,$value,$p['min'],$p['max'],$p['step'],$p['toadd']);
+      Dropdown::showInteger($name,$value,1,$p['max'],$p['step'],$p['toadd']);
    }
 
    static function alertExists($itemtype='',$items_id='',$type='') {
