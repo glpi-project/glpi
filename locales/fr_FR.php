@@ -822,7 +822,7 @@ $LANG['job'][11] = "Description de la demande ou de l'incident";
 $LANG['job'][12] = "Pas de suivi pour ce ticket.";
 $LANG['job'][13] = "Nouveau ticket";
 
-$LANG['job'][19] = "Suivi par Email";
+$LANG['job'][19] = "Suivi par email";
 $LANG['job'][20] = "Durée totale";
 $LANG['job'][21] = "Heure(s)";
 $LANG['job'][22] = "Minute(s)";
