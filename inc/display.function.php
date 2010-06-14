@@ -851,6 +851,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['extauth']['options']['ldap']['title']=$LANG['login'][2];
       $menu['config']['content']['extauth']['options']['ldap']['page']='/front/authldap.php';
 
+      $menu['config']['content']['extauth']['options']['imap']['title']=$LANG['login'][3];
+      $menu['config']['content']['extauth']['options']['imap']['page']='/front/authmail.php';
+
       $menu['config']['content']['extauth']['options']['others']['title']=$LANG['common'][67];
       $menu['config']['content']['extauth']['options']['others']['page']='/front/auth.others.php';
 
