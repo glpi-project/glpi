@@ -163,9 +163,11 @@ if (isset($_REQUEST['getvcard'])) {
       }
       if (isset($_GET['add_ext_auth_simple'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {
-            $newID = $user->add(array('name'     => $_GET['login'],
-                                      '_extauth' => 1,
-                                      'add'      => 1));
+            $input = array('name'     => $_GET['login'],
+                           '_extauth' => 1,
+                           'add'      => 1);
+            $user->check(-1,'w',$input);
+            $newID = $user->add($input);
             Event::log($newID, "users", 4, "setup",
                        $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET['login'].".");
          }
