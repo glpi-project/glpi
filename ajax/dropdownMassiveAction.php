@@ -39,7 +39,6 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
-logDebug("enter ajax:", $_POST);
 
    if (!class_exists($_POST['itemtype']) ) {
       exit();
