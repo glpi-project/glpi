@@ -851,10 +851,10 @@ class AuthLDAP extends CommonDBTM {
          $numrows = count($ldap_users);
          $action = "toprocess";
          $form_action = "process_ok";
-         
+
          if ($numrows > 0) {
             printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
-            
+
             // delete end
             array_splice($ldap_users, $values['start'] + $_SESSION['glpilist_limit']);
             // delete begin
@@ -978,7 +978,7 @@ class AuthLDAP extends CommonDBTM {
          $values[$option] = $value;
          }
       }
-      
+
       $ldap_users = array ();
 
       // we prevent some delay...
@@ -1113,7 +1113,7 @@ class AuthLDAP extends CommonDBTM {
    static function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='',
                            $entity,$order='DESC') {
       global $DB, $CFG_GLPI, $LANG;
-	
+
       echo "<br>";
       $ldap_groups = AuthLdap::getAllGroups($_SESSION["ldap_server"],$filter,$filter2,$entity,$order);
 
@@ -1211,7 +1211,7 @@ class AuthLDAP extends CommonDBTM {
       $res = $config_ldap->getFromDB($auths_id);
       $infos = array();
       $groups = array();
-      
+
       $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
                          $config_ldap->fields['rootdn'], $config_ldap->fields['rootdn_password'],
                          $config_ldap->fields['use_tls'], $config_ldap->fields['deref_option']);
@@ -1641,7 +1641,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $auth->user_present = $auth->userExists($options);
-      
+
       //If the user does not exists
       if ($auth->user_present == 0) {
          $auth->getAuthMethods();
@@ -2088,7 +2088,7 @@ class AuthLDAP extends CommonDBTM {
                   $value=substr($value,$begin,$length-$end-$begin);
                }
                $counter++;
-               $filter.='('.$authldap->fields[$criteria].'='.($begin?'':'*').$value.($end?'':'*').')';
+               $filter.='('.$authldap->fields[$criteria].'='.($begin?'*':'').$value.($end?'*':'').')';
              }
           }
       }
