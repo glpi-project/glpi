@@ -2088,7 +2088,7 @@ class AuthLDAP extends CommonDBTM {
                   $value=substr($value,$begin,$length-$end-$begin);
                }
                $counter++;
-               $filter.='('.$authldap->fields[$criteria].'='.($begin?'*':'').$value.($end?'*':'').')';
+               $filter.='('.$authldap->fields[$criteria].'='.($begin?'':'*').$value.($end?'':'*').')';
              }
           }
       }
