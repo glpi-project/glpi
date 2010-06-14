@@ -39,12 +39,19 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
-
+logDebug("enter ajax:", $_POST);
 
    if (!class_exists($_POST['itemtype']) ) {
       exit();
    }
-   $item = new $_POST["itemtype"]();
+   if (isset($_POST['sub_type'])) {
+      if (!class_exists($_POST['sub_type']) ) {
+         exit();
+      }
+      $item = new $_POST["sub_type"]();
+   } else {
+      $item = new $_POST["itemtype"]();
+   }
 
    if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
       checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
