@@ -338,8 +338,10 @@ class User extends CommonDBTM {
       if (!$rulesplayed) {
          $profile = Profile::getDefault();
          if ($profile) {
-            if (isset($this->input["entities_id"])) {
-               $affectation["entities_id"] = $this->input["entities_id"];
+            if (isset($this->input["_entities_id"])) {
+               // entities_id (user's pref) always set in prepareInputForAdd
+               // use _entities_id for default right (but this seems not used)
+               $affectation["entities_id"] = $this->input["_entities_id"];
             } else if (isset($_SESSION['glpiactive_entity'])) {
                $affectation["entities_id"] = $_SESSION['glpiactive_entity'];
             } else {
