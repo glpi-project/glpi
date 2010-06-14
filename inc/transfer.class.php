@@ -312,6 +312,10 @@ class Transfer extends CommonDBTM {
          if (!isset($this->noneedtobe_transfer[$t])) {
             $this->noneedtobe_transfer[$t] = array();
          }
+         $this->item_search[$t] =
+                  $this->createSearchConditionUsingArray($this->needtobe_transfer[$t]);
+         $this->item_recurs[$t] =
+                  $this->createSearchConditionUsingArray($this->noneedtobe_transfer[$t]);
       }
 
       $to_entity_ancestors = getAncestorsOf("glpi_entities",$this->to);
