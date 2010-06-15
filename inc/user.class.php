@@ -1430,18 +1430,11 @@ class User extends CommonDBTM {
          echo "</td>";
 
         if (haveRight("config", "w")) {
-            echo "<td>" . $LANG['setup'][138] . "&nbsp;:</td>";
-            echo "<td><select name='use_mode'>";
-            echo "<option value='" . NORMAL_MODE . "' " .
-                  ($this->fields["use_mode"] == NORMAL_MODE ? " selected " : "") .
-                  ">" . $LANG['setup'][135] . " </option>";
-            echo "<option value='" . TRANSLATION_MODE . "' " .
-                  ($this->fields["use_mode"] == TRANSLATION_MODE ? " selected " : "") .
-                  ">" . $LANG['setup'][136] . " </option>";
-            echo "<option value='" . DEBUG_MODE . "' " .
-                  ($this->fields["use_mode"] == DEBUG_MODE ? " selected " : "") .
-                  ">" . $LANG['setup'][137] . " </option>";
-            echo "</select>";
+            echo "<td>" . $LANG['setup'][138] . "&nbsp;:</td><td>";
+            $modes[NORMAL_MODE] = $LANG['setup'][135];
+            $modes[TRANSLATION_MODE] = $LANG['setup'][136];
+            $modes[DEBUG_MODE] = $LANG['setup'][137];
+            Dropdown::showFromArray('use_mode',$modes,array('value'=>$this->fields["use_mode"]));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
