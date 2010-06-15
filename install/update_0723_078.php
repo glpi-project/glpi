@@ -2088,7 +2088,7 @@ function update0723to078($output='HTML') {
          ('CronTask', 'logs', 86400, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('CronTask', 'optimize', 604800, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('MailCollector', 'mailgate', 600, 10, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
-         ('DBconnection', 'checkdbreplicate', 300, NULL, 0, 0, 3, 0, 24, 30, NULL, NULL, NULL),
+         ('DBconnection', 'checkdbreplicate', 300, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('CronTask', 'checkupdate', 604800, NULL, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('CronTask', 'session', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
          ('CronTask', 'graph', 3600, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL),
