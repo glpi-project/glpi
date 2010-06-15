@@ -193,12 +193,6 @@ class TicketPlanning extends CommonDBTM {
 //          $user=new User;
 //          $user->getFromDB(getLoginUserID());
 
-         //TODO class Mailing not exist : TO BE TESTED
-/*         if (isset($fup->fields["is_private"]) && $fup->fields["is_private"]) {
-            $options['is_private'] = true;
-         } else {
-            $options = array();
-         }*/
          $options = array('task_id' => $this->fields["id"]);
          NotificationEvent::raiseEvent('update_task',$job,$options);
          
@@ -267,12 +261,10 @@ class TicketPlanning extends CommonDBTM {
          
          $user=new User;
          $user->getFromDB(getLoginUserID());
-         //TODO class Mailing not exist : TO BE TESTED
-         $options = array('task_id' => $this->fields["id"]);
+         
+ 	 $options = array('task_id' => $this->fields["id"]);
          NotificationEvent::raiseEvent('update_task',$job,$options);
 
-/*         $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
-         $mail->send();*/
       }
    }
 
