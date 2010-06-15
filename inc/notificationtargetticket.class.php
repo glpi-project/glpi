@@ -310,15 +310,15 @@ class NotificationTargetTicket extends NotificationTarget {
    function addAdditionnalUserInfo($data) {
       global $DB;
 
-      // TODO problem : use all profiles having right but not limited to working entity. User can have this right to another entity.
-      
       if (!isset($data['id'])) {
          return 1;
       } else {
          $query = "SELECT count(*) AS cpt
                    FROM `glpi_profiles_users`
-                   WHERE `users_id`='".$data['id']."'
-                         AND profiles_id IN (".implode(',',$this->private_profiles).")";
+                   WHERE `users_id`='".$data['id']."' ".
+                     getEntitiesRestrictRequest("AND","glpi_profiles_users",
+                           "entities_id",$this->obj->fields['entities_id'],true) 
+                     ."AND profiles_id IN (".implode(',',$this->private_profiles).")";
 
          $result = $DB->query($query);
          if ($DB->result($result,0,'cpt')) {
@@ -342,7 +342,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $query = $this->getDistinctUserSql()."
                   FROM `glpi_groups`
                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
-                  $this->getJoinProfileSql()."
+                  $this->getJoinSql()."
                   WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
 
          foreach ($DB->request($query) as $data) {
@@ -429,17 +429,17 @@ class NotificationTargetTicket extends NotificationTarget {
       return "";
    }
 
-
-   function getJoinProfileSql() {
-
-      if ($this->isPrivate()) {
-         return " INNER JOIN `glpi_profiles`
-                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-                         AND `glpi_profiles`.`interface` = 'central'
-                         AND `glpi_profiles`.`show_full_ticket` = '1')";
-      }
-      return "";
-   }
+// Unused
+//    function getJoinProfileSql() {
+// 
+//       if ($this->isPrivate()) {
+//          return " INNER JOIN `glpi_profiles`
+//                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
+//                          AND `glpi_profiles`.`interface` = 'central'
+//                          AND `glpi_profiles`.`show_full_ticket` = '1')";
+//       }
+//       return "";
+//    }
 
 
    function isPrivate() {
