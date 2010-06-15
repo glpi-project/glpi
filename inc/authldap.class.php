@@ -890,7 +890,10 @@ class AuthLDAP extends CommonDBTM {
             echo "</tr>";
 
             foreach ($ldap_users as $userinfos) {
-               $user = $userinfos["user"];
+               $link = $user = $userinfos["user"];
+               if (isset($userinfos['id']) && haveRight('user','r')) {
+                  $link = "<a href='".getItemTypeFormURL('User').'?id='.$userinfos['id']."'>$user</a>";
+               }
                if (isset($userinfos["timestamp"])) {
                   $stamp = $userinfos["timestamp"];
                } else {
@@ -906,7 +909,7 @@ class AuthLDAP extends CommonDBTM {
                echo "<tr class='tab_bg_2' align='center'>";
                //Need to use " instead of ' because it doesn't work with names with ' inside !
                echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\"></td>";
-               echo "<td>" . $user . "</td>";
+               echo "<td>" . $link . "</td>";
 
                if ($stamp != '') {
                   echo "<td>" .convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
@@ -1043,7 +1046,7 @@ class AuthLDAP extends CommonDBTM {
       $glpi_users = array ();
       $sql = "SELECT *
               FROM `glpi_users`";
-      if ($values['action'] != AuthLDAP::ACTION_IMPORT) {
+      if ($values['mode'] != AuthLDAP::ACTION_IMPORT) {
          $sql.=" WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.") ";
          $sql.= " AND `auths_id`='".$options['ldapservers_id']."'";
       }
@@ -1051,7 +1054,7 @@ class AuthLDAP extends CommonDBTM {
 
       foreach ($DB->request($sql) as $user) {
          //Ldap add : fill the array with the login of the user
-         if ($values['action'] == AuthLDAP::ACTION_IMPORT) {
+         if ($values['mode'] == AuthLDAP::ACTION_IMPORT) {
             $glpi_users[$user['name']] = $user['name'];
          } else {
             //Ldap synchronisation : look if the user exists in the directory
@@ -1060,12 +1063,13 @@ class AuthLDAP extends CommonDBTM {
                //If entry was modified or if script should synchronize all the users
                if ( ($values['action']==AuthLDAP::ACTION_ALL)
                      || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)) {
-                  $glpi_users[] = array("user" => $user['name'],
-                                        "timestamp"=>$user_infos[$user['name']]['timestamp'],
-                                        "date_mod"=>$user['date_mod']);
+                  $glpi_users[] = array('id'        => $user['id'],
+                                        'user'      => $user['name'],
+                                        'timestamp' => $user_infos[$user['name']]['timestamp'],
+                                        'date_mod'  => $user['date_mod']);
                }
-            }
-            else {
+            // Only manage deleted user if ALL (because of entity visibility in delegated mode)
+            } else if ($values['action']==AuthLDAP::ACTION_ALL) {
                //If user is marked as coming from LDAP, but is not present in it anymore
                if (!$user['is_deleted'] && $user['is_active']
                      && $user['auths_id'] == $options['ldapservers_id']) {
@@ -1077,7 +1081,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //If add, do the difference between ldap users and glpi users
-      if ($values['action'] == AuthLDAP::ACTION_IMPORT) {
+      if ($values['mode'] == AuthLDAP::ACTION_IMPORT) {
          $diff = array_diff_ukey($ldap_users,$glpi_users,'strcasecmp');
          $list = array();
 
