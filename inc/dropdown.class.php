@@ -439,7 +439,7 @@ class Dropdown {
             closedir($dh);
             sort($files);
             echo "<select name='$myname'>";
-            echo "<option value=''>-----</option>";
+            echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
             foreach ($files as $file) {
                if (preg_match("/\.png$/i",$file)) {
                   if ($file == $value) {
@@ -830,7 +830,7 @@ class Dropdown {
       asort($options);
       if (count($options)) {
          echo "<select name='itemtype' id='itemtype$rand'>";
-         echo "<option value='0'>-----</option>\n";
+         echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
          foreach ($options as $key => $val) {
             echo "<option value='".$key."'>".$val."</option>";
          }
@@ -1080,7 +1080,7 @@ class Dropdown {
       if ($itemtype=='NetworkPort') {
          echo "<select name='massiveaction' id='massiveaction'>";
 
-         echo "<option value='-1' selected>-----</option>";
+         echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
          echo "<option value='assign_vlan'>".$LANG['networking'][55]."</option>";
          echo "<option value='unassign_vlan'>".$LANG['networking'][58]."</option>";
@@ -1102,8 +1102,8 @@ class Dropdown {
 
          $isadmin=$item->canUpdate();
 
-         echo '<select name="massiveaction" id="massiveaction">';
-         echo '<option value="-1" selected>-----</option>';
+         echo "<select name='massiveaction' id='massiveaction'>";
+         echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
             && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"])&& $infocom->canUpdate())
                         || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {

@@ -1332,7 +1332,7 @@ class Search {
 
             // Display select of the linked item type available
             echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
-            echo "<option value=''>------</option>";
+            echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
             foreach ($linked as $key) {
                if (!isset($metanames[$key])) {
                   $linkitem=new $key();

@@ -959,7 +959,7 @@ class Document extends CommonDBTM {
 
          if (count($uploaded_files)) {
             echo "<select name='$myname'>";
-            echo "<option value=''>-----</option>";
+            echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
             foreach ($uploaded_files as $key => $val) {
                echo "<option value=\"$val\">$val</option>";
             }
@@ -1233,7 +1233,7 @@ class Document extends CommonDBTM {
       $result=$DB->query($query);
 
       echo "<select name='_rubdoc' id='rubdoc$rand'>";
-      echo "<option value='0'>------</option>";
+      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
       while ($data=$DB->fetch_assoc($result)) {
          echo "<option value='".$data['id']."'>".$data['name']."</option>";
       }

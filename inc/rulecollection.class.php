@@ -355,7 +355,7 @@ class RuleCollection extends CommonDBTM {
          openArrowMassive("ruleactions_form", true);
 
          echo "<select name='massiveaction' id='massiveaction'>";
-         echo "<option value='-1' selected>------</option>";
+         echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
          if ($this->orderby=="ranking") {
             echo "<option value='move_rule'>".$LANG['buttons'][20]."</option>";

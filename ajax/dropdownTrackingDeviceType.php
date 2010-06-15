@@ -60,7 +60,7 @@ if (isset($_POST["itemtype"]) && Ticket::isPossibleToAssignType($_POST["itemtype
                                   $paramstrackingdt,false);
 
    echo "<span id='results_ID$rand'>";
-   echo "<select name='id'><option value='0'>------</option></select>";
+   echo "<select name='id'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
    echo "</span>\n";
    if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
       echo "<br>".$LANG['help'][23];

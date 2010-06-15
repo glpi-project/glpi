@@ -252,7 +252,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          $searchopt=Search::getCleanedOptions($_POST["itemtype"],'w');
 
          echo "<select name='id_field' id='massiveaction_field'>";
-         echo "<option value='0' selected>------</option>";
+         echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
                if (!empty($newgroup) && $items_in_group>0) {

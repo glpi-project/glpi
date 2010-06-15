@@ -63,7 +63,7 @@ $query = "SELECT DISTINCT `glpi_softwares`.`id`, `glpi_softwares`.`name`
 $result = $DB->query($query);
 
 echo "<select name='softwares_id' id='item_type$rand'>\n";
-echo "<option value='0'>------</option>\n";
+echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
 if ($DB->numrows($result)) {
    while ($data=$DB->fetch_array($result)) {
       $softwares_id = $data["id"];
