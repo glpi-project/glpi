@@ -58,7 +58,7 @@ if ($_POST['softwares_id']>0) {
    $number=$DB->numrows($result);
 
    echo "<select name=\"".$_POST['myname']."\" size='1'>";
-   echo "<option value='0'>------</option>";
+   echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 
    $today=date("Y-m-d");
    if ($number) {

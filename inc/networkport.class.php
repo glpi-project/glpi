@@ -202,7 +202,7 @@ class NetworkPort extends CommonDBChild {
 
       $rand=mt_rand();
       echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
-      echo "<option value='0'>-----</option>";
+      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 
       foreach ($CFG_GLPI["netport_types"] as $key => $itemtype) {
          if (class_exists($itemtype)) {
@@ -545,7 +545,7 @@ class NetworkPort extends CommonDBChild {
          if (count($macs) > 0) {
             echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
             echo "<select name='pre_mac'>\n";
-            echo "<option value=''>------</option>\n";
+            echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>\n";
             foreach ($macs as $key => $val) {
                echo "<option value='" . $val . "' >$val</option>\n";
             }

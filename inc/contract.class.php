@@ -1110,7 +1110,7 @@ class Contract extends CommonDBTM {
          }
          echo "<option selected value='".$p['value']."'>".$output."</option>";
       } else {
-         echo "<option value='-1'>-----</option>";
+         echo "<option value='-1'>".DROPDOWN_EMPTY_VALUE."</option>";
       }
       $prev=-1;
       while ($data=$DB->fetch_array($result)) {

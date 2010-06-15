@@ -647,7 +647,7 @@ class Computer_Item extends CommonDBRelation{
                   'entity_restrict'  => $entity_restrict,
                   'used'             => $used);
 
-      $default="<select name='$myname'><option value='0'>------</option></select>\n";
+      $default="<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>\n";
       ajaxDropdown($use_ajax,"/ajax/dropdownConnect.php",$params,$default,$rand);
 
       return $rand;

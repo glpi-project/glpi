@@ -412,7 +412,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td><td>";
       echo "<select name='helpdesk_hardware'>";
-      echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >------";
+      echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".DROPDOWN_EMPTY_VALUE;
       echo "</option>\n";
       echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".
              ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".
@@ -722,7 +722,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td><td>";
       echo "\n<select name='helpdesk_hardware'>";
-      echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >------";
+      echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".DROPDOWN_EMPTY_VALUE;
       echo "</option>\n";
       echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".
             ($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".

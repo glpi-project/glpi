@@ -429,7 +429,7 @@ class Profile_User extends CommonDBTM {
                   if ($canedit) {
                      echo "<td width='10'>&nbsp;</td>";
                   }
-                  echo "<td class='tab_bg_1'>------</td>";
+                  echo "<td class='tab_bg_1'>".DROPDOWN_EMPTY_VALUE."</td>";
                   $i++;
                }
             }

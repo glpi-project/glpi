@@ -1376,7 +1376,7 @@ class Rule extends CommonDBTM {
                   'type'       => $p['sub_type'],
                   'entity_restrict'  => $p['entity_restrict']);
       $default ="<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
-      $default.="<option value='0'>------</option></select>";
+      $default.="<option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
       ajaxDropdown($use_ajax,"/ajax/dropdownRules.php",$params,$default,$rand);
 
       return $rand;

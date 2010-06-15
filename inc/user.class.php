@@ -1863,7 +1863,7 @@ class User extends CommonDBTM {
          if ($p['all']) {
             $default.= "<option value='0'>[ ".$LANG['common'][66]." ]</option></select>";
          } else {
-            $default.= "<option value='0'>-----</option></select>\n";
+            $default.= "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>\n";
          }
       }
 

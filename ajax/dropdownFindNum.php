@@ -103,7 +103,7 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$
    echo "<option value='0'>--".$LANG['common'][11]."--</option>";
 }
 
-echo "<option value=\"0\">-----</option>";
+echo "<option value=\"0\">".DROPDOWN_EMPTY_VALUE."</option>";
 if ($DB->numrows($result)) {
    while ($data = $DB->fetch_array($result)) {
       $output = $data['name'];

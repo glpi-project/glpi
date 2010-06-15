@@ -527,7 +527,7 @@ class Software extends CommonDBTM {
                     'myname'           => $myname,
                     'entity_restrict'  => $entity_restrict);
 
-      $default="<select name='$myname'><option value='0'>------</option></select>";
+      $default="<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE." </option></select>";
       ajaxDropdown($use_ajax,"/ajax/dropdownSelectSoftware.php",$params,$default,$rand);
 
       return $rand;
