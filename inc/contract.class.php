@@ -186,7 +186,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][69]."&nbsp;:</td><td>";
-      Dropdown::showInteger("periodicity",$this->fields["periodicity"],12,60,12,array(0 => "-----",
+      Dropdown::showInteger("periodicity",$this->fields["periodicity"],12,60,12,array(0 => DROPDOWN_EMPTY_VALUE,
                                                                                       1 => "1",
                                                                                       2 => "2",
                                                                                       3 => "3",
@@ -207,7 +207,7 @@ class Contract extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['financial'][11]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger("billing",$this->fields["billing"],12,60,12,array(0=>"-----",
+      Dropdown::showInteger("billing",$this->fields["billing"],12,60,12,array(0=>DROPDOWN_EMPTY_VALUE,
                                                                         1=>"1",
                                                                         2=>"2",
                                                                         3=>"3",
@@ -1154,12 +1154,10 @@ class Contract extends CommonDBTM {
     **/
    static function dropdownContractRenewal($name,$value=0) {
       global $LANG;
-
-      echo "<select name='$name'>";
-      echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][105]."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][106]."</option>";
-      echo "</select>";
+      $tmp[0] = $LANG['setup'][307];
+      $tmp[1] = $LANG['financial'][105];
+      $tmp[2] = $LANG['financial'][106];
+      Dropdown::showFromArray($name,$tmp,array('value'=>$value));
    }
 
    /**
@@ -1212,17 +1210,12 @@ class Contract extends CommonDBTM {
     */
    static function dropdownAlert($myname,$value) {
       global $LANG;
-
-      echo "<select name='$myname'>";
-      echo "<option value='0' ".($value==0?"selected":"")." >-------</option>";
-      echo "<option value='".pow(2,Alert::END)."' ".($value==pow(2,Alert::END)?"selected":"")." >".
-             $LANG['buttons'][32]."</option>";
-      echo "<option value='".pow(2,Alert::NOTICE)."' ".($value==pow(2,Alert::NOTICE)?"selected":"")." >".
-             $LANG['financial'][10]."</option>";
-      echo "<option value='".(pow(2,Alert::END)+pow(2,Alert::NOTICE))."' ".
-             ($value==(pow(2,Alert::END)+pow(2,Alert::NOTICE))?"selected":"")." >".
-             $LANG['buttons'][32]." + ".$LANG['financial'][10]."</option>";
-      echo "</select>";
+      $tmp[0] = DROPDOWN_EMPTY_VALUE;
+      $tmp[pow(2,Alert::END)] = $LANG['buttons'][32];
+      $tmp[pow(2,Alert::NOTICE)] = $LANG['financial'][10];
+      $tmp[(pow(2,Alert::END)+pow(2,Alert::NOTICE))] = $LANG['buttons'][32]." + ".
+                                                                           $LANG['financial'][10];
+      Dropdown::showFromArray($myname,$tmp,array('value'=>$value));
    }
 }
 

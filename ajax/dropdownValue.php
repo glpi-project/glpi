@@ -75,7 +75,7 @@ if (isset($_POST['condition']) && !empty($_POST['condition'])) {
 }
 
 if (!isset($_POST['emptylabel']) || $_POST['emptylabel'] == '') {
-   $_POST['emptylabel'] = '-----';
+   $_POST['emptylabel'] = DROPDOWN_EMPTY_VALUE;
 }
 
 if (isset($_POST["entity_restrict"]) && !is_numeric($_POST["entity_restrict"])

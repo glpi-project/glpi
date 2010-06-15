@@ -49,7 +49,7 @@ class NotificationEvent extends CommonDBTM {
       if ($target) {
          $events = $target->getAllEvents();
       }
-      $events[''] = '-----';
+      $events[''] = DROPDOWN_EMPTY_VALUE;
       Dropdown::showFromArray('event', $events, array ('value' => $value));
    }
 

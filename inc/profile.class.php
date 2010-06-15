@@ -1526,7 +1526,7 @@ class Profile extends CommonDBTM {
       }
 
 
-      $profiles[0]="-----";
+      $profiles[0]=DROPDOWN_EMPTY_VALUE;
 
       $query="SELECT *
             FROM `glpi_profiles` ".

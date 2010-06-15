@@ -154,6 +154,14 @@ class Alert extends CommonDBTM {
          return false;
       }
    }
+
+   static function dropdownInfocomAlert($value) {
+      global $LANG;
+      $tmp[0] = DROPDOWN_EMPTY_VALUE;
+      $tmp[pow(2, Alert::END)] = $LANG['financial'][80];
+      Dropdown::showFromArray("default_infocom_alert",$tmp,
+                              array('value'=>$value));
+   }
 }
 
 ?>

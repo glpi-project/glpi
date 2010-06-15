@@ -209,13 +209,7 @@ class NotificationMailSetting extends CommonDBTM {
                                  'value'=>$CFG_GLPI["use_infocoms_alert"]));
       echo "</td>";
       echo "<td>" . $LANG['setup'][46]."&nbsp;:</td><td>";
-      echo "<select name=\"default_infocom_alert\">";
-      echo "<option value=\"0\" " . ($CFG_GLPI["default_infocom_alert"] == 0 ? " selected " : "") .
-             " >-----</option>";
-      echo "<option value=\"" . pow(2, Alert::END) . "\" " .
-             ($CFG_GLPI["default_infocom_alert"] == pow(2, Alert::END) ? " selected " : "") . " >" .
-             $LANG['financial'][80] . " </option>";
-      echo "</select>";
+      Alert::dropdownInfocomAlert($CFG_GLPI["default_infocom_alert"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][264] . "&nbsp;:</td><td>";

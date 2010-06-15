@@ -1391,7 +1391,7 @@ class User extends CommonDBTM {
 
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
-            $options = array(0 => '-----');
+            $options = array(0 => DROPDOWN_EMPTY_VALUE);
             foreach ($_SESSION['glpiprofiles'] as $ID => $prof) {
                $options[$ID] = $prof['name'];
             }
