@@ -860,7 +860,7 @@ class Plugin extends CommonDBTM {
 //          foreach ($attrib as $key => $val) {
 //             logInFile('debug',"Attribut $key used by $itemtype no more used for plugins\n");
 //          }
-      }
+      //}
       return true;
    }
    /**
