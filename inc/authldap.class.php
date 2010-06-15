@@ -1088,7 +1088,7 @@ class AuthLDAP extends CommonDBTM {
          foreach ($diff as $user) {
             $list[] = array("user" => $user,
                             "timestamp" => $user_infos[$user]["timestamp"],
-                            "date_mod"=> "-----");
+                            "date_mod"=> DROPDOWN_EMPTY_VALUE);
          }
          if ($values['order']=='DESC') {
             rsort($list);

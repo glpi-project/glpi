@@ -728,7 +728,7 @@ class Dropdown {
 
       $values = array();
       if (isset($options['display_none']) && ($options['display_none'])) {
-         $values[''] = '-----';
+         $values[''] = DROPDOWN_EMPTY_VALUE;
       }
       foreach ($CFG_GLPI["languages"] as $key => $val) {
          if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {

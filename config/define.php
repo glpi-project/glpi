@@ -85,7 +85,8 @@ define("DAY_TIMESTAMP",86400);
 define("WEEK_TIMESTAMP",604800);
 define("MONTH_TIMESTAMP",2592000);
 
-
+//Empty value displayed in a dropdown
+define("DROPDOWN_EMPTY_VALUE","-----");
 
 // ITEMS TYPE
 /// Temporary definition for test
@@ -208,7 +209,7 @@ $CFG_GLPI["state_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Mon
                                  'Peripheral', 'Phone');
 
 $CFG_GLPI["doc_types"]= array('Budget', 'CartridgeItem', 'ConsumableItem', 'Contract', 'Computer',
-                              'Entity', 'NetworkEquipment', 'Monitor', 'Peripheral', 'Phone', 
+                              'Entity', 'NetworkEquipment', 'Monitor', 'Peripheral', 'Phone',
                               'Printer', 'Software', 'SoftwareLicense', 'Supplier', 'Ticket');
 
 $CFG_GLPI["contract_types"] = array('Computer', 'NetworkEquipment', 'Printer', 'Monitor',
