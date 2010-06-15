@@ -855,11 +855,11 @@ class Plugin extends CommonDBTM {
          }
       }
 
-      /// TODO : clean warning when plug
-      if (count($attrib)) {
-         foreach ($attrib as $key => $val) {
-            logInFile('debug',"Attribut $key used by $itemtype no more used for plugins\n");
-         }
+      // Use it for plugin debug
+//       if (count($attrib)) {
+//          foreach ($attrib as $key => $val) {
+//             logInFile('debug',"Attribut $key used by $itemtype no more used for plugins\n");
+//          }
       }
       return true;
    }
