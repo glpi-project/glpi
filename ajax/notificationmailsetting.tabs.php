@@ -54,7 +54,7 @@ if ($_POST['id'] > 0) {
          $target->showFormMailServerConfig();
          if ($CFG_GLPI['use_mailing']) {
             $target->showFormAlerts();
-            Plugin::displayAction($_POST['target'], $_REQUEST['glpi_tab']);
+            Plugin::displayAction($target,$_REQUEST['glpi_tab']);
          }
          break;
 
@@ -69,7 +69,7 @@ if ($_POST['id'] > 0) {
          break;
 
       default :
-         if (!Plugin::displayAction($_POST['target'], $_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($target,$_REQUEST['glpi_tab'])) {
          }
    }
 }
