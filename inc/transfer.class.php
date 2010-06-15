@@ -969,7 +969,7 @@ class Transfer extends CommonDBTM {
                // Printer Direct Connect : keep / delete + clean unused / keep unused
                $this->transferDirectConnection($itemtype,$ID,'Printer',$ocs_computer);
                // Licence / Software :  keep / delete + clean unused / keep unused
-               $this->transferComputerSoftwares($itemtype,$ocs_computer);
+               $this->transferComputerSoftwares($ID,$ocs_computer);
             }
             if ($itemtype == 'SoftwareLicense') {
                $this->transferLicenseSoftwares($ID);
@@ -1389,14 +1389,6 @@ class Transfer extends CommonDBTM {
                           FROM `glpi_computers_softwareversions`
                           WHERE `id` = ".$data['id'];
             $DB->query($del_query);
-
-            if ($ocs_computer) {
-               $query = "UPDATE
-                         `glpi_ocslinks`
-                         SET `import_software` = NULL
-                         WHERE `computers_id` = '$ID'";
-               $DB->query($query);
-            }
          }
       } // each installed version
 
@@ -1410,6 +1402,13 @@ class Transfer extends CommonDBTM {
             $this->transferItem('SoftwareLicense',$data['id'],$data['id']);
          }
       } else {
+         if ($ocs_computer) {
+            $query = "UPDATE
+                      `glpi_ocslinks`
+                      SET `import_software` = NULL
+                      WHERE `computers_id` = '$ID'";
+            $DB->query($query);
+         }
          $query = "UPDATE
                    `glpi_softwarelicenses`
                    SET `computers_id` = '-1'
