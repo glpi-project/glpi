@@ -611,18 +611,12 @@ class Config extends CommonDBTM {
                             5,$CFG_GLPI['list_limit_max'],5);
       echo "</td>";
       echo "<td>" . $LANG['setup'][128] ."&nbsp;:</td>";
-      echo "<td><select name='date_format'>";
+      echo "<td>";
       $date_formats=array(0 => "YYYY-MM-DD",
                           1 => "DD-MM-YYYY",
                           2 => "MM-DD-YYYY");
-      foreach ($date_formats as $key => $val) {
-         echo "<option value='$key'";
-         if ($data["date_format"] == $key) {
-            echo " selected";
-         }
-         echo ">$val</option>";
-      }
-      echo "</select></td></tr>";
+      Dropdown::showFromArray('date_format',$date_formats,array('value'=>$data["date_format"]));
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
