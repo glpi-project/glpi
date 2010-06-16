@@ -834,7 +834,7 @@ class Infocom extends CommonDBTM {
                echo "<tr class='tab_bg_1'><td>".$LANG['setup'][247]."&nbsp;:</td>";
                echo "<td>";
                echo Infocom::dropdownAlert("alert",$ic->fields["alert"]);
-               echo "</td></tr>";
+               echo "</td><td colspan='2'></td></tr>";
             }
 
             if ($canedit) {
