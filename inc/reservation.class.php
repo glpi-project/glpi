@@ -754,6 +754,9 @@ class Reservation extends CommonDBTM {
          }
          echo "</th></tr>\n";
          if ($DB->numrows($result) == 0) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
+         } else {
             echo "<tr><th>".$LANG['search'][8]."</th>";
             echo "<th>".$LANG['search'][9]."</th>";
             echo "<th>".$LANG['reservation'][31]."</th>";
