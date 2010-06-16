@@ -782,9 +782,9 @@ class Infocom extends CommonDBTM {
                echo "<td colspan='2'>";
             }
             echo "</td>";
-            echo "<td rowspan='7'>".$LANG['common'][25]."&nbsp;:</td>";
-            echo "<td rowspan='7' class='middle'>";
-            echo "<textarea cols='45' rows='11' name='comment' >".$ic->fields["comment"]."</textarea>";
+            echo "<td rowspan='6'>".$LANG['common'][25]."&nbsp;:</td>";
+            echo "<td rowspan='6' class='middle'>";
+            echo "<textarea cols='45' rows='10' name='comment' >".$ic->fields["comment"]."</textarea>";
             echo "</td></tr>\n";
 
             echo "<tr class='tab_bg_1'>";
