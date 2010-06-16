@@ -2793,7 +2793,8 @@ class Ticket extends CommonDBTM {
       } else {
          if ($ID && $this->fields['itemtype'] && class_exists($this->fields['itemtype'])) {
             $item = new $this->fields['itemtype']();
-            echo $item->getTypeName()." ".$item->getNameID();
+            $item->getFromDB($this->fields['items_id']);
+            echo $item->getTypeName()." - ".$item->getNameID();
          } else {
             echo $LANG['help'][30];
          }
