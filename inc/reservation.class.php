@@ -283,11 +283,21 @@ class Reservation extends CommonDBTM {
       if (!empty($ID)) {
          $m=new ReservationItem;
          $m->getFromDB($ID);
-         if (!$m->fields['is_active']) {
-            echo "<div class='center'><strong>";
-            echo $LANG['reservation'][2]."<br>";
+         if ((!isset($m->fields['is_active'])) OR (!$m->fields['is_active'])) {
+            echo "<div class='center'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center'>";
+            echo "<strong>";
+            echo $LANG['reservation'][2];
+            echo "</td></tr>";
+            echo "<tr class='tab_bg_1'><td class='center'>";
             displayBackLink();
-            echo "</strong></div>";
+            echo "</strong>";
+            echo "</td>";
+            echo "</tr>";
+            echo "</table>";
+            echo "</div>";
             return false;
          }
          $type=$m->fields["itemtype"];
