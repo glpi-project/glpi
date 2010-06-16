@@ -431,16 +431,17 @@ class Ticket extends CommonDBTM {
          }
 
          if (in_array("status",$this->updates) && $this->input["status"]=="solved") {
-            $this->updates[]="solvedate";
+            $this->updates[] = "solvedate";
             $this->oldvalues['solvedate'] = $this->fields["solvedate"];
             $this->fields["solvedate"] = $_SESSION["glpi_currenttime"];
             // If invalid date : set open date
-            if ($this->fields["solvedate"] < $this->fields["date"]){
+            if ($this->fields["solvedate"] < $this->fields["date"]) {
                $this->fields["solvedate"] = $this->fields["date"];
             }
          }
+
          if (in_array("status",$this->updates) && $this->input["status"]=="closed") {
-            $this->updates[]="closedate";
+            $this->updates[] = "closedate";
             $this->oldvalues['closedate'] = $this->fields["closedate"];
             $this->fields["closedate"] = $_SESSION["glpi_currenttime"];
             // If invalid date : set open date
@@ -449,7 +450,7 @@ class Ticket extends CommonDBTM {
             }
             // Set solvedate to closedate
             if (empty($this->fields["solvedate"])) {
-               $this->updates[]="solvedate";
+               $this->updates[] = "solvedate";
                $this->oldvalues['solvedate'] = $this->fields["solvedate"];
                $this->fields["solvedate"] = $this->fields["closedate"];
             }
@@ -2585,7 +2586,7 @@ class Ticket extends CommonDBTM {
                showDateTimeFormItem("solvedate",$this->fields["solvedate"],1,false,$canupdate);
                echo "</td></tr>";
                break;
-         
+
          }
 
          echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td><td>";
