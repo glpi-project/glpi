@@ -2944,7 +2944,7 @@ class OcsServer extends CommonDBTM {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
                      if ($cfg_ocs["import_device_iface"]) {
                         $network["designation"] = $line2["DESCRIPTION"];
-                        
+
                         if (!in_array(stripslashes($prevalue.$network["designation"]), $import_device)) {
                            if (!empty ($line2["SPEED"])) {
                               $network["bandwidth"] = $line2["SPEED"];
@@ -4482,7 +4482,7 @@ class OcsServer extends CommonDBTM {
                      $line = clean_cross_side_scripting_deep(addslashes_deep($line));
                      $periph["name"] = $line["CAPTION"];
                      if (!in_array(stripslashes($periph["name"]), $import_periph)) {
-                        echo $periph["name"];print_r($import_periph);
+                        //echo $periph["name"];print_r($import_periph);
                         // Clean peripheral object
                         $p->reset();
                         if ($line["MANUFACTURER"] != "NULL") {
