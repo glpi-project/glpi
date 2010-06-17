@@ -524,7 +524,7 @@ class Phone extends CommonDBTM {
       $tab[83]['table']     = $this->getTable();
       $tab[83]['field']     = 'is_global';
       $tab[83]['linkfield'] = '';
-      $tab[83]['name']      = $LANG['common'][59];
+      $tab[83]['name']      = $LANG['peripherals'][31];
       $tab[83]['datatype']  = 'bool';
 
       return $tab;

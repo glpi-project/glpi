@@ -544,12 +544,6 @@ class NetworkEquipment extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[83]['table']     = $this->getTable();
-      $tab[83]['field']     = 'is_global';
-      $tab[83]['linkfield'] = '';
-      $tab[83]['name']      = $LANG['common'][59];
-      $tab[83]['datatype']  = 'bool';
-
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['linkfield'] = 'is_recursive';
