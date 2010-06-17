@@ -653,7 +653,7 @@ class Printer  extends CommonDBTM {
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['linkfield'] = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['name']      = $LANG['peripherals'][31];
       $tab[86]['datatype']  = 'bool';
 
       return $tab;
