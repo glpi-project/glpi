@@ -61,12 +61,19 @@ class ComputerDisk extends CommonDBChild {
    }
 
    function prepareInputForAdd($input) {
-      // Not attached to software -> not added
+
+      // Not attached to computer -> not added
       if (!isset($input['computers_id']) || $input['computers_id'] <= 0) {
          return false;
       }
+
+      if (!isset($input['entities_id'])) {
+         $input['entities_id'] = getItemEntity($input['itemtype'], $input['items_id']);
+      }
+
       return $input;
    }
+
 
    function post_getEmpty () {
       $this->fields["totalsize"]='0';
