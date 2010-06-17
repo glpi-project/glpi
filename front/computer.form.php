@@ -141,6 +141,7 @@ if (isset($_POST["add"])) {
    $actions = array("lockprinter"=> "import_printer",
                     "locksoft"   => "import_software",
                     "lockdisk"   => "import_disk",
+                    "lockmonitor"=> "import_monitor",
                     "lockperiph" => "import_peripheral",
                     "lockip"     => "import_ip",
                     "lockfield"  => "computer_update");
