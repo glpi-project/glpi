@@ -80,6 +80,15 @@ class SoftwareVersion extends CommonDBChild {
       if (!isset($input['softwares_id']) || $input['softwares_id'] <= 0) {
          return false;
       }
+
+      if (class_exists($input['itemtype'])) {
+         $item = new $input['itemtype']();
+         if ($item->getFromDB($input['items_id'])) {
+            $input['entities_id']  = $item->getEntityID();
+            $input['is_recursive'] = intval($item->isRecursive());
+            return $input;
+         }
+      }
       return $input;
    }
 

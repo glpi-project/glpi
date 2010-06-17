@@ -97,10 +97,24 @@ class NetworkPort extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      if (!isset($input['entities_id'])) {
-         // Security (entities_id not set in some case, ex : from OCS)
-         $input['entities_id'] = getItemEntity($input['itemtype'], $input['items_id']);
+      // Not attached to itemtype -> not added
+      if (!isset($input['itemtype'])
+          || empty($input['itemtype'])
+          || !class_exists($input['itemtype'])
+          || !isset($input['items_id'])
+          || $input['items_id'] <= 0) {
+         return false;
       }
+
+      if (class_exists($input['itemtype'])) {
+         $item = new $input['itemtype']();
+         if ($item->getFromDB($input['items_id'])) {
+            $input['entities_id']  = $item->getEntityID();
+            $input['is_recursive'] = intval($item->isRecursive());
+            return $input;
+         }
+      }
+
       if (isset($input["logical_number"]) && strlen($input["logical_number"])==0) {
          unset($input["logical_number"]);
       }
