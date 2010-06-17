@@ -68,7 +68,7 @@ class ComputerDisk extends CommonDBChild {
       }
 
       if (!isset($input['entities_id'])) {
-         $input['entities_id'] = getItemEntity($input['itemtype'], $input['items_id']);
+         $input['entities_id'] = getItemEntity('Computer', $input['computers_id']);
       }
 
       return $input;
