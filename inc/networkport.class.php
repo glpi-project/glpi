@@ -97,6 +97,10 @@ class NetworkPort extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
+      if (!isset($input['entities_id'])) {
+         // Security (entities_id not set in some case, ex : from OCS)
+         $input['entities_id'] = getItemEntity($input['itemtype'], $input['items_id']);
+      }
       if (isset($input["logical_number"]) && strlen($input["logical_number"])==0) {
          unset($input["logical_number"]);
       }
@@ -480,7 +484,12 @@ class NetworkPort extends CommonDBChild {
          $type = $item->getTypeName();
          if ($item->getFromDB($this->fields["items_id"])){
             $link=$item->getLink();
+         } else {
+            return false;
          }
+      } else {
+         // item is mandatory (for entity)
+         return false;
       }
 
       // Ajout des infos deja remplies
@@ -493,7 +502,8 @@ class NetworkPort extends CommonDBChild {
       }
       $this->showTabs($ID);
 
-      $options['colspan']=1;
+      $options['colspan']     = 1;
+      $options['entities_id'] = $item->getField('entities_id');
       $this->showFormHeader($options);
 
 

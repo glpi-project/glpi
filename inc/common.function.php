@@ -137,7 +137,24 @@ function getItemTypeTabsURL($itemtype, $full=true) {
    return "$dir/ajax/$item.tabs.php";
 }
 
+/**
+ * get the Entity of an Item
+ *
+ * @param $itemtype string item type
+ * @param $items_id integer id of the item
+ *
+ * @return integer ID of the entity or -1
+ */
+function getItemEntity ($itemtype, $items_id) {
 
+   if ($itemtype && class_exists($itemtype)) {
+      $item = new $itemtype();
+      if ($item->getFromDB($items_id)) {
+         return $item->getEntityID();
+      }
+   }
+   return -1;
+}
 /**
  * Determine if an object name is a plugin one
  *

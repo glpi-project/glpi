@@ -1452,8 +1452,11 @@ class CommonDBTM extends CommonGLPI {
          if ($this->isField("entities_id")) {
             //The object type can be assigned to an entity
             if ($this->isEntityAssign()) {
-               //It's a new object to be added
-               if ($this->isNewID($ID) || $params['withtemplate'] == 2) {
+               // TODO CommonDBChild must nost use current entity, but parent entity
+               if (isset($params['entities_id'])) {
+                  $entity = $this->fields['entities_id'] = $params['entities_id'];
+               } else if ($this->isNewID($ID) || $params['withtemplate'] == 2) {
+                  //It's a new object to be added
                   $entity = $_SESSION['glpiactive_entity'];
                } else {
                   //It's an existing object to be displayed
