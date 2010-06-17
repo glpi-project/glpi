@@ -81,15 +81,14 @@ class SoftwareVersion extends CommonDBChild {
          return false;
       }
 
-      if (class_exists($input['itemtype'])) {
-         $item = new $input['itemtype']();
-         if ($item->getFromDB($input['items_id'])) {
-            $input['entities_id']  = $item->getEntityID();
-            $input['is_recursive'] = intval($item->isRecursive());
-            return $input;
-         }
+      $item = new Software();
+      if ($item->getFromDB($input['softwares_id'])) {
+         $input['entities_id']  = $item->getEntityID();
+         $input['is_recursive'] = intval($item->isRecursive());
+         return $input;
       }
-      return $input;
+      // Software not found
+      return false;
    }
 
 //    function isEntityAssign() {

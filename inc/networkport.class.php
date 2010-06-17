@@ -106,19 +106,17 @@ class NetworkPort extends CommonDBChild {
          return false;
       }
 
-      if (class_exists($input['itemtype'])) {
-         $item = new $input['itemtype']();
-         if ($item->getFromDB($input['items_id'])) {
-            $input['entities_id']  = $item->getEntityID();
-            $input['is_recursive'] = intval($item->isRecursive());
-            return $input;
-         }
-      }
-
       if (isset($input["logical_number"]) && strlen($input["logical_number"])==0) {
          unset($input["logical_number"]);
       }
-      return $input;
+      $item = new $input['itemtype']();
+      if ($item->getFromDB($input['items_id'])) {
+         $input['entities_id']  = $item->getEntityID();
+         $input['is_recursive'] = intval($item->isRecursive());
+         return $input;
+      }
+      // Item not found
+      return false;
    }
 
    function pre_deleteItem() {
