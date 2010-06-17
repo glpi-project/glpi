@@ -325,7 +325,10 @@ class Ticket extends CommonDBTM {
           && $input["items_id"]>=0
           && isset($input["itemtype"])) {
 
-         if (isset($this->fields['groups_id']) && $this->fields['groups_id']) {
+         if (isset($this->fields['groups_id'])
+             && $this->fields['groups_id'] == 0
+             && (!isset($input['groups_id']) || $input['groups_id'] == 0)) {
+
             if ($input["itemtype"] && class_exists($input["itemtype"])) {
                $item = new $input["itemtype"]();
                $item->getFromDB($input["items_id"]);
@@ -932,7 +935,8 @@ class Ticket extends CommonDBTM {
 
       // Auto group define from item
       if ($item != NULL) {
-         if ($item->isField('groups_id')) {
+         if ($item->isField('groups_id')
+             && (!isset($input["groups_id"]) || $input["groups_id"]==0)) {
             $input["groups_id"] = $item->getField('groups_id');
          }
       }
