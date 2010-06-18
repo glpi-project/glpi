@@ -247,6 +247,15 @@ class Entity extends CommonTreeDropdown {
       $_SESSION['glpiactiveentities_string'] .= ",'".$this->fields['id']."'";
    }
 
+   function cleanDBonPurge() {
+      global $DB;
+
+      $query = "DELETE
+                FROM `glpi_entitydatas`
+                WHERE `entities_id` = '".$this->fields['id']."'";
+      $result = $DB->query($query);
+   }
+
    function getSearchOptions() {
       global $LANG;
 
