@@ -470,11 +470,11 @@ class Peripheral  extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
-      $tab[83]['table']     = $this->getTable();
-      $tab[83]['field']     = 'is_global';
-      $tab[83]['linkfield'] = '';
-      $tab[83]['name']      = $LANG['peripherals'][31];
-      $tab[83]['datatype']  = 'bool';
+      $tab[82]['table']     = $this->getTable();
+      $tab[82]['field']     = 'is_global';
+      $tab[82]['linkfield'] = '';
+      $tab[82]['name']      = $LANG['peripherals'][31];
+      $tab[82]['datatype']  = 'bool';
 
       return $tab;
    }
