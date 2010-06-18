@@ -1346,6 +1346,8 @@ class Transfer extends CommonDBTM {
                // create new item (don't check if move possible => clean needed)
                unset($vers->fields['id']);
                $input = $vers->fields;
+
+               // TODO entitie from new software
                unset($vers->fields);
                $input['softwares_id'] = $newsoftID;
                $newversID=$vers->add($input);
