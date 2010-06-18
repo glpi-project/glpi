@@ -127,7 +127,7 @@ class RuleMailCollector extends Rule {
       $criterias['KNOWN_DOMAIN']['field']   = 'name';
       $criterias['KNOWN_DOMAIN']['name']    = $LANG['rulesengine'][148];
       $criterias['KNOWN_DOMAIN']['table']   = 'glpi_entitydatas';
-      $criterias['KNOWN_DOMAIN']['type']    = 'yesonly';
+      $criterias['KNOWN_DOMAIN']['type']    = 'yesno';
       $criterias['KNOWN_DOMAIN']['virtual'] = true;
       $criterias['KNOWN_DOMAIN']['id']      = 'entitydatas';
       $criterias['KNOWN_DOMAIN']['allow_condition'] = array(Rule::PATTERN_IS);
