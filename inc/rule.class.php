@@ -1463,7 +1463,8 @@ class Rule extends CommonDBTM {
       $rules = $this->getRulesForEntity( $ID, 0, 1);
       if (empty ($rules)) {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th>" . $LANG['search'][15] . "</th></tr>\n";
+         echo "<tr><th>" . $LANG['search'][15] . "</th>";
+         echo "</tr>\n";
          echo "</table><br>\n";
       } else {
          if ($canedit) {
@@ -1471,7 +1472,10 @@ class Rule extends CommonDBTM {
                   "action='".getItemTypeSearchURL(get_class($this))."'>";
          }
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='3'>" . $this->getTitle() . "</th></tr>\n";
+         echo "<tr><th></th><th>" . $this->getTitle() . "</th>";
+         echo "<th>".$LANG['joblist'][6]."</th>";
+         echo "<th>" . $LANG['common'][60] . "</th>";
+         echo "</tr>\n";
          initNavigateListItems(get_class($this), $LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID));
 
          foreach ($rules as $rule) {
@@ -1489,6 +1493,7 @@ class Rule extends CommonDBTM {
                echo "<td>" . $rule->fields["name"] . "</td>";
             }
             echo "<td>" . $rule->fields["description"] . "</td>";
+            echo "<td>" . Dropdown::getYesNo($rule->fields["is_active"]) . "</td>";
             echo "</tr>\n";
          }
          echo "</table><br>\n";
