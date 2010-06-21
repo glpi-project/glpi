@@ -78,16 +78,12 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/networkequipment.php");
 
-} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-   if (isset($_POST["purge"])) {
-      $input["id"] = $_POST["id"];
-   } else {
-      $input["id"] = $_GET["id"];
-   }
-   $netdevice->check($input["id"],'d');
+} else if (isset($_REQUEST["purge"])) {
 
-   $netdevice->delete($input,1);
-   Event::log($input["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   $netdevice->check($_REQUEST["id"],'d');
+
+   $netdevice->delete($_REQUEST,1);
+   Event::log($_REQUEST["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/networkequipment.php");
 
 } else if (isset($_POST["update"])) {

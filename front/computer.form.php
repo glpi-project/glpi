@@ -83,16 +83,11 @@ if (isset($_POST["add"])) {
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 
-} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-   $input["id"] = $_GET["id"];
-   if (isset($_POST["purge"])) {
-      $input["id"] = $_POST["id"];
-   }
+} else if (isset($_REQUEST["purge"])) {
+   $computer->check($_REQUEST['id'],'d');
 
-   $computer->check($input['id'],'d');
-
-   if ($computer->delete($input,1)) {
-      Event::log($input["id"], "computers", 4, "inventory",
+   if ($computer->delete($_REQUEST,1)) {
+      Event::log($_REQUEST["id"], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$computer->getField('name'));
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");

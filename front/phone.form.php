@@ -77,17 +77,11 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 
-} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-   $phone->check($_POST["id"],'d');
+} else if (isset($_REQUEST["purge"])) {
+   $phone->check($_REQUEST["id"],'d');
 
-   if (isset($_POST["purge"])) {
-      $input["id"]=$_POST["id"];
-   } else {
-      $input["id"] = $_GET["id"];
-   }
-
-   $phone->delete($input,1);
-   Event::log($input["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   $phone->delete($_REQUEST,1);
+   Event::log($_REQUEST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 
 } else if (isset($_POST["update"])) {

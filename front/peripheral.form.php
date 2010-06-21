@@ -79,17 +79,11 @@ if (isset($_POST["add"])) {
               $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
 
-} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-   if (isset($_POST["purge"])) {
-      $input["id"]=$_POST["id"];
-   } else {
-      $input["id"] = $_GET["id"];
-   }
+} else if (isset($_REQUEST["purge"])) {
+   $peripheral->check($_REQUEST["id"],'d');
 
-   $peripheral->check($input["id"],'d');
-
-   $peripheral->delete($input,1);
-   Event::log($input["id"], "peripherals", 4, "inventory",
+   $peripheral->delete($_REQUEST,1);
+   Event::log($_REQUEST["id"], "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
 
