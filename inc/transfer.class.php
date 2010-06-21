@@ -2167,9 +2167,9 @@ class Transfer extends CommonDBTM {
                         $data = addslashes_deep($data);
                         $query = "INSERT
                                   INTO `glpi_logs`
-                                  (`items_id`, `itemtype`, `devicetype`, `linked_action`, `user_name`,
+                                  (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`,
                                    `date_mod`, `id_search_option`, `old_value`, `new_value`)
-                                  VALUES ('$newID', '$itemtype', '".$data['devicetype']."',
+                                  VALUES ('$newID', '$itemtype', '".$data['itemtype_link']."',
                                           '".$data['linked_action']."', '". $data['user_name']."',
                                           '".$data['date_mod']."', '".$data['id_search_option']."',
                                           '".$data['old_value']."', '".$data['new_value']."')";
