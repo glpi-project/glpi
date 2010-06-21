@@ -120,7 +120,6 @@ $where .= ") ";
 if (isset($_POST['condition']) && $_POST['condition'] != '') {
    $where .= " AND ".$_POST['condition']." ";
 }
-
 if ($item instanceof CommonTreeDropdown) {
    if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
       $where.=" AND `completename` ".makeTextSearch($_POST['searchText']);
@@ -131,6 +130,11 @@ if ($item instanceof CommonTreeDropdown) {
    $add_order="";
    if ($item->isEntityAssign()) {
       $recur=$item->maybeRecursive();
+
+       // Entities are not really recursive : do not display parents
+       if ($_POST['itemtype'] == 'Entity') {
+          $recur=false;
+       }
 
       if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
          $where.=getEntitiesRestrictRequest(" AND ", $table, '',
