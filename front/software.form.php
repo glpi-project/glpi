@@ -78,16 +78,11 @@ if (isset($_POST["add"])) {
               $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 
-} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-   $input["id"] = $_GET["id"];
-   if (isset($_POST["purge"])) {
-      $input["id"]=$_POST["id"];
-   }
+} else if (isset($_REQUEST["purge"])) {
+   $soft->check( || isset($_GET["purge"])["id"],'d');
 
-   $soft->check($input["id"],'d');
-
-   $soft->delete($input,1);
-   Event::log($input["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   $soft->delete( || isset($_GET["purge"]),1);
+   Event::log( || isset($_GET["purge"])["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 
 } else if (isset($_POST["update"])) {

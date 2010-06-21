@@ -77,16 +77,12 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
 
-} else if (isset($_POST["purge"]) || isset($_GET["purge"])) {
-   if (isset($_POST["purge"])) {
-      $input["id"] = $_POST["id"];
-   } else {
-      $input["id"] = $_GET["id"];
-   }
-   $print->check($input["id"],'d');
+} else if (isset($_REQUEST["purge"])) {
 
-   $print->delete($input,1);
-   Event::log($input["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   $print->check($_REQUEST["id"],'d');
+
+   $print->delete($_REQUEST,1);
+   Event::log($_REQUEST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
 
 } else if (isset($_POST["update"])) {

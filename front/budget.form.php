@@ -69,11 +69,11 @@ if (isset($_POST["add"])) {
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
 
-} else if (isset($_POST["purge"])) {
-   $budget->check($_POST["id"],'w');
+} else if (isset($_REQUEST["purge"])) {
+   $budget->check($_REQUEST["id"],'w');
 
-   if ($budget->delete($_POST,1)) {
-      Event::log($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   if ($budget->delete($_REQUEST,1)) {
+      Event::log($_REQUEST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
 
