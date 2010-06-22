@@ -323,6 +323,9 @@ class MailCollector  extends CommonDBTM {
                $tkt= $this->buildTicket($i,array('mailgates_id'=>$mailgateID,
                                                  'play_rules'=>true));
 
+               //Indicates that the mail must be deleted from the mailbox
+               $delete_mail = false;
+
                //If entity assigned, or email refused by rule, or no user associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"] ||$tkt['users_id'] > 0);
 
@@ -334,12 +337,15 @@ class MailCollector  extends CommonDBTM {
                   if (isset($tkt['entities_id'])) {
                      $tkt['_mailgate']=$mailgateID;
                      $result=imap_fetchheader($this->marubox,$i);
+
                      // Is a mail responding of an already existgin ticket ?
                      if (isset($tkt['tickets_id']) ) {
                         // Deletion of message with sucess
                         if (false === is_array($result)) {
                            $fup=new TicketFollowup();
-                           $fup->add($tkt);
+                           if ($fup->add($tkt)) {
+                              $delete_mail = true;
+                           }
                         } else {
                            $error++;
                         }
@@ -347,7 +353,9 @@ class MailCollector  extends CommonDBTM {
                         // Deletion of message with sucess
                         if (false === is_array($result)) {
                            $track=new Ticket();
-                           $track->add($tkt);
+                           if ($track->add($tkt)) {
+                              $delete_mail = true;
+                           }
                         } else {
                            $error++;
                         }
@@ -359,7 +367,10 @@ class MailCollector  extends CommonDBTM {
                      }
                      $refused++;
                   }
-                  $this->deleteMails($i); // Delete Mail from Mail box
+                  //Delete Mail from Mail box if ticket is added successfully
+                  if ($delete_mail) {
+                     $this->deleteMails($i);
+                  }
                } else {
                   $input = array();
                   $input['mailcollectors_id'] = $mailgateID;
