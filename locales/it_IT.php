@@ -1900,7 +1900,7 @@ $LANG['validation'][2]="Stato";
 $LANG['validation'][3]="Data di richiesta"; 
 $LANG['validation'][4]="Data di convalida"; 
 $LANG['validation'][5]="Richiesta di commento"; 
-$LANG['validation'][6]="Convalida del commento"; 
+$LANG['validation'][6]="Commento alla convalida"; 
 $LANG['validation'][7]="Convalida per la chiamata"; 
 $LANG['validation'][9]="In attesa di convalida"; 
 $LANG['validation'][10]="Rifiutato"; 
@@ -1920,5 +1920,5 @@ $LANG['validation'][29]="Se non sei d'accordo, devi specificare la motivazione";
 $LANG['validation'][30]="Elimina la richiesta di convalida a"; 
 $LANG['validation'][31]="Aggiorna la richiesta di convalida a"; 
 $LANG['validation'][32]="E' stata data una risposta ad una richiesta di convalida"; 
-$LANG['validation'][33]="Tickets are awaiting your approval"; 
+$LANG['validation'][33]="Chiamate in attesa della tua approvazione"; 
 ?>
