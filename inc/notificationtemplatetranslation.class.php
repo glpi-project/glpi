@@ -289,7 +289,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                $event = $LANG['common'][66];
             }
             else {
-               $event = implode(',',$values['events']);
+               $event = implode(', ',$values['events']);
             }
             $action = '';
 

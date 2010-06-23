@@ -334,7 +334,7 @@ class ReservationItem extends CommonDBTM {
    }
 
    /**
-    * Cron action on infocom : alert on expired warranty
+    * Cron action on reservation : alert on end of reservations
     *
     * @param $task to log, if NULL use display
     *
@@ -353,23 +353,22 @@ class ReservationItem extends CommonDBTM {
       $items_messages = array();
 
       foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
-         $delay_stamp_reservations= mktime(date("H")+$value,
-                                           date("i"), date("s"), date("m"), date("d"), date("y"));
-         $date_end_reservations=date("Y-m-d H:i:s",$delay_stamp_reservations);
-         $date_reservations=date("Y-m-d H:i:s");
+         $secs = $value * HOUR_TIMESTAMP;
 
-         $query_end = "SELECT `glpi_reservationitems`.*, `glpi_reservations`.`end` as `end`
-                       FROM `glpi_reservationitems`
-                       LEFT JOIN `glpi_alerts` ON (`glpi_reservationitems`.`id` = `glpi_alerts`.`items_id`
-                                                     AND `glpi_alerts`.`itemtype` = 'ReservationItem'
+
+         // Reservation already begin and reservation ended in $value hours
+         $query_end = "SELECT `glpi_reservationitems`.*, `glpi_reservations`.`end` as `end`,
+                              `glpi_reservations`.`id` as `resaid`
+                       FROM `glpi_reservations`
+                       LEFT JOIN `glpi_alerts` ON (`glpi_reservations`.`id` = `glpi_alerts`.`items_id`
+                                                     AND `glpi_alerts`.`itemtype` = 'Reservation'
                                                      AND `glpi_alerts`.`type`='".Alert::END."')
-                       LEFT JOIN `glpi_reservations` ON (
+                       LEFT JOIN `glpi_reservationitems` ON (
                                  `glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`)
                        WHERE `glpi_reservationitems`.`entities_id`='".$entity."'
-                             AND `glpi_reservations`.`end` < '$date_end_reservations'
-                                AND `glpi_reservations`.`end` > '$date_reservations'
-                                   AND `glpi_alerts`.`date` IS NULL";
-
+                         AND (UNIX_TIMESTAMP(`glpi_reservations`.`end`) - $secs) < UNIX_TIMESTAMP()
+                         AND `glpi_reservations`.`begin` < NOW()
+                         AND `glpi_alerts`.`date` IS NULL";
             foreach ($DB->request($query_end) as $data) {
                $item_resa = new $data["itemtype"]();
                if ($item_resa->getFromDB($data["items_id"])) {
@@ -377,7 +376,7 @@ class ReservationItem extends CommonDBTM {
                                  $item_resa->getTypeName()." - ".$item_resa->getName()."<br />";
                   $data['item_name'] = $item_resa->getName();
                   $data['entity'] = $entity;
-                  $items_infos[$entity][$data['id']] = $data;
+                  $items_infos[$entity][$data['resaid']] = $data;
 
                   if (!isset($items_messages[$entity])) {
                      $items_messages[$entity] = $LANG['reservation'][40]."<br />";
@@ -386,11 +385,9 @@ class ReservationItem extends CommonDBTM {
                }
             }
       }
-
       foreach ($items_infos as $entity => $items) {
 
          $resitem = new ReservationItem;
-
          if (NotificationEvent::raiseEvent("alert",new Reservation(),
                                            array('entities_id'=>$entity,'items'=>$items))) {
             $message = $items_messages[$entity];
@@ -405,10 +402,10 @@ class ReservationItem extends CommonDBTM {
             }
 
             $alert=new Alert();
-            $input["itemtype"] = 'ReservationItem';
+            $input["itemtype"] = 'Reservation';
             $input["type"]=Alert::END;
-            foreach ($items as $id => $item) {
-               $input["items_id"]=$id;
+            foreach ($items as $resaid => $item) {
+               $input["items_id"]=$resaid;
                $alert->add($input);
                unset($alert->fields['id']);
             }
