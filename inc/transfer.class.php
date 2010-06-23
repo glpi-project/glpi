@@ -1016,27 +1016,8 @@ class Transfer extends CommonDBTM {
             }
 
             if ($itemtype == 'Ticket') {
-               // Transfert ticket category
-               $catid=0;
-               if ($item->fields['ticketcategories_id']>0) {
-                  $categ= new TicketCategory();
-                  if ($categ->getFromDB($item->fields['ticketcategories_id'])) {
-                     $inputcat['entities_id']=$this->to;
-                     $inputcat['completename']=$categ->fields['completename'];
-                     $catid=$categ->getID($inputcat);
-                     if ($catid<0) {
-                        $catid=$categ->import($inputcat);
-                     }
-                  }
-               }
-               // Transfer supplier
-               $suppliers_id_assign = 0;
-               if ($item->fields['suppliers_id_assign'] >0) {
-                  $suppliers_id_assign
-                     = $this->transferSingleSupplier($item->fields['suppliers_id_assign']);
-               }
-               $input['suppliers_id_assign']=$suppliers_id_assign;
-               $input['ticketcategories_id']=$catid;
+               $input2=$this->transferTicketAdditionalInformations($item->fields);
+               $input=array_merge($input,$input2);
             }
 
             $item->update($input);
@@ -2088,31 +2069,12 @@ class Transfer extends CommonDBTM {
                case 2 :
                   // Same Item / Copy Item -> update entity
                   while ($data = $DB->fetch_array($result)) {
-                     $suppliers_id_assign = 0;
-                     if ($data['suppliers_id_assign'] >0) {
-                        $suppliers_id_assign
-                           = $this->transferSingleSupplier($data['suppliers_id_assign']);
-                     }
-                     $input=array('id'                  => $data['id'],
-                                        'entities_id'         => $this->to,
-                                        'items_id'            => $newID,
-                                        'itemtype'            => $itemtype,
-                                        'suppliers_id_assign' => $suppliers_id_assign);
-                     // Transfert ticket category
-                     $catid=0;
-                     if ($data['ticketcategories_id']>0) {
-                        $categ= new TicketCategory();
-                        if ($categ->getFromDB($data['ticketcategories_id'])) {
-                           $inputcat['entities_id']=$this->to;
-                           $inputcat['completename']=$categ->fields['completename'];
-                           $catid=$categ->getID($inputcat);
-//                            echo $catid;
-                           if ($catid<0) {
-                              $catid=$categ->import($inputcat);
-                           }
-                        }
-                     }
-                     $input['ticketcategories_id'] = $catid;
+                     $input=$this->transferTicketAdditionalInformations($data);
+                     $input['id']=$data['id'];
+                     $input['entities_id'] = $this->to;
+                     $input['items_id'] = $newID;
+                     $input['itemtype'] = $itemtype;
+
                      $job->update($input);
                      $this->addToAlreadyTransfer('Ticket',$data['id'],$data['id']);
                   }
@@ -2122,15 +2084,9 @@ class Transfer extends CommonDBTM {
                case 1 :
                   // Same Item / Copy Item : keep and clean ref
                   while ($data = $DB->fetch_array($result)) {
-                     $suppliers_id_assign = 0;
-                     if ($data['suppliers_id_assign'] >0) {
-                        $suppliers_id_assign
-                           = $this->transferSingleSupplier($data['suppliers_id_assign']);
-                     }
                      $job->update(array('id'                  => $data['id'],
                                         'itemtype'            => 0,
-                                        'items_id'            => 0,
-                                        'suppliers_id_assign' => $suppliers_id_assign));
+                                        'items_id'            => 0));
                      $this->addToAlreadyTransfer('Ticket',$data['id'],$data['id']);
                   }
                   break;
@@ -2150,6 +2106,35 @@ class Transfer extends CommonDBTM {
       }
    }
 
+
+   /**
+   * Transfer ticket infos
+   *
+   *@param $data ticket data fields
+   **/
+   function transferTicketAdditionalInformations($data) {
+      $input=array();
+      $suppliers_id_assign = 0;
+      if ($data['suppliers_id_assign'] >0) {
+         $suppliers_id_assign
+            = $this->transferSingleSupplier($data['suppliers_id_assign']);
+      }
+      // Transfert ticket category
+      $catid=0;
+      if ($data['ticketcategories_id']>0) {
+         $categ= new TicketCategory();
+         if ($categ->getFromDB($data['ticketcategories_id'])) {
+            $inputcat['entities_id']=$this->to;
+            $inputcat['completename']=$categ->fields['completename'];
+            $catid=$categ->getID($inputcat);
+            if ($catid<0) {
+               $catid=$categ->import($inputcat);
+            }
+         }
+      }
+      $input['ticketcategories_id'] = $catid;
+      return $input;
+   }
 
    /**
    * Transfer history
