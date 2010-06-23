@@ -1060,34 +1060,18 @@ class Transfer extends CommonDBTM {
 
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
-                  $data = $DB->fetch_array($result);
+                  $data = $DB->fetch_assoc($result);
                   $data = addslashes_deep($data);
-                  // Search if the location already exists in the destination entity
-                  $query = "SELECT `id`
-                            FROM `glpi_locations`
-                            WHERE `entities_id` = '".$this->to."'
-                                  AND `completename` = '".$data['completename']."'";
 
-                  if ($result_search=$DB->query($query)) {
-                     // Found : -> use it
-                     if ($DB->numrows($result_search)>0) {
-                        $newID = $DB->result($result_search,0,'id');
-                        $this->addToAlreadyTransfer('locations_id',$locID,$newID);
-                        return $newID;
-                     }
-                  }
-                  // Not found :
-                  // if locations_id>0 : transfer parent ID
-                  $parentid = 0;
-                  if ($data['locations_id']>0) {
-                     $parentid = $this->transferDropdownLocation($data['locations_id']);
-                  }
-                  // add item
+                  $input['entities_id']=$this->to;
+                  $input['completename']=$data['completename'];
                   $location = new Location();
-                  $newID = $location->add(array('name' => $data['name'],
-                                                'comment' => $data['comment'],
-                                                'entities_id' => $this->to,
-                                                'locations_id' => $parentid));
+                  $newID=$location->getID($input);
+                  
+                  if ($newID<0) {
+                     $newID=$location->import($input);
+                  }
+
                   $this->addToAlreadyTransfer('locations_id',$locID,$newID);
                   return $newID;
                }
