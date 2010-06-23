@@ -41,6 +41,8 @@ if (!defined('GLPI_ROOT')){
  * Entity class
  */
 class Entity extends CommonTreeDropdown {
+ 
+   var $must_be_replace = true;
 
    function getFromDB($ID) {
       global $LANG;
@@ -248,12 +250,28 @@ class Entity extends CommonTreeDropdown {
    }
 
    function cleanDBonPurge() {
-      global $DB;
+      global $DB,$LANG;
 
       $query = "DELETE
                 FROM `glpi_entitydatas`
                 WHERE `entities_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
+
+      $query="SELECT `rules_id`
+              FROM `glpi_ruleactions`
+              WHERE `value` = '".$this->fields['id']."'
+                  AND `field` = 'entities_id'";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $rule = new Rule();
+            $input['is_active']=0;
+            while ($data = $DB->fetch_array($result)) {
+               $input['id']=$data['rules_id'];
+               $rule->update($input);
+            }
+            addMessageAfterRedirect($LANG['rulesengine'][150]);
+         }
+      }
    }
 
    function getSearchOptions() {

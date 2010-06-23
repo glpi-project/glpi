@@ -1581,6 +1581,7 @@ $LANG['rulesengine'][54]="Dictionnaire des modèles d'imprimantes";
 $LANG['rulesengine'][55]="Dictionnaire des modèles de matériels réseaux";
 $LANG['rulesengine'][56]="Modèles";
 
+
 $LANG['rulesengine'][60]="Dictionnaire des types d'ordinateurs";
 $LANG['rulesengine'][61]="Dictionnaire des types de moniteurs";
 $LANG['rulesengine'][62]="Dictionnaire des types de téléphones";
@@ -1649,6 +1650,7 @@ $LANG['rulesengine'][146]="Utilisateur possèdant le profil";
 $LANG['rulesengine'][147]="Utilisateur possèdant une seule fois le profil";
 $LANG['rulesengine'][148]="Domaine de messagerie connu";
 
+$LANG['rulesengine'][150]="Les règles affectées à l'entité ont été désactivées.";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";
