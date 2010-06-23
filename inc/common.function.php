@@ -211,7 +211,8 @@ function logInFile($name,$text,$force=false) {
    global $CFG_GLPI;
 
    if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]||$force) {
-      error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
+      error_log(convDateTime(date("Y-m-d H:i:s"))." [".getLoginUserID()."]\n".$text,
+                3,GLPI_LOG_DIR."/".$name.".log");
    }
 }
 
