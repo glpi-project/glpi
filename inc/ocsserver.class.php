@@ -3725,12 +3725,19 @@ class OcsServer extends CommonDBTM {
                   $disk['mountpoint']=$line['VOLUMN'];
                   $disk['device']=$line['FILESYSTEM'];
                   $disk['filesystems_id']=Dropdown::importExternal('Filesystem', $line["TYPE"]);
-               } else if (in_array($line['FILESYSTEM'],array('ext4','ext3','ext2','jfs','jfs2',
+               } else if (in_array($line['FILESYSTEM'],array('ext4','ext3','ext2','ffs','jfs','jfs2',
                                                              'xfs','smbfs','nfs','hfs','ufs',
                                                              'Journaled HFS+','fusefs','fuseblk')) ) {
-                  $disk['name']=$line['VOLUMN'];
+                  // Try to detect mount point : OCS database is dirty
                   $disk['mountpoint']=$line['VOLUMN'];
                   $disk['device']=$line['TYPE'];
+                  // Found /dev in VOLUMN : invert datas
+                  if (strstr($line['VOLUMN'],'/dev/')) {
+                     $disk['mountpoint']=$line['TYPE'];
+                     $disk['device']=$line['VOLUMN'];
+                  }
+
+                  $disk['name']=$disk['mountpoint'];
                   $disk['filesystems_id']=Dropdown::importExternal('Filesystem', $line["FILESYSTEM"]);
                } else if (in_array($line['FILESYSTEM'],array('FAT32',
                                                              'NTFS',
