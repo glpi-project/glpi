@@ -70,7 +70,6 @@ class NotificationEvent extends CommonDBTM {
 
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
          $entity = $notificationtarget->getEntity();
-
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
                                                                $entity) as $data) {
@@ -97,21 +96,23 @@ class NotificationEvent extends CommonDBTM {
                $template->getFromDB($templates_id);
 
                foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
-                  //If the user have not yet been notified
-                  if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
-                     //If ther user's language is the same as the template's one
-                     if (isset($email_notprocessed[$users_infos['language']][$users_infos['email']])) {
-                        unset($email_notprocessed[$users_infos['language']][$users_infos['email']]);
-                     }
+                  if ($notificationtarget->validateSendTo($users_infos)) {
+                     //If the user have not yet been notified
+                     if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
+                        //If ther user's language is the same as the template's one
+                        if (isset($email_notprocessed[$users_infos['language']][$users_infos['email']])) {
+                           unset($email_notprocessed[$users_infos['language']][$users_infos['email']]);
+                        }
 
-                     if ($template->getTemplateByLanguage($notificationtarget, $users_infos, $event,
-                                                          $options)) {
-                        //Send notification to the user
-                        Notification::send ($template->getDataToSend($notificationtarget,
-                                                                     $users_infos, $options));
-                        $email_processed[$users_infos['language']][$users_infos['email']] = $users_infos;
-                     } else {
-                        $email_notprocessed[$users_infos['language']][$users_infos['email']] = $users_infos;
+                        if ($template->getTemplateByLanguage($notificationtarget, $users_infos, $event,
+                                                            $options)) {
+                           //Send notification to the user
+                           Notification::send ($template->getDataToSend($notificationtarget,
+                                                                        $users_infos, $options));
+                           $email_processed[$users_infos['language']][$users_infos['email']] = $users_infos;
+                        } else {
+                           $email_notprocessed[$users_infos['language']][$users_infos['email']] = $users_infos;
+                        }
                      }
                   }
                }

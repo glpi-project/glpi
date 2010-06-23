@@ -37,6 +37,42 @@ class NotificationTargetTicket extends NotificationTarget {
 
    var $private_profiles = array();
 
+
+   function __construct($entity='', $event='', $object=null, $options=array()) {
+      parent::__construct($entity, $event, $object, $options);
+
+      $this->options['sendprivate']=false;
+
+      if (isset($options['followup_id'])) {
+         $fup= new TicketFollowup();
+         if ($fup->getFromDB($options['followup_id'])) {
+            if ($fup->fields['is_private']) {
+               $this->options['sendprivate']=true;
+            }
+         }
+      }
+
+      if (isset($options['task_id'])) {
+         $fup= new TicketTask();
+         if ($fup->getFromDB($options['task_id'])) {
+            if ($fup->fields['is_private']) {
+               $this->options['sendprivate']=true;
+            }
+         }
+      }
+
+   }
+
+   /// Validate send before doing it (may be overloaded : exemple for private tasks or followups)
+   function validateSendTo($user_infos) {
+      // Private object and no right to see private items : do not send
+      if ($this->isPrivate() && $user_infos['additionnaloption']==0) {
+         return false;
+      }
+      return true;
+   }
+
+
    function getSubjectPrefix($event='') {
 
       if ($event !='alertnotclosed') {
@@ -79,7 +115,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             //Assign to a supplier
             case Notification::TICKET_SUPPLIER :
-               $this->getTicketSupplierAddress();
+               $this->getTicketSupplierAddress($this->options['sendprivate']);
                break;
 
             case Notification::TICKET_REQUESTER_GROUP :

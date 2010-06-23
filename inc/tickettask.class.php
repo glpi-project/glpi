@@ -191,16 +191,6 @@ class TicketTask  extends CommonDBTM {
             if ($CFG_GLPI["use_mailing"]
                 && (in_array("content",$this->updates))) {
 
-//                $user = new User;
-//                $user->getFromDB(getLoginUserID());
-
-//                $ticket = new Ticket;
-/*               if (isset($this->input["is_private"]) && $this->input["is_private"]) {
-                  $options['is_private'] = true;
-               }
-               else {
-                  $options = array();
-               }*/
                $options = array('task_id' => $this->fields["id"]);
                NotificationEvent::raiseEvent('update_task',$job,$options);
                $mailsend=true;
