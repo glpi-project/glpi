@@ -468,7 +468,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName();
                   }
                   $tmp['change'] = $LANG['log'][98]."&nbsp;<strong>:</strong>&nbsp;".
-                            $tmp['field']." (".$LANG['common'][2]." ".$data["new_value"].")";
+                            $tmp['field']." (".$data["new_value"].")";
                   break;
                case HISTORY_UPDATE_SUBITEM :
                   $tmp['field']='';
@@ -477,7 +477,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName();
                   }
                   $tmp['change'] = $LANG['log'][99]."&nbsp;<strong>:</strong>&nbsp;".
-                            $tmp['field']." (".$LANG['common'][2]." ".$data["new_value"].")";
+                            $tmp['field']." (".$data["new_value"].")";
                   break;
                case HISTORY_DELETE_SUBITEM :
                   $tmp['field']='';
@@ -486,7 +486,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName();
                   }
                   $tmp['change'] = $LANG['log'][100]."&nbsp;<strong>:</strong>&nbsp;".
-                            $tmp['field']." (".$LANG['common'][2]." ".$data["new_value"].")";
+                            $tmp['field']." (".$data["old_value"].")";
                   break;
 
             }
