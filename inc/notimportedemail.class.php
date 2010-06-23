@@ -78,7 +78,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[4]['table']         = 'glpi_mailcollectors';
       $tab[4]['field']         = 'name';
-      $tab[4]['linkfield']     = '';
+      $tab[4]['linkfield']     = 'mailcollectors_id';
       $tab[4]['name']          = $LANG['mailgate'][0];
       $tab[4]['datatype']      = 'itemlink';
       $tab[4]['itemlink_type'] = 'MailCollector';
