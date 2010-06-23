@@ -106,6 +106,10 @@ $LANG['buttons'][57]="Ejecutar";
 $LANG['buttons'][58]="Actualizar"; 
 $LANG['buttons'][59]="Dissociate"; 
 
+$LANG['calendar'][0]="YYYY-MM-DD"; 
+$LANG['calendar'][1]="DD-MM-YYYY"; 
+$LANG['calendar'][2]="MM-DD-YYYY"; 
+
 $LANG['calendarD'][0]="D"; 
 $LANG['calendarD'][1]="L"; 
 $LANG['calendarD'][2]="M"; 
@@ -1478,6 +1482,7 @@ $LANG['rulesengine'][145]="Usuario con un único perfil";
 $LANG['rulesengine'][146]="User featuring the profile"; 
 $LANG['rulesengine'][147]="Usuario con un único perfil"; 
 $LANG['rulesengine'][148]="Dominio correo electrónico conocido"; 
+$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
 
 $LANG['search'][0]="Buscar"; 
 $LANG['search'][1]="para todos"; 

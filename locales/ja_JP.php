@@ -106,6 +106,10 @@ $LANG['buttons'][57]="実行";
 $LANG['buttons'][58]="更新"; 
 $LANG['buttons'][59]="Dissociate"; 
 
+$LANG['calendar'][0]="YYYY-MM-DD"; 
+$LANG['calendar'][1]="DD-MM-YYYY"; 
+$LANG['calendar'][2]="MM-DD-YYYY"; 
+
 $LANG['calendarD'][0]="日"; 
 $LANG['calendarD'][1]="月"; 
 $LANG['calendarD'][2]="火"; 
@@ -1478,6 +1482,7 @@ $LANG['rulesengine'][145]="単一プロフィールのユーザー";
 $LANG['rulesengine'][146]="User featuring the profile"; 
 $LANG['rulesengine'][147]="User featuring a single profile"; 
 $LANG['rulesengine'][148]="Mail domain is known"; 
+$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
 
 $LANG['search'][0]="検索"; 
 $LANG['search'][1]="全て"; 

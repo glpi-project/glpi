@@ -106,6 +106,10 @@ $LANG['buttons'][57]="Végrehajt";
 $LANG['buttons'][58]="Frissít"; 
 $LANG['buttons'][59]="Szétválaszt"; 
 
+$LANG['calendar'][0]="YYYY-MM-DD"; 
+$LANG['calendar'][1]="DD-MM-YYYY"; 
+$LANG['calendar'][2]="MM-DD-YYYY"; 
+
 $LANG['calendarD'][0]="V"; 
 $LANG['calendarD'][1]="H"; 
 $LANG['calendarD'][2]="K"; 
@@ -1478,6 +1482,7 @@ $LANG['rulesengine'][145]="Egyszerű profilú felhasználó";
 $LANG['rulesengine'][146]="A következő profilhoz tartozó felhasználó"; 
 $LANG['rulesengine'][147]="Egyetlen profilhoz tartozó felhasználó"; 
 $LANG['rulesengine'][148]="A levelezőtartomány ismert"; 
+$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
 
 $LANG['search'][0]="Keresés"; 
 $LANG['search'][1]="mindegyik"; 

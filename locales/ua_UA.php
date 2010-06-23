@@ -106,6 +106,10 @@ $LANG['buttons'][57]="Виконати";
 $LANG['buttons'][58]="Оновити"; 
 $LANG['buttons'][59]="Відв’язати"; 
 
+$LANG['calendar'][0]="YYYY-MM-DD"; 
+$LANG['calendar'][1]="DD-MM-YYYY"; 
+$LANG['calendar'][2]="MM-DD-YYYY"; 
+
 $LANG['calendarD'][0]="Нд"; 
 $LANG['calendarD'][1]="Пн"; 
 $LANG['calendarD'][2]="Вт"; 
@@ -1478,6 +1482,7 @@ $LANG['rulesengine'][145]="Користувач з єдиним профілем
 $LANG['rulesengine'][146]="Профіль можливостей користувача"; 
 $LANG['rulesengine'][147]="Єдиний профіль можливостей користувача"; 
 $LANG['rulesengine'][148]="Поштовий домен відомий"; 
+$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
 
 $LANG['search'][0]="Пошук"; 
 $LANG['search'][1]="для всіх"; 
