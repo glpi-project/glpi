@@ -1015,6 +1015,30 @@ class Transfer extends CommonDBTM {
                      $this->transferDropdownLocation($item->fields['locations_id']);
             }
 
+            if ($itemtype == 'Ticket') {
+               // Transfert ticket category
+               $catid=0;
+               if ($item->fields['ticketcategories_id']>0) {
+                  $categ= new TicketCategory();
+                  if ($categ->getFromDB($item->fields['ticketcategories_id'])) {
+                     $inputcat['entities_id']=$this->to;
+                     $inputcat['completename']=$categ->fields['completename'];
+                     $catid=$categ->getID($inputcat);
+                     if ($catid<0) {
+                        $catid=$categ->import($inputcat);
+                     }
+                  }
+               }
+               // Transfer supplier
+               $suppliers_id_assign = 0;
+               if ($item->fields['suppliers_id_assign'] >0) {
+                  $suppliers_id_assign
+                     = $this->transferSingleSupplier($item->fields['suppliers_id_assign']);
+               }
+               $input['suppliers_id_assign']=$suppliers_id_assign;
+               $input['ticketcategories_id']=$catid;
+            }
+
             $item->update($input);
             $this->addToAlreadyTransfer($itemtype,$ID,$newID);
             doHook("item_transfer", array('type'  => $itemtype,
@@ -2052,7 +2076,7 @@ class Transfer extends CommonDBTM {
       global $DB;
 
       $job= new Ticket();
-      $query = "SELECT `id`, `suppliers_id_assign`
+      $query = "SELECT *
                 FROM `glpi_tickets`
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '$itemtype'";
@@ -2069,11 +2093,27 @@ class Transfer extends CommonDBTM {
                         $suppliers_id_assign
                            = $this->transferSingleSupplier($data['suppliers_id_assign']);
                      }
-                     $job->update(array('id'                  => $data['id'],
+                     $input=array('id'                  => $data['id'],
                                         'entities_id'         => $this->to,
                                         'items_id'            => $newID,
                                         'itemtype'            => $itemtype,
-                                        'suppliers_id_assign' => $suppliers_id_assign));
+                                        'suppliers_id_assign' => $suppliers_id_assign);
+                     // Transfert ticket category
+                     $catid=0;
+                     if ($data['ticketcategories_id']>0) {
+                        $categ= new TicketCategory();
+                        if ($categ->getFromDB($data['ticketcategories_id'])) {
+                           $inputcat['entities_id']=$this->to;
+                           $inputcat['completename']=$categ->fields['completename'];
+                           $catid=$categ->getID($inputcat);
+//                            echo $catid;
+                           if ($catid<0) {
+                              $catid=$categ->import($inputcat);
+                           }
+                        }
+                     }
+                     $input['ticketcategories_id'] = $catid;
+                     $job->update($input);
                      $this->addToAlreadyTransfer('Ticket',$data['id'],$data['id']);
                   }
                   break;

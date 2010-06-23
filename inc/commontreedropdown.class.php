@@ -343,7 +343,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $query .= getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
                                                  $input['entities_id'],$this->maybeRecursive());
          }
-
          // Check twin :
          if ($result_twin = $DB->query($query) ) {
             if ($DB->numrows($result_twin) > 0) {
@@ -374,7 +373,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $fk = $this->getForeignKeyField();
       $i=count($names);
       $parent = 0;
-
       foreach ($names as $name) {
          $i--;
          if (empty($name)) {
@@ -394,7 +392,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                }
             }
          }
+//          echo "import";print_r($tmp);echo "<br>";
          $parent = parent::import($tmp);
+//          echo "imported $parent<br>";
       }
       return $parent;
    }
