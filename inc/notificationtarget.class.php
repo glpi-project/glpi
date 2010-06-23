@@ -100,6 +100,11 @@ class NotificationTarget extends CommonDBChild {
    }
 
 
+   /// Validate send before doing it (may be overloaded : exemple for private tasks or followups)
+   function validateSendTo($user_infos) {
+      return true;
+   }
+
    function getSubjectPrefix($event='') {
       return "[GLPI] ";
    }
