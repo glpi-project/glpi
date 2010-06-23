@@ -1018,6 +1018,7 @@ class Transfer extends CommonDBTM {
             if ($itemtype == 'Ticket') {
                $input2=$this->transferTicketAdditionalInformations($item->fields);
                $input=array_merge($input,$input2);
+               $this->transferTicketTaskCategory($ID,$newID);
             }
 
             $item->update($input);
@@ -2077,6 +2078,7 @@ class Transfer extends CommonDBTM {
 
                      $job->update($input);
                      $this->addToAlreadyTransfer('Ticket',$data['id'],$data['id']);
+                     $this->transferTicketTaskCategory($input['id'],$input['id']);
                   }
                   break;
 
@@ -2105,7 +2107,43 @@ class Transfer extends CommonDBTM {
          }
       }
    }
+   /**
+   * Transfer task categories for specified tickets
+   *
+   * @param $ID original ticket ID
+   * @param $newID new ticket ID
+   **/
+   function transferTicketTaskCategory($ID,$newID) {
+      global $DB;
+      $task=new TicketTask();
+      $query = "SELECT *
+                FROM `glpi_tickettasks`
+                WHERE `tickets_id` = '$ID'";
 
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $input=array();
+               if ($data['taskcategories_id']>0) {
+
+                  $categ= new TaskCategory();
+                  if ($categ->getFromDB($data['taskcategories_id'])) {
+                     $inputcat['entities_id']=$this->to;
+                     $inputcat['completename']=$categ->fields['completename'];
+                     $catid=$categ->getID($inputcat);
+                     if ($catid<0) {
+                        $catid=$categ->import($inputcat);
+                     }
+                     $input['id']=$data['id'];
+                     $input['tickets_id']=$ID;
+                     $input['taskcategories_id']=$catid;
+                     $task->update($input);
+                  }
+               }
+            }
+         }
+      }
+   }
 
    /**
    * Transfer ticket infos
