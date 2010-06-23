@@ -250,11 +250,8 @@ class Bookmark extends CommonDBTM {
    **/
    function load($ID,$opener=true) {
 
-      if ($this->getFromDB($ID)) {
+      if ($params= $this->getParameters($ID)) {
          $url = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
-         $query_tab=array();
-         parse_str($this->fields["query"],$query_tab);
-         $params=$this->prepareQueryToUse($this->fields["type"],$query_tab);
          $url.="?".append_params($params);
          if ($opener) {
             echo "<script type='text/javascript' >\n";
@@ -264,6 +261,22 @@ class Bookmark extends CommonDBTM {
             glpi_header($url);
          }
       }
+   }
+
+   /**
+   * get bookmark parameters
+   *
+   * @param $ID ID of the bookmark
+   * @return nothing
+   **/
+   function getParameters($ID) {
+
+      if ($this->getFromDB($ID)) {
+         $query_tab=array();
+         parse_str($this->fields["query"],$query_tab);
+         return $this->prepareQueryToUse($this->fields["type"],$query_tab);
+      }
+      return false;
    }
 
    /**

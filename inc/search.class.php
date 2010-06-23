@@ -3718,10 +3718,9 @@ class Search {
    *
    * @param $itemtype item type to manage
    * @param $usesession Use datas save in session
-   * @param $save Save params to session
    * @return nothing
    */
-   static function manageGetValues($itemtype,$usesession=true,$save=true) {
+   static function manageGetValues($itemtype,$usesession=true,$forcebookmark=false) {
       global $_GET,$DB;
 
       $redirect=false;
@@ -3772,8 +3771,8 @@ class Search {
          $default_values=array_merge(call_user_func(array($itemtype, 'getDefaultSearchRequest')));
       }
 
-      // First view of the page : try to load a bookmark
-      if ($usesession && !isset($_SESSION['glpisearch'][$itemtype])) {
+      // First view of the page or reset : try to load a bookmark
+      if ($forcebookmark || ($usesession && !isset($_SESSION['glpisearch'][$itemtype]))) {
          $query = "SELECT `bookmarks_id`
                   FROM `glpi_bookmarks_users`
                   WHERE `users_id`='".getLoginUserID()."'
@@ -3785,7 +3784,12 @@ class Search {
                $_SESSION['glpisearch'][$itemtype]=array();
                // Load bookmark on main window
                $bookmark=new Bookmark();
-               $bookmark->load($IDtoload,false);
+               // Only get datas for bookmarks
+               if ($forcebookmark) {
+                  $_GET=$bookmark->getParameters($IDtoload);
+               } else {
+                  $bookmark->load($IDtoload,false);
+               }
             }
          }
       }
@@ -3816,7 +3820,7 @@ class Search {
          }
       }
 
-      if (is_array($_GET) && $save) {
+      if (is_array($_GET) && $usesession) {
          foreach ($_GET as $key => $val) {
             $_SESSION['glpisearch'][$itemtype][$key]=$val;
          }
