@@ -162,8 +162,9 @@ class TicketTask  extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       manageBeginAndEndPlanDates($input['plan']);
-
-      $input["realtime"] = $input["hour"]+$input["minute"]/60;
+      if (isset($input["hour"]) && isset($input["minute"])) {
+         $input["realtime"] = $input["hour"]+$input["minute"]/60;
+      }
       if ($uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
