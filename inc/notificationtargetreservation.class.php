@@ -155,9 +155,16 @@ class NotificationTargetReservation extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('reservation.item'        => $LANG['financial'][104],
+      $tags_all = array('reservation.item'        => $LANG['financial'][104],
                     'reservation.itemtype'    => $LANG['reports'][12],
-                    'reservation.user'        => $LANG['common'][37],
+                    'reservation.url'         => 'URL');
+
+      foreach ($tags_all as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true));
+      }
+
+      $tags_except_alert = array('reservation.user'        => $LANG['common'][37],
                     'reservation.begin'       => $LANG['search'][8],
                     'reservation.end'         => $LANG['search'][9],
                     'reservation.comment'     => $LANG['common'][25],
@@ -166,14 +173,20 @@ class NotificationTargetReservation extends NotificationTarget {
                     'reservation.item.name'   => $LANG['financial'][104],
                     'reservation.item.tech'   => $LANG['common'][10]);
 
-      foreach ($tags as $tag => $label) {
+      foreach ($tags_except_alert as $tag => $label) {
          $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+                                   'value'=>true,'events'=>array('new','update','delete')));
       }
 
       $this->addTagToList(array('tag'=>'items','label'=>$LANG['reports'][57],
                                 'value'=>false,'foreach'=>true,
                                 'events'=>array('alert')));
+
+      $tag_alert= array('reservation.expirationdate'         => $LANG['search'][9]);
+      foreach ($tag_alert as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true,'events'=>array('alert')));
+      }
 
       asort($this->tag_descriptions);
    }
