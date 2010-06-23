@@ -45,7 +45,7 @@ header_nocache();
 checkLoginUser();
 
 // Security
-if (!class_exists($_POST['itemtype'])) {
+if (!isset($_POST['itemtype']) || !class_exists($_POST['itemtype'])) {
    exit();
 }
 

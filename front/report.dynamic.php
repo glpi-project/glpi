@@ -62,15 +62,15 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
             $params = unserialize(stripslashes($_GET["item_type_param"]));
             switch ($params["type"]) {
                case "comp_champ" :
-                  $val = Stat::getItems($params["date1"], $params["date2"], $params["table"]);
+                  $val = Stat::getItems($params["date1"], $params["date2"], $params["dropdown"]);
                   Stat::show($params["type"], $params["date1"], $params["date2"], $params["start"],
-                             $val, $params["field"]);
+                             $val, $params["dropdown"]);
                   break;
 
                case "device" :
-                  $val = Stat::getItems($params["date1"], $params["date2"], $params["field"]);
+                  $val = Stat::getItems($params["date1"], $params["date2"], $params["dropdown"]);
                   Stat::show($params["type"], $params["date1"], $params["date2"], $params["start"],
-                             $val, $params["field"]);
+                             $val, $params["dropdown"]);
                   break;
 
                default :
