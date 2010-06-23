@@ -116,6 +116,9 @@ $LANG['buttons'][57] = "Exécuter";
 $LANG['buttons'][58] = "Mettre à jour";
 $LANG['buttons'][59] = "Dissocier";
 
+$LANG['calendar'][0] = "AAAA-MM-JJ";
+$LANG['calendar'][1] = "JJ-MM-AAAA";
+$LANG['calendar'][2] = "MM-JJ-AAAA";
 
 $LANG['calendarD'][0] = "D";
 $LANG['calendarD'][1] = "L";

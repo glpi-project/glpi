@@ -612,9 +612,9 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td>" . $LANG['setup'][128] ."&nbsp;:</td>";
       echo "<td>";
-      $date_formats=array(0 => "YYYY-MM-DD",
-                          1 => "DD-MM-YYYY",
-                          2 => "MM-DD-YYYY");
+      $date_formats=array(0 => $LANG['calendar'][0],
+                          1 => $LANG['calendar'][1],
+                          2 => $LANG['calendar'][2]);
       Dropdown::showFromArray('date_format',$date_formats,array('value'=>$data["date_format"]));
       echo "</td></tr>";
 
