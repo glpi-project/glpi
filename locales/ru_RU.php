@@ -106,6 +106,10 @@ $LANG['buttons'][57]="Выполнить";
 $LANG['buttons'][58]="Обновление"; 
 $LANG['buttons'][59]="Dissociate"; 
 
+$LANG['calendar'][0]="YYYY-MM-DD"; 
+$LANG['calendar'][1]="DD-MM-YYYY"; 
+$LANG['calendar'][2]="MM-DD-YYYY"; 
+
 $LANG['calendarD'][0]="Вс"; 
 $LANG['calendarD'][1]="Пн"; 
 $LANG['calendarD'][2]="Вт"; 
@@ -1478,6 +1482,7 @@ $LANG['rulesengine'][145]="Пользователь с единственным 
 $LANG['rulesengine'][146]="User featuring the profile"; 
 $LANG['rulesengine'][147]="User featuring a single profile"; 
 $LANG['rulesengine'][148]="Mail domain is known"; 
+$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
 
 $LANG['search'][0]="Поиск"; 
 $LANG['search'][1]="для всех"; 
