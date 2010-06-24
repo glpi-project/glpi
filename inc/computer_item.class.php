@@ -508,9 +508,9 @@ class Computer_Item extends CommonDBRelation{
       if (count($compids)>0) {
          foreach ($compids as $key => $compid) {
             $comp->getFromDB($compid);
-            echo "<tr><td class='b tab_bg_1".($comp->fields['is_deleted']?"_2":"")."'>";
+            echo "<tr><td class='b tab_bg_1".($comp->getField('is_deleted')?"_2":"")."'>";
             echo $LANG['help'][25]."&nbsp;: ".$comp->getLink()."</td>";
-            echo "<td class='tab_bg_2".($comp->fields['is_deleted']?"_2":"")." center b'>";
+            echo "<td class='tab_bg_2".($comp->getField('is_deleted')?"_2":"")." center b'>";
             if ($canedit) {
                echo "<a href=\"$target?disconnect=1&amp;computers_id=$compid&amp;id=$key\">".
                     $LANG['buttons'][10]."</a>";
