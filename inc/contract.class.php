@@ -990,7 +990,6 @@ class Contract extends CommonDBTM {
          $querys = array(Alert::NOTICE=>$query_notice, Alert::END=>$query_end);
 
          foreach ($querys as $type => $query) {
-            logDebug($query);
             foreach ($DB->request($query) as $data) {
                $entity = $data['entities_id'];
                $message = $data["name"].": ".
