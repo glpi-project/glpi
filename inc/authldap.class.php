@@ -792,6 +792,28 @@ class AuthLDAP extends CommonDBTM {
       return $stamp;
    }
 
+   /** Converts a Unix timestamp to an LDAP timestamps
+    *
+    * @param   $ldapstamp LDAP timestamp
+    * @param   $ldap_time_offset time offset
+    * @return unix timestamp
+    */
+   static function date2ldapTimeStamp($operator,$days,$ldap_time_offset=0) {
+      global $CFG_GLPI;
+
+      $delay = false;
+      switch ($operator) {
+         case '>' :
+            $delay = "-$days day";
+            break;
+         case '<' :
+            $delay = "+$days day";
+            break;
+      }
+
+      //return date("%Y%m%d%H%M%SZ",$unix_timestamp) - $CFG_GLPI["time_offset"]-$ldap_time_offset;
+      return date("YmdGis",strtotime($delay)).'Z';
+   }
 
    /** Test a LDAP connection
     *
@@ -1006,6 +1028,7 @@ class AuthLDAP extends CommonDBTM {
          } else {
             $filter = $values['ldap_filter'];
          }
+
          $sr = @ldap_search($ds,
                            $values['basedn'],
                            $filter ,
@@ -1812,7 +1835,9 @@ class AuthLDAP extends CommonDBTM {
                         'ldapservers_id',
                         'ldap_filter',
                         'basedn',
-                        'action');
+                        'action',
+                        'operator',
+                        'days');
 
       //If form accessed via popup, do not show expert mode link
       if (isset($options['popup'])) {
@@ -1955,18 +1980,28 @@ class AuthLDAP extends CommonDBTM {
                $_SESSION['glpiactive_entity']."'>";
             }
 
+          if (isset($_SESSION['ldap_import']['days']) && $_SESSION['ldap_import']['days']) {
+            $enabled = 1;
+          }
+          else {
+            $enabled = 0;
+          }
+          Dropdown::showAdvanceDateRestrictionSwitch($enabled);
+
+         echo "<table class='tab_cadre_fixe'>";
+
             if ($_SESSION['ldap_import']['ldapservers_id'] !=  NOT_AVAILABLE
                   && $_SESSION['ldap_import']['ldapservers_id'] > 0) {
                $field_counter = 0;
-               $fields = array('login_field'=>$LANG['login'][6],
-                               'email_field'=>$LANG['setup'][14],
-                               'realname_field'=>$LANG['common'][48],
-                               'firstname_field'=>$LANG['common'][43],
-                               'phone_field'=>$LANG['help'][35],
-                               'phone2_field'=>$LANG['help'][35] . " 2",
-                               'mobile_field'=>$LANG['common'][42],
-                               'title_field'=>$LANG['users'][1],
-                               'category_field'=>$LANG['users'][2]);
+               $fields = array('login_field'     => $LANG['login'][6],
+                               'email_field'     => $LANG['setup'][14],
+                               'realname_field'  => $LANG['common'][48],
+                               'firstname_field' => $LANG['common'][43],
+                               'phone_field'     => $LANG['help'][35],
+                               'phone2_field'    => $LANG['help'][35] . " 2",
+                               'mobile_field'    => $LANG['common'][42],
+                               'title_field'     => $LANG['users'][1],
+                               'category_field'  => $LANG['users'][2]);
                 $available_fields = array();
                foreach ($fields as $field => $label) {
                   if (isset($authldap->fields[$field]) && $authldap->fields[$field] != '') {
@@ -2034,9 +2069,7 @@ class AuthLDAP extends CommonDBTM {
             && $_SESSION['ldap_import']['ldapservers_id'] > 0) {
          if ($_SESSION['ldap_import']['ldapservers_id']) {
             echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
-            echo "<input  class='submit'
-                          type='submit'
-                          name='search'
+            echo "<input  class='submit' type='submit' name='search'
                           value='".$LANG['buttons'][0]."'>";
             echo "</td></tr>";
          }
@@ -2098,6 +2131,16 @@ class AuthLDAP extends CommonDBTM {
       }
       else {
          $filter = "(".$authldap->getField("login_field")."=*)";
+      }
+
+      //If days restriction
+      if (isset($_SESSION['ldap_import']['days']) && $_SESSION['ldap_import']['days']) {
+         $operator = $_SESSION['ldap_import']['operator'].'=';
+         $stampvalue = self::date2ldapTimeStamp($_SESSION['ldap_import']['operator'],
+                                                $_SESSION['ldap_import']['days'],
+                                                $authldap->fields['time_offset']);
+         $filter_days = "(modifyTimestamp".$operator.$stampvalue.")";
+         $filter.=$filter_days;
       }
 
       $ldap_condition = $authldap->getField('condition');
@@ -2174,6 +2217,51 @@ class AuthLDAP extends CommonDBTM {
          $ldaps[] = $data['id'];
       }
       return $ldaps;
+   }
+
+   static function showDateRestrictionForm($options =array()) {
+      global $LANG;
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_2'>";
+
+      $enabled = (isset($options['enabled'])?$options['enabled']:false);
+      if (!$enabled) {
+         echo "<td colspan='4' align='center'>";
+         echo "<a onClick='activateRestriction()'>".$LANG['ldap'][54]."</a>";
+         echo "</td>";
+         echo "<input type='hidden' name='condition' value='<'>";
+         echo "<input type='hidden' name='days' value='0'>";
+         echo "</tr>";
+      }
+      if ($enabled) {
+          echo "<td>";
+          if ($_SESSION['ldap_import']['mode'] == self::ACTION_IMPORT) {
+             echo $LANG['ldap'][49];
+          }
+          else {
+             echo $LANG['ldap'][50];
+          }
+          echo "</td><td colspan='3'>";
+          $infsup = array ('>' => $LANG['ldap'][53], '<' => $LANG['ldap'][52]);
+          $options = array('value'=>(isset($_SESSION['ldap_import']['operator'])
+                                       ?$_SESSION['ldap_import']['operator']:'<'));
+          Dropdown::showFromArray('operator',$infsup,$options);
+          echo "&nbsp;";
+          $default = (isset($_SESSION['ldap_import']['days'])?$_SESSION['ldap_import']['days']:0);
+          Dropdown::showInteger('days',$default,1,60,1,
+                                array(),
+                                array('suffix'=>$LANG['stats'][31]));
+          echo "&nbsp;";
+          echo "</td>";
+          echo "</tr>";
+          echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
+          echo "<a onClick='deactivateRestriction()'>".$LANG['ldap'][55]."</a>";
+          echo "</td>";
+          echo "</tr>";
+
+      }
+      echo "</table>";
    }
 }
 ?>

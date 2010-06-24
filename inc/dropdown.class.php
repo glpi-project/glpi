@@ -870,16 +870,22 @@ class Dropdown {
    * @param $step step used
    * @param $toadd values to add at the beginning
    */
-   static function showInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array()) {
+   static function showInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array(),$options = array()) {
 
+      if (isset($options['suffix'])) {
+         $suffix = $options['suffix'];
+      }
+      else {
+         $suffix = '';
+      }
       echo "<select name='$myname'>\n";
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
-            echo "<option value='$key' ".($key==$value?" selected ":"").">$val</option>";
+            echo "<option value='$key' ".($key==$value?" selected ":"").">$val .$suffix</option>";
          }
       }
       for ($i=$min ; $i<=$max ; $i+=$step) {
-         echo "<option value='$i' ".($i==$value?" selected ":"").">$i</option>";
+         echo "<option value='$i' ".($i==$value?" selected ":"").">$i $suffix</option>";
       }
       echo "</select>";
 
@@ -927,6 +933,33 @@ class Dropdown {
          $_POST['is_recursive']=$is_recursive;
          $_POST['entities_id']=$entity;
          include (GLPI_ROOT."/ajax/private_public.php");
+      echo "</span>\n";
+      return $rand;
+   }
+
+   /**
+    * Toggle view in LDAP user import/synchro between no restriction and date restriction
+    */
+   static function showAdvanceDateRestrictionSwitch($enabled = 0) {
+      global $LANG,$CFG_GLPI;
+
+      $rand=mt_rand();
+      $url = $CFG_GLPI["root_doc"]."/ajax/ldapdaterestriction.php";
+      echo "<script type='text/javascript' >\n";
+      echo "function activateRestriction(){\n";
+      $params=array('enabled'   => 1);
+      ajaxUpdateItemJsCode('date_restriction',$url,$params,false);
+      echo "};";
+      echo "function deactivateRestriction(){\n";
+      $params=array('enabled'   => 0);
+      ajaxUpdateItemJsCode('date_restriction',$url,$params,false);
+      echo "};";
+      echo "</script>";
+
+      echo "</table>";
+      echo "<span id='date_restriction'>";
+      $_POST['enabled']=$enabled;
+      include (GLPI_ROOT."/ajax/ldapdaterestriction.php");
       echo "</span>\n";
       return $rand;
    }

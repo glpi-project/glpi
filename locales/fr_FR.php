@@ -966,6 +966,13 @@ $LANG['ldap'][45] = "Action lorsqu'un utilisateur est supprimé de l'annuaire LD
 $LANG['ldap'][46] = "Retirer les habilitations";
 $LANG['ldap'][47] = "Mettre à la corbeille";
 $LANG['ldap'][48] = "Utilisateur supprimé de l'annuaire LDAP";
+$LANG['ldap'][49] = "Voir les utilisateurs ajoutés depuis";
+$LANG['ldap'][50] = "Voir les utilisateurs modifiés depuis";
+$LANG['ldap'][52] = "Moins de";
+$LANG['ldap'][53] = "Plus de";
+$LANG['ldap'][54] = "Activer le filtrage par date";
+$LANG['ldap'][55] = "Désactiver le filtrage par date";
+
 
 $LANG['links'][1] = "Lien ou nom du fichier";
 
@@ -1670,6 +1677,7 @@ $LANG['search'][17]="Ajouter un critère de recherche";
 $LANG['search'][18]="Supprimer un critère de recherche";
 $LANG['search'][19]="Ajouter un critère global de recherche";
 $LANG['search'][20]="Supprimer un critère global de recherche";
+
 
 $LANG['setup'][0]="Intitulés";
 $LANG['setup'][2]="Ajouter utilisateur...";
