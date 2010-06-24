@@ -150,7 +150,8 @@ class CronTask extends CommonDBTM{
    function start() {
       global $DB, $LANG;
 
-      if (!isset($this->fields['id'])) {
+      if (!isset($this->fields['id'])
+            || (!$DB->isSlave() && DBConnection::isDBSlaveActive())) {
          return false;
       }
       $query = "UPDATE `".$this->getTable()."`
