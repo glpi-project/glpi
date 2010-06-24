@@ -67,7 +67,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    include_once (GLPI_CACHE_LITE_DIR."/Lite/File.php");
 
    //Database connection
-   DBConnection::establishDBConnection((isset($USEDBConnection) ? $USEDBConnection : 0),
+   DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
                          (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
 
 
