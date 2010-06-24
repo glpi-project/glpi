@@ -841,6 +841,12 @@ $LANG['ldap'][45]="Дія, коли користувача було видале
 $LANG['ldap'][46]="Очистити права"; 
 $LANG['ldap'][47]="Видалити в корзину"; 
 $LANG['ldap'][48]="Користувач, видалений із LDAP"; 
+$LANG['ldap'][49]="View users added since"; 
+$LANG['ldap'][50]="View users updated since"; 
+$LANG['ldap'][52]="Less than"; 
+$LANG['ldap'][53]="More than"; 
+$LANG['ldap'][54]="Enable filtering by date"; 
+$LANG['ldap'][55]="Disable filtering by date"; 
 
 $LANG['links'][1]="Посилання або ім’я файлу"; 
 $LANG['links'][4]="Пов’язаний тип апаратного забезпечення"; 

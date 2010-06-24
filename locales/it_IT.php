@@ -841,6 +841,12 @@ $LANG['ldap'][45]="Azione quando un utente viene eliminato dalla directory LDAP"
 $LANG['ldap'][46]="Elimina i diritti"; 
 $LANG['ldap'][47]="Metti nel cestino"; 
 $LANG['ldap'][48]="Cancella utente in LDAP"; 
+$LANG['ldap'][49]="View users added since"; 
+$LANG['ldap'][50]="View users updated since"; 
+$LANG['ldap'][52]="Less than"; 
+$LANG['ldap'][53]="More than"; 
+$LANG['ldap'][54]="Enable filtering by date"; 
+$LANG['ldap'][55]="Disable filtering by date"; 
 
 $LANG['links'][1]="Collegamento o nome file"; 
 $LANG['links'][4]="Tipo di hardware associato"; 
