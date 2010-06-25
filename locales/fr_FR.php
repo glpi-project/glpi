@@ -972,7 +972,7 @@ $LANG['ldap'][52] = "Moins de";
 $LANG['ldap'][53] = "Plus de";
 $LANG['ldap'][54] = "Activer le filtrage par date";
 $LANG['ldap'][55] = "Désactiver le filtrage par date";
-
+$LANG['ldap'][56] = "Semaines";
 
 $LANG['links'][1] = "Lien ou nom du fichier";
 
