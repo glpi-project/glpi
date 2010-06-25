@@ -2236,9 +2236,19 @@ class AuthLDAP extends CommonDBTM {
           Dropdown::showFromArray('operator',$infsup,$options);
           echo "&nbsp;";
           $default = (isset($_SESSION['ldap_import']['days'])?$_SESSION['ldap_import']['days']:0);
-          Dropdown::showInteger('days',$default,1,60,1,
-                                array(),
-                                array('suffix'=>$LANG['stats'][31]));
+
+          $values = array();
+          for ($i=1; $i < 16; $i++) {
+            $values[$i] = $i.' '.$LANG['stats'][31];
+          }
+          for ($i=3; $i < 9; $i++) {
+            $values[$i*7] = $i.' '.$LANG['ldap'][56];
+          }
+          for ($i=3; $i < 13; $i++) {
+            $values[$i*28] = $i.' '.$LANG['planning'][14];
+          }
+
+          Dropdown::showFromArray('days',$values,array('value'=>$default));
           echo "&nbsp;";
           echo "</td>";
           echo "</tr>";
