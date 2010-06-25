@@ -967,6 +967,10 @@ class AuthLDAP extends CommonDBTM {
       $values['mode'] = AuthLDAP::ACTION_SYNCHRONIZE;
       $values['ldap_filter'] = '';
       $values['basedn'] = $config_ldap->fields['basedn'];
+      $values['days'] = 0;
+      $values['operator'] = '<';
+      //Called by an external script or not
+      $values['script'] = 0;
 
       foreach ($options as $option => $value) {
          if ($value != '') {
@@ -997,6 +1001,14 @@ class AuthLDAP extends CommonDBTM {
             $filter = "(".$config_ldap->fields['login_field']."=*)";
          } else {
             $filter = $values['ldap_filter'];
+         }
+
+
+         if ($values['script'] && $values['days']) {
+            $filter_timestamp= self::addTimestampRestrictions($config_ldap,
+                                                              $values['operator'],
+                                                              $values['days']);
+            $filter= "(&$filter $filter_timestamp)";
          }
 
          $sr = @ldap_search($ds,
@@ -2104,20 +2116,30 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //If days restriction
-      if (isset($_SESSION['ldap_import']['days']) && $_SESSION['ldap_import']['days']) {
-         $operator = $_SESSION['ldap_import']['operator'].'=';
-         $stampvalue = self::date2ldapTimeStamp($_SESSION['ldap_import']['operator'],
-                                                $_SESSION['ldap_import']['days'],
-                                                $authldap->fields['time_offset']);
-         $filter_days = "(modifyTimestamp".$operator.$stampvalue.")";
-         $filter.=$filter_days;
-      }
+      $days = (isset($_SESSION['ldap_import']['days'])?$_SESSION['ldap_import']['days']:0);
+      $filter.= self::addTimestampRestrictions($authldap,
+                                               $_SESSION['ldap_import']['operator'],
+                                               $days);
 
       $ldap_condition = $authldap->getField('condition');
       //Add entity filter and filter filled in directory's configuration form
       return  "(&".(isset($_SESSION['ldap_import']['entity_filter'])?
                               $_SESSION['ldap_import']['entity_filter']:'')
              ." $filter $ldap_condition)";
+   }
+
+   static function addTimestampRestrictions(AuthLDAP $authldap, $operator, $days) {
+      //If days restriction
+      if ($days) {
+         $operator = $operator.'=';
+         $stampvalue = self::date2ldapTimeStamp($operator,
+                                                $days,
+                                                $authldap->fields['time_offset']);
+         return "(modifyTimestamp".$operator.$stampvalue.")";
+      }
+      else {
+         return "";
+      }
    }
 
    static function searchUser(AuthLDAP $authldap) {

@@ -54,6 +54,8 @@ if ((isset($argv) && in_array('help',$argv)) || isset($_GET['help'])) {
    echo "0 : import users only\n";
    echo "1 : synchronize existing users only\n";
    echo "2 : import & synchronize users\n";
+   echo "before-days : restrict user import or synchronization to the last x days\n";
+   echo "after-days : restrict user import or synchronization until the last x days\n";
    exit (0);
 }
 
@@ -68,8 +70,27 @@ include (GLPI_ROOT . "/inc/includes.php");
 $options['action'] = AuthLDAP::ACTION_SYNCHRONIZE;
 $options['ldapservers_id'] = NOT_AVAILABLE;
 $options['filter'] = '';
+$options['before-days'] = 0;
+$options['after-days'] = 0;
+$options['script'] = 1;
 foreach ($_GET as $key => $value) {
    $options[$key] = $value;
+}
+
+if ($options['before-days'] && $options['after-days']) {
+   echo "You cannot use options before-days and after-days at the same time.";
+   exit(1);
+}
+
+if ($options['before-days']) {
+   $options['days'] = $options['before-days'];
+   $options['operator'] = '>';
+   unset($options['before-days']);
+}
+if ($options['after-days']) {
+   $options['days'] = $options['after-days'];
+   $options['operator'] = '<';
+   unset($options['after-days']);
 }
 
 if (!canUseLdap() || !countElementsInTable('glpi_authldaps')) {
