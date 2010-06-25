@@ -871,18 +871,8 @@ class AuthLDAP extends CommonDBTM {
                array_splice($ldap_users, 0, $values['start']);
             }
 
-            echo "<div class='center'>";
             echo "<form method='post' id='ldap_form' name='ldap_form' action='" .
                      $_SERVER['PHP_SELF'] . "'>";
-
-            //Input fields (needed because of the pager...)
-            echo "<a href='" .
-                  $_SERVER['PHP_SELF'] . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
-                      return false;\">" .
-                  $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
-                  $_SERVER['PHP_SELF'] . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
-                      return false;\">" .
-                  $LANG['buttons'][19] . "</a>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" .
                (!$_SESSION['ldap_import']['mode']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>";
@@ -940,19 +930,12 @@ class AuthLDAP extends CommonDBTM {
             else {
                $colspan = 5;
             }
-            echo "<tr class='tab_bg_1'><td colspan='$colspan' class='center'>";
-            echo "<input class='submit' type='submit' name='" . $form_action . "' value='" .
-                   (!$_SESSION['ldap_import']['mode']?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
-            echo "</td></tr>";
-            echo "</table></form>";
-            echo "<a href='" .
-                  $_SERVER['PHP_SELF'] . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') )
-                      return false;\">" .
-                  $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" .
-                  $_SERVER['PHP_SELF'] . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') )
-                      return false;\">" .
-                  $LANG['buttons'][19] . "</a>";
-            echo "</div>";
+            echo "</table>";
+
+            openArrowMassive("ldap_form", true);
+            closeArrowMassive($form_action, ($_SESSION['ldap_import']['mode']?$LANG['ldap'][15]:$LANG['buttons'][37]));
+            echo "</form>";
+
             printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
          } else {
             echo "<div class='center'><strong>" .
