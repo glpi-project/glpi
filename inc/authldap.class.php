@@ -2215,7 +2215,7 @@ class AuthLDAP extends CommonDBTM {
       $enabled = (isset($options['enabled'])?$options['enabled']:false);
       if (!$enabled) {
          echo "<td colspan='4' align='center'>";
-         echo "<a onClick='activateRestriction()'>".$LANG['ldap'][54]."</a>";
+         echo "<a href='#' onClick='activateRestriction()'>".$LANG['ldap'][54]."</a>";
          echo "</td>";
          echo "<input type='hidden' name='condition' value='<'>";
          echo "<input type='hidden' name='days' value='0'>";
@@ -2253,7 +2253,7 @@ class AuthLDAP extends CommonDBTM {
           echo "</td>";
           echo "</tr>";
           echo "<tr class='tab_bg_2'><td colspan='4' align='center'>";
-          echo "<a onClick='deactivateRestriction()'>".$LANG['ldap'][55]."</a>";
+          echo "<a href='#' onClick='deactivateRestriction()'>".$LANG['ldap'][55]."</a>";
           echo "</td>";
           echo "</tr>";
 
