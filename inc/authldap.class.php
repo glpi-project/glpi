@@ -799,20 +799,7 @@ class AuthLDAP extends CommonDBTM {
     * @return unix timestamp
     */
    static function date2ldapTimeStamp($operator,$days,$ldap_time_offset=0) {
-      global $CFG_GLPI;
-
-      $delay = false;
-      switch ($operator) {
-         case '>' :
-            $delay = "-$days day";
-            break;
-         case '<' :
-            $delay = "+$days day";
-            break;
-      }
-
-      //return date("%Y%m%d%H%M%SZ",$unix_timestamp) - $CFG_GLPI["time_offset"]-$ldap_time_offset;
-      return date("YmdGis",strtotime($delay)).'Z';
+      return date("YmdHis",strtotime("-$days day")).'Z';
    }
 
    /** Test a LDAP connection
@@ -2243,7 +2230,7 @@ class AuthLDAP extends CommonDBTM {
              echo $LANG['ldap'][50];
           }
           echo "</td><td colspan='3'>";
-          $infsup = array ('>' => $LANG['ldap'][53], '<' => $LANG['ldap'][52]);
+          $infsup = array ('<' => $LANG['ldap'][53], '>' => $LANG['ldap'][52]);
           $options = array('value'=>(isset($_SESSION['ldap_import']['operator'])
                                        ?$_SESSION['ldap_import']['operator']:'<'));
           Dropdown::showFromArray('operator',$infsup,$options);
