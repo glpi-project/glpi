@@ -368,24 +368,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    }
 
    // FINANCIAL
-   $menu['financial']['title']=$LANG['Menu'][26];
-   if (haveRight("contact_enterprise","r")) {
-      $menu['financial']['default']='/front/contact.php';
-      $menu['financial']['content']['contact']['title']=$LANG['Menu'][22];
-      $menu['financial']['content']['contact']['shortcut']='t';
-      $menu['financial']['content']['contact']['page']='/front/contact.php';
-      $menu['financial']['content']['contact']['links']['search']='/front/contact.php';
-      $menu['financial']['content']['supplier']['title']=$LANG['Menu'][23];
-      $menu['financial']['content']['supplier']['shortcut']='e';
-      $menu['financial']['content']['supplier']['page']='/front/supplier.php';
-      $menu['financial']['content']['supplier']['links']['search']='/front/supplier.php';
-
-      if (haveRight("contact_enterprise","w")) {
-         $menu['financial']['content']['contact']['links']['add']='/front/contact.form.php';
-         $menu['financial']['content']['supplier']['links']['add']='/front/supplier.form.php';
-      }
-   }
-
    if (haveRight("budget","r")) {
       $menu['financial']['content']['budget']['title']=$LANG['financial'][110];
       $menu['financial']['content']['budget']['shortcut']='n';
@@ -396,6 +378,25 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
             'itemtype=Budget&amp;add=1';
          $menu['financial']['content']['budget']['links']['template']='/front/setup.templates.php?'.
             'itemtype=Budget&amp;add=0';
+      }
+   }
+
+   $menu['financial']['title']=$LANG['Menu'][26];
+   if (haveRight("contact_enterprise","r")) {
+      $menu['financial']['content']['supplier']['title']=$LANG['Menu'][23];
+      $menu['financial']['content']['supplier']['shortcut']='e';
+      $menu['financial']['content']['supplier']['page']='/front/supplier.php';
+      $menu['financial']['content']['supplier']['links']['search']='/front/supplier.php';
+
+      $menu['financial']['default']='/front/contact.php';
+      $menu['financial']['content']['contact']['title']=$LANG['Menu'][22];
+      $menu['financial']['content']['contact']['shortcut']='t';
+      $menu['financial']['content']['contact']['page']='/front/contact.php';
+      $menu['financial']['content']['contact']['links']['search']='/front/contact.php';
+
+      if (haveRight("contact_enterprise","w")) {
+         $menu['financial']['content']['contact']['links']['add']='/front/contact.form.php';
+         $menu['financial']['content']['supplier']['links']['add']='/front/supplier.form.php';
       }
    }
 
