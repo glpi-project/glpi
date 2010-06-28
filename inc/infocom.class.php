@@ -1002,15 +1002,13 @@ class Infocom extends CommonDBTM {
    }
 
 
-   function checkValues($input) {
+   function checkValues() {
       $fields = array('value','warranty_value','sink_coeff');
       foreach ($fields as $field) {
-         if (isset($input[$field])) {
-            $input[$field] = floatval($input[$field]);
+         if (isset($this->input[$field])) {
+            $this->input[$field] = floatval($this->input[$field]);
          }
       }
-
-      return $input;
    }
 }
 

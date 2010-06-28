@@ -560,7 +560,7 @@ class CommonDBTM extends CommonGLPI {
          }
          $this->input=$this->prepareInputForAdd($this->input);
          //Check values to inject
-         $this->input = $this->checkValues($this->input);
+         $this->checkValues();
       }
 
       if ($this->input && is_array($this->input)) {
@@ -721,7 +721,7 @@ class CommonDBTM extends CommonGLPI {
             $this->input['_update']=$this->input['update'];
             unset($this->input['update']);
          }
-         $this->input = $this->checkValues($this->input);
+         $this->checkValues();
       }
       // Valid input
       if ($this->input && is_array($this->input)) {
@@ -2017,8 +2017,7 @@ class CommonDBTM extends CommonGLPI {
     * @param input the data to insert in db
     * @return input the data checked
     */
-   function checkValues($input) {
-      return $input;
+   function checkValues() {
    }
 }
 
