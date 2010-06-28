@@ -1217,11 +1217,10 @@ class Contract extends CommonDBTM {
       Dropdown::showFromArray($myname,$tmp,array('value'=>$value));
    }
 
-   function checkValues($input) {
-      if (isset($input['cost'])) {
-         $input['cost'] = floatval($input['cost']);
+   function checkValues() {
+      if (isset($this->input['cost'])) {
+         $this->input['cost'] = floatval($this->input['cost']);
       }
-      return $input;
    }
 }
 ?>
