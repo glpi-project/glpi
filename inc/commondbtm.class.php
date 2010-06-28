@@ -559,6 +559,8 @@ class CommonDBTM extends CommonGLPI {
             unset($this->input['add']);
          }
          $this->input=$this->prepareInputForAdd($this->input);
+         //Check values to inject
+         $this->input = $this->checkValues($this->input);
       }
 
       if ($this->input && is_array($this->input)) {
@@ -575,6 +577,7 @@ class CommonDBTM extends CommonGLPI {
          if (isset($table_fields['date_mod'])) {
             $this->fields['date_mod']=$_SESSION["glpi_currenttime"];
          }
+
          if ($this->addToDB()) {
             $this->addMessageOnAddAction();
             $this->post_addItem();
@@ -718,6 +721,7 @@ class CommonDBTM extends CommonGLPI {
             $this->input['_update']=$this->input['update'];
             unset($this->input['update']);
          }
+         $this->input = $this->checkValues($this->input);
       }
       // Valid input
       if ($this->input && is_array($this->input)) {
@@ -753,7 +757,6 @@ class CommonDBTM extends CommonGLPI {
                }
             }
             $this->pre_updateInDB();
-
             // CLean old_values history not needed  => Keep old value for plugin hook
             //if (!$this->dohistory || !$history) {
             //   $this->oldvalues=array();
@@ -2007,6 +2010,15 @@ class CommonDBTM extends CommonGLPI {
    function addDivForTabs() {
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   }
+
+   /**
+    * Check float and decimal values
+    * @param input the data to insert in db
+    * @return input the data checked
+    */
+   function checkValues($input) {
+      return $input;
    }
 }
 
