@@ -847,6 +847,7 @@ $LANG['ldap'][52]="Less than";
 $LANG['ldap'][53]="More than"; 
 $LANG['ldap'][54]="Enable filtering by date"; 
 $LANG['ldap'][55]="Disable filtering by date"; 
+$LANG['ldap'][56]="Weeks"; 
 
 $LANG['links'][1]="Линк или име на файла"; 
 $LANG['links'][4]="Във връзка с този тип хардуеър"; 
