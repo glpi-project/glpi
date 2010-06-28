@@ -106,7 +106,7 @@ $LANG['buttons'][57]="Ejecutar";
 $LANG['buttons'][58]="Actualizar"; 
 $LANG['buttons'][59]="Dissociate"; 
 
-$LANG['calendar'][0]="YYYY-MM-DD"; 
+$LANG['calendar'][0]="AAAA-MM-DD"; 
 $LANG['calendar'][1]="DD-MM-YYYY"; 
 $LANG['calendar'][2]="MM-DD-YYYY"; 
 
@@ -847,6 +847,7 @@ $LANG['ldap'][52]="Less than";
 $LANG['ldap'][53]="More than"; 
 $LANG['ldap'][54]="Enable filtering by date"; 
 $LANG['ldap'][55]="Disable filtering by date"; 
+$LANG['ldap'][56]="Weeks"; 
 
 $LANG['links'][1]="Enlace o nombre de fichero"; 
 $LANG['links'][4]="Tipo de materiales asociados"; 

@@ -108,7 +108,7 @@ $LANG['buttons'][59]="Відв’язати";
 
 $LANG['calendar'][0]="YYYY-MM-DD"; 
 $LANG['calendar'][1]="DD-MM-YYYY"; 
-$LANG['calendar'][2]="MM-DD-YYYY"; 
+$LANG['calendar'][2]="DD-MM-YYYY"; 
 
 $LANG['calendarD'][0]="Нд"; 
 $LANG['calendarD'][1]="Пн"; 
@@ -841,12 +841,13 @@ $LANG['ldap'][45]="Дія, коли користувача було видале
 $LANG['ldap'][46]="Очистити права"; 
 $LANG['ldap'][47]="Видалити в корзину"; 
 $LANG['ldap'][48]="Користувач, видалений із LDAP"; 
-$LANG['ldap'][49]="View users added since"; 
-$LANG['ldap'][50]="View users updated since"; 
-$LANG['ldap'][52]="Less than"; 
-$LANG['ldap'][53]="More than"; 
-$LANG['ldap'][54]="Enable filtering by date"; 
-$LANG['ldap'][55]="Disable filtering by date"; 
+$LANG['ldap'][49]="Дивитись користувачів добавлених починаючи з"; 
+$LANG['ldap'][50]="Дивитись користувачів оновлених починаючи з"; 
+$LANG['ldap'][52]="Менше ніж"; 
+$LANG['ldap'][53]="Більше ніж"; 
+$LANG['ldap'][54]="Включити фільтрування по даті"; 
+$LANG['ldap'][55]="Відключити фільтрування по даті"; 
+$LANG['ldap'][56]="Weeks"; 
 
 $LANG['links'][1]="Посилання або ім’я файлу"; 
 $LANG['links'][4]="Пов’язаний тип апаратного забезпечення"; 
@@ -1488,7 +1489,7 @@ $LANG['rulesengine'][145]="Користувач з єдиним профілем
 $LANG['rulesengine'][146]="Профіль можливостей користувача"; 
 $LANG['rulesengine'][147]="Єдиний профіль можливостей користувача"; 
 $LANG['rulesengine'][148]="Поштовий домен відомий"; 
-$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
+$LANG['rulesengine'][150]="Привила, які торкаються організації, були відключені."; 
 
 $LANG['search'][0]="Пошук"; 
 $LANG['search'][1]="для всіх"; 
