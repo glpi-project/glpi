@@ -97,14 +97,6 @@ class Contract extends CommonDBTM {
       return $ong;
    }
 
-   function prepareInputForAdd($input) {
-      return $this->checkValues($input);
-   }
-
-   function prepareInputForUpdate($input) {
-      return $this->checkValues($input);
-   }
-
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
@@ -1225,7 +1217,7 @@ class Contract extends CommonDBTM {
       Dropdown::showFromArray($myname,$tmp,array('value'=>$value));
    }
 
-   function checkValues($input = array()) {
+   function checkValues($input) {
       if (isset($input['cost'])) {
          $input['cost'] = floatval($input['cost']);
       }

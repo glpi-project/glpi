@@ -109,7 +109,7 @@ class Infocom extends CommonDBTM {
             if ($item->getFromDB($input['items_id'])) {
                $input['entities_id']=$item->getEntityID();
                $input['is_recursive']=intval($item->isRecursive());
-               return $this->checkValues($input);
+               return $input;
             }
          }
       }
@@ -135,7 +135,7 @@ class Infocom extends CommonDBTM {
          $input['_warranty_duration']=$this->fields['warranty_duration'];
       }
 
-      return $this->checkValues($input);
+      return $input;
    }
 
    function pre_updateInDB() {
@@ -1001,16 +1001,17 @@ class Infocom extends CommonDBTM {
       return $tab;
    }
 
-   function checkValues($input = array()) {
+
+   function checkValues($input) {
       $fields = array('value','warranty_value','sink_coeff');
       foreach ($fields as $field) {
          if (isset($input[$field])) {
             $input[$field] = floatval($input[$field]);
          }
       }
+
       return $input;
    }
-
 }
 
 ?>
