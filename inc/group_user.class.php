@@ -68,7 +68,7 @@ class Group_User extends CommonDBRelation{
     * @param $target where to go on action
     * @param $user the user
     */
-   static function showForUser($target, User $user) {
+   static function showForUser(User $user) {
       global $DB,$CFG_GLPI, $LANG;
 
       $ID = $user->fields['id'];
@@ -82,7 +82,8 @@ class Group_User extends CommonDBRelation{
       $nb_per_line = 3;
       if ($canedit) {
          $headerspan = $nb_per_line*2;
-         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action='$target'>";
+         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'";
+         echo " action='".getItemTypeFormURL('User')."'>";
       } else {
          $headerspan = $nb_per_line;
       }
