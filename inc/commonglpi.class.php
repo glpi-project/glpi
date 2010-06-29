@@ -111,10 +111,15 @@ class CommonGLPI {
          }
       }
       if (empty($withtemplate) && $ID && $this->getType()) {
-         echo "<div id='menu_navigate'>";
          $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
          $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
          $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
+
+         if (empty($glpilisturl)) {
+            $glpilisturl = $this->getSearchURL();
+         }
+
+         echo "<div id='menu_navigate'>";
 
          $next = $prev = $first = $last = -1;
          $current = false;
