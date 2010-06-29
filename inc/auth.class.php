@@ -914,7 +914,7 @@ class Auth {
     * @param   $ID ID of the user
     * @return nothing
     */
-   static function showSynchronizationForm($target, $ID) {
+   static function showSynchronizationForm($ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       if (haveRight("user", "w")) {
@@ -927,7 +927,7 @@ class Auth {
          if ($DB->numrows($result) == 1) {
             $data = $DB->fetch_array($result);
             echo "<div class='center'>";
-            echo "<form method='post' action=\"$target\">";
+            echo "<form method='post' action='".getItemTypeFormURL('User')."'>";
             switch($data["authtype"]) {
                case Auth::LDAP :
                   //Look it the auth server still exists !
@@ -969,7 +969,7 @@ class Auth {
                   break;
             }
             echo "<table class='tab_cadre'>";
-            echo "<tr><th colspan='2'>".$LANG['login'][30]."&nbsp:</th></tr>";
+            echo "<tr><th>".$LANG['login'][30]."&nbsp:</th></tr>";
             echo "<tr class='tab_bg_2'><td>";
             $rand = Auth::dropdown(array('name'=>'authtype'));
             $paramsmassaction=array('authtype'=>'__VALUE__','name'=>'change_auth_method');
@@ -977,11 +977,8 @@ class Auth {
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
                                        $paramsmassaction);
             echo "<input type='hidden' name='id' value='" . $ID . "'>";
-            echo "</td><td>";
-            echo "<input type='submit' name='change_auth_method' class='submit' value=\"".
-                  $LANG['buttons'][2]."\" ></span>\n";
+            echo "<span id='show_massiveaction_field'></span>";
             echo "</td></tr></table>";
-
             echo "</form></div>";
          }
       }

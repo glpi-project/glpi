@@ -73,7 +73,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          Profile_User::showForUser($user);
-         Group_User::showForUser($_POST['target'], $user);
+         Group_User::showForUser( $user);
          $user->showItems();
          Reservation::showForUser($_POST["id"]);
          Ticket::showListForUser($_POST["id"]);
@@ -89,7 +89,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 4 :
-         Group_User::showForUser($_POST['target'], $user);
+         Group_User::showForUser($user);
          break;
 
       case 11 :
@@ -97,7 +97,7 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          break;
 
       case 12 :
-         Auth::showSynchronizationForm($_POST['target'],$_POST["id"]);
+         Auth::showSynchronizationForm($_POST["id"]);
          break;
 
       case 13 :
