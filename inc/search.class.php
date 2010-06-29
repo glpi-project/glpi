@@ -2503,6 +2503,8 @@ class Search {
          // No link
          case 'User' :
             return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_profiles_users","");
+         case 'Entity' :
+            return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_entitydatas","");
          case 'Ticket' :
             if (haveRight("validate_ticket",1)) {
                return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_ticketvalidations","");
@@ -2582,7 +2584,11 @@ class Search {
                                                    AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)
                      LEFT JOIN `glpi_authmails` ON (`glpi_users`.`authtype` = ".Auth::MAIL."
                                                    AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
-
+         case "glpi_authldaps" :
+            if ($itemtype='Entity') {
+               return " LEFT JOIN `glpi_authldaps` ON (`glpi_entitydatas`.`ldapservers_id` = `glpi_authldaps`.`id`)";
+            }
+            break;
          case "glpi_reservationitems" :
             return "";
 
