@@ -560,19 +560,19 @@ class NotificationTargetTicket extends NotificationTarget {
 
          $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
 
-        $entitydata = new EntityData;
+         $entitydata = new EntityData;
 
-        if ($entitydata->getFromDB($this->obj->getField('entities_id'))
-               && $entitydata->getField('autoclose_delay') > 0) {
+         if ($entitydata->getFromDB($this->obj->getField('entities_id'))
+                  && $entitydata->getField('autoclose_delay') > 0) {
 
-            $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
-            $this->datas['##lang.ticket.autoclosewarning##']
-               = $LANG['job'][54]." ".$entitydata->fields['autoclose_delay']." ".$LANG['stats'][31];
+               $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
+               $this->datas['##lang.ticket.autoclosewarning##']
+                  = $LANG['job'][54]." ".$entitydata->fields['autoclose_delay']." ".$LANG['stats'][31];
 
-        } else {
-           $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
-        }
-        $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
+         } else {
+            $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
+         }
+         $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
 
          if ($this->obj->getField('ticketcategories_id')) {
             $this->datas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
