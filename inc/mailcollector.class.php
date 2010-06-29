@@ -254,7 +254,7 @@ class MailCollector  extends CommonDBTM {
 
 
    function deleteOrImportSeveralEmails($emails_ids = array(),$action=0,$entity=0) {
-      global $DB;
+      global $DB,$LANG;
       $mailbox_id = 0;
       $query = "SELECT * FROM `glpi_notimportedemails`
                 WHERE `id` IN (".implode(',',$emails_ids).") ORDER BY `mailcollectors_id`";
@@ -263,33 +263,42 @@ class MailCollector  extends CommonDBTM {
       foreach ($DB->request($query) as $data) {
          $todelete[$data['mailcollectors_id']][$data['messageid']] = $data;
       }
-
       $ticket = new Ticket;
       foreach ($todelete as $mailcollector_id => $rejected) {
          if ($this->getFromDB($mailcollector_id)) {
+
             $this->mid = -1;
             $this->fetch_emails = 0;
             //Connect to the Mail Box
             $this->connect();
             // Get Total Number of Unread Email in mail box
             $tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
-            for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
+            for($i=1 ; $i<=$tot ; $i++) {
                $head=$this->getHeaders($i);
                if (isset($rejected[$head['message_id']])) {
                   if ($action == 1) {
-                        $tkt = array();
-                        $tkt= $this->buildTicket($i,
-                                                 array('mailcollectors_id'=>$mailcollector_id,
-                                                       'play_rules'=>false));
-                        $tkt['users_id'] = $rejected[$head['message_id']]['users_id'];
-                        $tkt['entities_id'] = $entity;
-                        $ticket->add($tkt);
+                     $tkt = array();
+                     $tkt= $this->buildTicket($i,
+                                                array('mailcollectors_id'=>$mailcollector_id,
+                                                      'play_rules'=>false));
+                     $tkt['users_id'] = $rejected[$head['message_id']]['users_id'];
+                     $tkt['entities_id'] = $entity;
+                     $ticket->add($tkt);
                   }
-                     //Delete email
+                  //Delete email
                   if ($this->deleteMails($i)) {
                      $rejectedmail = new NotImportedEmail();
                      $rejectedmail->delete(array('id'=>$rejected[$head['message_id']]['id']));
                   }
+                  // Unset managed
+                  unset($rejected[$head['message_id']]);
+               }
+            }
+            // Email not present in mailbox
+            if (count($rejected)) {
+               $clean=array('<'=>'','>'=>'');
+               foreach ($rejected as $id => $data) {
+                  addMessageAfterRedirect($LANG['mailgate'][14]." : ".strtr($id,$clean),false,ERROR);
                }
             }
             $this->close_mailbox();
