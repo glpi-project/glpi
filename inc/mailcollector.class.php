@@ -298,9 +298,15 @@ class MailCollector  extends CommonDBTM {
             if (count($rejected)) {
                $clean=array('<'=>'','>'=>'');
                foreach ($rejected as $id => $data) {
-                  addMessageAfterRedirect($LANG['mailgate'][14]." : ".strtr($id,$clean),false,ERROR);
+                  if ($action == 1) {
+                     addMessageAfterRedirect($LANG['mailgate'][14]." : ".strtr($id,$clean),false,ERROR);
+                  } else { // Delete data in notimportedemail table
+                     $rejectedmail = new NotImportedEmail();
+                     $rejectedmail->delete(array('id'=>$data['id']));
+                  }
                }
             }
+            imap_expunge($this->marubox);
             $this->close_mailbox();
          }
       }
