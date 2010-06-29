@@ -881,11 +881,13 @@ class Dropdown {
       echo "<select name='$myname'>\n";
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
-            echo "<option value='$key' ".($key==$value?" selected ":"").">$val .$suffix</option>";
+            echo "<option value='$key' ".($key==$value?" selected ":"").">";
+            echo ($suffix!=''?$val.' '.$suffix:$val)."</option>";
          }
       }
       for ($i=$min ; $i<=$max ; $i+=$step) {
-         echo "<option value='$i' ".($i==$value?" selected ":"").">$i $suffix</option>";
+         echo "<option value='$i' ".($i==$value?" selected ":"").">";
+         echo ($suffix!=''?$i.' '.$suffix:$i)."</option>";
       }
       echo "</select>";
 
