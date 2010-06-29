@@ -847,7 +847,7 @@ $LANG['ldap'][52]="Weniger";
 $LANG['ldap'][53]="Mehr"; 
 $LANG['ldap'][54]="Datumsfilter aktivieren"; 
 $LANG['ldap'][55]="Datumsfilter deaktivieren"; 
-$LANG['ldap'][56]="Weeks"; 
+$LANG['ldap'][56]="Wochen"; 
 
 $LANG['links'][1]="Link oder Dateiname"; 
 $LANG['links'][4]="Verknüpfter Hardwaretyp"; 
