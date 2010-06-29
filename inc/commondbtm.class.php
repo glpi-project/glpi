@@ -1484,7 +1484,7 @@ class CommonDBTM extends CommonGLPI {
       //if (get_class($this)=='Entity' && !$ID) {
          // Very special case ;)
       //} else
-      if (!empty($params['withtemplate']) && $params['withtemplate'] == 2 && $ID>0) {
+      if (!empty($params['withtemplate']) && $params['withtemplate'] == 2 && !$this->isNewID($ID)) {
          echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
          echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . "&nbsp;: " .
               $this->fields["template_name"];
@@ -1492,7 +1492,7 @@ class CommonDBTM extends CommonGLPI {
          echo "<input type='hidden' name='is_template' value='1' />\n";
          echo $LANG['common'][6]."&nbsp;: ";
          autocompletionTextField($this,"template_name",array('size'=>25));
-      } else if (empty($ID) || $ID<0) {
+      } else if ($this->isNewID($ID)) {
          echo $this->getTypeName()." - ".$LANG['common'][87];
       } else {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID";
