@@ -1685,7 +1685,6 @@ class AuthLDAP extends CommonDBTM {
          $auth->extauth = 1;
          $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
          $auth->user->getFromLDAP($auth->ldap_connection,$ldap_method, $user_dn, $login);
-         $auth->auth_parameters = $ldap_method;
          $auth->user->fields["authtype"] = Auth::LDAP;
          $auth->user->fields["auths_id"] = $ldap_method["id"];
       }
@@ -2193,6 +2192,7 @@ class AuthLDAP extends CommonDBTM {
       $options[1] = $LANG['ldap'][47];
       $options[2] = $LANG['ldap'][46];
       $options[3] = $LANG['buttons'][42];
+      asort($options);
       return Dropdown::showFromArray('user_deleted_ldap',$options,array('value'=>$value));
    }
 
