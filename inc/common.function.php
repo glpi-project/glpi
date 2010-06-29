@@ -1423,7 +1423,7 @@ function makeTextSearch($val,$not=false) {
    }
    // Unclean to permit < and > search
    $val=unclean_cross_side_scripting_deep($val);
-   if ($val=="NULL"||$val=="null") {
+   if ($val=='NULL' || $val=='null') {
       $SEARCH=" IS $NOT NULL ";
    } else {
       $begin=0;
@@ -1459,7 +1459,7 @@ function makeTextSearch($val,$not=false) {
 function makeTextCriteria ($field, $val, $not=false, $link='AND') {
    $sql = $field . makeTextSearch($val,$not);
 
-   if (($not && $val!="NULL" && $val!='^$')    // Not something
+   if (($not && $val!='NULL' && $val!='null' && $val!='^$')    // Not something
        ||(!$not && $val=='^$')) {              // Empty
       $sql = "($sql OR $field IS NULL)";
    }
