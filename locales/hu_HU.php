@@ -843,11 +843,11 @@ $LANG['ldap'][47]="Áthelyezés kukába";
 $LANG['ldap'][48]="LDAP-ban törölt felhasználó"; 
 $LANG['ldap'][49]="View users added since"; 
 $LANG['ldap'][50]="View users updated since"; 
-$LANG['ldap'][52]="Less than"; 
-$LANG['ldap'][53]="More than"; 
-$LANG['ldap'][54]="Enable filtering by date"; 
-$LANG['ldap'][55]="Disable filtering by date"; 
-$LANG['ldap'][56]="Weeks"; 
+$LANG['ldap'][52]="Kevesebb mint"; 
+$LANG['ldap'][53]="Több mint"; 
+$LANG['ldap'][54]="Dátum szerinti szűrés bekapcsolása"; 
+$LANG['ldap'][55]="Dátum szerinti szűrés kikapcsolása"; 
+$LANG['ldap'][56]="Hetek"; 
 
 $LANG['links'][1]="Hivatkozás vagy fájlnév"; 
 $LANG['links'][4]="Hozzárendelt hardverfajta"; 

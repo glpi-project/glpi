@@ -104,11 +104,11 @@ $LANG['buttons'][55]="Primero";
 $LANG['buttons'][56]="Último"; 
 $LANG['buttons'][57]="Ejecutar"; 
 $LANG['buttons'][58]="Actualizar"; 
-$LANG['buttons'][59]="Dissociate"; 
+$LANG['buttons'][59]="Disociar"; 
 
 $LANG['calendar'][0]="AAAA-MM-DD"; 
-$LANG['calendar'][1]="DD-MM-YYYY"; 
-$LANG['calendar'][2]="MM-DD-YYYY"; 
+$LANG['calendar'][1]="DD-MM-AAAA"; 
+$LANG['calendar'][2]="MM-DD-AAAA"; 
 
 $LANG['calendarD'][0]="D"; 
 $LANG['calendarD'][1]="L"; 
@@ -275,7 +275,7 @@ $LANG['common'][89]="Sin instalar";
 $LANG['common'][90]="Objeto"; 
 $LANG['common'][91]="Este elemento es dependiente de otro. La modificación no está permitida"; 
 $LANG['common'][92]="Contacto"; 
-$LANG['common'][93]="New child heading"; 
+$LANG['common'][93]="Nuevo título hijo"; 
 
 $LANG['computers'][0]="Volumen"; 
 $LANG['computers'][1]="Porcentaje libre"; 
@@ -841,13 +841,13 @@ $LANG['ldap'][45]="Acción cuando un usuario es eliminado de LDAP";
 $LANG['ldap'][46]="Eliminar los permisos"; 
 $LANG['ldap'][47]="Enviar a la papelera"; 
 $LANG['ldap'][48]="Usuario borrado de LDAP"; 
-$LANG['ldap'][49]="View users added since"; 
-$LANG['ldap'][50]="View users updated since"; 
-$LANG['ldap'][52]="Less than"; 
-$LANG['ldap'][53]="More than"; 
-$LANG['ldap'][54]="Enable filtering by date"; 
-$LANG['ldap'][55]="Disable filtering by date"; 
-$LANG['ldap'][56]="Weeks"; 
+$LANG['ldap'][49]="Ver usuarios añadidos desde"; 
+$LANG['ldap'][50]="Ver usuarios actualizados desde"; 
+$LANG['ldap'][52]="Menos de"; 
+$LANG['ldap'][53]="Mas de"; 
+$LANG['ldap'][54]="Activar el filtro por fecha"; 
+$LANG['ldap'][55]="Desactivar el filtro por fecha"; 
+$LANG['ldap'][56]="Semanas"; 
 
 $LANG['links'][1]="Enlace o nombre de fichero"; 
 $LANG['links'][4]="Tipo de materiales asociados"; 
@@ -1486,10 +1486,10 @@ $LANG['rulesengine'][140]="Añadir criterio";
 $LANG['rulesengine'][142]="Listado de correos no importados"; 
 $LANG['rulesengine'][144]="Entidad desde perfíl de usuario"; 
 $LANG['rulesengine'][145]="Usuario con un único perfil"; 
-$LANG['rulesengine'][146]="User featuring the profile"; 
+$LANG['rulesengine'][146]="Con el perfil del usuario"; 
 $LANG['rulesengine'][147]="Usuario con un único perfil"; 
 $LANG['rulesengine'][148]="Dominio correo electrónico conocido"; 
-$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
+$LANG['rulesengine'][150]="Las reglas que afectan a la entidad están desactivadas"; 
 
 $LANG['search'][0]="Buscar"; 
 $LANG['search'][1]="para todos"; 
