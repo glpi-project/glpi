@@ -3477,6 +3477,9 @@ class Search {
 
          case 'glpi_notimportedemails.reason':
             return NotImportedEmail::getReason($data[$NAME.$num]);
+         case 'glpi_notimportedemails.messageid':
+            $clean=array('<'=>'','>'=>'');
+            return strtr($data[$NAME.$num],$clean);
       }
 
 
