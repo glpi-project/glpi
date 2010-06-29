@@ -1102,6 +1102,7 @@ $LANG['mailgate'][10] = "Email rejeté";
 $LANG['mailgate'][11] = "Processus d'import d'emails";
 $LANG['mailgate'][12] = "Impossible d'affecter l'email à une entité";
 $LANG['mailgate'][13] = "Raison du refus";
+$LANG['mailgate'][14] = "Email absent. Import impossible.";
 $LANG['mailgate'][16] = "Re:";
 
 $LANG['mailing'][0]   = "----------------------------------------------------------";
