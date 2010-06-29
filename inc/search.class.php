@@ -2193,7 +2193,7 @@ class Search {
          case "glpi_infocoms.sink_time" :
          case "glpi_infocoms.warranty_duration" :
             $ADD = "";
-            if ($nott && $val!="NULL") {
+            if ($nott && $val!='NULL' && $val!='null') {
                $ADD = " OR `$table`.`$field` IS NULL";
             }
             if (is_numeric($val)) {
@@ -2209,7 +2209,7 @@ class Search {
 
          case "glpi_infocoms.sink_type" :
             $ADD = "";
-            if ($nott && $val!="NULL") {
+            if ($nott && $val!='NULL' && $val!='null') {
                $ADD = " OR `$table`.`$field` IS NULL";
             }
 
@@ -2410,7 +2410,7 @@ class Search {
                }
                break;
             case "right" :
-               if ($val=='NULL'){
+               if ($val=='NULL' || $val=='null'){
                   return $link." $tocompute IS ".($nott?'NOT':'')." NULL ";
                } else {
                   return $link." $tocompute = '$val' ";
@@ -2448,7 +2448,7 @@ class Search {
                } else if (is_numeric($val)) {
                   if (isset($searchopt[$ID]["width"])) {
                      $ADD = "";
-                     if ($nott && $val!="NULL") {
+                     if ($nott && $val!='NULL' && $val!='null') {
                         $ADD = " OR $tocompute IS NULL";
                      }
                      if ($nott) {
