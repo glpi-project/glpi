@@ -73,6 +73,33 @@ class NotificationTargetTicket extends NotificationTarget {
    }
 
 
+   /**
+    * Get the email of the item's user : Overloaded manual address used
+    */
+   function getItemAuthorAddress() {
+      global $CFG_GLPI;
+      if ($this->obj->getField('use_email_notification')) {
+         $author_lang   = $CFG_GLPI["language"];
+         $author_email  = $this->obj->getField('user_email');
+         $author_id     = -1;
+         $user = new User;
+         if ($this->obj->isField('users_id')
+            && $user->getFromDB($this->obj->getField('users_id'))) {
+            if ($user->getField('email')==$author_email){
+               $user_lang=$user->getField('language');
+               if (!empty($user_lang)) {
+                  $author_lang=$user_lang;
+               }
+               $author_id=$user->getField('id');
+            }
+         }
+         $this->addToAddressesList(array('email'    => $author_email,
+                                         'language' => $author_lang,
+                                         'id'       => $author_id));
+
+      }
+   }
+
    function getSubjectPrefix($event='') {
 
       if ($event !='alertnotclosed') {
@@ -355,7 +382,6 @@ class NotificationTargetTicket extends NotificationTarget {
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",
                            "entities_id",$this->obj->fields['entities_id'],true) 
                      ."AND profiles_id IN (".implode(',',$this->private_profiles).")";
-
          $result = $DB->query($query);
          if ($DB->result($result,0,'cpt')) {
             return 1;
