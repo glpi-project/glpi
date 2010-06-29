@@ -620,7 +620,6 @@ class Auth {
       }
 
       if ($user_deleted_ldap) {
-         logDebug($this);
          User::manageDeletedUserInLdap($this->user->fields["id"]);
       }
       // Ok, we have gathered sufficient data, if the first return false the user
