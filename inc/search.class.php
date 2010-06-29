@@ -1530,6 +1530,7 @@ class Search {
          }
       }
 
+/*
       $ADD="";
       if (($NOT && $val!="NULL")
          || $val=='^$') {
@@ -1539,7 +1540,8 @@ class Search {
 
       return " $LINK (`$NAME$num`".makeTextSearch($val,$NOT)."
                      $ADD ) ";
-
+*/
+      return makeTextCriteria("`$NAME$num`",$val,$NOT,$LINK);
    }
 
 
@@ -2210,7 +2212,7 @@ class Search {
             if ($nott && $val!="NULL") {
                $ADD = " OR `$table`.`$field` IS NULL";
             }
-            
+
             if (stristr($val,Infocom::getAmortTypeName(1))) {
                $val=1;
             } else if (stristr($val,Infocom::getAmortTypeName(2))) {
