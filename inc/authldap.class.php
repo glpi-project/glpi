@@ -2116,9 +2116,10 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //If days restriction
+      $operator = (isset($_SESSION['ldap_import']['operator'])?$_SESSION['ldap_import']['operator']:'<');
       $days = (isset($_SESSION['ldap_import']['days'])?$_SESSION['ldap_import']['days']:0);
       $filter.= self::addTimestampRestrictions($authldap,
-                                               $_SESSION['ldap_import']['operator'],
+                                               $operator,
                                                $days);
 
       $ldap_condition = $authldap->getField('condition');
