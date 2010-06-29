@@ -2828,29 +2828,29 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 create glpi_notificationtemplates" . $LANG['update'][90] . $DB->error());
 
       $queries['DBConnection'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'MySQL Synchronization', 'DBConnection', '2010-02-01 15:51:46','');";
+               VALUES(NULL, 'MySQL Synchronization', 'DBConnection', NOW(),'');";
       $queries['Reservation'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Reservations', 'Reservation', '2010-02-03 14:03:45','');";
+               VALUES(NULL, 'Reservations', 'Reservation', NOW(),'');";
       $queries['Reservation2'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Alert Reservation', 'Reservation', '2010-02-03 14:03:45','');";
+               VALUES(NULL, 'Alert Reservation', 'Reservation', NOW(),'');";
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Tickets', 'Ticket', '2010-02-07 21:39:15','');";
+               VALUES(NULL, 'Tickets', 'Ticket', NOW(),'');";
       $queries['Ticket2'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Tickets (Simple)', 'Ticket', '2010-02-07 21:39:15','');";
+               VALUES(NULL, 'Tickets (Simple)', 'Ticket', NOW(),'');";
       $queries['Ticket3'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Alert Tickets not closed', 'Ticket', '2010-02-07 21:39:15','');";
+               VALUES(NULL, 'Alert Tickets not closed', 'Ticket', NOW(),'');";
       $queries['TicketValidation'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Tickets Validation', 'Ticket', '2010-02-26 21:39:15','');";
+               VALUES(NULL, 'Tickets Validation', 'Ticket', NOW(),'');";
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Cartridges', 'Cartridge', '2010-02-16 13:17:24','');";
+               VALUES(NULL, 'Cartridges', 'Cartridge', NOW(),'');";
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Consumables', 'Consumable', '2010-02-16 13:17:38','');";
+               VALUES(NULL, 'Consumables', 'Consumable', NOW(),'');";
       $queries['Infocom'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Infocoms', 'Infocom', '2010-02-16 13:17:55','');";
+               VALUES(NULL, 'Infocoms', 'Infocom', NOW(),'');";
       $queries['SoftwareLicense'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Licenses', 'SoftwareLicense', '2010-02-16 13:18:12','');";
+               VALUES(NULL, 'Licenses', 'SoftwareLicense', NOW(),'');";
       $queries['Contract'] = "INSERT INTO `glpi_notificationtemplates`
-               VALUES(NULL, 'Contracts', 'Contract', '2010-02-16 13:18:12','');";
+               VALUES(NULL, 'Contracts', 'Contract', NOW(),'');";
       foreach ($queries as $itemtype => $query) {
          $DB->query($query) or die("0.78 insert notification template for $itemtype " . $LANG['update'][90] . $DB->error());
          $templates[$itemtype] = $DB->insert_id();
@@ -3207,95 +3207,95 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Alert Tickets not closed', 0, 'Ticket', 'alertnotclosed',
                                        'mail',".$templates['Ticket3'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'New Ticket', 0, 'Ticket', 'new',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Update Ticket', 0, 'Ticket', 'update',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Close Ticket', 0, 'Ticket', 'closed',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Add Followup', 0, 'Ticket', 'add_followup',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Add Task', 0, 'Ticket', 'add_task',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Update Followup', 0, 'Ticket', 'update_followup',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Update Task', 0, 'Ticket', 'update_task',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Delete Followup', 0, 'Ticket', 'delete_followup',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Delete Task', 0, 'Ticket', 'delete_task',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Resolve ticket', 0, 'Ticket', 'solved',
                                        'mail',".$templates['Ticket'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Ticket Validation', 0, 'Ticket', 'validation',
                                        'mail',".$templates['TicketValidation'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'New Reservation', 0, 'Reservation', 'new',
                                        'mail',".$templates['Reservation'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Update Reservation', 0, 'Reservation', 'update',
                                        'mail',".$templates['Reservation'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Delete Reservation', 0, 'Reservation', 'delete',
                                        'mail',".$templates['Reservation'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Alert Reservation', 0, 'Reservation', 'alert',
                                        'mail',".$templates['Reservation2'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Contract Notice', 0, 'Contract', 'notice',
                                        'mail',".$templates['Contract'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Contract End', 0, 'Contract', 'end',
                                        'mail',".$templates['Contract'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'MySQL Synchronization', 0, 'DBConnection', 'desynchronization',
                                        'mail',".$templates['DBConnection'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Cartridges', 0, 'Cartridge', 'alert',
                                        'mail',".$templates['Cartridge'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Consumables', 0, 'Consumable', 'alert',
                                        'mail',".$templates['Consumable'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Infocoms', 0, 'Infocom', 'alert',
                                        'mail',".$templates['Infocom'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       $queries[] = "INSERT INTO `glpi_notifications`
                                 VALUES (NULL, 'Software Licenses', 0, 'SoftwareLicense', 'alert',
                                        'mail',".$templates['SoftwareLicense'].",
-                                       '', 1, 1, '2010-02-16 16:41:39');";
+                                       '', 1, 1, NOW());";
       foreach($queries as $query) {
          $DB->query($query) or die("0.78 insert notification" . $LANG['update'][90] . $DB->error());
       }
