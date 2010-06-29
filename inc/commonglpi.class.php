@@ -159,7 +159,7 @@ class CommonGLPI {
          } else {
             echo $LANG['common'][53];
          }
-         echo "</a>:&nbsp;</li>";
+         echo "</a>&nbsp;:&nbsp;</li>";
 
          if ($first > 0) {
             echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src=\"".
