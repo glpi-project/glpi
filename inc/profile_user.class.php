@@ -522,9 +522,12 @@ class Profile_User extends CommonDBTM {
       return $DB->result($result,0,'cpt');
    }
 
-   static function deleteRights($user_ID) {
+   static function deleteRights($user_ID,$only_dynamic = false) {
       global $DB;
-      $query = "DELETE FROM `glpi_profiles_users` WHERE `users_id`='$user_ID' AND `is_dynamic`='1'";
+      $query = "DELETE FROM `glpi_profiles_users` WHERE `users_id`='$user_ID'";
+      if ($only_dynamic) {
+         $query.= " AND `is_dynamic`='1'";
+      }
       $DB->query($query);
    }
 

@@ -2257,9 +2257,10 @@ class User extends CommonDBTM {
             $myuser->update($tmp);
             break;
 
-         //Delete user rights
+         //Delete all user dynamic habilitations and groups
          case 2 :
-            Profile_User::deleteRights($users_id);
+            Profile_User::deleteRights($users_id,true);
+            Group_User::deleteGroups($users_id,true);
             break;
 
          //Deactivate the user

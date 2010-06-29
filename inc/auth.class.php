@@ -55,8 +55,8 @@ class Auth {
    var $auth_succeded = 0;
    ///Indicates if the user is already present in database
    var $user_present = 0;
-   /// Really used ??? define twice but never used...
-   var $auth_parameters = array ();
+   //Indicates if the user is deleted in the directory (doesn't mean that it can login)
+   var $user_deleted_ldap = 0;
    /// LDAP connection descriptor
    var $ldap_connection;
 
@@ -159,6 +159,7 @@ class Auth {
       }
 
       $this->ldap_connection = AuthLdap::tryToConnectToServer($ldap_method,$login,$password);
+      $this->user_deleted_ldap = false;
 
       if ($this->ldap_connection) {
          $params['method'] = AuthLDAP::IDENTIFIER_LOGIN;
@@ -178,13 +179,22 @@ class Auth {
                return $dn;
             } else {
                $this->addToError($LANG['login'][16]);
+               //Use is present by has no right to connect because of a plugin
                return false;
             }
          }
-         $this->addToError($LANG['login'][12]);
-         return false;
+         else {
+            //User is present by password in incorrect
+            $this->addToError($LANG['login'][12]);
+            //Use is not present anymore in the directory!
+            if ($dn == '') {
+               $this->user_deleted_ldap = true;
+            }
+            return false;
+         }
       } else {
          $this->addToError($LANG['ldap'][6]);
+         //Directory is not available
          return false;
       }
    }
@@ -562,7 +572,7 @@ class Auth {
                }
             } else if ($exists == 2) {
                //The user is not authenticated on the GLPI DB, but we need to get informations about him
-               //to determine authentication method
+               //to find out his authentication method
                $this->user->getFromDBbyName(addslashes($login_name));
 
                //If the user has already been logged, the method_auth and auths_id are already set
@@ -574,7 +584,7 @@ class Auth {
                         $oldlevel = error_reporting(0);
                         AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                       $this->user->fields["auths_id"]);
-                        if (!$this->auth_succeded) {
+                        if (!$this->auth_succeded && $this->user_deleted_ldap) {
                            $user_deleted_ldap = true;
                         }
                         error_reporting($oldlevel);
@@ -610,6 +620,7 @@ class Auth {
       }
 
       if ($user_deleted_ldap) {
+         logDebug($this);
          User::manageDeletedUserInLdap($this->user->fields["id"]);
       }
       // Ok, we have gathered sufficient data, if the first return false the user
