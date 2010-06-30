@@ -595,30 +595,6 @@ class User extends CommonDBTM {
                // Clean groups
                $this->input["_groups"] = array_unique ($this->input["_groups"]);
 
-               $WHERE = "";
-               switch ($authtype["group_search_type"]) {
-                  case 0 : // user search
-                     $WHERE = " AND (`glpi_groups`.`ldap_field` <> ''
-                                     AND `glpi_groups`.`ldap_field` IS NOT NULL
-                                     AND `glpi_groups`.`ldap_value` <> ''
-                                     AND `glpi_groups`.`ldap_value` IS NOT NULL)";
-                     break;
-
-                  case 1 : // group search
-                     $WHERE = " AND (`ldap_group_dn` <> ''
-                                     AND `ldap_group_dn` IS NOT NULL)";
-                     break;
-
-                  case 2 : // user+ group search
-                     $WHERE = " AND ((`glpi_groups`.`ldap_field` <> ''
-                                      AND `glpi_groups`.`ldap_field` IS NOT NULL
-                                      AND `glpi_groups`.`ldap_value` <> ''
-                                      AND `glpi_groups`.`ldap_value` IS NOT NULL)
-                                     OR (`ldap_group_dn` <> ''
-                                         AND `ldap_group_dn` IS NOT NULL) )";
-                     break;
-
-               }
                // Delete not available groups like to LDAP
                $query = "SELECT `glpi_groups_users`.`id`,
                                 `glpi_groups_users`.`groups_id`,
@@ -626,8 +602,8 @@ class User extends CommonDBTM {
                          FROM `glpi_groups_users`
                          LEFT JOIN `glpi_groups`
                               ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                         WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'
-                               $WHERE";
+                         WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'";
+
                $result = $DB->query($query);
                $groupuser = new Group_User();
                if ($DB->numrows($result) > 0) {
