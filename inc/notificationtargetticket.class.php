@@ -380,7 +380,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    FROM `glpi_profiles_users`
                    WHERE `users_id`='".$data['id']."' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",
-                           "entities_id",$this->obj->fields['entities_id'],true) 
+                           "entities_id",$this->obj->fields['entities_id'],true)
                      ."AND profiles_id IN (".implode(',',$this->private_profiles).")";
          $result = $DB->query($query);
          if ($DB->result($result,0,'cpt')) {
@@ -493,7 +493,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
 // Unused
 //    function getJoinProfileSql() {
-// 
+//
 //       if ($this->isPrivate()) {
 //          return " INNER JOIN `glpi_profiles`
 //                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
@@ -878,8 +878,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.costfixed'             => $LANG['job'][41],
                      'ticket.costmaterial'          => $LANG['job'][42],
                      'ticket.solution.type'         => $LANG['job'][48],
-                     'ticket.solution.comment'      => $LANG['common'][25],
-                     'ticket.solution.name'         => $LANG['jobresolution'][1],
+                     'ticket.solution.description'  => $LANG['jobresolution'][1],
                      'task.author'                  => $LANG['job'][4],
                      'task.isprivate'               => $LANG['common'][77],
                      'task.date'                    => $LANG['reports'][60],

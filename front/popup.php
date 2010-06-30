@@ -98,7 +98,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          popFooter();
          break;
       case "list_notificationtags" :
-         popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
+         popHeader($LANG['mailing'][138],$_SERVER['PHP_SELF']);
          include "notification.tags.php";
          popFooter();
          break;
