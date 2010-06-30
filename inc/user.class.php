@@ -621,24 +621,23 @@ class User extends CommonDBTM {
                }
                // Delete not available groups like to LDAP
                $query = "SELECT `glpi_groups_users`.`id`,
-                                `glpi_groups_users`.`groups_id`
+                                `glpi_groups_users`.`groups_id`,
+                                `glpi_groups_users`.`is_dynamic`
                          FROM `glpi_groups_users`
                          LEFT JOIN `glpi_groups`
                               ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
                          WHERE `glpi_groups_users`.`users_id` = '" . $this->fields["id"] . "'
-                               AND `glpi_groups_users`.`is_dynamic`='1'
                                $WHERE";
                $result = $DB->query($query);
-
                $groupuser = new Group_User();
                if ($DB->numrows($result) > 0) {
-                  while ($data = $DB->fetch_array($result)) {
-                     if (!in_array($data["groups_id"], $this->input["_groups"])) {
-                        $groupuser->delete(array('id' => $data["id"]));
-                     } else {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     if (in_array($data["groups_id"], $this->input["_groups"])) {
                         // Delete found item in order not to add it again
                         unset($this->input["_groups"][array_search($data["groups_id"],
                               $this->input["_groups"])]);
+                     } else if ($data['is_dynamic']) {
+                        $groupuser->delete(array('id' => $data["id"]));
                      }
                   }
                }
