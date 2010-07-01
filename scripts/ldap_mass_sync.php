@@ -127,7 +127,8 @@ function import($options)
                     AuthLDAP::USER_SYNCHRONIZED=>0,
                     AuthLDAP::USER_DELETED_LDAP=>0);
    //The ldap server id is passed in the script url (parameter server_id)
-   foreach (AuthLdap::getAllUsers($options,$results) as $user) {
+   $limitexceeded = false;
+   foreach (AuthLdap::getAllUsers($options,$results,$limitexceeded) as $user) {
       $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
                                                          'value'=>$user["user"]),
                                          $options['action'],
@@ -136,6 +137,9 @@ function import($options)
          $results[$result['action']] += 1;
       }
       echo ".";
+   }
+   if ($limitexceeded) {
+      echo "LDAP Server size limit exceeded\n";
    }
    echo "\nImported : ".$results[AuthLDAP::USER_IMPORTED]."\n";
    echo "Synchronized : ".$results[AuthLDAP::USER_SYNCHRONIZED]."\n";
