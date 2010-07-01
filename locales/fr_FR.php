@@ -929,7 +929,7 @@ $LANG['ldap'][4]  = "Choix de l'annuaire LDAP";
 $LANG['ldap'][5]  = "Veuillez choisir l'annuaire LDAP depuis lequel les utilisateurs seront importés";
 $LANG['ldap'][6]  = "Impossible de joindre l'annuaire LDAP";
 $LANG['ldap'][7]  = "Aucun annuaire LDAP défini dans GLPI";
-
+$LANG['ldap'][8]  = "Attention : la requête dépasse la limite de l'annuaire. Les résultats ne sont que partiels.";
 $LANG['ldap'][9]  = "Test de connexion à l'annuaire LDAP";
 
 $LANG['ldap'][12] = "Synchronisation";

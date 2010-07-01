@@ -854,7 +854,8 @@ class AuthLDAP extends CommonDBTM {
          $values[$option] = $value;
       }
       $results = array();
-      $ldap_users = AuthLdap::getAllUsers($values,$results);
+      $limitexceeded = false;
+      $ldap_users = AuthLdap::getAllUsers($values,$results,$limitexceeded);
 
       if (is_array($ldap_users)) {
          $numrows = count($ldap_users);
@@ -862,6 +863,13 @@ class AuthLDAP extends CommonDBTM {
          $form_action = "process_ok";
 
          if ($numrows > 0) {
+            if ($limitexceeded) {
+               echo "<table class='tab_cadre_fixe'><tr><th class='red'>".
+                     "<img align='center' src='".$CFG_GLPI["root_doc"].
+                     "/pics/warning.png' alt='warning'>&nbsp;".
+                     $LANG['ldap'][8]."</th></tr></table><br>";
+            }
+
             printPager($values['start'], $numrows, $_SERVER['PHP_SELF'],'');
 
             // delete end
@@ -957,7 +965,7 @@ class AuthLDAP extends CommonDBTM {
     *          - order display order
     * @return  array of the user
     */
-   static function getAllUsers($options = array(),&$results) {
+   static function getAllUsers($options = array(),&$results,&$limitexceeded) {
       global $DB, $LANG,$CFG_GLPI;
 
       $config_ldap = new AuthLDAP();
@@ -979,6 +987,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       $ldap_users = array ();
+      $limitexceeded = false;
 
       // we prevent some delay...
       if (!$res) {
@@ -1016,7 +1025,14 @@ class AuthLDAP extends CommonDBTM {
                            $filter ,
                            $attrs);
          if ($sr) {
+            if (ldap_errno($ds) == 4) {
+               // openldap return 4 for Size limit exceeded
+               $limitexceeded = true;
+            }
             $info = ldap_get_entries($ds, $sr);
+            if (ldap_errno($ds) == 4) {
+               $limitexceeded = true;
+            }
             $user_infos = array();
 
             for ($ligne = 0; $ligne < $info["count"]; $ligne++) {
