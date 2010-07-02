@@ -427,6 +427,11 @@ class Software extends CommonDBTM {
       $tab[72]['datatype']     = 'number';
       $tab[72]['nometa']       = true;
 
+      $tab[86]['table']     = $this->getTable();
+      $tab[86]['field']     = 'is_recursive';
+      $tab[86]['linkfield'] = '';
+      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['datatype']  = 'bool';
 
       $tab['versions'] = $LANG['software'][5];
 
