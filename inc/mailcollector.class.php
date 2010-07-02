@@ -380,6 +380,7 @@ class MailCollector  extends CommonDBTM {
                      if (isset($tkt['_refuse_email_with_response'])) {
                         $this->sendMailRefusedResponse($tkt['user_email'],$tkt['name']);
                      }
+                     $delete_mail = true;
                      $refused++;
                   }
                   //Delete Mail from Mail box if ticket is added successfully
