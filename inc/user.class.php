@@ -65,6 +65,10 @@ class User extends CommonDBTM {
       return haveRight('user', 'w');
    }
 
+   function canDelete() {
+      return haveRight('user', 'w');
+   }
+
    function canView() {
       return haveRight('user', 'r');
    }
@@ -85,6 +89,14 @@ class User extends CommonDBTM {
    function canUpdateItem() {
       $entities = Profile_User::getUserEntities($this->fields['id'],true);
       if (isViewAllEntities() || haveAccessToOneOfEntities($entities)) {
+         return true;
+      }
+      return false;
+   }
+
+   function canDeleteItem() {
+      $entities = Profile_User::getUserEntities($this->fields['id'],true);
+      if (isViewAllEntities() || haveAccessToAllOfEntities($entities)) {
          return true;
       }
       return false;

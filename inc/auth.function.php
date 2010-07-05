@@ -531,7 +531,7 @@ function changeActiveEntities($ID="all",$is_recursive=false) {
          if (!$ok) {
             return false;
          }
-   
+
          $newroots[$ID]=$is_recursive;
          $newentities[$ID] = $ID;
          if ($is_recursive) {
@@ -673,15 +673,33 @@ function haveAccessToEntity($ID, $is_recursive=0) {
  * @return Boolean :
 **/
 function haveAccessToOneOfEntities($tab) {
-   $access=false;
-   if (is_array($tab)&&count($tab)) {
+
+   if (is_array($tab) && count($tab)) {
       foreach ($tab as $val) {
          if (haveAccessToEntity($val)) {
             return true;
          }
       }
    }
-   return $access;
+   return false;
+}
+
+/**
+ * Check if you could access to ALL the entities of an list
+ *
+ * @param $tab : list ID of entities
+ * @return Boolean :
+**/
+function haveAccessToAllOfEntities($tab) {
+
+   if (is_array($tab) && count($tab)) {
+      foreach ($tab as $val) {
+         if (!haveAccessToEntity($val)) {
+            return false;
+         }
+      }
+   }
+   return true;
 }
 
 /**
