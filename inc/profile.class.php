@@ -342,9 +342,9 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][2]."&nbsp;:</td><td>";
       echo "<select name='interface'>";
       echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".
-             $LANG['Menu'][31]."</option>\n";
+             self::getInterfaceName("helpdesk")."</option>\n";
       echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".
-             $LANG['common'][56]."</option>";
+             self::getInterfaceName("central")."</option>";
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['profiles'][24]."&nbsp;:</td><td>";
@@ -1571,6 +1571,16 @@ class Profile extends CommonDBTM {
             return $LANG['profiles'][11];
          default:
             return '';
+      }
+   }
+   static function getInterfaceName($value) {
+      global $LANG;
+
+      switch ($value) {
+         case 'central':
+            return $LANG['common'][56];
+         case 'helpdesk':
+            return $LANG['Menu'][31];
       }
    }
 }

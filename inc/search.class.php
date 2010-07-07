@@ -2261,6 +2261,16 @@ class Search {
             }
             break;
 
+         case "glpi_profiles.interface" :
+            if (stristr(Profile::getInterfaceName('central'),$val)) {
+               return $link." `$table`.`$field`='central'";
+            } else if (stristr(Profile::getInterfaceName('helpdesk'),$val)){
+               return $link." `$table`.`$field`='helpdesk'";
+            }
+            
+            return "";
+            break;
+
          case "glpi_networkports.ip" :
             $search=array("/\&lt;/","/\&gt;/");
             $replace=array("<",">");
@@ -3162,6 +3172,9 @@ class Search {
                                        $data[$NAME.$num."_4"],1).$toadd;
                }
             }
+            break;
+         case "glpi_profiles.interface" :
+            return Profile::getInterfaceName($data[$NAME.$num]);
             break;
 
          case "glpi_profiles.name" :
