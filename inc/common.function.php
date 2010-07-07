@@ -827,6 +827,17 @@ function unclean_cross_side_scripting_deep($value) {
 }
 
 /**
+ * Recursivly execute nl2br on an Array
+ *
+ * @param $value string or array
+ * @return array of value (same struct as input)
+ */
+function nl2br_deep($value) {
+
+   return (is_array($value) ? array_map('nl2br_deep', $value) : nl2br($value));
+}
+
+/**
  *  Resume text for followup
  *
  * @param $string string: string to resume

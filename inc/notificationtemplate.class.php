@@ -211,7 +211,7 @@ class NotificationTemplate extends CommonDBTM {
             $lang['content_html'] = '';
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
-               $data_html=array_map('nl2br',$data);
+               $data_html=nl2br_deep($data);
                $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
                               \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">".
