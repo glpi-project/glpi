@@ -1479,6 +1479,8 @@ class Ticket extends CommonDBTM {
       $tab[13]['field']     = 'items_id';
       $tab[13]['linkfield'] = '';
       $tab[13]['name']      = $LANG['common'][1];
+      $tab[13]['nosearch']  = true;
+      $tab[13]['nosort']  = true;
 
       $tab[9]['table']     = 'glpi_requesttypes';
       $tab[9]['field']     = 'name';
