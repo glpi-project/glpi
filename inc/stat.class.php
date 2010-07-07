@@ -379,9 +379,14 @@ class Stat {
 
          case "ticketcategories_id" :
             if (!empty($value)) {
-               $categories=getSonsOf("glpi_ticketcategories",$value);
-               $condition=implode("','",$categories);
-               $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` IN ('$condition')";
+               // do not merge for pie chart
+               if (!isset($_REQUEST['showgraph']) || !$_REQUEST['showgraph']) {
+                  $categories=getSonsOf("glpi_ticketcategories",$value);
+                  $condition=implode("','",$categories);
+                  $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` IN ('$condition')";
+               } else {
+                  $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` = '$value' ";
+               }
             } else {
                $WHERE .= " AND `glpi_tickets`.`ticketcategories_id` = '$value' ";
             }
