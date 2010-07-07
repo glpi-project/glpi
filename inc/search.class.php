@@ -1810,6 +1810,11 @@ class Search {
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_2, ";
             break;
 
+         case "glpi_documents_items.count" :
+            return " COUNT(DISTINCT `glpi_documents_items`.`id`)
+                        AS ".$NAME."_".$num.", ";
+            break;
+
          case "glpi_computers_softwareversions.count" :
             return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
                         AS ".$NAME."_".$num.", ";
@@ -2267,7 +2272,7 @@ class Search {
             } else if (stristr(Profile::getInterfaceName('helpdesk'),$val)){
                return $link." `$table`.`$field`='helpdesk'";
             }
-            
+
             return "";
             break;
 
@@ -2835,6 +2840,9 @@ class Search {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`softwares_id`) ";
             }
             return "";
+
+         case "glpi_documents_items" :
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`documents_id`) ";
 
          case "glpi_computers_softwareversions" :
             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwareversions",$linkfield,
