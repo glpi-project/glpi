@@ -286,7 +286,7 @@ class Log extends CommonDBTM {
     * @param $start interger first line to retrieve
     * @param $limit interfer max number of line to retrive (0 for all)
     *
-    * @return array of localized log entry
+    * @return array of localized log entry (TEXT only, no HTML)
     */
    static function getHistoryData(CommonDBTM $item, $start=0, $limit=0) {
       global $DB, $LANG;
@@ -295,7 +295,7 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $SEARCHOPTION=Search::getOptions($itemtype);
-      
+
       $query="SELECT *
               FROM `glpi_logs`
               WHERE `items_id`='".$items_id."'
@@ -333,7 +333,7 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['devices'][25]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['devices'][25]." : "."\"".
                             $data["new_value"]."\"";
                   break;
 
@@ -344,9 +344,9 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                      $specif_fields=$item->getSpecifityLabel();
-                     $tmp['change'] = $specif_fields['specificity']."&nbsp;<strong>:</strong>&nbsp;";
+                     $tmp['change'] = $specif_fields['specificity']." : ";
                   }
-                  $tmp['change'] .= $data[ "old_value"]."&nbsp;<strong>--></strong>&nbsp;"."\"".
+                  $tmp['change'] .= $data[ "old_value"]." --> "."\"".
                              $data[ "new_value"]."\"";
                   break;
 
@@ -356,19 +356,19 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['devices'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['devices'][26]." : "."\"".
                             $data["old_value"]."\"";
                   break;
 
                case HISTORY_INSTALL_SOFTWARE :
                   $tmp['field']=$LANG['help'][31];
-                  $tmp['change'] = $LANG['software'][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['software'][44]." : "."\"".
                             $data["new_value"]."\"";
                   break;
 
                case HISTORY_UNINSTALL_SOFTWARE :
                   $tmp['field']=$LANG['help'][31];
-                  $tmp['change'] = $LANG['software'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['software'][45]." : "."\"".
                             $data["old_value"]."\"";
                   break;
 
@@ -378,7 +378,7 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['log'][26]." : "."\"".
                             $data["old_value"]."\"";
                   break;
 
@@ -388,15 +388,15 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][27]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['log'][27]." : "."\"".
                             $data["new_value"]."\"";
                   break;
 
                case HISTORY_OCS_IMPORT :
                   if (haveRight("view_ocsng","r")) {
                      $tmp['field']="";
-                     $tmp['change'] = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>";
-                     $tmp['change'].= "&nbsp;"."\"".$data["new_value"]."\"";
+                     $tmp['change'] = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]." :";
+                     $tmp['change'].= " "."\"".$data["new_value"]."\"";
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -405,8 +405,8 @@ class Log extends CommonDBTM {
                case HISTORY_OCS_DELETE :
                   if (haveRight("view_ocsng","r")) {
                      $tmp['field']="";
-                     $tmp['change'] = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>";
-                     $tmp['change'].= "&nbsp;"."\"".$data["old_value"]."\"";
+                     $tmp['change'] = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]." :";
+                     $tmp['change'].= " "."\"".$data["old_value"]."\"";
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -420,8 +420,8 @@ class Log extends CommonDBTM {
                         $tmp['field'] = $item->getTypeName();
                      }
 
-                     $tmp['change'] = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>";
-                     $tmp['change'].= "&nbsp;"."\"".$data["new_value"]."\"";
+                     $tmp['change'] = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]." :";
+                     $tmp['change'].= " "."\"".$data["new_value"]."\"";
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -430,8 +430,8 @@ class Log extends CommonDBTM {
                case HISTORY_OCS_IDCHANGED :
                   if (haveRight("view_ocsng","r")) {
                      $tmp['field']="";
-                     $tmp['change'] = $LANG['ocsng'][48]." "."&nbsp;<strong>:</strong>&nbsp;"."\"".
-                               $data["old_value"]."\" --> &nbsp;<strong>:</strong>&nbsp;"."\"".
+                     $tmp['change'] = $LANG['ocsng'][48]." "." : "."\"".
+                               $data["old_value"]."\" -->  : "."\"".
                                $data["new_value"]."\"";
                   } else {
                      $tmp['display_history'] = false;
@@ -449,7 +449,7 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][32]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['log'][32]." : "."\"".
                             $data["new_value"]."\"";
                   break;
                case HISTORY_DEL_RELATION :
@@ -458,7 +458,7 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][33]."&nbsp;<strong>:</strong>&nbsp;"."\"".
+                  $tmp['change'] = $LANG['log'][33]." : "."\"".
                             $data["old_value"]."\"";
                   break;
                case HISTORY_ADD_SUBITEM :
@@ -467,7 +467,7 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][98]."&nbsp;<strong>:</strong>&nbsp;".
+                  $tmp['change'] = $LANG['log'][98]." : ".
                             $tmp['field']." (".$data["new_value"].")";
                   break;
                case HISTORY_UPDATE_SUBITEM :
@@ -476,7 +476,7 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][99]."&nbsp;<strong>:</strong>&nbsp;".
+                  $tmp['change'] = $LANG['log'][99]." : ".
                             $tmp['field']." (".$data["new_value"].")";
                   break;
                case HISTORY_DELETE_SUBITEM :
@@ -485,7 +485,7 @@ class Log extends CommonDBTM {
                      $item = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][100]."&nbsp;<strong>:</strong>&nbsp;".
+                  $tmp['change'] = $LANG['log'][100]." : ".
                             $tmp['field']." (".$data["old_value"].")";
                   break;
 
@@ -525,7 +525,7 @@ class Log extends CommonDBTM {
                            $data["new_value"]=Dropdown::getYesNo($data["new_value"]);
                            break;
                      }
-                     $tmp['change'] = "\"".$data["old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".
+                     $tmp['change'] = "\"".$data["old_value"]."\" --> \"".
                                $data["new_value"]."\"";
                   }
             }
