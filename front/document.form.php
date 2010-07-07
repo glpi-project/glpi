@@ -111,7 +111,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["deletedocumentitem"])) {
 
-   if (count($_POST["item"])) {
+   if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($documentitem->can($key, 'w')) {
             $documentitem->delete(array('id' => $key));

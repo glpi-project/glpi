@@ -288,7 +288,7 @@ class Ticket extends CommonDBTM {
       }
 
       if (is_numeric(getLoginUserID(false)) && !haveRight("update_ticket","1")) {
-         if ($this->canApprove()) {
+         if ($this->canApprove() && isset($input["status"])) {
             $ret["status"] = $input["status"];
          }
          // Manage assign and steal right
