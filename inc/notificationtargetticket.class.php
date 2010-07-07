@@ -562,6 +562,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
          $entitydata = new EntityData;
 
+         
          if ($entitydata->getFromDB($this->obj->getField('entities_id'))
                   && $entitydata->getField('autoclose_delay') > 0) {
 
@@ -571,6 +572,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
          } else {
             $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
+            $this->datas['##lang.ticket.autoclosewarning##'] ="";
          }
          $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
 
