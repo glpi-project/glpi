@@ -561,15 +561,19 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
 
          $entitydata = new EntityData;
-
+         $autoclose_value=$CFG_GLPI['autoclose_delay'];
          
-         if ($entitydata->getFromDB($this->obj->getField('entities_id'))
-                  && $entitydata->getField('autoclose_delay') > 0) {
-
-               $this->datas['##ticket.autoclose##'] = $entitydata->fields['autoclose_delay'];
-               $this->datas['##lang.ticket.autoclosewarning##']
-                  = $LANG['job'][54]." ".$entitydata->fields['autoclose_delay']." ".$LANG['stats'][31];
-
+         if ($entitydata->getFromDB($this->obj->getField('entities_id'))) {
+            $autoclose_value=$entitydata->getField('autoclose_delay');
+            // Set global config value
+            if ($autoclose_value == -1) {
+               $autoclose_value=$CFG_GLPI['autoclose_delay'];
+            }
+         }
+         if ($autoclose_value > 0) {
+                  $this->datas['##ticket.autoclose##'] = $autoclose_value;
+                  $this->datas['##lang.ticket.autoclosewarning##']
+                     = $LANG['job'][54]." ".$autoclose_value." ".$LANG['stats'][31];
          } else {
             $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
             $this->datas['##lang.ticket.autoclosewarning##'] ="";
@@ -643,19 +647,27 @@ class NotificationTargetTicket extends NotificationTarget {
 
             if ($this->target_object->isField('serial')) {
                $this->datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
+            } else {
+               $this->datas['##ticket.item.serial##']='';
             }
             if ($this->target_object->isField('otherserial')) {
                $this->datas['##ticket.item.otherserial##']
                         = $this->target_object->getField('otherserial');
+            } else {
+               $this->datas['##ticket.item.otherserial##']='';
             }
             if ($this->target_object->isField('location')) {
                $this->datas['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations',
                                                                   $user->getField('locations_id'));
+            } else {
+               $this->datas['##ticket.item.locationl##']='';
             }
             $modeltable = getSingular($this->getTable())."models";
             $modelfield = getForeignKeyFieldForTable($modeltable);
             if ($this->target_object->isField($modelfield)) {
                $this->datas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
+            } else {
+               $this->datas['##ticket.item.model##']='';
             }
 
          } else {
@@ -670,8 +682,10 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.solution.type##']
                = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                            $this->obj->getField('ticketsolutiontypes_id'));
-            $this->datas['##ticket.solution.description##'] = $this->obj->getField('solution');
+         } else {
+            $this->datas['##ticket.solution.type##']='';
          }
+         $this->datas['##ticket.solution.description##'] = $this->obj->getField('solution');
 
          $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
          if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {

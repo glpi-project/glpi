@@ -811,6 +811,14 @@ class Ticket extends CommonDBTM {
                $mailtype = "solved";
             }
 
+            if (isset($this->input["status"])
+                && $this->input["status"]
+                && in_array("status",$this->updates)
+                && $this->input["status"]=="closed") {
+
+               $mailtype = "closed";
+            }
+
             //TODO : manage assignation
 
             if (isset($this->input["_old_assign"])) {

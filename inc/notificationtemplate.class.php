@@ -309,15 +309,12 @@ class NotificationTemplate extends CommonDBTM {
    static function processIf($string, $data) {
 
       if (preg_match_all("/##IF([a-z\.]*)[=]?(\w*)##/i",$string,$out)) {
-         //printCleanArray($out);
          foreach ($out[1] as $key => $tag_infos) {
             $if_field = $tag_infos;
             //Get the field tag value (if one)
-            $regex_if = "/##IF".$if_field."[=]?\w*##(.*)##ENDIF".$if_field."##/is";
-
+            $regex_if = "/##IF".$if_field."[=]?\w*##(.*)##ENDIF".$if_field."##/Uis";
             //Get the else tag value (if one)
-            $regex_else = "/##ELSE".$if_field."[=]?\w*##(.*)##ENDELSE".$if_field."##/is";
-
+            $regex_else = "/##ELSE".$if_field."[=]?\w*##(.*)##ENDELSE".$if_field."##/Uis";
             if (empty($out[2][$key])){ // No = : check if ot empty or not null
                if (isset($data['##'.$if_field.'##'])
                   && $data['##'.$if_field.'##'] != ''
@@ -337,12 +334,13 @@ class NotificationTemplate extends CommonDBTM {
 
             }
 
+            // Force only one replacement to permit multiple use of the same condition
             if ($condition_ok){ // Do IF
-               $string = preg_replace($regex_if, "\\1", $string);
-               $string = preg_replace($regex_else, "",  $string);
+               $string = preg_replace($regex_if, "\\1", $string,1);
+               $string = preg_replace($regex_else, "",  $string,1);
             } else { // Do ELSE
-               $string = preg_replace($regex_if, "", $string);
-               $string = preg_replace($regex_else, "\\1",  $string);
+               $string = preg_replace($regex_if, "", $string,1);
+               $string = preg_replace($regex_else, "\\1",  $string,1);
             }
          }
       }
