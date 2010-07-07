@@ -801,8 +801,12 @@ class Search {
 
             // Display column Headers for toview items
             foreach ($toview as $key => $val) {
-               $linkto = "$target?itemtype=$itemtype&amp;sort=".$val."&amp;order=".($p['order']=="ASC"?"DESC":"ASC").
-                        "&amp;start=".$p['start'].$globallinkto;
+               $linkto='';
+               if (!isset($searchopt[$itemtype][$val]['nosort'])
+                     || !$searchopt[$itemtype][$val]['nosort']) {
+                  $linkto = "$target?itemtype=$itemtype&amp;sort=".$val."&amp;order=".($p['order']=="ASC"?"DESC":"ASC").
+                           "&amp;start=".$p['start'].$globallinkto;
+               }
                echo Search::showHeaderItem($output_type,$searchopt[$itemtype][$val]["name"],
                                           $header_num,$linkto,$p['sort']==$val,$p['order']);
             }
@@ -1233,12 +1237,14 @@ class Search {
                }
                echo "<optgroup label='$val'>";
             } else {
-               echo "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
-               if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
-                  echo "selected";
-                  $selected=$key;
+               if (!isset($val['nosearch']) || $val['nosearch']==false) {
+                  echo "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
+                  if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
+                     echo "selected";
+                     $selected=$key;
+                  }
+                  echo ">". utf8_substr($val["name"],0,28) ."</option>\n";
                }
-               echo ">". utf8_substr($val["name"],0,28) ."</option>\n";
             }
          }
          if (!$first_group) {
