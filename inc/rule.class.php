@@ -1471,9 +1471,12 @@ class Rule extends CommonDBTM {
             echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' ".
                   "action='".getItemTypeSearchURL(get_class($this))."'>";
          }
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th></th><th>" . $this->getTitle() . "</th>";
-         echo "<th>".$LANG['joblist'][6]."</th>";
+         echo "<table class='tab_cadre_fixehov'><tr>";
+         if ($canedit) {
+            echo "<th></th>";
+         }
+         echo "<th>" . $this->getTitle() . "</th>";
+         echo "<th>" . $LANG['joblist'][6] . "</th>";
          echo "<th>" . $LANG['common'][60] . "</th>";
          echo "</tr>\n";
          initNavigateListItems(get_class($this), $LANG['entity'][0]."=".Dropdown::getDropdownName("glpi_entities",$ID));
