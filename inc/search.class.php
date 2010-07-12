@@ -2527,9 +2527,9 @@ class Search {
          case 'Entity' :
             return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_entitydatas","");
          case 'Ticket' :
-            if (haveRight("validate_ticket",1)) {
-               return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_ticketvalidations","");
-            }
+//            if (haveRight("validate_ticket",1)) {
+//               return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_ticketvalidations","");
+//            }
          default :
             return "";
       }
