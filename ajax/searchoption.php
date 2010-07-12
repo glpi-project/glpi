@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 // Non define case
-
+//print_r($_POST);
 if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
 
    $addmeta="";
@@ -57,8 +57,18 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
    } else {
       $_POST['meta']=0;
    }
-
+//    echo $_POST["itemtype"]."--".$_POST["field"]."--".$_POST['searchtype'];
    $actions=Search::getActionsFor($_POST["itemtype"],$_POST["field"]);
+   // is it a valid action for type ?
+   if (count($actions) 
+       && (empty($_POST['searchtype']) || !isset($actions[$_POST['searchtype']]))) {
+      $tmp=$actions;
+      unset($tmp['searchopt']);
+      $_POST['searchtype']=key($tmp);
+      unset($tmp);
+   }
+//    echo $_POST["itemtype"]."--".$_POST["field"]."--".$_POST['searchtype'];
+//    printcleanArray($actions);
    $randsearch=-1;
    $dropdownname="searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
    $searchopt=array();
