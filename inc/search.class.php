@@ -3803,10 +3803,9 @@ class Search {
       $default_values["itemtype2"]="";
       $default_values["searchtype2"]="";
       $default_values["sort"]=1;
-
       if ($itemtype!='States'
          && class_exists($itemtype) && method_exists($itemtype,'getDefaultSearchRequest')) {
-         $default_values=array_merge(call_user_func(array($itemtype, 'getDefaultSearchRequest')));
+         $default_values=array_merge($default_values,call_user_func(array($itemtype, 'getDefaultSearchRequest')));
       }
 
       // First view of the page or force bookmark : try to load a bookmark
@@ -3832,7 +3831,6 @@ class Search {
             }
          }
       }
-
       if ($usesession
          && isset($_GET["reset"])) {
 
@@ -3891,8 +3889,7 @@ class Search {
             $_SESSION["glpisearchcount2"][$itemtype]=0;
          }
       }
-
-      //printCleanArray($_GET);
+//       printCleanArray($_GET);
    }
 
 
