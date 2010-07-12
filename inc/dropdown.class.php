@@ -101,6 +101,7 @@ class Dropdown {
       $limit_length=$_SESSION["glpidropdown_chars_limit"];
 
 
+      // Check default value for dropdown : need to be a numeric
       if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
          $params['value']=-1;
       }
