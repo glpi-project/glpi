@@ -96,17 +96,17 @@ class Dropdown {
          }
       }
 
-
       $name="------";
       $comment="";
       $limit_length=$_SESSION["glpidropdown_chars_limit"];
 
 
-      if (strlen($params['value'])==0) {
+      if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
          $params['value']=-1;
       }
-
-      if ($params['value'] > 0 || ($itemtype == "Entity" && $params['value'] >= 0)) {
+      
+      if ($params['value'] > 0 
+         || ($itemtype == "Entity" && $params['value'] >= 0)) {
          $tmpname=Dropdown::getDropdownName($table,$params['value'],1);
          if ($tmpname["name"]!="&nbsp;") {
             $name=$tmpname["name"];
@@ -235,7 +235,6 @@ class Dropdown {
 
       $itemtype=getItemTypeForTable($table);
       $item = new $itemtype();
-
       if ($item instanceof CommonTreeDropdown) {
          return getTreeValueCompleteName($table,$id,$withcomment);
       } else {
