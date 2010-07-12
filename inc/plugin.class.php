@@ -556,7 +556,7 @@ class Plugin extends CommonDBTM {
             if ($function()) {
                $this->update(array('id'=>$ID,
                                    'state'=>self::ACTIVATED));
-               $_SESSION['glpi_plugins'][]=$this->fields['directory'];
+               $_SESSION['glpi_plugins'][$ID]=$this->fields['directory'];
 
                // Initialize session for the plugin
                if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
