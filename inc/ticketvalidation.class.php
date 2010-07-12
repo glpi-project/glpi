@@ -449,7 +449,7 @@ class TicketValidation  extends CommonDBChild {
    function showSummary($ticket) {
       global $DB, $LANG, $CFG_GLPI;
 
-      if (!haveRight('validate_ticket',1) && !haveRight('create_validation	',1)) {
+      if (!haveRight('validate_ticket',1) && !haveRight('create_validation',1)) {
          return false;
       }
       $tID = $ticket->fields['id'];
