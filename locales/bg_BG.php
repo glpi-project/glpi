@@ -459,7 +459,7 @@ $LANG['document'][43]="Непознат файл";
 $LANG['document'][44]="Неправилно име на файла"; 
 $LANG['document'][45]="Непозволен достъп до този файл"; 
 $LANG['document'][46]="Failure in sending the file (probably too large)"; 
-$LANG['document'][48]="A document already exists with this file"; 
+$LANG['document'][48]="Já existe documento com este arquivo."; 
 $LANG['document'][49]="File is altered (bad checksum)"; 
 $LANG['document'][50]="Attached items"; 
 
