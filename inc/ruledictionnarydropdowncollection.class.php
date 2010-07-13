@@ -208,7 +208,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             // Manage cartridge assoc Update items
             if ($this->getRuleClassName()=='RuleDictionnaryPrinterModel') {
                $sql = "SELECT *
-                       FROM `glpi_cartridges_printermodels`
+                       FROM `glpi_cartridgeitems_printermodels`
                        WHERE `printermodels_id` = '$ID'";
                if ($result=$DB->query($sql)) {
                   if ($DB->numrows($result)) {
@@ -220,7 +220,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                      // Delete cartrodges_assoc
                      if ($deletecartmodel) {
                         $sql = "DELETE
-                                FROM `glpi_cartridges_printermodels`
+                                FROM `glpi_cartridgeitems_printermodels`
                                 WHERE `printermodels_id` = 'id'";
                         $DB->query($sql);
                      }

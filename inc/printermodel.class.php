@@ -51,7 +51,7 @@ class PrinterModel extends CommonDropdown {
 
       // Temporary solution to clean wrong updated items
       $query = "DELETE
-                FROM `glpi_cartridges_printermodels`
+                FROM `glpi_cartridgeitems_printermodels`
                 WHERE `printermodels_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }

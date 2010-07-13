@@ -94,7 +94,7 @@ class CartridgeItem extends CommonDBTM {
       $DB->query($query);
       // Delete all cartridge assoc
       $query2 = "DELETE
-                 FROM `glpi_cartridges_printermodels`
+                 FROM `glpi_cartridgeitems_printermodels`
                  WHERE `cartridgeitems_id` = '".$this->fields['id']."'";
       $result2 = $DB->query($query2);
    }
@@ -165,7 +165,7 @@ class CartridgeItem extends CommonDBTM {
 
       if ($cartridgeitems_id>0 && $printermodels_id>0) {
          $query="INSERT
-                 INTO `glpi_cartridges_printermodels`
+                 INTO `glpi_cartridgeitems_printermodels`
                       (`cartridgeitems_id`, `printermodels_id`)
                  VALUES ('$cartridgeitems_id','$printermodels_id');";
          if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
@@ -189,7 +189,7 @@ class CartridgeItem extends CommonDBTM {
       global $DB;
 
       $query="DELETE
-              FROM `glpi_cartridges_printermodels`
+              FROM `glpi_cartridgeitems_printermodels`
               WHERE `id`= '$ID';";
       if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
          return true;
@@ -451,15 +451,15 @@ class CartridgeItem extends CommonDBTM {
                        `glpi_cartridgeitems`.`ref` as ref, `glpi_cartridgeitems`.`name` as name,
                        `glpi_cartridgeitems`.`id` as tID
                 FROM `glpi_cartridgeitems`
-                INNER JOIN `glpi_cartridges_printermodels`
+                INNER JOIN `glpi_cartridgeitems_printermodels`
                            ON (`glpi_cartridgeitems`.`id` =
-                              `glpi_cartridges_printermodels`.`cartridgeitems_id`)
+                              `glpi_cartridgeitems_printermodels`.`cartridgeitems_id`)
                 INNER JOIN `glpi_cartridges`
                            ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`
                                AND `glpi_cartridges`.`date_use` IS NULL)
                 LEFT JOIN `glpi_locations`
                           ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
-                WHERE `glpi_cartridges_printermodels`.`printermodels_id` =
+                WHERE `glpi_cartridgeitems_printermodels`.`printermodels_id` =
                         '".$printer->fields["printermodels_id"]."'
                       AND `glpi_cartridgeitems`.`entities_id` ='".$printer->fields["entities_id"]."'
                 GROUP BY tID
@@ -491,12 +491,12 @@ class CartridgeItem extends CommonDBTM {
          return false;
       }
 
-      $query = "SELECT `glpi_cartridges_printermodels`.`id`,
+      $query = "SELECT `glpi_cartridgeitems_printermodels`.`id`,
                        `glpi_printermodels`.`name` as `type`,
                        `glpi_printermodels`.`id` as `pmid`
-                FROM `glpi_cartridges_printermodels`, `glpi_printermodels`
-                WHERE `glpi_cartridges_printermodels`.`printermodels_id` = `glpi_printermodels`.`id`
-                      AND `glpi_cartridges_printermodels`.`cartridgeitems_id` = '$instID'
+                FROM `glpi_cartridgeitems_printermodels`, `glpi_printermodels`
+                WHERE `glpi_cartridgeitems_printermodels`.`printermodels_id` = `glpi_printermodels`.`id`
+                      AND `glpi_cartridgeitems_printermodels`.`cartridgeitems_id` = '$instID'
                 ORDER BY `glpi_printermodels`.`name`";
 
       $result = $DB->query($query);
