@@ -2388,15 +2388,63 @@ class Search {
                   return " $link (`$table`.`$field`".$SEARCH.') ';
                }
             case "datetime" :
-               // Specific search for datetime
-               if ($searchtype=='equals') {
-                  $val=preg_replace("/:00$/",'',$val);
-                  $val='^'.$val;
-                  return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
-               }
-               // No break use standard date system for other search type
             case "date" :
             case "date_delay" :
+
+               $format_use="Y-m-d";
+               if ($searchopt[$ID]["datatype"]=='datetime') {
+                  $format_use="Y-m-d H:i:s";
+               }
+               // Parsing relative date
+               if ($val=='NOW') {
+                  $val=date($format_use);
+               }
+               if (preg_match("/([-+])(\d+)(\w+)/",$val,$matches)) {
+                  $nb=intval($matches[2]);
+                  if ($matches[1]=='-') {
+                     $nb=-$nb;
+                  }
+                  // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
+                  $hour = date("H");
+                  $minute = date("i");
+                  $second = 0;
+                  $month = date("n");
+                  $day = date("j");
+                  $year = date("Y");
+
+                  switch ($matches[3]) {
+                     case "YEAR":
+                        $year+=$nb;
+                        break;
+                     case "MONTH":
+                        $month+=$nb;
+                        break;
+                     case "WEEK":
+                        $day+=7*$nb;
+                        break;
+                     case "DAY":
+                        $day+=$nb;
+                        break;
+                     case "HOUR":
+                        $hour+=$nb;
+                        break;
+                  }
+                  $val=date($format_use,mktime  ($hour,$minute,$second,$month,$day,$year));
+                  if ($nott) {
+                     $SEARCH=" <> '$val'";
+                  } else {
+                     $SEARCH=" = '$val'";
+                  }
+               }
+
+               if ($searchopt[$ID]["datatype"]=='datetime') {
+                  // Specific search for datetime
+                  if ($searchtype=='equals') {
+                     $val=preg_replace("/:00$/",'',$val);
+                     $val='^'.$val;
+                     return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
+                  }
+               }
 
                if ($searchtype=='lessthan') {
                  $val='<'.$val; 
