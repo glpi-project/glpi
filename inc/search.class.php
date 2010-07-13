@@ -2399,7 +2399,7 @@ class Search {
                if ($val=='NOW') {
                   $val=date($format_use);
                }
-               if (preg_match("/([-+])(\d+)(\w+)/",$val,$matches)) {
+               if (preg_match("/^([-+])(\d+)(\w+)$/",$val,$matches)) {
                   $nb=intval($matches[2]);
                   if ($matches[1]=='-') {
                      $nb=-$nb;
