@@ -181,12 +181,8 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500,50);
-      echo "</td>";
-      echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
-      $values = array (REALNAME_BEFORE  =>$LANG['common'][48]." ".$LANG['common'][43],
-                       FIRSTNAME_BEFORE =>$LANG['common'][43]." ".$LANG['common'][48]);
-      Dropdown::showFromArray('names_format',$values,$CFG_GLPI["names_format"]);
-      echo "</td></tr>";
+      echo "</td><td colspan='2'>&nbsp;</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][149] . "&nbsp;:</td><td>";
       Dropdown::showInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
@@ -624,7 +620,7 @@ class Config extends CommonDBTM {
             Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
        } else {
-        echo "<td colspan='2'></td>";
+        echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "<td>" . $LANG['setup'][150] . "&nbsp;:</td>";
       echo "<td><select name='number_format'>";
@@ -649,10 +645,16 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $LANG['setup'][132] . "&nbsp;:</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
-         echo "</td><td colspan='2'></td></tr>";
+         echo "</td>";
       }
 
+      echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
+      $values = array (REALNAME_BEFORE  =>$LANG['common'][48]." ".$LANG['common'][43],
+                       FIRSTNAME_BEFORE =>$LANG['common'][43]." ".$LANG['common'][48]);
+      Dropdown::showFromArray('names_format',$values,array('value'=>$CFG_GLPI["names_format"]));
+      echo "</td><tr>";
       echo "<tr class='tab_bg_2'>";
+
       if ($oncentral) {
          echo "<td>" . $LANG['setup'][129] . "&nbsp;:</td><td>";
          Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"]);
