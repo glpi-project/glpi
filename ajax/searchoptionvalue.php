@@ -161,18 +161,20 @@ if (isset($_REQUEST['searchtype'])) {
                      $display=true;
                   case "date":
                   case "date_delay":
-                     if (!preg_match("/\d{4}-\d{2}-\d{2}.*/",$_REQUEST['value'])) {
-                        $_REQUEST['value']=date("Y-m-d");
-                     }
-                     showDateFormItem($inputname,$_REQUEST['value'],false,true);
+//                      if (!preg_match("/\d{4}-\d{2}-\d{2}.*/",$_REQUEST['value'])) {
+//                         $_REQUEST['value']=date("Y-m-d");
+//                      }
+                     showGenericDateTimeSearch($inputname,$_REQUEST['value']);
+                     //showDateFormItem($inputname,$_REQUEST['value'],false,true);
                      $display=true;
                      break;
                   case "datetime":
-                     if (!preg_match("/\d{4}-\d{2}-\d{2}.*/",$_REQUEST['value'])) {
-                        $_REQUEST['value']=date("Y-m-d H:i:s");
-                     }
+//                      if (!preg_match("/\d{4}-\d{2}-\d{2}.*/",$_REQUEST['value'])) {
+//                         $_REQUEST['value']=date("Y-m-d H:i:s");
+//                      }
 //                     echo $_REQUEST['value'];
-                     showDateTimeFormItem($inputname,$_REQUEST['value'],1,false,true);
+//                     showDateTimeFormItem($inputname,$_REQUEST['value'],1,false,true);
+                     showGenericDateTimeSearch($inputname,$_REQUEST['value'],true);
                      $display=true;
                      break;
                }

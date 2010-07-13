@@ -2257,6 +2257,124 @@ function printAjaxPager($title,$start,$numrows) {
    echo "</tr></table>";
 }
 
+function showGenericDateTimeSearch($element,$value='',$with_time=false) {
+   global $LANG,$CFG_GLPI;
+
+   $rand=mt_rand();
+   // Validate value
+   if ($value!='NOW' &&
+       !preg_match("/\d{4}-\d{2}-\d{2}.*/",$value) &&
+       !strstr($value,'HOUR') &&
+       !strstr($value,'DAY') &&
+       !strstr($value,'WEEK') && 
+       !strstr($value,'MONTH') &&
+       !strstr($value,'YEAR')) {
+      $value="";
+   }
+   if (empty($value)) {
+      $value='NOW';
+   }
+
+   $specific_value=date("Y-m-d H:i:s");
+   if (preg_match("/\d{4}-\d{2}-\d{2}.*/",$value)) {
+      $specific_value=$value;
+      $value=0;
+   }
+   echo "<table><tr><td>";
+   echo "<select id='genericdate$element$rand' name='_select_$element'>";
+
+   $val='NOW';
+   echo "<option value='$val' ".($value===$val?'selected':'').">";
+   echo $LANG['calendar'][16]."</option>";
+
+   echo "<option value='0' ".($value===0?'selected':'').">".$LANG['calendar'][17]."</option>";
+
+   if ($with_time) {
+      for ($i=1;$i<=24;$i++) {
+         $val='-'.$i.'HOUR';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "- $i ".$LANG['gmt'][1]."</option>";
+      }
+   }
+
+   for ($i=1;$i<=7;$i++) {
+      $val='-'.$i.'DAY';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "- $i ".$LANG['calendar'][12]."</option>";
+   }
+
+   for ($i=1;$i<=10;$i++) {
+      $val='-'.$i.'WEEK';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "- $i ".$LANG['calendar'][13]."</option>";
+   }
+
+   for ($i=1;$i<=12;$i++) {
+      $val='-'.$i.'MONTH';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "- $i ".$LANG['calendar'][14]."</option>";
+   }
+
+   for ($i=1;$i<=10;$i++) {
+      $val='-'.$i.'YEAR';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "- $i ".$LANG['calendar'][15]."</option>";
+   }
+/*
+   if ($with_time) {
+      for ($i=1;$i<=24;$i++) {
+         $val='+'.$i.'HOUR';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "+ $i ".$LANG['gmt'][1]."</option>";
+      }
+   }
+
+   for ($i=1;$i<=7;$i++) {
+      $val='+'.$i.'DAY';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "+ $i ".$LANG['calendar'][12]."</option>";
+   }
+
+   for ($i=1;$i<=10;$i++) {
+      $val='+'.$i.'WEEK';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "+ $i ".$LANG['calendar'][13]."</option>";
+   }
+
+   for ($i=1;$i<=12;$i++) {
+      $val='+'.$i.'MONTH';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "+ $i ".$LANG['calendar'][14]."</option>";
+   }
+
+   for ($i=1;$i<=10;$i++) {
+      $val='+'.$i.'YEAR';
+      echo "<option value='$val' ".($value===$val?'selected':'').">";
+      echo "+ $i ".$LANG['calendar'][15]."</option>";
+   }*/
+
+
+   echo "</select>";
+
+   echo "</td><td>";
+   echo "<div id='displaygenericdate$element$rand'></div>";
+
+   $params=array('value' => '__VALUE__',
+                  'name' => $element,
+                  'withtime'=>$with_time,
+                  'specificvalue'=>$specific_value);
+
+   ajaxUpdateItemOnSelectEvent("genericdate$element$rand",
+            "displaygenericdate$element$rand",$CFG_GLPI["root_doc"]."/ajax/genericdate.php",$params,false);
+
+   $params['value']=$value;
+   ajaxUpdateItem("displaygenericdate$element$rand",$CFG_GLPI["root_doc"]."/ajax/genericdate.php",$params);
+
+   echo "</td></tr></table>";
+   return $rand;
+}
+
+
 /**
  * Display DateTime form with calendar
  *

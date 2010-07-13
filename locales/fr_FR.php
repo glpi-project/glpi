@@ -129,6 +129,13 @@ $LANG['calendar'][8] = "Impossible d'ajouter une plage chevauchant une plage exi
 $LANG['calendar'][9] = "Hérité de l'entité parente";
 $LANG['calendar'][10] = "Plages Horaires";
 $LANG['calendar'][11] = "Périodes de fermeture";
+$LANG['calendar'][12] = "jour(s)";
+$LANG['calendar'][13] = "semaine(s)";
+$LANG['calendar'][14] = "mois(s)";
+$LANG['calendar'][15] = "année(s)";
+$LANG['calendar'][16] = "Maintenant";
+$LANG['calendar'][17] = "Spécifier une date";
+
 
 $LANG['calendarD'][0] = "D";
 $LANG['calendarD'][1] = "L";
