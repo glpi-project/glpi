@@ -486,9 +486,18 @@ class Budget extends CommonDBTM{
             echo "<td class='right b'>".formatNumber($budget->fields['value'] - $total)."</td></tr>";
          }
          echo "</table></div>";
-
       }
    }
+
+   function checkValues() {
+      $fields = array('value');
+      foreach ($fields as $field) {
+         if (isset($this->input[$field])) {
+            $this->input[$field] = floatval($this->input[$field]);
+         }
+      }
+   }
+
 }
 
 ?>

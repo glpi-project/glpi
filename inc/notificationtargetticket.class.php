@@ -491,19 +491,6 @@ class NotificationTargetTicket extends NotificationTarget {
       return "";
    }
 
-// Unused
-//    function getJoinProfileSql() {
-//
-//       if ($this->isPrivate()) {
-//          return " INNER JOIN `glpi_profiles`
-//                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-//                          AND `glpi_profiles`.`interface` = 'central'
-//                          AND `glpi_profiles`.`show_full_ticket` = '1')";
-//       }
-//       return "";
-//    }
-
-
    function isPrivate() {
 
       if (isset($this->options['sendprivate']) && $this->options['sendprivate'] == 1) {
