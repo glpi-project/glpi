@@ -829,7 +829,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
 
    }
 
+
    if (haveRight("config","w")) {
+
+      $menu['config']['content']['sla']['title']=$LANG['Menu'][43];
+      $menu['config']['content']['sla']['page']='/front/sla.php';
+      $menu['config']['content']['sla']['links']['search']="/front/sla.php";
+      $menu['config']['content']['sla']['links']['add']="/front/sla.form.php";
 
       $menu['config']['content']['config']['title']=$LANG['setup'][703];
       $menu['config']['content']['config']['page']='/front/config.form.php';
@@ -838,8 +844,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['config']['content']['crontask']['page']='/front/crontask.php';
       $menu['config']['content']['crontask']['links']['search']="/front/crontask.php";
 
-     $menu['config']['content']['mailing']['options']['config']['title']=$LANG['mailing'][118];
-     $menu['config']['content']['mailing']['options']['config']['page']='/front/notificationmailsetting.form.php';
+      $menu['config']['content']['mailing']['options']['config']['title']=$LANG['mailing'][118];
+      $menu['config']['content']['mailing']['options']['config']['page']='/front/notificationmailsetting.form.php';
 
       $menu['config']['content']['mailing']['options']['notificationtemplate']['title']=$LANG['mailing'][113];
       $menu['config']['content']['mailing']['options']['notificationtemplate']['page']='/front/notificationtemplate.php';

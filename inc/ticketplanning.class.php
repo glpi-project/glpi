@@ -171,19 +171,11 @@ class TicketPlanning extends CommonDBTM {
       // Auto update realtime
       $fup=new TicketTask();
       $fup->getFromDB($this->input["tickettasks_id"]);
-      $tmp_beg=explode(" ",$this->input["begin"]);
-      $tmp_end=explode(" ",$this->input["end"]);
-      $tmp_dbeg=explode("-",$tmp_beg[0]);
-      $tmp_dend=explode("-",$tmp_end[0]);
-      $tmp_hbeg=explode(":",$tmp_beg[1]);
-      $tmp_hend=explode(":",$tmp_end[1]);
+      $timestart=strtotime($this->input["begin"]);
+      $timeend=strtotime($this->input["end"]);
 
-      $dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],
-                         $tmp_dend[0])
-                  - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],
-                           $tmp_dbeg[0]);
       $updates2[]="realtime";
-      $fup->fields["realtime"]=$dateDiff/60/60;
+      $fup->fields["realtime"]=$timeend-$timestart;
       $fup->updateInDB($updates2);
       $job->updateRealTime($this->input["tickets_id"]);
 
@@ -239,19 +231,11 @@ class TicketPlanning extends CommonDBTM {
       $fup=new TicketTask();
       $fup->getFromDB($this->input["tickettasks_id"]);
       if ($fup->fields["realtime"]==0) {
-         $tmp_beg=explode(" ",$this->fields["begin"]);
-         $tmp_end=explode(" ",$this->fields["end"]);
-         $tmp_dbeg=explode("-",$tmp_beg[0]);
-         $tmp_dend=explode("-",$tmp_end[0]);
-         $tmp_hbeg=explode(":",$tmp_beg[1]);
-         $tmp_hend=explode(":",$tmp_end[1]);
+         $timestart=strtotime($this->input["begin"]);
+         $timeend=strtotime($this->input["end"]);
 
-         $dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],
-                            $tmp_dend[0])
-                     - mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],
-                              $tmp_dbeg[0]);
          $updates2[]="realtime";
-         $fup->fields["realtime"]=$dateDiff/60/60;
+         $fup->fields["realtime"]=$timeend-$timestart;
          $fup->updateInDB($updates2);
          $job->updateRealTime($this->input["tickets_id"]);
       }

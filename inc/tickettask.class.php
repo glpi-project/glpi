@@ -162,9 +162,8 @@ class TicketTask  extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       manageBeginAndEndPlanDates($input['plan']);
-      if (isset($input["hour"]) && isset($input["minute"])) {
-         $input["realtime"] = $input["hour"]+$input["minute"]/60;
-      }
+
+      $input["realtime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
       if ($uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
@@ -295,7 +294,7 @@ class TicketTask  extends CommonDBTM {
             $input["minute"] = 0;
          }
          if ($input["hour"]>0 || $input["minute"]>0) {
-            $input["realtime"] = $input["hour"]+$input["minute"]/60;
+            $input["realtime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
          }
       }
       unset($input["minute"]);
@@ -438,8 +437,10 @@ class TicketTask  extends CommonDBTM {
       echo convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 
-      $hour = floor($this->fields["realtime"]);
-      $minute = round(($this->fields["realtime"] - $hour) * 60, 0);
+      $units=getTimestampTimeUnits($this->fields["realtime"]);
+
+      $hour = $units['hour'];
+      $minute = $units['minute'];
       echo "<td>";
       if ($hour) {
          echo "$hour " . $LANG['job'][21] . "<br>";
@@ -542,8 +543,11 @@ class TicketTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
-      $hour = floor($this->fields["realtime"]);
-      $minute = round(($this->fields["realtime"]-$hour)*60,0);
+
+      $units=getTimestampTimeUnits($this->fields["realtime"]);
+
+      $hour = $units['hour'];
+      $minute = $units['minute'];
       Dropdown::showInteger('hour',$hour,0,100);
       echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
       Dropdown::showInteger('minute',$minute,0,59);

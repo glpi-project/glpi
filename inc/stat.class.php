@@ -195,6 +195,16 @@ class Stat {
             $solved=Stat::constructEntryValues("inter_solved",$date1,$date2,$type,$value[$i]["id"],$value2);
             $nb_solved=array_sum($solved);
             $export_data['solved'][$value[$i]['link']]=$nb_solved;
+
+            //le nombre d'intervention resolues - the number of resolved intervention
+            $late=Stat::constructEntryValues("inter_solved_late",$date1,$date2,$type,$value[$i]["id"],$value2);
+            $nb_late=array_sum($late);
+            $export_data['late'][$value[$i]['link']]=$nb_late;
+
+            //le nombre d'intervention closes - the number of closed intervention
+            $closed=Stat::constructEntryValues("inter_closed",$date1,$date2,$type,$value[$i]["id"],$value2);
+            $nb_closed=array_sum($closed);
+            $export_data['closed'][$value[$i]['link']]=$nb_closed;
          }
       }
       return $export_data;
@@ -232,10 +242,13 @@ class Stat {
          }
          echo Search::showHeaderItem($output_type,$LANG['stats'][13],$header_num);
          echo Search::showHeaderItem($output_type,$LANG['stats'][11],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][19],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][17],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][30],$header_num);
          echo Search::showHeaderItem($output_type,$LANG['stats'][15],$header_num);
+         echo Search::showHeaderItem($output_type,$LANG['stats'][18],$header_num);
          echo Search::showHeaderItem($output_type,$LANG['stats'][25],$header_num);
          echo Search::showHeaderItem($output_type,$LANG['stats'][27],$header_num);
-         echo Search::showHeaderItem($output_type,$LANG['stats'][30],$header_num);
          // End Line for column headers
          echo Search::showEndLine($output_type);
          $row_num=1;
@@ -266,17 +279,63 @@ class Stat {
             echo Search::showItem($output_type,$nb_solved,$item_num,$row_num);
             $export_data['solved'][$value[$i]['link']]=$nb_solved;
 
-            //Le temps moyen de resolution - The average time to resolv
-            $data=Stat::constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$value[$i]["id"],$value2);
+            //le nombre d'intervention resolues - the number of resolved intervention
+            $solved=Stat::constructEntryValues("inter_solved_late",$date1,$date2,$type,$value[$i]["id"],$value2);
+            $nb_solved=array_sum($solved);
+            echo Search::showItem($output_type,$nb_solved,$item_num,$row_num);
+            $export_data['solved_late'][$value[$i]['link']]=$nb_solved;
+
+            //le nombre d'intervention closes - the number of closed intervention
+            $closed=Stat::constructEntryValues("inter_closed",$date1,$date2,$type,$value[$i]["id"],$value2);
+            $nb_closed=array_sum($closed);
+            echo Search::showItem($output_type,$nb_closed,$item_num,$row_num);
+            $export_data['closed'][$value[$i]['link']]=$nb_closed;
+
+            //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
+            $data=Stat::constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["id"],$value2);
             foreach ($data as $key2 => $val2) {
                $data[$key2]*=$solved[$key2];
             }
             if ($nb_solved>0) {
-               $nb=array_sum($data)/$nb_solved;
+               $timedisplay=array_sum($data)/$nb_solved;
             } else {
-               $nb=0;
+               $timedisplay=0;
             }
-            $timedisplay = $nb*HOUR_TIMESTAMP;
+            if ($output_type==HTML_OUTPUT
+               || $output_type==PDF_OUTPUT_LANDSCAPE
+               || $output_type==PDF_OUTPUT_PORTRAIT) {
+               $timedisplay=timestampToString($timedisplay,0);
+            }
+            echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
+
+
+            //Le temps moyen de resolution - The average time to resolv
+            $data=Stat::constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$value[$i]["id"],$value2);
+            foreach ($data as $key2 => $val2) {
+               $data[$key2]=round($data[$key2]*$solved[$key2]);
+            }
+            if ($nb_solved>0) {
+               $timedisplay=array_sum($data)/$nb_solved;
+            } else {
+               $timedisplay=0;
+            }
+            if ($output_type==HTML_OUTPUT
+               || $output_type==PDF_OUTPUT_LANDSCAPE
+               || $output_type==PDF_OUTPUT_PORTRAIT) {
+               $timedisplay=timestampToString($timedisplay,0);
+            }
+            echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
+
+            //Le temps moyen de cloture - The average time to close
+            $data=Stat::constructEntryValues("inter_avgclosedtime",$date1,$date2,$type,$value[$i]["id"],$value2);
+            foreach ($data as $key2 => $val2) {
+               $data[$key2]=round($data[$key2]*$solved[$key2]);
+            }
+            if ($nb_closed>0) {
+               $timedisplay=array_sum($data)/$nb_closed;
+            } else {
+               $timedisplay=0;
+            }
             if ($output_type==HTML_OUTPUT
                || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
@@ -294,43 +353,26 @@ class Stat {
                }
             }
             $total_realtime=array_sum($data);
+            
             if ($nb_solved>0) {
-               $nb=$total_realtime/$nb_solved;
+               $timedisplay=$total_realtime/$nb_solved;
             } else {
-               $nb=0;
+               $timedisplay=0;
             }
-            $timedisplay=$nb*MINUTE_TIMESTAMP;
             if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
                $timedisplay=timestampToString($timedisplay,0);
             }
             echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
             //Le temps total de l'intervention reelle - The total realtime to resolv
-            $timedisplay=$total_realtime*MINUTE_TIMESTAMP;
+            $timedisplay=$total_realtime;
             if ($output_type==HTML_OUTPUT
                || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
                $timedisplay=timestampToString($timedisplay,0);
             }
             echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
-            //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
-            $data=Stat::constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["id"],
-                                       $value2);
-            foreach ($data as $key2 => $val2) {
-               $data[$key2]*=$solved[$key2];
-            }
-            if ($nb_solved>0) {
-               $nb=array_sum($data)/$nb_solved;
-            } else {
-               $nb=0;
-            }
-            $timedisplay=$nb*HOUR_TIMESTAMP;
-            if ($output_type==HTML_OUTPUT
-               || $output_type==PDF_OUTPUT_LANDSCAPE
-               || $output_type==PDF_OUTPUT_PORTRAIT) {
-               $timedisplay=timestampToString($timedisplay,0);
-            }
-            echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
+
             echo Search::showEndLine($output_type);
          }
          // Display footer
@@ -468,6 +510,40 @@ class Stat {
                      ORDER BY `glpi_tickets`.`solvedate`";
             break;
 
+         case "inter_solved_late" :
+            $WHERE .= " AND (`glpi_tickets`.`status` = 'closed'
+                           OR `glpi_tickets`.`status` = 'solved')
+                        AND `glpi_tickets`.`solvedate` IS NOT NULL
+                        AND `glpi_tickets`.`due_date` IS NOT NULL";
+            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`solvedate`",$begin,$end);
+            $WHERE .= " AND `glpi_tickets`.`solvedate` > `glpi_tickets`.`due_date`";
+
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
+                                 AS date_unix,
+                           COUNT(`glpi_tickets`.`id`) AS total_visites
+                     FROM `glpi_tickets`
+                     $LEFTJOIN
+                     $WHERE
+                     GROUP BY date_unix
+                     ORDER BY `glpi_tickets`.`solvedate`";
+            break;
+
+         case "inter_closed" :
+
+            $WHERE .= " AND (`glpi_tickets`.`status` = 'closed')
+                        AND `glpi_tickets`.`closedate` IS NOT NULL ";
+            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
+
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+                                 AS date_unix,
+                           COUNT(`glpi_tickets`.`id`) AS total_visites
+                     FROM `glpi_tickets`
+                     $LEFTJOIN
+                     $WHERE
+                     GROUP BY date_unix
+                     ORDER BY `glpi_tickets`.`closedate`";
+            break;
+
          case "inter_avgsolvedtime" :
             $WHERE .= " AND (`glpi_tickets`. `status` = 'solved'
                            OR `glpi_tickets`.`status` = 'closed')
@@ -476,15 +552,27 @@ class Stat {
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           AVG(TIME_TO_SEC(TIMEDIFF(`glpi_tickets`.`solvedate`, `glpi_tickets`.`date`))
-                           /".HOUR_TIMESTAMP.") AS total_visites
+                           AVG(solve_delay_stat) AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
                      GROUP BY date_unix
                      ORDER BY `glpi_tickets`.`solvedate`";
             break;
+         case "inter_avgclosedtime" :
+            $WHERE .= " AND (`glpi_tickets`.`status` = 'closed')
+                        AND `glpi_tickets`.`closedate` IS NOT NULL ";
+            $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`closedate`",$begin,$end);
 
+            $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`closedate`),'%Y-%m')
+                                 AS date_unix,
+                           AVG(close_delay_stat) AS total_visites
+                     FROM `glpi_tickets`
+                     $LEFTJOIN
+                     $WHERE
+                     GROUP BY date_unix
+                     ORDER BY `glpi_tickets`.`closedate`";
+            break;
          case "inter_avgrealtime" :
             if ($param=="technicien_followup") {
                $realtime_table = "glpi_tickettasks";
@@ -496,7 +584,7 @@ class Stat {
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           ".MINUTE_TIMESTAMP." * AVG(`$realtime_table`.`realtime`) AS total_visites
+                           AVG(`$realtime_table`.`realtime`) AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
@@ -513,24 +601,13 @@ class Stat {
             $query = "SELECT `glpi_tickets`.`id`,
                            FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           MIN(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`)
-                                 - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
-                           MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`)
-                                 - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
-                           MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`)
-                                 - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
+                              AVG(takeintoaccount_delay_stat) AS total_visites
 
-                     FROM `glpi_tickets`
-                     LEFT JOIN `glpi_ticketfollowups`
-                           ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
-                     LEFT JOIN `glpi_tickettasks`
-                           ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`) ";
+                     FROM `glpi_tickets`";
 
-            if (!strstr($LEFTJOIN,"glpi_ticketfollowups")) {
-               $query .= $LEFTJOIN;
-            }
             $query .= "$WHERE
-                     GROUP BY `glpi_tickets`.`id`";
+                     GROUP BY `glpi_tickets`.`id`
+                     ORDER BY `glpi_tickets`.`solvedate`";
             break;
       }
 
@@ -544,59 +621,39 @@ class Stat {
       if ($result && $DB->numrows($result)>0) {
          while ($row = $DB->fetch_array($result)) {
             $date = $row['date_unix'];
-            if ($type=="inter_avgtakeaccount") {
-               $min=$row["OPEN"];
-               if (!empty($row["FIRST"]) && !is_null($row["FIRST"]) && $row["FIRST"]<$min) {
-                  $min=$row["FIRST"];
-               }
-               if (!isset($entrees["$date"])) {
-                  $entrees["$date"]=$min;
-                  $count["$date"]=1;
-               } else {
-                  $entrees["$date"]+=$min;
-                  $count["$date"]++;
-               }
-            } else {
-               $visites = round($row['total_visites']);
-               $entrees["$date"] = $visites;
-            }
-         }
-      }
-
-      if ($type=="inter_avgtakeaccount") {
-         foreach ($entrees as $key => $val) {
-            $entrees[$key] = round($entrees[$key] / $count[$key] / HOUR_TIMESTAMP);
-         }
+            //$visites = round($row['total_visites']);
+            $entrees["$date"] = $row['total_visites'];
+        }
       }
 
       // Remplissage de $entrees pour les mois ou il n'y a rien
-      $min=-1;
-      $max=0;
-      if (count($entrees)==0) {
-         return $entrees;
-      }
-      foreach ($entrees as $key => $val) {
-         $time=strtotime($key."-01");
-         if ($min>$time || $min<0) {
-            $min=$time;
-         }
-         if ($max<$time) {
-            $max=$time;
-         }
-      }
+//       $min=-1;
+//       $max=0;
+//       if (count($entrees)==0) {
+//          return $entrees;
+//       }
+//       foreach ($entrees as $key => $val) {
+//          $time=strtotime($key."-01");
+//          if ($min>$time || $min<0) {
+//             $min=$time;
+//          }
+//          if ($max<$time) {
+//             $max=$time;
+//          }
+//       }
 
       $end_time=strtotime(date("Y-m",strtotime($end))."-01");
       $begin_time=strtotime(date("Y-m",strtotime($begin))."-01");
 
-      if ($max<$end_time) {
-         $max=$end_time;
-      }
-      if ($min>$begin_time) {
-         $min=$begin_time;
-      }
-      $current=$min;
+//       if ($max<$end_time) {
+//          $max=$end_time;
+//       }
+//       if ($min>$begin_time) {
+//          $min=$begin_time;
+//       }
+      $current=$begin_time;
 
-      while ($current<=$max) {
+      while ($current<=$end_time) {
          $curentry=date("Y-m",$current);
          if (!isset($entrees["$curentry"])) {
             $entrees["$curentry"]=0;
@@ -809,6 +866,7 @@ class Stat {
    *     - unit integer height of the graph (default empty)
    *     - type integer height of the graph (default line) : line bar pie
    *     - csv boolean export to CSV (default true)
+   *     - datatype string datatype (count or average / default is count)
    * @return array contains the distinct groups assigned to a tickets
    */
    static function showGraph($entrees,$options=array()) {
@@ -827,6 +885,7 @@ class Stat {
          $param['unit']       = '';
          $param['type']       = 'line';
          $param['csv']        = true;
+         $param['datatype']   = 'count';
 
          if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -929,16 +988,18 @@ class Stat {
                $param['title'] .= $pretoadd;
                if ($param['showtotal']==1) {
                   reset($entrees);
-                  $param['title'] .= array_sum(current($entrees));
+                  $param['title'] .= round(array_sum(current($entrees)),2);
                }
                $param['title'] .= $posttoadd;
             } else { // add sum to legend and unit to title
                $param['title'] .=$pretoadd.$posttoadd;
-               if ($param['showtotal']==1) {
+               // Cannot display totals of already average values
+               if ($param['showtotal']==1 && $param['datatype']!='average') {
                   $entree_tmp=$entrees;
                   $entrees=array();
                   foreach ($entree_tmp as $key => $data) {
-                     $entrees[$key." (".array_sum($data).")"]=$data;
+                     $sum=round(array_sum($data));
+                     $entrees[$key." ($sum)"]=$data;
                   }
                }
             }
@@ -998,6 +1059,9 @@ class Stat {
                      foreach ($data as $key => $val) {
                         if (!isset($values[$key])) {
                            $values[$key]=array();
+                        }
+                        if ($param['datatype']=='average'){
+                           $val=round($val,2);
                         }
                         $values[$key][$row_num]=$val;
                      }

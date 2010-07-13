@@ -109,16 +109,26 @@ $LANG['buttons'][50] = "Tester";
 $LANG['buttons'][51] = "Enregistrer";
 $LANG['buttons'][52] = "Charger";
 $LANG['buttons'][53] = "Nettoyer";
-
+$LANG['buttons'][54] = "Dupliquer";
 $LANG['buttons'][55] = "Premier";
 $LANG['buttons'][56] = "Dernier";
 $LANG['buttons'][57] = "Exécuter";
 $LANG['buttons'][58] = "Mettre à jour";
 $LANG['buttons'][59] = "Dissocier";
 
+
 $LANG['calendar'][0] = "AAAA-MM-JJ";
 $LANG['calendar'][1] = "JJ-MM-AAAA";
 $LANG['calendar'][2] = "MM-JJ-AAAA";
+$LANG['calendar'][3] = "Récurrent";
+$LANG['calendar'][4] = "Ajouter un jour de fermeture";
+$LANG['calendar'][5] = "Plage Horaire";
+$LANG['calendar'][6] = "Ajouter une plage horaire";
+$LANG['calendar'][7] = "Jour";
+$LANG['calendar'][8] = "Impossible d'ajouter une plage chevauchant une plage existante";
+$LANG['calendar'][9] = "Hérité de l'entité parente";
+$LANG['calendar'][10] = "Plages Horaires";
+$LANG['calendar'][11] = "Périodes de fermeture";
 
 $LANG['calendarD'][0] = "D";
 $LANG['calendarD'][1] = "L";
@@ -207,7 +217,7 @@ $LANG['central'][19] = "Vos tickets à valider";
 
 $LANG['choice'][0] = "Non";
 $LANG['choice'][1] = "Oui";
-
+$LANG['choice'][2]="ou";
 
 $LANG['common'][0]  = "Sans nom";
 $LANG['common'][1]  = "Matériel";
@@ -399,6 +409,7 @@ $LANG['crontask'][12] = "Nettoyage des sessions expirées";
 $LANG['crontask'][13] = "Nettoyage des graphiques générés";
 $LANG['crontask'][14] = "Clôture automatique des tickets";
 $LANG['crontask'][15] = "Tickets non résolus";
+$LANG['crontask'][16]="Actions automatiques des SLAs";
 
 // keep >12 free additionnal task
 $LANG['crontask'][31] = "Désactivée";
@@ -824,6 +835,9 @@ $LANG['job'][9]  = "Suivi";
 $LANG['job'][11] = "Description de la demande ou de l'incident";
 $LANG['job'][12] = "Pas de suivi pour ce ticket.";
 $LANG['job'][13] = "Nouveau ticket";
+$LANG['job'][14]="Ouverts";
+$LANG['job'][15]="Résolus";
+$LANG['job'][16]="Clos";
 
 $LANG['job'][19] = "Suivi par email";
 $LANG['job'][20] = "Durée totale";
@@ -1242,6 +1256,8 @@ $LANG['Menu'][38] = "Inventaire";
 $LANG['Menu'][39] = "Collecteurs";
 $LANG['Menu'][40] = "Marque-pages";
 $LANG['Menu'][41] = "Droits";
+$LANG['Menu'][42] = "Calendriers";
+$LANG['Menu'][43] = "SLAs";
 
 $LANG['monitors'][14]="Microphone";
 $LANG['monitors'][15]="Enceintes";
@@ -1956,6 +1972,15 @@ $LANG['setup'][808]="Base de données esclave désynchronisée !";
 $LANG['setup'][809]="Réplicat MySQL : lecture seule";
 $LANG['setup'][810]="Désynchronisation du réplicat MySQL";
 
+$LANG['sla'][1]="SLA";
+$LANG['sla'][2]="Temps maximum de résolution";
+$LANG['sla'][3]="Exécution";
+$LANG['sla'][4]="Ajouter un niveau d'escalade";
+$LANG['sla'][5]="Echéance";
+$LANG['sla'][6]="Niveau d'escalade";
+$LANG['sla'][7]="Sortir de la SLA";
+$LANG['sla'][8]="Prochaine escalade";
+
 $LANG['software'][1]="Version d'achat";
 $LANG['software'][2]="Version d'utilisation";
 $LANG['software'][3]="Licences affectées et non installées";
@@ -1998,10 +2023,17 @@ $LANG['stats'][3]="Par Intitulé";
 $LANG['stats'][5]="Nombre de tickets ouverts";
 $LANG['stats'][6]="Délai moyen de traitement du ticket";
 $LANG['stats'][7]="Voir les graphiques";
+$LANG['stats'][8]="Délai moyen";
+$LANG['stats'][9]="Résolution";
+$LANG['stats'][10]="Clôture";
 $LANG['stats'][11]="Nombre de tickets fermés";
+$LANG['stats'][12]="Prise en compte";
 $LANG['stats'][13]="Nombre de tickets";
+$LANG['stats'][14]="Durée Réelle";
 $LANG['stats'][15]="Durée moyenne de traitement du ticket";
 $LANG['stats'][16]="Nom du technicien";
+$LANG['stats'][17]="Nombre de tickets clos";
+$LANG['stats'][18]="Délai moyen de clôture";
 $LANG['stats'][20]="Nom d'utilisateur";
 $LANG['stats'][23]="Pas de statistiques disponibles";
 $LANG['stats'][25]="Durée réelle moyenne de traitement du ticket";

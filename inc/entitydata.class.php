@@ -461,6 +461,23 @@ class EntityData extends CommonDBTM {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr class='tab_bg_1'><td  colspan='2'>" . $LANG['buttons'][15] . "&nbsp;:</td>";
+      echo "<td  colspan='2'>";
+      $options=array('value' => $entdata->fields["calendars_id"],'emptylabel' => $LANG['calendar'][9]);
+      if ($ID==0) {
+         $options['emptylabel']=DROPDOWN_EMPTY_VALUE;
+      }
+      Dropdown::show('Calendar',$options);
+
+      if ($entdata->fields["calendars_id"] == 0) {
+         $calendar = new Calendar();
+         if ($calendar->getFromDB(self::getUsedCalendar($ID))) {
+            echo " - ".$calendar->getLink();
+         }
+      }
+      echo "</td></tr>";
+
       echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][18] . "&nbsp;:</td>";
@@ -485,6 +502,27 @@ class EntityData extends CommonDBTM {
       } else {
          echo "</table>";
       }
+   }
+   static function getUsedCalendar($entities_id) {
+
+      $entdata= new EntityData();
+      // Search in entity data of the current entity
+      if ($entdata->getFromDB($entities_id)) {
+         // Calendar defined : use it
+         if (isset($entdata->fields['calendars_id']) && $entdata->fields['calendars_id'] >0 ) {
+            return $entdata->fields['calendars_id'];
+         }
+      }
+
+      // Entity data not found or not defined calendar : search in parent one
+      if ($entities_id > 0) {
+         $current = new Entity();
+         if ($current->getFromDB($entities_id)) {
+            return EntityData::getUsedCalendar($current->fields['entities_id']);
+         }
+      }
+
+      return -1;
    }
 }
 

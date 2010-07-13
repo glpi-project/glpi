@@ -146,6 +146,7 @@ if (!$_REQUEST['showgraph']) {
    Stat::show($type,$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val,$_REQUEST["dropdown"]);
 } else {
    $data=Stat::getDatas($type,$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val,$_REQUEST["dropdown"]);
+
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach($data['opened'] as $key => $val){
          $cleandata[html_clean($key)]=$val;
@@ -167,6 +168,29 @@ if (!$_REQUEST['showgraph']) {
                            'unit'      => $LANG['stats'][35],
                            'type'      => 'pie'));
    }
+   if (isset($data['late']) && is_array($data['late'])) {
+      foreach($data['late'] as $key => $val){
+         $cleandata[html_clean($key)]=$val;
+      }
+
+      Stat::showGraph(array($LANG['stats'][19]=>$cleandata)
+                     ,array('title'    => $LANG['stats'][19],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
+   }
+   if (isset($data['closed']) && is_array($data['closed'])) {
+      foreach($data['closed'] as $key => $val){
+         $newkey=html_clean($key);
+         $cleandata[$newkey]=$val;
+      }
+      Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
+                     ,array('title'    => $LANG['stats'][17],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
+   }
+
 }
 
 

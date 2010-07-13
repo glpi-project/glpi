@@ -272,6 +272,25 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
+         case "duplicate" :
+            if (method_exists($item,'duplicate')) {
+               $options=array();
+               if ($item->isEntityAssign()) {
+                  $options=array('entities_id'=>$_POST['entities_id']);
+               }
+               foreach ($_POST["item"] as $key => $val){
+                  if ($val == 1) {
+                     if ($item->getFromDB($key)) {
+                        if (!$item->isEntityAssign() 
+                              || ($_POST['entities_id'] != $item->getEntityID())) {
+                           $item->duplicate($options);
+                        }
+                     }
+                  }
+               }
+            }
+
+            break;
 
          case "install" :
             $inst = new Computer_SoftwareVersion();

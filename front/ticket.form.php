@@ -85,6 +85,17 @@ if (isset($_POST["add"])) {
                $_POST["tickets_id"]."&glpi_tab=1&itemtype=Ticket");
 
 */
+} else if (isset($_POST['sla_delete'])) {
+   $track->check(-1,'w',$_POST);
+
+   $_POST['slas_id']=0;
+   $_POST['slalevels_id']=0;
+   $_POST['sla_wainting_duration']=0;
+
+   $track->update($_POST);
+   Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 }
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {
@@ -121,7 +132,9 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    'itemtype'             => '',
                    'items_id'             => 0,
                    'plan'                 => array(),
-                   'global_validation'    => 'accepted');
+                   'global_validation'    => 'accepted',
+                   'due_date'             => '',
+                   'slas_id'              => 0);
 
    // Restore saved value or override with page parameter
    foreach ($values as $name => $value) {

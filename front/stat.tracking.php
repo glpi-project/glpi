@@ -68,10 +68,10 @@ if (!isset($_REQUEST["start"])) {
 }
 
 $items =
-   array($LANG['job'][4] => array('user'  => array('title' => $LANG['job'][4],
+   array($LANG['job'][4] => array('user'  => array('title' => $LANG['common'][37],
                                                   'field' => 'glpi_tickets.users_id'),
                                   'users_id_recipient'
-                                          => array('title' => $LANG['common'][37],
+                                          => array('title' => $LANG['job'][3],
                                                    'field' => 'glpi_tickets.users_id_recipient'),
                                   'group' => array('title' => $LANG['common'][35],
                                                    'field' => 'glpi_tickets.groups_id'),
@@ -178,6 +178,32 @@ if (!$_REQUEST['showgraph']) {
       }
       Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
                      ,array('title'    => $LANG['stats'][11],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
+   }
+
+   if (isset($data['late']) && is_array($data['late'])) {
+      foreach($data['late'] as $key => $val){
+         $newkey=html_clean($key);
+         $cleandata[$newkey]=$val;
+      }
+
+      Stat::showGraph(array($LANG['stats'][19]=>$cleandata)
+                     ,array('title'    => $LANG['stats'][19],
+                           'showtotal' => 1,
+                           'unit'      => $LANG['stats'][35],
+                           'type'      => 'pie'));
+   }
+
+
+   if (isset($data['closed']) && is_array($data['closed'])) {
+      foreach($data['closed'] as $key => $val){
+         $newkey=html_clean($key);
+         $cleandata[$newkey]=$val;
+      }
+      Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
+                     ,array('title'    => $LANG['stats'][17],
                            'showtotal' => 1,
                            'unit'      => $LANG['stats'][35],
                            'type'      => 'pie'));

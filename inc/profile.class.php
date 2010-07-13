@@ -968,7 +968,10 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['setup'][704]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("notification",$this->fields["notification"],1,1,1);
       echo "</td>";
-      echo "<td colspan='4'>";
+      echo "<td>".$LANG['Menu'][42]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("calendar",$this->fields["calendar"],1,1,1);
+      echo "</td>\n";
+      echo "<td colspan='2'>";
       echo "</td></tr>\n";
 
       if ($canedit && $closeform) {
