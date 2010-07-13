@@ -1137,14 +1137,14 @@ class Search {
                      'Ticket'     => $LANG['Menu'][5],);
 
       echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
-      echo "<table class='tab_cadre_fixe' >";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo "<table>";
+      echo "<table  width='100%'>";
 
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr><td class='left'>";
+         echo "<tr><td class='left' width='39%'>";
 
          // First line display add / delete images for normal and meta search items
          if ($i==0) {
@@ -1216,7 +1216,7 @@ class Search {
          }
 
 
-         // display select box to define serach item
+         // display select box to define search item
          echo "<select id='Search$itemtype$i' name=\"field[$i]\" size='1'>";
          echo "<option value='view' ";
          if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
@@ -1257,6 +1257,7 @@ class Search {
          echo ">".$LANG['common'][66]."</option>";
          echo "</select>&nbsp;\n";
 
+         echo "</td><td class='left'>";
          echo "<span id='SearchSpan$itemtype$i'>\n";
 
          $_POST['itemtype']=$itemtype;
@@ -2386,9 +2387,25 @@ class Search {
                if ($searchtype=='equals') {
                   return " $link (`$table`.`$field`".$SEARCH.') ';
                }
-            case "date" :
             case "datetime" :
+               // Specific search for datetime
+               if ($searchtype=='equals') {
+                  $val=preg_replace("/:00$/",'',$val);
+                  $val='^'.$val;
+                  return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
+               }
+               // No break use standard date system for other search type
+            case "date" :
             case "date_delay" :
+
+               if ($searchtype=='lessthan') {
+                 $val='<'.$val; 
+               }
+               if ($searchtype=='morethan') {
+                 $val='>'.$val; 
+               }
+
+               if ($searchtype)
                $date_computation=$tocompute;
 
                $search_unit=' MONTH ';
@@ -2406,6 +2423,12 @@ class Search {
                                              `$table`.".$searchopt[$ID]["datafields"][2]."
                                              $delay_unit)";
                }
+
+               if ($searchtype=='equals') {
+                  return " $link ($date_computation ".$SEARCH.') ';
+               }
+
+
                $search=array("/\&lt;/","/\&gt;/");
                $replace=array("<",">");
 
@@ -4385,14 +4408,22 @@ class Search {
             switch ($searchopt[$field_num]['datatype']) {
                case 'bool' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'contains' => $LANG['search'][2],
-                              'searchopt' => $searchopt[$field_num]);
+                              'contains'   => $LANG['search'][2],
+                              'searchopt'  => $searchopt[$field_num]);
                case 'right' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'searchopt' => $searchopt[$field_num]);
+                              'searchopt'  => $searchopt[$field_num]);
                case 'itemtypename' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'searchopt' => $searchopt[$field_num]);
+                              'searchopt'  => $searchopt[$field_num]);
+               case 'date' :
+               case 'datetime' :
+               case 'date_delay' :
+                  return array('equals'    => $LANG['rulesengine'][0],
+                              'lessthan'    => '<',
+                              'morethan'    => '>',
+                              'contains'   => $LANG['search'][2],
+                              'searchopt'  => $searchopt[$field_num]);
             }
          }
 

@@ -73,6 +73,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
    $dropdownname="searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
    $searchopt=array();
 
+   echo "<table><tr><td>";
    if (count($actions)>0){
       // get already get search options
       if (isset($actions['searchopt'])) {
@@ -82,9 +83,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
          unset($actions['searchopt']);
       }
       $randsearch=Dropdown::showFromArray("searchtype".$addmeta."[".$_POST["num"]."]",
-                           $actions,array('value' => $_POST["searchtype"]));
+                            $actions,array('value' => $_POST["searchtype"]));
    }
-   echo "&nbsp;<span id='span$dropdownname'>\n";
+   echo "</td><td>";
+   echo "<span id='span$dropdownname'>\n";
 
    $_REQUEST['searchtype']=$_POST["searchtype"];
    $_REQUEST['field']=$_POST["field"];
@@ -95,6 +97,8 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
    $_REQUEST['searchopt']=serialize($searchopt);
    include(GLPI_ROOT."/ajax/searchoptionvalue.php");
    echo "</span>\n";
+
+   echo "</td></tr></table>";
 
    $paramsaction=array( 'searchtype'   => '__VALUE__',
                         'field'        => $_POST["field"],
