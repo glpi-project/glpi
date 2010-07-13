@@ -60,6 +60,10 @@ class Rule extends CommonDBTM {
    /// field used to order rules
    var $orderby='ranking';
 
+   protected $rules_id_field    = 'rules_id';
+   protected $ruleactionclass   = 'RuleAction';
+   protected $rulecriteriaclass = 'RuleCriteria';
+
    var $specific_parameters = false;
 
    var $regex_results = array();
@@ -239,7 +243,7 @@ class Rule extends CommonDBTM {
          if ($ID > 0) {
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
             echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-                "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;rules_id=".
+                "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;".$this->rules_id_field."=".
                 $this->fields["id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100,".
                 " scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>";
             echo "</td></tr>\n";
@@ -276,11 +280,11 @@ class Rule extends CommonDBTM {
          return $this->getEmpty();
       } else if ($ret=$this->getFromDB($ID)) {
          if ($withactions) {
-            $RuleAction = new RuleAction;
+            $RuleAction = new $this->ruleactionclass;
             $this->actions = $RuleAction->getRuleActions($ID);
          }
          if ($withcriterias) {
-            $RuleCriterias = new RuleCriteria;
+            $RuleCriterias = new $this->rulecriteriaclass;
             $this->criterias = $RuleCriterias->getRuleCriterias($ID);
          }
          return true;
@@ -328,11 +332,25 @@ class Rule extends CommonDBTM {
    /**
     * Display all rules actions
     * @param $rules_id  rule ID
+    * @param $options array iof options : may be readonly
    **/
-   function showActionsList($rules_id) {
+   function showActionsList($rules_id,$options=array()) {
       global $CFG_GLPI, $LANG;
 
+      $p['readonly'] = false;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key]=$val;
+         }
+      }
+
       $canedit = $this->can($rules_id, "w");
+      $style="class='tab_cadre_fixe'";
+      if ($p['readonly']) {
+         $canedit = false;
+         $style="class='tab_cadre'";
+      }
       $this->getTitleAction(getItemTypeFormURL(get_class($this)));
 
       if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount())
@@ -344,10 +362,12 @@ class Rule extends CommonDBTM {
          echo "</form>";
       }
 
-      echo "<form name='actionsform' id='actionsform'
-             method='post' action=\"".getItemTypeFormURL(get_class($this))."\">\n";
+      if ($canedit) {
+         echo "<form name='actionsform' id='actionsform'
+               method='post' action=\"".getItemTypeFormURL(get_class($this))."\">\n";
+      }
       echo "<div class='center'>";
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table $style>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][7] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
       if ($canedit){
@@ -366,10 +386,12 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $nb>0) {
          openArrowMassive("actionsform", true);
-         echo "<input type='hidden' name='rules_id' value='$rules_id'>";
+         echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          closeArrowMassive('delete_action', $LANG['buttons'][6]);
       }
-      echo "</form>";
+      if ($canedit) {
+         echo "</form>";
+      }
    }
 
    /**
@@ -379,12 +401,14 @@ class Rule extends CommonDBTM {
    function addActionForm($rules_id) {
       global $LANG,$CFG_GLPI;
 
+      $ra=new $this->ruleactionclass();
+
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $LANG['rulesengine'][7] . "</tr>";
       echo "<tr class='tab_bg_1 center'>";
       echo "<td>".$LANG['rulesengine'][30] . "&nbsp;:</td><td>";
-      $val=$this->dropdownActions(RuleAction::getAlreadyUsedForRuleID($rules_id,$this->getType()));
+      $val=$this->dropdownActions($ra->getAlreadyUsedForRuleID($rules_id,$this->getType()));
       echo "</td><td class='left'>";
       echo "<span id='action_span'>\n";
       $_POST["sub_type"]=$this->getType();
@@ -393,7 +417,7 @@ class Rule extends CommonDBTM {
       echo "</span>\n";
       echo "</td>";
       echo "<td class='tab_bg_2 left' width='80px'>";
-      echo "<input type='hidden' name='rules_id' value=\"" . $this->fields["id"] . "\">";
+      echo "<input type='hidden' name='".$this->rules_id_field."' value=\"" . $this->fields["id"] . "\">";
       echo "<input type='submit' name='add_action' value=\"" . $LANG['buttons'][8] .
              "\" class='submit'>";
       echo "</td></tr>\n";
@@ -421,7 +445,7 @@ class Rule extends CommonDBTM {
       echo "</span>\n";
       echo "</td>";
       echo "<td class='tab_bg_2' width='80px'>";
-      echo "<input type='hidden' name='rules_id' value=\"" . $this->fields["id"] . "\">";
+      echo "<input type='hidden' name='".$this->rules_id_field."' value=\"" . $this->fields["id"] . "\">";
       echo "<input type='submit' name='add_criteria' value=\"" . $LANG['buttons'][8] .
              "\" class='submit'>";
       echo "</td></tr>\n";
@@ -481,7 +505,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit && $maxsize>0) {
          openArrowMassive("criteriasform", true);
-         echo "<input type='hidden' name='rules_id' value='$rules_id'>";
+         echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          closeArrowMassive('delete_criteria', $LANG['buttons'][6]);
       }
       echo "</form>\n";
@@ -819,12 +843,12 @@ class Rule extends CommonDBTM {
       // Delete a rule and all associated criterias and actions
       $sql = "DELETE
               FROM `glpi_ruleactions`
-              WHERE `rules_id` = '".$this->fields['id']."'";
+              WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
       $DB->query($sql);
 
       $sql = "DELETE
               FROM `glpi_rulecriterias`
-              WHERE `rules_id` = '".$this->fields['id']."'";
+              WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
       $DB->query($sql);
    }
 
@@ -954,7 +978,7 @@ class Rule extends CommonDBTM {
       //Process the rule
       $this->process($input,$output,$params,false);
 
-      $criteria = new RuleCriteria;
+      $criteria = new $this->rulecriteriaclass;
 
       echo "<div class='center'>";
       echo "<table class='tab_cadrehov'>";
@@ -1162,7 +1186,7 @@ class Rule extends CommonDBTM {
          }
       }
       if (!$display) {
-         $rc = new RuleCriteria();
+         $rc = new $this->rulecriteriaclass();
          autocompletionTextField($rc,"pattern",array('name'=>$name));
       }
    }
@@ -1320,7 +1344,7 @@ class Rule extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
          echo "<input type='submit' name='test_rule' value=\"" . $LANG['buttons'][50] .
                "\" class='submit'>";
-         echo "<input type='hidden' name='rules_id' value='$rules_id'>";
+         echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
          echo "</td></tr>\n";
          echo "</table></div></form>\n";
@@ -1345,7 +1369,7 @@ class Rule extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $p['sub_type'] = '';
-      $p['name']   = 'rules_id';
+      $p['name']   = $this->rules_id_field;
       $p['entity_restrict'] = '';
 
       if (is_array($options) && count($options)) {
@@ -1414,7 +1438,7 @@ class Rule extends CommonDBTM {
       //Get all the rules whose sub_type is $sub_type and entity is $ID
       $query = "SELECT `glpi_rules`.`id`
               FROM `glpi_ruleactions`, `glpi_rules`
-              WHERE `glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
+              WHERE `glpi_ruleactions`.".$this->rules_id_field." = `glpi_rules`.`id`
                     AND `glpi_ruleactions`.`field` = 'entities_id'
                     AND `glpi_rules`.`sub_type` = '".get_class($this)."'
                     AND `glpi_ruleactions`.`value` = '$ID'";

@@ -326,7 +326,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB;
-      $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.78-empty.sql");
+      $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql");
 
 		// update default language
 		$query = "UPDATE `glpi_configs` SET language='".$_SESSION["glpilanguage"]."' ;";

@@ -42,9 +42,6 @@ class RuleAction extends CommonDBChild {
    public $items_id  = 'rules_id';
    public $dohistory = true;
 
-   // From CommonDBTM
-   public $table = 'glpi_ruleactions';
-
    function __construct($rule_type='Rule') {
       $this->itemtype = $rule_type;
    }
@@ -98,7 +95,7 @@ class RuleAction extends CommonDBChild {
       global $DB;
 
       $sql = "SELECT *
-              FROM `glpi_ruleactions`
+              FROM `".$this->getTable()."`
               WHERE `rules_id` = '$ID'
               ORDER BY `id`";
       $result = $DB->query($sql);
@@ -121,12 +118,11 @@ class RuleAction extends CommonDBChild {
    **/
    function addActionByAttributes($action,$ruleid,$field,$value) {
 
-      $ruleAction = new RuleAction;
       $input["action_type"]=$action;
       $input["field"]=$field;
       $input["value"]=$value;
       $input["rules_id"]=$ruleid;
-      $ruleAction->add($input);
+      $this->add($input);
    }
 
    /**
@@ -173,6 +169,10 @@ class RuleAction extends CommonDBChild {
             case 'compute';
                $elements['compute'] = $LANG['rulesengine'][38];
                break;
+
+            case 'send';
+               $elements['send'] = $LANG['buttons'][26];
+               break;
          }
       }
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
@@ -202,6 +202,9 @@ class RuleAction extends CommonDBChild {
 
          case 'compute' :
             return $LANG['rulesengine'][38];
+
+         case 'send' :
+            return $LANG['buttons'][26];
       }
    }
 
@@ -220,14 +223,14 @@ class RuleAction extends CommonDBChild {
       return $action;
    }
 
-   static function getAlreadyUsedForRuleID($rules_id,$sub_type) {
+   function getAlreadyUsedForRuleID($rules_id,$sub_type) {
       global $DB;
 
       $rule = new $sub_type();
       $actions_options = $rule->getActions();
 
       $actions = array();
-      $res = $DB->query("SELECT `field` FROM `glpi_ruleactions` WHERE `rules_id`='".$rules_id."'");
+      $res = $DB->query("SELECT `field` FROM `".$this->getTable()."` WHERE `".$this->items_id."`='".$rules_id."'");
       while ($action = $DB->fetch_array($res)) {
          if (isset($actions_options[$action["field"]])) {
             $actions[$action["field"]] = $action["field"];

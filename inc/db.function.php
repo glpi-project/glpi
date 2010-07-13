@@ -340,7 +340,6 @@ function getTreeValueCompleteName($table,$ID,$withcomment=false) {
 
    $name="";
    $comment="";
-
    if ($ID==0 && $table=="glpi_entities") {
       $name = $LANG['entity'][2];
    } else if ($ID==0 && $table=="glpi_knowbaseitemcategories") {

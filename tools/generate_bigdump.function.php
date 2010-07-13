@@ -179,16 +179,22 @@ function addTracking($type,$ID,$ID_entity){
 	$current_year=date("Y");
 
 	$tco=0;
+
 	while (mt_rand(0,100)<$percent['tracking_on_item']){
 		// ticket closed ?
 		$status="closed";
+      $closedate="";
+      $solvedate="";
 		if (mt_rand(0,100)<$percent['closed_tracking']){
-			$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
-			$date2=$date1+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
-			$status="solved";
+			$opendate=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
+			$rtype=mt_rand(0,100);
+			if ($rtype<20) {
+   			$status="solved";
+         } else {
+            $status="closed";
+         }
 		} else {
-			$date1=strtotime("$current_year-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
-			$date2="";
+			$opendate=strtotime("$current_year-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
 			$rtype=mt_rand(0,100);
 			if ($rtype<20)
 				$status="new";
@@ -196,9 +202,11 @@ function addTracking($type,$ID,$ID_entity){
 				$status="waiting";
 			else if ($rtype<80){
 				$status="plan";
-				$date3=$date1+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
+				$date3=$opendate+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
 				$date4=$date3+10800; // + 3 heures
-			} else $status="assign";
+			} else {
+            $status="assign";
+         }
 		}
 		// Author
 		$users[0]=mt_rand($FIRST['users_normal'],$LAST['users_postonly']);
@@ -208,28 +216,66 @@ function addTracking($type,$ID,$ID_entity){
 			$users[1]=mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
 		}
 		$enterprise=0;
-		if (mt_rand(0,100)<20) {
+		if (mt_rand(0,100)<20)
 			$enterprise=mt_rand($FIRST["enterprises"],$LAST['enterprises']);
+
+		$realtime=mt_rand(0,3)*HOUR_TIMESTAMP+mt_rand(0,60)*MINUTE_TIMESTAMP;
+		$firstactiontime=mt_rand(0,10)*HOUR_TIMESTAMP+mt_rand(0,60)*MINUTE_TIMESTAMP;
+      $solvetime=0;
+      $closetime=0;
+      if ($status=="closed" || $status=="solved") {
+         $solvetime=$firstactiontime+mt_rand(0,10)*DAY_TIMESTAMP+mt_rand(0,10)*HOUR_TIMESTAMP+mt_rand(0,60)*MINUTE_TIMESTAMP;
+         $solvedate=$opendate+$solvetime;
+         $closedate=$opendate+$solvetime;
+         if ($status=="closed") {
+            $closetime=$solvetime+mt_rand(0,5)*DAY_TIMESTAMP+mt_rand(0,10)*HOUR_TIMESTAMP+mt_rand(0,60)*MINUTE_TIMESTAMP;
+            $closedate=$opendate+$closetime;
+         } 
       }
-		$realtime=(mt_rand(0,3)+mt_rand(0,100)/100);
+      $updatedate=$opendate+max($firstactiontime,$solvetime,$closetime);
 		$hour_cost=100;
 		$tco+=$realtime*$hour_cost;
 
-		$query="INSERT INTO glpi_tickets VALUES (NULL,'$ID_entity','Title ".getRandomString(20)."','".date("Y-m-d H:i:s",intval($date1))."','".date("Y-m-d H:i:s",intval($date1))."','".date("Y-m-d H:i:s",intval($date2))."','".date("Y-m-d H:i:s",intval($date1))."','$status','".$users[0]."','".$users[0]."','".mt_rand($FIRST["groups"],$LAST['groups'])."','".mt_rand(0,6)."','".$users[1]."','$enterprise','".mt_rand($FIRST["groups"],$LAST['groups'])."','$type','$ID','tracking ".getRandomString(15)."','".mt_rand(1,5)."','".mt_rand(1,5)."','".mt_rand(1,5)."','','0','$realtime','".mt_rand(0,$MAX['tracking_category'])."','$hour_cost','0','0','".mt_rand(0,$MAX['ticketsolutions'])."','Solution ".getRandomString(20)."','accepted')";
+      $closedatetoadd='NULL';
+      if (!empty($closedate)) {
+         $closedatetoadd="'".date("Y-m-d H:i:s",intval($closedate))."'";
+      }
+
+      $solvedatetoadd='NULL';
+      if (!empty($solvedate)) {
+         $solvedatetoadd="'".date("Y-m-d H:i:s",intval($solvedate))."'";
+      }
+
+		$query="INSERT INTO glpi_tickets VALUES (NULL,'$ID_entity','Title ".getRandomString(20)."','".date("Y-m-d H:i:s",intval($opendate))."',$closedatetoadd,$solvedatetoadd,'".date("Y-m-d H:i:s",intval($updatedate))."','$status','".$users[0]."','".$users[0]."','".mt_rand($FIRST["groups"],$LAST['groups'])."','".mt_rand(0,6)."','".$users[1]."','$enterprise','".mt_rand($FIRST["groups"],$LAST['groups'])."','$type','$ID','tracking ".getRandomString(15)."','".mt_rand(1,5)."','".mt_rand(1,5)."','".mt_rand(1,5)."','','0','".mt_rand(0,$MAX['tracking_category'])."','$hour_cost','0','0','".mt_rand(0,$MAX['ticketsolutions'])."','Solution ".getRandomString(20)."','accepted',0,0,NULL,NULL,0,0,$closetime,$solvetime,$firstactiontime,'$realtime')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$tID=$DB->insert_id();
 		// Add followups
 		$i=0;
 		$fID=0;
+      $first=true;
+      $date=0;
 		while (mt_rand(0,100)<$percent['followups']){
-			$query="INSERT INTO glpi_ticketfollowups VALUES (NULL,'$tID','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[1]."','followup $i ".getRandomString(15)."','0','".mt_rand(0,3)."');";
+         if ($first) {
+            $date=$opendate+$firstactiontime;
+            $first=false;
+            
+         } else {
+            $date+=mt_rand(3600,7776000);
+         }
+			$query="INSERT INTO glpi_ticketfollowups VALUES (NULL,'$tID','".date("Y-m-d H:i:s",$date)."','".$users[1]."','followup $i ".getRandomString(15)."','0','".mt_rand(0,3)."');";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$fID=$DB->insert_id();
 			$i++;
 		}
 		while (mt_rand(0,100)<$percent['tasks']){
+         if ($first) {
+            $date=$opendate+$firstactiontime;
+            $first=false;
+         } else {
+            $date+=mt_rand(3600,7776000);
+         }
          $realtime=(mt_rand(0,3)+mt_rand(0,100)/100);
-			$query="INSERT INTO glpi_tickettasks VALUES (NULL,'$tID','".mt_rand($FIRST['taskcategory'],$LAST['taskcategory'])."','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[1]."','task $i ".getRandomString(15)."','".mt_rand(0,1)."','$realtime');";
+			$query="INSERT INTO glpi_tickettasks VALUES (NULL,'$tID','".mt_rand($FIRST['taskcategory'],$LAST['taskcategory'])."','".date("Y-m-d H:i:s",$date)."','".$users[1]."','task $i ".getRandomString(15)."','".mt_rand(0,1)."','$realtime');";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$fID=$DB->insert_id();
 			$i++;

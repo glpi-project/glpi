@@ -557,6 +557,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
          $this->datas['##ticket.closedate##']    = convDateTime($this->obj->getField('closedate'));
          $this->datas['##ticket.solvedate##']    = convDateTime($this->obj->getField('solvedate'));
+         $this->datas['##ticket.duedate##']    = convDateTime($this->obj->getField('due_date'));
 
          $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
 
@@ -585,6 +586,13 @@ class NotificationTargetTicket extends NotificationTarget {
                                                       $this->obj->getField('ticketcategories_id'));
          } else {
             $this->datas['##ticket.category##'] = '';
+         }
+
+         if ($this->obj->getField('slas_id')) {
+            $this->datas['##ticket.sla##'] = Dropdown::getDropdownName('glpi_slas',
+                                                      $this->obj->getField('slas_id'));
+         } else {
+            $this->datas['##ticket.sla##'] = '';
          }
 
          if ($this->obj->getField('users_id')) {
@@ -869,6 +877,8 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.creationdate'          => $LANG['reports'][60],
                      'ticket.closedate'             => $LANG['reports'][61],
                      'ticket.solvedate'             => $LANG['reports'][64],
+                     'ticket.sla'                   => $LANG['sla'][1],
+                     'ticket.duedate'               => $LANG['sla'][5],
                      'ticket.requesttype'           => $LANG['job'][44],
                      'ticket.author'                => $LANG['common'][2].' '.$LANG['job'][4],
                      'ticket.author.name'           => $LANG['job'][4],

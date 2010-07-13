@@ -88,6 +88,12 @@ class RuleTicket extends Rule {
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
+               case "send" :
+                  $ticket=new Ticket();
+                  if ($ticket->getFromDB($output['id'])) {
+                     NotificationEvent::raiseEvent('recall',$ticket);
+                  }
+                  break;
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
                   break;
@@ -274,6 +280,11 @@ class RuleTicket extends Rule {
       $actions['affectobject']['name']          = $LANG['common'][1];
       $actions['affectobject']['type']          = 'text';
       $actions['affectobject']['force_actions'] = array('affectbyip','affectbyfqdn','affectbymac');
+
+      $actions['slas_id']['table'] = 'glpi_slas';
+      $actions['slas_id']['name']  = $LANG['sla'][1];
+      $actions['slas_id']['type']  = 'dropdown';
+
       return $actions;
    }
 }

@@ -31,7 +31,7 @@
 
 
 // Current version of GLPI
-define("GLPI_VERSION","0.78");
+define("GLPI_VERSION","0.80");
 define("GLPI_DEMO_MODE","0");
 
 

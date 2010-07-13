@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: sla.tabs.php 11225 2010-04-06 14:06:12Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -41,74 +41,28 @@ header_nocache();
 if (!isset($_POST["id"])) {
    exit();
 }
-if (!isset($_REQUEST['glpi_tab'])) {
-   exit();
+
+if (empty($_POST["id"])) {
+   $_POST["id"] = -1;
 }
 
-$ticket = new Ticket();
-
-if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
+$sla = new SLA();
+if ($_POST['id']>0 && $sla->getFromDB($_POST['id'])) {
    switch($_REQUEST['glpi_tab']) {
-
       case -1 :
-         $fup = new TicketFollowup();
-         $fup->showSummary($ticket);
-         $validation = new Ticketvalidation();
-         $validation->showSummary($ticket);
-         $task = new TicketTask();
-         $task->showSummary($ticket);
-         $ticket->showSolutionForm();
-         if ($ticket->canApprove()) {
-            $suivi = new TicketFollowup();
-            $suivi->showApprobationForm($ticket);
-         }
-         $ticket->showCost($_POST['target']);
-         $ticket->showStats();
-         Document::showAssociated($ticket);
-         Log::showForItem($ticket);
-         break;
-
-
-      case 2 :
-         $task = new TicketTask();
-         $task->showSummary($ticket);
-         break;
-
-      case 3 :
-         $ticket->showCost($_POST['target']);
-         break;
-
-      case 4 :
-         $ticket->showSolutionForm();
-         if ($ticket->canApprove()) {
-            $suivi = new TicketFollowup();
-            $suivi->showApprobationForm($ticket);
-         }
-         break;
-
-      case 5 :
-         Document::showAssociated($ticket);
-         break;
-
-      case 6 :
-         Log::showForItem($ticket);
-         break;
-      
-      case 7 :
-         $validation = new Ticketvalidation();
-         $validation->showSummary($ticket);
-         break;
-      case 8 :
-         $ticket->showStats();
+         $slalevel=new SLALevel();
+         $slalevel->showForSLA($sla);
+         Plugin::displayAction($sla,$_REQUEST['glpi_tab']);
          break;
 
       default :
-         if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
-            $fup = new TicketFollowup();
-            $fup->showSummary($ticket);
+         if (!Plugin::displayAction($sla,$_REQUEST['glpi_tab'])) {
+            $slalevel=new SLALevel();
+            $slalevel->showForSLA($sla);
          }
    }
 }
 
 ajaxFooter();
+
 ?>

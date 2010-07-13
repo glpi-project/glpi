@@ -273,7 +273,7 @@ echo "</table></div><br>";
 
 $target = preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
 
-echo "<div class='center'><form method='post' name='form' action='$target'>";
+echo "<form method='post' name='form' action='$target'><div class='center'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
 showDateFormItem("date1",$_POST["date1"]);
@@ -282,50 +282,155 @@ echo "<input type='submit' class='button' name='submit' value='". $LANG['buttons
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
 showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
-echo "</table></form></div>";
+echo "</table></div>";
+
+
+/*
+///////// Stats nombre intervention
+// Total des interventions
+$entrees_total = Stat::constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+// Total des interventions résolues
+$entrees_solved = Stat::constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+// Total des interventions closes
+$entrees_closed = Stat::constructEntryValues("inter_closed",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+//Temps moyen de resolution d'intervention
+$entrees_avgsolvedtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+//Temps moyen de cloture d'intervention
+$entrees_avgclosedtime = Stat::constructEntryValues("inter_avgclosedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+//Temps moyen d'intervention reel
+$entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+//Temps moyen de prise en compte de l'intervention
+$entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+
+
+Stat::showGraph(array($LANG['job'][14] => $entrees_total,
+                     $LANG['job'][15]  => $entrees_solved,
+                     $LANG['job'][16]  => $entrees_closed),
+               array('title'=>$LANG['stats'][13],
+                     'showtotal' => 1,
+                     'unit'      => $LANG['stats'][35]));
+
+// Pass to hour values
+foreach ($entrees_avgclosedtime as $key => $val) {
+   $entrees_avgclosedtime[$key]/=HOUR_TIMESTAMP;
+}
+foreach ($entrees_avgsolvedtime as $key => $val) {
+   $entrees_avgsolvedtime[$key]/=HOUR_TIMESTAMP;
+}
+foreach ($entrees_avgtaketime as $key => $val) {
+   $entrees_avgtaketime[$key]/=HOUR_TIMESTAMP;
+}
+foreach ($entrees_avgrealtime as $key => $val) {
+   $entrees_avgrealtime[$key]/=HOUR_TIMESTAMP;
+}
+
+Stat::showGraph(array($LANG['stats'][10] => $entrees_avgclosedtime,
+                        $LANG['stats'][9] => $entrees_avgsolvedtime,
+                        $LANG['stats'][12]  => $entrees_avgtaketime,
+                        $LANG['stats'][14]  => $entrees_avgrealtime),
+               array('title'   => $LANG['stats'][8],
+                     'unit'     => $LANG['job'][21],
+                     'showtotal' => 1,
+                     'datatype' => 'average'));
+*/
+
 
 ///////// Stats nombre intervention
 // Total des interventions
-$entrees_total = Stat::constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],
-                                      $val1,$val2);
-Stat::showGraph(array($LANG['stats'][5]=>$entrees_total)
-               ,array('title'=>$LANG['stats'][5],
+$values['total'] = Stat::constructEntryValues("inter_total",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
+// Total des interventions résolues
+$values['solved']  = Stat::constructEntryValues("inter_solved",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
+// Total des interventions closes
+$values['closed'] = Stat::constructEntryValues("inter_closed",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
+// Total des interventions closes
+$values['late'] = Stat::constructEntryValues("inter_solved_late",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
+
+$available=array('total'  => $LANG['job'][14], 
+                 'solved' => $LANG['job'][15],
+                 'late'   => $LANG['job'][17],
+                 'closed' => $LANG['job'][16],);
+echo "<div class='center'>";
+
+$show_all = false;
+if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
+   $show_all = true;
+}
+
+
+foreach ($available as $key => $name) {
+   echo "<input type='checkbox' name='graph[$key]' ".($show_all||isset($_REQUEST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+}
+echo "</div>";
+
+$toprint=array();
+foreach ($available as $key => $name) {
+   if ($show_all || isset($_REQUEST['graph'][$key])) {
+      $toprint[$name]=$values[$key];
+   } 
+}
+
+Stat::showGraph($toprint
+               ,array('title'=>$LANG['stats'][13],
                      'showtotal' => 1,
                      'unit'      => $LANG['stats'][35]));
-
-// Total des interventions resolues
-$entrees_solved = Stat::constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],
-                                       $val1,$val2);
-Stat::showGraph(array($LANG['stats'][11]=>$entrees_solved)
-               ,array('title'    => $LANG['stats'][11],
-                     'showtotal' => 1,
-                     'unit'      => $LANG['stats'][35]));
-
 
 //Temps moyen de resolution d'intervention
-$entrees_avgsolvedtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],
-                                        $_GET["type"],$val1,$val2);
-
-Stat::showGraph(array($LANG['stats'][6]=>$entrees_avgsolvedtime)
-               ,array('title' => $LANG['stats'][6],
-                     'unit'   => $LANG['job'][21]));
-
+$values2['avgsolved'] = Stat::constructEntryValues("inter_avgsolvedtime",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
+//Temps moyen de cloture d'intervention
+$values2['avgclosed'] = Stat::constructEntryValues("inter_avgclosedtime",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
 //Temps moyen d'intervention reel
-$entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],
-                                        $_GET["type"],$val1,$val2);
-
-Stat::showGraph(array($LANG['stats'][25]=>$entrees_avgrealtime)
-               ,array('title' => $LANG['stats'][25],
-                     'unit'   => $LANG['job'][21]));
-
+$values2['avgrealtime'] = Stat::constructEntryValues("inter_avgrealtime",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
 //Temps moyen de prise en compte de l'intervention
-$entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],
-                                        $_GET["type"],$val1,$val2);
+$values2['avgtaketime'] = Stat::constructEntryValues("inter_avgtakeaccount",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
 
-Stat::showGraph(array($LANG['stats'][30]=>$entrees_avgtaketime)
-               ,array('title' => $LANG['stats'][30],
-                     'unit'   => $LANG['job'][21]));
+// Pass to hour values
+foreach ($values2['avgsolved'] as $key => $val) {
+   $values2['avgsolved'][$key]/=HOUR_TIMESTAMP;
+}
+foreach ($values2['avgclosed'] as $key => $val) {
+   $values2['avgclosed'][$key]/=HOUR_TIMESTAMP;
+}
+foreach ($values2['avgrealtime'] as $key => $val) {
+   $values2['avgrealtime'][$key]/=HOUR_TIMESTAMP;
+}
+foreach ($values2['avgtaketime'] as $key => $val) {
+   $values2['avgtaketime'][$key]/=HOUR_TIMESTAMP;
+}
 
+$available=array('avgclosed'   => $LANG['stats'][10],
+                 'avgsolved'   => $LANG['stats'][9],
+                 'avgtaketime' => $LANG['stats'][12],
+                 'avgrealtime'  => $LANG['stats'][14],
+                );
+
+
+echo "<div class='center'>";
+
+$show_all2 = false;
+if (!isset($_REQUEST['graph2']) || count($_REQUEST['graph2'])==0) {
+   $show_all2 = true;
+}
+
+
+foreach ($available as $key => $name) {
+   echo "<input type='checkbox' name='graph2[$key]' ".($show_all2||isset($_REQUEST['graph2'][$key])?"checked":"")."> ".$name."&nbsp;";
+}
+echo "</div>";
+
+$toprint=array();
+foreach ($available as $key => $name) {
+   if ($show_all2 || isset($_REQUEST['graph2'][$key])) {
+      $toprint[$name]=$values2[$key];
+   } 
+}
+
+Stat::showGraph($toprint,
+               array('title'   => $LANG['stats'][8],
+                     'unit'     => $LANG['job'][21],
+                     'showtotal' => 1,
+                     'datatype' => 'average'));
+
+echo "</form>";
 commonFooter();
 
 ?>

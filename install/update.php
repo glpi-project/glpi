@@ -602,6 +602,10 @@ function updateDbUpTo031()
          include("update_0723_078.php");
          update0723to078();
       case "0.78":
+         include("update_078_080.php");
+         update078to080();
+			break;
+      case "0.80":
 			break;
 		default:
 			include("update_031_04.php");
@@ -639,12 +643,14 @@ function updateDbUpTo031()
          update0722to0723();
          include("update_0723_078.php");
          update0723to078();
+         include("update_078_080.php");
+         update078to080();
 
 			break;
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_configs` SET `version` = ' 0.78', language='".$glpilanguage."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_configs` SET `version` = ' 0.80', language='".$glpilanguage."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG['update'][90].$DB->error());
 
 	// Update process desactivate all plugins

@@ -237,6 +237,14 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                $LANG['buttons'][2]."\" >";
          break;
 
+      case "duplicate":
+         if ($item->isEntityAssign()) {
+            Dropdown::show('Entity');
+         }
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
+               $LANG['buttons'][2]."\" >";
+         break;
+
       case "update" :
          $first_group=true;
          $newgroup="";

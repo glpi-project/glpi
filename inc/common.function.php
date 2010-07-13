@@ -1862,61 +1862,73 @@ function getRandomString($length) {
 /**
 * Make a good string from the unix timestamp $sec
 *
-* @param $sec integer: timestamp
+* @param $time integer: timestamp
 *
 * @param $display_sec boolean: display seconds ?
 *
 * @return string
 **/
-function timestampToString($sec,$display_sec=true) {
+function timestampToString($time,$display_sec=true) {
    global $LANG;
-   /// TODO : rewrite to have simple code
-   $sec=floor($sec);
-   if ($sec<0) {
-      $sec=0;
+   $sign='';
+   if ($time<0) {
+      $sign='- ';
+      $time=abs($time);
+   }
+   $time=floor($time);
+
+   // Force display seconds if time is null
+   if ($time==0) {
+      $display_sec = true;
+   }
+   $units=getTimestampTimeUnits($time);
+
+   $out=$sign;
+   if ($units['day']>0) {
+      $out .= " ".$units['day']."&nbsp;".$LANG['stats'][31];
+   }
+   if ($units['hour']>0) {
+      $out .= " ".$units['hour']."&nbsp;".$LANG['job'][21];
+   }
+   if ($units['minute']>0) {
+      $out .= " ".$units['minute']."&nbsp;".$LANG['stats'][33];
    }
 
-   if ($sec < MINUTE_TIMESTAMP) {
-      return $sec." ".$LANG['stats'][34];
-   } else if ($sec < HOUR_TIMESTAMP) {
-      $min = floor($sec/MINUTE_TIMESTAMP);
-      $sec = $sec%MINUTE_TIMESTAMP;
-      $out = $min." ".$LANG['stats'][33];
-      if ($display_sec && $sec >0) {
-         $out .= " ".$sec." ".$LANG['stats'][34];
-      }
-      return $out;
-   } else if ($sec <  DAY_TIMESTAMP) {
-      $heure = floor($sec/HOUR_TIMESTAMP);
-      $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
-      $sec = $sec%MINUTE_TIMESTAMP;
-      $out = $heure." ".$LANG['job'][21];
-      if ($min>0) {
-         $out .= " ".$min." ".$LANG['stats'][33];
-      }
-      if ($display_sec && $sec >0) {
-         $out.=" ".$sec." ".$LANG['stats'][34];
-      }
-      return $out;
-   } else {
-      $jour = floor($sec/DAY_TIMESTAMP);
-      $heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
-      $min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
-      $sec = $sec%MINUTE_TIMESTAMP;
-      $out = $jour." ".$LANG['stats'][31];
-      if ($heure>0) {
-         $out .= " ".$heure." ".$LANG['job'][21];
-      }
-
-      if ($min>0) {
-         $out.=" ".$min." ".$LANG['stats'][33];
-      }
-
-      if ($display_sec && $sec >0) {
-         $out.=" ".$sec." ".$LANG['stats'][34];
-      }
-      return $out;
+   if ($display_sec) {
+      $out.=" ".$units['second']."&nbsp;".$LANG['stats'][34];
    }
+   return $out;
+}
+
+/**
+* Split timestamp in time units
+*
+* @param $time integer: timestamp
+*
+* @return string
+**/
+function getTimestampTimeUnits($time) {
+
+   $time=abs($time);
+   $out['second'] = 0;
+   $out['minute'] = 0;
+   $out['hour']   = 0;
+   $out['day']    = 0;
+   
+   $out['second']=$time%MINUTE_TIMESTAMP;
+   $time-=$out['second'];
+   if ($time>0) {
+      $out['minute']=($time%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP;
+      $time-=$out['minute']*MINUTE_TIMESTAMP;
+      if ($time>0) {
+         $out['hour']=($time%DAY_TIMESTAMP)/HOUR_TIMESTAMP;
+         $time-=$out['hour']*HOUR_TIMESTAMP;
+         if ($time>0) {
+            $out['day']=$time/DAY_TIMESTAMP;
+         }
+      }
+   }
+   return $out;
 }
 
 /**

@@ -169,6 +169,10 @@ class Ticket extends CommonDBTM {
          $ong[3] = $LANG['job'][47];
          $ong[5] = $LANG['Menu'][27];
          $ong[6] = $LANG['title'][38];
+         if (haveRight('observe_ticket','1')) {
+            $ong[8] = $LANG['Menu'][13];
+         }
+
       //   $ong['no_all_tab'] = true;
       } else {
          $ong[1] = $LANG['job'][13];
@@ -507,12 +511,129 @@ class Ticket extends CommonDBTM {
          unset($this->oldvalues['status']);
       }
 
+      // Set begin waiting date if needed
+      if (($key=array_search('status',$this->updates)) !== false
+          && $this->fields['status'] == 'waiting') {
+         $this->updates[] = "begin_waiting_date";
+         $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
+
+         if ($this->fields['slas_id']>0) {
+            $sla=new SLA();
+            $sla->deleteLevelsToDo($this);
+         }
+
+      }
+
+      // Manage come back to waiting state
+      if ($key=array_search('status',$this->updates) !== false
+          && $this->oldvalues['status'] == 'waiting') {
+
+         // SLA case : compute sla duration
+         if ($this->fields['slas_id']>0) {
+            $sla=new SLA();
+            if ($sla->getFromDB($this->fields['slas_id'])) {
+               $delay_time=$sla->getActiveTimeBetween($this->fields['begin_waiting_date'],$_SESSION["glpi_currenttime"]);
+               $this->updates[] = "sla_waiting_duration";
+               $this->fields["sla_waiting_duration"] += $delay_time;
+            }
+
+            // Compute new due date
+            $this->updates[] = "due_date";
+            $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],$this->fields["sla_waiting_duration"]);
+            // Add current level to do
+            $sla->addLevelToDo($this);
+         }
+
+         // Compute ticket waiting time use calendar if exists
+         $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+         $calendar = new Calendar();
+         $delay_time=0;
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            $delay_time=$calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],$_SESSION["glpi_currenttime"]);
+            // compute new due date using calendar
+            $this->updates[] = "due_date";
+            $this->fields['due_date']=$calendar->computeEndDate($this->fields['due_date'],$delay_time);
+         } else { // Not calendar defined
+            $delay_time=strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['begin_waiting_date']);
+            // compute new due date : no calendar so add computed delay_time
+            $this->updates[] = "due_date";
+            $this->fields['due_date']=date('Y-m-d H:i:s',$delay_time+strtotime($this->fields['due_date']));
+         }
+         $this->updates[] = "ticket_waiting_duration";
+         $this->fields["ticket_waiting_duration"] += $delay_time;
+
+         // Reset begin_waiting_date
+         $this->updates[] = "begin_waiting_date";
+         $this->fields["begin_waiting_date"] = 'NULL';
+      }
+
+      // solve_delay_stat : use delay between opendate and solvedate
+      if (in_array("solvedate",$this->updates)) {
+         $this->updates[] = "solve_delay_stat";
+         $this->fields['solve_delay_stat']=$this->computeSolveDelayStat();
+      }
+      // close_delay_stat : use delay between opendate and closedate
+      if (in_array("closedate",$this->updates)) {
+         $this->updates[] = "close_delay_stat";
+         $this->fields['close_delay_stat']=$this->computeCloseDelayStat();
+      }
+
+      // takeintoaccount :
+      //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
+      if ($this->canUpdateItem() && $this->fields['takeintoaccount_delay_stat']==0) {
+         $this->updates[] = "takeintoaccount_delay_stat";
+         $this->fields['takeintoaccount_delay_stat']=$this->computeTakeIntoAccountDelayStat();
+      }
+
       // Do not take into account date_mod if no update is done
       if (count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false) {
          unset($this->updates[$key]);
       }
    }
 
+   /// Compute take into account stat of the current ticket
+   function computeTakeIntoAccountDelayStat() {
+      if (isset($this->fields['id'])) {
+         $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+         $calendar = new Calendar();
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            return $calendar->getActiveTimeBetween($this->fields['date'],$_SESSION["glpi_currenttime"]);
+         } else { // Not calendar defined
+            return strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']);
+         }
+      }
+      return 0;
+   }
+   /// Compute solve delay stat of the current ticket
+   function computeSolveDelayStat() {
+      if (isset($this->fields['id'])) {
+         $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+         $calendar = new Calendar();
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            return $calendar->getActiveTimeBetween($this->fields['date'],$this->fields['solvedate'])-$this->fields["ticket_waiting_duration"];
+         } else { // Not calendar defined
+            return strtotime($this->fields['solvedate'])-strtotime($this->fields['date'])-$this->fields["ticket_waiting_duration"];
+         }
+      }
+      return 0;
+   }
+   /// Compute close delay stat of the current ticket
+   function computeCloseDelayStat() {
+      if (isset($this->fields['id'])) {
+        $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+         $calendar = new Calendar();
+         // Using calendar
+         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+            return $calendar->getActiveTimeBetween($this->fields['date'],$this->fields['closedate'])-$this->fields["ticket_waiting_duration"];
+         } else { // Not calendar defined
+            return strtotime($this->fields['closedate'])-strtotime($this->fields['date'])-$this->fields["ticket_waiting_duration"];
+         }
+      }
+      return 0;
+   }
 
    function post_updateItem($history=1) {
       global $CFG_GLPI,$LANG;
@@ -1007,7 +1128,7 @@ class Ticket extends CommonDBTM {
       }
 
       if (isset($input["hour"]) && isset($input["minute"])) {
-         $input["realtime"] = $input["hour"]+$input["minute"]/60;
+         $input["realtime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
          $input["_hour"]    = $input["hour"];
          $input["_minute"]  = $input["minute"];
          unset($input["hour"]);
@@ -1023,11 +1144,44 @@ class Ticket extends CommonDBTM {
          $input['solvedate']=$input["closedate"];
       }
 
+      // Set begin wainting time if status is waiting
+      if (isset($input["status"]) && $input["status"]=="waiting") {
+         $input['begin_waiting_date']=$input['date'];
+      }
+
       // No name set name
       if (empty($input["name"])) {
          $input["name"] = preg_replace('/\r\n/',' ',$input['content']);
          $input["name"] = preg_replace('/\n/',' ',$input['name']);
          $input["name"] = utf8_substr($input['name'],0,70);
+      }
+
+      //// Manage SLA assignment
+      // due date defined : no SLA
+      if (isset($input["due_date"]) && $input['due_date'] != 'NULL') {
+         // Valid due date
+         if ($input['due_date']>$input['date']) {
+            if (isset($input["slas_id"])) {
+               unset($input["slas_id"]);
+            }
+         } else {
+            // Unset due date
+            unset($input["due_date"]);
+         }
+      }
+      if (isset($input["slas_id"]) && $input["slas_id"]>0) {
+         $sla=new SLA();
+         if ($sla->getFromDB($input["slas_id"])) {
+            // Get first SLA Level
+            $input["slalevels_id"] = SlaLevel::getFirstSlaLevel($input["slas_id"]);
+            // Compute due_date
+            $input['due_date'] = $sla->computeDueDate($input['date']);
+            $input['sla_waiting_duration']=0;
+         } else {
+            $input["slalevels_id"]=0;
+            $input["slas_id"]=0;
+            $input['sla_waiting_duration']=0;
+         }
       }
       return $input;
    }
@@ -1082,8 +1236,19 @@ class Ticket extends CommonDBTM {
          $already_mail = true;
       }
 
-      // Processing Email
+      // Manage SLA Level : add actions
+      if (isset($this->input["slas_id"]) && $this->input["slas_id"]>0
+         && isset($this->input["slalevels_id"]) && $this->input["slalevels_id"]>0) {
+         $sla=new SLA();
+         if ($sla->getFromDB($this->input["slas_id"])) {
+            // Add first level in working table
+            if ($this->input["slalevels_id"]>0) {
+               $sla->addLevelToDo($this);
+            }
+         }
+      }
 
+      // Processing Email
       if ($CFG_GLPI["use_mailing"] && !$already_mail) {
          $user = new User();
          $user->getFromDB($this->input["users_id"]);
@@ -1162,10 +1327,23 @@ class Ticket extends CommonDBTM {
    function updateDateMod($ID) {
       global $DB;
 
-      $query = "UPDATE `".$this->getTable()."`
-                SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'
-                WHERE `id` = '$ID'";
-      $DB->query($query);
+      if ($this->getFromDB($ID)) {
+         if (haveRight("global_add_tasks","1")
+              || haveRight("global_add_followups","1")
+              || ($this->fields["users_id_assign"]===getLoginUserID())
+              || (isset($_SESSION["glpigroups"])
+                  && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups']))) {
+            if ($this->fields['takeintoaccount_delay_stat']==0) {
+               $this->update(array('id'=>$ID,
+                                   'takeintoaccount_delay_stat'=>$this->computeTakeIntoAccountDelayStat()));
+            }
+         } else { // Force date mod
+            $query = "UPDATE `".$this->getTable()."`
+                     SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'
+                     WHERE `id` = '$ID'";
+            $DB->query($query);
+         }
+      }
    }
 
 
@@ -1457,6 +1635,18 @@ class Ticket extends CommonDBTM {
       $tab[16]['linkfield'] = '';
       $tab[16]['name']      = $LANG['reports'][61];
       $tab[16]['datatype']  = 'datetime';
+
+      $tab[18]['table']     = $this->getTable();
+      $tab[18]['field']     = 'due_date';
+      $tab[18]['linkfield'] = '';
+      $tab[18]['name']      = $LANG['sla'][5];
+      $tab[18]['datatype']  = 'datetime';
+
+      $tab[20]['table']     = 'glpi_slas';
+      $tab[20]['field']     = 'name';
+      $tab[20]['linkfield'] = 'slas_id';
+      $tab[20]['name']      = $LANG['sla'][1];
+      $tab[20]['datatype']  = 'datetime';
 
       $tab[17]['table']     = $this->getTable();
       $tab[17]['field']     = 'solvedate';
@@ -2588,9 +2778,62 @@ class Ticket extends CommonDBTM {
       echo "</th>";
 
       echo "<th class='left' colspan='2' width='50%'>";
-      if ($ID) {
-         echo "<table>";
+      echo "<table>";
 
+      if ($ID) {
+         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td><td>";
+         echo "<span class='tracking_small'>".convDateTime($this->fields["date_mod"])."</span>\n";
+         echo "</td></tr>";
+      }
+
+      // SLA
+      echo "<tr>";
+      echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;: </span></td>";
+      echo "<td>";
+      if ($ID) {
+         if ($this->fields["slas_id"]>0) {
+            echo "<span class='tracking_small'>&nbsp;";
+            echo convDateTime($this->fields["due_date"])."</span>";
+
+            echo "</td></tr><tr><td>".$LANG['sla'][1]."&nbsp;:</td><td>";
+            echo Dropdown::getDropdownName("glpi_slas",$this->fields["slas_id"]);
+            $commentsla="";
+            $slalevel = new SlaLevel();
+            if ($slalevel->getFromDB($this->fields['slalevels_id'])) {
+               $commentsla.= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".$slalevel->getName().'<br><br>';
+            }
+
+            $nextaction = new SlaLevel_Ticket();
+            if ($nextaction->getFromDBForTicket($this->fields["id"])) {
+               $commentsla.= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".convDateTime($nextaction->fields['date']).'<br>';
+               if ($slalevel->getFromDB(SlaLevel::getNextSlaLevel($this->fields["slas_id"],$this->fields['slalevels_id']))) {
+                  $commentsla.= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".$slalevel->getName().'<br>';
+               }
+            }
+            $slaoptions=array();
+            if (haveRight('config', 'r')) {
+            }
+            $slaoptions['link']=getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
+            showToolTip($commentsla,$slaoptions);
+            if ($canupdate) {
+               echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value=\"".$LANG['sla'][7]."\">";
+            }
+
+         } else {
+            showDateTimeFormItem("due_date",$this->fields["due_date"],1,false,$canupdate);
+         }
+      } else { // New Ticket
+         if ($this->fields["due_date"]=='NULL') {
+            $this->fields["due_date"]='';
+         }
+         showDateTimeFormItem("due_date",$this->fields["due_date"],1,false,$canupdate);
+/*         echo $LANG['choice'][2]." ".$LANG['sla'][1]." : ";
+         Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
+                                    'value' =>$this->fields["slas_id"]));*/
+      }
+      echo "</td></tr>";
+
+      if ($ID) {
          switch ($this->fields["status"]) {
             case 'closed' :
                echo "<tr>";
@@ -2607,15 +2850,11 @@ class Ticket extends CommonDBTM {
                showDateTimeFormItem("solvedate",$this->fields["solvedate"],1,false,$canupdate);
                echo "</td></tr>";
                break;
-
          }
-
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td><td>";
-         echo "<span class='tracking_small'>".convDateTime($this->fields["date_mod"])."</span>\n";
-         echo "</td></tr>";
-         echo "</table>";
-
       }
+      
+      echo "</table>";
+
       echo "</th>";
       echo "</tr>";
 
@@ -3982,15 +4221,17 @@ class Ticket extends CommonDBTM {
 
 
    static function getRealtime($realtime) {
-      global $LANG;
+//       global $LANG;
+// 
+//       $output = "";
+//       $hour = floor($realtime);
+//       if ($hour>0) {
+//          $output .= $hour." ".$LANG['job'][21]." ";
+//       }
+//       $output .= round((($realtime-floor($realtime))*60))." ".$LANG['job'][22];
+//       return $output;
 
-      $output = "";
-      $hour = floor($realtime);
-      if ($hour>0) {
-         $output .= $hour." ".$LANG['job'][21]." ";
-      }
-      $output .= round((($realtime-floor($realtime))*60))." ".$LANG['job'][22];
-      return $output;
+      return timestampToString($realtime,false);
    }
 
 
@@ -4728,6 +4969,70 @@ class Ticket extends CommonDBTM {
       }
 
       return ($tot > 0);
+   }
+
+   function showStats() {
+      global $LANG;
+      if (!haveRight('observe_ticket',1) || !isset($this->fields['id'])) {
+         return false;
+      }
+//      printCleanArray($this->fields);
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>".$LANG['common'][92]."</th></tr>";
+      echo "<tr class='tab_bg_2'><td>".$LANG['reports'][60]."&nbsp;:</td>";
+      echo "<td>".convDateTime($this->fields['date'])."</td></tr>";
+      echo "<tr class='tab_bg_2'><td>".$LANG['sla'][5]."&nbsp;:</td>";
+      echo "<td>".convDateTime($this->fields['due_date'])."</td></tr>";
+
+      if ($this->fields['status']=='solved' || $this->fields['status']=='closed') {
+         echo "<tr class='tab_bg_2'><td>".$LANG['reports'][64]."&nbsp;:</td>";
+         echo "<td>".convDateTime($this->fields['solvedate'])."</td></tr>";
+      }
+      if ($this->fields['status']=='closed') {
+         echo "<tr class='tab_bg_2'><td>".$LANG['reports'][61]."&nbsp;:</td>";
+         echo "<td>".convDateTime($this->fields['closedate'])."</td></tr>";
+      }
+      echo "<tr><th colspan='2'>".$LANG['common'][93]."</th></tr>";
+
+      echo "<tr class='tab_bg_2'><td>".$LANG['stats'][12]."&nbsp;:</td><td>";
+      if ($this->fields['takeintoaccount_delay_stat']>0) {
+         echo timestampToString($this->fields['takeintoaccount_delay_stat'],0);
+      } else {
+         echo '&nbsp;';
+      }
+      echo "</td></tr>";
+
+      if ($this->fields['status']=='solved' || $this->fields['status']=='closed') {
+         echo "<tr class='tab_bg_2'><td>".$LANG['stats'][9]."&nbsp;:</td><td>";
+         if ($this->fields['solve_delay_stat']>0) {
+            echo timestampToString($this->fields['solve_delay_stat'],0);
+         } else {
+            echo '&nbsp;';
+         }
+         echo "</td></tr>";
+      }
+
+      if ($this->fields['status']=='closed') {
+         echo "<tr class='tab_bg_2'><td>".$LANG['stats'][10]."&nbsp;:</td><td>";
+         if ($this->fields['close_delay_stat']>0) {
+            echo timestampToString($this->fields['close_delay_stat']);
+         } else {
+            echo '&nbsp;';
+         }
+         echo "</td></tr>";
+      }
+
+      echo "<tr class='tab_bg_2'><td>".$LANG['joblist'][26]."&nbsp;:</td><td>";
+      if ($this->fields['ticket_waiting_duration']>0) {
+         echo timestampToString($this->fields['ticket_waiting_duration'],0);
+      } else {
+         echo '&nbsp;';
+      }
+      echo "</td></tr>";
+
+      echo "</table>";
+      echo "</div>";
    }
 
 }

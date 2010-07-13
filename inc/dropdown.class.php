@@ -564,7 +564,10 @@ class Dropdown {
          $optgroup =
             array($LANG['setup'][139] => array('Location'        => $LANG['common'][15],
                                                'State'           => $LANG['setup'][83],
-                                               'Manufacturer'    => $LANG['common'][5]),
+                                               'Manufacturer'    => $LANG['common'][5],
+                                               'Calendar'        => $LANG['Menu'][42],
+                                               'Holiday'         => $LANG['calendar'][11]),
+
 
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],
@@ -1234,7 +1237,9 @@ class Dropdown {
                      echo "<option value='add_contact'>".$LANG['financial'][24]."</option>";
                   }
                   break;
-
+               case 'Calendar':
+                  echo "<option value='duplicate'>".$LANG['buttons'][59]."</option>";
+                  break;
                case 'Contact' :
                   if ($isadmin) {
                      echo "<option value='add_enterprise'>".$LANG['financial'][25]."</option>";
