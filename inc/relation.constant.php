@@ -55,7 +55,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                                           "glpi_slalevels_tickets"=>"slalevels_id",),
 
                 "glpi_cartridgeitems" => array("glpi_cartridges"=>"cartridgeitems_id",
-                                                "glpi_cartridges_printermodels"=>"cartridgeitems_id"),
+                                                "glpi_cartridgeitems_printermodels"=>"cartridgeitems_id"),
 
                 "glpi_computers" => array("glpi_computers_devicecases"=>"computers_id",
                                           "glpi_computers_devicecontrols"=>"computers_id",
@@ -186,7 +186,7 @@ $RELATION=array("glpi_authldaps" => array("glpi_configs"=>"authldaps_id_extra",
                 "glpi_phonemodels" => array("glpi_phones"=>"phonemodels_id"),
 
                 "glpi_printermodels" => array("glpi_printers"=>"printermodels_id",
-                                               "glpi_cartridges_printermodels"=>"printermodels_id"),
+                                               "glpi_cartridgeitems_printermodels"=>"printermodels_id"),
 
                 "glpi_netpoints" => array("glpi_networkports"=>"netpoints_id"),
 

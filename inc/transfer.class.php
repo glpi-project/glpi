@@ -2242,7 +2242,7 @@ class Transfer extends CommonDBTM {
 
       if ($ID != $newID) {
          $query = "SELECT *
-                   FROM `glpi_cartridges_printermodels`
+                   FROM `glpi_cartridgeitems_printermodels`
                    WHERE `cartridgeitems_id` = '$ID'";
 
          if ($result = $DB->query($query)) {

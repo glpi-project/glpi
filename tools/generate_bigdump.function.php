@@ -1097,7 +1097,7 @@ function generate_entity($ID_entity){
 
 		}
 		// Assoc printer type to cartridge type
-		$query="INSERT INTO glpi_cartridges_printermodels VALUES (NULL,'$cartID','".mt_rand(1,$MAX['type_printers'])."')";
+		$query="INSERT INTO glpi_cartridgeitems_printermodels VALUES (NULL,'$cartID','".mt_rand(1,$MAX['type_printers'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 
 	}
@@ -1192,7 +1192,7 @@ function generate_entity($ID_entity){
 
 		// Add Cartouches
 		// Get compatible cartridge
-		$query="SELECT cartridgeitems_id FROM glpi_cartridges_printermodels WHERE printermodels_id='$typeID'";
+		$query="SELECT cartridgeitems_id FROM glpi_cartridgeitems_printermodels WHERE printermodels_id='$typeID'";
 		$result2=$DB->query($query) or die("PB REQUETE ".$query);
 		if ($DB->numrows($result2)>0){
 			$ctypeID=$DB->result($result2,0,0) or die (" PB RESULT ".$query);
@@ -1419,7 +1419,7 @@ function generate_entity($ID_entity){
 
 			// Add Cartouches
 			// Get compatible cartridge
-			$query="SELECT cartridgeitems_id FROM glpi_cartridges_printermodels WHERE printermodels_id='$typeID'";
+			$query="SELECT cartridgeitems_id FROM glpi_cartridgeitems_printermodels WHERE printermodels_id='$typeID'";
 			$result=$DB->query($query) or die("PB REQUETE ".$query);
 			if ($DB->numrows($result)>0){
 				$ctypeID=$DB->result($result,0,0) or die (" PB RESULT ".$query);
