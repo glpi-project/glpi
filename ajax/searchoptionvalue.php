@@ -61,6 +61,8 @@ if (isset($_REQUEST['searchtype'])) {
    $display=false;
    switch ($_REQUEST['searchtype']) {
       case "equals" :
+      case "morethan" :
+      case "lessthan" :
         // Specific cases with linkfield
         if (!$display && isset($searchopt['linkfield'])) {
             // Specific cases
@@ -139,7 +141,6 @@ if (isset($_REQUEST['searchtype'])) {
                   $display=true;
                   break;
             }
-
             // Standard datatype usage
             if (!$display && isset($searchopt['datatype'])) {
                switch ($searchopt['datatype']) {
@@ -157,6 +158,21 @@ if (isset($_REQUEST['searchtype'])) {
                      Dropdown::dropdownUsedItemTypes($inputname,getItemTypeForTable($searchopt['table']),
                                     array('value'     => $_REQUEST['value'],
                                           'comments'  => 0));
+                     $display=true;
+                  case "date":
+                  case "date_delay":
+                     if (!preg_match("/\d{4}-\d{2}-\d{2}.*/",$_REQUEST['value'])) {
+                        $_REQUEST['value']=date("Y-m-d");
+                     }
+                     showDateFormItem($inputname,$_REQUEST['value'],false,true);
+                     $display=true;
+                     break;
+                  case "datetime":
+                     if (!preg_match("/\d{4}-\d{2}-\d{2}.*/",$_REQUEST['value'])) {
+                        $_REQUEST['value']=date("Y-m-d H:i:s");
+                     }
+//                     echo $_REQUEST['value'];
+                     showDateTimeFormItem($inputname,$_REQUEST['value'],1,false,true);
                      $display=true;
                      break;
                }
