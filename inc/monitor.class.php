@@ -349,6 +349,12 @@ class Monitor extends CommonDBTM {
       echo "</td><td>".$LANG['monitors'][33]."</td><td>";
       Dropdown::showYesNo("have_pivot",$this->fields["have_pivot"]);
       echo "</td></tr>";
+      // hdmi?
+      echo "<tr><td>".$LANG['monitors'][34]."</td><td>";
+      Dropdown::showYesNo("have_hdmi",$this->fields["have_hdmi"]);
+      // pivot ?
+      echo "</td><td colspan='2'>&nbsp;";
+      echo "</td></tr>";
       echo "</table></td></tr>";
 
 
@@ -500,6 +506,12 @@ class Monitor extends CommonDBTM {
       $tab[46]['linkfield'] = 'have_pivot';
       $tab[46]['name']      = $LANG['monitors'][33];
       $tab[46]['datatype']  = 'bool';
+
+      $tab[47]['table']     = $this->getTable();
+      $tab[47]['field']     = 'have_hdmi';
+      $tab[47]['linkfield'] = 'have_hdmi';
+      $tab[47]['name']      = $LANG['monitors'][34];
+      $tab[47]['datatype']  = 'bool';
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';

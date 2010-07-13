@@ -45,7 +45,7 @@
  * @return bool for success (will die for most error)
  */
 function update0723to078($output='HTML') {
-	global $DB, $LANG;
+   global $DB, $LANG;
 
    $updateresult = true;
 
@@ -200,7 +200,7 @@ function update0723to078($output='HTML') {
       'glpi_dropdown_vlan'                => 'glpi_vlans',
    );
    $backup_tables=false;
-	foreach ($glpi_tables as $original_table => $new_table) {
+   foreach ($glpi_tables as $original_table => $new_table) {
       if (strcmp($original_table,$new_table)!=0) {
          // Original table exists ?
          if (TableExists($original_table)) {
@@ -1918,14 +1918,14 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 change sub_type $old_subtype in $new_subtype in glpi_rules " . $LANG['update'][90] . $DB->error());
    }
 
-	if (FieldExists("glpi_rulecachesoftwares","ignore_ocs_import")) {
-		$query = "ALTER TABLE `glpi_rulecachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) NULL DEFAULT NULL ";
+   if (FieldExists("glpi_rulecachesoftwares","ignore_ocs_import")) {
+      $query = "ALTER TABLE `glpi_rulecachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) NULL DEFAULT NULL ";
       $DB->query($query) or die("0.78 alter table glpi_rulecachesoftwares " . $LANG['update'][90] . $DB->error());
-	}
-	if (!FieldExists("glpi_rulecachesoftwares","is_helpdesk_visible")) {
-		$query = "ALTER TABLE `glpi_rulecachesoftwares` ADD `is_helpdesk_visible` CHAR( 1 ) NULL ";
+   }
+   if (!FieldExists("glpi_rulecachesoftwares","is_helpdesk_visible")) {
+      $query = "ALTER TABLE `glpi_rulecachesoftwares` ADD `is_helpdesk_visible` CHAR( 1 ) NULL ";
       $DB->query($query) or die("0.78 add is_helpdesk_visible in glpi_rulecachesoftwares " . $LANG['update'][90] . $DB->error());
-	}
+   }
 
    displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
 
@@ -1942,15 +1942,15 @@ function update0723to078($output='HTML') {
    displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
 
 
-	if (!FieldExists("glpi_configs","default_graphtype")) {
-		$query = "ALTER TABLE `glpi_configs` ADD `default_graphtype` char( 3 ) NOT NULL DEFAULT 'svg'";
+   if (!FieldExists("glpi_configs","default_graphtype")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `default_graphtype` char( 3 ) NOT NULL DEFAULT 'svg'";
       $DB->query($query) or die("0.78 add default_graphtype in glpi_configs " . $LANG['update'][90] . $DB->error());
-	}
+   }
 
-	if (FieldExists('glpi_configs', 'license_deglobalisation')) {
-		$query="ALTER TABLE `glpi_configs` DROP `license_deglobalisation`;";
+   if (FieldExists('glpi_configs', 'license_deglobalisation')) {
+      $query="ALTER TABLE `glpi_configs` DROP `license_deglobalisation`;";
       $DB->query($query) or die("0.78 alter clean glpi_configs table " . $LANG['update'][90] . $DB->error());
-	}
+   }
 
    if (FieldExists("glpi_configs","use_cache")) {
       $query = "ALTER TABLE `glpi_configs`  DROP `use_cache`;";
@@ -1962,31 +1962,30 @@ function update0723to078($output='HTML') {
       $DB->query($query) or die("0.78 drop cache_max_size in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
-	if (!FieldExists("glpi_configs","default_request_type")) {
-		$query = "ALTER TABLE `glpi_configs` ADD `default_request_type` INT( 11 ) NOT NULL DEFAULT 1";
+   if (!FieldExists("glpi_configs","default_request_type")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `default_request_type` INT( 11 ) NOT NULL DEFAULT 1";
       $DB->query($query) or die("0.78 add default_request_type in glpi_configs " . $LANG['update'][90] . $DB->error());
-	}
+   }
 
-	if (!FieldExists("glpi_users","default_request_type")) {
-		$query = "ALTER TABLE `glpi_users` ADD `default_request_type` INT( 11 ) NULL";
+   if (!FieldExists("glpi_users","default_request_type")) {
+      $query = "ALTER TABLE `glpi_users` ADD `default_request_type` INT( 11 ) NULL";
       $DB->query($query) or die("0.78 add default_request_type in glpi_users " . $LANG['update'][90] . $DB->error());
-	}
+   }
 
-	if (!FieldExists("glpi_configs","use_noright_users_add")) {
-		$query = "ALTER TABLE `glpi_configs` ADD `use_noright_users_add` tinyint( 1 ) NOT NULL DEFAULT '1'";
+   if (!FieldExists("glpi_configs","use_noright_users_add")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `use_noright_users_add` tinyint( 1 ) NOT NULL DEFAULT '1'";
       $DB->query($query) or die("0.78 add use_noright_users_add in glpi_configs " . $LANG['update'][90] . $DB->error());
-	}
+   }
 
-	displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
+   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
 
-	if (!FieldExists("glpi_profiles","budget")) {
-		$query = "ALTER TABLE `glpi_profiles` ADD `budget` CHAR( 1 ) NULL ";
-		$DB->query($query) or die("0.78 add budget in glpi_profiles" . $LANG['update'][90] . $DB->error());
+   if (!FieldExists("glpi_profiles","budget")) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `budget` CHAR( 1 ) NULL ";
+      $DB->query($query) or die("0.78 add budget in glpi_profiles" . $LANG['update'][90] . $DB->error());
 
-		$query = "UPDATE `glpi_profiles` SET `budget`=`infocom`";
-		$DB->query($query) or die("0.78 update default budget rights" . $LANG['update'][90] . $DB->error());
-
-	}
+      $query = "UPDATE `glpi_profiles` SET `budget`=`infocom`";
+      $DB->query($query) or die("0.78 update default budget rights" . $LANG['update'][90] . $DB->error());
+   }
 
 
    if (!FieldExists("glpi_budgets","is_recursive")) {
@@ -4108,13 +4107,13 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->query($query) or die("0.78 add validate_ticket to glpi_profiles " . $LANG['update'][90] . $DB->error());
 
       $query = "UPDATE `glpi_profiles` SET `validate_ticket`='1' WHERE `interface` = 'central' ";
-		$DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.78 add validate_ticket write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
 
       $query = "ALTER TABLE `glpi_profiles` ADD `create_validation` char(1) collate utf8_unicode_ci default NULL";
       $DB->query($query) or die("0.78 add create_validation to glpi_profiles " . $LANG['update'][90] . $DB->error());
 
-		$query = "UPDATE `glpi_profiles` SET `create_validation`=`own_ticket`";
-		$DB->query($query) or die("0.78 add create_validation right if can own ticket" . $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_profiles` SET `create_validation`=`own_ticket`";
+      $DB->query($query) or die("0.78 add create_validation right if can own ticket" . $LANG['update'][90] . $DB->error());
    }
 
    if (FieldExists('glpi_mailcollectors','entities_id')) {
