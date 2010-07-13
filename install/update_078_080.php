@@ -422,6 +422,10 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 alter realtime in glpi_tickettasks". $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_softwarelicenses","date_mod")) {
+      $query = "ALTER TABLE `glpi_softwarelicenses` ADD `date_mod`  DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
+      $DB->query($query) or die("0.80 add date_mod field in glpi_softwarelicenses" . $LANG['update'][90] . $DB->error());
+   }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
 
