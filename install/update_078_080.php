@@ -432,6 +432,11 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 rename glpi_cartridges_printermodels " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_monitors","have_hdmi")) {
+      $query = "ALTER TABLE `glpi_monitors` ADD `have_hdmi`  tinyint(1) NOT NULL DEFAULT 0 AFTER `have_pivot`";
+      $DB->query($query) or die("0.80 add have_hdmi field in glpi_monitors" . $LANG['update'][90] . $DB->error());
+   }
+
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
 

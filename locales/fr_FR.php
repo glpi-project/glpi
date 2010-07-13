@@ -1267,6 +1267,7 @@ $LANG['monitors'][20]="BNC";
 $LANG['monitors'][21]="Taille";
 $LANG['monitors'][32]="DVI";
 $LANG['monitors'][33]="Pivot";
+$LANG['monitors'][34]="HDMI";
 
 $LANG['networking'][4]="Port réseau";
 $LANG['networking'][5]="Mémoire (Mio)";
