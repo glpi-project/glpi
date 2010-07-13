@@ -225,8 +225,8 @@ class SoftwareLicense extends CommonDBTM {
                                        'softwares_id' => $this->fields["softwares_id"],
                                        'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td>";
-      echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='4'>";
+      echo "<td rowspan='".($ID>0?'5':'4')."' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='".($ID>0?'5':'4')."'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
 
@@ -257,6 +257,15 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       showDateFormItem('expire',$this->fields["expire"]);
       echo "</td></tr>\n";
+
+      if ($ID>0) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<td>";
+         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+         echo "</td></tr>";
+      }
+
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
