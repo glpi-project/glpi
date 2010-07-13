@@ -442,6 +442,13 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 drop dbreplicate_email field in glpi_configs" . $LANG['update'][90] . $DB->error());
    }
 
+   if (FieldExists('glpi_users','names_format')) {
+      $query = "ALTER TABLE `glpi_users`
+                ADD `names_format` INT( 11 ) NULL DEFAULT NULL AFTER `number_format`";
+
+      $DB->query($query) or die("0.80 add names_format in glpi_users" .
+                                 $LANG['update'][90] . $DB->error());
+   }
 
    displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
 

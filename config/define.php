@@ -280,6 +280,6 @@ $CFG_GLPI['user_pref_field'] = array('date_format','default_requesttypes_id','dr
       'followup_private','task_private','is_categorized_soft_expanded','is_ids_visible',
       'is_not_categorized_soft_expanded','language','list_limit','number_format','priority_1',
       'priority_2','priority_3','priority_4','priority_5','priority_6',
-      'show_jobs_at_login','use_flat_dropdowntree');
+      'show_jobs_at_login','use_flat_dropdowntree','names_format');
 
 ?>
