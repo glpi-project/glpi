@@ -1641,6 +1641,7 @@ class Ticket extends CommonDBTM {
       $tab[18]['linkfield'] = '';
       $tab[18]['name']      = $LANG['sla'][5];
       $tab[18]['datatype']  = 'datetime';
+      $tab[18]['maybefuture']  = true;
 
       $tab[20]['table']     = 'glpi_slas';
       $tab[20]['field']     = 'name';

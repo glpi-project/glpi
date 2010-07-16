@@ -2119,14 +2119,70 @@ class Search {
          return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".($regs[1]==0?" OR `$table`.`id` IS NULL":'').") ";
       }
 
-      if ($searchtype=='contains') {
-         $SEARCH=makeTextSearch($val,$nott);
-      } else { // Equals
-         if ($nott) {
-            $SEARCH=" <> '$val'";
-         } else {
-            $SEARCH=" = '$val'";
+      // Preparse value
+      if (isset($searchopt[$ID]["datatype"])) {
+         switch ($searchopt[$ID]["datatype"]) {
+            case "datetime" :
+            case "date" :
+            case "date_delay" :
+               $format_use="Y-m-d";
+               if ($searchopt[$ID]["datatype"]=='datetime') {
+                  $format_use="Y-m-d H:i:s";
+               }
+               // Parsing relative date
+               if ($val=='NOW') {
+                  $val=date($format_use);
+               }
+               if (preg_match("/^(-?)(\d+)(\w+)$/",$val,$matches)) {
+                  if (in_array($matches[3],array('YEAR','MONTH','WEEK','DAY','HOUR'))) {
+                     $nb=intval($matches[2]);
+                     if ($matches[1]=='-') {
+                        $nb=-$nb;
+                     }
+                     // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
+                     $hour = date("H");
+                     $minute = date("i");
+                     $second = 0;
+                     $month = date("n");
+                     $day = date("j");
+                     $year = date("Y");
+   
+                     switch ($matches[3]) {
+                        case "YEAR":
+                           $year+=$nb;
+                           break;
+                        case "MONTH":
+                           $month+=$nb;
+                           break;
+                        case "WEEK":
+                           $day+=7*$nb;
+                           break;
+                        case "DAY":
+                           $day+=$nb;
+                           break;
+                        case "HOUR":
+                           $hour+=$nb;
+                           break;
+                     }
+                     $val=date($format_use,mktime  ($hour,$minute,$second,$month,$day,$year));
+                  }
+               }
+               break;
          }
+      }  
+
+
+      switch ($searchtype) {
+         case "contains":
+            $SEARCH=makeTextSearch($val,$nott);
+            break;
+         case "equals":
+            if ($nott) {
+               $SEARCH=" <> '$val'";
+            } else {
+               $SEARCH=" = '$val'";
+            }
+            break;
       }
 
       // Plugin can override core definition for its type
@@ -2390,52 +2446,6 @@ class Search {
             case "datetime" :
             case "date" :
             case "date_delay" :
-
-               $format_use="Y-m-d";
-               if ($searchopt[$ID]["datatype"]=='datetime') {
-                  $format_use="Y-m-d H:i:s";
-               }
-               // Parsing relative date
-               if ($val=='NOW') {
-                  $val=date($format_use);
-               }
-               if (preg_match("/^([-+])(\d+)(\w+)$/",$val,$matches)) {
-                  $nb=intval($matches[2]);
-                  if ($matches[1]=='-') {
-                     $nb=-$nb;
-                  }
-                  // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
-                  $hour = date("H");
-                  $minute = date("i");
-                  $second = 0;
-                  $month = date("n");
-                  $day = date("j");
-                  $year = date("Y");
-
-                  switch ($matches[3]) {
-                     case "YEAR":
-                        $year+=$nb;
-                        break;
-                     case "MONTH":
-                        $month+=$nb;
-                        break;
-                     case "WEEK":
-                        $day+=7*$nb;
-                        break;
-                     case "DAY":
-                        $day+=$nb;
-                        break;
-                     case "HOUR":
-                        $hour+=$nb;
-                        break;
-                  }
-                  $val=date($format_use,mktime  ($hour,$minute,$second,$month,$day,$year));
-                  if ($nott) {
-                     $SEARCH=" <> '$val'";
-                  } else {
-                     $SEARCH=" = '$val'";
-                  }
-               }
 
                if ($searchopt[$ID]["datatype"]=='datetime') {
                   // Specific search for datetime
@@ -4468,8 +4478,8 @@ class Search {
                case 'datetime' :
                case 'date_delay' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'lessthan'    => '<',
-                              'morethan'    => '>',
+                              'lessthan'    => $LANG['search'][23],
+                              'morethan'    => $LANG['search'][24],
                               'contains'   => $LANG['search'][2],
                               'searchopt'  => $searchopt[$field_num]);
             }
