@@ -301,6 +301,8 @@ class Contract extends CommonDBTM {
       $tab[5]['linkfield'] = 'begin_date';
       $tab[5]['name']      = $LANG['search'][8];
       $tab[5]['datatype']  = 'date';
+      $tab[5]['maybefuture']  = true;
+
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'duration';
@@ -316,6 +318,8 @@ class Contract extends CommonDBTM {
       $tab[20]['datafields'][2] = 'duration';
       $tab[20]['searchunit']    = 'MONTH';
       $tab[20]['delayunit']     = 'MONTH';
+      $tab[20]['maybefuture']  = true;
+
 
       $tab[7]['table']     = $this->getTable();
       $tab[7]['field']     = 'notice';
@@ -357,6 +361,7 @@ class Contract extends CommonDBTM {
       $tab[12]['datafields'][2] = 'duration';
       $tab[12]['searchunit']    = 'DAY';
       $tab[12]['delayunit']     = 'MONTH';
+      $tab[12]['maybefuture']  = true;
 
       $tab[13]['table']     = $this->getTable();
       $tab[13]['field']     = 'expire_notice';
@@ -368,6 +373,8 @@ class Contract extends CommonDBTM {
       $tab[13]['datafields'][3] = 'notice';
       $tab[13]['searchunit']    = 'DAY';
       $tab[13]['delayunit']     = 'MONTH';
+      $tab[13]['maybefuture']  = true;
+
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';

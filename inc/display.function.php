@@ -2257,7 +2257,18 @@ function printAjaxPager($title,$start,$numrows) {
    echo "</tr></table>";
 }
 
-function showGenericDateTimeSearch($element,$value='',$with_time=false) {
+/**
+ * Show generic date search
+ *
+ * @param $element name of the html element
+ * @param $value default value
+ * @param $with_time display with time selection ?
+ * @param $with_future display with future date selection ?
+ *
+ * @return rand value of dropdown
+ *
+ */
+function showGenericDateTimeSearch($element,$value='',$with_time=false,$with_future=false) {
    global $LANG,$CFG_GLPI;
 
    $rand=mt_rand();
@@ -2320,39 +2331,40 @@ function showGenericDateTimeSearch($element,$value='',$with_time=false) {
       echo "<option value='$val' ".($value===$val?'selected':'').">";
       echo "- $i ".$LANG['calendar'][15]."</option>";
    }
-/*
-   if ($with_time) {
-      for ($i=1;$i<=24;$i++) {
-         $val='+'.$i.'HOUR';
+
+   if ($with_future) {
+      if ($with_time) {
+         for ($i=1;$i<=24;$i++) {
+            $val=$i.'HOUR';
+            echo "<option value='$val' ".($value===$val?'selected':'').">";
+            echo "+ $i ".$LANG['gmt'][1]."</option>";
+         }
+      }
+   
+      for ($i=1;$i<=7;$i++) {
+         $val=$i.'DAY';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
-         echo "+ $i ".$LANG['gmt'][1]."</option>";
+         echo "+ $i ".$LANG['calendar'][12]."</option>";
+      }
+   
+      for ($i=1;$i<=10;$i++) {
+         $val=$i.'WEEK';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "+ $i ".$LANG['calendar'][13]."</option>";
+      }
+   
+      for ($i=1;$i<=12;$i++) {
+         $val=$i.'MONTH';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "+ $i ".$LANG['calendar'][14]."</option>";
+      }
+   
+      for ($i=1;$i<=10;$i++) {
+         $val=$i.'YEAR';
+         echo "<option value='$val' ".($value===$val?'selected':'').">";
+         echo "+ $i ".$LANG['calendar'][15]."</option>";
       }
    }
-
-   for ($i=1;$i<=7;$i++) {
-      $val='+'.$i.'DAY';
-      echo "<option value='$val' ".($value===$val?'selected':'').">";
-      echo "+ $i ".$LANG['calendar'][12]."</option>";
-   }
-
-   for ($i=1;$i<=10;$i++) {
-      $val='+'.$i.'WEEK';
-      echo "<option value='$val' ".($value===$val?'selected':'').">";
-      echo "+ $i ".$LANG['calendar'][13]."</option>";
-   }
-
-   for ($i=1;$i<=12;$i++) {
-      $val='+'.$i.'MONTH';
-      echo "<option value='$val' ".($value===$val?'selected':'').">";
-      echo "+ $i ".$LANG['calendar'][14]."</option>";
-   }
-
-   for ($i=1;$i<=10;$i++) {
-      $val='+'.$i.'YEAR';
-      echo "<option value='$val' ".($value===$val?'selected':'').">";
-      echo "+ $i ".$LANG['calendar'][15]."</option>";
-   }*/
-
 
    echo "</select>";
 

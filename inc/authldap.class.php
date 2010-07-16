@@ -2296,7 +2296,7 @@ class AuthLDAP extends CommonDBTM {
             echo $LANG['ldap'][50];
          }
          echo "</td><td colspan='3'>";
-         $infsup = array ('<' => $LANG['ldap'][53], '>' => $LANG['ldap'][52]);
+         $infsup = array ('<' => $LANG['search'][22], '>' => $LANG['search'][21]);
          $options = array('value'=>(isset($_SESSION['ldap_import']['operator'])
                                     ?$_SESSION['ldap_import']['operator']:'<'));
          Dropdown::showFromArray('operator', $infsup, $options);

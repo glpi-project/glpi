@@ -1702,6 +1702,11 @@ $LANG['search'][17]="Ajouter un critère de recherche";
 $LANG['search'][18]="Supprimer un critère de recherche";
 $LANG['search'][19]="Ajouter un critère global de recherche";
 $LANG['search'][20]="Supprimer un critère global de recherche";
+$LANG['search'][21] = "Moins de";
+$LANG['search'][22] = "Plus de";
+$LANG['search'][23] = "Avant";
+$LANG['search'][24] = "Après";
+
 
 
 $LANG['setup'][0]="Intitulés";
