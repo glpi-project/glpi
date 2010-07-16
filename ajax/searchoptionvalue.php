@@ -61,6 +61,7 @@ if (isset($_REQUEST['searchtype'])) {
    $display=false;
    switch ($_REQUEST['searchtype']) {
       case "equals" :
+      case "notequals" :
       case "morethan" :
       case "lessthan" :
         // Specific cases with linkfield

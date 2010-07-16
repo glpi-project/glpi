@@ -1144,7 +1144,7 @@ class Search {
 
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr><td class='left' width='39%'>";
+         echo "<tr><td class='left' width='40%'>";
 
          // First line display add / delete images for normal and meta search items
          if ($i==0) {
@@ -2183,6 +2183,13 @@ class Search {
                $SEARCH=" = '$val'";
             }
             break;
+         case "notequals":
+            if ($nott) {
+               $SEARCH=" = '$val'";
+            } else {
+               $SEARCH=" <> '$val'";
+            }
+            break;
       }
 
       // Plugin can override core definition for its type
@@ -2209,7 +2216,7 @@ class Search {
                }
             }
             if ($itemtype == 'User') { // glpi_users case / not link table
-               if ($searchtype=='equals') {
+               if (in_array($searchtype,array('equals','notequals'))) {
                   return " $link `$table$linkfield`.`id`".$SEARCH;
                } else {
                   return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
@@ -2222,7 +2229,7 @@ class Search {
                   $name1='realname';
                   $name2='firstname';
                }
-               if ($searchtype=='equals') {
+               if (in_array($searchtype,array('equals','notequals'))) {
                   return " $link `$table$linkfield`.`id`".$SEARCH;
                } else {
                   return $link." (`$table$linkfield`.`$name1` $SEARCH
@@ -2244,7 +2251,7 @@ class Search {
                   $linkfield .= "_".$itemtype;
                }
             }
-            if ($searchtype=='equals') {
+            if (in_array($searchtype,array('equals','notequals'))) {
                return " $link `$table$linkfield`.`id`".$SEARCH;
             } else {
                return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
@@ -2298,7 +2305,7 @@ class Search {
             break;
 
          case "glpi_contacts.completename" :
-            if ($searchtype=='equals') {
+            if (in_array($searchtype,array('equals','notequals'))) {
                return " $link `$table`.`id`".$SEARCH;
             } else {
                if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
@@ -2440,18 +2447,22 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemtypename" :
-               if ($searchtype=='equals') {
+               if (in_array($searchtype,array('equals','notequals'))) {
                   return " $link (`$table`.`$field`".$SEARCH.') ';
                }
             case "datetime" :
             case "date" :
             case "date_delay" :
+                              echo $searchtype;
 
                if ($searchopt[$ID]["datatype"]=='datetime') {
                   // Specific search for datetime
-                  if ($searchtype=='equals') {
+                  if (in_array($searchtype,array('equals','notequals'))) {
                      $val=preg_replace("/:00$/",'',$val);
                      $val='^'.$val;
+                     if ($searchtype=='notequals') {
+                        $nott=!$nott;
+                     }
                      return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
                   }
                }
@@ -2481,8 +2492,7 @@ class Search {
                                              `$table`.".$searchopt[$ID]["datafields"][2]."
                                              $delay_unit)";
                }
-
-               if ($searchtype=='equals') {
+               if (in_array($searchtype,array('equals','notequals'))) {
                   return " $link ($date_computation ".$SEARCH.') ';
                }
 
@@ -2579,9 +2589,17 @@ class Search {
       }
 
       // Default case
-      if ($searchtype=='equals') {
-         // Add NULL if $val = 0
-         return " $link (`$table`.`id`".$SEARCH.($val==0?" OR `$table`.`id` IS NULL":'').') ';
+      if (in_array($searchtype,array('equals','notequals'))) {
+         $out=" $link (`$table`.`id`".$SEARCH;
+         if ($searchtype=='notequals') {
+            $nott=!$nott;
+         }
+         // Add NULL if $val = 0 and not negative search
+         if ((!$nott && $val==0)) {
+            $out.=" OR `$table`.`id` IS NULL";
+         }
+         $out.=')';
+         return $out;
       } else {
          return makeTextCriteria($tocompute,$val,$nott,$link);
       }
@@ -4454,6 +4472,9 @@ class Search {
                   case "equals" :
                      $actions['equals'] = $LANG['rulesengine'][0];
                      break;
+                  case "notequals" :
+                     $actions['notequals'] = $LANG['rulesengine'][1];
+                     break;
                   case "contains" :
                      $actions['contains'] = $LANG['search'][2];
                      break;
@@ -4466,18 +4487,22 @@ class Search {
             switch ($searchopt[$field_num]['datatype']) {
                case 'bool' :
                   return array('equals'    => $LANG['rulesengine'][0],
+                              'notequals'    => $LANG['rulesengine'][1],
                               'contains'   => $LANG['search'][2],
                               'searchopt'  => $searchopt[$field_num]);
                case 'right' :
                   return array('equals'    => $LANG['rulesengine'][0],
+                              'notequals'    => $LANG['rulesengine'][1],
                               'searchopt'  => $searchopt[$field_num]);
                case 'itemtypename' :
                   return array('equals'    => $LANG['rulesengine'][0],
+                              'notequals'    => $LANG['rulesengine'][1],
                               'searchopt'  => $searchopt[$field_num]);
                case 'date' :
                case 'datetime' :
                case 'date_delay' :
                   return array('equals'    => $LANG['rulesengine'][0],
+                              'notequals'    => $LANG['rulesengine'][1],
                               'lessthan'    => $LANG['search'][23],
                               'morethan'    => $LANG['search'][24],
                               'contains'   => $LANG['search'][2],
@@ -4488,6 +4513,7 @@ class Search {
          switch ($searchopt[$field_num]['table']) {
             case 'glpi_users_validation' :
                return array('equals'=>$LANG['rulesengine'][0],
+                        'notequals'    => $LANG['rulesengine'][1],
                         'searchopt'=>$searchopt[$field_num]);
 
          }
@@ -4495,11 +4521,13 @@ class Search {
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
                return array('equals'=>$LANG['rulesengine'][0],
+                        'notequals'    => $LANG['rulesengine'][1],
                         'searchopt'=>$searchopt[$field_num]);
             case 'name' :
             case 'completename' :
                return array('contains' => $LANG['search'][2],
                            'equals'    => $LANG['rulesengine'][0],
+                           'notequals'    => $LANG['rulesengine'][1],
                            'searchopt' => $searchopt[$field_num]);
          }
      }
