@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Budget class
  */
-class Budget extends CommonDBTM{
+class Budget extends CommonDropdown{
 
    // From CommonDBTM
    public $dohistory = true;
