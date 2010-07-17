@@ -540,6 +540,7 @@ class Reservation extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".$LANG['search'][9]."&nbsp;:</td><td>";
       showDateTimeFormItem("end",$resa->fields["end"],-1,false);
+      Alert::displayLastAlert('Reservation', $ID);
       echo "</td></tr>\n";
 
       if (empty($ID)) {

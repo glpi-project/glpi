@@ -222,6 +222,7 @@ class Contract extends CommonDBTM {
       echo "<td>".$LANG['common'][41]."</td>";
       echo "<td>";
       Contract::dropdownAlert("alert",$this->fields["alert"]);
+      Alert::displayLastAlert('Contract', $ID);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td valign='top'>";

@@ -274,6 +274,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>".$LANG['consumables'][38]." : </td>";
       echo "<td>";
       Dropdown::showInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100);
+      Alert::displayLastAlert('CartridgeItem', $ID);
       echo "</td></tr>";
 
       $this->showFormButtons($options);

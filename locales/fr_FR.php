@@ -1172,6 +1172,8 @@ $LANG['mailing'][48]  = "Changement de la date d'ouverture";
 $LANG['mailing'][49]  = "Changement de la date de clôture";
 $LANG['mailing'][50]  = "Changement du receveur du ticket";
 $LANG['mailing'][51]  = "Licence expirée :";
+$LANG['mailing'][52]  = "Alerte envoyée le ";
+
 
 $LANG['mailing'][53]  = "Changement de solution";
 $LANG['mailing'][54]  = "Date d'expiration";
