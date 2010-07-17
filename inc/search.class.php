@@ -2468,10 +2468,10 @@ class Search {
                }
 
                if ($searchtype=='lessthan') {
-                 $val='<'.$val; 
+                 $val='<'.$val;
                }
                if ($searchtype=='morethan') {
-                 $val='>'.$val; 
+                 $val='>'.$val;
                }
 
                if ($searchtype)
@@ -2707,6 +2707,11 @@ class Search {
          case "glpi_authldaps" :
             if ($itemtype='Entity') {
                return " LEFT JOIN `glpi_authldaps` ON (`glpi_entitydatas`.`ldapservers_id` = `glpi_authldaps`.`id`)";
+            }
+            break;
+         case "glpi_operatingsystems" :
+            if ($itemtype='Software') {
+               return " LEFT JOIN `glpi_operatingsystems` ON (`glpi_softwareversions`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)";
             }
             break;
          case "glpi_reservationitems" :

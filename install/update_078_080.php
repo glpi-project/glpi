@@ -116,7 +116,7 @@ function update078to080($output='HTML') {
          include_once (GLPI_ROOT . "/inc/calendar.class.php");
          $calendar=new Calendar();
          if ($calendar->getFromDB($default_calendar_id)) {
-            $query="UPDATE `glpi_calendars` SET `cache_duration`='".exportArrayToDB($calendar->getDaysDurations())."' 
+            $query="UPDATE `glpi_calendars` SET `cache_duration`='".exportArrayToDB($calendar->getDaysDurations())."'
                         WHERE `id`='$default_calendar_id';";
                   $DB->query($query) or die("0.80 update default calendar cache " . $LANG['update'][90] . $DB->error());
          }
@@ -205,7 +205,7 @@ function update078to080($output='HTML') {
       $query="SELECT id FROM `glpi_notificationtemplates` WHERE `itemtype`='Ticket' ORDER BY id ASC";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
-            
+
             $query="INSERT INTO `glpi_notifications`
                                     VALUES (NULL, 'Ticket Recall', 0, 'Ticket', 'recall',
                                              'mail',".$DB->result($result,0,0).",
@@ -325,7 +325,7 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add close_delay_stat in glpi_tickets". $LANG['update'][90] . $DB->error());
       // Manage stat computation for existing tickets
       $query="UPDATE `glpi_tickets`
-               SET `close_delay_stat` = (UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) 
+               SET `close_delay_stat` = (UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))
                WHERE `glpi_tickets`.`status` = 'closed'
                   AND `glpi_tickets`.`date` IS NOT NULL
                   AND `glpi_tickets`.`closedate` IS NOT NULL
@@ -440,6 +440,22 @@ function update078to080($output='HTML') {
    if (!FieldExists("glpi_configs","dbreplicate_email")) {
       $query = "ALTER TABLE `glpi_configs` DROP `dbreplicate_email`";
       $DB->query($query) or die("0.80 drop dbreplicate_email field in glpi_configs" . $LANG['update'][90] . $DB->error());
+   }
+
+
+   if (!FieldExists("glpi_softwareversions","operatingsystems_id")) {
+      $query = "ALTER TABLE  `glpi_softwareversions` ADD  `operatingsystems_id` INT( 11 ) NOT NULL";
+      $DB->query($query) or die("0.80 add operatingsystems_id field in glpi_softwareversions" . $LANG['update'][90] . $DB->error());
+      $query = "ALTER TABLE `glpi_softwareversions` ADD INDEX `operatingsystems_id` (`operatingsystems_id`)";
+      $DB->query($query) or die("0.80 add index on operatingsystems_id in glpi_softwareversions". $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_softwareversions`,
+                        (SELECT `id`, `operatingsystems_id` FROM `glpi_softwares`) AS SOFT
+                           SET `glpi_softwareversions`.`operatingsystems_id` = `SOFT`.`operatingsystems_id`
+                       WHERE `glpi_softwareversions`.`softwares_id` = `SOFT`.`id` ";
+      $DB->query($query) or die("0.80 transfer operatingsystems_id from glpi_softwares to glpi_softwareversions" . $LANG['update'][90] . $DB->error());
+      $query = "ALTER TABLE  `glpi_softwares` DROP  `operatingsystems_id`";
+      $DB->query($query) or die("0.80 drop operatingsystems_id field in glpi_softwares" . $LANG['update'][90] . $DB->error());
    }
 
    if (FieldExists('glpi_users','names_format')) {

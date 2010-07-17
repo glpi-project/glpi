@@ -172,14 +172,18 @@ class SoftwareVersion extends CommonDBChild {
       echo "<a href='software.form.php?id=".$softwares_id."'>".
              Dropdown::getDropdownName("glpi_softwares",$softwares_id)."</a>";
       echo "</td>";
-      echo "<td rowspan='3' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='3'>";
+      echo "<td rowspan='4' class='middle'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='4'>";
       echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this,"name");
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][5] . "&nbsp;:</td><td>";
+      Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . "&nbsp;:</td><td>";
@@ -207,6 +211,11 @@ class SoftwareVersion extends CommonDBChild {
       $tab[2]['field']     =  'name';
       $tab[2]['linkfield'] ='name';
       $tab[2]['name']      = $LANG['common'][16];
+
+      $tab[4]['table']     = 'glpi_operatingsystems';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'operatingsystems_id';
+      $tab[4]['name']      = $LANG['setup'][5];
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
@@ -291,6 +300,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "<table class='tab_cadre'><tr>";
             echo "<th>&nbsp;".$LANG['software'][5]."&nbsp;</th>";
             echo "<th>&nbsp;".$LANG['state'][0]."&nbsp;</th>";
+            echo "<th>&nbsp;".$LANG['setup'][5]."&nbsp;</th>";
             echo "<th>&nbsp;".$LANG['software'][19]."&nbsp;</th>";
             echo "<th>&nbsp;".$LANG['common'][25]."&nbsp;</th>";
             echo "</tr>\n";
@@ -303,10 +313,11 @@ class SoftwareVersion extends CommonDBChild {
                echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>";
                echo $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
                echo "<td class='right'>".$data['sname']."</td>";
+              echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',$data['operatingsystems_id'])."</td>";
                echo "<td class='right'>$nb</td>";
                echo "<td>".$data['comment']."</td></tr>\n";
             }
-            echo "<tr class='tab_bg_1'><td class='right b' colspan='2'>".$LANG['common'][33]."</td>";
+            echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".$LANG['common'][33]."</td>";
             echo "<td class='right b'>$tot</td><td>";
             if ($canedit) {
                echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
