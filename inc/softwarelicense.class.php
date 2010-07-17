@@ -256,6 +256,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>".$LANG['software'][32]."&nbsp;:</td>";
       echo "<td>";
       showDateFormItem('expire',$this->fields["expire"]);
+      Alert::displayLastAlert('SoftwareLicense', $ID);
       echo "</td></tr>\n";
 
       if ($ID>0) {

@@ -162,6 +162,18 @@ class Alert extends CommonDBTM {
       Dropdown::showFromArray("default_infocom_alert",$tmp,
                               array('value'=>$value));
    }
+
+   static function displayLastAlert($itemtype, $items_id) {
+      global $DB,$LANG;
+      $query = "SELECT `date` FROM `glpi_alerts` WHERE `itemtype`='$itemtype' AND `items_id`='$items_id'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         echo "&nbsp;".$LANG['mailing'][52].' '.convDateTime($DB->result($result,0,'date'));
+      }
+      else {
+         return false;
+      }
+   }
 }
 
 ?>
