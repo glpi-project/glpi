@@ -281,8 +281,8 @@ class Software extends CommonDBTM {
                            'right'  => 'interface',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>" . $LANG['setup'][5] . "&nbsp;:</td><td>";
-      Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
+      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -291,9 +291,7 @@ class Software extends CommonDBTM {
       User::dropdown(array('value'  => $this->fields["users_id"],
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
-      echo "</td>";
-      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      echo "</td><td colspan='2'>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -355,10 +353,6 @@ class Software extends CommonDBTM {
 
       $tab+=Location::getSearchOptionsToAdd();
 
-      $tab[4]['table']     = 'glpi_operatingsystems';
-      $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'operatingsystems_id';
-      $tab[4]['name']      = $LANG['setup'][5];
 
       $tab[7]['table']     = 'glpi_softwarelicenses';
       $tab[7]['field']     = 'name';
@@ -453,6 +447,12 @@ class Software extends CommonDBTM {
       $tab[170]['name']         = $LANG['common'][25]." - ".$LANG['software'][5];
       $tab[170]['forcegroupby'] = true;
       $tab[170]['datatype']     = 'text';
+
+      $tab[4]['table']     = 'glpi_operatingsystems';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'operatingsystems_id';
+      $tab[4]['name']      = $LANG['setup'][5]." - ".$LANG['software'][5];
+      $tab[4]['forcegroupby'] = true;
 
 
       $tab['license'] = $LANG['software'][11];

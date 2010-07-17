@@ -105,8 +105,8 @@ class Dropdown {
       if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
          $params['value']=-1;
       }
-      
-      if ($params['value'] > 0 
+
+      if ($params['value'] > 0
          || ($itemtype == "Entity" && $params['value'] >= 0)) {
          $tmpname=Dropdown::getDropdownName($table,$params['value'],1);
          if ($tmpname["name"]!="&nbsp;") {
@@ -300,12 +300,6 @@ class Dropdown {
 
                      case "glpi_netpoints" :
                         $name .= " (".Dropdown::getDropdownName("glpi_locations",$data["locations_id"]).")";
-                        break;
-
-                     case "glpi_softwares" :
-                        if ($data["operatingsystems_id"]!=0 && $data["is_helpdesk_visible"] != 0)
-                           $comment.="<br>".$LANG['setup'][5]."&nbsp;: ".
-                                    Dropdown::getDropdownName("glpi_operatingsystems",$data["operatingsystems_id"]);
                         break;
                   }
                }
