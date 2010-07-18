@@ -165,13 +165,14 @@ class Alert extends CommonDBTM {
 
    static function displayLastAlert($itemtype, $items_id) {
       global $DB,$LANG;
-      $query = "SELECT `date` FROM `glpi_alerts` WHERE `itemtype`='$itemtype' AND `items_id`='$items_id'";
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         echo "&nbsp;".$LANG['mailing'][52].' '.convDateTime($DB->result($result,0,'date'));
-      }
-      else {
-         return false;
+      if ($items_id) {
+         $query = "SELECT `date` FROM `glpi_alerts`
+                     WHERE `itemtype`='$itemtype'
+                        AND `items_id`='$items_id' ORDER BY `date` DESC LIMIT 1";
+         $result = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
+            echo "&nbsp;".$LANG['mailing'][52].' '.convDateTime($DB->result($result,0,'date'));
+         }
       }
    }
 }
