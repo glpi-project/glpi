@@ -280,7 +280,9 @@ class Reminder extends CommonDBTM {
          echo "<div class='center'>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "<input type='hidden' name='id' value='$ID'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+         echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][22] .
+                         "\" class='submit' OnClick='return window.confirm(\"" .
+                         $LANG['common'][50]. "\");'>";
          echo "</div>";
          echo "</td></tr>\n";
       }
