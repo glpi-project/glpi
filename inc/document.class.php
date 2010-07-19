@@ -1168,7 +1168,7 @@ class Document extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
             echo "<input type='hidden' name='entities_id' value='$entity'>";
-            echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
+            echo "<input type='hidden' name='is_recursive' value='".($is_recursive?1:0)."'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
