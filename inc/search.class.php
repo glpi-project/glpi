@@ -4453,7 +4453,7 @@ class Search {
             break;
 
          case CSV_OUTPUT : //CSV
-            $out="\"".csv_clean($value)."\";";
+            $out="\"".csv_clean($value)."\"".$CFG_GLPI["csv_export_delimiter"];
             break;
 
          default :
@@ -4493,6 +4493,7 @@ class Search {
    *
    **/
    static function showItem($type,$value,&$num,$row,$extraparam='') {
+      global $CFG_GLPI;
 
       $out="";
       switch ($type) {
@@ -4513,7 +4514,7 @@ class Search {
 
          case CSV_OUTPUT : //csv
             $value = weblink_extract($value);
-            $out="\"".csv_clean($value)."\";";
+            $out="\"".csv_clean($value)."\"".$CFG_GLPI["csv_export_delimiter"];
             break;
 
          default :
