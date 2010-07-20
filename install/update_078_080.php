@@ -427,7 +427,7 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add date_mod field in glpi_softwarelicenses" . $LANG['update'][90] . $DB->error());
    }
 
-   if (!TableExists("glpi_cartridges_printermodels")) {
+   if (TableExists("glpi_cartridges_printermodels")) {
       $query = "RENAME TABLE `glpi_cartridges_printermodels`  TO `glpi_cartridgeitems_printermodels`  ;";
       $DB->query($query) or die("0.80 rename glpi_cartridges_printermodels " . $LANG['update'][90] . $DB->error());
    }
