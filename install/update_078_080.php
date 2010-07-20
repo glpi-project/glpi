@@ -54,7 +54,7 @@ function update078to080($output='HTML') {
    }
    displayMigrationMessage("080"); // Start
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Calendar'); // Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Calendar'); // Updating schema
 
    $default_calendar_id=0;
    if (!TableExists('glpi_calendars')) {
@@ -177,7 +177,7 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 create glpi_calendars_holidays " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - SLA'); // Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - SLA'); // Updating schema
 
 
    if (!TableExists('glpi_slas')) {
@@ -202,7 +202,7 @@ function update078to080($output='HTML') {
       $ADDTODISPLAYPREF['SLA']=array(4);
 
       // Get first Ticket template
-      $query="SELECT id FROM `glpi_notificationtemplates` WHERE `itemtype`='Ticket' ORDER BY id ASC";
+      $query="SELECT id FROM `glpi_notificationtemplates` WHERE `itemtype` LIKE 'Ticket%' ORDER BY id ASC";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
 
@@ -307,7 +307,53 @@ function update078to080($output='HTML') {
 
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Ticket'); // Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - PasswordForget'); // Updating schema
+
+   if (!FieldExists('glpi_users','token')) {
+      $query = "ALTER TABLE `glpi_users` ADD `token` char( 40 ) NULL DEFAULT ''";
+      $DB->query($query) or die("0.80 add token in glpi_users". $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_users','tokendate')) {
+      $query = "ALTER TABLE `glpi_users` ADD `tokendate` datetime NULL DEFAULT NULL";
+      $DB->query($query) or die("0.80 add tokendate in glpi_users". $LANG['update'][90] . $DB->error());
+   }
+
+   $query="SELECT * FROM `glpi_notificationtemplates` WHERE `name` = 'Password Forget'";
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                     VALUES(NULL, 'Password Forget', 'User', NOW(),'');";
+         $DB->query($query) or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
+         $notid=$DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                                 VALUES(NULL, $notid, '','##user.action##',
+                        '##lang.user.realname## ##lang.user.firstname## 
+
+##lang.user.information## 
+
+##lang.user.link## ##user.passwordforgeturl##',
+                        '&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;##lang.user.information##&lt;/p&gt;
+&lt;p&gt;##lang.user.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');"; 
+      $DB->query($query) or die("0.80 add password forget notification translation" . $LANG['update'][90] . $DB->error());
+
+      $query="INSERT INTO `glpi_notifications`
+                                VALUES (NULL, 'Password Forget', 0, 'User', 'passwordforget',
+                                       'mail',$notid,
+                                       '', 1, 1, NOW());";
+      $DB->query($query) or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
+      $notifid=$DB->insert_id();
+
+      $query = "INSERT INTO `glpi_notificationtargets`
+                     (`id`, `notifications_id`, `type`, `items_id`)
+                     VALUES (NULL, $notifid, 1, 19);";
+      $DB->query($query) or die("0.80 add password forget notification target" . $LANG['update'][90] . $DB->error());
+      }
+   }
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Ticket'); // Updating schema
 
 
    if (!FieldExists('glpi_tickets','ticket_waiting_duration')) {
@@ -484,7 +530,7 @@ function update078to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
+   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype='$type';";

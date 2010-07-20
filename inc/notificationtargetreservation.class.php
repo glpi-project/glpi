@@ -157,7 +157,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
       $tags_all = array('reservation.item'        => $LANG['financial'][104],
                     'reservation.itemtype'    => $LANG['reports'][12],
-                    'reservation.url'         => 'URL');
+                    'reservation.url'         => $LANG['common'][94]);
 
       foreach ($tags_all as $tag => $label) {
          $this->addTagToList(array('tag'=>$tag,'label'=>$label,
