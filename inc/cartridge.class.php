@@ -90,9 +90,7 @@ class Cartridge extends CommonDBTM {
             unset($ic->fields['buy_date']);
          }
          $ic->addToDB();
-      } else if ($CFG_GLPI["auto_create_infocoms"]) {
-         $ic->add(array('itemtype'=>__CLASS__,'items_id'=>$this->fields['id']));
-      }
+      } 
    }
 
    function restore($input,$history=1) {

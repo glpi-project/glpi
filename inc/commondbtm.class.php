@@ -541,7 +541,7 @@ class CommonDBTM extends CommonGLPI {
    *@return integer the new ID of the added item (or false if fail)
    **/
    function add($input) {
-      global $DB;
+      global $DB,$CFG_GLPI;
 
       if ($DB->isSlave()) {
          return false;
@@ -582,6 +582,14 @@ class CommonDBTM extends CommonGLPI {
             $this->addMessageOnAddAction();
             $this->post_addItem();
             doHook("item_add", $this);
+
+            // Auto create infocoms
+            if ($CFG_GLPI["auto_create_infocoms"] && in_array($this->getType(),$CFG_GLPI["infocom_types"])) {
+               $ic = new Infocom();
+               if (!$ic->getFromDBforDevice($this->getType(),$this->fields['id'])) {
+                  $ic->add(array('itemtype'=>$this->getType(),'items_id'=>$this->fields['id']));
+               }
+            }
             return $this->fields['id'];
          }
       }
