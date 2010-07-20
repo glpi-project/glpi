@@ -848,7 +848,7 @@ $LANG['ldap'][52]="Less than";
 $LANG['ldap'][53]="More than"; 
 $LANG['ldap'][54]="Enable filtering by date"; 
 $LANG['ldap'][55]="Disable filtering by date"; 
-$LANG['ldap'][56]="Weeks"; 
+$LANG['ldap'][56]="Недели"; 
 
 $LANG['links'][1]="Ссылка или имя файла"; 
 $LANG['links'][4]="Связанный с типом аппаратного обеспечения"; 
@@ -1778,7 +1778,7 @@ $LANG['software'][2]="Используется версия";
 $LANG['software'][3]="Not installed affected licenses"; 
 $LANG['software'][4]="Неограниченный"; 
 $LANG['software'][5]="Версии"; 
-$LANG['software'][6]="Publisher"; 
+$LANG['software'][6]="Разработчик"; 
 $LANG['software'][7]="Добавить версию"; 
 $LANG['software'][8]="Добавить лицензию"; 
 $LANG['software'][11]="Лицензии"; 
