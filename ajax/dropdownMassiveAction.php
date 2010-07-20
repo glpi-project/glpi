@@ -134,6 +134,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "purge" :
       case "restore" :
       case "add_transfer_list" :
+      case "activate_infocoms" :
       case "delete_email" :
       case 'reset':
          echo "<input type='submit' name='massiveaction' class='submit' value=\"".
