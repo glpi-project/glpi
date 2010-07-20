@@ -76,6 +76,10 @@ class Reminder extends CommonDBTM {
             $input['is_planned']=1;
             $input["begin"] = $input['_plan']["begin"];
             $input["end"] = $input['_plan']["end"];
+
+            if ($input["is_private"]) {
+               Planning::checkAlreadyPlanned($input["users_id"],$input["begin"],$input["end"]);
+            }
          } else {
             addMessageAfterRedirect($LANG['planning'][1],false,ERROR);
          }
@@ -114,6 +118,10 @@ class Reminder extends CommonDBTM {
             $input["begin"] = $input['_plan']["begin"];
             $input["end"] = $input['_plan']["end"];
             $input["state"] = $input['_plan']["state"];
+            if ($input["is_private"]) {
+               Planning::checkAlreadyPlanned($input["users_id"],$input["begin"],$input["end"],
+                           array('Reminder'=>array($input['id'])));
+            }
          } else {
             addMessageAfterRedirect($LANG['planning'][1],false,ERROR);
          }
@@ -365,6 +373,22 @@ class Reminder extends CommonDBTM {
     * Display a Planning Item
     *
     * @param $val Array of the item to display
+    *
+    * @return Already planned information
+    **/
+   static function getAlreadyPlannedInformation($val) {
+      global $CFG_GLPI;
+
+      $out=Reminder::getTypeName().' : '.convDateTime($val["begin"]).' -> '.convDateTime($val["end"]).' : ';
+      $out.="<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
+      $out.=resume_text($val["name"],80).'</a>';
+      return $out;
+   }
+
+   /**
+    * Display a Planning Item
+    *
+    * @param $val Array of the item to display
     * @param $who ID of the user (0 if all)
     * @param $type position of the item in the time block (in, through, begin or end)
     * @param $complete complete display (more details)
@@ -403,7 +427,7 @@ class Reminder extends CommonDBTM {
             echo $LANG['buttons'][32]." ".date("H:i",strtotime($val["end"])).": ";
             break;
       }
-      echo $val["name"];
+      echo resume_text($val["name"],80);
       echo $users_id;
       echo "</a>";
       if ($complete) {
