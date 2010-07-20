@@ -1392,7 +1392,7 @@ class CommonDBTM extends CommonGLPI {
                                                     $LANG['buttons'][22]."\" class='submit'>";
             }else {
                if (!$this->maybeDeleted()) {
-                  echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
+                  echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][22] .
                          "\" class='submit' OnClick='return window.confirm(\"" .
                          $LANG['common'][50]. "\");'>";
                } else {

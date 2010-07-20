@@ -3253,7 +3253,7 @@ class Ticket extends CommonDBTM {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
                echo "</td><td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' class='submit' name='delete' value='".$LANG['buttons'][6]."'
+               echo "<input type='submit' class='submit' name='delete' value='".$LANG['buttons'][22]."'
                               OnClick='return window.confirm(\"".$LANG['common'][50]."\");'>";
             } else {
                echo "<td class='tab_bg_2 center' colspan='4'>";
