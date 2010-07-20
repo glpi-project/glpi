@@ -101,6 +101,7 @@ class SoftwareLicense extends CommonDBTM {
    }
 
    function post_addItem() {
+      global $CFG_GLPI;
 
       $itemtype = 'Software';
       $dupid = $this->fields["softwares_id"];
@@ -125,6 +126,8 @@ class SoftwareLicense extends CommonDBTM {
          }
          $ic->fields["itemtype"] = $this->getType();
          $ic->addToDB();
+      } else if ($CFG_GLPI["auto_create_infocoms"]) {
+         $ic->add(array('itemtype'=>__CLASS__,'items_id'=>$this->fields['id']));
       }
    }
 

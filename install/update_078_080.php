@@ -442,6 +442,11 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 drop dbreplicate_email field in glpi_configs" . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_configs","auto_create_infocoms")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `auto_create_infocoms` tinyint( 1 ) NOT NULL DEFAULT '0' ";
+      $DB->query($query) or die("0.80 add auto_create_infocoms field in glpi_configs" . $LANG['update'][90] . $DB->error());
+   }
+
    if (!FieldExists("glpi_configs","csv_delimiter")) {
       $query = "ALTER TABLE `glpi_configs` ADD `csv_delimiter` CHAR( 1 ) NOT NULL AFTER `number_format` ";
       $DB->query($query) or die("0.80 add csv_delimiter field in glpi_configs" . $LANG['update'][90] . $DB->error());
