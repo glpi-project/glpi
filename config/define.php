@@ -269,7 +269,7 @@ $CFG_GLPI["systeminformations_type"] = array ('DBConnection','Plugin','AuthLDAP'
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]=0;
 $CFG_GLPI["decimal_number"]=2;
-
+$CFG_GLPI["csv_export_delimiter"]=';';
 
 // Default debug options : may be locally overriden
 $CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_lang"]=1;
