@@ -437,9 +437,22 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add have_hdmi field in glpi_monitors" . $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists("glpi_configs","dbreplicate_email")) {
+   if (FieldExists("glpi_configs","dbreplicate_email")) {
       $query = "ALTER TABLE `glpi_configs` DROP `dbreplicate_email`";
       $DB->query($query) or die("0.80 drop dbreplicate_email field in glpi_configs" . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_configs","csv_delimiter")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `csv_delimiter` CHAR( 1 ) NOT NULL AFTER `number_format` ";
+      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_configs" . $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_configs` SET `csv_delimiter` = ';'";
+      $DB->query($query);
+   }
+
+   if (!FieldExists("glpi_users","csv_delimiter")) {
+      $query = "ALTER TABLE `glpi_users` ADD `csv_delimiter` CHAR( 1 ) NULL AFTER `number_format` ";
+      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_users" . $LANG['update'][90] . $DB->error());
+
    }
 
 
@@ -458,7 +471,7 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 drop operatingsystems_id field in glpi_softwares" . $LANG['update'][90] . $DB->error());
    }
 
-   if (FieldExists('glpi_users','names_format')) {
+   if (!FieldExists('glpi_users','names_format')) {
       $query = "ALTER TABLE `glpi_users`
                 ADD `names_format` INT( 11 ) NULL DEFAULT NULL AFTER `number_format`";
 

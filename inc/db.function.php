@@ -913,7 +913,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0) {
    if (strlen($realname)>0) {
       $temp=$realname;
       if (strlen($firstname)>0) {
-         if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
+         if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
             $temp=$firstname." ".$temp;
          } else {
             $temp.=" ".$firstname;

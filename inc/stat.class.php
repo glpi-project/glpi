@@ -1070,15 +1070,15 @@ class Stat {
                }
                ksort($values);
                // Print labels
-               fwrite($fp,$CFG_GLPI["csv_export_delimiter"]);
+               fwrite($fp,$_SESSION["glpicsv_delimiter"]);
                foreach ($labels as $val) {
-                  fwrite($fp,$val.$CFG_GLPI["csv_export_delimiter"]);
+                  fwrite($fp,$val.$_SESSION["glpicsv_delimiter"]);
                }
                fwrite($fp,"\n");
                foreach ($values as $key => $data) {
-                  fwrite($fp,$key.$CFG_GLPI["csv_export_delimiter"]);
+                  fwrite($fp,$key.$_SESSION["glpicsv_delimiter"]);
                   foreach ($data as $value) {
-                     fwrite($fp,$value.$CFG_GLPI["csv_export_delimiter"]);
+                     fwrite($fp,$value.$_SESSION["glpicsv_delimiter"]);
                   }
                   fwrite($fp,"\n");
                }

@@ -1736,7 +1736,7 @@ class User extends CommonDBTM {
          }
          $query .= " WHERE $where ";
 
-         if ($CFG_GLPI["names_format"] == FIRSTNAME_BEFORE) {
+         if ($_SESSION["glpinames_format"] == FIRSTNAME_BEFORE) {
             $query.=" ORDER BY `glpi_users`.`firstname`,
                                `glpi_users`.`realname`,
                                `glpi_users`.`name` ";

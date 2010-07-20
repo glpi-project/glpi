@@ -623,38 +623,36 @@ class Config extends CommonDBTM {
         echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "<td>" . $LANG['setup'][150] . "&nbsp;:</td>";
-      echo "<td><select name='number_format'>";
-      echo "<option value='0'";
-      if ($data["number_format"] == 0) {
-         echo " selected";
-      }
-      echo ">1 234.56</option>";
-      echo "<option value='1'";
-      if ($data["number_format"] == 1) {
-         echo " selected";
-      }
-      echo ">1,234.56</option>";
-      echo "<option value='2'";
-      if ($data["number_format"] == 2) {
-         echo " selected";
-      }
-      echo ">1 234,56</option>";
-      echo "</select></td></tr>";
 
+      $values=array(0=>'1 234.56',1=>'1,234.56',2=>'1 234,56');
+      echo "<td>";
+      Dropdown::showFromArray('number_format',$values,array('value'=>$data["number_format"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<tr class='tab_bg_2'>";
          echo "<td>" . $LANG['setup'][132] . "&nbsp;:</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
          echo "</td>";
+      } else {
+        echo "<td colspan='2'>&nbsp;</td>";
       }
 
       echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
       $values = array (REALNAME_BEFORE  =>$LANG['common'][48]." ".$LANG['common'][43],
                        FIRSTNAME_BEFORE =>$LANG['common'][43]." ".$LANG['common'][48]);
-      Dropdown::showFromArray('names_format',$values,array('value'=>$CFG_GLPI["names_format"]));
-      echo "</td><tr>";
-      echo "<tr class='tab_bg_2'>";
+      Dropdown::showFromArray('names_format',$values,array('value'=>$data["names_format"]));
+      echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='2'></td>";
+      echo "<td>".$LANG['setup'][7]."&nbsp;:</td><td>";
+      $values = array (';'  =>';',','  =>',');
+
+      Dropdown::showFromArray('csv_delimiter',$values,array('value'=>$data["csv_delimiter"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
          echo "<td>" . $LANG['setup'][129] . "&nbsp;:</td><td>";
          Dropdown::showYesNo("is_ids_visible", $data["is_ids_visible"]);
