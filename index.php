@@ -145,6 +145,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a>';
       echo '</div>';
    }
+   if ($CFG_GLPI["use_mailing"]) {
+      echo '<div id="box-faq"><a href="front/lostpassword.php?lostpassword=1">[ '.$LANG['users'][3].' ]</a>';
+      echo '</div>';
+   }
 
    echo "</div>"; // end contenu login
 

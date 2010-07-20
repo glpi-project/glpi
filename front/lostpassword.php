@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id$
+ * @version $Id: preference.php 11521 2010-06-01 12:55:07Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -39,44 +39,27 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $user = new User();
 
-
 // Manage lost password
-if (isset($_GET['lostpassword'])) {
-   nullHeader();
-   if (isset($_GET['token'])) {
-      User::showPasswordForgetChangeForm($_GET['token']);
+simpleHeader($LANG['users'][3]);
+
+if (!$CFG_GLPI['use_mailing']) {
+   exit();
+}
+if (isset($_REQUEST['token'])) {
+   
+   if (isset($_REQUEST['email'])) {
+      $user->updateForgottenPassword($_REQUEST);
+   } else {
+      User::showPasswordForgetChangeForm($_REQUEST['token']);
+   }
+} else {
+
+   if (isset($_REQUEST['email'])) {
+      $user->forgetPassword($_REQUEST['email']);
    } else {
       User::showPasswordForgetRequestForm();
    }
-   nullFooter();
-   exit();
 }
-
-
-
-checkLoginUser();
-
-if (isset ($_POST["update"]) && $_POST["id"] === getLoginUserID()) {
-   $user->update($_POST);
-   Event::log(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " .
-              $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else {
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      commonHeader($LANG['title'][13], $_SERVER['PHP_SELF'],'preference');
-   } else {
-      helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
-   }
-
-   $pref = new Preference();
-   $pref->show();
-
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      commonFooter();
-   } else {
-      helpFooter();
-   }
-}
-
+nullFooter();
+exit();
 ?>

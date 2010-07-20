@@ -836,6 +836,19 @@ class Auth {
       if (AuthMail::useAuthMail()) {
          return true;
       }
+
+      if (!empty($CFG_GLPI["x509_email_field"])) {
+         return true;
+      }
+      // Existing auth method
+      if (!empty($CFG_GLPI["existing_auth_server_field"])) {
+         return true;
+      }
+      // Using CAS server
+      if (!empty($CFG_GLPI["cas_host"])) {
+         return true;
+      }
+
       return false;
    }
 

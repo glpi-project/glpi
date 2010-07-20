@@ -278,6 +278,32 @@ class User extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Retrieve an item from the database using its email
+    *
+    *@param $email login of the user
+    *@return true if succeed else false
+    *
+   **/
+   function getFromDBbyEmail($email) {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `".$this->getTable()."`
+                WHERE `email` = '$email'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
 
    function prepareInputForAdd($input) {
       global $DB,$LANG;
@@ -373,18 +399,19 @@ class User extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $LANG,$CFG_GLPI;
-
       if (isset($input["password2"])) {
          // Empty : do not update
          if (empty($input["password"])) {
             unset($input["password"]);
          } else {
-
             if ($input["password"]==$input["password2"]) {
                // Check right : my password of user with lesser rights
                if (isset($input['id'])
                    && ($input['id'] == getLoginUserID()
-                       || $this->currentUserHaveMoreRightThan($input['id']) )) {
+                       || $this->currentUserHaveMoreRightThan($input['id'])
+                       || ($input['token'] == $this->fields['token'] // Permit to change password with token and email
+                           && (abs(strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)
+                           && $input['email'] == $this->fields['email']))) {
                   $input["password"] = sha1(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
                } else {
                   unset($input["password"]);
@@ -439,7 +466,6 @@ class User extends CommonDBTM {
             }
          }
       }
-
       return $input;
    }
 
@@ -2275,6 +2301,143 @@ class User extends CommonDBTM {
          return $DB->result($result,0,'id');
       }
       return false;
+   }
+
+   /// Show form for password recovery
+   static function showPasswordForgetChangeForm ($token) {
+      global $LANG,$CFG_GLPI,$DB;
+      
+      // Verif token.
+      $token_ok=false;
+      $query="SELECT * FROM `glpi_users` WHERE `token` = '$token' AND NOW() < ADDDATE(`tokendate`, INTERVAL 1 DAY)";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)==1) {
+            $token_ok=true;
+         }
+      }
+      echo "<div class='center'>";
+
+      if ($token_ok) {
+         echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc']."/front/lostpassword.php'>";
+         echo "<table class='tab_cadre'>";
+         echo "<tr><th colspan='2'>" . $LANG['users'][3];
+         echo "</th></tr>";
+         echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['users'][11];
+         echo "</td></tr>";
+   
+         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14]."</td>";
+         echo "<td><input type='text' name='email' value='' size='60'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['login'][7]."</td>";
+         echo "<td><input type='password' name='password' value='' size='20'
+                              autocomplete='off'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][20]."</td>";
+         echo "<td><input type='password' name='password2' value='' size='20'
+                              autocomplete='off'>";
+         echo "</td></tr>";
+   
+         echo "<tr class='tab_bg_2 center'><td colspan='2'>";
+         echo "<input type='hidden' name='token' value='$token'>";
+         echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
+         echo "</td></tr>";
+   
+        echo "</table></form>";     
+      } else {
+         echo $LANG['users'][12];
+      }
+      echo "</div>";
+   }
+
+   /// Show form for password recovery
+   static function showPasswordForgetRequestForm () {
+      global $LANG,$CFG_GLPI;
+      echo "<div class='center'>";
+      echo "<form method='post' name='forgetpassword' action='".$CFG_GLPI['root_doc']."/front/lostpassword.php'>";
+      echo "<table class='tab_cadre'>";
+      echo "<tr><th colspan='2'>" . $LANG['users'][3];
+      echo "</th></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['users'][7];
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2 center'><td><input type='text' size='60' name='email' value=''></td><td>";
+      echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
+      echo "</td></tr>";
+
+      echo "</table></form></div>";     
+
+   }
+
+   function updateForgottenPassword($input) {
+      global $LANG,$CFG_GLPI;
+      echo "<div class='center'>";
+      if ($this->getFromDBbyEmail($input['email'])) {
+         if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
+            if ($input['token']==$this->fields['token']
+               && (abs(strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['tokendate'])) < DAY_TIMESTAMP)) {
+               $input['id']=$this->fields['id'];
+               if ($this->update($input)) {
+                 echo $LANG['users'][13];
+                 // 
+                 $input2['token']='';
+                 $input2['tokendate']=NULL;
+                 $input2['id']=$this->fields['id'];
+                 $this->update($input2);
+               } else {
+                  // Force display on error
+                  displayMessageAfterRedirect();
+               }
+            } else {
+               echo $LANG['users'][12];
+            }
+         } else {
+            echo $LANG['users'][9];
+         }
+      } else {
+         echo $LANG['users'][8];
+      }
+      echo "<br>";
+      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".$LANG['buttons'][13]."</a>";
+      echo "</div>";
+   }
+
+   /**
+    * Send password recovery for a user.
+    *
+    * @param $email email of the user
+    *
+    * @return nothing : send email or display error message
+    */
+   function forgetPassword($email) {
+      global $DB,$LANG,$CFG_GLPI;
+
+      echo "<div class='center'>";
+      if ($this->getFromDBbyEmail($email)) {
+         // Send token if auth DB or not external auth defined
+         if ($this->fields["authtype"]== Auth::DB_GLPI || !Auth::useAuthExt()) {
+
+            if (NotificationMail::isUserAddressValid($email)) {
+               $input['token']=sha1(getRandomString(30));
+               $input['tokendate']=$_SESSION["glpi_currenttime"];
+               $input['id']=$this->fields['id'];
+               $this->update($input);
+               NotificationEvent::raiseEvent('passwordforget',$this);
+               echo $LANG['users'][10];
+            } else {
+               echo $LANG['mailing'][110];
+            }
+         } else {
+            echo $LANG['users'][9];
+         }
+
+      } else {
+         echo $LANG['users'][8];
+      }
+      echo "<br>";
+      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".$LANG['buttons'][13]."</a>";
+      echo "</div>";
    }
 }
 

@@ -868,7 +868,7 @@ class NotificationTargetTicket extends NotificationTarget {
       //Locales
       $tags = array ('ticket.id'                    => $LANG['common'][2],
                      'ticket.title'                 => $LANG['common'][16],
-                     'ticket.url'                   => 'URL',
+                     'ticket.url'                   => $LANG['common'][94],
                      'ticket.entity'                => $LANG['entity'][0],
                      'ticket.category'              => $LANG['common'][36],
                      'ticket.content'               => $LANG['joblist'][6],

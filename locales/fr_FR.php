@@ -320,6 +320,7 @@ $LANG['common'][90] = "Objet";
 $LANG['common'][91] = "Cet élément est dépendant d'un autre. La modification de cet attribut est interdit.";
 $LANG['common'][92] = "Contact";
 $LANG['common'][93] = "Nouvel intitulé enfant";
+$LANG['common'][94] = "URL";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -2140,6 +2141,17 @@ $LANG['update'][142]="Redressement des données";
 
 $LANG['users'][1]="Titre";
 $LANG['users'][2]="Catégorie";
+$LANG['users'][3]="Mot de passe oublié ?";
+$LANG['users'][4]="Jeton";
+$LANG['users'][5]="Vous avez demandé la réinitialisation de votre mot de passe.";
+$LANG['users'][6]="Il vous suffit de suivre ce lien (vous avez une journée) : ";
+$LANG['users'][7]="Veuillez saisir votre adresse e-mail. Vous recevrez un email vous permettant de changer votre mot de passe.";
+$LANG['users'][8]="L'email demandé est inconnu.";
+$LANG['users'][9]="La configuration de l'authentification ne vous permet pas de changer votre mot de passe.";
+$LANG['users'][10]="Email expédié. Veuillez vous reportez à celui-ci pour changer votre mot de passe.";
+$LANG['users'][11]="Veuillez confirmer votre email et saisir votre nouveau mot de passe.";
+$LANG['users'][12]="La demande de renouvellement de mot de passe a expirée ou est invalide. Merci de la renouveller.";
+$LANG['users'][13]="Mot de passe modifié avec succès.";
 
 $LANG['validation'][0]="Validation";
 $LANG['validation'][1]="Envoyer une demande de validation";
