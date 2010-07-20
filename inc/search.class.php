@@ -1770,7 +1770,7 @@ class Search {
       switch ($table.".".$field) {
          case "glpi_contacts.completename" :
             // Contact for display in the enterprise item
-            if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
+            if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
                $name1='firstname';
                $name2='name';
             } else {
@@ -2222,7 +2222,7 @@ class Search {
                   return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
                }
             } else {
-               if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
+               if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
                   $name1='firstname';
                   $name2='realname';
                } else {
@@ -2308,7 +2308,7 @@ class Search {
             if (in_array($searchtype,array('equals','notequals'))) {
                return " $link `$table`.`id`".$SEARCH;
             } else {
-               if ($CFG_GLPI["names_format"]==FIRSTNAME_BEFORE) {
+               if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
                   $name1='firstname';
                   $name2='name';
                } else {
@@ -2710,9 +2710,10 @@ class Search {
             }
             break;
          case "glpi_operatingsystems" :
-            if ($itemtype='Software') {
+            if ($itemtype=='Software') {
                return " LEFT JOIN `glpi_operatingsystems` ON (`glpi_softwareversions`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)";
             }
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
             break;
          case "glpi_reservationitems" :
             return "";
@@ -4575,7 +4576,7 @@ class Search {
             break;
 
          case CSV_OUTPUT : //CSV
-            $out="\"".csv_clean($value)."\"".$CFG_GLPI["csv_export_delimiter"];
+            $out="\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
          default :
@@ -4636,7 +4637,7 @@ class Search {
 
          case CSV_OUTPUT : //csv
             $value = weblink_extract($value);
-            $out="\"".csv_clean($value)."\"".$CFG_GLPI["csv_export_delimiter"];
+            $out="\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
          default :

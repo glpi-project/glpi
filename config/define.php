@@ -269,7 +269,6 @@ $CFG_GLPI["systeminformations_type"] = array ('DBConnection','Plugin','AuthLDAP'
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]=0;
 $CFG_GLPI["decimal_number"]=2;
-$CFG_GLPI["csv_export_delimiter"]=';';
 
 // Default debug options : may be locally overriden
 $CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_lang"]=1;
@@ -280,6 +279,6 @@ $CFG_GLPI['user_pref_field'] = array('date_format','default_requesttypes_id','dr
       'followup_private','task_private','is_categorized_soft_expanded','is_ids_visible',
       'is_not_categorized_soft_expanded','language','list_limit','number_format','priority_1',
       'priority_2','priority_3','priority_4','priority_5','priority_6',
-      'show_jobs_at_login','use_flat_dropdowntree','names_format');
+      'show_jobs_at_login','use_flat_dropdowntree','names_format','csv_delimiter');
 
 ?>
