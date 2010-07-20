@@ -389,6 +389,19 @@ if (isset($_POST["itemtype"])) {
             }
             break;
 
+         case "activate_infocoms" :
+               $ic = new Infocom();
+               if ($ic->canCreate()) {
+                  foreach ($_POST["item"] as $key => $val) {
+                     $input = array('itemtype' => $_POST['itemtype'],
+                                    'items_id'  => $key);
+                     if (!$ic->getFromDBforDevice($_POST['itemtype'],$key)) {
+                        $ic->add($input);
+                     }
+                  }
+               }
+            break;
+
          case "change_authtype" :
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {

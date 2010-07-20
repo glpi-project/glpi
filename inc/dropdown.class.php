@@ -1137,10 +1137,14 @@ class Dropdown {
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
-            && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"])&& $infocom->canUpdate())
+            && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
                         || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
 
             echo "<option value='update'>".$LANG['buttons'][14]."</option>";
+         }
+
+         if (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canCreate() ) {
+            echo "<option value='activate_infocoms'>".$LANG['financial'][68]."</option>";
          }
 
          if ($is_deleted) {
