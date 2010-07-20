@@ -1343,7 +1343,7 @@ function generate_entity($ID_entity){
 
 		// Ajout d'un ecran sur l'ordi
 
-		$query="INSERT INTO glpi_monitors VALUES (NULL,'$ID_entity','monitor $i-$ID_entity',NOW(),'contact $i','num $i','$techID','comment $i','".getRandomString(10)."','".getRandomString(10)."','".mt_rand(14,22)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','$loc','".mt_rand(1,$MAX['model_monitors'])."','".mt_rand(1,$MAX['type_monitors'])."','".mt_rand(1,$MAX['manufacturer'])."','0','0','0','','notes monitor $i','".$userID."','".$groupID."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+		$query="INSERT INTO glpi_monitors VALUES (NULL,'$ID_entity','monitor $i-$ID_entity',NOW(),'contact $i','num $i','$techID','comment $i','".getRandomString(10)."','".getRandomString(10)."','".mt_rand(14,22)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','$loc','".mt_rand(1,$MAX['model_monitors'])."','".mt_rand(1,$MAX['type_monitors'])."','".mt_rand(1,$MAX['manufacturer'])."','0','0','0','','notes monitor $i','".$userID."','".$groupID."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$monID=$DB->insert_id();
 		addDocuments('Monitor',$monID);
@@ -1482,9 +1482,8 @@ function generate_entity($ID_entity){
 
 		$loc=mt_rand(1,$MAX['locations']);
 		$techID=mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
-		$os=mt_rand(1,$MAX['os']);
 		$recursive=mt_rand(0,1);
-		$query="INSERT INTO glpi_softwares VALUES (NULL,'$ID_entity','$recursive','$name','comment $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','0','1','".mt_rand(1,$MAX['softwarecategory'])."')";
+		$query="INSERT INTO glpi_softwares VALUES (NULL,'$ID_entity','$recursive','$name','comment $i','$loc','$techID','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','0','1','".mt_rand(1,$MAX['softwarecategory'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$softID=$DB->insert_id();
 		addDocuments('Software',$softID);
@@ -1504,7 +1503,8 @@ function generate_entity($ID_entity){
 			if (isset($items[$i])) {
 				$version=$items[$i][mt_rand(1,count($items[$i])-1)];
 			} else $version="$j.0";
-			$query="INSERT INTO glpi_softwareversions VALUES (NULL, '$ID_entity','$recursive', $softID, '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','$version','comment $version')";
+         		$os=mt_rand(1,$MAX['os']);
+			$query="INSERT INTO glpi_softwareversions VALUES (NULL, '$ID_entity','$recursive', $softID, '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','$version','comment $version','$os')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$versID=$DB->insert_id();
 			$val3=mt_rand(1,$MAX['softwareinstall']);
@@ -1519,7 +1519,7 @@ function generate_entity($ID_entity){
 		for ($j=0;$j<$val2;$j++){
 			$softwareversions_id_buy=mt_rand($FIRST["version"],$LAST["version"]);
 			$softwareversions_id_use=mt_rand($softwareversions_id_buy,$LAST["version"]);
-			$query="INSERT INTO glpi_softwarelicenses VALUES (NULL,$softID,'$ID_entity','$recursive','".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$softwareversions_id_buy','$softwareversions_id_use',NULL,0,'comment license $j')";
+			$query="INSERT INTO glpi_softwarelicenses VALUES (NULL,$softID,'$ID_entity','$recursive','".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$softwareversions_id_buy','$softwareversions_id_use',NULL,0,'comment license $j',NOW())";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 
