@@ -41,11 +41,11 @@ if (!defined('GLPI_ROOT')){
 
 class Planning {
 
-/**
- * Get planning state name
- *
- * @param $value status ID
- */
+   /**
+   * Get planning state name
+   *
+   * @param $value status ID
+   */
    static function getState($value) {
       global $LANG;
 
@@ -78,6 +78,37 @@ class Planning {
       echo "<option value='1'".($value==1?" selected ":"").">".$LANG['planning'][17]."</option>";
       echo "<option value='2'".($value==2?" selected ":"").">".$LANG['planning'][18]."</option>";
       echo "</select>";
+   }
+
+   /**
+    * Check already planned user for a period
+    *
+    * @param $users_id user id
+    * @param $begin begin date
+    * @param $end end date
+    * @param $except array of items which not be into account array('Reminder'=>array(1,2,id_of_items))
+    */
+   static function checkAlreadyPlanned($users_id,$begin,$end,$except=array()) {
+      global $CFG_GLPI,$LANG;
+      
+      $planned=false;
+      $message='';
+      foreach ($CFG_GLPI['planning_itemtype'] as $itemtype) {
+         $data=$itemtype::populatePlanning($users_id, 0, $begin, $end);
+         if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
+            foreach ($data as $key => $val) {
+               if (!isset($except[$itemtype]) || 
+                  (is_array($except[$itemtype]) && !in_array($val['id'],$except[$itemtype]))) {
+                  $planned=true;
+                  $message.='- '.$itemtype::getAlreadyPlannedInformation($val).'<br>';
+               }
+            }
+         }
+      }
+      if ($planned) {
+         addMessageAfterRedirect($LANG['planning'][2].'<br>'.$message,false,ERROR);
+      }
+      return $planned;
    }
 
    /**

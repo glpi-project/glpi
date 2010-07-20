@@ -146,10 +146,13 @@ class TicketPlanning extends CommonDBTM {
          $this->displayError("date");
          return false;
       }
-      if ($this->is_alreadyplanned()) {
+      Planning::checkAlreadyPlanned($input["users_id"],$input["begin"],$input["end"],
+                  array('TicketPlanning'=>array($input["id"])));
+
+/*      if ($this->is_alreadyplanned()) {
          $this->displayError("is_res");
          return false;
-      }
+      }*/
       // Restore fields
       $this->fields=$oldfields;
 
@@ -208,10 +211,11 @@ class TicketPlanning extends CommonDBTM {
          $this->displayError("date");
          return false;
       }
-      if ($this->is_alreadyplanned()) {
+      Planning::checkAlreadyPlanned($input["users_id"],$input["begin"],$input["end"]);
+/*      if ($this->is_alreadyplanned()) {
          $this->displayError("is_res");
          return false;
-      }
+      }*/
       return $input;
    }
 
@@ -428,6 +432,22 @@ class TicketPlanning extends CommonDBTM {
          }
       }
       return $interv;
+   }
+
+   /**
+    * Display a Planning Item
+    *
+    * @param $val Array of the item to display
+    *
+    * @return Already planned information
+    **/
+   static function getAlreadyPlannedInformation($val) {
+      global $CFG_GLPI;
+
+      $out=Ticket::getTypeName().' : '.convDateTime($val["begin"]).' -> '.convDateTime($val["end"]).' : ';
+      $out.="<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$val["tickets_id"]."'>";
+      $out.=resume_text($val["name"],80).'</a>';
+      return $out;
    }
 
    /**

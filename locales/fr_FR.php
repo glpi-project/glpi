@@ -1407,6 +1407,7 @@ $LANG['phones'][40]="Nombre de lignes";
 
 $LANG['planning'][0]="Le technicien demandé a déjà une intervention prévue pour cette plage.";
 $LANG['planning'][1]="Erreur dans l'entrée de vos dates. La date de début est sûrement supérieure à la date de fin";
+$LANG['planning'][2]="L'utilisateur est déjà occupé pour la période utilisée :";
 $LANG['planning'][5]="Journée";
 $LANG['planning'][6]="Semaine";
 $LANG['planning'][8]="Intervention";
