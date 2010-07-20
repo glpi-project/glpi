@@ -1719,6 +1719,7 @@ $LANG['setup'][4]="Types d'ordinateurs";
 $LANG['setup'][5]="Système d'exploitation";
 $LANG['setup'][6]="Personnalisation";
 $LANG['setup'][7]="Délimiteur CSV";
+$LANG['setup'][8]="Activer les informations financières par défaut";
 $LANG['setup'][9]="Interface réseau";
 $LANG['setup'][10]="Ordre d'affichage du nom complet";
 $LANG['setup'][14]="Email";

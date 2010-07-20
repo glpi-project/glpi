@@ -257,10 +257,8 @@ class Config extends CommonDBTM {
                                        $CFG_GLPI["monitors_management_restrict"]);
       echo "</td</tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][360] . "&nbsp;:</td><td>";
-      $tab=array(0=>$LANG['common'][59],1=>$LANG['entity'][8]);
-      Dropdown::showFromArray('use_autoname_by_entity', $tab,
-                        array('value' => $CFG_GLPI["use_autoname_by_entity"]));
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][8] . "&nbsp;:</td><td>";
+      Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
       echo "</td>";
       echo "</td><td> " . $LANG['setup'][272] . "&nbsp;:</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
@@ -284,7 +282,16 @@ class Config extends CommonDBTM {
       echo "<td> " . $LANG['setup'][275] . "&nbsp;:</td><td>";
       $this->dropdownGlobalManagement("printers_management_restrict",
                                       $CFG_GLPI["printers_management_restrict"]);
-      echo "</td></tr></table>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][360] . "&nbsp;:</td><td>";
+      $tab=array(0=>$LANG['common'][59],1=>$LANG['entity'][8]);
+      Dropdown::showFromArray('use_autoname_by_entity', $tab,
+                        array('value' => $CFG_GLPI["use_autoname_by_entity"]));
+      echo "</td>";
+      echo "</td><td colspan='2'>&nbsp;";
+      echo "</td></tr>";
+      echo "</table>";
 
       echo "<br><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>" . $LANG['setup'][280]. " (" . $LANG['peripherals'][32] . ")</th>";

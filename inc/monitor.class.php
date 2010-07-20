@@ -109,12 +109,13 @@ class Monitor extends CommonDBTM {
    }
 
    function post_addItem() {
-      global $DB;
+      global $DB,$CFG_GLPI;
+
+      $ic= new Infocom();
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
          if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
             $ic->fields["items_id"]=$this->fields['id'];
             unset ($ic->fields["id"]);
@@ -129,7 +130,8 @@ class Monitor extends CommonDBTM {
                unset($ic->fields['buy_date']);
             }
             $ic->addToDB();
-         }
+         } 
+
          // ADD Contract
          $query = "SELECT `contracts_id`
                    FROM `glpi_contracts_items`
@@ -159,6 +161,11 @@ class Monitor extends CommonDBTM {
             }
          }
       }
+
+      if ($CFG_GLPI["auto_create_infocoms"] && !$ic->getFromDBforDevice($this->getType(),$this->fields['id'])) {
+         $ic->add(array('itemtype'=>__CLASS__,'items_id'=>$this->fields['id']));
+      }
+
    }
 
    function cleanDBonPurge() {

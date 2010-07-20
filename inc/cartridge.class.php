@@ -75,7 +75,8 @@ class Cartridge extends CommonDBTM {
    }
 
    function post_addItem() {
-      // Add infocoms if exists for the licence
+      global $CFG_GLPI;
+      // Add infocoms if exists for the cartridgeitem
       $ic=new Infocom();
 
       if ($ic->getFromDBforDevice('CartridgeItem',$this->fields["cartridgeitems_id"])) {
@@ -89,6 +90,8 @@ class Cartridge extends CommonDBTM {
             unset($ic->fields['buy_date']);
          }
          $ic->addToDB();
+      } else if ($CFG_GLPI["auto_create_infocoms"]) {
+         $ic->add(array('itemtype'=>__CLASS__,'items_id'=>$this->fields['id']));
       }
    }
 

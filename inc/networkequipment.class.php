@@ -104,12 +104,12 @@ class NetworkEquipment extends CommonDBTM {
    }
 
    function post_addItem() {
-      global $DB;
+      global $DB,$CFG_GLPI;
 
+      $ic= new Infocom();
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
          if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
             $ic->fields["items_id"]=$this->fields['id'];
             unset ($ic->fields["id"]);
@@ -126,7 +126,8 @@ class NetworkEquipment extends CommonDBTM {
             $ic->fields["entities_id"]=$this->fields['entities_id'];
             $ic->fields["is_recursive"]=$this->fields['is_recursive'];
             $ic->addToDB();
-         }
+         } 
+
          // ADD Ports
          $query = "SELECT `id`
                    FROM `glpi_networkports`
@@ -180,6 +181,10 @@ class NetworkEquipment extends CommonDBTM {
                                    'items_id' => $this->fields['id']));
             }
          }
+      }
+ 
+      if ($CFG_GLPI["auto_create_infocoms"] && !$ic->getFromDBforDevice($this->getType(),$this->fields['id'])) {
+         $ic->add(array('itemtype'=>__CLASS__,'items_id'=>$this->fields['id']));
       }
    }
 
