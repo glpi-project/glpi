@@ -372,8 +372,8 @@ class Dropdown {
                $options[$type]=$item->getTypeName();
             }
          }
-         asort($options);
       }
+      asort($options);
       return Dropdown::showFromArray($name,$options,array('value'  => $value,'used'  => $used));
    }
 
