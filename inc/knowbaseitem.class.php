@@ -666,6 +666,82 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td></tr>";
       echo "</table></div>";
 }
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         =  'name';
+      $tab[1]['linkfield']     = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = $this->getType();
+
+      $tab[2]['table']     = $this->getTable();
+      $tab[2]['field']     = 'id';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['common'][2];
+
+      $tab[4]['table']     = 'glpi_knowbaseitemcategories';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'knowbaseitemcategories_id';
+      $tab[4]['name']      = $LANG['common'][36];
+
+      $tab[5]['table']     = $this->getTable();
+      $tab[5]['field']     = 'date';
+      $tab[5]['linkfield'] = '';
+      $tab[5]['name']      = $LANG['common'][27];
+      $tab[5]['datatype']  = 'datetime';
+
+      $tab[6]['table']     = $this->getTable();
+      $tab[6]['field']     = 'question';
+      $tab[6]['linkfield'] = 'question';
+      $tab[6]['name']      = $LANG['knowbase'][14];
+
+      $tab[7]['table']     = $this->getTable();
+      $tab[7]['field']     = 'answer';
+      $tab[7]['linkfield'] = 'answer';
+      $tab[7]['name']      = $LANG['knowbase'][15];
+
+      $tab[8]['table']     = $this->getTable();
+      $tab[8]['field']     = 'is_faq';
+      $tab[8]['linkfield'] = 'is_faq';
+      $tab[8]['name']      = $LANG['knowbase'][5];
+      $tab[8]['datatype']  = 'bool';
+
+      $tab[9]['table']     = $this->getTable();
+      $tab[9]['field']     = 'view';
+      $tab[9]['linkfield'] = '';
+      $tab[9]['name']      = $LANG['knowbase'][26];
+      $tab[9]['datatype']  = 'bool';
+
+      $tab[19]['table']     = $this->getTable();
+      $tab[19]['field']     = 'date_mod';
+      $tab[19]['linkfield'] = '';
+      $tab[19]['name']      = $LANG['common'][26];
+      $tab[19]['datatype']  = 'datetime';
+
+      $tab[70]['table']     = 'glpi_users';
+      $tab[70]['field']     = 'name';
+      $tab[70]['linkfield'] = 'users_id';
+      $tab[70]['name']      = $LANG['common'][34];
+
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name']      = $LANG['entity'][0];
+
+      $tab[86]['table']     = $this->getTable();
+      $tab[86]['field']     = 'is_recursive';
+      $tab[86]['linkfield'] = 'is_recursive';
+      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['datatype']  = 'bool';
+
+      return $tab;
+   }
 }
 
 ?>
