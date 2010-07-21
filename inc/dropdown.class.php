@@ -105,8 +105,8 @@ class Dropdown {
       if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
          $params['value']=-1;
       }
-      
-      if ($params['value'] > 0 
+
+      if ($params['value'] > 0
          || ($itemtype == "Entity" && $params['value'] >= 0)) {
          $tmpname=Dropdown::getDropdownName($table,$params['value'],1);
          if ($tmpname["name"]!="&nbsp;") {
@@ -378,8 +378,9 @@ class Dropdown {
                $options[$type]=$item->getTypeName();
             }
          }
-         asort($options);
       }
+      logDebug($options);
+      asort($options);
       return Dropdown::showFromArray($name,$options,array('value'  => $value,'used'  => $used));
    }
 
