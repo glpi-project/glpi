@@ -379,7 +379,6 @@ class Dropdown {
             }
          }
       }
-      logDebug($options);
       asort($options);
       return Dropdown::showFromArray($name,$options,array('value'  => $value,'used'  => $used));
    }
