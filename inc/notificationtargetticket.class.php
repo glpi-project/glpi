@@ -549,7 +549,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
          $entitydata = new EntityData;
          $autoclose_value=$CFG_GLPI['autoclose_delay'];
-         
+
          if ($entitydata->getFromDB($this->obj->getField('entities_id'))) {
             $autoclose_value=$entitydata->getField('autoclose_delay');
             // Set global config value
@@ -844,10 +844,10 @@ class NotificationTargetTicket extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      //Locales
+      //Locales : lang + value
       $tags = array ('ticket.id'                    => $LANG['common'][2],
                      'ticket.title'                 => $LANG['common'][16],
-                     'ticket.url'                   => 'URL',
+                     'ticket.url'                   => $LANG['document'][33],
                      'ticket.entity'                => $LANG['entity'][0],
                      'ticket.category'              => $LANG['common'][36],
                      'ticket.content'               => $LANG['joblist'][6],
@@ -895,7 +895,9 @@ class NotificationTargetTicket extends NotificationTarget {
                      'followup.requesttype'         => $LANG['job'][44],
                      'ticket.numberoffollowups'     => $LANG['mailing'][4],
                      'ticket.numberoftasks'         => $LANG['mailing'][122],
-                     'ticket.nocategoryassigned'    => $LANG['mailing'][100]);
+                     'ticket.nocategoryassigned'    => $LANG['mailing'][100],
+                     'ticket.action'                => $LANG['mailing'][119],
+                     'ticket.autoclose'             => $LANG['entity'][18]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -905,12 +907,14 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'ifelse' => true));
       }
 
+     //Events specific for validation
      $tags = array('validation.author'            => $LANG['job'][4],
                    'validation.status'            => $LANG['joblist'][0],
                    'validation.submissiondate'    => $LANG['validation'][3],
                    'validation.commentsubmission' => $LANG['validation'][5],
                    'validation.validationdate'    => $LANG['validation'][4],
-                   'validation.commentvalidation' => $LANG['validation'][6]);
+                   'validation.commentvalidation' => $LANG['validation'][6],
+                   'ticket.urlapprove'            => $LANG['document'][33].' '.$LANG['validation'][26]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -919,6 +923,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'events' => array('validation')));
       }
 
+     //Foreach global tags
      $tags = array('followups'   => $LANG['mailing'][141],
                    'tasks'       => $LANG['mailing'][142],
                    'log'         => $LANG['mailing'][144],
@@ -931,14 +936,30 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'foreach' => true));
       }
 
+      //Tags witouht lang
+      $tags = array('ticket.days' => $LANG['stats'][31]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => false,
+                                   'lang'  => true));
+      }
+
+
+      //Foreach tag for alertnotclosed
       $this->addTagToList(array('tag'     => 'tickets',
                                 'label'   => $LANG['crontask'][15],
                                 'value'   => false,
                                 'foreach' => true,
                                 'events'  => array('alertnotclosed')));
 
+      //Tags witouht lang
       $tags = array('validation.submission.title' => $LANG['validation'][27],
-                    'validation.answer.title'     => $LANG['validation'][32]);
+                    'validation.answer.title'     => $LANG['validation'][32],
+                    'ticket.log.date'             => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
+                    'ticket.log.user'             => $LANG['mailing'][144]. ' : '.$LANG['common'][34],
+                    'ticket.log.field'            => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
+                    'ticket.log.content'          => $LANG['mailing'][144]. ' : '.$LANG['event'][19]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -946,6 +967,30 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'value' => true,
                                    'lang'  => false));
       }
+
+      //Tickets with a fixed set of values
+      $status = Ticket::getAllStatusArray(false);
+      $allowed_ticket = $allowed_validation = array();
+      foreach ($status as $key => $value) {
+         $allowed_ticket[] = $key;
+      }
+      $status = TicketValidation::getAllStatusArray(false);
+      foreach ($status as $key => $value) {
+         $allowed_validation[] = $key;
+      }
+
+      $tags = array('ticket.storestatus'           => array('text'          =>$LANG['joblist'][36],
+                                                            'allowed_values' =>$allowed_ticket),
+                    'validation.validationstatus'  => array('text'           =>$LANG['joblist'][36],
+                                                            'allowed_values' => $allowed_validation));
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label['text'],
+                                   'value' => true,
+                                   'lang'  => false,
+                                   'allowed_values' =>$label['allowed_values']));
+      }
+
       asort($this->tag_descriptions);
    }
 }

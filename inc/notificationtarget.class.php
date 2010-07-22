@@ -840,6 +840,7 @@ class NotificationTarget extends CommonDBChild {
       $p['events'] = NotificationTarget::TAG_FOR_ALL_EVENTS;
       $p['foreach'] = false;
       $p['lang'] = true;
+      $p['allowed_values'] = array();
 
       foreach ($options as $key => $value) {
          $p[$key] = $value;
