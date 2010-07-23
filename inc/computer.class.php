@@ -333,7 +333,7 @@ class Computer extends CommonDBTM {
                unset($ic->fields['buy_date']);
             }
             $ic->addToDB();
-         } 
+         }
 
          // ADD volumes
          $query="SELECT `id`
@@ -1021,6 +1021,10 @@ class Computer extends CommonDBTM {
       $tab[101]['linkfield'] = '';
       $tab[101]['name']      = $LANG['ocsng'][6]." ".$LANG['Menu'][33];
 
+      $tab[104]['table']     = 'glpi_ocslinks';
+      $tab[104]['field']     = 'ocs_agent_version';
+      $tab[104]['linkfield'] = '';
+      $tab[104]['name']      = $LANG['ocsng'][49];
 
       $tab['registry'] = $LANG['title'][43];
 
