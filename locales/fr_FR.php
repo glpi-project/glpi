@@ -1310,7 +1310,6 @@ $LANG['ocsconfig'][2]="Hôte de la base de données OCSNG";
 $LANG['ocsconfig'][3]="Mot de passe de l'utilisateur OCSNG";
 $LANG['ocsconfig'][4]="Nom de la base de données OCSNG";
 $LANG['ocsconfig'][5]="Options d'importation";
-$LANG['ocsconfig'][6]="Ignorer lors de l'import OCSNG";
 $LANG['ocsconfig'][9]="Exclure les tags suivants (séparateur $, rien pour aucun)";
 $LANG['ocsconfig'][10]="Import global";
 $LANG['ocsconfig'][11]="Pas d'import";
@@ -1390,6 +1389,8 @@ $LANG['ocsng'][52]="Logiciel(s) verrouillé(s)";
 $LANG['ocsng'][54]="Logiciel mis dans la corbeille par la synchro OCSNG";
 $LANG['ocsng'][55]="Volume(s) verrouillé(s)";
 $LANG['ocsng'][57]="Interface OCSNG";
+$LANG['ocsng'][58]="Fusionner";
+$LANG['ocsng'][59]="Entité d'import";
 
 $LANG['pager'][1]="à";
 $LANG['pager'][2]="de";
@@ -1621,6 +1622,7 @@ $LANG['rulesengine'][53]="Dictionnaire des modèles de périphériques";
 $LANG['rulesengine'][54]="Dictionnaire des modèles d'imprimantes";
 $LANG['rulesengine'][55]="Dictionnaire des modèles de matériels réseaux";
 $LANG['rulesengine'][56]="Modèles";
+$LANG['rulesengine'][57]="Règles de liaison automatique des ordinateurs";
 
 
 $LANG['rulesengine'][60]="Dictionnaire des types d'ordinateurs";
@@ -1819,8 +1821,8 @@ $LANG['setup'][148]="Pas pour les horaires";
 $LANG['setup'][149]="Nombre de décimales pour les montants";
 $LANG['setup'][150]="Format des nombres";
 $LANG['setup'][154]="Basedn";
-$LANG['setup'][155]="rootdn (pour les connexions non anonymes)";
-$LANG['setup'][156]="Pass (pour les connexions non anonymes)";
+$LANG['setup'][155]="DN du compte (pour les connexions non anonymes)";
+$LANG['setup'][156]="Mot de passe du compte (pour les connexions non anonymes)";
 $LANG['setup'][157]="L'extension LDAP de votre parseur PHP n'est pas installée";
 $LANG['setup'][158]="Impossible d'utiliser LDAP comme source de connexion externe";
 $LANG['setup'][159]="Filtre de connexion";
