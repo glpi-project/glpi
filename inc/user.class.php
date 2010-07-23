@@ -148,6 +148,9 @@ class User extends CommonDBTM {
          if (haveRight("show_all_ticket", "1")) {
             $ong[3] = $LANG['title'][28]; // tickets
          }
+         if (haveRight("document","r")) {
+            $ong[5] = $LANG['Menu'][27];
+         }
          if (haveRight("reservation_central", "r")) {
             $ong[11] = $LANG['Menu'][17];
          }
@@ -2306,7 +2309,7 @@ class User extends CommonDBTM {
    /// Show form for password recovery
    static function showPasswordForgetChangeForm ($token) {
       global $LANG,$CFG_GLPI,$DB;
-      
+
       // Verif token.
       $token_ok=false;
       $query="SELECT * FROM `glpi_users` WHERE `token` = '$token' AND NOW() < ADDDATE(`tokendate`, INTERVAL 1 DAY)";
@@ -2324,7 +2327,7 @@ class User extends CommonDBTM {
          echo "</th></tr>";
          echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['users'][11];
          echo "</td></tr>";
-   
+
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][14]."</td>";
          echo "<td><input type='text' name='email' value='' size='60'>";
          echo "</td></tr>";
@@ -2338,13 +2341,13 @@ class User extends CommonDBTM {
          echo "<td><input type='password' name='password2' value='' size='20'
                               autocomplete='off'>";
          echo "</td></tr>";
-   
+
          echo "<tr class='tab_bg_2 center'><td colspan='2'>";
          echo "<input type='hidden' name='token' value='$token'>";
          echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
          echo "</td></tr>";
-   
-        echo "</table></form>";     
+
+        echo "</table></form>";
       } else {
          echo $LANG['users'][12];
       }
@@ -2366,7 +2369,7 @@ class User extends CommonDBTM {
       echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
       echo "</td></tr>";
 
-      echo "</table></form></div>";     
+      echo "</table></form></div>";
 
    }
 
@@ -2380,7 +2383,7 @@ class User extends CommonDBTM {
                $input['id']=$this->fields['id'];
                if ($this->update($input)) {
                  echo $LANG['users'][13];
-                 // 
+                 //
                  $input2['token']='';
                  $input2['tokendate']=NULL;
                  $input2['id']=$this->fields['id'];

@@ -92,6 +92,10 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          Group_User::showForUser($user);
          break;
 
+      case 5 :
+         Document::showAssociated($user);
+         break;
+
       case 11 :
          Reservation::showForUser($_POST["id"]);
          break;
