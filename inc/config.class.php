@@ -333,7 +333,7 @@ class Config extends CommonDBTM {
          echo "</td>";
       }
       echo "<td>";
-      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][197],
+      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
                                $CFG_GLPI["state_autoclean_mode"]);
       echo "</td></tr>";
 
