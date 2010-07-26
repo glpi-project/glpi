@@ -330,8 +330,8 @@ class Config extends CommonDBTM {
          echo "</td>";
       }
       echo "<td>";
-      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][197],
-                               $CFG_GLPI["state_autoclean_mode"]);
+      State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
+                               $CFG_GLPI["state_autoclean_mode"],false);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='6' class='center'>";

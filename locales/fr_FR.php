@@ -1816,6 +1816,7 @@ $LANG['setup'][192]="Activé";
 $LANG['setup'][193]="Champ de stockage de l'identifiant dans la variable _SERVER";
 $LANG['setup'][194]="Récupération d'informations complémentaires via un annuaire LDAP";
 $LANG['setup'][195]="Conserver le statut";
+$LANG['setup'][196]="Effacer le statut";
 $LANG['setup'][197]="Prendre le statut de l'ordinateur";
 $LANG['setup'][198]="Prendre le statut";
 $LANG['setup'][199]="Supprimer le domaine des identifiants de la forme identifiants@domaine";
