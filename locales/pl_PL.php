@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Rozwiązane";
 $LANG['joblist'][33]="Zamknięte"; 
 $LANG['joblist'][34]="Nie rozwiązany"; 
 $LANG['joblist'][35]="Nie zamknięty"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Rozwiązanie"; 
 $LANG['jobresolution'][3]="Zatwierdzone rozwiązania"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Sprawdzanie";
 $LANG['mailing'][144]="Historyczny"; 
 $LANG['mailing'][145]="Lista wartości"; 
 $LANG['mailing'][146]="Pojedyncza wartość"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Komputery"; 
 $LANG['Menu'][1]="Urz. Sieciowe"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Włączony";
 $LANG['setup'][193]="Zaablokowane pole logowania w tablicy _SERVER"; 
 $LANG['setup'][194]="Inne informacje pobrane z katalogu LDAP"; 
 $LANG['setup'][195]="Utrzymaj status"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Skopiuj status komputera"; 
 $LANG['setup'][198]="Ustaw status"; 
 $LANG['setup'][199]="Usuń domenę logowania w formie login@domena"; 

@@ -776,6 +776,7 @@ $LANG['joblist'][32]="解決済み";
 $LANG['joblist'][33]="クローズ済み"; 
 $LANG['joblist'][34]="未解決"; 
 $LANG['joblist'][35]="未完了"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="解決"; 
 $LANG['jobresolution'][3]="承認されたソリューション"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="有効化";
 $LANG['mailing'][144]="履歴"; 
 $LANG['mailing'][145]="値のリスト"; 
 $LANG['mailing'][146]="単独値"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="コンピュータ"; 
 $LANG['Menu'][1]="ネットワーク"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="有効";
 $LANG['setup'][193]="_SERVER アレイ内でログインを保持する領域"; 
 $LANG['setup'][194]="Additional informations retrieval from LDAP directory"; 
 $LANG['setup'][195]="ステータスを保存する"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="コンピュータのステータスをコピーする"; 
 $LANG['setup'][198]="ステータスを設定する"; 
 $LANG['setup'][199]="login@domain形式でのログインでdomain部分を除去"; 

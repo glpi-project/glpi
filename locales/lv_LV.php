@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Solved";
 $LANG['joblist'][33]="Closed"; 
 $LANG['joblist'][34]="Not solved"; 
 $LANG['joblist'][35]="Not closed"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Solution"; 
 $LANG['jobresolution'][3]="Approved solution"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Validations";
 $LANG['mailing'][144]="Historical"; 
 $LANG['mailing'][145]="List of values"; 
 $LANG['mailing'][146]="Single value"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Datori"; 
 $LANG['Menu'][1]="Tīkli"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Ieslēgts";
 $LANG['setup'][193]="Datubāzes lauks, kurā glabājas lietotājvārds priekš pieslēgšanās _SERVER masīvam"; 
 $LANG['setup'][194]="Papildus informācijas saņemšana no LDAP direktorijas"; 
 $LANG['setup'][195]="Saglabāt statusu"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Kopēt datora statusu"; 
 $LANG['setup'][198]="Uzstādīt statusu"; 
 $LANG['setup'][199]="Remove the domain of login in form login@domain"; 

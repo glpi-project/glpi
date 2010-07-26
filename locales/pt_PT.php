@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Solved";
 $LANG['joblist'][33]="Closed"; 
 $LANG['joblist'][34]="Não solucionado"; 
 $LANG['joblist'][35]="Not closed"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Solution"; 
 $LANG['jobresolution'][3]="Approved solution"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Validations";
 $LANG['mailing'][144]="Historical"; 
 $LANG['mailing'][145]="List of values"; 
 $LANG['mailing'][146]="Single value"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Computadores"; 
 $LANG['Menu'][1]="Redes"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Habilitar";
 $LANG['setup'][193]="Field holding the login in the _SERVER array"; 
 $LANG['setup'][194]="Additional informations retrieval from LDAP directory"; 
 $LANG['setup'][195]="Keep status"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Copiar estado do PC"; 
 $LANG['setup'][198]="Set status"; 
 $LANG['setup'][199]="Remove the domain of login in form login@domain"; 

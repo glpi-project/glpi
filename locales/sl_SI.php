@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Solved";
 $LANG['joblist'][33]="Closed"; 
 $LANG['joblist'][34]="Not solved"; 
 $LANG['joblist'][35]="Not closed"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Solution"; 
 $LANG['jobresolution'][3]="Approved solution"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Validations";
 $LANG['mailing'][144]="Historical"; 
 $LANG['mailing'][145]="List of values"; 
 $LANG['mailing'][146]="Single value"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Računalniki"; 
 $LANG['Menu'][1]="Omrežna oprema"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Omogočeno";
 $LANG['setup'][193]="Polje vsebuje prijavo v _SERVER polju"; 
 $LANG['setup'][194]="Additional informations retrieval from LDAP directory"; 
 $LANG['setup'][195]="Obdrži status"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Kopiraj status računalnika"; 
 $LANG['setup'][198]="Nastavi status"; 
 $LANG['setup'][199]="Odstrani domeno iz prijave v obrazcu login@domain"; 

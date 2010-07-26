@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Resuelto";
 $LANG['joblist'][33]="Cerrado"; 
 $LANG['joblist'][34]="Sin resolver"; 
 $LANG['joblist'][35]="Sin cerrar"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Solución"; 
 $LANG['jobresolution'][3]="Solución aprobada"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Validaciones";
 $LANG['mailing'][144]="Histórico"; 
 $LANG['mailing'][145]="Lista de valores"; 
 $LANG['mailing'][146]="valor único"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Ordenadores"; 
 $LANG['Menu'][1]="Electrónica de red"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Activado";
 $LANG['setup'][193]="Campo de almacenamiento del usuario en el conjunto _SERVER"; 
 $LANG['setup'][194]="Recuperación de datos complementarios usando LDAP"; 
 $LANG['setup'][195]="Mantener estado"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Copiar estado del ordenador"; 
 $LANG['setup'][198]="Configurar estado"; 
 $LANG['setup'][199]="Suprima @domain del inicio de sesión en la forma login@domain"; 

@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Løst";
 $LANG['joblist'][33]="Lukket"; 
 $LANG['joblist'][34]="Ikke løst"; 
 $LANG['joblist'][35]="Ikke lukket"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Løsning"; 
 $LANG['jobresolution'][3]="Godkendt løsning"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Valideringer";
 $LANG['mailing'][144]="Historisk"; 
 $LANG['mailing'][145]="List of values"; 
 $LANG['mailing'][146]="Énkelt værdi"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Computere"; 
 $LANG['Menu'][1]="Netværk"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Aktiveret";
 $LANG['setup'][193]="Field holding the login in the _SERVER array"; 
 $LANG['setup'][194]="Additional informations retrieval from LDAP directory"; 
 $LANG['setup'][195]="Behold status"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Kopier computerstatus"; 
 $LANG['setup'][198]="Set status"; 
 $LANG['setup'][199]="Remove the domain of login in form login@domain"; 

@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Solved";
 $LANG['joblist'][33]="Closed"; 
 $LANG['joblist'][34]="Not solved"; 
 $LANG['joblist'][35]="Not closed"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Solution"; 
 $LANG['jobresolution'][3]="Approved solution"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Validations";
 $LANG['mailing'][144]="Historical"; 
 $LANG['mailing'][145]="List of values"; 
 $LANG['mailing'][146]="Single value"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Kompiuteriai"; 
 $LANG['Menu'][1]="Tinklo įranga"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Įjungtas";
 $LANG['setup'][193]="Laukas talpinantis prisijungimus _SERVER masyve"; 
 $LANG['setup'][194]="Additional informations retrieval from LDAP directory"; 
 $LANG['setup'][195]="Tęsti būseną"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Kopijuoti kompiuterio būseną"; 
 $LANG['setup'][198]="Nustatyti būseną"; 
 $LANG['setup'][199]="Remove the domain of login in form login@domain"; 

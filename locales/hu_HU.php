@@ -776,6 +776,7 @@ $LANG['joblist'][32]="Megoldva";
 $LANG['joblist'][33]="Lezárt"; 
 $LANG['joblist'][34]="Nincs megoldva"; 
 $LANG['joblist'][35]="Nincs lezárva"; 
+$LANG['joblist'][36]="Status value in database"; 
 
 $LANG['jobresolution'][1]="Megoldás"; 
 $LANG['jobresolution'][3]="Elfogadott megoldás"; 
@@ -1047,6 +1048,7 @@ $LANG['mailing'][143]="Érvényesítések";
 $LANG['mailing'][144]="Történet"; 
 $LANG['mailing'][145]="Értékek listája"; 
 $LANG['mailing'][146]="Egyedi érték"; 
+$LANG['mailing'][147]="Possible value(s)"; 
 
 $LANG['Menu'][0]="Számítógépek"; 
 $LANG['Menu'][1]="Hálózatok"; 
@@ -1642,6 +1644,7 @@ $LANG['setup'][192]="Bekapcsolva";
 $LANG['setup'][193]="A login-t tartalmazó mező a _SERVER tömbben"; 
 $LANG['setup'][194]="Bővített információk lekérése LDAP-ból"; 
 $LANG['setup'][195]="Állapot megtartása"; 
+$LANG['setup'][196]="Clear status"; 
 $LANG['setup'][197]="Számítógép állapot másolása"; 
 $LANG['setup'][198]="Állapot beállítása"; 
 $LANG['setup'][199]="Domain eltávolítása a login@domain nevekből"; 
