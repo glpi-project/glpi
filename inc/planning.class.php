@@ -94,13 +94,15 @@ class Planning {
       $planned=false;
       $message='';
       foreach ($CFG_GLPI['planning_itemtype'] as $itemtype) {
-         $data=$itemtype::populatePlanning($users_id, 0, $begin, $end);
+         $data=call_user_func(array($itemtype, 'populatePlanning'),$users_id, 0, $begin, $end);
+//         $data=$itemtype::populatePlanning($users_id, 0, $begin, $end);
          if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
                if (!isset($except[$itemtype]) || 
                   (is_array($except[$itemtype]) && !in_array($val['id'],$except[$itemtype]))) {
                   $planned=true;
-                  $message.='- '.$itemtype::getAlreadyPlannedInformation($val).'<br>';
+                  $message.='- '.call_user_func(array($itemtype, 'getAlreadyPlannedInformation'),$val).'<br>';
+//                   $message.='- '.$itemtype::getAlreadyPlannedInformation($val).'<br>';
                }
             }
          }
