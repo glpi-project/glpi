@@ -1705,9 +1705,13 @@ function update0723to078($output='HTML') {
 
       // Update values
       displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_logs'); // Updating schema
+
+      // Copy data
+      $query = "UPDATE `glpi_logs` SET `itemtype` = `device_type`, `items_id`=`FK_glpi_device`, `itemtype_link`=`device_internal_type`";
+      $DB->query($query) or die("0.78 update glpi_logs default values " . $LANG['update'][90] . $DB->error());
+
       foreach ($typetoname as $key => $val) {
-         $query = "UPDATE `glpi_logs` SET `itemtype` = '$val', `items_id`=`FK_glpi_device`
-                  WHERE `device_type` = '$key'";
+         $query = "UPDATE `glpi_logs` SET `itemtype` = '$val' WHERE `device_type` = '$key'";
          $DB->query($query) or die("0.78 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
 
          $query = "UPDATE `glpi_logs` SET `itemtype_link` = '$val'
@@ -1723,6 +1727,11 @@ function update0723to078($output='HTML') {
                      AND `linked_action` IN (".HISTORY_ADD_DEVICE.",".HISTORY_UPDATE_DEVICE.",".HISTORY_DELETE_DEVICE.")";
          $DB->query($query) or die("0.78 update itemtype of table glpi_logs for $val " . $LANG['update'][90] . $DB->error());
       }
+
+      // Clean link
+      $query = "UPDATE `glpi_logs` SET `itemtype_link` = ''
+               WHERE `itemtype_link` = '0'";
+      $DB->query($query) or die("0.78 update itemtype of table glpi_logs " . $LANG['update'][90] . $DB->error());
 
       displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_logs - 2'); // Updating schema
       $query = "ALTER TABLE `glpi_logs`
