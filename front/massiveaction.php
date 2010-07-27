@@ -311,8 +311,8 @@ if (isset($_POST["itemtype"])) {
             $groupuser = new Group_User();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $input = array('groups_id' => $key,
-                                 'users_id'  => $_POST["group"]);
+                  $input = array('groups_id' => $_POST["groups_id"],
+                                 'users_id'  => $key);
                   if ($groupuser->can(-1,'w',$input)) {
                      $groupuser->add($input);
                   }
