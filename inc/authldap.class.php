@@ -1990,7 +1990,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<span>" .($_SESSION['ldap_import']['mode']?$LANG['ldap'][1]:$LANG['ldap'][2])."</span>";
 
       //If not coming from the ticket form, then give expert/simple link
-      echo "<span class='ldap_right'>".$LANG['common'][65]." : ";
+      echo "&nbsp;<span class='ldap_right'>".$LANG['common'][65]." : ";
       echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
                      "&amp;mode=".$_SESSION['ldap_import']['mode']. "&amp;interface=".
                      ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
