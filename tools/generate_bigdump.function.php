@@ -832,6 +832,7 @@ function generate_entity($ID_entity){
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$newID=$DB->insert_id();
 	}
+       	regenerateTreeCompleteName("glpi_ticketcategories");
 
 
 	// glpi_knowbaseitems

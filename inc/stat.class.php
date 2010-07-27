@@ -73,6 +73,7 @@ class Stat {
             $query = "SELECT DISTINCT `glpi_ticketcategories`.`id`,
                            `glpi_ticketcategories`.`completename` AS category
                      FROM `glpi_ticketcategories`
+                     ".getEntitiesRestrictRequest(" WHERE","glpi_ticketcategories")."
                      ORDER BY category";
 
             $result = $DB->query($query);
