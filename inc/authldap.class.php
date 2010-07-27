@@ -1223,7 +1223,7 @@ class AuthLDAP extends CommonDBTM {
                   echo "</td>";
                }
                else {
-                  echo "<input type='hidden' name=\"toimport_resursive[".$group_dn."]\" value='0'>";
+                  echo "<input type='hidden' name=\"toimport_recursive[".$group_dn."]\" value='0'>";
                }
                echo "<input type='hidden' name=\"toimport_type[".$group_dn."]\" value=\"".
                         $search_type."\"></tr>";
