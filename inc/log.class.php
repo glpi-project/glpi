@@ -537,6 +537,34 @@ class Log extends CommonDBTM {
                            $data["old_value"]=Dropdown::getYesNo($data["old_value"]);
                            $data["new_value"]=Dropdown::getYesNo($data["new_value"]);
                            break;
+                        case "datetime" :
+                           $data["old_value"]=convDateTime($data["old_value"]);
+                           $data["new_value"]=convDateTime($data["new_value"]);
+                           break;
+                        case "date" :
+                           $data["old_value"]=convDate($data["old_value"]);
+                           $data["new_value"]=convDate($data["new_value"]);
+                           break;
+                        case "timestamp" :
+                           $data["old_value"]=timestampToString($data["old_value"]);
+                           $data["new_value"]=timestampToString($data["new_value"]);
+                           break;
+                        case "realtime" :
+                           $data["old_value"]=Ticket::getRealtime($data["old_value"]);
+                           $data["new_value"]=Ticket::getRealtime($data["new_value"]);
+                           break;
+                        case "number" :
+                           $data["old_value"]=formatNumber($data["old_value"],false,0);
+                           $data["new_value"]=formatNumber($data["new_value"],false,0);
+                           break;
+                        case "decimal" :
+                           $data["old_value"]=formatNumber($data["old_value"]);
+                           $data["new_value"]=formatNumber($data["new_value"]);
+                           break;
+                        case "right" :
+                           $data["old_value"]=Profile::getRightValue($data["old_value"]);
+                           $data["new_value"]=Profile::getRightValue($data["new_value"]);
+                           break;
                      }
                      $tmp['change'] = "\"".$data["old_value"]."\" --> \"".
                                $data["new_value"]."\"";
