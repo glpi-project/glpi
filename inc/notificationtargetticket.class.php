@@ -629,38 +629,68 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.group##'] = '';
          }
 
-         //Hardware
+         //Tags associated with the object linked to the ticket
          if ($this->target_object != null) {
+
+            //Object type
             $this->datas['##ticket.itemtype##']  = $this->target_object->getTypeName();
+
+            //Object name
             $this->datas['##ticket.item.name##'] = $this->target_object->getField('name');
 
+            //Object serial
             if ($this->target_object->isField('serial')) {
                $this->datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
             } else {
                $this->datas['##ticket.item.serial##']='';
             }
+
+            //Object contact
             if ($this->target_object->isField('contact')) {
                $this->datas['##ticket.item.contact##'] = $this->target_object->getField('contact');
             } else {
                $this->datas['##ticket.item.contact##']='';
             }
+
+            //Object contact num
             if ($this->target_object->isField('contact_num')) {
                $this->datas['##ticket.item.contactnumber##'] = $this->target_object->getField('contact_num');
             } else {
                $this->datas['##ticket.item.contactnumber##']='';
             }
+
+            //Object otherserial
             if ($this->target_object->isField('otherserial')) {
                $this->datas['##ticket.item.otherserial##']
                         = $this->target_object->getField('otherserial');
             } else {
                $this->datas['##ticket.item.otherserial##']='';
             }
+
+            //Object location
             if ($this->target_object->isField('location')) {
                $this->datas['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations',
                                                                   $user->getField('locations_id'));
             } else {
                $this->datas['##ticket.item.locationl##']='';
             }
+            //Object user
+            if ($this->obj->getField('users_id')) {
+               $user_tmp = new User;
+               $user_tmp->getFromDB($this->target_object->getField('users_id'));
+               $this->datas['##ticket.item.user##'] = $user_tmp->getName();
+            } else {
+               $this->datas['##ticket.item.user##'] = '';
+            }
+            //Object group
+            if ($this->obj->getField('groups_id')) {
+               $this->datas['##ticket.item.group##']
+                  = Dropdown::getDropdownName('glpi_groups',
+                                              $this->target_object->getField('groups_id'));
+            } else {
+               $this->datas['##ticket.item.group##'] = '';
+            }
+
             $modeltable = getSingular($this->getTable())."models";
             $modelfield = getForeignKeyFieldForTable($modeltable);
             if ($this->target_object->isField($modelfield)) {
@@ -887,6 +917,8 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.item.model'            => $LANG['common'][22],
                      'ticket.item.contact'          => $LANG['common'][18],
                      'ticket.item.contactnumber'    => $LANG['common'][21],
+                     'ticket.item.user'             => $LANG['common'][34],
+                     'ticket.item.group'            => $LANG['common'][35],
                      'ticket.urgency'               => $LANG['joblist'][29],
                      'ticket.impact'                => $LANG['joblist'][30],
                      'ticket.priority'              => $LANG['joblist'][2],
