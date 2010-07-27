@@ -2004,6 +2004,7 @@ $LANG['sla'][5]="Echéance";
 $LANG['sla'][6]="Niveau d'escalade";
 $LANG['sla'][7]="Sortir de la SLA";
 $LANG['sla'][8]="Prochaine escalade";
+$LANG['sla'][9]="Rappels automatiques des SLAs";
 
 $LANG['software'][1]="Version d'achat";
 $LANG['software'][2]="Version d'utilisation";
