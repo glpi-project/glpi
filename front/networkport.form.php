@@ -136,7 +136,8 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["disconnect"])) {
-   checkRight("networking","w");
+//   checkRight("networking","w");
+   $nn->check($_GET['id'],'d');
    if (isset($_GET["id"])) {
       $nn->delete($_GET);
       $fin = "";
