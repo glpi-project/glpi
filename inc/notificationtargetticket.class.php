@@ -475,7 +475,6 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
-
    function getJoinSql() {
 
       if ($this->isPrivate()) {
@@ -734,6 +733,16 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##task.date##']        = convDateTime($task['date']);
             $tmp['##task.description##'] = $task['content'];
             $tmp['##task.time##']        = Ticket::getRealTime($task['realtime']);
+
+            $plan = new TicketPlanning();
+            if ($plan->getFromDBbyTask($task['id'])) {
+               $tmp['##task.planning.user##']     = Dropdown::getDropdownName('glpi_users',
+                                                                        $plan->fields['users_id']);
+               $tmp['##task.planning.begin##']    = convDateTime($plan->fields['begin']);
+               $tmp['##task.planning.end##']      = convDateTime($plan->fields['begin']);
+               $tmp['##task.planning.status##']   = Planning::getState($plan->fields['state']);
+            }
+
             $this->datas['tasks'][] = $tmp;
          }
          if (!empty($this->datas['tasks'])) {
@@ -934,6 +943,10 @@ class NotificationTargetTicket extends NotificationTarget {
                      'task.description'             => $LANG['joblist'][6],
                      'task.category'                => $LANG['common'][36],
                      'task.time'                    => $LANG['job'][20],
+                     'task.planning.user'           => $LANG['planning'][9],
+                     'task.planning.begin'          => $LANG['search'][8],
+                     'task.planning.end'            => $LANG['search'][9],
+                     'task.planning.status'         => $LANG['joblist'][0],
                      'followup.date'                => $LANG['reports'][60],
                      'followup.isprivate'           => $LANG['common'][77],
                      'followup.author'              => $LANG['job'][4],
