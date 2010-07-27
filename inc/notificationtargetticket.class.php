@@ -482,7 +482,7 @@ class NotificationTargetTicket extends NotificationTarget {
          return " INNER JOIN `glpi_profiles_users`
                      ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`".
                          getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                    $this->obj->fields['entities_id'],true).")
+                                                    $this->getEntity(),true).")
                   INNER JOIN `glpi_profiles`
                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
                          AND `glpi_profiles`.`interface` = 'central'
@@ -527,7 +527,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                                            $this->obj->getField("id")."_4");
 
          $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->obj->getField('entities_id'));
+                                                               $this->getEntity());
          $events = $this->getAllEvents();
          $this->datas['##ticket.action##']      = $events[$event];
          $this->datas['##ticket.storestatus##'] = $this->obj->getField('status');
@@ -550,7 +550,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $entitydata = new EntityData;
          $autoclose_value=$CFG_GLPI['autoclose_delay'];
 
-         if ($entitydata->getFromDB($this->obj->getField('entities_id'))) {
+         if ($entitydata->getFromDB($this->getEntity())) {
             $autoclose_value=$entitydata->getField('autoclose_delay');
             // Set global config value
             if ($autoclose_value == -1) {
