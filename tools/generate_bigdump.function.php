@@ -610,7 +610,7 @@ function generateGlobalDropdowns(){
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 
-   // GLobal ticket categories : also specific ones by entity
+         // GLobal ticket categories : also specific ones by entity
 	for ($i=0;$i<max(1,pow($MAX['tracking_category'],1/3));$i++){
 		$query="INSERT INTO glpi_ticketcategories VALUES (NULL,'0','1','0','categorie $i','','comment categorie $i','1','0','0','0','','',1)";
 		$DB->query($query) or die("PB REQUETE ".$query);
@@ -879,6 +879,7 @@ function generate_entity($ID_entity){
 		$newID=$DB->insert_id();
 	}
 
+	regenerateTreeCompleteName("glpi_ticketcategories");
 
 	// glpi_knowbaseitems
 	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories");

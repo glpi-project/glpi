@@ -2059,6 +2059,7 @@ $LANG['stats'][15]="Durée moyenne de traitement du ticket";
 $LANG['stats'][16]="Nom du technicien";
 $LANG['stats'][17]="Nombre de tickets clos";
 $LANG['stats'][18]="Délai moyen de clôture";
+$LANG['stats'][19]="Nombre de tickets résolus en retard";
 $LANG['stats'][20]="Nom d'utilisateur";
 $LANG['stats'][23]="Pas de statistiques disponibles";
 $LANG['stats'][25]="Durée réelle moyenne de traitement du ticket";

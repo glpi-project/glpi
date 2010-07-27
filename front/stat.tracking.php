@@ -68,10 +68,10 @@ if (!isset($_REQUEST["start"])) {
 }
 
 $items =
-   array($LANG['job'][4] => array('user'  => array('title' => $LANG['common'][37],
+   array($LANG['job'][4] => array('user'  => array('title' => $LANG['job'][4],
                                                   'field' => 'glpi_tickets.users_id'),
                                   'users_id_recipient'
-                                          => array('title' => $LANG['job'][3],
+                                          => array('title' => $LANG['common'][37],
                                                    'field' => 'glpi_tickets.users_id_recipient'),
                                   'group' => array('title' => $LANG['common'][35],
                                                    'field' => 'glpi_tickets.groups_id'),
