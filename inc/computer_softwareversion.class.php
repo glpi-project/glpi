@@ -191,7 +191,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       // Display the pager
       printAjaxPager($LANG['software'][19],$start,$number);
 
-      $query = "SELECT `glpi_computers_softwareversions`.*,
+      $query = "SELECT DISTINCT `glpi_computers_softwareversions`.*,
                        `glpi_computers`.`name` AS compname,
                        `glpi_computers`.`id` AS cID,
                        `glpi_computers`.`serial`,
@@ -204,9 +204,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_entities`.`completename` AS entity,
                        `glpi_locations`.`completename` AS location,
                        `glpi_states`.`name` AS state,
-                       `glpi_groups`.`name` AS groupe,
-                       `glpi_softwarelicenses`.`name` AS lname,
-                       `glpi_softwarelicenses`.`id` AS lID
+                       `glpi_groups`.`name` AS groupe
                 FROM `glpi_computers_softwareversions`
                 INNER JOIN `glpi_softwareversions`
                      ON (`glpi_computers_softwareversions`.`softwareversions_id`
@@ -218,9 +216,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_states` ON (`glpi_computers`.`states_id` = `glpi_states`.`id`)
                 LEFT JOIN `glpi_groups` ON (`glpi_computers`.`groups_id` = `glpi_groups`.`id`)
                 LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)
-                LEFT JOIN `glpi_softwarelicenses`
-                     ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwareversions`.`softwares_id`
-                         AND `glpi_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
                 WHERE (`glpi_softwareversions`.`$crit` = '$searchID') " .
                        getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                        AND `glpi_computers`.`is_deleted` = '0'
@@ -321,12 +316,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "<td>".$data['state']."</td>";
                echo "<td>".$data['groupe']."</td>";
                echo "<td>".$data['username']."</td>";
-               if ($data['lID']>0) {
-                  echo "<td><a href='softwarelicense.form.php?id=".$data['lID']."'>".$data['lname'];
-                  echo "</a></td>";
-               } else {
-                  echo "<td>&nbsp;</td>";
-               }
+
+               /// TODO display available licences for the installation  : 
+               //Computer_SoftwareLicense::GetLicenseForInstallation($computers_id,$softwareversions_id)
+               echo "<td>TODO</td>";
+               
                echo "</tr>\n";
 
             } while ($data=$DB->fetch_assoc($result));
@@ -638,10 +632,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "</td><td>";
 
       $query = "SELECT `glpi_softwarelicenses`.*, `glpi_softwarelicensetypes`.`name` as type
-                FROM `glpi_softwarelicenses`
+                FROM `glpi_computers_softwarelicenses`
+                INNER JOIN `glpi_softwarelicenses` 
+                     ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`= `glpi_softwarelicenses`.`id`)
                 LEFT JOIN `glpi_softwarelicensetypes`
                      ON `glpi_softwarelicenses`.`softwarelicensetypes_id`=`glpi_softwarelicensetypes`.`id`
-                WHERE `glpi_softwarelicenses`.`computers_id`='$computers_id'
+                WHERE `glpi_computers_softwarelicenses`.`computers_id`='$computers_id'
                   AND (`glpi_softwarelicenses`.`softwareversions_id_use`='$verid'
                        OR (`glpi_softwarelicenses`.`softwareversions_id_use`=0
                            AND `glpi_softwarelicenses`.`softwareversions_id_buy`='$verid'))";
@@ -769,17 +765,18 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          return false;
       }
 
+      /// Could not be possible : because several computers may be linked to a version
       // Update affected licenses
-      $lic = new SoftwareLicense();
-      $query = "SELECT `id`
-                FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
-                  AND `computers_id` = '".$this->fields['computers_id']."'
-                  AND `softwareversions_id_use` = '".$this->fields['softwareversions_id']."'";
-      foreach ($DB->request($query) as $data) {
-         $data['softwareversions_id_use'] = 0;
-         $lic->update($data);
-      }
+//       $lic = new SoftwareLicense();
+//       $query = "SELECT `id`
+//                 FROM `glpi_softwarelicenses`
+//                 WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
+//                   AND `computers_id` = '".$this->fields['computers_id']."'
+//                   AND `softwareversions_id_use` = '".$this->fields['softwareversions_id']."'";
+//       foreach ($DB->request($query) as $data) {
+//          $data['softwareversions_id_use'] = 0;
+//          $lic->update($data);
+//       }
 
       if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;

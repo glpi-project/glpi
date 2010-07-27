@@ -2014,6 +2014,7 @@ $LANG['software'][5]="Versions";
 $LANG['software'][6]="Editeur";
 $LANG['software'][7]="Ajouter une version";
 $LANG['software'][8]="Ajouter une licence";
+$LANG['software'][9]="Ordinateurs affectés";
 $LANG['software'][11]="Licences";
 $LANG['software'][17]="logiciel(s) installé(s)";
 $LANG['software'][19]="Installations";

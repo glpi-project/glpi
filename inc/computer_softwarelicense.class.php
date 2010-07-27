@@ -42,7 +42,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    // From CommonDBRelation
    public $itemtype_1 = 'Computer';
    public $items_id_1 = 'computers_id';
-   public $itemtype_2 = 'SoftwareLicence';
+   public $itemtype_2 = 'SoftwareLicense';
    public $items_id_2 = 'softwarelicenses_id';
 
    /**
@@ -105,7 +105,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Show number of installation per entity
     *
-    * @param $license SoftwareVersion object
+    * @param $license SoftwareLicense object
     *
     * @return nothing
     */
@@ -121,7 +121,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
       echo "<th>&nbsp;".$LANG['entity'][0]."&nbsp;</th>";
-      echo "<th>&nbsp;".$LANG['software'][19]."&nbsp;</th>";
+      echo "<th>&nbsp;".$LANG['software'][9]."&nbsp;-&nbsp;".$LANG['tracking'][29]."</th>";
       echo "</tr>\n";
 
       $tot=0;
@@ -155,6 +155,216 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       echo "</table></div>";
    }
 
+   /**
+    * Show computers linked to a License
+    *
+    * @param $licnese SoftwareLicense object
+    * @return nothing
+    */
+   static function showForLicense (SoftwareLicense $license) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $searchID = $license->getField('id');
+
+      if (!haveRight("software", "r") || !$searchID) {
+         return false;
+      }
+
+      $canedit = haveRight("software", "w");
+      $canshowcomputer = haveRight("computer", "r");
+
+      if (isset($_REQUEST["start"])) {
+         $start = $_REQUEST["start"];
+      } else {
+         $start = 0;
+      }
+
+      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+         // manage several param like location,compname
+         $tmp=explode(",",$_REQUEST["sort"]);
+         $sort="`".implode("`,`",$tmp)."`";
+      } else {
+         $sort = "`entity`, `license`";
+      }
+
+      if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
+         $order = "DESC";
+      } else {
+         $order = "ASC";
+      }
+
+      //SoftwareLicense ID
+      $number = countElementsInTable("glpi_computers_softwarelicenses, glpi_computers",
+                           "glpi_computers_softwarelicenses.computers_id = glpi_computers.id
+                              AND glpi_computers_softwarelicenses.softwarelicenses_id = $searchID" .
+                              getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
+                              AND glpi_computers.is_deleted=0
+                              AND glpi_computers.is_template=0");
+
+      echo "<br><div class='center'>";
+      if ($number < 1) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".$LANG['search'][15]."</th></tr>";
+         echo "</table></div>\n";
+         return;
+      }
+
+      // Display the pager
+      printAjaxPager($LANG['software'][9],$start,$number);
+
+      $query = "SELECT `glpi_computers_softwarelicenses`.*,
+                       `glpi_computers`.`name` AS compname,
+                       `glpi_computers`.`id` AS cID,
+                       `glpi_computers`.`serial`,
+                       `glpi_computers`.`otherserial`,
+                       `glpi_users`.`name` AS username,
+                       `glpi_softwarelicenses`.`name` AS license,
+                       `glpi_softwarelicenses`.`id` AS vID,
+                       `glpi_softwarelicenses`.`softwares_id` AS sID,
+                       `glpi_softwarelicenses`.`name` AS vername,
+                       `glpi_entities`.`completename` AS entity,
+                       `glpi_locations`.`completename` AS location,
+                       `glpi_states`.`name` AS state,
+                       `glpi_groups`.`name` AS groupe,
+                       `glpi_softwarelicenses`.`name` AS lname,
+                       `glpi_softwarelicenses`.`id` AS lID
+                FROM `glpi_computers_softwarelicenses`
+                INNER JOIN `glpi_softwarelicenses`
+                     ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`
+                          = `glpi_softwarelicenses`.`id`)
+                INNER JOIN `glpi_computers`
+                     ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
+                LEFT JOIN `glpi_entities` ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
+                LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)
+                LEFT JOIN `glpi_states` ON (`glpi_computers`.`states_id` = `glpi_states`.`id`)
+                LEFT JOIN `glpi_groups` ON (`glpi_computers`.`groups_id` = `glpi_groups`.`id`)
+                LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)
+                WHERE (`glpi_softwarelicenses`.`id` = '$searchID') " .
+                       getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
+                       AND `glpi_computers`.`is_deleted` = '0'
+                       AND `glpi_computers`.`is_template` = '0'
+                ORDER BY $sort $order
+                LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+
+      $rand=mt_rand();
+
+      if ($result=$DB->query($query)) {
+         if ($data=$DB->fetch_assoc($result)) {
+            $softwares_id = $data['sID'];
+
+            $soft = new Software;
+            $showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
+            $title=$LANG['help'][31] ." = ". $soft->fields["name"];
+            $title .= " - " . $data["vername"];
+            initNavigateListItems('Computer',$title);
+            $sort_img="<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
+                        ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
+            if ($canedit) {
+               echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".
+                      $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php\">";
+               echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
+               echo "<table class='tab_cadre_fixehov'><tr>";
+               echo "<th>&nbsp;</th>";
+            } else {
+               echo "<table class='tab_cadre_fixehov'><tr>";
+            }
+
+            echo "<th>".($sort=="`compname`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=compname&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+            if ($showEntity) {
+               echo "<th>".(strstr($sort,"entity")?$sort_img:"").
+                         "<a href='javascript:reloadTab(\"sort=entity,compname&amp;order=".
+                           ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0].
+                         "</a></th>";
+            }
+            echo "<th>".($sort=="`serial`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+            echo "<th>".($sort=="`otherserial`"?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][20]."</a></th>";
+            echo "<th>".(strstr($sort,"`location`")?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][15]."</a></th>";
+            echo "<th>".(strstr($sort,"state")?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=state,compname&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['state'][0]."</a></th>";
+            echo "<th>".(strstr($sort,"groupe")?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=groupe,compname&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][35]."</a></th>";
+            echo "<th>".(strstr($sort,"username")?$sort_img:"").
+                      "<a href='javascript:reloadTab(\"sort=username,compname&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][34]."</a></th>";
+            echo "</tr>\n";
+
+            do {
+               addToNavigateListItems('Computer',$data["cID"]);
+
+               echo "<tr class='tab_bg_2'>";
+               if ($canedit) {
+                  echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
+               }
+               $compname=$data['compname'];
+               if (empty($compname) || $_SESSION['glpiis_ids_visible']) {
+                  $compname .= " (".$data['cID'].")";
+               }
+               if ($canshowcomputer) {
+                  echo "<td><a href='computer.form.php?id=".$data['cID']."'>$compname</a></td>";
+               } else {
+                  echo "<td>".$compname."</td>";
+               }
+               if ($showEntity) {
+                  echo "<td>".(empty($data['entity']) ? $LANG['entity'][2] : $data['entity'])."</td>";
+               }
+               echo "<td>".$data['serial']."</td>";
+               echo "<td>".$data['otherserial']."</td>";
+               echo "<td>".$data['location']."</td>";
+               echo "<td>".$data['state']."</td>";
+               echo "<td>".$data['groupe']."</td>";
+               echo "<td>".$data['username']."</td>";
+               echo "</tr>\n";
+
+            } while ($data=$DB->fetch_assoc($result));
+
+            echo "</table>\n";
+
+            if ($canedit) {
+               openArrowMassive("softinstall".$rand."",true);
+               Dropdown::show('SoftwareLicense',array('condition'=> "`glpi_softwarelicenses`.`softwares_id` = '$softwares_id'"));
+
+               echo "&nbsp;<input type='submit' name='move' value=\"".
+                     $LANG['buttons'][20]."\" class='submit'>&nbsp;";
+               closeArrowMassive('delete', $LANG['buttons'][6]);
+
+               echo "</form>";
+            }
+         } else { // Not found
+            echo $LANG['search'][15];
+         }
+      } // Query
+      echo "</div>\n";
+
+   }
+
+   /**
+    * Update license associated on a computer
+    *
+    * @param $licID ID of the install software lienk
+    * @param softwarelicenses_id ID of the new license
+    *
+    * @return nothing
+    */
+   function upgrade($licID, $softwarelicenses_id) {
+      global $DB;
+
+      if ($this->getFromDB($licID)) {
+         $computers_id = $this->fields['computers_id'];
+         $this->delete(array('id' => $licID));
+         $this->add(array('computers_id'        => $computers_id,
+                          'softwarelicenses_id' => $softwarelicenses_id));
+      }
+   }
 
 }
 
