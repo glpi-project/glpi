@@ -212,13 +212,26 @@ class Log extends CommonDBTM {
       } else {
          $username="";
       }
+
+      $old_value=mysql_real_escape_string(utf8_substr(stripslashes($old_value),0,180));
+      $new_value=mysql_real_escape_string(utf8_substr(stripslashes($new_value),0,180));
+      //echo $old_value;
+
+      // Security to be sure that values do not pass over the max length
+      if (utf8_strlen($old_value)>255) {
+         $old_value=utf8_substr($old_value,0,250);
+      }
+      if (utf8_strlen($new_value)>255) {
+         $new_value=utf8_substr($new_value,0,250);
+      }
+
       // Build query
       $query = "INSERT INTO
                 `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`,
                              `date_mod`, `id_search_option`, `old_value`, `new_value`)
                 VALUES ('$items_id', '$itemtype', '$itemtype_link', '$linked_action','".
-                        addslashes($username)."', '$date_mod', '$id_search_option', '".
-                        utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."')";
+                        addslashes($username)."', '$date_mod', '$id_search_option', 
+                        '$old_value', '$new_value')";
 
       if ($DB->query($query)) {
          return $DB->insert_id();
