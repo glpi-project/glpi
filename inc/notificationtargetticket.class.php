@@ -739,7 +739,7 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##task.planning.user##']     = Dropdown::getDropdownName('glpi_users',
                                                                         $plan->fields['users_id']);
                $tmp['##task.planning.begin##']    = convDateTime($plan->fields['begin']);
-               $tmp['##task.planning.end##']      = convDateTime($plan->fields['begin']);
+               $tmp['##task.planning.end##']      = convDateTime($plan->fields['end']);
                $tmp['##task.planning.status##']   = Planning::getState($plan->fields['state']);
             }
 
