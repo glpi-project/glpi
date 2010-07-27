@@ -546,6 +546,8 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.solvedate##']    = convDateTime($this->obj->getField('solvedate'));
 
          $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
+         $this->datas['##ticket.useremailnotification##'] =
+                                 Dropdown::getYesNo($this->obj->getField('user_email_notification'));
 
          $entitydata = new EntityData;
          $autoclose_value=$CFG_GLPI['autoclose_delay'];
@@ -636,6 +638,16 @@ class NotificationTargetTicket extends NotificationTarget {
                $this->datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
             } else {
                $this->datas['##ticket.item.serial##']='';
+            }
+            if ($this->target_object->isField('contact')) {
+               $this->datas['##ticket.item.contact##'] = $this->target_object->getField('contact');
+            } else {
+               $this->datas['##ticket.item.contact##']='';
+            }
+            if ($this->target_object->isField('contact_num')) {
+               $this->datas['##ticket.item.contactnumber##'] = $this->target_object->getField('contact_num');
+            } else {
+               $this->datas['##ticket.item.contactnumber##']='';
             }
             if ($this->target_object->isField('otherserial')) {
                $this->datas['##ticket.item.otherserial##']
@@ -873,6 +885,8 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.item.otherserial'      => $LANG['common'][20],
                      'ticket.item.location'         => $LANG['common'][15],
                      'ticket.item.model'            => $LANG['common'][22],
+                     'ticket.item.contact'          => $LANG['common'][18],
+                     'ticket.item.contactnumber'    => $LANG['common'][21],
                      'ticket.urgency'               => $LANG['joblist'][29],
                      'ticket.impact'                => $LANG['joblist'][30],
                      'ticket.priority'              => $LANG['joblist'][2],
@@ -897,7 +911,8 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.numberoftasks'         => $LANG['mailing'][122],
                      'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                      'ticket.action'                => $LANG['mailing'][119],
-                     'ticket.autoclose'             => $LANG['entity'][18]);
+                     'ticket.autoclose'             => $LANG['entity'][18],
+                     'ticket.useremailnotification' => $LANG['job'][19]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
