@@ -484,15 +484,84 @@ function update078to080($output='HTML') {
                        WHERE `glpi_softwareversions`.`softwares_id` = `SOFT`.`id` ";
       $DB->query($query) or die("0.80 transfer operatingsystems_id from glpi_softwares to glpi_softwareversions" . $LANG['update'][90] . $DB->error());
       $query = "ALTER TABLE  `glpi_softwares` DROP  `operatingsystems_id`";
-      $DB->query($query) or die("0.80 drop operatingsystems_id field in glpi_softwares" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 drop operatingsystems_id field in glpi_softwares " . $LANG['update'][90] . $DB->error());
    }
+
+
+   if (!isIndex("glpi_softwarelicenses","unicity")) {
+      // clean datas
+      $query="SELECT `computers_id`, `softwareversions_id`, COUNT(*) AS CPT 
+               FROM `glpi_computers_softwareversions` 
+               GROUP BY `computers_id`, `softwareversions_id` 
+               HAVING CPT > 1";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query2="SELECT `id` FROM `glpi_computers_softwareversions`
+                        WHERE `computers_id` = '".$data['computers_id']."' 
+                           AND `softwareversions_id` = '".$data['softwareversions_id']."'
+                        LIMIT 1";
+               if ($result2= $DB->query($query2)) {
+                  if ($DB->numrows($result)) {
+                     $keep_id=$DB->result($result,0,0);
+                     $query3="DELETE FROM `glpi_computers_softwareversions`
+                           WHERE `computers_id` = '".$data['computers_id']."' 
+                           AND `softwareversions_id` = '".$data['softwareversions_id']."'
+                           AND `id` <> $keep_id";
+                     $DB->query($query3) or die("0.80 clean glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
+                  }
+               }
+            }
+         }
+      }
+      $query="ALTER TABLE `glpi_computers_softwareversions` ADD UNIQUE `unicity` ( `computers_id` , `softwareversions_id` )";
+      $DB->query($query) or die("0.80 add unicity index from glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
+   }   
+
+   if (!isIndex("`glpi_computers_softwareversions`","computers_id")) {
+      $query="ALTER TABLE `glpi_computers_softwareversions` DROP INDEX `computers_id`";
+      $DB->query($query) or die("0.80 drop computers_id index from glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists("glpi_computers_softwarelicenses")) {
+      $query = "CREATE TABLE `glpi_computers_softwarelicenses` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `computers_id` int(11) NOT NULL default '0',
+                  `softwarelicenses_id` int(11) NOT NULL default '0',
+                  PRIMARY KEY  (`id`),
+                  KEY `computers_id` (`computers_id`),
+                  KEY `softwarelicenses_id` (`softwarelicenses_id`),
+                  UNIQUE `unicity` ( `computers_id` , `softwarelicenses_id` )
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query) or die("0.80 create glpi_tickettasks " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (FieldExists("glpi_softwarelicenses","computers_id")) {
+      $query = "SELECT * FROM `glpi_softwarelicenses` WHERE `computers_id` > 0 and `computers_id` IS NOT NULL";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query="INSERT INTO `glpi_computers_softwarelicenses` (`computers_id`, `softwarelicenses_id`) 
+                              VALUES  ('".$data['computers_id']."','".$data['id']."')";
+               $DB->query($query) or die("0.80 migrate data to computers_softwarelicenses table " . $LANG['update'][90] . $DB->error());
+            }
+         }
+      }
+
+      $query = "ALTER TABLE `glpi_softwarelicenses` DROP `computers_id`";
+      $DB->query($query) or die("0.80 drop computers_id field in glpi_softwarelicenses " . $LANG['update'][90] . $DB->error());
+   }
+   
+
+   // TODO : MIgrate data from existig computers_id field of license
+   // Drop computers_id field in license
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Common'); // Updating schema
 
 
    if (!FieldExists("glpi_softwarelicenses","date_mod")) {
       $query = "ALTER TABLE `glpi_softwarelicenses` ADD `date_mod`  DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
-      $DB->query($query) or die("0.80 add date_mod field in glpi_softwarelicenses" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add date_mod field in glpi_softwarelicenses " . $LANG['update'][90] . $DB->error());
    }
 
    if (TableExists("glpi_cartridges_printermodels")) {
@@ -502,29 +571,29 @@ function update078to080($output='HTML') {
 
    if (!FieldExists("glpi_monitors","have_hdmi")) {
       $query = "ALTER TABLE `glpi_monitors` ADD `have_hdmi`  tinyint(1) NOT NULL DEFAULT 0 AFTER `have_pivot`";
-      $DB->query($query) or die("0.80 add have_hdmi field in glpi_monitors" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add have_hdmi field in glpi_monitors " . $LANG['update'][90] . $DB->error());
    }
 
    if (FieldExists("glpi_configs","dbreplicate_email")) {
       $query = "ALTER TABLE `glpi_configs` DROP `dbreplicate_email`";
-      $DB->query($query) or die("0.80 drop dbreplicate_email field in glpi_configs" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 drop dbreplicate_email field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists("glpi_configs","auto_create_infocoms")) {
       $query = "ALTER TABLE `glpi_configs` ADD `auto_create_infocoms` tinyint( 1 ) NOT NULL DEFAULT '0' ";
-      $DB->query($query) or die("0.80 add auto_create_infocoms field in glpi_configs" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add auto_create_infocoms field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists("glpi_configs","csv_delimiter")) {
       $query = "ALTER TABLE `glpi_configs` ADD `csv_delimiter` CHAR( 1 ) NOT NULL AFTER `number_format` ";
-      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_configs" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_configs " . $LANG['update'][90] . $DB->error());
       $query = "UPDATE `glpi_configs` SET `csv_delimiter` = ';'";
       $DB->query($query);
    }
 
    if (!FieldExists("glpi_users","csv_delimiter")) {
       $query = "ALTER TABLE `glpi_users` ADD `csv_delimiter` CHAR( 1 ) NULL AFTER `number_format` ";
-      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_users" . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_users " . $LANG['update'][90] . $DB->error());
 
    }
 

@@ -79,7 +79,9 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
          break;
 
       default :
-         Plugin::displayAction($license, $_REQUEST['glpi_tab']);
+         if (!Plugin::displayAction($license, $_REQUEST['glpi_tab'])) {
+            Computer_SoftwareLicense::showForLicenseByEntity($license);
+         }
    }
 }
 ajaxFooter();

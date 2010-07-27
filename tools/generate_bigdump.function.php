@@ -1510,7 +1510,7 @@ function generate_entity($ID_entity){
 			$val3=mt_rand(1,$MAX['softwareinstall']);
 			for ($k=0;$k<$val3;$k++){
 				$query="INSERT INTO glpi_computers_softwareversions VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$versID')";
-				$DB->query($query) or die("PB REQUETE ".$query);
+				$DB->query($query); // no die because may be corrupt unicity constraint
 			}
 		}
 		$LAST["version"]=getMaxItem("glpi_softwareversions");
@@ -1519,8 +1519,15 @@ function generate_entity($ID_entity){
 		for ($j=0;$j<$val2;$j++){
 			$softwareversions_id_buy=mt_rand($FIRST["version"],$LAST["version"]);
 			$softwareversions_id_use=mt_rand($softwareversions_id_buy,$LAST["version"]);
-			$query="INSERT INTO glpi_softwarelicenses VALUES (NULL,$softID,'$ID_entity','$recursive','".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$softwareversions_id_buy','$softwareversions_id_use',NULL,0,'comment license $j',NOW())";
+                        $nbused=mt_rand(1,$MAX['softwareinstall']);
+			$query="INSERT INTO glpi_softwarelicenses VALUES (NULL,$softID,'$ID_entity','$recursive','$nbused','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$softwareversions_id_buy','$softwareversions_id_use',NULL,'comment license $j',NOW())";
 			$DB->query($query) or die("PB REQUETE ".$query);
+                        $licID=$DB->insert_id();
+
+                        for ($k=0;$k<$nbused;$k++){
+				$query="INSERT INTO glpi_computers_softwarelicenses VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$licID')";
+				$DB->query($query); // no die because may be corrupt unicity constraint
+			}
 		}
 
 	}
