@@ -66,6 +66,10 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
          Plugin::displayAction($license, $_REQUEST['glpi_tab']);
          break;
 
+      case 2 :
+         Computer_SoftwareLicense::showForLicense($license);
+         break;
+
       case 4 :
          Infocom::showForItem($license);
          break;

@@ -134,6 +134,8 @@ class SoftwareLicense extends CommonDBTM {
 
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
+         $ong[2] = $LANG['Menu'][0];
+
          if (haveRight("infocom","r")) {
             $ong[4] = $LANG['Menu'][26];
          }
@@ -603,6 +605,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "<th>".($sort=="`number`"?$sort_img:"").
                      "<a href='javascript:reloadTab(\"sort=number&amp;order=".
                         ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['tracking'][29]."</a></th>";
+            echo "<th>".$LANG['software'][9]."</th>";
             echo "<th>".($sort=="`typename`"?$sort_img:"").
                       "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
                         ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][17]."</a></th>";
@@ -617,7 +620,7 @@ class SoftwareLicense extends CommonDBTM {
                         ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][32]."</a></th>";
 //             echo "<th>".$LANG['help'][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG['software'][50] is too long) ??
             echo "</tr>\n";
-
+            $tot_assoc=0;
             for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
                addToNavigateListItems('SoftwareLicense',$data['id']);
                echo "<tr class='tab_bg_2'>";
@@ -634,6 +637,9 @@ class SoftwareLicense extends CommonDBTM {
                }
                echo "<td>".$data['serial']."</td>";
                echo "<td class='right'>".($data['number']>0?$data['number']:$LANG['software'][4])."</td>";
+               $nb_assoc=Computer_SoftwareLicense::countForLicense($data['id']);
+               $tot_assoc+=$nb_assoc;
+               echo "<td class='right'>$nb_assoc</td>";
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
@@ -680,9 +686,10 @@ class SoftwareLicense extends CommonDBTM {
                }
             }
             echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='".($software->isRecursive()?3:2)."' class='right b'>".$LANG['common'][33];
+            echo "<td colspan='".($software->isRecursive()?4:3)."' class='right b'>".$LANG['common'][33];
             echo "</td><td class='right b'>".($tot>0?$tot:$LANG['software'][4])."</td>";
-            echo "<td colspan='5' class='center'>";
+            echo "<td class='right b'>$tot_assoc</td>";
+            echo "<td colspan='4' class='center'>";
             if ($canedit) {
                echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
                       $LANG['software'][8]."</a>";
