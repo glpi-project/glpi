@@ -380,7 +380,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    FROM `glpi_profiles_users`
                    WHERE `users_id`='".$data['id']."' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",
-                           "entities_id",$this->obj->fields['entities_id'],true)
+                           "entities_id",$this->getEntity(),true)
                      ."AND profiles_id IN (".implode(',',$this->private_profiles).")";
          $result = $DB->query($query);
          if ($DB->result($result,0,'cpt')) {
