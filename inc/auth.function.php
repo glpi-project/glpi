@@ -633,7 +633,7 @@ function haveRecursiveAccessToEntity($ID) {
  * Check if you could access (read) to the entity of id = $ID
  *
  * @param $ID : ID of the entity
- * @param $is_recursive : boolean if resursive item
+ * @param $is_recursive : boolean if recursive item
  *
  * @return Boolean : read access to entity
 **/
