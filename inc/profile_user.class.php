@@ -345,6 +345,7 @@ class Profile_User extends CommonDBTM {
       $i=0;
       $nb_per_line=3;
       $rand=mt_rand(); // Just to avoid IDE warning
+      $canedit_entity=false;
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)!=0) {
@@ -352,7 +353,7 @@ class Profile_User extends CommonDBTM {
             while ($data=$DB->fetch_array($result)) {
                if ($data["entity"]!=$temp) {
                   while ($i%$nb_per_line!=0) {
-                     if ($canedit) {
+                     if ($canedit_entity) {
                         echo "<td width='10'>&nbsp;</td>";
                      }
                      echo "<td class='tab_bg_1'>&nbsp;</td>\n";
@@ -360,7 +361,7 @@ class Profile_User extends CommonDBTM {
                   }
                   if ($i!=0) {
                      echo "</table>";
-                     if ($canedit) {
+                     if ($canedit_entity) {
                         openArrowMassive("profileuser_form".$rand."_$temp", true);
                         Dropdown::show('Entity', array('entity'=>$_SESSION['glpiactiveentities']));
                         echo "&nbsp;<input type='submit' name='moveentity' value=\"".
@@ -373,6 +374,7 @@ class Profile_User extends CommonDBTM {
                   // New entity
                   $i=0;
                   $temp=$data["entity"];
+                  $canedit_entity=$canedit && in_array($temp,$_SESSION['glpiactiveentities']);
                   $rand=mt_rand();
                   echo "<tr class='tab_bg_2'>";
                   echo "<td class='left'>";
@@ -396,7 +398,7 @@ class Profile_User extends CommonDBTM {
                   echo "<tr class='tab_bg_1'>\n";
                   $i=0;
                }
-               if ($canedit) {
+               if ($canedit_entity) {
                   echo "<td width='10'>";
                   $sel="";
                   if (isset($_GET["select"]) && $_GET["select"]=="all") {
@@ -426,7 +428,7 @@ class Profile_User extends CommonDBTM {
             }
             if ($i%$nb_per_line!=0) {
                while ($i%$nb_per_line!=0) {
-                  if ($canedit) {
+                  if ($canedit_entity) {
                      echo "<td width='10'>&nbsp;</td>";
                   }
                   echo "<td class='tab_bg_1'>".DROPDOWN_EMPTY_VALUE."</td>";
@@ -435,7 +437,7 @@ class Profile_User extends CommonDBTM {
             }
             if ($i!=0) {
                echo "</table>\n";
-               if ($canedit) {
+               if ($canedit_entity) {
                   openArrowMassive("profileuser_form".$rand."_$temp", true);
                   Dropdown::show('Entity', array('entity'=>$_SESSION['glpiactiveentities']));
                   echo "&nbsp;<input type='submit' name='moveentity' value=\"".
