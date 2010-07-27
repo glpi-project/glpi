@@ -445,7 +445,7 @@ function update078to080($output='HTML') {
 
    }
 
-   // Put relatime in seconds
+   // Put realtime in seconds
    if (FieldExists('glpi_tickets','realtime')) {
       $query = "ALTER TABLE `glpi_tickets` ADD `realtime_tmp` INT( 11 ) NOT NULL DEFAULT 0";
       $DB->query($query) or die("0.80 add realtime_tmp in glpi_tickets". $LANG['update'][90] . $DB->error());
@@ -467,6 +467,28 @@ function update078to080($output='HTML') {
       $query = "ALTER TABLE `glpi_tickettasks` DROP `realtime`, CHANGE `realtime_tmp` `realtime` INT( 11 ) NOT NULL DEFAULT 0";
       $DB->query($query) or die("0.80 alter realtime in glpi_tickettasks". $LANG['update'][90] . $DB->error());
    }
+
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Software'); // Updating schema
+
+
+   if (!FieldExists("glpi_softwareversions","operatingsystems_id")) {
+      $query = "ALTER TABLE  `glpi_softwareversions` ADD  `operatingsystems_id` INT( 11 ) NOT NULL";
+      $DB->query($query) or die("0.80 add operatingsystems_id field in glpi_softwareversions" . $LANG['update'][90] . $DB->error());
+      $query = "ALTER TABLE `glpi_softwareversions` ADD INDEX `operatingsystems_id` (`operatingsystems_id`)";
+      $DB->query($query) or die("0.80 add index on operatingsystems_id in glpi_softwareversions". $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_softwareversions`,
+                        (SELECT `id`, `operatingsystems_id` FROM `glpi_softwares`) AS SOFT
+                           SET `glpi_softwareversions`.`operatingsystems_id` = `SOFT`.`operatingsystems_id`
+                       WHERE `glpi_softwareversions`.`softwares_id` = `SOFT`.`id` ";
+      $DB->query($query) or die("0.80 transfer operatingsystems_id from glpi_softwares to glpi_softwareversions" . $LANG['update'][90] . $DB->error());
+      $query = "ALTER TABLE  `glpi_softwares` DROP  `operatingsystems_id`";
+      $DB->query($query) or die("0.80 drop operatingsystems_id field in glpi_softwares" . $LANG['update'][90] . $DB->error());
+   }
+
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Common'); // Updating schema
+
 
    if (!FieldExists("glpi_softwarelicenses","date_mod")) {
       $query = "ALTER TABLE `glpi_softwarelicenses` ADD `date_mod`  DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
@@ -504,22 +526,6 @@ function update078to080($output='HTML') {
       $query = "ALTER TABLE `glpi_users` ADD `csv_delimiter` CHAR( 1 ) NULL AFTER `number_format` ";
       $DB->query($query) or die("0.80 add csv_delimiter field in glpi_users" . $LANG['update'][90] . $DB->error());
 
-   }
-
-
-   if (!FieldExists("glpi_softwareversions","operatingsystems_id")) {
-      $query = "ALTER TABLE  `glpi_softwareversions` ADD  `operatingsystems_id` INT( 11 ) NOT NULL";
-      $DB->query($query) or die("0.80 add operatingsystems_id field in glpi_softwareversions" . $LANG['update'][90] . $DB->error());
-      $query = "ALTER TABLE `glpi_softwareversions` ADD INDEX `operatingsystems_id` (`operatingsystems_id`)";
-      $DB->query($query) or die("0.80 add index on operatingsystems_id in glpi_softwareversions". $LANG['update'][90] . $DB->error());
-
-      $query = "UPDATE `glpi_softwareversions`,
-                        (SELECT `id`, `operatingsystems_id` FROM `glpi_softwares`) AS SOFT
-                           SET `glpi_softwareversions`.`operatingsystems_id` = `SOFT`.`operatingsystems_id`
-                       WHERE `glpi_softwareversions`.`softwares_id` = `SOFT`.`id` ";
-      $DB->query($query) or die("0.80 transfer operatingsystems_id from glpi_softwares to glpi_softwareversions" . $LANG['update'][90] . $DB->error());
-      $query = "ALTER TABLE  `glpi_softwares` DROP  `operatingsystems_id`";
-      $DB->query($query) or die("0.80 drop operatingsystems_id field in glpi_softwares" . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists('glpi_users','names_format')) {
