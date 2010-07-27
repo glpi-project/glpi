@@ -589,7 +589,9 @@ class SoftwareLicense extends CommonDBTM {
             echo "<th>".($sort=="`serial`"?$sort_img:"").
                       "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
                         ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
-            echo "<th>".$LANG['tracking'][29]."</th>";
+            echo "<th>".($sort=="`number`"?$sort_img:"").
+                     "<a href='javascript:reloadTab(\"sort=number&amp;order=".
+                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['tracking'][29]."</a></th>";
             echo "<th>".($sort=="`typename`"?$sort_img:"").
                       "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
                         ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][17]."</a></th>";
