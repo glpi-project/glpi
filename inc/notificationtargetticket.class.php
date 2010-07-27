@@ -432,7 +432,8 @@ class NotificationTargetTicket extends NotificationTarget {
                       'delete_task'     => $LANG['job'][53],
                       'closed'          => $LANG['mailing'][127],
                       'delete'          => $LANG['mailing'][129],
-                      'alertnotclosed'  => $LANG['crontask'][15]);
+                      'alertnotclosed'  => $LANG['crontask'][15],
+                      'recall'          => $LANG['sla'][9]);
       asort($events);
       return $events;
    }
