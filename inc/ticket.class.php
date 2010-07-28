@@ -2764,7 +2764,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td></tr>";
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['job'][2]." &nbsp;:</span></td><td>";
+         echo "<tr><td><span class='tracking_small'>".$LANG['common'][95]." &nbsp;:</span></td><td>";
          if ($canupdate) {
             User::dropdown(array('name'   => 'users_id_recipient',
                                  'value'  => $this->fields["users_id_recipient"],

@@ -59,11 +59,11 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
       echo "<tr><th>".$LANG['common'][15]."</th>";
       echo "<th>".$LANG['reports'][37]."</th>";
       echo "<th>".$LANG['reports'][52]."</th>";
-      echo "<th>".$LANG['reports'][38]."</th>";
+      echo "<th>".$LANG['networking'][14]."</th>";
       echo "<th>".$LANG['reports'][46]."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".$LANG['reports'][47]."</th>";
-      echo "<th>".$LANG['reports'][38]."</th>";
+      echo "<th>".$LANG['networking'][14]."</th>";
       echo "<th>".$LANG['device_iface'][2]."</th>";
       echo "<th>".$LANG['reports'][36]."</th></tr>";
 

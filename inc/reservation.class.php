@@ -521,7 +521,7 @@ class Reservation extends CommonDBTM {
 
          echo "<input type='hidden' name='users_id' value='".getLoginUserID()."'>";
       } else {
-         echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:</td>";
          echo "<td>";
          if (empty($ID)) {
             User::dropdown(array('value'  => getLoginUserID(),
@@ -760,7 +760,7 @@ class Reservation extends CommonDBTM {
          } else {
             echo "<tr><th>".$LANG['search'][8]."</th>";
             echo "<th>".$LANG['search'][9]."</th>";
-            echo "<th>".$LANG['reservation'][31]."</th>";
+            echo "<th>".$LANG['common'][95]."</th>";
             echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
@@ -805,7 +805,7 @@ class Reservation extends CommonDBTM {
          } else {
             echo "<tr><th>".$LANG['search'][8]."</th>";
             echo "<th>".$LANG['search'][9]."</th>";
-            echo "<th>".$LANG['reservation'][31]."</th>";
+            echo "<th>".$LANG['common'][95]."</th>";
             echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
@@ -864,7 +864,7 @@ class Reservation extends CommonDBTM {
          echo "<tr><th>".$LANG['search'][8]."</th>";
          echo "<th>".$LANG['search'][9]."</th>";
          echo "<th>".$LANG['common'][1]."</th>";
-         echo "<th>".$LANG['reservation'][31]."</th>";
+         echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";
@@ -912,7 +912,7 @@ class Reservation extends CommonDBTM {
          echo "<tr><th>".$LANG['search'][8]."</th>";
          echo "<th>".$LANG['search'][9]."</th>";
          echo "<th>".$LANG['common'][1]."</th>";
-         echo "<th>".$LANG['reservation'][31]."</th>";
+         echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";

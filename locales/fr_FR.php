@@ -223,7 +223,8 @@ $LANG['central'][19] = "Vos tickets à valider";
 
 $LANG['choice'][0] = "Non";
 $LANG['choice'][1] = "Oui";
-$LANG['choice'][2]="ou";
+$LANG['choice'][2] = "ou";
+$LANG['choice'][3] = "et";
 
 $LANG['common'][0]  = "Sans nom";
 $LANG['common'][1]  = "Matériel";
@@ -320,6 +321,7 @@ $LANG['common'][91] = "Cet élément est dépendant d'un autre. La modification 
 $LANG['common'][92] = "Contact";
 $LANG['common'][93] = "Nouvel intitulé enfant";
 $LANG['common'][94] = "URL";
+$LANG['common'][95] = "Par";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -831,7 +833,6 @@ $LANG['install'][105] = "L'extension mbstring de votre parseur PHP n'est pas ins
 $LANG['install'][106] = "Test d'écriture des fichiers de graphiques";
 
 
-$LANG['job'][2]  = "par";
 $LANG['job'][4]  = "Demandeur";
 $LANG['job'][5]  = "Attribué à";
 $LANG['job'][6]  = "Technicien";
@@ -1288,7 +1289,6 @@ $LANG['networking'][17]="Connecté à";
 $LANG['networking'][19]="Ajouter un port...";
 $LANG['networking'][21]="Numéro de port";
 $LANG['networking'][25]="sur";
-$LANG['networking'][37]="port(s) réseau trouvé(s)";
 $LANG['networking'][44]="Le port";
 $LANG['networking'][46]="Ajouter plusieurs ports...";
 $LANG['networking'][47]="De";
@@ -1399,7 +1399,6 @@ $LANG['peripherals'][31]="Gestion globale";
 $LANG['peripherals'][32]="Gestion unitaire";
 $LANG['peripherals'][33]="Type de gestion";
 
-$LANG['phones'][18]="Marque";
 $LANG['phones'][36]="Alimentation";
 $LANG['phones'][38]="Casque";
 $LANG['phones'][39]="Haut parleur";
@@ -1411,7 +1410,6 @@ $LANG['planning'][2]="L'utilisateur est déjà occupé pour la période utilisé
 $LANG['planning'][5]="Journée";
 $LANG['planning'][6]="Semaine";
 $LANG['planning'][8]="Intervention";
-$LANG['planning'][9]="Par";
 $LANG['planning'][10]="Ical";
 $LANG['planning'][11]="Webcal";
 $LANG['planning'][12]="Télécharger planning format Ical";
@@ -1519,7 +1517,6 @@ $LANG['reports'][28]="Par année";
 $LANG['reports'][33]="Rapport réseau";
 $LANG['reports'][36]="Périphériques connectés";
 $LANG['reports'][37]="Prises";
-$LANG['reports'][38]="IP";
 $LANG['reports'][39]="Par lieu";
 $LANG['reports'][41]="Par équipement";
 $LANG['reports'][42]="Par prise";
@@ -1556,7 +1553,6 @@ $LANG['reservation'][27]="Répétition";
 $LANG['reservation'][28]="Par semaine";
 $LANG['reservation'][29]="Par jour";
 $LANG['reservation'][30]="fois";
-$LANG['reservation'][31]="Par";
 $LANG['reservation'][35]="Réservations en cours et à venir";
 $LANG['reservation'][36]="Réservations passées";
 $LANG['reservation'][37]="Pas de réservations";
@@ -1603,8 +1599,6 @@ $LANG['rulesengine'][37]="Règles d'affectation d'une catégorie aux logiciels";
 $LANG['rulesengine'][38]="Recalculer";
 $LANG['rulesengine'][40]="la catégorie";
 $LANG['rulesengine'][41]="Validation";
-$LANG['rulesengine'][42]="ET";
-$LANG['rulesengine'][43]="OU";
 $LANG['rulesengine'][45]="Assigner valeur depuis expression rationnelle";
 $LANG['rulesengine'][46]="Assigner : matériel sur IP";
 $LANG['rulesengine'][47]="Assigner : matériel sur nom + domaine";

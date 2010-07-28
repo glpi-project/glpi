@@ -335,7 +335,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['phones'][18]."&nbsp;:</td>";
+      echo "<td>".$LANG['peripherals'][18]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this,"brand");
       echo "</td>";

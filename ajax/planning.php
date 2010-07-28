@@ -74,7 +74,7 @@ if (isset($_POST["state"])) {
 
 echo "<table class='tab_cadre'>";
 if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
-   echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9]."&nbsp;:</td>";
+   echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:</td>";
    echo "<td class='center'>";
    User::dropdown(array('name'   => "plan[users_id]",
                         'value'  => $_POST["users_id"],

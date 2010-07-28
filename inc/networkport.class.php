@@ -303,11 +303,7 @@ class NetworkPort extends CommonDBChild {
             echo "<div class='center'><table class='tab_cadre_fixe'>\n";
             echo "<tr><th colspan='$colspan'>\n";
             echo $DB->numrows($result) . " ";
-            if ($DB->numrows($result) < 2) {
-               echo $LANG['networking'][37];
-            } else {
-               echo $LANG['networking'][13];
-            }
+            echo $LANG['networking'][13];
             echo "&nbsp;:</th></tr>\n";
 
             echo "<tr>";
