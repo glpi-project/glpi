@@ -1236,7 +1236,7 @@ class Dropdown {
                   }
                   break;
                case 'Calendar':
-                  echo "<option value='duplicate'>".$LANG['buttons'][59]."</option>";
+                  echo "<option value='duplicate'>".$LANG['buttons'][54]."</option>";
                   break;
                case 'Contact' :
                   if ($isadmin) {
