@@ -1348,7 +1348,6 @@ $LANG['ocsng'][34]="Imprimante(s) verrouillée(s)";
 $LANG['ocsng'][36]="Entité de destination";
 $LANG['ocsng'][37]="Activer la prévisualisation";
 $LANG['ocsng'][38]="Désactiver la prévisualisation";
-$LANG['ocsng'][39]="Lieu de destination";
 $LANG['ocsng'][40]="Vérifie la règle ?";
 $LANG['ocsng'][41]="Mode d'import manuel";
 $LANG['ocsng'][42]="Configuration OCSNG invalide (TRACE_DELETED doit être activé)";

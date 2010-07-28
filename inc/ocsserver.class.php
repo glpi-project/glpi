@@ -2178,7 +2178,7 @@ class OcsServer extends CommonDBTM {
             if ($advanced && !$tolinked) {
                echo "<th>" . $LANG['ocsng'][40] . "</th>\n";
                echo "<th>" . $LANG['ocsng'][36] . "</th>\n";
-               echo "<th>" . $LANG['ocsng'][39] . "</th>\n";
+               echo "<th>" . $LANG['common'][15] . "</th>\n";
             }
             echo "<th>&nbsp;</th></tr>\n";
 
