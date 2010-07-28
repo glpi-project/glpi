@@ -967,7 +967,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'task.description'             => $LANG['joblist'][6],
                      'task.category'                => $LANG['common'][36],
                      'task.time'                    => $LANG['job'][20],
-                     'task.planning.user'           => $LANG['planning'][9],
+                     'task.planning.user'           => $LANG['common'][95],
                      'task.planning.begin'          => $LANG['search'][8],
                      'task.planning.end'            => $LANG['search'][9],
                      'task.planning.status'         => $LANG['joblist'][0],

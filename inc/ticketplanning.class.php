@@ -504,7 +504,7 @@ class TicketPlanning extends CommonDBTM {
 
       if ($who<=0) { // show tech for "show all and show group"
          echo "<br>- ";
-         echo $LANG['planning'][9]." ".getUserName($val["users_id"]);
+         echo $LANG['common'][95]." ".getUserName($val["users_id"]);
       }
       echo "</a>";
       if ($complete) {

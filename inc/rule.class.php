@@ -263,8 +263,8 @@ class Rule extends CommonDBTM {
    function dropdownRulesMatch($name,$value='') {
       global $LANG;
 
-      $elements[Rule::AND_MATCHING] = $LANG['rulesengine'][42];
-      $elements[Rule::OR_MATCHING] = $LANG['rulesengine'][43];
+      $elements[Rule::AND_MATCHING] = $LANG['choice'][3];
+      $elements[Rule::OR_MATCHING] = $LANG['choice'][2];
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
 
@@ -1307,7 +1307,7 @@ class Rule extends CommonDBTM {
          echo "<tr><th colspan='3'>" . $LANG['rulesengine'][6] . "</th></tr>";
 
          $type_match=($this->fields["match"]==Rule::AND_MATCHING
-                      ?$LANG['rulesengine'][42]:$LANG['rulesengine'][43]);
+                      ?$LANG['choice'][3]:$LANG['choice'][2]);
          $already_displayed=array();
          $first=true;
          //Brower all criterias

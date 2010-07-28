@@ -199,7 +199,7 @@ class Reminder extends CommonDBTM {
       echo "</td></tr>\n";
 
       if (!$canedit) {
-         echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:</td>";
          echo "<td>";
          echo getUserName($this->fields["users_id"]);
          echo "</td></tr>\n";
@@ -403,7 +403,7 @@ class Reminder extends CommonDBTM {
       $img="rdv_private.png"; // default icon for reminder
 
       if (!$val["is_private"]) {
-         $users_id="<br>".$LANG['planning'][9]."&nbsp;: ".getUserName($val["users_id"]);
+         $users_id="<br>".$LANG['common'][95]."&nbsp;: ".getUserName($val["users_id"]);
          $img="rdv_public.png";
       }
 
