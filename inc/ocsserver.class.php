@@ -995,7 +995,7 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   static function processComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1,$canlink=0) {
+   static function processComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1, $defaultlocation = -1,$canlink=0) {
       global $DBocs, $DB;
 
       OcsServer::checkOCSconnection($ocsservers_id);
@@ -1015,7 +1015,7 @@ class OcsServer extends CommonDBTM {
          //or only last inventory date changed
          return OcsServer::updateComputer($datas["id"], $ocsservers_id, 1, 0);
       } else {
-         return OcsServer::importComputer($ocsid, $ocsservers_id, $lock, $defaultentity,$canlink);
+         return OcsServer::importComputer($ocsid, $ocsservers_id, $lock, $defaultentity, $defaultlocation,$canlink);
       }
    }
 
@@ -1198,7 +1198,7 @@ class OcsServer extends CommonDBTM {
 
    }
 
-   static function importComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1,$canlink=0) {
+   static function importComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1, $defaultlocation = -1,$canlink=0) {
       global $DBocs, $DB;
 
       OcsServer::checkOCSconnection($ocsservers_id);
@@ -1220,6 +1220,7 @@ class OcsServer extends CommonDBTM {
       } else {
          //An entity has already been defined via the web interface
          $data['entities_id'] = $defaultentity;
+         $data['locations_id'] = $defaultlocation;
       }
 
       //Try to match all the rules, return the first good one, or null if not rules matched
@@ -2176,10 +2177,11 @@ class OcsServer extends CommonDBTM {
             if ($advanced && !$tolinked) {
                echo "<th>" . $LANG['ocsng'][40] . "</th>\n";
                echo "<th>" . $LANG['ocsng'][36] . "</th>\n";
+               echo "<th>" . $LANG['ocsng'][39] . "</th>\n";
             }
             echo "<th>&nbsp;</th></tr>\n";
 
-            echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 7 : 5) . "' class='center'>";
+            echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
             echo "<input class='submit' type='submit' name='import_ok' value='".$LANG['buttons'][37]."'>";
             echo "</td></tr>\n";
 
@@ -2207,6 +2209,12 @@ class OcsServer extends CommonDBTM {
                                        'value'  => $data['entities_id'],
                                        'comments' => 0));
                   echo "</td>\n";
+                  echo "<td>";
+                  Dropdown::show('Location',
+                     array('name'  => "toimport_locations[".$tab["id"]."]=".$data['locations_id'],
+                                       'value'  => $data['locations_id'],
+                                       'comments' => 0));
+                  echo "</td>\n";
                }
                echo "<td>";
                if (!$tolinked) {
@@ -2226,7 +2234,7 @@ class OcsServer extends CommonDBTM {
                }
                echo "</td></tr>\n";
             }
-            echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 7 : 5) . "' class='center'>";
+            echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
             echo "<input class='submit' type='submit' name='import_ok' value='" .
                    $LANG['buttons'][37] . "'>\n";
             echo "<input type=hidden name='ocsservers_id' value='" . $ocsservers_id . "'>";
@@ -4655,7 +4663,7 @@ class OcsServer extends CommonDBTM {
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
                $task->log("Update computer " . $data["ID"] . "\n");
-               OcsServer::processComputer($data["ID"],$ocsservers_id,0,-1,1);
+               OcsServer::processComputer($data["ID"],$ocsservers_id,0,-1,-1,1);
             }
             $task->setVolume($nbcomp);
          } else {
