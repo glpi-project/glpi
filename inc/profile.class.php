@@ -51,7 +51,8 @@ class Profile extends CommonDBTM {
    static public $common_fields=array("id","name","interface","is_default");
    /// Fields not related to a basic right
    static public $noright_fields=array('helpdesk_hardware','helpdesk_item_type','show_group_ticket',
-                             'show_group_hardware','own_ticket','helpdesk_status');
+                             'show_group_hardware','own_ticket','helpdesk_status','comment',
+                              'date_mod');
 
    var $dohistory = true;
 
