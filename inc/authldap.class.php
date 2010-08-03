@@ -997,10 +997,11 @@ class AuthLDAP extends CommonDBTM {
       //Called by an external script or not
       $values['script']       = 0;
 
+      // TODO change loop ? : foreach ($values...) if isset($options[...])
       foreach ($options as $option => $value) {
-         if ($value != '') {
+         // this test break mode detection - if ($value != '') {
          $values[$option] = $value;
-         }
+         //}
       }
 
       $ldap_users = array ();
