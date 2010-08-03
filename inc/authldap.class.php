@@ -956,7 +956,7 @@ class AuthLDAP extends CommonDBTM {
             echo "</table>";
 
             openArrowMassive("ldap_form", true);
-            closeArrowMassive($form_action, 
+            closeArrowMassive($form_action,
                               ($_SESSION['ldap_import']['mode']?$LANG['ldap'][15]:$LANG['buttons'][37]));
             echo "</form>";
 
@@ -1084,7 +1084,7 @@ class AuthLDAP extends CommonDBTM {
               FROM `glpi_users`";
 
       if ($values['mode'] != AuthLDAP::ACTION_IMPORT) {
-         $sql .= " WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.") 
+         $sql .= " WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.")
                          AND `auths_id` = '".$options['ldapservers_id']."'";
       }
       $sql .= " ORDER BY `name` ".$values['order'];
@@ -1584,7 +1584,7 @@ class AuthLDAP extends CommonDBTM {
     * @param $password : password to use
     * @param $use_tls : use a tls connection ?
     * @param $deref_options Deref options used
-    * 
+    *
     * @return link to the LDAP server : false if connection failed
    **/
    static function connectToServer($host, $port, $login = "", $password = "", $use_tls = false,
@@ -1685,7 +1685,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Import a user from ldap
     * Check all the directories. When the user is found, then import it
-    * @param $options array containing condition : 
+    * @param $options array containing condition :
     *          array ('name'=>'glpi') or array ('email' => 'test at test.com')
    **/
    static function importUserFromServers($options=array()) {
@@ -1779,13 +1779,13 @@ class AuthLDAP extends CommonDBTM {
     * Get dn for a user
     *
     * @param $ds : LDAP link
-    * @param $options array 
+    * @param $options array
     *          - basedn : base dn used to search
     *          - login_field : attribute to store login
     *          - search_parameters array of search parameters
     *          - user_params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
     *          - condition : ldap condition used
-    * 
+    *
     * @return dn of the user, else false
    **/
    static function searchUserDn($ds, $options=array()) {
@@ -1846,7 +1846,7 @@ class AuthLDAP extends CommonDBTM {
     * @param $basedn : base dn used to search
     * @param $group_dn : dn of the group
     * @param $condition : ldap condition used
-    * 
+    *
     * @return group infos if found, else false
    **/
    static function getGroupByDn($ds, $basedn, $group_dn, $condition) {
@@ -1907,7 +1907,8 @@ class AuthLDAP extends CommonDBTM {
             $_SESSION['ldap_import']['ldapservers_id'] = NOT_AVAILABLE;
          }
 
-         if (!isset($_SESSION['ldap_import']['interface']) && !isset($options['interface'])) {
+         if ((!haveRight('config','w') && !haveRight('entity','w'))
+             || (!isset($_SESSION['ldap_import']['interface']) && !isset($options['interface']))) {
             $options['interface'] = AuthLdap::SIMPLE_INTERFACE;
          }
 
@@ -1987,21 +1988,55 @@ class AuthLDAP extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4' class='middle'><div class='relative'>";
-      echo "<span>" .($_SESSION['ldap_import']['mode']?$LANG['ldap'][1]:$LANG['ldap'][2])."</span>";
+      echo "<span>" .($_SESSION['ldap_import']['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]);
 
-      //If not coming from the ticket form, then give expert/simple link
-      echo "&nbsp;<span class='ldap_right'>".$LANG['common'][65]." : ";
-      echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
-                     "&amp;mode=".$_SESSION['ldap_import']['mode']. "&amp;interface=".
-                     ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
-                        ?AuthLdap::EXPERT_INTERFACE:AuthLdap::SIMPLE_INTERFACE)."'>".
-                     ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
-                        ?$LANG['ldap'][39]:$LANG['ldap'][40])."</a>";
+      // TODO "this comment seems false" =>  If not coming from the ticket form, then give expert/simple link
+
+      // Expert interface allow user to override configuration.
+      if (haveRight('config','w') || haveRight('entity','w')) {
+         echo "</span>&nbsp;<span class='ldap_right'>".$LANG['common'][65]." : ";
+         echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
+                        "&amp;mode=".$_SESSION['ldap_import']['mode']. "&amp;interface=".
+                        ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
+                           ?AuthLdap::EXPERT_INTERFACE:AuthLdap::SIMPLE_INTERFACE)."'>".
+                        ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
+                           ?$LANG['ldap'][39]:$LANG['ldap'][40])."</a>";
+      } else {
+         $_SESSION['ldap_import']['interface'] = AuthLdap::SIMPLE_INTERFACE;
+      }
       echo "</span></div>";
       echo "</th></tr>";
 
       switch ($_SESSION['ldap_import']['interface']) {
-         case AuthLdap::SIMPLE_INTERFACE :
+         case AuthLdap::EXPERT_INTERFACE :
+            //If more than one directory configured
+            //Display dropdown ldap servers
+            if ($_SESSION['ldap_import']['ldapservers_id'] !=  NOT_AVAILABLE
+                && $_SESSION['ldap_import']['ldapservers_id'] > 0) {
+
+               if (AuthLdap::getNumberOfServers() > 1) {
+                  echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][4]."</td><td colspan='3'>";
+                  Dropdown::show('AuthLdap',
+                                 array('name'   => 'ldapservers_id',
+                                       'value'  => $_SESSION['ldap_import']['ldapservers_id']));
+                  echo "&nbsp;<input class='submit' type='submit' name='change_directory'
+                          value='".$LANG['ldap'][41]."'>";
+                  echo "</td></tr>";
+               }
+               echo "<tr class='tab_bg_2'><td>Basedn</td><td colspan='3'>";
+               echo "<input type='text' name='basedn' value='".$_SESSION['ldap_import']['basedn'].
+                     "' size='90' ".(!$_SESSION['ldap_import']['basedn']?"disabled":"").">";
+               echo "</td></tr>";
+               echo "<tr class='tab_bg_2'><td>".$LANG['setup'][263]."</td><td colspan='3'>";
+               echo "<input type='text' name='ldap_filter' value='".
+                        $_SESSION['ldap_import']['ldap_filter']."' size='90' ".
+                        (!$_SESSION['ldap_import']['ldapservers_id']?"disabled":"").">";
+               echo "</td></tr>";
+            }
+            break;
+
+         //case AuthLdap::SIMPLE_INTERFACE :
+         default:
             //If multi-entity mode and more than one entity visible
             //else no need to select entity
             if (isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
@@ -2069,33 +2104,6 @@ class AuthLDAP extends CommonDBTM {
                   $field_counter = 0;
                   echo "</tr>";
                 }
-            }
-            break;
-
-         case AuthLdap::EXPERT_INTERFACE :
-            //If more than one directory configured
-            //Display dropdown ldap servers
-            if ($_SESSION['ldap_import']['ldapservers_id'] !=  NOT_AVAILABLE
-                && $_SESSION['ldap_import']['ldapservers_id'] > 0) {
-
-               if (AuthLdap::getNumberOfServers() > 1) {
-                  echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][4]."</td><td colspan='3'>";
-                  Dropdown::show('AuthLdap',
-                                 array('name'   => 'ldapservers_id',
-                                       'value'  => $_SESSION['ldap_import']['ldapservers_id']));
-                  echo "&nbsp;<input class='submit' type='submit' name='change_directory'
-                          value='".$LANG['ldap'][41]."'>";
-                  echo "</td></tr>";
-               }
-               echo "<tr class='tab_bg_2'><td>Basedn</td><td colspan='3'>";
-               echo "<input type='text' name='basedn' value='".$_SESSION['ldap_import']['basedn'].
-                     "' size='90' ".(!$_SESSION['ldap_import']['basedn']?"disabled":"").">";
-               echo "</td></tr>";
-               echo "<tr class='tab_bg_2'><td>".$LANG['setup'][263]."</td><td colspan='3'>";
-               echo "<input type='text' name='ldap_filter' value='".
-                        $_SESSION['ldap_import']['ldap_filter']."' size='90' ".
-                        (!$_SESSION['ldap_import']['ldapservers_id']?"disabled":"").">";
-               echo "</td></tr>";
             }
             break;
       }
@@ -2184,7 +2192,7 @@ class AuthLDAP extends CommonDBTM {
 
 
    static function addTimestampRestrictions($operator, $days) {
- 
+
       //If days restriction
       if ($days) {
          $operator = $operator.'=';
