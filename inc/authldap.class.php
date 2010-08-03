@@ -1990,10 +1990,10 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr><th colspan='4' class='middle'><div class='relative'>";
       echo "<span>" .($_SESSION['ldap_import']['mode']?$LANG['ldap'][1]:$LANG['ldap'][2]);
 
-      // TODO "this comment seems false" =>  If not coming from the ticket form, then give expert/simple link
-
       // Expert interface allow user to override configuration.
-      if (haveRight('config','w') || haveRight('entity','w')) {
+      // If not coming from the ticket form, then give expert/simple link
+      if ((haveRight('config','w') || haveRight('entity','w'))
+          && !isset($_SESSION['ldap_import']['no_expert_mode'])) {
          echo "</span>&nbsp;<span class='ldap_right'>".$LANG['common'][65]." : ";
          echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
                         "&amp;mode=".$_SESSION['ldap_import']['mode']. "&amp;interface=".
