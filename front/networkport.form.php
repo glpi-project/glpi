@@ -183,7 +183,7 @@ if (isset($_POST["add"])) {
       if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
          foreach ($_POST["del_port"] as $port_id => $val) {
             // Check port write access
-            if ($np->can($port_id,'w') {
+            if ($np->can($port_id,'w')) {
                $npv->unassignVlan($port_id,$_POST["vlans_id"]);
             }
          }
