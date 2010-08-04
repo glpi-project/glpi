@@ -502,8 +502,8 @@ function update078to080($output='HTML') {
                            AND `softwareversions_id` = '".$data['softwareversions_id']."'
                         LIMIT 1";
                if ($result2= $DB->query($query2)) {
-                  if ($DB->numrows($result)) {
-                     $keep_id=$DB->result($result,0,0);
+                  if ($DB->numrows($result2)) {
+                     $keep_id=$DB->result($result2,0,0);
                      $query3="DELETE FROM `glpi_computers_softwareversions`
                            WHERE `computers_id` = '".$data['computers_id']."' 
                            AND `softwareversions_id` = '".$data['softwareversions_id']."'
