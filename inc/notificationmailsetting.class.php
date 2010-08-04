@@ -102,15 +102,14 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    function showFormMailServerConfig() {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       echo "<div>";
       echo "<form action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='1'>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['setup'][704] . "</strong></td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['setup'][704]."</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][202] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
@@ -137,24 +136,23 @@ class NotificationMailSetting extends CommonDBTM {
          echo " </td></tr>";
          if (!function_exists('mail')) {
              echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-             echo "<span class='red'>" . $LANG['setup'][217] . "&nbsp;:</span>";
-             echo "<span>" . $LANG['setup'][218] . "</span></td></tr>";
+             echo "<span class='red'>" . $LANG['setup'][217] . "&nbsp;:</span>". 
+                  $LANG['setup'][218] . "</td></tr>";
          }
 
          echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][204] . "&nbsp;:</td>";
          echo "<td colspan='3'><textarea cols='60' rows='3' name='mailing_signature'>".
-                    $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
+                                $CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 
          echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][660]."</th></tr>";
          echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][231] . "&nbsp;:</td><td>";
-         $mail_methods = array(MAIL_MAIL   => $LANG['setup'][650],
+         $mail_methods = array(MAIL_MAIL    => $LANG['setup'][650],
                                MAIL_SMTP    => $LANG['setup'][651],
                                MAIL_SMTPSSL => $LANG['setup'][652],
                                MAIL_SMTPTLS => $LANG['setup'][653]);
          Dropdown::showFromArray("smtp_mode", $mail_methods, array('value' => $CFG_GLPI["smtp_mode"]));
-         echo "</td><td colspan='2' align='center'>";
-         echo "<input class='submit' type='submit' name='test_smtp_send'
-                                                               value=\"".$LANG['setup'][229]."\">";
+         echo "</td><td colspan='2' class='center'>";
+         echo "<input class='submit' type='submit' name='test_smtp_send' value='".$LANG['setup'][229]."'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "&nbsp;:</td>";
@@ -171,8 +169,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td><input type='password' name='smtp_password' size='40' value='' autocomplete='off'>";
          echo "</td></tr>";
 
-      }
-      else {
+      } else {
          echo "</tr>";
       }
       $options['candel'] = false;
@@ -185,56 +182,54 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</table></form>";*/
    }
 
+
    function showFormAlerts() {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       echo "<form action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['common'][41] . "</strong></td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['common'][41]."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td >" . $LANG['setup'][246] . "&nbsp;:</td><td>";
-      Alert::dropdownYesNo(array('name'=>"use_contracts_alert",
-                                 'value'=>$CFG_GLPI["use_contracts_alert"]));
+      Alert::dropdownYesNo(array('name'  => "use_contracts_alert",
+                                 'value' => $CFG_GLPI["use_contracts_alert"]));
       echo "</td>";
       echo "<td>" . $LANG['setup'][46] . "&nbsp;:</td><td>";
       Contract::dropdownAlert("default_contract_alert", $CFG_GLPI["default_contract_alert"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][247] . "&nbsp;:</td><td>";
-      Alert::dropdownYesNo(array('name'=>"use_infocoms_alert",
-                                 'value'=>$CFG_GLPI["use_infocoms_alert"]));
+      Alert::dropdownYesNo(array('name'  => "use_infocoms_alert",
+                                 'value' => $CFG_GLPI["use_infocoms_alert"]));
       echo "</td>";
       echo "<td>" . $LANG['setup'][46]."&nbsp;:</td><td>";
       Alert::dropdownInfocomAlert($CFG_GLPI["default_infocom_alert"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][264] . "&nbsp;:</td><td>";
-      Alert::dropdownYesNo(array('name'=>"use_licenses_alert",
-                                 'value'=>$CFG_GLPI["use_licenses_alert"]));
+      Alert::dropdownYesNo(array('name'  => "use_licenses_alert",
+                                 'value' => $CFG_GLPI["use_licenses_alert"]));
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td >" . $LANG['setup'][707] . "&nbsp;:</td><td>";
-      Alert::dropdownIntegerNever('use_reservations_alert',
-                                  $CFG_GLPI["use_reservations_alert"],
-                                  array('max'=>99));
+      Alert::dropdownIntegerNever('use_reservations_alert', $CFG_GLPI["use_reservations_alert"],
+                                  array('max' => 99));
       echo "&nbsp;".$LANG['job'][21]."</td>";
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][708] . "&nbsp;:</td><td>";
-      Alert::dropdownIntegerNever('notclosed_delay',
-                                  $CFG_GLPI["notclosed_delay"],
-                                  array('max'=>99));
+      Alert::dropdownIntegerNever('notclosed_delay', $CFG_GLPI["notclosed_delay"],
+                                  array('max' => 99));
       echo "&nbsp;".$LANG['stats'][31]."</td>";
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['setup'][245] . " : " . $LANG['setup'][244] . "&nbsp;:</td><td>";
+      echo "<td>" . $LANG['setup'][245] . "&nbsp;: " . $LANG['setup'][244] . "&nbsp;:</td><td>";
       Alert::dropdown(array('name'  => 'cartridges_alert_repeat',
                             'value' => $CFG_GLPI["cartridges_alert_repeat"]));
       echo "</td>";
@@ -243,7 +238,7 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td >" . $LANG['setup'][245] . " : " . $LANG['setup'][243] . "&nbsp;:</td><td>";
+      echo "<td >" . $LANG['setup'][245] . "&nbsp;: " . $LANG['setup'][243] . "&nbsp;:</td><td>";
       Alert::dropdown(array('name'  => 'consumables_alert_repeat',
                             'value' => $CFG_GLPI["consumables_alert_repeat"]));
       echo "</td><td colspan='2'>";
