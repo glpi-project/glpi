@@ -674,12 +674,12 @@ class NotificationTargetTicket extends NotificationTarget {
                $this->datas['##ticket.item.locationl##']='';
             }
             //Object user
+            $this->datas['##ticket.item.user##'] = '';
             if ($this->obj->getField('users_id')) {
                $user_tmp = new User;
-               $user_tmp->getFromDB($this->target_object->getField('users_id'));
-               $this->datas['##ticket.item.user##'] = $user_tmp->getName();
-            } else {
-               $this->datas['##ticket.item.user##'] = '';
+               if ($user_tmp->getFromDB($this->target_object->getField('users_id'))) {
+                  $this->datas['##ticket.item.user##'] = $user_tmp->getName();
+               }
             }
             //Object group
             if ($this->obj->getField('groups_id')) {
