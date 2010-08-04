@@ -1410,7 +1410,7 @@ class OcsServer extends CommonDBTM {
 
          //Get the list of parameters
 
-         while ($dataOcs = $DB->fetch_array($result)) {
+         while ($dataOcs = $DBocs->fetch_array($result)) {
             if ($conf["use_ip_to_link"]) {
                if (!empty($dataOcs["IPADDRESS"])
                    && !in_array($dataOcs["IPADDRESS"],$ocsParams["IPADDRESS"])) {
