@@ -518,7 +518,7 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add unicity index from glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
    }   
 
-   if (!isIndex("`glpi_computers_softwareversions`","computers_id")) {
+   if (isIndex("glpi_computers_softwareversions","computers_id")) {
       $query="ALTER TABLE `glpi_computers_softwareversions` DROP INDEX `computers_id`";
       $DB->query($query) or die("0.80 drop computers_id index from glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
    }
