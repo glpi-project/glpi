@@ -89,6 +89,10 @@ class NotificationTarget extends CommonDBChild {
       }
 
       if ($object) {
+         if ($object instanceof CommonDBTM) {
+            // Reread to avoid slashes issue
+            $object->getFromDB($object->fields['id']);
+         }
          $this->obj = $object;
          $this->getObjectItem($event);
       }
