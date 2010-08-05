@@ -1549,10 +1549,12 @@ class Search {
          }
       }
 
+     /* Je ne comprends pas à quoi sert ce switch
       switch ($table.".".$field) {
          default :
          break;
       }
+      */
 
       //// Default cases
       // Link with plugin tables
