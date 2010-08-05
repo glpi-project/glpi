@@ -3555,13 +3555,13 @@ class Search {
 
          case "glpi_contracts.alert" :
             switch ($data[$NAME.$num]) {
-               case pow(2,Alert::END);
+               case pow(2,Alert::END) :
                   return $LANG['buttons'][32];
 
-               case pow(2,Alert::NOTICE);
+               case pow(2,Alert::NOTICE) :
                   return $LANG['financial'][10];
 
-               case pow(2,Alert::END) + pow(2,Alert::NOTICE);
+               case pow(2,Alert::END) + pow(2,Alert::NOTICE) :
                   return $LANG['buttons'][32]." + ".$LANG['financial'][10];
             }
             return "";
