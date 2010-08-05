@@ -3569,19 +3569,18 @@ class Search {
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
 
-               $options['itemtype2'][0]  = $itemtype;
+               $options['itemtype2'][0]   = $itemtype;
                $options['field2'][0]      = 2;
                $options['searchtype2'][0] = 'equals';
                $options['contains2'][0]   = $data['id'];
-               $options['link2'][0]        = 'AND';
+               $options['link2'][0]       = 'AND';
 
-               $options['reset']='reset';
+               $options['reset'] = 'reset';
 
-               $out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">";
-               $out .= $data[$NAME.$num];
-               $out .= "</a>";
+               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">";
+               $out .= $data[$NAME.$num]."</a>";
             } else {
-               $out= $data[$NAME.$num];
+               $out = $data[$NAME.$num];
             }
             return $out;
 
@@ -3596,22 +3595,21 @@ class Search {
 
          case "glpi_auth_tables.name" :
             return Auth::getMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,
-                                    $data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
+                                       $data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
 
          case "glpi_reservationitems.comment" :
             if (empty($data[$NAME.$num])) {
                return "<a title='".$LANG['reservation'][22]."'
                         href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                        $data["refID"]."' >".$LANG['common'][49].
-                     "</a>";
+                        $data["refID"]."' >".$LANG['common'][49]."</a>";
             }
             return "<a title='".$LANG['reservation'][22]."'
                      href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
-                     $data['refID']."' >".
-                     resume_text($data[$NAME.$num])."</a>";
+                     $data['refID']."' >".resume_text($data[$NAME.$num])."</a>";
 
          case 'glpi_notifications.mode' :
                return Notification::getMode($data[$NAME.$num]);
+
          case 'glpi_notifications.event' :
                $item = NotificationTarget::getInstanceByType($data['itemtype']);
                if ($item) {
@@ -3619,6 +3617,7 @@ class Search {
                   return $events[$data[$NAME.$num]];
                }
                return '';
+
          case 'glpi_crontasks.description' :
             $tmp = new CronTask();
             return $tmp->getDescription($data['id']);
@@ -3628,26 +3627,30 @@ class Search {
 
          case 'glpi_crontasks.mode':
             return CronTask::getModeName($data[$NAME.$num]);
+
          case 'glpi_crontasks.itemtype':
             if ($plug=isPluginItemType($data[$NAME.$num])) {
                return $plug['plugin'];
             }
             return '';
+
          case 'glpi_tickets.status':
             $status=Ticket::getStatus($data[$NAME.$num]);
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
-                        alt='$status' title='$status'><br>$status";
+                     alt='$status' title='$status'><br>$status";
+
          case 'glpi_tickets.priority':
             return Ticket::getPriorityName($data[$NAME.$num]);
 
          case 'glpi_tickets.urgency':
             return Ticket::getUrgencyName($data[$NAME.$num]);
+
          case 'glpi_tickets.impact':
             return Ticket::getImpactName($data[$NAME.$num]);
 
          case 'glpi_tickets.items_id':
             if (!empty($data[$NAME.$num."_2"]) && class_exists($data[$NAME.$num."_2"])) {
-               $item= new $data[$NAME.$num."_2"];
+               $item = new $data[$NAME.$num."_2"];
                if ($item->getFromDB($data[$NAME.$num])) {
                   return $item->getLink(true);
                }
@@ -3655,13 +3658,13 @@ class Search {
             return '&nbsp;';
 
          case 'glpi_tickets.name':
-            $link=getItemTypeFormURL('Ticket');
+            $link = getItemTypeFormURL('Ticket');
             $out  = "<a id='ticket".$data[$NAME.$num."_2"]."' href=\"".$link;
             $out .= (strstr($link,'?') ?'&amp;' :  '?');
             $out .= 'id='.$data[$NAME.$num."_2"];
             // Force solution tab if solved
             if ($data[$NAME.$num."_4"]=='solved') {
-               $out.="&amp;forcetab=4";
+               $out .= "&amp;forcetab=4";
             }
             $out .= "\">".$data[$NAME.$num];
             if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
@@ -3670,25 +3673,29 @@ class Search {
             $out .= "</a>";
 
             $out.= showToolTip(nl2br($data[$NAME.$num."_3"]),
-                     array('applyto'=>'ticket'.$data[$NAME.$num."_2"],'display'=>false));
+                               array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
+                                     'display' => false));
             return $out;
+
          case 'glpi_ticketvalidations.status':
          case "glpi_tickets.global_validation" :
-
-            $split=explode("$$$$",$data[$NAME.$num]);
-            $out='';
+            $split = explode("$$$$",$data[$NAME.$num]);
+            $out   = '';
             foreach($split as $val) {
-               $status=TicketValidation::getStatus($val);
-               $bgcolor=TicketValidation::getStatusColor($val);
-               $out .= (empty($out)?'':'<br>')."<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
+               $status  = TicketValidation::getStatus($val);
+               $bgcolor = TicketValidation::getStatusColor($val);
+               $out .= (empty($out)?'':'<br>').
+                       "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
             }
             return $out;
 
          case 'glpi_notimportedemails.reason':
             return NotImportedEmail::getReason($data[$NAME.$num]);
+
          case 'glpi_notimportedemails.messageid':
-            $clean=array('<'=>'','>'=>'');
-            return strtr($data[$NAME.$num],$clean);
+            $clean = array('<' => '',
+                           '>' => '');
+            return strtr($data[$NAME.$num], $clean);
       }
 
 
@@ -3697,19 +3704,19 @@ class Search {
       // Link with plugin tables : need to know left join structure
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table.'.'.$field, $matches)) {
          if (count($matches)==2) {
-            $plug=$matches[1];
-            $function='plugin_'.$plug.'_giveItem';
+            $plug = $matches[1];
+            $function = 'plugin_'.$plug.'_giveItem';
             if (function_exists($function)) {
-               $out=$function($itemtype,$ID,$data,$num);
+               $out = $function($itemtype,$ID,$data,$num);
                if (!empty($out)) {
                   return $out;
                }
             }
          }
       }
-      $unit='';
+      $unit = '';
       if (isset($searchopt[$ID]['unit'])) {
-         $unit=$searchopt[$ID]['unit'];
+         $unit = $searchopt[$ID]['unit'];
       }
 
       // Preformat items
@@ -3718,43 +3725,41 @@ class Search {
             case "itemlink" :
                if (!empty($data[$NAME.$num."_2"])) {
                   if (isset($searchopt[$ID]["itemlink_type"])) {
-                     $link=getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
+                     $link = getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                   } else {
-                     $link=getItemTypeFormURL($itemtype);
+                     $link = getItemTypeFormURL($itemtype);
                   }
                   $out  = "<a id='".$itemtype."_".$data[$NAME.$num."_2"]."' href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');
-                  $out .= 'id='.$data[$NAME.$num."_2"]."\">";
-                  $out .= $data[$NAME.$num].$unit;
+                  $out .= 'id='.$data[$NAME.$num."_2"]."\">".$data[$NAME.$num].$unit;
                   if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
                      $out .= " (".$data[$NAME.$num."_2"].")";
                   }
                   $out .= "</a>";
                   return $out;
+
                } else if (isset($searchopt[$ID]["itemlink_type"])) {
-                  $out="";
-                  $split=explode("$$$$",$data[$NAME.$num]);
-                  $count_display=0;
+                  $out   = "";
+                  $split = explode("$$$$", $data[$NAME.$num]);
+                  $count_display = 0;
 
-                  $separate='<br>';
+                  $separate = '<br>';
                   if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                     $separate='<hr>';
+                     $separate = '<hr>';
                   }
-
 
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k]))>0) {
-                        $split2=explode("$$",$split[$k]);
+                        $split2 = explode("$$", $split[$k]);
                         if (isset($split2[1]) && $split2[1]>0) {
                            if ($count_display) {
                               $out .= $separate;
                            }
                            $count_display++;
-                           $page=getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
+                           $page = getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                            $page .= (strpos($page,'?') ? '&id' : '?id');
                            $out .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$split2[1]."'
-                                       href='$page=".$split2[1]."'>";
-                           $out .= $split2[0].$unit;
+                                     href='$page=".$split2[1]."'>".$split2[0].$unit;
                            if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                               $out .= " (".$split2[1].")";
                            }
@@ -3767,23 +3772,23 @@ class Search {
                break;
 
             case "text" :
-               $separate='<br>';
+               $separate = '<br>';
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                  $separate='<hr>';
+                  $separate = '<hr>';
                }
-               return str_replace('$$$$',$separate,nl2br($data[$NAME.$num]));
+               return str_replace('$$$$', $separate, nl2br($data[$NAME.$num]));
 
             case "date" :
-               $split=explode("$$$$",$data[$NAME.$num]);
-               $out='';
+               $split = explode("$$$$", $data[$NAME.$num]);
+               $out   = '';
                foreach($split as $val) {
                   $out .= (empty($out)?'':'<br>').convDate($val);
                }
                return $out;
 
             case "datetime" :
-               $split=explode("$$$$",$data[$NAME.$num]);
-               $out='';
+               $split = explode("$$$$", $data[$NAME.$num]);
+               $out   = '';
                foreach($split as $val) {
                   $out .= (empty($out)?'':'<br>').convDateTime($val);
                }
@@ -3796,76 +3801,74 @@ class Search {
                return Ticket::getRealtime($data[$NAME.$num]);
 
             case "date_delay" :
-               $split = explode('$$$$',$data[$NAME.$num]);
-               $out='';
+               $split = explode('$$$$', $data[$NAME.$num]);
+               $out   = '';
 
                foreach($split as $val) {
                   if (strpos($val,',')) {
-                     list($dat,$dur)=explode(',',$val);
+                     list($dat,$dur) = explode(', ', $val);
                      if (!empty($dat)) {
-                        $out .= (empty($out)?'':'<br>').getWarrantyExpir($dat,$dur);
+                        $out .= (empty($out)?'':'<br>').getWarrantyExpir($dat, $dur);
                      }
                   }
                }
                return (empty($out) ? "&nbsp;" : $out);
 
             case "email" :
-               $email=trim($data[$NAME.$num]);
+               $email = trim($data[$NAME.$num]);
                if (!empty($email)) {
                   return "<a href='mailto:$email'>$email</a>";
                }
                return "&nbsp;";
 
             case "weblink" :
-               $orig_link=trim($data[$NAME.$num]);
+               $orig_link = trim($data[$NAME.$num]);
                if (!empty($orig_link)) {
                   // strip begin of link
-                  $link=preg_replace('/https?:\/\/(www.)?/','',$orig_link);
-                  $link=preg_replace('/\/$/','',$link);
+                  $link = preg_replace('/https?:\/\/(www.)?/', '', $orig_link);
+                  $link = preg_replace('/\/$/', '', $link);
                   if (utf8_strlen($link)>30) {
-                     $link=utf8_substr($link,0,30)."...";
+                     $link = utf8_substr($link, 0, 30)."...";
                   }
                   return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
                return "&nbsp;";
 
             case "number" :
-               if (isset($searchopt[$ID]['forcegroupby'])
-                  && $searchopt[$ID]['forcegroupby']) {
-                  $out="";
-                  $split=explode("$$$$",$data[$NAME.$num]);
-                  $count_display=0;
+               if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
+                  $out   = "";
+                  $split = explode("$$$$", $data[$NAME.$num]);
+                  $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k]))>0) {
                         if ($count_display) {
-                           $out.= "<br>";
+                           $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ','&nbsp;',formatNumber($split[$k],false,0)).$unit;
+                        $out .= str_replace(' ', '&nbsp;', formatNumber($split[$k], false, 0)).$unit;
                      }
                   }
                   return $out;
                }
-               return str_replace(' ','&nbsp;',formatNumber($data[$NAME.$num],false,0)).$unit;
+               return str_replace(' ', '&nbsp;', formatNumber($data[$NAME.$num], false, 0)).$unit;
 
             case "decimal" :
-               if (isset($searchopt[$ID]['forcegroupby'])
-                  && $searchopt[$ID]['forcegroupby']) {
-                  $out="";
-                  $split=explode("$$$$",$data[$NAME.$num]);
-                  $count_display=0;
+               if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
+                  $out   = "";
+                  $split = explode("$$$$" ,$data[$NAME.$num]);
+                  $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k]))>0) {
                         if ($count_display) {
-                           $out.= "<br>";
+                           $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ','&nbsp;',formatNumber($split[$k])).$unit;
+                        $out .= str_replace(' ', '&nbsp;', formatNumber($split[$k])).$unit;
                      }
                   }
                   return $out;
                }
-               return str_replace(' ','&nbsp;',formatNumber($data[$NAME.$num])).$unit;
+               return str_replace(' ', '&nbsp;', formatNumber($data[$NAME.$num])).$unit;
 
             case "bool" :
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;
@@ -3878,34 +3881,29 @@ class Search {
                   $obj = new $data[$NAME.$num] ();
                   return $obj->getTypeName();
                }
-               else {
-                  return "";
-               }
+               return "";
+
             case "language":
                if (isset($CFG_GLPI['languages'][$data[$NAME.$num]])) {
                   return $CFG_GLPI['languages'][$data[$NAME.$num]][0];
                }
-               else {
-                  return $LANG['setup'][46];
-               }
-            break;
+               return $LANG['setup'][46];
          }
       }
 
       // Manage items with need group by / group_concat
-      if (isset($searchopt[$ID]['forcegroupby'])
-         && $searchopt[$ID]['forcegroupby']) {
-         $out="";
-         $split=explode("$$$$",$data[$NAME.$num]);
-         $count_display=0;
-         $separate='<br>';
+      if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
+         $out   = "";
+         $split = explode("$$$$", $data[$NAME.$num]);
+         $count_display = 0;
+         $separate = '<br>';
          if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-            $separate='<hr>';
+            $separate = '<hr>';
          }
          for ($k=0 ; $k<count($split) ; $k++) {
             if (strlen(trim($split[$k]))>0) {
                if ($count_display) {
-                  $out.= $separate;
+                  $out .= $separate;
                }
                $count_display++;
                $out .= $split[$k].$unit;
@@ -3924,12 +3922,13 @@ class Search {
    * @return nothing
    */
    static function resetSaveSearch() {
+
       unset($_SESSION['glpisearch']);
-      $_SESSION['glpisearch']=array();
+      $_SESSION['glpisearch'] = array();
       unset($_SESSION['glpisearchcount']);
-      $_SESSION['glpisearchcount']=array();
+      $_SESSION['glpisearchcount'] = array();
       unset($_SESSION['glpisearchcount2']);
-      $_SESSION['glpisearchcount2']=array();
+      $_SESSION['glpisearchcount2'] = array();
    }
 
 
