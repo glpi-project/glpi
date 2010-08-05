@@ -45,14 +45,17 @@ class RegistryKey extends CommonDBTM {
       return $LANG['title'][43];
    }
 
+
    function canCreate() {
       // Only create on ocsng sync
       return haveRight('sync_ocsng', 'w');
    }
 
+
    function canView() {
       return haveRight('ocsng', 'r');
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -63,34 +66,36 @@ class RegistryKey extends CommonDBTM {
       $result = $DB->query($query);
    }
 
+
    /** Display registry values for a computer
+    * 
    * @param $ID integer : computer ID
+   * 
    */
    static function showForComputer($ID) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $LANG;
 
       if (!haveRight("computer","r")) {
          return false;
       }
 
       //REGISTRY HIVE
-      $REGISTRY_HIVE=array("HKEY_CLASSES_ROOT",
-                           "HKEY_CURRENT_USER",
-                           "HKEY_LOCAL_MACHINE",
-                           "HKEY_USERS",
-                           "HKEY_CURRENT_CONFIG",
-                           "HKEY_DYN_DATA");
+      $REGISTRY_HIVE = array("HKEY_CLASSES_ROOT",
+                             "HKEY_CURRENT_USER",
+                             "HKEY_LOCAL_MACHINE",
+                             "HKEY_USERS",
+                             "HKEY_CURRENT_CONFIG",
+                             "HKEY_DYN_DATA");
 
       $query = "SELECT *
-               FROM `glpi_registrykeys`
-               WHERE `computers_id` = '$ID'";
+                FROM `glpi_registrykeys`
+                WHERE `computers_id` = '$ID'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)!=0) {
             echo "<div class='center'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>";
-            echo $DB->numrows($result)." ".$LANG['registry'][4];
-            echo "</th></tr>\n";
+            echo "<tr><th colspan='4'>".$DB->numrows($result)." ".$LANG['registry'][4]."</th></tr>\n";
+
             echo "<tr><th>".$LANG['registry'][6]."</th>";
             echo "<th>".$LANG['registry'][1]."</th>";
             echo "<th>".$LANG['registry'][2]."</th>";
@@ -111,7 +116,7 @@ class RegistryKey extends CommonDBTM {
          } else {
             echo "<div class='center'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th>".$LANG['ocsconfig'][41]."</th></tr>";
-            echo "<tr class='tab_bg_2'><td align='center'><strong>".$LANG['registry'][5]."</strong></td></tr>";
+            echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['registry'][5]."</td></tr>";
             echo "</table></div>";
          }
       }
