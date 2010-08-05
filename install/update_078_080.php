@@ -488,7 +488,7 @@ function update078to080($output='HTML') {
    }
 
 
-   if (!isIndex("glpi_softwarelicenses","unicity")) {
+   if (!isIndex("glpi_computers_softwareversions","unicity")) {
       // clean datas
       $query="SELECT `computers_id`, `softwareversions_id`, COUNT(*) AS CPT 
                FROM `glpi_computers_softwareversions` 
