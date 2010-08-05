@@ -48,6 +48,7 @@ function update078to080($output='HTML') {
 	global $DB, $LANG;
 
    $updateresult = true;
+   $ADDTODISPLAYPREF = array();
 
    if ($output) {
       echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
