@@ -1471,11 +1471,6 @@ class Search {
          }
       }
 
-      switch ($table.".".$field) {
-         default :
-         break;
-      }
-
       //// Default cases
       // Link with plugin tables
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
@@ -1592,7 +1587,8 @@ class Search {
 
       switch($table.".".$field) {
          case "glpi_auth_tables.name" :
-            return " ORDER BY `glpi_users`.`authtype`, `glpi_authldaps`.`name`,
+            return " ORDER BY `glpi_users`.`authtype` $order,
+                              `glpi_authldaps`.`name` $order,
                               `glpi_authmails`.`name` $order ";
             break;
 
@@ -2606,7 +2602,7 @@ class Search {
                      LEFT JOIN `glpi_authmails` ON (`glpi_users`.`authtype` = ".Auth::MAIL."
                                                    AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
          case "glpi_authldaps" :
-            if ($itemtype='Entity') {
+            if ($itemtype=='Entity') {
                return " LEFT JOIN `glpi_authldaps` ON (`glpi_entitydatas`.`ldapservers_id` = `glpi_authldaps`.`id`)";
             }
             break;
