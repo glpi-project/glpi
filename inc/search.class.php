@@ -2654,14 +2654,18 @@ class Search {
    *@return Left join string
    *
    **/
-   static function addDefaultJoin ($itemtype,$ref_table,&$already_link_tables) {
+   static function addDefaultJoin ($itemtype, $ref_table, &$already_link_tables) {
 
       switch ($itemtype) {
          // No link
          case 'User' :
-            return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_profiles_users","");
+            return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                       "glpi_profiles_users", "");
+
          case 'Entity' :
-            return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_entitydatas","");
+            return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                       "glpi_entitydatas", "");
+
          case 'Ticket' :
 //            if (haveRight("validate_ticket",1)) {
 //               return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_ticketvalidations","");
@@ -2679,24 +2683,26 @@ class Search {
    *@param $ref_table reference table
    *@param $already_link_tables array of tables already joined
    *@param $new_table new table to join
+   *@param $linkfield linkfield for LeftJoin
    *@param $meta is it a meta item ?
    *@param $meta_type meta type table
-   *@param $linkfield linkfield for LeftJoin
    *
    *@return Left join string
    *
    **/
-   static function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$linkfield,
-                        $meta=0,$meta_type=0){
-      global $PLUGIN_HOOKS,$LANG;
+   static function addLeftJoin ($itemtype, $ref_table, &$already_link_tables, $new_table,
+                                $linkfield, $meta=0, $meta_type=0) {
+      global $LANG;
 
       // Rename table for meta left join
       $AS = "";
       $nt = $new_table;
 
       // Multiple link possibilies case
-      if ($new_table=="glpi_users" || $new_table=="glpi_groups"
-            || $new_table=="glpi_users_validation") {
+      if ($new_table=="glpi_users"
+          || $new_table=="glpi_groups"
+          || $new_table=="glpi_users_validation") {
+
          if (!empty($linkfield)) {
             $nt .= "_".$linkfield;
             $AS .= " AS ".$nt;
@@ -2719,13 +2725,12 @@ class Search {
 
       if (in_array($nt.".".$linkfield,$already_link_tables)) {
          return "";
-      } else {
-         array_push($already_link_tables, $nt.".".$linkfield);
       }
+      array_push($already_link_tables, $nt.".".$linkfield);
 
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
-         $function='plugin_'.$plug['plugin'].'_addLeftJoin';
+         $function = 'plugin_'.$plug['plugin'].'_addLeftJoin';
          if (function_exists($function)) {
             $out = $function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
             if (!empty($out)) {
@@ -2737,10 +2742,13 @@ class Search {
       switch ($new_table) {
          // No link
          case "glpi_auth_tables" :
-            return " LEFT JOIN `glpi_authldaps` ON (`glpi_users`.`authtype` = ".Auth::LDAP."
-                                                   AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)
-                     LEFT JOIN `glpi_authmails` ON (`glpi_users`.`authtype` = ".Auth::MAIL."
-                                                   AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
+            return " LEFT JOIN `glpi_authldaps`
+                        ON (`glpi_users`.`authtype` = ".Auth::LDAP."
+                            AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)
+                     LEFT JOIN `glpi_authmails`
+                        ON (`glpi_users`.`authtype` = ".Auth::MAIL."
+                            AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
+
          case "glpi_authldaps" :
             if ($itemtype='Entity') {
                return " LEFT JOIN `glpi_authldaps` ON (`glpi_entitydatas`.`ldapservers_id` = `glpi_authldaps`.`id`)";
