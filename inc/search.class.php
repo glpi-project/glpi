@@ -3948,74 +3948,79 @@ class Search {
 
       if (isset($_GET["add_search_count"]) && $_GET["add_search_count"]) {
          $_SESSION["glpisearchcount"][$itemtype]++;
-         glpi_header(str_replace("add_search_count=1&","",$_SERVER['REQUEST_URI']));
+         glpi_header(str_replace("add_search_count=1&", "", $_SERVER['REQUEST_URI']));
       }
 
       if (isset($_GET["delete_search_count"]) && $_GET["delete_search_count"]) {
          if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
             $_SESSION["glpisearchcount"][$itemtype]--;
          }
-         glpi_header(str_replace("delete_search_count=1&","",$_SERVER['REQUEST_URI']));
+         glpi_header(str_replace("delete_search_count=1&", "", $_SERVER['REQUEST_URI']));
       }
 
       if (isset($_GET["add_search_count2"]) && $_GET["add_search_count2"]) {
          $_SESSION["glpisearchcount2"][$itemtype]++;
-         glpi_header(str_replace("add_search_count2=1&","",$_SERVER['REQUEST_URI']));
+         glpi_header(str_replace("add_search_count2=1&", "", $_SERVER['REQUEST_URI']));
       }
 
       if (isset($_GET["delete_search_count2"]) && $_GET["delete_search_count2"]) {
          if ($_SESSION["glpisearchcount2"][$itemtype] >= 1) {
             $_SESSION["glpisearchcount2"][$itemtype]--;
          }
-         glpi_header(str_replace("delete_search_count2=1&","",$_SERVER['REQUEST_URI']));
+         glpi_header(str_replace("delete_search_count2=1&", "", $_SERVER['REQUEST_URI']));
       }
 
-      $tab=array();
+      $tab = array();
 
-      $default_values["start"]=0;
-      $default_values["order"]="ASC";
-      $default_values["is_deleted"]=0;
-      $default_values["distinct"]="N";
-      $default_values["link"]=array();
-      $default_values["field"]=array(0=>"view");
-      $default_values["contains"]=array(0=>"");
-      $default_values["searchtype"]=array(0=>"contains");
-      $default_values["link2"]=array();
-      $default_values["field2"]=array(0=>"view");
-      $default_values["contains2"]=array(0=>"");
-      $default_values["itemtype2"]="";
-      $default_values["searchtype2"]="";
-      $default_values["sort"]=1;
+      $default_values["start"]       = 0;
+      $default_values["order"]       = "ASC";
+      $default_values["is_deleted"]  = 0;
+      $default_values["distinct"]    = "N";
+      $default_values["link"]        = array();
+      $default_values["field"]       = array(0 => "view");
+      $default_values["contains"]    = array(0 => "");
+      $default_values["searchtype"]  = array(0 => "contains");
+      $default_values["link2"]       = array();
+      $default_values["field2"]      = array(0 => "view");
+      $default_values["contains2"]   = array(0 => "");
+      $default_values["itemtype2"]   = "";
+      $default_values["searchtype2"] = "";
+      $default_values["sort"]        = 1;
+
       if ($itemtype!='States'
-         && class_exists($itemtype) && method_exists($itemtype,'getDefaultSearchRequest')) {
-         $default_values=array_merge($default_values,call_user_func(array($itemtype, 'getDefaultSearchRequest')));
+         && class_exists($itemtype)
+         && method_exists($itemtype,'getDefaultSearchRequest')) {
+
+         $default_values = array_merge($default_values,
+                                       call_user_func(array($itemtype,
+                                                            'getDefaultSearchRequest')));
       }
 
       // First view of the page or force bookmark : try to load a bookmark
       if ($forcebookmark
          || ($usesession && !isset($_SESSION['glpisearch'][$itemtype]))) {
+
          $query = "SELECT `bookmarks_id`
-                  FROM `glpi_bookmarks_users`
-                  WHERE `users_id`='".getLoginUserID()."'
-                        AND `itemtype` = '$itemtype'";
+                   FROM `glpi_bookmarks_users`
+                   WHERE `users_id`='".getLoginUserID()."'
+                         AND `itemtype` = '$itemtype'";
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               $IDtoload=$DB->result($result,0,0);
+               $IDtoload = $DB->result($result, 0, 0);
                // Set session variable
-               $_SESSION['glpisearch'][$itemtype]=array();
+               $_SESSION['glpisearch'][$itemtype] = array();
                // Load bookmark on main window
-               $bookmark=new Bookmark();
+               $bookmark = new Bookmark();
                // Only get datas for bookmarks
                if ($forcebookmark) {
-                  $_GET=$bookmark->getParameters($IDtoload);
+                  $_GET = $bookmark->getParameters($IDtoload);
                } else {
-                  $bookmark->load($IDtoload,false);
+                  $bookmark->load($IDtoload, false);
                }
             }
          }
       }
-      if ($usesession
-         && isset($_GET["reset"])) {
+      if ($usesession && isset($_GET["reset"])) {
 
          if (isset($_SESSION['glpisearch'][$itemtype])) {
             unset($_SESSION['glpisearch'][$itemtype]);
@@ -4028,28 +4033,28 @@ class Search {
          }
          // Bookmark use
          if (isset($_GET["glpisearchcount"])) {
-            $_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
+            $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
          } else if (isset($_GET["field"])){
-            $_SESSION["glpisearchcount"][$itemtype]=count($_GET["field"]);
+            $_SESSION["glpisearchcount"][$itemtype] = count($_GET["field"]);
          }
          // Bookmark use
          if (isset($_GET["glpisearchcount2"])) {
-            $_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
+            $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
          } else if (isset($_GET["field2"])){
-            $_SESSION["glpisearchcount2"][$itemtype]=count($_GET["field2"]);
+            $_SESSION["glpisearchcount2"][$itemtype] = count($_GET["field2"]);
          }
       }
 
       if (is_array($_GET) && $usesession) {
          foreach ($_GET as $key => $val) {
-            $_SESSION['glpisearch'][$itemtype][$key]=$val;
+            $_SESSION['glpisearch'][$itemtype][$key] = $val;
          }
       }
 
       foreach ($default_values as $key => $val) {
          if (!isset($_GET[$key])) {
             if ($usesession && isset($_SESSION['glpisearch'][$itemtype][$key])) {
-               $_GET[$key]=$_SESSION['glpisearch'][$itemtype][$key];
+               $_GET[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {
                $_GET[$key] = $val;
                $_SESSION['glpisearch'][$itemtype][$key] = $val;
@@ -4059,17 +4064,17 @@ class Search {
 
       if (!isset($_SESSION["glpisearchcount"][$itemtype])) {
          if (isset($_GET["glpisearchcount"])) {
-            $_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
+            $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
          } else {
-            $_SESSION["glpisearchcount"][$itemtype]=1;
+            $_SESSION["glpisearchcount"][$itemtype] = 1;
          }
       }
       if (!isset($_SESSION["glpisearchcount2"][$itemtype])) {
          // Set in URL for bookmark
          if (isset($_GET["glpisearchcount2"])) {
-            $_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
+            $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
          } else {
-            $_SESSION["glpisearchcount2"][$itemtype]=0;
+            $_SESSION["glpisearchcount2"][$itemtype] = 0;
          }
       }
 //       printCleanArray($_GET);
@@ -4082,35 +4087,34 @@ class Search {
    * @param $itemtype item type to manage
    * @param $action action which is used to manupulate searchoption (r/w)
    * @param $withplugins boolean get plugins options
+   * 
    * @return clean $SEARCH_OPTION array
    */
-   static function getCleanedOptions($itemtype,$action='r',$withplugins=true) {
+   static function getCleanedOptions($itemtype, $action='r', $withplugins=true) {
       global $CFG_GLPI;
 
-      $options=&Search::getOptions($itemtype,$withplugins);
-      $todel=array();
+      $options = &Search::getOptions($itemtype, $withplugins);
+      $todel   = array();
       if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
-         $todel=array_merge($todel,array('financial',
-                                       25,26,27,28,37,38,50,51,52,53,54,55,56,57,58,59,120,122));
+         $todel = array_merge($todel, array('financial', 25, 26, 27, 28, 37, 38, 50, 51, 52, 53,
+                                            54, 55, 56, 57, 58, 59, 120, 122));
       }
 
       if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
-         $todel=array_merge($todel,array('financial',
-                                       29,30,130,131,132,133,134,135,136,137,138));
+         $todel = array_merge($todel, array('financial', 29, 30, 130, 131, 132, 133, 134, 135, 136,
+                                            137, 138));
       }
 
       if ($itemtype == 'Computer') {
          if (!haveRight('networking',$action)) {
-            $todel=array_merge($todel,array('network',
-                                          20,21,22,83,84,85));
+            $todel = array_merge($todel, array('network', 20, 21, 22, 83, 84, 85));
          }
          if (!$CFG_GLPI['use_ocs_mode'] || !haveRight('view_ocsng',$action)) {
-            $todel=array_merge($todel,array('ocsng',
-                                          100,101,102,103));
+            $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103));
          }
       }
       if (!haveRight('notes',$action)) {
-         $todel[]=90;
+         $todel[] = 90;
       }
 
       if (count($todel)) {
@@ -4133,7 +4137,7 @@ class Search {
    *
    * @return the reference to  array of search options for the given item type
    **/
-   static function &getOptions($itemtype,$withplugins=true) {
+   static function &getOptions($itemtype, $withplugins=true) {
       global $LANG, $CFG_GLPI;
 
       static $search = array();
@@ -4160,7 +4164,7 @@ class Search {
             $search['States'][31]['linkfield'] = 'states_id';
             $search['States'][31]['name']      = $LANG['state'][0];
 
-            $search['States']+=Location::getSearchOptionsToAdd();
+            $search['States'] += Location::getSearchOptionsToAdd();
 
             $search['States'][5]['table']     = 'state_types';
             $search['States'][5]['field']     = 'serial';
@@ -4208,11 +4212,11 @@ class Search {
             $search['States'][80]['field']     = 'completename';
             $search['States'][80]['linkfield'] = 'entities_id';
             $search['States'][80]['name']      = $LANG['entity'][0];
+
          } else if (class_exists($itemtype)) {
             $item = new $itemtype();
             $search[$itemtype] = $item->getSearchOptions();
          }
-
 
          if (in_array($itemtype, $CFG_GLPI["helpdesk_types"])) {
             $search[$itemtype]['tracking'] = $LANG['title'][24];
@@ -4226,9 +4230,7 @@ class Search {
             $search[$itemtype][60]['datatype']     = 'number';
          }
 
-
          if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
-
             $search[$itemtype]['network'] = $LANG['setup'][88];
 
             $search[$itemtype][20]['table']        = 'glpi_networkports';
@@ -4278,7 +4280,6 @@ class Search {
             $search[$itemtype][88]['linkfield']    = '';
             $search[$itemtype][88]['name']         = $LANG['networking'][56];
             $search[$itemtype][88]['forcegroupby'] = true;
-
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
@@ -4350,13 +4351,13 @@ class Search {
             $search[$itemtype][137]['table']        = 'glpi_contracts';
             $search[$itemtype][137]['field']        = 'billing';
             $search[$itemtype][137]['linkfield']    = '';
-            $search[$itemtype][137]['name']       = $LANG['financial'][11]." ".$LANG['financial'][1];
+            $search[$itemtype][137]['name']         = $LANG['financial'][11]." ".$LANG['financial'][1];
             $search[$itemtype][137]['forcegroupby'] = true;
 
             $search[$itemtype][138]['table']        = 'glpi_contracts';
             $search[$itemtype][138]['field']        = 'renewal';
             $search[$itemtype][138]['linkfield']    = '';
-            $search[$itemtype][138]['name']      = $LANG['financial'][107]." ".$LANG['financial'][1];
+            $search[$itemtype][138]['name']         = $LANG['financial'][107]." ".$LANG['financial'][1];
             $search[$itemtype][138]['forcegroupby'] = true;
          }
 
@@ -4477,17 +4478,17 @@ class Search {
             $search[$itemtype][59]['name']         = $LANG['common'][41];
             $search[$itemtype][59]['forcegroupby'] = true;
 
-            $search[$itemtype][122]['table']       = 'glpi_infocoms';
-            $search[$itemtype][122]['field']       = 'comment';
-            $search[$itemtype][122]['linkfield']   = '';
-            $search[$itemtype][122]['name']        = $LANG['common'][25]." - ".$LANG['financial'][3];
-            $search[$itemtype][122]['datatype']    = 'text';
+            $search[$itemtype][122]['table']        = 'glpi_infocoms';
+            $search[$itemtype][122]['field']        = 'comment';
+            $search[$itemtype][122]['linkfield']    = '';
+            $search[$itemtype][122]['name']         = $LANG['common'][25]." - ".$LANG['financial'][3];
+            $search[$itemtype][122]['datatype']     = 'text';
             $search[$itemtype][122]['forcegroupby'] = true;
          }
 
          if ($withplugins) {
             // Search options added by plugins
-            $plugsearch=getPluginSearchOptions($itemtype);
+            $plugsearch = getPluginSearchOptions($itemtype);
             if (count($plugsearch)) {
                $search[$itemtype] += array('plugins' => $LANG['common'][29]);
                $search[$itemtype] += $plugsearch;
@@ -4497,17 +4498,19 @@ class Search {
       return $search[$itemtype];
    }
 
+
    /**
    * Convert an array to be add in url
    *
    * @param $name name of array
    * @param $array array to be added
+   * 
    * @return string to add
    *
    */
-   static function getArrayUrlLink($name,$array) {
+   static function getArrayUrlLink($name, $array) {
 
-      $out="";
+      $out = "";
       if (is_array($array) && count($array)>0) {
          foreach($array as $key => $val) {
             $out .= "&amp;".$name."[$key]=".urlencode(stripslashes($val));
@@ -4517,48 +4520,54 @@ class Search {
    }
 
 
-
    /**
    * Is the search item related to infocoms
    *
    * @param $itemtype item type
    * @param $searchID ID of the element in $SEARCHOPTION
+   * 
    * @return boolean
    *
    */
-   static function isInfocomOption($itemtype,$searchID) {
+   static function isInfocomOption($itemtype, $searchID) {
       global $CFG_GLPI;
 
-      return (($searchID>=25 && $searchID<=28) || ($searchID>=37 && $searchID<=38)
-            ||($searchID>=50 && $searchID<=59) || ($searchID>=120 && $searchID<=122))
-            && in_array($itemtype,$CFG_GLPI["infocom_types"]);
+      return (($searchID>=25 && $searchID<=28)
+              || ($searchID>=37 && $searchID<=38)
+              || ($searchID>=50 && $searchID<=59)
+              || ($searchID>=120 && $searchID<=122))
+             && in_array($itemtype, $CFG_GLPI["infocom_types"]);
    }
 
-   static function getActionsFor($itemtype,$field_num) {
+
+   static function getActionsFor($itemtype, $field_num) {
       global $LANG;
-      $searchopt=&Search::getOptions($itemtype);
-      $actions = array('contains'=>$LANG['search'][2],
-                       'searchopt' => array());
+
+      $searchopt = &Search::getOptions($itemtype);
+      $actions   = array('contains'  => $LANG['search'][2],
+                         'searchopt' => array());
 
       if (isset($searchopt[$field_num])) {
-         $actions['searchopt']=$searchopt[$field_num];
+         $actions['searchopt'] = $searchopt[$field_num];
 
          // Force search type
          if (isset($actions['searchopt']['searchtype'])) {
             // Reset search option
-            $actions=array();
-            $actions['searchopt']=$searchopt[$field_num];
+            $actions = array();
+            $actions['searchopt'] = $searchopt[$field_num];
             if (!is_array($actions['searchopt']['searchtype'])){
-               $actions['searchopt']['searchtype']=array($actions['searchopt']['searchtype']);
+               $actions['searchopt']['searchtype'] = array($actions['searchopt']['searchtype']);
             }
             foreach ($actions['searchopt']['searchtype'] as $searchtype) {
                switch ($searchtype) {
                   case "equals" :
                      $actions['equals'] = $LANG['rulesengine'][0];
                      break;
+ 
                   case "notequals" :
                      $actions['notequals'] = $LANG['rulesengine'][1];
                      break;
+
                   case "contains" :
                      $actions['contains'] = $LANG['search'][2];
                      break;
@@ -4571,59 +4580,59 @@ class Search {
             switch ($searchopt[$field_num]['datatype']) {
                case 'bool' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'notequals'    => $LANG['rulesengine'][1],
-                              'contains'   => $LANG['search'][2],
-                              'searchopt'  => $searchopt[$field_num]);
+                               'notequals' => $LANG['rulesengine'][1],
+                               'contains'   => $LANG['search'][2],
+                               'searchopt' => $searchopt[$field_num]);
+ 
                case 'right' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'notequals'    => $LANG['rulesengine'][1],
-                              'searchopt'  => $searchopt[$field_num]);
+                               'notequals' => $LANG['rulesengine'][1],
+                               'searchopt' => $searchopt[$field_num]);
+
                case 'itemtypename' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'notequals'    => $LANG['rulesengine'][1],
-                              'searchopt'  => $searchopt[$field_num]);
+                               'notequals' => $LANG['rulesengine'][1],
+                               'searchopt' => $searchopt[$field_num]);
+
                case 'date' :
                case 'datetime' :
                case 'date_delay' :
                   return array('equals'    => $LANG['rulesengine'][0],
-                              'notequals'    => $LANG['rulesengine'][1],
-                              'lessthan'    => $LANG['search'][23],
-                              'morethan'    => $LANG['search'][24],
-                              'contains'   => $LANG['search'][2],
-                              'searchopt'  => $searchopt[$field_num]);
+                               'notequals' => $LANG['rulesengine'][1],
+                               'lessthan'  => $LANG['search'][23],
+                               'morethan'  => $LANG['search'][24],
+                               'contains'  => $LANG['search'][2],
+                               'searchopt' => $searchopt[$field_num]);
             }
          }
 
          switch ($searchopt[$field_num]['table']) {
             case 'glpi_users_validation' :
-               return array('equals'=>$LANG['rulesengine'][0],
-                        'notequals'    => $LANG['rulesengine'][1],
-                        'searchopt'=>$searchopt[$field_num]);
-
+               return array('equals'    => $LANG['rulesengine'][0],
+                            'notequals' => $LANG['rulesengine'][1],
+                            'searchopt' => $searchopt[$field_num]);
          }
 
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
-               return array('equals'=>$LANG['rulesengine'][0],
-                        'notequals'    => $LANG['rulesengine'][1],
-                        'searchopt'=>$searchopt[$field_num]);
+               return array('equals'    => $LANG['rulesengine'][0],
+                            'notequals' => $LANG['rulesengine'][1],
+                            'searchopt' => $searchopt[$field_num]);
+
             case 'name' :
             case 'completename' :
-               return array('contains' => $LANG['search'][2],
-                           'equals'    => $LANG['rulesengine'][0],
-                           'notequals'    => $LANG['rulesengine'][1],
-                           'searchopt' => $searchopt[$field_num]);
+               return array('contains'  => $LANG['search'][2],
+                            'equals'    => $LANG['rulesengine'][0],
+                            'notequals' => $LANG['rulesengine'][1],
+                            'searchopt' => $searchopt[$field_num]);
          }
      }
-
       return $actions;
-
    }
 
 
    /**
    * Print generic Header Column
-   *
    *
    *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
    *@param $value value to display
@@ -4635,54 +4644,53 @@ class Search {
    *@return string to display
    *
    **/
-   static function showHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order="") {
+   static function showHeaderItem($type, $value, &$num, $linkto="", $issort=0, $order="") {
       global $CFG_GLPI;
 
-      $out="";
+      $out = "";
       switch ($type) {
          case PDF_OUTPUT_LANDSCAPE : //pdf
 
          case PDF_OUTPUT_PORTRAIT :
             global $PDF_HEADER;
-            $PDF_HEADER[$num]=decodeFromUtf8(html_clean($value),'windows-1252');
+            $PDF_HEADER[$num] = decodeFromUtf8(html_clean($value), 'windows-1252');
             break;
 
          case SYLK_OUTPUT : //sylk
             global $SYLK_HEADER,$SYLK_SIZE;
-            $SYLK_HEADER[$num]=sylk_clean($value);
-            $SYLK_SIZE[$num]=utf8_strlen($SYLK_HEADER[$num]);
+            $SYLK_HEADER[$num] = sylk_clean($value);
+            $SYLK_SIZE[$num]   = utf8_strlen($SYLK_HEADER[$num]);
             break;
 
          case CSV_OUTPUT : //CSV
-            $out="\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
+            $out = "\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
          default :
-            $out="<th>";
+            $out = "<th>";
             if ($issort) {
                if ($order=="DESC") {
-                  $out.="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
                } else {
-                  $out.="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
                }
             }
             if (!empty($linkto)) {
-               $out.= "<a href=\"$linkto\">";
+               $out .= "<a href=\"$linkto\">";
             }
-            $out.= $value;
+            $out .= $value;
             if (!empty($linkto)) {
-               $out.="</a>";
+               $out .= "</a>";
             }
-            $out.="</th>\n";
-            break;
+            $out .= "</th>\n";
       }
       $num++;
       return $out;
    }
 
+
    /**
    * Print generic normal Item Cell
-   *
    *
    *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
    *@param $value value to display
@@ -4693,34 +4701,33 @@ class Search {
    *@return string to display
    *
    **/
-   static function showItem($type,$value,&$num,$row,$extraparam='') {
-      global $CFG_GLPI;
+   static function showItem($type, $value, &$num, $row, $extraparam='') {
 
-      $out="";
+      $out = "";
       switch ($type) {
          case PDF_OUTPUT_LANDSCAPE : //pdf
 
          case PDF_OUTPUT_PORTRAIT :
             global $PDF_ARRAY,$PDF_HEADER;
             $value = weblink_extract($value);
-            $PDF_ARRAY[$row][$num]=decodeFromUtf8(html_clean($value),'windows-1252');
+            $PDF_ARRAY[$row][$num] = decodeFromUtf8(html_clean($value), 'windows-1252');
             break;
 
          case SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
             $value = weblink_extract($value);
-            $SYLK_ARRAY[$row][$num]=sylk_clean($value);
-            $SYLK_SIZE[$num]=max($SYLK_SIZE[$num],utf8_strlen($SYLK_ARRAY[$row][$num]));
+            $SYLK_ARRAY[$row][$num] = sylk_clean($value);
+            $SYLK_SIZE[$num] = max($SYLK_SIZE[$num], utf8_strlen($SYLK_ARRAY[$row][$num]));
             break;
 
          case CSV_OUTPUT : //csv
             $value = weblink_extract($value);
-            $out="\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
+            $out = "\"".csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
 
          default :
-            $out="<td $extraparam valign='top'>".$value."</td>\n";
-            break;
+            //TODO supprimer valign pour mettre class mais conflit avec $extraparam
+            $out = "<td $extraparam valign='top'>".$value."</td>\n";
       }
       $num++;
       return $out;
@@ -4730,7 +4737,6 @@ class Search {
    /**
    * Print generic error
    *
-   *
    *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
    *
    *@return string to display
@@ -4739,29 +4745,23 @@ class Search {
    static function showError($type) {
       global $LANG;
 
-      $out="";
+      $out = "";
       switch ($type) {
          case PDF_OUTPUT_LANDSCAPE : //pdf
-
          case PDF_OUTPUT_PORTRAIT :
-            break;
-
          case SYLK_OUTPUT : //sylk
-            break;
-
          case CSV_OUTPUT : //csv
             break;
 
          default :
-            $out= "<div class='center'><strong>".$LANG['search'][15]."</strong></div>\n";
-            break;
+            $out = "<div class='center b'>".$LANG['search'][15]."</div>\n";
       }
       return $out;
    }
 
+
    /**
    * Print generic footer
-   *
    *
    *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
    *@param $title title of file : used for PDF
@@ -4769,20 +4769,23 @@ class Search {
    *@return string to display
    *
    **/
-   static function showFooter($type,$title="") {
+   static function showFooter($type, $title="") {
       global $LANG;
 
-      $out="";
+      $out = "";
       switch ($type) {
          case PDF_OUTPUT_LANDSCAPE : //pdf
             global $PDF_HEADER,$PDF_ARRAY;
-            $pdf= new Cezpdf('a4','landscape');
+            $pdf = new Cezpdf('a4','landscape');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
             $pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d")).
-               " - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5],'windows-1252').
+               " - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5], 'windows-1252').
                " - {PAGENUM}/{TOTALPAGENUM}");
-            $options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
-            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title,'windows-1252'),$options);
+            $options = array('fontSize'      => 8,
+                             'colGap'        => 2,
+                             'maxWidth'      => 800,
+                             'titleFontSize' => 8);
+            $pdf->ezTable($PDF_ARRAY, $PDF_HEADER, decodeFromUtf8($title, 'windows-1252'), $options);
             $pdf->ezStream();
             break;
 
@@ -4791,10 +4794,13 @@ class Search {
             $pdf= new Cezpdf('a4','portrait');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
             $pdf->ezStartPageNumbers(550,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d")).
-               " - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5],'windows-1252').
+               " - ".count($PDF_ARRAY)." ".decodeFromUtf8($LANG['pager'][5], 'windows-1252').
                " - {PAGENUM}/{TOTALPAGENUM}");
-            $options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>565,'titleFontSize'=>8,);
-            $pdf->ezTable($PDF_ARRAY,$PDF_HEADER,decodeFromUtf8($title,'windows-1252'),$options);
+            $options = array('fontSize'      => 8,
+                             'colGap'        => 2,
+                             'maxWidth'      => 565,
+                             'titleFontSize' => 8);
+            $pdf->ezTable($PDF_ARRAY, $PDF_HEADER, decodeFromUtf8($title, 'windows-1252'), $options);
             $pdf->ezStream();
             break;
 
@@ -4802,20 +4808,20 @@ class Search {
             global $SYLK_HEADER,$SYLK_ARRAY,$SYLK_SIZE;
             // largeurs des colonnes
             foreach ($SYLK_SIZE as $num => $val) {
-               $out.= "F;W".$num." ".$num." ".min(50,$val)."\n";
+               $out .= "F;W".$num." ".$num." ".min(50,$val)."\n";
             }
-            $out.="\n";
+            $out .= "\n";
             // Header
             foreach ($SYLK_HEADER as $num => $val) {
-               $out.="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
-               $out.= "C;N;K\"".sylk_clean($val)."\"\n";
-               $out.="\n";
+               $out .= "F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
+               $out .= "C;N;K\"".sylk_clean($val)."\"\n";
+               $out .= "\n";
             }
             // Datas
             foreach ($SYLK_ARRAY as $row => $tab) {
                foreach ($tab as $num => $val) {
-                  $out.="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
-                  $out.= "C;N;K\"".sylk_clean($val)."\"\n";
+                  $out .= "F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
+                  $out .= "C;N;K\"".sylk_clean($val)."\"\n";
                }
             }
             $out.= "E\n";
@@ -4825,41 +4831,39 @@ class Search {
             break;
 
          default :
-            $out= "</table></div>\n";
-            break;
+            $out = "</table></div>\n";
       }
       return $out;
    }
 
+
    /**
    * Print generic footer
    *
-   *
    *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *@param $cols number of columns
    *@param $rows  number of rows
+   *@param $cols number of columns
    *@param $fixed  used tab_cadre_fixe table for HTML export ?
    *
    *@return string to display
    *
    **/
-   static function showHeader($type,$rows,$cols,$fixed=0) {
+   static function showHeader($type, $rows, $cols, $fixed=0) {
 
-      $out="";
+      $out = "";
       switch ($type) {
          case PDF_OUTPUT_LANDSCAPE : //pdf
-
          case PDF_OUTPUT_PORTRAIT :
-            global $PDF_ARRAY,$PDF_HEADER;
-            $PDF_ARRAY=array();
-            $PDF_HEADER=array();
+            global $PDF_ARRAY, $PDF_HEADER;
+            $PDF_ARRAY  = array();
+            $PDF_HEADER = array();
             break;
 
          case SYLK_OUTPUT : // Sylk
-            global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
-            $SYLK_ARRAY=array();
-            $SYLK_HEADER=array();
-            $SYLK_SIZE=array();
+            global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
+            $SYLK_ARRAY  = array();
+            $SYLK_HEADER = array();
+            $SYLK_SIZE   = array();
             // entetes HTTP
             header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
             header('Pragma: private'); /// IE BUG + SSL
@@ -4897,18 +4901,17 @@ class Search {
 
          default :
             if ($fixed) {
-               $out="<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
+               $out = "<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
             } else {
-               $out="<div class='center'><table border='0' class='tab_cadrehov'>\n";
+               $out = "<div class='center'><table border='0' class='tab_cadrehov'>\n";
             }
-            break;
       }
       return $out;
    }
 
+
    /**
    * Print generic new line
-   *
    *
    *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
    *@param $odd is it a new odd line ?
@@ -4916,35 +4919,29 @@ class Search {
    *@return string to display
    *
    **/
-   static function showNewLine($type,$odd=false) {
+   static function showNewLine($type, $odd=false) {
 
-      $out="";
+      $out = "";
       switch ($type) {
          case PDF_OUTPUT_LANDSCAPE : //pdf
-
          case PDF_OUTPUT_PORTRAIT :
-            break;
-
          case SYLK_OUTPUT : //sylk
-            break;
-
          case CSV_OUTPUT : //csv
             break;
 
          default :
-            $class=" class='tab_bg_2' ";
+            $class = " class='tab_bg_2' ";
             if ($odd) {
-               $class=" class='tab_bg_1' ";
+               $class = " class='tab_bg_1' ";
             }
-            $out="<tr $class>";
-            break;
+            $out = "<tr $class>";
       }
       return $out;
    }
 
+
    /**
    * Print generic end line
-   *
    *
    *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
    *
@@ -4953,26 +4950,23 @@ class Search {
    **/
    static function showEndLine($type) {
 
-      $out="";
+      $out = "";
       switch ($type) {
          case PDF_OUTPUT_LANDSCAPE : //pdf
-
          case PDF_OUTPUT_PORTRAIT :
-            break;
-
          case SYLK_OUTPUT : //sylk
             break;
 
          case CSV_OUTPUT : //csv
-            $out="\n";
+            $out = "\n";
             break;
 
          default :
-            $out="</tr>";
-            break;
+            $out = "</tr>";
       }
       return $out;
    }
 
 }
+
 ?>
