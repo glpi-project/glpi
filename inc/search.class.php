@@ -3937,10 +3937,12 @@ class Search {
    *
    * @param $itemtype item type to manage
    * @param $usesession Use datas save in session
+   * @param $forcebookmark //TODO not documented
+
    * @return nothing
    */
-   static function manageGetValues($itemtype,$usesession=true,$forcebookmark=false) {
-      global $_GET,$DB;
+   static function manageGetValues($itemtype, $usesession=true, $forcebookmark=false) {
+      global $_GET, $DB;
 
       $redirect=false;
 
