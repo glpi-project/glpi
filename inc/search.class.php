@@ -1560,10 +1560,10 @@ class Search {
       // Link with plugin tables
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
          if (count($matches)==2) {
-            $plug=$matches[1];
-            $function='plugin_'.$plug.'_addHaving';
+            $plug = $matches[1];
+            $function = 'plugin_'.$plug.'_addHaving';
             if (function_exists($function)) {
-               $out=$function($LINK,$NOT,$itemtype,$ID,$val,$num);
+               $out = $function($LINK, $NOT, $itemtype, $ID, $val, $num);
                if (!empty($out)) {
                   return $out;
                }
@@ -1577,40 +1577,35 @@ class Search {
             case "number" :
             case "decimal" :
             case "timestamp" :
-               $search=array("/\&lt;/","/\&gt;/");
-               $replace=array("<",">");
-               $val=preg_replace($search,$replace,$val);
+               $search  = array("/\&lt;/","/\&gt;/");
+               $replace = array("<",">");
+               $val     = preg_replace($search, $replace, $val);
                if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/",$val,$regs)) {
                   if ($NOT) {
                      if ($regs[1]=='<') {
-                        $regs[1]='>';
+                        $regs[1] = '>';
                      } else {
-                        $regs[1]='<';
+                        $regs[1] = '<';
                      }
                   }
-                  $regs[1].=$regs[2];
+                  $regs[1] .= $regs[2];
                   return " $LINK (`$NAME$num` ".$regs[1]." ".$regs[3]." ) ";
-               } else {
-                  if (is_numeric($val)) {
-                     if (isset($searchopt[$ID]["width"])) {
-                        if (!$NOT) {
-                           return " $LINK (`$NAME$num` < ".
-                                    (intval($val) + $searchopt[$ID]["width"])."
-                                    AND `$NAME$num` > ".
-                                    (intval($val) - $searchopt[$ID]["width"]).") ";
-                        } else {
-                           return " $LINK (`$NAME$num` > ".
-                                    (intval($val) + $searchopt[$ID]["width"])."
-                                    OR `$NAME$num` < ".
-                                    (intval($val) - $searchopt[$ID]["width"])." ) ";
-                        }
-                     } else { // Exact search
-                        if (!$NOT) {
-                           return " $LINK (`$NAME$num` = ".(intval($val)).") ";
-                        }
-                        return " $LINK (`$NAME$num` <> ".(intval($val)).") ";
+               }
+
+               if (is_numeric($val)) {
+                  if (isset($searchopt[$ID]["width"])) {
+                     if (!$NOT) {
+                        return " $LINK (`$NAME$num` < ".(intval($val) + $searchopt[$ID]["width"])."
+                                AND `$NAME$num` > ".(intval($val) - $searchopt[$ID]["width"]).") ";
                      }
+                     return " $LINK (`$NAME$num` > ".(intval($val) + $searchopt[$ID]["width"])."
+                             OR `$NAME$num` < ".(intval($val) - $searchopt[$ID]["width"])." ) ";
                   }
+                  // Exact search
+                  if (!$NOT) {
+                     return " $LINK (`$NAME$num` = ".(intval($val)).") ";
+                  }
+                  return " $LINK (`$NAME$num` <> ".(intval($val)).") ";
                }
                break;
          }
