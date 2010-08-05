@@ -2102,15 +2102,14 @@ class Search {
             // View all entities
             if (isViewAllEntities()) {
                return "";
-            } else {
-               return getEntitiesRestrictRequest("","glpi_profiles_users");
             }
-            break;
+            return getEntitiesRestrictRequest("","glpi_profiles_users");
+
          case 'Ticket' :
             if (!haveRight("show_all_ticket","1")) {
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
                   $condition =" (glpi_tickets.users_id= '".getLoginUserID()."'
-                              OR `glpi_tickets`.`users_id_assign` = '".getLoginUserID()."'";
+                                 OR `glpi_tickets`.`users_id_assign` = '".getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR `glpi_tickets`.`groups_id_assign`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
@@ -2118,13 +2117,13 @@ class Search {
                   if (haveRight('assign_ticket',1)) {
                      $condition .= " OR `glpi_tickets`.`status`='new'";
                   }
-                  $condition.=")";
-                  return $condition;
+
                } else {
                   if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                     $condition = " ( glpi_tickets.users_id= '".getLoginUserID()."' ";
+                     $condition = " (glpi_tickets.users_id= '".getLoginUserID()."' ";
                   } else { // Can own ticket : show my and assign to me
-                     $condition = " ( glpi_tickets.users_id= '".getLoginUserID()."' OR glpi_tickets.users_id_assign= '".getLoginUserID()."' ";
+                     $condition = " (glpi_tickets.users_id= '".getLoginUserID()."'
+                                     OR glpi_tickets.users_id_assign= '".getLoginUserID()."' ";
                   }
                   if (haveRight("show_group_ticket",1)) {
                      if (count($_SESSION['glpigroups'])) {
@@ -2133,13 +2132,13 @@ class Search {
                      }
                   }
                   if (haveRight("validate_ticket",1)) {
-                     $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".getLoginUserID()."'";
+                     $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".
+                                     getLoginUserID()."'";
                   }
-                  $condition.=") ";
-                  return $condition;
                }
+               $condition .= ") ";
+               return $condition;
             }
-            break;
 
          default :
             return "";
@@ -2161,10 +2160,10 @@ class Search {
    *@return select string
    *
    **/
-   static function addWhere($link,$nott,$itemtype,$ID,$searchtype,$val,$meta=0) {
-      global $LANG,$PLUGIN_HOOKS,$CFG_GLPI;
+   static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta=0) {
+      global $LANG;
 
-      $searchopt=&Search::getOptions($itemtype);
+      $searchopt = &Search::getOptions($itemtype);
       $table = $searchopt[$ID]["table"];
       $field = $searchopt[$ID]["field"];
 
@@ -2175,7 +2174,8 @@ class Search {
 
       // Hack to allow search by ID on every sub-table
       if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)) {
-         return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".($regs[1]==0?" OR `$table`.`id` IS NULL":'').") ";
+         return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".
+                ($regs[1]==0?" OR `$table`.`id` IS NULL":'').") ";
       }
 
       // Preparse value
@@ -2184,76 +2184,81 @@ class Search {
             case "datetime" :
             case "date" :
             case "date_delay" :
-               $format_use="Y-m-d";
+               $format_use = "Y-m-d";
                if ($searchopt[$ID]["datatype"]=='datetime') {
-                  $format_use="Y-m-d H:i:s";
+                  $format_use = "Y-m-d H:i:s";
                }
                // Parsing relative date
                if ($val=='NOW') {
-                  $val=date($format_use);
+                  $val = date($format_use);
                }
                if (preg_match("/^(-?)(\d+)(\w+)$/",$val,$matches)) {
-                  if (in_array($matches[3],array('YEAR','MONTH','WEEK','DAY','HOUR'))) {
-                     $nb=intval($matches[2]);
+                  if (in_array($matches[3], array('YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'))) {
+                     $nb = intval($matches[2]);
                      if ($matches[1]=='-') {
-                        $nb=-$nb;
+                        $nb = -$nb;
                      }
                      // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
-                     $hour = date("H");
+                     $hour   = date("H");
                      $minute = date("i");
                      $second = 0;
-                     $month = date("n");
-                     $day = date("j");
-                     $year = date("Y");
+                     $month  = date("n");
+                     $day    = date("j");
+                     $year   = date("Y");
    
                      switch ($matches[3]) {
-                        case "YEAR":
-                           $year+=$nb;
+                        case "YEAR" :
+                           $year += $nb;
                            break;
-                        case "MONTH":
-                           $month+=$nb;
+
+                        case "MONTH" :
+                           $month += $nb;
                            break;
-                        case "WEEK":
-                           $day+=7*$nb;
+
+                        case "WEEK" :
+                           $day += 7*$nb;
                            break;
-                        case "DAY":
-                           $day+=$nb;
+
+                        case "DAY" :
+                           $day += $nb;
                            break;
-                        case "HOUR":
-                           $hour+=$nb;
+
+                        case "HOUR" :
+                           $hour += $nb;
                            break;
                      }
-                     $val=date($format_use,mktime  ($hour,$minute,$second,$month,$day,$year));
+                     $val = date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
                   }
                }
                break;
          }
-      }  
-
+      }
 
       switch ($searchtype) {
-         case "contains":
-            $SEARCH=makeTextSearch($val,$nott);
+         case "contains" :
+            $SEARCH = makeTextSearch($val, $nott);
             break;
-         case "equals":
+
+         case "equals" :
             if ($nott) {
-               $SEARCH=" <> '$val'";
+               $SEARCH = " <> '$val'";
             } else {
-               $SEARCH=" = '$val'";
+               $SEARCH = " = '$val'";
             }
             break;
-         case "notequals":
+
+         case "notequals" :
             if ($nott) {
-               $SEARCH=" = '$val'";
+               $SEARCH = " = '$val'";
             } else {
-               $SEARCH=" <> '$val'";
+               $SEARCH = " <> '$val'";
             }
             break;
       }
 
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
-         $function='plugin_'.$plug['plugin'].'_addWhere';
+         $function = 'plugin_'.$plug['plugin'].'_addWhere';
          if (function_exists($function)) {
             $out = $function($link,$nott,$itemtype,$ID,$val);
             if (!empty($out)) {
@@ -2265,7 +2270,7 @@ class Search {
       switch ($inittable.".".$field) {
          case "glpi_users_validation.name" :
          case "glpi_users.name" :
-            $linkfield="";
+            $linkfield = "";
             if (!empty($searchopt[$ID]["linkfield"])) {
                $linkfield = "_".$searchopt[$ID]["linkfield"];
 
@@ -2275,33 +2280,30 @@ class Search {
                }
             }
             if ($itemtype == 'User') { // glpi_users case / not link table
-               if (in_array($searchtype,array('equals','notequals'))) {
+               if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link `$table$linkfield`.`id`".$SEARCH;
-               } else {
-                  return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
                }
-            } else {
-               if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
-                  $name1='firstname';
-                  $name2='realname';
-               } else {
-                  $name1='realname';
-                  $name2='firstname';
-               }
-               if (in_array($searchtype,array('equals','notequals'))) {
-                  return " $link `$table$linkfield`.`id`".$SEARCH;
-               } else {
-                  return $link." (`$table$linkfield`.`$name1` $SEARCH
-                                 OR `$table$linkfield`.`$name2` $SEARCH
-                                 OR CONCAT(`$table$linkfield`.`$name1`,' ',
-                                          `$table$linkfield`.`$name2`) $SEARCH".
-                                 makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,'OR').") ";
-               }
+               return makeTextCriteria("`$table$linkfield`.`$field`", $val, $nott, $link);
             }
-            break;
+            if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
+               $name1 = 'firstname';
+               $name2 = 'realname';
+            } else {
+               $name1 = 'realname';
+               $name2 = 'firstname';
+            }
+
+            if (in_array($searchtype, array('equals', 'notequals'))) {
+               return " $link `$table$linkfield`.`id`".$SEARCH;
+            }
+            return $link." (`$table$linkfield`.`$name1` $SEARCH
+                            OR `$table$linkfield`.`$name2` $SEARCH
+                            OR CONCAT(`$table$linkfield`.`$name1`, ' ',
+                                      `$table$linkfield`.`$name2`) $SEARCH".
+                            makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,'OR').") ";
 
          case "glpi_groups.name" :
-            $linkfield="";
+            $linkfield = "";
             if ($itemtype!='Group' && !empty($searchopt[$ID]["linkfield"])) {
                $linkfield = "_".$searchopt[$ID]["linkfield"];
 
@@ -2310,19 +2312,18 @@ class Search {
                   $linkfield .= "_".$itemtype;
                }
             }
-            if (in_array($searchtype,array('equals','notequals'))) {
+            if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link `$table$linkfield`.`id`".$SEARCH;
-            } else {
-               return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
             }
-            break;
+            return makeTextCriteria("`$table$linkfield`.`$field`", $val, $nott, $link);
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
-               return "$link (".makeTextCriteria("`glpi_computers_devicenetworkcards`.`specificity`",$val,$nott,'').
-                              makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').")";
+               return "$link (".makeTextCriteria("`glpi_computers_devicenetworkcards`.`specificity`",
+                                                 $val, $nott,'').
+                              makeTextCriteria("`$table`.`$field`", $val ,$nott, 'OR').")";
             }
-            return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
+            return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_infocoms.sink_time" :
          case "glpi_infocoms.warranty_duration" :
@@ -2333,11 +2334,10 @@ class Search {
             if (is_numeric($val)) {
                if ($nott) {
                   return $link." (`$table`.`$field` <> ".intval($val)." ".
-                                 $ADD." ) ";
-               } else {
-                  return $link." (`$table`.`$field` = ".intval($val)."  ".
-                                 $ADD." ) ";
+                                  $ADD." ) ";
                }
+               return $link." (`$table`.`$field` = ".intval($val)."  ".
+                               $ADD." ) ";
             }
             break;
 
@@ -2348,52 +2348,47 @@ class Search {
             }
 
             if (stristr($val,Infocom::getAmortTypeName(1))) {
-               $val=1;
+               $val = 1;
             } else if (stristr($val,Infocom::getAmortTypeName(2))) {
-               $val=2;
+               $val = 2;
             }
             if (is_int($val) && $val>0) {
                if ($nott) {
                   return $link." (`$table`.`$field` <> '$val' ".
-                                 $ADD." ) ";
-               } else {
-                  return $link." (`$table`.`$field` = '$val' ".
-                                 $ADD." ) ";
+                                  $ADD." ) ";
                }
+               return $link." (`$table`.`$field` = '$val' ".
+                               $ADD." ) ";
             }
             break;
 
          case "glpi_contacts.completename" :
-            if (in_array($searchtype,array('equals','notequals'))) {
+            if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link `$table`.`id`".$SEARCH;
             } else {
                if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
-                  $name1='firstname';
-                  $name2='name';
+                  $name1 = 'firstname';
+                  $name2 = 'name';
                } else {
-                  $name1='name';
-                  $name2='firstname';
+                  $name1 = 'name';
+                  $name2 = 'firstname';
                }
 
                return $link." (`$table`.`$name1` $SEARCH
-                              OR `$table`.`$name2` $SEARCH
-                              OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
+                               OR `$table`.`$name2` $SEARCH
+                               OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
             }
-            break;
 
          case "glpi_auth_tables.name" :
             return $link." (`glpi_authmails`.`name` $SEARCH
-                           OR `glpi_authldaps`.`name` $SEARCH ) ";
-            break;
+                            OR `glpi_authldaps`.`name` $SEARCH ) ";
 
          case "glpi_contracts.renewal" :
-            $valid=Contract::getContractRenewalIDByName($val);
+            $valid = Contract::getContractRenewalIDByName($val);
             if ($valid>0){
                return $link." `$table`.`$field`"."="."'$valid'";
-            } else {
-               return "";
             }
-            break;
+            return "";
 
          case "glpi_profiles.interface" :
             if (stristr(Profile::getInterfaceName('central'),$val)) {
@@ -2401,49 +2396,47 @@ class Search {
             } else if (stristr(Profile::getInterfaceName('helpdesk'),$val)){
                return $link." `$table`.`$field`='helpdesk'";
             }
-
             return "";
-            break;
 
          case "glpi_networkports.ip" :
-            $search=array("/\&lt;/","/\&gt;/");
-            $replace=array("<",">");
-            $val=preg_replace($search,$replace,$val);
+            $search  = array("/\&lt;/","/\&gt;/");
+            $replace = array("<",">");
+            $val = preg_replace($search, $replace, $val);
             if (preg_match("/([<>])([=]*)[[:space:]]*([0-9\.]+)/",$val,$regs)) {
                if ($nott) {
                   if ($regs[1]=='<') {
-                     $regs[1]='>';
+                     $regs[1] = '>';
                   } else {
-                     $regs[1]='<';
+                     $regs[1] = '<';
                   }
                }
-               $regs[1].=$regs[2];
+               $regs[1] .= $regs[2];
                return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." ".ip2long($regs[3]).") ";
             }
-            return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
-            break;
+            return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
+
          case "glpi_tickets.status" :
-            $tocheck=array('new'=>array('new'),
-                           'notold'=>array('new','plan','assign','waiting'),
-                           'notclosed'=>array('new','plan','assign','waiting','solved'),
-                           'old'=>array('solved','closed'),
-                           'process'=>array('plan','assign'),
-                           'waiting'=>array('waiting'),
-                           'solved'=>array('solved'),
-                           'closed'=>array('closed'),
-                           'assign'=>array('assign'),
-                           'plan'=>array('plan'),);
+            $tocheck = array('new'       => array('new'),
+                             'notold'    => array('new', 'plan', 'assign', 'waiting'),
+                             'notclosed' => array('new', 'plan', 'assign', 'waiting', 'solved'),
+                             'old'       => array('solved', 'closed'),
+                             'process'   => array('plan', 'assign'),
+                             'waiting'   => array('waiting'),
+                             'solved'    => array('solved'),
+                             'closed'    => array('closed'),
+                             'assign'    => array('assign'),
+                             'plan'      => array('plan'),);
             if (isset($tocheck[$val])) {
                foreach ($tocheck[$val] as $key=>$nval) {
-                  $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
+                  $tocheck[$val][$key] = " `$table`.`$field` = '$nval' ";
                }
                return $link.'('.implode(' OR ',$tocheck[$val]).')';
-            } else {
-               if ($val=='all') {
-                  return "";
-               }
+            }
+            if ($val=='all') {
+               return "";
             }
             break;
+
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
          case "glpi_tickets.urgency" :
@@ -2456,28 +2449,25 @@ class Search {
                }
                // Show all
                return $link." `$table`.`$field` >= '0' ";
-            } else {
+            }
+            return "";
+
+         case "glpi_tickets.global_validation" :
+         case "glpi_ticketvalidations.status" :
+            $tocheck = array('waiting'  => array('waiting'),
+                             'rejected' => array('rejected'),
+                             'accepted' => array('accepted'),
+                             'all'      => array('waiting', 'rejected', 'accepted'));
+            if (isset($tocheck[$val])) {
+               foreach ($tocheck[$val] as $key=>$nval) {
+                  $tocheck[$val][$key] = " `$table`.`$field` = '$nval' ";
+               }
+               return $link.'('.implode(' OR ', $tocheck[$val]).')';
+            }
+            if ($val=='all') {
                return "";
             }
             break;
-         case "glpi_tickets.global_validation" :
-         case "glpi_ticketvalidations.status" :
-            $tocheck=array('waiting'=>array('waiting'),
-                           'rejected'=>array('rejected'),
-                           'accepted'=>array('accepted'),
-                           'all'=>array('waiting','rejected','accepted'));
-            if (isset($tocheck[$val])) {
-               foreach ($tocheck[$val] as $key=>$nval) {
-                  $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
-               }
-               return $link.'('.implode(' OR ',$tocheck[$val]).')';
-            } else {
-               if ($val=='all') {
-                  return "";
-               }
-            }
-            break;
-
       }
 
       //// Default cases
@@ -2485,10 +2475,10 @@ class Search {
       // Link with plugin tables
       if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $inittable, $matches)) {
          if (count($matches)==2) {
-            $plug=$matches[1];
-            $function='plugin_'.$plug.'_addWhere';
+            $plug = $matches[1];
+            $function = 'plugin_'.$plug.'_addWhere';
             if (function_exists($function)) {
-               $out=$function($link,$nott,$itemtype,$ID,$val);
+               $out = $function($link, $nott, $itemtype, $ID, $val);
                if (!empty($out)) {
                   return $out;
                }
@@ -2496,104 +2486,101 @@ class Search {
          }
       }
 
-      $tocompute="`$table`.`$field`";
+      $tocompute = "`$table`.`$field`";
       if (isset($searchopt[$ID]["computation"])) {
-         $tocompute=$searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE","`$table`",$tocompute);
+         $tocompute = $searchopt[$ID]["computation"];
+         $tocompute = str_replace("TABLE", "`$table`", $tocompute);
       }
 
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemtypename" :
-               if (in_array($searchtype,array('equals','notequals'))) {
+               if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link (`$table`.`$field`".$SEARCH.') ';
                }
+
             case "datetime" :
             case "date" :
             case "date_delay" :
-                              echo $searchtype;
+               echo $searchtype;
 
                if ($searchopt[$ID]["datatype"]=='datetime') {
                   // Specific search for datetime
-                  if (in_array($searchtype,array('equals','notequals'))) {
-                     $val=preg_replace("/:00$/",'',$val);
-                     $val='^'.$val;
+                  if (in_array($searchtype, array('equals', 'notequals'))) {
+                     $val = preg_replace("/:00$/",'',$val);
+                     $val = '^'.$val;
                      if ($searchtype=='notequals') {
-                        $nott=!$nott;
+                        $nott = !$nott;
                      }
-                     return makeTextCriteria("`$table`.`$field`",$val,$nott,$link);
+                     return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
                   }
                }
 
                if ($searchtype=='lessthan') {
-                 $val='<'.$val;
+                 $val = '<'.$val;
                }
                if ($searchtype=='morethan') {
-                 $val='>'.$val;
+                 $val = '>'.$val;
                }
 
-               if ($searchtype)
-               $date_computation=$tocompute;
+               if ($searchtype) {
+                  $date_computation = $tocompute;
+               }
 
-               $search_unit=' MONTH ';
+               $search_unit = ' MONTH ';
                if (isset($searchopt[$ID]['searchunit'])) {
-                  $search_unit=$searchopt[$ID]['searchunit'];
+                  $search_unit = $searchopt[$ID]['searchunit'];
                }
 
                if ($searchopt[$ID]["datatype"]=="date_delay") {
-                  $delay_unit=' MONTH ';
+                  $delay_unit = ' MONTH ';
                   if (isset($searchopt[$ID]['delayunit'])) {
-                     $delay_unit=$searchopt[$ID]['delayunit'];
+                     $delay_unit = $searchopt[$ID]['delayunit'];
                   }
-                  $date_computation="ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
-                                             INTERVAL
-                                             `$table`.".$searchopt[$ID]["datafields"][2]."
-                                             $delay_unit)";
+                  $date_computation = "ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
+                                               INTERVAL `$table`.".$searchopt[$ID]["datafields"][2]."
+                                               $delay_unit)";
                }
-               if (in_array($searchtype,array('equals','notequals'))) {
+               if (in_array($searchtype, array('equals', 'notequals'))) {
                   return " $link ($date_computation ".$SEARCH.') ';
                }
 
+               $search  = array("/\&lt;/","/\&gt;/");
+               $replace = array("<",">");
 
-               $search=array("/\&lt;/","/\&gt;/");
-               $replace=array("<",">");
-
-               $val=preg_replace($search,$replace,$val);
+               $val = preg_replace($search,$replace,$val);
 
                if (preg_match("/([<>=]+)(.*)/",$val,$regs)) {
                   if (is_numeric($regs[2])) {
                      return $link." $date_computation ".$regs[1]."
-                              ADDDATE(NOW(), INTERVAL ".$regs[2]." $search_unit) ";
-                  } else {
-                     // Reformat date if needed
-                     $regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
-                     if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/',$regs[2])) {
-                        return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
-                     } else {
-                        return "";
-                     }
+                            ADDDATE(NOW(), INTERVAL ".$regs[2]." $search_unit) ";
                   }
-               } else { // standard search
-                  // Date format modification if needed
-                  $val=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$val);
-                  return makeTextCriteria($date_computation,$val,$nott,$link);
+                  // ELSE Reformat date if needed
+                  $regs[2] = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',
+                                          $regs[2]);
+                  if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
+                     return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
+                  }
+                  return "";
                }
-               break;
+               // ELSE standard search
+               // Date format modification if needed
+               $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1', $val);
+               return makeTextCriteria($date_computation, $val, $nott, $link);
+
             case "right" :
                if ($val=='NULL' || $val=='null'){
                   return $link." $tocompute IS ".($nott?'NOT':'')." NULL ";
-               } else {
-                  return $link." $tocompute = '$val' ";
                }
-               break;
+               return $link." $tocompute = '$val' ";
 
             case "bool" :
                if (!is_numeric($val)) {
                   if (strcasecmp($val,$LANG['choice'][0])==0) {
-                     $val=0;
+                     $val = 0;
                   } else if (strcasecmp($val,$LANG['choice'][1])==0) {
-                     $val=1;
+                     $val = 1;
                   }
                }
                // No break here : use number comparaison case
@@ -2601,20 +2588,20 @@ class Search {
             case "number" :
             case "decimal" :
             case "timestamp" :
-               $search=array("/\&lt;/",
-                           "/\&gt;/");
-               $replace=array("<",
-                              ">");
-               $val=preg_replace($search,$replace,$val);
-               if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/",$val,$regs)) {
+               $search = array("/\&lt;/",
+                               "/\&gt;/");
+               $replace = array("<",
+                                ">");
+               $val = preg_replace($search, $replace, $val);
+               if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                   if ($nott) {
                      if ($regs[1]=='<') {
-                        $regs[1]='>';
+                        $regs[1] = '>';
                      } else {
-                        $regs[1]='<';
+                        $regs[1] = '<';
                      }
                   }
-                  $regs[1].=$regs[2];
+                  $regs[1] .= $regs[2];
                   return $link." ($tocompute ".$regs[1]." ".$regs[3].") ";
                } else if (is_numeric($val)) {
                   if (isset($searchopt[$ID]["width"])) {
@@ -2623,46 +2610,37 @@ class Search {
                         $ADD = " OR $tocompute IS NULL";
                      }
                      if ($nott) {
-                        return $link." ($tocompute < ".(intval($val)
-                                                         - $searchopt[$ID]["width"])."
-                                       OR $tocompute > ".(intval($val)
-                                                            + $searchopt[$ID]["width"])."
-                                       $ADD) ";
-                     } else {
-                        return $link." (($tocompute >= ".(intval($val)
-                                                            - $searchopt[$ID]["width"])."
-                                       AND $tocompute <= ".(intval($val)
-                                                               + $searchopt[$ID]["width"]).")
-                                       $ADD) ";
+                        return $link." ($tocompute < ".(intval($val) - $searchopt[$ID]["width"])."
+                                        OR $tocompute > ".(intval($val) + $searchopt[$ID]["width"])."
+                                        $ADD) ";
                      }
-                  } else {
-                     if (!$nott) {
-                        return " $link ($tocompute = ".(intval($val)).") ";
-                     } else {
-                        return " $link ($tocompute <> ".(intval($val)).") ";
-                     }
+                     return $link." (($tocompute >= ".(intval($val) - $searchopt[$ID]["width"])."
+                                      AND $tocompute <= ".(intval($val) + $searchopt[$ID]["width"]).")
+                                     $ADD) ";
                   }
+                  if (!$nott) {
+                     return " $link ($tocompute = ".(intval($val)).") ";
+                  }
+                  return " $link ($tocompute <> ".(intval($val)).") ";
                }
                break;
          }
       }
 
       // Default case
-      if (in_array($searchtype,array('equals','notequals'))) {
-         $out=" $link (`$table`.`id`".$SEARCH;
+      if (in_array($searchtype, array('equals', 'notequals'))) {
+         $out = " $link (`$table`.`id`".$SEARCH;
          if ($searchtype=='notequals') {
-            $nott=!$nott;
+            $nott = !$nott;
          }
          // Add NULL if $val = 0 and not negative search
          if ((!$nott && $val==0)) {
-            $out.=" OR `$table`.`id` IS NULL";
+            $out .= " OR `$table`.`id` IS NULL";
          }
-         $out.=')';
+         $out .= ')';
          return $out;
-      } else {
-         return makeTextCriteria($tocompute,$val,$nott,$link);
       }
-
+      return makeTextCriteria($tocompute,$val,$nott,$link);
    }
 
 
