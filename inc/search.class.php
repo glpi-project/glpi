@@ -1637,18 +1637,18 @@ class Search {
    *@return select string
    *
    **/
-   static function addOrderBy($itemtype,$ID,$order,$key=0) {
+   static function addOrderBy($itemtype, $ID, $order, $key=0) {
       global $CFG_GLPI,$PLUGIN_HOOKS;
 
       // Security test for order
       if ($order!="ASC") {
-         $order="DESC";
+         $order = "DESC";
       }
       $searchopt = &Search::getOptions($itemtype);
 
-      $table=$searchopt[$ID]["table"];
-      $field=$searchopt[$ID]["field"];
-      $linkfield=$searchopt[$ID]["linkfield"];
+      $table     = $searchopt[$ID]["table"];
+      $field     = $searchopt[$ID]["field"];
+      $linkfield = $searchopt[$ID]["linkfield"];
 
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
          return " ORDER BY ITEM_$key $order ";
@@ -1656,9 +1656,9 @@ class Search {
 
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
-         $function='plugin_'.$plug['plugin'].'_addOrderBy';
+         $function = 'plugin_'.$plug['plugin'].'_addOrderBy';
          if (function_exists($function)) {
-            $out=$function($itemtype,$ID,$order,$key);
+            $out = $function($itemtype,$ID,$order,$key);
             if (!empty($out)) {
                return $out;
             }
@@ -1667,7 +1667,8 @@ class Search {
 
       switch($table.".".$field) {
          case "glpi_auth_tables.name" :
-            return " ORDER BY `glpi_users`.`authtype`, `glpi_authldaps`.`name`,
+            return " ORDER BY `glpi_users`.`authtype` $order,
+                              `glpi_authldaps`.`name` $order,
                               `glpi_authmails`.`name` $order ";
             break;
 
