@@ -43,11 +43,11 @@ if (!defined('GLPI_ROOT')) {
 class Computer extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory=true;
-   protected $forward_entity_to=array('Infocom','ComputerDisk','ReservationItem','NetworkPort');
+   public $dohistory = true;
+   protected $forward_entity_to = array('Infocom', 'ComputerDisk', 'ReservationItem', 'NetworkPort');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
-   var $devices	= array();
+   var $devices = array();
 
    static function getTypeName() {
       global $LANG;
@@ -55,111 +55,125 @@ class Computer extends CommonDBTM {
       return $LANG['help'][25];
    }
 
+
    function canCreate() {
       return haveRight('computer', 'w');
    }
+
 
    function canView() {
       return haveRight('computer', 'r');
    }
 
+
    function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       if ($this->fields['id'] > 0) {
-         $ong[1]=$LANG['title'][30];
-         $ong[20]=$LANG['computers'][8];
+         $ong[1]  = $LANG['title'][30];
+         $ong[20] = $LANG['computers'][8];
+
          if (haveRight("software","r")) {
-            $ong[2]=$LANG['Menu'][4];
+            $ong[2] = $LANG['Menu'][4];
          }
-         if (haveRight("networking","r") || haveRight("printer","r") || haveRight("monitor","r")
-             || haveRight("peripheral","r") || haveRight("phone","r")) {
-            $ong[3]=$LANG['title'][27];
+
+         if (haveRight("networking","r")
+             || haveRight("printer","r")
+             || haveRight("monitor","r")
+             || haveRight("peripheral","r")
+             || haveRight("phone","r")) {
+
+            $ong[3] = $LANG['title'][27];
          }
+
          if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4]=$LANG['Menu'][26];
+            $ong[4] = $LANG['Menu'][26];
          }
          if (haveRight("document","r")) {
-            $ong[5]=$LANG['Menu'][27];
+            $ong[5] = $LANG['Menu'][27];
          }
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if ($CFG_GLPI["use_ocs_mode"]) {
-               $ong[14]=$LANG['title'][43];
+               $ong[14] = $LANG['title'][43];
             }
             if (haveRight("show_all_ticket","1")) {
-               $ong[6]=$LANG['title'][28];
+               $ong[6] = $LANG['title'][28];
             }
             if (haveRight("link","r")) {
-               $ong[7]=$LANG['title'][34];
+               $ong[7] = $LANG['title'][34];
             }
             if (haveRight("notes","r")) {
-               $ong[10]=$LANG['title'][37];
+               $ong[10] = $LANG['title'][37];
             }
             if (haveRight("reservation_central","r")) {
-               $ong[11]=$LANG['Menu'][17];
+               $ong[11] = $LANG['Menu'][17];
             }
 
-            $ong[12]=$LANG['title'][38];
+            $ong[12] = $LANG['title'][38];
 
             if ($CFG_GLPI["use_ocs_mode"]
                 && (haveRight("sync_ocsng","w") ||haveRight("computer","w"))) {
-               $ong[13]=$LANG['Menu'][33];
+
+               $ong[13] = $LANG['Menu'][33];
             }
          }
+
       } else { // New item
-         $ong[1]=$LANG['title'][26];
+         $ong[1] = $LANG['title'][26];
       }
       return $ong;
    }
 
+
    function post_updateItem($history=1) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $LANG, $CFG_GLPI;
 
       // Manage changes for OCS if more than 1 element (date_mod)
       // Need dohistory==1 if dohistory==2 no locking fields
       if ($this->fields["is_ocs_import"] && $history==1 && count($this->updates)>1) {
-         OcsServer::mergeOcsArray($this->fields["id"],$this->updates,"computer_update");
+         OcsServer::mergeOcsArray($this->fields["id"], $this->updates, "computer_update");
       }
 
       if (isset($this->input["_auto_update_ocs"])){
-         $query="UPDATE
-                 `glpi_ocslinks`
-                 SET `use_auto_update`='".$this->input["_auto_update_ocs"]."'
-                 WHERE `computers_id`='".$this->input["id"]."'";
+         $query = "UPDATE `glpi_ocslinks`
+                   SET `use_auto_update` = '".$this->input["_auto_update_ocs"]."'
+                   WHERE `computers_id` = '".$this->input["id"]."'";
          $DB->query($query);
       }
 
-      for ($i=0; $i < count($this->updates); $i++) {
+      for ($i=0 ; $i<count($this->updates) ; $i++) {
          // Update contact of attached items
-         if (($this->updates[$i]=="contact"  || $this->updates[$i]=="contact_num")
-              && $CFG_GLPI["is_contact_autoupdate"]) {
+         if (($this->updates[$i]=="contact" || $this->updates[$i]=="contact_num")
+             && $CFG_GLPI["is_contact_autoupdate"]) {
+
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
 
-            $update_done=false;
-            $updates3[0]="contact";
-            $updates3[1]="contact_num";
+            $update_done = false;
+            $updates3[0] = "contact";
+            $updates3[1] = "contact_num";
 
             foreach ($items as $t) {
                $query = "SELECT *
                          FROM `glpi_computers_items`
-                         WHERE `computers_id`='".$this->fields["id"]."'
-                               AND `itemtype`='".$t."'";
+                         WHERE `computers_id` = '".$this->fields["id"]."'
+                               AND `itemtype` = '".$t."'";
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
                   $item = new $t();
                   if ($resultnum>0) {
-                     for ($j=0; $j < $resultnum; $j++) {
+                     for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
                            if ($item->getField('contact')!=$this->fields['contact']
                                || $item->getField('contact_num')!=$this->fields['contact_num']){
-                              $tmp["id"]=$item->getField('id');
-                              $tmp['contact']=$this->fields['contact'];
-                              $tmp['contact_num']=$this->fields['contact_num'];
+
+                              $tmp["id"]          = $item->getField('id');
+                              $tmp['contact']     = $this->fields['contact'];
+                              $tmp['contact_num'] = $this->fields['contact_num'];
                               $item->update($tmp);
-                              $update_done=true;
+                              $update_done = true;
                            }
                         }
                      }
@@ -168,47 +182,50 @@ class Computer extends CommonDBTM {
             }
 
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][49],true);
+               addMessageAfterRedirect($LANG['computers'][49], true);
             }
          }
 
          // Update users and groups of attached items
-         if (($this->updates[$i]=="users_id"  && $this->fields["users_id"]!=0
-                                        && $CFG_GLPI["is_user_autoupdate"])
-              ||($this->updates[$i]=="groups_id" && $this->fields["groups_id"]!=0
-                                           && $CFG_GLPI["is_group_autoupdate"])) {
+         if (($this->updates[$i]=="users_id"
+              && $this->fields["users_id"]!=0
+              && $CFG_GLPI["is_user_autoupdate"])
+             ||($this->updates[$i]=="groups_id" && $this->fields["groups_id"]!=0
+                && $CFG_GLPI["is_group_autoupdate"])) {
 
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
 
-            $update_done=false;
-            $updates4[0]="users_id";
-            $updates4[1]="groups_id";
+            $update_done = false;
+            $updates4[0] = "users_id";
+            $updates4[1] = "groups_id";
 
             foreach ($items as $t) {
                $query = "SELECT *
                          FROM `glpi_computers_items`
-                         WHERE `computers_id`='".$this->fields["id"]."'
-                               AND `itemtype`='".$t."'";
+                         WHERE `computers_id` = '".$this->fields["id"]."'
+                               AND `itemtype` = '".$t."'";
 
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
                   $item = new $t();
                   if ($resultnum>0) {
-                     for ($j=0; $j < $resultnum; $j++) {
+                     for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
                            if ($item->getField('users_id')!=$this->fields["users_id"]
                                ||$item->getField('groups_id')!=$this->fields["groups_id"]) {
-                              $tmp["id"]=$item->getField('id');
+
+                              $tmp["id"] = $item->getField('id');
+
                               if ($CFG_GLPI["is_user_autoupdate"]) {
-                                 $tmp["users_id"]=$this->fields["users_id"];
+                                 $tmp["users_id"] = $this->fields["users_id"];
                               }
                               if ($CFG_GLPI["is_group_autoupdate"]) {
-                                 $tmp["groups_id"]=$this->fields["groups_id"];
+                                 $tmp["groups_id"] = $this->fields["groups_id"];
                               }
                               $item->update($tmp);
-                              $update_done=true;
+                              $update_done = true;
                            }
                         }
                      }
@@ -216,35 +233,35 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][50],true);
+               addMessageAfterRedirect($LANG['computers'][50], true);
             }
          }
 
          // Update state of attached items
          if ($this->updates[$i]=="states_id" && $CFG_GLPI["state_autoupdate_mode"]<0) {
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
-            $update_done=false;
+            $update_done = false;
 
             foreach ($items as $t) {
                $query = "SELECT *
                          FROM `glpi_computers_items`
-                         WHERE `computers_id`='".$this->fields["id"]."'
-                               AND `itemtype`='".$t."'";
+                         WHERE `computers_id` = '".$this->fields["id"]."'
+                               AND `itemtype` = '".$t."'";
 
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
                   $item = new $t();
 
                   if ($resultnum>0) {
-                     for ($j=0; $j < $resultnum; $j++) {
+                     for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')){
                            if ($item->getField('states_id')!=$this->fields["states_id"]){
-                              $tmp["id"]=$item->getField('id');
-                              $tmp["states_id"]=$this->fields["states_id"];
+                              $tmp["id"]        = $item->getField('id');
+                              $tmp["states_id"] = $this->fields["states_id"];
                               $item->update($tmp);
-                              $update_done=true;
+                              $update_done = true;
                            }
                         }
                      }
@@ -252,38 +269,39 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][56],true);
+               addMessageAfterRedirect($LANG['computers'][56], true);
             }
          }
 
          // Update loction of attached items
-         if ($this->updates[$i]=="locations_id" && $this->fields["locations_id"]!=0
-                                          && $CFG_GLPI["is_location_autoupdate"]) {
+         if ($this->updates[$i]=="locations_id"
+             && $this->fields["locations_id"]!=0
+             && $CFG_GLPI["is_location_autoupdate"]) {
 
             $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
-            $update_done=false;
-            $updates2[0]="locations_id";
+            $update_done = false;
+            $updates2[0] = "locations_id";
 
             foreach ($items as $t) {
                $query = "SELECT *
                          FROM `glpi_computers_items`
-                         WHERE `computers_id`='".$this->fields["id"]."'
-                               AND `itemtype`='".$t."'";
+                         WHERE `computers_id` = '".$this->fields["id"]."'
+                               AND `itemtype` = '".$t."'";
 
                if ($result=$DB->query($query)) {
                   $resultnum = $DB->numrows($result);
                   $item = new $t();
 
                   if ($resultnum>0) {
-                     for ($j=0; $j < $resultnum; $j++) {
+                     for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
                            if ($item->getField('locations_id')!=$this->fields["locations_id"]) {
-                              $tmp["id"]=$item->getField('id');
-                              $tmp["locations_id"]=$this->fields["locations_id"];
+                              $tmp["id"]           = $item->getField('id');
+                              $tmp["locations_id"] = $this->fields["locations_id"];
                               $item->update($tmp);
-                              $update_done=true;
+                              $update_done = true;
                            }
                         }
                      }
@@ -291,16 +309,17 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               addMessageAfterRedirect($LANG['computers'][48],true);
+               addMessageAfterRedirect($LANG['computers'][48], true);
             }
          }
       }
    }
 
+
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && $input["id"]>0) {
-         $input["_oldID"]=$input["id"];
+         $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
       unset($input['withtemplate']);
@@ -308,8 +327,9 @@ class Computer extends CommonDBTM {
       return $input;
    }
 
+
    function post_addItem() {
-      global $DB,$CFG_GLPI;
+      global $DB;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
@@ -319,12 +339,12 @@ class Computer extends CommonDBTM {
 
          // ADD Infocoms
          $ic= new Infocom();
-         if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
-            $ic->fields["items_id"]=$this->fields['id'];
+         if ($ic->getFromDBforDevice($this->getType(), $this->input["_oldID"])) {
+            $ic->fields["items_id"] = $this->fields['id'];
             unset ($ic->fields["id"]);
             if (isset($ic->fields["immo_number"])) {
-               $ic->fields["immo_number"] = autoName($ic->fields["immo_number"],
-                                            "immo_number", 1, 'Infocom', $this->input['entities_id']);
+               $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
+                                                     'Infocom', $this->input['entities_id']);
             }
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
@@ -336,16 +356,16 @@ class Computer extends CommonDBTM {
          }
 
          // ADD volumes
-         $query="SELECT `id`
-                 FROM `glpi_computerdisks`
-                 WHERE `computers_id`='".$this->input["_oldID"]."'";
+         $query = "SELECT `id`
+                   FROM `glpi_computerdisks`
+                   WHERE `computers_id` = '".$this->input["_oldID"]."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               $disk=new ComputerDisk();
+               $disk = new ComputerDisk();
                $disk->getfromDB($data['id']);
                unset($disk->fields["id"]);
-               $disk->fields["computers_id"]=$this->fields['id'];
+               $disk->fields["computers_id"] = $this->fields['id'];
                $disk->addToDB();
             }
          }
@@ -355,65 +375,65 @@ class Computer extends CommonDBTM {
          $inst->cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
-         $query="SELECT `contracts_id`
-                 FROM `glpi_contracts_items`
-                 WHERE `items_id`='".$this->input["_oldID"]."'
-                       AND `itemtype`='".$this->getType()."';";
+         $query = "SELECT `contracts_id`
+                   FROM `glpi_contracts_items`
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
+                         AND `itemtype` = '".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
-            $contractitem=new Contract_Item();
+            $contractitem = new Contract_Item();
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype' => $this->getType(),
-                                        'items_id' => $this->fields['id']));
+                                        'itemtype'     => $this->getType(),
+                                        'items_id'     => $this->fields['id']));
             }
          }
 
          // ADD Documents
-         $query="SELECT `documents_id`
-                 FROM `glpi_documents_items`
-                 WHERE `items_id`='".$this->input["_oldID"]."'
-                       AND `itemtype`='".$this->getType()."';";
+         $query = "SELECT `documents_id`
+                   FROM `glpi_documents_items`
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
+                         AND `itemtype` = '".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
-            $docitem=new Document_Item();
+            $docitem = new Document_Item();
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->getType(),
-                                   'items_id' => $this->fields['id']));
+                                   'itemtype'     => $this->getType(),
+                                   'items_id'     => $this->fields['id']));
             }
          }
 
          // ADD Ports
-         $query="SELECT `id`
-                 FROM `glpi_networkports`
-                 WHERE `items_id`='".$this->input["_oldID"]."'
-                       AND `itemtype`='".$this->getType()."';";
+         $query = "SELECT `id`
+                   FROM `glpi_networkports`
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
+                         AND `itemtype` = '".$this->getType()."';";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               $np = new NetworkPort();
+               $np  = new NetworkPort();
                $npv = new NetworkPort_Vlan();
                $np->getFromDB($data["id"]);
                unset($np->fields["id"]);
                unset($np->fields["ip"]);
                unset($np->fields["mac"]);
                unset($np->fields["netpoints_id"]);
-               $np->fields["items_id"]=$this->fields['id'];
-               $portid=$np->addToDB();
+               $np->fields["items_id"] = $this->fields['id'];
+               $portid = $np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
-                                     array('networkports_id'=>$data["id"])) as $vlan) {
+                                     array('networkports_id' => $data["id"])) as $vlan) {
                   $npv->assignVlan($portid, $vlan['vlans_id']);
                }
             }
          }
 
          // Add connected devices
-         $query="SELECT *
-                 FROM `glpi_computers_items`
-                 WHERE `computers_id`='".$this->input["_oldID"]."';";
+         $query = "SELECT *
+                   FROM `glpi_computers_items`
+                   WHERE `computers_id` = '".$this->input["_oldID"]."';";
+         $result = $DB->query($query);
 
-         $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
             while ($data=$DB->fetch_array($result)) {
@@ -423,8 +443,8 @@ class Computer extends CommonDBTM {
             }
          }
       }
-
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -434,14 +454,15 @@ class Computer extends CommonDBTM {
                 WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
-      $query="SELECT `id`
-              FROM `glpi_computers_items`
-              WHERE `computers_id` = '".$this->fields['id']."'";
+      $query = "SELECT `id`
+                FROM `glpi_computers_items`
+                WHERE `computers_id` = '".$this->fields['id']."'";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
             while ($data = $DB->fetch_array($result)) {
-               $data['_no_auto_action']=true;
+               $data['_no_auto_action'] = true;
                $conn->delete($data);
             }
          }
@@ -464,6 +485,7 @@ class Computer extends CommonDBTM {
       $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
    }
 
+
    /**
    * Print the computer form
    *
@@ -476,7 +498,7 @@ class Computer extends CommonDBTM {
    *
    **/
    function showForm($ID, $options=array()) {
-      global $LANG,$CFG_GLPI,$DB;
+      global $LANG, $CFG_GLPI, $DB;
 
       if (!haveRight("computer","r")) {
         return false;
@@ -490,17 +512,17 @@ class Computer extends CommonDBTM {
       }
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
-         $template = "newcomp";
+         $template   = "newcomp";
          $datestring = $LANG['computers'][14]." : ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
-         $template = "newtemplate";
+         $template   = "newtemplate";
          $datestring = $LANG['computers'][14]." : ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
       } else {
          $datestring = $LANG['common'][26].": ";
-         $date = convDateTime($this->fields["date_mod"]);
-         $template = false;
+         $date       = convDateTime($this->fields["date_mod"]);
+         $template   = false;
       }
 
       $this->showTabs($options);
@@ -511,8 +533,7 @@ class Computer extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->getType(), $this->fields["entities_id"]);
-
-      autocompletionTextField($this,'name',array('value'=>$objectName));
+      autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -576,9 +597,8 @@ class Computer extends CommonDBTM {
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
-      autocompletionTextField($this,'otherserial',array('value'=>$objectName));
-
+                             $this->getType(), $this->fields["entities_id"]);
+      autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -637,15 +657,15 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       // Get OCS Datas :
-      $dataocs=array();
+      $dataocs = array();
       if (!empty($ID) && $this->fields["is_ocs_import"] && haveRight("view_ocsng","r")) {
          $query = "SELECT *
                    FROM `glpi_ocslinks`
-                   WHERE `computers_id`='$ID'";
+                   WHERE `computers_id` = '$ID'";
 
-         $result=$DB->query($query);
+         $result = $DB->query($query);
          if ($DB->numrows($result)==1) {
-            $dataocs=$DB->fetch_array($result);
+            $dataocs = $DB->fetch_array($result);
          }
       }
 
@@ -654,8 +674,11 @@ class Computer extends CommonDBTM {
       if (!$template && !empty($this->fields['template_name'])) {
          echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13]."&nbsp;: ".$this->fields['template_name'].")";
       }
-      if (!empty($ID) && $this->fields["is_ocs_import"] && haveRight("view_ocsng","r")
+      if (!empty($ID)
+          && $this->fields["is_ocs_import"]
+          && haveRight("view_ocsng","r")
           && count($dataocs)) {
+
          echo "<br>";
          echo $LANG['ocsng'][14]."&nbsp;: ".convDateTime($dataocs["last_ocs_update"]);
          echo "<br>";
@@ -667,6 +690,7 @@ class Computer extends CommonDBTM {
             $query = "SELECT `ocs_agent_version`, `ocsid`
                       FROM `glpi_ocslinks`
                       WHERE `computers_id` = '$ID'";
+
             $result_agent_version = $DB->query($query);
             $data_version = $DB->fetch_array($result_agent_version);
 
@@ -675,12 +699,14 @@ class Computer extends CommonDBTM {
             //If have write right on OCS and ocsreports url is not empty in OCS config
             if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
                echo ", ".OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
-               $data_version["ocsid"],$LANG['ocsng'][57]);
+                                                                 $data_version["ocsid"],
+                                                                 $LANG['ocsng'][57]);
             }
 
             if ($data_version["ocs_agent_version"] != NULL) {
                echo " , ".$LANG['ocsng'][49]."&nbsp;: ".$data_version["ocs_agent_version"];
             }
+
          } else {
             echo $LANG['common'][52]." ".OcsServer::getServerNameByID($ID);
          }
@@ -688,8 +714,12 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      if (!empty($ID) && $this->fields["is_ocs_import"] && haveRight("view_ocsng","r")
-          && haveRight("sync_ocsng","w") && count($dataocs)) {
+      if (!empty($ID)
+          && $this->fields["is_ocs_import"]
+          && haveRight("view_ocsng","r")
+          && haveRight("sync_ocsng","w")
+          && count($dataocs)) {
+
          echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33]."&nbsp;:</td>";
          echo "<td >";
          Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
@@ -699,10 +729,8 @@ class Computer extends CommonDBTM {
       }
       echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
       echo "<td >";
-      Dropdown::show('AutoUpdateSystem',
-                     array('value' => $this->fields["autoupdatesystems_id"]));
+      Dropdown::show('AutoUpdateSystem', array('value' => $this->fields["autoupdatesystems_id"]));
       echo "</td></tr>";
-
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -710,16 +738,19 @@ class Computer extends CommonDBTM {
       return true;
    }
 
+
    /**
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
     */
    function getSelectLinkedItem () {
+
       return "SELECT `itemtype`, `items_id`
               FROM `glpi_computers_items`
-              WHERE `computers_id`='" . $this->fields['id']."'";
+              WHERE `computers_id` = '" . $this->fields['id']."'";
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -739,7 +770,7 @@ class Computer extends CommonDBTM {
       $tab[2]['linkfield'] = '';
       $tab[2]['name']      = $LANG['common'][2];
 
-      $tab+=Location::getSearchOptionsToAdd();
+      $tab += Location::getSearchOptionsToAdd();
 
       $tab[4]['table']     = 'glpi_computertypes';
       $tab[4]['field']     = 'name';
