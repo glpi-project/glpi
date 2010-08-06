@@ -39,7 +39,7 @@
  *
  **/
 function ajaxDropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0) {
-   global $CFG_GLPI;
+   global $CFG_GLPI, $DB, $LANG;
 
    $initparams = $params;
    if ($rand==0) {
