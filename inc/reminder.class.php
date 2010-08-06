@@ -488,7 +488,7 @@ class Reminder extends CommonDBTM {
                $tab=explode(" ",$data["begin"]);
                $date_url=$tab[0];
                echo "<span class='reminder_right'>";
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticketplanning.php?date=".$date_url.
+               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                      "&amp;type=day\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG['Menu'][29].
                      "' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'>";
@@ -586,7 +586,7 @@ class Reminder extends CommonDBTM {
                $tab=explode(" ",$val["begin"]);
                $date_url=$tab[0];
                if ($planningRight) {
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticketplanning.php?date=".$date_url.
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                         "&amp;type=day\">";
                }
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG['Menu'][29].
