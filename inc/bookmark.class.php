@@ -44,62 +44,68 @@ class Bookmark extends CommonDBTM {
       return haveRight('bookmark_public', 'w');
    }
 
+
    function canView() {
       return haveRight('bookmark_public', 'r');
    }
 
+
    function prepareInputForAdd($input) {
-      if (!isset($input['url'])||!isset($input['type'])) {
+
+      if (!isset($input['url']) || !isset($input['type'])) {
          return false;
       }
 
       $taburl = parse_url(rawurldecode($input['url']));
 
-      $index = strpos($taburl["path"],"plugins");
+      $index = strpos($taburl["path"], "plugins");
       if (!$index) {
-         $index = strpos($taburl["path"],"front");
+         $index = strpos($taburl["path"], "front");
       }
-      $input['path'] = utf8_substr($taburl["path"],$index,utf8_strlen($taburl["path"]) - $index);
+      $input['path'] = utf8_substr($taburl["path"], $index, utf8_strlen($taburl["path"]) - $index);
 
-      $query_tab=array();
+      $query_tab = array();
 
       if (isset($taburl["query"])) {
-         parse_str($taburl["query"],$query_tab);
+         parse_str($taburl["query"], $query_tab);
       }
 
-      $input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab,
-                                                               $input['itemtype']));
+      $input['query'] = append_params($this->prepareQueryToStore($input['type'], $query_tab,
+                                                                 $input['itemtype']));
 
       return $input;
    }
+
 
    function pre_updateInDB() {
 
       // Set new user if initial user have been deleted
       if ($this->fields['users_id']==0 && $uid=getLoginUserID()) {
-         $this->input['users_id']=$uid;
-         $this->fields['users_id']=$uid;
-         $this->updates[]="users_id";
+         $this->input['users_id']  = $uid;
+         $this->fields['users_id'] = $uid;
+         $this->updates[]          = "users_id";
       }
    }
 
-   function post_getEmpty () {
-      global $LANG;
 
-      $this->fields["users_id"]=getLoginUserID();
-      $this->fields["is_private"]=1;
-      $this->fields["is_recursive"]=0;
-      $this->fields["entities_id"]=$_SESSION["glpiactive_entity"];
+   function post_getEmpty () {
+
+      $this->fields["users_id"]     = getLoginUserID();
+      $this->fields["is_private"]   = 1;
+      $this->fields["is_recursive"] = 0;
+      $this->fields["entities_id"]  = $_SESSION["glpiactive_entity"];
    }
+
 
    function cleanDBonPurge() {
       global $DB;
 
       $query="DELETE
               FROM `glpi_bookmarks_users`
-              WHERE `bookmarks_id`='".$this->fields['id']."'";
+              WHERE `bookmarks_id` = '".$this->fields['id']."'";
       $DB->query($query);
    }
+
 
    /**
    * Print the bookmark form
@@ -112,7 +118,7 @@ class Bookmark extends CommonDBTM {
    *     - itemtype when adding a new bookmark
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI, $LANG;
 
       $ID = $this->fields['id'];
 
@@ -124,7 +130,8 @@ class Bookmark extends CommonDBTM {
       }
 
       echo '<br>';
-      echo "<form method='post' name='form_save_query' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
+      echo "<form method='post' name='form_save_query' action='".$CFG_GLPI['root_doc'].
+             "/front/popup.php'>";
       echo "<div class='center'>";
       if (isset($options['itemtype'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
@@ -148,14 +155,15 @@ class Bookmark extends CommonDBTM {
 
       echo "<tr><td class='tab_bg_1'>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td class='tab_bg_1'>";
-      autocompletionTextField($this, "name",array('user' => $this->fields["users_id"]));
+      autocompletionTextField($this, "name", array('user' => $this->fields["users_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][17]."&nbsp;:</td>";
       echo "<td>";
 
       if (haveRight("bookmark_public","w")) {
-         Dropdown::showPrivatePublicSwitch($this->fields["is_private"],$this->fields["entities_id"],
+         Dropdown::showPrivatePublicSwitch($this->fields["is_private"],
+                                           $this->fields["entities_id"],
                                            $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
@@ -169,22 +177,24 @@ class Bookmark extends CommonDBTM {
       if ($ID <= 0) { // add
          echo "<tr>";
          echo "<td class='tab_bg_2 top' colspan='2'>";
-         echo "<input type='hidden' name='users_id' value=\"".$this->fields['users_id']."\">";
-         echo "<div class='center'><input type='submit' name='add' value=\"".
-                                    $LANG['buttons'][8]."\" class='submit'></div>";
-         echo "</td></tr>";
+         echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
+         echo "<div class='center'>";
+         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "</div></td></tr>";
+
       } else {
          echo "<tr>";
          echo "<td class='tab_bg_2 top' colspan='2'>";
-         echo "<input type='hidden' name='id' value=\"$ID\">";
+         echo "<input type='hidden' name='id' value='$ID'>";
          echo "<div class='center'>";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-         echo "<input type='hidden' name='id' value=\"$ID\">";
-         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+         echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+         echo "<input type='hidden' name='id' value='$ID'>";
+         echo "<input type='submit' name='delete' value='".$LANG['buttons'][6]."' class='submit'>";
          echo "</div></td></tr>";
       }
       echo "</table></div></form>";
    }
+
 
    /**
    * Prepare query to store depending of the type
@@ -192,67 +202,72 @@ class Bookmark extends CommonDBTM {
    * @param $type bookmark type
    * @param $query_tab parameters array
    * @param $itemtype device type
+   *
    * @return clean query array
    **/
-   function prepareQueryToStore($type,$query_tab,$itemtype=0) {
+   function prepareQueryToStore($type, $query_tab, $itemtype=0) {
 
       switch ($type) {
          case BOOKMARK_SEARCH :
-            $fields_toclean = array('start','add_search_count','delete_search_count',
-                                 'add_search_count2','delete_search_count2',
-                                 'glpisearchcount','glpisearchcount2');
+            $fields_toclean = array('start', 'add_search_count', 'delete_search_count',
+                                    'add_search_count2', 'delete_search_count2', 'glpisearchcount',
+                                    'glpisearchcount2');
             foreach ($fields_toclean as $field) {
                if (isset($query_tab[$field])) {
                   unset($query_tab[$field]);
                }
             }
-            
+
             // Manage glpisearchcount / dclean if needed + store
             if (isset($_SESSION["glpisearchcount"][$itemtype])) {
-               $query_tab['glpisearchcount']=$_SESSION["glpisearchcount"][$itemtype];
+               $query_tab['glpisearchcount'] = $_SESSION["glpisearchcount"][$itemtype];
             } else {
-               $query_tab['glpisearchcount']=1;
+               $query_tab['glpisearchcount'] = 1;
             }
             // Manage glpisearchcount2 / dclean if needed + store
             if (isset($_SESSION["glpisearchcount2"][$itemtype])) {
-               $query_tab['glpisearchcount2']=$_SESSION["glpisearchcount2"][$itemtype];
+               $query_tab['glpisearchcount2'] = $_SESSION["glpisearchcount2"][$itemtype];
             } else {
-               $query_tab['glpisearchcount2']=0;
+               $query_tab['glpisearchcount2'] = 0;
             }
             break;
       }
       return $query_tab;
    }
+
 
    /**
    * Prepare query to use depending of the type
    *
    * @param $type bookmark type
    * @param $query_tab parameters array
+   *
    * @return prepared query array
    **/
-   function prepareQueryToUse($type,$query_tab) {
+   function prepareQueryToUse($type, $query_tab) {
 
       switch ($type) {
          case BOOKMARK_SEARCH :
-            $query_tab['reset']='reset';
+            $query_tab['reset'] = 'reset';
             break;
       }
       return $query_tab;
    }
+
 
    /**
    * load a bookmark
    *
    * @param $ID ID of the bookmark
    * @param $opener boolean load bookmark in opener window ? false -> current window
+   *
    * @return nothing
    **/
-   function load($ID,$opener=true) {
+   function load($ID, $opener=true) {
 
       if ($params= $this->getParameters($ID)) {
-         $url = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
-         $url.="?".append_params($params);
+         $url  = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
+         $url .= "?".append_params($params);
          if ($opener) {
             echo "<script type='text/javascript' >\n";
             echo "window.opener.location.href='$url';";
@@ -263,6 +278,7 @@ class Bookmark extends CommonDBTM {
       }
    }
 
+
    /**
    * get bookmark parameters
    *
@@ -272,17 +288,19 @@ class Bookmark extends CommonDBTM {
    function getParameters($ID) {
 
       if ($this->getFromDB($ID)) {
-         $query_tab=array();
-         parse_str($this->fields["query"],$query_tab);
-         return $this->prepareQueryToUse($this->fields["type"],$query_tab);
+         $query_tab = array();
+         parse_str($this->fields["query"], $query_tab);
+         return $this->prepareQueryToUse($this->fields["type"], $query_tab);
       }
       return false;
    }
+
 
    /**
    * Mark bookmark as default view for the currect user
    *
    * @param $ID ID of the bookmark
+   *
    * @return nothing
    **/
    function mark_default($ID) {
@@ -290,30 +308,34 @@ class Bookmark extends CommonDBTM {
 
       // Get bookmark / Only search bookmark
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
-         $dd=new Bookmark_User();
+         $dd = new Bookmark_User();
          // Is default view for this itemtype already exists ?
-         $query="SELECT `id`
-                 FROM `glpi_bookmarks_users`
-                 WHERE `users_id` = '".getLoginUserID()."'
-                       AND `itemtype` = '".$this->fields['itemtype']."'";
+         $query = "SELECT `id`
+                   FROM `glpi_bookmarks_users`
+                   WHERE `users_id` = '".getLoginUserID()."'
+                         AND `itemtype` = '".$this->fields['itemtype']."'";
+
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists update it
-               $updateID=$DB->result($result,0,0);
-               $dd->update(array('id'=>$updateID,'bookmarks_id'=>$ID));
+               $updateID = $DB->result($result, 0, 0);
+               $dd->update(array('id'           => $updateID,
+                                 'bookmarks_id' => $ID));
             } else {
-               $dd->add(array('bookmarks_id'=>$ID,
-                              'users_id'=>getLoginUserID(),
-                              'itemtype'=>$this->fields['itemtype']));
+               $dd->add(array('bookmarks_id' => $ID,
+                              'users_id'     => getLoginUserID(),
+                              'itemtype'     => $this->fields['itemtype']));
             }
          }
       }
    }
 
+
    /**
    * Mark bookmark as default view for the currect user
    *
    * @param $ID ID of the bookmark
+   *
    * @return nothing
    **/
    function unmark_default($ID) {
@@ -321,56 +343,60 @@ class Bookmark extends CommonDBTM {
 
       // Get bookmark / Only search bookmark
       if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH) {
-         $dd=new Bookmark_User();
+         $dd = new Bookmark_User();
          // Is default view for this itemtype already exists ?
-         $query="SELECT `id`
-                 FROM `glpi_bookmarks_users`
-                 WHERE `users_id` = '".getLoginUserID()."'
-                       AND `bookmarks_id` = '$ID'
-                       AND `itemtype` = '".$this->fields['itemtype']."'";
+         $query = "SELECT `id`
+                   FROM `glpi_bookmarks_users`
+                   WHERE `users_id` = '".getLoginUserID()."'
+                         AND `bookmarks_id` = '$ID'
+                         AND `itemtype` = '".$this->fields['itemtype']."'";
+
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists delete it
-               $deleteID=$DB->result($result,0,0);
-               $dd->delete(array('id'=>$deleteID));
+               $deleteID = $DB->result($result,0,0);
+               $dd->delete(array('id' => $deleteID));
             }
          }
       }
    }
+
 
    /**
    * Show bookmarks list
    *
    * @param $target target to use for links
    * @param $is_private show private of public bookmarks ?
+   *
    * @return nothing
    **/
-   function showBookmarkList($target,$is_private=1) {
-      global $DB,$LANG,$CFG_GLPI;
+   function showBookmarkList($target, $is_private=1) {
+      global $DB, $LANG, $CFG_GLPI;
 
       if (!$is_private && !haveRight('bookmark_public','r')) {
          return false;
       }
 
-      $query="SELECT `".$this->getTable()."`.*, `glpi_bookmarks_users`.`id` AS IS_DEFAULT
-              FROM `".$this->getTable()."`
-              LEFT JOIN `glpi_bookmarks_users`
-                        ON (`".$this->getTable()."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
-                            AND `".$this->getTable()."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`)
-              WHERE ";
+      $query = "SELECT `".$this->getTable()."`.*,
+                       `glpi_bookmarks_users`.`id` AS IS_DEFAULT
+                FROM `".$this->getTable()."`
+                LEFT JOIN `glpi_bookmarks_users`
+                  ON (`".$this->getTable()."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
+                      AND `".$this->getTable()."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`)
+                WHERE ";
 
       if ($is_private) {
-         $query.="(`".$this->getTable()."`.`is_private`='1'
-                   AND `".$this->getTable()."`.`users_id`='".getLoginUserID()."') ";
+         $query .= "(`".$this->getTable()."`.`is_private`='1'
+                     AND `".$this->getTable()."`.`users_id`='".getLoginUserID()."') ";
       } else {
-         $query.="(`".$this->getTable()."`.`is_private`='0' ".
-                   getEntitiesRestrictRequest("AND",$this->getTable(),"","",true) . ")";
+         $query .= "(`".$this->getTable()."`.`is_private`='0' ".
+                     getEntitiesRestrictRequest("AND", $this->getTable(), "", "", true) . ")";
       }
 
-      $query.=" ORDER BY `itemtype`, `name`";
+      $query .= " ORDER BY `itemtype`, `name`";
 
       if ($result = $DB->query($query)) {
-         $rand=mt_rand();
+         $rand = mt_rand();
          echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
          echo "<div class='center' id='tabsbody' >";
 
@@ -381,27 +407,28 @@ class Bookmark extends CommonDBTM {
          echo "<th>".$LANG['bookmark'][6]."</th></tr>";
 
          if( $DB->numrows($result)) {
-            $current_type=-1;
-            $current_type_name=NOT_AVAILABLE;
+            $current_type      = -1;
+            $current_type_name = NOT_AVAILABLE;
             while ($this->fields = $DB->fetch_assoc($result)) {
                if ($current_type!=$this->fields['itemtype']) {
-                  $current_type=$this->fields['itemtype'];
-                  $current_type_name=NOT_AVAILABLE;
+                  $current_type      = $this->fields['itemtype'];
+                  $current_type_name = NOT_AVAILABLE;
+
                   if ($current_type=="States") {
-                     $current_type_name=$LANG['state'][0];
+                     $current_type_name = $LANG['state'][0];
                   } else if (class_exists($current_type)) {
                      $item = new $current_type();
-                     $current_type_name=$item->getTypeName();
+                     $current_type_name = $item->getTypeName();
                   }
                }
-               $canedit=$this->can($this->fields["id"],"w");
+               $canedit = $this->can($this->fields["id"],"w");
 
                echo "<tr class='tab_bg_1'>";
                echo "<td width='10px'>";
                if ($canedit) {
-                  $sel="";
+                  $sel = "";
                   if (isset($_GET["select"]) && $_GET["select"]=="all") {
-                     $sel="checked";
+                     $sel = "checked";
                   }
                   echo "<input type='checkbox' name='bookmark[".$this->fields["id"]."]'". $sel.">";
                } else {
@@ -413,7 +440,9 @@ class Bookmark extends CommonDBTM {
                           $this->fields["id"]."\">".$this->fields["name"]."</a></td>";
                if ($canedit) {
                   echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;id=".
-                         $this->fields["id"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG['buttons'][14]."'></a></td>";
+                             $this->fields["id"]."\">
+                            <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".
+                              $LANG['buttons'][14]."'></a></td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }
@@ -422,11 +451,11 @@ class Bookmark extends CommonDBTM {
                   if (is_null($this->fields['IS_DEFAULT'])) {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;
                             mark_default=1&amp;id=".$this->fields["id"]."\">".$LANG['choice'][0].
-                            "</a>";
+                          "</a>";
                   } else {
                      echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;
                             mark_default=0&amp;id=".$this->fields["id"]."\">".$LANG['choice'][1].
-                            "</a>";
+                          "</a>";
                   }
                }
                echo "</td></tr>";
@@ -436,13 +465,13 @@ class Bookmark extends CommonDBTM {
             openArrowMassive("form_load_bookmark$rand");
             closeArrowMassive('delete_several', $LANG['buttons'][6]);
 
-         }
-         else {
+         } else {
             echo "<tr class='tab_bg_1'><td colspan='5'>".$LANG['bookmark'][3]."</td></tr></table>";
          }
          echo '</form>';
       }
    }
+
 
    /**
     * Display bookmark buttons
@@ -450,8 +479,8 @@ class Bookmark extends CommonDBTM {
     * @param $type bookmark type to use
     * @param $itemtype device type of item where is the bookmark
     **/
-   static function showSaveButton($type,$itemtype=0) {
-      global $CFG_GLPI,$LANG;
+   static function showSaveButton($type, $itemtype=0) {
+      global $CFG_GLPI, $LANG;
 
       echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
               "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".
