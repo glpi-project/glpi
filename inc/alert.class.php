@@ -44,13 +44,14 @@ class Alert extends CommonDBTM {
 
    // ALERTS TYPE
    const THRESHOLD = 1;
-   const END = 2;
-   const NOTICE = 3;
+   const END       = 2;
+   const NOTICE    = 3;
    const NOTCLOSED = 4;
 
    function prepareInputForAdd($input) {
+
       if (!isset($input['date']) || empty($input['date'])) {
-         $input['date']=date("Y-m-d H:i:s");;
+         $input['date'] = date("Y-m-d H:i:s");;
       }
       return $input;
    }
@@ -59,109 +60,109 @@ class Alert extends CommonDBTM {
    /**
     * Clear all alerts of an alert type for an item
     *
-    *@param $ID ID of the item to clear
     *@param $itemtype ID of the type to clear
+    *@param $ID ID of the item to clear
     *@param $alert_type ID of the alert type to clear
+    *
     *@return nothing
     *
    **/
-   function clear($itemtype,$ID,$alert_type) {
+   function clear($itemtype, $ID, $alert_type) {
       global $DB;
 
-      $query="DELETE
-              FROM `".$this->getTable()."`
-              WHERE `itemtype` = '$itemtype'
-                    AND `items_id` = '$ID'
-                    AND `type` = '$alert_type'";
+      $query = "DELETE
+                FROM `".$this->getTable()."`
+                WHERE `itemtype` = '$itemtype'
+                      AND `items_id` = '$ID'
+                      AND `type` = '$alert_type'";
       $DB->query($query);
    }
 
-   static function dropdown($options = array()) {
+
+   static function dropdown($options=array()) {
       global $LANG;
 
-      if (!isset($options['value'])){
+      if (!isset($options['value'])) {
          $value = 0;
-      }
-      else {
+      } else {
          $value = $options['value'];
       }
 
-      if (isset($options['inherit_global']) && $options['inherit_global']){
+      if (isset($options['inherit_global']) && $options['inherit_global']) {
          $times[-1] = $LANG['setup'][731];
       }
 
-      $times[0] = $LANG['setup'][307];
-      $times[DAY_TIMESTAMP] = $LANG['setup'][305];
-      $times[WEEK_TIMESTAMP] = $LANG['setup'][308];
+      $times[0]               = $LANG['setup'][307];
+      $times[DAY_TIMESTAMP]   = $LANG['setup'][305];
+      $times[WEEK_TIMESTAMP]  = $LANG['setup'][308];
       $times[MONTH_TIMESTAMP] = $LANG['setup'][309];
 
-      Dropdown::showFromArray($options['name'],
-                              $times,
-                              array('value'=>$value));
-
+      Dropdown::showFromArray($options['name'], $times, array('value' => $value));
    }
+
 
    static function dropdownYesNo($options = array()) {
       global $LANG;
 
       if (!isset($options['value'])){
          $value = 0;
-      }
-      else {
+      } else {
          $value = $options['value'];
       }
 
-      if (isset($options['inherit_global']) && $options['inherit_global']){
+      if (isset($options['inherit_global']) && $options['inherit_global']) {
          $times[-1] = $LANG['setup'][731];
       }
 
       $times[0] = $LANG['choice'][0];
       $times[1] = $LANG['choice'][1];
 
-      Dropdown::showFromArray($options['name'],
-                              $times,
-                              array('value'=>$value));
-
+      Dropdown::showFromArray($options['name'], $times, array('value' => $value));
    }
 
-   static function dropdownIntegerNever($name,$value,$options=array()) {
+
+   static function dropdownIntegerNever($name, $value, $options=array()) {
       global $LANG;
-      $p['max'] = 100;
-      $p['step'] = 1;
-      $p['toadd'] = array();
+
+      $p['max']      = 100;
+      $p['step']     = 1;
+      $p['toadd']    = array();
       $p['toadd'][0] = $LANG['setup'][307];
-      if (isset($options['inherit_global']) && $options['inherit_global']){
+      if (isset($options['inherit_global']) && $options['inherit_global']) {
          $p['toadd'][-1] = $LANG['setup'][731];
       }
 
       foreach ($options as $key=>$val) {
          $p[$key] = $val;
       }
-      Dropdown::showInteger($name,$value,1,$p['max'],$p['step'],$p['toadd']);
+      Dropdown::showInteger($name, $value, 1, $p['max'], $p['step'], $p['toadd']);
    }
 
-   static function alertExists($itemtype='',$items_id='',$type='') {
+
+   static function alertExists($itemtype='', $items_id='', $type='') {
       global $DB;
-      $query = "SELECT `id` FROM `glpi_alerts`
-                WHERE `itemtype`='$itemtype'
-                  AND `type`='$type'
-                     AND `items_id`='$items_id'";
+
+      $query = "SELECT `id`
+                FROM `glpi_alerts`
+                WHERE `itemtype` = '$itemtype'
+                      AND `type` = '$type'
+                      AND `items_id` = '$items_id'";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
          return $DB->result($result,0,'id');
       }
-      else {
-         return false;
-      }
+      return false;
    }
+
 
    static function dropdownInfocomAlert($value) {
       global $LANG;
+
       $tmp[0] = DROPDOWN_EMPTY_VALUE;
       $tmp[pow(2, Alert::END)] = $LANG['financial'][80];
-      Dropdown::showFromArray("default_infocom_alert",$tmp,
-                              array('value'=>$value));
+      Dropdown::showFromArray("default_infocom_alert", $tmp, array('value' => $value));
    }
+
 }
 
 ?>
