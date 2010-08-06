@@ -41,11 +41,11 @@ class AuthLDAP extends CommonDBTM {
    const SIMPLE_INTERFACE = 'simple';
    const EXPERT_INTERFACE = 'expert';
 
-   const ACTION_IMPORT = 0;
+   const ACTION_IMPORT      = 0;
    const ACTION_SYNCHRONIZE = 1;
-   const ACTION_ALL = 2;
+   const ACTION_ALL         = 2;
 
-   const USER_IMPORTED = 0;
+   const USER_IMPORTED     = 0;
    const USER_SYNCHRONIZED = 1;
    const USER_DELETED_LDAP = 2;
 
@@ -100,6 +100,7 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Preconfig datas for standard system
     * @param $type type of standard system : AD
+    *
     *@return nothing
     **/
    function preconfig($type) {
@@ -222,11 +223,12 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][155] . "&nbsp;:</td>";
-         echo "<td colspan='3'><input type='text' name='rootdn' size='100' value='" . $this->fields["rootdn"] . "'>";
+         echo "<td colspan='3'><input type='text' name='rootdn' size='100' value='".
+                $this->fields["rootdn"]."'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
-         echo "<td><input type='password' name='rootdn_password' value=''  autocomplete='off'></td>";
+         echo "<td><input type='password' name='rootdn_password' value='' autocomplete='off'></td>";
          echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
@@ -290,11 +292,11 @@ class AuthLDAP extends CommonDBTM {
       echo"</td></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['ldap'][30] . "&nbsp;:</td><td colspan='4'>";
-      $alias_options[LDAP_DEREF_NEVER] = $LANG['ldap'][31];
-      $alias_options[LDAP_DEREF_ALWAYS] = $LANG['ldap'][32];
+      $alias_options[LDAP_DEREF_NEVER]     = $LANG['ldap'][31];
+      $alias_options[LDAP_DEREF_ALWAYS]    = $LANG['ldap'][32];
       $alias_options[LDAP_DEREF_SEARCHING] = $LANG['ldap'][33];
-      $alias_options[LDAP_DEREF_FINDING] = $LANG['ldap'][34];
-      Dropdown::showFromArray("deref_option",$alias_options,
+      $alias_options[LDAP_DEREF_FINDING]   = $LANG['ldap'][34];
+      Dropdown::showFromArray("deref_option", $alias_options,
                               array('value' => $this->fields["deref_option"]));
       echo"</td></tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
@@ -345,10 +347,10 @@ class AuthLDAP extends CommonDBTM {
             echo "<input type='checkbox' name='item[" . $ldap_replicate["id"] . "]' value='1' $sel>";
             echo "</td>";
             echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
-            echo "<td class='center'>".$ldap_replicate["host"]." : ".$ldap_replicate["port"]."</td>";
-            echo "<td class='center'>";
+            echo "<td class='center'>".$ldap_replicate["host"]."&nbsp;: ".$ldap_replicate["port"];
+            echo "</td><td class='center'>";
             echo "<input type='submit' name='test_ldap_replicate[".$ldap_replicate["id"]."]'
-                  class='submit' value=\"" . $LANG['buttons'][50] . "\" ></td>";
+                  class='submit' value='" . $LANG['buttons'][50] . "'></td>";
             echo"</tr>";
          }
          echo "</table>";
@@ -438,11 +440,11 @@ class AuthLDAP extends CommonDBTM {
       echo "<th class='center' colspan='4'>" . $LANG['setup'][167] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][48] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='realname_field' value='".$this->fields["realname_field"]."'>";
-      echo "</td>";
+      echo "<td><input type='text' name='realname_field' value='".
+                 $this->fields["realname_field"]."'></td>";
       echo "<td>" . $LANG['common'][43] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='firstname_field' value='".$this->fields["firstname_field"]."'>";
-      echo "</td></tr>";
+      echo "<td><input type='text' name='firstname_field' value='".
+                 $this->fields["firstname_field"]."'></td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . "&nbsp;:</td>";
       echo "<td><input type='text' name='comment_field' value='".$this->fields["comment_field"]."'>";
@@ -466,11 +468,11 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['users'][2] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='category_field' value='". $this->fields["category_field"]."'>";
-      echo "</td>";
+      echo "<td><input type='text' name='category_field' value='".
+                 $this->fields["category_field"]."'></td>";
       echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td>";
-      echo "<td><input type='text' name='language_field' value='".$this->fields["language_field"]."'>";
-      echo "</td></tr>";
+      echo "<td><input type='text' name='language_field' value='".
+                 $this->fields["language_field"]."'></td></tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
       echo "<input type='submit' name='update' class='submit' value='".$LANG['buttons'][2]."'></td>";
       echo "</td></tr>";
@@ -780,9 +782,9 @@ class AuthLDAP extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input class=submit type='submit' name='change_ldap_filter' value='".$LANG['buttons'][2]."'>";
-      echo "</td></tr></table>";
-      echo "</form></div>";
+      echo "<input class=submit type='submit' name='change_ldap_filter' value='".
+             $LANG['buttons'][2]."'></td></tr>";
+      echo "</table></form></div>";
    }
 
 
@@ -790,6 +792,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @param   $ldapstamp LDAP timestamp
     * @param   $ldap_time_offset time offset
+    *
     * @return unix timestamp
     */
    static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset=0) {
@@ -811,6 +814,7 @@ class AuthLDAP extends CommonDBTM {
    /** Converts a Unix timestamp to an LDAP timestamps
     *
     * @param   $days integer (number of days from now)
+    *
     * @return ldap timestamp
     */
    static function date2ldapTimeStamp($days) {
@@ -822,6 +826,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @param   $auths_id ID of the LDAP server
     * @param   $replicate_id use a replicate if > 0
+    *
     * @return  boolean connection succeeded ?
     */
    static function testLDAPConnection($auths_id, $replicate_id=-1) {
@@ -980,6 +985,7 @@ class AuthLDAP extends CommonDBTM {
     *          - ldap_filter ldap filter to use
     *          - basedn force basedn (default ldapservers_id one)
     *          - order display order
+    *
     * @return  array of the user
     */
    static function getAllUsers($options = array(), &$results, &$limitexceeded) {
@@ -1138,9 +1144,8 @@ class AuthLDAP extends CommonDBTM {
          }
 
          return $list;
-      } else {
-         return $glpi_users;
       }
+      return $glpi_users;
    }
 
 
@@ -1154,6 +1159,7 @@ class AuthLDAP extends CommonDBTM {
     * @param   $filter2 second ldap filter to use (which case ?)
     * @param   $entity working entity
     * @param   $order display order
+    *
     * @return  nothing
     */
    static function showLdapGroups($target, $check, $start, $sync = 0, $filter='', $filter2='',
@@ -1251,6 +1257,7 @@ class AuthLDAP extends CommonDBTM {
     * @param   $filter2 second ldap filter to use if needed
     * @param   $entity entity to search
     * @param   $order order to use
+    *
     * @return  array of the groups
     */
    static function getAllGroups($auths_id, $filter, $filter2, $entity, $order='DESC') {
@@ -1326,6 +1333,7 @@ class AuthLDAP extends CommonDBTM {
     * Get the group's cn by giving his DN
     * @param $ldap_connection ldap connection to use
     * @param $group_dn the group's dn
+    *
     * @return the group cn
     */
    static function getGroupCNByDn($ldap_connection, $group_dn) {
@@ -1388,6 +1396,7 @@ class AuthLDAP extends CommonDBTM {
    /** Form to choose a ldap server
     *
     * @param   $target target page for the form
+    *
     * @return  nothing
     */
    static function ldapChooseDirectory($target) {
@@ -1435,6 +1444,7 @@ class AuthLDAP extends CommonDBTM {
     * @param   $action synchoronize (true) or import (false)
     * @param   $ldap_server ID of the LDAP server to use
     * @param   $display display message information on redirect
+    *
     * @return  nothing
     */
    static function ldapImportUserByServerId($params=array(), $action, $ldap_server, $display=false) {
@@ -1535,6 +1545,7 @@ class AuthLDAP extends CommonDBTM {
     *             - ldapservers_id
     *             - entities_id where group must to be imported
     *             - is_recursive
+    *
     * @return  nothing
     */
    static function ldapImportGroup ($group_dn, $options=array()) {
@@ -1676,6 +1687,7 @@ class AuthLDAP extends CommonDBTM {
       $sql = "SELECT COUNT(*)
               FROM `glpi_authldaps`";
       $result = $DB->query($sql);
+
       if ($DB->result($result,0,0) > 0) {
          return true;
       }
@@ -1731,6 +1743,7 @@ class AuthLDAP extends CommonDBTM {
     * @param $login : user login
     * @param $password : user password
     * @param $ldap_method : ldap_method array to use
+    *
     * @return identification object
    **/
    static function ldapAuth($auth, $login, $password, $ldap_method) {
@@ -1754,6 +1767,7 @@ class AuthLDAP extends CommonDBTM {
     * @param $login : user login
     * @param $password : user password
     * @param $auths_id : auths_id already used for the user
+    *
     * @return identification object
    **/
    static function tryLdapAuth($auth, $login, $password, $auths_id = 0) {
@@ -1995,7 +2009,8 @@ class AuthLDAP extends CommonDBTM {
       // If not coming from the ticket form, then give expert/simple link
       if ((haveRight('config','w') || haveRight('entity','w'))
           && !isset($_SESSION['ldap_import']['no_expert_mode'])) {
-         echo "</span>&nbsp;<span class='ldap_right'>".$LANG['common'][65]." : ";
+
+         echo "</span>&nbsp;<span class='ldap_right'>".$LANG['common'][65]."&nbsp;: ";
          echo "<a href='".$_SERVER['PHP_SELF']."?action=".$_SESSION['ldap_import']['action'].
                         "&amp;mode=".$_SESSION['ldap_import']['mode']. "&amp;interface=".
                         ($_SESSION['ldap_import']['interface'] == AuthLdap::SIMPLE_INTERFACE
@@ -2021,7 +2036,7 @@ class AuthLDAP extends CommonDBTM {
                                  array('name'   => 'ldapservers_id',
                                        'value'  => $_SESSION['ldap_import']['ldapservers_id']));
                   echo "&nbsp;<input class='submit' type='submit' name='change_directory'
-                          value='".$LANG['ldap'][41]."'>";
+                        value='".$LANG['ldap'][41]."'>";
                   echo "</td></tr>";
                }
                echo "<tr class='tab_bg_2'><td>Basedn</td><td colspan='3'>";
@@ -2037,7 +2052,7 @@ class AuthLDAP extends CommonDBTM {
             break;
 
          //case AuthLdap::SIMPLE_INTERFACE :
-         default:
+         default :
             //If multi-entity mode and more than one entity visible
             //else no need to select entity
             if (isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
@@ -2133,6 +2148,7 @@ class AuthLDAP extends CommonDBTM {
       $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_authldaps`";
       $result = $DB->query($query);
+
       return $DB->result($result,0,'cpt');
    }
 
@@ -2143,6 +2159,7 @@ class AuthLDAP extends CommonDBTM {
       $query = "SELECT `id`
                 FROM `glpi_authldaps`";
       $result = $DB->query($query);
+
       return $DB->result($result,0,'id');
    }
 
