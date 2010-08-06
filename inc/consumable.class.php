@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')){
 class Consumable extends CommonDBTM {
 
    // From CommonDBTM
-   protected $forward_entity_to=array('Infocom');
+   protected $forward_entity_to = array('Infocom');
 
    static function getTypeName() {
       global $LANG;
@@ -58,9 +58,11 @@ class Consumable extends CommonDBTM {
       return haveRight('consumable', 'w');
    }
 
+
    function canView() {
       return haveRight('consumable', 'r');
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -68,30 +70,32 @@ class Consumable extends CommonDBTM {
       $query = "DELETE
                 FROM `glpi_infocoms`
                 WHERE (`items_id` = '".$this->fields['id']."'
-                       AND `itemtype`='".$this->getType()."')";
+                       AND `itemtype` = '".$this->getType()."')";
       $result = $DB->query($query);
    }
 
+
    function prepareInputForAdd($input) {
-      $item=new ConsumableItem();
+
+      $item = new ConsumableItem();
       if ($item->getFromDB($input["tID"])) {
-         return array("consumableitems_id"=>$item->fields["id"],
-                     "entities_id"=>$item->getEntityID(),
-                     "date_in"=>date("Y-m-d"));
-      } else {
-         return array();
+         return array("consumableitems_id" => $item->fields["id"],
+                      "entities_id"        => $item->getEntityID(),
+                      "date_in"            => date("Y-m-d"));
       }
+      return array();
    }
+
 
    function post_addItem() {
 
       // Add infocoms if exists for the licence
-      $ic=new Infocom();
+      $ic = new Infocom();
 
-      if ($ic->getFromDBforDevice('ConsumableItem',$this->fields["consumableitems_id"])) {
+      if ($ic->getFromDBforDevice('ConsumableItem', $this->fields["consumableitems_id"])) {
          unset($ic->fields["id"]);
-         $ic->fields["items_id"]=$this->fields['id'];
-         $ic->fields["itemtype"]=$this->getType();
+         $ic->fields["items_id"] = $this->fields['id'];
+         $ic->fields["itemtype"] = $this->getType();
          if (empty($ic->fields['use_date'])) {
             unset($ic->fields['use_date']);
          }
@@ -102,20 +106,20 @@ class Consumable extends CommonDBTM {
       }
    }
 
-   function restore($input,$history=1) {
+
+   function restore($input, $history=1) {
       global $DB;
 
-      $query = "UPDATE
-                `".$this->getTable()."`
+      $query = "UPDATE `".$this->getTable()."`
                 SET `date_out` = NULL
-                WHERE `id`='".$input["id"]."'";
+                WHERE `id` = '".$input["id"]."'";
 
       if ($result = $DB->query($query)) {
          return true;
-      } else {
-         return false;
       }
+      return false;
    }
+
 
    /**
     * UnLink a consumable linked to a printer
@@ -128,38 +132,20 @@ class Consumable extends CommonDBTM {
     *@return boolean
     *
     **/
-   function out($ID,$users_id=0) {
+   function out($ID, $users_id=0) {
       global $DB;
 
-      $query = "UPDATE
-                `".$this->getTable()."`
+      $query = "UPDATE `".$this->getTable()."`
                 SET `date_out` = '".date("Y-m-d")."',
                     `users_id` = '$users_id'
                 WHERE `id` = '$ID'";
 
       if ($result = $DB->query($query)) {
          return true;
-      } else {
-         return false;
       }
+      return false;
    }
 
-
-//    function isEntityAssign() {
-//       return true;
-//    }
-
-   /**
-    * Get the ID of entity assigned to the Consumable
-    *
-    * @return ID of the entity
-   **/
-//    function getEntityID () {
-//       $ci=new ConsumableItem();
-//       $ci->getFromDB($this->fields["consumableitems_id"]);
-//
-//       return $ci->getEntityID();
-//    }
 
    /**
     * count how many consumable for a consumable type
@@ -178,8 +164,10 @@ class Consumable extends CommonDBTM {
                 FROM `glpi_consumables`
                 WHERE `consumableitems_id` = '$tID'";
       $result = $DB->query($query);
+
       return $DB->numrows($result);
    }
+
 
    /**
     * count how many old consumable for a consumable type
@@ -199,8 +187,10 @@ class Consumable extends CommonDBTM {
                 WHERE (`consumableitems_id` = '$tID'
                        AND `date_out` IS NOT NULL)";
       $result = $DB->query($query);
+
       return $DB->numrows($result);
    }
+
 
    /**
     * count how many consumable unused for a consumable type
@@ -220,8 +210,10 @@ class Consumable extends CommonDBTM {
                 WHERE (`consumableitems_id` = '$tID'
                        AND `date_out` IS NULL)";
       $result = $DB->query($query);
+
       return $DB->numrows($result);
    }
+
 
    /**
     * Get the consumable count HTML array for a defined consumable type
@@ -234,44 +226,43 @@ class Consumable extends CommonDBTM {
     *
     **/
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $LANG;
 
-      $out="";
+      $out = "";
       // Get total
       $total = Consumable::getTotalNumber($tID);
 
       if ($total!=0) {
          $unused = Consumable::getUnusedNumber($tID);
-         $old = Consumable::getOldNumber($tID);
+         $old    = Consumable::getOldNumber($tID);
 
          $highlight="";
          if ($unused<=$alarm_threshold) {
-            $highlight="class='tab_bg_1_2'";
+            $highlight = "class='tab_bg_1_2'";
          }
          if (!$nohtml) {
-            $out.= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".
-                     $LANG['consumables'][13]."&nbsp;: $unused</strong>&nbsp;&nbsp;&nbsp;".
+            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total&nbsp;&nbsp;&nbsp;";
+                     "<strong>".$LANG['consumables'][13]."&nbsp;: $unused</strong>&nbsp;&nbsp;&nbsp;".
                      $LANG['consumables'][15]."&nbsp;: $old</div>";
          } else {
-            $out.= $LANG['common'][33]."&nbsp;: $total   ".$LANG['consumables'][13]."&nbsp;: $unused   ".
-                   $LANG['consumables'][15]."&nbsp;: $old";
+            $out .= $LANG['common'][33]."&nbsp;: $total   ".$LANG['consumables'][13].
+                    "&nbsp;: $unused   ".$LANG['consumables'][15]."&nbsp;: $old";
          }
       } else {
          if (!$nohtml) {
-            $out.= "<div class='tab_bg_1_2'><i>".$LANG['consumables'][9]."</i></div>";
+            $out .= "<div class='tab_bg_1_2'><i>".$LANG['consumables'][9]."</i></div>";
          } else {
-           $out.= $LANG['consumables'][9];
+           $out .= $LANG['consumables'][9];
          }
       }
       return $out;
    }
 
+
    /**
     * Check if a Consumable is New (not used, in stock)
     *
     * @param $cID integer : consumable ID.
-    *
-    * @return
     *
     **/
    static function isNew($cID) {
@@ -282,15 +273,15 @@ class Consumable extends CommonDBTM {
                 WHERE (`id` = '$cID'
                        AND `date_out` IS NULL)";
       $result = $DB->query($query);
-      return ($DB->numrows($result)==1);
+
+      return ($DB->numrows($result) == 1);
    }
+
 
    /**
     * Check if a consumable is Old (used, not in stock)
     *
     *@param $cID integer : consumable ID.
-    *
-    *@return
     *
     **/
    static function isOld($cID) {
@@ -301,8 +292,10 @@ class Consumable extends CommonDBTM {
                 WHERE (`id` = '$cID'
                        AND `date_out` IS NOT NULL)";
       $result = $DB->query($query);
-      return ($DB->numrows($result)==1);
+
+      return ($DB->numrows($result) == 1);
    }
+
 
    /**
     * Get the localized string for the status of a consumable
@@ -323,16 +316,16 @@ class Consumable extends CommonDBTM {
       }
    }
 
+
    /**
     * Print out a link to add directly a new consumable from a consumable item.
     *
     * @param $consitem oject of ConsumableItem class
     *
-    *
     * @return Nothing (displays)
     **/
    static function showAddForm(ConsumableItem $consitem) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI, $LANG;
 
       $ID = $consitem->getField('id');
 
@@ -345,7 +338,7 @@ class Consumable extends CommonDBTM {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
          echo "<tr>";
          echo "<td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add_several' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add_several' value='".$LANG['buttons'][8]."' class='submit'>";
          echo "<input type='hidden' name='tID' value=\"$ID\">\n";
          echo "&nbsp;&nbsp;";
          Dropdown::showInteger('to_add',1,1,100);
@@ -357,6 +350,7 @@ class Consumable extends CommonDBTM {
       }
    }
 
+
    /**
     * Print out the consumables of a defined type
     *
@@ -366,7 +360,7 @@ class Consumable extends CommonDBTM {
     *@return Nothing (displays)
     **/
    static function showForItem (ConsumableItem $consitem, $show_old=0) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       $tID = $consitem->getField('id');
       if (!$consitem->can($tID,'r')) {
@@ -380,22 +374,21 @@ class Consumable extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          if ($DB->result($result,0,0)!=0) {
-            if (!$show_old&&$canedit) {
-               echo "<form method='post' action='".
-                      $CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
-               echo "<input type='hidden' name='tID' value=\"$tID\">\n";
+            if (!$show_old && $canedit) {
+               echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
+               echo "<input type='hidden' name='tID' value='$tID'>\n";
             }
             echo "<br><div class='center'><table class='tab_cadre_fixe'>";
             if (!$show_old) {
                echo "<tr><th colspan='7'>";
-               echo self::getCount($tID,-1);
+               echo self::getCount($tID, -1);
                echo "</th></tr>";
             } else { // Old
                echo "<tr><th colspan='8'>";
                echo $LANG['consumables'][35];
                echo "</th></tr>";
             }
-            $i=0;
+            $i = 0;
             echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
             echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
 
@@ -418,48 +411,47 @@ class Consumable extends CommonDBTM {
                echo "<th>&nbsp;</th>";
             }
             echo "</tr>";
+
          } else {
             echo "<br>";
-            echo "<div class='center'><strong>".$LANG['consumables'][7]."</strong></div>";
+            echo "<div class='center b'>".$LANG['consumables'][7]."</div>";
             return;
          }
       }
 
-      $where="";
-      $leftjoin="";
-      $addselect="";
+      $where     = "";
+      $leftjoin  = "";
+      $addselect = "";
       if (!$show_old) { // NEW
-         $where= " AND `date_out` IS NULL
+         $where = " AND `date_out` IS NULL
                   ORDER BY `date_in`, `id`";
       } else { //OLD
-         $where= " AND `date_out` IS NOT NULL
+         $where = " AND `date_out` IS NOT NULL
                   ORDER BY `date_out` DESC,
                            `date_in`,
                            `id`";
-         $leftjoin=" LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_consumables`.`users_id`) ";
-         $addselect= ", `glpi_users`.`realname` AS REALNAME,
+         $leftjoin  = " LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_consumables`.`users_id`) ";
+         $addselect = ", `glpi_users`.`realname` AS REALNAME,
                         `glpi_users`.`firstname` AS FIRSTNAME,
                         `glpi_users`.`name` AS USERNAME ";
       }
-      $query = "SELECT `glpi_consumables`.* $addselect
-                FROM `glpi_consumables` $leftjoin
-                WHERE (`consumableitems_id` = '$tID') $where";
+      $query = "SELECT `glpi_consumables`.*
+                       $addselect
+                FROM `glpi_consumables`
+                $leftjoin
+                WHERE `consumableitems_id` = '$tID'
+                      $where";
 
       if ($result = $DB->query($query)) {
-         $number=$DB->numrows($result);
+         $number = $DB->numrows($result);
          while ($data=$DB->fetch_array($result)) {
-            $date_in=convDate($data["date_in"]);
-            $date_out=convDate($data["date_out"]);
+            $date_in  = convDate($data["date_in"]);
+            $date_out = convDate($data["date_out"]);
 
-            echo "<tr class='tab_bg_1'><td class='center'>";
-            echo $data["id"];
-            echo "</td><td class='center'>";
-            echo self::getStatus($data["id"]);
-            echo "</td><td class='center'>";
-            echo $date_in;
-            echo "</td><td class='center'>";
-            echo $date_out;
-            echo "</td>";
+            echo "<tr class='tab_bg_1'><td class='center'>".$data["id"]."</td>";
+            echo "<td class='center'>".self::getStatus($data["id"])."</td>";
+            echo "<td class='center'>".$date_in."</td>";
+            echo "<td class='center'>".$date_out."</td>";
 
             if ($show_old) {
                echo "<td class='center'>";
@@ -474,7 +466,7 @@ class Consumable extends CommonDBTM {
                echo "</td>";
             }
             echo "<td class='center'>";
-            Infocom::showDisplayLink('Consumable',$data["id"],1);
+            Infocom::showDisplayLink('Consumable', $data["id"],1);
             echo "</td>";
 
             if (!$show_old && $canedit) {
@@ -502,12 +494,13 @@ class Consumable extends CommonDBTM {
       }
    }
 
+
    /**
     * Show the usage summary of consumables by user
     *
     **/
    static function showSummary(){
-      global $DB,$LANG;
+      global $DB, $LANG;
 
       if (!haveRight("consumable","r")) {
          return false;
@@ -517,52 +510,54 @@ class Consumable extends CommonDBTM {
                 FROM `glpi_consumables`
                 WHERE `date_out` IS NOT NULL
                       AND `consumableitems_id` IN (SELECT `id`
-                                                    FROM `glpi_consumableitems`
-                                                    ".getEntitiesRestrictRequest(
-                                                    "WHERE","glpi_consumableitems").")
+                                                   FROM `glpi_consumableitems`
+                                                   ".getEntitiesRestrictRequest("WHERE",
+                                                                           "glpi_consumableitems").")
                 GROUP BY `users_id`, `consumableitems_id`";
-      $used=array();
+      $used = array();
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_array($result)) {
-               $used[$data["users_id"]][$data["consumableitems_id"]]=$data["COUNT"];
+               $used[$data["users_id"]][$data["consumableitems_id"]] = $data["COUNT"];
             }
          }
       }
       $query = "SELECT COUNT(*) AS COUNT, `consumableitems_id`
                 FROM `glpi_consumables`
                 WHERE `date_out` IS NULL
-                  AND `consumableitems_id` IN (SELECT `id`
-                                               FROM `glpi_consumableitems`
-                                                ".getEntitiesRestrictRequest("WHERE","glpi_consumableitems").")
+                      AND `consumableitems_id` IN (SELECT `id`
+                                                   FROM `glpi_consumableitems`
+                                                   ".getEntitiesRestrictRequest("WHERE",
+                                                                           "glpi_consumableitems").")
                 GROUP BY `consumableitems_id`";
-      $new=array();
+      $new = array();
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_array($result)) {
-               $new[$data["consumableitems_id"]]=$data["COUNT"];
+               $new[$data["consumableitems_id"]] = $data["COUNT"];
             }
          }
       }
 
-      $types=array();
-      $query="SELECT *
-              FROM `glpi_consumableitems`
-              ".getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
+      $types = array();
+      $query = "SELECT *
+                FROM `glpi_consumableitems`
+                ".getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
+
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_array($result)) {
-               $types[$data["id"]]=$data["name"];
+               $types[$data["id"]] = $data["name"];
             }
          }
       }
       asort($types);
-      $total=array();
+      $total = array();
       if (count($types)>0) {
          // Produce headline
-         echo "<div class='center'><table  class='tab_cadrehov'><tr>";
+         echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
          // Type
          echo "<th>";;
@@ -570,50 +565,51 @@ class Consumable extends CommonDBTM {
 
          foreach ($types as $key => $type) {
             echo "<th>$type</th>";
-            $total[$key]=0;
+            $total[$key] = 0;
          }
          echo "<th>".$LANG['common'][33]."</th>";
          echo "</tr>";
 
          // new
-         echo "<tr class='tab_bg_2'><td><strong>".$LANG['consumables'][1]."</strong></td>";
-         $tot=0;
+         echo "<tr class='tab_bg_2'><td class='b'>".$LANG['consumables'][1]."</td>";
+         $tot = 0;
          foreach ($types as $id_type => $type) {
             if (!isset($new[$id_type])) {
-               $new[$id_type]=0;
+               $new[$id_type] = 0;
             }
             echo "<td class='center'>".$new[$id_type]."</td>";
-            $total[$id_type]+=$new[$id_type];
-            $tot+=$new[$id_type];
+            $total[$id_type] += $new[$id_type];
+            $tot += $new[$id_type];
          }
          echo "<td class='center'>".$tot."</td>";
          echo "</tr>";
 
          foreach ($used as $users_id => $val) {
             echo "<tr class='tab_bg_2'><td>".getUserName($users_id)."</td>";
-            $tot=0;
+            $tot = 0;
             foreach ($types as $id_type => $type) {
                if (!isset($val[$id_type])) {
-                  $val[$id_type]=0;
+                  $val[$id_type] = 0;
                }
                echo "<td class='center'>".$val[$id_type]."</td>";
-               $total[$id_type]+=$val[$id_type];
-               $tot+=$val[$id_type];
+               $total[$id_type] += $val[$id_type];
+               $tot += $val[$id_type];
             }
          echo "<td class='center'>".$tot."</td>";
          echo "</tr>";
          }
-         echo "<tr class='tab_bg_1'><td><strong>".$LANG['common'][33]."</strong></td>";
-         $tot=0;
+         echo "<tr class='tab_bg_1'><td class='b'>".$LANG['common'][33]."</td>";
+         $tot = 0;
          foreach ($types as $id_type => $type) {
-            $tot+=$total[$id_type];
+            $tot += $total[$id_type];
             echo "<td class='center'>".$total[$id_type]."</td>";
          }
          echo "<td class='center'>".$tot."</td>";
          echo "</tr>";
          echo "</table></div>";
+
       } else {
-         echo "<div class='center'><strong>".$LANG['consumables'][7]."</strong></div>";
+         echo "<div class='center b'>".$LANG['consumables'][7]."</div>";
       }
    }
 }
