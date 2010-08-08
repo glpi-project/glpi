@@ -98,18 +98,17 @@ if (isset($_POST["add"])) {
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 }
 
-if (isset($_GET["id"]) && $_GET["id"]>0) {
+if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+   helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
+} else {
+   commonHeader($LANG['common'][56],'',"maintain","ticket");
+}
 
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
-   } else {
-      commonHeader($LANG['common'][56],'',"maintain","ticket");
-   }
+if (isset($_GET["id"]) && $_GET["id"]>0) {
 
    $track->showForm($_GET["id"]);
 
 } else {
-   commonHeader($LANG['Menu'][31],'',"maintain","ticket");
    // Set default value...
    $values = array('users_id'             => getLoginUserID(),
                    'groups_id'            => 0,
