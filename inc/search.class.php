@@ -3937,7 +3937,7 @@ class Search {
    *
    * @param $itemtype item type to manage
    * @param $usesession Use datas save in session
-   * @param $forcebookmark //TODO not documented
+   * @param $forcebookmark force trying to load parameters from default bookmark : used for global search
 
    * @return nothing
    */
