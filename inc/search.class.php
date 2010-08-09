@@ -884,7 +884,7 @@ class Search {
             }
             if ($itemtype == 'ReservationItem' && $output_type == HTML_OUTPUT) {
                if (haveRight("reservation_central","w")) {
-                  echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
+                  echo Search::showHeaderItem($output_type, $LANG['reservation'][4], $header_num);
                   echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
                }
                echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);

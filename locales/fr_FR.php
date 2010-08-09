@@ -1537,6 +1537,7 @@ $LANG['reports'][64]="Date de résolution";
 $LANG['reservation'][1]="Matériel réservable";
 $LANG['reservation'][2]="Matériel temporairement indisponible";
 $LANG['reservation'][3]="Rendre indisponible";
+$LANG['reservation'][4]="Disponible";
 $LANG['reservation'][5]="Rendre disponible";
 $LANG['reservation'][6]="Interdire les réservations";
 $LANG['reservation'][7]="Autoriser les réservations";
