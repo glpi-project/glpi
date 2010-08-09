@@ -776,7 +776,7 @@ $LANG['joblist'][32]="Risolta";
 $LANG['joblist'][33]="Chiuso"; 
 $LANG['joblist'][34]="Non risolta"; 
 $LANG['joblist'][35]="Non chiusa"; 
-$LANG['joblist'][36]="Status value in database"; 
+$LANG['joblist'][36]="Valore dello stato nel database"; 
 
 $LANG['jobresolution'][1]="Soluzione"; 
 $LANG['jobresolution'][3]="Soluzione approvata"; 
@@ -1048,7 +1048,7 @@ $LANG['mailing'][143]="Convalida";
 $LANG['mailing'][144]="Storico"; 
 $LANG['mailing'][145]="Lista dei valori"; 
 $LANG['mailing'][146]="Valore singolo"; 
-$LANG['mailing'][147]="Possible value(s)"; 
+$LANG['mailing'][147]="Valori accettabili"; 
 
 $LANG['Menu'][0]="Computer"; 
 $LANG['Menu'][1]="Apparati di rete"; 
@@ -1644,7 +1644,7 @@ $LANG['setup'][192]="Attivato";
 $LANG['setup'][193]="Campo per la registrazione della login nell'array _SERVER"; 
 $LANG['setup'][194]="Ottieni informazioni aggiuntive da directory LDAP"; 
 $LANG['setup'][195]="Conserva stato"; 
-$LANG['setup'][196]="Clear status"; 
+$LANG['setup'][196]="Cancella lo stato"; 
 $LANG['setup'][197]="Prende stato dal computer"; 
 $LANG['setup'][198]="Prende stato"; 
 $LANG['setup'][199]="Eliminare il dominio di login sotto forma di login@dominio"; 

@@ -776,7 +776,7 @@ $LANG['joblist'][32]="Вирішена";
 $LANG['joblist'][33]="Закрита"; 
 $LANG['joblist'][34]="Не вирішена"; 
 $LANG['joblist'][35]="Не закрита"; 
-$LANG['joblist'][36]="Status value in database"; 
+$LANG['joblist'][36]="Статус значення в базі даних"; 
 
 $LANG['jobresolution'][1]="Вирішення"; 
 $LANG['jobresolution'][3]="Схвалене рішення"; 
@@ -1048,7 +1048,7 @@ $LANG['mailing'][143]="Затвердження";
 $LANG['mailing'][144]="Історія"; 
 $LANG['mailing'][145]="Список значень"; 
 $LANG['mailing'][146]="Одне значення"; 
-$LANG['mailing'][147]="Possible value(s)"; 
+$LANG['mailing'][147]="Можливе(і) значення"; 
 
 $LANG['Menu'][0]="Комп’ютери"; 
 $LANG['Menu'][1]="Мережі"; 
@@ -1644,7 +1644,7 @@ $LANG['setup'][192]="Активізований";
 $LANG['setup'][193]="Поле, яке містить логін в масиві _SERVER"; 
 $LANG['setup'][194]="Додаткова інформація, отримувана з LDAP каталога"; 
 $LANG['setup'][195]="Зберегти статус"; 
-$LANG['setup'][196]="Clear status"; 
+$LANG['setup'][196]="Очистити статус"; 
 $LANG['setup'][197]="Копіювати статус комп’ютера"; 
 $LANG['setup'][198]="Встановити статус"; 
 $LANG['setup'][199]="Прибирати ім’я домена у логіні формату login@domain"; 
