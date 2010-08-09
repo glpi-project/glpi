@@ -87,7 +87,6 @@ class ComputerDisk extends CommonDBChild {
    * @param $options array
    *     - target for the Form
    *     - computers_id ID of the computer for add process
-   *     - withcomputertemplate withtemplate of the computer
    *
    *@return true if displayed  false if item not found or not right to display
    **/
@@ -103,10 +102,11 @@ class ComputerDisk extends CommonDBChild {
       if (!haveRight("computer","w")) {
         return false;
       }
+      $comp=new Computer();
       if ($ID > 0) {
          $this->check($ID,'r');
+         $comp->getFromDB($this->fields['computers_id']);
       } else {
-         $comp=new Computer();
          $comp->getFromDB($computers_id);
          // Create item
          $input=array('entities_id'=>$comp->getEntityID());
@@ -124,9 +124,7 @@ class ComputerDisk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][25]."&nbsp;:</td>";
       echo "<td colspan='3'>";
-      echo "<a href='computer.form.php?id=".$computers_id."&amp;withtemplate=".
-               $options['withcomputertemplate']."'>".
-             Dropdown::getDropdownName("glpi_computers",$computers_id)."</a>";
+      echo $comp->getLink();
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

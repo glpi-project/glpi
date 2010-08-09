@@ -44,10 +44,6 @@ if (!isset($_GET["computers_id"])) {
    $_GET["computers_id"] = "";
 }
 
-if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
-}
-
 $disk = new ComputerDisk();
 if (isset($_POST["add"])) {
    $disk->check(-1,'w',$_POST);
@@ -81,8 +77,7 @@ if (isset($_POST["add"])) {
 
 } else {
    commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
-   $disk->showForm($_GET["id"], array('computers_id' => $_GET["computers_id"],
-                                      'withcomputertemplate' => $_GET["withtemplate"]));
+   $disk->showForm($_GET["id"], array('computers_id' => $_GET["computers_id"]));
    commonFooter();
 }
 
