@@ -173,9 +173,13 @@ class RuleCriteria extends CommonDBChild {
          return true;
       }
 
-      // Trim for remove keyboard errors
       // Input are slashed protected, not output.
-      $field=stripslashes(trim($field));
+      if (is_array($field)) {
+         $field = stripslashes_deep($field);
+      } else {
+         // Trim for remove keyboard errors
+         $field = stripslashes(trim($field));
+      }
       $pattern=trim($pattern);
       if ($condition != Rule::REGEX_MATCH && $condition != Rule::REGEX_NOT_MATCH) {
          //Perform comparison with fields in lower case
@@ -185,7 +189,13 @@ class RuleCriteria extends CommonDBChild {
 
       switch ($condition) {
          case Rule::PATTERN_IS :
-            if ($field == $pattern) {
+            if (is_array($field)) {
+               // Special case (used only by UNIQUE_PROFILE, for now)
+               if (in_array($pattern, $field)) {
+                  $criterias_results[$criteria] = $pattern;
+                  return true;
+               }
+            } else if ($field == $pattern) {
                $criterias_results[$criteria] = $pattern;
                return true;
             }

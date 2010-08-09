@@ -84,7 +84,7 @@ class RuleMailCollectorCollection extends RuleCollection {
          $profiles = Profile_User::getForUser($input['users_id']);
          foreach ($profiles as $profile) {
             if (Profile_User::haveUniqueRight($input['users_id'], $profile['profiles_id'])) {
-               $input['UNIQUE_PROFILE'] = $profile['profiles_id'];
+               $input['UNIQUE_PROFILE'][$profile['profiles_id']] = $profile['profiles_id'];
             }
          }
       }
