@@ -87,6 +87,7 @@ class ComputerDisk extends CommonDBChild {
    * @param $options array
    *     - target for the Form
    *     - computers_id ID of the computer for add process
+   *     - withcomputertemplate withtemplate of the computer
    *
    *@return true if displayed  false if item not found or not right to display
    **/
@@ -123,7 +124,8 @@ class ComputerDisk extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][25]."&nbsp;:</td>";
       echo "<td colspan='3'>";
-      echo "<a href='computer.form.php?id=".$computers_id."'>".
+      echo "<a href='computer.form.php?id=".$computers_id."&amp;withtemplate=".
+               $options['withcomputertemplate']."'>".
              Dropdown::getDropdownName("glpi_computers",$computers_id)."</a>";
       echo "</td></tr>";
 
