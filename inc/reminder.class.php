@@ -245,7 +245,10 @@ class Reminder extends CommonDBTM {
       }
 
       if (!$ID || !$this->fields["is_planned"]) {
-         if ($canedit) {
+         if (haveRight("show_planning","1")
+             || haveRight("show_group_planning","1")
+             || haveRight("show_all_planning","1")) {
+  //       if ($canedit) {
             echo "<div id='plan' onClick='showPlan()'>\n";
             echo "<span class='showplan'>".$LANG['reminder'][12]."</span>";
          }
