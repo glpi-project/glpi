@@ -946,7 +946,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'task.planning.status'         => $LANG['joblist'][0],
                      'followup.date'                => $LANG['reports'][60],
                      'followup.isprivate'           => $LANG['common'][77],
-                     'followup.author'              => $LANG['job'][4],
+                     'followup.author'              => $LANG['common'][37],
                      'followup.description'         => $LANG['joblist'][6],
                      'followup.requesttype'         => $LANG['job'][44],
                      'ticket.numberoffollowups'     => $LANG['mailing'][4],
