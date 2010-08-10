@@ -555,7 +555,7 @@ class Contract extends CommonDBTM {
     *
     **/
    function showSuppliers() {
-      global $DB, $CFG_GLPI, $LANG,;
+      global $DB, $CFG_GLPI, $LANG;
 
       $instID = $this->fields['id'];
 
@@ -1266,7 +1266,7 @@ class Contract extends CommonDBTM {
     */
    static function dropdownAlert($myname, $value) {
       global $LANG;
- 
+
       $tmp[0] = DROPDOWN_EMPTY_VALUE;
       $tmp[pow(2, Alert::END)] = $LANG['buttons'][32];
       $tmp[pow(2, Alert::NOTICE)] = $LANG['financial'][10];
