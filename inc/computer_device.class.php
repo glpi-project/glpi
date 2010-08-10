@@ -41,6 +41,8 @@ if (!defined('GLPI_ROOT')){
 // Relation between Computer and devices
 class Computer_Device extends CommonDBTM {
 
+   public $auto_message_on_action = false;
+
    function __construct($itemtype='') {
 
       if (!empty($itemtype)) {

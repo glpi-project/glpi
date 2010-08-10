@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')){
 
 class Calendar_Holiday extends CommonDBRelation {
 
+   public $auto_message_on_action = false;
+
    // From CommonDBRelation
    public $itemtype_1 = 'Calendar';
    public $items_id_1 = 'calendars_id';
