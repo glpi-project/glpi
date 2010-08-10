@@ -221,7 +221,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<br><br>";
          if ($ID>0) {
             echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
-            echo "<input type='reset' class='submit' value='".$LANG['buttons'][16].">";
+            echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'>";
          } else {
             echo "<input type='hidden' name='users_id' value=\"".getLoginUserID()."\">";
             echo "<input type='submit' class='submit' name='add' value='".$LANG['buttons'][8]."'>";
