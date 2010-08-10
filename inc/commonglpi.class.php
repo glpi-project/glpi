@@ -40,6 +40,7 @@ class CommonGLPI {
    /// GLPI Item type cache : set dynamically calling getType
 
    protected $type = -1;
+   protected $displayliste = true;
 
    /**
    * Return the localized name of the current Type
@@ -110,7 +111,7 @@ class CommonGLPI {
             $extraparam .= "&$key=$val";
          }
       }
-      if (empty($withtemplate) && $ID && $this->getType()) {
+      if (empty($withtemplate) && $ID && $this->getType() && $this->displayliste) {
          $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
          $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
          $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];

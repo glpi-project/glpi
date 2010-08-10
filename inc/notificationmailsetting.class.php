@@ -44,6 +44,8 @@ class NotificationMailSetting extends CommonDBTM {
 
    var $table = 'glpi_configs';
 
+   protected $displayliste = false;
+
    static function getTypeName() {
       global $LANG;
 
@@ -136,7 +138,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo " </td></tr>";
          if (!function_exists('mail')) {
              echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-             echo "<span class='red'>" . $LANG['setup'][217] . "&nbsp;:</span>". 
+             echo "<span class='red'>" . $LANG['setup'][217] . "&nbsp;:</span>".
                   $LANG['setup'][218] . "</td></tr>";
          }
 
