@@ -52,7 +52,7 @@ $LANG['bookmark'][1] = "marque-page";
 
 $LANG['bookmark'][3] = "Vous n'avez pas encore enregistré de marque-pages.";
 $LANG['bookmark'][4] = "Nouveau marque-page";
-$LANG['bookmark'][5] = "Marque-page publics";
+$LANG['bookmark'][5] = "Marque-pages publics";
 $LANG['bookmark'][6] = "Vue par défaut";
 
 
@@ -121,12 +121,12 @@ $LANG['calendar'][0] = "AAAA-MM-JJ";
 $LANG['calendar'][1] = "JJ-MM-AAAA";
 $LANG['calendar'][2] = "MM-JJ-AAAA";
 $LANG['calendar'][3] = "Récurrent";
-$LANG['calendar'][5] = "Plage Horaire";
+$LANG['calendar'][5] = "Plage horaire";
 $LANG['calendar'][6] = "Ajouter une plage horaire";
 $LANG['calendar'][7] = "Jour";
 $LANG['calendar'][8] = "Impossible d'ajouter une plage chevauchant une plage existante";
 $LANG['calendar'][9] = "Hérité de l'entité parente";
-$LANG['calendar'][10] = "Plages Horaires";
+$LANG['calendar'][10] = "Plages horaires";
 $LANG['calendar'][11] = "Périodes de fermeture";
 $LANG['calendar'][12] = "jour(s)";
 $LANG['calendar'][13] = "semaine(s)";
@@ -206,13 +206,13 @@ $LANG['cartridges'][42] = "Pages imprimées en moyenne";
 
 $LANG['central'][2]  = "Derniers";
 
-$LANG['central'][4]  = "Pas d'événement";
+$LANG['central'][4]  = "Pas d'évènement";
 $LANG['central'][5]  = "Accueil";
 $LANG['central'][6]  = "Déconnexion";
 $LANG['central'][7]  = "Aide";
 $LANG['central'][8]  = "Ajouts";
 $LANG['central'][9]  = "Vos tickets en cours";
-$LANG['central'][10] ="Les nouveaux tickets";
+$LANG['central'][10] = "Les nouveaux tickets";
 
 $LANG['central'][12] = "Vue personnelle";
 $LANG['central'][13] = "Vue globale";
@@ -266,8 +266,8 @@ $LANG['common'][36] = "Catégorie";
 $LANG['common'][37] = "Rédacteur";
 $LANG['common'][38] = "Passer en gestion unitaire";
 $LANG['common'][39] = "Duplique l'élément autant de fois qu'il y a de connexions";
-$LANG['common'][40] = "Êtes-vous sûr de vouloir passer en gestion unitaire cet élément ?";
-$LANG['common'][41] = "Alertes par email";
+$LANG['common'][40] = "Êtes-vous sûr de vouloir passer cet élément en gestion unitaire ?";
+$LANG['common'][41] = "Alertes par courriel";
 $LANG['common'][42] = "Téléphone mobile";
 $LANG['common'][43] = "Prénom";
 $LANG['common'][44] = "Valeur(s) par défaut";
@@ -396,7 +396,7 @@ $LANG['consumables'][26] = "Date utilisation";
 $LANG['consumables'][32] = "Donner";
 
 $LANG['consumables'][35] = "Consommables utilisés";
-$LANG['consumables'][36] = "Lieu Stockage";
+$LANG['consumables'][36] = "Lieu de stockage";
 $LANG['consumables'][37] = "Réintégrer dans le stock";
 $LANG['consumables'][38] = "Seuil d'alerte";
 
@@ -406,19 +406,19 @@ $LANG['crontask'][0]  = "Actions automatiques";
 $LANG['crontask'][1]  = "Synchronisation des matériels depuis OCSNG";
 $LANG['crontask'][2]  = "Envoi des alertes sur les cartouches";
 $LANG['crontask'][3]  = "Envoi des alertes sur les consommables";
-$LANG['crontask'][4]  = "Envoi des alertes sur expiration des licences";
+$LANG['crontask'][4]  = "Envoi des alertes sur les expirations de licences";
 $LANG['crontask'][5]  = "Envoi des alertes sur les contrats";
 $LANG['crontask'][6]  = "Envoi des alertes sur les informations financières";
 $LANG['crontask'][7]  = "Nettoyage des journaux";
 $LANG['crontask'][8]  = "Optimisation de la base de données";
-$LANG['crontask'][9]  = "Récupération des messages (Collecteurs)";
+$LANG['crontask'][9]  = "Récupération des messages (collecteurs)";
 $LANG['crontask'][10] = "Vérification du réplicat MySQL";
 $LANG['crontask'][11] = "Vérification de la présence de mises à jour";
 $LANG['crontask'][12] = "Nettoyage des sessions expirées";
 $LANG['crontask'][13] = "Nettoyage des graphiques générés";
 $LANG['crontask'][14] = "Clôture automatique des tickets";
 $LANG['crontask'][15] = "Tickets non résolus";
-$LANG['crontask'][16]="Actions automatiques des SLAs";
+$LANG['crontask'][16] = "Actions automatiques des SLAs";
 
 // keep >12 free additionnal task
 $LANG['crontask'][31] = "Désactivée";
@@ -452,7 +452,7 @@ $LANG['crontask'][58] = "Nombre total";
 $LANG['crontask'][59] = "Vitesse moyenne";
 $LANG['crontask'][60] = "Verrou système";
 $LANG['crontask'][61] = "Plugin désactivé";
-$LANG['crontask'][62] = "Eléments";
+$LANG['crontask'][62] = "Éléments";
 
 
 $LANG['devices'][0]  = "Ajouter un nouveau composant";
@@ -527,12 +527,12 @@ $LANG['document'][22] = "Fichier courant";
 
 $LANG['document'][24] = "Suppression avec succès du fichier";
 $LANG['document'][25] = "Échec de la suppression du fichier";
-$LANG['document'][26] = "Le fichier est valide, et a été téléchargé avec succès.";
+$LANG['document'][26] = "Le fichier est valide et a été téléchargé avec succès.";
 $LANG['document'][27] = "Attaque par upload potentielle. Ou fichier trop volumineux. Impossible de déplacer le fichier temporaire.";
 
 $LANG['document'][29] = "Échec de la création du répertoire";
 $LANG['document'][30] = "Vérifiez que vous avez les droits";
-$LANG['document'][31] = "Répertoire de stockage des documents inexistant :";
+$LANG['document'][31] = "Répertoire de stockage des documents inexistants :";
 $LANG['document'][32] = "Type de fichier non autorisé";
 $LANG['document'][33] = "Lien Web";
 $LANG['document'][34] = "Création du répertoire";
@@ -638,7 +638,7 @@ $LANG['financial'][60]  = "en semaine";
 $LANG['financial'][61]  = "le samedi";
 $LANG['financial'][62]  = "dimanche et fêtes";
 
-$LANG['financial'][65]  = "Fournisseurs associés";
+$LANG['financial'][65]  = "Fournisseur(s) associé(s)";
 $LANG['financial'][66]  = "Contrat(s) associé(s)";
 
 $LANG['financial'][68]  = "Activer les informations financières";
@@ -730,7 +730,7 @@ $LANG['help'][51] = "Très bas";
 
 
 $LANG['install'][0]   = "Installation ou mise à jour de GLPI";
-$LANG['install'][1]   = "Choisissez 'Installation' pour  une nouvelle installation complète de GLPI.";
+$LANG['install'][1]   = "Choisissez 'Installation' pour une nouvelle installation complète de GLPI.";
 $LANG['install'][2]   = "Choisissez 'Mise à jour' pour mettre à jour votre version de GLPI à partir d'une version antérieure";
 $LANG['install'][3]   = "Installation";
 $LANG['install'][4]   = "Mise à jour";
@@ -763,10 +763,10 @@ $LANG['install'][30]  = "Serveur MySQL";
 $LANG['install'][31]  = "Utilisateur MySQL";
 $LANG['install'][32]  = "Mot de passe MySQL";
 
-$LANG['install'][34]  = "Test de la connexion à la base de données";
+$LANG['install'][34]  = "Test de connexion à la base de données";
 $LANG['install'][35]  = "Impossible de se connecter à la base de données";
 $LANG['install'][36]  = "Le serveur a répondu";
-$LANG['install'][37]  = "Le champs serveur MySQL  ou/et le champ utilisateur MySQL est vide";
+$LANG['install'][37]  = "Le champs serveur MySQL ou/et le champ utilisateur MySQL est vide";
 $LANG['install'][38]  = "Veuillez sélectionner une base de données :";
 $LANG['install'][39]  = "Créer une nouvelle base ou utiliser une base existante :";
 $LANG['install'][40]  = "Veuillez sélectionner la base de données à mettre à jour :";
@@ -796,7 +796,7 @@ $LANG['install'][65]  = "Test sur l'extension magic_quotes_sybase";
 $LANG['install'][66]  = "GLPI ne peut pas fonctionner avec l'option magic_quotes_sybase ; Veuillez désactiver cette option et réessayer";
 $LANG['install'][67]  = "L'option magic_quotes_sybase n'est pas utilisée par votre serveur - Parfait !";
 $LANG['install'][68]  = "Test sur le démarrage automatique des sessions";
-$LANG['install'][69]  = "session.auto_start est activé. Reportez vous au fichier .htaccess à la racine de GLPI pour plus d'informations.";
+$LANG['install'][69]  = "session.auto_start est activé. Reportez-vous au fichier .htaccess à la racine de GLPI pour plus d'informations.";
 $LANG['install'][70]  = "Impossible de créer le fichier de connexion à la base de données, vérifiez les droits sur les fichiers";
 $LANG['install'][71]  = "Test de l'extension MySQL.";
 $LANG['install'][72]  = "Vous devez compiler votre php avec l'extension MySQL.";
@@ -843,11 +843,11 @@ $LANG['job'][9]  = "Suivi";
 $LANG['job'][11] = "Description de la demande ou de l'incident";
 $LANG['job'][12] = "Pas de suivi pour ce ticket.";
 $LANG['job'][13] = "Nouveau ticket";
-$LANG['job'][14]="Ouverts";
-$LANG['job'][15]="Résolus";
-$LANG['job'][16]="Clos";
+$LANG['job'][14] = "Ouverts";
+$LANG['job'][15] = "Résolus";
+$LANG['job'][16] = "Clos";
 
-$LANG['job'][19] = "Suivi par email";
+$LANG['job'][19] = "Suivi par courriel";
 $LANG['job'][20] = "Durée totale";
 $LANG['job'][21] = "Heure(s)";
 $LANG['job'][22] = "Minute(s)";
@@ -903,7 +903,7 @@ $LANG['joblist'][19] = "En cours (Planifié)";
 $LANG['joblist'][21] = "En cours";
 
 $LANG['joblist'][26] = "En attente";
-$LANG['joblist'][27] = "Email pour le suivi";
+$LANG['joblist'][27] = "Courriel pour le suivi";
 $LANG['joblist'][28] = "Tickets sur les éléments liés";
 $LANG['joblist'][29] = "Urgence";
 $LANG['joblist'][30] = "Impact";
@@ -935,7 +935,7 @@ $LANG['knowbase'][13] = "Nom de la catégorie";
 $LANG['knowbase'][14] = "Sujet";
 $LANG['knowbase'][15] = "Contenu";
 
-$LANG['knowbase'][24] = "Accéder à la Foire aux questions";
+$LANG['knowbase'][24] = "Accéder à la Foire Aux Questions";
 
 $LANG['knowbase'][26] = "Vues";
 $LANG['knowbase'][27] = "Le";
@@ -1196,7 +1196,7 @@ $LANG['mailing'][115] = "Corps de l'email";
 $LANG['mailing'][116] = "HTML";
 $LANG['mailing'][117] = "texte";
 $LANG['mailing'][118] = "Email";
-$LANG['mailing'][119] = "Evènement";
+$LANG['mailing'][119] = "Évènement";
 $LANG['mailing'][120] = "Mode de notification";
 $LANG['mailing'][121] = "Destinataires";
 $LANG['mailing'][122] = "Tâche(s) déjà effectuée(s)";
