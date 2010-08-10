@@ -57,9 +57,9 @@ class Computer_Item extends CommonDBRelation{
     */
    static function countForItem($itemtype, $items_id) {
       return countElementsInTable('glpi_computers_items',
-                                  "`itemtype`='$itemtype'
-                                       AND `items_id`='$items_id'");
+                                  "`itemtype`='$itemtype' AND `items_id`='$items_id'");
    }
+
 
    /**
     * Check right on an item - overloaded to check is_global
@@ -70,7 +70,7 @@ class Computer_Item extends CommonDBRelation{
     *
     * @return boolean
    **/
-   function can($ID,$right,&$input=NULL) {
+   function can($ID, $right, &$input=NULL) {
 
       if ($ID<0) {
          // Ajout
@@ -89,7 +89,6 @@ class Computer_Item extends CommonDBRelation{
       }
       return parent::can($ID,$right,$input);
    }
-
 
 
    /**
@@ -141,60 +140,69 @@ class Computer_Item extends CommonDBRelation{
                    WHERE `glpi_computers_items`.`items_id` = '".$input['items_id']."'
                          AND `glpi_computers_items`.`itemtype` = '".$input['itemtype']."'";
          $result = $DB->query($query);
+
          while ($data=$DB->fetch_assoc($result)) {
             $temp = clone $this;
             $temp->delete($data);
             if ($ocstab) {
-               OcsServer::deleteInOcsArray($data["computers_id"],$data["id"],$ocstab);
+               OcsServer::deleteInOcsArray($data["computers_id"], $data["id"],$ocstab);
             }
          }
 
          // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
-         $comp=new Computer();
+         $comp = new Computer();
          if ($comp->getFromDB($input['computers_id'])) {
             $updates = array();
 
             if ($CFG_GLPI["is_location_autoupdate"]
                && $comp->fields['locations_id'] != $item->getField('locations_id')){
-               $updates[]="locations_id";
-               $item->fields['locations_id']=addslashes($comp->fields['locations_id']);
-               addMessageAfterRedirect($LANG['computers'][48],true);
+
+               $updates[] = "locations_id";
+               $item->fields['locations_id'] = addslashes($comp->fields['locations_id']);
+               addMessageAfterRedirect($LANG['computers'][48], true);
             }
             if (($CFG_GLPI["is_user_autoupdate"]
-               && $comp->fields['users_id'] != $item->getField('users_id'))
-               || ($CFG_GLPI["is_group_autoupdate"]
-                  && $comp->fields['groups_id'] != $item->getField('groups_id'))) {
+                 && $comp->fields['users_id'] != $item->getField('users_id'))
+                || ($CFG_GLPI["is_group_autoupdate"]
+                    && $comp->fields['groups_id'] != $item->getField('groups_id'))) {
+
                if ($CFG_GLPI["is_user_autoupdate"]) {
-                  $updates[]="users_id";
-                  $item->fields['users_id']=$comp->fields['users_id'];
+                  $updates[] = "users_id";
+                  $item->fields['users_id'] = $comp->fields['users_id'];
                }
                if ($CFG_GLPI["is_group_autoupdate"]) {
-                  $updates[]="groups_id";
-                  $item->fields['groups_id']=$comp->fields['groups_id'];
+                  $updates[] = "groups_id";
+                  $item->fields['groups_id'] = $comp->fields['groups_id'];
                }
                addMessageAfterRedirect($LANG['computers'][50],true);
             }
 
             if ($CFG_GLPI["is_contact_autoupdate"]
-               && ($comp->fields['contact'] != $item->getField('contact')
-                  || $comp->fields['contact_num'] != $item->getField('contact_num'))) {
-               $updates[]="contact";
-               $updates[]="contact_num";
-               $item->fields['contact']=addslashes($comp->fields['contact']);
-               $item->fields['contact_num']=addslashes($comp->fields['contact_num']);
-               addMessageAfterRedirect($LANG['computers'][49],true);
+                && ($comp->fields['contact'] != $item->getField('contact')
+                    || $comp->fields['contact_num'] != $item->getField('contact_num'))) {
+
+               $updates[] = "contact";
+               $updates[] = "contact_num";
+               $item->fields['contact']     = addslashes($comp->fields['contact']);
+               $item->fields['contact_num'] = addslashes($comp->fields['contact_num']);
+               addMessageAfterRedirect($LANG['computers'][49], true);
             }
+
             if ($CFG_GLPI["state_autoupdate_mode"]<0
-               && $comp->fields['states_id'] != $item->getField('states_id')) {
-               $updates[]="states_id";
-               $item->fields['states_id']=$comp->fields['states_id'];
-               addMessageAfterRedirect($LANG['computers'][56],true);
+                && $comp->fields['states_id'] != $item->getField('states_id')) {
+
+               $updates[] = "states_id";
+               $item->fields['states_id'] = $comp->fields['states_id'];
+               addMessageAfterRedirect($LANG['computers'][56], true);
             }
+
             if ($CFG_GLPI["state_autoupdate_mode"]>0
-               && $item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"]) {
-               $updates[]="states_id";
-               $item->fields['states_id']=$CFG_GLPI["state_autoupdate_mode"];
+                && $item->getField('states_id') != $CFG_GLPI["state_autoupdate_mode"]) {
+
+               $updates[] = "states_id";
+               $item->fields['states_id'] = $CFG_GLPI["state_autoupdate_mode"];
             }
+
             if (count($updates)) {
                $item->updateInDB($updates);
             }
@@ -202,6 +210,7 @@ class Computer_Item extends CommonDBRelation{
       }
       return $input;
    }
+
 
    /**
     * Actions done when item is deleted from the database
@@ -219,70 +228,78 @@ class Computer_Item extends CommonDBRelation{
 
          //Get device fields
          if (class_exists($this->fields['itemtype'])) {
-            $device=new $this->fields['itemtype']();
+            $device = new $this->fields['itemtype']();
             if ($device->getFromDB($this->fields['items_id'])) {
 
                if (!$device->getField('is_global')) {
-                  $updates=array();
+                  $updates = array();
                   if ($CFG_GLPI["is_location_autoclean"] && $device->isField('locations_id')) {
-                     $updates[]="locations_id";
-                     $device->fields['locations_id']=0;
+                     $updates[] = "locations_id";
+                     $device->fields['locations_id'] = 0;
                   }
                   if ($CFG_GLPI["is_user_autoclean"] && $device->isField('users_id')) {
-                     $updates[]="users_id";
-                     $device->fields['users_id']=0;
+                     $updates[] = "users_id";
+                     $device->fields['users_id'] = 0;
                   }
                   if ($CFG_GLPI["is_group_autoclean"] && $device->isField('groups_id')) {
-                     $updates[]="groups_id";
-                     $device->fields['groups_id']=0;
+                     $updates[] = "groups_id";
+                     $device->fields['groups_id'] = 0;
                   }
                   if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact')) {
-                     $updates[]="contact";
-                     $device->fields['contact']="";
+                     $updates[] = "contact";
+                     $device->fields['contact'] = "";
                   }
                   if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact_num')) {
-                     $updates[]="contact_num";
-                     $device->fields['contact_num']="";
+                     $updates[] = "contact_num";
+                     $device->fields['contact_num'] = "";
                   }
                   if ($CFG_GLPI["state_autoclean_mode"]<0 && $device->isField('states_id')) {
-                     $updates[]="states_id";
-                     $device->fields['states_id']=0;
+                     $updates[] = "states_id";
+                     $device->fields['states_id'] = 0;
                   }
-                  if ($CFG_GLPI["state_autoclean_mode"]>0 && $device->isField('states_id')
-                     && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
-                     $updates[]="states_id";
-                     $device->fields['states_id']=$CFG_GLPI["state_autoclean_mode"];
+
+                  if ($CFG_GLPI["state_autoclean_mode"]>0
+                      && $device->isField('states_id')
+                      && $device->getField('states_id') != $CFG_GLPI["state_autoclean_mode"]) {
+
+                     $updates[] = "states_id";
+                     $device->fields['states_id'] = $CFG_GLPI["state_autoclean_mode"];
                   }
+
                   if (count($updates)) {
                      $device->updateInDB($updates);
                   }
                }
+
                if (isset($this->input['_ocsservers_id'])) {
                   $ocsservers_id = $this->input['_ocsservers_id'];
                } else {
                   $ocsservers_id = OcsServer::getByMachineID($this->fields['computers_id']);
                }
+
                if ($ocsservers_id>0) {
                   //Get OCS configuration
                   $ocs_config = OcsServer::getConfig($ocsservers_id);
 
                   //Get the management mode for this device
-                  $mode = OcsServer::getDevicesManagementMode($ocs_config, $this->fields['itemtype']);
+                  $mode = OcsServer::getDevicesManagementMode($ocs_config,
+                                                              $this->fields['itemtype']);
                   $decoConf= $ocs_config["deconnection_behavior"];
 
                   //Change status if :
                   // 1 : the management mode IS NOT global
                   // 2 : a deconnection's status have been defined
                   // 3 : unique with serial
-                  if($mode >= 2 && strlen($decoConf)>0) {
+                  if ($mode >= 2 && strlen($decoConf)>0) {
                      //Delete periph from glpi
-                     if($decoConf == "delete") {
-                        $tmp["id"]=$this->fields['items_id'];
+                     if ($decoConf == "delete") {
+                        $tmp["id"] = $this->fields['items_id'];
                         $device->delete($tmp);
+
                      //Put periph in trash
                      } else if ($decoConf == "trash") {
-                        $tmp["id"]=$this->fields['items_id'];
-                        $tmp["is_deleted"]=1;
+                        $tmp["id"] = $this->fields['items_id'];
+                        $tmp["is_deleted"] = 1;
                         $device->update($tmp);
                      }
                   }
@@ -293,30 +310,28 @@ class Computer_Item extends CommonDBRelation{
    }
 
 
-
    /**
    * Disconnect an item to its computer
    *
    * @param $item the Monitor/Phone/Peripheral/Printer
    *
    * @return boolean : action succeeded
-   *
    */
    function disconnectForItem(CommonDBTM $item) {
       global $DB;
 
       if ($item->getField('id')) {
          $query = "SELECT `id`
-                     FROM `glpi_computers_items`
-                     WHERE `itemtype` = '".$item->getType()."'
-                           AND `items_id` = '".$item->getField('id')."'";
+                   FROM `glpi_computers_items`
+                   WHERE `itemtype` = '".$item->getType()."'
+                         AND `items_id` = '".$item->getField('id')."'";
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 0) {
-            $ok=true;
+            $ok = true;
             while ($data = $DB->fetch_assoc($result)) {
                if ($this->can($data["id"],'w')) {
-                  $ok&=$this->delete($data);
+                  $ok &= $this->delete($data);
                }
             }
             return $ok;
@@ -324,6 +339,7 @@ class Computer_Item extends CommonDBRelation{
       }
       return false;
    }
+
 
    /**
    * Print the computers or template local connections form.
@@ -335,10 +351,9 @@ class Computer_Item extends CommonDBRelation{
    *@param $withtemplate=''  boolean : Template or basic item.
    *
    *@return Nothing (call to classes members)
-   *
    **/
    static function showForComputer($target, Computer $comp, $withtemplate='') {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       $items = array('Printer'    => $LANG['computers'][39],
                      'Monitor'    => $LANG['computers'][40],
@@ -346,7 +361,7 @@ class Computer_Item extends CommonDBRelation{
                      'Phone'      => $LANG['computers'][55]);
 
       $ID = $comp->fields['id'];
-      $canedit=$comp->can($ID,'w');
+      $canedit = $comp->can($ID,'w');
 
       foreach ($items as $itemtype => $title) {
          if (!class_exists($itemtype)) {
@@ -359,29 +374,29 @@ class Computer_Item extends CommonDBRelation{
       }
       if (count($items)){
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='".max(2,count($items))."'>".$LANG['connect'][0].":</th></tr>";
+         echo "<tr><th colspan='".max(2,count($items))."'>".$LANG['connect'][0]."&nbsp;:</th></tr>";
 
          echo "<tr>";
-         $header_displayed=0;
+         $header_displayed = 0;
          foreach ($items as $itemtype => $title) {
             if ($header_displayed==2) {
                break;
             }
-            echo "<th>".$title.":</th>";
+            echo "<th>".$title."&nbsp;:</th>";
             $header_displayed++;
          }
          echo "</tr>";
          echo "<tr class='tab_bg_1'>";
-         $items_displayed=0;
+         $items_displayed = 0;
          foreach ($items as $itemtype=>$title) {
             $used = array();
 
             if ($items_displayed==2) {
                echo "</tr><tr>";
-               $header_displayed=0;
+               $header_displayed = 0;
                foreach ($items as $tmp_title) {
                   if ($header_displayed>=2) {
-                     echo "<th>".$tmp_title.":</th>";
+                     echo "<th>".$tmp_title."&nbsp;:</th>";
                   }
                   $header_displayed++;
                }
@@ -392,6 +407,7 @@ class Computer_Item extends CommonDBRelation{
                       FROM `glpi_computers_items`
                       WHERE `computers_id` = '$ID'
                             AND `itemtype` = '".$itemtype."'";
+
             if ($result=$DB->query($query)) {
                $resultnum = $DB->numrows($result);
                $item = new $itemtype();
@@ -405,10 +421,8 @@ class Computer_Item extends CommonDBRelation{
                      $used[] = $tID;
 
                      echo "<tr ".($item->isDeleted()?"class='tab_bg_2_2'":"").">";
-                     echo "<td class='center'><strong>";
-                     echo $item->getLink();
-                     echo "</strong>";
-                     echo " - ".Dropdown::getDropdownName("glpi_states",$item->getField('state'));
+                     echo "<td class='center'><strong>".$item->getLink()."</strong>";
+                     echo " - ".Dropdown::getDropdownName("glpi_states", $item->getField('state'));
                      echo "</td><td>".$item->getField('serial');
                      echo "</td><td>".$item->getField('otherserial');
                      echo "</td><td>";
@@ -416,28 +430,28 @@ class Computer_Item extends CommonDBRelation{
                         echo "<td class='center'>";
                         echo "<a href=\"".$CFG_GLPI["root_doc"].
                                "/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;" .
-                               "disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
-                        echo $LANG['buttons'][10];
-                        echo "</strong></a></td>";
+                               "disconnect=1&amp;withtemplate=".$withtemplate."\">";
+                        echo "<strong>".$LANG['buttons'][10]."</strong></a></td>";
                      }
                      echo "</tr>";
                   }
                   echo "</table>";
+
                } else {
                   switch ($itemtype) {
                      case 'Printer' :
                         echo $LANG['computers'][38];
                         break;
 
-                     case 'Monitor':
+                     case 'Monitor' :
                         echo $LANG['computers'][37];
                         break;
 
-                     case 'Peripheral':
+                     case 'Peripheral' :
                         echo $LANG['computers'][47];
                         break;
 
-                     case 'Phone':
+                     case 'Phone' :
                         echo $LANG['computers'][54];
                         break;
                   }
@@ -451,10 +465,11 @@ class Computer_Item extends CommonDBRelation{
                      if (!empty($withtemplate)) {
                         echo "<input type='hidden' name='_no_history' value='1'>";
                      }
-                     Computer_Item::dropdownConnect($itemtype,'Computer',"items_id",$comp->fields["entities_id"],
-                                     $withtemplate,$used);
-                     echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9].
-                          "\" class='submit'>";
+                     Computer_Item::dropdownConnect($itemtype, 'Computer', "items_id",
+                                                    $comp->fields["entities_id"], $withtemplate,
+                                                    $used);
+                     echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
+                            class='submit'>";
                      echo "</form>";
                   }
                }
@@ -467,17 +482,17 @@ class Computer_Item extends CommonDBRelation{
       }
    }
 
+
    /**
    * Prints a direct connection to a computer
    *
    * @param $item the Monitor/Phone/Peripheral/Printer
    *
    * @return nothing (print out a table)
-   *
    */
    static function showForItem(CommonDBTM $item) {
       // Prints a direct connection to a computer
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $LANG;
 
       $comp = new Computer();
       $target = $comp->getFormURL();
@@ -487,7 +502,7 @@ class Computer_Item extends CommonDBRelation{
       if (!$item->can($ID,"r")) {
          return false;
       }
-      $canedit=$item->can($ID,"w");
+      $canedit = $item->can($ID,"w");
 
       // Is global connection ?
       $global=$item->getField('is_global');
@@ -501,9 +516,8 @@ class Computer_Item extends CommonDBRelation{
          $compids[$data['id']] = $data['computers_id'];
       }
 
-      echo "<br><div class='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
-      echo $LANG['connect'][0]."&nbsp;: ".count($compids);
-      echo "</th></tr>";
+      echo "<br><div class='center'><table width='50%' class='tab_cadre'>";
+      echo "<tr><th colspan='2'>".$LANG['connect'][0]."&nbsp;: ".count($compids)."</th></tr>";
 
       if (count($compids)>0) {
          foreach ($compids as $key => $compid) {
@@ -513,16 +527,16 @@ class Computer_Item extends CommonDBRelation{
             echo "<td class='tab_bg_2".($comp->getField('is_deleted')?"_2":"")." center b'>";
             if ($canedit) {
                echo "<a href=\"$target?disconnect=1&amp;computers_id=$compid&amp;id=$key\">".
-                    $LANG['buttons'][10]."</a>";
+                      $LANG['buttons'][10]."</a>";
             } else {
                echo "&nbsp;";
             }
             $used[] = $compid;
          }
+
       } else {
-         echo "<tr><td class='tab_bg_1'><strong>".$LANG['help'][25].": </strong>";
-         echo "<i>".$LANG['connect'][1]."</i>";
-         echo "</td>";
+         echo "<tr><td class='tab_bg_1 b'>".$LANG['help'][25]."&nbsp;:";
+         echo "<i>".$LANG['connect'][1]."</i></td>";
          echo "<td class='tab_bg_2' class='center'>";
          if ($canedit) {
             echo "<form method='post' action=\"$target\">";
@@ -530,12 +544,14 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             if ($item->isRecursive()) {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               getSonsOf("glpi_entities",$item->getEntityID()),0,$used);
+                                              getSonsOf("glpi_entities", $item->getEntityID()), 0,
+                                                        $used);
             } else {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               $item->getEntityID(),0,$used);
+                                              $item->getEntityID(), 0, $used);
             }
-            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
+            echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
+                   class='submit'>";
             echo "</form>";
          } else {
             echo "&nbsp;";
@@ -552,12 +568,14 @@ class Computer_Item extends CommonDBRelation{
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             if ($item->isRecursive()) {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               getSonsOf("glpi_entities",$item->getEntityID()),0,$used);
+                                              getSonsOf("glpi_entities", $item->getEntityID()), 0,
+                                                        $used);
             } else {
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
-                               $item->getEntityID(),0,$used);
+                                              $item->getEntityID(), 0, $used);
             }
-            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
+            echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
+                   class='submit'>";
             echo "</form>";
          } else {
             echo "&nbsp;";
@@ -567,19 +585,19 @@ class Computer_Item extends CommonDBRelation{
       echo "</table></div><br>";
    }
 
+
    /**
     * Unglobalize an item : duplicate item and connections
     *
     * @param $item object to unglobalize
-    *
     */
    static function unglobalizeItem(CommonDBTM $item) {
       global $DB;
 
       // Update item to unit management :
       if ($item->getField('is_global')) {
-         $input=array('id'        => $item->fields['id'],
-                      'is_global' => 0);
+         $input = array('id'        => $item->fields['id'],
+                        'is_global' => 0);
          $item->update($input);
 
          // Get connect_wire for this connection
@@ -587,7 +605,7 @@ class Computer_Item extends CommonDBRelation{
                    FROM `glpi_computers_items`
                    WHERE `glpi_computers_items`.`items_id` = '".$item->fields['id']."'
                          AND `glpi_computers_items`.`itemtype` = '".$item->getType()."'";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
 
          if ($data=$DB->fetch_array($result)) {
             // First one, keep the existing one
@@ -602,11 +620,11 @@ class Computer_Item extends CommonDBRelation{
                   $conn->update(array('id'       => $data['id'],
                                       'items_id' => $newID));
                }
-
             }
          }
       }
    }
+
 
    /**
    * Make a select box for connections
@@ -620,39 +638,39 @@ class Computer_Item extends CommonDBRelation{
    *
    * @return nothing (print out an HTML select box)
    */
-   static function dropdownConnect($itemtype,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,
-                           $used=array()) {
+   static function dropdownConnect($itemtype, $fromtype, $myname, $entity_restrict=-1,
+                                   $onlyglobal=0, $used=array()) {
       global $CFG_GLPI;
 
-      $rand=mt_rand();
+      $rand = mt_rand();
 
-      $use_ajax=false;
+      $use_ajax = false;
       if ($CFG_GLPI["use_ajax"]) {
-         $nb=0;
+         $nb = 0;
          if ($entity_restrict>=0) {
-            $nb=countElementsInTableForEntity(getTableForItemType($itemtype),$entity_restrict);
+            $nb = countElementsInTableForEntity(getTableForItemType($itemtype), $entity_restrict);
          } else {
-            $nb=countElementsInTableForMyEntities(getTableForItemType($itemtype));
+            $nb = countElementsInTableForMyEntities(getTableForItemType($itemtype));
          }
          if ($nb>$CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax=true;
+            $use_ajax = true;
          }
       }
 
-      $params=array('searchText'       => '__VALUE__',
-                  'fromtype'         => $fromtype,
-                  'idtable'          => $itemtype,
-                  'myname'           => $myname,
-                  'onlyglobal'       => $onlyglobal,
-                  'entity_restrict'  => $entity_restrict,
-                  'used'             => $used);
+      $params = array('searchText'     => '__VALUE__',
+                     'fromtype'        => $fromtype,
+                     'idtable'         => $itemtype,
+                     'myname'          => $myname,
+                     'onlyglobal'      => $onlyglobal,
+                     'entity_restrict' => $entity_restrict,
+                     'used'            => $used);
 
-      $default="<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>\n";
-      ajaxDropdown($use_ajax,"/ajax/dropdownConnect.php",$params,$default,$rand);
+      $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>
+                  </select>\n";
+      ajaxDropdown($use_ajax, "/ajax/dropdownConnect.php", $params, $default, $rand);
 
       return $rand;
    }
-
 }
 
 ?>
