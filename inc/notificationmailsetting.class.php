@@ -44,6 +44,8 @@ class NotificationMailSetting extends CommonDBTM {
 
    var $table = 'glpi_configs';
 
+   protected $displayliste = false;
+
    static function getTypeName() {
       global $LANG;
 
