@@ -3643,7 +3643,7 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['joblist'][32]."</a></td>";
+            $LANG['job'][15]."</a></td>";
       echo "<td>".$status["solved"]."</td></tr>";
 
       $options['contains'][0]   = 'closed';

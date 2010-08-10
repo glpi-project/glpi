@@ -846,7 +846,7 @@ class Infocom extends CommonDBTM {
                echo "<tr class='tab_bg_1'><td>".$LANG['setup'][247]."&nbsp;:</td>";
                echo "<td>";
                echo Infocom::dropdownAlert("alert", $ic->fields["alert"]);
-               Alert::displayLastAlert('Infocom', $this->fields['id']);
+               Alert::displayLastAlert('Infocom', $ic->fields['id']);
                echo "</td><td colspan='2'></td></tr>";
             }
 
