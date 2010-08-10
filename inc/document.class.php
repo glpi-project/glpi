@@ -1013,11 +1013,11 @@ class Document extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $ID = $item->getField('id');
-      if (!(($item instanceof kbItem) && $CFG_GLPI["use_public_faq"] && $item->getEntityID()==0)) {
+      if (!(($item instanceof KnowbaseItem) && $CFG_GLPI["use_public_faq"] && $item->getEntityID()==0)) {
          if ($item->isNewID($ID)) {
             return false;
          }
-         if (get_class($item)!='Ticket' && !haveRight('document','r')) {
+         if ($item->getType()!='Ticket' && $item->getType()!='KnowbaseItem' && !haveRight('document','r')) {
             return false;
          }
          if (!$item->can($item->fields['id'],'r')) {
