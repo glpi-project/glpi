@@ -748,8 +748,7 @@ class NotificationTargetTicket extends NotificationTarget {
          foreach ($tasks as $task) {
             $tmp = array();
             $tmp['##task.isprivate##']   = Dropdown::getYesNo($task['is_private']);
-            $tmp['##task.author##']      = Dropdown::getDropdownName('glpi_users',
-                                                                     $task['users_id']);
+            $tmp['##task.author##']      = html_clean(getUserName($task['users_id']));
             $tmp['##task.category##']    = Dropdown::getDropdownName('glpi_taskcategories',
                                                                      $task['taskcategories_id']);
             $tmp['##task.date##']        = convDateTime($task['date']);
@@ -758,8 +757,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             $plan = new TicketPlanning();
             if ($plan->getFromDBbyTask($task['id'])) {
-               $tmp['##task.planning.user##']     = Dropdown::getDropdownName('glpi_users',
-                                                                        $plan->fields['users_id']);
+               $tmp['##task.planning.user##']     = html_clean(getUserName($plan['users_id']));
                $tmp['##task.planning.begin##']    = convDateTime($plan->fields['begin']);
                $tmp['##task.planning.end##']      = convDateTime($plan->fields['end']);
                $tmp['##task.planning.status##']   = Planning::getState($plan->fields['state']);
@@ -778,8 +776,7 @@ class NotificationTargetTicket extends NotificationTarget {
          foreach ($followups as $followup) {
             $tmp = array();
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
-            $tmp['##followup.author##']      = Dropdown::getDropdownName('glpi_users',
-                                                                         $followup['users_id']);
+            $tmp['##followup.author##']      = html_clean(getUserName($followup['users_id']));
             $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
                                                                         $followup['requesttypes_id']);
             $tmp['##followup.date##']        = convDateTime($followup['date']);
@@ -961,7 +958,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.costmaterial'          => $LANG['job'][42],
                      'ticket.solution.type'         => $LANG['job'][48],
                      'ticket.solution.description'  => $LANG['jobresolution'][1],
-                     'task.author'                  => $LANG['job'][4],
+                     'task.author'                  => $LANG['common'][37],
                      'task.isprivate'               => $LANG['common'][77],
                      'task.date'                    => $LANG['reports'][60],
                      'task.description'             => $LANG['joblist'][6],
