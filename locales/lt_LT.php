@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Aprašykite reikalą/įvykį"; 
 $LANG['job'][12]="Nėra atsakymo į paraišką"; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Atsakymai E-paštu"; 
 $LANG['job'][20]="Suminis laikas"; 
 $LANG['job'][21]="Valandos"; 

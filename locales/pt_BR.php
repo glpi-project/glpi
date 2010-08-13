@@ -718,6 +718,7 @@ $LANG['job'][9]="Acompanhamento";
 $LANG['job'][11]="Descreva o problema ou o incidente"; 
 $LANG['job'][12]="Sem follow-ups para este chamado."; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="E-mail follow-ups"; 
 $LANG['job'][20]="Duração total"; 
 $LANG['job'][21]="Hora(s)"; 

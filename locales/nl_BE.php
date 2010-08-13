@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Describe the Problem/Action"; 
 $LANG['job'][12]="Geen opvolgingen voor deze tussenkomst"; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="E-mailopvolgingen"; 
 $LANG['job'][20]="Reële tijd van de tussenkomst"; 
 $LANG['job'][21]="uren"; 

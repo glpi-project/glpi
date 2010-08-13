@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Skildre problemet/handlinga"; 
 $LANG['job'][12]="Inga oppfylging for denne saka"; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="E-post varsling"; 
 $LANG['job'][20]="Total varighet"; 
 $LANG['job'][21]="Time(r)"; 

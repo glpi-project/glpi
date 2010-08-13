@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Describe the Problem/Action"; 
 $LANG['job'][12]="没有后续为这张case。"; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="邮件后续"; 
 $LANG['job'][20]="总期间"; 
 $LANG['job'][21]="小时"; 

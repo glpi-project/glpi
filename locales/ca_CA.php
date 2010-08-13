@@ -718,6 +718,7 @@ $LANG['job'][9]="Seguiment";
 $LANG['job'][11]="Descrigui el problema/acció"; 
 $LANG['job'][12]="No hi ha seguiment per aquesta incidència"; 
 $LANG['job'][13]="Obrir un incident"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Seguiment per email"; 
 $LANG['job'][20]="Duració total"; 
 $LANG['job'][21]="Hores"; 

@@ -718,6 +718,7 @@ $LANG['job'][9]="Opfølgning";
 $LANG['job'][11]="Beskriv problemet/løsningen"; 
 $LANG['job'][12]="Ingen opfølgning for denne sag."; 
 $LANG['job'][13]="Ny sag"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="E-mail opfølgninger"; 
 $LANG['job'][20]="Samlet varighed"; 
 $LANG['job'][21]="Timer"; 

@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Aprakstiet problēmu/darbību"; 
 $LANG['job'][12]="Šim pieteikumam nav sekojumu."; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Nosūtīt sekojumus uz epastu"; 
 $LANG['job'][20]="Atvēlētais laiks"; 
 $LANG['job'][21]="Stunda(s)"; 

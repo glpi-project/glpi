@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Beskrivning av ärendet"; 
 $LANG['job'][12]="Inga uppföljningar registrerade för detta ärende"; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="E-post uppföljningar"; 
 $LANG['job'][20]="Total tidsåtgång"; 
 $LANG['job'][21]="Timmar"; 

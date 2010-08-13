@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Descriere a problemei/acțiunii"; 
 $LANG['job'][12]="Nu exista nici o comentariu/solutie pentru aceasta problema."; 
 $LANG['job'][13]="Adaugă o nouă problemă"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Comentarii pe E-mail"; 
 $LANG['job'][20]="Timp total"; 
 $LANG['job'][21]="Ora/e"; 

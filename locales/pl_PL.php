@@ -718,6 +718,7 @@ $LANG['job'][9]="Śledzenia";
 $LANG['job'][11]="Opisz problem lub wymagane działanie"; 
 $LANG['job'][12]="Brak śledzenia dla tego zgłoszenia"; 
 $LANG['job'][13]="Nowe zgloszenie"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Wysyłaj e-mailem śledzenia"; 
 $LANG['job'][20]="Sumaryczny czas trwania"; 
 $LANG['job'][21]="godzin(y)"; 

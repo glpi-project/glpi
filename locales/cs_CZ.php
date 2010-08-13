@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Popište problém/akci"; 
 $LANG['job'][12]="Žádný následovník tohoto požadavku."; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Následovníci emailu"; 
 $LANG['job'][20]="Doba trvání celkem"; 
 $LANG['job'][21]="Hodin"; 

@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Beskriv Problemet/Handlingen"; 
 $LANG['job'][12]="Ingen oppfølging for denne oppgaven"; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Epost oppfølging"; 
 $LANG['job'][20]="Total varighet"; 
 $LANG['job'][21]="Time(r)"; 

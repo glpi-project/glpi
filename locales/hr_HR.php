@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Opis problema/akcije"; 
 $LANG['job'][12]="Nema praćenja za ovaj ticket"; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Email praćenje"; 
 $LANG['job'][20]="Ukupno trajanje"; 
 $LANG['job'][21]="Sat(i)"; 

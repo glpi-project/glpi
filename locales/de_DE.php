@@ -718,6 +718,7 @@ $LANG['job'][9]="Anmerkung";
 $LANG['job'][11]="Problem-/ Anforderungs-Beschreibung"; 
 $LANG['job'][12]="Keine Anmerkungen für dieses Ticket."; 
 $LANG['job'][13]="Neues Supportticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="E-Mail Benachrichtigung"; 
 $LANG['job'][20]="Zeitaufwand"; 
 $LANG['job'][21]="Stunde(n)"; 

@@ -718,6 +718,7 @@ $LANG['job'][9]="Follow-up";
 $LANG['job'][11]="Describe the Problem/Action"; 
 $LANG['job'][12]="Não existem actualizações para esta senha."; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Email de actualizações"; 
 $LANG['job'][20]="Tempo total"; 
 $LANG['job'][21]="Hora(s)"; 

@@ -718,6 +718,7 @@ $LANG['job'][9]="Intézkedés";
 $LANG['job'][11]="A probléma/művelet leírása"; 
 $LANG['job'][12]="Nincs intézkedés a bejelentéshez"; 
 $LANG['job'][13]="Új bejelentés"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="E-mail értesítések"; 
 $LANG['job'][20]="Össz. idő"; 
 $LANG['job'][21]="Óra(k)"; 

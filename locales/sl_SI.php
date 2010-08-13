@@ -718,6 +718,7 @@ $LANG['job'][9]="Sledi zgoraj";
 $LANG['job'][11]="Opišite problem"; 
 $LANG['job'][12]="Za to naročilo ni odgovorov."; 
 $LANG['job'][13]="New ticket"; 
+$LANG['job'][15]="Solved"; 
 $LANG['job'][19]="Opombe po e-mailu"; 
 $LANG['job'][20]="Skupaj trajanje"; 
 $LANG['job'][21]="Ura(e)"; 
