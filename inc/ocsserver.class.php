@@ -1176,7 +1176,7 @@ class OcsServer extends CommonDBTM {
 
                         $query = "DELETE
                                   FROM `glpi_ocslinks`
-                                  WHERE `id` ='" . $data["ID"] . "'";
+                                  WHERE `id` ='" . $data["id"] . "'";
                         $DB->query($query);
                      }
                   }
