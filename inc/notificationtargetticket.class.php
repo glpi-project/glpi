@@ -840,6 +840,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##ticket.time##']         = Ticket::getRealTime($ticket['realtime']);
             $tmp['##ticket.costtime##']     = $ticket['cost_time'];
             $tmp['##ticket.creationdate##'] = convDateTime($ticket['date']);
+            $tmp['##ticket.content##']      = $ticket['content'];
 
             if ($ticket['users_id']) {
                $user = new User;
@@ -855,6 +856,30 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##ticket.author.phone##']  = $user->getField('phone');
                $tmp['##ticket.author.phone2##'] = $user->getField('phone2');
             }
+            
+            if ($ticket['users_id_assign']) {
+               $user_tmp = new User;
+               $user_tmp->getFromDB($ticket['users_id_assign']);
+               $tmp['##ticket.assigntouser##'] = $user_tmp->getName();
+            } else {
+               $tmp['##ticket.assigntouser##'] = '';
+            }
+            
+            if ($ticket['groups_id_assign']) {
+               $tmp['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
+                                                            $ticket['groups_id_assign']);
+            } else {
+               $tmp['##ticket.group##'] = '';
+            }
+
+            if ($ticket['suppliers_id_assign']) {
+               $tmp['##ticket.assigntosupplier##']
+                  = Dropdown::getDropdownName('glpi_suppliers',
+                                              $ticket['suppliers_id_assign']);
+            } else {
+               $tmp['##ticket.assigntosupplier##'] = '';
+            }
+            
             $this->datas['tickets'][] = $tmp;
          }
       }
@@ -912,6 +937,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.author.phone2'         => $LANG['help'][35].' 2',
                      'ticket.openbyuser'            => $LANG['common'][37],
                      'ticket.group'                 => $LANG['common'][35],
+                     'ticket.attribution'          => $LANG['job'][5],
                      'ticket.assigntouser'          => $LANG['job'][5]." - ".$LANG['job'][6],
                      'ticket.assigntogroup'         => $LANG['job'][5]." - ".$LANG['common'][35],
                      'ticket.assigntosupplier'      => $LANG['job'][5]." - ".$LANG['financial'][26],
