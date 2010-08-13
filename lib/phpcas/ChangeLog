@@ -2,6 +2,28 @@ This document duplicates reference information found at http://www.ja-sig.org/wi
 for interested parties, in the case the wiki wouldn't be available.
 
 ----
+Changes in version 1.1.2
+   * None
+   
+Changes in version 1.1.2RC2
+ Bug Fixes
+    * Prevent domxml-php4-to-php5 to be inclueded twice [PHPCAS-48] (Brad Krane)
+
+Changes in version 1.1.2RC1
+Security Issue
+    * Fix a session hijacking hole CVE-2010-2795 [PHPCAS-61] (Joachim Fritschi)
+    * callbackurl in proxy mode should be urlencoded CVE-2010-2796 [PHPCAS-67] (Joachim Fritschi)
+
+ Improvement
+    * Debuglog contains phpCAS version information [PHPCAS-62] (Joachim Fritschi)
+    
+ Bug Fixes   
+    * Fix warnings for SAML responses without attributes [PHPCAS-59] (Joachim Fritschi)
+    * Fix duplicate SAML debug output [PHPCAS-64] (Joachim Fritschi)
+    * Providing a new ST/PT/SA during an authenticated session will be ignored 
+      and a warning will be issued to the debug log. [PHPCAS-61] (Joachim Fritschi)
+    * fix 2 undefinded variable notices in serviceWeb() [PHPCAS-68] (Joachim Fritschi)
+
 Changes in version 1.1.1
 Improvement
     * On Single Sign Out destroy any existing application session before deleting the phpcas session [PHPCAS-58] (Joachim Fritschi)
