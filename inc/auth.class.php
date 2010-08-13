@@ -286,7 +286,7 @@ class Auth {
          case Auth::CAS :
             include (GLPI_PHPCAS);
             phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
-                           $CFG_GLPI["cas_uri"]);
+                           $CFG_GLPI["cas_uri"],false);
 
             // no SSL validation for the CAS server
             phpCAS::setNoCasServerValidation();
