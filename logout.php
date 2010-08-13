@@ -47,8 +47,9 @@ if (!isset($_SESSION["noAUTO"])
    include (GLPI_ROOT . "/lib/phpcas/CAS.php");
    $cas=new phpCAS();
    $cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
-                $CFG_GLPI["cas_uri"]);
-   $cas->logoutWithUrl($CFG_GLPI["cas_logout"]);
+                $CFG_GLPI["cas_uri"],false);
+   
+   $cas->logoutWithUrl(strval($CFG_GLPI["cas_logout"]));
 }
 
 $toADD="";

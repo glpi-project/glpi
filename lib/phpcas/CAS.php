@@ -39,7 +39,7 @@ if (!$_SERVER['REQUEST_URI']) {
 //
 // another one by Vangelis Haniotakis also to make phpCAS work with PHP5
 //
-if (version_compare(PHP_VERSION, '5', '>=')) {
+if (version_compare(PHP_VERSION, '5', '>=') && !(function_exists('domxml_new_doc'))) {
 	require_once (dirname(__FILE__) . '/CAS/domxml-php4-to-php5.php');
 }
 
@@ -61,7 +61,7 @@ if (version_compare(PHP_VERSION, '5', '>=')) {
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION', '1.1.1');
+define('PHPCAS_VERSION', '1.1.2');
 
 // ------------------------------------------------------------------------
 //  CAS VERSIONS
@@ -491,7 +491,7 @@ class phpCAS {
 
 		$PHPCAS_DEBUG['filename'] = $filename;
 
-		phpCAS :: trace('START ******************');
+		phpCAS :: trace('START phpCAS-' . PHPCAS_VERSION . ' ******************');
 	}
 
 	/** @} */
