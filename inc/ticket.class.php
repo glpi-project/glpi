@@ -4938,7 +4938,7 @@ class Ticket extends CommonDBTM {
       $tot = 0;
 
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
-         $query = "SELECT `glpi_tickets`.*
+/*         $query = "SELECT `glpi_tickets`.*
                    FROM `glpi_tickets`
                    LEFT JOIN `glpi_alerts` ON (`glpi_tickets`.`id` = `glpi_alerts`.`items_id`
                                                AND `glpi_alerts`.`itemtype` = 'Ticket'
@@ -4947,7 +4947,13 @@ class Ticket extends CommonDBTM {
                          AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
                          AND `glpi_tickets`.`closedate` IS NULL
                          AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()
-                         AND `glpi_alerts`.`date` IS NULL";
+                         AND `glpi_alerts`.`date` IS NULL";*/
+         $query = "SELECT `glpi_tickets`.*
+                   FROM `glpi_tickets`
+                   WHERE `glpi_tickets`.`entities_id` = '".$entity."'
+                         AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
+                         AND `glpi_tickets`.`closedate` IS NULL
+                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()";
          $tickets = array();
          foreach ($DB->request($query) as $tick) {
             $tickets[] = $tick;
@@ -4957,14 +4963,15 @@ class Ticket extends CommonDBTM {
             if (NotificationEvent::raiseEvent('alertnotclosed', new self(),
                                               array('tickets'     => $tickets,
                                                     'entities_id' => $entity))) {
-               $alert = new Alert();
-               $input["itemtype"] = 'Ticket';
-               $input["type"] = Alert::NOTCLOSED;
-               foreach ($tickets as $ticket) {
-                  $input["items_id"] = $ticket['id'];
-                  $alert->add($input);
-                  unset($alert->fields['id']);
-               }
+// To be clean : do not mark ticket as already send : always send all
+//                $alert = new Alert();
+//                $input["itemtype"] = 'Ticket';
+//                $input["type"] = Alert::NOTCLOSED;
+//                foreach ($tickets as $ticket) {
+//                   $input["items_id"] = $ticket['id'];
+//                   $alert->add($input);
+//                   unset($alert->fields['id']);
+//                }
 
                $tot += count($tickets);
                $task->addVolume(count($tickets));
