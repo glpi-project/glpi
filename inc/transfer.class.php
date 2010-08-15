@@ -2841,12 +2841,12 @@ class Transfer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG['cartridges'][12]."&nbsp;:".
             "</td><td>";
-      $params['value']=$this->fields['keep_cartridgesitem'];
-      Dropdown::showFromArray('keep_cartridgesitem',$keep,$params);
+      $params['value']=$this->fields['keep_cartridgeitem'];
+      Dropdown::showFromArray('keep_cartridgeitem',$keep,$params);
       echo "</td>";
       echo "<td>".$LANG['cartridges'][12]." (".$LANG['transfer'][3].")&nbsp;:</td><td>";
-      $params['value']=$this->fields['clean_cartridgesitem'];
-      Dropdown::showFromArray('clean_cartridgesitem',$clean,$params);
+      $params['value']=$this->fields['clean_cartridgeitem'];
+      Dropdown::showFromArray('clean_cartridgeitem',$clean,$params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
