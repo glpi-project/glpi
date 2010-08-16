@@ -486,7 +486,6 @@ class Entity extends CommonTreeDropdown {
                LEFT JOIN `glpi_entitydatas` ON (
                `glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)";
       $query.= " ORDER BY `glpi_entities`.`entities_id` ASC";
-
       $entities = array();
       foreach ($DB->request($query) as $entitydatas) {
          Entity::getDefaultValueForNotification($field,$entities, $entitydatas);
@@ -504,22 +503,21 @@ class Entity extends CommonTreeDropdown {
       elseif ($CFG_GLPI[$field]) {
          $entities[0] = $CFG_GLPI[$field];
       }
-
       return $entities;
    }
 
    static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
       global $CFG_GLPI;
-
+      
       //If there's a configuration for this entity & the value is not the one of the global config
       if (isset($entitydatas[$field]) && $entitydatas[$field] > 0) {
          $entities[$entitydatas['entity']] = $entitydatas[$field];
       }
       //No configuration for this entity : if global config allows notification then add the entity
       //to the array of entities to be notified
-      else if ((!isset($entitydatas[$field])
-                || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
-               && $CFG_GLPI[$field]) {
+      else if ( (!isset($entitydatas[$field]) || $entitydatas[$field] == -1 
+                  || is_null($entitydatas[$field]))
+               && isset($CFG_GLPI[$field])) {
          $entities[$entitydatas['entity']] = $CFG_GLPI[$field];
       }
    }
