@@ -233,7 +233,7 @@ class Planning {
       echo "<br>";
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
       echo "<a  target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
-            "/front/planning.ical.php?genical=1&amp;uID=".$uID."\" title='".$LANG['planning'][13]."'>";
+            "/front/planning.php?genical=1&amp;uID=".$uID."\" title='".$LANG['planning'][13]."'>";
       echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
       echo "</td>\n";
 
