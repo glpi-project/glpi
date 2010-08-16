@@ -127,7 +127,12 @@ class Alert extends CommonDBTM {
       $p['max']      = 100;
       $p['step']     = 1;
       $p['toadd']    = array();
-      $p['toadd'][0] = $LANG['setup'][307];
+      if (isset($options['never_value']) && $options['never_value']) {
+         $p['toadd'][$options['never_value']] = $LANG['setup'][307];
+      } else {
+         $p['toadd'][0] = $LANG['setup'][307];
+      }
+   
       if (isset($options['inherit_global']) && $options['inherit_global']) {
          $p['toadd'][-1] = $LANG['setup'][731];
       }
