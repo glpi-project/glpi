@@ -4903,7 +4903,7 @@ class Ticket extends CommonDBTM {
                    FROM `glpi_tickets`
                    WHERE `entities_id` = '".$entity."'
                          AND `status` = 'solved'
-                         AND ADDDATE(`date_mod`, INTERVAL ".$delay." DAY) < CURDATE()";
+                         AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < CURDATE()";
          $nb = 0;
          foreach ($DB->request($query) as $tick) {
             $ticket->update(array('id'     => $tick['id'],
