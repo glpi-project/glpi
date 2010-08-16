@@ -517,9 +517,9 @@ class Entity extends CommonTreeDropdown {
       }
       //No configuration for this entity : if global config allows notification then add the entity
       //to the array of entities to be notified
-      else if ((!isset($entitydatas[$field])
-                || (isset($entitydatas[$field]) && $entitydatas[$field] == -1))
-               && $CFG_GLPI[$field]) {
+      else if ( (!isset($entitydatas[$field]) || $entitydatas[$field] == -1 
+                  || is_null($entitydatas[$field]))
+               && isset($CFG_GLPI[$field])) {
          $entities[$entitydatas['entity']] = $CFG_GLPI[$field];
       }
    }
