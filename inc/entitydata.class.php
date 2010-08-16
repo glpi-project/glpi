@@ -465,13 +465,10 @@ class EntityData extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][18] . "&nbsp;:</td>";
       echo "<td colspan='2'>";
-
-      // Need to set a specific value for never because 0 days is a possible value
-      $toadd    = array();
-      $toadd[-10] = $LANG['setup'][307];
-      $toadd[-1] = $LANG['setup'][731];
-      Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'], 0, 100, 1, $toadd);
-
+      Alert::dropdownIntegerNever('autoclose_delay', $entdata->fields['autoclose_delay'],
+                                  array('max'            => 99,
+                                        'inherit_global' => 1,
+                                        'never_value'    => -10));
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
       if ($canedit) {
