@@ -735,7 +735,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             $plan = new TicketPlanning();
             if ($plan->getFromDBbyTask($task['id'])) {
-               $tmp['##task.planning.user##']     = html_clean(getUserName($plan['users_id']));
+               $tmp['##task.planning.user##']     = html_clean(getUserName($plan->fields['users_id']));
                $tmp['##task.planning.begin##']    = convDateTime($plan->fields['begin']);
                $tmp['##task.planning.end##']      = convDateTime($plan->fields['end']);
                $tmp['##task.planning.status##']   = Planning::getState($plan->fields['state']);
