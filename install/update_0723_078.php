@@ -4230,6 +4230,9 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
       $query = "UPDATE `glpi_profiles` SET `entity_rule_ticket`=`rule_ticket`";
       $DB->query($query) or die("0.78 update default entity_rule_ticket rights" . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `rule_ticket`='r' WHERE `rule_ticket`='w'";
+      $DB->query($query) or die("0.78 update rule_ticket rights" . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists('glpi_authldaps','is_default')) {
