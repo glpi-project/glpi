@@ -191,6 +191,7 @@ class RuleMailCollector extends Rule {
    }
 
    function executeActions($output,$params) {
+
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
@@ -221,10 +222,12 @@ class RuleMailCollector extends Rule {
                         elseif (isset($this->criterias_results['PROFILES'])) {
                            $profile = $this->criterias_results['PROFILES'];
                         }
-
                         if ($profile) {
-                           $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
-                                                                                 $profile);
+                           $entities=array();
+                           if (isset($params['users_id'])) { // Not set when testing
+                              $entities = Profile_User::getEntitiesForProfileByUser($params['users_id'],
+                                                                                    $profile);
+                           }
 
                            //Case 2 : check if there's only one profile for this user
                            if ((isset($this->criterias_results['ONE_PROFILE'])
@@ -237,16 +240,19 @@ class RuleMailCollector extends Rule {
                                  $output['entities_id'] = array_pop($entities);
                               } else {
                                  //Rights on more than one entity : get the user's prefered entity
-                                 $user = new User;
-                                 $user->getFromDB($params['users_id']);
-                                 //If an entity is defined in user's preferences, use this one
-                                 //else do not set the rule as matched
-                                 if ($user->getField('entities_id') > 0) {
-                                    $output['entities_id'] = $user->fields['entities_id'];
+                                 if (isset($params['users_id'])) { // Not set when testing
+                                    $user = new User;
+                                    $user->getFromDB($params['users_id']);
+                                    //If an entity is defined in user's preferences, use this one
+                                    //else do not set the rule as matched
+                                    if (is_integer($user->getField('entities_id'))) {
+                                       $output['entities_id'] = $user->fields['entities_id'];
+                                    }
                                  }
                               }
                            }
                         }
+
                   }
                   break;
                case "regex_result" :
