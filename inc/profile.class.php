@@ -1497,6 +1497,13 @@ class Profile extends CommonDBTM {
       $tab[99]['linkfield'] = 'create_validation';
       $tab[99]['datatype']  = 'bool';
 
+      $tab[100]['table'] = $this->getTable();
+      $tab[100]['field'] = 'helpdesk_status';
+      $tab[100]['name'] = $LANG['setup'][615];
+      $tab[100]['linkfield'] = '';
+      $tab[100]['nosearch'] = true;
+      $tab[100]['shorthistory'] = true;
+
       return $tab;
    }
 
