@@ -549,9 +549,9 @@ class Log extends CommonDBTM {
                            $data["old_value"]=timestampToString($data["old_value"]);
                            $data["new_value"]=timestampToString($data["new_value"]);
                            break;
-                        case "realtime" :
-                           $data["old_value"]=Ticket::getRealtime($data["old_value"]);
-                           $data["new_value"]=Ticket::getRealtime($data["new_value"]);
+                        case "actiontime" :
+                           $data["old_value"]=Ticket::getActionTime($data["old_value"]);
+                           $data["new_value"]=Ticket::getActionTime($data["new_value"]);
                            break;
                         case "number" :
                            $data["old_value"]=formatNumber($data["old_value"],false,0);

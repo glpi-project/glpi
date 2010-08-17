@@ -298,7 +298,7 @@ $entrees_avgsolvedtime = Stat::constructEntryValues("inter_avgsolvedtime",$_POST
 //Temps moyen de cloture d'intervention
 $entrees_avgclosedtime = Stat::constructEntryValues("inter_avgclosedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 //Temps moyen d'intervention reel
-$entrees_avgrealtime = Stat::constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+$entrees_avgactiontime = Stat::constructEntryValues("inter_avgactiontime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 //Temps moyen de prise en compte de l'intervention
 $entrees_avgtaketime = Stat::constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 
@@ -320,14 +320,14 @@ foreach ($entrees_avgsolvedtime as $key => $val) {
 foreach ($entrees_avgtaketime as $key => $val) {
    $entrees_avgtaketime[$key]/=HOUR_TIMESTAMP;
 }
-foreach ($entrees_avgrealtime as $key => $val) {
-   $entrees_avgrealtime[$key]/=HOUR_TIMESTAMP;
+foreach ($entrees_avgactiontime as $key => $val) {
+   $entrees_avgactiontime[$key]/=HOUR_TIMESTAMP;
 }
 
 Stat::showGraph(array($LANG['stats'][10] => $entrees_avgclosedtime,
                         $LANG['stats'][9] => $entrees_avgsolvedtime,
                         $LANG['stats'][12]  => $entrees_avgtaketime,
-                        $LANG['stats'][14]  => $entrees_avgrealtime),
+                        $LANG['stats'][14]  => $entrees_avgactiontime),
                array('title'   => $LANG['stats'][8],
                      'unit'     => $LANG['job'][21],
                      'showtotal' => 1,
@@ -379,7 +379,7 @@ $values2['avgsolved'] = Stat::constructEntryValues("inter_avgsolvedtime",$_REQUE
 //Temps moyen de cloture d'intervention
 $values2['avgclosed'] = Stat::constructEntryValues("inter_avgclosedtime",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
 //Temps moyen d'intervention reel
-$values2['avgrealtime'] = Stat::constructEntryValues("inter_avgrealtime",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
+$values2['avgactiontime'] = Stat::constructEntryValues("inter_avgactiontime",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
 //Temps moyen de prise en compte de l'intervention
 $values2['avgtaketime'] = Stat::constructEntryValues("inter_avgtakeaccount",$_REQUEST["date1"],$_REQUEST["date2"],$_GET["type"],$val1,$val2);
 
@@ -390,8 +390,8 @@ foreach ($values2['avgsolved'] as $key => $val) {
 foreach ($values2['avgclosed'] as $key => $val) {
    $values2['avgclosed'][$key]/=HOUR_TIMESTAMP;
 }
-foreach ($values2['avgrealtime'] as $key => $val) {
-   $values2['avgrealtime'][$key]/=HOUR_TIMESTAMP;
+foreach ($values2['avgactiontime'] as $key => $val) {
+   $values2['avgactiontime'][$key]/=HOUR_TIMESTAMP;
 }
 foreach ($values2['avgtaketime'] as $key => $val) {
    $values2['avgtaketime'][$key]/=HOUR_TIMESTAMP;
@@ -400,7 +400,7 @@ foreach ($values2['avgtaketime'] as $key => $val) {
 $available=array('avgclosed'   => $LANG['stats'][10],
                  'avgsolved'   => $LANG['stats'][9],
                  'avgtaketime' => $LANG['stats'][12],
-                 'avgrealtime'  => $LANG['stats'][14],
+                 'avgactiontime'  => $LANG['stats'][14],
                 );
 
 

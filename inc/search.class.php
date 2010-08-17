@@ -3797,8 +3797,8 @@ class Search {
             case "timestamp" :
                return timestampToString($data[$NAME.$num]);
 
-            case "realtime" :
-               return Ticket::getRealtime($data[$NAME.$num]);
+            case "actiontime" :
+               return Ticket::getActionTime($data[$NAME.$num]);
 
             case "date_delay" :
                $split = explode('$$$$', $data[$NAME.$num]);
