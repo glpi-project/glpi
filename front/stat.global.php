@@ -110,7 +110,7 @@ $values2['avgsolved'] = Stat::constructEntryValues("inter_avgsolvedtime",$_REQUE
 //Temps moyen de cloture d'intervention
 $values2['avgclosed'] = Stat::constructEntryValues("inter_avgclosedtime",$_REQUEST["date1"],$_REQUEST["date2"]);
 //Temps moyen d'intervention reel
-$values2['avgrealtime'] = Stat::constructEntryValues("inter_avgrealtime",$_REQUEST["date1"],$_REQUEST["date2"]);
+$values2['avgactiontime'] = Stat::constructEntryValues("inter_avgactiontime",$_REQUEST["date1"],$_REQUEST["date2"]);
 //Temps moyen de prise en compte de l'intervention
 $values2['avgtaketime'] = Stat::constructEntryValues("inter_avgtakeaccount",$_REQUEST["date1"],$_REQUEST["date2"]);
 
@@ -121,8 +121,8 @@ foreach ($values2['avgsolved'] as $key => $val) {
 foreach ($values2['avgclosed'] as $key => $val) {
    $values2['avgclosed'][$key]/=HOUR_TIMESTAMP;
 }
-foreach ($values2['avgrealtime'] as $key => $val) {
-   $values2['avgrealtime'][$key]/=HOUR_TIMESTAMP;
+foreach ($values2['avgactiontime'] as $key => $val) {
+   $values2['avgactiontime'][$key]/=HOUR_TIMESTAMP;
 }
 foreach ($values2['avgtaketime'] as $key => $val) {
    $values2['avgtaketime'][$key]/=HOUR_TIMESTAMP;
@@ -131,7 +131,7 @@ foreach ($values2['avgtaketime'] as $key => $val) {
 $available=array('avgclosed'   => $LANG['stats'][10],
                  'avgsolved'   => $LANG['stats'][9],
                  'avgtaketime' => $LANG['stats'][12],
-                 'avgrealtime'  => $LANG['stats'][14],
+                 'avgactiontime'  => $LANG['stats'][14],
                 );
 
 

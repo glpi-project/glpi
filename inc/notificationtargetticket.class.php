@@ -551,7 +551,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.urgency##']  = Ticket::getUrgencyName($this->obj->getField('urgency'));
          $this->datas['##ticket.impact##']   = Ticket::getImpactName($this->obj->getField('impact'));
          $this->datas['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
-         $this->datas['##ticket.time##']     = Ticket::getRealTime($this->obj->getField('realtime'));
+         $this->datas['##ticket.time##']     = Ticket::getActionTime($this->obj->getField('actiontime'));
          $this->datas['##ticket.costtime##'] = $this->obj->getField('cost_time');
 
          $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
@@ -753,7 +753,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                                                      $task['taskcategories_id']);
             $tmp['##task.date##']        = convDateTime($task['date']);
             $tmp['##task.description##'] = $task['content'];
-            $tmp['##task.time##']        = Ticket::getRealTime($task['realtime']);
+            $tmp['##task.time##']        = Ticket::getActionTime($task['actiontime']);
 
             $plan = new TicketPlanning();
             if ($plan->getFromDBbyTask($task['id'])) {
@@ -859,7 +859,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##ticket.urgency##']      = Ticket::getUrgencyName($ticket['urgency']);
             $tmp['##ticket.impact##']       = Ticket::getImpactName($ticket['impact']);
             $tmp['##ticket.priority##']     = Ticket::getPriorityName($ticket['priority']);
-            $tmp['##ticket.time##']         = Ticket::getRealTime($ticket['realtime']);
+            $tmp['##ticket.time##']         = Ticket::getActionTime($ticket['actiontime']);
             $tmp['##ticket.costtime##']     = $ticket['cost_time'];
             $tmp['##ticket.creationdate##'] = convDateTime($ticket['date']);
             $tmp['##ticket.content##']      = $ticket['content'];

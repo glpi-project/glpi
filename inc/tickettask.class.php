@@ -145,7 +145,7 @@ class TicketTask  extends CommonDBTM {
 
       $job = new Ticket();
       $job->getFromDB($this->fields['tickets_id']);
-      $job->updateRealtime($this->fields['tickets_id']);
+      $job->updateActiontime($this->fields['tickets_id']);
       $job->updateDateMod($this->fields["tickets_id"]);
 
       // Add log entry in the ticket
@@ -163,7 +163,7 @@ class TicketTask  extends CommonDBTM {
 
       manageBeginAndEndPlanDates($input['plan']);
 
-      $input["realtime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
+      $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
       if ($uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
@@ -196,8 +196,8 @@ class TicketTask  extends CommonDBTM {
                $mailsend=true;
             }
 
-            if (in_array("realtime",$this->updates)) {
-               $job->updateRealTime($this->input["tickets_id"]);
+            if (in_array("actiontime",$this->updates)) {
+               $job->updateActionTime($this->input["tickets_id"]);
             }
          }
       }
@@ -294,7 +294,7 @@ class TicketTask  extends CommonDBTM {
             $input["minute"] = 0;
          }
          if ($input["hour"]>0 || $input["minute"]>0) {
-            $input["realtime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
+            $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
          }
       }
       unset($input["minute"]);
@@ -310,8 +310,8 @@ class TicketTask  extends CommonDBTM {
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
 
-      if (isset($this->input["realtime"]) && $this->input["realtime"]>0) {
-         $this->input["_job"]->updateRealTime($this->input["tickets_id"]);
+      if (isset($this->input["actiontime"]) && $this->input["actiontime"]>0) {
+         $this->input["_job"]->updateActionTime($this->input["tickets_id"]);
       }
 
       if ($this->input["_isadmin"] && $this->input["_type"]!="update") {
@@ -437,7 +437,7 @@ class TicketTask  extends CommonDBTM {
       echo convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
 
-      $units=getTimestampTimeUnits($this->fields["realtime"]);
+      $units=getTimestampTimeUnits($this->fields["actiontime"]);
 
       $hour = $units['hour'];
       $minute = $units['minute'];
@@ -544,7 +544,7 @@ class TicketTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
 
-      $units=getTimestampTimeUnits($this->fields["realtime"]);
+      $units=getTimestampTimeUnits($this->fields["actiontime"]);
 
       $hour = $units['hour'];
       $minute = $units['minute'];
@@ -700,8 +700,8 @@ class TicketTask  extends CommonDBTM {
       }
 
       echo "<tr><td>".$LANG['job'][31]."&nbsp;:</td><td>";
-      $hour = floor($this->fields["realtime"]);
-      $minute = round(($this->fields["realtime"]-$hour)*60,0);
+      $hour = floor($this->fields["actiontime"]);
+      $minute = round(($this->fields["actiontime"]-$hour)*60,0);
 
       if ($commentall) {
          Dropdown::showInteger('hour',$hour,0,100);

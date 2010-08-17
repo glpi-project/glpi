@@ -502,8 +502,8 @@ class TicketFollowup  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['job'][31]."&nbsp;:</td><td>";
-      $hour = floor($this->fields["realtime"]);
-      $minute = round(($this->fields["realtime"]-$hour)*60,0);
+      $hour = floor($this->fields["actiontime"]);
+      $minute = round(($this->fields["actiontime"]-$hour)*60,0);
       Dropdown::showInteger('hour',$hour,0,100);
       echo $LANG['job'][21]."&nbsp;&nbsp;";
       Dropdown::showInteger('minute',$minute,0,59);

@@ -647,7 +647,7 @@ class Ticket extends CommonDBTM {
             }
          }
          // Update Ticket Tco
-         if (in_array("realtime",$this->updates)
+         if (in_array("actiontime",$this->updates)
              || in_array("cost_time",$this->updates)
              || in_array("cost_fixed",$this->updates)
              || in_array("cost_material",$this->updates)) {
@@ -1128,7 +1128,7 @@ class Ticket extends CommonDBTM {
       }
 
       if (isset($input["hour"]) && isset($input["minute"])) {
-         $input["realtime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
+         $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
          $input["_hour"]    = $input["hour"];
          $input["_minute"]  = $input["minute"];
          unset($input["hour"]);
@@ -1206,8 +1206,8 @@ class Ticket extends CommonDBTM {
           )
           || (isset($this->input["_hour"])
               && isset($this->input["_minute"])
-              && isset($this->input["realtime"])
-              && $this->input["realtime"]>0)) {
+              && isset($this->input["actiontime"])
+              && $this->input["actiontime"]>0)) {
 
          $fup = new TicketFollowup();
          $type = "new";
@@ -1291,17 +1291,17 @@ class Ticket extends CommonDBTM {
 
 
    /**
-    * Update realtime of the ticket based on realtime of the followups and tasks
+    * Update actiontime of the ticket based on actiontime of the followups and tasks
     *
     *@param $ID ID of the ticket
     *@return boolean : success
    **/
-   function updateRealTime($ID) {
+   function updateActionTime($ID) {
       global $DB;
 
       $tot = 0;
 
-      $query = "SELECT SUM(`realtime`)
+      $query = "SELECT SUM(`actiontime`)
                 FROM `glpi_tickettasks`
                 WHERE `tickets_id` = '$ID'";
 
@@ -1312,7 +1312,7 @@ class Ticket extends CommonDBTM {
          }
       }
       $query2 = "UPDATE `".$this->getTable()."`
-                 SET `realtime` = '$tot'
+                 SET `actiontime` = '$tot'
                  WHERE `id` = '$ID'";
 
       return $DB->query($query2);
@@ -1384,10 +1384,10 @@ class Ticket extends CommonDBTM {
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                "text-decoration:underline; '>".$LANG['knowbase'][15]."</span>&nbsp;:<br>".
                                str_replace("\n","<br>",$fup->fields["content"])."\n";
-                  if ($fup->fields["realtime"]>0) {
+                  if ($fup->fields["actiontime"]>0) {
                      $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                   "text-decoration:underline; '>".$LANG['mailing'][104]."&nbsp;:".
-                                  ".</span> ".self::getRealtime($fup->fields["realtime"])."\n";
+                                  ".</span> ".self::getActionTime($fup->fields["actiontime"])."\n";
                   }
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                "text-decoration:underline; '>".$LANG['job'][35]."&nbsp;:</span> ";
@@ -1420,9 +1420,9 @@ class Ticket extends CommonDBTM {
                                ($fup->fields["is_private"]?"\t".$LANG['common'][77] :"")."\n";
                   $message .= $LANG['job'][4]."&nbsp;: ".$fup->getAuthorName()."\n";
                   $message .= $LANG['knowbase'][15]."&nbsp;:\n".$fup->fields["content"]."\n";
-                  if ($fup->fields["realtime"]>0) {
+                  if ($fup->fields["actiontime"]>0) {
                      $message .= $LANG['mailing'][104]."&nbsp;: ".
-                                 self::getRealtime($fup->fields["realtime"])."\n";
+                                 self::getActionTime($fup->fields["actiontime"])."\n";
                   }
                   $message .= $LANG['job'][35]."&nbsp;: ";
 
@@ -2601,7 +2601,7 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td width='50%'>".$LANG['job'][20]."&nbsp;: </td>";
 
-      echo "<td class='b'>".self::getRealtime($this->fields["realtime"])."</td>";
+      echo "<td class='b'>".self::getActionTime($this->fields["actiontime"])."</td>";
       echo "</tr>";
 
       if ($canedit) {  // admin = oui on affiche les couts liés à l'interventions
@@ -2630,7 +2630,7 @@ class Ticket extends CommonDBTM {
          echo "<td >".$LANG['job'][43]."&nbsp;: </td>";
 
          echo "<td class='b'>";
-         echo self::trackingTotalCost($this->fields["realtime"], $this->fields["cost_time"],
+         echo self::trackingTotalCost($this->fields["actiontime"], $this->fields["cost_time"],
                                       $this->fields["cost_fixed"],$this->fields["cost_material"]);
          echo "</td>";
          echo "</tr>\n";
@@ -2653,7 +2653,7 @@ class Ticket extends CommonDBTM {
 
       $totalcost = 0;
 
-      $query = "SELECT `realtime`, `cost_time`, `cost_fixed`, `cost_material`
+      $query = "SELECT `actiontime`, `cost_time`, `cost_fixed`, `cost_material`
                 FROM `glpi_tickets`
                 WHERE `itemtype` = '".get_class($item)."'
                       AND `items_id` = '".$item->getField('id')."'
@@ -2665,7 +2665,7 @@ class Ticket extends CommonDBTM {
       $i = 0;
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_array($result)) {
-            $totalcost += self::trackingTotalCost($data["realtime"],$data["cost_time"],
+            $totalcost += self::trackingTotalCost($data["actiontime"],$data["cost_time"],
                                                   $data["cost_fixed"], $data["cost_material"]);
          }
       }
@@ -2676,14 +2676,14 @@ class Ticket extends CommonDBTM {
    /**
     * Computer total cost of a ticket
     *
-    * @param $realtime float : ticket realtime
+    * @param $actiontime float : ticket actiontime
     * @param $cost_time float : ticket time cost
     * @param $cost_fixed float : ticket fixed cost
     * @param $cost_material float : ticket material cost
     * @return total cost formatted string
     */
-   static function trackingTotalCost($realtime, $cost_time, $cost_fixed, $cost_material) {
-      return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
+   static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material) {
+      return formatNumber(($actiontime*$cost_time)+$cost_fixed+$cost_material,true);
    }
 
 
@@ -3092,7 +3092,7 @@ class Ticket extends CommonDBTM {
       } else {
          echo "<td>".TicketValidation::getStatus($this->fields['global_validation']);
       }
-      // Need comment right to add a followup with the realtime
+      // Need comment right to add a followup with the actiontime
       if (haveRight("global_add_followups","1") && !$ID) {
          echo "<td>".$LANG['job'][20]."&nbsp;: </td>";
          echo "<td class='center' colspan='3'>";
@@ -4027,13 +4027,13 @@ class Ticket extends CommonDBTM {
             }
             $second_col .= "&nbsp;<span class='tracking_bold'>".convDateTime($data["closedate"]).
                            "</span><br>";
-            if ($data["realtime"] > 0) {
+            if ($data["actiontime"] > 0) {
                $second_col .= $LANG['job'][20]."&nbsp;: ";
             }
             if ($output_type == HTML_OUTPUT) {
                $second_col .= "<br>";
             }
-            $second_col .= "&nbsp;".self::getRealtime($data["realtime"])."</div>";
+            $second_col .= "&nbsp;".self::getActionTime($data["actiontime"])."</div>";
          }
 
          echo Search::showItem($output_type,$second_col,$item_num,$row_num,$align." width=130");
@@ -4225,18 +4225,18 @@ class Ticket extends CommonDBTM {
    }
 
 
-   static function getRealtime($realtime) {
+   static function getActionTime($actiontime) {
 //       global $LANG;
 //
 //       $output = "";
-//       $hour = floor($realtime);
+//       $hour = floor($actiontime);
 //       if ($hour>0) {
 //          $output .= $hour." ".$LANG['job'][21]." ";
 //       }
-//       $output .= round((($realtime-floor($realtime))*60))." ".$LANG['job'][22];
+//       $output .= round((($actiontime-floor($actiontime))*60))." ".$LANG['job'][22];
 //       return $output;
 
-      return timestampToString($realtime,false);
+      return timestampToString($actiontime,false);
    }
 
 

@@ -171,16 +171,16 @@ class TicketPlanning extends CommonDBTM {
          $job->updateInDB($this->updates);
       }
 
-      // Auto update realtime
+      // Auto update actiontime
       $fup=new TicketTask();
       $fup->getFromDB($this->input["tickettasks_id"]);
       $timestart=strtotime($this->input["begin"]);
       $timeend=strtotime($this->input["end"]);
 
-      $updates2[]="realtime";
-      $fup->fields["realtime"]=$timeend-$timestart;
+      $updates2[]="actiontime";
+      $fup->fields["actiontime"]=$timeend-$timestart;
       $fup->updateInDB($updates2);
-      $job->updateRealTime($this->input["tickets_id"]);
+      $job->updateActionTime($this->input["tickets_id"]);
 
       if ((!isset($this->input["_nomail"]) || $this->input["_nomail"]==0)
           && count($this->updates)>0 && $CFG_GLPI["use_mailing"]) {
@@ -231,17 +231,17 @@ class TicketPlanning extends CommonDBTM {
          $job->updateInDB($updates);
       }
 
-      // Auto update realtime
+      // Auto update actiontime
       $fup=new TicketTask();
       $fup->getFromDB($this->input["tickettasks_id"]);
-      if ($fup->fields["realtime"]==0) {
+      if ($fup->fields["actiontime"]==0) {
          $timestart=strtotime($this->input["begin"]);
          $timeend=strtotime($this->input["end"]);
 
-         $updates2[]="realtime";
-         $fup->fields["realtime"]=$timeend-$timestart;
+         $updates2[]="actiontime";
+         $fup->fields["actiontime"]=$timeend-$timestart;
          $fup->updateInDB($updates2);
-         $job->updateRealTime($this->input["tickets_id"]);
+         $job->updateActionTime($this->input["tickets_id"]);
       }
       
       if ((!isset($this->input["_nomail"]) || $this->input["_nomail"]==0)
@@ -261,11 +261,11 @@ class TicketPlanning extends CommonDBTM {
       if (isset($this->fields["users_id"]) &&
           ($this->fields["users_id"] === getLoginUserID() || haveRight("global_add_tasks","1"))) {
 
-         // Auto update realtime
+         // Auto update actiontime
          $fup=new TicketTask();
          $fup->getFromDB($this->fields["tickettasks_id"]);
-         $updates2[]="realtime";
-         $fup->fields["realtime"]=0;
+         $updates2[]="actiontime";
+         $fup->fields["actiontime"]=0;
          $fup->updateInDB($updates2);
       }
       return true;

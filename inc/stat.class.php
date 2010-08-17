@@ -344,8 +344,8 @@ class Stat {
             }
             echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
 
-            //Le temps moyen de l'intervention reelle - The average realtime to resolv
-            $data=Stat::constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["id"],$value2);
+            //Le temps moyen de l'intervention reelle - The average actiontime to resolv
+            $data=Stat::constructEntryValues("inter_avgactiontime",$date1,$date2,$type,$value[$i]["id"],$value2);
             foreach ($data as $key2 => $val2) {
                if (isset($solved[$key2])) {
                   $data[$key2]*=$solved[$key2];
@@ -353,10 +353,10 @@ class Stat {
                   $data[$key2]*=0;
                }
             }
-            $total_realtime=array_sum($data);
+            $total_actiontime=array_sum($data);
             
             if ($nb_solved>0) {
-               $timedisplay=$total_realtime/$nb_solved;
+               $timedisplay=$total_actiontime/$nb_solved;
             } else {
                $timedisplay=0;
             }
@@ -365,8 +365,8 @@ class Stat {
                $timedisplay=timestampToString($timedisplay,0);
             }
             echo Search::showItem($output_type,$timedisplay,$item_num,$row_num);
-            //Le temps total de l'intervention reelle - The total realtime to resolv
-            $timedisplay=$total_realtime;
+            //Le temps total de l'intervention reelle - The total actiontime to resolv
+            $timedisplay=$total_actiontime;
             if ($output_type==HTML_OUTPUT
                || $output_type==PDF_OUTPUT_LANDSCAPE
                || $output_type==PDF_OUTPUT_PORTRAIT) {
@@ -574,18 +574,18 @@ class Stat {
                      GROUP BY date_unix
                      ORDER BY `glpi_tickets`.`closedate`";
             break;
-         case "inter_avgrealtime" :
+         case "inter_avgactiontime" :
             if ($param=="technicien_followup") {
-               $realtime_table = "glpi_tickettasks";
+               $actiontime_table = "glpi_tickettasks";
             } else {
-               $realtime_table = "glpi_tickets";
+               $actiontime_table = "glpi_tickets";
             }
-            $WHERE .= " AND `$realtime_table`.`realtime` > '0' ";
+            $WHERE .= " AND `$actiontime_table`.`actiontime` > '0' ";
             $WHERE .= " AND ".getDateRequest("`glpi_tickets`.`solvedate`",$begin,$end);
 
             $query = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`),'%Y-%m')
                                  AS date_unix,
-                           AVG(`$realtime_table`.`realtime`) AS total_visites
+                           AVG(`$actiontime_table`.`actiontime`) AS total_visites
                      FROM `glpi_tickets`
                      $LEFTJOIN
                      $WHERE
