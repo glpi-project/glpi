@@ -372,36 +372,41 @@ class Computer_Item extends CommonDBRelation{
             unset($items[$itemtype]);
          }
       }
-      if (count($items)){
+      if (count($items)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='".max(2,count($items))."'>".$LANG['connect'][0]."&nbsp;:</th></tr>";
 
-         echo "<tr>";
-         $header_displayed = 0;
-         foreach ($items as $itemtype => $title) {
-            if ($header_displayed==2) {
-               break;
-            }
-            echo "<th>".$title."&nbsp;:</th>";
-            $header_displayed++;
-         }
-         echo "</tr>";
          echo "<tr class='tab_bg_1'>";
          $items_displayed = 0;
+         $nbperline=2;
          foreach ($items as $itemtype=>$title) {
             $used = array();
 
-            if ($items_displayed==2) {
-               echo "</tr><tr>";
-               $header_displayed = 0;
+            // Line change
+            if ($items_displayed%$nbperline==0) {
+               // Begin case 
+               if ($items_displayed!=0) {
+                     echo "</tr>";
+               }
+               echo "<tr>";
+               $count = 0;
+               $header_displayed=0;
                foreach ($items as $tmp_title) {
-                  if ($header_displayed>=2) {
+                  if ($count>=$items_displayed 
+                        && $header_displayed <$nbperline) {
                      echo "<th>".$tmp_title."&nbsp;:</th>";
+                     $header_displayed++;
                   }
+                  $count++;
+               }
+               // Add header if line not complete
+               while ($header_displayed%$nbperline!=0) {
+                  echo "<th>&nbsp;</th>";
                   $header_displayed++;
                }
                echo "</tr><tr class='tab_bg_1'>";
             }
+
             echo "<td class='center'>";
             $query = "SELECT *
                       FROM `glpi_computers_items`
@@ -475,6 +480,10 @@ class Computer_Item extends CommonDBRelation{
                }
             }
             echo "</td>";
+            $items_displayed++;
+         }
+         while ($items_displayed%$nbperline!=0) {
+            echo "<td>&nbsp;</td>";
             $items_displayed++;
          }
          echo "</tr>";
