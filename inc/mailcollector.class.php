@@ -660,9 +660,10 @@ class MailCollector  extends CommonDBTM {
          foreach($header as $line) {
             // is line with additional header?
             if (preg_match("/^X-/i", $line)) {
-                // separate name and value
-                preg_match("/^([^:]*): (.*)/i", $line, $arg);
-                $head[$arg[1]] = $arg[2];
+               // separate name and value
+               if (preg_match("/^([^:]*): (.*)/i", $line, $arg)) {
+                  $head[$arg[1]] = $arg[2];
+               }
             }
          }
       }
