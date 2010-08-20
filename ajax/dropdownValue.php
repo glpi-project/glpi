@@ -294,6 +294,7 @@ if ($item instanceof CommonTreeDropdown) {
                               $raquo2="";
                            }
 
+                           // TODO disabled attribute not honoured by IE6 and IE7
                            $to_display="<option disabled value='$work_parentID' $class2
                                     title=\"".cleanInputText($item->fields['completename'].
                                     $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
