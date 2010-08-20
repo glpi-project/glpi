@@ -3749,10 +3749,11 @@ class Ticket extends CommonDBTM {
    *
    * @param $itemtype
    * @param $items_id
+   * @param $idsearchfield interger, ref of the field "id" in object search options
    *
    * @return nothing (display a table)
    */
-   static function showListForItem($itemtype,$items_id) {
+   static function showListForItem($itemtype, $items_id, $idsearchfield=2) {
       global $DB,$CFG_GLPI, $LANG;
 
       if (!haveRight("show_all_ticket","1")) {
@@ -3783,11 +3784,11 @@ class Ticket extends CommonDBTM {
 
          $options['field'][0]      = 12;
          $options['searchtype'][0] = 'equals';
-         $options['contains'][0]   = 'new';
+         $options['contains'][0]   = 'all';
          $options['link'][0]       = 'AND';
 
          $options['itemtype2'][0]   = $itemtype;
-         $options['field2'][0]      = 2;
+         $options['field2'][0]      = $idsearchfield;
          $options['searchtype2'][0] = 'equals';
          $options['contains2'][0]   = $items_id;
          $options['link2'][0]       = 'AND';
