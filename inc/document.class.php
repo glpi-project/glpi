@@ -192,7 +192,7 @@ class Document extends CommonDBTM {
          $input['mime']=$_FILES['filename']['type'];
       }
 
-      if (isset($input['current_filename'])) {
+      if (isset($input['current_filepath'])) {
          if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
             $this->moveUploadedDocument($input,$input["upload_file"]);
          } else if (isset($_FILES['filename'])) {
@@ -203,6 +203,7 @@ class Document extends CommonDBTM {
       if (empty($input['filename'])) {
          unset($input['filename']);
       }
+      unset($input['current_filepath']);
       unset($input['current_filename']);
 
       return $input;
@@ -262,6 +263,7 @@ class Document extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['document'][22]."&nbsp;:</td>";
          echo "<td>".$this->getDownloadLink('',45);
+         echo "<input type='hidden' name='current_filepath' value='".$this->fields["filepath"]."'>";
          echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
          echo "</td></tr>";
       }
@@ -786,7 +788,7 @@ class Document extends CommonDBTM {
     * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
     *
     * @param $filename filename to move
-    * @param $input array of data used in adding process (need current_filename)
+    * @param $input array of data used in adding process (need current_filepath)
     *
     * @return boolean for success / $input array is updated
     *
@@ -813,14 +815,16 @@ class Document extends CommonDBTM {
       }
 
       // Delete old file (if not used by another doc)
-      if (isset($input['current_filename'])
-          && !empty($input['current_filename'])
-          && is_file(GLPI_DOC_DIR."/".$input['current_filename'])
-          && countElementsInTable('glpi_documents',"`sha1sum`='$sha1sum'")<=1) {
-         if (unlink(GLPI_DOC_DIR."/".$input['current_filename'])) {
-            addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$input['current_filename']);
+      if (isset($input['current_filepath'])
+          && !empty($input['current_filepath'])
+          && is_file(GLPI_DOC_DIR."/".$input['current_filepath'])
+          && countElementsInTable('glpi_documents',
+                  "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".$input['current_filepath'])."'")<=1) {
+         if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
+            addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
          } else {
-            addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$input['current_filename'],
+            addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
+                                    " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
                                     false,ERROR);
          }
       }
@@ -881,13 +885,15 @@ class Document extends CommonDBTM {
       }
 
       // Delete old file (if not used by another doc)
-      if (isset($input['current_filename'])
-          && !empty($input['current_filename'])
-          && countElementsInTable('glpi_documents',"`sha1sum`='$sha1sum'")<=1) {
-         if (unlink(GLPI_DOC_DIR."/".$input['current_filename'])) {
-            addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$input['current_filename']);
+      if (isset($input['current_filepath'])
+          && !empty($input['current_filepath'])
+          && countElementsInTable('glpi_documents',
+            "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".$input['current_filepath'])."'")<=1) {
+         if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
+            addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
          } else {
-            addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$input['current_filename'],
+            addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
+                                    " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
                                     false,ERROR);
          }
       }
