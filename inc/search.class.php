@@ -3383,11 +3383,16 @@ class Search {
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
 
-               $options['itemtype2'][0]  = $itemtype;
-               $options['field2'][0]      = 2;
+               $options['field'][0]      = 12;
+               $options['searchtype'][0] = 'equals';
+               $options['contains'][0]   = 'all';
+               $options['link'][0]       = 'AND';
+
+               $options['itemtype2'][0]   = $itemtype;
+               $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
                $options['searchtype2'][0] = 'equals';
                $options['contains2'][0]   = $data['id'];
-               $options['link2'][0]        = 'AND';
+               $options['link2'][0]       = 'AND';
 
                $options['reset']='reset';
 
@@ -3937,6 +3942,28 @@ class Search {
       return $options;
    }
 
+
+   /**
+    *
+    * Get an option number in the SEARCH_OPTION array
+    *
+    * @param $itemtype
+    * @param $field name
+    *
+    * @return integer
+    */
+   static function getOptionNumber($itemtype, $field) {
+      $table = getTableForItemType($itemtype);
+
+      $opts = &self::getOptions($itemtype);
+
+      foreach ($opts as $num => $opt) {
+         if ($opt['table']==$table && $opt['field']==$field) {
+            return $num;
+         }
+      }
+      return 0;
+   }
 
    /**
    * Get the SEARCH_OPTION array
