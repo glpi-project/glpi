@@ -1229,7 +1229,7 @@ class Search {
                       $LANG['search'][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
                if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
-                  echo "<input type='hidden' disabled id='delete_search_count2' 
+                  echo "<input type='hidden' disabled id='delete_search_count2'
                          name='delete_search_count2' value='1'>";
                   echo "<a href='#' onClick = \"document.getElementById('delete_search_count2').disabled=false;
                          document.forms['searchform$itemtype'].submit();\">";
@@ -1991,7 +1991,7 @@ class Search {
             if ($meta && $meta_type == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`) SEPARATOR '$$$$') 
+                                                     `$table$addtable`.`$field`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             } else if ($itemtype == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
@@ -2205,7 +2205,7 @@ class Search {
                      $month  = date("n");
                      $day    = date("j");
                      $year   = date("Y");
-   
+
                      switch ($matches[3]) {
                         case "YEAR" :
                            $year += $nb;
@@ -3277,7 +3277,7 @@ class Search {
 
          case "glpi_tickets.priority":
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$NAME.$num]].";\" ";
- 
+
          default:
             return "";
       }
@@ -3569,8 +3569,13 @@ class Search {
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
 
+               $options['field'][0]      = 12;
+               $options['searchtype'][0] = 'equals';
+               $options['contains'][0]   = 'all';
+               $options['link'][0]       = 'AND';
+
                $options['itemtype2'][0]   = $itemtype;
-               $options['field2'][0]      = 2;
+               $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
                $options['searchtype2'][0] = 'equals';
                $options['contains2'][0]   = $data['id'];
                $options['link2'][0]       = 'AND';
@@ -4087,7 +4092,7 @@ class Search {
    * @param $itemtype item type to manage
    * @param $action action which is used to manupulate searchoption (r/w)
    * @param $withplugins boolean get plugins options
-   * 
+   *
    * @return clean $SEARCH_OPTION array
    */
    static function getCleanedOptions($itemtype, $action='r', $withplugins=true) {
@@ -4128,6 +4133,28 @@ class Search {
       return $options;
    }
 
+
+   /**
+    *
+    * Get an option number in the SEARCH_OPTION array
+    *
+    * @param $itemtype
+    * @param $field name
+    *
+    * @return integer
+    */
+   static function getOptionNumber($itemtype, $field) {
+      $table = getTableForItemType($itemtype);
+
+      $opts = &self::getOptions($itemtype);
+
+      foreach ($opts as $num => $opt) {
+         if ($opt['table']==$table && $opt['field']==$field) {
+            return $num;
+         }
+      }
+      return 0;
+   }
 
    /**
    * Get the SEARCH_OPTION array
@@ -4504,7 +4531,7 @@ class Search {
    *
    * @param $name name of array
    * @param $array array to be added
-   * 
+   *
    * @return string to add
    *
    */
@@ -4525,7 +4552,7 @@ class Search {
    *
    * @param $itemtype item type
    * @param $searchID ID of the element in $SEARCHOPTION
-   * 
+   *
    * @return boolean
    *
    */
@@ -4563,7 +4590,7 @@ class Search {
                   case "equals" :
                      $actions['equals'] = $LANG['rulesengine'][0];
                      break;
- 
+
                   case "notequals" :
                      $actions['notequals'] = $LANG['rulesengine'][1];
                      break;
@@ -4583,7 +4610,7 @@ class Search {
                                'notequals' => $LANG['rulesengine'][1],
                                'contains'   => $LANG['search'][2],
                                'searchopt' => $searchopt[$field_num]);
- 
+
                case 'right' :
                   return array('equals'    => $LANG['rulesengine'][0],
                                'notequals' => $LANG['rulesengine'][1],
