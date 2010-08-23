@@ -780,7 +780,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##validation.submission.title##']
                = $LANG['validation'][27]." (".$LANG['job'][4].
                  " ".html_clean(getUserName($validation['users_id'])).")";
-            $tmp['##lang.validation.answer.title##']
+            $tmp['##validation.answer.title##']
                = $LANG['validation'][32]." (".$LANG['validation'][21].
                  " ".html_clean(getUserName($validation['users_id_validate'])).")";
 
