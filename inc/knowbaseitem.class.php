@@ -350,18 +350,18 @@ class KnowbaseItem extends CommonDBTM {
       $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",
                                                    $knowbaseitemcategories_id);
 
-      echo "<table class='tab_cadre_fixe'><tr><th colspan='2'>".$LANG['common'][36]."&nbsp;:&nbsp;";
+      echo "<table class='tab_cadre_fixe'><tr><th colspan='3'>".$LANG['common'][36]."&nbsp;:&nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/".
             (isset($_SESSION['glpiactiveprofile'])
              && $_SESSION['glpiactiveprofile']['interface']=="central"?"knowbaseitem.php":"helpdesk.faq.php").
             "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
       echo "</th></tr>";
 
-      echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>".$LANG['knowbase'][14]."</h2>";
+      echo "<tr class='tab_bg_3'><td class='left' colspan='3'><h2>".$LANG['knowbase'][14]."</h2>";
       echo $this->fields["question"];
 
       echo "</td></tr>";
-      echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>".$LANG['knowbase'][15]."</h2>\n";
+      echo "<tr class='tab_bg_3'><td class='left' colspan='3'><h2>".$LANG['knowbase'][15]."</h2>\n";
 
       $answer = unclean_cross_side_scripting_deep($this->fields["answer"]);
 
@@ -384,8 +384,18 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields["date"]) {
          echo $LANG['knowbase'][27]."&nbsp;: ". convDateTime($this->fields["date"]);
       }
-
-      echo "</th><th class='tdkb'>";
+      
+      echo "</th>";
+      
+      if (isMultiEntitiesMode()) {
+         echo "<th class='tdkb'>";
+         echo $LANG['entity'][0]."&nbsp;: ";
+         echo Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]);
+         echo "&nbsp;-&nbsp;".$LANG['entity'][9]."&nbsp;: ";
+         echo Dropdown::getYesNo($this->fields["is_recursive"])."</th>";
+      }
+      
+      echo "<th class='tdkb'>";
       if ($this->fields["date_mod"]) {
          echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]).
               "&nbsp;&nbsp;|&nbsp;&nbsp; ";
