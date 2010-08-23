@@ -55,7 +55,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $LANG;
 
-      $this->datas['##dbconnection.description##'] = $LANG['setup'][808];
+      $this->datas['##lang.dbconnection.title##']  = $LANG['setup'][808];
       $this->datas['##lang.dbconnection.delay##']  = $LANG['setup'][807];
       $this->datas['##dbconnection.delay##']       = DBConnection::getReplicateDelay();
    }
