@@ -256,7 +256,7 @@ class DBConnection extends CommonDBTM {
 
          if ($diff > ($task->fields['param']*60)) {
             //Raise event if replicate is not synchronized
-            NotificationEvent::raiseEvent('desynchronization',$this);
+            NotificationEvent::raiseEvent('desynchronization', new self());
          }
          return 1;
       }
