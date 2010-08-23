@@ -199,12 +199,13 @@ class DBConnection extends CommonDBTM {
     */
    static function getHistoryMaxDate($DBconnection) {
 
-      $result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(date_mod)) as max_date FROM glpi_logs");
-      if ($DBconnection->numrows($result) > 0) {
-         return $DBconnection->result($result, 0, "max_date");
-      } else {
-         return "";
+      if ($DBconnection->connected) {
+         $result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(date_mod)) as max_date FROM glpi_logs");
+         if ($DBconnection->numrows($result) > 0) {
+            return $DBconnection->result($result, 0, "max_date");
+         }
       }
+      return 0;
    }
 
    /**

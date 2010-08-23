@@ -94,8 +94,11 @@ class Config extends CommonDBTM {
          if ($input['_dbslave_status']) {
             DBConnection::changeCronTaskStatus(true);
             if (!$already_active) {
+               // Activate Slave from the "system" tab
                DBConnection::createDBSlaveConfig();
-            } else {
+
+            } else if (isset($input["_dbreplicate_dbhost"])) {
+               // Change parameter from the "replicate" tab
                DBConnection::saveDBSlaveConf($input["_dbreplicate_dbhost"],$input["_dbreplicate_dbuser"],
                                $input["_dbreplicate_dbpassword"],$input["_dbreplicate_dbdefault"]);
             }
@@ -402,6 +405,7 @@ class Config extends CommonDBTM {
       echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
+      echo "<input type='hidden' name='_dbslave_status' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
       $active = DBConnection::isDBSlaveActive();
 
