@@ -384,8 +384,18 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields["date"]) {
          echo $LANG['knowbase'][27]."&nbsp;: ". convDateTime($this->fields["date"]);
       }
-
-      echo "</th><th class='tdkb'>";
+      
+      echo "</th>";
+      
+      if (isMultiEntitiesMode()) {
+         echo "<th class='tdkb'>";
+         echo $LANG['entity'][0]."&nbsp;: ";
+         echo Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]);
+         echo "&nbsp;-&nbsp;".$LANG['entity'][9]."&nbsp;: ";
+         echo Dropdown::getYesNo($this->fields["is_recursive"])."</th>";
+      }
+      
+      echo "<th class='tdkb'>";
       if ($this->fields["date_mod"]) {
          echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]).
               "&nbsp;&nbsp;|&nbsp;&nbsp; ";
