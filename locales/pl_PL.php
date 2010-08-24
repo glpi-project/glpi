@@ -1494,7 +1494,7 @@ $LANG['rulesengine'][145]="Użytkownik z pojedyńczym profilem";
 $LANG['rulesengine'][146]="Charakterystyka profilu użytkownika"; 
 $LANG['rulesengine'][147]="Charakterystyka użytkownika pojedynczego profilu"; 
 $LANG['rulesengine'][148]="Znane domeny email"; 
-$LANG['rulesengine'][150]="The rules affected to the entity have been disabled."; 
+$LANG['rulesengine'][150]="The rules linked with the entity have been disabled."; 
 
 $LANG['search'][0]="Szukaj"; 
 $LANG['search'][1]="dla wszystkich"; 
