@@ -54,7 +54,8 @@ if (isset($_POST["add"])) {
    $_GET["action"] = "load";
 
 } else if (isset($_POST["update"])) {
-   $bookmark->check($_POST["id"],'w');
+   $bookmark->check($_POST["id"], 'w');   // Right to update the bookmark
+   $bookmark->check(-1, 'w', $_POST);     // Right when entity change
 
    $bookmark->update($_POST);
    $_GET["action"] = "load";
