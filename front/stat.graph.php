@@ -119,8 +119,8 @@ switch($_GET["type"]) {
       $val1 = $_GET["id"];
       $val2 = "";
 
-      $next = getNextItem("glpi_ticketcategories",$_GET["id"]);
-      $prev = getPreviousItem("glpi_ticketcategories",$_GET["id"]);
+      $next = getNextItem("glpi_ticketcategories", $_GET["id"], '', 'completename');
+      $prev = getPreviousItem("glpi_ticketcategories", $_GET["id"], '', 'completename');
       $title = $LANG['common'][36]."&nbsp;: ".Dropdown::getDropdownName("glpi_ticketcategories",$_GET["id"]);
       break;
 
