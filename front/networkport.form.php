@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
    checkRight("networking","w");
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
-         if ($np->can($_POST['id'],'d')) {
+         if ($np->can($port_id,'d')) {
             $np->delete(array("id" => $port_id));
          }
       }
