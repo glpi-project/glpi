@@ -48,7 +48,7 @@ $LANG['bookmark'][1]="Semn de carte";
 $LANG['bookmark'][3]="Nu ați salvat încă semnul de carte"; 
 $LANG['bookmark'][4]="Semn de carte nou"; 
 $LANG['bookmark'][5]="Semn de carte public"; 
-$LANG['bookmark'][6]="Apply by default"; 
+$LANG['bookmark'][6]="Default view"; 
 
 $LANG['buttons'][0]="Caută"; 
 $LANG['buttons'][2]="OK"; 
@@ -669,7 +669,7 @@ $LANG['install'][58]="glpi/glpi pentru contul de administrator";
 $LANG['install'][59]="tech/tech pentru contul technicianului"; 
 $LANG['install'][60]="normal/normal for the normal account"; 
 $LANG['install'][61]="post-only/postonly for the postonly account"; 
-$LANG['install'][62]="You can delete or modify these accounts as well as the initial datas."; 
+$LANG['install'][62]="You can delete or modify these accounts as well as the initial data."; 
 $LANG['install'][64]="Folositi GLPI"; 
 $LANG['install'][65]="testarea extensiei magic_quotes_sybase"; 
 $LANG['install'][66]="GLPI nu lucreaza cu optiunea magic_quotes_sybase; Dezactivati optiunea si reincercati"; 
