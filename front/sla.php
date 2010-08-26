@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: sla.php 11253 2010-04-13 10:26:26Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

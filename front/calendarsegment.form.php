@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: calendarsegment.form.php 11159 2010-03-30 16:50:31Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

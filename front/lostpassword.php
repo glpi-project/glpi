@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id: preference.php 11521 2010-06-01 12:55:07Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

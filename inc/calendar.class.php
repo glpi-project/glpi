@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: calendar.class.php 11832 2010-06-29 12:24:17Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

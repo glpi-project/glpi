@@ -1,6 +1,6 @@
 <?php
 /*
- * @license $Id: computer_softwarelicense.class.php 11680 2010-06-11 17:10:12Z yllen $
+ * @license $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

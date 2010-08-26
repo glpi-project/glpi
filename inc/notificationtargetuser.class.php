@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: notificationtargetcartridge.class.php 11220 2010-04-06 10:20:36Z walid $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
