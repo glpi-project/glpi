@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: planningend.php 10856 2010-03-02 15:36:09Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: rule.common.tabs.php 10879 2010-03-04 10:41:38Z walid $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
