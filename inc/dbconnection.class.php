@@ -44,15 +44,16 @@ class DBConnection extends CommonDBTM {
       return $LANG['setup'][800];
    }
 
+
    /**
     * Create slave DB configuration file
+    *
     * @param host the slave DB host
     * @param user the slave DB user
     * @param password the slave DB password
     * @param DBname the name of the slave DB
     */
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
-      global $CFG_GLPI;
 
       $DB_str = "<?php \n class DBSlave extends DBmysql { \n var \$slave = true; \n var \$dbhost = '" .
                   $host . "'; \n var \$dbuser = '" . $user . "'; \n var \$dbpassword= '" .
@@ -62,18 +63,20 @@ class DBConnection extends CommonDBTM {
          $fw = fwrite($fp, $DB_str);
          fclose($fp);
          return true;
-      } else {
-         return false;
       }
+      return false;
    }
+
 
    /**
     * Indicates is the DB replicate is active or not
+    *
     * @return true if active / false if not active
     */
    static function isDBSlaveActive() {
       return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
    }
+
 
    /**
     * Read slave DB configuration file
@@ -86,26 +89,33 @@ class DBConnection extends CommonDBTM {
       }
    }
 
+
    /**
     * Create a default slave DB configuration file
     */
    static function createDBSlaveConfig() {
+
       DBConnection::createSlaveConnectionFile("localhost", "glpi", "glpi", "glpi");
    }
+
 
    /**
     * Save changes to the slave DB configuration file
     */
    static function saveDBSlaveConf($host, $user, $password, $DBname) {
+
       DBConnection::createSlaveConnectionFile($host, $user, $password, $DBname);
    }
+
 
    /**
     * Delete slave DB configuration file
     */
    static function deleteDBSlaveConfig() {
+
       unlink(GLPI_CONFIG_DIR . "/config_db_slave.php");
    }
+
 
    /**
     * Switch database connection to slave
@@ -117,31 +127,35 @@ class DBConnection extends CommonDBTM {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
          $DB = new DBSlave;
          return $DB->connected;
-      } else {
-         return false;
       }
+      return false;
    }
+
 
    /**
     * Switch database connection to master
     */
    static function switchToMaster() {
       global $DB;
+
       $DB = new DB;
       return $DB->connected;
    }
 
+
    /**
     *  Establish a connection to a mysql server (main or replicate)
+    *
     * @param $use_slave try to connect to slave server first not to main server
-    * @param $required connection to the specified server is required (if connection failed, do not try to connect to the other server)
+    * @param $required connection to the specified server is required
+    *                  (if connection failed, do not try to connect to the other server)
     * @param $display display error message
     */
    static function establishDBConnection($use_slave, $required, $display=true) {
       global $DB;
 
-      $DB = null;
-      $res=false;
+      $DB  = null;
+      $res = false;
 
       // First standard config : no use slave : try to connect to master
       if (!$use_slave) {
@@ -157,7 +171,8 @@ class DBConnection extends CommonDBTM {
             if ($use_slave) {
                $res = DBConnection::switchToMaster();
             }
-         // SLave DB configured
+
+         // Slave DB configured
          } else {
             // Try to connect to slave if wanted
             if ($use_slave) {
@@ -184,6 +199,7 @@ class DBConnection extends CommonDBTM {
       return $res;
    }
 
+
    /**
     *  Get delay between slave and master
     */
@@ -193,20 +209,24 @@ class DBConnection extends CommonDBTM {
       return (int) (DBConnection::getHistoryMaxDate(new DB) - DBConnection::getHistoryMaxDate(new DBSlave));
    }
 
+
    /**
     *  Get history max date of a GLPI DB
+    *
     * @param $DBconnection DB conneciton used
     */
    static function getHistoryMaxDate($DBconnection) {
 
       if ($DBconnection->connected) {
-         $result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(date_mod)) as max_date FROM glpi_logs");
+         $result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(date_mod)) AS max_date
+                                         FROM glpi_logs");
          if ($DBconnection->numrows($result) > 0) {
             return $DBconnection->result($result, 0, "max_date");
          }
       }
       return 0;
    }
+
 
    /**
     *  Display a common mysql connection error
@@ -217,17 +237,19 @@ class DBConnection extends CommonDBTM {
 
       if (!isCommandLine()) {
          echo "<div class='center'><p><strong>
-                A link to the Mysql server could not be established. Please Check your configuration.
+                A link to the Mysql server could not be established. Please check your configuration.
                 </strong></p><p><strong>
-                Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</strong></p></div>";
+                Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</strong></p>
+               </div>";
       } else {
-         echo "A link to the Mysql server could not be established. Please Check your configuration.\n";
+         echo "A link to the Mysql server could not be established. Please check your configuration.\n";
          echo "Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration\n";
       }
 
       nullFooter();
       die();
    }
+
 
    static function cronInfo($name) {
       global $LANG;
@@ -236,14 +258,14 @@ class DBConnection extends CommonDBTM {
                    'parameter'   => $LANG['setup'][806]);
    }
 
+
    /**
     *  Cron process to check DB replicate state
     *
     * @param $task to log and get param
-    *
     */
    static function cronCheckDBreplicate($task) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB;
 
       //Lauch cron only is :
       // 1 the master database is avalaible
@@ -263,32 +285,38 @@ class DBConnection extends CommonDBTM {
       return 0;
    }
 
+
    function showSystemInformations($width) {
       global $LANG;
-      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . $LANG['setup'][800] . "</th></tr>";
+
+      echo "\n</pre></td>";
+      echo "</tr><tr class='tab_bg_2'><th>" . $LANG['setup'][800] . "</th></tr>";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       if (DBConnection::isDBSlaveActive()) {
-         echo $LANG['common'][60]." : ".$LANG['choice'][1]."\n";
+         echo $LANG['common'][60]."&nbsp;: ".$LANG['choice'][1]."\n";
 
          $task = new CronTask;
          $task->getFromDBbyName('DBConnection','CheckDBreplicate');
          $diff = DBConnection::getReplicateDelay();
-         echo $LANG['setup'][803]." : ".timestampToString($diff)."\n";
-      }
-      else {
-            echo $LANG['common'][60]." : ".$LANG['choice'][0]."\n";
+         echo $LANG['setup'][803]."&nbsp;: ".timestampToString($diff)."\n";
+
+      } else {
+         echo $LANG['common'][60]."&nbsp;: ".$LANG['choice'][0]."\n";
       }
       echo "\n</pre></td></tr>";
    }
 
+
    /**
     * Enable or disable db replication check cron task
+    *
     * @param enable of disable cron task
     */
    static function changeCronTaskStatus($enable=true) {
+
       $cron = new CronTask;
-      $cron->getFromDBbyName('DBConnection','CheckDBreplicate');
-      $input['id'] = $cron->fields['id'];
+      $cron->getFromDBbyName('DBConnection', 'CheckDBreplicate');
+      $input['id']    = $cron->fields['id'];
       $input['state'] = ($enable?1:0);
       $cron->update($input);
    }
