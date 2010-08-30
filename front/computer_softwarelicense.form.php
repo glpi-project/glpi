@@ -40,21 +40,21 @@ include (GLPI_ROOT . "/inc/includes.php");
 $csl = new Computer_SoftwareLicense();
 
 if (isset($_POST["move"])) {
-   checkRight("software","w");
+   checkRight("software", "w");
    if ($_POST['softwarelicenses_id'] > 0 ){
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
             $csl->upgrade($key, $_POST['softwarelicenses_id']);
             Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                     $_SESSION["glpiname"]." move computers from a license to another.");
+                       $_SESSION["glpiname"]." move computers from a license to another.");
          }
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-// From association list 
+// From association list
 } else if (isset($_POST["delete"])) {
-   checkRight("software","w");
+   checkRight("software", "w");
 
    foreach ($_POST["item"] as $key => $val) {
       if ($val == 1) {
@@ -62,7 +62,8 @@ if (isset($_POST["move"])) {
       }
    }
    Event::log($_POST["softwares_id"], "software", 5, "inventory",
-               $_SESSION["glpiname"]." delete association with a software license for several computers.");
+              $_SESSION["glpiname"]." delete association with a software license for several computers.");
+
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 

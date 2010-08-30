@@ -46,12 +46,13 @@ if (!$CFG_GLPI['use_mailing']) {
    exit();
 }
 if (isset($_REQUEST['token'])) {
-   
+
    if (isset($_REQUEST['email'])) {
       $user->updateForgottenPassword($_REQUEST);
    } else {
       User::showPasswordForgetChangeForm($_REQUEST['token']);
    }
+
 } else {
 
    if (isset($_REQUEST['email'])) {
@@ -62,4 +63,5 @@ if (isset($_REQUEST['token'])) {
 }
 nullFooter();
 exit();
+
 ?>
