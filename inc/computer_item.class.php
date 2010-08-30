@@ -372,7 +372,7 @@ class Computer_Item extends CommonDBRelation{
             unset($items[$itemtype]);
          }
       }
-      if (count($items)){
+      if (count($items)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='".max(2,count($items))."'>".$LANG['connect'][0]."&nbsp;:</th></tr>";
 
@@ -392,7 +392,7 @@ class Computer_Item extends CommonDBRelation{
                $count = 0;
                $header_displayed = 0;
                foreach ($items as $tmp_title) {
-                  if ($count>=$items_displayed  && $header_displayed <$nbperline) {
+                  if ($count>=$items_displayed  && $header_displayed<$nbperline) {
                      echo "<th>".$tmp_title."&nbsp;:</th>";
                      $header_displayed++;
                   }
