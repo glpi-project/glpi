@@ -49,37 +49,39 @@ abstract class CommonDropdown extends CommonDBTM {
 
    /**
     * Return Additional Fileds for this type
-    */
+    **/
    function getAdditionalFields() {
       return array();
    }
 
-   function defineTabs($options=array()) {
-      global $LANG;
 
-      $ong=array();
+   function defineTabs($options=array()) {
+
+      $ong = array();
       $ong[1] = $this->getTypeName();
       return $ong;
    }
 
-  /**
-   * Have I the right to "create" the Object
-   *
-   * MUST be overloaded for entity_dropdown
-   *
-   * @return booleen
-   **/
+
+   /**
+    * Have I the right to "create" the Object
+    *
+    * MUST be overloaded for entity_dropdown
+    *
+    * @return booleen
+    **/
    function canCreate() {
       return haveRight('dropdown','w');
    }
 
+
    /**
-   * Have I the right to "view" the Object
-   *
-   * MUST be overloaded for entity_dropdown
-   *
-   * @return booleen
-   **/
+    * Have I the right to "view" the Object
+    *
+    * MUST be overloaded for entity_dropdown
+    *
+    * @return booleen
+    **/
    function canView() {
       return haveRight('dropdown','r');
    }
@@ -92,8 +94,9 @@ abstract class CommonDropdown extends CommonDBTM {
     * @param $tab number of the tab
     *
     * @return true if handled (for class stack)
-    */
+    **/
    function showTabContent ($ID, $tab) {
+
       if (!$this->isNewID($ID)) {
          switch ($tab) {
             case -1 :
@@ -107,11 +110,12 @@ abstract class CommonDropdown extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Display title above search engine
     *
     * @return nothing (HTML display if needed)
-    */
+    **/
    function title() {
       global $LANG;
 
@@ -119,11 +123,13 @@ abstract class CommonDropdown extends CommonDBTM {
                                  Dropdown::getStandardDropdownItemTypes(), $this->getSearchUrl());
    }
 
+
    function displayHeader () {
-      commonHeader($this->getTypeName(),'',"config","dropdowns",get_class($this));
+      commonHeader($this->getTypeName(), '', "config", "dropdowns", get_class($this));
    }
 
-   function showForm ($ID,$options=array()) {
+
+   function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       if (!$this->isNewID($ID)) {
@@ -136,24 +142,24 @@ abstract class CommonDropdown extends CommonDBTM {
       $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();
-      $nb=count($fields);
+      $nb = count($fields);
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
       echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
       if ($this instanceof CommonDevice) {
          // Awfull hack for CommonDevice where name is designation
-         autocompletionTextField($this,"designation");
+         autocompletionTextField($this, "designation");
       } else {
-         autocompletionTextField($this,"name");
+         autocompletionTextField($this, "name");
       }
       echo "</td>";
 
       echo "<td rowspan='".($nb+1)."'>";
       echo $LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='".($nb+1)."'>
-            <textarea cols='45' rows='".($nb+2)."' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+            <textarea cols='45' rows='".($nb+2)."' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>\n";
 
       foreach ($fields as $field) {
          echo "<tr class='tab_bg_1'><td>".$field['label']."&nbsp;:</td><td>";
@@ -174,7 +180,7 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'text' :
-               autocompletionTextField($this,$field['name']);
+               autocompletionTextField($this, $field['name']);
                break;
 
             case 'parent' :
@@ -191,9 +197,8 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'icon' :
-               Dropdown::dropdownIcons($field['name'],
-                             $this->fields[$field['name']],
-                             GLPI_ROOT."/pics/icones");
+               Dropdown::dropdownIcons($field['name'], $this->fields[$field['name']],
+                                       GLPI_ROOT."/pics/icones");
                if (!empty($this->fields[$field['name']])) {
                   echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".
                        $CFG_GLPI["typedoc_icon_dir"]."/".$this->fields[$field['name']]."'>";
@@ -224,17 +229,21 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
 
+
    function pre_deleteItem() {
+
       if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
          return false;
       }
       return true;
    }
+
+
    /**
-   * Get search function for the class
-   *
-   * @return array of search option
-   */
+    * Get search function for the class
+    *
+    * @return array of search option
+    **/
    function getSearchOptions() {
       global $LANG;
 
@@ -283,10 +292,11 @@ abstract class CommonDropdown extends CommonDBTM {
       return $tab;
    }
 
+
    /** Check if the dropdown $ID is used into item tables
-   *
-   * @return boolean : is the value used ?
-   */
+    *
+    * @return boolean : is the value used ?
+    **/
    function isUsed() {
       global $DB;
 
@@ -304,6 +314,7 @@ abstract class CommonDropdown extends CommonDBTM {
                   if ($DB->result($result, 0, "cpt") > 0) {
                      return true;
                   }
+
                } else {
                   foreach ($field as $f) {
                      $query = "SELECT COUNT(*) AS cpt
@@ -321,24 +332,26 @@ abstract class CommonDropdown extends CommonDBTM {
       return false;
    }
 
+
    /**
-   * Report if a dropdown have Child
-   * Used to (dis)allow delete action
-   */
+    * Report if a dropdown have Child
+    * Used to (dis)allow delete action
+    **/
    function haveChildren() {
       return false;
    }
 
+
    /**
-   * Show a dialog to Confirm delete action
-   * And propose a value to replace
-   *
-   * @param $target string URL
-   *
-   *
-   */
+    * Show a dialog to Confirm delete action
+    * And propose a value to replace
+    *
+    * @param $target string URL
+    *
+    *
+    **/
    function showDeleteConfirmForm($target) {
-      global $DB, $LANG,$CFG_GLPI;
+      global $LANG;
 
       if ($this->haveChildren()) {
          echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";
@@ -354,11 +367,12 @@ abstract class CommonDropdown extends CommonDBTM {
          // Delete form (set to 0)
          echo "<p>" . $LANG['setup'][64] . "</p>";
          echo "<form action='$target' method='post'>";
-         echo "<table class='tab_cadre'><tr><td>";
-         echo "<input type='hidden' name='id' value='$ID'/>";
-         echo "<input type='hidden' name='forcedelete' value='1'/>";
-         echo "<input class='button' type='submit' name='delete' value='".$LANG['buttons'][2]."'/></td>";
-         echo "<td><input class='button' type='submit' name='annuler' value='".$LANG['buttons'][34]."'/>";
+         echo "<table class='tab_cadre'><tr>";
+         echo "<td><input type='hidden' name='id' value='$ID'>";
+         echo "<input type='hidden' name='forcedelete' value='1'>";
+         echo "<input class='button' type='submit' name='delete' value='".$LANG['buttons'][2]."'>";
+         echo "</td>";
+         echo "<td><input class='button' type='submit' name='annuler' value='".$LANG['buttons'][34]."'>";
          echo "</td></tr></table>\n";
          echo "</form>";
       }
@@ -385,13 +399,14 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       echo "<input type='hidden' name='id' value='$ID'/>";
       echo "</td><td>";
-      echo "<input class='button' type='submit' name='replace' value='".$LANG['buttons'][39]."'/>";
+      echo "<input class='button' type='submit' name='replace' value='".$LANG['buttons'][39]."'>";
       echo "</td><td>";
-      echo "<input class='button' type='submit' name='annuler' value='".$LANG['buttons'][34]."' /></td>";
-      echo "</tr></table>\n";
+      echo "<input class='button' type='submit' name='annuler' value='".$LANG['buttons'][34]."'>";
+      echo "</td></tr></table>\n";
       echo "</form>";
       echo "</div>";
    }
+
 
    /* Replace a dropdown item (this) by another one (newID)  and update all linked fields
     * @param $new integer ID of the replacement item
@@ -442,6 +457,7 @@ abstract class CommonDropdown extends CommonDBTM {
    }
     */
 
+
    /**
     * check if a dropdown already exists (before import)
     *
@@ -456,21 +472,22 @@ abstract class CommonDropdown extends CommonDBTM {
 
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
-                   WHERE  `name` = '".$input["name"]."'";
+                   WHERE `name` = '".$input["name"]."'";
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
-                                                 $input['entities_id'],$this->maybeRecursive());
+            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
+                                                 $input['entities_id'], $this->maybeRecursive());
          }
 
          // Check twin :
          if ($result_twin = $DB->query($query) ) {
             if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin,0,"id");
+               return $DB->result($result_twin, 0, "id");
             }
          }
       }
       return -1;
    }
+
 
    /**
     * Import a dropdown - check if already exists
@@ -485,7 +502,7 @@ abstract class CommonDropdown extends CommonDBTM {
          return -1;
       }
       // Clean datas
-      $input['name']=trim($input['name']);
+      $input['name'] = trim($input['name']);
 
       if (empty($input['name'])) {
          return -1;
@@ -501,6 +518,7 @@ abstract class CommonDropdown extends CommonDBTM {
       return $this->add($input);
    }
 
+
    /**
     * Import a value in a dropdown table.
     *
@@ -514,10 +532,10 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return integer : dropdown id.
     **/
-   function importExternal($value, $entities_id = -1,$external_params=array(),$comment="",$add=true) {
-      global $DB, $CFG_GLPI;
+   function importExternal($value, $entities_id = -1, $external_params=array(), $comment="",
+                           $add=true) {
 
-      $value=trim($value);
+      $value = trim($value);
       if (strlen($value) == 0) {
          return 0;
       }
@@ -549,11 +567,12 @@ abstract class CommonDropdown extends CommonDBTM {
       return ($add ? $this->import($input) : $this->getID($input));
    }
 
+
    function refreshParentInfos() {
+
       if (!$this->refresh_page) {
          refreshDropdownPopupInMainWindow();
-      }
-      else {
+      } else {
          refreshPopupMainWindow();
       }
    }
