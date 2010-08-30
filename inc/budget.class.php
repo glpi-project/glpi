@@ -111,7 +111,7 @@ class Budget extends CommonDBTM{
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]." : </td>";
+      echo "<td>".$LANG['common'][16]."&nbsp;: </td>";
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
@@ -255,10 +255,10 @@ class Budget extends CommonDBTM{
       }
 
       $query = "SELECT DISTINCT `itemtype`
-               FROM `glpi_infocoms`
-               WHERE `budgets_id` = '$budgets_id'
-               AND itemtype NOT IN ('ConsumableItem','CartridgeItem','Software')
-               ORDER BY `itemtype`";
+                FROM `glpi_infocoms`
+                WHERE `budgets_id` = '$budgets_id'
+                      AND itemtype NOT IN ('ConsumableItem','CartridgeItem','Software')
+                ORDER BY `itemtype`";
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -276,7 +276,7 @@ class Budget extends CommonDBTM{
       echo "</tr>";
 
       $num=0;
-      for  ($i = 0; $i < $number ; $i++) {
+      for ($i = 0; $i < $number ; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
 
          if (!class_exists($itemtype)) {
@@ -286,14 +286,14 @@ class Budget extends CommonDBTM{
          if ($item->canView()) {
             switch ($itemtype) {
                default :
-                  $query = "SELECT ".$item->getTable().".*, `glpi_infocoms`.`value`
+                  $query = "SELECT `".$item->getTable()."`.*, `glpi_infocoms`.`value`
                            FROM `glpi_infocoms`
                            INNER JOIN `".$item->getTable()."`
                                        ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
                            WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                     getEntitiesRestrictRequest(" AND",$item->getTable())."
-                           ORDER BY `entities_id`, ".$item->getTable().".`name`";
+                           ORDER BY `entities_id`, `".$item->getTable()."`.`name`";
                break;
                case 'Cartridge':
                   $query = "SELECT `".$item->getTable()."`.*, `glpi_cartridgeitems`.`name`
@@ -334,7 +334,7 @@ class Budget extends CommonDBTM{
                         $LANG['reports'][57]."</a></td>";
                   echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-</td></tr>";
                } else if ($nb) {
-                  for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false) {
+                  for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
                      $ID="";
                      if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                         $ID= " (".$data["id"].")";
@@ -388,11 +388,11 @@ class Budget extends CommonDBTM{
       $ignore = array('CartridgeItem', 'ConsumableItem', 'Software');
 
       $query = "SELECT DISTINCT `itemtype`
-               FROM `glpi_infocoms`
-               WHERE `budgets_id` = '$budgets_id'
-               AND `itemtype` NOT IN ('".implode("','",$ignore)."')
-               ".getEntitiesRestrictRequest(" AND",'glpi_infocoms',"entities_id")."
-               GROUP BY `itemtype`";
+                FROM `glpi_infocoms`
+                WHERE `budgets_id` = '$budgets_id'
+                      AND `itemtype` NOT IN ('".implode("','",$ignore)."')".
+                      getEntitiesRestrictRequest(" AND",'glpi_infocoms',"entities_id")."
+                GROUP BY `itemtype`";
 
       $result = $DB->query($query);
       $total = 0;
@@ -401,7 +401,7 @@ class Budget extends CommonDBTM{
       $entitiestype_values = array();
       $found_types=array();
 
-      if ( $DB->numrows($result) ) {
+      if ($DB->numrows($result)) {
          while ($types = $DB->fetch_array($result)) {
             if (!class_exists($types['itemtype'])) {
                continue;
@@ -458,10 +458,11 @@ class Budget extends CommonDBTM{
          echo "</tr>";
 
          foreach ($entities_values as $entity => $value) {
-            echo "<tr class='tab_bg_1'><td class='b'>".Dropdown::getDropdownName('glpi_entities',$entity)."</th>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='b'>".Dropdown::getDropdownName('glpi_entities',$entity)."</td>";
             if (count($found_types)) {
                foreach ($found_types as $type => $typename) {
-                  echo "<td  class='right'>";
+                  echo "<td class='right'>";
                   $typevalue=0;
                   if (isset($entitiestype_values[$entity][$type])){
                      $typevalue=$entitiestype_values[$entity][$type];
@@ -478,7 +479,7 @@ class Budget extends CommonDBTM{
 
          echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
          echo "<tr class='tab_bg_1'>";
-         echo "<td class='right'  colspan='".($colspan-1)."'>".$LANG['financial'][108]."</td>";
+         echo "<td class='right' colspan='".($colspan-1)."'>".$LANG['financial'][108]."</td>";
          echo "<td class='right b'>".formatNumber($total)."</td></tr>";
          if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
             echo "<tr class='tab_bg_1'>";
