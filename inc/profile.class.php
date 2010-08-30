@@ -187,7 +187,7 @@ class Profile extends CommonDBTM {
       // Empty/NULL case
       if (!isset($this->fields["helpdesk_item_type"])
           || !is_array($this->fields["helpdesk_item_type"])) {
- 
+
          $this->fields["helpdesk_item_type"] = array();
       }
 
@@ -268,7 +268,7 @@ class Profile extends CommonDBTM {
     **/
    static function currentUserHaveMoreRightThan($IDs=array()) {
       global $DB;
- 
+
       if (count($IDs)==0) {
          // Check all profiles (means more right than all possible profiles)
          return (countElementsInTable('glpi_profiles')
@@ -914,7 +914,7 @@ class Profile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("rule_ocs", $this->fields["rule_ocs"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['rulesengine'][70]."&nbsp;:</td><td>";
-      Profile::dropdownNoneReadWrite("rule_mailcollector", $this->fields["rule_mailcollector"], 
+      Profile::dropdownNoneReadWrite("rule_mailcollector", $this->fields["rule_mailcollector"],
                                      1, 1, 1);
       echo "</td></tr>\n";
 
@@ -1497,11 +1497,11 @@ class Profile extends CommonDBTM {
       $tab[99]['linkfield'] = 'create_validation';
       $tab[99]['datatype']  = 'bool';
 
-      $tab[100]['table'] = $this->getTable();
-      $tab[100]['field'] = 'helpdesk_status';
-      $tab[100]['name'] = $LANG['setup'][615];
-      $tab[100]['linkfield'] = '';
-      $tab[100]['nosearch'] = true;
+      $tab[100]['table']        = $this->getTable();
+      $tab[100]['field']        = 'helpdesk_status';
+      $tab[100]['name']         = $LANG['setup'][615];
+      $tab[100]['linkfield']    = '';
+      $tab[100]['nosearch']     = true;
       $tab[100]['shorthistory'] = true;
 
       return $tab;
@@ -1540,7 +1540,7 @@ class Profile extends CommonDBTM {
    * @param $options array
    *    - name : string / name of the select (default is profiles_id)
    *    - value : integer / preselected value (default 0)
-   * 
+   *
    */
    static function dropdownUnder($options=array()) {
       global $DB;
