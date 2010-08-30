@@ -378,22 +378,21 @@ class Computer_Item extends CommonDBRelation{
 
          echo "<tr class='tab_bg_1'>";
          $items_displayed = 0;
-         $nbperline=2;
+         $nbperline = 2;
          foreach ($items as $itemtype=>$title) {
             $used = array();
 
             // Line change
             if ($items_displayed%$nbperline==0) {
-               // Begin case 
+               // Begin case
                if ($items_displayed!=0) {
-                     echo "</tr>";
+                  echo "</tr>";
                }
                echo "<tr>";
                $count = 0;
-               $header_displayed=0;
+               $header_displayed = 0;
                foreach ($items as $tmp_title) {
-                  if ($count>=$items_displayed 
-                        && $header_displayed <$nbperline) {
+                  if ($count>=$items_displayed && $header_displayed<$nbperline) {
                      echo "<th>".$tmp_title."&nbsp;:</th>";
                      $header_displayed++;
                   }
