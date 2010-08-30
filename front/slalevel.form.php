@@ -32,47 +32,42 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-checkRight('config',"r");
+checkRight('config', "r");
 
 $item = new SlaLevel();
 
 if (isset($_POST["update"])) {
-
-
    $item->update($_POST);
-   Event::log($_POST["id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
+   Event::log($_POST["id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add"])) {
 
    if ($item->add($_POST)) {
-      Event::log($_POST["slas_id"], "slas", 4, "config",
-                  $_SESSION["glpiname"]." ".$LANG['log'][32]);
+      Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   checkRight('config',"w");
+   checkRight('config', "w");
 
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
-            if ($item->can($key,'w')) {
+            if ($item->can($key, 'w')) {
                $item->delete(array('id' => $key));
             }
          }
       }
-      Event::log($_POST["slas_id"], "slas", 4, "config",
-                    $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["add_action"])) {
 
-   $item->check($_POST['slalevels_id'],'w');
+} else if (isset($_POST["add_action"])) {
+   $item->check($_POST['slalevels_id'], 'w');
 
    $action = new SlaLevelAction();
-
    $action->add($_POST);
 
    // Can't do this in SlaLevelAction, so do it here
@@ -81,7 +76,7 @@ if (isset($_POST["update"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete_action"])) {
-   $item->check($_POST['slalevels_id'],'w');
+   $item->check($_POST['slalevels_id'], 'w');
 
    $action = new SlaLevelAction();
 
@@ -97,12 +92,11 @@ if (isset($_POST["update"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
  } else {//print computer informations
-   commonHeader($LANG['sla'][6],$_SERVER['PHP_SELF'],"config","sla");
+   commonHeader($LANG['sla'][6], $_SERVER['PHP_SELF'], "config", "sla");
    //show computer form to add
    $item->showForm($_GET["id"]);
    commonFooter();
 }
- 
 
 displayErrorAndDie("lost");
 

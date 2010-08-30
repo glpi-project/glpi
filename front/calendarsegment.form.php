@@ -36,10 +36,10 @@ $item = new CalendarSegment();
 
 if (isset($_POST["add"])) {
 
-   $item->check(-1,'w',$_POST);
+   $item->check(-1, 'w', $_POST);
    if ($item->add($_POST)) {
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
-                  $_SESSION["glpiname"]." ".$LANG['log'][32]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][32]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -48,17 +48,17 @@ if (isset($_POST["add"])) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
-            if ($item->can($key,'w')) {
+            if ($item->can($key, 'w')) {
                $item->delete(array('id' => $key));
             }
          }
       }
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
-                    $_SESSION["glpiname"]." ".$LANG['log'][22]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} 
+}
 
 displayErrorAndDie("lost");
 
