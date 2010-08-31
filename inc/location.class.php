@@ -246,11 +246,11 @@ class Location extends CommonTreeDropdown {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".$LANG['common'][87]."</td>";
          echo "<td>".$LANG['common'][16]."&nbsp;: ";
-         echo "<input type='text' maxlength='100' size='10' name='_before'>";
+         echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
          Dropdown::showInteger('_from', 0, 0, 400);
-         echo "-->";
+         echo "&nbsp;-->&nbsp;";
          Dropdown::showInteger('_to', 0, 0, 400);
-         echo "<input type='text' maxlength='100' size='10' name='_after'><br>";
+         echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<input type='hidden' name='_method' value='addMulti'></td>";
