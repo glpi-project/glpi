@@ -72,12 +72,12 @@ class Config extends CommonDBTM {
    }
 
    /**
-    * Prepare input datas for updating the item
-    *
-    *@param $input datas used to update the item
-    *
-    *@return the modified $input array
-    *
+   * Prepare input datas for updating the item
+   *
+   *@param $input datas used to update the item
+   *
+   *@return the modified $input array
+   *
    **/
    function prepareInputForUpdate($input) {
 
@@ -135,12 +135,10 @@ class Config extends CommonDBTM {
    }
 
    /**
-    * Print the config form for display
-    *
-    *@param $target filename : where to go when done.
-    *
-    *@return Nothing (display)
-    *
+   * Print the config form for display
+   *
+   *@return Nothing (display)
+   *
    **/
    function showFormDisplay() {
       global $DB, $LANG, $CFG_GLPI;
@@ -229,12 +227,10 @@ class Config extends CommonDBTM {
    }
 
    /**
-    * Print the config form for restrictions
-    *
-    *@param $target filename : where to go when done.
-    *
-    *@return Nothing (display)
-    *
+   * Print the config form for restrictions
+   *
+   *@return Nothing (display)
+   *
    **/
    function showFormInventory() {
       global $DB, $LANG, $CFG_GLPI;
@@ -348,12 +344,10 @@ class Config extends CommonDBTM {
    }
 
    /**
-    * Print the config form for restrictions
-    *
-    *@param $target filename : where to go when done.
-    *
-    *@return Nothing (display)
-    *
+   * Print the config form for restrictions
+   *
+   *@return Nothing (display)
+   *
    **/
    function showFormAuthentication() {
       global $DB, $LANG, $CFG_GLPI;
@@ -391,12 +385,10 @@ class Config extends CommonDBTM {
    }
 
    /**
-    * Print the config form for slave DB
-    *
-    *@param $target filename : where to go when done.
-    *
-    *@return Nothing (display)
-    *
+   * Print the config form for slave DB
+   *
+   *@return Nothing (display)
+   *
    **/
    function showFormDBSlave() {
       global $DB, $LANG, $CFG_GLPI, $DBSlave;
@@ -446,12 +438,10 @@ class Config extends CommonDBTM {
    }
 
    /**
-    * Print the config form for connections
-    *
-    *@param $target filename : where to go when done.
-    *
-    *@return Nothing (display)
-    *
+   * Print the config form for connections
+   *
+   *@return Nothing (display)
+   *
    **/
    function showFormHelpdesk() {
       global $DB, $LANG, $CFG_GLPI;
@@ -582,14 +572,12 @@ class Config extends CommonDBTM {
    }
 
    /**
-
-    * Print the config form for default user prefs
-    *
-    *@param $target filename : where to go when done.
-    *@param $data array containing datas (CFG_GLPI for global config / glpi_users fields for user prefs)
-    *
-    *@return Nothing (display)
-    *
+   * Print the config form for default user prefs
+   *
+   *@param $data array containing datas (CFG_GLPI for global config / glpi_users fields for user prefs)
+   *
+   *@return Nothing (display)
+   *
    **/
    function showFormUserPrefs($data=array()) {
       global $DB, $LANG, $CFG_GLPI;

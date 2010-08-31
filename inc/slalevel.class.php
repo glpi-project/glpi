@@ -195,6 +195,7 @@ class SlaLevel extends RuleTicket {
    * Show the rule
    *
    * @param $ID ID of the rule
+   * @param $options options
    *
    * @return nothing
    **/

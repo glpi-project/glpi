@@ -2022,7 +2022,6 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Check float and decimal values
-    * @param input the data to insert in db
     * @return input the data checked
     */
    function checkValues() {

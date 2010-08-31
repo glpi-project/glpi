@@ -174,7 +174,7 @@ function displayMigrationMessage ($id, $msg="") {
  * @param $table string table name
  * @param $name string name of the imported dropdown
  *
- * @param interger (ID of the existing/new dropdown)
+ * @return integer (ID of the existing/new dropdown)
  */
 function update_importDropdown ($table, $name) {
    global $DB;
