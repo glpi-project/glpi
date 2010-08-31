@@ -158,7 +158,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Show computers linked to a License
     *
-    * @param $licnese SoftwareLicense object
+    * @param $license SoftwareLicense object
     * @return nothing
     */
    static function showForLicense (SoftwareLicense $license) {

@@ -985,6 +985,11 @@ class AuthLDAP extends CommonDBTM {
     *          - ldap_filter ldap filter to use
     *          - basedn force basedn (default ldapservers_id one)
     *          - order display order
+    *          - operator operator used to limit user updates days
+    *          - days number of days to limit (with operator)
+    *          - script true if called by an external script
+    * @param $results result stats
+    * @param $limitexceeded limit exceeded exception
     *
     * @return  array of the user
     */

@@ -863,6 +863,8 @@ class Dropdown {
    * @param $max max value
    * @param $step step used
    * @param $toadd values to add at the beginning
+   * @param $options additionnal options :
+   *    - suffix : suffix toi display
    */
    static function showInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array(),$options = array()) {
 
