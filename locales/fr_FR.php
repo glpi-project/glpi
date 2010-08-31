@@ -206,7 +206,7 @@ $LANG['cartridges'][42] = "Pages imprimées en moyenne";
 
 $LANG['central'][2]  = "Derniers";
 
-$LANG['central'][4]  = "Pas d'évènement";
+$LANG['central'][4]  = "Pas d'événement";
 $LANG['central'][5]  = "Accueil";
 $LANG['central'][6]  = "Déconnexion";
 $LANG['central'][7]  = "Aide";
@@ -532,7 +532,7 @@ $LANG['document'][27] = "Attaque par upload potentielle. Ou fichier trop volumin
 
 $LANG['document'][29] = "Échec de la création du répertoire";
 $LANG['document'][30] = "Vérifiez que vous avez les droits";
-$LANG['document'][31] = "Répertoire de stockage des documents inexistants :";
+$LANG['document'][31] = "Répertoire de stockage des documents inexistant :";
 $LANG['document'][32] = "Type de fichier non autorisé";
 $LANG['document'][33] = "Lien Web";
 $LANG['document'][34] = "Création du répertoire";
@@ -638,8 +638,8 @@ $LANG['financial'][60]  = "en semaine";
 $LANG['financial'][61]  = "le samedi";
 $LANG['financial'][62]  = "dimanche et fêtes";
 
-$LANG['financial'][65]  = "Fournisseur(s) associé(s)";
-$LANG['financial'][66]  = "Contrat(s) associé(s)";
+$LANG['financial'][65]  = "Fournisseurs associés";
+$LANG['financial'][66]  = "Contrats associés";
 
 $LANG['financial'][68]  = "Activer les informations financières";
 $LANG['financial'][69]  = "Périodicité du contrat";
@@ -766,7 +766,7 @@ $LANG['install'][32]  = "Mot de passe MySQL";
 $LANG['install'][34]  = "Test de connexion à la base de données";
 $LANG['install'][35]  = "Impossible de se connecter à la base de données";
 $LANG['install'][36]  = "Le serveur a répondu";
-$LANG['install'][37]  = "Le champs serveur MySQL ou/et le champ utilisateur MySQL est vide";
+$LANG['install'][37]  = "Le champ serveur MySQL ou/et le champ utilisateur MySQL est vide";
 $LANG['install'][38]  = "Veuillez sélectionner une base de données :";
 $LANG['install'][39]  = "Créer une nouvelle base ou utiliser une base existante :";
 $LANG['install'][40]  = "Veuillez sélectionner la base de données à mettre à jour :";
@@ -796,7 +796,7 @@ $LANG['install'][65]  = "Test sur l'extension magic_quotes_sybase";
 $LANG['install'][66]  = "GLPI ne peut pas fonctionner avec l'option magic_quotes_sybase ; Veuillez désactiver cette option et réessayer";
 $LANG['install'][67]  = "L'option magic_quotes_sybase n'est pas utilisée par votre serveur - Parfait !";
 $LANG['install'][68]  = "Test sur le démarrage automatique des sessions";
-$LANG['install'][69]  = "session.auto_start est activé. Reportez-vous au fichier .htaccess à la racine de GLPI pour plus d'informations.";
+$LANG['install'][69]  = "session.auto_start est activé. Reportez vous au fichier .htaccess à la racine de GLPI pour plus d'informations.";
 $LANG['install'][70]  = "Impossible de créer le fichier de connexion à la base de données, vérifiez les droits sur les fichiers";
 $LANG['install'][71]  = "Test de l'extension MySQL.";
 $LANG['install'][72]  = "Vous devez compiler votre php avec l'extension MySQL.";
@@ -1179,8 +1179,8 @@ $LANG['mailing'][53]  = "Changement de solution";
 $LANG['mailing'][54]  = "Date d'expiration";
 
 $LANG['mailing'][100] = "Pas de catégorie attribuée";
-$LANG['mailing'][101] = "Le suivi par email a été activé";
-$LANG['mailing'][102] = "Le suivi par email a été désactivé";
+$LANG['mailing'][101] = "Le suivi par courriel a été activé";
+$LANG['mailing'][102] = "Le suivi par courriel a été désactivé";
 
 $LANG['mailing'][104] = "Durée de l'intervention";
 $LANG['mailing'][105] = "Non attribué";
@@ -1196,7 +1196,7 @@ $LANG['mailing'][115] = "Corps de l'email";
 $LANG['mailing'][116] = "HTML";
 $LANG['mailing'][117] = "texte";
 $LANG['mailing'][118] = "Email";
-$LANG['mailing'][119] = "Évènement";
+$LANG['mailing'][119] = "Événement";
 $LANG['mailing'][120] = "Mode de notification";
 $LANG['mailing'][121] = "Destinataires";
 $LANG['mailing'][122] = "Tâche(s) déjà effectuée(s)";
