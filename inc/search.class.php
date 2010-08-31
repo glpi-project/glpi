@@ -3757,6 +3757,7 @@ class Search {
    *
    * @param $itemtype item type to manage
    * @param $usesession Use datas save in session
+   * @param $forcebookmark force trying to load parameters from default bookmark : used for global search
    * @return nothing
    */
    static function manageGetValues($itemtype,$usesession=true,$forcebookmark=false) {

@@ -637,7 +637,6 @@ class Infocom extends CommonDBTM {
     * Show Infocom form for an item (not a standard showForm)
     *
     * @param $item CommonDBTM object
-    * @param $show_immo boolean: show immobilisation infos
     * @param $withtemplate integer: template or basic item
     **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {

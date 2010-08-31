@@ -65,7 +65,6 @@ class Group_User extends CommonDBRelation{
    }
    /**  Show groups of a user
     *
-    * @param $target where to go on action
     * @param $user the user
     */
    static function showForUser(User $user) {

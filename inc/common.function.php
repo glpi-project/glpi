@@ -1590,6 +1590,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 * Check if new version is available
 *
 * @param $auto boolean: check done autically ? (if not display result)
+* @param $messageafterredirect boolean: use message after redirect instead of display
 *
 * @return string explaining the result
 **/
