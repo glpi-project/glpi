@@ -2715,7 +2715,7 @@ class Ticket extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
 
-      if (!$ID && haveRight("update_ticket","1")) {
+      if (!$ID) {
          //Get all the user's entities
          $all_entities = Profile_User::getUserEntities($options["users_id"], true);
          $values = array();
@@ -2891,18 +2891,22 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
       echo "<td>";
-      if (!$ID && haveRight("update_ticket","1")) {
+      if (!$ID) {
          echo $LANG['job'][4]."&nbsp;: </td>";
          echo "<td>";
 
-         //List all users in the active entities
-         User::dropdown(array('value'         => $options["users_id"],
-                              'entity'        => $_SESSION['glpiactiveentities'],
-                              //'entity'        => $this->fields["entities_id"],
-                              //'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
-                              'right'         => 'all',
-                              'helpdesk_ajax' => 1,
-                              'ldap_import'   => true));
+         if (haveRight("update_ticket","1")) {
+            //List all users in the active entities
+            User::dropdown(array('value'         => $options["users_id"],
+                                 'entity'        => $_SESSION['glpiactiveentities'],
+                                 //'entity'        => $this->fields["entities_id"],
+                                 //'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
+                                 'right'         => 'all',
+                                 'helpdesk_ajax' => 1,
+                                 'ldap_import'   => true));
+         } else {
+            echo getUserName($this->fields["users_id"],$showuserlink);
+         }
 
          //If user have access to more than one entity, then display a combobox
          if ($count > 1) {
@@ -3044,7 +3048,8 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='left'>".$LANG['common'][1]."&nbsp;: </td>";
       echo "<td>";
-      if ($canupdate) {
+      // Select hardware on creation or if have update right
+      if ($canupdate || !$ID) {
          if ($ID) {
             if ($this->fields['itemtype'] && class_exists($this->fields['itemtype'])
                   && $this->fields["items_id"]) {
