@@ -4331,7 +4331,7 @@ class Search {
             $search[$itemtype][130]['table']        = 'glpi_contracts';
             $search[$itemtype][130]['field']        = 'duration';
             $search[$itemtype][130]['linkfield']    = '';
-            $search[$itemtype][130]['name']         = $LANG['financial'][8]." ".$LANG['financial'][1];
+            $search[$itemtype][130]['name']         = $LANG['financial'][8];
             $search[$itemtype][130]['forcegroupby'] = true;
 
             $search[$itemtype][131]['table']        = 'glpi_contracts';
