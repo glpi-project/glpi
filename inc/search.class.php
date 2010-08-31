@@ -1679,6 +1679,8 @@ class Search {
                return " ORDER BY ".$table.$linkfield.".realname $order, ".
                                  $table.$linkfield.".firstname $order, ".
                                  $table.$linkfield.".name $order";
+            } else {
+               return " ORDER BY ".$table.".name $order";
             }
             break;
 
