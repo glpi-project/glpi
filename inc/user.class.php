@@ -2243,9 +2243,9 @@ class User extends CommonDBTM {
             foreach ($ldaps as $ldap) {
                $params['method'] = AuthLdap::IDENTIFIER_EMAIL;
                $params['value'] = $email;
-               $newID = AuthLdap::ldapImportUserByServerId($params, AuthLdap::ACTION_IMPORT,$ldap);
-               if ($newID) {
-                  return $newID;
+               $res = AuthLdap::ldapImportUserByServerId($params, AuthLdap::ACTION_IMPORT,$ldap);
+               if (isset($res['id'])) {
+                  return $res['id'];
                }
             }
          }
