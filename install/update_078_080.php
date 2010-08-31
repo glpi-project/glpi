@@ -607,6 +607,16 @@ function update078to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   if (isIndex("glpi_budgets","end_date")) {
+      $query = "ALTER TABLE `glpi_budgets` DROP INDEX `end_date` ";
+      $DB->query($query) or die("0.80 correct end_date index " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!isIndex("glpi_budgets","end_date")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD INDEX `end_date` ( `end_date` ) ";
+      $DB->query($query) or die("0.80 correct end_date index " . $LANG['update'][90] . $DB->error());
+   }
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
