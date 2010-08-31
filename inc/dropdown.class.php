@@ -179,22 +179,12 @@ class Dropdown {
       if ($params['comments']) {
          $options_tooltip=array('contentid'=>"comment_".$params['name'].$params['rand']);
 
-         if ($itemtype=='TicketCategory' && haveRight('knowbase','r')) {
-            if ($params['value'] && $item->getFromDB($params['value'])) {
-               if ($kbid=$item->getField('knowbaseitemcategories_id')) {
-                  $options_tooltip['link']=$CFG_GLPI['root_doc'].
-                                       '/front/knowbaseitem.php?knowbaseitemcategories_id='.$kbid;
-               }
-            }
-            $options_tooltip['linkid']="comment_link_".$params["name"].$params['rand'];
-         } else {
-            if ($item->canView()
-               && $params['value'] && $item->getFromDB($params['value'])
-               && $item->canViewItem()) {
-               $options_tooltip['link']=$item->getLinkURL();
+         if ($item->canView()
+            && $params['value'] && $item->getFromDB($params['value'])
+            && $item->canViewItem()) {
+            $options_tooltip['link']=$item->getLinkURL();
 
-               $options_tooltip['linktarget']='_blank';
-            }
+            $options_tooltip['linktarget']='_blank';
          }
 
          showToolTip($comment,$options_tooltip);
@@ -215,6 +205,13 @@ class Dropdown {
                echo $item->getLinks();
             }
          }
+
+         if ($itemtype=='TicketCategory' && haveRight('knowbase','r')) {
+            if ($params['value'] && $item->getFromDB($params['value'])) {
+               echo '&nbsp;'.$item->getLinks();
+            }
+         } 
+
       }
 
       return $params['rand'];
