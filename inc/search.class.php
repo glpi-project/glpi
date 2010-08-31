@@ -3832,7 +3832,7 @@ class Search {
                $orig_link = trim($data[$NAME.$num]);
                if (!empty($orig_link)) {
                   // strip begin of link
-                  $link = preg_replace('/https?:\/\/(www.)?/', '', $orig_link);
+                  $link=preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
                   $link = preg_replace('/\/$/', '', $link);
                   if (utf8_strlen($link)>30) {
                      $link = utf8_substr($link, 0, 30)."...";
