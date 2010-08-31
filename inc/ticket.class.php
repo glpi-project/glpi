@@ -2761,7 +2761,12 @@ class Ticket extends CommonDBTM {
       if ($ID) {
          showDateTimeFormItem("date",$this->fields["date"],1,false,$canupdate);
       } else {
-         showDateTimeFormItem("date",date("Y-m-d H:i:s"),1);
+         $date=date("Y-m-d H:i:s");
+         if ($canupdate) {
+            showDateTimeFormItem("date",$date,1);
+         } else {
+            echo convDateTime($date);
+         }
       }
       echo "</td></tr>";
       if ($ID) {
@@ -2875,8 +2880,8 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
       echo "<td>";
-      if ($canupdate
-          && ($canpriority || !$ID || $this->fields["users_id_recipient"] === getLoginUserID())) {
+      if (($canupdate && $canpriority) 
+            || !$ID || $this->fields["users_id_recipient"] === getLoginUserID()) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
          $idurgency = self::dropdownUrgency("urgency",$this->fields["urgency"]);
       } else {
@@ -2969,7 +2974,8 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;: </td>";
       echo "<td >";
-      if ($canupdate) {
+      // Permit to set category when creating ticket without update right
+      if ($canupdate || !$ID) {
          Dropdown::show('TicketCategory',
                         array('value'  => $this->fields["ticketcategories_id"],
                               'entity' => $this->fields["entities_id"]));
@@ -3243,6 +3249,22 @@ class Ticket extends CommonDBTM {
           echo "<td colspan='2'>&nbsp;";
       }
       echo "</td></tr>";
+
+
+      // Permit to add doc when creating a ticket
+      if (!$ID) {
+         $max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+         $max_size/=1024*1024;
+         $max_size=round($max_size,1);
+
+         echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".$max_size." ".$LANG['common'][45].")&nbsp;:";
+         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"".
+               $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
+               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+         echo "</td>";
+         echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
+         echo "<td colspan='2'>&nbsp;</td></tr>";
+      }
 
       if ($canupdate
           || $canupdate_descr
