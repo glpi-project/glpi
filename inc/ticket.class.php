@@ -1663,7 +1663,7 @@ class Ticket extends CommonDBTM {
       $tab[19]['datatype']  = 'datetime';
 
       $tab[7]['table']     = 'glpi_ticketcategories';
-      $tab[7]['field']     = 'name';
+      $tab[7]['field']     = 'completename';
       $tab[7]['linkfield'] = 'ticketcategories_id';
       $tab[7]['name']      = $LANG['common'][36];
 
