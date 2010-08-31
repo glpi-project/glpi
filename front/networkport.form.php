@@ -47,7 +47,6 @@ if (!isset($_GET["id"])) {
 
 
 if (isset($_POST["add"])) {
-   checkRight("networking","w");
 
    // Is a preselected mac adress selected ?
    if (isset($_POST['pre_mac'])) {
@@ -58,11 +57,13 @@ if (isset($_POST["add"])) {
    }
 
    if (!isset($_POST["several"])) {
+      $np->check(-1,'w',$_POST);
       $np->add($_POST);
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][70]);
       glpi_header($_SERVER['HTTP_REFERER']);
 
    } else {
+      checkRight("networking","w");
       $input = $_POST;
       unset($input['several']);
       unset($input['from_logical_number']);
@@ -75,7 +76,9 @@ if (isset($_POST["add"])) {
          $input["logical_number"] = $i;
          $input["name"] = $_POST["name"].$add.$i;
          unset($np->fields["id"]);
-         $np->add($input);
+         if ($np->can(-1,'w',$input)) {
+            $np->add($input);
+         }
       }
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".
                  ($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG['log'][71]);
@@ -83,7 +86,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if(isset($_POST["delete"])) {
-   checkRight("networking","w");
+   $np->check($_POST['id'],'d');
    $np->delete($_POST);
    Event::log($_POST['id'], "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][73]);
    if (class_exists($np->fields['itemtype'])) {
@@ -96,7 +99,9 @@ if (isset($_POST["add"])) {
    checkRight("networking","w");
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
-         $np->delete(array("id" => $port_id));
+         if ($np->can($port_id,'d')) {
+            $np->delete(array("id" => $port_id));
+         }
       }
    }
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][74]);
@@ -110,7 +115,9 @@ if (isset($_POST["add"])) {
             $input = array();
             $input['id'] = $port_id;
             $input['items_id'] = $_POST["device"];
-            $np->update($input);
+            if ($np->can($input['id'],'w')) {
+               $np->update($input);
+            }
          }
       }
    }
@@ -118,7 +125,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if(isset($_POST["update"])) {
-   checkRight("networking","w");
+   $np->check($_POST['id'],'w');
 
    $np->update($_POST);
    Event::log($_POST["id"], "networkport", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
@@ -136,7 +143,6 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["disconnect"])) {
-//   checkRight("networking","w");
    $nn->check($_GET['id'],'d');
    if (isset($_GET["id"])) {
       $nn->delete($_GET);
@@ -161,7 +167,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST['assign_vlan'])) {
-   checkRight("networking","w");
+   $npv->check(-1,'w',$_POST);
 
    if (isset($_POST["vlans_id"]) && $_POST["vlans_id"] >0) {
       $npv->assignVlan($_POST["id"],$_POST["vlans_id"]);
@@ -175,7 +181,10 @@ if (isset($_POST["add"])) {
    if ($_POST["vlans_id"] >0) {
       if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
          foreach ($_POST["del_port"] as $port_id => $val) {
-            $npv->unassignVlan($port_id,$_POST["vlans_id"]);
+            // Check port write access
+            if ($np->can($port_id,'w')) {
+               $npv->unassignVlan($port_id,$_POST["vlans_id"]);
+            }
          }
       }
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][80]);
@@ -183,9 +192,9 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET['unassign_vlan'])) {
-   checkRight("networking","w");
+   $npv->check($_GET['id'],'d');
 
-  $npv->unassignVlanbyID($_GET['id']);
+   $npv->unassignVlanbyID($_GET['id']);
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
