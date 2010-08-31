@@ -107,6 +107,31 @@ class TicketCategory extends CommonTreeDropdown {
       $this->fields['is_helpdeskvisible'] = 1;
    }
 
+   /**
+    * Get links to Faq
+    *
+    * @param $withname boolean : also display name ?
+    */
+   function getLinks($withname=false) {
+      global $CFG_GLPI,$LANG;
+
+      $ret = '';
+
+      if ($withname) {
+         $ret .= $this->fields["name"];
+         $ret .= "&nbsp;&nbsp;";
+      }
+
+      if ($this->fields['knowbaseitemcategories_id']) {
+         $ret.= "<a href='".$CFG_GLPI["root_doc"].
+            "/front/knowbaseitem.php?knowbaseitemcategories_id=".
+            $this->fields['knowbaseitemcategories_id'].
+            "'><img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle' alt='".
+            $LANG['knowbase'][1]."' title='".$LANG['knowbase'][1]."'></a>";
+      }
+      return $ret;
+   }
+
 }
 
 ?>
