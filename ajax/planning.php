@@ -94,7 +94,7 @@ echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
 $rand_begin=showDateTimeFormItem("plan[begin]",$begin,-1,false,true,'','',$CFG_GLPI["planning_begin"],$CFG_GLPI["planning_end"]);
 echo "</td></tr>\n";
 
-echo "<tr class='tab_bg_2'><td>".$LANG['financial'][8]."&nbsp;:</td><td>";
+echo "<tr class='tab_bg_2'><td>".$LANG['planning'][3]."&nbsp;:</td><td>";
 
 
 $values=array(0=>$LANG['search'][12],
