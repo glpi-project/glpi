@@ -558,9 +558,25 @@ class Rule extends CommonDBTM {
    function dropdownActions($used=array()) {
       global $CFG_GLPI;
 
+      $actions=$this->getActions();
+      // Complete used array with duplicate items 
+      // add duplicates of used items
+      foreach ($used as $ID) {
+         if (isset($actions[$ID]['duplicatewith'])) {
+            $used[$actions[$ID]['duplicatewith']] = $actions[$ID]['duplicatewith'];
+         }
+      }
+      // Parse for duplicates of already used items
+      foreach ($actions as $ID => $act) {
+         if (isset($actions[$ID]['duplicatewith']) 
+               && in_array($actions[$ID]['duplicatewith'],$used)) {
+            $used[$ID]=$ID;
+         }
+      }
+
       $items=array();
       $value='';
-      foreach ($this->getActions() as $ID => $act) {
+      foreach ($actions as $ID => $act) {
          $items[$ID]=$act['name'];
          if (empty($value) && !isset($used[$ID])) {
             $value=$ID;

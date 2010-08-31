@@ -292,10 +292,12 @@ class RuleRight extends Rule {
       $actions['_affect_entity_by_dn']['name']   = $LANG['rulesengine'][130];
       $actions['_affect_entity_by_dn']['type']   = 'text';
       $actions['_affect_entity_by_dn']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_dn']['duplicatewith'] = 'entities_id';
 
       $actions['_affect_entity_by_tag']['name']  = $LANG['rulesengine'][131];
       $actions['_affect_entity_by_tag']['type']  = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_tag']['duplicatewith'] = 'entities_id';
 
       $actions['profiles_id']['name']  = $LANG['Menu'][35];
       $actions['profiles_id']['type']  = 'dropdown';
