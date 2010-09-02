@@ -65,6 +65,7 @@ class Ticket extends CommonDBTM {
    function canUpdate() {
 
       return haveRight('update_ticket', 1)
+             || haveRight('create_ticket', 1)
              || haveRight('assign_ticket', 1)
              || haveRight('steal_ticket', 1);
    }
@@ -126,6 +127,9 @@ class Ticket extends CommonDBTM {
 
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
+      }
+      if ($this->numberOfFollowups()==0 && $this->fields['users_id'] === getLoginUserID()) {
+         return true;
       }
       return $this->canUpdate();
    }
@@ -309,6 +313,9 @@ class Ticket extends CommonDBTM {
          }
          if (isset($input["name"])) {
             $ret["name"] = $input["name"];
+         }
+         if (isset($input["urgency"])) {
+            $ret["urgency"] = $input["urgency"];
          }
 
          $input=$ret;
@@ -2639,8 +2646,9 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
       echo "<td>";
-      if (($canupdate && $canpriority) 
-            || !$ID || $this->fields["users_id_recipient"] === getLoginUserID()) {
+      if (($canupdate && $canpriority)
+            || !$ID
+            || $canupdate_descr) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
          $idurgency = self::dropdownUrgency("urgency",$this->fields["urgency"]);
       } else {
@@ -3032,8 +3040,8 @@ class Ticket extends CommonDBTM {
 
       if ($canupdate
           || $canupdate_descr
-          || haveRight("global_add_followups","1")
-          ||(haveRight("add_followups","1") && !strstr($this->fields["status"],'old_'))
+          // TODO why this ?? || haveRight("global_add_followups","1")
+          // TODO why this ?? ||(haveRight("add_followups","1") && !strstr($this->fields["status"],'old_'))
           || haveRight("assign_ticket","1")
           || haveRight("steal_ticket","1")) {
 
