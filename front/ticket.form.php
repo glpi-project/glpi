@@ -115,7 +115,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    'requesttypes_id'      => $_SESSION["glpidefault_requesttypes_id"],
                    'hour'                 => 0,
                    'minute'               => 0,
-                   'date'                 => $_SESSION["glpiactive_entity"],
+                   'date'                 => $_SESSION["glpi_currenttime"],
                    'entities_id'          => $_SESSION["glpiactive_entity"],
                    'status'               => 'new',
                    'followup'             => array(),
