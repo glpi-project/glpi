@@ -775,7 +775,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "</td></tr>";
          echo "<tr><th colspan='2'>" . $LANG['setup'][263] . "</th></tr>";
-         echo "<tr class='tab_bg_2'><td>";
+         echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='text' name='ldap_filter2' value='".$_SESSION["ldap_group_filter2"].
                "' size='70'>";
          echo "</td></tr>";
