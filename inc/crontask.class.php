@@ -992,7 +992,9 @@ class CronTask extends CommonDBTM{
       $tab[3]['field']     = 'description';
       $tab[3]['linkfield'] = '';
       $tab[3]['name']      = $LANG['joblist'][6];
-
+      $tab[3]['nosearch']  = true;
+      $tab[3]['nosort']    = true;
+      
       $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'state';
       $tab[4]['linkfield'] = '';
