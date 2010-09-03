@@ -459,7 +459,7 @@ $LANG['document'][43]="Neznámý soubor";
 $LANG['document'][44]="Neplatný název souboru"; 
 $LANG['document'][45]="Neoprávněný přístup k tomuto souboru"; 
 $LANG['document'][46]="Chyba při odesílání souboru (pravděpodobně z důvodu velikosti)"; 
-$LANG['document'][48]="A document already exists with this file"; 
+$LANG['document'][48]="A document with that filename has already been attached to (another) record"; 
 $LANG['document'][49]="File is altered (bad checksum)"; 
 $LANG['document'][50]="Attached items"; 
 

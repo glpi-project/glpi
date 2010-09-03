@@ -345,7 +345,7 @@ $LANG['crontask'][4]="Send alarms on expired licenses";
 $LANG['crontask'][5]="Send alarms on contracts"; 
 $LANG['crontask'][6]="Send alarms on financial information"; 
 $LANG['crontask'][7]="נקה לוגים ישנים"; 
-$LANG['crontask'][8]="Database optimization"; 
+$LANG['crontask'][8]="אופטימיזציה של בסיס הנתונים"; 
 $LANG['crontask'][9]="Retrieve email (Mail receivers)"; 
 $LANG['crontask'][10]="בדוק רפליקציה של בסיס הנתונים"; 
 $LANG['crontask'][11]="בדוק עדכונים חדשים"; 
@@ -459,7 +459,7 @@ $LANG['document'][43]="קובץ לא מוכר";
 $LANG['document'][44]="שם קובץ לא חוקי"; 
 $LANG['document'][45]="גישה לא מורשית לקובץ זה"; 
 $LANG['document'][46]="העברת הקובץ נכשלה (יתכן כי הוא גדול מידי)"; 
-$LANG['document'][48]="A document already exists with this file"; 
+$LANG['document'][48]="A document with that filename has already been attached to (another) record"; 
 $LANG['document'][49]="File is altered (bad checksum)"; 
 $LANG['document'][50]="פריטים מצורפים"; 
 

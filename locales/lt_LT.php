@@ -459,7 +459,7 @@ $LANG['document'][43]="Nežinoma rinkmena";
 $LANG['document'][44]="Netinkamas vardas"; 
 $LANG['document'][45]="Nėra reikalingų prieeigos teisių šiai rinkmenai"; 
 $LANG['document'][46]="Nepavyko išsiųsti rinkmenos (per didelė apimtis)"; 
-$LANG['document'][48]="A document already exists with this file"; 
+$LANG['document'][48]="A document with that filename has already been attached to (another) record"; 
 $LANG['document'][49]="File is altered (bad checksum)"; 
 $LANG['document'][50]="Attached items"; 
 

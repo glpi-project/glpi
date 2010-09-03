@@ -459,7 +459,7 @@ $LANG['document'][43]="Archivo desconocido";
 $LANG['document'][44]="Nombre de archivo incorrecto"; 
 $LANG['document'][45]="No tiene permisos para acceder a este archivo"; 
 $LANG['document'][46]="Fallo en el envío del archivo (muy grande)"; 
-$LANG['document'][48]="A document already exists with this file"; 
+$LANG['document'][48]="A document with that filename has already been attached to (another) record"; 
 $LANG['document'][49]="File is altered (bad checksum)"; 
 $LANG['document'][50]="Attached items"; 
 

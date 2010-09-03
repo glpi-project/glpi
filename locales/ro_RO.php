@@ -459,7 +459,7 @@ $LANG['document'][43]="Fisier necunoscut";
 $LANG['document'][44]="Nume de fișier eronat"; 
 $LANG['document'][45]="Nu aveți acces la acest fișier"; 
 $LANG['document'][46]="Trimiterea fisierului a esuat (prea mare)"; 
-$LANG['document'][48]="A document already exists with this file"; 
+$LANG['document'][48]="A document with that filename has already been attached to (another) record"; 
 $LANG['document'][49]="Fișierul e incorect (checksum incorect)"; 
 $LANG['document'][50]="Attached items"; 
 

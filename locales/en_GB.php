@@ -459,7 +459,7 @@ $LANG['document'][43]="Unknown File";
 $LANG['document'][44]="Invalid Filename"; 
 $LANG['document'][45]="Unauthorized access to this file"; 
 $LANG['document'][46]="Failure in sending the file (probably too large)"; 
-$LANG['document'][48]="A document already exists with this file"; 
+$LANG['document'][48]="A document with that filename has already been attached to (another) record"; 
 $LANG['document'][49]="File is altered (bad checksum)"; 
 $LANG['document'][50]="Attached items"; 
 
