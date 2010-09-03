@@ -1953,6 +1953,11 @@ class AuthLDAP extends CommonDBTM {
                $_SESSION['ldap_import']['ldapservers_id'] = $entitydata->getField('ldapservers_id');
                $_SESSION['ldap_import']['basedn']         = $entitydata->getField('ldap_dn');
 
+               // No dn specified in entity : use standard one
+               if (empty($_SESSION['ldap_import']['basedn'])) {
+                  $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
+               }
+
                if ($entitydata->getField('entity_ldapfilter') != NOT_AVAILABLE) {
                   $_SESSION['ldap_import']['entity_filter'] =
                                                          $entitydata->getField('entity_ldapfilter');
@@ -2050,8 +2055,7 @@ class AuthLDAP extends CommonDBTM {
                echo "</td></tr>";
                echo "<tr class='tab_bg_2'><td>".$LANG['setup'][263]."</td><td colspan='3'>";
                echo "<input type='text' name='ldap_filter' value='".
-                        $_SESSION['ldap_import']['ldap_filter']."' size='90' ".
-                        (!$_SESSION['ldap_import']['ldapservers_id']?"disabled":"").">";
+                        $_SESSION['ldap_import']['ldap_filter']."' size='90'>";
                echo "</td></tr>";
             }
             break;
