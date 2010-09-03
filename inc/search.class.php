@@ -2002,7 +2002,7 @@ class Search {
             }
             break;
 
-         case 'glpi_crontasks.comment' :
+         case 'glpi_crontasks.description' :
             return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.", ";
 
          case 'glpi_notifications.event' :
@@ -3627,7 +3627,7 @@ class Search {
                }
                return '';
 
-         case 'glpi_crontasks.comment' :
+         case 'glpi_crontasks.description' :
             $tmp = new CronTask();
             return $tmp->getDescription($data['id']);
 
