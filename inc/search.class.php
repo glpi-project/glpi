@@ -1930,7 +1930,7 @@ class Search {
             }
             break;
 
-         case 'glpi_crontasks.description' :
+         case 'glpi_crontasks.comment' :
             return " `glpi_crontasks`.`name` AS ".$NAME."_".$num.", ";
             break;
          case 'glpi_notifications.event' :
@@ -3440,7 +3440,7 @@ class Search {
                   return $events[$data[$NAME.$num]];
                }
                return '';
-         case 'glpi_crontasks.description' :
+         case 'glpi_crontasks.comment' :
             $tmp = new CronTask();
             return $tmp->getDescription($data['id']);
 
