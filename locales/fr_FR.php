@@ -1629,7 +1629,7 @@ $LANG['rulesengine'][68]="Dictionnaire des service packs";
 $LANG['rulesengine'][69]="Dictionnaire des versions";
 $LANG['rulesengine'][70]="Règles d'affectation des tickets ouverts par email";
 
-$LANG['rulesengine'][76]="Rejouer le dictionnaire";
+$LANG['rulesengine'][76]="Rejouer les règles du dictionnaire";
 $LANG['rulesengine'][77]="Dictionnaires";
 $LANG['rulesengine'][78]="Version";
 $LANG['rulesengine'][79]="Ajouter le résultat de l'expression rationnelle";
@@ -1639,17 +1639,17 @@ $LANG['rulesengine'][82]="Détail du résultat";
 $LANG['rulesengine'][83]="Il est possible d'affecter le résultat d'une expression rationnelle en utilisant la chaine #0";
 $LANG['rulesengine'][84]="Tester le moteur de règles";
 $LANG['rulesengine'][85]="Résultat de l'expression rationelle";
-$LANG['rulesengine'][86]="Catégorie des logiciels supprimés par le dictionnaire";
-$LANG['rulesengine'][87]="Logiciel mis dans la corbeille par le dictionnaire GLPI";
+$LANG['rulesengine'][86]="Catégorie des logiciels supprimés par les règles du dictionnaire";
+$LANG['rulesengine'][87]="Logiciel mis dans la corbeille par les règles du dictionnaire GLPI";
 
 
 $LANG['rulesengine'][90]="Traitement en cours...";
 $LANG['rulesengine'][91]="Traitement terminé.";
-$LANG['rulesengine'][92]="Avertissement avant de rejouer le dictionnaire";
+$LANG['rulesengine'][92]="Avertissement avant de rejouer les règles du dictionnaire";
 $LANG['rulesengine'][93]="Attention ! Cette opération peut mettre à la corbeille des logiciels fusionnés.<br>Pensez à prévenir vos utilisateurs.";
 $LANG['rulesengine'][94]="FUSION";
 $LANG['rulesengine'][95]="Choix d'un fabricant";
-$LANG['rulesengine'][96]="Rejouer le dictionnaire sur le(s) fabricant(s)<br> ( ----- = Tous)";
+$LANG['rulesengine'][96]="Rejouer les règles du dictionnaire sur le(s) fabricant(s)<br> ( ----- = Tous)";
 $LANG['rulesengine'][97]="Aucun élément à tester";
 
 $LANG['rulesengine'][100]="Informations sur le cache";
