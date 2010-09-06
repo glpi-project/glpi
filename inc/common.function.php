@@ -1016,46 +1016,6 @@ function html_clean($value) {
 }
 
 
-/**
- * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
- *
- * @param $time datetime: datetime to convert
- *
- * @return $time or $date
- **/
-function convDateTime($time) {
-
-   if (is_null($time) || $time=='NULL') {
-      return NULL;
-   }
-
-   if (!isset($_SESSION["glpidate_format"])) {
-      $_SESSION["glpidate_format"] = 0;
-   }
-
-   switch ($_SESSION['glpidate_format']) {
-      case 1 : // DD-MM-YYYY
-         $date = substr($time, 8, 2)."-";   // day
-         $date .= substr($time, 5, 2)."-";  // month
-         $date .= substr($time, 0, 4). " "; // year
-         $date .= substr($time, 11, 5);     // hours and minutes
-         return $date;
-
-      case 2 : // MM-DD-YYYY
-         $date = substr($time, 5, 2)."-";   // month
-         $date .= substr($time, 8, 2)."-";  // day
-         $date .= substr($time, 0, 4). " "; // year
-         $date .= substr($time, 11, 5);     // hours and minutes
-         return $date;
-
-      default : // YYYY-MM-DD
-         if (strlen($time)>16) {
-            return substr($time, 0, 16);
-         }
-         return $time;
-   }
-}
-
 
 /**
  * Convert a date YY-MM-DD to DD-MM-YY for calendar
@@ -1094,6 +1054,24 @@ function convDate($time) {
          return $time;
    }
 }
+
+
+/**
+ * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
+ *
+ * @param $time datetime: datetime to convert
+ *
+ * @return $time or $date
+ **/
+function convDateTime($time) {
+
+   if (is_null($time) || $time=='NULL') {
+      return NULL;
+   }
+
+   return convDate($time).' '. substr($time, 11, 5);
+}
+
 
 /**
  * Convert a number to correct display
