@@ -1596,11 +1596,11 @@ class Search {
          case "glpi_users.name" :
             if (!empty($searchopt[$ID]["linkfield"])) {
                $linkfield="_".$searchopt[$ID]["linkfield"];
-               return " ORDER BY ".$table.$linkfield.".realname $order, ".
-                                 $table.$linkfield.".firstname $order, ".
-                                 $table.$linkfield.".name $order";
+               return " ORDER BY ".$table.$linkfield.".`realname` $order, ".
+                                 $table.$linkfield.".`firstname` $order, ".
+                                 $table.$linkfield.".`name` $order";
             } else {
-               return " ORDER BY ".$table.".name $order";
+               return " ORDER BY `".$table."`.`name` $order";
             }
             break;
 
