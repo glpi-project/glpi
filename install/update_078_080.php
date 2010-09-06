@@ -448,17 +448,23 @@ function update078to080($output='HTML') {
 
    // Put realtime in seconds
    if (!FieldExists('glpi_tickets','actiontime')) {
+
+      $query = "ALTER TABLE `glpi_tickets` ADD `actiontime` INT( 11 ) NOT NULL DEFAULT 0";
+      $DB->query($query) or die("0.80 alter realtime to actiontime in glpi_tickets". $LANG['update'][90] . $DB->error());
+
       if (FieldExists('glpi_tickets','realtime')) {
          $query = "UPDATE `glpi_tickets` SET `actiontime` = ROUND(realtime * 3600)";
          $DB->query($query) or die("0.80 compute actiontime value in glpi_tickets". $LANG['update'][90] . $DB->error());
          $query = "ALTER TABLE `glpi_tickets` DROP `realtime`";
          $DB->query($query) or die("0.80 alter realtime in glpi_tickets". $LANG['update'][90] . $DB->error());
       }
-      $query = "ALTER TABLE `glpi_tickets` ADD `actiontime` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 alter realtime to actiontime in glpi_tickets". $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists('glpi_tickettasks','actiontime')) {
+
+      $query = "ALTER TABLE `glpi_tickettasks` ADD `actiontime` INT( 11 ) NOT NULL DEFAULT 0";
+      $DB->query($query) or die("0.80 alter realtime to actiontime in glpi_tickettasks". $LANG['update'][90] . $DB->error());
+
       if (FieldExists('glpi_tickettasks','realtime')) {
          $query = "UPDATE `glpi_tickettasks` SET `actiontime` = ROUND(realtime * 3600)";
          $DB->query($query) or die("0.80 compute actiontime value in glpi_tickettasks". $LANG['update'][90] . $DB->error());
@@ -466,8 +472,6 @@ function update078to080($output='HTML') {
          $query = "ALTER TABLE `glpi_tickettasks` DROP `realtime`";
          $DB->query($query) or die("0.80 alter realtime in glpi_tickettasks". $LANG['update'][90] . $DB->error());
       }
-      $query = "ALTER TABLE `glpi_tickettasks` ADD `actiontime` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 alter realtime to actiontime in glpi_tickettasks". $LANG['update'][90] . $DB->error());
    }
 
 
