@@ -1362,7 +1362,7 @@ function seems_utf8($str) {
  * @param $string string: initial string
  *
  * @return formatted string
- */
+ **/
 function rembo($string) {
 
    // Adapte de PunBB
@@ -1399,8 +1399,8 @@ function rembo($string) {
    // This thing takes a while! :)
    $string = preg_replace($pattern, $replace, $string);
 
-   $string=clicurl($string);
-   $string=autop($string);
+   $string = clicurl($string);
+   $string = autop($string);
 
    // If we split up the message before we have to concatenate it together again (code tags)
    if (isset($inside)) {
@@ -1408,7 +1408,7 @@ function rembo($string) {
       $string = '';
       $num_tokens = count($outside);
 
-      for ($i = 0; $i < $num_tokens; ++$i) {
+      for ($i = 0 ; $i < $num_tokens ; ++$i) {
          $string .= $outside[$i];
          if (isset($inside[$i])) {
             $string .= '<br><br><table  class="code center"><tr><td class="punquote">' .
@@ -1420,64 +1420,68 @@ function rembo($string) {
    return $string;
 }
 
-/**
-* Create SQL search condition
-*
-* @param $val string: value to search
-* @param $not boolean: is a negative search ?
-*
-* @return search string
-**/
-function makeTextSearch($val,$not=false) {
 
-   $NOT="";
+/**
+ * Create SQL search condition
+ *
+ * @param $val string: value to search
+ * @param $not boolean: is a negative search ?
+ *
+ * @return search string
+ **/
+function makeTextSearch($val, $not=false) {
+
+   $NOT = "";
    if ($not) {
-      $NOT= " NOT ";
+      $NOT = "NOT";
    }
    // Unclean to permit < and > search
-   $val=unclean_cross_side_scripting_deep($val);
+   $val = unclean_cross_side_scripting_deep($val);
    if ($val=='NULL' || $val=='null') {
-      $SEARCH=" IS $NOT NULL ";
+      $SEARCH =" IS $NOT NULL ";
    } else {
-      $begin=0;
-      $end=0;
+      $begin = 0;
+      $end = 0;
       if (($length=strlen($val))>0) {
          if (($val[0]=='^')) {
-            $begin=1;
+            $begin = 1;
          }
          if ($val[$length-1]=='$'){
-            $end=1;
+            $end = 1;
          }
       }
       if ($begin||$end) {
          // no utf8_substr, to be consistent with strlen result
-         $val=substr($val,$begin,$length-$end-$begin);
+         $val = substr($val, $begin, $length-$end-$begin);
       }
 
-      $SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
+      $SEARCH = " $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
    }
    return $SEARCH;
 }
 
+
 /**
-* Create SQL search condition
-*
-* @param $field name (should be ` protected)
-* @param $val string: value to search
-* @param $not boolean: is a negative search ?
-* @param $link with previous criteria
-*
-* @return search SQL string
-**/
+ * Create SQL search condition
+ *
+ * @param $field name (should be ` protected)
+ * @param $val string: value to search
+ * @param $not boolean: is a negative search ?
+ * @param $link with previous criteria
+ *
+ * @return search SQL string
+ **/
 function makeTextCriteria ($field, $val, $not=false, $link='AND') {
-   $sql = $field . makeTextSearch($val,$not);
+
+   $sql = $field . makeTextSearch($val, $not);
 
    if (($not && $val!='NULL' && $val!='null' && $val!='^$')    // Not something
-       ||(!$not && $val=='^$')) {              // Empty
+       ||(!$not && $val=='^$')) {   // Empty
       $sql = "($sql OR $field IS NULL)";
    }
    return " $link $sql ";
 }
+
 
 /**
  * Get a web page. Use proxy if configured
@@ -1487,31 +1491,33 @@ function makeTextCriteria ($field, $val, $not=false, $link='AND') {
  * @param $rec integer: internal use only Must be 0
  *
  * @return content of the page (or empty)
- */
+ **/
 function getURLContent ($url, &$msgerr=NULL, $rec=0) {
-   global $LANG,$CFG_GLPI;
+   global $LANG, $CFG_GLPI;
 
-   $content="";
-   $taburl=parse_url($url);
+   $content = "";
+   $taburl  = parse_url($url);
 
    // Connection directe
    if (empty($CFG_GLPI["proxy_name"])) {
       if ($fp=@fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80),
-          $errno, $errstr, 1)) {
+                         $errno, $errstr, 1)) {
 
          if (isset($taburl["path"]) && $taburl["path"]!='/') {
             // retrieve path + args
-            $request  = "GET ".strstr($url, $taburl["path"])." HTTP/1.1\r\n";
+            $request = "GET ".strstr($url, $taburl["path"])." HTTP/1.1\r\n";
          } else {
-            $request  = "GET / HTTP/1.1\r\n";
+            $request = "GET / HTTP/1.1\r\n";
          }
          $request .= "Host: ".$taburl["host"]."\r\n";
+
       } else {
          if (isset($msgerr)) {
-            $msgerr=$LANG['setup'][304] . " ($errstr)"; // failed direct connexion - try proxy
+            $msgerr = $LANG['setup'][304] . " ($errstr)"; // failed direct connexion - try proxy
          }
          return "";
       }
+
    } else { // Connection using proxy
       $fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
       if ($fp) {
@@ -1521,9 +1527,10 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
             $request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".
                         $CFG_GLPI["proxy_password"]) . "\r\n";
          }
+
       } else {
          if (isset($msgerr)) {
-            $msgerr=$LANG['setup'][311] . " ($errstr)"; // failed proxy connexion
+            $msgerr = $LANG['setup'][311] . " ($errstr)"; // failed proxy connexion
          }
          return "";
       }
@@ -1533,42 +1540,43 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
    $request .= "Connection: Close\r\n\r\n";
    fwrite($fp, $request);
 
-   $header=true ;
-   $redir=false;
-   $errstr="";
-   while(!feof($fp)) {
+   $header = true ;
+   $redir  = false;
+   $errstr = "";
+   while (!feof($fp)) {
       if ($buf=fgets($fp, 1024)) {
          if ($header) {
             if (strlen(trim($buf))==0) {
                // Empty line = end of header
-               $header=false;
+               $header = false;
+
             } else if ($redir && preg_match("/^Location: (.*)$/", $buf, $rep)) {
                if ($rec<9) {
-                  $desturl=trim($rep[1]);
-                  $taburl2=parse_url($desturl);
+                  $desturl = trim($rep[1]);
+                  $taburl2 = parse_url($desturl);
                   if (isset($taburl2['host'])) {
                      // Redirect to another host
-                     return (getURLContent($desturl,$errstr,$rec+1));
-                  } else  {
-                     // redirect to same host
-                     return (getURLContent(
+                     return (getURLContent($desturl, $errstr, $rec+1));
+                  }
+                  // redirect to same host
+                  return (getURLContent(
                              (isset($taburl['scheme'])?$taburl['scheme']:'http')."://".$taburl['host'].
                              (isset($taburl['port'])?':'.$taburl['port']:'').$desturl,$errstr,$rec+1));
-                  }
-               } else {
-                  $errstr="Too deep";
-                  break;
                }
-            } else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
-               // HTTP 200 = OK
+
+               $errstr = "Too deep";
+               break;
+
             } else if (preg_match("/^HTTP.*302/", $buf)) {
                // HTTP 302 = Moved Temporarily
-               $redir=true;
+               $redir = true;
+
             } else if (preg_match("/^HTTP/", $buf)) {
                // Other HTTP status = error
-               $errstr=trim($buf);
+               $errstr = trim($buf);
                break;
             }
+
          } else {
             // Body
             $content .= $buf;
@@ -1580,7 +1588,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 
    if (empty($content) && isset($msgerr)) {
       if (empty($errstr)) {
-         $msgerr=$LANG['setup'][312]; // no data
+         $msgerr = $LANG['setup'][312]; // no data
       } else {
          $msgerr=$LANG['setup'][310] . " ($errstr)"; // HTTP error
       }
@@ -1588,16 +1596,17 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
    return $content;
 }
 
+
 /**
-* Check if new version is available
-*
-* @param $auto boolean: check done autically ? (if not display result)
-* @param $messageafterredirect boolean: use message after redirect instead of display
-*
-* @return string explaining the result
-**/
-function checkNewVersionAvailable($auto=true,$messageafterredirect=false) {
-   global $DB,$LANG,$CFG_GLPI;
+ * Check if new version is available
+ *
+ * @param $auto boolean: check done autically ? (if not display result)
+ * @param $messageafterredirect boolean: use message after redirect instead of display
+ *
+ * @return string explaining the result
+ **/
+function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
+   global $LANG, $CFG_GLPI;
 
    if (!$auto && !haveRight("check_update","r")) {
       return false;
@@ -1606,86 +1615,87 @@ function checkNewVersionAvailable($auto=true,$messageafterredirect=false) {
       echo "<br>";
    }
 
-   $error="";
+   $error = "";
    $latest_version = getURLContent("http://glpi-project.org/latest_version", $error);
 
    if (strlen(trim($latest_version))==0) {
       if (!$auto) {
          if ($messageafterredirect) {
-            addMessageAfterRedirect($error,true,ERROR);
+            addMessageAfterRedirect($error, true, ERROR);
+         } else {
+            echo "<div class='center'>$error</div>";
          }
-         else {
-            echo "<div class='center'> $error </div>";
-         }
+
       } else {
          return $error;
       }
+
    } else {
-      $splitted=explode(".",trim($CFG_GLPI["version"]));
+      $splitted = explode(".", trim($CFG_GLPI["version"]));
       if ($splitted[0]<10) {
-         $splitted[0].="0";
+         $splitted[0] .= "0";
       }
       if ($splitted[1]<10) {
-         $splitted[1].="0";
+         $splitted[1] .= "0";
       }
       $cur_version = $splitted[0]*10000+$splitted[1]*100;
       if (isset($splitted[2])) {
          if ($splitted[2]<10) {
-            $splitted[2].="0";
+            $splitted[2] .= "0";
          }
-         $cur_version+=$splitted[2];
+         $cur_version += $splitted[2];
       }
-      $splitted=explode(".",trim($latest_version));
+      $splitted = explode(".", trim($latest_version));
 
       if ($splitted[0]<10) {
-         $splitted[0].="0";
+         $splitted[0] .= "0";
       }
       if ($splitted[1]<10) {
-         $splitted[1].="0";
+         $splitted[1] .= "0";
       }
 
       $lat_version = $splitted[0]*10000+$splitted[1]*100;
       if (isset($splitted[2])) {
          if ($splitted[2]<10) {
-            $splitted[2].="0";
+            $splitted[2] .= "0";
          }
-         $lat_version+=$splitted[2];
+         $lat_version += $splitted[2];
       }
 
       if ($cur_version < $lat_version) {
-         $config_object=new Config();
-         $input["id"]=1;
-         $input["founded_new_version"]=$latest_version;
+         $config_object = new Config();
+         $input["id"] = 1;
+         $input["founded_new_version"] = $latest_version;
          $config_object->update($input);
          if (!$auto) {
             if ($messageafterredirect) {
                addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version.$LANG['setup'][302]);
-            }
-            else {
+
+            } else {
                echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
                echo "<div class='center'>".$LANG['setup'][302]."</div>";
             }
+
          } else {
             if ($messageafterredirect) {
                addMessageAfterRedirect($LANG['setup'][301]." ".$latest_version);
-            }
-            else {
+            } else {
                return $LANG['setup'][301]." ".$latest_version;
             }
          }
+
       } else {
          if (!$auto) {
             if ($messageafterredirect) {
                addMessageAfterRedirect($LANG['setup'][303]);
-            }
-            else {
+            } else {
                echo "<div class='center'>".$LANG['setup'][303]."</div>";
             }
+
          } else {
             if ($messageafterredirect) {
                addMessageAfterRedirect($LANG['setup'][303]);
-            }
-            else {
+            } else {
                return $LANG['setup'][303];
             }
          }
@@ -1694,16 +1704,17 @@ function checkNewVersionAvailable($auto=true,$messageafterredirect=false) {
    return 1;
 }
 
+
 /**
-* Get date using a begin date and a period in month
-*
-* @param $from date: begin date
-* @param $addwarranty integer: period in months
-* @param $deletenotice integer: period in months of notice
-*
-* @return expiration date string
-**/
-function getWarrantyExpir($from,$addwarranty,$deletenotice=0) {
+ * Get date using a begin date and a period in month
+ *
+ * @param $from date: begin date
+ * @param $addwarranty integer: period in months
+ * @param $deletenotice integer: period in months of notice
+ *
+ * @return expiration date string
+ **/
+function getWarrantyExpir($from, $addwarranty, $deletenotice=0) {
    global $LANG;
 
    // Life warranty
@@ -1712,79 +1723,83 @@ function getWarrantyExpir($from,$addwarranty,$deletenotice=0) {
    }
    if ($from==NULL || empty($from)) {
       return "";
-   } else {
-      return convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
    }
+   return convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
 }
 
+
 /**
-* Get date using a begin date and a period in month and a notice one
-*
-* @param $begin date: begin date
-* @param $duration integer: period in months
-* @param $notice integer: notice in months
-*
-* @return expiration string
-**/
-function getExpir($begin,$duration,$notice="0") {
+ * Get date using a begin date and a period in month and a notice one
+ *
+ * @param $begin date: begin date
+ * @param $duration integer: period in months
+ * @param $notice integer: notice in months
+ *
+ * @return expiration string
+ **/
+function getExpir($begin, $duration, $notice="0") {
    global $LANG;
 
    if ($begin==NULL || empty($begin)) {
       return "";
-   } else {
-      $diff=strtotime("$begin+$duration month -$notice month")-time();
-      $diff_days=floor($diff/60/60/24);
-      if($diff_days>0) {
-         return $diff_days." ".$LANG['stats'][31];
-      } else {
-         return "<span class='red'>".$diff_days." ".$LANG['stats'][31]."</span>";
-      }
    }
+   $diff = strtotime("$begin+$duration month -$notice month")-time();
+   $diff_days = floor($diff/60/60/24);
+
+   if ($diff_days>0) {
+      return $diff_days." ".$LANG['stats'][31];
+   }
+   return "<span class='red'>".$diff_days." ".$LANG['stats'][31]."</span>";
 }
 
+
 /**
-* Manage login redirection
-*
-* @param $where string: where to redirect ?
-**/
+ * Manage login redirection
+ *
+ * @param $where string: where to redirect ?
+ **/
 function manageRedirect($where) {
-   global $CFG_GLPI,$PLUGIN_HOOKS;
+   global $CFG_GLPI, $PLUGIN_HOOKS;
 
    if (!empty($where)) {
-      $data=explode("_",$where);
-      if (count($data)>=2 && isset($_SESSION["glpiactiveprofile"]["interface"])
+      $data = explode("_",$where);
+      if (count($data)>=2
+          && isset($_SESSION["glpiactiveprofile"]["interface"])
           && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
-         $forcetab='';
+
+         $forcetab = '';
          if (isset($data[2])) {
-            $forcetab='forcetab='.$data[2];
+            $forcetab = 'forcetab='.$data[2];
          }
 
          switch ($_SESSION["glpiactiveprofile"]["interface"]) {
             case "helpdesk" :
                switch ($data[0]) {
-                  case "plugin":
+                  case "plugin" :
                      if (isset($data[3])) {
-                        $forcetab='forcetab='.$data[3];
+                        $forcetab = 'forcetab='.$data[3];
                      }
-
-                     if (isset($data[2]) && $data[2]>0
+                     if (isset($data[2])
+                         && $data[2]>0
                          && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
                          && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
 
                         glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".
-                           $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]."&$forcetab");
+                                    $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2].
+                                    "&$forcetab");
                      } else {
                         glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
                      }
                      break;
 
                   // Use for compatibility with old name
-                  case "tracking":
-                  case "ticket":
-                     glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
-                                       $data[1]."&$forcetab");
+                  case "tracking" :
+                  case "ticket" :
+                     glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
+                                 "&$forcetab");
                      break;
-                  case "preference":
+
+                  case "preference" :
                      glpi_header($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                      break;
 
@@ -1796,32 +1811,35 @@ function manageRedirect($where) {
 
             case "central" :
                switch ($data[0]) {
-                  case "plugin":
+                  case "plugin" :
                      if (isset($data[3])) {
-                        $forcetab='forcetab='.$data[3];
+                        $forcetab = 'forcetab='.$data[3];
                      }
-                     if (isset($data[2]) && $data[2]>0
+                     if (isset($data[2])
+                         && $data[2]>0
                          && isset($PLUGIN_HOOKS['redirect_page'][$data[1]])
                          && !empty($PLUGIN_HOOKS['redirect_page'][$data[1]])) {
 
                         glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".
-                           $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2]."&$forcetab");
+                                    $PLUGIN_HOOKS['redirect_page'][$data[1]]."?id=".$data[2].
+                                    "&$forcetab");
                      } else {
                         glpi_header($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                      }
                      break;
 
-                  case "preference":
+                  case "preference" :
                      glpi_header($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                      break;
 
                   // Use for compatibility with old name
-                  case "tracking":
+                  case "tracking" :
                      $data[0] = "ticket";
+
                   default :
                      if (!empty($data[0] )&& $data[1]>0) {
                         glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
-                                          $data[1]."&$forcetab");
+                                    $data[1]."&$forcetab");
                      } else {
                         glpi_header($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                      }
@@ -1833,60 +1851,63 @@ function manageRedirect($where) {
    }
 }
 
+
 /**
-* Clean string for input text field
-*
-* @param $string string: input text
-*
-* @return clean string
-**/
+ * Clean string for input text field
+ *
+ * @param $string string: input text
+ *
+ * @return clean string
+ **/
 function cleanInputText($string) {
-   return preg_replace('/\"/','&quot;',$string);
+   return preg_replace('/\"/', '&quot;', $string);
 }
 
+
 /**
-* Get a random string
-*
-* @param $length integer: length of the random string
-*
-* @return random string
-**/
+ * Get a random string
+ *
+ * @param $length integer: length of the random string
+ *
+ * @return random string
+ **/
 function getRandomString($length) {
 
-   $alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
-   $rndstring="";
-   for ($a = 0; $a <= $length; $a++) {
+   $alphabet  = "1234567890abcdefghijklmnopqrstuvwxyz";
+   $rndstring = "";
+   for ($a=0 ; $a<=$length ; $a++) {
       $b = rand(0, strlen($alphabet) - 1);
       $rndstring .= $alphabet[$b];
    }
    return $rndstring;
 }
 
+
 /**
-* Make a good string from the unix timestamp $sec
-*
-* @param $time integer: timestamp
-*
-* @param $display_sec boolean: display seconds ?
-*
-* @return string
-**/
-function timestampToString($time,$display_sec=true) {
+ * Make a good string from the unix timestamp $sec
+ *
+ * @param $time integer: timestamp
+ * @param $display_sec boolean: display seconds ?
+ *
+ * @return string
+ **/
+function timestampToString($time, $display_sec=true) {
    global $LANG;
-   $sign='';
+
+   $sign = '';
    if ($time<0) {
-      $sign='- ';
-      $time=abs($time);
+      $sign = '- ';
+      $time = abs($time);
    }
-   $time=floor($time);
+   $time = floor($time);
 
    // Force display seconds if time is null
    if ($time==0) {
       $display_sec = true;
    }
-   $units=getTimestampTimeUnits($time);
+   $units = getTimestampTimeUnits($time);
 
-   $out=$sign;
+   $out = $sign;
    if ($units['day']>0) {
       $out .= " ".$units['day']."&nbsp;".$LANG['stats'][31];
    }
@@ -1903,49 +1924,54 @@ function timestampToString($time,$display_sec=true) {
    return $out;
 }
 
+
 /**
-* Split timestamp in time units
-*
-* @param $time integer: timestamp
-*
-* @return string
-**/
+ * Split timestamp in time units
+ *
+ * @param $time integer: timestamp
+ *
+ * @return string
+ **/
 function getTimestampTimeUnits($time) {
 
-   $time=abs($time);
+   $time = abs($time);
    $out['second'] = 0;
    $out['minute'] = 0;
    $out['hour']   = 0;
    $out['day']    = 0;
 
-   $out['second']=$time%MINUTE_TIMESTAMP;
-   $time-=$out['second'];
+   $out['second'] = $time%MINUTE_TIMESTAMP;
+   $time -= $out['second'];
+
    if ($time>0) {
-      $out['minute']=($time%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP;
-      $time-=$out['minute']*MINUTE_TIMESTAMP;
+      $out['minute'] = ($time%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP;
+      $time -= $out['minute']*MINUTE_TIMESTAMP;
+
       if ($time>0) {
-         $out['hour']=($time%DAY_TIMESTAMP)/HOUR_TIMESTAMP;
-         $time-=$out['hour']*HOUR_TIMESTAMP;
+         $out['hour'] = ($time%DAY_TIMESTAMP)/HOUR_TIMESTAMP;
+         $time -= $out['hour']*HOUR_TIMESTAMP;
+
          if ($time>0) {
-            $out['day']=$time/DAY_TIMESTAMP;
+            $out['day'] = $time/DAY_TIMESTAMP;
          }
       }
    }
    return $out;
 }
 
+
 /**
-* Delete a directory and file contains in it
-*
-* @param $dir string: directory to delete
-**/
+ * Delete a directory and file contains in it
+ *
+ * @param $dir string: directory to delete
+ **/
 function deleteDir($dir) {
 
    if (file_exists($dir)) {
-      chmod($dir,0777);
+      chmod($dir, 0777);
       if (is_dir($dir)) {
          $id_dir = opendir($dir);
-         while($element = readdir($id_dir)) {
+         while ($element = readdir($id_dir)) {
             if ($element != "." && $element != "..") {
                if (is_dir($element)) {
                   deleteDir($dir."/".$element);
@@ -1956,51 +1982,62 @@ function deleteDir($dir) {
          }
          closedir($id_dir);
          rmdir($dir);
+
       } else { // Delete file
          unlink($dir);
       }
    }
 }
 
+
 /**
  * Determine if a login is valid
+ *
  * @param $login string: login to check
+ *
  * @return boolean
- */
+ **/
 function isValidLogin($login="") {
    return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
 }
 
+
 /**
  * Determine if Ldap is usable checking ldap extension existence
+ *
  * @return boolean
- */
+ **/
 function canUseLdap() {
    return extension_loaded('ldap');
 }
 
+
 /**
  * Determine if Imap/Pop is usable checking extension existence
+ *
  * @return boolean
- */
+ **/
 function canUseImapPop() {
    return extension_loaded('imap');
 }
 
+
 /** Converts an array of parameters into a query string to be appended to a URL.
  *
- * @return  string  : Query string to append to a URL.
- * @param   $array  array: parameters to append to the query string.
- * @param   $parent This should be left blank (it is used internally by the function).
- * @param   $separator separator : default is & : may be defined as &amp; to display purpose
- */
-function append_params($array,$separator='&', $parent='') {
+ * @param $array  array: parameters to append to the query string.
+ * @param $separator separator : default is & : may be defined as &amp; to display purpose
+ * @param $parent This should be left blank (it is used internally by the function).
+ *
+ * @return string  : Query string to append to a URL.
+ **/
+function append_params($array, $separator='&', $parent='') {
 
    $params = array();
    foreach ($array as $k => $v) {
       if (is_array($v)) {
-         $params[] = append_params($v,$separator, (empty($parent) ? rawurlencode($k) : $parent . '[' .
-                     rawurlencode($k) . ']'));
+         $params[] = append_params($v, $separator,
+                                   (empty($parent) ? rawurlencode($k) : $parent . '[' .
+                                    rawurlencode($k) . ']'));
       } else {
          $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']' :
                       rawurlencode($k)) . '=' . rawurlencode($v);
@@ -2009,16 +2046,18 @@ function append_params($array,$separator='&', $parent='') {
    return implode($separator, $params);
 }
 
+
 /** Format a size passing a size in octet
  *
  * @param   $size integer: Size in octet
+ *
  * @return  formatted size
- */
+ **/
 function getSize($size) {
 
-   $bytes = array('B','KB','MB','GB','TB');
-   foreach($bytes as $val) {
-      if($size > 1024) {
+   $bytes = array('B', 'KB', 'MB', 'GB', 'TB');
+   foreach ($bytes as $val) {
+      if ($size > 1024) {
          $size = $size / 1024;
       } else {
          break;
@@ -2027,94 +2066,94 @@ function getSize($size) {
    return round($size, 2)." ".$val;
 }
 
+
 /** Display how many logins since
  *
  * @return  nothing
- */
+ **/
 function getCountLogin() {
    global $DB;
 
-   $query="SELECT count(*)
-           FROM `glpi_events`
-           WHERE `message` LIKE '%logged in%'";
+   $query = "SELECT count(*)
+             FROM `glpi_events`
+             WHERE `message` LIKE '%logged in%'";
 
-   $query2="SELECT `date`
-            FROM `glpi_events`
-            ORDER BY `date` ASC LIMIT 1";
+   $query2 = "SELECT `date`
+              FROM `glpi_events`
+              ORDER BY `date` ASC
+              LIMIT 1";
 
-   $result=$DB->query($query);
-   $result2=$DB->query($query2);
-   $nb_login=$DB->result($result,0,0);
-   $date=$DB->result($result2,0,0);
+   $result   = $DB->query($query);
+   $result2  = $DB->query($query2);
+   $nb_login = $DB->result($result, 0, 0);
+   $date     = $DB->result($result2, 0, 0);
 
    echo '<b>'.$nb_login.'</b> logins since '.$date ;
 }
+
 
 /** Initialise a list of items to use navigate through search results
  *
  * @param $itemtype device type
  * @param $title titre de la liste
- */
-function initNavigateListItems($itemtype,$title="") {
+ **/
+function initNavigateListItems($itemtype, $title="") {
    global $LANG;
 
    if (empty($title)) {
-      $title=$LANG['common'][53];
+      $title = $LANG['common'][53];
    }
-   $url='';
+   $url = '';
    if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
       if (isset($_SERVER['HTTP_REFERER'])) {
-         $url=$_SERVER['HTTP_REFERER'];
+         $url = $_SERVER['HTTP_REFERER'];
       }
    } else {
       if (isset($_SERVER['HTTP_REFERER'])) {
-         $url=$_SERVER['PHP_SELF'];
+         $url = $_SERVER['PHP_SELF'];
       }
    }
-   $_SESSION['glpilisttitle'][$itemtype]=$title;
-   $_SESSION['glpilistitems'][$itemtype]=array();
-   $_SESSION['glpilisturl'][$itemtype]=$url;
+   $_SESSION['glpilisttitle'][$itemtype] = $title;
+   $_SESSION['glpilistitems'][$itemtype] = array();
+   $_SESSION['glpilisturl'][$itemtype]   = $url;
 }
+
 
 /** Add an item to the navigate through search results list
  *
  * @param $itemtype device type
  * @param $ID ID of the item
  */
-function addToNavigateListItems($itemtype,$ID) {
-
-   $_SESSION['glpilistitems'][$itemtype][]=$ID;
+function addToNavigateListItems($itemtype, $ID) {
+   $_SESSION['glpilistitems'][$itemtype][] = $ID;
 }
 
 
 /**
  * Clean display value for csv export
  *
+ * @param $value string value
  *
- *@param $value string value
- *
- *@return clean value
- *
+ * @return clean value
  **/
 function csv_clean($value) {
 
    if (get_magic_quotes_runtime()) {
-      $value=stripslashes($value);
+      $value = stripslashes($value);
    }
-   $value=str_replace("\"","''",$value);
-   $value=html_clean($value);
+   $value = str_replace("\"", "''", $value);
+   $value = html_clean($value);
 
    return $value;
 }
 
+
 /**
  * Extract url from web link
  *
+ * @param $value string value
  *
- *@param $value string value
- *
- *@return clean value
- *
+ * @return clean value
  **/
 function weblink_extract($value) {
 
@@ -2122,48 +2161,49 @@ function weblink_extract($value) {
    return $value;
 }
 
+
 /**
  * Clean display value for sylk export
  *
+ * @param $value string value
  *
- *@param $value string value
- *
- *@return clean value
- *
+ * @return clean value
  **/
 function sylk_clean($value) {
 
    if (get_magic_quotes_runtime()) {
-      $value=stripslashes($value);
+      $value = stripslashes($value);
    }
-   $value=preg_replace('/\x0A/',' ',$value);
-   $value=preg_replace('/\x0D/',NULL,$value);
-   $value=str_replace("\"","''",$value);
-   $value=str_replace(';', ';;', $value);
-   $value=html_clean($value);
+   $value = preg_replace('/\x0A/', ' ', $value);
+   $value = preg_replace('/\x0D/', NULL, $value);
+   $value = str_replace("\"", "''", $value);
+   $value = str_replace(';', ';;', $value);
+   $value = html_clean($value);
 
    return $value;
 }
 
-/**
-*   Clean all parameters of an URL. Get a clean URL
-*
-*/
-function cleanParametersURL($url) {
-   $url=preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/","$1",$url);
-   return preg_replace("/\?.*/","",$url);
 
-}
 /**
-*   Manage planning posted datas (must have begin + duration or end)
-*   Compute end if duration is set
-*
-*/
+ * Clean all parameters of an URL. Get a clean URL
+ **/
+function cleanParametersURL($url) {
+
+   $url = preg_replace("/(\/[0-9a-zA-Z\.\-\_]+\.php).*/", "$1", $url);
+   return preg_replace("/\?.*/", "", $url);
+}
+
+
+/**
+ * Manage planning posted datas (must have begin + duration or end)
+ * Compute end if duration is set
+ **/
 function manageBeginAndEndPlanDates(&$data) {
+
    if (!isset($data['end'])) {
       if (isset($data['begin']) && isset($data['_duration'])) {
-         $begin_timestamp=strtotime($data['begin']);
-         $data['end']=date("Y-m-d H:i:s",$begin_timestamp+$data['_duration']);
+         $begin_timestamp = strtotime($data['begin']);
+         $data['end']     = date("Y-m-d H:i:s",$begin_timestamp+$data['_duration']);
          unset($data['_duration']);
       }
    }
