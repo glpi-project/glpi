@@ -1676,11 +1676,11 @@ class Search {
          case "glpi_users.name" :
             if (!empty($searchopt[$ID]["linkfield"])) {
                $linkfield = "_".$searchopt[$ID]["linkfield"];
-               return " ORDER BY ".$table.$linkfield.".realname $order, ".
-                                 $table.$linkfield.".firstname $order, ".
-                                 $table.$linkfield.".name $order";
+               return " ORDER BY ".$table.$linkfield.".`realname` $order, ".
+                                 $table.$linkfield.".`firstname` $order, ".
+                                 $table.$linkfield.".`name` $order";
             } else {
-               return " ORDER BY ".$table.".name $order";
+               return " ORDER BY `".$table."`.`name` $order";
             }
             break;
 
@@ -3834,7 +3834,7 @@ class Search {
                $orig_link = trim($data[$NAME.$num]);
                if (!empty($orig_link)) {
                   // strip begin of link
-                  $link=preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
+                  $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
                   $link = preg_replace('/\/$/', '', $link);
                   if (utf8_strlen($link)>30) {
                      $link = utf8_substr($link, 0, 30)."...";
