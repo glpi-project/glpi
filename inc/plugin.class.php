@@ -134,7 +134,8 @@ class Plugin extends CommonDBTM {
    * @return nothing
    */
    static function loadLang($name, $forcelang='') {
-      global $CFG_GLPI;
+      // $LANG needed : used when include lang file
+      global $CFG_GLPI,$LANG;
 
       $trytoload = 'en_GB';
       if (isset($_SESSION['glpilanguage'])) {
@@ -149,6 +150,7 @@ class Plugin extends CommonDBTM {
       if (empty($trytoload)) {
          $trytoload = $CFG_GLPI["language"];
       }
+
       $dir = GLPI_ROOT . "/plugins/$name/locales/";
 
       if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
