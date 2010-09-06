@@ -41,6 +41,7 @@ class Central extends CommonGLPI {
       return $LANG['common'][56];
    }
 
+
    function defineTabs($options=array()) {
       global $LANG;
 
@@ -51,10 +52,9 @@ class Central extends CommonGLPI {
       return $tabs;
    }
 
+
    /**
     * Show the central global view
-    *
-    *
    **/
    static function showGlobalView() {
 
@@ -90,6 +90,7 @@ class Central extends CommonGLPI {
       }
    }
 
+
    /**
     * Show the central personal view
     *
@@ -114,17 +115,17 @@ class Central extends CommonGLPI {
          echo "</td></tr>";
       }
       echo "<tr><td class='top' width='450px'>";
-      Ticket::showCentralList(0,"toapprove",false);
+      Ticket::showCentralList(0, "toapprove", false);
       echo "</td></tr>";
       echo "<tr><td class='top' width='450px'>";
-      Ticket::showCentralList(0,"requestbyself",false);
+      Ticket::showCentralList(0, "requestbyself", false);
       echo "</td></tr>";
       if ($showticket) {
          echo "<tr><td class='top' width='450px'>";
-         Ticket::showCentralList(0,"process",false);
+         Ticket::showCentralList(0, "process", false);
          echo "</td></tr>";
          echo "<tr><td class='top' width='450px'>";
-         Ticket::showCentralList(0,"waiting",false);
+         Ticket::showCentralList(0, "waiting", false);
          echo "</td></tr>";
       }
 
@@ -141,7 +142,7 @@ class Central extends CommonGLPI {
       if (haveRight("reminder_public","r")) {
          echo "<tr><td class='top' width='450px'>";
          Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
-         $entities = array_reverse(getAncestorsOf("glpi_entities",$_SESSION["glpiactive_entity"]));
+         $entities = array_reverse(getAncestorsOf("glpi_entities", $_SESSION["glpiactive_entity"]));
          foreach ($entities as $entity) {
             Reminder::showListForCentral($entity, true);
          }
@@ -155,10 +156,9 @@ class Central extends CommonGLPI {
       echo "</table></td></tr></table>";
    }
 
+
    /**
     * Show the central group view
-    *
-    *
    **/
    static function showGroupView() {
 
@@ -169,28 +169,27 @@ class Central extends CommonGLPI {
 
       if ($showticket) {
          echo "<tr><td class='top' width='450px'><br>";
-         Ticket::showCentralList(0,"process",true);
+         Ticket::showCentralList(0, "process", true);
          echo "</td></tr>";
       }
       if (haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
-         Ticket::showCentralList(0,"waiting",true);
+         Ticket::showCentralList(0, "waiting", true);
          echo "</td></tr>";
       }
       echo "</table></td>";
       echo "<td class='top'><table>";
 
-
       if (haveRight('show_group_ticket','1')) {
          echo "<tr><td  class='top' width='450px'><br>";
-         Ticket::showCentralList(0,"toapprove",true);
+         Ticket::showCentralList(0, "toapprove", true);
          echo "</td></tr>";
          echo "<tr><td  class='top' width='450px'>";
-         Ticket::showCentralList(0,"requestbyself",true);
+         Ticket::showCentralList(0, "requestbyself", true);
          echo "</td></tr>";
       } else {
          echo "<tr><td  class='top' width='450px'><br>";
-         Ticket::showCentralList(0,"waiting",true);
+         Ticket::showCentralList(0, "waiting", true);
          echo "</td></tr>";
       }
 
