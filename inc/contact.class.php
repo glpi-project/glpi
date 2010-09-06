@@ -399,7 +399,6 @@ class Contact extends CommonDBTM{
          }
          if ($nb>count($used)) {
             echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
-            echo "<div class='software-instal'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
             Dropdown::show('Supplier',
                      array('used'         => $used,
@@ -408,7 +407,6 @@ class Contact extends CommonDBTM{
 
             echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value=\"".
                                $LANG['buttons'][8]."\" class='submit'>";
-            echo "</div>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
          }

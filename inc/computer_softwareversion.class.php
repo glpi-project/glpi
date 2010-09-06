@@ -211,7 +211,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_groups`.`name` AS groupe
                 FROM `glpi_computers_softwareversions`
                 INNER JOIN `glpi_softwareversions`
-                     ON (`glpi_computers_softwareversions`.`softwareversions_id` 
+                     ON (`glpi_computers_softwareversions`.`softwareversions_id`
                          = `glpi_softwareversions`.`id`)
                 INNER JOIN `glpi_computers`
                      ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
@@ -321,10 +321,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "<td>".$data['groupe']."</td>";
                echo "<td>".$data['username']."</td>";
 
-               /// TODO display available licences for the installation  : 
+               /// TODO display available licences for the installation  :
                //Computer_SoftwareLicense::GetLicenseForInstallation($computers_id,$softwareversions_id)
                echo "<td>TODO</td>";
-               
+
                echo "</tr>\n";
 
             } while ($data=$DB->fetch_assoc($result));
@@ -444,13 +444,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
          echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
-         echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . 
+         echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] .
                "/front/computer_softwareversion.form.php\">";
-         echo "<div class='software-instal'>";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "<input type='submit' name='install' value='" .$LANG['buttons'][4]."' class='submit'>";
-         echo "</div></form>";
+         echo "</form>";
          echo "</td></tr>\n";
       }
       echo "<tr><th colspan='5'>" . $LANG['software'][17] . "&nbsp;:</th></tr>";
@@ -581,9 +580,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='5'>";
-      echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT . 
+      echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT .
             "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
-      echo "<img alt='' name='imgcat$cat' src=\"" . GLPI_ROOT . "/pics/folder" . 
+      echo "<img alt='' name='imgcat$cat' src=\"" . GLPI_ROOT . "/pics/folder" .
             (!$display ? '' : "-open") . ".png\">&nbsp;<strong>" . $catname . "</strong>";
       echo "</a></td></tr>";
 
@@ -592,7 +591,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action='";
       echo $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
       echo "<input type='hidden' name='computers_id' value='$computers_ID'>";
- 
+
       echo "<table class='tab_cadre_fixe'><tr>";
       if ($canedit) {
          echo "<th>&nbsp;</th>";
@@ -644,7 +643,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_softwarelicensetypes`.`name` AS type
                 FROM `glpi_computers_softwarelicenses`
-                INNER JOIN `glpi_softwarelicenses` 
+                INNER JOIN `glpi_softwarelicenses`
                      ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`
                          = `glpi_softwarelicenses`.`id`)
                 LEFT JOIN `glpi_softwarelicensetypes`
@@ -702,7 +701,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td>";
          if ((empty ($withtemplate) || $withtemplate != 2)
              && $ID>0) {
- 
+
             echo "<input type='checkbox' name='softversion_$ID'>";
          }
          echo "</td>";

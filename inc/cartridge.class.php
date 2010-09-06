@@ -709,13 +709,13 @@ class Cartridge extends CommonDBTM {
       if ($old==0 && $canedit) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='3'>";
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
-         echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
+         echo "<input type='hidden' name='pID' value='$instID'>";
 
          if (CartridgeItem::dropdownForPrinter($printer)) {
             echo "&nbsp;<input type='submit' name='install' value='".$LANG['buttons'][4]."'
                          class='submit'>";
          }
-         echo "</div></form></td><td class='tab_bg_2 center'>&nbsp;";
+         echo "</form></td><td class='tab_bg_2 center'>&nbsp;";
          echo "</td></tr>";
 
       } else { // Print average
