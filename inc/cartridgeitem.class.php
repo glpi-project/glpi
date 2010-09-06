@@ -209,7 +209,7 @@ class CartridgeItem extends CommonDBTM {
    *
    **/
    function showForm ($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $LANG;
 
    // Show CartridgeItem or blank form
       if (!haveRight("cartridge","r")) {
@@ -231,31 +231,31 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
-      "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='7'>.<textarea cols='45' rows='9' name='comment' >"
-         .$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='7'>";
+      echo "<textarea cols='45' rows='9' name='comment'>".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['consumables'][2]." : </td>";
+      echo "<td>".$LANG['consumables'][2]."&nbsp;: </td>";
       echo "<td>";
       autocompletionTextField($this, "ref");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][17]." : </td>";
+      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('CartridgeItemType', array('value' => $this->fields["cartridgeitemtypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][5]." : </td>";
+      echo "<td>".$LANG['common'][5]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][10]." : </td>";
+      echo "<td>".$LANG['common'][10]."&nbsp;: </td>";
       echo "<td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
@@ -264,14 +264,14 @@ class CartridgeItem extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['consumables'][36]." : </td>";
+      echo "<td>".$LANG['consumables'][36]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
                                        'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['consumables'][38]." : </td>";
+      echo "<td>".$LANG['consumables'][38]."&nbsp;: </td>";
       echo "<td>";
       Dropdown::showInteger('alarm_threshold',$this->fields["alarm_threshold"],-1,100);
       echo "</td></tr>";
