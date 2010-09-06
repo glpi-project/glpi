@@ -647,12 +647,12 @@ class Supplier extends CommonDBTM {
 
          if ($nb>count($used)) {
             echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
-            echo "<div class='software-instal'><input type='hidden' name='suppliers_id' value='$ID'>";
+            echo "<input type='hidden' name='suppliers_id' value='$ID'>";
             Contract::dropdown(array('used'        => $used,
                                     'entity'       => $this->fields["entities_id"],
                                     'entity_sons'  => $this->fields["is_recursive"],
                                     'nochecklimit' => true));
-            echo "</div></td><td class='center'>";
+            echo "</td><td class='center'>";
             echo "<input type='submit' name='addcontractsupplier' value=\"".
                    $LANG['buttons'][8]."\" class='submit'>";
             echo "</td>";

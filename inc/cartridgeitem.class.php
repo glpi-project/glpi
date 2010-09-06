@@ -551,9 +551,9 @@ class CartridgeItem extends CommonDBTM {
       }
       if (haveRight("cartridge", "w")) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
-         echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
+         echo "<input type='hidden' name='tID' value='$instID'>";
          Dropdown::show('PrinterModel', array('used' => $used));
-         echo "</div></td><td class='tab_bg_2 center'>";
+         echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addtype' value='".$LANG['buttons'][8]."' class='submit'>";
          echo "</td></tr>";
       }

@@ -641,13 +641,12 @@ class Contract extends CommonDBTM {
          }
          if ($nb>count($used)) {
             echo "<tr class='tab_bg_1'><td class='right' colspan='2'>";
-            echo "<div class='software-instal'>";
             echo "<input type='hidden' name='contracts_id' value='$instID'>";
             Dropdown::show('Supplier',
                            array('used'         => $used,
                                  'entity'       => $this->fields["entities_id"],
                                  'entity_sons'  => $this->fields["is_recursive"]));
-            echo "</div></td><td class='center'>";
+            echo "</td><td class='center'>";
             echo "<input type='submit' name='addcontractsupplier' value='".$LANG['buttons'][8].
                   "' class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
@@ -797,11 +796,10 @@ class Contract extends CommonDBTM {
              || $this->fields['max_links_allowed'] > $totalnb) {
 
             echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
-            echo "<div class='software-instal'>";
             Dropdown::showAllItems("items_id", 0, 0,
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
                                    $CFG_GLPI["contract_types"]);
-            echo "</div></td><td class='center'>";
+            echo "</td><td class='center'>";
             echo "<input type='submit' name='additem' value='".$LANG['buttons'][8]."' class='submit'>";
             echo "</td><td>&nbsp;</td></tr>";
          }
@@ -950,11 +948,11 @@ class Contract extends CommonDBTM {
       if ($canedit) {
          if ($withtemplate!=2 && $nb>count($contracts)) {
             echo "<tr class='tab_bg_1'><td class='right' colspan='3'>";
-            echo "<div class='software-instal'><input type='hidden' name='items_id' value='$ID'>";
+            echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
             Contract::dropdown(array('entity' => $item->getEntityID(),
                                      'used'   => $contracts));
-            echo "</div></td><td class='center'>";
+            echo "</td><td class='center'>";
             echo "<input type='submit' name='additem' value='".$LANG['buttons'][8]."' class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
