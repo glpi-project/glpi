@@ -1356,67 +1356,8 @@ function seems_utf8($str) {
 
 
 /**
- * NOT USED IN CORE - Used for update process - Clean string for knowbase display
- * replace nl2br
- *
- * @param $pee string: initial string
- * @param $br boolean: make line breaks ?
- *
- * @return $string
- */
-function autop($pee, $br=true) {
-   // Thanks  to Matthew Mullenweg
-
-   $pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
-   $pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
-   $pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs,
-                                                                     // including one at the end
-   if ($br) {
-      $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
-   }
-   return $pee;
-}
-
-/**
- * NOT USED IN CORE - Used for update process - make url clickable
- *
- * @param $chaine string: initial string
- *
- * @return $string
- */
-function clicurl($chaine) {
-
-   $text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine);
-   return $text;
-}
-
-/**
- * NOT USED IN CORE - Used for update process - Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
- *
- * @param $text string: initial text
- * @param $start integer: where to start
- * @param $end integer: where to stop
- *
- * @return array
- */
-function split_text($text, $start, $end) {
-
-   // Adapte de PunBB
-   //Copyright (C)  Rickard Andersson (rickard@punbb.org)
-
-   $tokens = explode($start, $text);
-   $outside[] = $tokens[0];
-   $num_tokens = count($tokens);
-   for ($i = 1; $i < $num_tokens; ++$i) {
-      $temp = explode($end, $tokens[$i]);
-      $inside[] = $temp[0];
-      $outside[] = $temp[1];
-   }
-   return array($inside, $outside);
-}
-
-/**
  * NOT USED IN CORE - Used for update process - Replace bbcode in text by html tag
+ * used in update_065_068.php
  *
  * @param $string string: initial string
  *
