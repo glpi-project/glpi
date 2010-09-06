@@ -1081,42 +1081,40 @@ function convDateTime($time) {
  * @param $forcedecimal integer: Force decimal number (do not use default value)
  *
  * @return formatted number
- */
-function formatNumber($number,$edit=false,$forcedecimal=-1) {
+ **/
+function formatNumber($number, $edit=false, $forcedecimal=-1) {
    global $CFG_GLPI;
 
    // Php 5.3 : number_format() expects parameter 1 to be double,
    if ($number=="") {
-      $number=0;
+      $number = 0;
    } else if ($number=="-") { // used for not defines value (from Infocom::Amort, p.e.)
       return "-";
    }
 
-   $decimal=$CFG_GLPI["decimal_number"];
+   $decimal = $CFG_GLPI["decimal_number"];
    if ($forcedecimal>=0) {
-      $decimal=$forcedecimal;
+      $decimal = $forcedecimal;
    }
 
    // Edit : clean display for mysql
    if ($edit) {
-      return number_format($number,$decimal,'.','');
+      return number_format($number, $decimal, '.', '');
    }
 
    // Display : clean display
    switch ($_SESSION['glpinumber_format']) {
-		case 2: // Other French
-			return str_replace(' ','&nbsp;',number_format($number,$decimal,',',' '));
-			break;
+      case 2 : // Other French
+         return str_replace(' ', '&nbsp;', number_format($number, $decimal, ', ', ' '));
 
-		case 0: // French
-			return str_replace(' ','&nbsp;',number_format($number,$decimal,'.',' '));
-			break;
+      case 0 : // French
+         return str_replace(' ', '&nbsp;', number_format($number, $decimal, '.', ' '));
 
       default: // English
-         return number_format($number,$decimal,'.',',');
-         break;
+         return number_format($number, $decimal, '.', ', ');
    }
 }
+
 
 /**
  * Send a file (not a document) to the navigator
@@ -1124,42 +1122,45 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
  *
  * @param $file string: storage filename
  * @param $filename string: file title
+ *
  * @return nothing
- */
-function sendFile($file,$filename) {
-   global $DB,$LANG;
+ **/
+function sendFile($file, $filename) {
 
    // Test securite : document in DOC_DIR
-   $tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
+   $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
    if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")) {
-      Event::log($file, "sendFile", 1, "security", $_SESSION["glpiname"].
-                 " try to get a non standard file.");
+      Event::log($file, "sendFile", 1, "security",
+                 $_SESSION["glpiname"]." try to get a non standard file.");
       die("Security attack !!!");
    }
 
    if (!file_exists($file)) {
       die("Error file $file does not exist");
    }
-   $splitter=explode("/",$file);
+   $splitter = explode("/", $file);
 
-   $mime="application/octetstream";
-   if (preg_match('/\.(...)$/',$file,$regs)){
+   $mime = "application/octetstream";
+   if (preg_match('/\.(...)$/', $file, $regs)){
       switch ($regs[1]) {
          case "sql" :
-            $mime="text/x-sql";
+            $mime = "text/x-sql";
             break;
 
          case "xml" :
-            $mime="text/xml";
+            $mime = "text/xml";
             break;
+
          case "csv" :
-            $mime="text/csv";
+            $mime = "text/csv";
             break;
+
          case "svg" :
-            $mime="image/svg+xml";
+            $mime = "image/svg+xml";
             break;
+
          case "png" :
-            $mime="image/png";
+            $mime = "image/png";
             break;
       }
    }
@@ -1168,102 +1169,111 @@ function sendFile($file,$filename) {
    header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
    header('Pragma: private'); /// IE BUG + SSL
    header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-   header("Content-disposition: filename=\"$filename\"");
+   header("Content-disposition: filename='$filename'");
    header("Content-type: ".$mime);
 
    readfile($file) or die ("Error opening file $file");
 }
 
+
 /**
  * Convert a value in byte, kbyte, megabyte etc...
  *
  * @param $val string: config value (like 10k, 5M)
+ *
  * @return $val
- */
+ **/
 function return_bytes_from_ini_vars($val) {
 
-   $val = trim($val);
+   $val  = trim($val);
    $last = utf8_strtolower($val{strlen($val)-1});
+
    switch($last) {
       // Le modifieur 'G' est disponible depuis PHP 5.1.0
-      case 'g':
+      case 'g' :
          $val *= 1024;
 
-      case 'm':
+      case 'm' :
          $val *= 1024;
 
-      case 'k':
+      case 'k' :
          $val *= 1024;
    }
 
    return $val;
 }
 
+
 /**
  * Header redirection hack
  *
  * @param $dest string: Redirection destination
  * @return nothing
- */
+ **/
 function glpi_header($dest) {
 
-   $toadd='';
+   $toadd = '';
    if (!strpos($dest,"?")) {
-      $toadd='?tokonq='.getRandomString(5);
+      $toadd = '?tokonq='.getRandomString(5);
    }
    echo "<script language=javascript>
          NomNav = navigator.appName;
          if (NomNav=='Konqueror'){
-            window.location=\"".$dest.$toadd."\";
+            window.location='".$dest.$toadd."';
          } else {
-            window.location=\"".$dest."\";
+            window.location='".$dest."';
          }
       </script>";
    exit();
 }
 
+
 /**
  * Call from a popup Windows, refresh the dropdown in main window
- */
+ **/
 function refreshDropdownPopupInMainWindow() {
+
    if (isset($_SESSION["glpipopup"]["rand"])) {
       echo "<script type='text/javascript' >\n";
       echo "window.opener.update_results_".$_SESSION["glpipopup"]["rand"]."();";
       echo "</script>";
    }
-
 }
+
 
 /**
  * Call from a popup Windows, refresh the dropdown in main window
- */
+ **/
 function refreshPopupMainWindow() {
+
    if (isset($_SESSION["glpipopup"]["rand"])) {
       echo "<script type='text/javascript' >\n";
       echo "window.opener.location.reload(true)";
       echo "</script>";
    }
-
 }
+
+
 /**
  * Call cron without time check
  *
  * @return boolean : true if launched
- */
+ **/
 function callCronForce() {
    global $CFG_GLPI;
 
-   $path=$CFG_GLPI['root_doc']."/front/cron.php";
+   $path = $CFG_GLPI['root_doc']."/front/cron.php";
 
    echo "<div style=\"background-image: url('$path');\"></div>";
    return true;
 }
 
+
 /**
  * Call cron if time since last launch elapsed
  *
  * @return nothing
- */
+ **/
 function callCron() {
 
    if (isset($_SESSION["glpicrontimer"])) {
@@ -1271,27 +1281,32 @@ function callCron() {
       if ((time()-$_SESSION["glpicrontimer"])>300) {
          if (callCronForce()) {
             // Restart timer
-            $_SESSION["glpicrontimer"]=time();
+            $_SESSION["glpicrontimer"] = time();
          }
       }
+
    } else {
       // Start timer
-      $_SESSION["glpicrontimer"]=time();
+      $_SESSION["glpicrontimer"] = time();
    }
 }
+
 
 /**
  * Get hour from sql
  *
  * @param $time datetime: time
+ *
  * @return  array
- */
+ **/
 function get_hour_from_sql($time) {
 
-   $t=explode(" ",$time);
-   $p=explode(":",$t[1]);
+   $t = explode(" ", $time);
+   $p = explode(":", $t[1]);
+
    return $p[0].":".$p[1];
 }
+
 
 /**
  *  Optimize sql table
@@ -1299,15 +1314,16 @@ function get_hour_from_sql($time) {
  * @param $progress_fct function to call to display progress message
  *
  * @return number of tables
- */
+ **/
 function optimize_tables ($progress_fct=NULL){
    global $DB;
 
    if (function_exists($progress_fct)) {
       $progress_fct("optimize"); // Start
    }
-   $result=$DB->list_tables("glpi_%");
-   $nb=0;
+   $result = $DB->list_tables("glpi_%");
+   $nb = 0;
+
    while ($line = $DB->fetch_array($result)) {
       $table = $line[0];
       if (function_exists($progress_fct)) {
@@ -1322,18 +1338,22 @@ function optimize_tables ($progress_fct=NULL){
    if (function_exists($progress_fct)) {
       $progress_fct("optimize"); // End
    }
+
    return $nb;
 }
 
+
 /**
-* Is a string seems to be UTF-8 one ?
-*
-* @param $str string: string to analyze
-* @return  boolean
-**/
+ * Is a string seems to be UTF-8 one ?
+ *
+ * @param $str string: string to analyze
+ *
+ * @return  boolean
+ **/
 function seems_utf8($str) {
-   return mb_check_encoding($str,"UTF-8");
+   return mb_check_encoding($str, "UTF-8");
 }
+
 
 /**
  * NOT USED IN CORE - Used for update process - Clean string for knowbase display
