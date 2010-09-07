@@ -621,6 +621,15 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 correct end_date index " . $LANG['update'][90] . $DB->error());
    }
 
+
+   if (!FieldExists('glpi_ocsservers','ocs_db_utf8')) {
+      $query = "ALTER TABLE `glpi_ocsservers`
+                ADD `ocs_db_utf8` tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`";
+
+      $DB->query($query) or die("0.80 add ocs_db_utf8 in glpi_ocsservers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

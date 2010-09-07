@@ -499,7 +499,7 @@ class OcsServer extends CommonDBTM {
          return false;
       }
 
-      $rowspan = 5;
+      $rowspan = 6;
       //If no ID provided, or if the server is created using an existing template
       if (empty ($ID)) {
          $this->getEmpty();
@@ -537,6 +537,17 @@ class OcsServer extends CommonDBTM {
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
       $out .= "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'></td>";
 
+
+      $out .= "</tr>\n";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . 
+                     $LANG['ocsconfig'][7] . "&nbsp;: </td>\n";
+      $out .= "<td><select name='ocs_db_utf8'>";
+      $out .= "<option value='0'".($this->fields["ocs_db_utf8"] ? "" : "selected") .
+               ">" . $LANG['choice'][0] . "</option>";
+      $out .= "<option value='1'".($this->fields["ocs_db_utf8"] ? "selected" : "") .
+               ">" . $LANG['choice'][1] . "</option>";
+      $out .= "</select></td>";
+
       if (!empty ($ID)) {
          $out .= "<td>".$LANG['common'][26]."&nbsp;: </td>";
          $out .= "<td>";
@@ -544,7 +555,9 @@ class OcsServer extends CommonDBTM {
          $out .= "</td>";
       }
 
+
       $out .= "</tr>\n";
+
       echo $out;
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -1754,7 +1767,7 @@ class OcsServer extends CommonDBTM {
             if (!in_array("operatingsystems_id", $computer_updates)) {
                $osname=$line["OSNAME"];
                // Hack for OCS encoding problems
-               if (!seems_utf8($osname)) {
+               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($osname)) {
                   $osname = encodeInUtf8($osname);
                }
                $compupdate["operatingsystems_id"] = Dropdown::importExternal('OperatingSystem',
@@ -4039,12 +4052,12 @@ class OcsServer extends CommonDBTM {
                $data2 = clean_cross_side_scripting_deep(addslashes_deep($data2));
                $initname = $data2["INITNAME"];
                // Hack for OCS encoding problems
-               if (!seems_utf8($initname)) {
+               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($initname)) {
                   $initname = encodeInUtf8($initname);
                }
                $name = $data2["NAME"];
                // Hack for OCS encoding problems
-               if (!seems_utf8($name)) {
+               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($name)) {
                   $name = encodeInUtf8($name);
                }
                $version = $data2["VERSION"];
