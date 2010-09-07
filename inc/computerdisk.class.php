@@ -228,9 +228,9 @@ class ComputerDisk extends CommonDBChild {
                echo "<td>".$data['mountpoint']."</td>";
                echo "<td>".$data['fsname']."</td>";
                echo "<td class='right'>".formatNumber($data['totalsize'], false, 0)."&nbsp;".
-                      $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                      $LANG['common'][82]."<span class='small_space'></span></td>";
                echo "<td class='right'>".formatNumber($data['freesize'], false, 0)."&nbsp;".
-                      $LANG['common'][82]."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                      $LANG['common'][82]."<span class='small_space'></span></td>";
                echo "<td>";
                $percent=0;
                if ($data['totalsize']>0) {

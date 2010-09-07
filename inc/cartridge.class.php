@@ -240,10 +240,11 @@ class Cartridge extends CommonDBTM {
          }
 
          if (!$nohtml) {
-            $out .= "<div $highlight>".$LANG['common'][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".
-                     $LANG['cartridges'][13]."&nbsp;: $unused</strong>&nbsp;&nbsp;&nbsp;".
-                     $LANG['cartridges'][14]."&nbsp;: $used&nbsp;&nbsp;&nbsp;".
-                     $LANG['cartridges'][15]."&nbsp;: $old</div>";
+            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total
+                     <span class='small_space b'>".
+                     $LANG['cartridges'][13]."&nbsp;: $unused</span><span class='small_space'>".
+                     $LANG['cartridges'][14]."&nbsp;: $used</span><span class='small_space'>".
+                     $LANG['cartridges'][15]."&nbsp;: $old</span></div>";
          } else {
             $out .= $LANG['common'][33]."&nbsp;: $total   ".
                     $LANG['cartridges'][13]."&nbsp;: $unused   ".

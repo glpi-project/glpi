@@ -672,7 +672,8 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$datestring.$date;
       if (!$template && !empty($this->fields['template_name'])) {
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13]."&nbsp;: ".$this->fields['template_name'].")";
+         echo "<span class='small_space'>(".$LANG['common'][13]."&nbsp;: ".
+               $this->fields['template_name'].")</span>";
       }
       if (!empty($ID)
           && $this->fields["is_ocs_import"]
