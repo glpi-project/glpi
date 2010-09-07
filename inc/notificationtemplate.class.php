@@ -231,7 +231,7 @@ class NotificationTemplate extends CommonDBTM {
                      "<html>
                         <head>
                          <META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">
-                         <title>".$lang['subject']."</title>
+                         <title>".htmlentities_deep($lang['subject'])."</title>
                         </head>
                         <body>".NotificationTemplate::process($template_datas['content_html'],
                                                                   $data_html).
