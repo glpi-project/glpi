@@ -38,81 +38,84 @@
  * Light color pallet for ezcGraph based on GLPI-project style guidelines at
  * http://glpi-project.org
  *
- * 
- * 
- */
-class GraphPalette extends ezcGraphPalette
-{
-    /**
-     * Axiscolor 
-     * 
-     * @var ezcGraphColor
-     */
+ **/
+class GraphPalette extends ezcGraphPalette {
+
+   /**
+    * Axiscolor
+    *
+    * @var ezcGraphColor
+    **/
     protected $axisColor = '#e4b22b';
 
-    /**
-     * Color of grid lines
-     * 
-     * @var ezcGraphColor
-     */
+
+   /**
+    * Color of grid lines
+    *
+    * @var ezcGraphColor
+    **/
     protected $majorGridColor = '#D3D7DF';
 
-    /**
-     * Array with colors for datasets
-     * 
-     * @var array
-     */
-    protected $dataSetColor = array(
-        '#bfcc7a',
-        '#d0d99d',
-        '#e6b940',
-        '#efd283',
-        '#4F6C57',
-    );
 
-    /**
-     * Array with symbols for datasets 
-     * 
-     * @var array
-     */
-    protected $dataSetSymbol = array(
-        ezcGraph::BULLET,
-    );
+   /**
+    * Array with colors for datasets
+    *
+    * @var array
+    **/
+    protected $dataSetColor = array('#bfcc7a',
+                                    '#d0d99d',
+                                    '#e6b940',
+                                    '#efd283',
+                                    '#4F6C57');
 
-    /**
-     * Name of font to use
-     * 
-     * @var string
-     */
+
+   /**
+    * Array with symbols for datasets
+    *
+    * @var array
+    **/
+    protected $dataSetSymbol = array(ezcGraph::BULLET);
+
+
+   /**
+    * Name of font to use
+    *
+    * @var string
+    **/
     protected $fontName = 'sans-serif';
 
-    /**
-     * Fontcolor 
-     * 
-     * @var ezcGraphColor
-     */
+
+   /**
+    * Fontcolor
+    *
+    * @var ezcGraphColor
+    **/
     protected $fontColor = '#2E3436';
 
-    /**
-     * Backgroundcolor for chart
-     * 
-     * @var ezcGraphColor
-     */
+
+   /**
+    * Backgroundcolor for chart
+    *
+    * @var ezcGraphColor
+    **/
     protected $chartBackground = '#FFFFFF';
 
-    /**
-     * Padding in elements
-     * 
-     * @var integer
-     */
+
+   /**
+    * Padding in elements
+    *
+    * @var integer
+    **/
     protected $padding = 1;
 
-    /**
-     * Margin of elements
-     * 
-     * @var integer
-     */
+
+   /**
+    * Margin of elements
+    *
+    * @var integer
+    **/
     protected $margin = 0;
+
 }
 
 ?>
