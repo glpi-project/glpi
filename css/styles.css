@@ -574,6 +574,24 @@ cursor:pointer;
 text-align:left;
 margin-left:8px;}
 
+
+/* ################--------------- Space to replace &nbsp; ---------------#################### */
+
+/* 3 spaces */
+.small_space {
+   margin-left: 3em;
+}
+
+/* 10 spaces */
+.mediumspace {
+   margin-left: 10em;
+}
+
+/* 20 spaces */
+.big_space {
+   margin-left:20em;
+}
+
 /* ################--------------- Calendrier  / reservation ---------------#################### */
 
 .calendrier{
