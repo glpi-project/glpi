@@ -349,11 +349,11 @@ class TicketPlanning extends CommonDBTM {
       }
    }
 
-   /*
+   /**
     * Populate the planning with planned ticket tasks
     *
     * @param $who ID of the user (0 = undefined)
-    * @param $who_group ID of the group of users (0 = undefined)
+    * @param $who_group ID of the group of users (0 = undefined, mine = login user ones)
     * @param $begin Date
     * @param $end Date
     *
