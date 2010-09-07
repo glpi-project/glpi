@@ -1994,6 +1994,7 @@ function update0723to078($output='HTML') {
 
       $query = "UPDATE `glpi_profiles` SET `budget`=`infocom`";
       $DB->query($query) or die("0.78 update default budget rights" . $LANG['update'][90] . $DB->error());
+
    }
 
 
@@ -2933,13 +2934,13 @@ function update0723to078($output='HTML') {
       $queries['Reservation2'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                                     VALUES(NULL, ".$templates['Reservation2'].", '',
                                     '##reservation.action##  ##reservation.entity##',
-                                    '##lang.reservation.entity## :##reservation.entity## \r\n
+                                    '##lang.reservation.entity## : ##reservation.entity## \r\n
  \r\n##FOREACHreservations## \r\n##lang.reservation.itemtype## : ##reservation.itemtype##\r\n
  ##lang.reservation.item## : ##reservation.item##\r\n \r\n ##reservation.url## \r\n
  ##ENDFOREACHreservations##',
- '&lt;p&gt;##lang.reservation.entity##  :##reservation.entity## &lt;br /&gt; &lt;br /&gt;
-##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype##  :  ##reservation.itemtype##&lt;br /&gt;
- ##lang.reservation.item##  :  ##reservation.item##&lt;br /&gt; &lt;br /&gt;
+ '&lt;p&gt;##lang.reservation.entity## : ##reservation.entity## &lt;br /&gt; &lt;br /&gt;
+##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype## : ##reservation.itemtype##&lt;br /&gt;
+ ##lang.reservation.item## : ##reservation.item##&lt;br /&gt; &lt;br /&gt;
  &lt;a href=\"##reservation.url##\"&gt; ##reservation.url##&lt;/a&gt;&lt;br /&gt;
  ##ENDFOREACHreservations##&lt;/p&gt;');";
       $queries['Ticket'] = "INSERT INTO `glpi_notificationtemplatetranslations`
@@ -2955,21 +2956,21 @@ function update0723to078($output='HTML') {
 
  ##lang.ticket.description##
 
- ##lang.ticket.title##  :##ticket.title##
- ##lang.ticket.author.name##  :##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name## ##ELSEticket.author.name##--##ENDELSEticket.author.name##
- ##lang.ticket.creationdate##  :##ticket.creationdate##
- ##lang.ticket.closedate##  :##ticket.closedate##
- ##lang.ticket.requesttype##  :##ticket.requesttype##
- ##IFticket.itemtype## ##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
-##IFticket.assigntouser## ##lang.ticket.assigntouser##  : ##ticket.assigntouser## ##ENDIFticket.assigntouser##
- ##lang.ticket.status##  : ##ticket.status##
-##IFticket.assigntogroup## ##lang.ticket.assigntogroup##  : ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
- ##lang.ticket.urgency##  : ##ticket.urgency##
- ##lang.ticket.impact##  : ##ticket.impact##
- ##lang.ticket.priority##  : ##ticket.priority##
-##IFticket.user.email## ##lang.ticket.user.email##  : ##ticket.user.email ##ENDIFticket.user.email##
-##IFticket.category## ##lang.ticket.category##  :##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
- ##lang.ticket.content##  : ##ticket.content##
+ ##lang.ticket.title## : ##ticket.title##
+ ##lang.ticket.author.name## : ##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name## ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+ ##lang.ticket.creationdate## : ##ticket.creationdate##
+ ##lang.ticket.closedate## : ##ticket.closedate##
+ ##lang.ticket.requesttype## : ##ticket.requesttype##
+ ##IFticket.itemtype## ##lang.ticket.item.name## : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## - ##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
+##IFticket.assigntouser## ##lang.ticket.assigntouser## : ##ticket.assigntouser## ##ENDIFticket.assigntouser##
+ ##lang.ticket.status## : ##ticket.status##
+##IFticket.assigntogroup## ##lang.ticket.assigntogroup## : ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
+ ##lang.ticket.urgency## : ##ticket.urgency##
+ ##lang.ticket.impact## : ##ticket.impact##
+ ##lang.ticket.priority## : ##ticket.priority##
+##IFticket.user.email## ##lang.ticket.user.email## : ##ticket.user.email ##ENDIFticket.user.email##
+##IFticket.category## ##lang.ticket.category## : ##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+ ##lang.ticket.content## : ##ticket.content##
 
  ##IFticket.storestatus=closed##
 
@@ -3007,7 +3008,7 @@ function update0723to078($output='HTML') {
 <div>##ELSEticket.storestatus## ##lang.ticket.url## : <a href=\"##ticket.url##\">##ticket.url##</a> ##ENDELSEticket.storestatus##</div>
 <div class=\"description b\"><strong>##lang.ticket.description##</strong></div>
 <p><span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.title##</span>&#160;:##ticket.title## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.author.name##</span>&#160;:##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name##    ##ELSEticket.author.name##--##ENDELSEticket.author.name## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.creationdate##</span>&#160;:##ticket.creationdate## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.closedate##</span>&#160;:##ticket.closedate## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.requesttype##</span>&#160;:##ticket.requesttype##<br /> ##IFticket.itemtype## <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.item.name##</span>&#160;: ##ticket.itemtype## - ##ticket.item.name##    ##IFticket.item.model## - ##ticket.item.model##    ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##&#160; ##IFticket.item.otherserial## -##ticket.item.otherserial##  ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype## <br /> ##IFticket.assigntouser## <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.assigntouser##</span>&#160;: ##ticket.assigntouser## ##ENDIFticket.assigntouser##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\">##lang.ticket.status## </span>&#160;: ##ticket.status##<br /> ##IFticket.assigntogroup## <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.assigntogroup##</span>&#160;: ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.urgency##</span>&#160;: ##ticket.urgency##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.impact##</span>&#160;: ##ticket.impact##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.priority##</span>&#160;: ##ticket.priority## <br /> ##IFticket.user.email##<span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.user.email##</span>&#160;: ##ticket.user.email ##ENDIFticket.user.email##    <br /> ##IFticket.category##<span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\">##lang.ticket.category## </span>&#160;:##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##    <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.content##</span>&#160;: ##ticket.content##</p>
-<br />IFticket.storestatus=closed##<br /><span style=\"text-decoration: underline;\"><strong><span style=\"color: #888888;\">##lang.ticket.solvedate##</span></strong></span> : ##ticket.solvedate##<br /><span style=\"color: #888888;\"><strong><span style=\"text-decoration: underline;\">##lang.ticket.solution.type##</span></strong></span> : ##ticket.solution.type##<br /><span style=\"text-decoration: underline; color: #888888;\"><strong>##lang.ticket.solution.description##</strong></span> : ##ticket.solution.description##<br />##ENDIFticket.storestatus##</p>
+<br />##IFticket.storestatus=closed##<br /><span style=\"text-decoration: underline;\"><strong><span style=\"color: #888888;\">##lang.ticket.solvedate##</span></strong></span> : ##ticket.solvedate##<br /><span style=\"color: #888888;\"><strong><span style=\"text-decoration: underline;\">##lang.ticket.solution.type##</span></strong></span> : ##ticket.solution.type##<br /><span style=\"text-decoration: underline; color: #888888;\"><strong>##lang.ticket.solution.description##</strong></span> : ##ticket.solution.description##<br />##ENDIFticket.storestatus##</p>
 <div class=\"description b\">##lang.ticket.numberoffollowups##&#160;: ##ticket.numberoffollowups##</div>
 <p>##FOREACHfollowups##</p>
 <div class=\"description b\"><br /> <strong> [##followup.date##] <em>##lang.followup.isprivate## : ##followup.isprivate## </em></strong><br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.followup.author## </span> ##followup.author##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.followup.description## </span> ##followup.description##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.followup.date## </span> ##followup.date##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.followup.requesttype## </span> ##followup.requesttype##</div>
@@ -3020,7 +3021,7 @@ function update0723to078($output='HTML') {
       $queries['Contract'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                               VALUES(NULL, ".$templates['Contract'].", '',
                               '##contract.action##  ##contract.entity##',
-                              '##lang.contract.entity## :##contract.entity##\r\n".
+                              '##lang.contract.entity## : ##contract.entity##\r\n".
                               "\r\n##FOREACHcontracts##\r\n".
                               "##lang.contract.name## : ##contract.name##\r\n".
                               "##lang.contract.number## : ##contract.number##\r\n".
@@ -3029,7 +3030,7 @@ function update0723to078($output='HTML') {
                               "##ENDIFcontract.type##\r\n".
                               "##contract.url##\r\n".
                               "##ENDFOREACHcontracts##',
-'&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
+'&lt;p&gt;##lang.contract.entity## : ##contract.entity##&lt;br /&gt;
 &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## :
 ##contract.name##&lt;br /&gt;
 ##lang.contract.number## : ##contract.number##&lt;br /&gt;
@@ -3094,7 +3095,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 ##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
 ##IFvalidation.commentvalidation##
-##lang.validation.commentvalidation## :   ##validation.commentvalidation##
+##lang.validation.commentvalidation## : ##validation.commentvalidation##
 ##ENDIFvalidation.commentvalidation##
 ##ENDFOREACHvalidations##',
 '&lt;div&gt;##FOREACHvalidations##&lt;/div&gt;
@@ -3115,7 +3116,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $queries['Ticket3'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                              VALUES(NULL, ".$templates['Ticket3'].", '',
                              '##ticket.action## ##ticket.entity##',
-'##lang.ticket.entity## :##ticket.entity##\n \n##FOREACHtickets##\n
+'##lang.ticket.entity## : ##ticket.entity##\n \n##FOREACHtickets##\n
 ##lang.ticket.title## : ##ticket.title##\n ##lang.ticket.status## : ##ticket.status##\n
  ##ticket.url## \n ##ENDFOREACHtickets##',
 '&lt;table class=\"tab_cadre\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&gt;
@@ -3146,33 +3147,33 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $queries['Consumable'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                            VALUES(NULL, ".$templates['Consumable'].", '',
                            '##consumable.action##  ##consumable.entity##',
-'##lang.consumable.entity## :##consumable.entity##\n \n
+'##lang.consumable.entity## : ##consumable.entity##\n \n
 ##FOREACHconsumables##\n##lang.consumable.item## : ##consumable.item##\n \n
 ##lang.consumable.reference## : ##consumable.reference##\n
 ##lang.consumable.remaining## : ##consumable.remaining##\n
 ##consumable.url## \n
 ##ENDFOREACHconsumables##', '&lt;p&gt;
-##lang.consumable.entity## :##consumable.entity##
+##lang.consumable.entity## : ##consumable.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHconsumables##
-&lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
-&lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
-##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
+&lt;br /&gt;##lang.consumable.item## : ##consumable.item##&lt;br /&gt;
+&lt;br /&gt;##lang.consumable.reference## : ##consumable.reference##&lt;br /&gt;
+##lang.consumable.remaining## : ##consumable.remaining##&lt;br /&gt;
 &lt;a href=\"##consumable.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
    ##ENDFOREACHconsumables##&lt;/p&gt;');";
 
       $queries['Cartridge'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                                VALUES(NULL, ".$templates['Cartridge'].", '',
                                '##cartridge.action##  ##cartridge.entity##',
-'##lang.cartridge.entity## :##cartridge.entity##\n \n
+'##lang.cartridge.entity## : ##cartridge.entity##\n \n
 ##FOREACHcartridges##\n##lang.cartridge.item## : ##cartridge.item##\n \n
 ##lang.cartridge.reference## : ##cartridge.reference##\n
 ##lang.cartridge.remaining## : ##cartridge.remaining##\n
 ##cartridge.url## \n ##ENDFOREACHcartridges##',
 '&lt;p&gt;##lang.cartridge.entity## :##cartridge.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
-&lt;br /&gt;##lang.cartridge.item##   :
+&lt;br /&gt;##lang.cartridge.item## :
 ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
-##lang.cartridge.reference##  :
+##lang.cartridge.reference## :
 ##cartridge.reference##&lt;br /&gt;
 ##lang.cartridge.remaining## :
 ##cartridge.remaining##&lt;br /&gt;
@@ -3182,34 +3183,34 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
        $queries['Infocom'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                               VALUES(NULL, ".$templates['Infocom'].", '',
                              '##infocom.action##  ##infocom.entity##',
-'##lang.infocom.entity## :##infocom.entity## \n \n
+'##lang.infocom.entity## : ##infocom.entity## \n \n
 ##FOREACHinfocoms## \n
 ##lang.infocom.itemtype## : ##infocom.itemtype##\n
 ##lang.infocom.item## : ##infocom.item##\n \n
 ##lang.infocom.expirationdate## : ##infocom.expirationdate##\n
 ##infocom.url## \n ##ENDFOREACHinfocoms##',
-'&lt;p&gt;##lang.infocom.entity##  :##infocom.entity##
+'&lt;p&gt;##lang.infocom.entity## : ##infocom.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHinfocoms##
-&lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
-##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
-##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
+&lt;br /&gt;##lang.infocom.itemtype## : ##infocom.itemtype##&lt;br /&gt;
+##lang.infocom.item## : ##infocom.item##&lt;br /&gt; &lt;br /&gt;
+##lang.infocom.expirationdate## : ##infocom.expirationdate##
 &lt;br /&gt; &lt;a href=\"##infocom.url##\"&gt;
 ##infocom.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHinfocoms##&lt;/p&gt;');";
       $queries['SoftwareLicense'] = "INSERT INTO `glpi_notificationtemplatetranslations`
                                      VALUES(NULL, ".$templates['SoftwareLicense'].", '',
                                     '##license.action##  ##license.entity##',
-'##lang.license.entity## :##license.entity##\r\n
+'##lang.license.entity## : ##license.entity##\r\n
 ##FOREACHlicenses## \r\n
 ##lang.license.item## : ##license.item##\r\n
 ##lang.license.serial## : ##license.serial##\r\n
 ##lang.license.expirationdate## : ##license.expirationdate##\r\n
 ##license.url## \r\n ##ENDFOREACHlicenses##', '&lt;p&gt;
-##lang.license.entity##  :##license.entity##&lt;br /&gt;
+##lang.license.entity## : ##license.entity##&lt;br /&gt;
 ##FOREACHlicenses##
-&lt;br /&gt;##lang.license.item##  :  ##license.item##&lt;br /&gt;
-##lang.license.serial##  :  ##license.serial##&lt;br /&gt;
-##lang.license.expirationdate## :   ##license.expirationdate##
+&lt;br /&gt;##lang.license.item## : ##license.item##&lt;br /&gt;
+##lang.license.serial## : ##license.serial##&lt;br /&gt;
+##lang.license.expirationdate## : ##license.expirationdate##
 &lt;br /&gt; &lt;a href=\"##license.url##\"&gt; ##license.url##
 &lt;/a&gt;&lt;br /&gt; ##ENDFOREACHlicenses##&lt;/p&gt;');";
       foreach ($queries as $itemtype => $query) {
