@@ -36,28 +36,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (isset($_REQUEST['genical'])) {
-   if (!isset($_GET["uID"])) {
-      $_GET["uID"] = getLoginUserID();
-   }
-   // Send UTF8 Headers
-   @header ("content-type:text/calendar; charset=UTF-8");
-   @header("Content-disposition: filename=\"glpi.ics\"");
 
-   echo Planning::generateIcal($_GET["uID"]);
 
-} else {
-   commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
-
-   checkSeveralRightsOr(array('show_all_planning' => '1',
-                              'show_planning'     => '1'));
-
-   if (!isset($_GET["date"]) || empty($_GET["date"])) {
-      $_GET["date"] = strftime("%Y-%m-%d");
-   }
-   if (!isset($_GET["type"])) {
-      $_GET["type"] = "week";
-   }
    if (!isset($_GET["uID"]) || !haveRight("show_all_planning","1")) {
       $_GET["uID"] = getLoginUserID();
    }
@@ -80,6 +60,26 @@ if (isset($_REQUEST['genical'])) {
       case "user_group" :
          $_GET['gID'] = "mine";
          break;
+   }
+
+if (isset($_REQUEST['genical'])) {
+   // Send UTF8 Headers
+   @header ("content-type:text/calendar; charset=UTF-8");
+   @header("Content-disposition: filename=\"glpi.ics\"");
+
+   echo Planning::generateIcal($_GET["uID"],$_GET["gID"],$_GET["usertype"]);
+
+} else {
+   commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
+
+   checkSeveralRightsOr(array('show_all_planning' => '1',
+                              'show_planning'     => '1'));
+
+   if (!isset($_GET["date"]) || empty($_GET["date"])) {
+      $_GET["date"] = strftime("%Y-%m-%d");
+   }
+   if (!isset($_GET["type"])) {
+      $_GET["type"] = "week";
    }
 
    Planning::showSelectionForm($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],

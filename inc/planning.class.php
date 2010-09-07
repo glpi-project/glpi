@@ -228,12 +228,12 @@ class Planning {
       echo "</td>\n";
 
       echo "<td>";
-      echo "<a target='_blank' href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID."\" title='".
+      echo "<a target='_blank' href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID."&amp;usertype=".$usertype."\" title='".
             $LANG['planning'][12]."'><span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
       echo "<br>";
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
       echo "<a  target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
-            "/front/planning.php?genical=1&amp;uID=".$uID."\" title='".$LANG['planning'][13]."'>";
+            "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID."&amp;usertype=".$usertype."\" title='".$LANG['planning'][13]."'>";
       echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
       echo "</td>\n";
 
@@ -662,11 +662,12 @@ class Planning {
    /**
     *  Generate ical file content
     *
-    * @param $who
+    * @param $who user ID
+    * @param $who_group group ID
     *
     * @return icalendar string
     **/
-   static function generateIcal($who) {
+   static function generateIcal($who,$who_group) {
       global  $DB,$CFG_GLPI, $LANG;
 
       include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
@@ -677,9 +678,10 @@ class Planning {
       } else {
          $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
       }
+
       $v->setProperty( "method", "PUBLISH" );
       $v->setProperty( "version", "2.0" );
-      $v->setProperty( "x-wr-calname", "GLPI - ".getUserName($who) );
+      $v->setProperty( "x-wr-calname", "GLPI_".$who."_".$who_group );
       $v->setProperty( "calscale", "GREGORIAN" );
       $interv=array();
 
@@ -689,15 +691,16 @@ class Planning {
       $end=date("Y-m-d H:i:s",$end);
 
       // ---------------Tracking
-      $interv = TicketPlanning::populatePlanning($who, 0, $begin, $end);
+      $interv = TicketPlanning::populatePlanning($who, $who_group, $begin, $end);
 
       // ---------------Reminder
-      $data = Reminder::populatePlanning($who, 0, $begin, $end);
+      $data = Reminder::populatePlanning($who, $who_group, $begin, $end);
 
       $interv = array_merge($interv, $data);
 
       // ---------------Plugin
-      $data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
+      $data=doHookFunction("planning_populate",
+            array("begin"=>$begin,"end"=>$end,"who"=>$who,"who_group"=>$who_group));
 
       if (isset($data["items"]) && count($data["items"])) {
          $interv=array_merge($data["items"],$interv);
