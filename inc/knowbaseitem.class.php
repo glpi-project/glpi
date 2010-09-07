@@ -225,7 +225,7 @@ class KnowbaseItem extends CommonDBTM {
             echo "<input type='hidden' name='users_id' value=\"".getLoginUserID()."\">";
             echo "<input type='submit' class='submit' name='add' value='".$LANG['buttons'][8]."'>";
          }
-         echo "<span class='reminder_list'>";
+         echo "&nbsp;&nbsp;&nbsp;";
          echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'></span>";
 
          echo "</p></form></div>";
