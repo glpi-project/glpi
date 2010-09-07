@@ -46,13 +46,16 @@ class Event extends CommonDBTM {
       return $LANG['Menu'][30];
    }
 
+
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
-      if (isset($input['level']) &&  $input['level'] <= $CFG_GLPI["event_loglevel"]) {
+
+      if (isset($input['level']) && $input['level'] <= $CFG_GLPI["event_loglevel"]) {
          return $input;
       }
       return false;
    }
+
 
    /**
     * Log an event.
@@ -67,7 +70,6 @@ class Event extends CommonDBTM {
     * @param $event
     **/
    static function log ($items_id, $type, $level, $service, $event) {
-      global $DB,$CFG_GLPI, $LANG;
 
       $input = array('items_id' => intval($items_id),
                      'type'     => addslashes($type),
@@ -79,13 +81,14 @@ class Event extends CommonDBTM {
       return $tmp->add($input);
    }
 
+
    /**
     * Clean old event - Call by cron
     *
     * @param $day integer
     *
     * @return integer number of events deleted
-    */
+    **/
    static function cleanOld ($day) {
       global $DB;
 
@@ -94,48 +97,49 @@ class Event extends CommonDBTM {
       $query_exp = "DELETE
                     FROM `glpi_events`
                     WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-
       $DB->query($query_exp);
+
       return $DB->affected_rows();
    }
 
+
    /**
     * Return arrays for function showEvent et lastEvent
-    *
     **/
    static function logArray() {
       global $LANG;
 
       static $logItemtype = array();
-      static $logService = array();
+      static $logService  = array();
 
       if (count($logItemtype)) {
-         return array($logItemtype,$logService);
+         return array($logItemtype, $logService);
       }
-      $logItemtype=array('system'      => $LANG['log'][1],
-                         'devices'     => $LANG['log'][18],
-                         'planning'    => $LANG['log'][16],
-                         'reservation' => $LANG['log'][42],
-                         'dropdown'    => $LANG['log'][44],
-                         'rules'       => $LANG['log'][65],
-                        );
 
-      $logService=array('inventory'    => $LANG['Menu'][38],
-                        'tracking'     => $LANG['Menu'][5],
-                        'planning'     => $LANG['Menu'][29],
-                        'tools'        => $LANG['Menu'][18],
-                        'financial'    => $LANG['Menu'][26],
-                        'login'        => $LANG['log'][55],
-                        'setup'        => $LANG['common'][12],
-                        'security'     => $LANG['log'][66],
-                        'reservation'  => $LANG['log'][42],
-                        'cron'         => $LANG['log'][59],
-                        'document'     => $LANG['Menu'][27],
-                        'notification'=> $LANG['setup'][704],
-                        'plugin'       => $LANG['common'][29]);
+      $logItemtype = array('system'      => $LANG['log'][1],
+                           'devices'     => $LANG['log'][18],
+                           'planning'    => $LANG['log'][16],
+                           'reservation' => $LANG['log'][42],
+                           'dropdown'    => $LANG['log'][44],
+                           'rules'       => $LANG['log'][65]);
 
-      return array($logItemtype,$logService);
+      $logService = array('inventory'    => $LANG['Menu'][38],
+                          'tracking'     => $LANG['Menu'][5],
+                          'planning'     => $LANG['Menu'][29],
+                          'tools'        => $LANG['Menu'][18],
+                          'financial'    => $LANG['Menu'][26],
+                          'login'        => $LANG['log'][55],
+                          'setup'        => $LANG['common'][12],
+                          'security'     => $LANG['log'][66],
+                          'reservation'  => $LANG['log'][42],
+                          'cron'         => $LANG['log'][59],
+                          'document'     => $LANG['Menu'][27],
+                          'notification' => $LANG['setup'][704],
+                          'plugin'       => $LANG['common'][29]);
+
+      return array($logItemtype, $logService);
    }
+
 
    static function displayItemLogID($type, $items_id) {
       global $CFG_GLPI;
@@ -165,13 +169,14 @@ class Event extends CommonDBTM {
                break;
 
             default :
-               $show=getSingular($type);
+               $show = getSingular($type);
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?id=".$items_id;
                echo "\">$items_id</a>";
                break;
          }
       }
    }
+
 
    /**
     * Print a nice tab for last event from inventory section
@@ -181,15 +186,15 @@ class Event extends CommonDBTM {
     * @param $user string : name user to search on message
     **/
    static function showForUser($user="") {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       // Show events from $result in table form
-      list($logItemtype,$logService) = self::logArray();
+      list($logItemtype, $logService) = self::logArray();
 
       // define default sorting
-      $usersearch="%";
+      $usersearch = "%";
       if (!empty($user)) {
-         $usersearch=$user." ";
+         $usersearch = $user." ";
       }
 
       // Query Database
@@ -219,7 +224,8 @@ class Event extends CommonDBTM {
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr><th colspan='5'>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".$LANG['central'][2]." ".
-             $_SESSION['glpilist_limit']." ".$LANG['central'][8]."</a></th></tr>";
+             $_SESSION['glpilist_limit']." ".$LANG['central'][8]."</a>";
+      echo "</th></tr>";
 
       echo "<tr><th colspan='2'>".$LANG['event'][0]."</th>";
       echo "<th>".$LANG['common'][27]."</th>";
@@ -227,24 +233,23 @@ class Event extends CommonDBTM {
       echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
 
       while ($i < $number) {
-         $ID = $DB->result($result, $i, "id");
+         $ID       = $DB->result($result, $i, "id");
          $items_id = $DB->result($result, $i, "items_id");
-         $type = $DB->result($result, $i, "type");
-         $date = $DB->result($result, $i, "date");
-         $service = $DB->result($result, $i, "service");
-         $message = $DB->result($result, $i, "message");
+         $type     = $DB->result($result, $i, "type");
+         $date     = $DB->result($result, $i, "date");
+         $service  = $DB->result($result, $i, "service");
+         $message  = $DB->result($result, $i, "message");
 
-         $itemtype="&nbsp;";
+         $itemtype = "&nbsp;";
          if (isset($logItemtype[$type])) {
-            $itemtype=$logItemtype[$type];
+            $itemtype = $logItemtype[$type];
          } else {
-            $type=getSingular($type);
+            $type = getSingular($type);
             if (class_exists($type)) {
                $item = new $type();
                $itemtype = $item->getTypeName();
             }
          }
-
 
          echo "<tr class='tab_bg_2'><td>$itemtype :</td>";
          echo "<td class='center'>";
@@ -254,8 +259,10 @@ class Event extends CommonDBTM {
 
          $i++;
       }
+
       echo "</table><br>";
    }
+
 
    /**
     * Print a nice tab for last event
@@ -268,10 +275,10 @@ class Event extends CommonDBTM {
     * @param $start
     **/
    static function showList($target, $order='DESC', $sort='date', $start=0) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       // Show events from $result in table form
-      list($logItemtype,$logService) = self::logArray();
+      list($logItemtype, $logService) = self::logArray();
 
       // Columns of the Table
       $items = array("items_id" => array($LANG['event'][0],
@@ -306,7 +313,7 @@ class Event extends CommonDBTM {
 
       // No Events in database
       if ($number < 1) {
-         echo "<div class='center'><strong>".$LANG['central'][4]."</strong></div>";
+         echo "<div class='center b'>".$LANG['central'][4]."</div>";
          return;
       }
 
@@ -314,11 +321,12 @@ class Event extends CommonDBTM {
       $i = 0;
 
       echo "<div class='center'>";
-      $parameters="sort=$sort&amp;order=$order";
-      printPager($start,$numrows,$target,$parameters);
+      $parameters = "sort=$sort&amp;order=$order";
+      printPager($start, $numrows, $target, $parameters);
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
+
       foreach ($items as $field => $args) {
          echo "<th ".$args[1].">";
          if ($sort==$field) {
@@ -334,19 +342,19 @@ class Event extends CommonDBTM {
       echo "</tr>";
 
       while ($i < $number) {
-         $ID = $DB->result($result, $i, "id");
+         $ID       = $DB->result($result, $i, "id");
          $items_id = $DB->result($result, $i, "items_id");
-         $type = $DB->result($result, $i, "type");
-         $date = $DB->result($result, $i, "date");
-         $service = $DB->result($result, $i, "service");
-         $level = $DB->result($result, $i, "level");
-         $message = $DB->result($result, $i, "message");
+         $type     = $DB->result($result, $i, "type");
+         $date     = $DB->result($result, $i, "date");
+         $service  = $DB->result($result, $i, "service");
+         $level    = $DB->result($result, $i, "level");
+         $message  = $DB->result($result, $i, "message");
 
-         $itemtype="&nbsp;";
+         $itemtype = "&nbsp;";
          if (isset($logItemtype[$type])) {
-            $itemtype=$logItemtype[$type];
+            $itemtype = $logItemtype[$type];
          } else {
-            $type=getSingular($type);
+            $type = getSingular($type);
             if (class_exists($type)) {
                $item = new $type();
                $itemtype = $item->getTypeName();
@@ -355,11 +363,11 @@ class Event extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>$itemtype :</td>";
-         echo "<td class='center'><strong>";
-         self::displayItemLogID($type,$items_id);
-         echo "</strong></td><td>".convDateTime($date)."</td>";
-         echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:$service)."</td>";
-         echo "<td class='center'>$level</td><td>$message</td></tr>";
+         echo "<td class='center b'>";
+         self::displayItemLogID($type, $items_id);
+         echo "</td><td>".convDateTime($date)."</td>";
+         echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:$service);
+         echo "</td><td class='center'>$level</td><td>$message</td></tr>";
 
          $i++;
       }
