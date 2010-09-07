@@ -3059,10 +3059,10 @@ class Ticket extends CommonDBTM {
             }
          } else {
             echo "<td class='tab_bg_2 center' colspan='2'>";
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
-            echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a></td>";
+            echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'></td>";
             echo "<td class='tab_bg_2 center' colspan='2'>";
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
+            echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a>";
          }
          echo "</td></tr>";
       }
