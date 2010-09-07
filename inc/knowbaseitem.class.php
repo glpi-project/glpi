@@ -221,12 +221,13 @@ class KnowbaseItem extends CommonDBTM {
          echo "<br><br>";
          if ($ID>0) {
             echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
-            echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'>";
          } else {
             echo "<input type='hidden' name='users_id' value=\"".getLoginUserID()."\">";
             echo "<input type='submit' class='submit' name='add' value='".$LANG['buttons'][8]."'>";
-            echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'>";
          }
+         echo "<span class='reminder_list'>";
+         echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'></span>";
+
          echo "</p></form></div>";
          return true;
       }
@@ -384,9 +385,9 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields["date"]) {
          echo $LANG['knowbase'][27]."&nbsp;: ". convDateTime($this->fields["date"]);
       }
-      
+
       echo "</th>";
-      
+
       if (isMultiEntitiesMode()) {
          echo "<th class='tdkb'>";
          echo $LANG['entity'][0]."&nbsp;: ";
@@ -394,7 +395,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<br>".$LANG['entity'][9]."&nbsp;: ";
          echo Dropdown::getYesNo($this->fields["is_recursive"])."</th>";
       }
-      
+
       echo "<th class='tdkb'>";
       if ($this->fields["date_mod"]) {
          echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]).
