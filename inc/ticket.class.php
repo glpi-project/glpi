@@ -128,7 +128,8 @@ class Ticket extends CommonDBTM {
       if (!haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      if ($this->numberOfFollowups()==0 && $this->fields['users_id'] === getLoginUserID()) {
+      if ($this->numberOfFollowups()==0  && $this->numberOfTasks()==0
+            && $this->fields['users_id'] === getLoginUserID()) {
          return true;
       }
       return $this->canUpdate();
@@ -316,6 +317,15 @@ class Ticket extends CommonDBTM {
          }
          if (isset($input["urgency"])) {
             $ret["urgency"] = $input["urgency"];
+         }
+         if (isset($input["ticketcategories_id"])) {
+            $ret["ticketcategories_id"] = $input["ticketcategories_id"];
+         }
+         if (isset($input["itemtype"])) {
+            $ret["itemtype"] = $input["itemtype"];
+         }
+         if (isset($input["items_id"])) {
+            $ret["items_id"] = $input["items_id"];
          }
 
          $input=$ret;
@@ -1124,6 +1134,29 @@ class Ticket extends CommonDBTM {
       // Set number of followups
       $query = "SELECT count(*)
                 FROM `glpi_ticketfollowups`
+                WHERE `tickets_id` = '".$this->fields["id"]."'
+                      $RESTRICT";
+      $result = $DB->query($query);
+
+      return $DB->result($result,0,0);
+   }
+
+   /**
+    * Number of tasks of the ticket
+    *
+    *@param $with_private boolean : true : all ticket / false : only public ones
+    *@return followup count
+   **/
+   function numberOfTasks($with_private=1) {
+      global $DB;
+
+      $RESTRICT = "";
+      if ($with_private!=1) {
+         $RESTRICT = " AND `is_private` = '0'";
+      }
+      // Set number of followups
+      $query = "SELECT count(*)
+                FROM `glpi_tickettasks`
                 WHERE `tickets_id` = '".$this->fields["id"]."'
                       $RESTRICT";
       $result = $DB->query($query);
@@ -2523,6 +2556,7 @@ class Ticket extends CommonDBTM {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups() == 0
+                                        && $this->numberOfTasks() == 0  
                                         && $this->fields['users_id'] === getLoginUserID());
       echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
             $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
@@ -2573,15 +2607,14 @@ class Ticket extends CommonDBTM {
       echo "<tr>";
       echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
       echo "<td>";
-      if ($ID) {
-         showDateTimeFormItem("date",$this->fields["date"],1,false,$canupdate);
-      } else {
+      $date=$this->fields["date"];
+      if (!$ID) {
          $date=date("Y-m-d H:i:s");
-         if ($canupdate) {
-            showDateTimeFormItem("date",$date,1);
-         } else {
-            echo convDateTime($date);
-         }
+      }
+      if ($canupdate) {
+         showDateTimeFormItem("date",$this->fields["date"],1,false);
+      } else {
+         echo convDateTime($date);
       }
       echo "</td></tr>";
       if ($ID) {
@@ -2746,7 +2779,7 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['common'][36]."&nbsp;: </td>";
       echo "<td >";
       // Permit to set category when creating ticket without update right
-      if ($canupdate || !$ID) {
+      if ($canupdate || !$ID || $canupdate_descr) {
          Dropdown::show('TicketCategory',
                         array('value'  => $this->fields["ticketcategories_id"],
                               'entity' => $this->fields["entities_id"]));
@@ -2815,8 +2848,9 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='left'>".$LANG['common'][1]."&nbsp;: </td>";
       echo "<td>";
+
       // Select hardware on creation or if have update right
-      if ($canupdate || !$ID) {
+      if ($canupdate || !$ID || $canupdate_descr) {
          if ($ID) {
             if ($this->fields['itemtype'] && class_exists($this->fields['itemtype'])
                   && $this->fields["items_id"]) {
@@ -2827,10 +2861,9 @@ class Ticket extends CommonDBTM {
                   echo $item->getTypeName()." ".$item->getNameID();
                }
             }
-         } else {
-            self::dropdownMyDevices($this->fields["users_id"],$this->fields["entities_id"],
+         } 
+         self::dropdownMyDevices($this->fields["users_id"],$this->fields["entities_id"],
                                     $this->fields["itemtype"], $this->fields["items_id"]);
-         }
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
                                   1, $this->fields["entities_id"]);
       } else {
@@ -2842,6 +2875,7 @@ class Ticket extends CommonDBTM {
             echo $LANG['help'][30];
          }
       }
+
       echo "</td>";
 
       echo "<td>".$LANG['financial'][26]."&nbsp;: </td>";
@@ -3040,8 +3074,6 @@ class Ticket extends CommonDBTM {
 
       if ($canupdate
           || $canupdate_descr
-          // TODO why this ?? || haveRight("global_add_followups","1")
-          // TODO why this ?? ||(haveRight("add_followups","1") && !strstr($this->fields["status"],'old_'))
           || haveRight("assign_ticket","1")
           || haveRight("steal_ticket","1")) {
 
