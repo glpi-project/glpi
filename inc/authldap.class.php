@@ -818,7 +818,7 @@ class AuthLDAP extends CommonDBTM {
     * @return ldap timestamp
     */
    static function date2ldapTimeStamp($days) {
-      return date("YmdHis",strtotime("-$days day")).'Z';
+      return date("YmdHis",strtotime("-$days day")).'.0Z';
    }
 
 
