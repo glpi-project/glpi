@@ -186,7 +186,7 @@ function addTracking($type,$ID,$ID_entity){
       $closedate="";
       $solvedate="";
 		if (mt_rand(0,100)<$percent['closed_tracking']){
-			$opendate=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
+			$opendate=strtotime(mt_rand(2005,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
 			$rtype=mt_rand(0,100);
 			if ($rtype<20) {
    			$status="solved";
