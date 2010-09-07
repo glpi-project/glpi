@@ -206,15 +206,18 @@ class NotificationTemplate extends CommonDBTM {
 
          if ($template_datas = $this->getByLanguage($language)) {
             //Template processing
+            // Decode html chars to have clean text
             $data = html_entity_decode_deep($data);
             $template_datas['subject'] = html_entity_decode_deep($template_datas['subject']);
+            $this->signature = html_entity_decode_deep($this->signature);
+
             $lang['subject'] = $target->getSubjectPrefix($event) .
                                NotificationTemplate::process($template_datas['subject'], $data);
             $lang['content_html'] = '';
-            $this->signature = html_entity_decode_deep($this->signature);
 
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {
+               // Encode in HTML all chars
                $data_html = htmlentities_deep($data);
                $data_html = nl2br_deep($data_html);
                
