@@ -220,7 +220,7 @@ class NotificationTemplate extends CommonDBTM {
                // Encode in HTML all chars
                $data_html = htmlentities_deep($data);
                $data_html = nl2br_deep($data_html);
-               
+
                $signature_html = htmlentities_deep($this->signature);
                $signature_html = nl2br_deep($signature_html);
 
@@ -230,7 +230,7 @@ class NotificationTemplate extends CommonDBTM {
                      "<html>
                         <head>
                          <META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">
-                         <title>".$lang['subject']."</title>
+                         <title>".htmlentities_deep($lang['subject'])."</title>
                         </head>
                         <body>".NotificationTemplate::process($template_datas['content_html'],
                                                                   $data_html).
