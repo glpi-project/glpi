@@ -524,6 +524,9 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.urlapprove##'] = urldecode($CFG_GLPI["url_base"].
                                                            "/index.php?redirect=ticket_".
                                                            $this->obj->getField("id")."_4");
+         $this->datas['##ticket.urlvalidation##'] = urldecode($CFG_GLPI["url_base"].
+                                                           "/index.php?redirect=ticket_".
+                                                           $this->obj->getField("id")."_7");
 
          $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                $this->getEntity());
@@ -784,10 +787,6 @@ class NotificationTargetTicket extends NotificationTarget {
                = $LANG['validation'][32]." (".$LANG['validation'][21].
                  " ".html_clean(getUserName($validation['users_id_validate'])).")";
 
-            $tmp['##validation.url##']
-               = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                  $validation['tickets_id']."_7");
-
             $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
             $tmp['##lang.validation.validationstatus##']
                = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
@@ -996,8 +995,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    'validation.submissiondate'    => $LANG['validation'][3],
                    'validation.commentsubmission' => $LANG['validation'][5],
                    'validation.validationdate'    => $LANG['validation'][4],
-                   'validation.commentvalidation' => $LANG['validation'][6],
-                   'ticket.urlapprove'            => $LANG['document'][33].' '.$LANG['validation'][26]);
+                   'validation.commentvalidation' => $LANG['validation'][6]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -1019,8 +1017,8 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'foreach' => true));
       }
 
-      //Tags witouht lang
-      $tags = array('ticket.days' => $LANG['stats'][31]);
+      //Tags with just lang
+      $tags = array('ticket.days'          => $LANG['stats'][31]);
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
@@ -1036,13 +1034,15 @@ class NotificationTargetTicket extends NotificationTarget {
                                 'foreach' => true,
                                 'events'  => array('alertnotclosed')));
 
-      //Tags witouht lang
+      //Tags without lang
       $tags = array('validation.submission.title' => $LANG['validation'][27],
                     'validation.answer.title'     => $LANG['validation'][32],
                     'ticket.log.date'             => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
                     'ticket.log.user'             => $LANG['mailing'][144]. ' : '.$LANG['common'][34],
                     'ticket.log.field'            => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
-                    'ticket.log.content'          => $LANG['mailing'][144]. ' : '.$LANG['event'][19]);
+                    'ticket.log.content'          => $LANG['mailing'][144]. ' : '.$LANG['event'][19],
+                    'ticket.urlapprove'           => $LANG['document'][33].' '.$LANG['job'][51],
+                    'ticket.urlvalidation'        => $LANG['document'][33].' '.$LANG['validation'][26]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

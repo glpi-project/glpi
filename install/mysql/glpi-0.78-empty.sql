@@ -2271,7 +2271,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
 
 ##ENDFOREACHtasks##','<!-- description{ color: inherit; background: #ebebeb; border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }    -->
 <div>##IFticket.storestatus=solved##</div>
-<div>##lang.ticket.url## : <a href=\"##ticket.url##\">##ticket.urlapprove##</a> <strong>&#160;</strong></div>
+<div>##lang.ticket.url## : <a href=\"##ticket.urlapprove##\">##ticket.urlapprove##</a> <strong>&#160;</strong></div>
 <div><strong>##lang.ticket.autoclosewarning##</strong></div>
 <div><span style="color: #888888;"><strong><span style="text-decoration: underline;">##lang.ticket.solvedate##</span></strong></span> : ##ticket.solvedate##<br /><span style="text-decoration: underline; color: #888888;"><strong>##lang.ticket.solution.type##</strong></span> : ##ticket.solution.type##<br /><span style="text-decoration: underline; color: #888888;"><strong>##lang.ticket.solution.description##</strong></span> : ##ticket.solution.description## ##ENDIFticket.storestatus##</div>
 <div>##ELSEticket.storestatus## ##lang.ticket.url## : <a href=\"##ticket.url##\">##ticket.url##</a> ##ENDELSEticket.storestatus##</div>
@@ -2355,7 +2355,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##ticket
 ##ENDIFvalidation.storestatus##
 ##ELSEvalidation.storestatus## ##validation.answer.title## ##ENDELSEvalidation.storestatus##
 
-##lang.ticket.url## : ##validation.url##
+##lang.ticket.url## : ##ticket.urlvalidation##
 
 ##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
 ##IFvalidation.commentvalidation##
@@ -2369,7 +2369,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##ticket
 &lt;div&gt;##ELSEvalidation.storestatus## ##validation.answer.title## ##ENDELSEvalidation.storestatus##&lt;/div&gt;
 &lt;div&gt;&lt;/div&gt;
 &lt;div&gt;
-&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##validation.url##\"&gt; ##validation.url## &lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##ticket.urlvalidation##\"&gt; ##ticket.urlvalidation## &lt;/a&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
 &lt;br /&gt; ##IFvalidation.commentvalidation##&lt;br /&gt; ##lang.validation.commentvalidation## :
