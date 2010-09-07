@@ -884,7 +884,7 @@ class Stat {
             case 'bar':
                $graph = new ezcGraphBarChart();
                $graph->options->fillLines = 210;
-               $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
+               $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedBoxedLabelRenderer();
                $graph->xAxis->axisLabelRenderer->angle = 45;
                $graph->xAxis->axisSpace = .2;
                $graph->yAxis->min = 0;
@@ -894,6 +894,15 @@ class Stat {
                $graph->renderer = new ezcGraphRenderer3d();
                $graph->renderer->options->legendSymbolGleam = .5;
                $graph->renderer->options->barChartGleam = .5;
+
+               $max = 0;
+               foreach ($entrees as $key => $val) {
+                  if (count($val) > $max) {
+                     $max = count($val);
+                  }
+               }
+               $graph->xAxis->labelCount = $max;
+
                break;
             case 'line':
                // No break default case
