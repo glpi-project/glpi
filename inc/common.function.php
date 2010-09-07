@@ -909,6 +909,27 @@ function resume_text($string, $length=255) {
    return $string;
 }
 
+/**
+ * Recursivly execute html_entity_decode on an Array
+ *
+ * @param $value string or array
+ * @return array of value (same struct as input)
+ */
+function html_entity_decode_deep($value) {
+
+   return (is_array($value) ? array_map('html_entity_decode_deep', $value) : html_entity_decode($value,ENT_QUOTES, "UTF-8"));
+}
+
+/**
+ * Recursivly execute htmlentities on an Array
+ *
+ * @param $value string or array
+ * @return array of value (same struct as input)
+ */
+function htmlentities_deep($value) {
+
+   return (is_array($value) ? array_map('htmlentities_deep', $value) : htmlentities($value,ENT_QUOTES, "UTF-8"));
+}
 
 /**
  *  Resume a name for display
