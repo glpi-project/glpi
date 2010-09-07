@@ -49,6 +49,10 @@ if (!isset($_GET['id'])) {
 if (isset($_POST["add"])) {
    $track->check(-1,'w',$_POST);
 
+   // Force id is visible
+   $saveidview=$_SESSION['glpiis_ids_visible'];
+   $_SESSION['glpiis_ids_visible']=1;
+
    if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
       $splitter = explode("_",$_POST["_my_items"]);
       if (count($splitter) == 2) {
@@ -58,6 +62,10 @@ if (isset($_POST["add"])) {
    }
 
    $track->add($_POST);
+
+   //Restore id is visible
+   $_SESSION['glpiis_ids_visible']=$saveidview;
+
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST['update'])) {
