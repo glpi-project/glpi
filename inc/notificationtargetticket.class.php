@@ -537,7 +537,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                                     $this->obj->getField("id"));
          $this->datas['##ticket.urlapprove##'] = urldecode($CFG_GLPI["url_base"].
                                                            "/index.php?redirect=ticket_".
-                                                           $this->obj->getField("id")."_4");
+                                                           $this->obj->getField("id")."_7");
 
          $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                $this->getEntity());
