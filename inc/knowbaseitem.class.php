@@ -178,6 +178,7 @@ class KnowbaseItem extends CommonDBTM {
 
          if (!empty($ID)) {
             echo "<fieldset>";
+            echo "<legend></legend>";
             echo "<div class='baskb'>";
             if ($this->fields["users_id"]) {
                echo $LANG['common'][37]."&nbsp;: ".getUserName($this->fields["users_id"],"1")."      ";
@@ -221,12 +222,13 @@ class KnowbaseItem extends CommonDBTM {
          echo "<br><br>";
          if ($ID>0) {
             echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
-            echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'>";
          } else {
             echo "<input type='hidden' name='users_id' value=\"".getLoginUserID()."\">";
             echo "<input type='submit' class='submit' name='add' value='".$LANG['buttons'][8]."'>";
-            echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'>";
          }
+
+         echo "&nbsp;&nbsp;&nbsp;";
+         echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'>";
          echo "</p></form></div>";
          return true;
       }
