@@ -2202,7 +2202,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('2','2','','##reserv
 ======================================================================
 ','&lt;!-- description{ color: inherit; background: #ebebeb;border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; } --&gt;
 &lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.user##:&lt;/span&gt;##reservation.user##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.item.name##:&lt;/span&gt;##reservation.itemtype## - ##reservation.item.name##&lt;br /&gt;##IFreservation.tech## ##lang.reservation.tech## ##reservation.tech####ENDIFreservation.tech##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.begin##:&lt;/span&gt; ##reservation.begin##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.end##:&lt;/span&gt;##reservation.end##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.comment##:&lt;/span&gt; ##reservation.comment##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##reservation.action##  ##reservation.entity##','##lang.reservation.entity## :##reservation.entity## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##reservation.action##  ##reservation.entity##','##lang.reservation.entity## : ##reservation.entity## 
 
  
 ##FOREACHreservations## 
@@ -2212,9 +2212,9 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##reserv
  
  ##reservation.url## 
 
- ##ENDFOREACHreservations##','&lt;p&gt;##lang.reservation.entity##  :##reservation.entity## &lt;br /&gt; &lt;br /&gt;
-##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype##  :  ##reservation.itemtype##&lt;br /&gt;
- ##lang.reservation.item##  :  ##reservation.item##&lt;br /&gt; &lt;br /&gt;
+ ##ENDFOREACHreservations##','&lt;p&gt;##lang.reservation.entity## : ##reservation.entity## &lt;br /&gt; &lt;br /&gt;
+##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype## :  ##reservation.itemtype##&lt;br /&gt;
+ ##lang.reservation.item## :  ##reservation.item##&lt;br /&gt; &lt;br /&gt;
  &lt;a href=\"##reservation.url##\"&gt; ##reservation.url##&lt;/a&gt;&lt;br /&gt;
  ##ENDFOREACHreservations##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket.action## ##ticket.title##',' ##IFticket.storestatus=solved##
@@ -2227,21 +2227,21 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
 
  ##lang.ticket.description##
 
- ##lang.ticket.title##  :##ticket.title##
- ##lang.ticket.author.name##  :##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name## ##ELSEticket.author.name##--##ENDELSEticket.author.name##
- ##lang.ticket.creationdate##  :##ticket.creationdate##
- ##lang.ticket.closedate##  :##ticket.closedate##
- ##lang.ticket.requesttype##  :##ticket.requesttype##
-##IFticket.itemtype## ##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## -##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
-##IFticket.assigntouser## ##lang.ticket.assigntouser##  : ##ticket.assigntouser## ##ENDIFticket.assigntouser##
- ##lang.ticket.status##  : ##ticket.status##
-##IFticket.assigntogroup## ##lang.ticket.assigntogroup##  : ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
- ##lang.ticket.urgency##  : ##ticket.urgency##
- ##lang.ticket.impact##  : ##ticket.impact##
- ##lang.ticket.priority##  : ##ticket.priority##
-##IFticket.user.email## ##lang.ticket.user.email##  : ##ticket.user.email ##ENDIFticket.user.email##
-##IFticket.category## ##lang.ticket.category##  :##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
- ##lang.ticket.content##  : ##ticket.content##
+ ##lang.ticket.title## : ##ticket.title##
+ ##lang.ticket.author.name## : ##IFticket.author.name## ##ticket.author.name## ##ENDIFticket.author.name## ##ELSEticket.author.name##--##ENDELSEticket.author.name##
+ ##lang.ticket.creationdate## : ##ticket.creationdate##
+ ##lang.ticket.closedate## : ##ticket.closedate##
+ ##lang.ticket.requesttype## : ##ticket.requesttype##
+##IFticket.itemtype## ##lang.ticket.item.name## : ##ticket.itemtype## - ##ticket.item.name## ##IFticket.item.model## - ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## - ##ticket.item.serial## ##ENDIFticket.item.serial##  ##IFticket.item.otherserial## -##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype##
+##IFticket.assigntouser## ##lang.ticket.assigntouser## : ##ticket.assigntouser## ##ENDIFticket.assigntouser##
+ ##lang.ticket.status## : ##ticket.status##
+##IFticket.assigntogroup## ##lang.ticket.assigntogroup## : ##ticket.assigntogroup## ##ENDIFticket.assigntogroup##
+ ##lang.ticket.urgency## : ##ticket.urgency##
+ ##lang.ticket.impact## : ##ticket.impact##
+ ##lang.ticket.priority## : ##ticket.priority##
+##IFticket.user.email## ##lang.ticket.user.email## : ##ticket.user.email ##ENDIFticket.user.email##
+##IFticket.category## ##lang.ticket.category## : ##ticket.category## ##ENDIFticket.category## ##ELSEticket.category## ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
+ ##lang.ticket.content## : ##ticket.content##
  ##IFticket.storestatus=closed##
 
  ##lang.ticket.solvedate## : ##ticket.solvedate##
@@ -2286,7 +2286,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
 <p>##FOREACHtasks##</p>
 <div class=\"description b\"><br /> <strong> [##task.date##] <em>##lang.task.isprivate## : ##task.isprivate## </em></strong><br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.author##</span> ##task.author##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.description##</span> ##task.description##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.time##</span> ##task.time##<br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.task.category##</span> ##task.category##</div>
 <p>##ENDFOREACHtasks##</p>');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','12','','##contract.action##  ##contract.entity##','##lang.contract.entity## :##contract.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','12','','##contract.action##  ##contract.entity##','##lang.contract.entity## : ##contract.entity##
 
 ##FOREACHcontracts##
 ##lang.contract.name## : ##contract.name##
@@ -2294,7 +2294,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','12','','##contr
 ##lang.contract.time## : ##contract.time##
 ##IFcontract.type####lang.contract.type## : ##contract.type####ENDIFcontract.type##
 ##contract.url##
-##ENDFOREACHcontracts##','&lt;p&gt;##lang.contract.entity## :##contract.entity##&lt;br /&gt;
+##ENDFOREACHcontracts##','&lt;p&gt;##lang.contract.entity## : ##contract.entity##&lt;br /&gt;
 &lt;br /&gt;##FOREACHcontracts##&lt;br /&gt;##lang.contract.name## :
 ##contract.name##&lt;br /&gt;
 ##lang.contract.number## : ##contract.number##&lt;br /&gt;
@@ -2359,7 +2359,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##ticket
 
 ##IFvalidation.status## ##lang.validation.validationstatus## ##ENDIFvalidation.status##
 ##IFvalidation.commentvalidation##
-##lang.validation.commentvalidation## :   ##validation.commentvalidation##
+##lang.validation.commentvalidation## : ##validation.commentvalidation##
 ##ENDIFvalidation.commentvalidation##
 ##ENDFOREACHvalidations##','&lt;div&gt;##FOREACHvalidations##&lt;/div&gt;
 &lt;p&gt;##IFvalidation.storestatus=waiting##&lt;/p&gt;
@@ -2375,7 +2375,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##ticket
 &lt;br /&gt; ##IFvalidation.commentvalidation##&lt;br /&gt; ##lang.validation.commentvalidation## :
 &#160; ##validation.commentvalidation##&lt;br /&gt; ##ENDIFvalidation.commentvalidation##
 &lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket.action## ##ticket.entity##','##lang.ticket.entity## :##ticket.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket.action## ##ticket.entity##','##lang.ticket.entity## : ##ticket.entity##
  
 ##FOREACHtickets##
 
@@ -2407,7 +2407,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket
 ##ENDFOREACHtickets##
 &lt;/tbody&gt;
 &lt;/table&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','9','','##consumable.action##  ##consumable.entity##','##lang.consumable.entity## :##consumable.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','9','','##consumable.action##  ##consumable.entity##','##lang.consumable.entity## : ##consumable.entity##
  
 
 ##FOREACHconsumables##
@@ -2421,14 +2421,14 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','9','','##consum
 ##consumable.url## 
 
 ##ENDFOREACHconsumables##','&lt;p&gt;
-##lang.consumable.entity## :##consumable.entity##
+##lang.consumable.entity## : ##consumable.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHconsumables##
-&lt;br /&gt;##lang.consumable.item##  : ##consumable.item##&lt;br /&gt;
-&lt;br /&gt;##lang.consumable.reference##  : ##consumable.reference##&lt;br /&gt;
-##lang.consumable.remaining## :  ##consumable.remaining##&lt;br /&gt;
+&lt;br /&gt;##lang.consumable.item## : ##consumable.item##&lt;br /&gt;
+&lt;br /&gt;##lang.consumable.reference## : ##consumable.reference##&lt;br /&gt;
+##lang.consumable.remaining## : ##consumable.remaining##&lt;br /&gt;
 &lt;a href=\"##consumable.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
    ##ENDFOREACHconsumables##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','8','','##cartridge.action##  ##cartridge.entity##','##lang.cartridge.entity## :##cartridge.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','8','','##cartridge.action##  ##cartridge.entity##','##lang.cartridge.entity## : ##cartridge.entity##
  
 
 ##FOREACHcartridges##
@@ -2440,18 +2440,18 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','8','','##cartr
 ##lang.cartridge.remaining## : ##cartridge.remaining##
 
 ##cartridge.url## 
- ##ENDFOREACHcartridges##','&lt;p&gt;##lang.cartridge.entity## :##cartridge.entity##
+ ##ENDFOREACHcartridges##','&lt;p&gt;##lang.cartridge.entity## : ##cartridge.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
-&lt;br /&gt;##lang.cartridge.item##   :
+&lt;br /&gt;##lang.cartridge.item## :
 ##cartridge.item##&lt;br /&gt; &lt;br /&gt;
-##lang.cartridge.reference##  :
+##lang.cartridge.reference## :
 ##cartridge.reference##&lt;br /&gt;
 ##lang.cartridge.remaining## :
 ##cartridge.remaining##&lt;br /&gt;
 &lt;a href=\"##cartridge.url##\"&gt;
 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHcartridges##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## :##infocom.entity## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## : ##infocom.entity## 
  
 
 ##FOREACHinfocoms## 
@@ -2464,15 +2464,15 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##info
 ##lang.infocom.expirationdate## : ##infocom.expirationdate##
 
 ##infocom.url## 
- ##ENDFOREACHinfocoms##','&lt;p&gt;##lang.infocom.entity##  :##infocom.entity##
+ ##ENDFOREACHinfocoms##','&lt;p&gt;##lang.infocom.entity## : ##infocom.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHinfocoms##
-&lt;br /&gt;##lang.infocom.itemtype##  :  ##infocom.itemtype##&lt;br /&gt;
-##lang.infocom.item##  :  ##infocom.item##&lt;br /&gt; &lt;br /&gt;
-##lang.infocom.expirationdate##  :  ##infocom.expirationdate##
+&lt;br /&gt;##lang.infocom.itemtype## : ##infocom.itemtype##&lt;br /&gt;
+##lang.infocom.item## : ##infocom.item##&lt;br /&gt; &lt;br /&gt;
+##lang.infocom.expirationdate## : ##infocom.expirationdate##
 &lt;br /&gt; &lt;a href=\"##infocom.url##\"&gt;
 ##infocom.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHinfocoms##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('12','11','','##license.action##  ##license.entity##','##lang.license.entity## :##license.entity##
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('12','11','','##license.action##  ##license.entity##','##lang.license.entity## : ##license.entity##
 
 ##FOREACHlicenses## 
 
@@ -2484,11 +2484,11 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('12','11','','##lice
 
 ##license.url## 
  ##ENDFOREACHlicenses##','&lt;p&gt;
-##lang.license.entity##  :##license.entity##&lt;br /&gt;
+##lang.license.entity## : ##license.entity##&lt;br /&gt;
 ##FOREACHlicenses##
-&lt;br /&gt;##lang.license.item##  :  ##license.item##&lt;br /&gt;
-##lang.license.serial##  :  ##license.serial##&lt;br /&gt;
-##lang.license.expirationdate## :   ##license.expirationdate##
+&lt;br /&gt;##lang.license.item## : ##license.item##&lt;br /&gt;
+##lang.license.serial## : ##license.serial##&lt;br /&gt;
+##lang.license.expirationdate## : ##license.expirationdate##
 &lt;br /&gt; &lt;a href=\"##license.url##\"&gt; ##license.url##
 &lt;/a&gt;&lt;br /&gt; ##ENDFOREACHlicenses##&lt;/p&gt;');
 
