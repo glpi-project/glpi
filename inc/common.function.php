@@ -2118,25 +2118,24 @@ function getCountLogin() {
  * @param $itemtype device type
  * @param $title titre de la liste
  **/
-function initNavigateListItems($itemtype, $title="") {
+function initNavigateListItems($itemtype,$title="") {
    global $LANG;
 
    if (empty($title)) {
-      $title = $LANG['common'][53];
+      $title=$LANG['common'][53];
    }
-   $url = '';
-   if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
+   $url='';
+   if (!isset($_SERVER['REQUEST_URI']) || strpos($_SERVER['REQUEST_URI'],"tabs")>0) {
       if (isset($_SERVER['HTTP_REFERER'])) {
-         $url = $_SERVER['HTTP_REFERER'];
+         $url=$_SERVER['HTTP_REFERER'];
       }
    } else {
-      if (isset($_SERVER['HTTP_REFERER'])) {
-         $url = $_SERVER['PHP_SELF'];
-      }
+      $url=$_SERVER['REQUEST_URI'];
    }
-   $_SESSION['glpilisttitle'][$itemtype] = $title;
-   $_SESSION['glpilistitems'][$itemtype] = array();
-   $_SESSION['glpilisturl'][$itemtype]   = $url;
+
+   $_SESSION['glpilisttitle'][$itemtype]=$title;
+   $_SESSION['glpilistitems'][$itemtype]=array();
+   $_SESSION['glpilisturl'][$itemtype]=$url;
 }
 
 

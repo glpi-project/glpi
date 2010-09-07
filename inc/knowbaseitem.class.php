@@ -57,7 +57,14 @@ class KnowbaseItem extends CommonDBTM {
       return (haveRight('knowbase', 'r') || haveRight('faq', 'r'));
    }
 
+   function defineTabs($options=array()) {
+      global $LANG;
 
+      $ong=array();
+      $ong[1]=$LANG['title'][26];
+      return $ong;
+   }
+   
    /**
     * Get The Name of the Object
     *
@@ -326,7 +333,7 @@ class KnowbaseItem extends CommonDBTM {
     *
     * @return nothing (display item : question and answer)
     **/
-   function showFull($linkusers_id=true) {
+   function showFull($linkusers_id=true, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       // show item : question and answer
@@ -352,18 +359,22 @@ class KnowbaseItem extends CommonDBTM {
       $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",
                                                    $knowbaseitemcategories_id);
 
-      echo "<table class='tab_cadre_fixe'><tr><th colspan='2'>".$LANG['common'][36]."&nbsp;:&nbsp;";
+      $this->showTabs($options);
+      $options['colspan'] = 2;
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_3'><th colspan='4'>".$LANG['common'][36]."&nbsp;:&nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/".
             (isset($_SESSION['glpiactiveprofile'])
              && $_SESSION['glpiactiveprofile']['interface']=="central"?"knowbaseitem.php":"helpdesk.faq.php").
             "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
       echo "</th></tr>";
 
-      echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>".$LANG['knowbase'][14]."</h2>";
+      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][14]."</h2>";
       echo $this->fields["question"];
 
       echo "</td></tr>";
-      echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>".$LANG['knowbase'][15]."</h2>\n";
+      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][15]."</h2>\n";
 
       $answer = unclean_cross_side_scripting_deep($this->fields["answer"]);
 
@@ -395,15 +406,20 @@ class KnowbaseItem extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]);
          echo "<br>".$LANG['entity'][9]."&nbsp;: ";
          echo Dropdown::getYesNo($this->fields["is_recursive"])."</th>";
+      } else {
+         echo "<th>&nbsp;</th>";
       }
 
-      echo "<th class='tdkb'>";
+      echo "<th class='tdkb' colspan='2'>";
       if ($this->fields["date_mod"]) {
          echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]).
               "<br>";
       }
       echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
-      echo "</table><br>";
+
+      $this->showFormButtons($options);
+      $this->addDivForTabs();
+
 
       return true;
    }
@@ -440,7 +456,7 @@ class KnowbaseItem extends CommonDBTM {
       // Category select not for anonymous FAQ
       if (getLoginUserID() && !$faq) {
          echo "<td><form method=get action=\"".$target."\"><table border='0' class='tab_cadre'>";
-         echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp:</th></tr>";
+         echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp;:</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
          Dropdown::show('KnowbaseItemCategory', array('value' => $knowbaseitemcategories_id));
          echo "</td><td><input type='submit' value='".$LANG['buttons'][2]."' class='submit' ></td>";
@@ -466,7 +482,7 @@ class KnowbaseItem extends CommonDBTM {
       $where = "";
       $order = "";
       $score = "";
-
+      
       // Build query
       if (getLoginUserID()) {
          $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
@@ -534,6 +550,15 @@ class KnowbaseItem extends CommonDBTM {
 
       // Get it from database
       if ($result=$DB->query($query)) {
+         $KbCategory = new KnowbaseItemCategory();
+         $title = "";
+         if ($KbCategory->getFromDB($knowbaseitemcategories_id)) {
+            $title = $LANG['common'][36]." = ".
+                                  (empty($KbCategory->fields['name']) ? "($knowbaseitemcategories_id)" : $KbCategory->fields['name']);
+         }
+         
+         initNavigateListItems('KnowbaseItem', $title);
+         
          $numrows    = $DB->numrows($result);
          $list_limit = $_SESSION['glpilist_limit'];
          // Limit the result, if no limit applies, use prior result
@@ -575,6 +600,8 @@ class KnowbaseItem extends CommonDBTM {
             $row_num = 1;
             for ($i=0 ; $i<$numrows_limit ; $i++) {
                $data = $DB->fetch_array($result_limit);
+               
+               addToNavigateListItems('KnowbaseItem',$data["id"]);
                // Column num
                $item_num = 1;
                $row_num++;
