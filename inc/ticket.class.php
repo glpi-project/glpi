@@ -1114,6 +1114,13 @@ class Ticket extends CommonDBTM {
 
          NotificationEvent::raiseEvent($type,$this);
       }
+
+      if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
+         addMessageAfterRedirect($LANG['help'][18]." (".$LANG['job'][38]."&nbsp;".
+            "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+            $this->fields['id']."'>".$this->fields['id']."</a>)");
+      }
+
    }
 
 
