@@ -631,11 +631,11 @@ function update078to080($output='HTML') {
    }
 
    // Drop nl_be langage
-   $query="UPDATE `glpi_configs` SET `language`='nl_NL' WHERE `langage`='nl_BE';";
+   $query="UPDATE `glpi_configs` SET `language`='nl_NL' WHERE `language`='nl_BE';";
    $DB->query($query) or die("0.80 drop nl_be langage" .
                                  $LANG['update'][90] . $DB->error());
 
-   $query="UPDATE `glpi_users` SET `language`='nl_NL' WHERE `langage`='nl_BE';";
+   $query="UPDATE `glpi_users` SET `language`='nl_NL' WHERE `language`='nl_BE';";
    $DB->query($query) or die("0.80 drop nl_be langage" .
                                  $LANG['update'][90] . $DB->error());
 
