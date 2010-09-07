@@ -179,6 +179,9 @@ class Ticket extends CommonDBTM {
          if (haveRight('observe_ticket','1')) {
             $ong[8] = $LANG['Menu'][13];
          }
+         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+            $ong[9] = $LANG['setup'][137];
+         }
 
       //   $ong['no_all_tab'] = true;
       } else {
@@ -5115,6 +5118,14 @@ class Ticket extends CommonDBTM {
 
       echo "</table>";
       echo "</div>";
+   }
+
+   /**
+    * Display debug information for current object
+    *
+    */
+   function showDebug() {
+      NotificationEvent::debugEvent($this);
    }
 
 }

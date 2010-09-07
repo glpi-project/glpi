@@ -102,6 +102,11 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $ticket->showStats();
          break;
 
+      case 9: 
+         $ticket->showDebug();
+         break;
+
+
       default :
          if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
             $fup = new TicketFollowup();
