@@ -125,5 +125,81 @@ class NotificationEvent extends CommonDBTM {
       return true;
    }
 
+ /**
+    * Display debug information for an object
+    *
+    * @param $item the object
+    */
+   static function debugEvent($item) {
+      global $LANG;
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".$LANG['setup'][137].' - '.$LANG['setup'][704]."</th></tr>";
+
+      $events = array();
+      if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
+         $events = $target->getAllEvents();
+
+         if (count($events)>0) {
+            echo "<tr><th>".$LANG['mailing'][119].'</th><th>'.$LANG['mailing'][121]."</th>";
+            echo "<th>".$LANG['mailing'][113].'</th><th>'.$LANG['mailing'][118]."</th></tr>";
+
+            foreach ($events as $event => $label) {
+               $email_processed = array();
+               $email_notprocessed = array();
+
+               $template = new NotificationTemplate();
+               $notificationtarget = NotificationTarget::getInstance($item,$event);
+               $entity = $notificationtarget->getEntity();
+               //Foreach notification
+               foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
+                                                                     $entity) as $data) {
+                  $targets = getAllDatasFromTable('glpi_notificationtargets',
+                                                  'notifications_id='.$data['id']);
+
+                  $notificationtarget->clearAddressesList();
+
+                  //Process more infos (for example for tickets)
+                  $notificationtarget->addAdditionnalInfosForTarget();
+
+                  //Foreach notification targets
+                  foreach ($targets as $target) {
+                     $template->getFromDB($data['notificationtemplates_id']);
+                     $notificationtarget->getFromDB($target['id']);
+
+                     //Get all users affected by this notification
+                     $notificationtarget->getAddressesByTarget($target);
+
+                     foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
+                        //If the user have not yet been notified
+                        if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
+                           //If ther user's language is the same as the template's one
+                           if (isset($email_notprocessed[$users_infos['language']][$users_infos['email']])) {
+                              unset($email_notprocessed[$users_infos['language']][$users_infos['email']]);
+                           }
+
+                           if ($template->getTemplateByLanguage($notificationtarget, $users_infos, $event)) {
+                              //Send notification to the user
+                              echo "<tr class='tab_bg_2'><td>".$label."</td>";
+                              echo "<td>".$notificationtarget->getNameID()."</td>";
+                              echo "<td>".$template->getName()." (".$users_infos['language'].")</td>";
+                              echo "<td>".$users_infos['email']."</td>";
+                              echo "</tr>";
+                              $email_processed[$users_infos['language']][$users_infos['email']] = $users_infos;
+                           } else {
+                              $email_notprocessed[$users_infos['language']][$users_infos['email']] = $users_infos;
+                           }
+                        }
+                     }
+                  }
+               }
+
+            }
+         } else  {
+            echo "<tr class='tab_bg_2 center'><td colspan='4'>".$LANG['stats'][2]."</td></tr>";
+         }
+      }
+      echo "</table>";
+   }
 }
 ?>
