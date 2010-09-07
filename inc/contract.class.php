@@ -251,9 +251,9 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][60]."&nbsp;:</td>";
-      echo "<td colspan='3'>". $LANG['buttons'][33]."&nbsp;:&nbsp;&nbsp;";
+      echo "<td colspan='3'>". $LANG['buttons'][33]."&nbsp;:&nbsp;";
       Dropdown::showHours("week_begin_hour", $this->fields["week_begin_hour"]);
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['buttons'][32]."&nbsp;:&nbsp;&nbsp;";
+      echo "<span class='small_space'>".$LANG['buttons'][32]."</span>&nbsp;:&nbsp;";
       Dropdown::showHours("week_end_hour", $this->fields["week_end_hour"]);
       echo "</td></tr>";
 
@@ -261,9 +261,9 @@ class Contract extends CommonDBTM {
       echo "<td>".$LANG['financial'][61]."&nbsp;:</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_saturday", $this->fields["use_saturday"]);
-      echo "&nbsp;".$LANG['buttons'][33]."&nbsp;:&nbsp;&nbsp;";
+      echo "<span class='small_space'>".$LANG['buttons'][33]."</span>&nbsp;:&nbsp;&nbsp;";
       Dropdown::showHours("saturday_begin_hour", $this->fields["saturday_begin_hour"]);
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['buttons'][32]."&nbsp;:&nbsp;&nbsp;";
+      echo "<span class='small_space'>".$LANG['buttons'][32]."</span>&nbsp;:&nbsp;&nbsp;";
       Dropdown::showHours("saturday_end_hour", $this->fields["saturday_end_hour"]);
       echo "</td></tr>";
 
@@ -271,9 +271,9 @@ class Contract extends CommonDBTM {
       echo "<td>".$LANG['financial'][62]."&nbsp;:</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_monday", $this->fields["use_monday"]);
-      echo "&nbsp;".$LANG['buttons'][33]."&nbsp;:&nbsp;&nbsp;";
+      echo "<span class='small_space'>".$LANG['buttons'][33]."</span>&nbsp;:&nbsp;&nbsp;";
       Dropdown::showHours("monday_begin_hour", $this->fields["monday_begin_hour"]);
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['buttons'][32]."&nbsp;:&nbsp;&nbsp;";
+      echo "<span class='small_space'>".$LANG['buttons'][32]."</span>&nbsp;:&nbsp;&nbsp;";
       Dropdown::showHours("monday_end_hour", $this->fields["monday_end_hour"]);
       echo "</td></tr>";
 

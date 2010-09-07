@@ -1396,8 +1396,9 @@ class CommonDBTM extends CommonGLPI {
             if ($this->isDeleted()){
                echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21].
                       "\" class='submit'>";
-               echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".
-                                                    $LANG['buttons'][22]."\" class='submit'>";
+               echo "<span class='small_space'>
+                     <input type='submit' name='purge' value='".$LANG['buttons'][22]."' class='submit'>
+                     </span>";
             }else {
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][22] .
