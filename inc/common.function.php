@@ -2070,15 +2070,14 @@ function initNavigateListItems($itemtype,$title="") {
       $title=$LANG['common'][53];
    }
    $url='';
-   if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
+   if (!isset($_SERVER['REQUEST_URI']) || strpos($_SERVER['REQUEST_URI'],"tabs")>0) {
       if (isset($_SERVER['HTTP_REFERER'])) {
          $url=$_SERVER['HTTP_REFERER'];
       }
    } else {
-      if (isset($_SERVER['HTTP_REFERER'])) {
-         $url=$_SERVER['PHP_SELF'];
-      }
+      $url=$_SERVER['REQUEST_URI'];
    }
+
    $_SESSION['glpilisttitle'][$itemtype]=$title;
    $_SESSION['glpilistitems'][$itemtype]=array();
    $_SESSION['glpilisturl'][$itemtype]=$url;
