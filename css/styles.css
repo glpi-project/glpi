@@ -579,17 +579,17 @@ margin-left:8px;}
 
 /* 3 spaces */
 .small_space {
-   margin-left: 3em;
+   margin-left: 38px;
 }
 
 /* 10 spaces */
 .medium_space {
-   margin-left: 10em;
+   margin-left: 120px;
 }
 
 /* 20 spaces */
 .big_space {
-   margin-left:20em;
+   margin-left:250px;
 }
 
 /* ################--------------- Calendrier  / reservation ---------------#################### */
