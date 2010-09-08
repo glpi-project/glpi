@@ -107,9 +107,9 @@ class SLA extends CommonDBTM {
       autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
 
 
-      echo "<td rowspan='4'>";
+      echo "<td rowspan='3'>";
       echo $LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='4'>
+      echo "<td rowspan='3'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
 
       echo "</td></tr>";
@@ -139,12 +139,8 @@ class SLA extends CommonDBTM {
       Dropdown::showFromArray('resolution_time',$possible_values,array('value'=>$this->fields["resolution_time"]));
       echo "</td></tr>";
 
-
-
       $this->showFormButtons($options);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
 
       return true;
    }
