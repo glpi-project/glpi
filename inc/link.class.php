@@ -165,9 +165,11 @@ class Link extends CommonDBTM {
    * @param $link string : original string content
    * @param $item CommonDBTM : item used to make replacements
    * @param $name string : name used for multi link generation
+   * @param $noip boolean : true to not evaluate IP/MAC
+   *
    * @return array of link contents (may have several when item have several IP / MAC cases)
    */
-   static function generateLinkContents($link, CommonDBTM $item, $name='') {
+   static function generateLinkContents($link, CommonDBTM $item, $name='', $noip=false) {
       global $DB;
 
       if (strstr($link,"[ID]")) {
@@ -235,7 +237,7 @@ class Link extends CommonDBTM {
       $ipmac = array();
       $i = 0;
 
-      if (!strstr($link,"[IP]") && !strstr($link,"[MAC]")) {
+      if ($noip || (!strstr($link,"[IP]") && !strstr($link,"[MAC]"))) {
          return array($link);
 
       } else { // Return sevral links id several IP / MAC
@@ -351,14 +353,14 @@ class Link extends CommonDBTM {
                $tosend = true;
             }
 
-            $contents = Link::generateLinkContents($link, $item, $name);
+            $contents=Link::generateLinkContents($link, $item, $name);
             if (count($contents)) {
                foreach ($contents as $title => $link) {
                   $current_name = $name;
                   if (!empty($title)){
                      $current_name = $title;
                   }
-                  $clean_name = Link::generateLinkContents($current_name, $item, $name);
+                  $clean_name=Link::generateLinkContents($current_name, $item, $name, true);
 
                   $url = $link;
                   if ($tosend) {
@@ -366,7 +368,8 @@ class Link extends CommonDBTM {
                             "&amp;itemtype=$itemtype&amp;id=$ID";
                   }
                   echo "<tr class='tab_bg_2'><td class='center'>";
-                  echo "<a href='$url' target='_blank'>".$clean_name[0]."</a></td></tr>";
+                  echo "<td class='center'><a href='$url' target='_blank'>".
+                              $clean_name[0]."</a></td></tr>";
                }
             }
          }
