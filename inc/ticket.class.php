@@ -4046,6 +4046,7 @@ class Ticket extends CommonDBTM {
       $job->fields = $data;
       $candelete = haveRight("delete_ticket","1");
       $canupdate = haveRight("update_ticket","1");
+      $showprivate = haveRight("show_full_ticket","1");
       $align = "class='center";
       $align_desc = "class='left";
       if ($followups) {
@@ -4219,8 +4220,8 @@ class Ticket extends CommonDBTM {
             if ($followups && $output_type == HTML_OUTPUT) {
                $eigth_column .= TicketFollowup::showShortForTicket($data["id"]);
             } else {
-               $eigth_column .= "&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket",
-                                                                            "1")).")";
+               $eigth_column .= "&nbsp;(".$job->numberOfFollowups($showprivate).
+                                 "-".$job->numberOfTasks($showprivate).")";
             }
          }
 
@@ -4250,6 +4251,8 @@ class Ticket extends CommonDBTM {
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
       $viewusers = haveRight("user","r");
+      $showprivate = haveRight("show_full_ticket",1);
+
       $job = new self();
       $rand = mt_rand();
       if ($job->getFromDBwithData($ID,0)) {
@@ -4290,7 +4293,7 @@ class Ticket extends CommonDBTM {
          echo "<a id='ticket".$job->fields["id"].$rand."' href=\"".$CFG_GLPI["root_doc"].
                "/front/ticket.form.php?id=".$job->fields["id"]."\">";
          echo "<strong>".$job->fields["name"]."</strong>";
-         echo "</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;";
+         echo "</a>&nbsp;(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).")&nbsp;";
          showToolTip($job->fields['content'], array('applyto' => 'ticket'.$job->fields["id"].$rand));
 
          echo "</td>";
