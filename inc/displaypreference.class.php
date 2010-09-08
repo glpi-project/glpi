@@ -231,9 +231,9 @@ class DisplayPreference extends CommonDBTM {
          echo "<form method='post' action=\"$target\">";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
-         echo $LANG['setup'][241]."&nbsp;&nbsp;&nbsp;";
-         echo "<input type='submit' name='activate' value=\"".$LANG['buttons'][2]."\" class='submit' >";
-         echo "</form></th></tr></table>\n";
+         echo $LANG['setup'][241]."<span class='small_space'>";
+         echo "<input type='submit' name='activate' value='".$LANG['buttons'][2]."' class='submit' >";
+         echo "</span></form></th></tr></table>\n";
       } else {
          $already_added = self::getForTypeUser($itemtype,$IDuser);
 
@@ -261,9 +261,9 @@ class DisplayPreference extends CommonDBTM {
          if (!$first_group) {
             echo "</optgroup>\n";
          }
-         echo "</select>&nbsp;&nbsp;&nbsp;";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit' >";
-         echo "</form>";
+         echo "</select><span class='small_space'>";
+         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit' >";
+         echo "</span></form>";
          echo "</td></tr>\n";
 
          // print first element
@@ -402,9 +402,9 @@ class DisplayPreference extends CommonDBTM {
          if (!$first_group) {
             echo "</optgroup>\n";
          }
-         echo "</select>&nbsp;&nbsp;&nbsp;";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit' >";
-         echo "</form>";
+         echo "</select><span class='small_space'>";
+         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit' >";
+         echo "</span></form>";
          echo "</td></tr>";
       }
 

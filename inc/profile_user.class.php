@@ -324,7 +324,8 @@ class Profile_User extends CommonDBTM {
       }
 
       echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".$LANG['profiles'][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th></tr>\n";
+      echo "<th>".$LANG['profiles'][22]."&nbsp;:<span class='small_space'>".$prof->fields["name"].
+            "</span></th></tr>\n";
       echo "<tr><th colspan='2'>".$LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".
                  $LANG['profiles'][28].")</th></tr>";
       echo "</table>\n";

@@ -307,7 +307,8 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center' height='30'>".$datestring."&nbsp;".$date;
       if (!$template && !empty($this->fields['template_name'])) {
-         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13]."&nbsp;: ".$this->fields['template_name'].")";
+         echo "<span class='small_space'>";
+         echo "(".$LANG['common'][13]."&nbsp;: ".$this->fields['template_name'].")</span>";
       }
       echo "</td></tr>\n";
 
