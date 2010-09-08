@@ -827,7 +827,7 @@ class Infocom extends CommonDBTM {
             if ($ic->fields["warranty_duration"] >= 0) {
                echo " ".$LANG['financial'][57];
             }
-            echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG['financial'][88]."&nbsp;";
+            echo "<span class='small_space'>".$LANG['financial'][88]."</span>&nbsp;";
             echo getWarrantyExpir($ic->fields["buy_date"], $ic->fields["warranty_duration"]);
             echo "</td></tr>";
 

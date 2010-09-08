@@ -693,18 +693,17 @@ class Cartridge extends CommonDBTM {
             echo "</td><td class='center'>";
          }
          if ($canedit) {
+            echo "<span class='small_space'>";
             if (is_null($date_out)) {
-               echo "&nbsp;&nbsp;&nbsp;";
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?uninstall=uninstall&amp;id=".$data["id"].
                       "&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][29]."</a>";
             } else {
-               echo "&nbsp;&nbsp;&nbsp;";
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
                       "&amp;tID=".$data["tID"]."'>".$LANG['buttons'][6]."</a>";
             }
-            echo "</td></tr>";
+            echo "</span></td></tr>";
          }
       }
       if ($old==0 && $canedit) {
