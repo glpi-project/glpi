@@ -1056,7 +1056,7 @@ class AuthLDAP extends CommonDBTM {
                // openldap return 4 for Size limit exceeded
                $limitexceeded = true;
             }
-            $info = ldap_get_entries($ds, $sr);
+            $info = ldap_get_entries_clean($ds, $sr);
             if (ldap_errno($ds) == 4) {
                $limitexceeded = true;
             }
@@ -1344,7 +1344,7 @@ class AuthLDAP extends CommonDBTM {
    static function getGroupCNByDn($ldap_connection, $group_dn) {
 
       $sr = @ ldap_read($ldap_connection, $group_dn, "objectClass=*", array("cn"));
-      $v = ldap_get_entries($ldap_connection, $sr);
+      $v = ldap_get_entries_clean($ldap_connection, $sr);
       if (!is_array($v) || count($v) == 0 || empty ($v[0]["cn"][0])) {
          return false;
       }
@@ -1372,7 +1372,7 @@ class AuthLDAP extends CommonDBTM {
       $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter , $attrs);
 
       if ($sr) {
-         $infos = ldap_get_entries($ldap_connection, $sr);
+         $infos = ldap_get_entries_clean($ldap_connection, $sr);
          for ($ligne=0 ; $ligne < $infos["count"] ; $ligne++) {
             if ($search_in_groups) {
                // No cn : not a real object
@@ -1859,7 +1859,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)){
-         $info = ldap_get_entries($ds, $result);
+         $info = ldap_get_entries_clean($ds, $result);
          if (is_array($info) && $info['count'] == 1) {
             return array('dn'        => $info[0]['dn'],
                          $login_attr => $info[0][$login_attr][0]);
@@ -1893,7 +1893,7 @@ class AuthLDAP extends CommonDBTM {
    static function getGroupByDn($ds, $basedn, $group_dn, $condition) {
 
       if($result = @ ldap_read($ds, $group_dn, "objectClass=*", array("cn"))) {
-         $info = ldap_get_entries($ds, $result);
+         $info = ldap_get_entries_clean($ds, $result);
          if (is_array($info) && $info['count'] == 1) {
             return $info[0];
          }
