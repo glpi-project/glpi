@@ -45,9 +45,6 @@ if (isset($_GET["id"])) {
 
 commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
-if (!isset($_GET["start"])) {
-   $_GET["start"] = 0;
-}
 if (!isset($_GET["contains"])) {
    $_GET["contains"] = "";
 }
@@ -57,10 +54,10 @@ if (!isset($_GET["knowbaseitemcategories_id"])) {
 
 $faq = !haveRight("knowbase","r");
 
-KnowbaseItem::searchForm($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["knowbaseitemcategories_id"],$faq);
-KnowbaseItemCategory::showFirstLevel($_SERVER['PHP_SELF'],$_GET["knowbaseitemcategories_id"],$faq );
-KnowbaseItem::showList($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php",$_GET["contains"],$_GET["start"],
-               $_GET["knowbaseitemcategories_id"],$faq);
+KnowbaseItem::searchForm($_GET,$faq);
+KnowbaseItemCategory::showFirstLevel($_GET,$faq);
+KnowbaseItem::showList($_GET,$faq);
+
 if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {
    KnowbaseItem::showViewGlobal($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php",$faq) ;
 }

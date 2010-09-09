@@ -1755,6 +1755,8 @@ INSERT INTO `glpi_interfacetypes` VALUES ('8','PCI-X','');
 DROP TABLE IF EXISTS `glpi_knowbaseitemcategories`;
 CREATE TABLE `glpi_knowbaseitemcategories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `completename` text COLLATE utf8_unicode_ci,
@@ -1762,7 +1764,9 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
   `level` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`knowbaseitemcategories_id`,`name`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
