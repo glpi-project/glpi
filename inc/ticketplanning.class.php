@@ -195,7 +195,7 @@ class TicketPlanning extends CommonDBTM {
 
          $options = array('task_id' => $this->fields["id"]);
          NotificationEvent::raiseEvent('update_task',$job,$options);
-         
+
 //          $mail = new Mailing("followup",$job,$user,$fup->fields["is_private"]);
 //          $mail->send();
       }
@@ -255,13 +255,13 @@ class TicketPlanning extends CommonDBTM {
          $fup->updateInDB($updates2);
          $job->updateRealTime($this->input["tickets_id"]);
       }
-      
+
       if ((!isset($this->input["_nomail"]) || $this->input["_nomail"]==0)
           && $CFG_GLPI["use_mailing"]) {
-         
+
          $user=new User;
          $user->getFromDB(getLoginUserID());
-         
+
  	 $options = array('task_id' => $this->fields["id"]);
          NotificationEvent::raiseEvent('update_task',$job,$options);
 
@@ -366,7 +366,7 @@ class TicketPlanning extends CommonDBTM {
       // Get items to print
       $ASSIGN="";
 
-      if ($who_group=="mine") {
+      if ($who_group==="mine") {
          if (count($_SESSION["glpigroups"])) {
             $groups=implode("','",$_SESSION['glpigroups']);
             $ASSIGN=" `users_id` IN (SELECT DISTINCT `users_id`
