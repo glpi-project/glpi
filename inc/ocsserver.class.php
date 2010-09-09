@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// OCS config class
 class OcsServer extends CommonDBTM {
-   
+
    // From CommonDBTM
    public $dohistory = true;
    // Class constant - still used for import_device field
@@ -148,6 +148,11 @@ class OcsServer extends CommonDBTM {
       $tab[3]['linkfield'] = 'ocs_db_host';
       $tab[3]['name']      = $LANG['common'][52];
 
+      $tab[6]['table']     = $this->getTable();
+      $tab[6]['field']     = 'is_active';
+      $tab[6]['linkfield'] = 'is_active';
+      $tab[6]['name']      = $LANG['common'][60];
+      $tab[6]['datatype']  = 'bool';
 
       $tab[19]['table']       = $this->getTable();
       $tab[19]['field']       = 'date_mod';
@@ -203,7 +208,7 @@ class OcsServer extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][10] . " </td>\n<td>";
       Dropdown::showYesNo("import_os_serial", $this->fields["import_os_serial"]);
       echo "</td></tr>\n";
- 
+
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][19] . " </td>\n<td>";
       Dropdown::showYesNo("import_general_serial", $this->fields["import_general_serial"]);
       echo "</td></tr>\n";
@@ -235,7 +240,7 @@ class OcsServer extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['networking'][14] . " </td>\n<td>";
       Dropdown::showYesNo("import_ip", $this->fields["import_ip"]);
       echo "</td></tr>\n";
- 
+
       echo "<tr><td>&nbsp;</td></tr>";
       echo "</table>";
 
@@ -274,15 +279,15 @@ class OcsServer extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][36] . " </td>\n<td>";
       Dropdown::showYesNo("import_device_modem", $this->fields["import_device_modem"]);
       echo "</td></tr>\n";
- 
+
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][37] . " </td>\n<td>";
       Dropdown::showYesNo("import_device_port", $this->fields["import_device_port"]);
       echo "</td></tr>\n";
       echo "</table>";
-      
+
       echo "</td>\n";
       echo "<td class='tab_bg_2 top'>\n";
- 
+
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][20] . " </td>\n";
       echo "<td><select name='import_otherserial'>\n";
@@ -297,7 +302,7 @@ class OcsServer extends CommonDBTM {
       $listColumnOCS = OcsServer::getColumnListFromAccountInfoTable($ID, "locations_id");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
- 
+
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][35] . " </td>\n";
       echo "<td><select name='import_group'>\n";
       echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>\n";
@@ -319,12 +324,12 @@ class OcsServer extends CommonDBTM {
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
       echo "</table>";
-      
+
       echo "</td></tr>\n";
- 
+
       echo "<tr><th>&nbsp;" . $LANG['ocsconfig'][27] ." ".$LANG['Menu'][3]. "&nbsp;</th>\n";
       echo "<th colspan='2'>&nbsp;</th></tr>\n";
- 
+
       echo "<tr class='tab_bg_2'>\n";
       echo "<td class='tab_bg_2 top'>\n";
 
@@ -333,7 +338,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_monitor_comment", $this->fields["import_monitor_comment"]);
       echo "</td></tr>\n";
       echo "</table>";
-      
+
       echo "</td>\n";
       echo "<td class='tab_bg_2' colspan='2'>&nbsp;</td>";
       echo "</table>\n";
@@ -528,7 +533,7 @@ class OcsServer extends CommonDBTM {
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
       $out .= "<td><input type='text' name='ocs_db_host' value=\"" .
                     $this->fields["ocs_db_host"] ."\"></td></tr>\n";
- 
+
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][4] . "&nbsp;: </td>\n";
       $out .= "<td><input type='text' name='ocs_db_name' value=\"" .
                     $this->fields["ocs_db_name"] . "\"></td></tr>\n";
@@ -540,9 +545,8 @@ class OcsServer extends CommonDBTM {
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
       $out .= "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'></td>";
 
-
       $out .= "</tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . 
+      $out .= "<tr class='tab_bg_1'><td class='center'>" .
                      $LANG['ocsconfig'][7] . "&nbsp;: </td>\n";
       $out .= "<td><select name='ocs_db_utf8'>";
       $out .= "<option value='0'".($this->fields["ocs_db_utf8"] ? "" : "selected") .
@@ -801,7 +805,7 @@ class OcsServer extends CommonDBTM {
    /**
     * Get the ocs server id of a machine, by giving the machine id
     * @param $ID the machine ID
-    * 
+    *
     * @return the ocs server id of the machine
     */
    static function getByMachineID($ID) {
@@ -1078,7 +1082,7 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   static function processComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1, 
+   static function processComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1,
                                    $defaultlocation = -1, $canlink=0) {
       global $DB;
 
@@ -1192,7 +1196,7 @@ class OcsServer extends CommonDBTM {
                                           WHERE `ID` = '".$data["ID"]."'";
                         $DBocs->query($querychecksum);
                      }
- 
+
                   } else {
                      $query_ocs = "SELECT *
                                    FROM `hardware`
@@ -1232,7 +1236,7 @@ class OcsServer extends CommonDBTM {
                         }
                      }
                   }
- 
+
                } else { // Deleted
                   if (strstr($del,"-")) {
                      $query = "SELECT *
@@ -1372,7 +1376,7 @@ class OcsServer extends CommonDBTM {
    * @param $ocsid integer : ocs ID of the computer
    * @param $ocsservers_id integer : ocs server ID
    * @param $entity integer : entity ID
-   * 
+   *
    * @return array containing the glpi computer ID
    */
    static function getComputersAlreadyImported($ocsid, $ocsservers_id, $entity) {
@@ -2772,7 +2776,7 @@ class OcsServer extends CommonDBTM {
                         if (!in_array(stripslashes($prevalue . $ram["designation"]),
                                                    $import_device)) {
                            $ram["frequence"] = $line2["SPEED"];
-                           $ram["devicememorytypes_id"] = Dropdown::importExternal('DeviceMemoryType', 
+                           $ram["devicememorytypes_id"] = Dropdown::importExternal('DeviceMemoryType',
                                                                                    $line2["TYPE"]);
 
                            $DeviceMemory = new DeviceMemory();
@@ -3345,7 +3349,7 @@ class OcsServer extends CommonDBTM {
 
                //Add new value (ID => IP.$$$$$.MAC)
                OcsServer::addToOcsArray($computers_id,
-                                        array($importip_ID => $new_ip . self::FIELD_SEPARATOR . 
+                                        array($importip_ID => $new_ip . self::FIELD_SEPARATOR .
                                                               $new_mac),
                                         "import_ip");
                $import_ip[$importip_ID] = $new_ip.self::FIELD_SEPARATOR.$new_mac;

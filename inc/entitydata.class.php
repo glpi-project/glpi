@@ -232,7 +232,8 @@ class EntityData extends CommonDBTM {
          Dropdown::show('AuthLDAP',
                         array ('name'=>'ldapservers_id',
                                'value'=> $entdata->fields['ldapservers_id'],
-                               'emptylabel'=>$LANG['ldap'][44]));
+                               'emptylabel'=>$LANG['ldap'][44],
+                               'condition'=>"`is_active`='1'"));
          echo "</td>";
          echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
          echo "<td>";

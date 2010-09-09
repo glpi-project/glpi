@@ -330,14 +330,14 @@ function update078to080($output='HTML') {
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                                  VALUES(NULL, $notid, '','##user.action##',
-                        '##lang.user.realname## ##lang.user.firstname## 
+                        '##lang.user.realname## ##lang.user.firstname##
 
-##lang.user.information## 
+##lang.user.information##
 
 ##lang.user.link## ##user.passwordforgeturl##',
                         '&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.user.information##&lt;/p&gt;
-&lt;p&gt;##lang.user.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');"; 
+&lt;p&gt;##lang.user.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');";
       $DB->query($query) or die("0.80 add password forget notification translation" . $LANG['update'][90] . $DB->error());
 
       $query="INSERT INTO `glpi_notifications`
@@ -496,22 +496,22 @@ function update078to080($output='HTML') {
 
    if (!isIndex("glpi_computers_softwareversions","unicity")) {
       // clean datas
-      $query="SELECT `computers_id`, `softwareversions_id`, COUNT(*) AS CPT 
-               FROM `glpi_computers_softwareversions` 
-               GROUP BY `computers_id`, `softwareversions_id` 
+      $query="SELECT `computers_id`, `softwareversions_id`, COUNT(*) AS CPT
+               FROM `glpi_computers_softwareversions`
+               GROUP BY `computers_id`, `softwareversions_id`
                HAVING CPT > 1";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $query2="SELECT `id` FROM `glpi_computers_softwareversions`
-                        WHERE `computers_id` = '".$data['computers_id']."' 
+                        WHERE `computers_id` = '".$data['computers_id']."'
                            AND `softwareversions_id` = '".$data['softwareversions_id']."'
                         LIMIT 1";
                if ($result2= $DB->query($query2)) {
                   if ($DB->numrows($result2)) {
                      $keep_id=$DB->result($result2,0,0);
                      $query3="DELETE FROM `glpi_computers_softwareversions`
-                           WHERE `computers_id` = '".$data['computers_id']."' 
+                           WHERE `computers_id` = '".$data['computers_id']."'
                            AND `softwareversions_id` = '".$data['softwareversions_id']."'
                            AND `id` <> $keep_id";
                      $DB->query($query3) or die("0.80 clean glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
@@ -522,7 +522,7 @@ function update078to080($output='HTML') {
       }
       $query="ALTER TABLE `glpi_computers_softwareversions` ADD UNIQUE `unicity` ( `computers_id` , `softwareversions_id` )";
       $DB->query($query) or die("0.80 add unicity index from glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
-   }   
+   }
 
    if (isIndex("glpi_computers_softwareversions","computers_id")) {
       $query="ALTER TABLE `glpi_computers_softwareversions` DROP INDEX `computers_id`";
@@ -547,7 +547,7 @@ function update078to080($output='HTML') {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
-               $query="INSERT INTO `glpi_computers_softwarelicenses` (`computers_id`, `softwarelicenses_id`) 
+               $query="INSERT INTO `glpi_computers_softwarelicenses` (`computers_id`, `softwarelicenses_id`)
                               VALUES  ('".$data['computers_id']."','".$data['id']."')";
                $DB->query($query) or die("0.80 migrate data to computers_softwarelicenses table " . $LANG['update'][90] . $DB->error());
             }
@@ -557,7 +557,7 @@ function update078to080($output='HTML') {
       $query = "ALTER TABLE `glpi_softwarelicenses` DROP `computers_id`";
       $DB->query($query) or die("0.80 drop computers_id field in glpi_softwarelicenses " . $LANG['update'][90] . $DB->error());
    }
-   
+
 
    // TODO : MIgrate data from existig computers_id field of license
    // Drop computers_id field in license
@@ -630,6 +630,30 @@ function update078to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_authldaps','is_active')) {
+      $query = "ALTER TABLE  `glpi_authldaps` ADD  `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'";
+      $DB->query($query) or die("0.80 add is_active in glpi_authldaps". $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_authldaps` set `is_active`='1'";
+      $DB->query($query) or die("0.80 set all ldap servers active". $LANG['update'][90] . $DB->error());
+      $ADDTODISPLAYPREF['AuthLdap']=array(30);
+   }
+
+   if (!FieldExists('glpi_authmails','is_active')) {
+      $query = "ALTER TABLE  `glpi_authmails` ADD  `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'";
+      $DB->query($query) or die("0.80 add is_active in glpi_authmails". $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_authmails` set `is_active`='1'";
+      $DB->query($query) or die("0.80 set all ldap servers active". $LANG['update'][90] . $DB->error());
+      $ADDTODISPLAYPREF['AuthMail']=array(6);
+   }
+
+   if (!FieldExists('glpi_ocsservers','is_active')) {
+      $query = "ALTER TABLE  `glpi_ocsservers` ADD  `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'";
+      $DB->query($query) or die("0.80 add is_active in glpi_ocsservers". $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_ocsservers` set `is_active`='1'";
+      $DB->query($query) or die("0.80 set all ocs servers active". $LANG['update'][90] . $DB->error());
+      $ADDTODISPLAYPREF['OcsServer']=array(6);
+   }
+
    // Drop nl_be langage
    $query="UPDATE `glpi_configs` SET `language`='nl_NL' WHERE `language`='nl_BE';";
    $DB->query($query) or die("0.80 drop nl_be langage" .
@@ -673,7 +697,7 @@ function update078to080($output='HTML') {
          }
       }
    }
-   
+
    if (!FieldExists('glpi_knowbaseitemcategories','entities_id')) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                     ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
