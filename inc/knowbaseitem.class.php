@@ -439,7 +439,6 @@ class KnowbaseItem extends CommonDBTM {
       global $LANG, $CFG_GLPI;
       
       // Default values of parameters
-      $default_values["entities_id"]=$_SESSION['glpiactive_entity'];
       $default_values["knowbaseitemcategories_id"]="0";
       $default_values["contains"]="";
       $default_values["target"] = $_SERVER['PHP_SELF'];
