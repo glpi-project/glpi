@@ -263,7 +263,7 @@ class Budget extends CommonDBTM{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<br><br><div class='center'><table class='tab_cadrehov'>";
+      echo "<br><br><div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
       echo "</th><th colspan='4'>".$LANG['document'][19]."&nbsp;:</th></tr>";
@@ -367,6 +367,9 @@ class Budget extends CommonDBTM{
       }
       echo "<tr class='tab_bg_2'><td class='center'>$num</td><td colspan='5'>&nbsp;</td></tr> ";
       echo "</table></div>";
+      // pour espacement
+      echo "<form></form>";
+
    }
 
    /**
@@ -445,7 +448,7 @@ class Budget extends CommonDBTM{
          $budget->getFromDB($budgets_id);
 
          $colspan=count($found_types)+2;
-         echo "<br><br><div class='center'><table class='tab_cadre'>";
+         echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr>";
          echo "<th colspan='$colspan'>".$LANG['financial'][108]."</th></tr>";
          echo "<tr><th>".$LANG['entity'][0]."</th>";
