@@ -49,6 +49,7 @@ class NotificationTargetCartridge extends NotificationTarget {
 
       $this->datas['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                $options['entities_id']);
+      $this->datas['##cartridge.action##']      = $LANG['mailing'][33];
 
       foreach ($options['cartridges'] as $id => $cartridge) {
          $tmp = array();
