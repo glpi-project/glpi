@@ -36,7 +36,9 @@ if (!defined('GLPI_ROOT')) {
 
 /// OCS config class
 class OcsServer extends CommonDBTM {
-
+   
+   // From CommonDBTM
+   public $dohistory = true;
    // Class constant - still used for import_device field
    // not used const MOBOARD_DEVICE=1;
    const PROCESSOR_DEVICE = 2;
@@ -117,6 +119,7 @@ class OcsServer extends CommonDBTM {
          $tabs[2] = $LANG['ocsconfig'][5];
          $tabs[3] = $LANG['ocsconfig'][27];
          $tabs[4] = $LANG['setup'][620];
+         $tabs[12] = $LANG['title'][38];
       }
       return $tabs;
    }
