@@ -1354,6 +1354,7 @@ class AuthLDAP extends CommonDBTM {
 
    static function getGroupsFromLDAP($ldap_connection, $config_ldap, $filter,
                                      $search_in_groups=true, $groups=array()) {
+      global $DB;
 
       //First look for groups in group objects
       $extra_attribute = ($search_in_groups?"cn":$config_ldap->fields["group_field"]);
@@ -1382,13 +1383,33 @@ class AuthLDAP extends CommonDBTM {
                }
             } else {
                if (isset($infos[$ligne][$extra_attribute])) {
-                  for ($ligne_extra=0 ; $ligne_extra < $infos[$ligne][$extra_attribute]["count"] ;
-                       $ligne_extra++) {
+                  if ($config_ldap->fields["group_field"] =='dn' || in_array('ou',$groups)) {
+                     $dn = $infos[$ligne][$extra_attribute];
+                     $ou = array();
+                     for ($tmp=$dn ; count($tmptab=explode(',',$tmp,2))==2 ; $tmp=$tmptab[1]) {
+                        $ou[] = $tmptab[1];
+                     }
 
-                     $groups[$infos[$ligne][$extra_attribute][$ligne_extra]] =
-                        array("cn"          => AuthLdap::getGroupCNByDn($ldap_connection,
-                                                   $infos[$ligne][$extra_attribute][$ligne_extra]),
-                              "search_type" => "users");
+                     /// Search in DB for group with ldap_group_dn
+                     if ($config_ldap->fields["group_field"]=='dn' && count($ou)>0) {
+                        $query="SELECT `ldap_value` FROM `glpi_groups`
+                              WHERE `ldap_group_dn`
+                                 IN ('".implode("','",addslashes_deep($ou))."')";
+
+                        foreach ($DB->request($query) as $group) {
+                           $groups[$group['ldap_value']] =
+                              array("cn"          => $group['ldap_value'],
+                                    "search_type" => "users");
+                        }
+                     }
+                  } else {
+                     for ($ligne_extra=0 ; $ligne_extra < $infos[$ligne][$extra_attribute]["count"] ;
+                          $ligne_extra++) {
+                        $groups[$infos[$ligne][$extra_attribute][$ligne_extra]] =
+                           array("cn"          => AuthLdap::getGroupCNByDn($ldap_connection,
+                                                      $infos[$ligne][$extra_attribute][$ligne_extra]),
+                                 "search_type" => "users");
+                     }
                   }
                }
             }
