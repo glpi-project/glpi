@@ -118,6 +118,12 @@ class AuthMail extends CommonDBTM {
       $tab[4]['linkfield']     = '';
       $tab[4]['name']          = $LANG['setup'][170];
 
+      $tab[6]['table']     = $this->getTable();
+      $tab[6]['field']     = 'is_active';
+      $tab[6]['linkfield'] = 'is_active';
+      $tab[6]['name']      = $LANG['common'][60];
+      $tab[6]['datatype']  = 'bool';
+
       $tab[19]['table']       = $this->getTable();
       $tab[19]['field']       = 'date_mod';
       $tab[19]['linkfield']   = '';
@@ -164,17 +170,14 @@ class AuthMail extends CommonDBTM {
          $this->showTabs($options);
          $this->showFormHeader($options);
 
-/*         echo "<form action='".$this->getFormURL()."' method='post'>";
-         if (!empty ($ID)) {
-            echo "<input type='hidden' name='id' value='$ID'>";
-         }
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr><th>" . $LANG['login'][3] . "</th><th>";
-         echo ($ID>0?$LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]):'&nbsp;');
-         echo "</th></tr>";*/
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "&nbsp;:</td>";
          echo "<td><input size='30' type='text' name='name' value='" . $this->fields["name"] . "'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" . $LANG['common'][60] . "&nbsp;:</td>";
+         echo "<td colspan='3'>";
+         Dropdown::showYesNo('is_active',$this->fields['is_active']);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][164] . "&nbsp;:</td>";
@@ -191,6 +194,7 @@ class AuthMail extends CommonDBTM {
          }
 
          echo "</td></tr>";
+
 
          $this->showFormButtons($options);
          $this->addDivForTabs();
@@ -305,7 +309,7 @@ class AuthMail extends CommonDBTM {
 
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {
-            if (!$auth->auth_succeded) {
+            if (!$auth->auth_succeded && $mail_method['is_active']) {
                $auth = AuthMail::mailAuth($auth, $login, $password, $mail_method);
             } else {
                break;

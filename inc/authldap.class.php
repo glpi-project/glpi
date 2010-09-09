@@ -202,8 +202,12 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['ldap'][44] . "&nbsp;:</td>";
-         echo "<td colspan='3'>";
+         echo "<td>";
          Dropdown::showYesNo('is_default',$this->fields['is_default']);
+         echo "</td>";
+         echo "<td>" . $LANG['common'][60] . "&nbsp;:</td>";
+         echo "<td>";
+         Dropdown::showYesNo('is_active',$this->fields['is_active']);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
@@ -656,6 +660,12 @@ class AuthLDAP extends CommonDBTM {
       $tab[24]['field']     = 'group_search_type';
       $tab[24]['linkfield'] = '';
       $tab[24]['name']      = $LANG['setup'][254];
+
+      $tab[30]['table']     = $this->getTable();
+      $tab[30]['field']     = 'is_active';
+      $tab[30]['linkfield'] = 'is_active';
+      $tab[30]['name']      = $LANG['common'][60];
+      $tab[30]['datatype']  = 'bool';
 
       return $tab;
    }
@@ -1801,7 +1811,7 @@ class AuthLDAP extends CommonDBTM {
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
          foreach  ($auth->authtypes["ldap"] as $ldap_method) {
-            if (!$auth->auth_succeded) {
+            if (!$auth->auth_succeded && $ldap_method['is_active']) {
                $auth = AuthLdap::ldapAuth($auth, $login, $password, $ldap_method);
             } else {
                break;
@@ -2065,7 +2075,8 @@ class AuthLDAP extends CommonDBTM {
                   echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][4]."</td><td colspan='3'>";
                   Dropdown::show('AuthLdap',
                                  array('name'   => 'ldapservers_id',
-                                       'value'  => $_SESSION['ldap_import']['ldapservers_id']));
+                                       'value'  => $_SESSION['ldap_import']['ldapservers_id'],
+                                       'condition'=>"`is_active`='1'"));
                   echo "&nbsp;<input class='submit' type='submit' name='change_directory'
                         value='".$LANG['ldap'][41]."'>";
                   echo "</td></tr>";

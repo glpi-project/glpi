@@ -66,6 +66,7 @@ CREATE TABLE `glpi_authldaps` (
   `date_mod` datetime DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `is_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_default` (`is_default`)
@@ -82,6 +83,7 @@ CREATE TABLE `glpi_authmails` (
   `host` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -2724,6 +2726,7 @@ CREATE TABLE `glpi_ocsservers` (
   `ocs_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
