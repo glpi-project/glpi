@@ -990,7 +990,8 @@ class Profile extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common']           = $LANG['common'][16];
+
+      $tab['common']           = $LANG['common'][32];
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -998,7 +999,6 @@ class Profile extends CommonDBTM {
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
-
 
       $tab[19]['table']     = $this->getTable();
       $tab[19]['field']     = 'date_mod';
@@ -1022,6 +1022,8 @@ class Profile extends CommonDBTM {
       $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
+
+      $tab['inventory'] = $LANG['Menu'][18];
 
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'computer';
@@ -1083,6 +1085,8 @@ class Profile extends CommonDBTM {
       $tab[29]['linkfield'] = 'notes';
       $tab[29]['datatype'] = 'right';
 
+      $tab['management']           = $LANG['Menu'][26];
+
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'contact_enterprise';
       $tab[30]['name'] = $LANG['common'][92]." / ".$LANG['financial'][26];
@@ -1106,6 +1110,8 @@ class Profile extends CommonDBTM {
       $tab[33]['name'] = $LANG['Menu'][24];
       $tab[33]['linkfield'] = 'infocom';
       $tab[33]['datatype'] = 'right';
+
+      $tab['tools'] = $LANG['Menu'][18];
 
       $tab[34]['table'] = $this->getTable();
       $tab[34]['field'] = 'knowbase';
@@ -1155,6 +1161,8 @@ class Profile extends CommonDBTM {
       $tab[41]['linkfield'] = 'sync_ocsng';
       $tab[41]['datatype'] = 'right';
 
+      $tab['config'] = $LANG['common'][12];
+
       $tab[42]['table'] = $this->getTable();
       $tab[42]['field'] = 'dropdown';
       $tab[42]['name'] = $LANG['setup'][0];
@@ -1191,6 +1199,20 @@ class Profile extends CommonDBTM {
       $tab[47]['linkfield'] = 'config';
       $tab[47]['datatype'] = 'right';
 
+      $tab[52]['table'] = $this->getTable();
+      $tab[52]['field'] = 'search_config';
+      $tab[52]['name'] = $LANG['setup'][250]."(".$LANG['common'][34].")";
+      $tab[52]['linkfield'] = 'search_config';
+      $tab[52]['datatype'] = 'right';
+
+      $tab[53]['table'] = $this->getTable();
+      $tab[53]['field'] = 'search_config_global';
+      $tab[53]['name'] = $LANG['setup'][250];
+      $tab[53]['linkfield'] = 'search_config_global';
+      $tab[53]['datatype'] = 'right';
+
+      $tab['admin'] = $LANG['common'][12];
+
       $tab[48]['table'] = $this->getTable();
       $tab[48]['field'] = 'rule_tracking';
       $tab[48]['name'] = $LANG['rulesengine'][28];
@@ -1215,17 +1237,29 @@ class Profile extends CommonDBTM {
       $tab[51]['linkfield'] = 'rule_softwarecategories';
       $tab[51]['datatype'] = 'right';
 
-      $tab[52]['table'] = $this->getTable();
-      $tab[52]['field'] = 'search_config';
-      $tab[52]['name'] = $LANG['setup'][250]."(".$LANG['common'][34].")";
-      $tab[52]['linkfield'] = 'search_config';
-      $tab[52]['datatype'] = 'right';
+      $tab[90]['table'] = $this->getTable();
+      $tab[90]['field'] = 'rule_dictionnary_software';
+      $tab[90]['name'] = $LANG['rulesengine'][35];
+      $tab[90]['linkfield'] = 'rule_dictionnary_software';
+      $tab[90]['datatype'] = 'right';
 
-      $tab[53]['table'] = $this->getTable();
-      $tab[53]['field'] = 'search_config_global';
-      $tab[53]['name'] = $LANG['setup'][250];
-      $tab[53]['linkfield'] = 'search_config_global';
-      $tab[53]['datatype'] = 'right';
+      $tab[91]['table'] = $this->getTable();
+      $tab[91]['field'] = 'rule_dictionnary_dropdown';
+      $tab[91]['name'] = $LANG['rulesengine'][33];
+      $tab[91]['linkfield'] = 'rule_dictionnary_dropdown';
+      $tab[91]['datatype'] = 'right';
+
+      $tab[92]['table'] = $this->getTable();
+      $tab[92]['field'] = 'rule_ticket';
+      $tab[92]['name'] = $LANG['rulesengine'][28];
+      $tab[92]['linkfield'] = 'rule_ticket';
+      $tab[92]['datatype'] = 'right';
+
+      $tab[93]['table'] = $this->getTable();
+      $tab[93]['field'] = 'entity_rule_ticket';
+      $tab[93]['name'] = $LANG['rulesengine'][28]." (".$LANG['entity'][0].")";
+      $tab[93]['linkfield'] = 'entity_rule_ticket';
+      $tab[93]['datatype'] = 'right';
 
       $tab[54]['table'] = $this->getTable();
       $tab[54]['field'] = 'check_update';
@@ -1281,17 +1315,7 @@ class Profile extends CommonDBTM {
       $tab[62]['linkfield'] = 'backup';
       $tab[62]['datatype'] = 'right';
 
-      $tab[63]['table'] = $this->getTable();
-      $tab[63]['field'] = 'reminder_public';
-      $tab[63]['name'] = $LANG['reminder'][1];
-      $tab[63]['linkfield'] = 'reminder_public';
-      $tab[63]['datatype'] = 'right';
-
-      $tab[64]['table'] = $this->getTable();
-      $tab[64]['field'] = 'bookmark_public';
-      $tab[64]['name'] = $LANG['bookmark'][5];
-      $tab[64]['linkfield'] = 'bookmark_public';
-      $tab[64]['datatype'] = 'right';
+      $tab['ticket'] = $LANG['title'][24];
 
       $tab[65]['table'] = $this->getTable();
       $tab[65]['field'] = 'delete_ticket';
@@ -1389,12 +1413,6 @@ class Profile extends CommonDBTM {
       $tab[85]['linkfield'] = 'statistic';
       $tab[85]['datatype'] = 'right';
 
-      $tab[4]['table'] = $this->getTable();
-      $tab[4]['field'] = 'password_update';
-      $tab[4]['name'] = $LANG['profiles'][24];
-      $tab[4]['linkfield'] = 'password_update';
-      $tab[4]['datatype'] = 'bool';
-
       $tab[86]['table'] = $this->getTable();
       $tab[86]['field'] = 'helpdesk_hardware';
       $tab[86]['name'] = $LANG['setup'][350];
@@ -1416,30 +1434,6 @@ class Profile extends CommonDBTM {
       $tab[89]['name'] = $LANG['profiles'][27];
       $tab[89]['linkfield'] = 'show_group_hardware';
       $tab[89]['datatype'] = 'bool';
-
-      $tab[90]['table'] = $this->getTable();
-      $tab[90]['field'] = 'rule_dictionnary_software';
-      $tab[90]['name'] = $LANG['rulesengine'][35];
-      $tab[90]['linkfield'] = 'rule_dictionnary_software';
-      $tab[90]['datatype'] = 'right';
-
-      $tab[91]['table'] = $this->getTable();
-      $tab[91]['field'] = 'rule_dictionnary_dropdown';
-      $tab[91]['name'] = $LANG['rulesengine'][33];
-      $tab[91]['linkfield'] = 'rule_dictionnary_dropdown';
-      $tab[91]['datatype'] = 'right';
-
-      $tab[92]['table'] = $this->getTable();
-      $tab[92]['field'] = 'rule_ticket';
-      $tab[92]['name'] = $LANG['rulesengine'][28];
-      $tab[92]['linkfield'] = 'rule_ticket';
-      $tab[92]['datatype'] = 'right';
-
-      $tab[93]['table'] = $this->getTable();
-      $tab[93]['field'] = 'entity_rule_ticket';
-      $tab[93]['name'] = $LANG['rulesengine'][28]." (".$LANG['entity'][0].")";
-      $tab[93]['linkfield'] = 'entity_rule_ticket';
-      $tab[93]['datatype'] = 'right';
 
       $tab[94]['table'] = $this->getTable();
       $tab[94]['field'] = 'group_add_followups';
@@ -1483,6 +1477,26 @@ class Profile extends CommonDBTM {
       $tab[100]['linkfield'] = '';
       $tab[100]['nosearch'] = true;
       $tab[100]['shorthistory'] = true;
+
+      $tab['other'] = $LANG['common'][62];
+
+      $tab[63]['table'] = $this->getTable();
+      $tab[63]['field'] = 'reminder_public';
+      $tab[63]['name'] = $LANG['reminder'][1];
+      $tab[63]['linkfield'] = 'reminder_public';
+      $tab[63]['datatype'] = 'right';
+
+      $tab[64]['table'] = $this->getTable();
+      $tab[64]['field'] = 'bookmark_public';
+      $tab[64]['name'] = $LANG['bookmark'][5];
+      $tab[64]['linkfield'] = 'bookmark_public';
+      $tab[64]['datatype'] = 'right';
+
+      $tab[4]['table'] = $this->getTable();
+      $tab[4]['field'] = 'password_update';
+      $tab[4]['name'] = $LANG['profiles'][24];
+      $tab[4]['linkfield'] = 'password_update';
+      $tab[4]['datatype'] = 'bool';
 
       return $tab;
    }
