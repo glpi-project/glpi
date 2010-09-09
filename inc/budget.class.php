@@ -269,7 +269,7 @@ class Budget extends CommonDropdown{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<br><br><div class='center'><table class='tab_cadre_fixehov'>";
+      echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
       echo "</th><th colspan='4'>".$LANG['document'][19]."&nbsp;:</th></tr>";
@@ -383,9 +383,8 @@ class Budget extends CommonDropdown{
          }
       }
       echo "<tr class='tab_bg_2'><td class='center'>$num</td><td colspan='5'>&nbsp;</td></tr> ";
-      echo "</table></div>";
-      // pour espacement
-      echo "<form></form>";   }
+      echo "</table></div><br>";
+   }
 
 
    /**
@@ -464,7 +463,7 @@ class Budget extends CommonDropdown{
          $budget->getFromDB($budgets_id);
 
          $colspan = count($found_types)+2;
-         echo "<br><br><div class='center'><table class='tab_cadre'>";
+         echo "<div class='center'><table class='tab_cadre'>";
          echo "<tr><th colspan='$colspan'>".$LANG['financial'][108]."</th></tr>";
          echo "<tr><th>".$LANG['entity'][0]."</th>";
          if (count($found_types)) {
@@ -504,7 +503,7 @@ class Budget extends CommonDropdown{
             echo "<td class='right' colspan='".($colspan-1)."'>".$LANG['financial'][109]."</td>";
             echo "<td class='right b'>".formatNumber($budget->fields['value'] - $total)."</td></tr>";
          }
-         echo "</table></div>";
+         echo "</table></div><br>";
 
       }
    }
