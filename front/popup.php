@@ -53,56 +53,50 @@ if (isset($_SESSION["glpipopup"]["name"])) {
             echo "</script>";
          }
          include "displaypreference.form.php";
-         popFooter();
          break;
 
       case "test_rule" :
          popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']);
          include "rule.test.php";
-         popFooter();
          break;
 
       case "test_all_rules" :
          popHeader($LANG['rulesengine'][84],$_SERVER['PHP_SELF']);
          include "rulesengine.test.php";
-         popFooter();
          break;
 
       case "show_cache" :
          popHeader($LANG['rulesengine'][100],$_SERVER['PHP_SELF']);
          include "rule.cache.php";
-         popFooter();
          break;
 
       case "load_bookmark" :
          popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
          $_GET["action"] = "load";
          include "bookmark.php";
-         popFooter();
          break;
 
       case "edit_bookmark" :
          popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
          $_GET["action"] = "edit";
          include "bookmark.php";
-         popFooter();
          break;
       case "add_ldapuser" :
          popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
          include "ldap.import.php";
-         popFooter();
          break;
       case "add_ruleparameter" :
          popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
          include strtolower($_GET['sub_type']."Parameter.php");
-         popFooter();
          break;
       case "list_notificationtags" :
          popHeader($LANG['mailing'][138],$_SERVER['PHP_SELF']);
          include "notification.tags.php";
-         popFooter();
          break;
    }
+   echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
+   echo "</div>";
+   popFooter();
 }
 
 ?>
