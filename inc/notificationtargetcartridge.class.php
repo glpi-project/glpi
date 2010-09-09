@@ -49,9 +49,11 @@ class NotificationTargetCartridge extends NotificationTarget {
 
       $this->datas['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                $options['entities_id']);
+      $this->datas['##cartridge.action##']      = $LANG['mailing'][33];
 
       foreach ($options['cartridges'] as $id => $cartridge) {
          $tmp = array();
+
          $tmp['##cartridge.item##']      = $cartridge['cartname'];
          $tmp['##cartridge.reference##'] = $cartridge['cartref'];
          $tmp['##cartridge.remaining##']     = cartridge::getUnusedNumber($id);
@@ -69,7 +71,7 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('cartridge.action'          =>$LANG['mailing'][41],
+      $tags = array('cartridge.action'          =>$LANG['mailing'][33],
                     'cartridge.reference'       =>$LANG['consumables'][2],
                     'cartridge.item'            =>$LANG['financial'][104],
                     'cartridge.remaining'       =>$LANG['software'][20],
