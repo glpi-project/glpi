@@ -485,13 +485,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_softwareversions`.`name` AS version,
                        `glpi_states`.`name` AS state
                FROM `glpi_softwarelicenses`
+               LEFT JOIN `glpi_computers_softwarelicenses`
+                      ON (`glpi_computers_softwarelicenses`.softwarelicenses_id
+                          = `glpi_softwarelicenses`.`id`)
                INNER JOIN `glpi_softwares`
                       ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
                LEFT JOIN `glpi_softwareversions`
                       ON (`glpi_softwarelicenses`.`softwareversions_id_buy`
                           = `glpi_softwareversions`.`id`)
                LEFT JOIN `glpi_states` ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
-               WHERE `glpi_softwarelicenses`.`computers_id` = '$computers_id' ";
+               WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id' ";
       if (count($installed)) {
          $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',',$installed).")";
       }
@@ -741,16 +744,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       // Update affected licenses
-      $lic = new SoftwareLicense();
-      $query = "SELECT `id`
-                FROM `glpi_softwarelicenses`
-                WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
-                      AND `computers_id` = '".$this->fields['computers_id']."'
-                      AND `softwareversions_id_use` = '0'";
-      foreach ($DB->request($query) as $data) {
-         $data['softwareversions_id_use'] = $this->fields['softwareversions_id'];
-         $lic->update($data);
-      }
+//       $lic = new SoftwareLicense();
+//       $query = "SELECT `id`
+//                 FROM `glpi_softwarelicenses`
+//                 WHERE `softwares_id` = '".$vers->fields['softwares_id']."'
+//                       AND `computers_id` = '".$this->fields['computers_id']."'
+//                       AND `softwareversions_id_use` = '0'";
+//       foreach ($DB->request($query) as $data) {
+//          $data['softwareversions_id_use'] = $this->fields['softwareversions_id'];
+//          $lic->update($data);
+//       }
 
       if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
