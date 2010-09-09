@@ -1243,6 +1243,12 @@ class Profile extends CommonDBTM {
       $tab[53]['linkfield'] = 'search_config_global';
       $tab[53]['datatype']  = 'right';
 
+      $tab[107]['table']     = $this->getTable();
+      $tab[107]['field']     = 'calendar';
+      $tab[107]['name']      = $LANG['Menu'][42];
+      $tab[107]['linkfield'] = 'calendar';
+      $tab[107]['datatype']  = 'right';
+
       $tab['admin'] = $LANG['Menu'][15];
 
       $tab[48]['table']     = $this->getTable();
