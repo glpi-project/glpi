@@ -1540,6 +1540,12 @@ class Ticket extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
+      $tab[45]['table']     = $this->getTable();
+      $tab[45]['field']     = 'realtime';
+      $tab[45]['linkfield'] = 'realtime';
+      $tab[45]['name']      = $LANG['job'][20];
+      $tab[45]['datatype']  = 'realtime';
+
       $tab['validation'] = $LANG['validation'][0];
 
       $tab[52]['table']      = 'glpi_tickets';
