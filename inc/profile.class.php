@@ -1226,9 +1226,9 @@ class Profile extends CommonDBTM {
       $tab['admin'] = $LANG['Menu'][15];
 
       $tab[48]['table'] = $this->getTable();
-      $tab[48]['field'] = 'rule_tracking';
+      $tab[48]['field'] = 'rule_ticket';
       $tab[48]['name'] = $LANG['rulesengine'][28];
-      $tab[48]['linkfield'] = 'rule_tracking';
+      $tab[48]['linkfield'] = 'rule_ticket';
       $tab[48]['datatype'] = 'right';
 
       $tab[105]['table']     = $this->getTable();
@@ -1244,9 +1244,9 @@ class Profile extends CommonDBTM {
       $tab[49]['datatype'] = 'right';
 
       $tab[50]['table'] = $this->getTable();
-      $tab[50]['field'] = 'rule_right';
+      $tab[50]['field'] = 'rule_ldap';
       $tab[50]['name'] = $LANG['rulesengine'][19];
-      $tab[50]['linkfield'] = 'rule_right';
+      $tab[50]['linkfield'] = 'rule_ldap';
       $tab[50]['datatype'] = 'right';
 
       $tab[51]['table'] = $this->getTable();
@@ -1266,12 +1266,6 @@ class Profile extends CommonDBTM {
       $tab[91]['name'] = $LANG['rulesengine'][33];
       $tab[91]['linkfield'] = 'rule_dictionnary_dropdown';
       $tab[91]['datatype'] = 'right';
-
-      $tab[92]['table'] = $this->getTable();
-      $tab[92]['field'] = 'rule_ticket';
-      $tab[92]['name'] = $LANG['rulesengine'][28];
-      $tab[92]['linkfield'] = 'rule_ticket';
-      $tab[92]['datatype'] = 'right';
 
       $tab[93]['table'] = $this->getTable();
       $tab[93]['field'] = 'entity_rule_ticket';
@@ -1365,12 +1359,6 @@ class Profile extends CommonDBTM {
       $tab[67]['linkfield'] = 'comment_all_ticket';
       $tab[67]['datatype'] = 'bool';
 
-      $tab[103]['table'] = $this->getTable();
-      $tab[103]['field'] = 'update_followups';
-      $tab[103]['name'] = $LANG['profiles'][35];
-      $tab[103]['linkfield'] = 'update_followups';
-      $tab[103]['datatype'] = 'bool';
-
       $tab[68]['table'] = $this->getTable();
       $tab[68]['field'] = 'update_ticket';
       $tab[68]['name'] = $LANG['profiles'][18];
@@ -1420,9 +1408,9 @@ class Profile extends CommonDBTM {
       $tab[75]['datatype'] = 'bool';
 
       $tab[76]['table'] = $this->getTable();
-      $tab[76]['field'] = 'update_followup';
-      $tab[76]['name'] = $LANG['profiles'][9];
-      $tab[76]['linkfield'] = 'update_followup';
+      $tab[76]['field'] = 'update_followups';
+      $tab[76]['name'] = $LANG['profiles'][35];
+      $tab[76]['linkfield'] = 'update_followups';
       $tab[76]['datatype'] = 'bool';
 
       $tab[77]['table'] = $this->getTable();
@@ -1447,7 +1435,7 @@ class Profile extends CommonDBTM {
       $tab[85]['field'] = 'statistic';
       $tab[85]['name'] = $LANG['Menu'][13];
       $tab[85]['linkfield'] = 'statistic';
-      $tab[85]['datatype'] = 'right';
+      $tab[85]['datatype'] = 'bool';
 
       $tab[86]['table'] = $this->getTable();
       $tab[86]['field'] = 'helpdesk_hardware';
@@ -1455,9 +1443,9 @@ class Profile extends CommonDBTM {
       $tab[86]['linkfield'] = 'helpdesk_hardware';
 
       $tab[87]['table'] = $this->getTable();
-      $tab[87]['field'] = 'helpdesk_hardware_type';
+      $tab[87]['field'] = 'helpdesk_item_type';
       $tab[87]['name'] = $LANG['setup'][352];
-      $tab[87]['linkfield'] = 'helpdesk_hardware_type';
+      $tab[87]['linkfield'] = 'helpdesk_item_type';
 
       $tab[88]['table'] = $this->getTable();
       $tab[88]['field'] = 'show_group_ticket';
