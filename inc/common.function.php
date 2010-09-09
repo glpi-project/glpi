@@ -827,6 +827,16 @@ function unclean_cross_side_scripting_deep($value) {
 }
 
 /**
+ * Get ldap query results and clean them at the same time
+ * @param link the directory connection
+ * @param result the query results
+ * @return an array which contains ldap query results
+ */
+function ldap_get_entries_clean($link, $result) {
+   return clean_cross_side_scripting_deep(ldap_get_entries($link, $result));
+}
+
+/**
  * Recursivly execute nl2br on an Array
  *
  * @param $value string or array

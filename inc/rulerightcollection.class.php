@@ -192,7 +192,7 @@ class RuleRightCollection extends RuleCollection {
 
          //Get all the datas we need from ldap to process the rules
          $sz = @ ldap_read($params["connection"], $params["userdn"], "objectClass=*", $rule_fields);
-         $rule_input = ldap_get_entries($params["connection"], $sz);
+         $rule_input = ldap_get_entries_clean($params["connection"], $sz);
 
          if (count($rule_input)) {
             if (isset($input)) {

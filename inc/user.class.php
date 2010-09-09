@@ -689,7 +689,7 @@ class User extends CommonDBTM {
 
          // If the groups must be retrieve from the ldap user object
          $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
-         $v = ldap_get_entries($ldap_connection, $sr);
+         $v = ldap_get_entries_clean($ldap_connection, $sr);
 
          for ($i=0 ; $i<count($v['count']) ; $i++) {
             //Try to find is DN in present and needed: if yes, then extract only the OU from it
@@ -817,7 +817,7 @@ class User extends CommonDBTM {
          $f = array_values($fields);
 
          $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
-         $v = ldap_get_entries($ldap_connection, $sr);
+         $v = ldap_get_entries_clean($ldap_connection, $sr);
 
          if (!is_array($v) || count($v) == 0 || empty($v[0][$fields['name']][0])) {
             return false;
@@ -946,7 +946,7 @@ class User extends CommonDBTM {
       $sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
       //Get the result of the search as an array
-      $info = ldap_get_entries($ds, $sr);
+      $info = ldap_get_entries_clean($ds, $sr);
       //Browse all the groups
       for ($i = 0 ; $i < count($info) ; $i++) {
          //Get the cn of the group and add it to the list of groups
