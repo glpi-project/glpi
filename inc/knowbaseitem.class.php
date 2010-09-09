@@ -435,9 +435,23 @@ class KnowbaseItem extends CommonDBTM {
     *
     * @return nothing (display the form)
     **/
-   static function searchForm($target, $contains, $knowbaseitemcategories_id=0, $faq=0) {
+   static function searchForm($params, $faq=0) {
       global $LANG, $CFG_GLPI;
-
+      
+      // Default values of parameters
+      $default_values["entities_id"]=$_SESSION['glpiactive_entity'];
+      $default_values["knowbaseitemcategories_id"]="0";
+      $default_values["contains"]="";
+      $default_values["target"] = $_SERVER['PHP_SELF'];
+      
+      foreach ($default_values as $key => $val) {
+         if (isset($params[$key])) {
+            $$key=$params[$key];
+         } else {
+            $$key=$default_values[$key];
+         }
+      }
+      
       if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) {
          return false;
       }
@@ -475,9 +489,23 @@ class KnowbaseItem extends CommonDBTM {
    * @param $knowbaseitemcategories_id category ID
    * @param $faq display on faq ?
    **/
-   static function showList($target, $contains, $start, $knowbaseitemcategories_id, $faq=0) {
+   static function showList($params, $faq=0) {
       global $DB, $LANG;
-
+      
+      // Default values of parameters
+      $default_values["start"]="0";
+      $default_values["knowbaseitemcategories_id"]="0";
+      $default_values["contains"]="";
+      $default_values["target"] = $_SERVER['PHP_SELF'];
+      
+      foreach ($default_values as $key => $val) {
+         if (isset($params[$key])) {
+            $$key=$params[$key];
+         } else {
+            $$key=$default_values[$key];
+         }
+      }
+      
       // Lists kb Items
       $where = "";
       $order = "";
