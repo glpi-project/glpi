@@ -227,7 +227,7 @@ class TicketTask  extends CommonDBTM {
             }
             unset($this->input["_plan"]);
          }
-      
+
       }
       if ($update_done) {
          // Add log entry in the ticket
@@ -245,7 +245,7 @@ class TicketTask  extends CommonDBTM {
 
       manageBeginAndEndPlanDates($input['plan']);
 
-      $input["_isadmin"] = haveRight("global_add_tasks","1");
+//      $input["_isadmin"] = haveRight("global_add_tasks","1");
       $input["_job"] = new Ticket;
 
       if ($input["_job"]->getFromDB($input["tickets_id"])) {
@@ -267,7 +267,7 @@ class TicketTask  extends CommonDBTM {
       if (!isset($input["type"])) {
          $input["type"] = "followup";
       }
-      $input["_type"] = $input["type"];
+//      $input["_type"] = $input["type"];
       unset($input["type"]);
       $input['_close'] = 0;
       unset($input["add"]);
@@ -275,7 +275,7 @@ class TicketTask  extends CommonDBTM {
       if (!isset($input["users_id"]) && $uid=getLoginUserID()) {
          $input["users_id"] = $uid;
       }
-      if ($input["_isadmin"] && $input["_type"]!="update") {
+//      if ($input["_isadmin"] && $input["_type"]!="update") {
          if (isset($input['plan'])) {
             $input['_plan'] = $input['plan'];
             unset($input['plan']);
@@ -297,7 +297,7 @@ class TicketTask  extends CommonDBTM {
          if ($input["hour"]>0 || $input["minute"]>0) {
             $input["realtime"] = $input["hour"]+$input["minute"]/60;
          }
-      }
+//      }
       unset($input["minute"]);
       unset($input["hour"]);
       $input["date"] = $_SESSION["glpi_currenttime"];
@@ -315,7 +315,7 @@ class TicketTask  extends CommonDBTM {
          $this->input["_job"]->updateRealTime($this->input["tickets_id"]);
       }
 
-      if ($this->input["_isadmin"] && $this->input["_type"]!="update") {
+//      if ($this->input["_isadmin"] && $this->input["_type"]!="update") {
          if (isset($this->input["_plan"])) {
             $this->input["_plan"]['tickettasks_id'] = $this->fields['id'];
             $this->input["_plan"]['tickets_id'] = $this->input['tickets_id'];
@@ -326,7 +326,7 @@ class TicketTask  extends CommonDBTM {
                return false;
             }
          }
-
+/*
          // TODO add + close from solution tab, not from followup
          if ($this->input["_close"] && $this->input["_type"]!="update"
                                     && $this->input["_type"]!="finish") {
@@ -354,7 +354,7 @@ class TicketTask  extends CommonDBTM {
          }
          $this->input["_job"]->updateInDB($updates);
       }
-
+*/
       if ($CFG_GLPI["use_mailing"]) {
          if ($this->input["_close"]) {
             $this->input["_type"] = "finish";
