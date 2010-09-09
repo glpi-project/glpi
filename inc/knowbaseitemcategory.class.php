@@ -84,7 +84,6 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       // Default values of parameters
       $default_values["start"]="0";
       $default_values["knowbaseitemcategories_id"]="0";
-      $default_values["entities_id"]=$_SESSION['glpiactive_entity'];
       $default_values["target"] = $_SERVER['PHP_SELF'];
       
       foreach ($default_values as $key => $val) {
