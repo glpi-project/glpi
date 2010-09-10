@@ -635,7 +635,7 @@ class Document extends CommonDBTM {
       echo "<form method='post' name='document_form$rand' id='document_form$rand' action=\"".
              $CFG_GLPI["root_doc"]."/front/document.form.php\">";
 
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG['document'][19]."&nbsp;:</th></tr><tr>";
       if ($canedit) {
          echo "<th>&nbsp;</th>";
@@ -750,15 +750,15 @@ class Document extends CommonDBTM {
          echo "<input type='submit' name='adddocumentitem' value=\"".
                 $LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
-         echo "</table></div>" ;
+         echo "</table>";
 
          openArrowMassive("document_form$rand", true);
          closeArrowMassive('deletedocumentitem', $LANG['buttons'][6]);
 
       } else {
-         echo "</table></div>";
+         echo "</table>";
       }
-      echo "</form>";
+      echo "</div></form>";
 
    }
 
@@ -1202,7 +1202,7 @@ class Document extends CommonDBTM {
             echo "</tr>";
          }
       }
-      echo "</table></div></form>";
+      echo "</table></form></div>";
    }
 
    /**
