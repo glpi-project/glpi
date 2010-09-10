@@ -3812,10 +3812,9 @@ class Search {
             case "date_delay" :
                $split = explode('$$$$', $data[$NAME.$num]);
                $out   = '';
-
                foreach($split as $val) {
                   if (strpos($val,',')) {
-                     list($dat,$dur) = explode(', ', $val);
+                     list($dat,$dur) = explode(',', $val);
                      if (!empty($dat)) {
                         $out .= (empty($out)?'':'<br>').getWarrantyExpir($dat, $dur);
                      }
