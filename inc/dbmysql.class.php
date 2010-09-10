@@ -381,22 +381,34 @@ class DBmysql {
       if (!$DBf_handle) {
          return false;
       }
-      $sql_query = fread($DBf_handle, filesize($path));
-      fclose($DBf_handle);
 
-      $result = true;
-      foreach ( explode(";\n", "$sql_query") as $sql_line) {
-         if (get_magic_quotes_runtime()) {
-            $sql_line=stripslashes_deep($sql_line);
-         }
-         $sql_line = trim($sql_line);
-         if (!empty($sql_line)) {
-            if (!$this->query($sql_line)) {
-               $result = false;
+      $formattedQuery = "";
+      $lastresult=false;
+      while (!feof($DBf_handle)) {
+         // specify read length to be able to read long lines
+         $buffer = fgets($DBf_handle,102400);
+   
+         // do not strip comments due to problems when # in begin of a data line
+         $formattedQuery .= $buffer;
+         if (substr(rtrim($formattedQuery),-1) == ";") {
+
+            if (get_magic_quotes_runtime()) {
+               $formattedQuerytorun = stripslashes($formattedQuery);
+            } else {
+               $formattedQuerytorun = $formattedQuery;
+            }
+
+            // Do not use the $DB->query
+            if ($this->query($formattedQuerytorun)) { //if no success continue to concatenate
+               $formattedQuery = "";
+               $lastresult=true;
+            } else {
+               $lastresult=false;
             }
          }
       }
-      return $result;
+
+      return $lastresult;
    }
 
    /**
