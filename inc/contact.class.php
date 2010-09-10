@@ -345,7 +345,7 @@ class Contact extends CommonDBTM{
       $i = 0;
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
-      echo "<br><br><div class='spaced'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>".$LANG['financial'][65]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['financial'][26]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -392,18 +392,19 @@ class Contact extends CommonDBTM{
       }
       if ($canedit) {
          if ($this->fields["is_recursive"]) {
-            $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",
-                                              $this->fields["entities_id"]));
+            $nb = countElementsInTableForEntity("glpi_suppliers",
+                                                getSonsOf("glpi_entities",
+                                                          $this->fields["entities_id"]));
          } else {
-            $nb=countElementsInTableForEntity("glpi_suppliers",$this->fields["entities_id"]);
+            $nb = countElementsInTableForEntity("glpi_suppliers", $this->fields["entities_id"]);
          }
          if ($nb>count($used)) {
             echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
             Dropdown::show('Supplier',
-                     array('used'         => $used,
-                           'entity'       => $this->fields["entities_id"],
-                           'entity_sons'  => $this->fields["is_recursive"]));
+                            array('used'        => $used,
+                                  'entity'      => $this->fields["entities_id"],
+                                  'entity_sons' => $this->fields["is_recursive"]));
 
             echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value=\"".
                                $LANG['buttons'][8]."\" class='submit'>";
