@@ -584,7 +584,7 @@ class Contract extends CommonDBTM {
       $i = 0;
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['financial'][65]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['financial'][26]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -682,7 +682,7 @@ class Contract extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
       echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
@@ -691,7 +691,7 @@ class Contract extends CommonDBTM {
 
          echo "<form method='post' name='contract_form$rand' id='contract_form$rand' action=\"".
                 $CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-         echo "<div class='center'>";
+         echo "<div class='spaced'>";
          echo "<table class='tab_cadre_fixe'>";
          // massive action checkbox
          echo "<tr><th>&nbsp;</th>";
@@ -803,16 +803,16 @@ class Contract extends CommonDBTM {
             echo "<input type='submit' name='additem' value='".$LANG['buttons'][8]."' class='submit'>";
             echo "</td><td>&nbsp;</td></tr>";
          }
-         echo "</table></div>";
+         echo "</table>";
 
          openArrowMassive("contract_form$rand", true);
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
          closeArrowMassive('deleteitem', $LANG['buttons'][6]);
 
       } else {
-         echo "</table></div>";
+         echo "</table>";
       }
-      echo "</form>";
+      echo "</div></form>";
    }
 
 
