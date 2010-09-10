@@ -296,28 +296,6 @@ function addTracking($type,$ID,$ID_entity){
 function generateGlobalDropdowns(){
 	global $MAX,$DB;
 
-//	$FIRST["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories")+1;
-	for ($i=0;$i<max(1,pow($MAX['kbcategories'],1/3));$i++){
-		$query="INSERT INTO glpi_knowbaseitemcategories VALUES (NULL,'0','categorie $i','','comment categorie $i','1')";
-		$DB->query($query) or die("PB REQUETE ".$query);
-		$newID=$DB->insert_id();
-		for ($j=0;$j<mt_rand(0,pow($MAX['kbcategories'],1/2));$j++){
-			$query="INSERT INTO glpi_knowbaseitemcategories VALUES (NULL,'$newID','s-categorie $j','','comment s-categorie $j','2')";
-			$DB->query($query) or die("PB REQUETE ".$query);
-			$newID2=$DB->insert_id();
-			for ($k=0;$k<mt_rand(0,pow($MAX['kbcategories'],1/2));$k++){
-				$query="INSERT INTO glpi_knowbaseitemcategories VALUES (NULL,'$newID2','ss-categorie $k','','comment ss-categorie $k','3')";
-				$DB->query($query) or die("PB REQUETE ".$query);
-			}
-		}
-	}
-
-	$query = "OPTIMIZE TABLE  glpi_knowbaseitemcategories;";
-	$DB->query($query) or die("PB REQUETE ".$query);
-
-
-	// glpi_knowbaseitems
-	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories");
 
 	$items=array("CD","CD-RW","DVD-R","DVD+R","DVD-RW","DVD+RW","ramette papier","disquette","ZIP");
 	for ($i=0;$i<$MAX['consumable_type'];$i++){
@@ -806,6 +784,29 @@ function generate_entity($ID_entity){
 	$LAST["users_postonly"]=getMaxItem("glpi_users");
 
 
+
+	$FIRST["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories")+1;
+	for ($i=0;$i<max(1,pow($MAX['kbcategories'],1/3));$i++){
+		$query="INSERT INTO glpi_knowbaseitemcategories VALUES (NULL,'$ID_entity','1','0','entity categorie $i','','comment categorie $i','1')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+		$newID=$DB->insert_id();
+		for ($j=0;$j<mt_rand(0,pow($MAX['kbcategories'],1/2));$j++){
+			$query="INSERT INTO glpi_knowbaseitemcategories VALUES (NULL,'$ID_entity','1','$newID','s-categorie $j','','comment s-categorie $j','2')";
+			$DB->query($query) or die("PB REQUETE ".$query);
+			$newID2=$DB->insert_id();
+			for ($k=0;$k<mt_rand(0,pow($MAX['kbcategories'],1/2));$k++){
+				$query="INSERT INTO glpi_knowbaseitemcategories VALUES (NULL,'$ID_entity','1','$newID2','ss-categorie $k','','comment ss-categorie $k','3')";
+				$DB->query($query) or die("PB REQUETE ".$query);
+			}
+		}
+	}
+
+	$query = "OPTIMIZE TABLE  glpi_knowbaseitemcategories;";
+	$DB->query($query) or die("PB REQUETE ".$query);
+
+	regenerateTreeCompleteName("glpi_knowbaseitemcategories");
+	$LAST["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories");
+
 	// LOCATIONS
 	$added=0;
 	$FIRST["locations"]=getMaxItem("glpi_locations")+1;
@@ -881,13 +882,10 @@ function generate_entity($ID_entity){
 
 	regenerateTreeCompleteName("glpi_ticketcategories");
 
-	// glpi_knowbaseitems
-	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemcategories");
-
 	// Add Specific questions
 	$k=0;
 	$FIRST["kbitems"]=getMaxItem("glpi_knowbaseitems")+1;
-	for ($i=1;$i<=$MAX['kbcategories'];$i++){
+	for ($i=$FIRST['kbcategories'];$i<=$LAST['kbcategories'];$i++){
 		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
 		for ($j=0;$j<$nb;$j++){
 			$k++;
@@ -896,7 +894,7 @@ function generate_entity($ID_entity){
 		}
 	}
 	// Add global questions
-	for ($i=1;$i<=$MAX['kbcategories']/2;$i++){
+	for ($i=$FIRST['kbcategories'];$i<=$LAST['kbcategories'];$i++){
 		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
 		for ($j=0;$j<$nb;$j++){
 			$k++;
