@@ -321,8 +321,9 @@ class Link extends CommonDBTM {
 
       $result=$DB->query($query);
 
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+
       if ($DB->numrows($result)>0) {
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['title'][33]."</th></tr>";
          while ($data=$DB->fetch_assoc($result)) {
             $name=$data["name"];
@@ -360,13 +361,13 @@ class Link extends CommonDBTM {
                }
             }
          }
-         echo "</table></div>";
       } else {
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th>".$LANG['title'][33]."</th></tr>";
-         echo "<tr class='tab_bg_2'><td align='center'><strong>".$LANG['links'][7]."</strong></td></tr>";
-         echo "</table></div>";
+         echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['links'][7]."</td></tr>";
       }
+
+      echo "</table></div>";
+
    }
 }
 

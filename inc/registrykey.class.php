@@ -86,8 +86,9 @@ class RegistryKey extends CommonDBTM {
                WHERE `computers_id` = '$ID'";
 
       if ($result = $DB->query($query)) {
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+
          if ($DB->numrows($result)!=0) {
-            echo "<div class='center'><table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='4'>";
             echo $DB->numrows($result)." ".$LANG['registry'][4];
             echo "</th></tr>\n";
@@ -107,13 +108,12 @@ class RegistryKey extends CommonDBTM {
                echo "<td>".$data["value"]."</td>";
                echo "</tr>";
             }
-            echo "</table></div>\n\n";
          } else {
-            echo "<div class='center'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th>".$LANG['ocsconfig'][41]."</th></tr>";
-            echo "<tr class='tab_bg_2'><td align='center'><strong>".$LANG['registry'][5]."</strong></td></tr>";
-            echo "</table></div>";
+            echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['registry'][5]."</td></tr>";
          }
+
+         echo "</table></div>\n\n";
       }
    }
 

@@ -828,7 +828,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  * Get all replicate servers for a master one
  *
  * @param $master_id : master ldap server ID
- * 
+ *
  * @return array of the replicate servers
 **/
 function getAllReplicateForAMaster($master_id) {
@@ -855,7 +855,7 @@ function getAllReplicateForAMaster($master_id) {
  * Get all replicate name servers for a master one
  *
  * @param $master_id : master ldap server ID
- * 
+ *
  * @return string containing names of the replicate servers
 **/
 function getAllReplicatesNamesForAMaster($master_id) {
