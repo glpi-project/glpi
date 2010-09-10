@@ -3120,7 +3120,7 @@ class Ticket extends CommonDBTM {
                   echo $item->getTypeName()." ".$item->getNameID();
                }
             }
-         } 
+         }
          self::dropdownMyDevices($this->fields["users_id"],$this->fields["entities_id"],
                                     $this->fields["itemtype"], $this->fields["items_id"]);
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
@@ -3951,6 +3951,8 @@ class Ticket extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+
       if ($number > 0) {
          $ent  =new Supplier();
          $ent->getFromDB($entID);
@@ -3964,7 +3966,6 @@ class Ticket extends CommonDBTM {
 
          $options['reset'] = 'reset';
 
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$number." ".$LANG['job'][8]."&nbsp;:&nbsp;";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."'>".
                $LANG['buttons'][40]."</a>";
@@ -3977,13 +3978,12 @@ class Ticket extends CommonDBTM {
             self::showShort($data, 0);
          }
          echo "</table></div>";
+
       } else {
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
-         echo "</table>";
-         echo "</div><br>";
       }
+      echo "</table></div>";
+
    }
 
 
