@@ -1768,7 +1768,7 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
   `comment` text COLLATE utf8_unicode_ci,
   `level` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`knowbaseitemcategories_id`,`name`),
+  UNIQUE KEY `unicity` (`entities_id`,`knowbaseitemcategories_id`,`name`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
