@@ -51,7 +51,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'fr_FR' => array('Français',             'fr_FR.php','fr',    'fr','french'),
             'gl_ES' => array('Galego',               'gl_ES.php','es',    'gl','galician'),
             'el_EL' => array('Ελληνικά',             'el_EL.php','el_GR', 'el','greek'),
-            'he_HE' => array('עברית',                                   'he_HE.php','he',    'he','hebrew'),
+            'he_HE' => array('עברית',                'he_HE.php','he',    'he','hebrew'),
             'hr_HR' => array('Hrvatski',             'hr_HR.php','hr',    'hr','croatian'),
             'hu_HU' => array('Magyar',               'hu_HU.php','hu',    'hu','hungarian'),
             'it_IT' => array('Italiano',             'it_IT.php','it',    'it','italian'),
@@ -69,7 +69,8 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'tr_TR' => array('Türkçe',               'tr_TR.php','tr',    'tr','turkish'),
             'ua_UA' => array('Українська',           'ua_UA.php','ukr',   'en','ukrainian'),
             'ja_JP' => array('日本語',                'ja_JP.php','ja',    'ja','japanese'),
-            'zh_CN' => array('中文',                  'zh_CN.php','en',    'zh','chinese'));
+            'zh_CN' => array('中文',                  'zh_CN.php','zh_CN', 'zh','chinese'),
+            'zh_TW' => array('漢字',                  'zh_TW.php','zh_TW', 'zh','chinese'),);
 
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables']=array();
