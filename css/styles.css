@@ -597,8 +597,11 @@ margin-left:8px;}
 
 .spaced {
    margin-bottom: 15px;
-   }
+}
 
+.firstbloc {
+   margin-bottom: 5px;
+}
 
 /* ################--------------- Calendrier  / reservation ---------------#################### */
 

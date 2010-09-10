@@ -171,15 +171,15 @@ class Supplier extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle'>".$LANG['financial'][44]."&nbsp;:</td>";
-      echo "<td class='middle'><textarea cols='45' rows='3' name='address'>".
+      echo "<td class='middle'><textarea cols='37' rows='3' name='address'>".
              $this->fields["address"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"postcode",array('size'=>10));
+      autocompletionTextField($this,"postcode", array('size' => 10));
       echo "&nbsp;&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField($this,"town",array('size'=>25));
+      autocompletionTextField($this,"town", array('size' => 23));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -359,7 +359,7 @@ class Supplier extends CommonDBTM {
       $number = $DB->numrows($result);
       $i = 0;
 
-      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='9'>".$LANG['financial'][46]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -408,35 +408,38 @@ class Supplier extends CommonDBTM {
          }
       }
 
-      echo "</table><br>"    ;
+      echo "</table></div>";
+
       if ($canedit) {
          if ($this->fields["is_recursive"]) {
-            $nb=countElementsInTableForEntity("glpi_contacts",
-                  getSonsOf("glpi_entities",$this->fields["entities_id"]));
+            $nb = countElementsInTableForEntity("glpi_contacts",
+                                                getSonsOf("glpi_entities",
+                                                          $this->fields["entities_id"]));
          } else {
-            $nb=countElementsInTableForEntity("glpi_contacts",$this->fields["entities_id"]);
+            $nb = countElementsInTableForEntity("glpi_contacts", $this->fields["entities_id"]);
          }
          if ($nb>count($used)) {
+            echo "<div class='spaced'>";
             echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
-            echo "<table  class='tab_cadre_fixe'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='suppliers_id' value='$instID'>";
 
             Dropdown::show('Contact',
-                     array('used'         => $used,
-                           'entity'       => $this->fields["entities_id"],
-                           'entity_sons'  => $this->fields["is_recursive"]));
+                           array('used'        => $used,
+                                 'entity'      => $this->fields["entities_id"],
+                                 'entity_sons' => $this->fields["is_recursive"]));
 
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addcontactsupplier' value=\"".
-                   $LANG['buttons'][8]."\" class='submit'>";
+            echo "<input type='submit' name='addcontactsupplier' value='".$LANG['buttons'][8]."'
+                   class='submit'>";
             echo "</td></tr>";
          }
-         echo "</table></form>";
+         echo "</table></form></div>";
       }
-      echo "</div>";
    }
+
 
    /**
     * Print the HTML array for infocoms linked
@@ -461,7 +464,7 @@ class Supplier extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
       echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
@@ -482,10 +485,10 @@ class Supplier extends CommonDBTM {
          $item = new $itemtype();
 
          if ($item->canView()) {
-
-            $linktype = $itemtype;
+            $linktype  = $itemtype;
             $linkfield = 'id';
-            $itemtable=getTableForItemType($itemtype);
+            $itemtable = getTableForItemType($itemtype);
+
             $query = "SELECT `glpi_infocoms`.`entities_id`,`name`,`$itemtable`.*
                       FROM `glpi_infocoms`
                       INNER JOIN `$itemtable`
@@ -495,27 +498,32 @@ class Supplier extends CommonDBTM {
             if ($itemtype == 'Cartridge') {
                $query .= "INNER JOIN `glpi_cartridgeitems`
                                ON (`glpi_cartridgeitems`.`id`=`glpi_cartridges`.`cartridgeitems_id`) ";
-               $linktype = 'CartridgeItem';
+
+               $linktype  = 'CartridgeItem';
                $linkfield = 'cartridgeitems_id';
             }
+
             if ($itemtype == 'Consumable' ) {
                $query .= "INNER JOIN `glpi_consumableitems`
                                ON (`glpi_consumableitems`.`id`=`glpi_consumables`.`consumableitems_id`) ";
+
                $linktype = 'ConsumableItem';
                $linkfield = 'consumableitems_id';
             }
-            $linktable=getTableForItemType($linktype);
+
+            $linktable = getTableForItemType($linktype);
+
             $query .= "WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                              AND `glpi_infocoms`.`suppliers_id` = '$instID' ".
                              getEntitiesRestrictRequest(" AND",$linktable) ."
                        ORDER BY `glpi_infocoms`.`entities_id`, `$linktable`.`name`";
 
             $result_linked=$DB->query($query);
-            $nb=$DB->numrows($result_linked);
+            $nb = $DB->numrows($result_linked);
 
             // Set $linktype for link to search engine pnly
             if ($itemtype == 'SoftwareLicense' && $nb>$_SESSION['glpilist_limit']) {
-               $linktype = 'Software';
+               $linktype  = 'Software';
                $linkfield = 'softwares_id';
             }
             if ($nb>$_SESSION['glpilist_limit']) {
@@ -528,22 +536,23 @@ class Supplier extends CommonDBTM {
                       $LANG['reports'][57]."</a></td>";
 
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
+
             } else if ($nb) {
-               for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false) {
-                  $ID="";
+               for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+                  $ID = "";
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                     $ID= " (".$data["id"].")";
+                     $ID = " (".$data["id"].")";
                   }
-                  $link=getItemTypeFormURL($linktype);
-                  $name= "<a href=\"".$link."?id=".
-                           $data[$linkfield]."\">".$data["name"]."$ID</a>";
+                  $link = getItemTypeFormURL($linktype);
+                  $name = "<a href=\"".$link."?id=".$data[$linkfield]."\">".$data["name"]."$ID</a>";
 
                   echo "<tr class='tab_bg_1'>";
                   if ($prem) {
                      echo "<td class='center top' rowspan='$nb'>".$item->getTypeName()
                             .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                   }
-                  echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entities_id"])."</td>";
+                  echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                       $data["entities_id"])."</td>";
                   echo "<td class='center";
                   echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                   echo ">".$name."</td>";
@@ -554,14 +563,15 @@ class Supplier extends CommonDBTM {
                   echo "</tr>";
                }
             }
-            $num+=$nb;
+            $num += $nb;
          }
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>".($num>0? $LANG['common'][33]."&nbsp;=&nbsp;$num</td>" : "&nbsp;</td>");
+      echo "<td class='center'>".($num>0? $LANG['common'][33]."&nbsp;=&nbsp;$num" : "&nbsp;")."</td>";
       echo "<td colspan='4'>&nbsp;</td></tr> ";
-      echo "</table></div>"    ;
+      echo "</table></div>";
    }
+
 
    /**
     * Print an HTML array with contracts associated to the enterprise
@@ -592,7 +602,7 @@ class Supplier extends CommonDBTM {
       $i = 0;
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>".$LANG['financial'][66]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
