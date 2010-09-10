@@ -1089,7 +1089,7 @@ class Document extends CommonDBTM {
          echo "<form method='post' action=\"".
                 $CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
       }
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>".$LANG['document'][21]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -1202,8 +1202,7 @@ class Document extends CommonDBTM {
             echo "</tr>";
          }
       }
-      echo "</table></div>"    ;
-      echo "</form>";
+      echo "</table></div></form>";
    }
 
    /**

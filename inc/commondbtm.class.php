@@ -1485,7 +1485,7 @@ class CommonDBTM extends CommonGLPI {
             echo "<input type='hidden' name='_no_message_link' value='1'>";
          }
       }
-      echo "<div class='center' id='tabsbody'>";
+      echo "<div class='spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='".$params['colspan']."'>";
