@@ -56,14 +56,14 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $budget->showValuesByEntity();
-         $budget->showDevices();
+         $budget->showitems();
          Document::showAssociated($budget);
          Link::showForItem('Budget',$_POST["id"]);
          Plugin::displayAction($budget,$_REQUEST['glpi_tab']);
          break;
 
       case 2 :
-         $budget->showDevices();
+         $budget->showitems();
          break;
 
       case 5 :

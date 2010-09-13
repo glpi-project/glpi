@@ -45,11 +45,23 @@ class Monitor extends CommonDBTM {
    public $dohistory=true;
    protected $forward_entity_to=array('Infocom','ReservationItem');
 
-   static function getTypeName() {
+
+/**
+ * Name of the type
+ *
+ * @param $nb : number of item in the type
+ *
+ * @return $LANG
+ */
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][3];
+      }
       return $LANG['help'][28];
    }
+
 
    function canCreate() {
       return haveRight('monitor', 'w');

@@ -322,7 +322,7 @@ $LANG['common'][92] = "Contact";
 $LANG['common'][93] = "Nouvel intitulé enfant";
 $LANG['common'][94] = "URL";
 $LANG['common'][95] = "Par";
-
+$LANG['common'][96] = "Matériels";
 
 $LANG['computers'][0]  = "Volume";
 $LANG['computers'][1]  = "Pourcentage libre";
@@ -516,13 +516,15 @@ $LANG['document'][9]  = "Extension";
 $LANG['document'][10] = "Icône";
 $LANG['document'][11] = "Téléchargement autorisé";
 
+$LANG['document'][13] = "Aucun élément associé";
+$LANG['document'][14] = "Élément associé";
 $LANG['document'][15] = "Téléchargement";
 $LANG['document'][16] = "Ajouter un Document";
-
+$LANG['document'][17] = "Aucun document associé";
 $LANG['document'][18] = "Document";
 $LANG['document'][19] = "Éléments associés";
-
-$LANG['document'][21] = "Document(s) associé(s)";
+$LANG['document'][20] = "Documents associés";
+$LANG['document'][21] = "Document associé";
 $LANG['document'][22] = "Fichier courant";
 
 $LANG['document'][24] = "Suppression avec succès du fichier";
@@ -612,10 +614,12 @@ $LANG['financial'][26]  = "Fournisseur";
 
 $LANG['financial'][30]  = "Fax";
 
-$LANG['financial'][33]  = "Ajouter un Contact";
+$LANG['financial'][33]  = "Ajouter un contact";
 
-$LANG['financial'][36]  = "Ajouter un Contrat";
+$LANG['financial'][36]  = "Ajouter un contrat";
 
+$LANG['financial'][40]  = "Aucun contact associé";
+$LANG['financial'][41]  = "Contact associé";
 $LANG['financial'][42]  = "Commercial";
 $LANG['financial'][43]  = "Technicien";
 $LANG['financial'][44]  = "Adresse";
@@ -638,6 +642,9 @@ $LANG['financial'][60]  = "en semaine";
 $LANG['financial'][61]  = "le samedi";
 $LANG['financial'][62]  = "dimanche et fêtes";
 
+$LANG['financial'][62]  = "Aucun contrat associé";
+$LANG['financial'][63]  = "Contrat associé";
+$LANG['financial'][64]  = "Fournisseur associé";
 $LANG['financial'][65]  = "Fournisseurs associés";
 $LANG['financial'][66]  = "Contrats associés";
 
@@ -832,14 +839,14 @@ $LANG['install'][104] = "Test sur l'extension mbstring";
 $LANG['install'][105] = "L'extension mbstring de votre parseur PHP n'est pas installée";
 $LANG['install'][106] = "Test d'écriture des fichiers de graphiques";
 
-
+$LANG['job'][3]  = "Aucun ticket";
 $LANG['job'][4]  = "Demandeur";
 $LANG['job'][5]  = "Attribué à";
 $LANG['job'][6]  = "Technicien";
 $LANG['job'][7]  = "Tâche";
-$LANG['job'][8]  = "dernier(s) ticket(s)";
+$LANG['job'][8]  = "derniers tickets";
 $LANG['job'][9]  = "Suivi";
-
+$LANG['job'][10] = "dernier ticket";
 $LANG['job'][11] = "Description de la demande ou de l'incident";
 $LANG['job'][12] = "Pas de suivi pour ce ticket.";
 $LANG['job'][13] = "Nouveau ticket";

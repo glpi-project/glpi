@@ -346,7 +346,13 @@ class Contact extends CommonDBTM{
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='7'>".$LANG['financial'][65]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='7'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['financial'][64];
+      } else {
+         echo $LANG['financial'][65];
+      }
+      echo "</th></tr>";
       echo "<tr><th>".$LANG['financial'][26]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";

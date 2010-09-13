@@ -685,7 +685,13 @@ class Contract extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
-      echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
+      echo "</th><th colspan='3'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['document'][13];
+      } else {
+         echo $LANG['document'][19];
+      }
+      echo "</th></tr>";
       if ($canedit) {
          echo "</table></div>";
 

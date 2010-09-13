@@ -69,7 +69,7 @@ class Budget extends CommonDropdown{
             $ong[5] = $LANG['Menu'][27];
          }
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
-            $ong[2] = $LANG['common'][1];
+            $ong[2] = $LANG['common'][96];
             if (haveRight("link","r")) {
                $ong[7] = $LANG['title'][34];
             }
@@ -251,7 +251,7 @@ class Budget extends CommonDropdown{
    *
    *@return Nothing (display)
    **/
-   function showDevices() {
+   function showItems() {
       global $DB, $LANG;
 
       $budgets_id = $this->fields['id'];
@@ -272,7 +272,14 @@ class Budget extends CommonDropdown{
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
-      echo "</th><th colspan='4'>".$LANG['document'][19]."&nbsp;:</th></tr>";
+      echo "</th><th colspan='4'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['document'][13];
+      } else {
+         echo $LANG['document'][19];
+      }
+      echo "</th></tr>";
+
       echo "<tr><th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
@@ -340,7 +347,7 @@ class Budget extends CommonDropdown{
 
                if ($nb>$_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
-                  echo "<td class='center'>".$item->getTypeName()."<br />$nb</td>";
+                  echo "<td class='center'>".$item->getTypeName($nb)."&nbsp;:&nbsp;$nb</td>";
                   echo "<td class='center' colspan='2'>";
                   echo "<a href='". $item->getSearchURL() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
@@ -360,8 +367,8 @@ class Budget extends CommonDropdown{
                      }
                      echo "<tr class='tab_bg_1'>";
                      if ($prem) {
-                        echo "<td class='center top' rowspan='$nb'>".$item->getTypeName()
-                              .($nb>1?"<br />$nb</td>":"</td>");
+                        echo "<td class='center top' rowspan='$nb'>".$item->getTypeName($nb)
+                              .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                      }
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                           $data["entities_id"]);
@@ -382,7 +389,9 @@ class Budget extends CommonDropdown{
             }
          }
       }
-      echo "<tr class='tab_bg_2'><td class='center'>$num</td><td colspan='5'>&nbsp;</td></tr> ";
+      if ($num>0) {
+         echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['common'][33]."&nbsp;:&nbsp;$num</td><td colspan='5'>&nbsp;</td></tr> ";
+      }
       echo "</table></div>";
    }
 

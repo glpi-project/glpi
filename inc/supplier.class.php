@@ -80,9 +80,11 @@ class Supplier extends CommonDBTM {
             $ong[1] = $LANG['Menu'][22];
          }
          if (haveRight("contract","r")) {
-            $ong[4] = $LANG['Menu'][26];
+            $ong[4] = $LANG['Menu'][25];
          }
-         $ong[15] = $LANG['financial'][104];
+         if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
+            $ong[15] = $LANG['common'][96];
+         }
          if (haveRight("document","r")) {
             $ong[5] = $LANG['Menu'][27];
          }
@@ -360,7 +362,16 @@ class Supplier extends CommonDBTM {
       $i = 0;
 
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='9'>".$LANG['financial'][46]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='9'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['financial'][40];
+      } else if ($DB->numrows($result)==1) {
+         echo $LANG['financial'][41];
+      } else {
+         echo $LANG['financial'][46];
+      }
+      echo "</th></tr>";
+
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
@@ -603,7 +614,16 @@ class Supplier extends CommonDBTM {
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='7'>".$LANG['financial'][66]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='7'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['financial'][62];
+      } else if ($DB->numrows($result)==1) {
+         echo $LANG['financial'][63];
+      } else {
+         echo $LANG['financial'][66];
+      }
+      echo "</th></tr>";
+
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['financial'][4]."</th>";
