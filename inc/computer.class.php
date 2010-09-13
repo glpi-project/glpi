@@ -49,12 +49,22 @@ class Computer extends CommonDBTM {
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    var $devices = array();
 
-   static function getTypeName() {
+
+/**
+ * Name of the type
+ *
+ * @param $nb : number of item in the type
+ *
+ * @return $LANG
+ */
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][0];
+      }
       return $LANG['help'][25];
    }
-
 
    function canCreate() {
       return haveRight('computer', 'w');
