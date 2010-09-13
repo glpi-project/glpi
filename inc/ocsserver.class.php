@@ -2503,7 +2503,7 @@ class OcsServer extends CommonDBTM {
                $header = true;
                if ($first) {
                   echo "<tr><th colspan='2'>" . $LANG['ocsng'][34] . "</th></tr>\n";
-                  $fisrt = false;
+                  $first = false;
                }
                echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
                echo "<td class='left' width='50%'>";
@@ -2513,7 +2513,7 @@ class OcsServer extends CommonDBTM {
 
          // Search locked peripherals
          $locked_printer = importArrayFromDB($data["import_peripheral"]);
-         $fisrt = true;
+         $first = true;
          foreach ($locked_printer as $key => $val) {
             $querySearchLockedPeriph = "SELECT `items_id`
                                         FROM `glpi_computers_items`
@@ -2537,7 +2537,7 @@ class OcsServer extends CommonDBTM {
          if (!in_array(self::IMPORT_TAG_072,$locked_ip)) {
             $locked_ip=OcsServer::migrateImportIP($ID,$locked_ip);
          }
-         $fisrt = true;
+         $first = true;
          foreach ($locked_ip as $key => $val) {
             if ($key>0) {
                $tmp = explode(self::FIELD_SEPARATOR,$val);
@@ -2574,7 +2574,7 @@ class OcsServer extends CommonDBTM {
                   $header = true;
                   if ($first) {
                      echo "<tr><th colspan='2'>" . $LANG['ocsng'][52] . "</th></tr>\n";
-                     $fisrt = false;
+                     $first = false;
                   }
                   echo "<tr class='tab_bg_1'>";
                   echo "<td class='right'width='50%'>" . str_replace('$$$$$',' v. ',$val) . "</td>";
