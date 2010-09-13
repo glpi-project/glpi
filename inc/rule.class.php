@@ -1521,8 +1521,9 @@ class Rule extends CommonDBTM {
             openArrowMassive("entityaffectation_form", true);
             echo "<input type='hidden' name='action' value='delete'>";
             closeArrowMassive('massiveaction', $LANG['buttons'][6]);
-            echo "</form><br>";
+            echo "</form>";
          }
+         echo "<br>";
       }
    }
 
