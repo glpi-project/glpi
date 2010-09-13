@@ -2461,9 +2461,9 @@ class OcsServer extends CommonDBTM {
             $header = true;
             echo "<tr><th colspan='2'>" . $LANG['ocsng'][16] . "&nbsp;:</th></tr>\n";
             foreach ($locked as $key => $val) {
-               echo "<tr class='tab_bg_1'><td align='right' width='50%'>" .
-                                                                  $lockable_fields[$val] . "</td>";
-               echo "<td align='left' width='50%'>";
+               echo "<tr class='tab_bg_1'>";
+               echo "<td class='right' width='50%'>" . $lockable_fields[$val] . "</td>";
+               echo "<td class='left' width='50%'>";
                echo "<input type='checkbox' name='lockfield[" . $key . "]'></td></tr>\n";
             }
          }
@@ -2471,6 +2471,7 @@ class OcsServer extends CommonDBTM {
          //Search locked monitors
 
          $locked_monitor = importArrayFromDB($data["import_monitor"]);
+         $first = true;
          foreach ($locked_monitor as $key => $val) {
             if ($val != "_version_070_") {
                $querySearchLockedMonitor = "SELECT `items_id`
@@ -2479,9 +2480,12 @@ class OcsServer extends CommonDBTM {
                $resultSearch = $DB->query($querySearchLockedMonitor);
                if ($DB->numrows($resultSearch) == 0) {
                   $header = true;
-                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][30] . "&nbsp;:</th></tr>\n";
+                  if ($first) {
+                     echo "<tr><th colspan='2'>" . $LANG['ocsng'][30] . "&nbsp;:</th></tr>\n";
+                     $first = false;
+                  }
                   echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
-                  echo "<td align='left' width='50%'>";
+                  echo "<td class='left' width='50%'>";
                   echo "<input type='checkbox' name='lockmonitor[" . $key . "]'></td></tr>\n";
                }
             }
@@ -2489,6 +2493,7 @@ class OcsServer extends CommonDBTM {
 
          //Search locked printers
          $locked_printer = importArrayFromDB($data["import_printer"]);
+         $first = true;
          foreach ($locked_printer as $key => $val) {
             $querySearchLockedPrinter = "SELECT `items_id`
                                          FROM `glpi_computers_items`
@@ -2496,15 +2501,19 @@ class OcsServer extends CommonDBTM {
             $resultSearchPrinter = $DB->query($querySearchLockedPrinter);
             if ($DB->numrows($resultSearchPrinter) == 0) {
                $header = true;
-               echo "<tr><th colspan='2'>" . $LANG['ocsng'][34] . "</th></tr>\n";
+               if ($first) {
+                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][34] . "</th></tr>\n";
+                  $fisrt = false;
+               }
                echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
-               echo "<td align='left' width='50%'>";
+               echo "<td class='left' width='50%'>";
                echo "<input type='checkbox' name='lockprinter[" . $key . "]'></td></tr>\n";
             }
          }
 
          // Search locked peripherals
          $locked_printer = importArrayFromDB($data["import_peripheral"]);
+         $fisrt = true;
          foreach ($locked_printer as $key => $val) {
             $querySearchLockedPeriph = "SELECT `items_id`
                                         FROM `glpi_computers_items`
@@ -2512,9 +2521,12 @@ class OcsServer extends CommonDBTM {
             $resultSearchPrinter = $DB->query($querySearchLockedPeriph);
             if ($DB->numrows($resultSearchPrinter) == 0) {
                $header = true;
-               echo "<tr><th colspan='2'>" . $LANG['ocsng'][32] . "</th></tr>\n";
+               if ($first) {
+                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][32] . "</th></tr>\n";
+                  $first = false;
+               }
                echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
-               echo "<td align='left' width='50%'>";
+               echo "<td class='left' width='50%'>";
                echo "<input type='checkbox' name='lockperiph[" . $key . "]'></td></tr>\n";
             }
          }
@@ -2525,7 +2537,7 @@ class OcsServer extends CommonDBTM {
          if (!in_array(self::IMPORT_TAG_072,$locked_ip)) {
             $locked_ip=OcsServer::migrateImportIP($ID,$locked_ip);
          }
-
+         $fisrt = true;
          foreach ($locked_ip as $key => $val) {
             if ($key>0) {
                $tmp = explode(self::FIELD_SEPARATOR,$val);
@@ -2538,9 +2550,12 @@ class OcsServer extends CommonDBTM {
                $resultSearchIP = $DB->query($querySearchLockedIP);
                if ($DB->numrows($resultSearchIP) == 0) {
                   $header = true;
-                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][50] . "</th></tr>\n";
+                  if ($first) {
+                     echo "<tr><th colspan='2'>" . $LANG['ocsng'][50] . "</th></tr>\n";
+                     $first = false;
+                  }
                   echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
-                  echo "<td align='left' width='50%'>";
+                  echo "<td class='left' width='50%'>";
                   echo "<input type='checkbox' name='lockip[" . $key . "]'></td></tr>\n";
                }
             }
@@ -2548,6 +2563,7 @@ class OcsServer extends CommonDBTM {
 
          // Search locked softwares
          $locked_software = importArrayFromDB($data["import_software"]);
+         $first = true;
          foreach ($locked_software as $key => $val) {
             if ($val != "_version_070_") {
                $querySearchLockedSoft = "SELECT `id`
@@ -2556,10 +2572,13 @@ class OcsServer extends CommonDBTM {
                $resultSearchSoft = $DB->query($querySearchLockedSoft);
                if ($DB->numrows($resultSearchSoft) == 0) {
                   $header = true;
-                 echo "<tr><th colspan='2'>" . $LANG['ocsng'][52] . "</th></tr>\n";
-                  echo "<tr class='tab_bg_1'><td align='right'width='50%'>" .
-                                                       str_replace('$$$$$',' v. ',$val) . "</td>";
-                  echo "<td align='left'width='50%'>";
+                  if ($first) {
+                     echo "<tr><th colspan='2'>" . $LANG['ocsng'][52] . "</th></tr>\n";
+                     $fisrt = false;
+                  }
+                  echo "<tr class='tab_bg_1'>";
+                  echo "<td class='right'width='50%'>" . str_replace('$$$$$',' v. ',$val) . "</td>";
+                  echo "<td class='left'width='50%'>";
                   echo "<input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
                }
             }
@@ -2567,6 +2586,7 @@ class OcsServer extends CommonDBTM {
 
          // Search locked computerdisks
          $locked = importArrayFromDB($data["import_disk"]);
+         $first = true;
          foreach ($locked as $key => $val) {
             $querySearchLocked = "SELECT `id`
                                   FROM `glpi_computerdisks`
@@ -2574,9 +2594,12 @@ class OcsServer extends CommonDBTM {
             $resultSearch = $DB->query($querySearchLocked);
             if ($DB->numrows($resultSearch) == 0) {
                $header = true;
-               echo "<tr><th colspan='2'>" . $LANG['ocsng'][55] . "</th></tr>\n";
+               if ($first) {
+                  echo "<tr><th colspan='2'>" . $LANG['ocsng'][55] . "</th></tr>\n";
+                  $first = false;
+               }
                echo "<tr class='tab_bg_1'><td align='right' width='50%'>" . $val . "</td>";
-               echo "<td align='left' width='50%'>";
+               echo "<td class='left' width='50%'>";
                echo "<input type='checkbox' name='lockdisk[" . $key . "]'></td></tr>\n";
             }
          }
