@@ -157,7 +157,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $tmp=explode(",",$_REQUEST["sort"]);
          $sort="`".implode("` $order,`",$tmp)."`";
       } else {
-         $sort = "`entity` $order, `version`";
+         if ($crit=="softwares_id") {
+            $sort = "`entity` $order, `version`, `compname`";
+         } else {
+            $sort = "`entity` $order, `compname`";
+         }
       }
 
 
