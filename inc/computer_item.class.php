@@ -597,7 +597,7 @@ class Computer_Item extends CommonDBRelation{
          }
       }
       echo "</td></tr>";
-      echo "</table></div><br>";
+      echo "</table></div>";
    }
 
 

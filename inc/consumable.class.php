@@ -238,15 +238,38 @@ class Consumable extends CommonDBTM {
 
          $highlight="";
          if ($unused<=$alarm_threshold) {
-            $highlight = "class='tab_bg_1_2'";
+            $highlight = "class='tab_bg_1_2";
          }
          if (!$nohtml) {
-            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total
-                     <span class='small_space b'>".$LANG['consumables'][13]."&nbsp;: $unused</span>
-                     <span class='small_space'>".$LANG['consumables'][15]."&nbsp;: $old</span></div>";
+            $out .= "<div $highlight>".$LANG['common'][33]."&nbsp;:&nbsp;$total";
+            $out .= "<span class='small_space b'>";
+            if ($unused>1) {
+               $out .= $LANG['consumables'][14];
+            } else {
+               $out .= $LANG['consumables'][20];
+            }
+            $out .= "&nbsp;:&nbsp;$unused</span>";
+            $out .= "<span class='small_space'>";
+            if ($old>1) {
+               $out .= $LANG['consumables'][22];
+            } else {
+               $out .= $LANG['consumables'][21];
+            }
+            $out .= "&nbsp;:&nbsp;$old</span></div>";
          } else {
-            $out .= $LANG['common'][33]."&nbsp;: $total   ".$LANG['consumables'][13].
-                    "&nbsp;: $unused   ".$LANG['consumables'][15]."&nbsp;: $old";
+            $out .= $LANG['common'][33]."&nbsp;: $total   ";
+            if ($unused>1) {
+               $out .= $LANG['consumables'][14];
+            } else {
+               $out .= $LANG['consumables'][20];
+            }
+            $out .= " : $unused   ";
+            if ($old>1) {
+               $out .= $LANG['consumables'][22];
+            } else {
+               $out .= $LANG['consumables'][21];
+            }
+            $out .= " : $old";
          }
       } else {
          if (!$nohtml) {
@@ -334,8 +357,9 @@ class Consumable extends CommonDBTM {
       }
 
       if ($ID > 0) {
+         echo "<div class='firstbloc'>";
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/consumable.form.php\">";
-         echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
          echo "<td class='tab_bg_2 center'>";
          echo "<input type='submit' name='add_several' value='".$LANG['buttons'][8]."' class='submit'>";
@@ -345,8 +369,8 @@ class Consumable extends CommonDBTM {
          echo "&nbsp;&nbsp;";
          echo $LANG['consumables'][16];
          echo "</td></tr>";
-         echo "</table></div>";
-         echo "</form><br>";
+         echo "</table>";
+         echo "</form></div>";
       }
    }
 
@@ -378,15 +402,13 @@ class Consumable extends CommonDBTM {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
                echo "<input type='hidden' name='tID' value='$tID'>\n";
             }
-            echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+            echo "<div class='spaced'><table class='tab_cadre_fixe'>";
             if (!$show_old) {
                echo "<tr><th colspan='7'>";
                echo self::getCount($tID, -1);
                echo "</th></tr>";
             } else { // Old
-               echo "<tr><th colspan='8'>";
-               echo $LANG['consumables'][35];
-               echo "</th></tr>";
+               echo "</th><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
             }
             $i = 0;
             echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
@@ -413,8 +435,7 @@ class Consumable extends CommonDBTM {
             echo "</tr>";
 
          } else {
-            echo "<br>";
-            echo "<div class='center b'>".$LANG['consumables'][7]."</div>";
+            echo "<div class='spaced b'>".$LANG['consumables'][7]."</div>";
             return;
          }
       }

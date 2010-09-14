@@ -387,12 +387,12 @@ $LANG['consumables'][9]  = "Aucun consommable";
 
 $LANG['consumables'][12] = "Type de consommable";
 $LANG['consumables'][13] = "Neuf(s)";
-
+$LANG['consumables'][14] = "Neufs";
 $LANG['consumables'][15] = "Utilisé(s)";
 $LANG['consumables'][16] = "Consommable(s)";
 
 $LANG['consumables'][20] = "Neuf";
-
+$LANG['consumables'][21] = "Utilisé";
 $LANG['consumables'][22] = "Utilisés";
 $LANG['consumables'][23] = "État";
 
