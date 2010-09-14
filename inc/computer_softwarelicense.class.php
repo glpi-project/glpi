@@ -53,7 +53,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     *
     * @return number of installations
     */
-   static function countForLicnse($softwarelicenses_id, $entity='') {
+   static function countForLicense($softwarelicenses_id, $entity='') {
       global $DB;
 
       $query = "SELECT COUNT(`glpi_computers_softwarelicenses`.`id`)
@@ -190,7 +190,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          $tmp=explode(",",$_REQUEST["sort"]);
          $sort="`".implode("` $order,`",$tmp)."`";
       } else {
-         $sort = "`entity` $order, `license`";
+         $sort = "`entity` $order, `compname`";
       }
 
 
@@ -369,13 +369,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
    /**
-    * Update license associated on a computer
-    *
-    * @param $licID ID of the install software lienk
-    * @param softwarelicenses_id ID of the new license
-    *
-    * @return nothing
-    */
+   * Update license associated on a computer
+   *
+   * @param $licID ID of the install software lienk
+   * @param $softwarelicenses_id ID of the new license
+   *
+   * @return nothing
+   */
    function upgrade($licID, $softwarelicenses_id) {
       global $DB;
 
@@ -384,6 +384,30 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          $this->delete(array('id' => $licID));
          $this->add(array('computers_id'        => $computers_id,
                           'softwarelicenses_id' => $softwarelicenses_id));
+      }
+   }
+
+   /**
+   * Get licenses list corresponding to an installation
+   *
+   * @param $computers_id ID of the computer
+   * @param $softwareversions_id ID of the version
+   *
+   * @return nothing
+   */
+   function GetLicenseForInstallation($computers_id,$softwareversions_id) {
+      global $DB;
+
+      $lic=array();
+      $sql = "SELECT `glpi_softwarelicenses`.*
+              FROM `glpi_softwarelicenses` 
+              INNER JOIN `glpi_computers_softwarelicenses` 
+                  ON (`glpi_softwarelicenses`.`id`
+                        = `glpi_computers_softwarelicenses`.`softwarelicenses_id`
+                      AND `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id')
+              WHERE `glpi_softwarelicenses`.`softwareversions_id_buy`";
+
+      foreach ($DB->request($sql) as $ID => $data) {
       }
    }
 
