@@ -257,6 +257,12 @@ class Ticket extends CommonDBTM {
                  FROM `glpi_ticketfollowups`
                  WHERE `tickets_id` = '".$this->fields['id']."'";
       $DB->query($query1);
+
+      $query1 = "DELETE
+                 FROM `glpi_tickets_tickets`
+                 WHERE `tickets_id_1` = '".$this->fields['id']."'
+                     OR `tickets_id_2` = '".$this->fields['id']."'";
+      $DB->query($query1);
    }
 
 
@@ -3218,6 +3224,53 @@ class Ticket extends CommonDBTM {
 
       echo "</tr>";
 
+      // Mailing ? Y or no ?
+      if ($CFG_GLPI["use_mailing"]==1) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['job'][19]."&nbsp;: </td>";
+         echo "<td>";
+         if (!$ID) {
+            $query = "SELECT `email`
+                      FROM `glpi_users`
+                      WHERE `id` ='".$this->fields["users_id"]."'";
+            $result = $DB->query($query);
+
+            $email = "";
+            if ($result && $DB->numrows($result)) {
+               $email = $DB->result($result,0,"email");
+            }
+            Dropdown::showYesNo('use_email_notification',!empty($email));
+         } else {
+            if ($canupdate){
+               Dropdown::showYesNo('use_email_notification',$this->fields["use_email_notification"]);
+            } else {
+               if ($this->fields["use_email_notification"]) {
+                  echo $LANG['choice'][1];
+               } else {
+                  echo $LANG['choice'][0];
+               }
+            }
+         }
+
+         echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
+         echo "<td>";
+         if (!$ID) {
+            echo "<input type='text' size='30' name='user_email' value='$email'>";
+         } else {
+            if ($canupdate) {
+               autocompletionTextField($this,"user_email");
+               if (!empty($this->fields["user_email"])) {
+                  echo "<a href='mailto:".$this->fields["user_email"]."'>";
+                  echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
+               }
+            } else if (!empty($this->fields["user_email"])) {
+               echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"]."</a>";
+            } else {
+               echo "&nbsp;";
+            }
+         }
+         echo "</td></tr>";
+      }
 
 
       echo "<tr class='tab_bg_1'>";
@@ -3259,15 +3312,27 @@ class Ticket extends CommonDBTM {
          }
       }
       echo "</th>";
+
+      $view_linked_tickets=($ID && $canupdate);
+
       echo "<th colspan='2'>";
-      if ($CFG_GLPI["use_mailing"]==1) {
-         echo $LANG['title'][10];
+      if ($view_linked_tickets) {
+         echo $LANG['job'][55]."&nbsp;&nbsp;";
+
+         $rand_linked_ticket = mt_rand();
+         echo "<a class='tracking' 
+            onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
+         echo $LANG['buttons'][8];
+         echo "</a>\n";
+
+
       }
       echo "</th></tr>";
 
+
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='2'>".$LANG['joblist'][6]."</td>";
-      echo "<td rowspan='2'>";
+      echo "<td rowspan='1'>".$LANG['joblist'][6]."</td>";
+      echo "<td rowspan='1'>";
       if ($canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
@@ -3299,61 +3364,26 @@ class Ticket extends CommonDBTM {
          echo nl2br($this->fields["content"]);
       }
       echo "</td>";
-      // Mailing ? Y or no ?
-      if ($CFG_GLPI["use_mailing"]==1) {
-         echo "<td>".$LANG['job'][19]."&nbsp;: </td>";
-         echo "<td>";
-         if (!$ID) {
-            $query = "SELECT `email`
-                      FROM `glpi_users`
-                      WHERE `id` ='".$this->fields["users_id"]."'";
-            $result = $DB->query($query);
 
-            $email = "";
-            if ($result && $DB->numrows($result)) {
-               $email = $DB->result($result,0,"email");
-            }
-            Dropdown::showYesNo('use_email_notification',!empty($email));
-         } else {
-            if ($canupdate){
-               Dropdown::showYesNo('use_email_notification',$this->fields["use_email_notification"]);
-            } else {
-               if ($this->fields["use_email_notification"]) {
-                  echo $LANG['choice'][1];
-               } else {
-                  echo $LANG['choice'][0];
-               }
-            }
-         }
-      } else {
-         echo "<td colspan='2'>&nbsp;";
-      }
-      echo "</td></tr>";
+      if ($view_linked_tickets) {
+         
+         echo "<td colspan='2'>";
+         Ticket_Ticket::displayLinkedTicketsTo($ID);
 
-      echo "<tr class='tab_bg_1'>";
-      // Mailing ? Y or no ?
-      if ($CFG_GLPI["use_mailing"] == 1) {
-         echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
-         echo "<td>";
-         if (!$ID) {
-            echo "<input type='text' size='30' name='user_email' value='$email'>";
-         } else {
-            if ($canupdate) {
-               autocompletionTextField($this,"user_email");
-               if (!empty($this->fields["user_email"])) {
-                  echo "<a href='mailto:".$this->fields["user_email"]."'>";
-                  echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
-               }
-            } else if (!empty($this->fields["user_email"])) {
-               echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"]."</a>";
-            } else {
-               echo "&nbsp;";
-            }
-         }
+         echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
+         Ticket_Ticket::dropdownLinks('_link[link]');
+         echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
+         echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
+         echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
+         echo "&nbsp;";
+         echo "<input type='submit' name='add_link' value='".$LANG['buttons'][8]."' class='submit'></td>";
+         echo "</div>";
+         echo "</td>";
       } else {
-          echo "<td colspan='2'>&nbsp;";
+         echo "<td colspan='2'>&nbsp;</td>";
       }
-      echo "</td></tr>";
+      echo "</tr>";
+
 
 
       // Permit to add doc when creating a ticket
@@ -3397,6 +3427,7 @@ class Ticket extends CommonDBTM {
          }
          echo "</td></tr>";
       }
+
 
       echo "</table>";
       echo "<input type='hidden' name='id' value='$ID'>";

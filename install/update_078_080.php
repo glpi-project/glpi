@@ -699,6 +699,19 @@ function update078to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   // Link between tickets
+   if (!TableExists('glpi_tickets_tickets')) {
+      $query = "CREATE TABLE `glpi_tickets_tickets` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `tickets_id_1` int(11) NOT NULL default '0',
+                  `tickets_id_2` int(11) NOT NULL default '0',
+                  `link` int(11) NOT NULL default '1',
+                  PRIMARY KEY  (`id`),
+                  KEY `unicity` (`tickets_id_1`,`tickets_id_2`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query) or die("0.80 create glpi_tickets_tickets " . $LANG['update'][90] . $DB->error());
+   }
+
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 

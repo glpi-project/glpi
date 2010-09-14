@@ -323,6 +323,8 @@ $LANG['common'][93] = "Nouvel intitulé enfant";
 $LANG['common'][94] = "URL";
 $LANG['common'][95] = "Par";
 $LANG['common'][96] = "Matériels";
+$LANG['common'][97] = "Lié à";
+$LANG['common'][98] = "Duplique";
 
 $LANG['computers'][0]  = "Volume";
 $LANG['computers'][1]  = "Pourcentage libre";
@@ -887,6 +889,7 @@ $LANG['job'][51] = "Approbation de la solution";
 $LANG['job'][52] = "Mise à jour d'une tâche";
 $LANG['job'][53] = "Suppression d'une tâche";
 $LANG['job'][54] = "Sans réponse de votre part, le ticket sera clos automatiquement après";
+$LANG['job'][55] = "Tickets liés";
 
 
 $LANG['joblist'][0]  = "Statut";
@@ -1093,6 +1096,7 @@ $LANG['log'][115] = "changement de la version des logiciels installés";
 $LANG['log'][116] = "association d'un ordinateur à une license";
 $LANG['log'][117] = "changement de license pour plusieurs ordinateurs";
 $LANG['log'][118] = "dissociation d'une license et d'ordinateurs";
+$LANG['log'][119] = "ajout d'un lien entre tickets";
 
 
 $LANG['login'][0]  = "Dernière connexion";
