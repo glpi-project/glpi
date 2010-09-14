@@ -648,7 +648,7 @@ $LANG['financial'][63]  = "Contrat associé";
 $LANG['financial'][64]  = "Fournisseur associé";
 $LANG['financial'][65]  = "Fournisseurs associés";
 $LANG['financial'][66]  = "Contrats associés";
-
+$LANG['financial'][67]  = "Aucun fournisseur associé";
 $LANG['financial'][68]  = "Activer les informations financières";
 $LANG['financial'][69]  = "Périodicité du contrat";
 

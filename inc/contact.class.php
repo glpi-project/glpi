@@ -348,6 +348,8 @@ class Contact extends CommonDBTM{
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>";
       if ($DB->numrows($result)==0) {
+         echo $LANG['financial'][67];
+      } else if ($DB->numrows($result)==1) {
          echo $LANG['financial'][64];
       } else {
          echo $LANG['financial'][65];

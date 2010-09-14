@@ -85,7 +85,7 @@ class Contract extends CommonDBTM {
       $ong = array();
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['Menu'][23];
-         $ong[2] = $LANG['common'][1];
+         $ong[2] = $LANG['common'][96];
          if (haveRight("document","r")) {
             $ong[5] = $LANG['Menu'][27];
          }
@@ -585,7 +585,15 @@ class Contract extends CommonDBTM {
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='6'>".$LANG['financial'][65]."&nbsp;:</th></tr>";
+      echo "<tr><th colspan='6'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['financial'][67];
+      } else if ($DB->numrows($result)==1) {
+         echo $LANG['financial'][64];
+      } else {
+         echo $LANG['financial'][65];
+      }
+      echo "</th></tr>";
       echo "<tr><th>".$LANG['financial'][26]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
