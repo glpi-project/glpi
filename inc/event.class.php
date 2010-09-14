@@ -165,9 +165,19 @@ class Event extends CommonDBTM {
                break;
 
             default :
-               $show=getSingular($type);
-               echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?id=".$items_id;
-               echo "\">$items_id</a>";
+               
+               $type=getSingular($type);
+               $url='';
+               if (class_exists($type)) {
+                  $item = new $type();
+                  $url  =  $item->getFormURL();
+               }
+               if (!empty($url)) {
+                  echo "<a href=\"$url?id=".$items_id;
+                  echo "\">$items_id</a>";
+               } else {
+                  echo $items_id;
+               }
                break;
          }
       }
