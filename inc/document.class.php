@@ -87,7 +87,7 @@ class Document extends CommonDBTM {
 
       $ong=array();
       if ($this->fields['id'] > 0) {
-         $ong[1]=$LANG['document'][50];
+         $ong[1]=$LANG['document'][19];
          $ong[5]=$LANG['document'][20];
          if (haveRight("notes","r")) {
             $ong[10]=$LANG['title'][37];
@@ -636,7 +636,15 @@ class Document extends CommonDBTM {
              $CFG_GLPI["root_doc"]."/front/document.form.php\">";
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG['document'][19]."&nbsp;:</th></tr><tr>";
+      echo "<tr><th colspan='".($canedit?6:5)."'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['document'][13];
+      } else if ($DB->numrows($result)==1) {
+         echo $LANG['document'][14];
+      } else {
+         echo $LANG['document'][19];
+      }
+      echo "</th></tr><tr>";
       if ($canedit) {
          echo "<th>&nbsp;</th>";
       }

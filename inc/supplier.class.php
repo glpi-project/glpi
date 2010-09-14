@@ -478,7 +478,13 @@ class Supplier extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
-      echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
+      echo "</th><th colspan='3'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['document'][13];
+      } else {
+         echo $LANG['document'][19];
+      }
+      echo "</th></tr>";
       echo "<tr><th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
