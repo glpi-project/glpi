@@ -654,7 +654,7 @@ class Infocom extends CommonDBTM {
       }
 
       if (!$item) {
-         echo "<div class='center'><br><br>".$LANG['financial'][85]."</div>";
+         echo "<div class='spaced'>".$LANG['financial'][85]."</div>";
       } else {
          $date_tax = $CFG_GLPI["date_tax"];
          $dev_ID = $item->getField('id');
@@ -668,7 +668,7 @@ class Infocom extends CommonDBTM {
              && in_array($item->getType(), array('Software',
                                                  'CartridgeItem',
                                                  'ConsumableItem'))) {
-            echo "<div class='center'>".$LANG['financial'][84]."</div>";
+            echo "<div class='spaced'>".$LANG['financial'][84]."</div>";
          }
          if (!$ic->getFromDBforDevice($item->getType(),$dev_ID)) {
             $input = array('itemtype'    => $item->getType(),
@@ -676,7 +676,7 @@ class Infocom extends CommonDBTM {
                            'entities_id' => $item->getEntityID());
 
             if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
-               echo "<div class='center b'>";
+               echo "<div class='spaced b'>";
                echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><th>";
                echo $item->getTypeName()." - ".$item->getName()."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
@@ -691,7 +691,7 @@ class Infocom extends CommonDBTM {
                echo "<form name='form_ic' method='post' action='".$CFG_GLPI["root_doc"].
                      "/front/infocom.form.php'>";
             }
-            echo "<div class='center'>";
+            echo "<div class='spaced'>";
             echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],
                                                     "infocoms-show")?"_fixe":"")."'>";
 

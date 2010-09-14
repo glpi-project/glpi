@@ -364,6 +364,7 @@ $LANG['computers'][56] = "Modification du statut. Les éléments connectés ont 
 
 $LANG['connect'][0]  = "Connexion(s) directe(s)";
 $LANG['connect'][1]  = "Non connecté.";
+$LANG['connect'][2]  = "Connexions directes";
 
 $LANG['connect'][15] = "Mise à jour automatique des éléments suivants";
 $LANG['connect'][16] = "Attention !! Les éléments suivants des deux matériels ne correspondent pas";
@@ -1299,6 +1300,7 @@ $LANG['monitors'][34]="HDMI";
 $LANG['networking'][4]="Port réseau";
 $LANG['networking'][5]="Mémoire (Mio)";
 $LANG['networking'][6]="Ports réseaux";
+$LANG['networking'][12]="port réseau trouvé";
 $LANG['networking'][13]="port(s) réseau trouvé(s)";
 $LANG['networking'][14]="IP";
 $LANG['networking'][15]="MAC";
@@ -1404,6 +1406,7 @@ $LANG['ocsng'][50]="IP(s) verrouillée(s)";
 $LANG['ocsng'][52]="Logiciel(s) verrouillé(s)";
 $LANG['ocsng'][54]="Logiciel mis dans la corbeille par la synchro OCSNG";
 $LANG['ocsng'][55]="Volume(s) verrouillé(s)";
+$LANG['ocsng'][56]="Volume verrouillé";
 $LANG['ocsng'][57]="Interface OCSNG";
 
 $LANG['pager'][1]="à";
@@ -2023,7 +2026,9 @@ $LANG['software'][7]="Ajouter une version";
 $LANG['software'][8]="Ajouter une licence";
 $LANG['software'][9]="Ordinateurs affectés";
 $LANG['software'][11]="Licences";
-$LANG['software'][17]="logiciel(s) installé(s)";
+
+$LANG['software'][16]="logiciel installé";
+$LANG['software'][17]="logiciels installés";
 $LANG['software'][19]="Installations";
 $LANG['software'][20]="Restant";
 $LANG['software'][28]="OEM";
@@ -2093,6 +2098,8 @@ $LANG['title'][26]="Principal";
 $LANG['title'][27]="Connexions";
 $LANG['title'][28]="Tickets";
 $LANG['title'][30]="Composants";
+
+$LANG['title'][32]="Lien externe";
 $LANG['title'][33]="Liens externes";
 $LANG['title'][34]="Liens";
 $LANG['title'][37]="Notes";

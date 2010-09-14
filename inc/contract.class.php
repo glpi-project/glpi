@@ -879,11 +879,22 @@ class Contract extends CommonDBTM {
       $number = $DB->numrows($result);
       $i = 0;
 
+      echo "<div class='spaced'>";
       if ($withtemplate!=2) {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
       }
-      echo "<div class='center'><br><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='8'>".$LANG['financial'][66]."&nbsp;:</th></tr>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='8'>";
+
+      if ($number==0) {
+         echo $LANG['financial'][62];
+      } else if ($number==1) {
+         echo $LANG['financial'][63];
+      } else {
+         echo $LANG['financial'][66];
+      }
+      echo "</th></tr>";
+
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['financial'][4]."</th>";
@@ -964,11 +975,12 @@ class Contract extends CommonDBTM {
             echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
          }
       }
-      echo "</table></div>";
+      echo "</table>";
 
       if ($withtemplate!=2) {
          echo "</form>";
       }
+      echo "</div>";
    }
 
 

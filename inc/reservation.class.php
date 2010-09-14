@@ -730,9 +730,8 @@ class Reservation extends CommonDBTM {
          return false;
       }
 
-      echo "<div class='center'>";
+      echo "<div class='firstbloc'>";
       ReservationItem::showActivationFormForItem($itemtype,$ID);
-      echo "<br>";
 
       $ri=new ReservationItem;
       if ($ri->getFromDBbyItem($itemtype,$ID)) {
@@ -748,8 +747,8 @@ class Reservation extends CommonDBTM {
 
          echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
          if ($ri->fields["is_active"]) {
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".$ri->fields['id']."' >".
-                  $LANG['reservation'][35]."</a>";
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
+                   $ri->fields['id']."' >".$LANG['reservation'][35]."</a>";
          } else {
             echo $LANG['reservation'][35];
          }
@@ -779,8 +778,7 @@ class Reservation extends CommonDBTM {
                echo "</td></tr>\n";
             }
          }
-         echo "</table>\n";
-         echo "<br>";
+         echo "</table></div>\n";
 
          // Print old reservations
          $query = "SELECT *
@@ -790,10 +788,10 @@ class Reservation extends CommonDBTM {
                   ORDER BY `begin` DESC";
          $result=$DB->query($query);
 
-         echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
+         echo "<div class='spaced'<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
          if ($ri->fields["is_active"]) {
-            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".$ri->fields['id']."' >".
-                  $LANG['reservation'][36]."</a>";
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
+                   $ri->fields['id']."' >".$LANG['reservation'][36]."</a>";
          } else {
             echo $LANG['reservation'][36];
          }
@@ -825,7 +823,6 @@ class Reservation extends CommonDBTM {
             }
          }
          echo "</table>\n";
-         echo "<br>";
       }
       echo "</div>\n";
    }

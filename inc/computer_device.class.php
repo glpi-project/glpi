@@ -179,6 +179,7 @@ class Computer_Device extends CommonDBTM {
       }
       $canedit = ($withtemplate!=2 && $computer->can($ID, 'w'));
 
+      echo "<div class='spaced'>";
       if ($canedit) {
          echo "<form name='form_device_action' action='".getItemTypeFormURL(__CLASS__)."' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
@@ -263,7 +264,9 @@ class Computer_Device extends CommonDBTM {
       } else {
       echo "</table>";
       }
+      echo "</div>";
    }
+
 
    /**
     * Update an internal device quantity
