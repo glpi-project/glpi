@@ -380,7 +380,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div id='kbanswer'>".$answer."</div>";
       echo "</td></tr>";
 
-      echo "<tr><th class='tdkb'>";
+      echo "<tr><th class='tdkb'  colspan='2'>";
       if ($this->fields["users_id"]) {
          echo $LANG['common'][37]."&nbsp;: ";
          // Integer because true may be 2 and getUserName return array
@@ -398,16 +398,6 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       echo "</th>";
-
-      if (isMultiEntitiesMode()) {
-         echo "<th class='tdkb'>";
-         echo $LANG['entity'][0]."&nbsp;: ";
-         echo Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]);
-         echo "<br>".$LANG['entity'][9]."&nbsp;: ";
-         echo Dropdown::getYesNo($this->fields["is_recursive"])."</th>";
-      } else {
-         echo "<th>&nbsp;</th>";
-      }
 
       echo "<th class='tdkb' colspan='2'>";
       if ($this->fields["date_mod"]) {
