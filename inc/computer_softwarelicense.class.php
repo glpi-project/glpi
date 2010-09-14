@@ -179,19 +179,20 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          $start = 0;
       }
 
-      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
-         // manage several param like location,compname
-         $tmp=explode(",",$_REQUEST["sort"]);
-         $sort="`".implode("`,`",$tmp)."`";
-      } else {
-         $sort = "`entity`, `license`";
-      }
-
       if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
+
+      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+         // manage several param like location,compname : order first
+         $tmp=explode(",",$_REQUEST["sort"]);
+         $sort="`".implode("` $order,`",$tmp)."`";
+      } else {
+         $sort = "`entity` $order, `license`";
+      }
+
 
       //SoftwareLicense ID
       $number = countElementsInTable("glpi_computers_softwarelicenses, glpi_computers",
@@ -201,7 +202,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                               AND glpi_computers.is_deleted=0
                               AND glpi_computers.is_template=0");
 
-      echo "<br><div class='center'>";
+      echo "<div class='center'>";
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['search'][15]."</th></tr>";
@@ -331,7 +332,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
             if ($canedit) {
                openArrowMassive("softinstall".$rand."",true);
-               Dropdown::show('SoftwareLicense',array('condition'=> "`glpi_softwarelicenses`.`softwares_id` = '$softwares_id'"));
+               Dropdown::show('SoftwareLicense',
+                     array('condition' => "`glpi_softwarelicenses`.`softwares_id` = '$softwares_id'",
+                           'used'      => array($searchID)));
 
                echo "&nbsp;<input type='submit' name='move' value=\"".
                      $LANG['buttons'][20]."\" class='submit'>&nbsp;";

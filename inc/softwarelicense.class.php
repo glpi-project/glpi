@@ -519,17 +519,19 @@ class SoftwareLicense extends CommonDBTM {
          $start = 0;
       }
 
-      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
-         $sort = "`".$_REQUEST["sort"]."`";
-      } else {
-         $sort = "`entity`, `name`";
-      }
 
       if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
+
+      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+         $sort = "`".$_REQUEST["sort"]."`";
+      } else {
+         $sort = "`entity` $order, `name`";
+      }
+
 
       // Righ type is enough. Can add a License on a software we have Read access
       $canedit = haveRight("software", "w");
