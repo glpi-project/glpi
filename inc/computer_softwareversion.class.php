@@ -327,9 +327,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "<td>".$data['groupe']."</td>";
                echo "<td>".$data['username']."</td>";
 
-               /// TODO display available licences for the installation  :
-               //Computer_SoftwareLicense::GetLicenseForInstallation($computers_id,$softwareversions_id)
-               echo "<td>TODO</td>";
+               $lics=Computer_SoftwareLicense::GetLicenseForInstallation($data['cID'],$data['vID']);
+               echo "<td>";
+               if (count($lics)) {
+                  foreach ($lics as $data) {
+                     echo "<a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'];
+                     echo "</a><br>";
+                  }
+               }
+               echo "</td>";
 
                echo "</tr>\n";
 
