@@ -494,8 +494,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                INNER JOIN `glpi_softwares`
                       ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`)
                LEFT JOIN `glpi_softwareversions`
-                      ON (`glpi_softwarelicenses`.`softwareversions_id_buy`
-                           = `glpi_softwareversions`.`id`)
+                      ON (`glpi_softwarelicenses`.`softwareversions_id_use` = `glpi_softwareversions`.`id`
+                           OR (`glpi_softwarelicenses`.`softwareversions_id_use` = '0'
+                               AND `glpi_softwarelicenses`.`softwareversions_id_buy` = `glpi_softwareversions`.`id`)
+                           )
                LEFT JOIN `glpi_states` ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
                WHERE `glpi_softwarelicenses`.`computers_id` = '$computers_id' ";
       if (count($installed)) {
@@ -688,7 +690,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate,$canedit) {
       global $LANG, $CFG_GLPI;
 
-      $ID = $data["softwareversions_id_buy"];
+      if ($data["softwareversions_id_use"]>0) {
+         $ID = $data["softwareversions_id_use"];
+      } else {
+         $ID = $data["softwareversions_id_buy"];
+      }
       $multiple = false;
       $link_item=getItemTypeFormURL('SoftwareLicense');
       $link = $link_item."?id=".$data['id'];
