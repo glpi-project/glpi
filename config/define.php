@@ -201,6 +201,10 @@ define("AUTO_ASSIGN_HARDWARE_CATEGORY",1);
 define("AUTO_ASSIGN_CATEGORY_HARDWARE",2);
 
 
+// Ticket links
+define("LINK_TO",1);
+define("DUPLICATE_WITH",2);
+
 // MESSAGE TYPE
 define("INFO",0);
 define("ERROR",1);

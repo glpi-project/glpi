@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
 
 */
 } else if (isset($_POST['sla_delete'])) {
-   $track->check(-1,'w',$_POST);
+   $track->check($_POST["id"],'w');
 
    $_POST['slas_id']=0;
    $_POST['slalevels_id']=0;
@@ -96,6 +96,16 @@ if (isset($_POST["add"])) {
    $track->update($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+} else if (isset($_REQUEST['add_link'])) {
+   if (isset($_REQUEST['_link'])) {
+      $track->check($_REQUEST['_link']['tickets_id_1'],'w');
+
+      $ticket_ticket=new Ticket_Ticket();
+      $ticket_ticket->add($_REQUEST['_link']);
+   
+      Event::log($_REQUEST['_link']['tickets_id_1'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][119]);
+   }
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 }
 
