@@ -162,7 +162,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                case "warranty_duration" :
-                  Dropdown::showInteger("warranty_duration",0,0,120);
+                  Dropdown::showInteger("warranty_duration",0,0,120,1,array(-1 => $LANG['financial'][2]));
                   echo " ".$LANG['financial'][57]."&nbsp;&nbsp;";
                   break;
 
