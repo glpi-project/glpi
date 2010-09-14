@@ -486,8 +486,11 @@ class Config extends CommonDBTM {
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][116] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_auto_assign_to_tech", $CFG_GLPI["use_auto_assign_to_tech"]);
+      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][52] . "&nbsp;:</td><td>";
+      $autoassign=array(NO_AUTO_ASSIGN                => $LANG['choice'][0],
+                        AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
+                        AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
+      Dropdown::showFromArray('auto_assign_mode',$autoassign,array('value'=>$CFG_GLPI["auto_assign_mode"]));
       echo "</td>";
       echo "<td>" . $LANG['setup'][409] . "&nbsp;:</td><td>";
       Dropdown::show('DocumentCategory',
@@ -509,6 +512,7 @@ class Config extends CommonDBTM {
       echo "<td> " . $LANG['setup'][219] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
       echo "</td></tr>";
+
       echo "</table><br>";
 
       echo "<table class='tab_cadre_fixe'>";

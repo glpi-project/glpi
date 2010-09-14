@@ -195,6 +195,11 @@ define("MAIL_SMTP",1);
 define("MAIL_SMTPSSL",2);
 define("MAIL_SMTPTLS",3);
 
+// Auto assign mode for tickets
+define("NO_AUTO_ASSIGN",0);
+define("AUTO_ASSIGN_HARDWARE_CATEGORY",1);
+define("AUTO_ASSIGN_CATEGORY_HARDWARE",2);
+
 
 // MESSAGE TYPE
 define("INFO",0);
