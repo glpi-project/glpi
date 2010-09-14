@@ -99,14 +99,22 @@ if (isset($_POST["add"])) {
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 } else if (isset($_REQUEST['add_link'])) {
    if (isset($_REQUEST['_link'])) {
-      $track->check($_REQUEST['_link']['tickets_id_1'],'w');
-
       $ticket_ticket=new Ticket_Ticket();
+      $ticket_ticket->check(-1,'w',$_REQUEST['_link']);
+
       $ticket_ticket->add($_REQUEST['_link']);
    
       Event::log($_REQUEST['_link']['tickets_id_1'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][119]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+} else if (isset($_REQUEST['delete_link'])) {
+   $ticket_ticket=new Ticket_Ticket();
+   $ticket_ticket->check($_REQUEST['id'],'w');
+
+   $ticket_ticket->delete($_REQUEST);
+
+   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][120]);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 }
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {

@@ -1097,6 +1097,7 @@ $LANG['log'][116] = "association d'un ordinateur à une license";
 $LANG['log'][117] = "changement de license pour plusieurs ordinateurs";
 $LANG['log'][118] = "dissociation d'une license et d'ordinateurs";
 $LANG['log'][119] = "ajout d'un lien entre tickets";
+$LANG['log'][120] = "suppression d'un lien entre tickets";
 
 
 $LANG['login'][0]  = "Dernière connexion";
