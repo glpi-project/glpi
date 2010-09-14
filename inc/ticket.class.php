@@ -403,33 +403,6 @@ class Ticket extends CommonDBTM {
          unset($input["document"]);
       }
 
-      /*
-      // Old values for add followup in change
-      if ($CFG_GLPI["add_followup_on_update_ticket"]) {
-         $this->getFromDB($input["id"]);
-         $input["_old_assign_name"] = Ticket::getAssignName($this->fields["users_id_assign"],'User');
-         $input["_old_assign"]      = $this->fields["users_id_assign"];
-         $input["_old_assign_supplier_name"]  = Ticket::getAssignName($this->fields["suppliers_id_assign"],
-                                                             'Supplier');
-         $input["_old_groups_id_assign_name"] = Ticket::getAssignName($this->fields["groups_id_assign"],
-                                                              'Group');
-         $input["_old_ticketcategories_id"]  = $this->fields["ticketcategories_id"];
-         $input["_old_items_id"]       = $this->fields["items_id"];
-         $input["_old_itemtype"]       = $this->fields["itemtype"];
-         $input["_old_users_id"]       = $this->fields["users_id"];
-         $input["_old_recipient"]      = $this->fields["users_id_recipient"];
-         $input["_old_group"]          = $this->fields["groups_id"];
-         $input["_old_priority"]       = $this->fields["priority"];
-         $input["_old_status"]         = $this->fields["status"];
-         $input["_old_requesttypes_id"]= $this->fields["requesttypes_id"];
-         $input["_old_cost_time"]      = $this->fields["cost_time"];
-         $input["_old_cost_fixed"]     = $this->fields["cost_fixed"];
-         $input["_old_cost_material"]  = $this->fields["cost_material"];
-         $input["_old_date"]           = $this->fields["date"];
-         $input["_old_closedate"]      = $this->fields["closedate"];
-         $input["_old_soltype"]        = $this->fields["ticketsolutiontypes_id"];
-      }
-      */
       return $input;
    }
 
@@ -691,264 +664,21 @@ class Ticket extends CommonDBTM {
             }
          }
 
-/*
-         $global_mail_change_count=0;
-         if ($CFG_GLPI["add_followup_on_update_ticket"] && count($this->updates)) {
-            foreach ($this->updates as $key) {
-               switch ($key) {
-                  case "name" :
-                     $change_followup_content .= $LANG['mailing'][45]."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "content" :
-                     $change_followup_content .= $LANG['mailing'][46]."\n";
-                     break;
-
-                  case "ticketsolutiontypes_id" :
-                     $change_followup_content .= $LANG['mailing'][53]." : " .
-                                                 Dropdown::getDropdownName('glpi_ticketsolutiontypes',$this->input["_old_soltype"])." -> ".
-                                                 Dropdown::getDropdownName('glpi_ticketsolutiontypes',$this->fields["ticketsolutiontypes_id"])."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "solution" :
-                     if (!in_array('ticketsolutiontypes_id', $this->updates)) {
-                        $change_followup_content .= $LANG['mailing'][53];
-                     }
-                     break;
-
-                  case "date" :
-                     $change_followup_content .= $LANG['mailing'][48]."&nbsp;: ".
-                                                 $this->input["_old_date"]." -> ".$this->fields["date"]."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "closedate" :
-                     // if update status from an not closed status : no mail for change closedate
-                     if (!in_array("status",$this->updates) || !$this->input["status"]!="closed") {
-                        $change_followup_content .= $LANG['mailing'][49]."&nbsp;: ".
-                                                    $this->input["_old_closedate"]." -> ".
-                                                    $this->fields["closedate"]."\n";
-                        $global_mail_change_count++;
-                     }
-                     break;
-
-                  case "status" :
-                     $new_status=$this->fields["status"];
-                     $change_followup_content .= $LANG['mailing'][27]."&nbsp;: ".
-                                                 $this->getStatus($this->input["_old_status"])." -> ".
-                                                 $this->getStatus($new_status)."\n";
-                     if ($new_status=="closed") {
-                        $newinput["add_close"]="add_close";
-                     }
-                     if (in_array("closedate",$this->updates)) {
-                        $global_mail_change_count++; // Manage closedate
-                     }
-                     $global_mail_change_count++;
-                     break;
-
-                  case "users_id" :
-                     $users_id=new User;
-                     $users_id->getFromDB($this->input["_old_users_id"]);
-                     $old_users_id_name = $users_id->getName();
-                     $users_id->getFromDB($this->fields["users_id"]);
-                     $new_users_id_name = $users_id->getName();
-                     $change_followup_content .= $LANG['mailing'][18]."&nbsp;: $old_users_id_name -> ".
-                                                 $new_users_id_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "users_id_recipient" :
-                     $recipient=new User;
-                     $recipient->getFromDB($this->input["_old_recipient"]);
-                     $old_recipient_name = $recipient->getName();
-                     $recipient->getFromDB($this->fields["users_id_recipient"]);
-                     $new_recipient_name = $recipient->getName();
-                     $change_followup_content .= $LANG['mailing'][50]."&nbsp;: $old_recipient_name -> ".
-                                                 $new_recipient_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "groups_id" :
-                     $new_group=$this->fields["groups_id"];
-                     $old_group_name = str_replace("&nbsp;",$LANG['mailing'][109],
-                                                   Dropdown::getDropdownName("glpi_groups",$this->input["_old_group"]));
-                     $new_group_name = str_replace("&nbsp;",$LANG['mailing'][109],
-                                                   Dropdown::getDropdownName("glpi_groups",$new_group));
-                     $change_followup_content .= $LANG['mailing'][20].": ".$old_group_name." -> ".
-                                                 $new_group_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "priority" :
-                     $new_priority = $this->fields["priority"];
-                     $change_followup_content .= $LANG['mailing'][15]."&nbsp;: ".
-                                                 Ticket::getPriorityName($this->input["_old_priority"])." -> ".
-                                                 Ticket::getPriorityName($new_priority)."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "ticketcategories_id" :
-                     $new_ticketcategories_id = $this->fields["ticketcategories_id"];
-                     $old_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
-                                                      Dropdown::getDropdownName("glpi_ticketcategories",
-                                                                      $this->input["_old_ticketcategories_id"]));
-                     $new_category_name = str_replace("&nbsp;",$LANG['mailing'][100],
-                                                      Dropdown::getDropdownName("glpi_ticketcategories",
-                                                                      $new_ticketcategories_id));
-                     $change_followup_content .= $LANG['mailing'][14]."&nbsp;: ".
-                                                 $old_category_name." -> ".$new_category_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "requesttypes_id" :
-                     $old_requesttype_name = Dropdown::getDropdownName('glpi_requesttypes',
-                                                             $this->input["_old_requesttypes_id"]);
-                     $new_requesttype_name = Dropdown::getDropdownName('glpi_requesttypes',
-                                                             $this->fields["requesttypes_id"]);
-                     $change_followup_content .= $LANG['mailing'][21]."&nbsp;: ".
-                                                 $old_requesttype_name." -> ".
-                                                 $new_requesttype_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "items_id" :
-                  case "itemtype" :
-                     if (isset($already_done_computer_itemtype_update)) {
-                        break;
-                     } else {
-                        $already_done_computer_itemtype_update=true;
-                     }
-                     $old_item_name = $LANG['mailing'][107];
-                     if ($this->input["_old_itemtype"] && class_exists($this->input["_old_itemtype"])) {
-                        $item=new $this->input["_old_itemtype"]();
-                        if ($item->getFromDB($this->input["_old_items_id"])) {
-                           $old_item_name = $item->getName();
-                           if ($old_item_name==NOT_AVAILABLE || empty($old_item_name)) {
-                              $old_item_name = $LANG['mailing'][107];
-                           }
-                        }
-                     }
-                     $new_item_name=$LANG['mailing'][107];
-                     if ($this->fields["itemtype"] && class_exists($this->fields["itemtype"])) {
-                        $item = new $this->fields["itemtype"]();
-                        if ($item->getFromDB($this->fields["items_id"])) {
-                           $new_item_name = $item->getName();
-                           if ($new_item_name==NOT_AVAILABLE || empty($new_item_name)) {
-                              $new_item_name=$LANG['mailing'][107];
-                           }
-                        }
-                     }
-                     $change_followup_content .= $LANG['mailing'][17]."&nbsp;:
-                                                 $old_item_name -> ".$new_item_name."\n";
-                     if (in_array("items_id",$this->updates)) {
-                        $global_mail_change_count++;
-                     }
-                     if (in_array("itemtype",$this->updates)) {
-                        $global_mail_change_count++;
-                     }
-                     break;
-
-                  case "users_id_assign" :
-                     $new_assign_name = Ticket::getAssignName($this->fields["users_id_assign"],'User');
-                     if ($this->input["_old_assign"]==0) {
-                        $this->input["_old_assign_name"]=$LANG['mailing'][105];
-                     }
-                     $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
-                                                 $this->input["_old_assign_name"]." -> ".
-                                                 $new_assign_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "suppliers_id_assign" :
-                     $new_assign_supplier_name = Ticket::getAssignName($this->fields["suppliers_id_assign"],
-                                                               'Supplier');
-                     $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
-                                                 $this->input["_old_assign_supplier_name"]." -> ".
-                                                 $new_assign_supplier_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "groups_id_assign" :
-                     $new_groups_id_assign_name = Ticket::getAssignName($this->fields["groups_id_assign"],
-                                                                'Group');
-                     $change_followup_content .= $LANG['mailing'][12]."&nbsp;: ".
-                                                 $this->input["_old_groups_id_assign_name"]." -> ".
-                                                 $new_groups_id_assign_name."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "cost_time" :
-                     $change_followup_content .= $LANG['mailing'][42]."&nbsp;: ".
-                                                 formatNumber($this->input["_old_cost_time"])." -> ".
-                                                 formatNumber($this->fields["cost_time"])."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "cost_fixed" :
-                     $change_followup_content .= $LANG['mailing'][43]."&nbsp;: ".
-                                                 formatNumber($this->input["_old_cost_fixed"])." -> ".
-                                                 formatNumber($this->fields["cost_fixed"])."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "cost_material" :
-                     $change_followup_content .= $LANG['mailing'][44]."&nbsp;: ".
-                                                 formatNumber($this->input["_old_cost_material"])." -> ".
-                                                 formatNumber($this->fields["cost_material"])."\n";
-                     $global_mail_change_count++;
-                     break;
-
-                  case "use_email_notification" :
-                     if ($this->fields["use_email_notification"]) {
-                        $change_followup_content .= $LANG['mailing'][101]."\n";
-                     } else {
-                        $change_followup_content .= $LANG['mailing'][102]."\n";
-                     }
-                     $global_mail_change_count++;
-                     break;
-               }
-            }
+         // Setting a solution type means the ticket is solved
+         if ((in_array("ticketsolutiontypes_id",$this->updates)
+               || in_array("solution",$this->updates))
+               && $this->fields["status"]=="solved" ) {
+            Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
          }
-         */
+
          if (!in_array("users_id_assign",$this->updates)) {
             unset($this->input["_old_assign"]);
          }
-/*         $mail_send=false;
 
-         if (!empty($change_followup_content)) { // Add followup if not empty
-            $newinput=array();
-            $newinput["content"]    = addslashes($change_followup_content);
-            $newinput["users_id"]   = getLoginUserID();
-            $newinput["is_private"] = 0;
-            $newinput["hour"]       = $newinput["minute"] = 0;
-            $newinput["tickets_id"] = $this->fields["id"];
-            $newinput["type"]       = "update";
-            $newinput["_do_not_check_users_id"] = true;
-            // pass _old_assign if assig changed
-            if (isset($this->input["_old_assign"])) {
-               $newinput["_old_assign"] = $this->input["_old_assign"];
-            }
-
-            if (isset($this->input["status"])
-                && in_array("status",$this->updates)
-                && $this->input["status"]=="solved") {
-
-               $newinput["type"]="finish";
-            }
-            $fup=new TicketFollowup();
-            $fup->add($newinput);
-            $mail_send=true;
-         }
-*/
          // Clean content to mail
          $this->fields["content"] = stripslashes($this->fields["content"]);
-/*
-         if (!$mail_send
-             && count($this->updates)>$global_mail_change_count
-             && $CFG_GLPI["use_mailing"]) {
-*/
+
+
          if (count($this->updates)>0 && $CFG_GLPI["use_mailing"]) {
             $mailtype = "update";
 
@@ -974,8 +704,7 @@ class Ticket extends CommonDBTM {
                $this->fields["_old_assign"] = $this->input["_old_assign"];
             }
             NotificationEvent::raiseEvent($mailtype, $this);
-            //$mail = new Mailing($mailtype,$this,$user);
-            //$mail->send();
+
          }
       }
    }
@@ -3317,14 +3046,15 @@ class Ticket extends CommonDBTM {
 
       echo "<th colspan='2'>";
       if ($view_linked_tickets) {
-         echo $LANG['job'][55]."&nbsp;&nbsp;";
+         echo $LANG['job'][55];
 
-         $rand_linked_ticket = mt_rand();
-         echo "<a class='tracking' 
-            onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
-         echo $LANG['buttons'][8];
-         echo "</a>\n";
-
+         if ($canupdate) {
+            $rand_linked_ticket = mt_rand();
+            echo "&nbsp;&nbsp;<a class='tracking' 
+               onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
+            echo $LANG['buttons'][8];
+            echo "</a>\n";
+         }
 
       }
       echo "</th></tr>";
@@ -3370,14 +3100,16 @@ class Ticket extends CommonDBTM {
          echo "<td colspan='2'>";
          Ticket_Ticket::displayLinkedTicketsTo($ID);
 
-         echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
-         Ticket_Ticket::dropdownLinks('_link[link]');
-         echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
-         echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
-         echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
-         echo "&nbsp;";
-         echo "<input type='submit' name='add_link' value='".$LANG['buttons'][8]."' class='submit'></td>";
-         echo "</div>";
+         if ($canupdate) {
+            echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
+            Ticket_Ticket::dropdownLinks('_link[link]');
+            echo "&nbsp;".$LANG['job'][38]."&nbsp;".$LANG['common'][2]."&nbsp;:&nbsp;";
+            echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
+            echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
+            echo "&nbsp;";
+            echo "<input type='submit' name='add_link' value='".$LANG['buttons'][8]."' class='submit'></td>";
+            echo "</div>";
+         }
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";

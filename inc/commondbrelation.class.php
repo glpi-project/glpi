@@ -41,6 +41,7 @@ abstract class CommonDBRelation extends CommonDBTM {
    var $itemtype_2; // Type ref or field name (must start with itemtype)
    var $items_id_2; // Field name
 
+   var $check_entities = true;
 
       /**
    * Get search function for the class
@@ -129,31 +130,32 @@ abstract class CommonDBRelation extends CommonDBTM {
       }
 
       // Check entity compatibility
-      if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
-         // get items if needed : need to have entity set
-         if (!isset($item1->fields['id'])){
-            $item1->getFromDB($input[$this->items_id_1]);
+      if ($this->check_entities) {
+         if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
+            // get items if needed : need to have entity set
+            if (!isset($item1->fields['id'])){
+               $item1->getFromDB($input[$this->items_id_1]);
+            }
+            if (!isset($item2->fields['id'])){
+               $item2->getFromDB($input[$this->items_id_2]);
+            }
+            if ($item1->getEntityID() == $item2->getEntityID()) {
+               $checkentity = true;
+            } else if ($item1->isRecursive()
+                     && in_array($item1->getEntityID(),
+                                    getAncestorsOf("glpi_entities",$item2->getEntityID()))) {
+               $checkentity = true;
+            } else if ($item2->isRecursive()
+                     && in_array($item2->getEntityID(),
+                                 getAncestorsOf("glpi_entities",$item1->getEntityID()))) {
+               $checkentity = true;
+            } else {
+               // $checkentity is false => return
+               return false;
+            }
          }
-         if (!isset($item2->fields['id'])){
-            $item2->getFromDB($input[$this->items_id_2]);
-         }
-         if ($item1->getEntityID() == $item2->getEntityID()) {
-            $checkentity = true;
-         } else if ($item1->isRecursive()
-                    && in_array($item1->getEntityID(),
-                                 getAncestorsOf("glpi_entities",$item2->getEntityID()))) {
-            $checkentity = true;
-         } else if ($item2->isRecursive()
-                    && in_array($item2->getEntityID(),
-                                getAncestorsOf("glpi_entities",$item1->getEntityID()))) {
-            $checkentity = true;
-         } else {
-            // $checkentity is false => return
-            return false;
-         }
-      } else {
-         $checkentity = true;
       }
+
       // can write one item is enough
       if ($item1->can($input[$this->items_id_1],'w')
           || $item2->can($input[$this->items_id_2],'w')) {

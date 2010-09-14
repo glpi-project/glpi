@@ -38,9 +38,23 @@ if (!defined('GLPI_ROOT')){
 }
 
 /// Class Ticket links
-class Ticket_Ticket extends CommonDBTM {
+class Ticket_Ticket extends CommonDBRelation {
 
 
+   // From CommonDBRelation
+   public $itemtype_1 = 'Ticket';
+   public $items_id_1 = 'tickets_id_1';
+   public $itemtype_2 = 'Ticket';
+   public $items_id_2 = 'tickets_id_2';
+
+   public $check_entities=false;
+
+   function canCreateItem() {
+      $ticket = new Ticket();
+      print_r($this);
+      return $ticket->can($this->fields['tickets_id_1'],'w') 
+            || $ticket->can($this->fields['tickets_id_2'],'w');
+   }
    /**
     * Get linked tickets to a ticket
     *
@@ -65,9 +79,11 @@ class Ticket_Ticket extends CommonDBTM {
 
       foreach ($DB->request($sql) as $data) {
          if ($data['tickets_id_1']!=$ID) {
-            $tickets[$data['tickets_id_1']]=$data['link'];
+            $tickets[$data['id']]=array('link'       => $data['link'],
+                                        'tickets_id' => $data['tickets_id_1']);
          } else {
-            $tickets[$data['tickets_id_2']]=$data['link'];
+            $tickets[$data['id']]=array('link'       => $data['link'],
+                                        'tickets_id' => $data['tickets_id_2']);
          }
       }
 
@@ -84,23 +100,35 @@ class Ticket_Ticket extends CommonDBTM {
     *
    **/
    static function displayLinkedTicketsTo ($ID) {
-      global $DB,$LANG;
+      global $DB,$LANG,$CFG_GLPI;
 
-      // Make new database object and fill variables
-      if (empty($ID)) {
-         return false;
-      }
       $tickets=self::getLinkedTicketsTo($ID);
 
+      $canupdate = haveRight('update_ticket','1');
+
       $ticket=new Ticket();
-      foreach ($tickets as $tickets_id => $link) {
-         echo self::getLinkName($link)."&nbsp;";
-         if (!$_SESSION['glpiis_ids_visible']) {
-            echo $LANG['common'][2]."&nbsp;".$tickets_id."&nbsp;:&nbsp;";
+      if (count($tickets)) {
+         foreach ($tickets as $linkID => $data) {
+            echo self::getLinkName($data['link'])."&nbsp;";
+            if (!$_SESSION['glpiis_ids_visible']) {
+               echo $LANG['common'][2]."&nbsp;".$data['tickets_id']."&nbsp;:&nbsp;";
+            }
+            if ($ticket->getFromDB($data['tickets_id'])) {
+               echo $ticket->getLink();
+               echo  "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$ticket->fields["status"].".png\"
+                                 alt='".Ticket::getStatus($ticket->fields["status"])."' title='".
+                                 Ticket::getStatus($ticket->fields["status"])."'>";
+               if ($canupdate) {
+                  echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
+                        "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID&amp;tickets_id=$ID\" 
+                           title='".$LANG['reservation'][6]."'>
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" 
+                        alt='".$LANG['buttons'][6]."' title='".$LANG['buttons'][6]."'></a>";
+               }
+            }
+   
+            echo '<br>';
          }
-         $ticket->getFromDB($tickets_id);
-         echo $ticket->getLink();
-         echo '<br>';
       }
    }
    
@@ -146,6 +174,33 @@ class Ticket_Ticket extends CommonDBTM {
       }
       
       return $input;
+   }
+
+  /**
+    * Affect the same solution for duplicates tickets
+    *
+    *@param $ID ID of the ticket id
+    *@return nothing do the change
+    *
+   **/
+   static function manageLinkedTicketsOnSolved ($ID) {
+      
+      $ticket = new Ticket();
+
+      if ($ticket->getfromDB($ID)) {
+         $input['solution']               = addslashes($ticket->fields['solution']);
+         $input['ticketsolutiontypes_id'] = addslashes($ticket->fields['ticketsolutiontypes_id']);
+
+         $tickets=self::getLinkedTicketsTo($ID);
+         if (count($tickets)) {
+            foreach ($tickets as $data) {
+               $input['id']=$data['tickets_id'];
+               if ($ticket->can($input['id'],'w')) {
+                  $ticket->update($input);
+               }
+            }
+         }
+      }
    }
 
 
