@@ -455,14 +455,25 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
-         echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
+         echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
          echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] .
                "/front/computer_softwareversion.form.php\">";
+         echo $LANG['Menu'][4]."&nbsp;:";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "<input type='submit' name='install' value='" .$LANG['buttons'][4]."' class='submit'>";
          echo "</form>";
-         echo "</td></tr>\n";
+         echo "</td>";
+         echo "<td class='cneter' clospan='2'>";
+         echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] .
+               "/front/computer_softwarelicense.form.php\">";
+         echo $LANG['software'][11]."&nbsp;:";
+         echo "<input type='hidden' name='computers_id' value='$computers_id'>";
+         Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
+         echo "<input type='submit' name='add' value='" .$LANG['buttons'][8]."' class='submit'>";
+         echo "</form>";
+         echo "</td>";
+         echo "</tr>\n";
       }
       echo "<tr><th colspan='5'>";
       if ($DB->numrows($result)==1) {

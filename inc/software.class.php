@@ -540,6 +540,38 @@ class Software extends CommonDBTM {
    }
 
    /**
+    * Make a select box for license software to associate
+    *
+    *
+    * @param $myname select name
+    * @param $massiveaction is it a massiveaction select ?
+    * @param $entity_restrict Restrict to a defined entity
+    * @return nothing (print out an HTML select box)
+    */
+   static function dropdownLicenseToInstall($myname,$entity_restrict,$massiveaction=0) {
+      global $CFG_GLPI;
+
+      $rand=mt_rand();
+      $use_ajax=false;
+
+      if ($CFG_GLPI["use_ajax"]) {
+         if (countElementsInTableForEntity("glpi_softwarelicenses",$entity_restrict)
+             > $CFG_GLPI["ajax_limit_count"]) {
+            $use_ajax=true;
+         }
+      }
+
+      $params=array('searchText'       => '__VALUE__',
+                    'myname'           => $myname,
+                    'entity_restrict'  => $entity_restrict);
+
+      $default="<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE." </option></select>";
+      ajaxDropdown($use_ajax,"/ajax/dropdownSelectSoftwareLicense.php",$params,$default,$rand);
+
+      return $rand;
+   }
+
+   /**
     * Create a new software
     * @param name the software's name
     * @param manufacturer the software's manufacturer
