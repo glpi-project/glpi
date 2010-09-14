@@ -289,9 +289,9 @@ class NetworkPort extends CommonDBChild {
                      AND `itemtype` = '$itemtype'
                ORDER BY `name`, `logical_number`";
       if ($result = $DB->query($query)) {
+         echo "<div class='spaced'>";
          if ($DB->numrows($result) != 0) {
             $colspan = 9;
-            echo "<div class='spaced'>";
             if ($withtemplate != 2) {
                if ($canedit) {
                   $colspan++;
@@ -305,7 +305,7 @@ class NetworkPort extends CommonDBChild {
             if ($DB->numrows($result)==1) {
                echo $LANG['networking'][12];
             } else {
-                  echo $LANG['networking'][13];
+                  echo $LANG['networking'][11];
             }
             echo "</th></tr>\n";
 
@@ -378,10 +378,14 @@ class NetworkPort extends CommonDBChild {
             if ($canedit && $withtemplate != 2) {
                echo "</form>";
             }
-            echo "</div>";
+
+         } else {
+            echo "<table class='tab_cadre_fixe'><tr><th>".$LANG['networking'][10]."</th></tr></table>";
          }
+         echo "</div>";
       }
    }
+
 
    /**
    * Display a connection of a networking port
