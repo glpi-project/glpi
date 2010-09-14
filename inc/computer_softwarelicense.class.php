@@ -53,7 +53,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     *
     * @return number of installations
     */
-   static function countForLicense($softwarelicenses_id, $entity='') {
+   static function countForLicnse($softwarelicenses_id, $entity='') {
       global $DB;
 
       $query = "SELECT COUNT(`glpi_computers_softwarelicenses`.`id`)
@@ -203,6 +203,25 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                               AND glpi_computers.is_template=0");
 
       echo "<div class='center'>";
+
+      if ($canedit) {
+         echo "<form method='post' action=\"".
+                  $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php\">";
+         echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2 center'>";
+         echo "<td>";
+         Dropdown::show('Computer', array('entity'       => $license->fields['entities_id'],
+                                          'entity_sons'  => $license->fields['is_recursive']));
+   
+         echo "</td><td><input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit' >";
+         echo "</td></tr>";
+   
+         echo "</table></form>";
+      }
+
+
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['search'][15]."</th></tr>";
@@ -221,7 +240,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        `glpi_users`.`name` AS username,
                        `glpi_softwarelicenses`.`name` AS license,
                        `glpi_softwarelicenses`.`id` AS vID,
-                       `glpi_softwarelicenses`.`softwares_id` AS sID,
                        `glpi_softwarelicenses`.`name` AS vername,
                        `glpi_entities`.`completename` AS entity,
                        `glpi_locations`.`completename` AS location,
@@ -251,19 +269,19 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       if ($result=$DB->query($query)) {
          if ($data=$DB->fetch_assoc($result)) {
-            $softwares_id = $data['sID'];
 
             $soft = new Software;
-            $showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
+            $soft->getFromDB($license->fields['softwares_id']);
+            $showEntity = ($license->isRecursive());
             $title=$LANG['help'][31] ." = ". $soft->fields["name"];
             $title .= " - " . $data["vername"];
+
             initNavigateListItems('Computer',$title);
             $sort_img="<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
             if ($canedit) {
                echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".
                       $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php\">";
-               echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
                echo "<table class='tab_cadre_fixehov'><tr>";
                echo "<th>&nbsp;</th>";
             } else {
@@ -333,7 +351,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                openArrowMassive("softinstall".$rand."",true);
                Dropdown::show('SoftwareLicense',
-                     array('condition' => "`glpi_softwarelicenses`.`softwares_id` = '$softwares_id'",
+                     array('condition' => "`glpi_softwarelicenses`.`softwares_id` = '".$license->fields['softwares_id']."'",
                            'used'      => array($searchID)));
 
                echo "&nbsp;<input type='submit' name='move' value=\"".

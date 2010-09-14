@@ -1081,6 +1081,16 @@ $LANG['log'][98]  = "ajout d'un élément";
 $LANG['log'][99]  = "modification d'un élément";
 $LANG['log'][100] = "suppression d'un élément";
 
+$LANG['log'][110] = "installation d'un logiciel";
+$LANG['log'][111] = "désinstallation d'un logiciel";
+$LANG['log'][112] = "désinstallation de plusieurs logiciels";
+$LANG['log'][113] = "installation de plusieurs logiciels";
+$LANG['log'][114] = "désinstallation d'un logiciel sur plusieurs ordinateurs";
+$LANG['log'][115] = "changement de la version des logiciels installés";
+$LANG['log'][116] = "association d'un ordinateur à une license";
+$LANG['log'][117] = "changement de license pour plusieurs ordinateurs";
+$LANG['log'][118] = "dissociation d'une license et d'ordinateurs";
+
 
 $LANG['login'][0]  = "Dernière connexion";
 $LANG['login'][1]  = "Se reconnecter";

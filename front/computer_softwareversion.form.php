@@ -47,7 +47,7 @@ if (isset($_REQUEST["install"])){
                      'softwareversions_id' => $_REQUEST["softwareversions_id"]));
 
       Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
-               $_SESSION["glpiname"]." installed software.");
+               $_SESSION["glpiname"]." ".$LANG['log'][110]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -57,7 +57,7 @@ if (isset($_REQUEST["install"])){
    $inst->delete(array('id'=>$_GET["id"]));
 
    Event::log($_GET["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." uninstalled software.");
+              $_SESSION["glpiname"]." ".$LANG['log'][111]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 // From Computer - Software tab  (installed software)
@@ -69,7 +69,7 @@ if (isset($_REQUEST["install"])){
       }
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." uninstalled software.");
+              $_SESSION["glpiname"]." ".$LANG['log'][112]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["massinstall"]) && isset($_POST["computers_id"])) {
@@ -83,7 +83,7 @@ if (isset($_REQUEST["install"])){
       }
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." installed software.");
+              $_SESSION["glpiname"]." ".$LANG['log'][113]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 // From installation list on Software form
@@ -94,7 +94,7 @@ if (isset($_REQUEST["install"])){
       if ($val == 1) {
          $inst->delete(array('id' => $key));
          Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    $_SESSION["glpiname"]." uninstalled software for several computers.");
+                    $_SESSION["glpiname"]." ".$LANG['log'][114]);
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -105,7 +105,7 @@ if (isset($_REQUEST["install"])){
       if ($val == 1 && $_POST['versionID'] > 0) {
          $inst->upgrade($key, $_POST['versionID']);
          Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    $_SESSION["glpiname"]." change version of versions installed on computers.");
+                    $_SESSION["glpiname"]." ".$LANG['log'][115]);
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);

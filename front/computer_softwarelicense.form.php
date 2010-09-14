@@ -39,105 +39,43 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $csl = new Computer_SoftwareLicense();
 
-if (isset($_POST["move"])) {
+if (isset($_REQUEST["add"])) {
    checkRight("software", "w");
-   if ($_POST['softwarelicenses_id'] > 0 ){
-      foreach ($_POST["item"] as $key => $val) {
+   if ($_REQUEST['softwarelicenses_id'] > 0 ){
+      $csl->add($_REQUEST);
+      Event::log($_REQUEST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
+               $_SESSION["glpiname"]." ".$LANG['log'][116]);
+
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+
+// From association list
+} else if (isset($_REQUEST["move"])) {
+   checkRight("software", "w");
+   if ($_REQUEST['softwarelicenses_id'] > 0 ){
+      foreach ($_REQUEST["item"] as $key => $val) {
          if ($val == 1) {
-            $csl->upgrade($key, $_POST['softwarelicenses_id']);
-            Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                       $_SESSION["glpiname"]." move computers from a license to another.");
+            $csl->upgrade($key, $_REQUEST['softwarelicenses_id']);
+            Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
+                       $_SESSION["glpiname"]." ".$LANG['log'][117]);
          }
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
 // From association list
-} else if (isset($_POST["delete"])) {
+} else if (isset($_REQUEST["delete"])) {
    checkRight("software", "w");
 
-   foreach ($_POST["item"] as $key => $val) {
+   foreach ($_REQUEST["item"] as $key => $val) {
       if ($val == 1) {
          $csl->delete(array('id' => $key));
       }
    }
-   Event::log($_POST["softwares_id"], "software", 5, "inventory",
-              $_SESSION["glpiname"]." delete association with a software license for several computers.");
+   Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
+              $_SESSION["glpiname"]." ".$LANG['log'][118]);
 
    glpi_header($_SERVER['HTTP_REFERER']);
 }
-
-// From Computer - Software tab (add form or from not installed license)
-/*if (isset($_REQUEST["install"])){
-   checkRight("software","w");
-   if (isset($_REQUEST["softwarelicenses_id"]) && isset($_REQUEST["computers_id"])) {
-      $inst->add(array('computers_id'        => $_REQUEST["computers_id"],
-                     'softwarelicenses_id' => $_REQUEST["softwarelicenses_id"]));
-
-      Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
-               $_SESSION["glpiname"]." installed software.");
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-// From Computer - Software tab (installed software)
-} else if (isset($_GET["uninstall"])) {
-   checkRight("software","w");
-   $inst->delete(array('id'=>$_GET["id"]));
-
-   Event::log($_GET["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." uninstalled software.");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-// From Computer - Software tab  (installed software)
-} else if (isset($_POST["massuninstall"])) {
-   checkRight("software","w");
-   foreach ($_POST as $key => $val) {
-      if (preg_match("/softlicense_([0-9]+)/",$key,$ereg)) {
-         $inst->delete(array('id' => $ereg[1]));
-      }
-   }
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." uninstalled software.");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["massinstall"]) && isset($_POST["computers_id"])) {
-   checkRight("software","w");
-   foreach ($_POST as $key => $val) {
-      if (preg_match("/softlicense_([0-9]+)/",$key,$ereg)) {
-         if ($ereg[1] > 0) {
-            $inst->add(array('computers_id'        => $_POST["computers_id"],
-                             'softwarelicenses_id' => $ereg[1]));
-         }
-      }
-   }
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." installed software.");
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-// From installation list on Software form
-} else if (isset($_POST["deleteinstalls"])) {
-   checkRight("software","w");
-
-   foreach ($_POST["item"] as $key => $val) {
-      if ($val == 1) {
-         $inst->delete(array('id' => $key));
-         Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    $_SESSION["glpiname"]." uninstalled software for several computers.");
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-} else if (isset($_POST["moveinstalls"])) {
-   checkRight("software","w");
-   foreach ($_POST["item"] as $key => $val) {
-      if ($val == 1 && $_POST['licenseID'] > 0) {
-         $inst->upgrade($key, $_POST['licenseID']);
-         Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                    $_SESSION["glpiname"]." change license of licenses installed on computers.");
-      }
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-
-}*/
 displayErrorAndDie('Lost');
 ?>
