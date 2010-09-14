@@ -267,7 +267,7 @@ class NetworkPort extends CommonDBChild {
 
       // Show Add Form
       if ($canedit && (empty($withtemplate) || $withtemplate !=2)) {
-         echo "\n<div class='center'><table class='tab_cadre_fixe'>";
+         echo "\n<div class='firstbloc'><table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<a href=\"" . $CFG_GLPI["root_doc"] .
                "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype\"><strong>";
@@ -278,9 +278,7 @@ class NetworkPort extends CommonDBChild {
                "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=1\"><strong>";
          echo $LANG['networking'][46];
          echo "</strong></a></td></tr>\n";
-         echo "</table></div><br>\n";
-      } else {
-         echo "<br>";
+         echo "</table></div>\n";
       }
 
       initNavigateListItems('NetworkPort',$item->getTypeName()." = ".$item->getName());
@@ -293,6 +291,7 @@ class NetworkPort extends CommonDBChild {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 0) {
             $colspan = 9;
+            echo "<div class='spaced'>";
             if ($withtemplate != 2) {
                if ($canedit) {
                   $colspan++;
@@ -300,11 +299,15 @@ class NetworkPort extends CommonDBChild {
                         action=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php\">\n";
                }
             }
-            echo "<div class='center'><table class='tab_cadre_fixe'>\n";
+            echo "<table class='tab_cadre_fixe'>\n";
             echo "<tr><th colspan='$colspan'>\n";
             echo $DB->numrows($result) . " ";
-            echo $LANG['networking'][13];
-            echo "&nbsp;:</th></tr>\n";
+            if ($DB->numrows($result)==1) {
+               echo $LANG['networking'][12];
+            } else {
+                  echo $LANG['networking'][13];
+            }
+            echo "</th></tr>\n";
 
             echo "<tr>";
             if ($withtemplate != 2 && $canedit) {
@@ -365,18 +368,17 @@ class NetworkPort extends CommonDBChild {
                }
                echo "</td></tr>\n";
             }
-            echo "</table></div>\n";
+            echo "</table>\n";
 
             if ($canedit && $withtemplate != 2) {
                openArrowMassive("networking_ports$rand", true);
                Dropdown::showForMassiveAction('NetworkPort');
                closeArrowMassive();
-            } else {
-               echo "<br>";
             }
             if ($canedit && $withtemplate != 2) {
                echo "</form>";
             }
+            echo "</div>";
          }
       }
    }

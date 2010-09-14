@@ -3861,7 +3861,7 @@ class Ticket extends CommonDBTM {
       $number = $DB->numrows($result);
 
       // Ticket for the item
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
       if ($number > 0) {
          initNavigateListItems('Ticket',$item->getTypeName()." = ".$item->getName());
 
@@ -3913,7 +3913,7 @@ class Ticket extends CommonDBTM {
             self::showShort($data, 0);
          }
       }
-      echo "</table></div><br>";
+      echo "</table></div>";
 
       // Tickets for linked items
       if ($subquery = $item->getSelectLinkedItem()) {
@@ -3926,7 +3926,7 @@ class Ticket extends CommonDBTM {
          $result = $DB->query($query);
          $number = $DB->numrows($result);
 
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$LANG['joblist'][28]."</th></tr>";
          if ($number > 0) {
             self::commonListHeader(HTML_OUTPUT);
@@ -3938,7 +3938,7 @@ class Ticket extends CommonDBTM {
          } else {
             echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
          }
-         echo "</table></div><br>";
+         echo "</table></div>";
 
       } // Subquery for linked item
    }

@@ -45,11 +45,23 @@ class Peripheral  extends CommonDBTM {
    public $dohistory = true;
    protected $forward_entity_to=array('Infocom','ReservationItem','NetworkPort');
 
-   static function getTypeName() {
+
+/**
+ * Name of the type
+ *
+ * @param $nb : number of item in the type
+ *
+ * @return $LANG
+ */
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][16];
+      }
       return $LANG['help'][29];
    }
+
 
    function canCreate() {
       return haveRight('peripheral', 'w');

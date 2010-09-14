@@ -202,7 +202,14 @@ class ComputerDisk extends CommonDBChild {
 
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'><tr>";
-         echo "<th colspan='7'>".$LANG['computers'][8]."</th></tr>";
+         echo "<tr><th colspan='7'>";
+         if  ($DB->numrows($result)==1) {
+            echo $LANG['computers'][0];
+         } else {
+            echo $LANG['computers'][8];
+         }
+         echo "</th></tr>";
+
          if ($DB->numrows($result)) {
             echo "<tr><th>".$LANG['common'][16]."</th>";
             echo "<th>".$LANG['computers'][6]."</th>";
@@ -241,10 +248,12 @@ class ComputerDisk extends CommonDBChild {
                echo "</td>";
 
                addToNavigateListItems('ComputerDisk',$data['id']);
+
             }
          } else {
             echo "<tr><th colspan='7'>".$LANG['search'][15]."</th></tr>";
          }
+
       if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
          echo "<tr class='tab_bg_2'><th colspan='7'>";
          echo "<a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".

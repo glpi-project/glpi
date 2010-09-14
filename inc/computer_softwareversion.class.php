@@ -443,7 +443,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $result = $DB->query($query);
       $i = 0;
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
          echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
          echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] .
@@ -454,7 +454,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</form>";
          echo "</td></tr>\n";
       }
-      echo "<tr><th colspan='5'>" . $LANG['software'][17] . "&nbsp;:</th></tr>";
+      echo "<tr><th colspan='5'>";
+      if ($DB->numrows($result)==1) {
+         echo $LANG['software'][16];
+      } else {
+         echo $LANG['software'][17];
+      }
+      echo "</th></tr>";
 
       $cat = -1;
 
@@ -514,7 +520,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          self::displayCategoryFooter(NULL, $rand, $canedit);
       }
 
-      echo "</table></div><br>\n";
+      echo "</table></div>\n";
 
    }
 

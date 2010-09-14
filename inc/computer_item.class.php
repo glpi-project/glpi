@@ -355,31 +355,36 @@ class Computer_Item extends CommonDBRelation{
    static function showForComputer($target, Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI, $LANG;
 
-      $items = array('Printer'    => $LANG['computers'][39],
-                     'Monitor'    => $LANG['computers'][40],
-                     'Peripheral' => $LANG['computers'][46],
-                     'Phone'      => $LANG['computers'][55]);
-
       $ID = $comp->fields['id'];
       $canedit = $comp->can($ID,'w');
 
-      foreach ($items as $itemtype => $title) {
-         if (!class_exists($itemtype)) {
-            unset($items[$itemtype]);
-         }
+      $items = array('Printer', 'Monitor', 'Peripheral', 'Phone');
+      $datas = array();
+      foreach ($items as $itemtype) {
          $item = new $itemtype();
-         if (!$item->canView()) {
-            unset($items[$itemtype]);
+         if ($item->canView()) {
+            $query = "SELECT *
+                      FROM `glpi_computers_items`
+                      WHERE `computers_id` = '$ID'
+                            AND `itemtype` = '".$itemtype."'";
+
+            $result = $DB->query($query);
+            if ($result) {
+               $nb = $DB->numrows($result);
+               $datas[$itemtype]['result'] = $result;
+               $datas[$itemtype]['title'] = $item->getTypeName($nb);
+            }
          }
       }
-      if (count($items)) {
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='".max(2,count($items))."'>".$LANG['connect'][0]."&nbsp;:</th></tr>";
 
-         echo "<tr class='tab_bg_1'>";
+      if (count($datas)) {
+         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>".$LANG['connect'][2]."&nbsp;:</th></tr>";
+
+         //echo "<tr class='tab_bg_1'>";
          $items_displayed = 0;
-         $nbperline = 3;
-         foreach ($items as $itemtype=>$title) {
+         $nbperline = 2;
+         foreach ($datas as $itemtype => $data) {
             $used = array();
 
             // Line change
@@ -391,9 +396,9 @@ class Computer_Item extends CommonDBRelation{
                echo "<tr>";
                $count = 0;
                $header_displayed = 0;
-               foreach ($items as $tmp_title) {
+               foreach ($datas as $tmp_data) {
                   if ($count>=$items_displayed  && $header_displayed<$nbperline) {
-                     echo "<th>".$tmp_title."&nbsp;:</th>";
+                     echo "<th>".$tmp_data['title']."&nbsp;:</th>";
                      $header_displayed++;
                   }
                   $count++;
@@ -407,75 +412,69 @@ class Computer_Item extends CommonDBRelation{
             }
 
             echo "<td class='center'>";
-            $query = "SELECT *
-                      FROM `glpi_computers_items`
-                      WHERE `computers_id` = '$ID'
-                            AND `itemtype` = '".$itemtype."'";
 
-            if ($result=$DB->query($query)) {
-               $resultnum = $DB->numrows($result);
-               $item = new $itemtype();
-               if ($resultnum>0) {
-                  echo "<table width='100%'>";
-                  for ($i=0; $i < $resultnum; $i++) {
-                     $tID = $DB->result($result, $i, "items_id");
-                     $connID = $DB->result($result, $i, "id");
+            $resultnum = $DB->numrows($data['result']);
+            $item = new $itemtype();
+            if ($resultnum>0) {
+               echo "<table width='100%'>";
+               for ($i=0; $i < $resultnum; $i++) {
+                  $tID = $DB->result($data['result'], $i, "items_id");
+                  $connID = $DB->result($data['result'], $i, "id");
 
-                     $item->getFromDB($tID);
-                     $used[] = $tID;
+                  $item->getFromDB($tID);
+                  $used[] = $tID;
 
-                     echo "<tr ".($item->isDeleted()?"class='tab_bg_2_2'":"").">";
-                     echo "<td class='center'><strong>".$item->getLink()."</strong>";
-                     echo " - ".Dropdown::getDropdownName("glpi_states", $item->getField('state'));
-                     echo "</td><td>".$item->getField('serial');
-                     echo "</td><td>".$item->getField('otherserial');
-                     echo "</td><td>";
-                     if ($canedit && (empty($withtemplate) || $withtemplate != 2)) {
-                        echo "<td class='center'>";
-                        echo "<a href=\"".$CFG_GLPI["root_doc"].
-                               "/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;" .
-                               "disconnect=1&amp;withtemplate=".$withtemplate."\">";
-                        echo "<strong>".$LANG['buttons'][10]."</strong></a></td>";
-                     }
-                     echo "</tr>";
+                  echo "<tr ".($item->isDeleted()?"class='tab_bg_2_2'":"").">";
+                  echo "<td class='center'><strong>".$item->getLink()."</strong>";
+                  echo " - ".Dropdown::getDropdownName("glpi_states", $item->getField('state'));
+                  echo "</td><td>".$item->getField('serial');
+                  echo "</td><td>".$item->getField('otherserial');
+                  echo "</td><td>";
+                  if ($canedit && (empty($withtemplate) || $withtemplate != 2)) {
+                     echo "<td class='center'>";
+                     echo "<a href=\"".$CFG_GLPI["root_doc"].
+                            "/front/computer.form.php?computers_id=$ID&amp;id=$connID&amp;" .
+                            "disconnect=1&amp;withtemplate=".$withtemplate."\">";
+                     echo "<strong>".$LANG['buttons'][10]."</strong></a></td>";
                   }
-                  echo "</table>";
-
-               } else {
-                  switch ($itemtype) {
-                     case 'Printer' :
-                        echo $LANG['computers'][38];
-                        break;
-
-                     case 'Monitor' :
-                        echo $LANG['computers'][37];
-                        break;
-
-                     case 'Peripheral' :
-                        echo $LANG['computers'][47];
-                        break;
-
-                     case 'Phone' :
-                        echo $LANG['computers'][54];
-                        break;
-                  }
-                  echo "<br>";
+                  echo "</tr>";
                }
-               if ($canedit) {
-                  if(empty($withtemplate) || $withtemplate != 2) {
-                     echo "<form method='post' action=\"$target\">";
-                     echo "<input type='hidden' name='computers_id' value='$ID'>";
-                     echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
-                     if (!empty($withtemplate)) {
-                        echo "<input type='hidden' name='_no_history' value='1'>";
-                     }
-                     Computer_Item::dropdownConnect($itemtype, 'Computer', "items_id",
-                                                    $comp->fields["entities_id"], $withtemplate,
-                                                    $used);
-                     echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
-                            class='submit'>";
-                     echo "</form>";
+               echo "</table>";
+
+            } else {
+               switch ($itemtype) {
+                  case 'Printer' :
+                     echo $LANG['computers'][38];
+                     break;
+
+                  case 'Monitor' :
+                     echo $LANG['computers'][37];
+                     break;
+
+                  case 'Peripheral' :
+                     echo $LANG['computers'][47];
+                     break;
+
+                  case 'Phone' :
+                     echo $LANG['computers'][54];
+                     break;
+               }
+               echo "<br>";
+            }
+            if ($canedit) {
+               if(empty($withtemplate) || $withtemplate != 2) {
+                  echo "<form method='post' action=\"$target\">";
+                  echo "<input type='hidden' name='computers_id' value='$ID'>";
+                  echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
+                  if (!empty($withtemplate)) {
+                     echo "<input type='hidden' name='_no_history' value='1'>";
                   }
+                  Computer_Item::dropdownConnect($itemtype, 'Computer', "items_id",
+                                                 $comp->fields["entities_id"], $withtemplate,
+                                                 $used);
+                  echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
+                         class='submit'>";
+                  echo "</form>";
                }
             }
             echo "</td>";
@@ -486,7 +485,7 @@ class Computer_Item extends CommonDBRelation{
             $items_displayed++;
          }
          echo "</tr>";
-         echo "</table></div><br>";
+         echo "</table></div>";
       }
    }
 
