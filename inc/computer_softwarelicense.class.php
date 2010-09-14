@@ -395,7 +395,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    *
    * @return nothing
    */
-   function GetLicenseForInstallation($computers_id,$softwareversions_id) {
+   static function GetLicenseForInstallation($computers_id,$softwareversions_id) {
       global $DB;
 
       $lic=array();
@@ -405,10 +405,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                   ON (`glpi_softwarelicenses`.`id`
                         = `glpi_computers_softwarelicenses`.`softwarelicenses_id`
                       AND `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id')
-              WHERE `glpi_softwarelicenses`.`softwareversions_id_buy`";
+              WHERE `glpi_softwarelicenses`.`softwareversions_id_use` = '$softwareversions_id'
+                    OR `glpi_softwarelicenses`.`softwareversions_id_buy` = '$softwareversions_id'";
 
       foreach ($DB->request($sql) as $ID => $data) {
+         $lic[$data['id']]=$data;
       }
+      return $lic;
    }
 
 }
