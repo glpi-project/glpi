@@ -149,19 +149,21 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $start = 0;
       }
 
-      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
-         // manage several param like location,compname
-         $tmp  = explode(",",$_REQUEST["sort"]);
-         $sort = "`".implode("`,`",$tmp)."`";
-      } else {
-         $sort = "`entity`, `version`";
-      }
 
       if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
+
+      if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+         // manage several param like location,compname :  order first
+         $tmp  = explode(",",$_REQUEST["sort"]);
+         $sort = "`".implode("` $order,`",$tmp)."`";
+      } else {
+         $sort = "`entity` $order, `version`";
+      }
+
 
       // Total Number of events
       if ($crit=="softwares_id") {
@@ -184,7 +186,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                AND glpi_computers.is_template=0");
       }
 
-      echo "<br><div class='center'>";
+      echo "<div class='center'>";
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['search'][15]."</th></tr>";
