@@ -663,6 +663,43 @@ function update078to080($output='HTML') {
    $DB->query($query) or die("0.80 drop nl_be langage" .
                                  $LANG['update'][90] . $DB->error());
 
+
+   if (!FieldExists('glpi_knowbaseitemcategories','entities_id')) {
+      $query = "ALTER TABLE `glpi_knowbaseitemcategories`
+                    ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
+                    ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
+                    ADD INDEX `entities_id` (`entities_id`),ADD INDEX `is_recursive` (`is_recursive`)";
+      $DB->query($query) or die("0.80 add entities_id,is_recursive in glpi_knowbaseitemcategories" .
+                                 $LANG['update'][90] . $DB->error());
+
+      // Set existing categories recursive global
+      $query = "UPDATE `glpi_knowbaseitemcategories` SET `is_recursive` = '1'";
+      $DB->query($query) or die("0.80 set value of is_recursive in glpi_knowbaseitemcategories" .
+                                $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi`.`glpi_knowbaseitemcategories` DROP INDEX `unicity` , 
+               ADD UNIQUE `unicity` ( `entities_id`, `knowbaseitemcategories_id` , `name` ) ";
+      $DB->query($query) or die("0.80 update unicity index on glpi_knowbaseitemcategories" .
+                                $LANG['update'][90] . $DB->error());
+
+
+   }
+
+   if (!FieldExists('glpi_configs','use_auto_assign_to_tech')) {
+      $query = "ALTER TABLE `glpi_configs`
+                    CHANGE `use_auto_assign_to_tech` `auto_assign_mode` INT( 11 ) NOT NULL DEFAULT '1'";
+      $DB->query($query) or die("0.80 alter use_auto_assign_to_tech in glpi_configs " .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists('glpi_entitydatas','auto_assign_mode')) {
+      $query = "ALTER TABLE `glpi_entitydatas`
+                    ADD `auto_assign_mode` INT( 11 ) NOT NULL DEFAULT '-1'";
+      $DB->query($query) or die("0.80 add auto_assign_mode in glpi_entitydatas " .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -698,26 +735,6 @@ function update078to080($output='HTML') {
       }
    }
 
-   if (!FieldExists('glpi_knowbaseitemcategories','entities_id')) {
-      $query = "ALTER TABLE `glpi_knowbaseitemcategories`
-                    ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
-                    ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
-                    ADD INDEX `entities_id` (`entities_id`),ADD INDEX `is_recursive` (`is_recursive`)";
-      $DB->query($query) or die("0.80 add entities_id,is_recursive in glpi_knowbaseitemcategories" .
-                                 $LANG['update'][90] . $DB->error());
-
-      // Set existing categories recursive global
-      $query = "UPDATE `glpi_knowbaseitemcategories` SET `is_recursive` = '1'";
-      $DB->query($query) or die("0.80 set value of is_recursive in glpi_knowbaseitemcategories" .
-                                $LANG['update'][90] . $DB->error());
-
-      $query = "ALTER TABLE `glpi`.`glpi_knowbaseitemcategories` DROP INDEX `unicity` , 
-               ADD UNIQUE `unicity` ( `entities_id`, `knowbaseitemcategories_id` , `name` ) ";
-      $DB->query($query) or die("0.80 update unicity index on glpi_knowbaseitemcategories" .
-                                $LANG['update'][90] . $DB->error());
-
-
-   }
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

@@ -479,6 +479,17 @@ class EntityData extends CommonDBTM {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'><td  colspan='2'>" . $LANG['setup'][52] . "&nbsp;:</td>";
+      echo "<td  colspan='2'>";
+      $autoassign=array(-1                             => $LANG['setup'][731],
+                        NO_AUTO_ASSIGN                => $LANG['choice'][0],
+                        AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
+                        AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
+
+      Dropdown::showFromArray('auto_assign_mode',$autoassign,array('value'=>$entdata->fields["auto_assign_mode"]));
+
+      echo "</td></tr>";
+
       echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][18] . "&nbsp;:</td>";

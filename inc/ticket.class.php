@@ -1092,32 +1092,73 @@ class Ticket extends CommonDBTM {
          }
       }
 
-      if ($CFG_GLPI["use_auto_assign_to_tech"]) {
+      // Manage auto assign
+      $entitydata = new EntityData;
+      $auto_assign_mode=$CFG_GLPI['auto_assign_mode'];
+      if ($entitydata->getFromDB($input['entities_id'])) {
+         $auto_assign_mode=$entitydata->getField('auto_assign_mode');
+         // Set global config value
+         if ($auto_assign_mode == -1) {
+            $auto_assign_mode=$CFG_GLPI['auto_assign_mode'];
+         }
+      }
+      switch ($auto_assign_mode) {
+         case NO_AUTO_ASSIGN :
+            break;
 
-         // Auto assign tech from item
-         if ($input["users_id_assign"]==0 && $item!=NULL) {
-
-            if ($item->isField('users_id_tech')) {
-               $input["users_id_assign"] = $item->getField('users_id_tech');
-               if ($input["users_id_assign"]>0) {
-                  $input["status"] = "assign";
+         case AUTO_ASSIGN_HARDWARE_CATEGORY :
+            // Auto assign tech from item
+            if ($input["users_id_assign"]==0 && $item!=NULL) {
+   
+               if ($item->isField('users_id_tech')) {
+                  $input["users_id_assign"] = $item->getField('users_id_tech');
+                  if ($input["users_id_assign"]>0) {
+                     $input["status"] = "assign";
+                  }
                }
             }
-         }
-
-         // Auto assign tech/group from Category
-         if ($input['ticketcategories_id']>0
-             && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
-
-            $cat = new TicketCategory();
-            $cat->getFromDB($input['ticketcategories_id']);
-            if (!$input['users_id_assign'] && $cat->isField('users_id')) {
-               $input['users_id_assign'] = $cat->getField('users_id');
+   
+            // Auto assign tech/group from Category
+            if ($input['ticketcategories_id']>0
+               && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
+   
+               $cat = new TicketCategory();
+               $cat->getFromDB($input['ticketcategories_id']);
+               if (!$input['users_id_assign'] && $cat->isField('users_id')) {
+                  $input['users_id_assign'] = $cat->getField('users_id');
+               }
+               if (!$input['groups_id_assign'] && $cat->isField('groups_id')) {
+                  $input['groups_id_assign'] = $cat->getField('groups_id');
+               }
             }
-            if (!$input['groups_id_assign'] && $cat->isField('groups_id')) {
-               $input['groups_id_assign'] = $cat->getField('groups_id');
+            break;
+
+         case AUTO_ASSIGN_CATEGORY_HARDWARE :
+            // Auto assign tech/group from Category
+            if ($input['ticketcategories_id']>0
+               && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
+   
+               $cat = new TicketCategory();
+               $cat->getFromDB($input['ticketcategories_id']);
+               if (!$input['users_id_assign'] && $cat->isField('users_id')) {
+                  $input['users_id_assign'] = $cat->getField('users_id');
+               }
+               if (!$input['groups_id_assign'] && $cat->isField('groups_id')) {
+                  $input['groups_id_assign'] = $cat->getField('groups_id');
+               }
             }
-         }
+            // Auto assign tech from item
+            if ($input["users_id_assign"]==0 && $item!=NULL) {
+   
+               if ($item->isField('users_id_tech')) {
+                  $input["users_id_assign"] = $item->getField('users_id_tech');
+                  if ($input["users_id_assign"]>0) {
+                     $input["status"] = "assign";
+                  }
+               }
+            }
+
+            break;
       }
 
       // Process Business Rules
