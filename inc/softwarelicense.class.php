@@ -76,29 +76,9 @@ class SoftwareLicense extends CommonDBTM {
          unset ($input['expire']);
       }
 
-//       if (!isset($input['computers_id']) || $input['computers_id'] <= 0) {
-//          $input['computers_id'] = -1;
-//       } else {
-//          // Number is 1 for affected license
-//          $input['number']=1;
-//       }
 
       return $input;
    }
-
-//    function prepareInputForUpdate($input) {
-// 
-//       if (isset($input['computers_id']) && $input['computers_id'] == 0) {
-//          $input['computers_id'] = -1;
-//       }
-//       if ((isset($input['computers_id']) && $input['computers_id'] > 0)
-//           || (!isset($input['computers_id']) && isset($this->fields['computers_id'])
-//               && $this->fields['computers_id']>0)) {
-//          // Number is 1 for affected license
-//          $input['number']=1;
-//       }
-//       return $input;
-//    }
 
    function post_addItem() {
       global $CFG_GLPI;
@@ -236,24 +216,10 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['tracking'][29]."&nbsp;:</td>";
       echo "<td>";
-/*      if ($this->fields["computers_id"]>0) {
-         echo "1  (".$LANG['software'][50].")";
-      } else {*/
-         Dropdown::showInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));
-//       }
+      Dropdown::showInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));
       echo "</td></tr>\n";
 
-//       echo "<tr class='tab_bg_1'>";
-//       echo "<td>".$LANG['software'][50]."&nbsp;:</td>";
-//       echo "<td>";
-//       if ($this->fields["number"]==1) {
-//          Dropdown::show('Computer', array('value'        => $this->fields["computers_id"],
-//                                           'entity'       => $this->fields['entities_id'],
-//                                           'entity_sons'  => $this->fields['is_recursive']));
-//       } else {
-//          echo $LANG['software'][51];
-//       }
-//       echo "</td></tr>\n";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['software'][32]."&nbsp;:</td>";
@@ -620,7 +586,6 @@ class SoftwareLicense extends CommonDBTM {
             echo "<th>".($sort=="`expire`"?$sort_img:"").
                       "<a href='javascript:reloadTab(\"sort=expire&amp;order=".
                         ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][32]."</a></th>";
-//             echo "<th>".$LANG['help'][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG['software'][50] is too long) ??
             echo "</tr>\n";
             $tot_assoc=0;
             for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
@@ -646,37 +611,6 @@ class SoftwareLicense extends CommonDBTM {
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
                echo "<td>".convDate($data['expire'])."</td>";
-//                if ($data['computers_id']>0 && $computer->getFromDB($data['computers_id'])) {
-//                   $link = $computer->fields['name'];
-//                   if (empty($link) || $_SESSION['glpiis_ids_visible']) {
-//                      $link .= " (".$computer->fields['id'].")";
-//                   }
-//                   if ($computer->fields['is_deleted']) {
-//                      $link .= " (".$LANG['common'][28].")";
-//                   }
-//                   echo "<td><a href='computer.form.php?id=".$data['computers_id']."'>".$link."</a>";
-// 
-//                   // search installed version name
-//                   // should be same as name of used_version, except for multiple installation
-//                   $sql = "SELECT `glpi_softwareversions`.`name`
-//                           FROM `glpi_softwareversions`,
-//                                `glpi_computers_softwareversions`
-//                           WHERE `glpi_softwareversions`.`softwares_id` = '$softwares_id'
-//                                  AND `glpi_computers_softwareversions`.`softwareversions_id`
-//                                       =`glpi_softwareversions`.`id`
-//                                  AND `glpi_computers_softwareversions`.`computers_id`
-//                                       ='".$data['computers_id']."'
-//                           ORDER BY `name`";
-// 
-//                   $installed='';
-//                   foreach ($DB->request($sql) as $inst) {
-//                      $installed .= (empty($installed)?'':', ').$inst['name'];
-//                   }
-//                   echo " (".(empty($installed) ? $LANG['common'][89] : $installed).")";
-//                   echo "</td>";
-//                } else {
-//                   echo "<td>&nbsp;</td>";
-//                }
                echo "</tr>";
 
                if ($data['number']<0) {
