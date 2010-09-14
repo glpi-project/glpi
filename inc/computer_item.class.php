@@ -523,14 +523,22 @@ class Computer_Item extends CommonDBRelation{
          $compids[$data['id']] = $data['computers_id'];
       }
 
-      echo "<br><div class='center'><table width='50%' class='tab_cadre'>";
-      echo "<tr><th colspan='2'>".$LANG['connect'][0]."&nbsp;: ".count($compids)."</th></tr>";
+      echo "<div class='spaced'><table width='50%' class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>";
+      if (count($compids)==0) {
+         echo $LANG['connect'][4];
+      } else if (count($compids)==1) {
+         echo count($compids)." ".$LANG['connect'][3];
+      }else {
+         echo count($compids)." ".$LANG['connect'][2];
+      }
+      echo "</th></tr>";
 
       if (count($compids)>0) {
          foreach ($compids as $key => $compid) {
             $comp->getFromDB($compid);
             echo "<tr><td class='b tab_bg_1".($comp->getField('is_deleted')?"_2":"")."'>";
-            echo $LANG['help'][25]."&nbsp;: ".$comp->getLink()."</td>";
+            echo $LANG['help'][25]."&nbsp;:&nbsp;".$comp->getLink()."</td>";
             echo "<td class='tab_bg_2".($comp->getField('is_deleted')?"_2":"")." center b'>";
             if ($canedit) {
                echo "<a href=\"$target?disconnect=1&amp;computers_id=$compid&amp;id=$key\">".
@@ -542,7 +550,7 @@ class Computer_Item extends CommonDBRelation{
          }
 
       } else {
-         echo "<tr><td class='tab_bg_1 b'>".$LANG['help'][25]."&nbsp;:";
+         echo "<tr><td class='tab_bg_1 b'>".$LANG['help'][25]."&nbsp;:&nbsp;";
          echo "<i>".$LANG['connect'][1]."</i></td>";
          echo "<td class='tab_bg_2' class='center'>";
          if ($canedit) {

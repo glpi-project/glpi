@@ -359,12 +359,14 @@ $LANG['computers'][52] = "Version du système d'exploitation";
 $LANG['computers'][53] = "Service pack";
 $LANG['computers'][54] = "Pas de téléphone connecté";
 $LANG['computers'][55] = "Téléphone(s)";
-$LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut l'ordinateur.";
+$LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut de l'ordinateur.";
 
 
 $LANG['connect'][0]  = "Connexion(s) directe(s)";
 $LANG['connect'][1]  = "Non connecté.";
 $LANG['connect'][2]  = "Connexions directes";
+$LANG['connect'][3]  = "Connexion directe";
+$LANG['connect'][4]  = "Aucune connexion directe";
 
 $LANG['connect'][15] = "Mise à jour automatique des éléments suivants";
 $LANG['connect'][16] = "Attention !! Les éléments suivants des deux matériels ne correspondent pas";
