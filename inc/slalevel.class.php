@@ -172,7 +172,7 @@ class SlaLevel extends RuleTicket {
          echo "</table></div>";
 
          if ($canedit) {
-            openArrowMassive("calendarsegment_form$rand",true);
+            openArrowMassive("slalevel_form$rand",true);
             closeArrowMassive('delete', $LANG['buttons'][6]);
          }
          echo "</form>";
