@@ -104,10 +104,10 @@ class NotificationTargetTicket extends NotificationTarget {
 
       if ($event !='alertnotclosed') {
          return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
+      } else {
+         return parent::getSubjectPrefix();
       }
-      parent::getSubjectPrefix();
    }
-
 
    function getSpecificTargets($data,$options) {
 
@@ -531,7 +531,13 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                $this->getEntity());
          $events = $this->getAllEvents();
-         $this->datas['##ticket.action##']      = $events[$event];
+
+         if ($event != 'validation') {
+            $this->datas['##ticket.action##']      = $events[$event];
+         } else {
+            $this->datas['##ticket.action##'] = $LANG['validation'][0].' '.
+               TicketValidation::getStatus($options['validation_status']);
+         }
          $this->datas['##ticket.storestatus##'] = $this->obj->getField('status');
          $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
          $this->datas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
@@ -855,7 +861,7 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##ticket.author.phone##']  = $user->getField('phone');
                $tmp['##ticket.author.phone2##'] = $user->getField('phone2');
             }
-            
+
             if ($ticket['users_id_assign']) {
                $user_tmp = new User;
                $user_tmp->getFromDB($ticket['users_id_assign']);
@@ -863,7 +869,7 @@ class NotificationTargetTicket extends NotificationTarget {
             } else {
                $tmp['##ticket.assigntouser##'] = '';
             }
-            
+
             if ($ticket['groups_id_assign']) {
                $tmp['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
                                                             $ticket['groups_id_assign']);
@@ -878,7 +884,7 @@ class NotificationTargetTicket extends NotificationTarget {
             } else {
                $tmp['##ticket.assigntosupplier##'] = '';
             }
-            
+
             $this->datas['tickets'][] = $tmp;
          }
       }

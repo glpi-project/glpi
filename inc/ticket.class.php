@@ -2569,7 +2569,7 @@ class Ticket extends CommonDBTM {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups() == 0
-                                        && $this->numberOfTasks() == 0  
+                                        && $this->numberOfTasks() == 0
                                         && $this->fields['users_id'] === getLoginUserID());
       echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
             $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
@@ -2874,7 +2874,7 @@ class Ticket extends CommonDBTM {
                   echo $item->getTypeName()." ".$item->getNameID();
                }
             }
-         } 
+         }
          self::dropdownMyDevices($this->fields["users_id"],$this->fields["entities_id"],
                                     $this->fields["itemtype"], $this->fields["items_id"]);
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
@@ -4775,20 +4775,9 @@ class Ticket extends CommonDBTM {
       if (!$CFG_GLPI["use_mailing"]) {
          return 0;
       }
-      // Recherche des entités
       $tot = 0;
 
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
-/*         $query = "SELECT `glpi_tickets`.*
-                   FROM `glpi_tickets`
-                   LEFT JOIN `glpi_alerts` ON (`glpi_tickets`.`id` = `glpi_alerts`.`items_id`
-                                               AND `glpi_alerts`.`itemtype` = 'Ticket'
-                                               AND `glpi_alerts`.`type`='".Alert::NOTCLOSED."')
-                   WHERE `glpi_tickets`.`entities_id` = '".$entity."'
-                         AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
-                         AND `glpi_tickets`.`closedate` IS NULL
-                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()
-                         AND `glpi_alerts`.`date` IS NULL";*/
          $query = "SELECT `glpi_tickets`.*
                    FROM `glpi_tickets`
                    WHERE `glpi_tickets`.`entities_id` = '".$entity."'
@@ -4804,16 +4793,6 @@ class Ticket extends CommonDBTM {
             if (NotificationEvent::raiseEvent('alertnotclosed', new self(),
                                               array('tickets'     => $tickets,
                                                     'entities_id' => $entity))) {
-
-// To be clean : do not mark ticket as already send : always send all
-//                $alert = new Alert();
-//                $input["itemtype"] = 'Ticket';
-//                $input["type"] = Alert::NOTCLOSED;
-//                foreach ($tickets as $ticket) {
-//                   $input["items_id"] = $ticket['id'];
-//                   $alert->add($input);
-//                   unset($alert->fields['id']);
-//                }
 
                $tot += count($tickets);
                $task->addVolume(count($tickets));
