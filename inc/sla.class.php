@@ -93,9 +93,11 @@ class SLA extends CommonDBTM {
 
       if ($ID > 0) {
          $this->check($ID,'r');
+         $rowspan = 4;
       } else {
          // Create item
          $this->check(-1,'w');
+         $rowspan = 3;
       }
 
       $this->showTabs($options);
@@ -106,10 +108,10 @@ class SLA extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
 
-
-      echo "<td rowspan='3'>";
+      
+      echo "<td rowspan='".$rowspan."'>";
       echo $LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='3'>
+      echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
 
       echo "</td></tr>";
