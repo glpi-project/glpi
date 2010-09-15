@@ -96,7 +96,7 @@ class RuleAction extends CommonDBChild {
 
       $sql = "SELECT *
               FROM `".$this->getTable()."`
-              WHERE `rules_id` = '$ID'
+              WHERE `".$this->items_id."` = '$ID'
               ORDER BY `id`";
       $result = $DB->query($sql);
 
@@ -121,7 +121,7 @@ class RuleAction extends CommonDBChild {
       $input["action_type"]=$action;
       $input["field"]=$field;
       $input["value"]=$value;
-      $input["rules_id"]=$ruleid;
+      $input[$this->items_id]=$ruleid;
       $this->add($input);
    }
 
