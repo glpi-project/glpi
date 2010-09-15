@@ -82,7 +82,7 @@ $LANG['buttons'][22] = "Purger";
 $LANG['buttons'][23] = "Voir";
 $LANG['buttons'][24] = "Monter";
 $LANG['buttons'][25] = "Descendre";
-
+$LANG['buttons'][26] = "Envoyer";
 $LANG['buttons'][27] = "Page courante en PDF";
 $LANG['buttons'][28] = "Page courante en SLK";
 $LANG['buttons'][29] = "Toutes les pages en PDF";
