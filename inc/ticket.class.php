@@ -2540,7 +2540,7 @@ class Ticket extends CommonDBTM {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups() == 0
-                                        && $this->numberOfTasks() == 0
+                                        && $this->numberOfTasks() == 0  
                                         && $this->fields['users_id'] === getLoginUserID());
 
       echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
@@ -2896,7 +2896,7 @@ class Ticket extends CommonDBTM {
                   echo $item->getTypeName()." ".$item->getNameID();
                }
             }
-         }
+         } 
          self::dropdownMyDevices($this->fields["users_id"],$this->fields["entities_id"],
                                     $this->fields["itemtype"], $this->fields["items_id"]);
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
@@ -4883,6 +4883,16 @@ class Ticket extends CommonDBTM {
             if (NotificationEvent::raiseEvent('alertnotclosed', new self(),
                                               array('tickets'     => $tickets,
                                                     'entities_id' => $entity))) {
+// To be clean : do not mark ticket as already send : always send all
+//                $alert = new Alert();
+//                $input["itemtype"] = 'Ticket';
+//                $input["type"] = Alert::NOTCLOSED;
+//                foreach ($tickets as $ticket) {
+//                   $input["items_id"] = $ticket['id'];
+//                   $alert->add($input);
+//                   unset($alert->fields['id']);
+//                }
+
 // To be clean : do not mark ticket as already send : always send all
 //                $alert = new Alert();
 //                $input["itemtype"] = 'Ticket';

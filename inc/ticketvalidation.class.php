@@ -224,7 +224,8 @@ class TicketValidation  extends CommonDBChild {
 
       if ($job->getFromDB($this->fields["tickets_id"])) {
          if (count($this->updates) && $CFG_GLPI["use_mailing"]) {
-            $options = array('validation_id' => $this->fields["id"]);
+            $options = array('validation_id'     => $this->fields["id"],
+                             'validation_status' => $this->fields["status"]);
             $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
          }
          // Add log entry in the ticket
