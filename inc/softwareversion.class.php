@@ -284,7 +284,7 @@ class SoftwareVersion extends CommonDBChild {
       }
       $canedit = $soft->can($softwares_id,"w");
 
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
 
       $query = "SELECT `glpi_softwareversions`.*,
                        `glpi_states`.`name` AS sname
@@ -312,13 +312,14 @@ class SoftwareVersion extends CommonDBChild {
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>";
                echo $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
-               echo "<td class='right'>".$data['sname']."</td>";
-              echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',$data['operatingsystems_id'])."</td>";
-               echo "<td class='right'>$nb</td>";
+               echo "<td>".$data['sname']."</td>";
+               echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',
+                                                                   $data['operatingsystems_id'])."</td>";
+               echo "<td class='right'>$nb&nbsp;&nbsp;</td>";
                echo "<td>".$data['comment']."</td></tr>\n";
             }
             echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".$LANG['common'][33]."</td>";
-            echo "<td class='right b'>$tot</td><td>";
+            echo "<td class='right b'>$tot&nbsp;&nbsp;</td><td>";
             if ($canedit) {
                echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
                       $LANG['software'][7]."</a>";

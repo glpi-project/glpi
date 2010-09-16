@@ -507,7 +507,7 @@ class SoftwareLicense extends CommonDBTM {
                                      "glpi_softwarelicenses.softwares_id = $softwares_id " .
                                              getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses',
                                                                         '', '', true));
-      echo "<br><div class='center'>";
+      echo "<div class='spaced'>";
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['search'][15]."</th></tr>\n";
@@ -558,34 +558,37 @@ class SoftwareLicense extends CommonDBTM {
             echo "<table class='tab_cadre_fixehov'><tr>";
             echo "<th>&nbsp;</th>";
             echo "<th>".($sort=="`name`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=name&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=name&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
 
             if ($software->isRecursive()) {
                // Ereg to search entity in string for match default order
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").
-                         "<a href='javascript:reloadTab(\"sort=entity&amp;order=".
-                           ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0]."</a></th>";
+                    "<a href='javascript:reloadTab(\"sort=entity&amp;order=".
+                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0].
+                    "</a></th>";
             }
             echo "<th>".($sort=="`serial`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
             echo "<th>".($sort=="`number`"?$sort_img:"").
-                     "<a href='javascript:reloadTab(\"sort=number&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['tracking'][29]."</a></th>";
+                   "<a href='javascript:reloadTab(\"sort=number&amp;order=".
+                     ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['tracking'][29].
+                   "</a></th>";
             echo "<th>".$LANG['software'][9]."</th>";
             echo "<th>".($sort=="`typename`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][17]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][17]."</a></th>";
             echo "<th>".($sort=="`buyname`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=buyname&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][1]."</a></th>";
+                  "<a href='javascript:reloadTab(\"sort=buyname&amp;order=".
+                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][1].
+                  "</a></th>";
             echo "<th>".($sort=="`usename`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=usename&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][2]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=usename&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][2]."</a></th>";
             echo "<th>".($sort=="`expire`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=expire&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][32]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=expire&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['software'][32]."</a></th>";
             echo "</tr>\n";
             $tot_assoc=0;
             for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
@@ -603,14 +606,15 @@ class SoftwareLicense extends CommonDBTM {
                   echo "<td>".$data['entity']."</td>";
                }
                echo "<td>".$data['serial']."</td>";
-               echo "<td class='right'>".($data['number']>0?$data['number']:$LANG['software'][4])."</td>";
-               $nb_assoc=Computer_SoftwareLicense::countForLicense($data['id']);
-               $tot_assoc+=$nb_assoc;
-               echo "<td class='right'>$nb_assoc</td>";
+               echo "<td class='right'>".
+                      ($data['number']>0?$data['number']."&nbsp;&nbsp;":$LANG['software'][4])."</td>";
+               $nb_assoc   = Computer_SoftwareLicense::countForLicense($data['id']);
+               $tot_assoc += $nb_assoc;
+               echo "<td class='right'>$nb_assoc&nbsp;&nbsp;</td>";
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
-               echo "<td>".convDate($data['expire'])."</td>";
+               echo "<td class='center'>".convDate($data['expire'])."</td>";
                echo "</tr>";
 
                if ($data['number']<0) {
@@ -623,8 +627,8 @@ class SoftwareLicense extends CommonDBTM {
             }
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='".($software->isRecursive()?4:3)."' class='right b'>".$LANG['common'][33];
-            echo "</td><td class='right b'>".($tot>0?$tot:$LANG['software'][4])."</td>";
-            echo "<td class='right b'>$tot_assoc</td>";
+            echo "</td><td class='right b'>".($tot>0?$tot."&nbsp;&nbsp;":$LANG['software'][4])."</td>";
+            echo "<td class='right b'>$tot_assoc&nbsp;&nbsp;</td>";
             echo "<td colspan='4' class='center'>";
             if ($canedit) {
                echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
