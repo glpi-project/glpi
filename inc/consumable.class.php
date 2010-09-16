@@ -257,7 +257,7 @@ class Consumable extends CommonDBTM {
             }
             $out .= "&nbsp;:&nbsp;$old</span></div>";
          } else {
-            $out .= $LANG['common'][33]."&nbsp;: $total   ";
+            $out .= $LANG['common'][33]." : $total   ";
             if ($unused>1) {
                $out .= $LANG['consumables'][14];
             } else {
@@ -360,17 +360,14 @@ class Consumable extends CommonDBTM {
          echo "<div class='firstbloc'>";
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/consumable.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center'>";
+         echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='add_several' value='".$LANG['buttons'][8]."' class='submit'>";
-         echo "<input type='hidden' name='tID' value=\"$ID\">\n";
-         echo "&nbsp;&nbsp;";
+         echo "<input type='hidden' name='tID' value='$ID'>\n";
+         echo "<span class='small_space'>";
          Dropdown::showInteger('to_add',1,1,100);
-         echo "&nbsp;&nbsp;";
-         echo $LANG['consumables'][16];
-         echo "</td></tr>";
-         echo "</table>";
-         echo "</form></div>";
+         echo "</span>&nbsp;";
+         echo $LANG['consumables'][16]."</td></tr>";
+         echo "</table></form></div>";
       }
    }
 
@@ -408,12 +405,11 @@ class Consumable extends CommonDBTM {
                echo self::getCount($tID, -1);
                echo "</th></tr>";
             } else { // Old
-               echo "</th><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
+               echo "<tr><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
             }
             $i = 0;
             echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
             echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
-
             if ($show_old) {
                echo "<th>".$LANG['common'][34]."</th>";
             }

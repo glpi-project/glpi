@@ -530,8 +530,9 @@ class CartridgeItem extends CommonDBTM {
       $number = $DB->numrows($result);
       $i = 0;
 
+      echo "<div class='spaced'>";
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='3'>".$LANG['cartridges'][32]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 
@@ -557,7 +558,7 @@ class CartridgeItem extends CommonDBTM {
          echo "<input type='submit' name='addtype' value='".$LANG['buttons'][8]."' class='submit'>";
          echo "</td></tr>";
       }
-      echo "</table></div></form>"    ;
+      echo "</table></div></form>";
    }
 
 

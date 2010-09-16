@@ -176,9 +176,9 @@ $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
 $LANG['cartridges'][11] = "Jet d'encre";
 $LANG['cartridges'][12] = "Type de cartouche";
-$LANG['cartridges'][13] = "Neuve(s)";
-$LANG['cartridges'][14] = "Utilisée(s)";
-$LANG['cartridges'][15] = "Usagée(s)";
+$LANG['cartridges'][13] = "Neuves";
+$LANG['cartridges'][14] = "Utilisées";
+$LANG['cartridges'][15] = "Usagées";
 $LANG['cartridges'][16] = "Cartouche(s)";
 
 $LANG['cartridges'][20] ="Neuve";
@@ -194,7 +194,7 @@ $LANG['cartridges'][29] = "Fin de vie";
 $LANG['cartridges'][32] = "Modèles d'imprimantes compatibles";
 $LANG['cartridges'][33] = "Cartouches utilisées";
 $LANG['cartridges'][34] = "Pas de cartouche libre";
-$LANG['cartridges'][35] = "Cartouche(s) usagée(s)";
+$LANG['cartridges'][35] = "Cartouches usagées";
 
 $LANG['cartridges'][37] = "Ruban";
 
@@ -400,6 +400,7 @@ $LANG['consumables'][26] = "Date utilisation";
 
 $LANG['consumables'][32] = "Donner";
 
+$LANG['consumables'][34] = "Consommable utilisé";
 $LANG['consumables'][35] = "Consommables utilisés";
 $LANG['consumables'][36] = "Lieu de stockage";
 $LANG['consumables'][37] = "Réintégrer dans le stock";
@@ -915,6 +916,7 @@ $LANG['joblist'][19] = "En cours (Planifié)";
 
 $LANG['joblist'][21] = "En cours";
 
+$LANG['joblist'][25] = "Ticket sur les éléments liés";
 $LANG['joblist'][26] = "En attente";
 $LANG['joblist'][27] = "Courriel pour le suivi";
 $LANG['joblist'][28] = "Tickets sur les éléments liés";

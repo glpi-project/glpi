@@ -3731,7 +3731,13 @@ class Ticket extends CommonDBTM {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='10'>".$LANG['joblist'][28]."</th></tr>";
+         echo "<tr><th colspan='10'>";
+         if ($number>1) {
+            echo $LANG['joblist'][28];
+         } else {
+            echo $LANG['joblist'][25];
+         }
+         echo "</th></tr>";
          if ($number > 0) {
             self::commonListHeader(HTML_OUTPUT);
 
