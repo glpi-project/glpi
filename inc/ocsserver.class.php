@@ -2580,8 +2580,8 @@ class OcsServer extends CommonDBTM {
                $querySearchLockedMonitor = "SELECT `items_id`
                                             FROM `glpi_computers_items`
                                             WHERE `id` = '$key'";
-               $resultSearch = $DB->query($querySearchLockedMonitor);
-               if ($DB->numrows($resultSearch) == 0) {
+               $resultSearchMonitor = $DB->query($querySearchLockedMonitor);
+               if ($DB->numrows($resultSearchMonitor) == 0) {
                   $header = true;
                   if ($first) {
                      echo "<tr><th colspan='2'>" . $LANG['ocsng'][30] . "&nbsp;:</th></tr>\n";
@@ -2618,15 +2618,15 @@ class OcsServer extends CommonDBTM {
          }
 
          // Search locked peripherals
-         $locked_printer = importArrayFromDB($data["import_peripheral"]);
+         $locked_periph = importArrayFromDB($data["import_peripheral"]);
          $first = true;
 
-         foreach ($locked_printer as $key => $val) {
+         foreach ($locked_periph as $key => $val) {
             $querySearchLockedPeriph = "SELECT `items_id`
                                         FROM `glpi_computers_items`
                                         WHERE `id` = '$key'";
-            $resultSearchPrinter = $DB->query($querySearchLockedPeriph);
-            if ($DB->numrows($resultSearchPrinter) == 0) {
+            $resultSearchPeriph = $DB->query($querySearchLockedPeriph);
+            if ($DB->numrows($resultSearchPeriph) == 0) {
                $header = true;
                if ($first) {
                   echo "<tr><th colspan='2'>" . $LANG['ocsng'][32] . "</th></tr>\n";
@@ -2645,7 +2645,6 @@ class OcsServer extends CommonDBTM {
          if (!in_array(self::IMPORT_TAG_072,$locked_ip)) {
             $locked_ip = OcsServer::migrateImportIP($ID,$locked_ip);
          }
-
          $first = true;
          foreach ($locked_ip as $key => $val) {
             if ($key>0) {
@@ -2695,15 +2694,15 @@ class OcsServer extends CommonDBTM {
          }
 
          // Search locked computerdisks
-         $locked = importArrayFromDB($data["import_disk"]);
+         $locked_disk = importArrayFromDB($data["import_disk"]);
          $first = true;
 
-         foreach ($locked as $key => $val) {
-            $querySearchLocked = "SELECT `id`
-                                  FROM `glpi_computerdisks`
-                                  WHERE `id` = '$key'";
-            $resultSearch = $DB->query($querySearchLocked);
-            if ($DB->numrows($resultSearch) == 0) {
+         foreach ($locked_disk as $key => $val) {
+            $querySearchLockedDisk = "SELECT `id`
+                                       FROM `glpi_computerdisks`
+                                       WHERE `id` = '$key'";
+            $resultSearchDisk = $DB->query($querySearchLockedDisk);
+            if ($DB->numrows($resultSearchDisk) == 0) {
                $header = true;
                if ($first) {
                   echo "<tr><th colspan='2'>" . $LANG['ocsng'][55] . "</th></tr>\n";

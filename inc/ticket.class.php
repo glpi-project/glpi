@@ -844,7 +844,7 @@ class Ticket extends CommonDBTM {
          case AUTO_ASSIGN_HARDWARE_CATEGORY :
             // Auto assign tech from item
             if ($input["users_id_assign"]==0 && $item!=NULL) {
-   
+
                if ($item->isField('users_id_tech')) {
                   $input["users_id_assign"] = $item->getField('users_id_tech');
                   if ($input["users_id_assign"]>0) {
@@ -852,11 +852,11 @@ class Ticket extends CommonDBTM {
                   }
                }
             }
-   
+
             // Auto assign tech/group from Category
             if ($input['ticketcategories_id']>0
                && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
-   
+
                $cat = new TicketCategory();
                $cat->getFromDB($input['ticketcategories_id']);
                if (!$input['users_id_assign'] && $cat->isField('users_id')) {
@@ -872,7 +872,7 @@ class Ticket extends CommonDBTM {
             // Auto assign tech/group from Category
             if ($input['ticketcategories_id']>0
                && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
-   
+
                $cat = new TicketCategory();
                $cat->getFromDB($input['ticketcategories_id']);
                if (!$input['users_id_assign'] && $cat->isField('users_id')) {
@@ -884,7 +884,7 @@ class Ticket extends CommonDBTM {
             }
             // Auto assign tech from item
             if ($input["users_id_assign"]==0 && $item!=NULL) {
-   
+
                if ($item->isField('users_id_tech')) {
                   $input["users_id_assign"] = $item->getField('users_id_tech');
                   if ($input["users_id_assign"]>0) {
@@ -2540,7 +2540,7 @@ class Ticket extends CommonDBTM {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups() == 0
-                                        && $this->numberOfTasks() == 0  
+                                        && $this->numberOfTasks() == 0
                                         && $this->fields['users_id'] === getLoginUserID());
 
       echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
@@ -2896,7 +2896,7 @@ class Ticket extends CommonDBTM {
                   echo $item->getTypeName()." ".$item->getNameID();
                }
             }
-         } 
+         }
          self::dropdownMyDevices($this->fields["users_id"],$this->fields["entities_id"],
                                     $this->fields["itemtype"], $this->fields["items_id"]);
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
@@ -3050,7 +3050,7 @@ class Ticket extends CommonDBTM {
 
          if ($canupdate) {
             $rand_linked_ticket = mt_rand();
-            echo "&nbsp;&nbsp;<a class='tracking' 
+            echo "&nbsp;&nbsp;<a class='tracking'
                onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
             echo $LANG['buttons'][8];
             echo "</a>\n";
@@ -3096,7 +3096,7 @@ class Ticket extends CommonDBTM {
       echo "</td>";
 
       if ($view_linked_tickets) {
-         
+
          echo "<td colspan='2'>";
          Ticket_Ticket::displayLinkedTicketsTo($ID);
 
@@ -3783,11 +3783,11 @@ class Ticket extends CommonDBTM {
          if ($number==0) {
             echo $LANG['job'][3];
          } else if ($number==1) {
-            echo $number." ".$LANG['job'][10];
+            echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
          } else {
-            echo $number." ".$LANG['job'][8] ." ";
+            echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
          }
