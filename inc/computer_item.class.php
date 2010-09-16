@@ -528,9 +528,9 @@ class Computer_Item extends CommonDBRelation{
       if (count($compids)==0) {
          echo $LANG['connect'][4];
       } else if (count($compids)==1) {
-         echo count($compids)." ".$LANG['connect'][3];
+         echo $LANG['connect'][3]."&nbsp;:&nbsp;".count($compids);
       }else {
-         echo count($compids)." ".$LANG['connect'][2];
+         echo $LANG['connect'][2]."&nbsp;:&nbsp;".count($compids);
       }
       echo "</th></tr>";
 

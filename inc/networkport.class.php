@@ -301,13 +301,12 @@ class NetworkPort extends CommonDBChild {
             }
             echo "<table class='tab_cadre_fixe'>\n";
             echo "<tr><th colspan='$colspan'>\n";
-            echo $DB->numrows($result) . " ";
             if ($DB->numrows($result)==1) {
                echo $LANG['networking'][12];
             } else {
-                  echo $LANG['networking'][11];
+               echo $LANG['networking'][11];
             }
-            echo "</th></tr>\n";
+            echo "&nbsp;:&nbsp;".$DB->numrows($result)."</th></tr>\n";
 
             echo "<tr>";
             if ($withtemplate != 2 && $canedit) {
