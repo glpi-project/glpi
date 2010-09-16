@@ -3686,11 +3686,11 @@ class Ticket extends CommonDBTM {
          if ($number==0) {
             echo $LANG['job'][3];
          } else if ($number==1) {
-            echo $number." ".$LANG['job'][10];
+            echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
          } else {
-            echo $number." ".$LANG['job'][8] ." ";
+            echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
          }
