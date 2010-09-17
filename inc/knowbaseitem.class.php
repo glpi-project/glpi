@@ -657,7 +657,7 @@ class KnowbaseItem extends CommonDBTM {
             }
 
          } else {
-            if ($params['$knowbaseitemcategories_id']!=0) {
+            if ($params["knowbaseitemcategories_id"] !=0) {
                echo "<div class='center b'>".$LANG['search'][15]."</div>";
             }
          }
