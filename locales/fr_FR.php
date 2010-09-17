@@ -854,7 +854,7 @@ $LANG['job'][13] = "Nouveau ticket";
 $LANG['job'][14] = "Ouverts";
 $LANG['job'][15] = "Résolus";
 $LANG['job'][16] = "Clos";
-$LANG['job'][16] = "En retard";
+$LANG['job'][17] = "En retard";
 
 $LANG['job'][19] = "Suivi par courriel";
 $LANG['job'][20] = "Durée totale";
