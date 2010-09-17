@@ -50,9 +50,20 @@ class Ticket extends CommonDBTM {
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
    var $computerfound = 0;
 
-   static function getTypeName() {
+
+/**
+ * Name of the type
+ *
+ * @param $nb : number of item in the type
+ *
+ * @return $LANG
+ */
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][5];
+      }
       return $LANG['job'][38];
    }
 
@@ -164,15 +175,15 @@ class Ticket extends CommonDBTM {
 
       if ($this->fields['id'] > 0) {
          if (haveRight('observe_ticket','1')) {
-            $ong[1] = $LANG['job'][9];
+            $ong[1] = $LANG['mailing'][141];
          }
          if (haveRight('create_validation','1') ||haveRight('validate_ticket','1')) {
-            $ong[7] = $LANG['validation'][0];
+            $ong[7] = $LANG['validation'][8];
          }
          if (haveRight('observe_ticket','1')) {
-            $ong[2] = $LANG['job'][7];
+            $ong[2] = $LANG['mailing'][142];
          }
-         $ong[4] = $LANG['jobresolution'][1];
+         $ong[4] = $LANG['jobresolution'][2];
          $ong[3] = $LANG['job'][47];
          $ong[5] = $LANG['Menu'][27];
          $ong[6] = $LANG['title'][38];
@@ -1614,7 +1625,7 @@ class Ticket extends CommonDBTM {
          $tab[8]['linkfield'] = 'groups_id_assign';
          $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
 
-         $tab['followup'] = $LANG['job'][9];
+         $tab['followup'] = $LANG['mailing'][141];
 
          $tab[25]['table']        = 'glpi_ticketfollowups';
          $tab[25]['field']        = 'content';
@@ -2126,8 +2137,9 @@ class Ticket extends CommonDBTM {
                          ORDER BY `name` ";
 
                $result = $DB->query($query);
+               $nb = $DB->numrows($result);
                if ($DB->numrows($result)>0) {
-                  $type_name = $item->getTypeName();
+                  $type_name = $item->getTypeName($nb);
 
                   while ($data = $DB->fetch_array($result)) {
                      $output = $data["name"];
@@ -2545,7 +2557,7 @@ class Ticket extends CommonDBTM {
 
       echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
             $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
-      echo "<div class='center' id='tabsbody'>";
+      echo "<div class='spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
 
@@ -2638,26 +2650,31 @@ class Ticket extends CommonDBTM {
 
             echo "</td></tr><tr><td>".$LANG['sla'][1]."&nbsp;:</td><td>";
             echo Dropdown::getDropdownName("glpi_slas",$this->fields["slas_id"]);
-            $commentsla="";
+            $commentsla = "";
             $slalevel = new SlaLevel();
             if ($slalevel->getFromDB($this->fields['slalevels_id'])) {
-               $commentsla.= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".$slalevel->getName().'<br><br>';
+               $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
+                              $slalevel->getName().'<br><br>';
             }
 
             $nextaction = new SlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
-               $commentsla.= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".convDateTime($nextaction->fields['date']).'<br>';
-               if ($slalevel->getFromDB(SlaLevel::getNextSlaLevel($this->fields["slas_id"],$this->fields['slalevels_id']))) {
-                  $commentsla.= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".$slalevel->getName().'<br>';
+               $commentsla .= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".
+                              convDateTime($nextaction->fields['date']).'<br>';
+               if ($slalevel->getFromDB(SlaLevel::getNextSlaLevel($this->fields["slas_id"],
+                                                                  $this->fields['slalevels_id']))) {
+                  $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
+                                 $slalevel->getName().'<br>';
                }
             }
-            $slaoptions=array();
+            $slaoptions = array();
             if (haveRight('config', 'r')) {
             }
-            $slaoptions['link']=getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
+            $slaoptions['link'] = getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
             showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
-               echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value=\"".$LANG['sla'][7]."\">";
+               echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
+                    $LANG['sla'][7]."'>";
             }
 
          } else {
