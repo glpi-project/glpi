@@ -79,10 +79,9 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
     * @return nothing (display the form)
     **/
    static function showFirstLevel($options, $faq=0) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $LANG, $CFG_GLPI;
 
       // Default values of parameters
-      $params["start"]                     = "0";
       $params["knowbaseitemcategories_id"] = "0";
       $params["target"]                    = $_SERVER['PHP_SELF'];
 
