@@ -64,7 +64,7 @@ class KnowbaseItem extends CommonDBTM {
       $ong[1]=$LANG['title'][26];
       return $ong;
    }
-   
+
    /**
     * Get The Name of the Object
     *
@@ -418,39 +418,36 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out an HTML "<form>" for Search knowbase item
     *
-    * @param $target where to go
-    * @param $contains search pattern
-    * @param $knowbaseitemcategories_id category ID
+    * @param $options : $_GET
     * @param $faq display on faq ?
     *
     * @return nothing (display the form)
     **/
-   static function searchForm($params, $faq=0) {
+   static function searchForm($options, $faq=0) {
       global $LANG, $CFG_GLPI;
-      
+
       // Default values of parameters
-      $default_values["knowbaseitemcategories_id"]="0";
-      $default_values["contains"]="";
-      $default_values["target"] = $_SERVER['PHP_SELF'];
-      
-      foreach ($default_values as $key => $val) {
-         if (isset($params[$key])) {
-            $$key=$params[$key];
-         } else {
-            $$key=$default_values[$key];
+      $params["knowbaseitemcategories_id"] = "0";
+      $params["contains"]                  = "";
+      $params["target"]                    = $_SERVER['PHP_SELF'];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key]=$val;
          }
       }
-      
+
       if (!$CFG_GLPI["use_public_faq"] && !haveRight("knowbase","r") && !haveRight("faq","r")) {
          return false;
       }
 
       echo "<div><table class='center-h'><tr><td>";
 
-      echo "<form method=get action=\"".$target."\"><table border='0' class='tab_cadre'>";
+      echo "<form method=get action='".$params["target"]."'><table border='0' class='tab_cadre'>";
       echo "<tr><th colspan='2'>".$LANG['search'][0]."&nbsp;:</th></tr>";
       echo "<tr class='tab_bg_2 center'><td>";
-      echo "<input type='text' size='30' name='contains' value=\"". stripslashes(cleanInputText($contains)) ."\"></td>";
+      echo "<input type='text' size='30' name='contains' value='".
+             stripslashes(cleanInputText($params["contains"]))."'></td>";
       echo "<td><input type='submit' value='".$LANG['buttons'][0]."' class='submit' ></td></tr>";
       echo "</table></form>";
 
@@ -458,10 +455,11 @@ class KnowbaseItem extends CommonDBTM {
 
       // Category select not for anonymous FAQ
       if (getLoginUserID() && !$faq) {
-         echo "<td><form method=get action=\"".$target."\"><table border='0' class='tab_cadre'>";
+         echo "<td><form method=get action='".$params["target"]."'><table border='0' class='tab_cadre'>";
          echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp;:</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
-         Dropdown::show('KnowbaseItemCategory', array('value' => $knowbaseitemcategories_id));
+         Dropdown::show('KnowbaseItemCategory',
+                        array('value' => $params["knowbaseitemcategories_id)"]));
          echo "</td><td><input type='submit' value='".$LANG['buttons'][2]."' class='submit' ></td>";
          echo "</tr></table></form></td>";
       }
@@ -472,34 +470,29 @@ class KnowbaseItem extends CommonDBTM {
    /**
    *Print out list kb item
    *
-   * @param $target where to go
-   * @param $contains search pattern
-   * @param $start where to start
-   * @param $knowbaseitemcategories_id category ID
+   * @param $options : $_GET
    * @param $faq display on faq ?
    **/
-   static function showList($params, $faq=0) {
+   static function showList($options, $faq=0) {
       global $DB, $LANG;
-      
+
       // Default values of parameters
-      $default_values["start"]="0";
-      $default_values["knowbaseitemcategories_id"]="0";
-      $default_values["contains"]="";
-      $default_values["target"] = $_SERVER['PHP_SELF'];
-      
-      foreach ($default_values as $key => $val) {
-         if (isset($params[$key])) {
-            $$key=$params[$key];
-         } else {
-            $$key=$default_values[$key];
+      $params["start"]                     = "0";
+      $params["knowbaseitemcategories_id"] = "0";
+      $params["contains"]                  = "";
+      $params["target"]                    = $_SERVER['PHP_SELF'];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key]=$val;
          }
       }
-      
+
       // Lists kb Items
       $where = "";
       $order = "";
       $score = "";
-      
+
       // Build query
       if (getLoginUserID()) {
          $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
@@ -508,18 +501,18 @@ class KnowbaseItem extends CommonDBTM {
          if (isMultiEntitiesMode()) {
             $where = " (`glpi_knowbaseitems`.`entities_id` = '0'
                         AND `glpi_knowbaseitems`.`is_recursive` = '1')
-                       AND ";
+                        AND ";
          }
       }
 
       if ($faq) { // helpdesk
          $where .= " (`glpi_knowbaseitems`.`is_faq` = '1')
-                     AND ";
+                      AND ";
       }
 
       // a search with $contains
-      if (strlen($contains)>0) {
-         $search  = unclean_cross_side_scripting_deep($contains);
+      if (strlen($params["contains"])>0) {
+         $search  = unclean_cross_side_scripting_deep($params["contains"]);
 
          $score   = " ,MATCH(glpi_knowbaseitems.question, glpi_knowbaseitems.answer)
                      AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
@@ -546,19 +539,20 @@ class KnowbaseItem extends CommonDBTM {
                              /* 7 */   "/\(/",
                              /* 8 */   "/\)/",
                              /* 9 */   "/\-/");
-            $contains = preg_replace($search1,"", $contains);
+            $contains = preg_replace($search1,"", $params["contains"]);
             $where .= " (`glpi_knowbaseitems`.`question` ".makeTextSearch($contains)."
                          OR `glpi_knowbaseitems`.`answer` ".makeTextSearch($contains).")";
          } else {
             $where = $where_1;
+            $contains = $params["contains"];
          }
 
       } else { // no search -> browse by category
-         $where .= " (`glpi_knowbaseitems`.`knowbaseitemcategories_id` = '$knowbaseitemcategories_id') ";
+         $where .= " (`glpi_knowbaseitems`.`knowbaseitemcategories_id` = '".$params["knowbaseitemcategories_id"]."')";
          $order  = " ORDER BY `glpi_knowbaseitems`.`question` ASC";
       }
-      if (!$start) {
-         $start = 0;
+      if (!$params["start"]) {
+         $params["start"] = 0;
       }
       $query = "SELECT * $score
                 FROM `glpi_knowbaseitems`
@@ -569,18 +563,19 @@ class KnowbaseItem extends CommonDBTM {
       if ($result=$DB->query($query)) {
          $KbCategory = new KnowbaseItemCategory();
          $title = "";
-         if ($KbCategory->getFromDB($knowbaseitemcategories_id)) {
+         if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
             $title = $LANG['common'][36]." = ".
-                                  (empty($KbCategory->fields['name']) ? "($knowbaseitemcategories_id)" : $KbCategory->fields['name']);
+                        (empty($KbCategory->fields['name']) ? "($params['knowbaseitemcategories_id'])"
+                         : $KbCategory->fields['name']);
          }
-         
+
          initNavigateListItems('KnowbaseItem', $title);
-         
+
          $numrows    = $DB->numrows($result);
          $list_limit = $_SESSION['glpilist_limit'];
          // Limit the result, if no limit applies, use prior result
          if ($numrows>$list_limit && !isset($_GET['export_all'])) {
-            $query_limit   = $query ." LIMIT ".intval($start).", ".intval($list_limit)." ";
+            $query_limit   = $query ." LIMIT ".intval($params["start"]).", ".intval($list_limit)." ";
             $result_limit  = $DB->query($query_limit);
             $numrows_limit = $DB->numrows($result_limit);
          } else {
@@ -597,11 +592,11 @@ class KnowbaseItem extends CommonDBTM {
 
             // Pager
             $parameters = "start=$start&amp;knowbaseitemcategories_id=".
-                          "$knowbaseitemcategories_id&amp;contains=$contains&amp;is_faq=$faq";
+                          "$params['knowbaseitemcategories_id']&amp;contains=$contains&amp;is_faq=$faq";
 
             if ($output_type==HTML_OUTPUT) {
-               printPager($start, $numrows, getItemTypeSearchURL('KnowbaseItem'), $parameters,
-                          'KnowbaseItem');
+               printPager($params['start'], $numrows, getItemTypeSearchURL('KnowbaseItem'),
+                          $parameters, 'KnowbaseItem');
             }
             $nbcols = 1;
             // Display List Header
@@ -617,26 +612,30 @@ class KnowbaseItem extends CommonDBTM {
             $row_num = 1;
             for ($i=0 ; $i<$numrows_limit ; $i++) {
                $data = $DB->fetch_array($result_limit);
-               
-               addToNavigateListItems('KnowbaseItem',$data["id"]);
+
+               addToNavigateListItems('KnowbaseItem', $data["id"]);
                // Column num
                $item_num = 1;
                $row_num++;
                echo Search::showNewLine($output_type, $i%2);
 
                if ($output_type==HTML_OUTPUT) {
-                  echo Search::showItem($output_type, "<div class='kb'><a ".
-                                        ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
-                                        " href=\"".$target."?id=".$data["id"]."\">".
-                                        resume_text($data["question"], 80)."</a></div>
-                                        <div class='kb_resume'>".
-                           resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),
-                                       600)."</div>", $item_num, $row_num);
+                  echo Search::showItem($output_type,
+                                        "<div class='kb'><a ".
+                                          ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
+                                          " href=\"".$params['target']."?id=".$data["id"]."\">".
+                                          resume_text($data["question"], 80)."</a></div>
+                                          <div class='kb_resume'>".
+                                          resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),
+                                                      600)."</div>",
+                                        $item_num, $row_num);
                } else {
                   echo Search::showItem($output_type, $data["question"], $item_num, $row_num);
                   echo Search::showItem($output_type,
                      html_clean(unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
-                                        ENT_QUOTES, "UTF-8"))), $item_num, $row_num);
+                                                                                     ENT_QUOTES,
+                                                                                     "UTF-8"))),
+                                        $item_num, $row_num);
                }
 
                // End Line
@@ -647,18 +646,18 @@ class KnowbaseItem extends CommonDBTM {
             if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT) {
                echo Search::showFooter($output_type,
                                        Dropdown::getDropdownName("glpi_knowbaseitemcategories",
-                                                                 $knowbaseitemcategories_id));
+                                                                 $params['knowbaseitemcategories_id']));
             } else {
                echo Search::showFooter($output_type);
             }
             echo "<br>";
             if ($output_type==HTML_OUTPUT) {
-               printPager($start, $numrows, getItemTypeSearchURL('KnowbaseItem'), $parameters,
-                          'KnowbaseItem');
+               printPager($params['start'], $numrows, getItemTypeSearchURL('KnowbaseItem'),
+                          $parameters, 'KnowbaseItem');
             }
 
          } else {
-            if ($knowbaseitemcategories_id!=0) {
+            if ($params['$knowbaseitemcategories_id']!=0) {
                echo "<div class='center b'>".$LANG['search'][15]."</div>";
             }
          }

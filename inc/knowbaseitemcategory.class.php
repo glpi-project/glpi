@@ -47,7 +47,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    function canView() {
       return haveRight('entity_dropdown','r');
    }
-   
+
    static function getTypeName() {
       global $LANG;
 
@@ -73,27 +73,25 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    /**
     * Show KB categories
     *
-    * @param $target where to go
-    * @param $knowbaseitemcategories_id category ID
+    * @param $options : $_GET
     * @param $faq display on faq ?
+    *
     * @return nothing (display the form)
     **/
-   static function showFirstLevel($params,$faq=0) {
+   static function showFirstLevel($options, $faq=0) {
       global $DB,$LANG,$CFG_GLPI;
-      
+
       // Default values of parameters
-      $default_values["start"]="0";
-      $default_values["knowbaseitemcategories_id"]="0";
-      $default_values["target"] = $_SERVER['PHP_SELF'];
-      
-      foreach ($default_values as $key => $val) {
-         if (isset($params[$key])) {
-            $$key=$params[$key];
-         } else {
-            $$key=$default_values[$key];
+      $params["start"]                     = "0";
+      $params["knowbaseitemcategories_id"] = "0";
+      $params["target"]                    = $_SERVER['PHP_SELF'];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key]=$val;
          }
       }
-      
+
       if ($faq) {
          if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r")) {
             return false;
@@ -102,26 +100,28 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          // Get All FAQ categories
          if (!isset($_SESSION['glpi_faqcategories'])) {
             $_SESSION['glpi_faqcategories']='(0)';
-            $tmp=array();
-            $query="SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
-                    FROM `glpi_knowbaseitems`
-                    LEFT JOIN `glpi_knowbaseitemcategories` 
-                    ON (`glpi_knowbaseitemcategories`.`id` = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
-                    WHERE `glpi_knowbaseitems`.`is_faq` = 1 "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
+            $tmp = array();
+            $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
+                      FROM `glpi_knowbaseitems`
+                      LEFT JOIN `glpi_knowbaseitemcategories`
+                        ON (`glpi_knowbaseitemcategories`.`id` = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
+                      WHERE `glpi_knowbaseitems`.`is_faq` = '1' ".
+                           getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories",
+                                                      "entities_id", $_SESSION['glpiactiveentities'],
+                                                      true);
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
                   while ($data=$DB->fetch_array($result)) {
-                     if (!in_array($data['knowbaseitemcategories_id'],$tmp)) {
-                        $tmp[]=$data['knowbaseitemcategories_id'];
-                        $tmp=array_merge($tmp,
-                           getAncestorsOf('glpi_knowbaseitemcategories',$data['knowbaseitemcategories_id']));
+                     if (!in_array($data['knowbaseitemcategories_id'], $tmp)) {
+                        $tmp[] = $data['knowbaseitemcategories_id'];
+                        $tmp   = array_merge($tmp,
+                                             getAncestorsOf('glpi_knowbaseitemcategories',
+                                                            $data['knowbaseitemcategories_id']));
                      }
                   }
                }
                if (count($tmp)) {
-                  $_SESSION['glpi_faqcategories']="('".implode("','",$tmp)."')";
+                  $_SESSION['glpi_faqcategories'] = "('".implode("','",$tmp)."')";
                }
             }
          }
@@ -129,54 +129,58 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                    FROM `glpi_knowbaseitemcategories`
                    WHERE `id` IN ".$_SESSION['glpi_faqcategories']."
                          AND (`glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
-                              '$knowbaseitemcategories_id') "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
-         $query.= " ORDER BY `name` ASC";
+                              '".$params["knowbaseitemcategories_id"]."') ".
+                         getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories",
+                                                    "entities_id", $_SESSION['glpiactiveentities'],
+                                                    true);
+         $query .= " ORDER BY `name` ASC";
+
       } else {
-         if (!haveRight("knowbase","r")) {
+         if (!haveRight("knowbase", "r")) {
             return false;
          }
          $query = "SELECT *
                    FROM `glpi_knowbaseitemcategories`
                    WHERE `glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
-                         '$knowbaseitemcategories_id' "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
-         $query.= " ORDER BY `name` ASC";
+                                                      '".$params["knowbaseitemcategories_id"]."' ".
+                   getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "entities_id",
+                                              $_SESSION['glpiactiveentities'], true);
+         $query .= " ORDER BY `name` ASC";
       }
 
       // Show category
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_central'>";
-         echo "<tr><td colspan='3'><a href=\"".$target."\">";
+         echo "<tr><td colspan='3'><a href='".$params['target']."'>";
          echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' class='bottom'></a>";
 
          // Display Category
-         if ($knowbaseitemcategories_id!=0) {
-            $tmpID=$knowbaseitemcategories_id;
-            $todisplay="";
+         if ($params["knowbaseitemcategories_id"]!=0) {
+            $tmpID = $params["knowbaseitemcategories_id"];
+            $todisplay = "";
             while ($tmpID!=0) {
-               $query2="SELECT *
-                        FROM `glpi_knowbaseitemcategories`
-                        WHERE `id`='$tmpID' "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
-               $result2=$DB->query($query2);
+               $query2 = "SELECT *
+                          FROM `glpi_knowbaseitemcategories`
+                          WHERE `id` = '$tmpID' ".
+                          getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories",
+                                                     "entities_id", $_SESSION['glpiactiveentities'],
+                                                     true);
+               $result2 = $DB->query($query2);
                if ($DB->numrows($result2)==1) {
-                  $data=$DB->fetch_assoc($result2);
-                  $tmpID=$data["knowbaseitemcategories_id"];
-                  $todisplay="<a href='$target?knowbaseitemcategories_id=".$data["id"]."'>".
-                              $data["name"]."</a>".(empty($todisplay)?"":" > ").$todisplay;
+                  $data = $DB->fetch_assoc($result2);
+                  $tmpID = $data["knowbaseitemcategories_id"];
+                  $todisplay = "<a href='".$params['target']."?knowbaseitemcategories_id=".
+                                 $data["id"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").
+                                 $todisplay;
                } else {
-                  $tmpID=0;
+                  $tmpID = 0;
                }
             }
             echo " > ".$todisplay;
          }
 
          if ($DB->numrows($result)>0) {
-            $i=0;
+            $i = 0;
             while ($row=$DB->fetch_array($result)) {
                // on affiche les résultats sur trois colonnes
                if ($i%3==0) {
@@ -184,12 +188,12 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                }
                $ID = $row["id"];
                echo "<td class='tdkb_result'>";
-               echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" >";
-               echo "<strong><a href=\"".$target."?knowbaseitemcategories_id=".$row["id"]."\">".
+               echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png' hspace='5'>";
+               echo "<strong><a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."'>".
                               $row["name"]."</a></strong>";
                echo "<div class='kb_resume'>".resume_text($row['comment'],60)."</div>";
 
-               if($i%3==2) {
+               if ($i%3==2) {
                   echo "</tr>";
                }
                $i++;
