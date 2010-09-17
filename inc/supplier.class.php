@@ -45,11 +45,22 @@ class Supplier extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
-   static function getTypeName() {
+/**
+ * Name of the type
+ *
+ * @param $nb : number of item in the type
+ *
+ * @return $LANG
+ */
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['Menu'][23];
+      }
       return $LANG['financial'][26];
    }
+
 
    function canCreate() {
       return haveRight('contact_enterprise', 'w');
@@ -545,7 +556,7 @@ class Supplier extends CommonDBTM {
             }
             if ($nb>$_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
-               echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;$nb</td>";
+               echo "<td class='center'>".$item->getTypeName($nb)."&nbsp;:&nbsp;$nb</td>";
                echo "<td class='center' colspan='2'>";
                echo "<a href='". getItemTypeSearchURL($linktype) . "?" .
                       rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" .
@@ -565,7 +576,7 @@ class Supplier extends CommonDBTM {
 
                   echo "<tr class='tab_bg_1'>";
                   if ($prem) {
-                     echo "<td class='center top' rowspan='$nb'>".$item->getTypeName()
+                     echo "<td class='center top' rowspan='$nb'>".$item->getTypeName($nb)
                             .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
                   }
                   echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",

@@ -44,9 +44,20 @@ class TicketFollowup  extends CommonDBTM {
    // From CommonDBTM
    public $auto_message_on_action = false;
 
-   static function getTypeName() {
+
+/**
+ * Name of the type
+ *
+ * @param $nb : number of item in the type
+ *
+ * @return $LANG
+ */
+   static function getTypeName($nb=0) {
       global $LANG;
 
+      if ($nb>1) {
+         return $LANG['mailing'][141];
+      }
       return $LANG['job'][9];
    }
 

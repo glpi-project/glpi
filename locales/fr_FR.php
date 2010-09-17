@@ -925,7 +925,7 @@ $LANG['joblist'][36] = "Valeur du statut en base";
 
 
 $LANG['jobresolution'][1] = "Solution";
-
+$LANG['jobresolution'][2] = "Solutions";
 $LANG['jobresolution'][3] = "Solution approuvée";
 $LANG['jobresolution'][4] = "Solution rejetée";
 $LANG['jobresolution'][5] = "En cas de rejet de la solution, vous devez indiquer un motif";
@@ -2191,6 +2191,7 @@ $LANG['validation'][4]="Date de la validation";
 $LANG['validation'][5]="Commentaire de la demande";
 $LANG['validation'][6]="Commentaire de la validation";
 $LANG['validation'][7]="Validation(s) pour le ticket";
+$LANG['validation'][8]="Validations";
 $LANG['validation'][9]="En attente de validation";
 $LANG['validation'][10]="Refusé";
 $LANG['validation'][11]="Accepté";
