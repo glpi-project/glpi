@@ -459,7 +459,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp;:</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
-                        array('value' => $params["knowbaseitemcategories_id)"]));
+                        array('value' => '$params["knowbaseitemcategories_id)"]'));
          echo "</td><td><input type='submit' value='".$LANG['buttons'][2]."' class='submit' ></td>";
          echo "</tr></table></form></td>";
       }
@@ -544,7 +544,6 @@ class KnowbaseItem extends CommonDBTM {
                          OR `glpi_knowbaseitems`.`answer` ".makeTextSearch($contains).")";
          } else {
             $where = $where_1;
-            $contains = $params["contains"];
          }
 
       } else { // no search -> browse by category
@@ -565,7 +564,7 @@ class KnowbaseItem extends CommonDBTM {
          $title = "";
          if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
             $title = $LANG['common'][36]." = ".
-                        (empty($KbCategory->fields['name']) ? "($params['knowbaseitemcategories_id'])"
+                        (empty($KbCategory->fields['name']) ? "(".$params['knowbaseitemcategories_id'].")"
                          : $KbCategory->fields['name']);
          }
 
@@ -591,8 +590,9 @@ class KnowbaseItem extends CommonDBTM {
             }
 
             // Pager
-            $parameters = "start=$start&amp;knowbaseitemcategories_id=".
-                          "$params['knowbaseitemcategories_id']&amp;contains=$contains&amp;is_faq=$faq";
+            $parameters = "start=".$params["start"]."&amp;knowbaseitemcategories_id=".
+                          $params['knowbaseitemcategories_id']."&amp;contains=".
+                          $params["contains"]."&amp;is_faq=$faq";
 
             if ($output_type==HTML_OUTPUT) {
                printPager($params['start'], $numrows, getItemTypeSearchURL('KnowbaseItem'),
