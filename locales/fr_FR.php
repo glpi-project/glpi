@@ -348,10 +348,7 @@ $LANG['computers'][25] = "Taille du disque dur";
 $LANG['computers'][36] = "Type de disque dur";
 $LANG['computers'][37] = "Pas de moniteur connecté.";
 $LANG['computers'][38] = "Pas d'imprimante connectée";
-$LANG['computers'][39] = "Imprimante(s)";
-$LANG['computers'][40] = "Moniteur(s)";
 
-$LANG['computers'][46] = "Périphérique(s)";
 $LANG['computers'][47] = "Pas de périphérique connecté";
 $LANG['computers'][48] = "Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
 $LANG['computers'][49] = "Modification de l'usager. Les éléments connectés ont pris comme usager celui de l'ordinateur.";
@@ -360,7 +357,7 @@ $LANG['computers'][51] = "Source de mise à jour";
 $LANG['computers'][52] = "Version du système d'exploitation";
 $LANG['computers'][53] = "Service pack";
 $LANG['computers'][54] = "Pas de téléphone connecté";
-$LANG['computers'][55] = "Téléphone(s)";
+
 $LANG['computers'][56] = "Modification du statut. Les éléments connectés ont été mis à jour avec le statut de l'ordinateur.";
 
 
@@ -386,9 +383,9 @@ $LANG['consumables'][7]  = "Pas de consommable trouvé";
 $LANG['consumables'][9]  = "Aucun consommable";
 
 $LANG['consumables'][12] = "Type de consommable";
-$LANG['consumables'][13] = "Neuf(s)";
+
 $LANG['consumables'][14] = "Neufs";
-$LANG['consumables'][15] = "Utilisé(s)";
+
 $LANG['consumables'][16] = "Consommable(s)";
 
 $LANG['consumables'][20] = "Neuf";
@@ -400,7 +397,6 @@ $LANG['consumables'][26] = "Date utilisation";
 
 $LANG['consumables'][32] = "Donner";
 
-$LANG['consumables'][34] = "Consommable utilisé";
 $LANG['consumables'][35] = "Consommables utilisés";
 $LANG['consumables'][36] = "Lieu de stockage";
 $LANG['consumables'][37] = "Réintégrer dans le stock";
@@ -558,7 +554,6 @@ $LANG['document'][45] = "Vous n'avez pas le droit d'accéder à ce fichier";
 $LANG['document'][46] = "Échec dans l'envoi du fichier (sûrement trop volumineux)";
 $LANG['document'][48] = "Un document avec ce fichier est déjà disponible";
 $LANG['document'][49] = "Fichier altéré (mauvaise somme de contrôle)";
-$LANG['document'][50] = "Élément(s) rattaché(s)";
 
 
 $LANG['entity'][0]  = "Entité";
@@ -1312,7 +1307,7 @@ $LANG['networking'][6]="Ports réseaux";
 $LANG['networking'][10]="Aucun port réseau trouvé";
 $LANG['networking'][11]="ports réseau trouvés";
 $LANG['networking'][12]="port réseau trouvé";
-$LANG['networking'][13]="port(s) réseau trouvé(s)";
+
 $LANG['networking'][14]="IP";
 $LANG['networking'][15]="MAC";
 $LANG['networking'][17]="Connecté à";
