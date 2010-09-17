@@ -184,9 +184,6 @@ if ($item instanceof CommonTreeDropdown) {
       }
       $display_selected=true;
       switch ($table) {
-         case "glpi_knowbaseitemcategories" :
-            echo "<option class='tree' value='0'>--".$LANG['knowbase'][12]."--</option>";
-            break;
 
          case "glpi_entities" :
             // If entity=0 allowed
