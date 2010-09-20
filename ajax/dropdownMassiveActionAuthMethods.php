@@ -33,23 +33,27 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;	
+$AJAX_INCLUDE = 1;
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("user","w");
+checkRight("user", "w");
+
 if ($_POST["authtype"] > 0) {
-   $name='massiveaction';
+   $name = 'massiveaction';
+
    if (isset($_POST['name'])) {
-      $name=$_POST['name'];
+      $name = $_POST['name'];
    }
 
    switch($_POST["authtype"]) {
       case Auth::DB_GLPI :
          echo "<input type='hidden' name='auths_id' value='0'>";
          break;
+
       case Auth::LDAP :
       case Auth::EXTERNAL :
          Dropdown::show('AuthLDAP', array('name' => "auths_id"));
@@ -59,6 +63,8 @@ if ($_POST["authtype"] > 0) {
          Dropdown::show('AuthMail', array('name' => "auths_id"));
          break;
    }
-   echo "&nbsp;<input type='submit' name='$name' class='submit' value=\"".$LANG['buttons'][2]."\" >";
+
+   echo "&nbsp;<input type='submit' name='$name' class='submit' value='".$LANG['buttons'][2]."'>";
 }
+
 ?>

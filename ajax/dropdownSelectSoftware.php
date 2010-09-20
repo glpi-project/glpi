@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 if (strpos($_SERVER['PHP_SELF'],"dropdownSelectSoftware.php")) {
-   $AJAX_INCLUDE=1;
+   $AJAX_INCLUDE = 1;
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
@@ -44,40 +44,44 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownSelectSoftware.php")) {
 checkRight("software","w");
 
 // Make a select box
-$rand=mt_rand();
-$where="";
+$rand  = mt_rand();
+$where = "";
 
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
    $where .=" AND `name` ".makeTextSearch($_POST['searchText'])." ";
 }
 
-$where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares','entities_id',$_POST["entity_restrict"],
-                                     true);
+$where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares','entities_id',
+                                     $_POST["entity_restrict"], true);
 
-$query = "SELECT DISTINCT `glpi_softwares`.`id`, `glpi_softwares`.`name`
+$query = "SELECT DISTINCT `glpi_softwares`.`id`,
+                          `glpi_softwares`.`name`
           FROM `glpi_softwares`
-          WHERE `glpi_softwares`.`is_deleted`='0'
-                AND `glpi_softwares`.`is_template`='0'
+          WHERE `glpi_softwares`.`is_deleted` = '0'
+                AND `glpi_softwares`.`is_template` = '0'
                 $where
           ORDER BY `glpi_softwares`.`name`";
 $result = $DB->query($query);
 
 echo "<select name='softwares_id' id='item_type$rand'>\n";
 echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
+
 if ($DB->numrows($result)) {
    while ($data=$DB->fetch_array($result)) {
       $softwares_id = $data["id"];
-      $output=$data["name"];
-      echo "<option value='$softwares_id' title=\"".cleanInputText($output)."\">".
-             utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"])."</option>";
+      $output       = $data["name"];
+      echo "<option value='$softwares_id' title='".cleanInputText($output)."'>".
+             utf8_substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 }
 echo "</select>\n";
 
-$paramsselsoft=array('softwares_id'=>'__VALUE__',
-                     'myname'=>$_POST["myname"]);
-ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"].
-                            "/ajax/dropdownInstallVersion.php",$paramsselsoft,false);
+$paramsselsoft = array('softwares_id' => '__VALUE__',
+                       'myname'       => $_POST["myname"]);
+
+ajaxUpdateItemOnSelectEvent("item_type$rand", "show_".$_POST["myname"].$rand,
+                            $CFG_GLPI["root_doc"]."/ajax/dropdownInstallVersion.php",
+                            $paramsselsoft, false);
 
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";
 

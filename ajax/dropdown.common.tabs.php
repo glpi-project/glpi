@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 if (!($dropdown instanceof CommonDropdown)) {
    exit();
 }
@@ -48,7 +47,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
 }
 
 if ($dropdown->can($_POST["id"],'r')) {
-   $dropdown->showTabContent($_POST["id"],$_REQUEST['glpi_tab']);
+   $dropdown->showTabContent($_POST["id"], $_REQUEST['glpi_tab']);
 }
 
 ajaxFooter();

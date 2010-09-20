@@ -49,29 +49,31 @@ checkLoginUser();
 
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) {
-   $_POST["limit"]=$_SESSION["glpidropdown_chars_limit"];
+   $_POST["limit"] = $_SESSION["glpidropdown_chars_limit"];
 }
 
-$NBMAX=$CFG_GLPI["dropdown_max"];
-$LIMIT="LIMIT 0,$NBMAX";
+$NBMAX = $CFG_GLPI["dropdown_max"];
+$LIMIT = "LIMIT 0,$NBMAX";
 
 $sql = "SELECT `id`, `name`, `ranking`
         FROM `glpi_rules`
-        WHERE `sub_type`='".$_POST["type"]."'";
+        WHERE `sub_type` = '".$_POST["type"]."'";
 
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
-   $LIMIT="";
+   $LIMIT = "";
 } else {
    $sql .= " AND `name` ".makeTextSearch($_POST['searchText']);
 }
+
 if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']!='') {
-   $sql.=" AND `glpi_rules`.`entities_id`='".$_POST['entity_restrict']."'";
+   $sql .= " AND `glpi_rules`.`entities_id` = '".$_POST['entity_restrict']."'";
 }
+
 $sql .= " ORDER BY `ranking` ASC " .
           $LIMIT;
 $result = $DB->query($sql);
 
-echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
+echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."' size='1'>";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
    echo "<option value='0'>--".$LANG['common'][11]."--</option>";
@@ -81,10 +83,10 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$
 
 if ($DB->numrows($result)) {
    while ($data =$DB->fetch_array($result)) {
-      $ID = $data['id'];
+      $ID   = $data['id'];
       $name = $data['name'];
-      echo "<option value='$ID' title=\"".cleanInputText($name)."\">".
-             utf8_substr($name,0,$_POST["limit"])."</option>";
+      echo "<option value='$ID' title='".cleanInputText($name)."'>".
+            utf8_substr($name, 0, $_POST["limit"])."</option>";
    }
 }
 echo "</select>";

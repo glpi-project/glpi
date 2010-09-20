@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -43,8 +44,10 @@ if (!isset($_POST["itemtype"]) || !class_exists($_POST["itemtype"])) {
 }
 
 $item = new $_POST["itemtype"]();
+
 if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-   checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
+   checkSeveralRightsOr(array($_POST["itemtype"] => "w",
+                              "infocom"          => "w"));
 } else {
    $item->checkGlobal("w");
 }
@@ -56,9 +59,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
    // Specific budget case
    if ($_POST["id_field"]==50) {
-      $search["linkfield"]="budgets_id";
+      $search["linkfield"] = "budgets_id";
    }
-   $FIELDNAME_PRINTED=false;
+   $FIELDNAME_PRINTED = false;
 
    echo '&nbsp;';
 
@@ -66,21 +69,22 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
       switch ($search["table"].".".$search["linkfield"]) {
          case "glpi_cartridgeitems.alarm_threshold" :
          case "glpi_consumableitems.alarm_threshold" :
-            Dropdown::showInteger($search["linkfield"],0,-1,100);
+            Dropdown::showInteger($search["linkfield"], 0, -1, 100);
             break;
 
          case "glpi_contracts.duration" :
          case "glpi_contracts.notice" :
-            Dropdown::showInteger($search["field"],0,0,120);
+            Dropdown::showInteger($search["field"], 0, 0, 120);
             echo " ".$LANG['financial'][57];
             break;
 
          case "glpi_softwarelicenses.number" :
-            Dropdown::showInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG['software'][4]));
+            Dropdown::showInteger($search["linkfield"], 0, 1, 1000, 1,
+                                  array(-1 => $LANG['software'][4]));
             break;
 
          case "glpi_contracts.alert" :
-            Contract::dropdownAlert($search["linkfield"],0);
+            Contract::dropdownAlert($search["linkfield"], 0);
             break;
 
          case "glpi_tickets.status" :
@@ -90,55 +94,59 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          case "glpi_tickets.priority" :
             Ticket::dropdownPriority($search["linkfield"]);
             break;
+
          case "glpi_tickets.impact" :
             Ticket::dropdownImpact($search["linkfield"]);
             break;
+
          case "glpi_tickets.urgency" :
             Ticket::dropdownUrgency($search["linkfield"]);
             break;
+
          case "glpi_tickets.global_validation" :
             TicketValidation::dropdownStatus($search["linkfield"]);
             break;
 
          default :
             // Specific plugin Type case
-            $plugdisplay=false;
+            $plugdisplay = false;
             if ($plug=isPluginItemType($_POST["itemtype"])) {
-               $plugdisplay=doOneHook($plug['plugin'],
-                                         'MassiveActionsFieldsDisplay',
-                                          array('itemtype'  => $_POST["itemtype"],
-                                                'options'     => $search));
+               $plugdisplay = doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
+                                        array('itemtype' => $_POST["itemtype"],
+                                              'options'  => $search));
             }
-            $already_display=false;
+            $already_display = false;
+
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
                      showDateFormItem($search["field"]);
-                     $already_display=true;
+                     $already_display = true;
                      break;
 
                   case "datetime" :
                      showDateTimeFormItem($search["field"]);
-                     $already_display=true;
+                     $already_display = true;
                      break;
 
                   case "bool" :
                      Dropdown::showYesNo($search["linkfield"]);
-                     $already_display=true;
+                     $already_display = true;
                      break;
                }
             }
+
             if (!$plugdisplay && !$already_display) {
-               $newtype=getItemTypeForTable($search["table"]);
+               $newtype = getItemTypeForTable($search["table"]);
                if ($newtype != $_POST["itemtype"]) {
                   $item = new $newtype();
                }
-               autocompletionTextField($item,$search["field"],
+               autocompletionTextField($item, $search["field"],
                                        array('name'   => $search["linkfield"],
                                              'entity' => $_SESSION["glpiactive_entity"]));
             }
-            break;
       }
+
    } else {
       switch ($search["table"]) {
          case "glpi_infocoms" :  // infocoms case
@@ -162,25 +170,25 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                case "warranty_duration" :
-                  Dropdown::showInteger("warranty_duration",0,0,120,1,array(-1 => $LANG['financial'][2]));
+                  Dropdown::showInteger("warranty_duration", 0, 0, 120, 1,
+                                        array(-1 => $LANG['financial'][2]));
                   echo " ".$LANG['financial'][57]."&nbsp;&nbsp;";
                   break;
 
                default :
-                  $newtype=getItemTypeForTable($search["table"]);
+                  $newtype = getItemTypeForTable($search["table"]);
                   if ($newtype != $_POST["itemtype"]) {
                      $item = new $newtype();
                   }
-                  autocompletionTextField($item,$search["field"],
+                  autocompletionTextField($item, $search["field"],
                                           array('entity' => $_SESSION["glpiactive_entity"]));
-                  break;
             }
             break;
 
          case "glpi_suppliers_infocoms" : // Infocoms suppliers
             Dropdown::show('Supplier', array('entity' => $_SESSION['glpiactiveentities']));
             echo "<input type='hidden' name='field' value='suppliers_id'>";
-            $FIELDNAME_PRINTED=true;
+            $FIELDNAME_PRINTED = true;
             break;
 
          case "glpi_budgets" : // Infocoms budget
@@ -190,7 +198,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          case "glpi_ocslinks" : // auto_update ocs_link
             Dropdown::showYesNo("_auto_update_ocs");
             echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
-            $FIELDNAME_PRINTED=true;
+            $FIELDNAME_PRINTED = true;
             break;
 
          case "glpi_users" : // users
@@ -212,17 +220,17 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   User::dropdown(array('name'   => $search["linkfield"],
                                        'entity' => $_SESSION["glpiactive_entity"],
                                        'right'  => 'all'));
-                  break;
             }
             break;
+
          break;
 
          case "glpi_softwareversions":
             switch ($search["linkfield"]) {
                case "softwareversions_id_use" :
                case "softwareversions_id_buy" :
-                  $_POST['softwares_id']=$_POST['extra_softwares_id'];
-                  $_POST['myname']=$search['linkfield'];
+                  $_POST['softwares_id'] = $_POST['extra_softwares_id'];
+                  $_POST['myname']       = $search['linkfield'];
                   include("dropdownInstallVersion.php");
                   break;
             }
@@ -230,21 +238,21 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
          default : // dropdown case
             // Specific plugin Type case
-            $plugdisplay=false;
+            $plugdisplay = false;
+
             if ($plug=isPluginItemType($_POST["itemtype"])) {
-               $plugdisplay=doOneHook($plug['plugin'],
-                                       'MassiveActionsFieldsDisplay',
-                                          array('itemtype'  => $_POST["itemtype"],
-                                                'options'     => $search));
+               $plugdisplay = doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
+                                        array('itemtype' => $_POST["itemtype"],
+                                              'options'  => $search));
             }
             if (!$plugdisplay) {
                Dropdown::show(getItemTypeForTable($search["table"]),
-                           array('name'   => $search["linkfield"],
-                                 'entity' => $_SESSION['glpiactiveentities']));
+                              array('name'   => $search["linkfield"],
+                                    'entity' => $_SESSION['glpiactiveentities']));
             }
-            break;
       }
    }
+
    if (!$FIELDNAME_PRINTED) {
       if (empty($search["linkfield"])) {
          echo "<input type='hidden' name='field' value='".$search["field"]."'>";
@@ -252,8 +260,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
       }
    }
-   echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value=\"".
-                $LANG['buttons'][2]."\" >";
+
+   echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+                $LANG['buttons'][2]."'>";
 }
 
 ?>

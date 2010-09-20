@@ -39,29 +39,28 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
+
 // Make a select box
-
-
 if (isset($_POST["itemtype"]) && Ticket::isPossibleToAssignType($_POST["itemtype"])) {
-
-   $table=getTableForItemType($_POST["itemtype"]);
-
-   $rand=mt_rand();
+   $table = getTableForItemType($_POST["itemtype"]);
+   $rand  =mt_rand();
    echo "&nbsp;";
    ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,8);
-   $paramstrackingdt=array('searchText'=>'__VALUE__',
-                           'myname'=>$_POST["myname"],
-                           'table'=>$table,
-                           'itemtype'=>$_POST["itemtype"],
-                           'entity_restrict'=>$_POST['entity_restrict']);
 
-   ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",
+   $paramstrackingdt = array('searchText'      => '__VALUE__',
+                             'myname'          => $_POST["myname"],
+                             'table'           => $table,
+                             'itemtype'        => $_POST["itemtype"],
+                             'entity_restrict' => $_POST['entity_restrict']);
+
+   ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand, "results_ID$rand",
                                   $CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",
-                                  $paramstrackingdt,false);
+                                  $paramstrackingdt, false);
 
    echo "<span id='results_ID$rand'>";
    echo "<select name='id'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
    echo "</span>\n";
+
    if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
       echo "<br>".$LANG['help'][23];
    }
