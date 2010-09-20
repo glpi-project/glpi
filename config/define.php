@@ -68,9 +68,9 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'sv_SE' => array('Svenska',              'sv_SE.php','sv_SE', 'sv','swedish'),
             'tr_TR' => array('Türkçe',               'tr_TR.php','tr',    'tr','turkish'),
             'ua_UA' => array('Українська',           'ua_UA.php','ukr',   'en','ukrainian'),
-            'ja_JP' => array('日本語',                'ja_JP.php','ja',    'ja','japanese'),
-            'zh_CN' => array('中文',                  'zh_CN.php','zh_CN', 'zh','chinese'),
-            'zh_TW' => array('漢字',                  'zh_TW.php','zh_TW', 'zh','chinese'),);
+            'ja_JP' => array('日本語',               'ja_JP.php','ja',    'ja','japanese'),
+            'zh_CN' => array('简体中文',             'zh_CN.php','zh_CN', 'zh','chinese'),
+            'zh_TW' => array('繁體中文',             'zh_TW.php','zh_TW', 'zh','chinese'),);
 
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables']=array();
