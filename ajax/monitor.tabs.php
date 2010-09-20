@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -56,32 +57,36 @@ if (!isset($_POST["order"])) {
 if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
+
 $monitor = new Monitor();
+
 if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
+
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($monitor,$_POST["withtemplate"]);
-            Contract::showAssociated($monitor,$_POST["withtemplate"]);
+            Infocom::showForItem($monitor, $_POST["withtemplate"]);
+            Contract::showAssociated($monitor, $_POST["withtemplate"]);
             break;
 
          case 5 :
-            Document::showAssociated($monitor,$_POST["withtemplate"]);
+            Document::showAssociated($monitor, $_POST["withtemplate"]);
             break;
 
          default :
-            Plugin::displayAction($monitor,$_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($monitor, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
+
    } else  {
       switch($_REQUEST['glpi_tab']) {
          case -1:
             Computer_Item::showForItem($monitor);
             Infocom::showForItem($monitor);
             Contract::showAssociated($monitor);
-            Document::showAssociated($monitor,$_POST["withtemplate"]);
-            Ticket::showListForItem('Monitor',$_POST["id"]);
-            Link::showForItem('Monitor',$_POST["id"]);
-            Plugin::displayAction($monitor,$_REQUEST['glpi_tab']);
+            Document::showAssociated($monitor, $_POST["withtemplate"]);
+            Ticket::showListForItem('Monitor', $_POST["id"]);
+            Link::showForItem('Monitor', $_POST["id"]);
+            Plugin::displayAction($monitor, $_REQUEST['glpi_tab']);
             break;
 
          case 4 :
@@ -90,23 +95,23 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          case 5 :
-            Document::showAssociated($monitor,$_POST["withtemplate"]);
+            Document::showAssociated($monitor, $_POST["withtemplate"]);
             break;
 
          case 6 :
-            Ticket::showListForItem('Monitor',$_POST["id"]);
+            Ticket::showListForItem('Monitor', $_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem('Monitor',$_POST["id"]);
+            Link::showForItem('Monitor', $_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],'Monitor',$_POST["id"]);
+            showNotesForm($_POST['target'], 'Monitor', $_POST["id"]);
             break;
 
          case 11 :
-            Reservation::showForItem('Monitor',$_POST["id"]);
+            Reservation::showForItem('Monitor', $_POST["id"]);
             break;
 
          case 12 :
@@ -114,7 +119,7 @@ if ($_POST["id"]>0 && $monitor->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!Plugin::displayAction($monitor,$_REQUEST['glpi_tab'])) {
+            if (!Plugin::displayAction($monitor, $_REQUEST['glpi_tab'])) {
                Computer_Item::showForItem($monitor);
             }
       }

@@ -36,20 +36,23 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("config",'r');
+checkRight("config", 'r');
 
 if (isset($_POST['id']) && $_POST['id'] > 0) {
+
    if (!isset($_REQUEST['glpi_tab'])) {
       exit();
    }
    $translation = new NotificationTemplateTranslation;
    $translation->getFromDB($_POST['id']);
+
    switch($_REQUEST['glpi_tab']) {
       case 12 :
-            Log::showForItem($translation);
+         Log::showForItem($translation);
          break;
 
       default :

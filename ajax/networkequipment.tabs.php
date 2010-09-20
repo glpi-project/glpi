@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -54,37 +55,40 @@ if (!isset($_POST["order"])) {
 if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
-$netdevice=new NetworkEquipment();
+
+$netdevice = new NetworkEquipment();
 $netdevice->check($_POST["id"],'r');
 
 if (!empty($_POST["withtemplate"])) {
+
    if ($_POST["id"]>0) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($netdevice,$_POST["withtemplate"]);
-            Contract::showAssociated($netdevice,$_POST["withtemplate"]);
+            Infocom::showForItem($netdevice, $_POST["withtemplate"]);
+            Contract::showAssociated($netdevice, $_POST["withtemplate"]);
             break;
 
          case 5 :
-            Document::showAssociated($netdevice,$_POST["withtemplate"]);
+            Document::showAssociated($netdevice, $_POST["withtemplate"]);
             break;
 
          default :
-            if (!Plugin::displayAction($netdevice,$_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
+            if (!Plugin::displayAction($netdevice, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                NetworkPort::showForItem('NetworkEquipment', $_POST["id"], $_POST["withtemplate"]);
             }
       }
    }
+
 } else {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          NetworkPort::showForItem('NetworkEquipment', $_POST["id"]);
          Infocom::showForItem($netdevice);
          Contract::showAssociated($netdevice);
-         Document::showAssociated($netdevice,$_POST["withtemplate"]);
-         Ticket::showListForItem('NetworkEquipment',$_POST["id"]);
-         Link::showForItem('NetworkEquipment',$_POST["id"]);
-         Plugin::displayAction($netdevice,$_REQUEST['glpi_tab']);
+         Document::showAssociated($netdevice, $_POST["withtemplate"]);
+         Ticket::showListForItem('NetworkEquipment', $_POST["id"]);
+         Link::showForItem('NetworkEquipment', $_POST["id"]);
+         Plugin::displayAction($netdevice, $_REQUEST['glpi_tab']);
          break;
 
       case 4 :
@@ -93,23 +97,23 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       case 5 :
-         Document::showAssociated($netdevice,$_POST["withtemplate"]);
+         Document::showAssociated($netdevice, $_POST["withtemplate"]);
          break;
 
       case 6 :
-         Ticket::showListForItem('NetworkEquipment',$_POST["id"]);
+         Ticket::showListForItem('NetworkEquipment', $_POST["id"]);
          break;
 
       case 7 :
-         Link::showForItem('NetworkEquipment',$_POST["id"]);
+         Link::showForItem('NetworkEquipment', $_POST["id"]);
          break;
 
       case 10 :
-         showNotesForm($_POST['target'],'NetworkEquipment',$_POST["id"]);
+         showNotesForm($_POST['target'], 'NetworkEquipment', $_POST["id"]);
          break;
 
       case 11 :
-         Reservation::showForItem('NetworkEquipment',$_POST["id"]);
+         Reservation::showForItem('NetworkEquipment', $_POST["id"]);
          break;
 
       case 12 :
@@ -117,7 +121,7 @@ if (!empty($_POST["withtemplate"])) {
          break;
 
       default :
-         if (!Plugin::displayAction($netdevice,$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($netdevice, $_REQUEST['glpi_tab'])) {
             NetworkPort::showForItem('NetworkEquipment',$_POST["id"]);
          }
    }

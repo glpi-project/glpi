@@ -36,12 +36,12 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 $notification = new Notification;
 
-//checkRight("notification",'r');
 if (isset($_POST['id']) && $_POST['id'] > 0 && $notification->can($_POST['id'],'r') ) {
 
    if (!isset($_REQUEST['glpi_tab'])) {

@@ -36,6 +36,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -49,7 +50,9 @@ if (!isset($_REQUEST['glpi_tab'])) {
 checkRight("ocsng", "w");
 
 $ocs = new OcsServer();
+
 if ($_POST["id"]>0 && $ocs->can($_POST["id"],'r')) {
+
    switch ($_REQUEST['glpi_tab']) {
       case -1 :
          $ocs->showDBConnectionStatus($_POST["id"]);
@@ -70,9 +73,11 @@ if ($_POST["id"]>0 && $ocs->can($_POST["id"],'r')) {
       case 4 :
          $ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["id"]);
          break;
+
       case 12 :
             Log::showForItem($ocs);
             break;
+
       default :
          if (!Plugin::displayAction($ocs, $_REQUEST['glpi_tab'])) {
             $ocs->showDBConnectionStatus($_POST["id"]);

@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -50,19 +51,21 @@ if(empty($_POST["id"])) {
 }
 
 $link = new Link();
+
 if ($_POST['id']>0 && $link->can($_POST['id'],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          Link_ItemType::showForItem($_POST["id"]);
-         Plugin::displayAction($link,$_REQUEST['glpi_tab']);
+         Plugin::displayAction($link, $_REQUEST['glpi_tab']);
          break;
+
       default :
-         if (!Plugin::displayAction($link,$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($link, $_REQUEST['glpi_tab'])) {
             Link_ItemType::showForItem($_POST["id"]);
          }
-         break;
    }
-
 }
+
 ajaxFooter();
 ?>

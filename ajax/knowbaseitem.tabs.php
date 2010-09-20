@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -50,22 +51,24 @@ if(empty($_POST["id"])) {
 }
 
 $kb = new KnowbaseItem();
+
 if ($_POST['id']>0 && $kb->can($_POST['id'],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $kb->showMenu();
          Document::showAssociated($kb);
-         Plugin::displayAction($kb,$_REQUEST['glpi_tab']);
+         Plugin::displayAction($kb, $_REQUEST['glpi_tab']);
          break;
+
       default :
-         if (!Plugin::displayAction($kb,$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($kb, $_REQUEST['glpi_tab'])) {
             $kb->showMenu();
             Document::showAssociated($kb);
          }
-         break;
    }
-
 }
+
 ajaxFooter();
 
 ?>

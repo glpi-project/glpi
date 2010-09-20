@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -50,12 +51,15 @@ if(empty($_POST["id"])) {
 }
 
 $collector = new MailCollector();
+
 if ($_POST['id']>0 && $collector->can($_POST['id'],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $collector->showGetMessageForm($_POST['id']);
-         Plugin::displayAction($collector,$_REQUEST['glpi_tab']);
+         Plugin::displayAction($collector, $_REQUEST['glpi_tab']);
          break;
+
       case 12 :
             Log::showForItem($collector);
          break;
@@ -66,8 +70,8 @@ if ($_POST['id']>0 && $collector->can($_POST['id'],'r')) {
          }
          break;
    }
-
 }
+
 ajaxFooter();
 
 ?>
