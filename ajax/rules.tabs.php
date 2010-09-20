@@ -35,16 +35,20 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 $rulecollection = new $_POST['itemtype'] ();
+
 if ($rulecollection->isRuleEntityAssigned()) {
    $rulecollection->setEntity($_SESSION['glpiactive_entity']);
 }
+
 $rulecollection->title();
 $rulecollection->showEngineSummary();
-$rulecollection->showListRules($_POST['target'],$_REQUEST['glpi_tab'],$_POST);
+$rulecollection->showListRules($_POST['target'], $_REQUEST['glpi_tab'], $_POST);
 
 ajaxFooter();
+
 ?>

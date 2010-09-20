@@ -50,22 +50,25 @@ checkLoginUser();
 // Non define case
 if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
    if (!isset($_POST["field"])) {
-      $_POST["field"]=key(Rule::getActionsByType($_POST["sub_type"]));
+      $_POST["field"] = key(Rule::getActionsByType($_POST["sub_type"]));
    }
 
-   $randaction=RuleAction::dropdownActions($_POST["sub_type"],"action_type",$_POST["field"]);
+   $randaction = RuleAction::dropdownActions($_POST["sub_type"], "action_type", $_POST["field"]);
 
    echo "&nbsp;&nbsp;";
    echo "<span id='action_type_span'>\n";
    echo "</span>\n";
 
-   $paramsaction=array('action_type'=>'__VALUE__',
-                       'field'=>$_POST["field"],
-                       'sub_type'=>$_POST["sub_type"]);
-   ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction","action_type_span",
-                               $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false);
-   ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,
-                  false,"dropdown_action_type$randaction");
+   $paramsaction = array('action_type' => '__VALUE__',
+                         'field'       => $_POST["field"],
+                         'sub_type'    => $_POST["sub_type"]);
+
+   ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction", "action_type_span",
+                               $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php", $paramsaction,
+                               false);
+
+   ajaxUpdateItem("action_type_span", $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",
+                  $paramsaction, false, "dropdown_action_type$randaction");
 }
 
 ?>

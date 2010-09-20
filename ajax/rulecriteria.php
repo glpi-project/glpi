@@ -48,39 +48,43 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 if (isset($_POST["sub_type"])) {
-   $type = $_POST["sub_type"];
-   $rule=new $type();
-   $criterias=$rule->getCriterias();
+   $type      = $_POST["sub_type"];
+   $rule      = new $type();
+   $criterias = $rule->getCriterias();
+
    if (count($criterias)) {
       // First include -> first of the predefined array
       if (!isset($_POST["criteria"])) {
-         $_POST["criteria"]=key($criterias);
+         $_POST["criteria"] = key($criterias);
       }
-      $type="";
+      $type = "";
+
       if (isset($criterias[$_POST["criteria"]]['type'])) {
-         $type=$criterias[$_POST["criteria"]]['type'];
+         $type = $criterias[$_POST["criteria"]]['type'];
       }
+
       if (isset($criterias[$_POST["criteria"]]['allow_condition'])) {
-         $allow_condition=$criterias[$_POST["criteria"]]['allow_condition'];
-      }
-      else {
+         $allow_condition = $criterias[$_POST["criteria"]]['allow_condition'];
+      } else {
          $allow_condition = array();
       }
-      $randcrit = RuleCriteria::dropdownConditions($type,"condition",'',$allow_condition);
+
+      $randcrit = RuleCriteria::dropdownConditions($type, "condition", '', $allow_condition);
 
       echo "&nbsp;&nbsp;";
       echo "<span id='condition_span'>\n";
       echo "</span>\n";
 
-      $paramscriteria=array('condition'=>'__VALUE__',
-                            'criteria'=>$_POST["criteria"],
-                            'sub_type'=>$_POST["sub_type"]);
-      ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit","condition_span",
-                                  $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,
-                                  false);
-      ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
-                     $paramscriteria,false,"dropdown_condition$randcrit");
+      $paramscriteria = array('condition' => '__VALUE__',
+                              'criteria'  => $_POST["criteria"],
+                              'sub_type'  => $_POST["sub_type"]);
 
+      ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit", "condition_span",
+                                  $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
+                                  $paramscriteria, false);
+
+      ajaxUpdateItem("condition_span", $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
+                     $paramscriteria, false, "dropdown_condition$randcrit");
    }
 }
 

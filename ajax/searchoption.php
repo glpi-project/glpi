@@ -47,72 +47,72 @@ if (!defined('GLPI_ROOT')) {
 
 checkLoginUser();
 
-// Non define case
-//print_r($_POST);
-if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
+   $addmeta = "";
 
-   $addmeta="";
-   if (isset($_POST['meta'])&&$_POST['meta']) {
-      $addmeta='2';
+// Non define case
+if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
+   if (isset($_POST['meta']) && $_POST['meta']) {
+      $addmeta = '2';
    } else {
-      $_POST['meta']=0;
+      $_POST['meta'] = 0;
    }
-//    echo $_POST["itemtype"]."--".$_POST["field"]."--".$_POST['searchtype'];
-   $actions=Search::getActionsFor($_POST["itemtype"],$_POST["field"]);
+
+   $actions = Search::getActionsFor($_POST["itemtype"], $_POST["field"]);
+
    // is it a valid action for type ?
-   if (count($actions) 
+   if (count($actions)
        && (empty($_POST['searchtype']) || !isset($actions[$_POST['searchtype']]))) {
-      $tmp=$actions;
+      $tmp = $actions;
       unset($tmp['searchopt']);
-      $_POST['searchtype']=key($tmp);
+      $_POST['searchtype'] = key($tmp);
       unset($tmp);
    }
-//    echo $_POST["itemtype"]."--".$_POST["field"]."--".$_POST['searchtype'];
-//    printcleanArray($actions);
-   $randsearch=-1;
-   $dropdownname="searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
-   $searchopt=array();
+
+   $randsearch   = -1;
+   $dropdownname = "searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
+   $searchopt    = array();
 
    echo "<table><tr><td>";
    if (count($actions)>0){
+
       // get already get search options
       if (isset($actions['searchopt'])) {
-         $searchopt=$actions['searchopt'];
+         $searchopt = $actions['searchopt'];
          // No name for clean array whith quotes
          unset($searchopt['name']);
          unset($actions['searchopt']);
       }
-      $randsearch=Dropdown::showFromArray("searchtype".$addmeta."[".$_POST["num"]."]",
-                            $actions,array('value' => $_POST["searchtype"]));
+      $randsearch = Dropdown::showFromArray("searchtype".$addmeta."[".$_POST["num"]."]",
+                                            $actions,
+                                            array('value' => $_POST["searchtype"]));
    }
    echo "</td><td>";
    echo "<span id='span$dropdownname'>\n";
 
-   $_REQUEST['searchtype']=$_POST["searchtype"];
-   $_REQUEST['field']=$_POST["field"];
-   $_REQUEST['itemtype']=$_POST["itemtype"];
-   $_REQUEST['num']=$_POST["num"];
-   $_REQUEST['value']=stripslashes($_POST['value']);
-   $_REQUEST['meta']=$_POST['meta'];
-   $_REQUEST['searchopt']=serialize($searchopt);
+   $_REQUEST['searchtype'] = $_POST["searchtype"];
+   $_REQUEST['field']      = $_POST["field"];
+   $_REQUEST['itemtype']   = $_POST["itemtype"];
+   $_REQUEST['num']        = $_POST["num"];
+   $_REQUEST['value']      = stripslashes($_POST['value']);
+   $_REQUEST['meta']       = $_POST['meta'];
+   $_REQUEST['searchopt']  = serialize($searchopt);
+
    include(GLPI_ROOT."/ajax/searchoptionvalue.php");
    echo "</span>\n";
-
    echo "</td></tr></table>";
 
-   $paramsaction=array( 'searchtype'   => '__VALUE__',
-                        'field'        => $_POST["field"],
-                        'itemtype'     => $_POST["itemtype"],
-                        'num'          => $_POST["num"],
-                        'value'        => rawurlencode(stripslashes($_POST['value'])),
-                        'searchopt'    => $searchopt,
-                        'meta'         => $_POST['meta'],);
+   $paramsaction = array( 'searchtype' => '__VALUE__',
+                          'field'      => $_POST["field"],
+                          'itemtype'   => $_POST["itemtype"],
+                          'num'        => $_POST["num"],
+                          'value'      => rawurlencode(stripslashes($_POST['value'])),
+                          'searchopt'  => $searchopt,
+                          'meta'       => $_POST['meta']);
 
-   ajaxUpdateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch","span$dropdownname",
-                                 $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",$paramsaction,false);
-//    ajaxUpdateItem("span$dropdownname",$CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
-//                      $paramsaction, false,"dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch");
-
+   ajaxUpdateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch",
+                               "span$dropdownname",
+                               $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
+                               $paramsaction, false);
 }
 
 ?>
