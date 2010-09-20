@@ -36,27 +36,30 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("config",'r');
+checkRight("config", 'r');
 
 if (isset($_POST['id']) && $_POST['id'] > 0) {
+
    if (!isset($_REQUEST['glpi_tab'])) {
       exit();
    }
 
    $template = new NotificationTemplate();
    $template->getFromDB($_POST['id']);
-   $templatelanguage = new NotificationTemplateTranslation;
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
       case 1 :
+         $templatelanguage = new NotificationTemplateTranslation;
          $templatelanguage->showSummary($template);
          break;
 
       case 12 :
-            Log::showForItem($template);
+         Log::showForItem($template);
          break;
 
       default :

@@ -44,7 +44,9 @@ if (!isset($_REQUEST['glpi_tab'])) {
 }
 
 $port = new NetworkPort();
+
 if ($_POST["id"]>0 && $port->can($_POST["id"],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1: // All
          NetworkPort_Vlan::showForNetworkPortForm($_POST["id"]);

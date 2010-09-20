@@ -33,19 +33,20 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
 
 if (!isset($_GET['target'])) {
-   $_GET['target']=$CFG_GLPI['root_doc']."/front/central.php";
+   $_GET['target'] = $CFG_GLPI['root_doc']."/front/central.php";
 }
 
-Entity::showSelector($_GET['target'],"activeentity");
+Entity::showSelector($_GET['target'], "activeentity");
 
 ajaxFooter();
 

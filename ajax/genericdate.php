@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 include (GLPI_ROOT."/inc/includes.php");
 
 // Send UTF8 Headers
@@ -44,11 +44,13 @@ header_nocache();
 checkLoginUser();
 
 if (isset($_POST['value']) && strcmp($_POST['value'],'0')==0) {
+
    if ($_POST['withtime']) {
-      showDateTimeFormItem($_POST['name'],$_POST['specificvalue']);
+      showDateTimeFormItem($_POST['name'], $_POST['specificvalue']);
    } else {
-      showDateFormItem($_POST['name'],$_POST['specificvalue']);
+      showDateFormItem($_POST['name'], $_POST['specificvalue']);
    }
+
 } else {
    echo "<input type='hidden' name='".$_POST['name']."' value='".$_POST['value']."'>";
 }
