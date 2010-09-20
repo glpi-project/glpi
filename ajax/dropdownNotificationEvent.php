@@ -40,6 +40,8 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownNotificationEvent.php")) {
    header_nocache();
 }
 
-checkRight("notification","w");
+checkRight("notification", "w");
+
 NotificationEvent::dropdownEvents($_POST['itemtype']);
+
 ?>

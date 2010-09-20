@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 if (strpos($_SERVER['PHP_SELF'],"dropdownRubDocument.php")) {
-   $AJAX_INCLUDE=1;
+   $AJAX_INCLUDE = 1;
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
@@ -46,22 +46,28 @@ checkCentralAccess();
 // Make a select box
 if (isset($_POST["rubdoc"])) {
    if (!is_array($_POST['used'])) {
-      $_POST['used']=unserialize(stripslashes($_POST['used']));
+      $_POST['used'] = unserialize(stripslashes($_POST['used']));
    }
-   $used=array();
+   $used = array();
+
    // Clean used array
    if (is_array($_POST['used']) && count($_POST['used'])>0) {
-      $query="SELECT id FROM glpi_documents WHERE id IN (".implode(',',$_POST['used']).") AND documentcategories_id='".$_POST["rubdoc"]."'";
+      $query = "SELECT `id`
+                FROM `glpi_documents`
+                WHERE `id` IN (".implode(',',$_POST['used']).")
+                      AND `documentcategories_id` = '".$_POST["rubdoc"]."'";
+
       foreach ($DB->request($query) AS $data) {
-         $used[$data['id']]=$data['id'];
+         $used[$data['id']] = $data['id'];
       }
    }
-   Dropdown::show('Document',array('name'    => $_POST['myname'],
-                                    'used'     => $used,
-                                    'entity'   => $_POST['entity'],
-                                    'rand'   => $_POST['rand'],
-                                    'condition'=> "glpi_documents.documentcategories_id='".$_POST["rubdoc"]."'"
-                              ));
+
+   Dropdown::show('Document',
+                  array('name'      => $_POST['myname'],
+                        'used'      => $used,
+                        'entity'    => $_POST['entity'],
+                        'rand'      => $_POST['rand'],
+                        'condition' => "glpi_documents.documentcategories_id='".$_POST["rubdoc"]."'"));
 }
 
 ?>

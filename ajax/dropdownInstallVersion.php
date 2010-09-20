@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 if (strpos($_SERVER['PHP_SELF'],"dropdownInstallVersion.php")) {
-   $AJAX_INCLUDE=1;
+   $AJAX_INCLUDE = 1;
    define('GLPI_ROOT','..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
@@ -45,34 +45,37 @@ checkRight("software","w");
 
 if ($_POST['softwares_id']>0) {
    if (!isset($_POST['value'])) {
-      $_POST['value']=0;
+      $_POST['value'] = 0;
    }
 
    // Make a select box
-   $query = "SELECT DISTINCT `glpi_softwareversions`.*, `glpi_states`.`name` AS sname
+   $query = "SELECT DISTINCT `glpi_softwareversions`.*,
+                             `glpi_states`.`name` AS sname
              FROM `glpi_softwareversions`
              LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
              WHERE `glpi_softwareversions`.`softwares_id` = '".$_POST['softwares_id']."'
              ORDER BY `name`";
    $result = $DB->query($query);
-   $number=$DB->numrows($result);
+   $number = $DB->numrows($result);
 
-   echo "<select name=\"".$_POST['myname']."\" size='1'>";
+   echo "<select name='".$_POST['myname']."' size='1'>";
    echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 
-   $today=date("Y-m-d");
+   $today = date("Y-m-d");
+
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
          $ID = $data['id'];
          $output = $data['name'];
+
          if (empty($output) || $_SESSION['glpiis_ids_visible']) {
             $output .= " ($ID)";
          }
          if (!empty($data['sname'])) {
             $output .= " - " . $data['sname'];
          }
-        echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
-               cleanInputText($output)."\">".$output."</option>";
+         echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title='".
+               cleanInputText($output)."'>".$output."</option>";
       }
    }
    echo "</select>&nbsp;";

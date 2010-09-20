@@ -35,34 +35,36 @@
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("networking","w");
+checkRight("networking", "w");
 
 if (isset($_POST["action"])) {
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
+
    switch($_POST["action"]) {
       case "delete" :
-         echo "&nbsp;<input type='submit' name='delete_several' class='submit' value=\"".
-               $LANG['buttons'][2]."\" >";
+         echo "&nbsp;<input type='submit' name='delete_several' class='submit' value='".
+               $LANG['buttons'][2]."'>";
          break;
 
       case "assign_vlan" :
          Dropdown::show('Vlan');
-         echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value=\"".
-                      $LANG['buttons'][2]."\" >";
+         echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value='".
+               $LANG['buttons'][2]."'>";
          break;
 
       case "unassign_vlan" :
          Dropdown::show('Vlan');
-         echo "&nbsp;<input type='submit' name='unassign_vlan_several' class='submit' value=\"".
-                      $LANG['buttons'][2]."\" >";
+         echo "&nbsp;<input type='submit' name='unassign_vlan_several' class='submit' value='".
+               $LANG['buttons'][2]."'>";
          break;
 
       case "move" :
          Dropdown::show($_POST['itemtype'], array('name' => 'device'));
-         echo "&nbsp;<input type='submit' name='move' class='submit' value=\"".$LANG['buttons'][2]."\">";
+         echo "&nbsp;<input type='submit' name='move' class='submit' value='".$LANG['buttons'][2]."'>";
          break;
    }
 }

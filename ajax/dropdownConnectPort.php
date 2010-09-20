@@ -33,10 +33,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -44,11 +45,13 @@ checkRight("networking","w");
 
 // Make a select box
 if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
-   $table=getTableForItemType($_POST["itemtype"]);
+   $table = getTableForItemType($_POST["itemtype"]);
 
    $query = "SELECT DISTINCT `glpi_networkports_networkports`.`id` AS wid,
-                    `glpi_networkports`.`id` AS did, `$table`.`name` AS cname,
-                    `glpi_networkports`.`name` AS nname, `glpi_netpoints`.`name` as npname
+                             `glpi_networkports`.`id` AS did,
+                             `$table`.`name` AS cname,
+                             `glpi_networkports`.`name` AS nname,
+                             `glpi_netpoints`.`name` AS npname
              FROM `$table`
              LEFT JOIN `glpi_networkports`
                ON (`glpi_networkports`.`items_id` = '".$_POST['item']."'
@@ -68,34 +71,38 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
    $result = $DB->query($query);
 
    echo "<br>";
-   echo "<select name=\"".$_POST['myname']."[".$_POST["current"]."]\" size='1'>";
+   echo "<select name='".$_POST['myname']."[".$_POST["current"]."]' size='1'>";
    echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
+
    if ($DB->numrows($result)) {
       while ($data = $DB->fetch_array($result)) {
          // Device name + port name
          $output = $output_long = $data['cname'];
+
          if (!empty($data['nname'])) {
-            $output .= " - ".$data['nname'];
+            $output      .= " - ".$data['nname'];
             $output_long .= " - " . $LANG['networking'][44] . " " . $data['nname'];
          }
+
          // display netpoint (which will be copied)
          if (!empty($data['npname'])) {
-            $output .= " - ".$data['npname'];
+            $output      .= " - ".$data['npname'];
             $output_long .= " - " . $LANG['networking'][51] . " " . $data['npname'];
          }
          $ID = $data['did'];
+
          if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-            $output .= " ($ID)";
+            $output      .= " ($ID)";
             $output_long .= " ($ID)";
          }
-         $output = utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]);
-         echo "<option value='$ID' title=\"".cleanInputText($output_long)."\">".$output;
+         $output = utf8_substr($output, 0, $_SESSION["glpidropdown_chars_limit"]);
+         echo "<option value='$ID' title='".cleanInputText($output_long)."'>".$output;
          echo "</option>";
       }
    }
    echo "</select>";
 
-   echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
+   echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."' class='submit'>";
 }
 
 ?>
