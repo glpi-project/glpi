@@ -1675,15 +1675,15 @@ class Ticket extends CommonDBTM {
          $tab[28]['usehaving']    = true;
          $tab[28]['datatype']     = 'number';
 
-         $tab[29]['table']        = 'glpi_requesttypes';
+         $tab[29]['table']        = 'glpi_followup_requesttypes';
          $tab[29]['field']        = 'name';
-         $tab[29]['linkfield']    = 'requesttypes_id';
+         $tab[29]['linkfield']    = '';
          $tab[29]['name']         = $LANG['job'][9]." - ".$LANG['job'][44];
          $tab[29]['forcegroupby'] = true;
 
          $tab[26]['table']        = 'glpi_taskcategories';
          $tab[26]['field']        = 'name';
-         $tab[26]['linkfield']    = 'taskcategories_id';
+         $tab[26]['linkfield']    = '';
          $tab[26]['name']         = $LANG['job'][7]." - ".$LANG['common'][36];
          $tab[26]['forcegroupby'] = true;
          $tab[26]['splititems']   = true;
