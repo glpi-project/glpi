@@ -150,7 +150,7 @@ class SlaLevel extends RuleTicket {
 
                echo "<td>";
                if ($canedit) {
-                  echo "<a href='".getItemTypeFormURL('SLALevel')."?id=".$data["id"]."'>";
+                  echo "<a href='".getItemTypeFormURL('SlaLevel')."?id=".$data["id"]."'>";
                }
                   echo $data["name"];
                   if (empty($data["name"])) {
@@ -234,7 +234,7 @@ class SlaLevel extends RuleTicket {
       echo "</td>";
       echo "<td>".$LANG['sla'][3]."</td>";
       echo "<td>";
-      
+
       self::dropdownExecutionTime('execution_time',
                      array('max_time'  => $sla->fields['resolution_time'],
                            'used'      => self::getAlreadyUsedExecutionTime($sla->fields['id']),
@@ -298,7 +298,7 @@ class SlaLevel extends RuleTicket {
          if (!in_array(0,$p['used'])) {
             $possible_values[0]=$LANG['sla'][5];
          }
-   
+
          ksort($possible_values);
          Dropdown::showFromArray($name,$possible_values,array('value'=>$p['value']));
 
