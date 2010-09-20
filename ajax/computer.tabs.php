@@ -35,10 +35,11 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
+if (!isset($_POST["id"])) {
    exit();
 }
 if (!isset($_POST["sort"])) {
@@ -51,16 +52,17 @@ if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
 
-checkRight("computer","r");
+checkRight("computer", "r");
 
 $computer = new Computer();
 
 //show computer form to add
 if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
+
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 2 :
-            Computer_SoftwareVersion::showForComputer($computer,$_POST["withtemplate"]);
+            Computer_SoftwareVersion::showForComputer($computer, $_POST["withtemplate"]);
             break;
 
          case 3 :
@@ -69,38 +71,39 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($computer,$_POST["withtemplate"]);
-            Contract::showAssociated($computer,$_POST["withtemplate"]);
+            Infocom::showForItem($computer, $_POST["withtemplate"]);
+            Contract::showAssociated($computer, $_POST["withtemplate"]);
             break;
 
          case 5 :
-            Document::showAssociated($computer,$_POST["withtemplate"]);
+            Document::showAssociated($computer, $_POST["withtemplate"]);
             break;
 
          case 20 :
-            ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
+            ComputerDisk::showForComputer($computer, $_POST["withtemplate"]);
             break;
 
          default :
-            if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($computer, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                Computer_Device::showForComputer($computer, $_POST["withtemplate"]);
             }
       }
+
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             Computer_Device::showForComputer($computer);
-            ComputerDisk::showForComputer($computer,$_POST["withtemplate"]);
+            ComputerDisk::showForComputer($computer, $_POST["withtemplate"]);
             Computer_SoftwareVersion::showForComputer($computer);
             Computer_Item::showForComputer($_POST['target'], $computer);
             NetworkPort::showForItem('Computer', $_POST["id"]);
             Infocom::showForItem($computer);
-            Contract::showAssociated($computer,$_POST["withtemplate"]);
+            Contract::showAssociated($computer ,$_POST["withtemplate"]);
             Document::showAssociated($computer);
-            Ticket::showListForItem('Computer',$_POST["id"]);
-            Link::showForItem('Computer',$_POST["id"]);
+            Ticket::showListForItem('Computer', $_POST["id"]);
+            Link::showForItem('Computer', $_POST["id"]);
             RegistryKey::showForComputer($_POST["id"]);
-            Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+            Plugin::displayAction($computer, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
             break;
 
          case 2 :
@@ -122,19 +125,19 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            Ticket::showListForItem('Computer',$_POST["id"]);
+            Ticket::showListForItem('Computer', $_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem('Computer',$_POST["id"]);
+            Link::showForItem('Computer', $_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],'Computer',$_POST["id"]);
+            showNotesForm($_POST['target'],'Computer', $_POST["id"]);
             break;
 
          case 11 :
-            Reservation::showForItem('Computer',$_POST["id"]);
+            Reservation::showForItem('Computer', $_POST["id"]);
             break;
 
          case 12 :
@@ -142,7 +145,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 13 :
-            OcsServer::editLock($_POST['target'],$_POST["id"]);
+            OcsServer::editLock($_POST['target'], $_POST["id"]);
             break;
 
          case 14:
@@ -154,7 +157,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!Plugin::displayAction($computer,$_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($computer, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                Computer_Device::showForComputer($computer);
             }
       }

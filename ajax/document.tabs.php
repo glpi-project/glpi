@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -45,14 +46,15 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-$doc= new Document();
+$doc = new Document();
 
 if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
+
    switch ($_REQUEST['glpi_tab']) {
       case -1 :
          $doc->showItems();
          Document::showAssociated($doc);
-         Plugin::displayAction($doc,$_REQUEST['glpi_tab']);
+         Plugin::displayAction($doc, $_REQUEST['glpi_tab']);
          break;
 
       case 5 :
@@ -60,7 +62,7 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          break;
 
       case 10 :
-         showNotesForm( $_POST['target'],'Document',$_POST["id"]);
+         showNotesForm( $_POST['target'], 'Document', $_POST["id"]);
          break;
 
       case 12 :
@@ -68,7 +70,7 @@ if ($_POST["id"]>0 && $doc->can($_POST["id"],'r')) {
          break;
 
       default :
-         if (!Plugin::displayAction($doc,$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($doc, $_REQUEST['glpi_tab'])) {
             $doc->showItems();
          }
    }

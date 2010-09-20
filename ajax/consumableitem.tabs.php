@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -45,10 +46,12 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-checkRight("consumable","r");
+checkRight("consumable", "r");
 
 $consumable = new ConsumableItem();
+
 if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          Consumable::showAddForm($consumable);
@@ -56,8 +59,8 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          Consumable::showForItem($consumable, 1);
          Infocom::showForItem($consumable);
          Document::showAssociated($consumable);
-         Link::showForItem('ConsumableItem',$_POST["id"]);
-         Plugin::displayAction($consumable,$_REQUEST['glpi_tab']);
+         Link::showForItem('ConsumableItem', $_POST["id"]);
+         Plugin::displayAction($consumable, $_REQUEST['glpi_tab']);
          break;
 
       case 4 :
@@ -69,15 +72,15 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
          break;
 
       case 7 :
-         Link::showForItem('ConsumableItem',$_POST["id"]);
+         Link::showForItem('ConsumableItem', $_POST["id"]);
          break;
 
       case 10 :
-         showNotesForm($_POST['target'],'ConsumableItem',$_POST["id"]);
+         showNotesForm($_POST['target'], 'ConsumableItem', $_POST["id"]);
          break;
 
       default :
-         if (!Plugin::displayAction($consumable,$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($consumable, $_REQUEST['glpi_tab'])) {
             Consumable::showAddForm($consumable);
             Consumable::showForItem($consumable);
             Consumable::showForItem($consumable, 1);
@@ -85,4 +88,5 @@ if ($_POST["id"]>0 && $consumable->can($_POST["id"],'r')) {
    }
 }
 ajaxFooter();
+
 ?>

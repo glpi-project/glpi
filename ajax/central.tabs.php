@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -62,14 +63,15 @@ switch ($_REQUEST['glpi_tab']) {
       echo "<br>";
       $central->showGlobalView();
       echo "<br>";
-      Plugin::displayAction($central,$_REQUEST['glpi_tab']);
+      Plugin::displayAction($central, $_REQUEST['glpi_tab']);
       break;
 
    default :
-      if (!Plugin::displayAction($central,$_REQUEST['glpi_tab'])) {
+      if (!Plugin::displayAction($central, $_REQUEST['glpi_tab'])) {
          $central->showMyView();
       }
 }
 
 ajaxFooter();
+
 ?>

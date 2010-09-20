@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -56,7 +57,7 @@ switch($_REQUEST['glpi_tab']) {
       if (DBConnection::isDBSlaveActive()) {
          $config->showFormDBSlave();
       }
-      Plugin::displayAction($config,$_REQUEST['glpi_tab']);
+      Plugin::displayAction($config, $_REQUEST['glpi_tab']);
       break;
 
    case 1 :
@@ -85,10 +86,11 @@ switch($_REQUEST['glpi_tab']) {
 
 
    default :
-      if (!Plugin::displayAction($config,$_REQUEST['glpi_tab'])) {
+      if (!Plugin::displayAction($config, $_REQUEST['glpi_tab'])) {
       $config->showFormDisplay();
       }
 }
 
 ajaxFooter();
+
 ?>
