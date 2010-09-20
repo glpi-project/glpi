@@ -461,9 +461,8 @@ class TicketValidation  extends CommonDBChild {
       $canadd = $this->can(-1,'w',$tmp);
       $rand = mt_rand();
 
-      if ($canadd) {
-         echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
-      }
+      echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
+ 
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddValidation" . $tID . "$rand(){\n";
