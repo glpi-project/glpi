@@ -89,7 +89,7 @@ if (isset($_REQUEST['searchtype'])) {
          }
 
         // Specific cases with linkfield
-        if (isset($searchopt['linkfield'])) {
+        if (!$display && isset($searchopt['linkfield'])) {
             switch ($_REQUEST['itemtype'].".".$searchopt['linkfield']) {
                case "Ticket.users_id_recipient" :
                case "Ticket.users_id" :
