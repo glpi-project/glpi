@@ -155,7 +155,8 @@ class TicketValidation  extends CommonDBChild {
             $job->update($input);
          }
          if ($CFG_GLPI["use_mailing"]) {
-            $options = array('validation_id' => $this->fields["id"]);
+            $options = array('validation_id'     => $this->fields["id"],
+                             'validation_status' => $this->fields["status"]);
             $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
          }
          if ($mailsend) {
