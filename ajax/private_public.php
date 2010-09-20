@@ -46,6 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 if (isset($_POST['is_private'])) {
    checkLoginUser();
+
    switch ($_POST['is_private']) {
       case true :
          echo "<input type='hidden' name='is_private' value='1'>\n";
@@ -60,7 +61,7 @@ if (isset($_POST['is_private'])) {
          echo $LANG['common'][76]."&nbsp;:&nbsp;";
          Dropdown::show('Entity', array('value' => $_POST["entities_id"]));
          echo "&nbsp;+&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
-         Dropdown::showYesNo('is_recursive',$_POST["is_recursive"]);
+         Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
          echo " - ";
          echo "<a onClick='setPrivate".$_POST['rand']."()'>".$LANG['common'][79]."</a>";
          break;

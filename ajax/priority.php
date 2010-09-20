@@ -44,12 +44,15 @@ checkLoginUser();
 
 if (isset($_POST["urgency"]) && isset($_POST["impact"]) && isset($_POST["priority"])) {
    $priority = Ticket::computePriority($_POST["urgency"], $_POST["impact"]);
+
    if ($_POST["priority"]) {
       echo "<script>\n";
       echo "document.getElementById('".$_POST["priority"]."').value = $priority;";
       echo "\n</script>";
+
    } else {
       echo Ticket::getPriorityName($priority);
    }
 }
+
 ?>

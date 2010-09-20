@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -56,6 +57,7 @@ checkRight("printer","r");
 $printer = new Printer();
 
 if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
+
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 3 :
@@ -63,17 +65,18 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 4 :
-            Infocom::showForItem($printer,$_POST["withtemplate"]);
-            Contract::showAssociated($printer,$_POST["withtemplate"]);
+            Infocom::showForItem($printer, $_POST["withtemplate"]);
+            Contract::showAssociated($printer, $_POST["withtemplate"]);
             break;
 
          case 5 :
-            Document::showAssociated($printer,$_POST["withtemplate"]);
+            Document::showAssociated($printer, $_POST["withtemplate"]);
             break;
 
          default :
-            Plugin::displayAction($printer, $_REQUEST['glpi_tab'],$_POST["withtemplate"]);
+            Plugin::displayAction($printer, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
+
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
@@ -104,15 +107,15 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            Ticket::showListForItem('Printer',$_POST["id"]);
+            Ticket::showListForItem('Printer', $_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem('Printer',$_POST["id"]);
+            Link::showForItem('Printer', $_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],'Printer',$_POST["id"]);
+            showNotesForm($_POST['target'], 'Printer', $_POST["id"]);
             break;
 
          case 11 :

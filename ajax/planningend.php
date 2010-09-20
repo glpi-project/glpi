@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 include (GLPI_ROOT."/inc/includes.php");
 
 // Send UTF8 Headers
@@ -44,8 +44,8 @@ header_nocache();
 checkLoginUser();
 
 if (isset($_POST['duration']) && $_POST['duration']==0) {
-   showDateTimeFormItem("plan[end]",$_POST['end'],-1,false,true,
-               '','',$_POST['global_begin'],$_POST['global_end']);
+   showDateTimeFormItem("plan[end]", $_POST['end'], -1, false, true, '', '',
+                        $_POST['global_begin'], $_POST['global_end']);
 }
 
 ?>

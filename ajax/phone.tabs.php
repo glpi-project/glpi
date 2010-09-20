@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -45,7 +46,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-checkRight("phone","r");
+checkRight("phone", "r");
 
 if (empty($_POST["id"])) {
    $_POST["id"] = "";
@@ -63,22 +64,24 @@ if (!isset($_POST["withtemplate"])) {
 $phone = new Phone();
 
 if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
+
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($phone,$_POST["withtemplate"]);
-            Contract::showAssociated($phone,$_POST["withtemplate"]);
+            Infocom::showForItem($phone, $_POST["withtemplate"]);
+            Contract::showAssociated($phone, $_POST["withtemplate"]);
             break;
 
          case 5 :
-            Document::showAssociated($phone,$_POST["withtemplate"]);
+            Document::showAssociated($phone, $_POST["withtemplate"]);
             break;
 
          default :
-            if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
+            if (!Plugin::displayAction($phone, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                NetworkPort::showForItem('Phone', $_POST["id"], $_POST["withtemplate"]);
             }
       }
+
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
@@ -87,8 +90,8 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             Infocom::showForItem($phone);
             Contract::showAssociated($phone);
             Document::showAssociated($phone);
-            Ticket::showListForItem('Phone',$_POST["id"]);
-            Link::showForItem('Phone',$_POST["id"]);
+            Ticket::showListForItem('Phone', $_POST["id"]);
+            Link::showForItem('Phone', $_POST["id"]);
             Plugin::displayAction($phone, $_REQUEST['glpi_tab']);
             break;
 
@@ -102,19 +105,19 @@ if ($_POST["id"]>0 && $phone->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            Ticket::showListForItem('Phone',$_POST["id"]);
+            Ticket::showListForItem('Phone', $_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem('Phone',$_POST["id"]);
+            Link::showForItem('Phone', $_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],'Phone',$_POST["id"]);
+            showNotesForm($_POST['target'], 'Phone', $_POST["id"]);
             break;
 
          case 11 :
-            Reservation::showForItem('Phone',$_POST["id"]);
+            Reservation::showForItem('Phone', $_POST["id"]);
             break;
 
          case 12 :

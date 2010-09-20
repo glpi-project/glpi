@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -45,8 +46,6 @@ if (!isset($_REQUEST['glpi_tab'])) {
 checkLoginUser();
 
 $user = new User();
-$pref = new Preference();
-
 
 switch ($_REQUEST['glpi_tab']) {
    case 2 :
@@ -57,6 +56,7 @@ switch ($_REQUEST['glpi_tab']) {
       break;
 
    default :
+      $pref = new Preference();
       if (!Plugin::displayAction($pref, $_REQUEST['glpi_tab'])) {
          $user->showMyForm($CFG_GLPI['root_doc']."/front/preference.php", getLoginUserID());
       }
