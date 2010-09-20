@@ -57,7 +57,8 @@ function listTemplates($itemtype, $target, $add = 0) {
    $query = "SELECT * FROM `".$item->getTable()."`
             WHERE `is_template` = '1' ";
    if ($item->isEntityAssign()) {
-      $query .= getEntitiesRestrictRequest('AND',$item->getTable(),'entities_id','',$item->maybeRecursive());
+      $query .= getEntitiesRestrictRequest('AND', $item->getTable(), 'entities_id',
+               $_SESSION['glpiactive_entity'], $item->maybeRecursive());
    }
    $query .= " ORDER by `template_name`";
 
