@@ -2727,6 +2727,7 @@ class Search {
          return "";
       }
 
+//       echo $nt.".".$linkfield.'<br>';
       if (in_array($nt.".".$linkfield,$already_link_tables)) {
          return "";
       }
@@ -2837,8 +2838,22 @@ class Search {
          case "glpi_ticketfollowups" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
 
-         case "glpi_tickettasks" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
+         case "glpi_followup_requesttypes":
+            // Link to glpi_ticketfollowups before
+            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_ticketfollowups",$linkfield);
+            return $out." LEFT JOIN `glpi_requesttypes` AS glpi_followup_requesttypes  ON (`glpi_followup_requesttypes`.`id`
+                            =`glpi_ticketfollowups`.`requesttypes_id`)";
+
+         case "glpi_taskcategories":
+              $out = " LEFT JOIN `glpi_taskcategories` ON (`glpi_taskcategories`.`id`
+                            =`glpi_tickettasks`.`taskcategories_id`)";
+              return $out;
+
+         case "glpi_taskcategories":
+            // Link to glpi_tickettasks before
+            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickettasks",$linkfield);
+            return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
+                          =`glpi_tickettasks`.`taskcategories_id`)";
 
          case "glpi_ticketvalidations" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_tickets",

@@ -59,6 +59,19 @@ if (isset($_REQUEST['searchtype'])) {
    $inputname = 'contains'.$addmeta.'['.$_REQUEST['num'].']';
    $display   = false;
 
+
+   // Fix table 
+   if (isset($searchopt['table'])) {
+      switch ($searchopt['table']) {
+         case "glpi_followup_requesttypes" :
+               $searchopt['table']='glpi_requesttypes';
+            break;
+         case "glpi_suppliers_infocoms" :
+               $searchopt['table']='glpi_suppliers';
+            break;
+      }
+   }
+
    switch ($_REQUEST['searchtype']) {
       case "equals" :
       case "notequals" :
