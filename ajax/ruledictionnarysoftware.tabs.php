@@ -33,15 +33,15 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight('rule_dictionnary_software','r');
+checkRight('rule_dictionnary_software', 'r');
 
 $rule = new RuleDictionnarySoftware();
 include ("rule.common.tabs.php");
+
 ?>

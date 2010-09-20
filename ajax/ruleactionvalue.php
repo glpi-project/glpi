@@ -46,8 +46,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 checkLoginUser();
-$display=false;
+$display = false;
 
 $ra = new RuleAction();
 $ra->displayActionSelectPattern($_POST);
+
 ?>
