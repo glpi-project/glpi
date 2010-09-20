@@ -35,10 +35,11 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkRight("peripheral","r");
+checkRight("peripheral", "r");
 
 if (!isset($_POST['id'])) {
    exit();
@@ -57,23 +58,26 @@ if (!isset($_POST["withtemplate"])) {
 }
 
 $periph = new Peripheral();
+
 if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
+
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($periph,$_POST["withtemplate"]);
-            Contract::showAssociated($periph,$_POST["withtemplate"]);
+            Infocom::showForItem($periph, $_POST["withtemplate"]);
+            Contract::showAssociated($periph, $_POST["withtemplate"]);
             break;
 
          case 5 :
-            Document::showAssociated($periph,$_POST["withtemplate"]);
+            Document::showAssociated($periph, $_POST["withtemplate"]);
             break;
 
          default :
-            if (!Plugin::displayAction($periph, $_REQUEST['glpi_tab'],$_POST["withtemplate"])) {
+            if (!Plugin::displayAction($periph, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
                NetworkPort::showForItem('Peripheral', $_POST["id"], $_POST["withtemplate"]);
             }
       }
+
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
@@ -82,8 +86,8 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             Infocom::showForItem($periph);
             Contract::showAssociated($periph);
             Document::showAssociated($periph);
-            Ticket::showListForItem('Peripheral',$_POST["id"]);
-            Link::showForItem('Peripheral',$_POST["id"]);
+            Ticket::showListForItem('Peripheral', $_POST["id"]);
+            Link::showForItem('Peripheral', $_POST["id"]);
             Plugin::displayAction($periph, $_REQUEST['glpi_tab']);
             break;
 
@@ -97,19 +101,19 @@ if ($_POST["id"]>0 && $periph->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            Ticket::showListForItem('Peripheral',$_POST["id"]);
+            Ticket::showListForItem('Peripheral', $_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem('Peripheral',$_POST["id"]);
+            Link::showForItem('Peripheral', $_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],'Peripheral',$_POST["id"]);
+            showNotesForm($_POST['target'],'Peripheral', $_POST["id"]);
             break;
 
          case 11 :
-            Reservation::showForItem('Peripheral',$_POST["id"]);
+            Reservation::showForItem('Peripheral', $_POST["id"]);
             break;
 
          case 12 :
