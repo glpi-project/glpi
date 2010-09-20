@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -50,13 +51,15 @@ if (empty($_POST["id"])) {
 }
 
 $contact = new Contact();
+
 if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $contact->showSuppliers();
          Document::showAssociated($contact);
-         Link::showForItem('Contact',$_POST["id"]);
-         Plugin::displayAction($contact,$_REQUEST['glpi_tab']);
+         Link::showForItem('Contact', $_POST["id"]);
+         Plugin::displayAction($contact, $_REQUEST['glpi_tab']);
          break;
 
       case 5 :
@@ -64,11 +67,11 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          break;
 
       case 7 :
-         Link::showForItem('Contact',$_POST["id"]);
+         Link::showForItem('Contact', $_POST["id"]);
          break;
 
       case 10 :
-         showNotesForm($_POST['target'],'Contact',$_POST["id"]);
+         showNotesForm($_POST['target'], 'Contact', $_POST["id"]);
          break;
 
       case 12 :
@@ -76,7 +79,7 @@ if ($_POST['id']>0 && $contact->getFromDB($_POST['id'])) {
          break;
 
       default :
-         if (!Plugin::displayAction($contact,$_REQUEST['glpi_tab'])) {
+         if (!Plugin::displayAction($contact, $_REQUEST['glpi_tab'])) {
             $contact->showSuppliers();
          }
    }

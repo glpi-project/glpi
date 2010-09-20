@@ -35,6 +35,7 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -46,16 +47,17 @@ if (!isset($_POST["id"])) {
    $_POST["id"] = -1;
 }
 
-$contract=new Contract();
+$contract = new Contract();
 
 if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $contract->showSuppliers();
          $contract->showItems();
          Document::showAssociated($contract);
-         Link::showForItem('Contact',$_POST["id"]);
-         Plugin::displayAction($contract,$_REQUEST['glpi_tab']);
+         Link::showForItem('Contact', $_POST["id"]);
+         Plugin::displayAction($contract, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :
@@ -67,11 +69,11 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          break;
 
       case 7 :
-         Link::showForItem('Contract',$_POST["id"]);
+         Link::showForItem('Contract', $_POST["id"]);
          break;
 
       case 10 :
-         showNotesForm($_POST['target'],'Contract',$_POST["id"]);
+         showNotesForm($_POST['target'], 'Contract', $_POST["id"]);
          break;
 
       case 12 :

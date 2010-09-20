@@ -35,22 +35,23 @@
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
+if (!isset($_POST["id"])) {
    exit();
 }
 
-checkRight("cartridge","r");
+checkRight("cartridge", "r");
 
 $cartridge = new CartridgeItem();
+
 if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
 
    if (!isset($_REQUEST['glpi_tab'])) {
       exit();
    }
-
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
@@ -60,7 +61,7 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Cartridge::showForCartridgeItem($cartridge, 1);
          Infocom::showForItem($cartridge);
          Document::showAssociated($cartridge);
-         Link::showForItem('CartridgeItem',$_POST["id"]);
+         Link::showForItem('CartridgeItem', $_POST["id"]);
          Plugin::displayAction($cartridge, $_REQUEST['glpi_tab']);
          break;
 
@@ -73,7 +74,7 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          break;
 
       case 7 :
-         Link::showForItem('CartridgeItem',$_POST["id"]);
+         Link::showForItem('CartridgeItem', $_POST["id"]);
          break;
 
       case 10 :
@@ -87,9 +88,9 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
             Cartridge::showForCartridgeItem($cartridge);
             Cartridge::showForCartridgeItem($cartridge, 1);
          }
-         break;
    }
 }
+
 ajaxFooter();
 
 ?>
