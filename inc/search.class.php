@@ -2664,7 +2664,17 @@ class Search {
 
 
          case "glpi_ticketfollowups" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`)";
+
+        case "glpi_requesttypes":
+             $out = " LEFT JOIN `glpi_requesttypes` ON (`glpi_requesttypes`.`id`
+                           =`glpi_ticketfollowups`.`requesttypes_id`)";
+             return $out;
+        case "glpi_taskcategories":
+             $out = " LEFT JOIN `glpi_taskcategories` ON (`glpi_taskcategories`.`id`
+                           =`glpi_tickettasks`.`taskcategories_id`)";
+             return $out;
+
          case "glpi_tickettasks" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
 
