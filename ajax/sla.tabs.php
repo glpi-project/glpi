@@ -46,18 +46,19 @@ if (empty($_POST["id"])) {
    $_POST["id"] = -1;
 }
 
-$sla = new SLA();
+$sla      = new SLA();
+$slalevel = new SlaLevel();
+
 if ($_POST['id']>0 && $sla->getFromDB($_POST['id'])) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $slalevel=new SLALevel();
          $slalevel->showForSLA($sla);
-         Plugin::displayAction($sla,$_REQUEST['glpi_tab']);
+         Plugin::displayAction($sla, $_REQUEST['glpi_tab']);
          break;
 
       default :
-         if (!Plugin::displayAction($sla,$_REQUEST['glpi_tab'])) {
-            $slalevel=new SLALevel();
+         if (!Plugin::displayAction($sla, $_REQUEST['glpi_tab'])) {
             $slalevel->showForSLA($sla);
          }
    }
