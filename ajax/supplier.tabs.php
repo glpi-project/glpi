@@ -45,26 +45,27 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-$supplier=new Supplier();
-
 if (!isset($_POST["start"])) {
-   $_POST["start"]=0;
+   $_POST["start"] = 0;
 }
 if (!isset($_POST["sort"])) {
-   $_POST["sort"]="";
+   $_POST["sort"] = "";
 }
 if (!isset($_POST["order"])) {
-   $_POST["order"]="";
+   $_POST["order"] = "";
 }
 
+$supplier = new Supplier();
+
 if ($_POST["id"]>0 && $supplier->can($_POST["id"],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $supplier->showContacts();
          $supplier->showContracts();
          Document::showAssociated($supplier);
          Ticket::showListForSupplier($_POST["id"]);
-         Link::showForItem('Supplier',$_POST["id"]);
+         Link::showForItem('Supplier', $_POST["id"]);
          Plugin::displayAction($supplier, $_REQUEST['glpi_tab']);
          break;
 

@@ -33,15 +33,16 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 define('GLPI_ROOT','..');
 
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
-	
-checkRight("update_ticket","1");
-Ticket::dropdownMyDevices($_POST["userID"],$_POST["entity_restrict"]);
+
+checkRight("update_ticket", "1");
+Ticket::dropdownMyDevices($_POST["userID"], $_POST["entity_restrict"]);
+
 ajaxFooter();
+
 ?>
