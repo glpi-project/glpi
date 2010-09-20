@@ -45,7 +45,7 @@ if (!isset($_REQUEST['glpi_tab'])) {
    exit();
 }
 
-checkRight("software","r");
+checkRight("software", "r");
 
 if (!isset($_POST["sort"])) {
    $_POST["sort"] = "";
@@ -59,20 +59,22 @@ if (!isset($_POST["withtemplate"])) {
 $soft = new Software();
 
 if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
+
    if (!empty($_POST["withtemplate"])) {
       switch($_REQUEST['glpi_tab']) {
          case 4 :
-            Infocom::showForItem($soft,$_POST["withtemplate"]);
-            Contract::showAssociated($soft,$_POST["withtemplate"]);
+            Infocom::showForItem($soft, $_POST["withtemplate"]);
+            Contract::showAssociated($soft, $_POST["withtemplate"]);
             break;
 
          case 5 :
-            Document::showAssociated($soft,$_POST["withtemplate"]);
+            Document::showAssociated($soft, $_POST["withtemplate"]);
             break;
 
          default :
             Plugin::displayAction($soft, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
       }
+
    } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
@@ -82,8 +84,8 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             Infocom::showForItem($soft);
             Contract::showAssociated($soft);
             Document::showAssociated($soft);
-            Ticket::showListForItem('Software',$_POST["id"]);
-            Link::showForItem('Software',$_POST["id"]);
+            Ticket::showListForItem('Software', $_POST["id"]);
+            Link::showForItem('Software' ,$_POST["id"]);
             Plugin::displayAction($soft, $_REQUEST['glpi_tab']);
             break;
 
@@ -101,19 +103,19 @@ if ($_POST["id"]>0 && $soft->can($_POST["id"],'r')) {
             break;
 
          case 6 :
-            Ticket::showListForItem('Software',$_POST["id"]);
+            Ticket::showListForItem('Software', $_POST["id"]);
             break;
 
          case 7 :
-            Link::showForItem('Software',$_POST["id"]);
+            Link::showForItem('Software', $_POST["id"]);
             break;
 
          case 10 :
-            showNotesForm($_POST['target'],'Software',$_POST["id"]);
+            showNotesForm($_POST['target'], 'Software', $_POST["id"]);
             break;
 
          case 11 :
-            Reservation::showForItem('Software',$_POST["id"]);
+            Reservation::showForItem('Software', $_POST["id"]);
             break;
 
          case 12 :

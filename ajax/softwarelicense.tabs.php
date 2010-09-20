@@ -55,9 +55,10 @@ if (!isset($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
 
-checkRight("software","r");
+checkRight("software", "r");
 
 $license = new SoftwareLicense();
+
 if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :

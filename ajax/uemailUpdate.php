@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
@@ -45,20 +45,24 @@ checkCentralAccess();
 $query = "SELECT `email`
           FROM `glpi_users`
           WHERE `id` = '".$_POST["value"]."'";
-$email="";
+
+$email = "";
 if ($result=$DB->query($query)) {
    if ($DB->numrows($result)) {
-      $email=$DB->result($result,0,"email");
+      $email = $DB->result($result, 0, "email");
    }
 }
 echo "<input type='text' size='30' name='user_email' value='$email'>";
 
 echo "<script type='text/javascript' >\n";
+
 if (!empty($email)) {
    echo "window.document.getElementById('dropdownyesno_use_email_notification').value='1';";
+
 } else {
    echo "window.document.getElementById('dropdownyesno_use_email_notification').value='0';";
 }
+
 echo "</script>\n";
 
 ?>

@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -47,14 +47,19 @@ if (!isset($_POST['type'])) {
 
 if ($_POST['type']=='TicketTask') {
    $item = new TicketTask();
+
 } else if ($_POST['type']=='TicketFollowup') {
    $item = new TicketFollowup();
+
 } else if ($_POST['type']=='TicketValidation') {
    $item = new TicketValidation();
 }
+
 $ticket = new Ticket();
+
 if (isset($_POST["tickets_id"]) && isset($_POST["id"]) && $ticket->getFromDB($_POST["tickets_id"])) {
    $item->showForm($_POST["id"], array('ticket' => $ticket));
+
 } else {
    echo $LANG['login'][5];
 }

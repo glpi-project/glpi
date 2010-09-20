@@ -45,38 +45,42 @@ if (!class_exists($_POST["itemtype"])) {
 $item = new $_POST["itemtype"];
 $item->checkGlobal('r');
 
-$first_group=true;
-$newgroup="";
-$items_in_group=0;
-$searchopt=Search::getCleanedOptions($_POST["itemtype"],'r',false);
+$first_group    = true;
+$newgroup       = "";
+$items_in_group = 0;
+$searchopt      = Search::getCleanedOptions($_POST["itemtype"], 'r', false);
 
 echo "<select id='Search2".$_POST["itemtype"].$_POST["num"]."' name='field2[".$_POST["num"]."]' size='1'>";
+
 foreach ($searchopt as $key => $val) {
+
    // print groups
    if (!is_array($val)) {
       if (!empty($newgroup) && $items_in_group>0) {
          echo $newgroup;
-         $first_group=false;
+         $first_group = false;
       }
-      $items_in_group=0;
-      $newgroup="";
+      $items_in_group = 0;
+      $newgroup       = "";
       if (!$first_group) {
-         $newgroup.="</optgroup>";
+         $newgroup .= "</optgroup>";
       }
-      $newgroup.="<optgroup label='$val'>";
+      $newgroup .= "<optgroup label='$val'>";
+
    } else {
       // No search on plugins
       echo $key."--";
       if (!isPluginItemType($key) && !isset($val["nometa"])) {
-         $newgroup.= "<option value='$key' title=\"".cleanInputText($val["name"])."\"";
+         $newgroup .= "<option value='$key' title='".cleanInputText($val["name"])."'";
          if ($key == $_POST["field"]) {
-            $newgroup.= "selected";
+            $newgroup .= "selected";
          }
-         $newgroup.= ">". utf8_substr($val["name"],0,20) ."</option>\n";
+         $newgroup .= ">". utf8_substr($val["name"], 0, 20) ."</option>\n";
          $items_in_group++;
       }
    }
 }
+
 if (!empty($newgroup) && $items_in_group>0) {
    echo $newgroup;
 }
@@ -84,27 +88,28 @@ if (!$first_group) {
    echo "</optgroup>";
 }
 echo "</select>&nbsp;";
-//print_r($_POST);
+
 echo "<span id='Search2Span".$_POST["itemtype"].$_POST["num"]."'>\n";
 
-$_POST['itemtype']=$_POST["itemtype"];
-$_POST['num']=$_POST["num"];
-$_POST['field']=$_POST["field"];
-$_POST['searchtype']=$_POST["searchtype2"];
-$_POST['value']=$_POST["value"];
-$_POST['meta']=1;
+$_POST['itemtype']   = $_POST["itemtype"];
+$_POST['num']        = $_POST["num"];
+$_POST['field']      = $_POST["field"];
+$_POST['searchtype'] = $_POST["searchtype2"];
+$_POST['value']      = $_POST["value"];
+$_POST['meta']       = 1;
+
 include (GLPI_ROOT."/ajax/searchoption.php");
 echo "</span>\n";
 
 $params = array('field'       => '__VALUE__',
-                  'itemtype'    => $_POST["itemtype"],
-                  'num'         => $_POST["num"],
-                  'value'       => $_POST["value"],
-                  'searchtype'  => $_POST["searchtype2"],
-                  'meta'        => 1);
-ajaxUpdateItemOnSelectEvent("Search2".$_POST["itemtype"].$_POST["num"],
-                              "Search2Span".$_POST["itemtype"].$_POST["num"],
-                              $CFG_GLPI["root_doc"]."/ajax/searchoption.php",$params,false);
+                 'itemtype'   => $_POST["itemtype"],
+                 'num'        => $_POST["num"],
+                 'value'      => $_POST["value"],
+                 'searchtype' => $_POST["searchtype2"],
+                 'meta'       => 1);
 
+ajaxUpdateItemOnSelectEvent("Search2".$_POST["itemtype"].$_POST["num"],
+                            "Search2Span".$_POST["itemtype"].$_POST["num"],
+                            $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params, false);
 
 ?>

@@ -33,31 +33,30 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
 if (!isset($_POST['id'])) {
    exit();
 }
 
-
-$slalevel=new SlaLevel();
+$slalevel = new SlaLevel();
 
 if ($_POST['id'] >0 && $slalevel->can($_POST['id'],'r')) {
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
-         $slalevel->getRuleWithCriteriasAndActions($_POST['id'],0,1);
+         $slalevel->getRuleWithCriteriasAndActions($_POST['id'], 0, 1);
          $slalevel->showActionsList($_POST["id"]);
          break;
+
       case 1 :
-         $slalevel->getRuleWithCriteriasAndActions($_POST['id'],0,1);
+         $slalevel->getRuleWithCriteriasAndActions($_POST['id'], 0, 1);
          $slalevel->showActionsList($_POST["id"]);
          break;
+
       case 12 :
             Log::showForItem($slalevel);
          break;

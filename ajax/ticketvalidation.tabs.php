@@ -46,11 +46,12 @@ if (!isset($_REQUEST['glpi_tab'])) {
 }
 
 $validation = new TicketValidation();
+
 if ($_POST["id"]>0 && $validation->getFromDB($_POST["id"])) {
+
    switch($_REQUEST['glpi_tab']) {
       default :
          Plugin::displayAction($validation, $_REQUEST['glpi_tab']);
-         break;
    }
 }
 

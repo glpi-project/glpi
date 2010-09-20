@@ -48,8 +48,8 @@ if (!isset($_REQUEST['glpi_tab'])) {
 $ticket = new Ticket();
 
 if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
-   switch($_REQUEST['glpi_tab']) {
 
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
          $fup = new TicketFollowup();
          $fup->showSummary($ticket);
@@ -59,15 +59,13 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $task->showSummary($ticket);
          $ticket->showSolutionForm();
          if ($ticket->canApprove()) {
-            $suivi = new TicketFollowup();
-            $suivi->showApprobationForm($ticket);
+            $fup->showApprobationForm($ticket);
          }
          $ticket->showCost($_POST['target']);
          $ticket->showStats();
          Document::showAssociated($ticket);
          Log::showForItem($ticket);
          break;
-
 
       case 2 :
          $task = new TicketTask();
@@ -81,8 +79,8 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
       case 4 :
          $ticket->showSolutionForm();
          if ($ticket->canApprove()) {
-            $suivi = new TicketFollowup();
-            $suivi->showApprobationForm($ticket);
+            $fup = new TicketFollowup();
+            $fup->showApprobationForm($ticket);
          }
          break;
 
@@ -93,19 +91,19 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
       case 6 :
          Log::showForItem($ticket);
          break;
-      
+
       case 7 :
          $validation = new Ticketvalidation();
          $validation->showSummary($ticket);
          break;
+
       case 8 :
          $ticket->showStats();
          break;
 
-      case 9: 
+      case 9:
          $ticket->showDebug();
          break;
-
 
       default :
          if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {

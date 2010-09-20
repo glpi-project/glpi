@@ -47,17 +47,17 @@ if (!isset($_REQUEST['glpi_tab'])) {
 
 checkRight("user","r");
 
-$user=new User();
+$user = new User();
 
 if (!isset($_POST["start"])) {
-   $_POST["start"]=0;
+   $_POST["start"] = 0;
 }
 
 if (!isset($_POST["sort"])) {
-   $_POST["sort"]="";
+   $_POST["sort"] = "";
 }
 if (!isset($_POST["order"])) {
-   $_POST["order"]="";
+   $_POST["order"] = "";
 }
 
 if (empty($_POST["id"]) && isset($_POST["name"])) {
@@ -68,8 +68,9 @@ if (empty($_POST["id"]) && isset($_POST["name"])) {
 if (empty($_POST["name"])) {
    $_POST["name"] = "";
 }
-$user = new User();
+
 if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
+
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          Profile_User::showForUser($user);

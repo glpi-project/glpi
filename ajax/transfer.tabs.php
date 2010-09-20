@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -51,11 +50,14 @@ if (empty($_POST['id'])) {
 }
 
 $transfer = new Transfer();
-if ($_POST['id']>0 && $transfer->can($_POST['id'],'r'))
-switch ($_REQUEST['glpi_tab']) {
-   default :
-      if (!Plugin::displayAction($transfer, $_REQUEST['glpi_tab'])) {
-      }
+
+if ($_POST['id']>0 && $transfer->can($_POST['id'],'r')) {
+
+   switch ($_REQUEST['glpi_tab']) {
+      default :
+         if (!Plugin::displayAction($transfer, $_REQUEST['glpi_tab'])) {
+         }
+   }
 }
 
 ajaxFooter();
