@@ -78,7 +78,7 @@ class Group extends CommonDBTM {
          if (haveRight("user","r")) {
             $ong[1]=$LANG['Menu'][14];
          }
-         $ong[2]=$LANG['common'][1];
+         $ong[2]=$LANG['common'][96];
          if (haveRight("config","r") && AuthLdap::useAuthLdap()) {
             $ong[3]=$LANG['setup'][3];
          }
