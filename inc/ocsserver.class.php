@@ -517,55 +517,55 @@ class OcsServer extends CommonDBTM {
       }
 
       $this->showTabs($options);
+      $this->showFormHeader($options);
 
-      $out  = "\n<div class='center' id='tabsbody'>";
-      $out .= "<form name='formdbconfig' action='".$this->getFormURL()."' method='post'>";
-      $out .= "<table class='tab_cadre_fixe'>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][2] . "&nbsp;: </td>\n";
-      $out .= "<td class='b'>" . $this->fields["id"] . "</td>\n";
-      $out .= "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
-      $out .= "<td rowspan='$rowspan'>";
-      $out .= "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-      $out .= "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "&nbsp;: </td>\n";
+      echo "<td><input type='text' name='name' value=\"" . $this->fields["name"] ."\"></td>\n";
+      echo "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
+      echo "<td rowspan='$rowspan'>";
+      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
 
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "&nbsp;: </td>\n";
-      $out .= "<td><input type='text' name='name' value=\"" . $this->fields["name"] ."\"></td></tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
-      $out .= "<td><input type='text' name='ocs_db_host' value=\"" .
+      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][2] . "&nbsp;: </td>\n";
+      echo "<td><input type='text' name='ocs_db_host' value=\"" .
                     $this->fields["ocs_db_host"] ."\"></td></tr>\n";
 
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][4] . "&nbsp;: </td>\n";
-      $out .= "<td><input type='text' name='ocs_db_name' value=\"" .
+      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][4] . "&nbsp;: </td>\n";
+      echo "<td><input type='text' name='ocs_db_name' value=\"" .
                     $this->fields["ocs_db_name"] . "\"></td></tr>\n";
 
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][1] . "&nbsp;: </td>\n";
-      $out .= "<td><input type='text' name='ocs_db_user' value=\"".$this->fields["ocs_db_user"]."\">";
-      $out .= "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][1] . "&nbsp;: </td>\n";
+      echo "<td><input type='text' name='ocs_db_user' value=\"".$this->fields["ocs_db_user"]."\">";
+      echo "</td></tr>\n";
 
-      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
-      $out .= "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'></td>";
+      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
+      echo "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'></td>";
 
-      $out .= "</tr>\n";
-      $out .= "<tr class='tab_bg_1'><td class='center'>" .
+      echo "</tr>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" .
                      $LANG['ocsconfig'][7] . "&nbsp;: </td>\n";
-      $out .= "<td><select name='ocs_db_utf8'>";
-      $out .= "<option value='0'".($this->fields["ocs_db_utf8"] ? "" : "selected") .
-               ">" . $LANG['choice'][0] . "</option>";
-      $out .= "<option value='1'".($this->fields["ocs_db_utf8"] ? "selected" : "") .
-               ">" . $LANG['choice'][1] . "</option>";
-      $out .= "</select></td>";
+      echo "<td>";
+      Dropdown::showYesNo('ocs_db_utf8',$this->fields["ocs_db_utf8"]);
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "</tr>\n";
+      echo "<tr class='tab_bg_1'><td class='center'>" .
+                     $LANG['common'][60] . "&nbsp;: </td>\n";
+      echo "<td>";
+      Dropdown::showYesNo('is_active',$this->fields["is_active"]);
+      echo "</td>";
 
       if (!empty ($ID)) {
-         $out .= "<td>".$LANG['common'][26]."&nbsp;: </td>";
-         $out .= "<td>";
-         $out .= ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
-         $out .= "</td>";
+         echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
+         echo "<td>";
+         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+         echo "</td>";
       }
 
 
-      $out .= "</tr>\n";
+      echo "</tr>\n";
 
-      echo $out;
       $this->showFormButtons($options);
       $this->addDivForTabs();
    }
@@ -844,6 +844,7 @@ class OcsServer extends CommonDBTM {
 
          $sql = "SELECT `id`
                  FROM `glpi_ocsservers`
+                 WHERE `is_active`='1'
                  ORDER BY RAND()
                  LIMIT 1";
          $result = $DB->query($sql);
@@ -3552,6 +3553,7 @@ class OcsServer extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `glpi_ocsservers`
+                WHERE `is_active`='1'
                 ORDER BY `name` ASC";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 1) {
