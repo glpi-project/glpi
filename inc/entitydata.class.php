@@ -48,44 +48,46 @@ class EntityData extends CommonDBTM {
    public $auto_message_on_action = false;
 
    // Array of "right required to update" => array of fields allowed
-   private static $field_right = array(
-                  // Address
-                 'entity' => array('address', 'postcode', 'postcode', 'town', 'state', 'country',
-                                   'website', 'phonenumber', 'fax', 'email', 'notepad',
-                 // Advanced (could be user_authtype ?)
-                                   'ldap_dn', 'tag', 'ldapservers_id', 'entity_ldapfilter',
-                 // Helpdesk config (could be another right)
-                                   'autoclose_delay'),
-                 // Notification
-                 'notification' => array('admin_email', 'admin_reply', 'mailing_signature',
-                                         'cartridges_alert_repeat', 'consumables_alert_repeat',
-                                         'use_licenses_alert','use_contracts_alert',
-                                         'use_reservations_alert','use_infocoms_alert'));
-/*
-   function getEmpty() {
-      global $CFG_GLPI;
-      $this->fields['cartridges_alert_repeat'] = -1;
-      $this->fields['consumables_alert_repeat'] = -1;
-      $this->fields['use_licenses_alert'] = 0;
-      $this->fields['mailing_signature'] = '';
-   }
-*/
+   private static $field_right = array('entity' => array(// Address
+                                                         'address', 'postcode', 'postcode', 'town',
+                                                         'state', 'country', 'website',
+                                                         'phonenumber', 'fax', 'email', 'notepad',
+                                                         // Advanced (could be user_authtype ?)
+                                                         'ldap_dn', 'tag', 'ldapservers_id',
+                                                         'entity_ldapfilter',
+                                                         // Helpdesk config (could be another right)
+                                                         'autoclose_delay'),
+                                       // Notification
+                                       'notification' => array('admin_email', 'admin_reply',
+                                                               'mailing_signature',
+                                                               'cartridges_alert_repeat',
+                                                               'consumables_alert_repeat',
+                                                               'use_licenses_alert',
+                                                               'use_contracts_alert',
+                                                               'use_reservations_alert',
+                                                               'use_infocoms_alert'));
+
+
    function getIndexName() {
       return 'entities_id';
    }
+
 
    function canCreate() {
       return haveRight('entity', 'w') || haveRight('notification', 'w');
    }
 
+
    function canView() {
       return haveRight('entity', 'r');
    }
+
 
    function prepareInputForAdd($input) {
 
       foreach (self::$field_right as $right => $fields) {
          if (!haveRight($right, 'w')) {
+
             foreach ($fields as $field) {
                if (isset($input[$field])) {
                   unset($input[$field]);
@@ -96,17 +98,19 @@ class EntityData extends CommonDBTM {
       return $input;
    }
 
+
    function prepareInputForUpdate($input) {
       return $this->prepareInputForAdd($input);
    }
+
 
    /**
     *
     */
    static function showStandardOptions(Entity $entity) {
-      global $DB, $LANG;
+      global $LANG;
 
-      $con_spotted=false;
+      $con_spotted = false;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r')) {
@@ -114,10 +118,10 @@ class EntityData extends CommonDBTM {
       }
 
       // Entity right applied
-      $canedit=$entity->can($ID,'w');
+      $canedit = $entity->can($ID, 'w');
 
       // Get data
-      $entdata=new EntityData();
+      $entdata = new EntityData();
       if (!$entdata->getFromDB($ID)) {
          $entdata->getEmpty();
       }
@@ -126,51 +130,53 @@ class EntityData extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".$LANG['financial'][44]."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
+      echo "<td>".$LANG['help'][35]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "phonenumber");
       echo "</td>";
-      echo "<td rowspan='7'>".$LANG['financial'][44]."&nbsp;:</td>";
-      echo "<td rowspan='7'><textarea cols='45' rows='8' name='address'>".
-             $entdata->fields["address"]."</textarea></td></tr>";
+      echo "<td rowspan='7'>".$LANG['financial'][44]."&nbsp;:&nbsp;</td>";
+      echo "<td rowspan='7'>";
+      echo "<textarea cols='45' rows='8' name='address'>". $entdata->fields["address"]."</textarea>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
+      echo "<td>".$LANG['financial'][30]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "fax");
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
+      echo "<td>".$LANG['financial'][45]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "website");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][14]."&nbsp;:</td>";
+      echo "<td>".$LANG['setup'][14]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "email");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
+      echo "<td>".$LANG['financial'][100]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata,"postcode",array('size' => 7));
+      autocompletionTextField($entdata,"postcode", array('size' => 7));
       echo "&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField($entdata, "town", array('size'=>27));
+      autocompletionTextField($entdata, "town", array('size' => 27));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
+      echo "<td>".$LANG['financial'][102]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "state");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
+      echo "<td>".$LANG['financial'][103]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "country");
       echo "</td></tr>";
@@ -179,19 +185,24 @@ class EntityData extends CommonDBTM {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
+
          if ($entdata->fields["id"]) {
-            echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
+            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit' >";
          }
+
          echo "</td></tr>";
          echo "</table></form>";
+
       } else {
          echo "</table>";
       }
+
       echo "</div>";
    }
+
 
    /**
     *
@@ -199,7 +210,7 @@ class EntityData extends CommonDBTM {
    static function showAdvancedOptions(Entity $entity) {
       global $DB, $LANG;
 
-      $con_spotted=false;
+      $con_spotted = false;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r')) {
@@ -207,10 +218,10 @@ class EntityData extends CommonDBTM {
       }
 
       // Entity right applied (could be user_authtype)
-      $canedit=$entity->can($ID,'w');
+      $canedit = $entity->can($ID, 'w');
 
       // Get data
-      $entdata=new EntityData();
+      $entdata = new EntityData();
       if (!$entdata->getFromDB($ID)) {
          $entdata->getEmpty();
       }
@@ -220,56 +231,58 @@ class EntityData extends CommonDBTM {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
-
       echo "<tr><th colspan='4'>".$LANG['entity'][14]."</th></tr>";
+
       if (canUseLdap()) {
          echo "<tr><th colspan='4'>".$LANG['login'][2]."</th></tr>";
+
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][15]."&nbsp;:</td>";
+         echo "<td>".$LANG['entity'][15]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         Dropdown::show('AuthLDAP',
-                        array ('name'=>'ldapservers_id',
-                               'value'=> $entdata->fields['ldapservers_id'],
-                               'emptylabel'=>$LANG['ldap'][44],
-                               'condition'=>"`is_active`='1'"));
+         Dropdown::show('AuthLDAP', array ('name'       => 'ldapservers_id',
+                                           'value'      =>  $entdata->fields['ldapservers_id'],
+                                           'emptylabel' => $LANG['ldap'][44],
+                                           'condition'  => "`is_active`='1'"));
          echo "</td>";
-         echo "<td>".$LANG['entity'][12]."&nbsp;:</td>";
+         echo "<td>".$LANG['entity'][12]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          autocompletionTextField($entdata, "ldap_dn");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][16]."&nbsp;:</td>";
-         echo "<td colspan='3'><input type='text' name='entity_ldapfilter'
-                      value='".$entdata->fields['entity_ldapfilter']."' size='100'>";
+         echo "<td>".$LANG['entity'][16]."&nbsp;:&nbsp;</td>";
+         echo "<td colspan='3'>";
+         echo "<input type='text' name='entity_ldapfilter' value='".
+                $entdata->fields['entity_ldapfilter']."' size='100'>";
          echo "</td></tr>";
       }
 
       echo "<tr><th colspan='4'>".$LANG['common'][67]."</th></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][13]."&nbsp;:</td>";
+      echo "<td>".$LANG['entity'][13]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "tag");
       echo "</td>";
-      echo "<td>".$LANG['setup'][732]."&nbsp;:</td>";
+      echo "<td>".$LANG['setup'][732]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entdata, "mail_domain");
-      echo "</td>";
-      echo "</tr>";
-
+      echo "</td></tr>";
 
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
+
          if ($entdata->fields["id"]) {
-            echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
+            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit'>";
          }
+
          echo "</td></tr>";
          echo "</table></form>";
+
       } else {
          echo "</table>";
       }
@@ -281,6 +294,7 @@ class EntityData extends CommonDBTM {
       $fields = array('use_licenses_alert', 'use_contracts_alert', 'use_infocoms_alert',
                       'use_reservations_alert', 'autoclose_delay', 'consumables_alert_repeat',
                       'cartridges_alert_repeat', 'notclosed_delay');
+
       foreach ($fields as $field) {
          $this->fields[$field] = -1;
       }
@@ -288,7 +302,7 @@ class EntityData extends CommonDBTM {
 
 
    static function showNotificationOptions(Entity $entity) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $LANG;
 
       $con_spotted = false;
 
@@ -301,7 +315,7 @@ class EntityData extends CommonDBTM {
       $canedit = haveRight('notification','w') && haveAccessToEntity($ID);
 
       // Get data
-      $entitynotification=new EntityData();
+      $entitynotification = new EntityData();
       if (!$entitynotification->getFromDB($ID)) {
          $entitynotification->getEmpty();
       }
@@ -310,21 +324,23 @@ class EntityData extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
-      echo "<table class='tab_cadre_fixe'>";
 
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".$LANG['setup'][240]."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][203]."&nbsp;:</td>";
+      echo "<td>".$LANG['setup'][203]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entitynotification, "admin_email");
       echo "</td>";
       echo "<td rowspan='2' class='middle right'>" . $LANG['setup'][204] . "</td>";
-      echo "<td rowspan='2' class='middle right'><textarea cols='60' rows='5' name=\"mailing_signature\" >".
-                 $entitynotification->fields["mailing_signature"]."</textarea></td></tr>";
+      echo "<td rowspan='2' class='middle right'>";
+      echo "<textarea cols='60' rows='5' name='mailing_signature'>".
+             $entitynotification->fields["mailing_signature"]."</textarea>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][207]."&nbsp;:</td>";
+      echo "<td>".$LANG['setup'][207]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entitynotification, "admin_reply");
       echo "</td></tr>";
@@ -332,7 +348,6 @@ class EntityData extends CommonDBTM {
       echo "<tr><th colspan='4'>".$LANG['setup'][242]."</th></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][245] . " - " . $LANG['setup'][244] . "</td><td>";
-
       $default_value = $entitynotification->fields['cartridges_alert_repeat'];
       Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
@@ -383,63 +398,70 @@ class EntityData extends CommonDBTM {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
+
          if ($entitynotification->fields["id"]) {
-            echo "<input type='hidden' name='id' value=\"".$entitynotification->fields["id"]."\">";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='hidden' name='id' value='".$entitynotification->fields["id"]."'>";
+            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit'>";
          }
+
          echo "</td></tr>";
          echo "</table></form>";
+
       } else {
          echo "</table>";
       }
+
       echo "</div>";
    }
+
 
    private static function getEntityIDByField($field,$value) {
       global $DB;
 
       $sql = "SELECT `entities_id`
               FROM `glpi_entitydatas`
-              WHERE `".$field."`='".$value."'";
+              WHERE `".$field."` = '".$value."'";
 
       $result = $DB->query($sql);
+
       if ($DB->numrows($result)==1) {
-         return $DB->result($result,0,"entities_id");
-      } else {
-         return -1;
+         return $DB->result($result, 0, "entities_id");
       }
+      return -1;
    }
+
 
    static function getEntityIDByDN($value) {
-      return self::getEntityIDByField("ldap_dn",$value);
+      return self::getEntityIDByField("ldap_dn", $value);
    }
+
 
    static function getEntityIDByTag($value) {
-      return self::getEntityIDByField("tag",$value);
+      return self::getEntityIDByField("tag", $value);
    }
+
 
    static function getEntityIDByDomain($value) {
-      return self::getEntityIDByField("mail_domain",$value);
+      return self::getEntityIDByField("mail_domain", $value);
    }
 
+
    static function isEntityDirectoryConfigured($entities_id) {
+
       $entitydatas = new EntityData;
 
       if ($entitydatas->getFromDB($entities_id)
-            && $entitydatas->getField('ldapservers_id') != NOT_AVAILABLE) {
+          && $entitydatas->getField('ldapservers_id') != NOT_AVAILABLE) {
          return true;
       }
-      else {
-         //If there's a directory marked as default
-         if (AuthLdap::getDefault()) {
-            return true;
-         }
-         else {
-            return false;
-         }
+
+      //If there's a directory marked as default
+      if (AuthLdap::getDefault()) {
+         return true;
       }
+      return false;
    }
 
 
@@ -453,7 +475,7 @@ class EntityData extends CommonDBTM {
       $canedit = $entity->canCreate();
 
       // Get data
-      $entdata=new EntityData();
+      $entdata = new EntityData();
       if (!$entdata->getFromDB($ID)) {
          $entdata->getEmpty();
       }
@@ -462,38 +484,42 @@ class EntityData extends CommonDBTM {
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
-      echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>" . $LANG['buttons'][15] . "&nbsp;:</td>";
-      echo "<td  colspan='2'>";
-      $options=array('value' => $entdata->fields["calendars_id"],'emptylabel' => $LANG['calendar'][9]);
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
+      $options = array('value'      => $entdata->fields["calendars_id"],
+                       'emptylabel' => $LANG['calendar'][9]);
+
       if ($ID==0) {
-         $options['emptylabel']=DROPDOWN_EMPTY_VALUE;
+         $options['emptylabel'] = DROPDOWN_EMPTY_VALUE;
       }
-      Dropdown::show('Calendar',$options);
+      Dropdown::show('Calendar', $options);
 
       if ($entdata->fields["calendars_id"] == 0) {
          $calendar = new Calendar();
+
          if ($calendar->getFromDB(self::getUsedCalendar($ID))) {
             echo " - ".$calendar->getLink();
          }
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td  colspan='2'>" . $LANG['setup'][52] . "&nbsp;:</td>";
-      echo "<td  colspan='2'>";
-      $autoassign=array(-1                             => $LANG['setup'][731],
-                        NO_AUTO_ASSIGN                => $LANG['choice'][0],
-                        AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
-                        AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".$LANG['setup'][52]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
+      $autoassign = array(-1                            => $LANG['setup'][731],
+                          NO_AUTO_ASSIGN                => $LANG['choice'][0],
+                          AUTO_ASSIGN_HARDWARE_CATEGORY => $LANG['setup'][51],
+                          AUTO_ASSIGN_CATEGORY_HARDWARE => $LANG['setup'][50]);
 
-      Dropdown::showFromArray('auto_assign_mode',$autoassign,array('value'=>$entdata->fields["auto_assign_mode"]));
+      Dropdown::showFromArray('auto_assign_mode', $autoassign,
+                              array('value' => $entdata->fields["auto_assign_mode"]));
 
       echo "</td></tr>";
 
       echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][18] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][18]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       Alert::dropdownIntegerNever('autoclose_delay', $entdata->fields['autoclose_delay'],
                                   array('max'            => 99,
@@ -505,24 +531,32 @@ class EntityData extends CommonDBTM {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
+
          if ($entdata->fields["id"]) {
-            echo "<input type='hidden' name='id' value=\"".$entdata->fields["id"]."\">";
-            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
+            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit'>";
          }
+
          echo "</td></tr>";
          echo "</table></form>";
+
       } else {
          echo "</table>";
       }
+
       echo "</div>";
    }
+
+
    static function getUsedCalendar($entities_id) {
 
       $entdata= new EntityData();
+
       // Search in entity data of the current entity
       if ($entdata->getFromDB($entities_id)) {
+
          // Calendar defined : use it
          if (isset($entdata->fields['calendars_id']) && $entdata->fields['calendars_id'] >0 ) {
             return $entdata->fields['calendars_id'];
@@ -532,11 +566,11 @@ class EntityData extends CommonDBTM {
       // Entity data not found or not defined calendar : search in parent one
       if ($entities_id > 0) {
          $current = new Entity();
+
          if ($current->getFromDB($entities_id)) {
             return EntityData::getUsedCalendar($current->fields['entities_id']);
          }
       }
-
       return -1;
    }
 }
