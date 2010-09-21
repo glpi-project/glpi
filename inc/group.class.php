@@ -306,6 +306,7 @@ class Group extends CommonDBTM {
 
       $ID = $this->fields['id'];
 
+      echo "<div class='spaced'>";
       echo "<form name='group_form' id='group_form' method='post' action='".$this->getFormURL()."'>";
       echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
       echo "<th>".$LANG['common'][17]."</th>";
@@ -354,7 +355,7 @@ class Group extends CommonDBTM {
       echo "&nbsp;";
       closeArrowMassive('changegroup', $LANG['buttons'][14]);
 
-      echo "</form>";
+      echo "</form></div>";
    }
 
 }

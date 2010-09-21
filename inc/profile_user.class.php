@@ -212,6 +212,7 @@ class Profile_User extends CommonDBTM {
       }
 
       if ($canedit) {
+         echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr>";
          echo "<tr><td class='tab_bg_2 center'>";
@@ -226,8 +227,10 @@ class Profile_User extends CommonDBTM {
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
-         echo "</table><br>";
+         echo "</table></div>";
       }
+
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'><tr><th colspan='$headerspan'>".
              $LANG['Menu'][14]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
@@ -307,6 +310,8 @@ class Profile_User extends CommonDBTM {
          closeArrowMassive('delete', $LANG['buttons'][6]);
          echo "</form>";
       }
+      echo "</div>";
+
    }
 
    /**

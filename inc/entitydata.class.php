@@ -122,15 +122,12 @@ class EntityData extends CommonDBTM {
          $entdata->getEmpty();
       }
 
-
+      echo "<div class='spaced'>";
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
-
-
       echo "<tr><th colspan='4'>".$LANG['financial'][44]."</th></tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
@@ -163,7 +160,7 @@ class EntityData extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($entdata,"postcode",array('size' => 7));
       echo "&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
-      autocompletionTextField($entdata, "town", array('size'=>25));
+      autocompletionTextField($entdata, "town", array('size'=>27));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -193,6 +190,7 @@ class EntityData extends CommonDBTM {
       } else {
          echo "</table>";
       }
+      echo "</div>";
    }
 
    /**
@@ -308,6 +306,7 @@ class EntityData extends CommonDBTM {
          $entitynotification->getEmpty();
       }
 
+      echo "<div class='spaced'>";
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
@@ -395,6 +394,7 @@ class EntityData extends CommonDBTM {
       } else {
          echo "</table>";
       }
+      echo "</div>";
    }
 
    private static function getEntityIDByField($field,$value) {
@@ -458,6 +458,7 @@ class EntityData extends CommonDBTM {
          $entdata->getEmpty();
       }
 
+      echo "<div class='spaced'>";
       if ($canedit) {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
@@ -515,6 +516,7 @@ class EntityData extends CommonDBTM {
       } else {
          echo "</table>";
       }
+      echo "</div>";
    }
    static function getUsedCalendar($entities_id) {
 
