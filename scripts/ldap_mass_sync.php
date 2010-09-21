@@ -97,15 +97,15 @@ if (!canUseLdap() || !countElementsInTable('glpi_authldaps')) {
    echo "LDAP extension is not active or no LDAP directory defined";
 }
 
-$sql = "SELECT `id`, `name` FROM  `glpi_authldaps`";
+$sql = "SELECT `id`, `name` FROM  `glpi_authldaps` WHERE `is_active`='1'";
 //Get the ldap server's id by his name
 if ($_GET["ldapservers_id"] != '') {
-   $sql.= " WHERE id=" . $options['ldapservers_id'];
+   $sql.= " AND id=" . $options['ldapservers_id'];
 }
 
 $result = $DB->query($sql);
 if ($DB->numrows($result) == 0 && $_GET["ldapservers_id"] != NOT_AVAILABLE) {
-   echo "LDAP Server not found";
+   echo "LDAP Server not found ord inactive";
 }
 else
 {
