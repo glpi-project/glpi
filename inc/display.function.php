@@ -45,10 +45,11 @@ if (!defined('GLPI_ROOT')) {
  * Include common HTML headers
  *
  * @param $title title used for the page
+ *
  * @return nothing
  **/
 function includeCommonHtmlHeader($title='') {
-   global $CFG_GLPI,$PLUGIN_HOOKS,$LANG;
+   global $CFG_GLPI, $PLUGIN_HOOKS, $LANG;
 
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
@@ -59,14 +60,17 @@ function includeCommonHtmlHeader($title='') {
    echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
           \"http://www.w3.org/TR/html4/loose.dtd\">";
    echo "\n<html><head><title>GLPI - ".$title."</title>";
-   echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
+   echo "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
+
    // Send extra expires header
-   echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\" >\n";
-   echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-   echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
+   echo "<meta http-equiv='Expires' content='Fri, Jun 12 1981 08:20:00 GMT'>\n";
+   echo "<meta http-equiv='Pragma' content='no-cache'>\n";
+   echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
+
    //  CSS link
-   echo "<link rel='stylesheet'  href='".
+   echo "<link rel='stylesheet' href='".
           $CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
+
    // surcharge CSS hack for IE
    echo "<!--[if lte IE 6]>" ;
    echo "<link rel='stylesheet' href='".
@@ -80,32 +84,35 @@ function includeCommonHtmlHeader($title='') {
    // AJAX library
    echo "<script type=\"text/javascript\" src='".
           $CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base.js'></script>\n";
+
    if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-      echo "<script type=\"text/javascript\" src='".
+      echo "<script type='text/javascript' src='".
              $CFG_GLPI["root_doc"]."/lib/extjs/ext-all-debug.js'></script>\n";
    } else {
-      echo "<script type=\"text/javascript\" src='".
+      echo "<script type='text/javascript' src='".
              $CFG_GLPI["root_doc"]."/lib/extjs/ext-all.js'></script>\n";
    }
+
    echo "<link rel='stylesheet' type='text/css' href='".
           $CFG_GLPI["root_doc"]."/lib/extjs/resources/css/ext-all.css' media='screen' >\n";
    echo "<link rel='stylesheet' type='text/css' href='".
           $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
 
    if (isset($_SESSION['glpilanguage'])) {
-      echo "<script type=\"text/javascript\" src='".
+      echo "<script type='text/javascript' src='".
              $CFG_GLPI["root_doc"]."/lib/extjs/locale/ext-lang-".
              $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
    }
+
    // EXTRA EXTJS
-   echo "<script type=\"text/javascript\" src='".
+   echo "<script type='text/javascript' src='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
-   echo "<script type=\"text/javascript\" src='".
+   echo "<script type='text/javascript' src='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
-   echo "<script type=\"text/javascript\" src='".
+   echo "<script type='text/javascript' src='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/spancombobox.js'></script>\n";
 
-   echo "<script type=\"text/javascript\">\n";
+   echo "<script type='text/javascript'>\n";
    echo "//<![CDATA[ \n";
    // DO not get it from extjs website
    echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';\n";
@@ -117,25 +124,28 @@ function includeCommonHtmlHeader($title='') {
    echo "</script>\n";
 
    echo "<!--[if IE]>" ;
-   echo "<script type=\"text/javascript\">\n";
-   echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".
+   echo "<script type='text/javascript'>\n";
+   echo "Ext.UpdateManager.defaults.indicatorText='<\span class='loading-indicator-ie'>".
          $LANG['common'][80]."<\/span>';\n";
    echo "</script>\n";
    echo "<![endif]-->";
 
    // Some Javascript-Functions which we may need later
-   echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
+   echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
 
    // Add specific javascript for plugins
    if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
-      foreach  ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
-         echo "<script type=\"text/javascript\" src='".
-                $CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
+
+      foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
+         echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'>
+               </script>\n";
       }
    }
+
    // Add specific css for plugins
    if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
-      foreach  ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
+
+      foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
          echo "<link rel='stylesheet' href='".
                 $CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
       }
@@ -145,6 +155,7 @@ function includeCommonHtmlHeader($title='') {
    echo "</head>\n";
 }
 
+
 /**
  * Common Title Function
  *
@@ -152,25 +163,29 @@ function includeCommonHtmlHeader($title='') {
  * @param $ref_pic_text Alt text of the icon
  * @param $ref_title Title to display
  * @param $ref_btts Extra items to display array(link=>text...)
+ *
  * @return nothing
  **/
-function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts="") {
+function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_btts="") {
 
    echo "<div class='center'><table border='0' class='tab_glpi'><tr>";
+
    if ($ref_pic_link!="") {
-      echo "<td><img src=\"".$ref_pic_link."\" alt=\"".$ref_pic_text."\"title=\"".
-                 $ref_pic_text."\" ></td>";
+      echo "<td><img src='".$ref_pic_link."' alt='".$ref_pic_text."' title='".$ref_pic_text."'></td>";
    }
+
    if ($ref_title!="") {
-      echo "<td><span class='icon_consol'><strong>".$ref_title."</strong></span></td>";
+      echo "<td><span class='icon_consol b'>".$ref_title."</span></td>";
    }
+
    if (is_array($ref_btts) && count($ref_btts)) {
       foreach ($ref_btts as $key => $val) {
-         echo "<td><a class='icon_consol_hov' href=\"".$key."\">".$val."</a></td>";
+         echo "<td><a class='icon_consol_hov' href='".$key."'>".$val."</a></td>";
       }
    }
    echo "</tr></table></div>";
 }
+
 
 /**
  * Print a nice HTML head for every page
@@ -182,14 +197,14 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
  * @param $option option corresponding to the page displayed
  *
  **/
-function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
-   global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED,$DB;
+function commonHeader($title, $url='', $sector="none", $item="none", $option="") {
+   global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
 
    // Print a nice HTML-head for every page
    if ($HEADER_LOADED) {
       return;
    }
-   $HEADER_LOADED=true;
+   $HEADER_LOADED = true;
 
    includeCommonHtmlHeader($title);
    // Body
@@ -197,312 +212,353 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    // Generate array for menu and check right
 
    // INVENTORY
-   $showstate=false;
-   $menu['inventory']['title']=$LANG['Menu'][38];
-   if (haveRight("computer","r")) {
-      $menu['inventory']['default']='/front/computer.php';
+   $showstate = false;
+   $menu['inventory']['title'] = $LANG['Menu'][38];
 
-      $menu['inventory']['content']['computer']['title']=$LANG['Menu'][0];
-      $menu['inventory']['content']['computer']['shortcut']='c';
-      $menu['inventory']['content']['computer']['page']='/front/computer.php';
-      $menu['inventory']['content']['computer']['links']['search']='/front/computer.php';
+   if (haveRight("computer","r")) {
+      $menu['inventory']['default'] = '/front/computer.php';
+
+      $menu['inventory']['content']['computer']['title']           = $LANG['Menu'][0];
+      $menu['inventory']['content']['computer']['shortcut']        = 'c';
+      $menu['inventory']['content']['computer']['page']            = '/front/computer.php';
+      $menu['inventory']['content']['computer']['links']['search'] = '/front/computer.php';
+
       if (haveRight("computer","w")) {
-         $menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?' .
-                'itemtype=Computer&amp;add=1';
-         $menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?' .
-                'itemtype=Computer&amp;add=0';
+         $menu['inventory']['content']['computer']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=Computer&amp;add=1';
+         $menu['inventory']['content']['computer']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=Computer&amp;add=0';
       }
-      $showstate=true;
+      $showstate = true;
    }
+
    if (haveRight("monitor","r")) {
-      $menu['inventory']['content']['monitor']['title']=$LANG['Menu'][3];
-      $menu['inventory']['content']['monitor']['shortcut']='m';
-      $menu['inventory']['content']['monitor']['page']='/front/monitor.php';
-      $menu['inventory']['content']['monitor']['links']['search']='/front/monitor.php';
+      $menu['inventory']['content']['monitor']['title']           = $LANG['Menu'][3];
+      $menu['inventory']['content']['monitor']['shortcut']        = 'm';
+      $menu['inventory']['content']['monitor']['page']            = '/front/monitor.php';
+      $menu['inventory']['content']['monitor']['links']['search'] = '/front/monitor.php';
+
       if (haveRight("monitor","w")) {
-         $menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?' .
-                'itemtype=Monitor&amp;add=1';
-         $menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?' .
-                'itemtype=Monitor&amp;add=0';
+         $menu['inventory']['content']['monitor']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=1';
+         $menu['inventory']['content']['monitor']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=0';
       }
-      $showstate=true;
+      $showstate = true;
    }
+
    if (haveRight("software","r")) {
-      $menu['inventory']['content']['software']['title']=$LANG['Menu'][4];
-      $menu['inventory']['content']['software']['shortcut']='s';
-      $menu['inventory']['content']['software']['page']='/front/software.php';
-      $menu['inventory']['content']['software']['links']['search']='/front/software.php';
+      $menu['inventory']['content']['software']['title']           = $LANG['Menu'][4];
+      $menu['inventory']['content']['software']['shortcut']        = 's';
+      $menu['inventory']['content']['software']['page']            = '/front/software.php';
+      $menu['inventory']['content']['software']['links']['search'] = '/front/software.php';
+
       if (haveRight("software","w")){
-         $menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?' .
-                'itemtype=Software&amp;add=1';
-         $menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?' .
-                'itemtype=Software&amp;add=0';
+         $menu['inventory']['content']['software']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=Software&amp;add=1';
+         $menu['inventory']['content']['software']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=Software&amp;add=0';
       }
-      $showstate=true;
+      $showstate = true;
    }
+
    if (haveRight("networking","r")) {
-      $menu['inventory']['content']['networking']['title']=$LANG['Menu'][1];
-      $menu['inventory']['content']['networking']['shortcut']='n';
-      $menu['inventory']['content']['networking']['page']='/front/networkequipment.php';
-      $menu['inventory']['content']['networking']['links']['search']='/front/networkequipment.php';
+      $menu['inventory']['content']['networking']['title']           = $LANG['Menu'][1];
+      $menu['inventory']['content']['networking']['shortcut']        = 'n';
+      $menu['inventory']['content']['networking']['page']            = '/front/networkequipment.php';
+      $menu['inventory']['content']['networking']['links']['search'] = '/front/networkequipment.php';
+
       if (haveRight("networking","w")) {
-         $menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?' .
-                'itemtype=NetworkEquipment&amp;add=1';
-         $menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?' .
-                'itemtype=NetworkEquipment&amp;add=0';
+         $menu['inventory']['content']['networking']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=NetworkEquipment&amp;add=1';
+         $menu['inventory']['content']['networking']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=NetworkEquipment&amp;add=0';
       }
-      $showstate=true;
+      $showstate = true;
    }
+
    if (haveRight("peripheral","r")) {
-      $menu['inventory']['content']['peripheral']['title']=$LANG['Menu'][16];
-      $menu['inventory']['content']['peripheral']['shortcut']='n';
-      $menu['inventory']['content']['peripheral']['page']='/front/peripheral.php';
-      $menu['inventory']['content']['peripheral']['links']['search']='/front/peripheral.php';
+      $menu['inventory']['content']['peripheral']['title']           = $LANG['Menu'][16];
+      $menu['inventory']['content']['peripheral']['shortcut']        = 'n';
+      $menu['inventory']['content']['peripheral']['page']            = '/front/peripheral.php';
+      $menu['inventory']['content']['peripheral']['links']['search'] = '/front/peripheral.php';
+
       if (haveRight("peripheral","w")) {
-         $menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?' .
-                'itemtype=Peripheral&amp;add=1';
-         $menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?' .
-                'itemtype=Peripheral&amp;add=0';
+         $menu['inventory']['content']['peripheral']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=Peripheral&amp;add=1';
+         $menu['inventory']['content']['peripheral']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=Peripheral&amp;add=0';
       }
-      $showstate=true;
+      $showstate = true;
    }
+
    if (haveRight("printer","r")) {
-      $menu['inventory']['content']['printer']['title']=$LANG['Menu'][2];
-      $menu['inventory']['content']['printer']['shortcut']='p';
-      $menu['inventory']['content']['printer']['page']='/front/printer.php';
-      $menu['inventory']['content']['printer']['links']['search']='/front/printer.php';
+      $menu['inventory']['content']['printer']['title']           = $LANG['Menu'][2];
+      $menu['inventory']['content']['printer']['shortcut']        = 'p';
+      $menu['inventory']['content']['printer']['page']            = '/front/printer.php';
+      $menu['inventory']['content']['printer']['links']['search'] = '/front/printer.php';
+
       if (haveRight("printer","w")) {
-         $menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?' .
-                'itemtype=Printer&amp;add=1';
-         $menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?' .
-                'itemtype=Printer&amp;add=0';
+         $menu['inventory']['content']['printer']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=Printer&amp;add=1';
+         $menu['inventory']['content']['printer']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=Printer&amp;add=0';
       }
-      $showstate=true;
+      $showstate = true;
    }
+
    if (haveRight("cartridge","r")) {
-      $menu['inventory']['content']['cartridge']['title']=$LANG['Menu'][21];
-      $menu['inventory']['content']['cartridge']['shortcut']='c';
-      $menu['inventory']['content']['cartridge']['page']='/front/cartridgeitem.php';
-      $menu['inventory']['content']['cartridge']['links']['search']='/front/cartridgeitem.php';
+      $menu['inventory']['content']['cartridge']['title']           = $LANG['Menu'][21];
+      $menu['inventory']['content']['cartridge']['shortcut']        = 'c';
+      $menu['inventory']['content']['cartridge']['page']            = '/front/cartridgeitem.php';
+      $menu['inventory']['content']['cartridge']['links']['search'] = '/front/cartridgeitem.php';
+
       if (haveRight("cartridge","w")) {
-         $menu['inventory']['content']['cartridge']['links']['add']='/front/cartridgeitem.form.php';
+         $menu['inventory']['content']['cartridge']['links']['add'] = '/front/cartridgeitem.form.php';
       }
    }
+
    if (haveRight("consumable","r")) {
-      $menu['inventory']['content']['consumable']['title']=$LANG['Menu'][32];
-      $menu['inventory']['content']['consumable']['shortcut']='g';
-      $menu['inventory']['content']['consumable']['page']='/front/consumableitem.php';
-      $menu['inventory']['content']['consumable']['links']['search']='/front/consumableitem.php';
+      $menu['inventory']['content']['consumable']['title']           = $LANG['Menu'][32];
+      $menu['inventory']['content']['consumable']['shortcut']        = 'g';
+      $menu['inventory']['content']['consumable']['page']            = '/front/consumableitem.php';
+      $menu['inventory']['content']['consumable']['links']['search'] = '/front/consumableitem.php';
+
       if (haveRight("consumable","w")) {
-         $menu['inventory']['content']['consumable']['links']['add']='/front/consumableitem.form.php';
+         $menu['inventory']['content']['consumable']['links']['add'] = '/front/consumableitem.form.php';
       }
-      $menu['inventory']['content']['consumable']['links']['summary']='/front/consumableitem.php?' .
-            'synthese=yes';
+
+      $menu['inventory']['content']['consumable']['links']['summary']
+                        = '/front/consumableitem.php?'.'synthese=yes';
    }
+
    if (haveRight("phone","r")) {
-      $menu['inventory']['content']['phone']['title']=$LANG['Menu'][34];
-      $menu['inventory']['content']['phone']['shortcut']='t';
-      $menu['inventory']['content']['phone']['page']='/front/phone.php';
-      $menu['inventory']['content']['phone']['links']['search']='/front/phone.php';
+      $menu['inventory']['content']['phone']['title']           = $LANG['Menu'][34];
+      $menu['inventory']['content']['phone']['shortcut']        = 't';
+      $menu['inventory']['content']['phone']['page']            = '/front/phone.php';
+      $menu['inventory']['content']['phone']['links']['search'] = '/front/phone.php';
+
       if (haveRight("phone","w")){
-         $menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?' .
-                'itemtype=Phone&amp;add=1';
-         $menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?' .
-                'itemtype=Phone&amp;add=0';
+         $menu['inventory']['content']['phone']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=Phone&amp;add=1';
+         $menu['inventory']['content']['phone']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=Phone&amp;add=0';
       }
-      $showstate=true;
+      $showstate = true;
    }
+
    if ($showstate){
-      $menu['inventory']['content']['state']['title']=$LANG['Menu'][28];
-      $menu['inventory']['content']['state']['shortcut']='n';
-      $menu['inventory']['content']['state']['page']='/front/states.php';
-      $menu['inventory']['content']['state']['links']['search']='/front/states.php';
-      $menu['inventory']['content']['state']['links']['summary']='/front/states.php?synthese=yes';
+      $menu['inventory']['content']['state']['title']            = $LANG['Menu'][28];
+      $menu['inventory']['content']['state']['shortcut']         = 'n';
+      $menu['inventory']['content']['state']['page']             = '/front/states.php';
+      $menu['inventory']['content']['state']['links']['search']  = '/front/states.php';
+      $menu['inventory']['content']['state']['links']['summary'] = '/front/states.php?synthese=yes';
    }
 
    // ASSISTANCE
-   $menu['maintain']['title']=$LANG['title'][24];
+   $menu['maintain']['title'] = $LANG['title'][24];
 
-   if (haveRight("observe_ticket","1") || haveRight("show_all_ticket","1")
+   if (haveRight("observe_ticket","1")
+       || haveRight("show_all_ticket","1")
        || haveRight("create_ticket","1")) {
 
-      $menu['maintain']['default']='/front/ticket.php';
-      $menu['maintain']['content']['ticket']['title']=$LANG['Menu'][5];
-      $menu['maintain']['content']['ticket']['shortcut']='t';
-      $menu['maintain']['content']['ticket']['page']='/front/ticket.php';
-      $menu['maintain']['content']['ticket']['links']['search']='/front/ticket.php';
-      $menu['maintain']['content']['ticket']['links']['search']='/front/ticket.php';
+      $menu['maintain']['default'] = '/front/ticket.php';
+
+      $menu['maintain']['content']['ticket']['title']           = $LANG['Menu'][5];
+      $menu['maintain']['content']['ticket']['shortcut']        = 't';
+      $menu['maintain']['content']['ticket']['page']            = '/front/ticket.php';
+      $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
+      $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
 
       if (haveRight('validate_ticket',1)) {
-         $opt=array();
-         $opt['reset']  = 'reset';
+         $opt = array();
+         $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
          $opt['searchtype'][0] = 'equals';
          $opt['contains'][0]   = 'waiting';
-         $opt['link'][0]        = 'AND';
+         $opt['link'][0]       = 'AND';
 
          $opt['field'][1]      = 59; // validation aprobator
          $opt['searchtype'][1] = 'equals';
          $opt['contains'][1]   = getLoginUserID();
-         $opt['link'][1]        = 'AND';
+         $opt['link'][1]       = 'AND';
 
 
-         $pic_validate="<img title=\"".$LANG['validation'][15]."\" alt=\"".$LANG['validation'][15]."\" src='".
-                                 $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
-         $menu['maintain']['content']['ticket']['links'][$pic_validate]='/front/ticket.php?'.append_params($opt,'&amp;');
+         $pic_validate = "<img title='".$LANG['validation'][15]."' alt='".$LANG['validation'][15].
+                           "' src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+
+         $menu['maintain']['content']['ticket']['links'][$pic_validate]
+                        = '/front/ticket.php?'.append_params($opt, '&amp;');
       }
    }
+
    if (haveRight("create_ticket","1")) {
-      $menu['maintain']['content']['ticket']['links']['add']='/front/ticket.form.php';
+      $menu['maintain']['content']['ticket']['links']['add'] = '/front/ticket.form.php';
    }
+
    if (haveRight("show_planning","1") || haveRight("show_all_planning","1")) {
-      $menu['maintain']['content']['planning']['title']=$LANG['Menu'][29];
-      $menu['maintain']['content']['planning']['shortcut']='l';
-      $menu['maintain']['content']['planning']['page']='/front/planning.php';
-      $menu['maintain']['content']['planning']['links']['search']='/front/planning.php';
+      $menu['maintain']['content']['planning']['title']           = $LANG['Menu'][29];
+      $menu['maintain']['content']['planning']['shortcut']        = 'l';
+      $menu['maintain']['content']['planning']['page']            = '/front/planning.php';
+      $menu['maintain']['content']['planning']['links']['search'] = '/front/planning.php';
    }
+
    if (haveRight("statistic","1")) {
-      $menu['maintain']['content']['stat']['title']=$LANG['Menu'][13];
-      $menu['maintain']['content']['stat']['shortcut']='1';
-      $menu['maintain']['content']['stat']['page']='/front/stat.php';
+      $menu['maintain']['content']['stat']['title']    = $LANG['Menu'][13];
+      $menu['maintain']['content']['stat']['shortcut'] = '1';
+      $menu['maintain']['content']['stat']['page']     = '/front/stat.php';
    }
 
    // FINANCIAL
    if (haveRight("budget","r")) {
-      $menu['financial']['content']['budget']['title']=$LANG['financial'][110];
-      $menu['financial']['content']['budget']['shortcut']='n';
-      $menu['financial']['content']['budget']['page']='/front/budget.php';
-      $menu['financial']['content']['budget']['links']['search']='/front/budget.php';
+      $menu['financial']['content']['budget']['title']           = $LANG['financial'][110];
+      $menu['financial']['content']['budget']['shortcut']        = 'n';
+      $menu['financial']['content']['budget']['page']            = '/front/budget.php';
+      $menu['financial']['content']['budget']['links']['search'] = '/front/budget.php';
+
       if (haveRight("contract","w")) {
-         $menu['financial']['content']['budget']['links']['add']='/front/setup.templates.php?'.
-            'itemtype=Budget&amp;add=1';
-         $menu['financial']['content']['budget']['links']['template']='/front/setup.templates.php?'.
-            'itemtype=Budget&amp;add=0';
+         $menu['financial']['content']['budget']['links']['add']
+                        = '/front/setup.templates.php?'.'itemtype=Budget&amp;add=1';
+         $menu['financial']['content']['budget']['links']['template']
+                        = '/front/setup.templates.php?'.'itemtype=Budget&amp;add=0';
       }
    }
 
-   $menu['financial']['title']=$LANG['Menu'][26];
-   if (haveRight("contact_enterprise","r")) {
-      $menu['financial']['content']['supplier']['title']=$LANG['Menu'][23];
-      $menu['financial']['content']['supplier']['shortcut']='e';
-      $menu['financial']['content']['supplier']['page']='/front/supplier.php';
-      $menu['financial']['content']['supplier']['links']['search']='/front/supplier.php';
+   $menu['financial']['title'] = $LANG['Menu'][26];
 
-      $menu['financial']['default']='/front/contact.php';
-      $menu['financial']['content']['contact']['title']=$LANG['Menu'][22];
-      $menu['financial']['content']['contact']['shortcut']='t';
-      $menu['financial']['content']['contact']['page']='/front/contact.php';
-      $menu['financial']['content']['contact']['links']['search']='/front/contact.php';
+   if (haveRight("contact_enterprise","r")) {
+      $menu['financial']['content']['supplier']['title']           = $LANG['Menu'][23];
+      $menu['financial']['content']['supplier']['shortcut']        = 'e';
+      $menu['financial']['content']['supplier']['page']            = '/front/supplier.php';
+      $menu['financial']['content']['supplier']['links']['search'] = '/front/supplier.php';
+
+      $menu['financial']['default'] = '/front/contact.php';
+
+      $menu['financial']['content']['contact']['title']           = $LANG['Menu'][22];
+      $menu['financial']['content']['contact']['shortcut']        = 't';
+      $menu['financial']['content']['contact']['page']            = '/front/contact.php';
+      $menu['financial']['content']['contact']['links']['search'] = '/front/contact.php';
 
       if (haveRight("contact_enterprise","w")) {
-         $menu['financial']['content']['contact']['links']['add']='/front/contact.form.php';
-         $menu['financial']['content']['supplier']['links']['add']='/front/supplier.form.php';
+         $menu['financial']['content']['contact']['links']['add']  = '/front/contact.form.php';
+         $menu['financial']['content']['supplier']['links']['add'] = '/front/supplier.form.php';
       }
    }
 
    if (haveRight("contract","r")) {
-      $menu['financial']['content']['contract']['title']=$LANG['Menu'][25];
-      $menu['financial']['content']['contract']['shortcut']='n';
-      $menu['financial']['content']['contract']['page']='/front/contract.php';
-      $menu['financial']['content']['contract']['links']['search']='/front/contract.php';
+      $menu['financial']['content']['contract']['title']           = $LANG['Menu'][25];
+      $menu['financial']['content']['contract']['shortcut']        = 'n';
+      $menu['financial']['content']['contract']['page']            = '/front/contract.php';
+      $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
+
       if (haveRight("contract","w")) {
-         $menu['financial']['content']['contract']['links']['add']='/front/contract.form.php';
+         $menu['financial']['content']['contract']['links']['add'] = '/front/contract.form.php';
       }
    }
 
    if (haveRight("document","r")) {
-      $menu['financial']['content']['document']['title']=$LANG['Menu'][27];
-      $menu['financial']['content']['document']['shortcut']='d';
-      $menu['financial']['content']['document']['page']='/front/document.php';
-      $menu['financial']['content']['document']['links']['search']='/front/document.php';
+      $menu['financial']['content']['document']['title']           = $LANG['Menu'][27];
+      $menu['financial']['content']['document']['shortcut']        = 'd';
+      $menu['financial']['content']['document']['page']            = '/front/document.php';
+      $menu['financial']['content']['document']['links']['search'] = '/front/document.php';
+
       if (haveRight("document","w")) {
-         $menu['financial']['content']['document']['links']['add']='/front/document.form.php';
+         $menu['financial']['content']['document']['links']['add'] = '/front/document.form.php';
       }
    }
 
    // UTILS
-   $menu['utils']['title']=$LANG['Menu'][18];
-   $menu['utils']['default']='/front/reminder.php';
+   $menu['utils']['title'] = $LANG['Menu'][18];
 
-   $menu['utils']['content']['reminder']['title']=$LANG['title'][37];
-   $menu['utils']['content']['reminder']['page']='/front/reminder.php';
-   $menu['utils']['content']['reminder']['links']['search']='/front/reminder.php';
-   $menu['utils']['content']['reminder']['links']['add']='/front/reminder.form.php';
+   $menu['utils']['default'] = '/front/reminder.php';
+
+   $menu['utils']['content']['reminder']['title']           = $LANG['title'][37];
+   $menu['utils']['content']['reminder']['page']            = '/front/reminder.php';
+   $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
+   $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
 
    if (haveRight("knowbase","r") || haveRight("faq","r")) {
-      $menu['utils']['content']['knowbase']['title']=$LANG['Menu'][19];
-      $menu['utils']['content']['knowbase']['page']='/front/knowbaseitem.php';
-      $menu['utils']['content']['knowbase']['links']['search']='/front/knowbaseitem.php';
+      $menu['utils']['content']['knowbase']['title']           = $LANG['Menu'][19];
+      $menu['utils']['content']['knowbase']['page']            = '/front/knowbaseitem.php';
+      $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbaseitem.php';
+
       if (haveRight("knowbase","w") || haveRight("faq","w")) {
-         $menu['utils']['content']['knowbase']['links']['add']='/front/knowbaseitem.form.php?id=new';
+         $menu['utils']['content']['knowbase']['links']['add'] = '/front/knowbaseitem.form.php?id=new';
       }
    }
 
    if (haveRight("reservation_helpdesk","1") || haveRight("reservation_central","r")) {
-      $menu['utils']['content']['reservation']['title']=$LANG['Menu'][17];
-      $menu['utils']['content']['reservation']['page']='/front/reservationitem.php';
-      $menu['utils']['content']['reservation']['links']['search']='/front/reservationitem.php';
-      $menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php';
+      $menu['utils']['content']['reservation']['title']            = $LANG['Menu'][17];
+      $menu['utils']['content']['reservation']['page']             = '/front/reservationitem.php';
+      $menu['utils']['content']['reservation']['links']['search']  = '/front/reservationitem.php';
+      $menu['utils']['content']['reservation']['links']['showall'] = '/front/reservation.php';
    }
 
    if (haveRight("reports","r")) {
-      $menu['utils']['content']['report']['title']=$LANG['Menu'][6];
-      $menu['utils']['content']['report']['page']='/front/report.php';
+      $menu['utils']['content']['report']['title'] = $LANG['Menu'][6];
+      $menu['utils']['content']['report']['page']  = '/front/report.php';
    }
 
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("ocsng","w")) {
-      $menu['utils']['content']['ocsng']['title']=$LANG['Menu'][33];
-      $menu['utils']['content']['ocsng']['page']='/front/ocsng.php';
+      $menu['utils']['content']['ocsng']['title'] = $LANG['Menu'][33];
+      $menu['utils']['content']['ocsng']['page']  = '/front/ocsng.php';
    }
 
    // PLUGINS
    if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
-      $menu['plugins']['title']=$LANG['common'][29];
-      $plugins=array();
+      $menu['plugins']['title'] = $LANG['common'][29];
+      $plugins = array();
+
       foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
          if ($active) { // true or a string
-            $function="plugin_version_$plugin";
+            $function = "plugin_version_$plugin";
+
             if (function_exists($function)) {
-               $plugins[$plugin]=$function();
+               $plugins[$plugin] = $function();
             }
          }
       }
+
       if (count($plugins)) {
-         $list=array();
+         $list = array();
+
          foreach ($plugins as $key => $val) {
-            $list[$key]=$val["name"];
+            $list[$key] = $val["name"];
          }
          asort($list);
+
          foreach ($list as $key => $val) {
-            $menu['plugins']['content'][$key]['title']=$val;
-            $menu['plugins']['content'][$key]['page']='/plugins/'.$key.'/';
+            $menu['plugins']['content'][$key]['title'] = $val;
+            $menu['plugins']['content'][$key]['page']  = '/plugins/'.$key.'/';
+
             if (is_string($PLUGIN_HOOKS["menu_entry"][$key])) {
                $menu['plugins']['content'][$key]['page'] .= $PLUGIN_HOOKS["menu_entry"][$key];
             }
 
             // Set default link for plugins
             if (!isset($menu['plugins']['default'])) {
-               $menu['plugins']['default']=$menu['plugins']['content'][$key]['page'];
+               $menu['plugins']['default'] = $menu['plugins']['content'][$key]['page'];
             }
 
-            if ($sector=="plugins"&&$item==$key) {
+            if ($sector=="plugins" && $item==$key) {
                if (isset($PLUGIN_HOOKS["submenu_entry"][$key])
                    && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
 
                   foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
-
                      // New complete option management
                      if ($name=="options") {
-                        $menu['plugins']['content'][$key]['options']=$link;
+                        $menu['plugins']['content'][$key]['options'] = $link;
                      } else { // Keep it for compatibility
+
                         if (is_array($link)) {
                            // Simple link option
                            if (isset($link[$option])) {
-                              $menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.
-                                                                              $link[$option];
+                              $menu['plugins']['content'][$key]['links'][$name]
+                                             ='/plugins/'.$key.'/'.$link[$option];
                            }
                         } else {
-                           $menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
+                           $menu['plugins']['content'][$key]['links'][$name]
+                                             ='/plugins/'.$key.'/'.$link;
                         }
                      }
                   }
@@ -513,116 +569,155 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
    }
 
    /// ADMINISTRATION
-   $menu['admin']['title']=$LANG['Menu'][15];
+   $menu['admin']['title'] = $LANG['Menu'][15];
 
    if (haveRight("user","r")) {
-      $menu['admin']['default']='/front/user.php';
-      $menu['admin']['content']['user']['title']=$LANG['Menu'][14];
-      $menu['admin']['content']['user']['shortcut']='u';
-      $menu['admin']['content']['user']['page']='/front/user.php';
-      $menu['admin']['content']['user']['links']['search']='/front/user.php';
+      $menu['admin']['default'] = '/front/user.php';
+
+      $menu['admin']['content']['user']['title']           = $LANG['Menu'][14];
+      $menu['admin']['content']['user']['shortcut']        = 'u';
+      $menu['admin']['content']['user']['page']            = '/front/user.php';
+      $menu['admin']['content']['user']['links']['search'] = '/front/user.php';
+
       if (haveRight("user","w")) {
-         $menu['admin']['content']['user']['links']['add']="/front/user.form.php";
+         $menu['admin']['content']['user']['links']['add'] = "/front/user.form.php";
       }
 
-     $menu['admin']['content']['user']['options']['ldap']['title']=$LANG['login'][2];
-     $menu['admin']['content']['user']['options']['ldap']['page']="/front/ldap.php";
+     $menu['admin']['content']['user']['options']['ldap']['title'] = $LANG['login'][2];
+     $menu['admin']['content']['user']['options']['ldap']['page']  = "/front/ldap.php";
    }
+
    if (haveRight("group","r")) {
-      $menu['admin']['content']['group']['title']=$LANG['Menu'][36];
-      $menu['admin']['content']['group']['shortcut']='g';
-      $menu['admin']['content']['group']['page']='/front/group.php';
-      $menu['admin']['content']['group']['links']['search']='/front/group.php';
+      $menu['admin']['content']['group']['title']           = $LANG['Menu'][36];
+      $menu['admin']['content']['group']['shortcut']        = 'g';
+      $menu['admin']['content']['group']['page']            = '/front/group.php';
+      $menu['admin']['content']['group']['links']['search'] = '/front/group.php';
+
       if (haveRight("group","w")) {
-         $menu['admin']['content']['group']['links']['add']="/front/group.form.php";
-         $menu['admin']['content']['group']['options']['ldap']['title']=$LANG['login'][2];
-         $menu['admin']['content']['group']['options']['ldap']['page']="/front/ldap.group.php";
+         $menu['admin']['content']['group']['links']['add']             = "/front/group.form.php";
+         $menu['admin']['content']['group']['options']['ldap']['title'] = $LANG['login'][2];
+         $menu['admin']['content']['group']['options']['ldap']['page']  = "/front/ldap.group.php";
       }
    }
 
    if (haveRight("entity","r")) {
-      $menu['admin']['content']['entity']['title']=$LANG['Menu'][37];
-      $menu['admin']['content']['entity']['shortcut']='z';
-      $menu['admin']['content']['entity']['page']='/front/entity.php';
-      $menu['admin']['content']['entity']['links']['search']='/front/entity.php';
-      $menu['admin']['content']['entity']['links']['add']="/front/entity.form.php";
+      $menu['admin']['content']['entity']['title']           = $LANG['Menu'][37];
+      $menu['admin']['content']['entity']['shortcut']        = 'z';
+      $menu['admin']['content']['entity']['page']            = '/front/entity.php';
+      $menu['admin']['content']['entity']['links']['search'] = '/front/entity.php';
+      $menu['admin']['content']['entity']['links']['add']    = "/front/entity.form.php";
    }
 
    if (haveRight("rule_ldap","r")
-         || haveRight("rule_ocs","r")
-            || haveRight("entity_rule_ticket","r")
-               || haveRight("rule_softwarecategories","r")
-                  || haveRight("rule_mailcollector","r")) {
+       || haveRight("rule_ocs","r")
+       || haveRight("entity_rule_ticket","r")
+       || haveRight("rule_softwarecategories","r")
+       || haveRight("rule_mailcollector","r")) {
 
-      $menu['admin']['content']['rule']['title']=$LANG['rulesengine'][17];
-      $menu['admin']['content']['rule']['shortcut']='r';
-      $menu['admin']['content']['rule']['page']='/front/rule.php';
+      $menu['admin']['content']['rule']['title']    = $LANG['rulesengine'][17];
+      $menu['admin']['content']['rule']['shortcut'] = 'r';
+      $menu['admin']['content']['rule']['page']     = '/front/rule.php';
 
       if ($sector=='admin' && $item == 'rule') {
+         $menu['admin']['content']['rule']['options']['ocs']['title']           = $LANG['Menu'][33];
+         $menu['admin']['content']['rule']['options']['ocs']['page']            = '/front/ruleocs.php';
+         $menu['admin']['content']['rule']['options']['ocs']['links']['search'] = '/front/ruleocs.php';
 
-         $menu['admin']['content']['rule']['options']['ocs']['title']=$LANG['Menu'][33];
-         $menu['admin']['content']['rule']['options']['ocs']['page']='/front/ruleocs.php';
-         $menu['admin']['content']['rule']['options']['ocs']['links']['search']='/front/ruleocs.php';
          if (haveRight("rule_ocs","w")) {
-            $menu['admin']['content']['rule']['options']['ocs']['links']['add']='/front/ruleocs.form.php';
+            $menu['admin']['content']['rule']['options']['ocs']['links']['add']
+                           = '/front/ruleocs.form.php';
          }
 
-         $menu['admin']['content']['rule']['options']['right']['title']=$LANG['Menu'][37]." / ".$LANG['Menu'][41];
-         $menu['admin']['content']['rule']['options']['right']['page']='/front/ruleright.php';
-         $menu['admin']['content']['rule']['options']['right']['links']['search']='/front/ruleright.php';
+         $menu['admin']['content']['rule']['options']['right']['title']
+                        = $LANG['Menu'][37]." / ".$LANG['Menu'][41];
+         $menu['admin']['content']['rule']['options']['right']['page']
+                        = '/front/ruleright.php';
+         $menu['admin']['content']['rule']['options']['right']['links']['search']
+                        = '/front/ruleright.php';
+
          if (haveRight("rule_ldap","w")) {
-            $menu['admin']['content']['rule']['options']['right']['links']['add']='/front/ruleright.form.php';
+            $menu['admin']['content']['rule']['options']['right']['links']['add']
+                           = '/front/ruleright.form.php';
          }
 
-         $menu['admin']['content']['rule']['options']['mailcollector']['title']=$LANG['rulesengine'][70];
-         $menu['admin']['content']['rule']['options']['mailcollector']['page']='/front/rulemailcollector.php';
-         $menu['admin']['content']['rule']['options']['mailcollector']['links']['search']='/front/rulemailcollector.php';
+         $menu['admin']['content']['rule']['options']['mailcollector']['title']
+                        = $LANG['rulesengine'][70];
+         $menu['admin']['content']['rule']['options']['mailcollector']['page']
+                        = '/front/rulemailcollector.php';
+         $menu['admin']['content']['rule']['options']['mailcollector']['links']['search']
+                        = '/front/rulemailcollector.php';
+
          if (haveRight("rule_mailcollector","w")) {
-            $menu['admin']['content']['rule']['options']['mailcollector']['links']['add']='/front/rulemailcollector.form.php';
+            $menu['admin']['content']['rule']['options']['mailcollector']['links']['add']
+                           = '/front/rulemailcollector.form.php';
          }
 
-         $menu['admin']['content']['rule']['options']['ticket']['title']=$LANG['Menu'][5];
-         $menu['admin']['content']['rule']['options']['ticket']['page']='/front/ruleticket.php';
-         $menu['admin']['content']['rule']['options']['ticket']['links']['search']='/front/ruleticket.php';
+         $menu['admin']['content']['rule']['options']['ticket']['title']
+                        = $LANG['Menu'][5];
+         $menu['admin']['content']['rule']['options']['ticket']['page']
+                        = '/front/ruleticket.php';
+         $menu['admin']['content']['rule']['options']['ticket']['links']['search']
+                        = '/front/ruleticket.php';
+
          if (haveRight("entity_rule_ticket","w")) {
-            $menu['admin']['content']['rule']['options']['ticket']['links']['add']='/front/ruleticket.form.php';
+            $menu['admin']['content']['rule']['options']['ticket']['links']['add']
+                           = '/front/ruleticket.form.php';
          }
 
-         $menu['admin']['content']['rule']['options']['softwarecategories']['title']=$LANG['softwarecategories'][5];
-         $menu['admin']['content']['rule']['options']['softwarecategories']['page']='/front/rulesoftwarecategory.php';
-         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']='/front/rulesoftwarecategory.php';
+         $menu['admin']['content']['rule']['options']['softwarecategories']['title']
+                        = $LANG['softwarecategories'][5];
+         $menu['admin']['content']['rule']['options']['softwarecategories']['page']
+                        = '/front/rulesoftwarecategory.php';
+         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']
+                        = '/front/rulesoftwarecategory.php';
+
          if (haveRight("rule_softwarecategories","w")) {
-            $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']='/front/rulesoftwarecategory.form.php';
+            $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']
+                           = '/front/rulesoftwarecategory.form.php';
          }
       }
    }
 
    if (haveRight("rule_dictionnary_dropdown","r") || haveRight("rule_dictionnary_software","r")) {
-      $menu['admin']['content']['dictionnary']['title']=$LANG['rulesengine'][77];
-      $menu['admin']['content']['dictionnary']['shortcut']='r';
-      $menu['admin']['content']['dictionnary']['page']='/front/dictionnary.php';
+      $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
+      $menu['admin']['content']['dictionnary']['shortcut'] = 'r';
+      $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
 
       if ($sector=='admin' && $item == 'dictionnary') {
+         $menu['admin']['content']['dictionnary']['options']['manufacturers']['title']
+                        = $LANG['common'][5];
+         $menu['admin']['content']['dictionnary']['options']['manufacturers']['page']
+                        = '/front/ruledictionnarymanufacturer.php';
+         $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['search']
+                        = '/front/ruledictionnarymanufacturer.php';
 
-         $menu['admin']['content']['dictionnary']['options']['manufacturers']['title']=$LANG['common'][5];
-         $menu['admin']['content']['dictionnary']['options']['manufacturers']['page']='/front/ruledictionnarymanufacturer.php';
-         $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['search']='/front/ruledictionnarymanufacturer.php';
          if (haveRight("rule_dictionnary_dropdown","w")) {
-            $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['add']='/front/ruledictionnarymanufacturer.form.php';
+            $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['add']
+                           = '/front/ruledictionnarymanufacturer.form.php';
          }
 
-         $menu['admin']['content']['dictionnary']['options']['software']['title']=$LANG['Menu'][4];
-         $menu['admin']['content']['dictionnary']['options']['software']['page']='/front/ruledictionnarysoftware.php';
-         $menu['admin']['content']['dictionnary']['options']['software']['links']['search']='/front/ruledictionnarysoftware.php';
+         $menu['admin']['content']['dictionnary']['options']['software']['title']
+                        = $LANG['Menu'][4];
+         $menu['admin']['content']['dictionnary']['options']['software']['page']
+                        = '/front/ruledictionnarysoftware.php';
+         $menu['admin']['content']['dictionnary']['options']['software']['links']['search']
+                        = '/front/ruledictionnarysoftware.php';
+
          if (haveRight("rule_dictionnary_software","w")) {
-            $menu['admin']['content']['dictionnary']['options']['software']['links']['add']='/front/ruledictionnarysoftware.form.php';
+            $menu['admin']['content']['dictionnary']['options']['software']['links']['add']
+                           = '/front/ruledictionnarysoftware.form.php';
          }
 
-         $menu['admin']['content']['dictionnary']['options']['model.computer']['title']=$LANG['setup'][91];
-         $menu['admin']['content']['dictionnary']['options']['model.computer']['page']='/front/ruledictionnarycomputermodel.php';
-         $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']='/front/ruledictionnarycomputermodel.php';
+         $menu['admin']['content']['dictionnary']['options']['model.computer']['title']
+                        = $LANG['setup'][91];
+         $menu['admin']['content']['dictionnary']['options']['model.computer']['page']
+                        = '/front/ruledictionnarycomputermodel.php';
+         $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']
+                        = '/front/ruledictionnarycomputermodel.php';
+
          if (haveRight("rule_dictionnary_dropdown","w")) {
-            $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['add']='/front/ruledictionnarycomputermodel.form.php';
+            $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['add']
+                           = '/front/ruledictionnarycomputermodel.form.php';
          }
 
          $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']=$LANG['setup'][94];
@@ -2277,7 +2372,7 @@ function showGenericDateTimeSearch($element,$value='',$with_time=false,$with_fut
        !preg_match("/\d{4}-\d{2}-\d{2}.*/",$value) &&
        !strstr($value,'HOUR') &&
        !strstr($value,'DAY') &&
-       !strstr($value,'WEEK') && 
+       !strstr($value,'WEEK') &&
        !strstr($value,'MONTH') &&
        !strstr($value,'YEAR')) {
       $value="";
@@ -2340,25 +2435,25 @@ function showGenericDateTimeSearch($element,$value='',$with_time=false,$with_fut
             echo "+ $i ".$LANG['gmt'][1]."</option>";
          }
       }
-   
+
       for ($i=1;$i<=7;$i++) {
          $val=$i.'DAY';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
          echo "+ $i ".$LANG['calendar'][12]."</option>";
       }
-   
+
       for ($i=1;$i<=10;$i++) {
          $val=$i.'WEEK';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
          echo "+ $i ".$LANG['calendar'][13]."</option>";
       }
-   
+
       for ($i=1;$i<=12;$i++) {
          $val=$i.'MONTH';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
          echo "+ $i ".$LANG['calendar'][14]."</option>";
       }
-   
+
       for ($i=1;$i<=10;$i++) {
          $val=$i.'YEAR';
          echo "<option value='$val' ".($value===$val?'selected':'').">";
