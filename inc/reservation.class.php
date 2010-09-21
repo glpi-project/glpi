@@ -841,19 +841,20 @@ class Reservation extends CommonDBTM {
          return false;
       }
 
-      echo "<div class='center'>";
+      echo "<div class='firstbloc'>";
       $now=$_SESSION["glpi_currenttime"];
 
       // Print reservation in progress
       $query = "SELECT *
-               FROM `glpi_reservations`
-               WHERE `end` > '$now'
-                     AND `users_id` = '$ID'
-               ORDER BY `begin`";
-      $result=$DB->query($query);
+                FROM `glpi_reservations`
+                WHERE `end` > '$now'
+                      AND `users_id` = '$ID'
+                ORDER BY `begin`";
+      $result = $DB->query($query);
 
-      $ri=new ReservationItem();
-      echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
+      $ri = new ReservationItem();
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr\n>";
@@ -890,18 +891,19 @@ class Reservation extends CommonDBTM {
             echo "</td></tr>\n";
          }
       }
-      echo "</table>\n";
-      echo "<br>";
+      echo "</table></div>\n";
 
       // Print old reservations
       $query = "SELECT *
-               FROM `glpi_reservations`
-               WHERE `end` <= '$now'
-                     AND `users_id` = '$ID'
-               ORDER BY `begin` DESC";
-      $result=$DB->query($query);
+                FROM `glpi_reservations`
+                WHERE `end` <= '$now'
+                      AND `users_id` = '$ID'
+                ORDER BY `begin` DESC";
+      $result = $DB->query($query);
 
-      echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>\n";
+      echo "<div class='spaced'>";
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>\n";
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr>\n";
@@ -938,8 +940,7 @@ class Reservation extends CommonDBTM {
             echo "</td></tr>\n";
          }
       }
-      echo "</table>\n";
-      echo "<br></div>\n";
+      echo "</table></div>\n";
    }
 
 }

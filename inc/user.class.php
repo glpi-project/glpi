@@ -2130,8 +2130,9 @@ class User extends CommonDBTM {
                 LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
                 WHERE `glpi_groups_users`.`users_id` = '$ID'";
       $result = $DB->query($query);
+      $number = $DB->numrows($result);
 
-      if ($DB->numrows($result) > 0) {
+      if ($number > 0) {
          $first = true;
 
          while ($data = $DB->fetch_array($result)) {
@@ -2146,11 +2147,13 @@ class User extends CommonDBTM {
          }
       }
 
-      echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG['common'][17]."</th>".
-            "<th>".$LANG['entity'][0]."</th>".
-            "<th>".$LANG['common'][16]."</th>".
-            "<th>".$LANG['common'][19]."</th>".
-            "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      echo "<tr><th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['common'][19]."</th>";
+      echo "<th>".$LANG['common'][20]."</th>";
+      echo "<th>&nbsp;</th></tr>";
 
       foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
          if (!class_exists($itemtype)) {
@@ -2208,10 +2211,10 @@ class User extends CommonDBTM {
             }
          }
       }
-      echo "</table></div><br>";
+      echo "</table></div>";
 
       if (!empty($group_where)) {
-         echo "<div class='center'><table class='tab_cadre_fixe'><tr>".
+         echo "<div class='spaced'><table class='tab_cadre_fixe'><tr>".
                "<th>".$LANG['common'][17]."</th>".
                "<th>".$LANG['entity'][0]."</th>".
                "<th>".$LANG['common'][16]."</th>".
@@ -2275,7 +2278,7 @@ class User extends CommonDBTM {
                }
             }
          }
-         echo "</table></div><br>";
+         echo "</table></div>";
       }
    }
 

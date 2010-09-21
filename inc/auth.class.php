@@ -105,7 +105,7 @@ class Auth {
       if ($DB->numrows($result) == 0) {
          $this->addToError($LANG['login'][14]);
          return 0;
- 
+
       } else {
          $pwd = $DB->result($result, 0, "password");
          if (empty ($pwd)) {
@@ -590,7 +590,7 @@ class Auth {
                      $this->user->fields["password"] = $login_password;
                   }
                }
- 
+
             } else if ($exists == 2) {
                //The user is not authenticated on the GLPI DB, but we need to get informations about him
                //to find out his authentication method
@@ -945,7 +945,7 @@ class Auth {
             return Auth::EXTERNAL;
          }
       }
- 
+
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
          if ($redirect) {
@@ -976,9 +976,9 @@ class Auth {
 
          if ($DB->numrows($result) == 1) {
             $data = $DB->fetch_array($result);
-            echo "<div class='center'>";
+            echo "<div class='firstbloc'>";
             echo "<form method='post' action='".getItemTypeFormURL('User')."'>";
- 
+
             switch($data["authtype"]) {
                case Auth::LDAP :
                   //Look it the auth server still exists !
@@ -991,7 +991,7 @@ class Auth {
                      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                      echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                             $LANG['ocsng'][24] . "'>";
-                     echo "</td></tr></table><br>";
+                     echo "</td></tr></table>";
                   }
                   break;
 
@@ -1012,15 +1012,17 @@ class Auth {
                         echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                         echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                                $LANG['ocsng'][24] . "'>";
-                        echo "</td></tr></table><br>";
+                        echo "</td></tr></table>";
                      }
                   }
                   break;
             }
+            echo "</div>";
 
+            echo "<div class='spaced'>";
             echo "<table class='tab_cadre'>";
-            echo "<tr><th>".$LANG['login'][30]."&nbsp:</th></tr>";
-            echo "<tr class='tab_bg_2'><td>";
+            echo "<tr><th>".$LANG['login'][30]."&nbsp:&nbsp;</th></tr>";
+            echo "<tr class='tab_bg_2'><td class='center'>";
             $rand             = Auth::dropdown(array('name' => 'authtype'));
             $paramsmassaction = array('authtype' => '__VALUE__',
                                       'name'     => 'change_auth_method');
