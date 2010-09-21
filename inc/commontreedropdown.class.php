@@ -172,6 +172,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       // Minimal form for quick input.
       if ($this->canCreate()) {
          $link=$this->getFormURL();
+         echo "<div class='firstbloc'>";
          echo "<form action='".$link."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>".$LANG['common'][93]."</th></tr>";
@@ -187,9 +188,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<td><input type='submit' name='add' value=\"".
               $LANG['buttons'][8]."\" class='submit'></td>";
          echo "</tr>\n";
-         echo "</table></form>\n";
+         echo "</table></form></div>\n";
       }
 
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($nb+3)."'>".$LANG['setup'][75]."&nbsp;: ";
       echo $this->getTreeLink();
@@ -248,7 +250,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<td>".$data['comment']."</td>";
          echo "</tr>\n";
       }
-      echo "</table>\n";
+      echo "</table></div>\n";
 
    }
 

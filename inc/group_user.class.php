@@ -188,8 +188,9 @@ class Group_User extends CommonDBRelation{
             openArrowMassive("groupuser_form$rand", true);
             closeArrowMassive('deletegroup', $LANG['buttons'][6]);
          }
-         echo "</div></form>";
+         echo "</form>";
       }
+      echo "</div>";
    }
 
 
@@ -245,7 +246,7 @@ class Group_User extends CommonDBRelation{
          $nb = ($res ? $DB->result($res,0,"CPT") : 0);
 
          if ($nb) {
-            echo "<div class='center'>";
+            echo "<div class='firstbloc'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
@@ -266,15 +267,16 @@ class Group_User extends CommonDBRelation{
             echo "<input type='hidden' name'is_dynamic' value='0'>";
             echo "<input type='submit' name='adduser' value='".$LANG['buttons'][8]."' class='submit'>";
             echo "</td></tr>";
-            echo "</table></div><br>";
+            echo "</table></div>";
          }
 
       } else {
          $headerspan = $nb_per_line;
       }
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14]."(D=".$LANG['profiles'][29].")</th></tr>";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='$headerspan'>".$LANG['Menu'][14]." (D=".$LANG['profiles'][29].")";
+      echo "</th></tr>";
 
       if (count($used)) {
          initNavigateListItems('User', $group->getTypeName()." = ".$group->getName());
@@ -315,7 +317,7 @@ class Group_User extends CommonDBRelation{
          }
          echo "</tr>";
       }
-      echo "</table></div>";
+      echo "</table>";
 
       if ($canedit) {
          openArrowMassive("groupuser_form$rand", true);
@@ -324,6 +326,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</form>";
       }
+      echo "</div>";
    }
 
 

@@ -559,7 +559,7 @@ class Rule extends CommonDBTM {
       global $CFG_GLPI;
 
       $actions=$this->getActions();
-      // Complete used array with duplicate items 
+      // Complete used array with duplicate items
       // add duplicates of used items
       foreach ($used as $ID) {
          if (isset($actions[$ID]['duplicatewith'])) {
@@ -568,7 +568,7 @@ class Rule extends CommonDBTM {
       }
       // Parse for duplicates of already used items
       foreach ($actions as $ID => $act) {
-         if (isset($actions[$ID]['duplicatewith']) 
+         if (isset($actions[$ID]['duplicatewith'])
                && in_array($actions[$ID]['duplicatewith'],$used)) {
             $used[$ID]=$ID;
          }
@@ -1507,6 +1507,8 @@ class Rule extends CommonDBTM {
          echo "</tr>\n";
          echo "</table><br>\n";
       } else {
+         echo "<div class='spaced'>";
+
          if ($canedit) {
             echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' ".
                   "action='".getItemTypeSearchURL(get_class($this))."'>";
@@ -1539,13 +1541,14 @@ class Rule extends CommonDBTM {
             echo "<td>" . Dropdown::getYesNo($rule->fields["is_active"]) . "</td>";
             echo "</tr>\n";
          }
-         echo "</table><br>\n";
+         echo "</table>\n";
          if ($canedit) {
             openArrowMassive("entityaffectation_form", true);
             echo "<input type='hidden' name='action' value='delete'>";
             closeArrowMassive('massiveaction', $LANG['buttons'][6]);
             echo "</form>";
          }
+         echo "</div>";
       }
    }
 
