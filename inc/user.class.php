@@ -160,7 +160,7 @@ class User extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          $ong[1] = $LANG['Menu'][35]; // principal
          $ong[4] = $LANG['Menu'][36];
-         $ong[2] = $LANG['common'][1]; // materiel
+         $ong[2] = $LANG['common'][96]; // materiel
 
          if (haveRight("show_all_ticket", "1")) {
             $ong[3] = $LANG['title'][28]; // tickets
