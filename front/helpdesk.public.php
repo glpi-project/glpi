@@ -68,6 +68,17 @@ if (isset($_GET["redirect"])) {
    manageRedirect($_GET["redirect"]);
 }
 
+// redirect if no create ticket right
+if (!haveRight('create_ticket',1)) {
+   if (haveRight('observe_ticket',1) || haveRight('validate_ticket',1)) {
+      glpi_header($CFG_GLPI['root_doc']."/front/ticket.php");
+   } else if (haveRight('reservation_helpdesk',1)) {
+      glpi_header($CFG_GLPI['root_doc']."/front/reservationitem.php");
+   } else if (haveRight('faq','r')) {
+      glpi_header($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
+   }
+}
+
 checkHelpdeskAccess();
 helpHeader($LANG['job'][13],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 printHelpDesk(getLoginUserID(),1);
