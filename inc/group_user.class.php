@@ -100,7 +100,7 @@ class Group_User extends CommonDBRelation{
       }
 
       if ($canedit) {
-         echo "<div class='center'>";
+         echo "<div class='firstbloc'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</th></tr>";
@@ -127,10 +127,10 @@ class Group_User extends CommonDBRelation{
          }
 
          echo "</td></tr>";
-         echo "</table></div><br>";
+         echo "</table></div>";
       }
 
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'><tr>";
       echo "<th colspan='$headerspan'>".$LANG['Menu'][36]."&nbsp;(D=".$LANG['profiles'][29].")</th>";
       echo "</tr>";
@@ -181,10 +181,9 @@ class Group_User extends CommonDBRelation{
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='$headerspan' class='center'>".$LANG['common'][49]."</td></tr>";
       }
-      echo "</table></div>";
+      echo "</table>";
 
       if ($canedit) {
-         echo "<div class='center'>";
          if (count($used)) {
             openArrowMassive("groupuser_form$rand", true);
             closeArrowMassive('deletegroup', $LANG['buttons'][6]);

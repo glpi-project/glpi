@@ -101,7 +101,7 @@ class Profile_User extends CommonDBTM {
       echo getItemTypeFormURL(__CLASS__)."'>";
 
       if ($canedit) {
-         echo "<div class='center'>";
+         echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['entity'][3]."</tr>";
 
@@ -116,10 +116,10 @@ class Profile_User extends CommonDBTM {
          echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></div><br>";
+         echo "</table></div>";
       }
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
+      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".$LANG['Menu'][37]."</th>";
       echo "<th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")";
       echo "</th></tr>";
@@ -176,13 +176,13 @@ class Profile_User extends CommonDBTM {
          }
          echo "</tr>";
       }
-      echo "</table></div>";
+      echo "</table>";
 
       if ($canedit) {
          openArrowMassive("entityuser_form$rand",true);
          closeArrowMassive('delete', $LANG['buttons'][6]);
       }
-      echo "</form>";
+      echo "</form></div>";
    }
 
    /**

@@ -3713,9 +3713,7 @@ class Ticket extends CommonDBTM {
          $options['reset'] = 'reset';
 
          echo "<tr><th colspan='10'>";
-         if ($number==0) {
-            echo $LANG['job'][3];
-         } else if ($number==1) {
+         if ($number==1) {
             echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
@@ -3816,9 +3814,7 @@ class Ticket extends CommonDBTM {
          $options['reset'] = 'reset';
 
          echo "<tr><th colspan='10'>";
-         if ($number==0) {
-            echo $LANG['job'][3];
-         } else if ($number==1) {
+         if ($number==1) {
             echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></span>";
@@ -3835,13 +3831,11 @@ class Ticket extends CommonDBTM {
             addToNavigateListItems('Ticket',$data["id"]);
             self::showShort($data, 0);
          }
-         echo "</table></div>";
 
       } else {
          echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
       }
       echo "</table></div>";
-
    }
 
 
@@ -3861,6 +3855,8 @@ class Ticket extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+
       if ($number > 0) {
          $user = new User();
          $user->getFromDB($userID);
@@ -3872,17 +3868,14 @@ class Ticket extends CommonDBTM {
          $options['contains'][0]   = $userID;
          $options['link'][0]       = 'AND';
 
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>";
-         if ($number==0) {
-            echo $LANG['job'][3];
-         } else if ($number==1) {
-            echo $number." ".$LANG['job'][10];
+         if ($number==1) {
+            echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></SPAN>";
 
          } else {
-            echo $number." ".$LANG['job'][8] ." ";
+            echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                    append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a></SPAN>";
          }
@@ -3894,15 +3887,11 @@ class Ticket extends CommonDBTM {
             addToNavigateListItems('Ticket',$data["id"]);
             self::showShort($data, 0);
          }
-         echo "</table></div>";
 
       } else {
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['joblist'][8]."</th></tr>";
-         echo "</table>";
-         echo "</div><br>";
       }
+      echo "</table></div>";
    }
 
 
