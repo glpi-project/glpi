@@ -90,6 +90,7 @@ class Entity extends CommonTreeDropdown {
       return haveAccessToEntity($this->getField('id'));
    }
 
+
    function isNewID($ID) {
       return ($ID<0 || !strlen($ID));
    }
@@ -99,13 +100,15 @@ class Entity extends CommonTreeDropdown {
       global $LANG;
 
       $ong[1] = $LANG['title'][26];          // Main
+
       if (!$this->isNewID($this->fields['id'])) {
          $ong[2] = $LANG['financial'][44];   // Address
          $ong[3] = $LANG['Menu'][14];        // Users
          $ong[4] = $LANG['rulesengine'][17]; // Rules
          $ong[5] = $LANG['entity'][14];      // Advanced
+
          if (haveRight("document","r")) {
-            $ong[6]=$LANG['Menu'][27];       // Docs
+            $ong[6] = $LANG['Menu'][27];       // Docs
          }
          if (haveRight('notification','r')) {
             $ong[7] = $LANG['setup'][704];
@@ -133,8 +136,8 @@ class Entity extends CommonTreeDropdown {
                $this->showChildren($ID);
                EntityData::showStandardOptions($this);
                Profile_User::showForEntity($this);
-               $ocsrule = new RuleOcs;
-               $ldaprule = new RuleRight;
+               $ocsrule       = new RuleOcs;
+               $ldaprule      = new RuleRight;
                $mailcollector = new RuleMailCollector;
                $ldaprule->showAndAddRuleForm($_POST["id"]);
                if ($CFG_GLPI["use_ocs_mode"]) {
@@ -156,8 +159,8 @@ class Entity extends CommonTreeDropdown {
                break;
 
             case 4 :
-               $ocsrule = new RuleOcs;
-               $ldaprule = new RuleRight;
+               $ocsrule       = new RuleOcs;
+               $ldaprule      = new RuleRight;
                $mailcollector = new RuleMailCollector;
                $ldaprule->showAndAddRuleForm($_POST["id"]);
                if ($CFG_GLPI["use_ocs_mode"]) {
@@ -202,15 +205,13 @@ class Entity extends CommonTreeDropdown {
       global $LANG, $CFG_GLPI;
 
       $buttons = array();
-      $title = $LANG['Menu'][37];
+      $title   = $LANG['Menu'][37];
       $buttons["entity.form.php?id=0"] = $LANG['entity'][2];
       displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png", $LANG['Menu'][37], $title, $buttons);
    }
 
 
    function displayHeader () {
-      global $LANG;
-
       commonHeader($this->getTypeName(), '', "admin", "entity");
    }
 
@@ -275,10 +276,12 @@ class Entity extends CommonTreeDropdown {
                 FROM `glpi_ruleactions`
                 WHERE `value` = '".$this->fields['id']."'
                       AND `field` = 'entities_id'";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $rule = new Rule();
             $input['is_active'] = 0;
+
             while ($data = $DB->fetch_array($result)) {
                $input['id'] = $data['rules_id'];
                $rule->update($input);
@@ -403,18 +406,19 @@ class Entity extends CommonTreeDropdown {
    /**
     * Display entities of the loaded profile
     *
-    * @param $myname select name
     * @param $target target for entity change action
+    * @param $myname select name
     */
    static function showSelector($target, $myname) {
       global $CFG_GLPI, $LANG;
 
       $rand = mt_rand();
 
-      echo "<div class='center' ><span class='b'>".$LANG['entity'][10]." ( <img src=\"".
-             $CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG['entity'][11].")</span><br>";
-      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
-             $LANG['buttons'][40]."\">".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
+      echo "<div class='center'>";
+      echo "<span class='b'>".$LANG['entity'][10]." ( <img src='".$CFG_GLPI["root_doc"].
+            "/pics/entity_all.png' alt=''> ".$LANG['entity'][11].")</span><br>";
+      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title='".
+             $LANG['buttons'][40]."'>".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
 
@@ -464,8 +468,8 @@ class Entity extends CommonTreeDropdown {
       $this->check($_POST["affectentity"], 'w');
 
       $collection = RuleCollection::getClassByType($_POST['sub_type']);
-      $rule = $collection->getRuleClass($_POST['sub_type']);
-      $ruleid = $rule->add($_POST);
+      $rule       = $collection->getRuleClass($_POST['sub_type']);
+      $ruleid     = $rule->add($_POST);
 
       if ($ruleid) {
          //Add an action associated to the rule
@@ -478,11 +482,11 @@ class Entity extends CommonTreeDropdown {
          switch ($_POST['sub_type']) {
             case 'RuleRight' :
                if ($_POST["profiles_id"]) {
-                  $ruleAction->addActionByAttributes("assign", $ruleid,
-                                                     "profiles_id", $_POST["profiles_id"]);
+                  $ruleAction->addActionByAttributes("assign", $ruleid, "profiles_id",
+                                                     $_POST["profiles_id"]);
                }
-               $ruleAction->addActionByAttributes("assign", $ruleid,
-                                                  "is_recursive", $_POST["is_recursive"]);
+               $ruleAction->addActionByAttributes("assign", $ruleid, "is_recursive",
+                                                  $_POST["is_recursive"]);
          }
       }
 
@@ -492,7 +496,7 @@ class Entity extends CommonTreeDropdown {
 
 
    static function getEntitiesToNotify($field, $with_value=false) {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $query = "SELECT `glpi_entities`.`id` AS `entity`,
                        `glpi_entitydatas`.`$field`
@@ -502,6 +506,7 @@ class Entity extends CommonTreeDropdown {
                 ORDER BY `glpi_entities`.`entities_id` ASC";
 
       $entities = array();
+
       foreach ($DB->request($query) as $entitydatas) {
          Entity::getDefaultValueForNotification($field, $entities, $entitydatas);
       }
@@ -511,6 +516,7 @@ class Entity extends CommonTreeDropdown {
                 FROM `glpi_entitydatas`
                 WHERE `entities_id` = '0'";
       $result = $DB->query($query);
+
       if ($DB->numrows($result)) {
          Entity::getDefaultValueForNotification($field, $entities,
                                                 array('entity' => 0,
@@ -537,8 +543,11 @@ class Entity extends CommonTreeDropdown {
                   || $entitydatas[$field] == -1
                   || is_null($entitydatas[$field]))
                  && isset($CFG_GLPI[$field])) {
+
          $entities[$entitydatas['entity']] = $CFG_GLPI[$field];
       }
    }
+
 }
+
 ?>
