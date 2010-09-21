@@ -531,12 +531,12 @@ class Profile_User extends CommonDBTM {
    }
 
    static function deleteRights($user_ID,$only_dynamic = false) {
-      global $DB;
-      $query = "DELETE FROM `glpi_profiles_users` WHERE `users_id`='$user_ID'";
+      $crit = "`users_id` = '$user_ID'";
       if ($only_dynamic) {
-         $query.= " AND `is_dynamic`='1'";
+         $crit .= " AND `is_dynamic` = '1'";
       }
-      $DB->query($query);
+      $obj = new Profile_User();
+      $obj->deleteByCriterias($crit);
    }
 
    function getSearchOptions() {
@@ -578,6 +578,42 @@ class Profile_User extends CommonDBTM {
       $tab[86]['datatype']  = 'bool';
 
       return $tab;
+   }
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['Menu'][35];
+   }
+
+   function getName($with_comment=0) {
+
+      return Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']).', '.
+             Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']).
+             (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic'] ? ', D' : '').
+             (isset($this->fields['is_recursive']) && $this->fields['is_recursive'] ? ', R' : '');
+   }
+
+   function post_addItem() {
+
+      if (isset($this->input['_no_history'])) {
+         return false;
+      }
+      $changes[0] = '0';
+      $changes[1] = '';
+      $changes[2] = addslashes($this->getName());
+      Log::history($this->fields['users_id'], 'User', $changes, get_class($this), HISTORY_ADD_SUBITEM);
+   }
+
+   function post_deleteFromDB() {
+
+      if (isset($this->input['_no_history'])) {
+         return false;
+      }
+      $changes[0] = '0';
+      $changes[1] = addslashes($this->getName());
+      $changes[2] = '';
+      Log::history($this->fields['users_id'], 'User', $changes, get_class($this), HISTORY_DELETE_SUBITEM);
    }
 }
 ?>
