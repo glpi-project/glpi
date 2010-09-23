@@ -374,7 +374,7 @@ class Group_User extends CommonDBRelation{
          $crit['is_dynamic'] = '1';
       }
       $obj = new Group_User();
-      $obj->deleteByCriterias($crit);
+      $obj->deleteByCriteria($crit);
    }
 }
 

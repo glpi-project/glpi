@@ -2034,7 +2034,7 @@ class CommonDBTM extends CommonGLPI {
     * $crit array of criteria (ex array('itemtype'=>'PluginAppliancesAppliance'))
     *
     **/
-   function deleteByCriterias($crit=array()) {
+   function deleteByCriteria($crit=array()) {
       global $DB;
 
       if (is_array($crit) && count($crit)>0) {
