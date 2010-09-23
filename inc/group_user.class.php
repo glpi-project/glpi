@@ -369,9 +369,9 @@ class Group_User extends CommonDBRelation{
    static function deleteGroups($user_ID, $only_dynamic = false) {
       global $DB;
 
-      $crit = "`users_id` = '$user_ID'";
+      $crit['users_id'] = $user_ID;
       if ($only_dynamic) {
-         $crit .= " AND `is_dynamic` = '1'";
+         $crit['is_dynamic'] = '1';
       }
       $obj = new Group_User();
       $obj->deleteByCriterias($crit);

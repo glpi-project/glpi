@@ -989,6 +989,7 @@ class Auth {
                   $result = $DB->query($sql);
                   if ($DB->numrows($result) > 0) {
                      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+                     echo "<input type='hidden' name='id' value='$ID'>";
                      echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                             $LANG['ocsng'][24] . "'>";
                      echo "</td></tr></table>";
