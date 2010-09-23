@@ -3311,8 +3311,9 @@ function changeProgressBarMessage($msg="&nbsp;") {
  *
  * @param $formname string
  * @param $fixed boolean - used tab_cadre_fixe in both tables
+ * @param $width only for dictionnary
  **/
-function openArrowMassive($formname, $fixed=false) {
+function openArrowMassive($formname, $fixed=false, $width='80%') {
    global $CFG_GLPI, $LANG;
 
    if ($fixed) {
@@ -3328,7 +3329,7 @@ function openArrowMassive($formname, $fixed=false) {
    echo "<td>/</td><td class='center'>";
    echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
           href='#'>".$LANG['buttons'][19]."</a></td>";
-   echo "<td class='left' width='80%'>";
+   echo "<td class='left' width='".$width."'>";
 }
 
 

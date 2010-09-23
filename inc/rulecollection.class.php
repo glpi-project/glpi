@@ -365,7 +365,7 @@ class RuleCollection extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $nb>0) {
-         openArrowMassive("ruleactions_form", true);
+         openArrowMassive("ruleactions_form", true, '50%');
 
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
@@ -390,10 +390,11 @@ class RuleCollection extends CommonDBTM {
          echo "</td>";
 
          if ($this->can_replay_rules) {
+            echo "</td>"; // close td of openArrowMassive
             echo "<td><input type='submit' name='replay_rule' value='" . $LANG['rulesengine'][76] .
                        "' class='submit'></td>";
+            echo "<td>"; // open td for closeArrowMassive
          }
-
          closeArrowMassive();
       }
 
@@ -404,7 +405,9 @@ class RuleCollection extends CommonDBTM {
              "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
              "w.focus();\">".$LANG['rulesengine'][84]."</a></span></div>";
 
+      echo "<div class='spaced'>";
       $this->showAdditionalInformationsInForm($target);
+      echo "</div>";
    }
 
    /**
