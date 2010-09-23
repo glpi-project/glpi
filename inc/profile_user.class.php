@@ -328,6 +328,7 @@ class Profile_User extends CommonDBTM {
          return false;
       }
 
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'><tr>";
       echo "<th>".$LANG['profiles'][22]."&nbsp;:<span class='small_space'>".$prof->fields["name"].
             "</span></th></tr>\n";
@@ -456,7 +457,7 @@ class Profile_User extends CommonDBTM {
             echo "<tr><td class='tab_bg_1 center'>".$LANG['profiles'][33]."</td></tr>\n";
          }
       }
-      echo "</table>\n";
+      echo "</table></div>\n";
    }
 
    /**
