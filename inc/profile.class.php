@@ -297,6 +297,7 @@ class Profile extends CommonDBTM {
    function showLegend() {
       global $LANG;
 
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td width='70' style='text-decoration:underline' class='b'>";
       echo $LANG['profiles'][34]."&nbsp;: </td>";
@@ -305,7 +306,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td></td>";
       echo "<td class='tab_bg_2' width='15' style='border:1px solid black'></td>";
       echo "<td class='b'>".$LANG['profiles'][1]."</td></tr>";
-      echo "</table>\n";
+      echo "</table></div>\n";
    }
 
 
@@ -515,6 +516,7 @@ class Profile extends CommonDBTM {
          echo "<form method='post' action='$target'>";
       }
 
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
 
       // Inventory
@@ -630,6 +632,7 @@ class Profile extends CommonDBTM {
       } else {
          echo "</table>\n";
       }
+      echo "</div>";
    }
 
 
@@ -652,6 +655,7 @@ class Profile extends CommonDBTM {
          echo "<form method='post' action='$target'>";
       }
 
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
 
       // Assistance / Tracking-helpdesk
@@ -840,6 +844,7 @@ class Profile extends CommonDBTM {
       } else {
          echo "</table>\n";
       }
+      echo "</div>";
    }
 
 
@@ -858,6 +863,8 @@ class Profile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
+
+      echo "<div class='firstbloc'>";
       if (($canedit=haveRight("profile","w")) && $openform) {
          echo "<form method='post' action='$target'>";
       }
@@ -1001,6 +1008,7 @@ class Profile extends CommonDBTM {
       } else {
          echo "</table>\n";
       }
+      echo "</div>";
 
       $this->showLegend();
    }
