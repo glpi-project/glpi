@@ -536,7 +536,7 @@ class Profile_User extends CommonDBTM {
          $crit['is_dynamic'] = '1';
       }
       $obj = new Profile_User();
-      $obj->deleteByCriterias($crit);
+      $obj->deleteByCriteria($crit);
    }
 
    function getSearchOptions() {
