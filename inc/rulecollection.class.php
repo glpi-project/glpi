@@ -269,7 +269,9 @@ class RuleCollection extends CommonDBTM {
 
    function showEngineSummary() {
       global $LANG;
-           echo "<table class='tab_cadre_fixe'><tr><th>";
+
+      echo "<table class='tab_cadre_fixe'><tr><th>";
+
       //Display informations about the how the rules engine process the rules
       if ($this->stop_on_first_match) {
          //The engine stop on the first matched rule
@@ -287,18 +289,20 @@ class RuleCollection extends CommonDBTM {
    }
 
    /**
-   * Show the list of rules
-   * @param $target
-   * @param $tab
-   * @param $options
-   * @return nothing
+    * Show the list of rules
+    *
+    * @param $target
+    * @param $tab
+    * @param $options
+    *
+    * @return nothing
    **/
-   function showListRules($target,$tab=0,$options=array()) {
+   function showListRules($target, $tab=0, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       $p['inherited'] = true;
       $p['childrens'] = false;
-      $p['active'] = false;
+      $p['active']    = false;
 
       foreach (array('inherited','childrens') as $param) {
          if (isset($options[$param]) && $this->isRuleRecursive()) {
@@ -310,82 +314,95 @@ class RuleCollection extends CommonDBTM {
       // Do not know what it is ?
       $canedit = (haveRight($this->right, "w") && !$display_entities);
 
-      $nb = $this->getCollectionSize($p['inherited']);
+      $nb         = $this->getCollectionSize($p['inherited']);
       $p['start'] = (isset($_GET["start"]) ? $_GET["start"] : 0);
+
       if ($p['start'] >= $nb) {
          $p['start'] = 0;
       }
+
       $p['limit'] = $_SESSION['glpilist_limit'];
       $this->getCollectionPart($p);
 
-      printPager($p['start'],$nb,$target,"");
+      printPager($p['start'], $nb, $target,"");
 
-      echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post'
-             action=\"".$target."\">";
-      echo "\n<div class='center'>";
+      echo "<form name='ruleactions_form' id='ruleactions_form' method='post'action='".$target."'>";
+      echo "\n<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan=4;
+      $colspan = 4;
+
       if ($display_entities) {
          $colspan++;
       }
+
       if ($canedit) {
          $colspan+=2;
       }
+
       echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
       echo "<tr><th colspan='2'>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['joblist'][6]."</th>";
       echo "<th>".$LANG['common'][60]."</th>";
+
       if ($display_entities) {
          echo "<th>".$LANG['entity'][0]."</th>\n";
       }
+
       if ($canedit) {
          echo "<th colspan='2'>&nbsp;</th>";
       }
       echo "</tr>\n";
+
       if (count($this->RuleList->list)) {
-         $ruletype=$this->RuleList->list[0]->getType();
+         $ruletype = $this->RuleList->list[0]->getType();
          initNavigateListItems($ruletype);
       }
+
       for ($i=$p['start'],$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
-         $this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1,$display_entities);
-         addToNavigateListItems($ruletype,$this->RuleList->list[$j]->fields['id']);
+         $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities);
+         addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
       echo "</table>\n";
+
       if ($canedit && $nb>0) {
          openArrowMassive("ruleactions_form", true);
 
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
+
          if ($this->orderby=="ranking") {
             echo "<option value='move_rule'>".$LANG['buttons'][20]."</option>";
          }
          echo "<option value='activate_rule'>".$LANG['buttons'][41]."</option>";
          echo "</select>\n";
 
-         $params = array('action'   => '__VALUE__',
-                         'itemtype' => 'Rule',
-                         'sub_type' => $this->getRuleClassName(),
-                         'entity_restrict'=>$this->entity);
+         $params = array('action'          => '__VALUE__',
+                         'itemtype'        => 'Rule',
+                         'sub_type'        => $this->getRuleClassName(),
+                         'entity_restrict' => $this->entity);
 
-         ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",
-                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",$params);
+         ajaxUpdateItemOnSelectEvent("massiveaction", "show_massiveaction",
+                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
+                                     $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
          echo "</td>";
+
          if ($this->can_replay_rules) {
-            echo "<td><input type='submit' name='replay_rule' value=\"" . $LANG['rulesengine'][76] .
-                       "\" class='submit'></td>";
+            echo "<td><input type='submit' name='replay_rule' value='" . $LANG['rulesengine'][76] .
+                       "' class='submit'></td>";
          }
 
          closeArrowMassive();
       }
-      echo "</form>";
-      echo "<br><span class='icon_consol'>";
+
+      echo "</div></form>";
+      echo "<div class='spaced'><span class='icon_consol'>";
       echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->getRuleClassName().
              "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
-             "w.focus();\">".$LANG['rulesengine'][84]."</a></span>";
+             "w.focus();\">".$LANG['rulesengine'][84]."</a></span></div>";
 
       $this->showAdditionalInformationsInForm($target);
    }
