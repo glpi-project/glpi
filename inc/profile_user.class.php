@@ -531,9 +531,9 @@ class Profile_User extends CommonDBTM {
    }
 
    static function deleteRights($user_ID,$only_dynamic = false) {
-      $crit = "`users_id` = '$user_ID'";
+      $crit['users_id'] = $user_ID;
       if ($only_dynamic) {
-         $crit .= " AND `is_dynamic` = '1'";
+         $crit['is_dynamic'] = '1';
       }
       $obj = new Profile_User();
       $obj->deleteByCriterias($crit);
