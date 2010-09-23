@@ -396,7 +396,7 @@ class Rule extends CommonDBTM {
          echo "<form name='actionsform' id='actionsform' method='post' action='".
                 getItemTypeFormURL(get_class($this))."'>\n";
       }
-      echo "<div class='center'>";
+      echo "<div class='spaced'>";
       echo "<table $style>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][7] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
@@ -415,7 +415,7 @@ class Rule extends CommonDBTM {
       foreach ($this->actions as $action){
          $this->showMinimalActionForm($action->fields, $canedit);
       }
-      echo "</table></div>\n";
+      echo "</table>\n";
 
       if ($canedit && $nb>0) {
          openArrowMassive("actionsform", true);
@@ -425,6 +425,7 @@ class Rule extends CommonDBTM {
       if ($canedit) {
          echo "</form>";
       }
+      echo "</div>";
    }
 
 
@@ -434,13 +435,13 @@ class Rule extends CommonDBTM {
     * @param $rules_id rule ID
    **/
    function addActionForm($rules_id) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       $ra = new $this->ruleactionclass();
 
-      echo "<div class='spaced'>";
+      echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $LANG['rulesengine'][7] . "</tr>";
+      echo "<tr><th colspan='4'>" . $LANG['rulesengine'][30] . "</tr>";
 
       echo "<tr class='tab_bg_1 center'>";
       echo "<td>".$LANG['rulesengine'][30] . "&nbsp;:&nbsp;</td><td>";
@@ -464,9 +465,9 @@ class Rule extends CommonDBTM {
     * @param $rules_id rule ID
    **/
    function addCriteriaForm($rules_id) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
-      echo "<div class='spaced'>";
+      echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $LANG['rulesengine'][16] . "</tr>";
 
@@ -521,9 +522,11 @@ class Rule extends CommonDBTM {
          $this->addCriteriaForm($rules_id);
          echo "</form>";
       }
+
+      echo "<div class='spaced'>";
+
       echo "<form name='criteriasform' id='criteriasform' method='post' action='".
              getItemTypeFormURL(get_class($this))."'>\n";
-      echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][6] . "</th></tr>\n";
 
@@ -541,14 +544,14 @@ class Rule extends CommonDBTM {
       foreach ($this->criterias as $criteria) {
          $this->showMinimalCriteriaForm($criteria->fields, $canedit);
       }
-      echo "</table></div>\n";
+      echo "</table>\n";
 
       if ($canedit && $maxsize>0) {
          openArrowMassive("criteriasform", true);
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          closeArrowMassive('delete_criteria', $LANG['buttons'][6]);
       }
-      echo "</form>\n";
+      echo "</form></div>\n";
    }
 
 
