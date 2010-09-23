@@ -2865,8 +2865,11 @@ class Search {
             if (!empty($linkfield)) {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
             }
+           return " LEFT JOIN `$new_table` $AS
+                        ON (`$rt`.`id` = `$nt`.`items_id`
+                            AND `$nt`.`itemtype` = '$itemtype' ".
+                            getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
 
-            // nobreak;
          case "glpi_contracts_items" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                     AND `$nt`.`itemtype` = '$itemtype') ";
