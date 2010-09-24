@@ -573,6 +573,10 @@ $LANG['entity'][15] = "Annuaire associé à l'entité";
 $LANG['entity'][16] = "Filtre de recherche (si nécessaire)";
 $LANG['entity'][17] = "Configuration de la clôture automatique";
 $LANG['entity'][18] = "Clôture automatique des tickets résolus après";
+$LANG['entity'][19] = "Configuration de l'enquête de satisfaction";
+$LANG['entity'][20] = "Création de l'enquête après";
+$LANG['entity'][21] = "Taux d'enquêtes à déclencher";
+$LANG['entity'][22] = "Pour les ticket fermés après le";
 
 
 $LANG['event'][0]  = "Source";
@@ -1714,6 +1718,9 @@ $LANG['rulesengine'][147]="Utilisateur possèdant une seule fois le profil";
 $LANG['rulesengine'][148]="Domaine de messagerie connu";
 
 $LANG['rulesengine'][150]="Les règles affectées à l'entité ont été désactivées.";
+
+$LANG['satisfaction'][0]="Satisfaction";
+$LANG['satisfaction'][1]="Satisfaction sur la résolution du ticket";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";

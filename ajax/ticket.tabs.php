@@ -105,6 +105,13 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $ticket->showDebug();
          break;
 
+      case 10:
+         if ($ticket->fields['status'] == 'closed') {
+            $satisfaction = new TicketSatisfaction();
+            $satisfaction->showSatisfactionForm($ticket);
+         }
+         break;
+
       default :
          if (!Plugin::displayAction($ticket, $_REQUEST['glpi_tab'])) {
             $fup = new TicketFollowup();

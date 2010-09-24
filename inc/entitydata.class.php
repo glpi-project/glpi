@@ -85,6 +85,8 @@ class EntityData extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
+      $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+
       foreach (self::$field_right as $right => $fields) {
          if (!haveRight($right, 'w')) {
 
@@ -100,6 +102,16 @@ class EntityData extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
+
+      // Si on change le taux de déclanchement de l'enquête (enquête activée),
+      // cela s'applique aux prochains tickets - Pas à l'historique
+
+      if (isset($input['inquest_rate'])
+          && $input['inquest_rate']!=$this->fields['inquest_rate']) {
+
+         $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+      }
+
       return $this->prepareInputForAdd($input);
    }
 
@@ -526,6 +538,24 @@ class EntityData extends CommonDBTM {
                                         'inherit_global' => 1,
                                         'never_value'    => -10));
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+
+      echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
+      Alert::dropdownIntegerNever('inquest_delay', $entdata->fields['inquest_delay'],
+                                  array('max'            => 99,
+                                        'inherit_global' => 1));
+      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
+      Dropdown::showInteger('inquest_rate', $entdata->fields['inquest_rate'],
+                            10, 100, 10, array(0 => $LANG['crontask'][31]));
+      echo "&nbsp;%</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>" . convDateTime($entdata->fields['max_closedate'])."</td></tr>";
 
       if ($canedit) {
          echo "<tr>";

@@ -183,8 +183,12 @@ class Ticket extends CommonDBTM {
          if (haveRight('observe_ticket','1')) {
             $ong[2] = $LANG['mailing'][142];
          }
-         $ong[4] = $LANG['jobresolution'][2];
          $ong[3] = $LANG['job'][47];
+         $ong[4] = $LANG['jobresolution'][2];
+         // enquete déclenchable manuellement et statut clos
+         if ($this->fields['status'] == 'closed') {
+            $ong[10] = $LANG['satisfaction'][0];
+         }
          $ong[5] = $LANG['Menu'][27];
          $ong[6] = $LANG['title'][38];
          if (haveRight('observe_ticket','1')) {
