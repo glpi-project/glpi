@@ -105,7 +105,7 @@ class Auth {
       if ($DB->numrows($result) == 0) {
          $this->addToError($LANG['login'][14]);
          return 0;
- 
+
       } else {
          $pwd = $DB->result($result, 0, "password");
          if (empty ($pwd)) {
@@ -590,7 +590,7 @@ class Auth {
                      $this->user->fields["password"] = $login_password;
                   }
                }
- 
+
             } else if ($exists == 2) {
                //The user is not authenticated on the GLPI DB, but we need to get informations about him
                //to find out his authentication method
@@ -627,13 +627,13 @@ class Auth {
                //test all ldap servers only is user is not present in glpi's DB
                if (!$this->auth_succeded && canUseLdap()) {
                   $oldlevel = error_reporting(0);
-                  AuthLdap::tryLdapAuth($this, $login_name, $login_password);
+                  AuthLdap::tryLdapAuth($this, $login_name, $login_password,0,false,false);
                   error_reporting($oldlevel);
                }
 
                //test all imap/pop servers
                if (!$this->auth_succeded && canUseImapPop()) {
-                  AuthMail::tryMailAuth($this, $login_name, $login_password);
+                  AuthMail::tryMailAuth($this, $login_name, $login_password,0,false);
                }
             }
             // Fin des tests de connexion
@@ -754,7 +754,7 @@ class Auth {
     *
     * @return string
     */
-   static function getMethodName($authtype, $auths_id, $link=0, $name='') {
+   static function getMethodName($authtype, $auths_id,$link=0,$name='') {
       global $LANG;
 
       switch ($authtype) {
@@ -934,7 +934,7 @@ class Auth {
             return Auth::EXTERNAL;
          }
       }
- 
+
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
          if ($redirect) {
@@ -967,7 +967,7 @@ class Auth {
             $data = $DB->fetch_array($result);
             echo "<div class='center'>";
             echo "<form method='post' action='".getItemTypeFormURL('User')."'>";
- 
+
             switch($data["authtype"]) {
                case Auth::LDAP :
                   //Look it the auth server still exists !
@@ -999,6 +999,7 @@ class Auth {
 
                      if ($DB->numrows($result) > 0) {
                         echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+                        echo "<input type='hidden' name='id' value='$ID'>";
                         echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
                                $LANG['ocsng'][24] . "'>";
                         echo "</td></tr></table><br>";

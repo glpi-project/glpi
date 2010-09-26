@@ -44,7 +44,7 @@ class User extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   public $history_blacklist = array('last_login');
+   public $history_blacklist = array('last_login','date_mod');
 
    static function getTypeName() {
       global $LANG;

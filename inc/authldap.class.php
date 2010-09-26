@@ -1792,18 +1792,22 @@ class AuthLDAP extends CommonDBTM {
     * @param $login : user login
     * @param $password : user password
     * @param $auths_id : auths_id already used for the user
+    * @param $user_dn : user LDAP DN if present
+    * @param $break : if user is not found in the first directory, stop searching or try the following ones
     *
     * @return identification object
    **/
-   static function tryLdapAuth($auth, $login, $password, $auths_id = 0) {
+   static function tryLdapAuth($auth, $login, $password, $auths_id = 0,$user_dn=false,$break=true) {
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
          foreach  ($auth->authtypes["ldap"] as $ldap_method) {
-            if (!$auth->auth_succeded) {
-               $auth = AuthLdap::ldapAuth($auth, $login, $password, $ldap_method);
+            if (!$auth->auth_succeded && $ldap_method['is_active']) {
+               $auth = AuthLdap::ldapAuth($auth, $login, $password, $ldap_method,$user_dn);
             } else {
-               break;
+               if ($break) {
+                  break;
+               }
             }
          }
       //Check if the ldap server indicated as the last good one still exists !

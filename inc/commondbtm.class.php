@@ -2018,6 +2018,23 @@ class CommonDBTM extends CommonGLPI {
     */
    function checkValues() {
    }
+
+   /**
+    * Clean all infos which match some criteria
+    *
+    * $crit array of criteria (ex array('is_active'=>'1'))
+    *
+    **/
+   function deleteByCriteria($crit=array()) {
+      global $DB;
+
+      if (is_array($crit) && count($crit)>0) {
+         $crit['FIELDS'] = 'id';
+         foreach ($DB->request($this->getTable(), $crit) as $row) {
+            $this->delete($row);
+         }
+      }
+   }
 }
 
 ?>

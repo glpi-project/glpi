@@ -339,15 +339,16 @@ class Group_User extends CommonDBRelation{
       return $tab;
    }
 
-   static function deleteGroups($user_ID,$only_dynamic = false) {
+   static function deleteGroups($user_ID, $only_dynamic = false) {
       global $DB;
-      $query = "DELETE FROM `glpi_groups_users` WHERE `users_id`='$user_ID'";
-      if ($only_dynamic) {
-         $query.= " AND `is_dynamic`='1'";
-      }
-      $DB->query($query);
-   }
 
+      $crit['users_id'] = $user_ID;
+      if ($only_dynamic) {
+         $crit['is_dynamic'] = '1';
+      }
+      $obj = new Group_User();
+      $obj->deleteByCriteria($crit);
+   }
 }
 
 ?>
