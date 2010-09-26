@@ -148,7 +148,7 @@ function showOtherAuthList($target) {
    echo "</td></tr>\n";
 
    // Autres config
-   echo "<tr><th colspan='2'>" . $LANG['common'][67];
+   echo "<tr><th colspan='2'>" . $LANG['login'][19];
    if (!empty($CFG_GLPI["existing_auth_server_field"])) {
       echo " - ".$LANG['setup'][192];
    }

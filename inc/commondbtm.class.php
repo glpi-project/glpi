@@ -1952,7 +1952,6 @@ class CommonDBTM extends CommonGLPI {
     */
    function getNameID($with_comment=0) {
       global $CFG_GLPI;
-
       $toadd="";
       if ($with_comment) {
          $toadd="&nbsp;".$this->getComments();
@@ -2029,9 +2028,9 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Clean all model which match some criteria
+    * Clean all infos which match some criteria
     *
-    * $crit array of criteria (ex array('itemtype'=>'PluginAppliancesAppliance'))
+    * $crit array of criteria (ex array('is_active'=>'1'))
     *
     **/
    function deleteByCriteria($crit=array()) {

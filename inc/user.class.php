@@ -44,7 +44,7 @@ class User extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   public $history_blacklist = array('last_login');
+   public $history_blacklist = array('last_login','date_mod');
 
 
    static function getTypeName() {
@@ -867,7 +867,7 @@ class User extends CommonDBTM {
     *
     * @return String : basedn of the user / false if not founded
     */
-   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login) {
+   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login,$attrs = array()) {
       global $DB, $CFG_GLPI;
 
       // we prevent some delay...
@@ -890,6 +890,9 @@ class User extends CommonDBTM {
          if (!is_array($v) || count($v) == 0 || empty($v[0][$fields['name']][0])) {
             return false;
          }
+
+         //Store user's dn
+        $this->fields['user_dn'] = $userdn;
 
          foreach ($fields as $k => $e) {
             if (empty($v[0][$e][0])) {
@@ -1256,7 +1259,7 @@ class User extends CommonDBTM {
       if (!empty($ID)) {
          if (haveRight("user_authtype", "r")) {
             echo "<td>" . $LANG['login'][10] . "&nbsp;:</td><td>";
-            echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"], 1);
+            echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
@@ -1691,6 +1694,11 @@ class User extends CommonDBTM {
       $tab[20]['linkfield']    = '';
       $tab[20]['name']         = $LANG['Menu'][35]." (- ".$LANG['entity'][0].")";
       $tab[20]['forcegroupby'] = true;
+
+      $tab[21]['table']     = $this->getTable();
+      $tab[21]['field']     = 'user_dn';
+      $tab[21]['linkfield'] = '';
+      $tab[21]['name']      = $LANG['ldap'][26];
 
       $tab[80]['table']        = 'glpi_entities';
       $tab[80]['field']        = 'completename';
