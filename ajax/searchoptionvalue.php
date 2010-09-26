@@ -60,7 +60,7 @@ if (isset($_REQUEST['searchtype'])) {
    $display   = false;
 
 
-   // Fix table 
+   // Fix table
    if (isset($searchopt['table'])) {
       switch ($searchopt['table']) {
          case "glpi_followup_requesttypes" :
@@ -163,6 +163,7 @@ if (isset($_REQUEST['searchtype'])) {
                                                                      'all'   => 1));
                   $display = true;
                   break;
+
             }
 
             // Standard datatype usage

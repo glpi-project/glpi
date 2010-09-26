@@ -214,8 +214,8 @@ class Profile_User extends CommonDBTM {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr>";
-         echo "<tr><td class='tab_bg_2 center'>";
+         echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][605]."</tr>";
+         echo "<tr><td class='tab_bg_2 center'>".$LANG['common'][34]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          User::dropdown(array('right'  => 'all'));
          echo "</td><td class='tab_bg_2 center'>";
@@ -244,7 +244,7 @@ class Profile_User extends CommonDBTM {
       $result=$DB->query($query);
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
-            echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
+            echo "<tr><th colspan='$headerspan'>".$LANG['profiles'][22]." : ".$data["name"]."</th></tr>";
 
             $query="SELECT `glpi_users`.*, `glpi_profiles_users`.`id` AS linkID,
                            `glpi_profiles_users`.`is_recursive`, `glpi_profiles_users`.`is_dynamic`

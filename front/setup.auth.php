@@ -61,7 +61,7 @@ if (canUseImapPop()) {
    echo "<p class='red'>".$LANG['setup'][165] ."</p><p>".$LANG['setup'][166].'</p>';
 }
 echo "</td> </tr>";
-echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . $LANG['common'][67] .
+echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . $LANG['login'][17] .
       "</a></td></tr>";
 echo "</table>";
 

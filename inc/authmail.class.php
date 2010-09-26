@@ -305,14 +305,16 @@ class AuthMail extends CommonDBTM {
     *
     * @return identification object
    **/
-   static function tryMailAuth($auth, $login, $password, $auths_id = 0) {
+   static function tryMailAuth($auth, $login, $password, $auths_id = 0,$break=true) {
 
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {
             if (!$auth->auth_succeded && $mail_method['is_active']) {
                $auth = AuthMail::mailAuth($auth, $login, $password, $mail_method);
             } else {
-               break;
+               if ($break) {
+                  break;
+               }
             }
          }
 

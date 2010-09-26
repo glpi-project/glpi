@@ -699,6 +699,12 @@ function update078to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_users','user_dn')) {
+      $query = "ALTER TABLE  `glpi_users` ADD  `user_dn` TEXT DEFAULT NULL";
+      $DB->query($query) or die("0.80 add user_dn in glpi_users " .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
    // Link between tickets
    if (!TableExists('glpi_tickets_tickets')) {
       $query = "CREATE TABLE `glpi_tickets_tickets` (

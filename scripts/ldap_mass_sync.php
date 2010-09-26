@@ -96,7 +96,7 @@ if ($options['after-days']) {
    unset($options['after-days']);
 }
 
-if (!canUseLdap() || !countElementsInTable('glpi_authldaps')) {
+if (!canUseLdap() || !countElementsInTable('glpi_authldaps',"`is_active`='1'")) {
    echo "LDAP extension is not active or no LDAP directory defined";
 }
 

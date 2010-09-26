@@ -4181,6 +4181,7 @@ CREATE TABLE `glpi_users` (
   `default_requesttypes_id` int(11) DEFAULT NULL,
   `token` char(40) COLLATE utf8_unicode_ci DEFAULT '',
   `tokendate` datetime DEFAULT NULL,
+  `user_dn` TEXT DEFAULT NULL
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),

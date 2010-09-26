@@ -376,6 +376,8 @@ class Group_User extends CommonDBRelation{
       $obj = new Group_User();
       $obj->deleteByCriteria($crit);
    }
+
+
 }
 
 ?>
