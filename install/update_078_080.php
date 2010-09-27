@@ -739,6 +739,12 @@ function update078to080($output='HTML') {
       $query = "ALTER TABLE `glpi_entitydatas`
                      ADD `max_closedate` DATETIME NULL";
       $DB->query($query) or die("0.80 add max_closedate  in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
+
+      $query = "INSERT INTO `glpi_crontasks`
+                  (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES
+                 ('Ticket', 'createinquest', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL)";
+      $DB->query($query) or die("0.80 populate glpi_crontasks for ticketsatisfaction" . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_entitydatas","inquest_rate")) {
       $query = "ALTER TABLE `glpi_entitydatas`
@@ -752,12 +758,6 @@ function update078to080($output='HTML') {
    }
 
    // if no config inquest in the entity
-   if (!FieldExists("glpi_configs","max_closedate")) {
-      $query = "ALTER TABLE `glpi_configs`
-                     ADD `max_closedate` DATETIME NULL";
-      $DB->query($query) or die("0.80 add max_closedate  in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
-
    if (!FieldExists("glpi_configs","inquest_rate")) {
       $query = "ALTER TABLE `glpi_configs`
                      ADD `inquest_rate` INT(11) NULL";

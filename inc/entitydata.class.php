@@ -543,15 +543,15 @@ class EntityData extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      Alert::dropdownIntegerNever('inquest_delay', $entdata->fields['inquest_delay'],
-                                  array('max'            => 99,
-                                        'inherit_global' => 1));
+      Dropdown::showInteger('inquest_delay', $entdata->fields['inquest_delay'],
+                            0, 90, 1, array(-1 => $LANG['setup'][731]));
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       Dropdown::showInteger('inquest_rate', $entdata->fields['inquest_rate'],
-                            10, 100, 10, array(0 => $LANG['crontask'][31]));
+                            10, 100, 10, array(-1 => $LANG['setup'][731],
+                                                0 => $LANG['crontask'][31]));
       echo "&nbsp;%</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
