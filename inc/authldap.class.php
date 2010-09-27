@@ -1826,7 +1826,9 @@ class AuthLDAP extends CommonDBTM {
       //Check if the ldap server indicated as the last good one still exists !
       } else if(array_key_exists($auths_id, $auth->authtypes["ldap"])) {
          //A specific ldap directory is given, test it and only this one !
-         $auth = AuthLdap::ldapAuth($auth, $login, $password, $auth->authtypes["ldap"][$auths_id]);
+         $auth = AuthLdap::ldapAuth($auth, $login, $password,
+                                    $auth->authtypes["ldap"][$auths_id],
+                                    $user_dn);
       }
       return $auth;
    }
@@ -1882,25 +1884,24 @@ class AuthLDAP extends CommonDBTM {
                          $login_attr => $info[$login_attr][0]);
          }
       }
-      else {
 
-         //$authentification_value = $values['user_params']['value'];
-         // Tenter une recherche pour essayer de retrouver le DN
-         $filter = "(".$values['login_field']."=".$values['user_params']['value'].")";
+      //$authentification_value = $values['user_params']['value'];
+      // Tenter une recherche pour essayer de retrouver le DN
+      $filter = "(".$values['login_field']."=".$values['user_params']['value'].")";
 
-         if (!empty ($values['condition'])) {
-            $filter = "(& $filter ".$values['condition'].")";
-         }
-
-         if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)){
-            $info = ldap_get_entries_clean($ds, $result);
-            if (is_array($info) && $info['count'] == 1) {
-               return array('dn'        => $info[0]['dn'],
-                            $login_attr => $info[0][$login_attr][0]);
-            }
-         }
-         return false;
+      if (!empty ($values['condition'])) {
+         $filter = "(& $filter ".$values['condition'].")";
       }
+
+      if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)){
+         $info = ldap_get_entries_clean($ds, $result);
+         if (is_array($info) && $info['count'] == 1) {
+            return array('dn'        => $info[0]['dn'],
+                         $login_attr => $info[0][$login_attr][0]);
+         }
+      }
+      return false;
+
    }
 
 
