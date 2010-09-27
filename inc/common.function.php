@@ -220,6 +220,8 @@ function logInFile($name,$text,$force=false) {
  * Log in 'php-errors' all args
  */
 function logDebug() {
+   static $tps = 0;
+
    $msg = "";
    foreach (func_get_args() as $arg) {
       if (is_array($arg) || is_object($arg)) {
@@ -228,6 +230,11 @@ function logDebug() {
          $msg .= ' ' . $arg;
       }
    }
+   if ($tps) {
+      $msg .= ' ('.number_format(microtime(true)-$tps,3).'", '.
+         number_format(memory_get_usage()/1024/1024,2).'Mio)';
+   }
+   $tps = microtime(true);
    logInFile('php-errors', $msg."\n",true);
 }
 
