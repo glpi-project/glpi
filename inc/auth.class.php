@@ -110,6 +110,7 @@ class Auth {
 
       } else {
          $pwd = $DB->result($result, 0, "password");
+
          if (empty ($pwd)) {
             //If the user has an LDAP DN, then store it in the Auth object
             $user_dn = $DB->result($result, 0, "user_dn");
@@ -117,10 +118,9 @@ class Auth {
                $this->user_dn = $user_dn;
             }
             return 2;
-         } else {
-            return 1;
-         }
 
+         }
+         return 1;
       }
    }
 
@@ -185,8 +185,8 @@ class Auth {
                                                'search_parameters' => $params,
                                                'user_params' => array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
                                                                       'value'=>$login),
-                                               'condition'        => $ldap_method['condition'],
-                                               'user_dn'          => $this->user_dn));
+                                               'condition'         => $ldap_method['condition'],
+                                               'user_dn'           => $this->user_dn));
          $dn = $infos['dn'];
          if (@ldap_bind($this->ldap_connection, $dn, $password)) {
 
@@ -637,13 +637,13 @@ class Auth {
                //test all ldap servers only is user is not present in glpi's DB
                if (!$this->auth_succeded && canUseLdap()) {
                   $oldlevel = error_reporting(0);
-                  AuthLdap::tryLdapAuth($this, $login_name, $login_password,0,false,false);
+                  AuthLdap::tryLdapAuth($this, $login_name, $login_password, 0, false, false);
                   error_reporting($oldlevel);
                }
 
                //test all imap/pop servers
                if (!$this->auth_succeded && canUseImapPop()) {
-                  AuthMail::tryMailAuth($this, $login_name, $login_password,0,false);
+                  AuthMail::tryMailAuth($this, $login_name, $login_password, 0, false);
                }
             }
             // Fin des tests de connexion
@@ -722,7 +722,7 @@ class Auth {
    static function dropdown($options=array()) {
       global $LANG, $DB;
 
-      $p['name'] = 'auths_id';
+      $p['name']  = 'auths_id';
       $p['value'] = Auth::DB_GLPI;
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -750,7 +750,7 @@ class Auth {
          $methods[Auth::MAIL] = $LANG['login'][33];
       }
 
-      return Dropdown::showFromArray($p['name'], $methods,$p);
+      return Dropdown::showFromArray($p['name'], $methods, $p);
    }
 
 
@@ -761,11 +761,10 @@ class Auth {
     * @param $auths_id Authentication method ID
     * @param $link show links to config page ?
     * @param $name override the name if not empty
-    * @param $comments display comments
     *
     * @return string
     */
-   static function getMethodName($authtype, $auths_id,$link=0,$name='') {
+   static function getMethodName($authtype, $auths_id, $link=0, $name='') {
       global $LANG;
 
       switch ($authtype) {

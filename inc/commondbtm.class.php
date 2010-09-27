@@ -1952,13 +1952,16 @@ class CommonDBTM extends CommonGLPI {
     */
    function getNameID($with_comment=0) {
       global $CFG_GLPI;
-      $toadd="";
+
+      $toadd = "";
       if ($with_comment) {
-         $toadd="&nbsp;".$this->getComments();
+         $toadd = "&nbsp;".$this->getComments();
       }
+
       if ($_SESSION['glpiis_ids_visible']) {
          return $this->getName()." (".$this->getField('id').")".$toadd;
       }
+
       return $this->getName().$toadd;
    }
 

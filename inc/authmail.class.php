@@ -302,10 +302,11 @@ class AuthMail extends CommonDBTM {
     * @param $login : user login
     * @param $password : user password
     * @param $auths_id : auths_id already used for the user
+    * @param $break : if user is not found in the first directory, stop searching or try the following ones
     *
     * @return identification object
    **/
-   static function tryMailAuth($auth, $login, $password, $auths_id = 0,$break=true) {
+   static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break=true) {
 
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {
