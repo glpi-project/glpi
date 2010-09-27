@@ -1603,9 +1603,8 @@ class AuthLDAP extends CommonDBTM {
                                       $config_ldap->fields['use_tls'],
                                       $config_ldap->fields['deref_option']);
       if ($ds) {
-         $group_infos = AuthLdap::getGroupByDn($ds, $config_ldap->fields['basedn'],
-                                               stripslashes($group_dn),
-                                               $config_ldap->fields["group_condition"]);
+         $group_infos = AuthLdap::getGroupByDn($ds,
+                                               stripslashes($group_dn));
          $group = new Group();
          if ($options['type'] == "groups") {
             $group->add(array("name"          => addslashes($group_infos["cn"][0]),
@@ -1779,6 +1778,7 @@ class AuthLDAP extends CommonDBTM {
     * @param $login : user login
     * @param $password : user password
     * @param $ldap_method : ldap_method array to use
+    * @param $user_dn : user LDAP DN if present
     *
     * @return identification object
    **/
@@ -1789,9 +1789,8 @@ class AuthLDAP extends CommonDBTM {
          $auth->auth_succeded = true;
          $auth->extauth       = 1;
          $auth->user_present  = $auth->user->getFromDBbyName(addslashes($login));
-         $auth->user->getFromLDAP($auth->ldap_connection,
-                                  $ldap_method, $user_dn, $login,
-                                  array('user_dn'=>$user_dn));
+         $auth->user->getFromLDAP($auth->ldap_connection, $ldap_method, $user_dn, $login,
+                                  array('user_dn' => $user_dn));
          $auth->user->fields["authtype"] = Auth::LDAP;
          $auth->user->fields["auths_id"] = $ldap_method["id"];
       }
@@ -1810,13 +1809,14 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return identification object
    **/
-   static function tryLdapAuth($auth, $login, $password, $auths_id = 0,$user_dn=false,$break=true) {
+   static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn=false,
+                               $break=true) {
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
          foreach  ($auth->authtypes["ldap"] as $ldap_method) {
             if (!$auth->auth_succeded && $ldap_method['is_active']) {
-               $auth = AuthLdap::ldapAuth($auth, $login, $password, $ldap_method,$user_dn);
+               $auth = AuthLdap::ldapAuth($auth, $login, $password, $ldap_method, $user_dn);
             } else {
                if ($break) {
                   break;
@@ -1826,8 +1826,7 @@ class AuthLDAP extends CommonDBTM {
       //Check if the ldap server indicated as the last good one still exists !
       } else if(array_key_exists($auths_id, $auth->authtypes["ldap"])) {
          //A specific ldap directory is given, test it and only this one !
-         $auth = AuthLdap::ldapAuth($auth, $login, $password,
-                                    $auth->authtypes["ldap"][$auths_id],
+         $auth = AuthLdap::ldapAuth($auth, $login, $password, $auth->authtypes["ldap"][$auths_id],
                                     $user_dn);
       }
       return $auth;
@@ -1876,7 +1875,6 @@ class AuthLDAP extends CommonDBTM {
       //Before trying to find the user using his login_field
       if ($values['user_dn']) {
          $info = self::getUserByDn($ds,
-                                   $values['basedn'],
                                    $values['user_dn'],
                                    $ldap_parameters);
          if ($info) {
@@ -1893,29 +1891,31 @@ class AuthLDAP extends CommonDBTM {
          $filter = "(& $filter ".$values['condition'].")";
       }
 
-      if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)){
+      if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
          $info = ldap_get_entries_clean($ds, $result);
+
          if (is_array($info) && $info['count'] == 1) {
             return array('dn'        => $info[0]['dn'],
                          $login_attr => $info[0][$login_attr][0]);
          }
       }
       return false;
-
    }
 
 
    /**
     * Get an object from LDAP by giving his DN
+    *
     * @param ds the active connection to the directory
-    * @param basedn the basedn to use for the search
     * @param condition the LDAP filter to use for the search
+    * @param $dn string DN of the object
     * @param attrs the attributes to retreive
     */
-   static function getObjectByDn($ds, $basedn, $condition,$dn,$attrs = array()) {
+   static function getObjectByDn($ds, $condition, $dn, $attrs = array()) {
 
-      if($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
+      if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
          $info = ldap_get_entries_clean($ds, $result);
+
          if (is_array($info) && $info['count'] == 1) {
             return $info[0];
          }
@@ -1923,22 +1923,21 @@ class AuthLDAP extends CommonDBTM {
       return false;
    }
 
-   static function getUserByDn($ds, $basedn, $user_dn,$attrs) {
-      return self::getObjectByDn($ds,$basedn,"objectClass=*",$user_dn,$attrs);
+
+   static function getUserByDn($ds, $user_dn, $attrs) {
+      return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs);
    }
 
    /**
     * Get infos for groups
     *
     * @param $ds : LDAP link
-    * @param $basedn : base dn used to search
     * @param $group_dn : dn of the group
-    * @param $condition : ldap condition used
     *
     * @return group infos if found, else false
    **/
-   static function getGroupByDn($ds, $basedn, $group_dn, $condition) {
-      return self::getObjectByDn($ds,$basedn,$group_dn,$condition,array("cn"));
+   static function getGroupByDn($ds, $group_dn) {
+      return self::getObjectByDn($ds, "objectClass=*", $group_dn, array("cn"));
    }
 
 
@@ -2219,7 +2218,7 @@ class AuthLDAP extends CommonDBTM {
 
       $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_authldaps`
-                WHERE `is_active`='1'";
+                WHERE `is_active` = '1'";
       $result = $DB->query($query);
 
       return $DB->result($result,0,'cpt');
@@ -2231,7 +2230,7 @@ class AuthLDAP extends CommonDBTM {
 
       $query = "SELECT `id`
                 FROM `glpi_authldaps`
-                WHERE `is_active`='1'";
+                WHERE `is_active` = '1'";
       $result = $DB->query($query);
 
       return $DB->result($result,0,'id');

@@ -44,7 +44,7 @@ class User extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   public $history_blacklist = array('last_login','date_mod');
+   public $history_blacklist = array('last_login', 'date_mod');
 
 
    static function getTypeName() {
@@ -867,7 +867,7 @@ class User extends CommonDBTM {
     *
     * @return String : basedn of the user / false if not founded
     */
-   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login,$attrs = array()) {
+   function getFromLDAP($ldap_connection, $ldap_method, $userdn, $login) {
       global $DB, $CFG_GLPI;
 
       // we prevent some delay...

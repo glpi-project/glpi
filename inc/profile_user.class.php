@@ -244,7 +244,8 @@ class Profile_User extends CommonDBTM {
       $result=$DB->query($query);
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
-            echo "<tr><th colspan='$headerspan'>".$LANG['profiles'][22]." : ".$data["name"]."</th></tr>";
+            echo "<tr><th colspan='$headerspan'>".$LANG['profiles'][22]."&nbsp;: ".$data["name"];
+            echo "</th></tr>";
 
             $query="SELECT `glpi_users`.*, `glpi_profiles_users`.`id` AS linkID,
                            `glpi_profiles_users`.`is_recursive`, `glpi_profiles_users`.`is_dynamic`
