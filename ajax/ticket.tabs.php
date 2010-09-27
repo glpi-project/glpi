@@ -101,12 +101,18 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $ticket->showStats();
          break;
 
-      case 9:
+      case 9 :
          $ticket->showDebug();
          break;
 
-      case 10:
-         if ($ticket->fields['status'] == 'closed') {
+      case 10 :
+      // affichage uniquement  si enquete déclenchée et status clos
+         $query = "SELECT *
+                   FROM `glpi_ticketsatisfactions`
+                   WHERE `tickets_id` = '".$_POST["id"]."'";
+         $result = $DB->query($query);
+
+         if ($DB->numrows($result) && $ticket->fields['status'] == 'closed') {
             $satisfaction = new TicketSatisfaction();
             $satisfaction->showSatisfactionForm($ticket);
          }

@@ -4944,6 +4944,78 @@ class Ticket extends CommonDBTM {
       return ($tot > 0);
    }
 
+
+   /**
+    * Cron for ticketsatisfaction's automatic generated
+    * @param $task : crontask object
+    *
+    * @return integer (0 : nothing done - 1 : done)
+    *
+    */
+   static function cronCreateInquests($task) {
+      global $DB, $CFG_GLPI;
+
+      $ticket = new self();
+      $conf   = new Entitydata();
+      $tot = 0;
+
+      foreach (Entity::getEntitiesToNotify('inquest_rate') as $entity => $rate) {
+
+         if ($rate>0 && $conf->getFromDB($entity)) {
+
+            $delay = ($conf->fields['inquest_delay']<0
+                      ? $CFG_GLPI['inquest_delay']
+                      : $conf->fields['inquest_delay']);
+
+            $max_closedate = $conf->fields['max_closedate'];
+
+            $query = "SELECT `glpi_tickets`.`id`,
+                             `glpi_tickets`.`closedate`,
+                             `glpi_tickets`.`entities_id`
+                      FROM `glpi_tickets`
+                      LEFT JOIN `glpi_ticketsatisfactions`
+                          ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
+                      WHERE `glpi_tickets`.`entities_id` = '$entity'
+                            AND `glpi_tickets`.`status` = 'closed'
+                            AND `glpi_tickets`.`closedate` > '$max_closedate'
+                            AND ADDDATE(`glpi_tickets`.`closedate`,
+                                        INTERVAL $delay DAY)<CURDATE()
+                            AND `glpi_ticketsatisfactions`.`id` IS NULL
+                      ORDER BY `closedate` ASC";
+
+            $nb = 0;
+            $max_closedate = '';
+
+            foreach ($DB->request($query) as $tick) {
+               $max_closedate = $tick['closedate'];
+               if (mt_rand(1, 100)<=$delay) {
+                  $inquest = new TicketSatisfaction();
+                  if ($inquest->add(array('tickets_id'  => $tick['id'],
+                                          'date_begin'  => $_SESSION["glpi_currenttime"],
+                                          'entities_id' => $tick['entities_id']))) {
+                     $nb++;
+                  }
+               }
+            }
+
+            if ($max_closedate) {
+               // Sauvegarde du max_closedate pour ne pas tester les même tickets 2 fois
+               $conf->update(array('id'            => $entity['id'],
+                                   'entities_id'   => $entity['entities_id'],
+                                   'max_closedate' => $max_closedate));
+            }
+
+            if ($nb) {
+               $tot += $nb;
+               $task->addVolume($nb);
+               $task->log(Dropdown::getDropdownName('glpi_entities', $entity)." : $nb");
+            }
+         }
+      }
+      return ($tot > 0);
+   }
+
+
    function showStats() {
       global $LANG;
       if (!haveRight('observe_ticket',1) || !isset($this->fields['id'])) {

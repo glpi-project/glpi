@@ -513,6 +513,19 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_anonymous_helpdesk", $CFG_GLPI["use_anonymous_helpdesk"]);
       echo "</td></tr>";
 
+      echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
+
+      echo "<tr class='tab_bg_2'><td>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      Dropdown::showInteger('inquest_delay', $CFG_GLPI['inquest_delay'], 0, 90, 1);
+      echo "&nbsp;".$LANG['stats'][31]."</td>";
+
+      echo "<td>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      Dropdown::showInteger('inquest_rate', $CFG_GLPI['inquest_rate'],
+                            10, 100, 10, array(0 => $LANG['crontask'][31]));
+      echo "&nbsp;%</td></tr>";
+
       echo "</table><br>";
 
       echo "<table class='tab_cadre_fixe'>";
