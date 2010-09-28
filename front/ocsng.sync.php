@@ -42,14 +42,16 @@ commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
 
 if (isset($_SESSION["ocs_update"])) {
    if ($count = count($_SESSION["ocs_update"])) {
-      $percent = min(100,round(100*($_SESSION["ocs_update_count"]-$count)
-                               /$_SESSION["ocs_update_count"],0));
+      $percent = min(100,
+                     round(100*($_SESSION["ocs_update_count"]-$count)/$_SESSION["ocs_update_count"],
+                           0));
 
-      displayProgressBar(400,$percent);
+      displayProgressBar(400, $percent);
 
       $key = array_pop($_SESSION["ocs_update"]);
-      OcsServer::updateComputer($key,$_SESSION["ocsservers_id"],2);
+      OcsServer::updateComputer($key, $_SESSION["ocsservers_id"], 2);
       glpi_header($_SERVER['PHP_SELF']);
+
    } else {
       unset($_SESSION["ocs_update"]);
       displayProgressBar(400,100);
@@ -67,11 +69,12 @@ if (!isset($_POST["update_ok"])) {
       $_GET['start'] = 0;
    }
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
-   OcsServer::showComputersToUpdate($_SESSION["ocsservers_id"],$_GET['check'],$_GET['start']);
+   OcsServer::showComputersToUpdate($_SESSION["ocsservers_id"], $_GET['check'], $_GET['start']);
 
 } else {
    if (count($_POST['toupdate']) >0) {
       $_SESSION["ocs_update_count"] = 0;
+
       foreach ($_POST['toupdate'] as $key => $val) {
          if ($val == "on") {
             $_SESSION["ocs_update"][] = $key;

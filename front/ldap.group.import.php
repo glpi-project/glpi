@@ -41,7 +41,7 @@ $group = new Group();
 $group->checkGlobal('w');
 checkRight('user_authtype','w');
 
-commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
+commonHeader($LANG['setup'][3], $_SERVER['PHP_SELF'], "admin", "group", "ldap");
 
 if (isset($_GET['next'])) {
    AuthLdap::ldapChooseDirectory($_SERVER['PHP_SELF']);
@@ -49,10 +49,10 @@ if (isset($_GET['next'])) {
 } else {
    if (isset($_SESSION["ldap_import"])) {
       if ($count = count($_SESSION["ldap_import"])) {
-         $percent = min(100,round(100*($_SESSION["ldap_import_count"]-$count)/
-                                  $_SESSION["ldap_import_count"],0));
+         $percent = min(100, round(100*($_SESSION["ldap_import_count"]-$count)
+                                   /$_SESSION["ldap_import_count"], 0));
 
-         displayProgressBar(400,$percent);
+         displayProgressBar(400, $percent);
          $key = array_pop($_SESSION["ldap_import"]);
 
          if (isset($_SESSION["ldap_import_entities"][$key])) {
@@ -62,10 +62,10 @@ if (isset($_GET['next'])) {
          }
 
          AuthLdap::ldapImportGroup($key,
-                                   array("ldapservers_id"=>$_SESSION["ldap_server"],
-                                         "entities_id"=>$entity,
-                                         "is_recursive"=>$_SESSION["ldap_import_recursive"][$key],
-                                         "type"=>$_SESSION["ldap_import_type"][$key]));
+                                   array("ldapservers_id" => $_SESSION["ldap_server"],
+                                         "entities_id"    => $entity,
+                                         "is_recursive"   => $_SESSION["ldap_import_recursive"][$key],
+                                         "type"           => $_SESSION["ldap_import_type"][$key]));
          glpi_header($_SERVER['PHP_SELF']);
 
       } else {
@@ -96,6 +96,7 @@ if (isset($_GET['next'])) {
       if (isset($_SESSION["ldap_import"])) {
          unset($_SESSION["ldap_import"]);
       }
+
       if (!isset($_SESSION["ldap_server"])) {
          if (isset($_POST["ldap_server"])) {
             $_SESSION["ldap_server"] = $_POST["ldap_server"];
@@ -108,6 +109,7 @@ if (isset($_GET['next'])) {
          unset($_SESSION["ldap_server"]);
          echo "<div class='center b'>".$LANG['ldap'][6]."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".$LANG['buttons'][13]."</a></div>";
+
       } else {
          if (!isset($_SESSION["ldap_group_filter"])) {
             $_SESSION["ldap_group_filter"] = '';
@@ -122,23 +124,24 @@ if (isset($_GET['next'])) {
             $_SESSION["ldap_sortorder"] = (!isset($_GET["order"])?"DESC":$_GET["order"]);
          }
 
-         AuthLdap::displayLdapFilter($_SERVER['PHP_SELF'],false);
+         AuthLdap::displayLdapFilter($_SERVER['PHP_SELF'], false);
 
-         AuthLdap::showLdapGroups($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,
-                        $_SESSION["ldap_group_filter"],$_SESSION["ldap_group_filter2"],
-                        $_SESSION["glpiactive_entity"],$_SESSION["ldap_sortorder"]);
+         AuthLdap::showLdapGroups($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 0,
+                                  $_SESSION["ldap_group_filter"], $_SESSION["ldap_group_filter2"],
+                                  $_SESSION["glpiactive_entity"], $_SESSION["ldap_sortorder"]);
       }
 
    } else {
       if (count($_POST['toimport']) >0) {
          $_SESSION["ldap_import_count"] = 0;
+
          foreach ($_POST['toimport'] as $key => $val) {
             if ($val == "on") {
                $_SESSION["ldap_import"][] = $key;
                $_SESSION["ldap_import_count"]++;
-               $_SESSION["ldap_import_entities"][$key]=$_POST["toimport_entities"][$key];
-               $_SESSION["ldap_import_type"][$key]=$_POST["toimport_type"][$key];
-               $_SESSION["ldap_import_recursive"][$key]=$_POST["toimport_recursive"][$key];
+               $_SESSION["ldap_import_entities"][$key]  = $_POST["toimport_entities"][$key];
+               $_SESSION["ldap_import_type"][$key]      = $_POST["toimport_type"][$key];
+               $_SESSION["ldap_import_recursive"][$key] = $_POST["toimport_recursive"][$key];
             }
          }
       }

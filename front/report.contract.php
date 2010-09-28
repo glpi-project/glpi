@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+commonHeader($LANG['Menu'][6], $_SERVER['PHP_SELF'], "utils", "report");
 
 # Titre
 
@@ -69,7 +69,8 @@ echo "<p><select name='annee[]' size='8' multiple>";
 echo "<option value='toutes' selected>".$LANG['common'][66]."</option>";
 
 $y = date("Y");
-for ($i=$y-10;$i<=$y;$i++) {
+
+for ($i=$y-10 ; $i<=$y ; $i++) {
    echo " <option value='$i'>$i</option>";
 }
 echo "</select></p></td></tr>";
