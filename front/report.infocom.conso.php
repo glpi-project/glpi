@@ -38,46 +38,48 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+commonHeader($LANG['Menu'][6], $_SERVER['PHP_SELF'], "utils", "report");
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    $year = date("Y")-1;
-   $_POST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+   $_POST["date1"] = date("Y-m-d", mktime(1,0,0,date("m"),date("d"),$year));
    $_POST["date2"] = date("Y-m-d");
 }
+
 if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
-    && strcmp($_POST["date2"],$_POST["date1"]) < 0) {
+    && strcmp($_POST["date2"], $_POST["date1"]) < 0) {
 
    $tmp = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
    $_POST["date2"] = $tmp;
 }
 
-echo "\n<form method='post' name='form' action=\"".$_SERVER['PHP_SELF']."\">";
+echo "\n<form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:&nbsp;</td><td>";
-showDateFormItem("date1",$_POST["date1"]);
+showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='submit' class='button' name='submit' value='".$LANG['buttons'][7] ."'></td></tr>\n";
+echo "<input type='submit' class='button' name='submit' value='".$LANG['buttons'][7]."'></td></tr>\n";
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:&nbsp;</td><td>";
-showDateFormItem("date2",$_POST["date2"]);
+showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form>\n";
 
-$valeurtot = 0;
-$valeurnettetot = 0;
+$valeurtot           = 0;
+$valeurnettetot      = 0;
 $valeurnettegraphtot = array();
-$valeurgraphtot = array();
+$valeurgraphtot      = array();
 
 
 /** Display an infocom report for items like consumables
+ *
  * @param $itemtype item type
  * @param $begin begin date
  * @param $end end date
- */
-function display_infocoms_report($itemtype,$begin,$end) {
-   global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
+**/
+function display_infocoms_report($itemtype, $begin, $end) {
+   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $LANG, $CFG_GLPI;
 
    $itemtable = getTableForItemType($itemtype);
    $query = "SELECT `glpi_infocoms`.*
@@ -88,31 +90,31 @@ function display_infocoms_report($itemtype,$begin,$end) {
 
    switch ($itemtype) {
       case 'Consumable' :
-         $query.=" INNER JOIN `glpi_consumableitems`
-                      ON (`glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`) ".
-                   getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
+         $query .= " INNER JOIN `glpi_consumableitems`
+                        ON (`glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`) ".
+                     getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
          break;
 
       case 'Cartridge' :
-         $query.=" INNER JOIN `glpi_cartridgeitems`
-                      ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`) ".
-                   getEntitiesRestrictRequest("WHERE","glpi_cartridgeitems");
+         $query .= " INNER JOIN `glpi_cartridgeitems`
+                        ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`) ".
+                     getEntitiesRestrictRequest("WHERE","glpi_cartridgeitems");
          break;
 
       case 'SoftwareLicense' :
-         $query.=" INNER JOIN `glpi_softwares`
-                      ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`) ".
-                   getEntitiesRestrictRequest("WHERE","glpi_softwarelicenses");
+         $query .= " INNER JOIN `glpi_softwares`
+                        ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`) ".
+                     getEntitiesRestrictRequest("WHERE","glpi_softwarelicenses");
          break;
    }
 
    if (!empty($begin)) {
-      $query.= " AND (`glpi_infocoms`.`buy_date` >= '$begin'
-                      OR `glpi_infocoms`.`use_date` >= '$begin')";
+      $query .= " AND (`glpi_infocoms`.`buy_date` >= '$begin'
+                       OR `glpi_infocoms`.`use_date` >= '$begin')";
    }
    if (!empty($end)) {
-      $query.= " AND (`glpi_infocoms`.`buy_date` <= '$end'
-                      OR `glpi_infocoms`.`use_date` <= '$end')";
+      $query .= " AND (`glpi_infocoms`.`buy_date` <= '$end'
+                       OR `glpi_infocoms`.`use_date` <= '$end')";
    }
 
    if ($result = $DB->query($query)) {
@@ -122,19 +124,21 @@ function display_infocoms_report($itemtype,$begin,$end) {
          echo "<h2>".$item->getTypeName()."</h2>";
          echo "<table class='tab_cadre'>";
 
-         $valeursoustot = 0;
+         $valeursoustot      = 0;
          $valeurnettesoustot = 0;
-         $valeurnettegraph = array();
-         $valeurgraph = array();
+         $valeurnettegraph   = array();
+         $valeurgraph        = array();
 
          while ($line=$DB->fetch_array($result)) {
             if ($itemtype == 'SoftwareLicense') {
                $item->getFromDB($line["items_id"]);
+
                if ($item->fields["serial"] == "global") {
                   if ($item->fields["number"] > 0) {
                      $line["value"] *= $item->fields["number"];
                   }
                }
+
             }
             if ($line["value"] >0) {
                $valeursoustot += $line["value"];
@@ -143,38 +147,45 @@ function display_infocoms_report($itemtype,$begin,$end) {
             $valeurnette = Infocom::Amort($line["sink_type"], $line["value"], $line["sink_time"],
                                           $line["sink_coeff"], $line["buy_date"], $line["use_date"],
                                           $CFG_GLPI["date_tax"], "n");
+
             $tmp = Infocom::Amort($line["sink_type"], $line["value"], $line["sink_time"],
                                   $line["sink_coeff"], $line["buy_date"], $line["use_date"],
                                   $CFG_GLPI["date_tax"], "all");
 
             if (is_array($tmp) && count($tmp) >0) {
                foreach ($tmp["annee"] as $key => $val) {
+
                   if ($tmp["vcnetfin"][$key] >0) {
                      if (!isset($valeurnettegraph[$val])) {
                         $valeurnettegraph[$val] = 0;
                      }
                      $valeurnettegraph[$val] += $tmp["vcnetdeb"][$key];
                   }
+
                }
             }
+
             if (!empty($line["buy_date"])) {
                $year = substr($line["buy_date"],0,4);
+
                if ($line["value"] >0) {
                   if (!isset($valeurgraph[$year])) {
                      $valeurgraph[$year] = 0;
                   }
                   $valeurgraph[$year] += $line["value"];
                }
+
             }
             $valeurnettesoustot += str_replace(" ","",$valeurnette);
          }
+
          $valeurtot += $valeursoustot;
          $valeurnettetot += $valeurnettesoustot;
 
          if (count($valeurnettegraph) >0) {
             echo "<tr><td colspan='5' class='center'>";
             ksort($valeurnettegraph);
-            $valeurnettegraphdisplay = array_map('round',$valeurnettegraph);
+            $valeurnettegraphdisplay = array_map('round', $valeurnettegraph);
 
             foreach ($valeurnettegraph as $key => $val) {
                if (!isset($valeurnettegraphtot[$key])) {
@@ -193,7 +204,7 @@ function display_infocoms_report($itemtype,$begin,$end) {
          if (count($valeurgraph) >0) {
             echo "<tr><td colspan='5' class='center'>";
             ksort($valeurgraph);
-            $valeurgraphdisplay = array_map('round',$valeurgraph);
+            $valeurgraphdisplay = array_map('round', $valeurgraph);
 
             foreach ($valeurgraph as $key => $val) {
                if (!isset($valeurgraphtot[$key])) {
@@ -202,7 +213,7 @@ function display_infocoms_report($itemtype,$begin,$end) {
                $valeurgraphtot[$key] += $valeurgraph[$key];
             }
 
-            Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphdisplay),
+            Stat::showGraph(array($LANG['financial'][21] => $valeurgraphdisplay),
                             array('title' => $LANG['financial'][21],
                                   'width' => 500));
 
@@ -218,21 +229,25 @@ function display_infocoms_report($itemtype,$begin,$end) {
 
 $types = array('Consumable', 'Cartridge', 'SoftwareLicense');
 
-$i=0;
+$i = 0;
 while (count($types)>0) {
    if ($i==0){
       echo "<table width='90%'><tr><td class='center top'>";
    }
-   $type=array_shift($types);
+   $type = array_shift($types);
+
    if (display_infocoms_report($type,$_POST["date1"],$_POST["date2"])) {
       echo "</td>";
       $i++;
+
       if (($i%2)==0){
          echo "</tr><tr>";
       }
+
       echo "<td class='center top'>";
    }
 }
+
 if (($i%2)==0){
    echo "</td><td>&nbsp;";
 }
@@ -246,14 +261,14 @@ echo "<div class='center'><h3>".$LANG['common'][33]."&nbsp;: ".
       $LANG['financial'][81]." = ".formatNumber($valeurnettetot)."</h3></div>\n";
 
 if (count($valeurnettegraphtot) >0) {
-   $valeurnettegraphtotdisplay = array_map('round',$valeurnettegraphtot);
-   Stat::showGraph(array($LANG['financial'][81]=>$valeurnettegraphtotdisplay),
+   $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);
+   Stat::showGraph(array($LANG['financial'][81] => $valeurnettegraphtotdisplay),
                    array('title' => $LANG['financial'][81]));
 
 }
 if (count($valeurgraphtot) >0) {
-   $valeurgraphtotdisplay = array_map('round',$valeurgraphtot);
-   Stat::showGraph(array($LANG['financial'][21]=>$valeurgraphtotdisplay),
+   $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
+   Stat::showGraph(array($LANG['financial'][21] => $valeurgraphtotdisplay),
                    array('title' => $LANG['financial'][21]));
 }
 

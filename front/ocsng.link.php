@@ -49,6 +49,7 @@ if (!isset($_SESSION["change_import_mode"])) {
 
 //Changing the import mode
 if (isset($_GET["change_import_mode"])) {
+
    if ($_GET["change_import_mode"] == "false") {
       $_SESSION["change_import_mode"] = false;
    } else {
@@ -58,14 +59,15 @@ if (isset($_GET["change_import_mode"])) {
 
 if (isset($_SESSION["ocs_link"])) {
    if ($count = count($_SESSION["ocs_link"])) {
-      $percent = min(100,round(100*($_SESSION["ocs_link_count"]-$count)/$_SESSION["ocs_link_count"],
-                     0));
+      $percent = min(100,
+                     round(100*($_SESSION["ocs_link_count"]-$count)/$_SESSION["ocs_link_count"], 0));
 
       displayProgressBar(400,$percent);
 
       $key = array_pop($_SESSION["ocs_link"]);
-      OcsServer::linkComputer($key["ocsid"],$_SESSION["ocsservers_id"],$key["computers_id"]);
+      OcsServer::linkComputer($key["ocsid"], $_SESSION["ocsservers_id"], $key["computers_id"]);
       glpi_header($_SERVER['PHP_SELF']);
+
    } else {
       displayProgressBar(400,100);
 
@@ -83,12 +85,13 @@ if (!isset($_POST["import_ok"])) {
       $_GET['start'] = 0;
    }
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
-   OcsServer::ocsShowNewComputer($_SESSION["ocsservers_id"],$_SESSION["change_import_mode"],
-                                 $_GET['check'],$_GET['start'],$_SESSION['glpiactiveentities'],1);
+   OcsServer::ocsShowNewComputer($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
+                                 $_GET['check'], $_GET['start'], $_SESSION['glpiactiveentities'], 1);
 
 } else {
    if (count($_POST['tolink']) >0) {
       $_SESSION["ocs_link_count"] = 0;
+
       foreach ($_POST['tolink'] as $ocsid => $computers_id) {
          if ($computers_id >0) {
             $_SESSION["ocs_link"][] = array('ocsid'        => $ocsid,

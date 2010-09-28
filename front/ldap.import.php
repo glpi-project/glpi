@@ -38,15 +38,15 @@ if (!defined('GLPI_ROOT')) {
    include (GLPI_ROOT . "/inc/includes.php");
 }
 
-checkRight("import_externalauth_users",'w');
+checkRight("import_externalauth_users", 'w');
 
 AuthLdap::manageValuesInSession($_REQUEST);
 
 if (isset($_SESSION['ldap_import']['popup']) && $_SESSION['ldap_import']['popup']) {
-   popHeader($LANG['setup'][3],$_SERVER['PHP_SELF']);
-}
-else {
-   commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
+   popHeader($LANG['setup'][3], $_SERVER['PHP_SELF']);
+
+} else {
+   commonHeader($LANG['setup'][3], $_SERVER['PHP_SELF'], "admin", "user", "ldap");
 }
 
 if (isset($_GET['start'])) {
@@ -57,29 +57,32 @@ if (isset($_GET['order'])) {
 }
 
 if ($_SESSION['ldap_import']['action'] == 'show') {
-   $_REQUEST['target']=$_SERVER['PHP_SELF'];
+   $_REQUEST['target'] = $_SERVER['PHP_SELF'];
 
    $authldap = new AuthLDAP;
    $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
 
    AuthLdap::showUserImportForm($authldap);
-   if (isset($_SESSION['ldap_import']['ldapservers_id']) &&
-       $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE
-         && isset($_SESSION['ldap_import']['criterias'])
-            && !empty($_SESSION['ldap_import']['criterias'])) {
+
+   if (isset($_SESSION['ldap_import']['ldapservers_id'])
+       && $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE
+       && isset($_SESSION['ldap_import']['criterias'])
+       && !empty($_SESSION['ldap_import']['criterias'])) {
+
       echo "<br />";
       AuthLdap::searchUser($authldap);
    }
+
 } else {
    if (isset($_SESSION["ldap_process"])) {
       if ($count = count($_SESSION["ldap_process"])) {
          $percent = min(100,round(100*($_SESSION["ldap_process_count"]-$count)/
-                                  $_SESSION["ldap_process_count"],0));
+                                  $_SESSION["ldap_process_count"], 0));
 
          displayProgressBar(400,$percent);
          $key = array_pop($_SESSION["ldap_process"]);
-         AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                  'value'=>$key),
+         AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                  'value'  => $key),
                                             $_SESSION['ldap_import']["mode"],
                                             $_SESSION['ldap_import']["ldapservers_id"],
                                             true);
@@ -96,12 +99,13 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
          unset($_SESSION["interface"]);
          $_SESSION['ldap_import']['action'] = 'show';
          refreshDropdownPopupInMainWindow();
-
       }
- } else {
+
+   } else {
       if (count($_POST['toprocess']) >0) {
          $_SESSION["ldap_process_count"] = 0;
          $_SESSION["ldapservers_id"] = $_SESSION['ldap_import']['ldapservers_id'];
+
          foreach ($_POST['toprocess'] as $key => $val) {
             if ($val == "on") {
                $_SESSION["ldap_process"][] = $key;
@@ -115,8 +119,8 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 
 if (isset($_SESSION['ldap_import']['popup']) && $_SESSION['ldap_import']['popup']) {
    ajaxFooter();
-}
-else {
+} else {
    commonFooter();
+
 }
 ?>
