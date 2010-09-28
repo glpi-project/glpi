@@ -94,31 +94,31 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
 			$end=$_POST["end"];
 			$to_add=1;
-	
+
 			if ($_POST["periodicity"]=="week") {
 				$to_add=7;
 			}
 			$_POST['_target']=$_SERVER['PHP_SELF'];
-			
+
 			$_POST['_ok']=true;
 			for ($i=0;$i<$times&&($_POST['_ok']);$i++){
 				$_POST["begin"]=date('Y-m-d H:i:s', strtotime($begin)+$i*$to_add*DAY_TIMESTAMP);
 				$_POST["end"]=date('Y-m-d H:i:s', strtotime($end)+$i*$to_add*DAY_TIMESTAMP);
-	
+
 				if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) {
 					unset($rr->fields["ID"]);
 					$_POST['_ok']=$rr->add($_POST);
 				}
-	
+
 			}
 			// Positionnement du calendrier au mois de debut
 			$_GET["mois_courant"]=$begin_month;
 			$_GET["annee_courant"]=$begin_year;
-	
+
 			if ($_POST['_ok']){
 				logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 			} else $all_ok=false;
-
+      }
 			if ($all_ok){
 				// Several reservations
 				if (count($_POST['items'])>1){
@@ -127,8 +127,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=$id_item");
 				}
 			}
-		}
-		
+
 	} else if (isset($_GET["ID"])){
 		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
 	}else {
@@ -155,7 +154,7 @@ else {
 				logEvent($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
-		} 
+		}
 		else if (isset($_GET["delete"]))
 		{
 			checkRight("reservation_central","w");
@@ -175,7 +174,7 @@ else {
 			checkRight("reservation_central","w");
 			$ri->update($_POST);
 			logEvent($_POST['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
-		} 
+		}
 
 		checkRight("reservation_central","r");
 
@@ -186,9 +185,9 @@ else {
 		} else {
 
 			manageGetValuesInSearch(RESERVATION_TYPE);
-	
+
 			searchForm(RESERVATION_TYPE,$_GET);
-	
+
 			showList(RESERVATION_TYPE,$_GET);
 		}
 	}
