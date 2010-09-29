@@ -1474,6 +1474,7 @@ class AuthLDAP extends CommonDBTM {
     */
    static function ldapImportUserByServerId($params=array(), $action, $ldap_server, $display=false) {
       global $DB, $LANG;
+      static $conn_cache = array();
 
       $params = stripslashes_deep($params);
 
@@ -1488,13 +1489,18 @@ class AuthLDAP extends CommonDBTM {
 
       $search_parameters = array();
       //Connect to the directory
-      $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
-                                      $config_ldap->fields['rootdn'],
-                                      $config_ldap->fields['rootdn_password'],
-                                      $config_ldap->fields['use_tls'],
-                                      $config_ldap->fields['deref_option']);
-
+      if (isset($conn_cache[$ldap_server])) {
+         $ds = $conn_cache[$ldap_server];
+      } else {
+         $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
+                                         $config_ldap->fields['rootdn'],
+                                         $config_ldap->fields['rootdn_password'],
+                                         $config_ldap->fields['use_tls'],
+                                         $config_ldap->fields['deref_option']);
+      }
       if ($ds) {
+         $conn_cache[$ldap_server] = $ds;
+
          $search_parameters['method'] = $params['method'];
          $search_parameters['fields'][AuthLdap::IDENTIFIER_LOGIN] =
                                                                $config_ldap->fields['login_field'];
@@ -1802,7 +1808,7 @@ class AuthLDAP extends CommonDBTM {
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
          foreach  ($auth->authtypes["ldap"] as $ldap_method) {
-            if (!$auth->auth_succeded && $ldap_method['is_active']) {
+            if (!$auth->auth_succeded) {
                $auth = AuthLdap::ldapAuth($auth, $login, $password, $ldap_method,$user_dn);
             } else {
                if ($break) {
