@@ -33,10 +33,9 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
+
 define('GLPI_ROOT', '.');
-
 include (GLPI_ROOT . "/inc/includes.php");
-
 
 if (!isset($_SESSION["glpicookietest"]) || $_SESSION["glpicookietest"]!='testcookie') {
    if (!is_writable(GLPI_SESSION_DIR)) {
@@ -53,6 +52,7 @@ $_POST = array_map('stripslashes', $_POST);
 if (!isset($_POST['login_name'])) {
    $_POST['login_name'] = '';
 }
+
 if (isset($_POST['login_password'])) {
    $_POST['login_password'] = unclean_cross_side_scripting_deep($_POST['login_password']);
 } else {
@@ -63,6 +63,7 @@ if (isset($_POST['login_password'])) {
 $REDIRECT = "";
 if (isset ($_POST['redirect']) && strlen($_POST['redirect'])>0) {
    $REDIRECT = "?redirect=" .$_POST['redirect'];
+
 } else if (isset ($_GET['redirect']) && strlen($_GET['redirect'])>0) {
    $REDIRECT = "?redirect=" .$_GET['redirect'];
 }
@@ -71,10 +72,8 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->Login($_POST['login_name'],
-                        $_POST['login_password'], 
-                        (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
-
+if ($auth->Login($_POST['login_name'], $_POST['login_password'],
+                 (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
 
    // Redirect to Command Central if not post-only
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
@@ -84,13 +83,12 @@ if ($auth->Login($_POST['login_name'],
    }
 
 } else {
-
    // we have done at least a good login? No, we exit.
    nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');
    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
    // Logout whit noAUto to manage auto_login with errors
-   echo '<a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1'.str_replace("?","&",$REDIRECT).'">' .
-          $LANG['login'][1] . '</a></div>';
+   echo '<a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1'.
+         str_replace("?","&",$REDIRECT).'">' .$LANG['login'][1] . '</a></div>';
    nullFooter();
    exit();
 }
