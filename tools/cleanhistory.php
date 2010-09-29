@@ -32,11 +32,11 @@
 // Original Author of file: Remi Collet
 // Purpose of file: Purge history with some criterias
 // ----------------------------------------------------------------------
-ini_set("memory_limit","-1");
+ini_set("memory_limit", "-1");
 ini_set("max_execution_time", "0");
 
 if ($argv) {
-   for ($i=1;$i<$_SERVER['argc'];$i++) {
+   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
       $it = explode("=",$_SERVER['argv'][$i]);
       $it[0] = preg_replace('/^--/','',$it[0]);
       $_GET[$it[0]] = $it[1];
@@ -89,25 +89,31 @@ $table = 'glpi_logs';
 echo "    Total entries in history : ".countElementsInTable($table)."\n";
 
 $where = "`date_mod` < SUBDATE(NOW(), INTERVAL ".$_GET['delay']." month)";
+
 if (isset($_GET['item'])) {
-   $where .= " AND `itemtype`='".$_GET['item']."'";
+   $where .= " AND `itemtype` = '".$_GET['item']."'";
 }
+
 if (isset($_GET['type'])) {
-   $where .= " AND `linked_action`=".intval($_GET['type']);
+   $where .= " AND `linked_action` = ".intval($_GET['type']);
 }
+
 if (isset($_GET['old'])) {
    $where .= " AND `old_value` REGEXP '".$_GET['old']."'";
 }
+
 if (isset($_GET['new'])) {
    $where .= " AND `new_value` REGEXP '".$_GET['new']."'";
 }
-//echo "SQL = $where\n";
 
 if (isset($_GET['run'])) {
-   $query = "DELETE QUICK FROM `$table` WHERE $where";
+   $query = "DELETE QUICK
+             FROM `$table`
+             WHERE $where";
    $res = $DB->query($query);
+
    if (!$res) {
-      die("SQL request: $query\nSQL error: ".$DB->error()."\n");
+      die("SQL request: $query\nSQL error : ".$DB->error()."\n");
    }
 
    echo "  Deleted entries in history : ".$DB->affected_rows()."\n";
@@ -115,11 +121,13 @@ if (isset($_GET['run'])) {
 
    if (isset($_GET['optimize'])) {
       foreach ($DB->request("OPTIMIZE TABLE `$table`") as $data) {
-         echo "Table Optimization for ".$data['Table'].": ".$data['Msg_type']." = ".$data['Msg_text']."\n";
+         echo "Table Optimization for ".$data['Table'].": ".$data['Msg_type']." = ".
+               $data['Msg_text']."\n";
       }
    }
 
 } else {
    echo " Selected entries in history : ".countElementsInTable($table, $where)."\n";
 }
+
 ?>

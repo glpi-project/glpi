@@ -35,7 +35,6 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '.');
-
 include (GLPI_ROOT . "/inc/includes.php");
 
 //@session_start();
@@ -45,28 +44,29 @@ if (!isset($_SESSION["noAUTO"])
     && $_SESSION["glpiauthtype"]==Auth::CAS) {
 
    include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-   $cas=new phpCAS();
-   $cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
-                $CFG_GLPI["cas_uri"],false);
+   $cas = new phpCAS();
+   $cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
+                $CFG_GLPI["cas_uri"], false);
    $cas->logoutWithUrl(strval($CFG_GLPI["cas_logout"]));
 }
 
-$toADD="";
+$toADD = "";
 
 // Redirect management
 if (isset ($_POST['redirect']) && strlen($_POST['redirect'])>0) {
    $toADD = "?redirect=" .$_POST['redirect'];
+
 } else if (isset ($_GET['redirect']) && strlen($_GET['redirect'])>0) {
    $toADD = "?redirect=" .$_GET['redirect'];
 }
 
 if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
    if (empty($toADD)) {
-      $toADD.="?";
+      $toADD .= "?";
    } else {
-      $toADD.="&";
+      $toADD .= "&";
    }
-   $toADD.="noAUTO=1";
+   $toADD .= "noAUTO=1";
 }
 
 $auth = new Auth();

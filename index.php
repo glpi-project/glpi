@@ -35,25 +35,25 @@
 
 // If config_db doesn't exist -> start installation
 define('GLPI_ROOT', '.');
-
 include (GLPI_ROOT . "/config/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    include (GLPI_ROOT . "/inc/common.function.php");
    glpi_header("install/install.php");
    die();
+
 } else {
-   $TRY_OLD_CONFIG_FIRST=true;
+   $TRY_OLD_CONFIG_FIRST = true;
 
    include (GLPI_ROOT . "/inc/includes.php");
-   $_SESSION["glpicookietest"]='testcookie';
+   $_SESSION["glpicookietest"] = 'testcookie';
 
    // For compatibility reason
    if (isset($_GET["noCAS"])) {
       $_GET["noAUTO"] = $_GET["noCAS"];
    }
 
-   Auth::checkAlternateAuthSystems(true,isset($_GET["redirect"])?$_GET["redirect"]:"");
+   Auth::checkAlternateAuthSystems(true, isset($_GET["redirect"])?$_GET["redirect"]:"");
 
    // Send UTF8 Headers
    header("Content-Type: text/html; charset=UTF-8");
@@ -89,6 +89,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "<div id='boxlogin'>";
    echo "<form action='".$CFG_GLPI["root_doc"]."/login.php' method='post'>";
+
    // Other CAS
    if (isset($_GET["noAUTO"])) {
       echo "<input type='hidden' name='noAUTO' value='1'/>";
@@ -126,6 +127,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<noscript><p>";
    echo $LANG['login'][26];
    echo "</p></noscript>";
+
    if (isset($_GET['error'])) {
       switch ($_GET['error']) {
          case 1 : // cookie error
@@ -133,7 +135,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             break;
 
          case 2 : // GLPI_SESSION_DIR not writable
-            echo $LANG['install'][50].": ".GLPI_SESSION_DIR;
+            echo $LANG['install'][50]." : ".GLPI_SESSION_DIR;
             break;
       }
    }
@@ -145,6 +147,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a>';
       echo '</div>';
    }
+
    if ($CFG_GLPI["use_mailing"]) {
       echo '<div id="box-faq"><a href="front/lostpassword.php?lostpassword=1">[ '.$LANG['users'][3].' ]</a>';
       echo '</div>';

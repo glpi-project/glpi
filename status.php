@@ -34,11 +34,10 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '.');
-
 include (GLPI_ROOT . "/inc/includes.php");
 
 // Force in normal mode
-$_SESSION['glpi_use_mode']=NORMAL_MODE;
+$_SESSION['glpi_use_mode'] = NORMAL_MODE;
 
 // Need to be used using :
 // check_http -H servername -u /glpi/status.php -s GLPI_OK
@@ -47,28 +46,29 @@ $_SESSION['glpi_use_mode']=NORMAL_MODE;
 // Plain text content
 header('Content-type: text/plain');
 
-$ok_master=true;
-$ok_slave=true;
-$ok=true;
+$ok_master = true;
+$ok_slave  = true;
+$ok        = true;
 
 // Check slave server connection
-if (DBConnection::isDBSlaveActive()){
-	if (DBConnection::establishDBConnection(true,true,false)){
-		echo "GLPI_DBSLAVE_OK\n";
-	} else {
-		echo "GLPI_DBSLAVE_PROBLEM\n";
-		$ok_slave=false;
-	}
+if (DBConnection::isDBSlaveActive()) {
+   if (DBConnection::establishDBConnection(true,true,false)){
+      echo "GLPI_DBSLAVE_OK\n";
+   } else {
+      echo "GLPI_DBSLAVE_PROBLEM\n";
+      $ok_slave = false;
+   }
+
 } else {
-	echo "No slave DB\n";
+   echo "No slave DB\n";
 }
 
 // Check main server connection
-if (DBConnection::establishDBConnection(false,true,false)){
-	echo "GLPI_DB_OK\n";
+if (DBConnection::establishDBConnection(false,true,false)) {
+   echo "GLPI_DB_OK\n";
 } else {
-	echo "GLPI_DB_PROBLEM\n";
-	$ok_master=false;
+   echo "GLPI_DB_PROBLEM\n";
+   $ok_master = false;
 }
 
 // Slave and master ok;
@@ -76,70 +76,79 @@ $ok = $ok_slave && $ok_master;
 
 // Check session dir (usefull when NFS mounted))
 if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
-		echo "GLPI_SESSION_DIR_OK\n";
+   echo "GLPI_SESSION_DIR_OK\n";
 } else {
-		echo "GLPI_SESSION_DIR_PROBLEM\n";
-		$ok=false;
+   echo "GLPI_SESSION_DIR_PROBLEM\n";
+   $ok = false;
 }
 
 // Reestablished DB connection
-if (( $ok_master || $ok_slave ) && DBConnection::establishDBConnection(false,false,false)){
+if (( $ok_master || $ok_slave ) && DBConnection::establishDBConnection(false,false,false)) {
 
-	// Check OCS connections
-	$query = "SELECT id, name FROM glpi_ocsservers";
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)){
-			echo "Check OCS servers:";
-			while ($data = $DB->fetch_assoc($result)){
-				echo " ".$data['name'];
-				if (OcsServer::checkOCSconnection($data['id'])){
-					echo "_OK";
-				} else {
-					echo "_PROBLEM";
-					$ok=false;
-				}
-				echo "\n";
-			}
-		} else {
-			echo "No OCS server\n";
-		}
-	}
+   // Check OCS connections
+   $query = "SELECT `id`, `name`
+             FROM `glpi_ocsservers`";
 
-	// Check Auth connections
-	$auth = new Auth();
-	$auth->getAuthMethods();
-	$ldap_methods = $auth->authtypes["ldap"];
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)) {
+         echo "Check OCS servers:";
 
-	if (count($ldap_methods)){
-		echo "Check LDAP servers:";
-		foreach ($ldap_methods as $method){
-			echo " ".$method['name'];
+         while ($data = $DB->fetch_assoc($result)) {
+            echo " ".$data['name'];
 
-			if (AuthLdap::tryToConnectToServer($method, $method["rootdn"], $method["rootdn_password"])){
-				echo "_OK";
-			} else {
-				echo "_PROBLEM";
-				$ok=false;
-			}
-			echo "\n";
-		}
-	} else {
-		echo "No LDAP server\n";
-	}
+            if (OcsServer::checkOCSconnection($data['id'])) {
+               echo "_OK";
+            } else {
+               echo "_PROBLEM";
+               $ok = false;
+            }
 
-	// TODO Check mail server : cannot open a mail connexion / only ping server ?
+            echo "\n";
+         }
 
-	// TODO check CAS url / check url using socket ?
+      } else {
+         echo "No OCS server\n";
+      }
+   }
 
+   // Check Auth connections
+   $auth = new Auth();
+   $auth->getAuthMethods();
+   $ldap_methods = $auth->authtypes["ldap"];
+
+   if (count($ldap_methods)) {
+      echo "Check LDAP servers:";
+
+      foreach ($ldap_methods as $method) {
+         echo " ".$method['name'];
+
+         if (AuthLdap::tryToConnectToServer($method, $method["rootdn"],
+                                            $method["rootdn_password"])) {
+            echo "_OK";
+         } else {
+            echo "_PROBLEM";
+            $ok = false;
+         }
+
+         echo "\n";
+      }
+
+   } else {
+      echo "No LDAP server\n";
+   }
+
+   // TODO Check mail server : cannot open a mail connexion / only ping server ?
+
+   // TODO check CAS url / check url using socket ?
 
 }
 
 echo "\n";
 
-if ($ok){
-	echo "GLPI_OK\n";
+if ($ok) {
+   echo "GLPI_OK\n";
 } else {
-	echo "GLPI_PROBLEM\n";
+   echo "GLPI_PROBLEM\n";
 }
 
 ?>
