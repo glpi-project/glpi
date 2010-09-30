@@ -515,7 +515,6 @@ class NetworkPort extends CommonDBChild {
       }
       $this->showTabs($ID);
 
-      $options['colspan']     = 1;
       $options['entities_id'] = $item->getField('entities_id');
       $this->showFormHeader($options);
 
@@ -525,7 +524,11 @@ class NetworkPort extends CommonDBChild {
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       }
-      echo $link. "</td></tr>\n";
+      echo $link. "</td>\n";
+      echo "<td rowspan='10'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='10' class='middle'>";
+      echo "<textarea cols='45' rows='11' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
 
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
@@ -841,6 +844,12 @@ class NetworkPort extends CommonDBChild {
       $tab[10]['linkfield'] = 'networkinterfaces_id';
       $tab[10]['name'] = $LANG['setup'][9];
       $tab[10]['datatype'] = 'text';
+
+      $tab[16]['table']     = $this->getTable();
+      $tab[16]['field']     = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
 
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'itemtype';

@@ -2122,6 +2122,7 @@ CREATE TABLE `glpi_networkports` (
   `netmask` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gateway` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `subnet` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `on_device` (`items_id`,`itemtype`),
   KEY `networkinterfaces_id` (`networkinterfaces_id`),
