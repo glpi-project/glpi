@@ -770,6 +770,10 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add inquest_delay  in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_networkports","comment")) {
+      $query = "ALTER TABLE  `glpi_networkports` ADD  `comment` TEXT COLLATE utf8_unicode_ci";
+      $DB->query($query) or die("0.80 add comment  in glpi_networkports " . $LANG['update'][90] . $DB->error());
+   }
 
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
