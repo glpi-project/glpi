@@ -252,11 +252,16 @@ class Rule extends CommonDBTM {
          echo "<input type='hidden' name='sub_type' value='".get_class($this)."'>";
 
          if ($ID > 0) {
+            if ($plugin = isPluginItemType($this->getType())) {
+               $url = $CFG_GLPI["root_doc"]."/plugins/".strtolower($plugin['plugin']);
+            } else {
+               $url = $CFG_GLPI["root_doc"];
+            }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-                  "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType()."&amp;".
-                  $this->rules_id_field."=".$this->fields["id"]."' ,'glpipopup', 'height=400,
-                  width=1000, top=100, left=100,". " scrollbars=yes' );w.focus();\">".
+            echo "<a href='#' onClick=\"var w=window.open('".$url.
+                  "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType().
+                  "&amp;rules_id=".$this->fields["id"]."' ,'glpipopup', 'height=400,".
+                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
                   $LANG['buttons'][50]."</a>";
             echo "</td></tr>\n";
          }
@@ -1339,7 +1344,7 @@ class Rule extends CommonDBTM {
 
       if (!$display) {
          $rc = new $this->rulecriteriaclass();
-         autocompletionTextField($rc, "pattern", array('name' => $name));
+         autocompletionTextField($rc, "pattern", array('name' => $name,'value'=>$value));
       }
    }
 
@@ -1495,10 +1500,10 @@ class Rule extends CommonDBTM {
                echo "<td>".$criteria_constants["name"]."&nbsp;:&nbsp;</td>";
                echo "<td>";
                $value = "";
-
                if (isset($_POST[$criteria->fields["criteria"]])) {
                   $value = $_POST[$criteria->fields["criteria"]];
                }
+
                $this->displayCriteriaSelectPattern($criteria->fields['criteria'],
                                                    $criteria->fields['criteria'],
                                                    $criteria->fields['condition'], $value, true);
