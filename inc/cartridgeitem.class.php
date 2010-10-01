@@ -356,6 +356,14 @@ class CartridgeItem extends CommonDBTM {
       $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name']      = $LANG['entity'][0];
 
+
+      $tab[40]['table']     = 'glpi_printermodels';
+      $tab[40]['field']     = 'name';
+      $tab[40]['linkfield'] = 'printersmodels_id';
+      $tab[40]['name']      = $LANG['setup'][96];
+      $tab[40]['forcegroupby'] = true;
+
+
       return $tab;
    }
 
