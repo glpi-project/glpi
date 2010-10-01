@@ -677,7 +677,7 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 set value of is_recursive in glpi_knowbaseitemcategories" .
                                 $LANG['update'][90] . $DB->error());
 
-      $query = "ALTER TABLE `glpi`.`glpi_knowbaseitemcategories` DROP INDEX `unicity` ,
+      $query = "ALTER TABLE `glpi_knowbaseitemcategories` DROP INDEX `unicity` ,
                ADD UNIQUE `unicity` ( `entities_id`, `knowbaseitemcategories_id` , `name` ) ";
       $DB->query($query) or die("0.80 update unicity index on glpi_knowbaseitemcategories" .
                                 $LANG['update'][90] . $DB->error());
