@@ -2761,6 +2761,14 @@ class Search {
             }
             break;
 
+         case "glpi_printermodels" :
+            if ($itemtype=='CartridgeItem') {
+               return " LEFT JOIN `glpi_cartridgeitems_printermodels`
+                           ON (`glpi_cartridgeitems_printermodels`.`cartridgeitems_id` = `$rt`.`id`)
+                        LEFT JOIN `$new_table` $AS
+                           ON (`glpi_cartridgeitems_printermodels`.`printermodels_id` = `$nt`.`id`) ";
+            }
+
          case "glpi_operatingsystems" :
             if ($itemtype=='Software') {
                return " LEFT JOIN `glpi_operatingsystems`
