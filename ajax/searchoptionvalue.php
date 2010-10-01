@@ -60,14 +60,20 @@ if (isset($_REQUEST['searchtype'])) {
    //print_r($searchopt);
    $display=false;
 
-   // Fix table 
+   // Fix table
    if (isset($searchopt['table'])) {
       switch ($searchopt['table']) {
          case "glpi_followup_requesttypes" :
                $searchopt['table']='glpi_requesttypes';
             break;
+
          case "glpi_suppliers_infocoms" :
                $searchopt['table']='glpi_suppliers';
+            break;
+
+         //TODO voir pour authmails qui est sacrifiée
+         case "glpi_auth_tables" :
+               $searchopt['table']='glpi_authldaps';
             break;
       }
    }
@@ -157,7 +163,7 @@ if (isset($_REQUEST['searchtype'])) {
             // Standard datatype usage
             if (!$display && isset($searchopt['datatype'])) {
                switch ($searchopt['datatype']) {
-      
+
                   case "bool":
                      Dropdown::showYesNo($inputname,$_REQUEST['value']);
                      $display=true;
@@ -179,7 +185,7 @@ if (isset($_REQUEST['searchtype'])) {
             // Standard field usage
             if (!$display) {
                switch ($searchopt['field']) {
-      
+
                   case "name":
                   case "completename":
                      Dropdown::show(getItemTypeForTable($searchopt['table']),
