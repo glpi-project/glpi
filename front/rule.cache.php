@@ -45,7 +45,7 @@ if (!strpos($_SERVER['PHP_SELF'],"popup")) {
 if (isset($_GET["sub_type"])) {
    echo "<br>";
    $rulecollection = RuleCollection::getClassByType($_GET["sub_type"]);
-   if (haveRight($rulecollection->right,"r")) {
+   if ($rulecollection->can(-1,'r')) {
       if (!isset($_GET["rules_id"])) {
          $rulecollection->showCacheStatusForRuleType();
       } else {

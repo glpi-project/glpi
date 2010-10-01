@@ -275,6 +275,10 @@ $CFG_GLPI["union_search_type"] = array('ReservationItem'=>"reservation_types",
 $CFG_GLPI["systeminformations_type"] = array ('DBConnection','Plugin','AuthLDAP',
                                               'MailCollector','OcsServer');
 
+$CFG_GLPI["rulecollections_types"] = array('RuleOcsCollection', 'RuleRightCollection',
+                                           'RuleTicketCollection', 'RuleMailCollectorCollection',
+                                           'RuleSoftwareCategoryCollection');
+
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]=0;
 $CFG_GLPI["decimal_number"]=2;
@@ -283,7 +287,7 @@ $CFG_GLPI["decimal_number"]=2;
 $CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_lang"]=1;
 
 
-// Items which can planned something 
+// Items which can planned something
 $CFG_GLPI['planning_itemtype'] = array('Reminder','TicketPlanning');
 
 // User Prefs fields which override $CFG_GLPI config

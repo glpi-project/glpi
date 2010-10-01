@@ -38,8 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 $rule = $rulecollection->getRuleClass();
-
-checkRight($rule->right,"r");
+$rulecollection->checkGlobal('r');
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -48,7 +47,7 @@ $rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction = new RuleAction(get_class($rule));
 
 if (isset($_POST["delete_criteria"])) {
-   checkRight($rule->right,"w");
+   $rulecollection->checkGlobal('w');
 
    if (count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
@@ -62,7 +61,7 @@ if (isset($_POST["delete_criteria"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete_action"])) {
-   checkRight($rule->right,"w");
+   $rulecollection->checkGlobal('w');
 
    if (count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
@@ -76,7 +75,7 @@ if (isset($_POST["delete_criteria"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_criteria"])) {
-   checkRight($rule->right,"w");
+   $rulecollection->checkGlobal('w');
    $rulecriteria->add($_POST);
 
    // Can't do this in RuleCriteria, so do it here
@@ -85,7 +84,7 @@ if (isset($_POST["delete_criteria"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["add_action"])) {
-   checkRight($rule->right,"w");
+   $rulecollection->checkGlobal('w');
    $ruleaction->add($_POST);
 
    // Can't do this in RuleCriteria, so do it here
@@ -94,21 +93,21 @@ if (isset($_POST["delete_criteria"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
-   checkRight($rule->right,"w");
+   $rulecollection->checkGlobal('w');
    $rule->update($_POST);
 
    Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } elseif (isset($_POST["add"])) {
-   checkRight($rule->right,"w");
+   $rulecollection->checkGlobal('w');
 
    $newID = $rule->add($_POST);
    Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 
 } elseif (isset($_POST["delete"])) {
-   checkRight($rule->right,"w");
+   $rulecollection->checkGlobal('w');
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
    $rule->delete($_POST);
 

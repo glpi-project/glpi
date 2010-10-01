@@ -56,14 +56,6 @@ class RuleSoftwareCategory extends Rule {
       return $LANG['rulesengine'][37];
    }
 
-   function canCreate() {
-      return haveRight('rule_softwarecategories', 'w');
-   }
-
-   function canView() {
-      return haveRight('rule_softwarecategories', 'r');
-   }
-
    function maxActionsCount() {
       return 1;
    }

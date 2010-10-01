@@ -43,14 +43,6 @@ class RuleOcs extends Rule {
    public $right='rule_ocs';
    public $can_sort=true;
 
-   function canCreate() {
-      return haveRight('rule_ocs', 'w');
-   }
-
-   function canView() {
-      return haveRight('rule_ocs', 'r');
-   }
-
    function getTitle() {
       global $LANG;
 
@@ -154,11 +146,11 @@ class RuleOcs extends Rule {
       $actions['entities_id']['name']  = $LANG['entity'][0];
       $actions['entities_id']['type']  = 'dropdown';
       $actions['entities_id']['table'] = 'glpi_entities';
-      
+
       $actions['locations_id']['name']  = $LANG['common'][15];
       $actions['locations_id']['type']  = 'dropdown';
       $actions['locations_id']['table'] = 'glpi_locations';
-      
+
       $actions['_affect_entity_by_tag']['name'] = $LANG['rulesengine'][131];
       $actions['_affect_entity_by_tag']['type'] = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');

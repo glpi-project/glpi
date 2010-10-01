@@ -93,19 +93,16 @@ class Rule extends CommonDBTM {
       $this->forceTable('glpi_rules');
    }
 
+   function canCreate() {
+      return haveRight($this->right, 'w');
+   }
+
+   function canView() {
+      return haveRight($this->right, 'r');
+   }
 
    function isEntityAssign() {
       return false;
-   }
-
-
-   function canCreate() {
-      return haveRight('config', 'w');
-   }
-
-
-   function canView() {
-      return haveRight('config', 'r');
    }
 
 
@@ -210,7 +207,7 @@ class Rule extends CommonDBTM {
          $this->check($ID, 'r');
       } else {
          // Create item
-         $this->check(-1, 'w');
+         $this->checkGlobal('w');
       }
 
       $canedit = $this->can($this->right, "w");

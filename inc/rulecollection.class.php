@@ -60,9 +60,33 @@ class RuleCollection extends CommonDBTM {
 
    var $entity = 0;
 
+   /**
+    * Constructor
+   **/
+   function __construct() {
+      $this->forceTable('glpi_rules');
+   }
+
+   function canCreate() {
+      return haveRight($this->right, 'w');
+   }
+
+   function canView() {
+      return haveRight($this->right, 'r');
+   }
+
    function setEntity($entity=0) {
       $this->entity = $entity;
    }
+
+   function canList() {
+      return $this->canView();
+   }
+
+   function isEntityAssign() {
+      return false;
+   }
+
    /**
    * Get Collection Size : retrieve the number of rules
    *
@@ -329,14 +353,10 @@ class RuleCollection extends CommonDBTM {
       echo "<form name='ruleactions_form' id='ruleactions_form' method='post'action='".$target."'>";
       echo "\n<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
-      $colspan = 4;
+      $colspan = 6;
 
       if ($display_entities) {
          $colspan++;
-      }
-
-      if ($canedit) {
-         $colspan+=2;
       }
 
       echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
@@ -348,9 +368,7 @@ class RuleCollection extends CommonDBTM {
          echo "<th>".$LANG['entity'][0]."</th>\n";
       }
 
-      if ($canedit) {
-         echo "<th colspan='2'>&nbsp;</th>";
-      }
+      echo "<th colspan='2'>&nbsp;</th>";
       echo "</tr>\n";
 
       if (count($this->RuleList->list)) {
@@ -827,25 +845,30 @@ class RuleCollection extends CommonDBTM {
    function title() {
    }
 
-   static function getClassByType($type) {
-      $typeclass = $type."Collection";
-      if(class_exists($typeclass)) {
-         return new $typeclass();
-      }
-      else {
-         return null;
-      }
-   }
-
-   static function getByItemType($itemtype) {
+   /**
+    * Get rulecollection classname by giving his itemtype
+    * @param $itemtype itemtype
+    * @param $check_dictionnary_type check if the itemtype is a dictionnary or not
+    * @return the rulecollection class or null
+    */
+   static function getClassByType($itemtype,$check_dictionnary_type=false) {
       global $CFG_GLPI;
-      if (isset($CFG_GLPI["dictionnary_types"][$itemtype])) {
-         $collection_name = 'RuleDictionnary'.$itemtype.'Collection';
-         if (class_exists($collection_name)) {
-            return new $collection_name;
+      $item = new $itemtype;
+      if ($plug = isPluginItemType($item->getType())) {
+         $typeclass = 'Plugin'.$plug['plugin'].$plug['class'].'Collection';
+      } else {
+         $typeclass = $itemtype."Collection";
+      }
+
+      if (($check_dictionnary_type && isset($CFG_GLPI["dictionnary_types"][$itemtype]))
+         || !$check_dictionnary_type) {
+         if(class_exists($typeclass)) {
+            return new $typeclass();
+         }
+         else {
+            return NULL;
          }
       }
-      return NULL;
    }
 
    function showInheritedTab() {

@@ -649,64 +649,21 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['admin']['content']['rule']['page']     = '/front/rule.php';
 
       if ($sector=='admin' && $item == 'rule') {
-         $menu['admin']['content']['rule']['options']['ocs']['title'] = $LANG['Menu'][33];
-         $menu['admin']['content']['rule']['options']['ocs']['page']  = '/front/ruleocs.php';
-         $menu['admin']['content']['rule']['options']['ocs']['links']['search']
-                                                                      = '/front/ruleocs.php';
-
-         if (haveRight("rule_ocs","w")) {
-            $menu['admin']['content']['rule']['options']['ocs']['links']['add']
-                                                                        = '/front/ruleocs.form.php';
-         }
-
-
-         $menu['admin']['content']['rule']['options']['right']['title']
-                        = $LANG['Menu'][37]." / ".$LANG['Menu'][41];
-         $menu['admin']['content']['rule']['options']['right']['page']
-                        = '/front/ruleright.php';
-         $menu['admin']['content']['rule']['options']['right']['links']['search']
-                        = '/front/ruleright.php';
-
-         if (haveRight("rule_ldap","w")) {
-            $menu['admin']['content']['rule']['options']['right']['links']['add']
-                           = '/front/ruleright.form.php';
-         }
-
-
-         $menu['admin']['content']['rule']['options']['mailcollector']['title']
-                        = $LANG['rulesengine'][70];
-         $menu['admin']['content']['rule']['options']['mailcollector']['page']
-                        = '/front/rulemailcollector.php';
-         $menu['admin']['content']['rule']['options']['mailcollector']['links']['search']
-                        = '/front/rulemailcollector.php';
-
-         if (haveRight("rule_mailcollector","w")) {
-            $menu['admin']['content']['rule']['options']['mailcollector']['links']['add']
-                           = '/front/rulemailcollector.form.php';
-         }
-
-
-         $menu['admin']['content']['rule']['options']['ticket']['title'] = $LANG['Menu'][5];
-         $menu['admin']['content']['rule']['options']['ticket']['page']  = '/front/ruleticket.php';
-         $menu['admin']['content']['rule']['options']['ticket']['links']['search']
-                                                                         = '/front/ruleticket.php';
-
-         if (haveRight("entity_rule_ticket","w")) {
-            $menu['admin']['content']['rule']['options']['ticket']['links']['add']
-                                                                     = '/front/ruleticket.form.php';
-         }
-
-
-         $menu['admin']['content']['rule']['options']['softwarecategories']['title']
-                        = $LANG['softwarecategories'][5];
-         $menu['admin']['content']['rule']['options']['softwarecategories']['page']
-                        = '/front/rulesoftwarecategory.php';
-         $menu['admin']['content']['rule']['options']['softwarecategories']['links']['search']
-                        = '/front/rulesoftwarecategory.php';
-
-         if (haveRight("rule_softwarecategories","w")) {
-            $menu['admin']['content']['rule']['options']['softwarecategories']['links']['add']
-                           = '/front/rulesoftwarecategory.form.php';
+         foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+            $rulecollection = new $rulecollectionclass;
+            if ($rulecollection->canList()) {
+               $ruleclassname = $rulecollection->getRuleClassName();
+               $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['title']
+                              = $rulecollection->getRuleClass()->getTitle();
+               $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['page']
+                              = getItemTypeSearchURL($ruleclassname,false);
+               $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['search']
+                              = getItemTypeSearchURL($ruleclassname,false);
+               if ($rulecollection->canCreate()) {
+                  $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['add']
+                                 = getItemTypeFormURL($ruleclassname,false);
+               }
+            }
          }
       }
    }

@@ -55,7 +55,7 @@ if (isset($_POST["rules_id"])) {
 }
 
 $rule = new $sub_type();
-checkRight($rule->right,"r");
+$rule->checkGlobal('r');
 
 $test_rule_output = null;
 
