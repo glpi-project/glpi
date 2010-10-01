@@ -41,32 +41,21 @@ commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'], "admin", "rule", -1);
 echo "<table class='tab_cadre'>";
 echo "<tr><th>" . $LANG['rulesengine'][24] . "</th></tr>";
 
-if ($CFG_GLPI["use_ocs_mode"] && haveRight("rule_ocs","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleocs.php'>" . $LANG['rulesengine'][18] . "</a></td></tr>";
-}
-
-if (haveRight("rule_ldap","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleright.php'>" .$LANG['rulesengine'][19] . "</a></td> </tr>";
-}
-
-if (haveRight("rule_mailcollector","r")
-    && canUseImapPop()
-    && MailCollector::getNumberOfMailCollectors()) {
-
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='rulemailcollector.php'>" . $LANG['rulesengine'][70] . "</a></td></tr>";
-}
-
-if (haveRight("rule_ticket","r") || haveRight("entity_rule_ticket","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='ruleticket.php'>" . $LANG['rulesengine'][28] . "</a></td></tr>";
-}
-
-if (haveRight("rule_softwarecategories","r")) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='rulesoftwarecategory.php'>&nbsp;".$LANG['rulesengine'][37]."&nbsp;</a></td></tr>";
+foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+   $rulecollection = new $rulecollectionclass;
+   if ($rulecollection->canList()) {
+      if ($plug = isPluginItemType($rulecollectionclass)) {
+         $function = 'plugin_version_'.strtolower($plug['plugin']);
+         $plugname = $function();
+         $title = $plugname['name'].' - ';
+      } else {
+         $title = '';
+      }
+      $title .= $rulecollection->getTitle();
+      echo "<tr class='tab_bg_1'><td class='center b'>";
+      echo "<a href='".getItemTypeSearchURL($rulecollection->getRuleClassName())."'>";
+      echo $title."</a></td></tr>";
+   }
 }
 
 echo "</table>";

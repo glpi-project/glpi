@@ -47,6 +47,9 @@ class RuleTicketCollection extends RuleCollection {
       $this->entity = $entity;
    }
 
+   function canList() {
+      return haveRight("rule_ticket","r") || $this->canView();
+   }
    function getTitle() {
       global $LANG;
 

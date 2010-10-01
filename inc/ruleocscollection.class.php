@@ -56,6 +56,11 @@ class RuleOcsCollection extends RuleCollection {
       $this->ocsservers_id = $ocsservers_id;
    }
 
+   function canList() {
+      global $CFG_GLPI;
+      return $CFG_GLPI["use_ocs_mode"] && $this->canView();
+   }
+
    function getTitle() {
       global $LANG;
 

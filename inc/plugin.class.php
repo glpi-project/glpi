@@ -877,7 +877,7 @@ class Plugin extends CommonDBTM {
       foreach (array('contract_types', 'doc_types', 'helpdesk_types', 'helpdesk_visible_types',
                      'infocom_types', 'linkgroup_types', 'linkuser_types',
                      'massiveaction_noupdate_types', 'massiveaction_nodelete_types', 'netport_types',
-                     'reservation_types', 'notificationtemplates_types') as $att) {
+                     'reservation_types', 'notificationtemplates_types','rulecollections_types') as $att) {
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
             unset($attrib[$att]);
@@ -896,11 +896,11 @@ class Plugin extends CommonDBTM {
 
    /**
     * Display plugin actions for a device type
-    * 
+    *
     * @param $item object
     * @param $onglet Heading corresponding of the datas to display
     * @param $withtemplate is the item display like a template ?
-    * 
+    *
     * @return true if display have been done
     */
    static function displayAction(CommonGLPI $item, $onglet=1, $withtemplate=0) {
@@ -957,11 +957,11 @@ class Plugin extends CommonDBTM {
 
    /**
     * Display plugin headgsin for a device type
-    * 
+    *
     * @param $target page to link
     * @param $item object
     * @param $withtemplate is the item display like a template ?
-    * 
+    *
     * @return Array of tabs (sorted)
     */
    static function getTabs($target, CommonGLPI $item, $withtemplate) {

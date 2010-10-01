@@ -42,15 +42,16 @@ $rule = $rulecollection->getRuleClass();
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-checkRight($rulecollection->right,"r");
+
+$rulecollection->checkGlobal('r');
 
 if (isset($_GET["action"])) {
-   checkRight($rulecollection->right,"w");
+   $rulecollection->checkGlobal('w');
    $rulecollection->changeRuleOrder($_GET["id"],$_GET["action"]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["action"])) {
-   checkRight($rulecollection->right,"w");
+   $rulecollection->checkGlobal('w');
 
    // Use massive action system
    switch ($_POST["action"]) {
@@ -91,7 +92,7 @@ if (isset($_GET["action"])) {
    }
 
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
-   checkRight($rulecollection->right,"w");
+   $rulecollection->checkGlobal('w');
 
    // Current time
    $start = explode(" ",microtime());

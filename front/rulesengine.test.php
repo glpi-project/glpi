@@ -50,7 +50,7 @@ $rulecollection = RuleCollection::getClassByType($sub_type);
 if ($rulecollection->isRuleRecursive()) {
    $rulecollection->setEntity($_SESSION['glpiactive_entity']);
 }
-checkRight($rulecollection->right,"r");
+$rulecollection->checkGlobal('r');
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
    commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
