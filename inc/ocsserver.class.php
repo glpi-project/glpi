@@ -2747,7 +2747,7 @@ class OcsServer extends CommonDBTM {
     **/
    static function updateDevices($devicetype, $computers_id, $ocsid, $ocsservers_id, $cfg_ocs,
                                  $import_device, $import_ip, $dohistory) {
-      global $DBocs;
+      global $DBocs,$DB;
 
       $prevalue = $devicetype.self::FIELD_SEPARATOR;
 
@@ -4614,6 +4614,7 @@ class OcsServer extends CommonDBTM {
                            // Clean printer object
                            $p->reset();
                            $print["comment"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
+                           self::analizePrinterPorts($print, $line["PORT"]);
                            $id_printer = 0;
                            if ($cfg_ocs["import_printer"] == 1) {
                               //Config says : manage printers as global
@@ -4870,6 +4871,16 @@ class OcsServer extends CommonDBTM {
          }
       }
       return 1;
+   }
+
+   static function analizePrinterPorts(&$printer_infos, $port='') {
+      if (preg_match("/USB/i",$port)) {
+         $printer_infos['have_usb'] = 1;
+      } elseif(preg_match("/IP/i",$port)) {
+         $printer_infos['have_ethernet'] = 1;
+      } elseif(preg_match("/LPT/i",$port)) {
+         $printer_infos['have_parallel'] = 1;
+      }
    }
 }
 ?>
