@@ -1872,7 +1872,7 @@ function generate_entity($ID_entity) {
                            'link port to netw ".$net_loc[$data['locations_id']]."',
                            '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
                            '".$newIP['netwmask']."', '".$newIP['gateway']."',
-                           '".$newIP['subnet']."')";
+                           '".$newIP['subnet']."','comment')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $port1ID = $DB->insert_id();
@@ -1882,7 +1882,7 @@ function generate_entity($ID_entity) {
                            '".$net_port['NetworkEquipment'][$net_loc[$data['locations_id']]]++."',
                            'link port to netw $netwID', '".$newIP['ip']."', '$newMAC', '$iface',
                            '$netpointID', '".$newIP['netwmask']."', '".$newIP['gateway']."',
-                           '".$newIP['subnet']."')";
+                           '".$newIP['subnet']."','comment')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $port2ID = $DB->insert_id();
@@ -1915,7 +1915,7 @@ function generate_entity($ID_entity) {
       $modelID = mt_rand(1,$MAX['model_printers']);
       $recur   = mt_rand(0,1);
 
-      $query = "INSERT INTO `glpi_printers
+      $query = "INSERT INTO `glpi_printers`
                 VALUES (NULL, '$ID_entity', '$recur', 'printer of loc ".$data['id']."', NOW(),
                         'contact ".$data['id']."', 'num ".$data['id']."', '$techID',
                         '".getRandomString(10)."', '".getRandomString(10)."', '".mt_rand(0,1)."',
@@ -1994,7 +1994,7 @@ function generate_entity($ID_entity) {
                         '".$net_port['NetworkEquipment'][$netwID]++."',
                         'link port to printer of loc ".$data["id"]."', '".$newIP['ip']."',
                         '$newMAC','$iface', '$netpointID', '".$newIP['netwmask']."',
-                        '".$newIP['gateway']."', '".$newIP['subnet']."')";
+                        '".$newIP['gateway']."', '".$newIP['subnet']."','comment')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $port1ID = $DB->insert_id();
@@ -2002,7 +2002,7 @@ function generate_entity($ID_entity) {
                 VALUES (NULL, '$printID', 'Printer', '$ID_entity', '$recur',
                         '".$net_port['Printer'][$printID]++."', 'link port to netw $netwID',
                         '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
-                        '".$newIP['netwmask']."', '".$newIP['gateway']."', '".$newIP['subnet']."')";
+                        '".$newIP['netwmask']."', '".$newIP['gateway']."', '".$newIP['subnet']."', 'comment')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
       $port2ID = $DB->insert_id();
@@ -2170,7 +2170,7 @@ function generate_entity($ID_entity) {
                            '".$net_port['Computer'][$compID]++."', 'link port to netw $netwID',
                            '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
                            '".$newIP['netwmask']."', '".$newIP['gateway']."',
-                           '".$newIP['subnet']."')";
+                           '".$newIP['subnet']."','comment')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $port1ID = $DB->insert_id();
@@ -2179,7 +2179,7 @@ function generate_entity($ID_entity) {
                            '".$net_port['NetworkEquipment'][$netwID]++."',
                            'link port to computer $i', '".$newIP['ip']."', '$newMAC', '$iface',
                            '$netpointID', '".$newIP['netwmask']."', '".$newIP['gateway']."',
-                           '".$newIP['subnet']."')";
+                           '".$newIP['subnet']."','comment')";
          $DB->query($query) or die("PB REQUETE ".$query);
 
          $port2ID = $DB->insert_id();
