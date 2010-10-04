@@ -99,14 +99,14 @@ if (isset($_POST["delete_criteria"])) {
    Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} elseif (isset($_POST["add"])) {
+} else if (isset($_POST["add"])) {
    $rulecollection->checkGlobal('w');
 
    $newID = $rule->add($_POST);
    Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
    glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 
-} elseif (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
    $rulecollection->checkGlobal('w');
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
    $rule->delete($_POST);
