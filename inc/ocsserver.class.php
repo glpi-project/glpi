@@ -1212,7 +1212,7 @@ class OcsServer extends CommonDBTM {
       $DBocs->query($query);
 
       //No entity predefined, check rules
-      if ($defaultentity == -1) {
+      if ($defaultentity == -1 || $defaultlocation == -1) {
          //Try to affect computer to an entity
          $rule = new RuleOcsCollection($ocsservers_id);
          $data = array ();
@@ -1256,7 +1256,8 @@ class OcsServer extends CommonDBTM {
             $cfg_ocs = OcsServer::getConfig($ocsservers_id);
             $input = array ();
             $input["entities_id"] = $data['entities_id'];
-            $input["locations_id"] = $data['locations_id'];
+            if (isset($data['locations_id']))
+               $input["locations_id"] = $data['locations_id'];
             $input["name"] = $line["NAME"];
             $input["is_ocs_import"] = 1;
             if ($cfg_ocs["states_id_default"]>0) {
