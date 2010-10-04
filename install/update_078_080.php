@@ -559,9 +559,6 @@ function update078to080($output='HTML') {
    }
 
 
-   // TODO : MIgrate data from existig computers_id field of license
-   // Drop computers_id field in license
-
    displayMigrationMessage("080", $LANG['update'][141] . ' - Common'); // Updating schema
 
 
