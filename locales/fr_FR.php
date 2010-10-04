@@ -1723,6 +1723,7 @@ $LANG['rulesengine'][150]="Les règles affectées à l'entité ont été désact
 
 $LANG['satisfaction'][0]="Satisfaction";
 $LANG['satisfaction'][1]="Satisfaction sur la résolution du ticket";
+$LANG['satisfaction'][2]="Aucune enquête de générée";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";

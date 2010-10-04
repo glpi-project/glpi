@@ -56,26 +56,21 @@ class TicketSatisfaction extends CommonDropdown {
    /**
     * form for satisfaction
     *
-    *@param $ticket Object : the ticket
+    * @param $ticket Object : the ticket
    **/
    function showSatisfactionForm($ticket){
       global $LANG;
 
-     $id = $ticket->fields['id'];
-     $options = array();
-     $options['colspan'] = 1;
-     $options['id']      = $id;
-
-     if (!$this->getFromDB($id)) {
-        $this->getEmpty();
-        $this->fields['tickets_id'] = $id;
-     }
+      $tid = $ticket->fields['id'];
+      $options = array();
+      $options['colspan'] = 1;
 
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['satisfaction'][1]."&nbsp;:&nbsp;</td>";
       echo "<td>";
+      echo "<input type='hidden' name='tickets_id' value='$tid'>";
       Dropdown::showInteger("satisfaction", $this->fields["satisfaction"], 0, 5);
       echo "</td></tr>";
 
@@ -85,6 +80,7 @@ class TicketSatisfaction extends CommonDropdown {
       echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
+      $options['candel'] = false;
       $this->showFormButtons($options);
    }
 }

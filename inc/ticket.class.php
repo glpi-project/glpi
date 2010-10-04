@@ -171,7 +171,7 @@ class Ticket extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI, $DB;
 
       if ($this->fields['id'] > 0) {
          if (haveRight('observe_ticket','1')) {
@@ -185,7 +185,7 @@ class Ticket extends CommonDBTM {
          }
          $ong[3] = $LANG['job'][47];
          $ong[4] = $LANG['jobresolution'][2];
-         // enquete déclenchable manuellement et statut clos
+         // enquete si statut clos
          if ($this->fields['status'] == 'closed') {
             $ong[10] = $LANG['satisfaction'][0];
          }
@@ -4979,16 +4979,16 @@ class Ticket extends CommonDBTM {
                             AND `glpi_tickets`.`status` = 'closed'
                             AND `glpi_tickets`.`closedate` > '$max_closedate'
                             AND ADDDATE(`glpi_tickets`.`closedate`,
-                                        INTERVAL $delay DAY)<CURDATE()
+                                        INTERVAL $delay DAY)<NOW()
                             AND `glpi_ticketsatisfactions`.`id` IS NULL
                       ORDER BY `closedate` ASC";
-
+logDebug($query);
             $nb = 0;
             $max_closedate = '';
 
             foreach ($DB->request($query) as $tick) {
                $max_closedate = $tick['closedate'];
-               if (mt_rand(1, 100)<=$delay) {
+               if (mt_rand(1, 100)<=$rate) {
                   $inquest = new TicketSatisfaction();
                   if ($inquest->add(array('tickets_id'  => $tick['id'],
                                           'date_begin'  => $_SESSION["glpi_currenttime"],
@@ -5000,8 +5000,8 @@ class Ticket extends CommonDBTM {
 
             if ($max_closedate) {
                // Sauvegarde du max_closedate pour ne pas tester les même tickets 2 fois
-               $conf->update(array('id'            => $entity['id'],
-                                   'entities_id'   => $entity['entities_id'],
+               $conf->update(array('id'            => $conf->fields['id'],
+                                   'entities_id'   => $entity,
                                    'max_closedate' => $max_closedate));
             }
 
