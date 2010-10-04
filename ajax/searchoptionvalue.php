@@ -186,7 +186,7 @@ if (isset($_REQUEST['searchtype'])) {
                                                      array('value'    => $_REQUEST['value'],
                                                            'comments' => 0));
                      $display = true;
-
+		     break;
                   case "date" :
                   case "date_delay" :
                      showGenericDateTimeSearch($inputname, $_REQUEST['value'], false,
