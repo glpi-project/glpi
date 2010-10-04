@@ -622,10 +622,11 @@ class NotificationTarget extends CommonDBChild {
       $id = 0;
       if (!$search_in_object) {
          $id = $this->obj->getField($field);
-      }
-      elseif ($this->target_object) {
+
+      } else if ($this->target_object) {
          $id = $this->target_object->getField($field);
       }
+
       if ($id) {
          //Look for the user by his id
          $query = $this->getDistinctUserSql()."

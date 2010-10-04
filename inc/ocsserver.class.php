@@ -4873,12 +4873,16 @@ class OcsServer extends CommonDBTM {
       return 1;
    }
 
+
    static function analizePrinterPorts(&$printer_infos, $port='') {
+
       if (preg_match("/USB[0-9]*/i",$port)) {
          $printer_infos['have_usb'] = 1;
-      } elseif(preg_match("/IP_/i",$port)) {
+
+      } else if(preg_match("/IP_/i",$port)) {
          $printer_infos['have_ethernet'] = 1;
-      } elseif(preg_match("/LPT[0-9]:/i",$port)) {
+
+      } else if(preg_match("/LPT[0-9]:/i",$port)) {
          $printer_infos['have_parallel'] = 1;
       }
    }

@@ -1344,7 +1344,8 @@ class Rule extends CommonDBTM {
 
       if (!$display) {
          $rc = new $this->rulecriteriaclass();
-         autocompletionTextField($rc, "pattern", array('name' => $name,'value'=>$value));
+         autocompletionTextField($rc, "pattern", array('name'  => $name,
+                                                       'value' => $value));
       }
    }
 
