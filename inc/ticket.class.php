@@ -4952,7 +4952,7 @@ class Ticket extends CommonDBTM {
     * @return integer (0 : nothing done - 1 : done)
     *
     */
-   static function cronCreateInquests($task) {
+   static function cronCreateInquest($task) {
       global $DB, $CFG_GLPI;
 
       $ticket = new self();
