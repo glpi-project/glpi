@@ -112,7 +112,7 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
                    WHERE `tickets_id` = '".$_POST["id"]."'";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result) && $ticket->fields['status'] == 'closed') {
+         if ($DB->numrows($result) == 0 && $ticket->fields['status'] == 'closed') {
             $satisfaction = new TicketSatisfaction();
             $satisfaction->showSatisfactionForm($ticket);
          }

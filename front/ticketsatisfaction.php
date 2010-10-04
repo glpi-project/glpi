@@ -37,6 +37,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+// TODO : interest of this file ? 
+
 $dropdown = new TicketSatisfaction();
 include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>
