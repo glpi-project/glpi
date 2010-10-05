@@ -506,69 +506,57 @@ class Log extends CommonDBTM {
 
          } else {
             $fieldname = "";
-            $shorthistory = false;
             // It's not an internal device
             foreach ($SEARCHOPTION as $key2 => $val2) {
                if ($key2==$data["id_search_option"]) {
                   $tmp['field']= $val2["name"];
                   $fieldname=$val2["field"];
-                  if (isset($val2['shorthistory'])) {
-                     $shorthistory = $val2['shorthistory'];
-                  }
                   if (isset($val2['datatype'])) {
                      $tmp['datatype']= $val2["datatype"];
                   }
                }
             }
-            switch ($fieldname) {
-               case "comment":
-                  $tmp['change'] = $LANG['log'][64];
-                  break;
-               case "notepad" :
-                  $tmp['change'] =$LANG['log'][67];
-                  break;
-               default :
-                  if ($shorthistory) {
+               switch ($tmp['datatype']) {
+                  case "bool" :
+                     $data["old_value"]=Dropdown::getYesNo($data["old_value"]);
+                     $data["new_value"]=Dropdown::getYesNo($data["new_value"]);
+                     break;
+                  case "datetime" :
+                     $data["old_value"]=convDateTime($data["old_value"]);
+                     $data["new_value"]=convDateTime($data["new_value"]);
+                     break;
+                  case "date" :
+                     $data["old_value"]=convDate($data["old_value"]);
+                     $data["new_value"]=convDate($data["new_value"]);
+                     break;
+                  case "timestamp" :
+                     $data["old_value"]=timestampToString($data["old_value"]);
+                     $data["new_value"]=timestampToString($data["new_value"]);
+                     break;
+                  case "actiontime" :
+                     $data["old_value"]=Ticket::getActionTime($data["old_value"]);
+                     $data["new_value"]=Ticket::getActionTime($data["new_value"]);
+                     break;
+                  case "number" :
+                     $data["old_value"]=formatNumber($data["old_value"],false,0);
+                     $data["new_value"]=formatNumber($data["new_value"],false,0);
+                     break;
+                  case "decimal" :
+                     $data["old_value"]=formatNumber($data["old_value"]);
+                     $data["new_value"]=formatNumber($data["new_value"]);
+                     break;
+                  case "right" :
+                     $data["old_value"]=Profile::getRightValue($data["old_value"]);
+                     $data["new_value"]=Profile::getRightValue($data["new_value"]);
+                     break;
+                  case "text" :
                      $tmp['change'] = $LANG['log'][64];
-                  }
-                  else {
-                     switch ($tmp['datatype']) {
-                        case "bool" :
-                           $data["old_value"]=Dropdown::getYesNo($data["old_value"]);
-                           $data["new_value"]=Dropdown::getYesNo($data["new_value"]);
-                           break;
-                        case "datetime" :
-                           $data["old_value"]=convDateTime($data["old_value"]);
-                           $data["new_value"]=convDateTime($data["new_value"]);
-                           break;
-                        case "date" :
-                           $data["old_value"]=convDate($data["old_value"]);
-                           $data["new_value"]=convDate($data["new_value"]);
-                           break;
-                        case "timestamp" :
-                           $data["old_value"]=timestampToString($data["old_value"]);
-                           $data["new_value"]=timestampToString($data["new_value"]);
-                           break;
-                        case "actiontime" :
-                           $data["old_value"]=Ticket::getActionTime($data["old_value"]);
-                           $data["new_value"]=Ticket::getActionTime($data["new_value"]);
-                           break;
-                        case "number" :
-                           $data["old_value"]=formatNumber($data["old_value"],false,0);
-                           $data["new_value"]=formatNumber($data["new_value"],false,0);
-                           break;
-                        case "decimal" :
-                           $data["old_value"]=formatNumber($data["old_value"]);
-                           $data["new_value"]=formatNumber($data["new_value"]);
-                           break;
-                        case "right" :
-                           $data["old_value"]=Profile::getRightValue($data["old_value"]);
-                           $data["new_value"]=Profile::getRightValue($data["new_value"]);
-                           break;
-                     }
-                     $tmp['change'] = "\"".$data["old_value"]."\" --> \"".
-                               $data["new_value"]."\"";
-                  }
+                     break;
+               }
+               if (!isset($tmp['change'])) {
+                  $tmp['change'] = "\"".$data["old_value"]."\" --> \"".
+                              $data["new_value"]."\"";
+               }
             }
          }// fin du else
          $changes[] =$tmp;

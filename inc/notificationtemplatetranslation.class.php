@@ -242,19 +242,18 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $tab[2]['field']         = 'subject';
       $tab[2]['linkfield']     = '';
       $tab[2]['name']          = $LANG['knowbase'][14];
-      $tab[2]['shorthistory']  = true;
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'content_html';
       $tab[3]['linkfield']     = '';
       $tab[3]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
-      $tab[3]['shorthistory']  = true;
+      $tab[2]['datatype']      = 'text';
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'content_text';
       $tab[4]['linkfield']     = '';
       $tab[4]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
-      $tab[4]['shorthistory']  = true;
+      $tab[2]['datatype']      = 'text';
 
       return $tab;
    }
