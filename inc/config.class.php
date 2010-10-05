@@ -874,30 +874,10 @@ class Config extends CommonDBTM {
    static function dropdownGlobalManagement($name,$value) {
       global $LANG;
 
-      echo "<select name=\"".$name."\">";
-
-      $yesUnit = $LANG['peripherals'][32];
-      $yesGlobal = $LANG['peripherals'][31];
-
-      echo "<option value='2'";
-      if ($value == 2) {
-         echo " selected";
-      }
-      echo ">".$LANG['choice'][0]."</option>";
-
-      echo "<option value='0'";
-      if ($value == 0) {
-      echo " selected";
-      }
-      echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ".  $yesUnit . "</option>";
-
-      echo "<option value='1'";
-      if ($value == 1) {
-      echo " selected";
-      }
-      echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ". $yesGlobal . " </option>";
-
-      echo "</select>";
+      $choices[0] = $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ".  $LANG['peripherals'][32];
+      $choices[1] = $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ". $LANG['peripherals'][31];
+      $choices[2] = $LANG['choice'][0];
+      Dropdown::showFromArray($name,$choices,array('value'=>$value));
    }
 
    /**

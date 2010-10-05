@@ -432,13 +432,17 @@ class Printer  extends CommonDBTM {
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
       if ($this->can($ID,'w')) {
-         Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],
-                                    $this->fields["is_global"],
-                                    $CFG_GLPI["printers_management_restrict"]);
+         Dropdown::showGlobalSwitch($this->fields["id"],
+                                    array('withtemplate'=>$withtemplate,
+                                          'value'       => $this->fields["is_global"],
+                                          'management_restrict'
+                                                        => $CFG_GLPI["printers_management_restrict"],
+                                          'target'      => $target));
       } else {
-         // Use printers_management_restrict to disallow change this
-         Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],
-                                    $this->fields["is_global"]);
+         Dropdown::showGlobalSwitch($this->fields["id"],
+                                    array('withtemplate'=>$withtemplate,
+                                          'value'       => $this->fields["is_global"],
+                                          'target'      => $target));
       }
       echo "</td></tr>\n";
 

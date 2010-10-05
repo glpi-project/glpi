@@ -668,8 +668,9 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       }
    }
 
-
-   if (haveRight("rule_dictionnary_dropdown","r") || haveRight("rule_dictionnary_software","r")) {
+   if (haveRight("rule_dictionnary_dropdown","r")
+      || haveRight("rule_dictionnary_software","r")
+         || haveRight("rule_dictionnary_printer","r")) {
       $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
       $menu['admin']['content']['dictionnary']['shortcut'] = 'r';
       $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
@@ -887,12 +888,25 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['admin']['content']['dictionnary']['options']['os_version']['page']
                         = '/front/ruledictionnaryoperatingsystemversion.php';
          $menu['admin']['content']['dictionnary']['options']['os_version']['links']['search']
-                        = '/front/rruledictionnaryoperatingsystemversion.php';
+                        = '/front/ruledictionnaryoperatingsystemversion.php';
 
          if (haveRight("rule_dictionnary_dropdown","w")) {
             $menu['admin']['content']['dictionnary']['options']['os_version']['links']['add']
                            = '/front/ruledictionnaryoperatingsystemversion.form.php';
          }
+
+         $menu['admin']['content']['dictionnary']['options']['printer']['title']
+                        = $LANG['rulesengine'][39];
+         $menu['admin']['content']['dictionnary']['options']['printer']['page']
+                        = '/front/ruledictionnaryprinter.php';
+         $menu['admin']['content']['dictionnary']['options']['printer']['links']['search']
+                        = '/front/ruledictionnaryprinter.php';
+
+         if (haveRight("rule_dictionnary_printer","w")) {
+            $menu['admin']['content']['dictionnary']['options']['printer']['links']['add']
+                           = '/front/ruledictionnaryprinter.form.php';
+         }
+
       }
    }
 

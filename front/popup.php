@@ -94,7 +94,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          include "notification.tags.php";
          break;
    }
-   echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][13]."</a>";
+   echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][60]."</a>";
    echo "</div>";
    popFooter();
 }

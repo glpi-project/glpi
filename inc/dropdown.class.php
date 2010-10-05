@@ -210,7 +210,7 @@ class Dropdown {
             if ($params['value'] && $item->getFromDB($params['value'])) {
                echo '&nbsp;'.$item->getLinks();
             }
-         } 
+         }
 
       }
 
@@ -1020,33 +1020,47 @@ class Dropdown {
    * @param $value value of global state
    * @param $management_restrict global management restrict mode
    */
-   static function showGlobalSwitch($target,$withtemplate,$ID,$value,$management_restrict=0) {
+   static function showGlobalSwitch($ID,$attrs = array()) {
       global $LANG,$CFG_GLPI;
 
-      if ($value && empty($withtemplate)) {
+      $params['management_restrict'] = 0;
+      $params['value'] = 0;
+      //$params['withtemplate'] = '';
+      $params['name'] = 'is_global';
+      $params['target'] = '';
+
+      foreach ($attrs as $key => $value) {
+         if ($value != '') {
+            $params[$key] = $value;
+         }
+      }
+
+      if ($value && empty($params['withtemplate'])) {
          echo $LANG['peripherals'][31];
 
-         if ($management_restrict == 2) {
+         if ($params['management_restrict'] == 2) {
             echo "&nbsp;<a title=\"".$LANG['common'][39]."\" href=\"javascript:confirmAction('".addslashes($LANG['common'][40])."\\n".
-                        addslashes($LANG['common'][39])."','$target?unglobalize=unglobalize&amp;id=$ID')\">".
+                        addslashes($LANG['common'][39])."','".$params['target']."?unglobalize=unglobalize&amp;id=$ID')\">".
                         $LANG['common'][38]."</a>&nbsp;";
             echo "<img alt=\"".$LANG['common'][39]."\" title=\"".$LANG['common'][39]."\" src=\"".
                   $CFG_GLPI["root_doc"]."/pics/aide.png\">";
          }
       } else {
 
-         if ($management_restrict == 2) {
-            echo "<select name='is_global'>";
-            echo "<option value='0' ".(!$value?" selected":"").">".$LANG['peripherals'][32]."</option>";
-            echo "<option value='1' ".($value?" selected":"").">".$LANG['peripherals'][31]."</option>";
+         if ($params['management_restrict'] == 2) {
+            echo "<select name='".$params['name']."'>";
+            echo "<option value='".MANAGEMENT_UNITARY."' ".
+               (!$params['value']?" selected":"").">".$LANG['peripherals'][32]."</option>";
+            echo "<option value='".MANAGEMENT_GLOBAL."' ".
+               ($params['value']?" selected":"").">".$LANG['peripherals'][31]."</option>";
             echo "</select>";
          } else {
             // Templates edition
-            if (!empty($withtemplate)) {
-               echo "<input type='hidden' name='is_global' value=\"".$management_restrict."\">";
-               echo (!$management_restrict?$LANG['peripherals'][32]:$LANG['peripherals'][31]);
+            if (!empty($params['withtemplate'])) {
+               echo "<input type='hidden' name='is_global' value=\"".$params['management_restrict']."\">";
+               echo (!$params['management_restrict']?$LANG['peripherals'][32]:$LANG['peripherals'][31]);
             } else {
-               echo (!$value?$LANG['peripherals'][32]:$LANG['peripherals'][31]);
+               echo (!$params['value']?$LANG['peripherals'][32]:$LANG['peripherals'][31]);
             }
          }
       }
@@ -1332,7 +1346,17 @@ class Dropdown {
       }
    }
 
-
+   static function getGlobalSwitch ($value=0) {
+      global $LANG;
+      switch ($value) {
+         default :
+            return "";
+         case 0:
+            return $LANG['peripherals'][32];
+         case 1:
+            return $LANG['peripherals'][31];
+      }
+   }
 }
 
 ?>

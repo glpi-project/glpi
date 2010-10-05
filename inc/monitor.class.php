@@ -322,9 +322,12 @@ class Monitor extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showGlobalSwitch($target,$withtemplate,$this->fields["id"],
-                                 $this->fields["is_global"],
-                                 $CFG_GLPI["monitors_management_restrict"]);
+      Dropdown::showGlobalSwitch($this->fields["id"],
+                                 array('withtemplate'=>$withtemplate,
+                                       'value'       => $this->fields["is_global"],
+                                       'management_restrict'
+                                                     =>$CFG_GLPI["monitors_management_restrict"],
+                                       'target'     =>$target));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

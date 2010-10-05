@@ -54,6 +54,10 @@ if (haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href=\"ruledictionnarymanufacturer.php\">" . $LANG['rulesengine'][36] ."</a></td></tr>";
 }
+if (haveRight("rule_dictionnary_printer","r")) {
+   echo "<tr class='tab_bg_1'><td class='center b'>";
+   echo "<a href=\"ruledictionnaryprinter.php\">" . $LANG['rulesengine'][39] ."</a></td></tr>";
+}
 
 echo "</table></td>";
 
