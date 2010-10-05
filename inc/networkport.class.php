@@ -75,11 +75,11 @@ class NetworkPort extends CommonDBChild {
       // Only netpoint updates : ip and mac may be different.
       $tomatch=array("netpoints_id");
       $updates=array_intersect($this->updates,$tomatch);
-      if (count($this->updates)) {
+      if (count($updates)) {
          $save_ID=$this->fields["id"];
          $n=new NetworkPort_NetworkPort;
          if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
-            $this->updateInDB($this->updates);
+            $this->updateInDB($updates);
          }
          $this->fields["id"]=$save_ID;
       }
