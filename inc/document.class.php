@@ -397,6 +397,10 @@ class Document extends CommonDBTM {
    function getFromDBbyContent ($entity, $path) {
       global $DB;
 
+      if (empty($path)) {
+         return false;
+      }
+
       $sum = sha1_file($path);
       if (!$sum) {
          return false;
