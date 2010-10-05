@@ -57,10 +57,6 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
    $search = Search::getOptions($_POST["itemtype"]);
    $search = $search[$_POST["id_field"]];
 
-   // Specific budget case
-   if ($_POST["id_field"]==50) {
-      $search["linkfield"] = "budgets_id";
-   }
    $FIELDNAME_PRINTED = false;
 
    echo '&nbsp;';
@@ -116,7 +112,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                                               'options'  => $search));
             }
             $already_display = false;
-
+            
             if (isset($search['datatype'])) {
                switch ($search['datatype']) {
                   case "date" :
@@ -195,12 +191,6 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             Dropdown::show('Budget');
             break;
 
-         case "glpi_ocslinks" : // auto_update ocs_link
-            Dropdown::showYesNo("_auto_update_ocs");
-            echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
-            $FIELDNAME_PRINTED = true;
-            break;
-
          case "glpi_users" : // users
             switch ($search["linkfield"]) {
                case "users_id_assign" :
@@ -245,7 +235,28 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                                         array('itemtype' => $_POST["itemtype"],
                                               'options'  => $search));
             }
-            if (!$plugdisplay) {
+            $already_display = false;
+            
+            if (isset($search['datatype'])) {
+               switch ($search['datatype']) {
+                  case "date" :
+                     showDateFormItem($search["field"]);
+                     $already_display = true;
+                     break;
+
+                  case "datetime" :
+                     showDateTimeFormItem($search["field"]);
+                     $already_display = true;
+                     break;
+
+                  case "bool" :
+                     Dropdown::showYesNo($search["linkfield"]);
+                     $already_display = true;
+                     break;
+               }
+            }
+
+            if (!$plugdisplay && !$already_display) {
                Dropdown::show(getItemTypeForTable($search["table"]),
                               array('name'   => $search["linkfield"],
                                     'entity' => $_SESSION['glpiactiveentities']));
