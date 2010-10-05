@@ -1538,7 +1538,7 @@ class Profile extends CommonDBTM {
       $tab[100]['name']         = $LANG['setup'][615];
       $tab[100]['linkfield']    = '';
       $tab[100]['nosearch']     = true;
-      $tab[100]['shorthistory'] = true;
+      $tab[100]['datatype']     = 'text';
 
       $tab['other'] = $LANG['common'][62];
 
