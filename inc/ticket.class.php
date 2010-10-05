@@ -4386,14 +4386,17 @@ class Ticket extends CommonDBTM {
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_ticketfollowups`
                      ON (`glpi_tickets`.`id` = `glpi_ticketfollowups`.`tickets_id`)
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)".
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)
+                LEFT JOIN `glpi_profiles_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
+                LEFT JOIN `glpi_profiles` ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
          $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
       }
-      $query .="     AND `glpi_ticketfollowups`.`users_id` <> '0'
+      $query .="     AND `glpi_profiles`.`own_ticket` = 1
+                     AND `glpi_ticketfollowups`.`users_id` <> '0'
                      AND `glpi_ticketfollowups`.`users_id` IS NOT NULL
                ORDER BY realname, firstname, name";
 
