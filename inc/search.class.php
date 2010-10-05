@@ -2759,6 +2759,19 @@ class Search {
                return " LEFT JOIN `glpi_authldaps`
                            ON (`glpi_entitydatas`.`ldapservers_id` = `glpi_authldaps`.`id`)";
             }
+            if ($itemtype=='User') {
+               return " LEFT JOIN `glpi_authldaps`
+                           ON (`glpi_users`.`authtype` = ".Auth::LDAP."
+                               AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)";
+            }
+            break;
+
+         case "glpi_authmails" :
+            if ($itemtype=='User') {
+               return " LEFT JOIN `glpi_authmails`
+                           ON (`glpi_users`.`authtype` = ".Auth::MAIL."
+                               AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
+            }
             break;
 
          case "glpi_printermodels" :
@@ -4493,6 +4506,7 @@ class Search {
             $search[$itemtype][53]['linkfield']    = '';
             $search[$itemtype][53]['name']         = $LANG['financial'][26];
             $search[$itemtype][53]['forcegroupby'] = true;
+            $search[$itemtype][53]['realtable']    = 'glpi_suppliers';
 
             $search[$itemtype][54]['table']        = 'glpi_infocoms';
             $search[$itemtype][54]['field']        = 'value';

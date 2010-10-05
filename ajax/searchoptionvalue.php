@@ -60,16 +60,9 @@ if (isset($_REQUEST['searchtype'])) {
    $display   = false;
 
 
-   // Fix table
-   if (isset($searchopt['table'])) {
-      switch ($searchopt['table']) {
-         case "glpi_followup_requesttypes" :
-               $searchopt['table']='glpi_requesttypes';
-            break;
-         case "glpi_suppliers_infocoms" :
-               $searchopt['table']='glpi_suppliers';
-            break;
-      }
+   // Fix table name
+   if (isset($searchopt['realtable'])) {
+      $searchopt['table']=$searchopt['realtable'];
    }
 
    switch ($_REQUEST['searchtype']) {
