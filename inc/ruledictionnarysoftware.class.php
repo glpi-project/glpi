@@ -71,7 +71,7 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][105] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][78] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['ocsconfig'][6] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][132] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['software'][46] . "</td></tr>\n";
    }
 
@@ -119,7 +119,7 @@ class RuleDictionnarySoftware extends RuleCached {
       $actions['name']['name']          = $LANG['help'][31];
       $actions['name']['force_actions'] = array('assign','regex_result');
 
-      $actions['_ignore_ocs_import']['name'] = $LANG['ocsconfig'][6];
+      $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
       $actions['version']['name']          = $LANG['rulesengine'][78];
