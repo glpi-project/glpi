@@ -880,8 +880,16 @@ class Document extends CommonDBTM {
     **/
    static function uploadDocument(&$input,$FILEDESC) {
       global $LANG;
-
       if (!count($FILEDESC) || empty($FILEDESC['name']) || !is_file($FILEDESC['tmp_name'])) {
+         switch ($FILEDESC['error']) {
+            case 1 :
+            case 2 :
+               addMessageAfterRedirect($LANG['document'][23],false,ERROR);
+               break;
+            case 4 :
+               addMessageAfterRedirect($LANG['document'][28],false,ERROR);
+               break;
+         }
          return false;
       }
 
