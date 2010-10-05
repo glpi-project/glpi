@@ -65,16 +65,19 @@ class Log extends CommonDBTM {
       // needed to have  $SEARCHOPTION
       if ($item->getType() == 'Infocom') {
          $real_type = $item->fields['itemtype'];
-         $real_id = $item->fields['items_id'];
+         $real_id   = $item->fields['items_id'];
+
       } else {
          $real_type = $item->getType();
-         $real_id = $item->fields['id'];
+         $real_id   = $item->fields['id'];
       }
       $searchopt = Search::getOptions($real_type);
+
       if (!is_array($searchopt)) {
          return false;
       }
       $result = 0;
+
       foreach ($oldvalues as $key => $oldval) {
          $changes = array ();
 
@@ -88,40 +91,42 @@ class Log extends CommonDBTM {
                   $id_search_option = $key2; // Give ID of the $SEARCHOPTION
                   if ($val2["table"] == "glpi_infocoms") {
                      // 1st case : text field -> keep datas
-                     $changes = array (
-                        $id_search_option,
-                        addslashes($oldval),
-                        $values[$key]
-                     );
+                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
+
                   } else if ($val2["table"] == "glpi_suppliers_infocoms") {
                      // 2nd case ; link field -> get data from glpi_suppliers
-                     $changes = array (
-                        $id_search_option,
-                        addslashes(Dropdown::getDropdownName("glpi_suppliers", $oldval)),
-                        addslashes(Dropdown::getDropdownName("glpi_suppliers", $values[$key])));
+                     $changes = array($id_search_option,
+                                      addslashes(Dropdown::getDropdownName("glpi_suppliers",
+                                                                           $oldval)),
+                                      addslashes(Dropdown::getDropdownName("glpi_suppliers",
+                                                                           $values[$key])));
+
                   } else {
                      // 3rd case ; link field -> get data from dropdown (budget)
-                     $changes = array (
-                        $id_search_option,
-                        addslashes(Dropdown::getDropdownName($val2["table"], $oldval)),
-                        addslashes(Dropdown::getDropdownName($val2["table"], $values[$key])));
+                     $changes = array($id_search_option,
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $oldval)),
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $values[$key])));
                   }
                   break; // foreach exit
                }
             }
+
          } else { // Not an Infocom
             // Parsing $SEARCHOPTION to find changed field
             foreach ($searchopt as $key2 => $val2) {
                // Linkfield or standard field not massive action enable
                if ($val2["linkfield"] == $key
-                  || (empty ($val2["linkfield"])
-                     && $key == $val2["field"]
-                     && $val2["table"] == $item->getTable())) {
+                   || (empty ($val2["linkfield"])
+                       && $key == $val2["field"]
+                       && $val2["table"] == $item->getTable())) {
 
                   $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                   // 1st case : Ticket specific dropdown case (without table)
-                  if ($real_type=='Ticket' && in_array($key,array('status','urgency','impact','priority'))) {
+                  if ($real_type=='Ticket' && in_array($key, array('status', 'urgency', 'impact',
+                                                                   'priority'))) {
                      switch ($key) {
                         case 'status' :
                            $changes = array ($id_search_option,
@@ -148,36 +153,35 @@ class Log extends CommonDBTM {
                            break;
 
                      }
+
                   } else if ($val2["table"] == $item->getTable()) {
                      // 2nd case : text field -> keep datas
-                     $changes = array (
-                        $id_search_option,
-                        addslashes($oldval),
-                        $values[$key]
-                     );
-                  } else {
+                     $changes = array($id_search_option, addslashes($oldval), $values[$key]);
 
+                  } else {
                      if ($val2['table'] == 'glpi_users_validation') {
-                        $val2['table']='glpi_users';
+                        $val2['table'] = 'glpi_users';
                      }
 
                      // other cases ; link field -> get data from dropdown
-                     $changes = array (
-                        $id_search_option,
-                        addslashes(Dropdown::getDropdownName($val2["table"], $oldval)),
-                        addslashes(Dropdown::getDropdownName($val2["table"], $values[$key]))
-                     );
+                     $changes = array($id_search_option,
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $oldval)),
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $values[$key])));
                   }
                   break;
                }
             }
          }
+
          if (count($changes)) {
             $result = Log::history($real_id, $real_type, $changes);
          }
       }
       return $result;
    } // function construct_history
+
 
    /**
     * Log history
@@ -189,48 +193,48 @@ class Log extends CommonDBTM {
     * @param $linked_action
     *
     * @return boolean success
-    **/
-   static function history ($items_id,$itemtype,$changes,$itemtype_link='',$linked_action='0') {
+   **/
+   static function history ($items_id, $itemtype, $changes, $itemtype_link='', $linked_action='0') {
       global $DB;
 
-      $date_mod=$_SESSION["glpi_currenttime"];
+      $date_mod = $_SESSION["glpi_currenttime"];
       if (empty($changes)) {
          return false;
       }
 
       // create a query to insert history
-      $id_search_option=$changes[0];
-      $old_value=$changes[1];
-      $new_value=$changes[2];
+      $id_search_option = $changes[0];
+      $old_value        = $changes[1];
+      $new_value        = $changes[2];
 
       if ($uid=getLoginUserID(false)) {
          if (is_numeric($uid)) {
             $username = getUserName($uid,$link=0);
          } else { // For cron management
-            $username=$uid;
+            $username = $uid;
          }
+
       } else {
-         $username="";
+         $username = "";
       }
 
-      $old_value=mysql_real_escape_string(utf8_substr(stripslashes($old_value),0,180));
-      $new_value=mysql_real_escape_string(utf8_substr(stripslashes($new_value),0,180));
-      //echo $old_value;
+      $old_value = mysql_real_escape_string(utf8_substr(stripslashes($old_value), 0, 180));
+      $new_value = mysql_real_escape_string(utf8_substr(stripslashes($new_value), 0, 180));
 
       // Security to be sure that values do not pass over the max length
       if (utf8_strlen($old_value)>255) {
-         $old_value=utf8_substr($old_value,0,250);
+         $old_value = utf8_substr($old_value,0,250);
       }
       if (utf8_strlen($new_value)>255) {
-         $new_value=utf8_substr($new_value,0,250);
+         $new_value = utf8_substr($new_value,0,250);
       }
 
       // Build query
-      $query = "INSERT INTO
-                `glpi_logs` (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`,
-                             `date_mod`, `id_search_option`, `old_value`, `new_value`)
-                VALUES ('$items_id', '$itemtype', '$itemtype_link', '$linked_action','".
-                        addslashes($username)."', '$date_mod', '$id_search_option', 
+      $query = "INSERT INTO `glpi_logs`
+                       (`items_id`, `itemtype`, `itemtype_link`, `linked_action`, `user_name`,
+                        `date_mod`, `id_search_option`, `old_value`, `new_value`)
+                VALUES ('$items_id', '$itemtype', '$itemtype_link', '$linked_action',
+                        '".addslashes($username)."', '$date_mod', '$id_search_option',
                         '$old_value', '$new_value')";
 
       if ($DB->query($query)) {
@@ -239,18 +243,20 @@ class Log extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Show History of an item
     *
     * @param $item CommonDBTM object
-    **/
+   **/
    static function showForItem(CommonDBTM $item) {
       global $DB,$LANG;
 
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      $SEARCHOPTION=Search::getOptions($itemtype);
+      $SEARCHOPTION = Search::getOptions($itemtype);
+
       if (isset($_REQUEST["start"])) {
          $start = $_REQUEST["start"];
       } else {
@@ -292,6 +298,7 @@ class Log extends CommonDBTM {
       echo "</table></div>";
    }
 
+
    /**
     * Retrieve last history Data for an item
     *
@@ -300,20 +307,21 @@ class Log extends CommonDBTM {
     * @param $limit interfer max number of line to retrive (0 for all)
     *
     * @return array of localized log entry (TEXT only, no HTML)
-    */
+   **/
    static function getHistoryData(CommonDBTM $item, $start=0, $limit=0) {
       global $DB, $LANG;
 
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      $SEARCHOPTION=Search::getOptions($itemtype);
+      $SEARCHOPTION = Search::getOptions($itemtype);
 
-      $query="SELECT *
-              FROM `glpi_logs`
-              WHERE `items_id`='".$items_id."'
-                    AND `itemtype`='".$itemtype."'
-              ORDER BY `id` DESC";
+      $query = "SELECT *
+                FROM `glpi_logs`
+                WHERE `items_id` = '".$items_id."'
+                      AND `itemtype` = '".$itemtype."'
+                ORDER BY `id` DESC";
+
       if ($limit) {
          $query .= " LIMIT ".intval($start)."," . intval($limit);
       }
@@ -322,12 +330,13 @@ class Log extends CommonDBTM {
       foreach ($DB->request($query) as $data) {
          $tmp = array();
          $tmp['display_history'] = true;
-         $tmp['id'] = $data["id"];
-         $tmp['date_mod']=convDateTime($data["date_mod"]);
-         $tmp['user_name'] = $data["user_name"];
-         $tmp['field']= "";
-         $tmp['change']= "";
-         $tmp['datatype']= "";
+         $tmp['id']              = $data["id"];
+         $tmp['date_mod']        = convDateTime($data["date_mod"]);
+         $tmp['user_name']       = $data["user_name"];
+         $tmp['field']           = "";
+         $tmp['change']          = "";
+         $tmp['datatype']        = "";
+
          // This is an internal device ?
          if ($data["linked_action"]) {
             // Yes it is an internal device
@@ -341,73 +350,66 @@ class Log extends CommonDBTM {
                   break;
 
                case HISTORY_ADD_DEVICE :
-                  $tmp['field']=NOT_AVAILABLE;
+                  $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['devices'][25]." : "."\"".
-                            $data["new_value"]."\"";
+                  $tmp['change'] = $LANG['devices'][25]." : "."\"". $data["new_value"]."\"";
                   break;
 
                case HISTORY_UPDATE_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   $change = '';
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
-                     $tmp['field'] = $item->getTypeName();
-                     $specif_fields=$item->getSpecifityLabel();
+                     $item          = new $data["itemtype_link"]();
+                     $tmp['field']  = $item->getTypeName();
+                     $specif_fields = $item->getSpecifityLabel();
                      $tmp['change'] = $specif_fields['specificity']." : ";
                   }
-                  $tmp['change'] .= $data[ "old_value"]." --> "."\"".
-                             $data[ "new_value"]."\"";
+                  $tmp['change'] .= $data[ "old_value"]." --> "."\"". $data[ "new_value"]."\"";
                   break;
 
                case HISTORY_DELETE_DEVICE :
                   $tmp['field']=NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['devices'][26]." : "."\"".
-                            $data["old_value"]."\"";
+                  $tmp['change'] = $LANG['devices'][26]." : "."\"". $data["old_value"]."\"";
                   break;
 
                case HISTORY_INSTALL_SOFTWARE :
-                  $tmp['field']=$LANG['help'][31];
-                  $tmp['change'] = $LANG['software'][44]." : "."\"".
-                            $data["new_value"]."\"";
+                  $tmp['field']  = $LANG['help'][31];
+                  $tmp['change'] = $LANG['software'][44]." : "."\"".$data["new_value"]."\"";
                   break;
 
                case HISTORY_UNINSTALL_SOFTWARE :
-                  $tmp['field']=$LANG['help'][31];
-                  $tmp['change'] = $LANG['software'][45]." : "."\"".
-                            $data["old_value"]."\"";
+                  $tmp['field']  = $LANG['help'][31];
+                  $tmp['change'] = $LANG['software'][45]." : "."\"". $data["old_value"]."\"";
                   break;
 
                case HISTORY_DISCONNECT_DEVICE :
-                  $tmp['field']=NOT_AVAILABLE;
+                  $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][26]." : "."\"".
-                            $data["old_value"]."\"";
+                  $tmp['change'] = $LANG['log'][26]." : "."\"". $data["old_value"]."\"";
                   break;
 
                case HISTORY_CONNECT_DEVICE :
-                  $tmp['field']=NOT_AVAILABLE;
+                  $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][27]." : "."\"".
-                            $data["new_value"]."\"";
+                  $tmp['change'] = $LANG['log'][27]." : "."\"". $data["new_value"]."\"";
                   break;
 
                case HISTORY_OCS_IMPORT :
                   if (haveRight("view_ocsng","r")) {
-                     $tmp['field']="";
+                     $tmp['field']  = "";
                      $tmp['change'] = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]." :";
                      $tmp['change'].= " "."\"".$data["new_value"]."\"";
                   } else {
@@ -417,7 +419,7 @@ class Log extends CommonDBTM {
 
                case HISTORY_OCS_DELETE :
                   if (haveRight("view_ocsng","r")) {
-                     $tmp['field']="";
+                     $tmp['field']  ="";
                      $tmp['change'] = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]." :";
                      $tmp['change'].= " "."\"".$data["old_value"]."\"";
                   } else {
@@ -427,14 +429,14 @@ class Log extends CommonDBTM {
 
                case HISTORY_OCS_LINK :
                   if (haveRight("view_ocsng","r")) {
-                     $tmp['field']=NOT_AVAILABLE;
+                     $tmp['field'] = NOT_AVAILABLE;
                      if (class_exists($data["itemtype_link"])) {
-                        $item = new $data["itemtype_link"]();
+                        $item         = new $data["itemtype_link"]();
                         $tmp['field'] = $item->getTypeName();
                      }
-
                      $tmp['change'] = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]." :";
                      $tmp['change'].= " "."\"".$data["new_value"]."\"";
+
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -442,64 +444,63 @@ class Log extends CommonDBTM {
 
                case HISTORY_OCS_IDCHANGED :
                   if (haveRight("view_ocsng","r")) {
-                     $tmp['field']="";
+                     $tmp['field']  = "";
                      $tmp['change'] = $LANG['ocsng'][48]." "." : "."\"".
-                               $data["old_value"]."\" -->  : "."\"".
-                               $data["new_value"]."\"";
+                                      $data["old_value"]."\" -->  : "."\"".
+                                      $data["new_value"]."\"";
                   } else {
                      $tmp['display_history'] = false;
                   }
                   break;
 
                case HISTORY_LOG_SIMPLE_MESSAGE :
-                  $tmp['field']="";
+                  $tmp['field']  = "";
                   $tmp['change'] = $data["new_value"];
                   break;
 
                case HISTORY_ADD_RELATION :
-                  $tmp['field']=NOT_AVAILABLE;
+                  $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][32]." : "."\"".
-                            $data["new_value"]."\"";
+                  $tmp['change'] = $LANG['log'][32]." : "."\"". $data["new_value"]."\"";
                   break;
+
                case HISTORY_DEL_RELATION :
-                  $tmp['field']=NOT_AVAILABLE;
+                  $tmp['field'] = NOT_AVAILABLE;
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][33]." : "."\"".
-                            $data["old_value"]."\"";
+                  $tmp['change'] = $LANG['log'][33]." : "."\"". $data["old_value"]."\"";
                   break;
+
                case HISTORY_ADD_SUBITEM :
-                  $tmp['field']='';
+                  $tmp['field'] = '';
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][98]." : ".
-                            $tmp['field']." (".$data["new_value"].")";
+                  $tmp['change'] = $LANG['log'][98]." : ".$tmp['field']." (".$data["new_value"].")";
                   break;
+
                case HISTORY_UPDATE_SUBITEM :
-                  $tmp['field']='';
+                  $tmp['field'] = '';
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][99]." : ".
-                            $tmp['field']." (".$data["new_value"].")";
+                  $tmp['change'] = $LANG['log'][99]." : ".$tmp['field']." (".$data["new_value"].")";
                   break;
+
                case HISTORY_DELETE_SUBITEM :
-                  $tmp['field']='';
+                  $tmp['field'] = '';
                   if (class_exists($data["itemtype_link"])) {
-                     $item = new $data["itemtype_link"]();
+                     $item         = new $data["itemtype_link"]();
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][100]." : ".
-                            $tmp['field']." (".$data["old_value"].")";
+                  $tmp['change'] = $LANG['log'][100]." : ".$tmp['field']." (".$data["old_value"].")";
                   break;
 
             }
@@ -509,58 +510,69 @@ class Log extends CommonDBTM {
             // It's not an internal device
             foreach ($SEARCHOPTION as $key2 => $val2) {
                if ($key2==$data["id_search_option"]) {
-                  $tmp['field']= $val2["name"];
-                  $fieldname=$val2["field"];
+                  $tmp['field'] =  $val2["name"];
+                  $fieldname    = $val2["field"];
+
                   if (isset($val2['datatype'])) {
-                     $tmp['datatype']= $val2["datatype"];
+                     $tmp['datatype'] = $val2["datatype"];
                   }
                }
             }
+
             switch ($tmp['datatype']) {
                case "bool" :
-                  $data["old_value"]=Dropdown::getYesNo($data["old_value"]);
-                  $data["new_value"]=Dropdown::getYesNo($data["new_value"]);
+                  $data["old_value"] = Dropdown::getYesNo($data["old_value"]);
+                  $data["new_value"] = Dropdown::getYesNo($data["new_value"]);
                   break;
+
                case "datetime" :
-                  $data["old_value"]=convDateTime($data["old_value"]);
-                  $data["new_value"]=convDateTime($data["new_value"]);
+                  $data["old_value"] = convDateTime($data["old_value"]);
+                  $data["new_value"] = convDateTime($data["new_value"]);
                   break;
+
                case "date" :
-                  $data["old_value"]=convDate($data["old_value"]);
-                  $data["new_value"]=convDate($data["new_value"]);
+                  $data["old_value"] = convDate($data["old_value"]);
+                  $data["new_value"] = convDate($data["new_value"]);
                   break;
+
                case "timestamp" :
-                  $data["old_value"]=timestampToString($data["old_value"]);
-                  $data["new_value"]=timestampToString($data["new_value"]);
+                  $data["old_value"] = timestampToString($data["old_value"]);
+                  $data["new_value"] = timestampToString($data["new_value"]);
                   break;
+
                case "actiontime" :
-                  $data["old_value"]=Ticket::getActionTime($data["old_value"]);
-                  $data["new_value"]=Ticket::getActionTime($data["new_value"]);
+                  $data["old_value"] = Ticket::getActionTime($data["old_value"]);
+                  $data["new_value"] = Ticket::getActionTime($data["new_value"]);
                   break;
+
                case "number" :
-                  $data["old_value"]=formatNumber($data["old_value"],false,0);
-                  $data["new_value"]=formatNumber($data["new_value"],false,0);
+                  $data["old_value"] = formatNumber($data["old_value"],false,0);
+                  $data["new_value"] = formatNumber($data["new_value"],false,0);
                   break;
+
                case "decimal" :
-                  $data["old_value"]=formatNumber($data["old_value"]);
-                  $data["new_value"]=formatNumber($data["new_value"]);
+                  $data["old_value"] = formatNumber($data["old_value"]);
+                  $data["new_value"] = formatNumber($data["new_value"]);
                   break;
+
                case "right" :
-                  $data["old_value"]=Profile::getRightValue($data["old_value"]);
-                  $data["new_value"]=Profile::getRightValue($data["new_value"]);
+                  $data["old_value"] = Profile::getRightValue($data["old_value"]);
+                  $data["new_value"] = Profile::getRightValue($data["new_value"]);
                   break;
+
                case "text" :
                   $tmp['change'] = $LANG['log'][64];
                   break;
             }
+
             if (!isset($tmp['change'])) {
-               $tmp['change'] = "\"".$data["old_value"]."\" --> \"".
-                           $data["new_value"]."\"";
+               $tmp['change'] = "\"".$data["old_value"]."\" --> \"". $data["new_value"]."\"";
             }
          }
-         $changes[] =$tmp;
+         $changes[] = $tmp;
       }
       return $changes;
    }
+
 }
 ?>
