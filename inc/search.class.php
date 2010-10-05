@@ -2505,7 +2505,6 @@ class Search {
             case "datetime" :
             case "date" :
             case "date_delay" :
-               echo $searchtype;
 
                if ($searchopt[$ID]["datatype"]=='datetime') {
                   // Specific search for datetime
@@ -4213,7 +4212,9 @@ class Search {
       global $LANG, $CFG_GLPI;
 
       static $search = array();
-
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+      }
       if (!isset($search[$itemtype])) {
 
          // standard type first
@@ -4286,7 +4287,6 @@ class Search {
             $search['States'][80]['name']      = $LANG['entity'][0];
 
          } else if (class_exists($itemtype)) {
-            $item = new $itemtype();
             $search[$itemtype] = $item->getSearchOptions();
          }
 
@@ -4569,6 +4569,17 @@ class Search {
             }
          }
       }
+      // Complete linkfield if not define
+      foreach ($search[$itemtype] as $key => $val) {
+         if (!isset($val['linkfield'])) {
+            if (strcmp($item->getTable(),$val['table'])==0) {
+               $search[$itemtype][$key]['linkfield']=$val['field'];
+            } else {
+               $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
+            }
+         }
+      }
+
       return $search[$itemtype];
    }
 
