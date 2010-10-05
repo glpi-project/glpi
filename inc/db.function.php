@@ -279,7 +279,6 @@ function getAllDatasFromTable($table, $condition="", $usecache=false) {
    if (empty($condition) && $usecache && isset($cache[$table])) {
       return $cache[$table];
    }
-   echo "getAllDatasFromTable($table, $condition)\n";
 
    $datas=array();
    $query="SELECT *
