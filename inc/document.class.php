@@ -267,12 +267,9 @@ class Document extends CommonDBTM {
          echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
          echo "</td></tr>";
       }
-      $max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-      $max_size/=1024*1024;
-      $max_size=round($max_size,1);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][2]." (".$max_size." ".$LANG['common'][45].")&nbsp;:</td>";
+      echo "<td>".$LANG['document'][2]." (".self::getMaxUploadSize().")&nbsp;:</td>";
       echo "<td><input type='file' name='filename' value=\"".
                  $this->fields["filename"]."\" size='39'></td>";
       echo "</tr>";
@@ -309,6 +306,13 @@ class Document extends CommonDBTM {
       $this->addDivForTabs();
 
       return true;
+   }
+
+   static function getMaxUploadSize() {
+      global $LANG;
+      $max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+      $max_size/=1024*1024;
+      return round($max_size,1)." ".$LANG['common'][45];
    }
 
    /**
@@ -1182,7 +1186,8 @@ class Document extends CommonDBTM {
             echo "<input type='hidden' name='is_recursive' value='".($is_recursive?1:0)."'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
+            echo "<input type='file' name='filename' size='25'>&nbsp;";
+            echo "(".self::getMaxUploadSize().")&nbsp;";
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></td>";
 
             if ($item->getType() == 'Document') {

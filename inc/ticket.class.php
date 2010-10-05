@@ -3087,11 +3087,7 @@ class Ticket extends CommonDBTM {
 
       // Permit to add doc when creating a ticket
       if (!$ID) {
-         $max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-         $max_size/=1024*1024;
-         $max_size=round($max_size,1);
-
-         echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".$max_size." ".$LANG['common'][45].")&nbsp;:";
+         echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"".
                $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
