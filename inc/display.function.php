@@ -669,8 +669,9 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
    if (haveRight("rule_dictionnary_dropdown","r")
-      || haveRight("rule_dictionnary_software","r")
-         || haveRight("rule_dictionnary_printer","r")) {
+       || haveRight("rule_dictionnary_software","r")
+       || haveRight("rule_dictionnary_printer","r")) {
+
       $menu['admin']['content']['dictionnary']['title']    = $LANG['rulesengine'][77];
       $menu['admin']['content']['dictionnary']['shortcut'] = 'r';
       $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';

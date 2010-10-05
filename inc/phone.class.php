@@ -43,7 +43,7 @@ class Phone extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory=true;
-   protected $forward_entity_to=array('Infocom','ReservationItem','NetworkPort');
+   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
 
    static function getTypeName() {
       global $LANG;
@@ -55,48 +55,59 @@ class Phone extends CommonDBTM {
       return haveRight('phone', 'w');
    }
 
+
    function canView() {
       return haveRight('phone', 'r');
    }
 
-   function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
 
-      $ong=array();
+   function defineTabs($options=array()) {
+      global $LANG, $CFG_GLPI;
+
+      $ong = array();
       if ($this->fields['id'] > 0) {
-         $ong[1]=$LANG['title'][27];
+         $ong[1] = $LANG['title'][27];
+
          if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4]=$LANG['Menu'][26];
+            $ong[4] = $LANG['Menu'][26];
          }
+
          if (haveRight("document","r")) {
-            $ong[5]=$LANG['Menu'][27];
+            $ong[5] = $LANG['Menu'][27];
          }
 
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
-               $ong[6]=$LANG['title'][28];
+               $ong[6] = $LANG['title'][28];
             }
+
             if (haveRight("link","r")) {
-               $ong[7]=$LANG['title'][34];
+               $ong[7] = $LANG['title'][34];
             }
+
             if (haveRight("notes","r")) {
-               $ong[10]=$LANG['title'][37];
+               $ong[10] = $LANG['title'][37];
             }
+
             if (haveRight("reservation_central","r")) {
-               $ong[11]=$LANG['Menu'][17];
+               $ong[11] = $LANG['Menu'][17];
             }
-            $ong[12]=$LANG['title'][38];
+
+            $ong[12] = $LANG['title'][38];
          }
+
       } else { // New item
-         $ong[1]=$LANG['title'][26];
+         $ong[1] = $LANG['title'][26];
       }
+
       return $ong;
    }
+
 
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && $input["id"]>0) {
-         $input["_oldID"]=$input["id"];
+         $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
       unset($input['withtemplate']);
@@ -104,38 +115,45 @@ class Phone extends CommonDBTM {
       return $input;
    }
 
+
    function post_addItem() {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
+         $ic = new Infocom();
+
          if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
-            $ic->fields["items_id"]=$this->fields['id'];
+            $ic->fields["items_id"] = $this->fields['id'];
             unset ($ic->fields["id"]);
+
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
                                                      'Infocom', $this->input['entities_id']);
             }
+
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
             }
+
             if (empty($ic->fields['buy_date'])) {
                unset($ic->fields['buy_date']);
             }
+
             $ic->addToDB();
          }
 
          // ADD Ports
          $query = "SELECT `id`
                    FROM `glpi_networkports`
-                   WHERE `items_id`='".$this->input["_oldID"]."'
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               $np= new NetworkPort();
+               $np  = new NetworkPort();
                $npv = new NetworkPort_Vlan();
                $np->getFromDB($data["id"]);
                unset($np->fields["id"]);
@@ -143,7 +161,8 @@ class Phone extends CommonDBTM {
                unset($np->fields["mac"]);
                unset($np->fields["netpoints_id"]);
                $np->fields["items_id"]=$this->fields['id'];
-               $portid=$np->addToDB();
+               $portid = $np->addToDB();
+
                foreach ($DB->request('glpi_networkports_vlans',
                                      array('networkports_id' => $data["id"])) as $vlan) {
                   $npv->assignVlan($portid, $vlan['vlans_id']);
@@ -156,13 +175,15 @@ class Phone extends CommonDBTM {
                    FROM `glpi_contracts_items`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $contractitem=new Contract_Item();
+            $contractitem = new Contract_Item();
+
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype' => $this->getType(),
-                                        'items_id' => $this->fields['id']));
+                                        'itemtype'     => $this->getType(),
+                                        'items_id'     => $this->fields['id']));
             }
          }
 
@@ -171,18 +192,21 @@ class Phone extends CommonDBTM {
                    FROM `glpi_documents_items`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $docitem=new Document_Item();
+            $docitem = new Document_Item();
+
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->getType(),
-                                   'items_id' => $this->fields['id']));
+                                   'itemtype'     => $this->getType(),
+                                   'items_id'     => $this->fields['id']));
             }
          }
       }
 
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -191,16 +215,19 @@ class Phone extends CommonDBTM {
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->getType()."'
                       AND `items_id` = '".$this->fields['id']."'";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
+
             while ($data = $DB->fetch_array($result)) {
-               $data['_no_auto_action']=true;
+               $data['_no_auto_action'] = true;
                $conn->delete($data);
             }
          }
       }
    }
+
 
    /**
     * Print the phone form
@@ -215,11 +242,13 @@ class Phone extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      $target = $this->getFormURL();
+      $target       = $this->getFormURL();
       $withtemplate = '';
+
       if (isset($options['target'])) {
         $target = $options['target'];
       }
+
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
       }
@@ -239,25 +268,27 @@ class Phone extends CommonDBTM {
       $this->showFormHeader($options);
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
-         $template = "newcomp";
+         $template   = "newcomp";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
-         $template = "newtemplate";
+         $template   = "newtemplate";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else {
          $datestring = $LANG['common'][26]."&nbsp;: ";
-         $date = convDateTime($this->fields["date_mod"]);
-         $template = false;
+         $date       = convDateTime($this->fields["date_mod"]);
+         $template   = false;
       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"],"name",($template === "newcomp"),$this->getType(),
-                             $this->fields["entities_id"]);
-      autocompletionTextField($this,'name',array('value'=>$objectName));
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
+                             $this->getType(), $this->fields["entities_id"]);
+      autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
       echo "<td>";
@@ -291,7 +322,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"contact_num");
+      autocompletionTextField($this, "contact_num");
       echo "</td>";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>";
       echo "<td>";
@@ -300,7 +331,7 @@ class Phone extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td><td>";
-      autocompletionTextField($this,"contact");
+      autocompletionTextField($this, "contact");
       echo "</td>";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td>";
@@ -316,9 +347,9 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["otherserial"],"otherserial",($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
-      autocompletionTextField($this,'otherserial',array('value'=>$objectName));
+      $objectName = autoName($this->fields["otherserial"], "otherserial",($template === "newcomp"),
+                             $this->getType(), $this->fields["entities_id"]);
+      autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -330,11 +361,11 @@ class Phone extends CommonDBTM {
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showGlobalSwitch($this->fields["id"],
-                                 array('withtemplate'=>$withtemplate,
-                                       'value'       => $this->fields["is_global"],
+                                 array('withtemplate' => $withtemplate,
+                                       'value'        => $this->fields["is_global"],
                                        'management_restrict'
-                                                     =>$CFG_GLPI["phones_management_restrict"],
-                                       'target'      => $target));
+                                                      => $CFG_GLPI["phones_management_restrict"],
+                                       'target'       => $target));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -351,18 +382,18 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['phones'][36]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('PhonePowerSupply',array('value' => $this->fields["phonepowersupplies_id"]));
+      Dropdown::show('PhonePowerSupply', array('value' => $this->fields["phonepowersupplies_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][71]."&nbsp;:</td>";
       echo "<td>";
-      autocompletionTextField($this,"firmware");
+      autocompletionTextField($this, "firmware");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['phones'][40]."&nbsp;:</td><td>";
-      autocompletionTextField($this,"number_line");
+      autocompletionTextField($this, "number_line");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -371,12 +402,12 @@ class Phone extends CommonDBTM {
       // micro?
       echo "\n<table><tr><td>".$LANG['phones'][38]."</td>";
       echo "<td>&nbsp;";
-      Dropdown::showYesNo("have_headset",$this->fields["have_headset"]);
+      Dropdown::showYesNo("have_headset", $this->fields["have_headset"]);
       echo "</td></tr>";
       // hp?
       echo "<tr><td>".$LANG['phones'][39]."</td>";
       echo "<td>&nbsp;";
-      Dropdown::showYesNo("have_hp",$this->fields["have_hp"]);
+      Dropdown::showYesNo("have_hp", $this->fields["have_hp"]);
       echo "</td></tr></table>\n";
       echo "</td></tr>\n";
 
@@ -394,18 +425,20 @@ class Phone extends CommonDBTM {
       return true;
    }
 
-   /*
+
+   /**
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
-    */
+    **/
    function getSelectLinkedItem () {
 
       return "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`
-              WHERE `itemtype`='".$this->getType()."'
-                    AND `items_id`='" . $this->fields['id']."'";
+              WHERE `itemtype` = '".$this->getType()."'
+                    AND `items_id` = '" . $this->fields['id']."'";
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -534,6 +567,7 @@ class Phone extends CommonDBTM {
 
       return $tab;
    }
+
 }
 
 ?>

@@ -67,126 +67,152 @@ class Peripheral  extends CommonDBTM {
       return haveRight('peripheral', 'w');
    }
 
+
    function canView() {
       return haveRight('peripheral', 'r');
    }
 
+
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong=array();
+      $ong = array();
       if ($this->fields['id'] > 0) {
          if (haveRight("computer","r")) {
-            $ong[1]=$LANG['title'][27];
+            $ong[1] = $LANG['title'][27];
          }
+
          if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4]=$LANG['Menu'][26];
+            $ong[4] = $LANG['Menu'][26];
          }
+
          if (haveRight("document","r")) {
-            $ong[5]=$LANG['Menu'][27];
+            $ong[5] = $LANG['Menu'][27];
          }
+
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
-               $ong[6]=$LANG['title'][28];
+               $ong[6] = $LANG['title'][28];
             }
+
             if (haveRight("link","r")) {
-               $ong[7]=$LANG['title'][34];
+               $ong[7] = $LANG['title'][34];
             }
+
             if (haveRight("notes","r")) {
-               $ong[10]=$LANG['title'][37];
+               $ong[10] = $LANG['title'][37];
             }
+
             if (haveRight("reservation_central","r")) {
-               $ong[11]=$LANG['Menu'][17];
+               $ong[11] = $LANG['Menu'][17];
             }
-            $ong[12]=$LANG['title'][38];
+
+            $ong[12] = $LANG['title'][38];
          }
+
       } else { // New item
-         $ong[1]=$LANG['title'][26];
+         $ong[1] = $LANG['title'][26];
       }
+
       return $ong;
    }
+
 
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && $input["id"]>0) {
-         $input["_oldID"]=$input["id"];
+         $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
       unset($input['withtemplate']);
       return $input;
    }
 
+
    function post_addItem() {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
+         $ic = new Infocom();
          if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
             $ic->fields["items_id"]=$this->fields['id'];
             unset ($ic->fields["id"]);
+
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
-                                            'Infocom',$this->input['entities_id']);
+                                                     'Infocom', $this->input['entities_id']);
             }
+
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
             }
+
             if (empty($ic->fields['buy_date'])) {
                unset($ic->fields['buy_date']);
             }
+
             $ic->addToDB();
          }
+
          // ADD Ports
          $query = "SELECT `id`
                    FROM `glpi_networkports`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."';";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               $np= new NetworkPort();
+               $np  = new NetworkPort();
                $npv = new NetworkPort_Vlan();
                $np->getFromDB($data["id"]);
                unset($np->fields["id"]);
                unset($np->fields["ip"]);
                unset($np->fields["mac"]);
                unset($np->fields["netpoints_id"]);
-               $np->fields["items_id"]=$this->fields['id'];
-               $portid=$np->addToDB();
+               $np->fields["items_id"] = $this->fields['id'];
+               $portid = $np->addToDB();
+
                foreach ($DB->request('glpi_networkports_vlans',
                                      array('networkports_id' => $data["id"])) as $vlan) {
                   $npv->assignVlan($portid, $vlan['vlans_id']);
                }
             }
          }
+
          // ADD Contract
          $query = "SELECT `contracts_id`
                    FROM `glpi_contracts_items`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."';";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $contractitem=new Contract_Item();
+            $contractitem = new Contract_Item();
+
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype' => $this->getType(),
-                                        'items_id' => $this->fields['id']));
+                                        'itemtype'     => $this->getType(),
+                                        'items_id'     => $this->fields['id']));
             }
          }
+
          // ADD Documents
          $query = "SELECT `documents_id`
                    FROM `glpi_documents_items`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."';";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $docitem=new Document_Item();
+            $docitem = new Document_Item();
+
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->getType(),
-                                   'items_id' => $this->fields['id']));
+                                   'itemtype'     => $this->getType(),
+                                   'items_id'     => $this->fields['id']));
             }
          }
       }
@@ -200,16 +226,19 @@ class Peripheral  extends CommonDBTM {
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->getType()."'
                       AND `items_id` = '".$this->fields['id']."'";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
+
             while ($data = $DB->fetch_array($result)) {
-               $data['_no_auto_action']=true;
+               $data['_no_auto_action'] = true;
                $conn->delete($data);
             }
          }
       }
    }
+
 
    /**
     * Print the peripheral form
@@ -224,11 +253,13 @@ class Peripheral  extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      $target = $this->getFormURL();
+      $target       = $this->getFormURL();
       $withtemplate = '';
+
       if (isset($options['target'])) {
         $target = $options['target'];
       }
+
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
       }
@@ -245,17 +276,19 @@ class Peripheral  extends CommonDBTM {
       }
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
-         $template = "newcomp";
+         $template   = "newcomp";
          $datestring = $LANG['computers'][14];
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
-         $template = "newtemplate";
+         $template   = "newtemplate";
          $datestring = $LANG['computers'][14];
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else {
          $datestring = $LANG['common'][26];
-         $date = convDateTime($this->fields["date_mod"]);
-         $template = false;
+         $date       = convDateTime($this->fields["date_mod"]);
+         $template   = false;
       }
 
       $this->showTabs($options);
@@ -265,8 +298,8 @@ class Peripheral  extends CommonDBTM {
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
-      autocompletionTextField($this, "name", array('value'=>$objectName));
+                             $this->getType(), $this->fields["entities_id"]);
+      autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
@@ -327,8 +360,8 @@ class Peripheral  extends CommonDBTM {
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
-      autocompletionTextField($this, "otherserial", array('value'=>$objectName));
+                             $this->getType(), $this->fields["entities_id"]);
+      autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -340,11 +373,11 @@ class Peripheral  extends CommonDBTM {
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>\n";
       echo "<td>";
       Dropdown::showGlobalSwitch($this->fields["id"],
-                                 array('withtemplate'=>$withtemplate,
-                                       'value'       => $this->fields["is_global"],
+                                 array('withtemplate' => $withtemplate,
+                                       'value'        => $this->fields["is_global"],
                                        'management_restrict'
-                                                     =>$CFG_GLPI["peripherals_management_restrict"],
-                                       'target'      => $target));
+                                                      => $CFG_GLPI["peripherals_management_restrict"],
+                                       'target'       => $target));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -372,11 +405,12 @@ class Peripheral  extends CommonDBTM {
       return true;
    }
 
-   /*
+
+   /**
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
-    */
+    **/
    function getSelectLinkedItem () {
 
       return "SELECT 'Computer', `computers_id`
@@ -384,6 +418,7 @@ class Peripheral  extends CommonDBTM {
               WHERE `itemtype` = '".$this->getType()."'
                     AND `items_id` = '" . $this->fields['id']."'";
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -495,6 +530,7 @@ class Peripheral  extends CommonDBTM {
 
       return $tab;
    }
+
 }
 
 ?>
