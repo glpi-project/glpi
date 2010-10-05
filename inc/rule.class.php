@@ -1261,7 +1261,7 @@ class Rule extends CommonDBTM {
                      return $item->getTypeName();
                   }
                   if (empty($pattern)) {
-                  return $LANG['help'][30];
+                     return $LANG['help'][30];
                   }
                   break;
 
@@ -1410,7 +1410,8 @@ class Rule extends CommonDBTM {
 
       $crit = $this->getCriteria($ID);
       if (isset($crit['type'])
-          && ($condition!=Rule::PATTERN_IS && $condition!=Rule::PATTERN_IS_NOT)) {
+          && ($condition!=Rule::PATTERN_IS
+          && $condition!=Rule::PATTERN_IS_NOT)) {
 
          switch ($crit['type']) {
             case "dropdown" :
@@ -1436,7 +1437,6 @@ class Rule extends CommonDBTM {
             case "dropdown_priority" :
                return Ticket::getPriorityName($value);
          }
-      }
       }
       return $value;
    }
