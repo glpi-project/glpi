@@ -87,6 +87,8 @@ function update078to080($output='HTML') {
       $query = "CREATE TABLE `glpi_calendarsegments` (
                   `id` int(11) NOT NULL auto_increment,
                   `calendars_id` int(11) NOT NULL default '0',
+                  `entities_id` int(11) NOT NULL default '0',
+                  `is_recursive` tinyint(1) NOT NULL default '0',
                   `day` tinyint(1) NOT NULL default '1' COMMENT 'numer of the day based on date(w)',
                   `begin` time DEFAULT NULL,
                   `end` time DEFAULT NULL,
