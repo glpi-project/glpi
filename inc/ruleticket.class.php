@@ -68,7 +68,6 @@ class RuleTicket extends Rule {
    }
 
    function addSpecificParamsForPreview($input,$params) {
-
       if (!isset($params["entities_id"])) {
          $params["entities_id"] = $_SESSION["glpiactive_entity"];
       }
@@ -80,7 +79,15 @@ class RuleTicket extends Rule {
     * @param $fields fields values
     */
    function showSpecificCriteriasForPreview($fields) {
-      echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+      $entity_as_criteria=false;
+      foreach ($this->criterias as $criteria) {
+         if ($criteria->fields['criteria'] == 'entities_id') {
+            $entity_as_criteria=true;
+         }
+      }
+      if (!$entity_as_criteria) {
+         echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+      }
    }
 
    function executeActions($output,$params) {
