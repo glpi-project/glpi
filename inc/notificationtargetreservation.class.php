@@ -125,7 +125,7 @@ class NotificationTargetReservation extends NotificationTarget {
                 $this->datas['##reservation.item.tech##'] = Dropdown::getDropdownName('glpi_users',
                                                                      $item->getField('users_id_tech'));
             }
-            $tmp['##reservation.url##'] = urldecode($CFG_GLPI["url_base"].
+            $this->datas['##reservation.url##'] = urldecode($CFG_GLPI["url_base"].
                                        "/index.php?redirect=".strtolower($itemtype)."_".
                                                       $reservationitem->getField('id'));
          }
@@ -169,7 +169,6 @@ class NotificationTargetReservation extends NotificationTarget {
                     'reservation.end'         => $LANG['search'][9],
                     'reservation.comment'     => $LANG['common'][25],
                     'reservation.item.entity' => $LANG['entity'][0],
-                    'reservation.entity'      => $LANG['entity'][0],
                     'reservation.item.name'   => $LANG['financial'][104],
                     'reservation.item.tech'   => $LANG['common'][10]);
 
@@ -182,7 +181,8 @@ class NotificationTargetReservation extends NotificationTarget {
                                 'value'=>false,'foreach'=>true,
                                 'events'=>array('alert')));
 
-      $tag_alert= array('reservation.expirationdate'         => $LANG['search'][9]);
+      $tag_alert= array('reservation.expirationdate'         => $LANG['search'][9],
+                    'reservation.entity'      => $LANG['entity'][0],);
       foreach ($tag_alert as $tag => $label) {
          $this->addTagToList(array('tag'=>$tag,'label'=>$label,
                                    'value'=>true,'events'=>array('alert')));
