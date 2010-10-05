@@ -137,6 +137,8 @@ class TicketValidation  extends CommonDBChild {
 
          $input["users_id"] = getLoginUserID();
          $input["submission_date"] = $_SESSION["glpi_currenttime"];
+         $input["status"] = 'waiting';
+
       }
       return $input;
    }
