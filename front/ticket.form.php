@@ -106,7 +106,7 @@ if (isset($_POST["add"])) {
    
       Event::log($_REQUEST['_link']['tickets_id_1'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][119]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['id']);
 } else if (isset($_REQUEST['delete_link'])) {
    $ticket_ticket=new Ticket_Ticket();
    $ticket_ticket->check($_REQUEST['id'],'w');
