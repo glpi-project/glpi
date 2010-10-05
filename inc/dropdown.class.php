@@ -1306,7 +1306,7 @@ class Dropdown {
                   echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
                }
             }
-            if ($itemtype!='Entity'
+            if ($itemtype!='Entity' && $itemtype!='Calendar'
                 && ($item instanceof CommonDropdown)
                 && $item->maybeRecursive()){
                if ($isadmin) {
