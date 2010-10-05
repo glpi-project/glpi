@@ -1,7 +1,27 @@
-This document duplicates reference information found at http://www.ja-sig.org/wiki/display/CASC/phpCAS+ChangeLog
+This document duplicates reference information found at https://wiki.jasig.org/display/CASC/phpCAS+ChangeLog
 for interested parties, in the case the wiki wouldn't be available.
 
 ----
+Changes in version 1.1.3
+  Bug Fixes
+   * removal of the non functional pgt-db backend [PHPCAS-81] (Joachim Fritschi)
+
+Changes in version 1.1.3RC1
+ Security Issue
+    * CVE-2010-3690 phpCAS: XSS during a proxy callback [PHPCAS-80] (Joachim Fritschi)
+    * CVE-2010-3691 phpCAS: prevent symlink attacks during a proxy callback [PHPCAS-80] (Joachim Fritschi)
+    * CVE-2010-3692 phpCAS: directory traversal during a proxy callback [PHPCAS-80] (Joachim Fritschi)
+
+ Bug Fixes
+   * fix missing $this in domxml-php4-to-php5 [PHPCAS-73] (Iñaki Arenaza)
+   * fix broken redirection with safari [PHPCAS-79] (Alex Barker)
+   * fix missing exit() call during ticket validation [PHPCAS-76] (Igor Blanco,Joachim Fritschi)
+   * fix a notice because REQUEST_URL is not defined on IIS [PHPCAS-81] (Iñaki Arenaza)
+   * fix a typo in pgt-db.php [PHPCAS-75] (Julien Cochennec)
+ 
+ Improvements
+   * upgrade domxml-php4-to-php5 to the newest version [PHPCAS-74] (Joachim Fritschi)
+
 Changes in version 1.1.2
    * None
    
