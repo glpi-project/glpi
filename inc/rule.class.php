@@ -1240,39 +1240,40 @@ class Rule extends CommonDBTM {
    function getCriteriaDisplayPattern($ID, $condition, $pattern) {
       global $LANG;
 
-      $crit = $this->getCriteria($ID);
-      if (isset($crit['type'])
-          && ($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
+      if (($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
+         $crit = $this->getCriteria($ID);
+         if (isset($crit['type'])) {
 
-         switch ($crit['type']) {
-            case "yesonly" :
-            case "yesno" :
-               return Dropdown::getYesNo($pattern);
+            switch ($crit['type']) {
+               case "yesonly" :
+               case "yesno" :
+                  return Dropdown::getYesNo($pattern);
 
-            case "dropdown" :
-               return Dropdown::getDropdownName($crit["table"], $pattern);
+               case "dropdown" :
+                  return Dropdown::getDropdownName($crit["table"], $pattern);
 
-            case "dropdown_users" :
-               return getUserName($pattern);
+               case "dropdown_users" :
+                  return getUserName($pattern);
 
-            case "dropdown_tracking_itemtype" :
-               if (class_exists($pattern)) {
-                  $item = new $pattern();
-                  return $item->getTypeName();
-               }
-               if (empty($pattern)) {
-                 return $LANG['help'][30];
-               }
-               break;
+               case "dropdown_tracking_itemtype" :
+                  if (class_exists($pattern)) {
+                     $item = new $pattern();
+                     return $item->getTypeName();
+                  }
+                  if (empty($pattern)) {
+                  return $LANG['help'][30];
+                  }
+                  break;
 
-            case "dropdown_priority" :
-               return Ticket::getPriorityName($pattern);
+               case "dropdown_priority" :
+                  return Ticket::getPriorityName($pattern);
 
-            case "dropdown_urgency" :
-               return Ticket::getUrgencyName($pattern);
+               case "dropdown_urgency" :
+                  return Ticket::getUrgencyName($pattern);
 
-            case "dropdown_impact" :
-               return Ticket::getImpactName($pattern);
+               case "dropdown_impact" :
+                  return Ticket::getImpactName($pattern);
+            }
          }
       }
       return $pattern;
@@ -1435,6 +1436,7 @@ class Rule extends CommonDBTM {
             case "dropdown_priority" :
                return Ticket::getPriorityName($value);
          }
+      }
       }
       return $value;
    }
