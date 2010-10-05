@@ -67,49 +67,59 @@ class Monitor extends CommonDBTM {
       return haveRight('monitor', 'w');
    }
 
+
    function canView() {
       return haveRight('monitor', 'r');
    }
 
+
    function defineTabs($options=array()) {
       global $LANG,$CFG_GLPI;
 
-      $ong=array();
+      $ong = array();
       if ($this->fields['id'] > 0) {
          if (haveRight("computer","r")) {
-            $ong[1]=$LANG['title'][27];
+            $ong[1] = $LANG['title'][27];
          }
+
          if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4]=$LANG['Menu'][26];
+            $ong[4] = $LANG['Menu'][26];
          }
+
          if (haveRight("document","r")) {
-            $ong[5]=$LANG['Menu'][27];
+            $ong[5] = $LANG['Menu'][27];
          }
+
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
-               $ong[6]=$LANG['title'][28];
+               $ong[6] = $LANG['title'][28];
             }
+
             if (haveRight("link","r")) {
-               $ong[7]=$LANG['title'][34];
+               $ong[7] = $LANG['title'][34];
             }
+
             if (haveRight("notes","r")) {
-               $ong[10]=$LANG['title'][37];
+               $ong[10] = $LANG['title'][37];
             }
+
             if (haveRight("reservation_central","r")) {
-               $ong[11]=$LANG['Menu'][17];
+               $ong[11] = $LANG['Menu'][17];
             }
-            $ong[12]=$LANG['title'][38];
+            $ong[12] = $LANG['title'][38];
          }
+
       } else { // New item
-         $ong[1]=$LANG['title'][26];
+         $ong[1] = $LANG['title'][26];
       }
       return $ong;
    }
 
+
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && $input["id"]>0) {
-         $input["_oldID"]=$input["id"];
+         $input["_oldID"] = $input["id"];
       }
       if (isset($input["size"]) && $input["size"] == '') {
          unset($input["size"]);
@@ -120,24 +130,28 @@ class Monitor extends CommonDBTM {
       return $input;
    }
 
+
    function post_addItem() {
-      global $DB,$CFG_GLPI;
+      global $DB;
 
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
+         $ic = new Infocom();
          if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
             $ic->fields["items_id"]=$this->fields['id'];
             unset ($ic->fields["id"]);
+
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
                                                      'Infocom', $this->input['entities_id']);
             }
+
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
             }
+
             if (empty($ic->fields['buy_date'])) {
                unset($ic->fields['buy_date']);
             }
@@ -147,34 +161,37 @@ class Monitor extends CommonDBTM {
          // ADD Contract
          $query = "SELECT `contracts_id`
                    FROM `glpi_contracts_items`
-                   WHERE `items_id`='".$this->input["_oldID"]."'
-                         AND `itemtype`='".$this->getType()."'";
-         $result=$DB->query($query);
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
+                         AND `itemtype` = '".$this->getType()."'";
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $contractitem=new Contract_Item();
+            $contractitem = new Contract_Item();
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype' => $this->getType(),
-                                        'items_id' => $this->fields['id']));
+                                        'itemtype'     => $this->getType(),
+                                        'items_id'     => $this->fields['id']));
             }
          }
          // ADD Documents
          $query = "SELECT `documents_id`
                    FROM `glpi_documents_items`
-                   WHERE `items_id`='".$this->input["_oldID"]."'
-                         AND `itemtype`='".$this->getType()."'";
-         $result=$DB->query($query);
+                   WHERE `items_id` = '".$this->input["_oldID"]."'
+                         AND `itemtype` = '".$this->getType()."'";
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $docitem=new Document_Item();
+            $docitem = new Document_Item();
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->getType(),
-                                   'items_id' => $this->fields['id']));
+                                   'itemtype'     => $this->getType(),
+                                   'items_id'     => $this->fields['id']));
             }
          }
       }
 
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -183,16 +200,19 @@ class Monitor extends CommonDBTM {
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->getType()."'
                       AND `items_id` = '".$this->fields['id']."'";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
+
             while ($data = $DB->fetch_array($result)) {
-               $data['_no_auto_action']=true;
+               $data['_no_auto_action'] = true;
                $conn->delete($data);
             }
          }
       }
    }
+
 
    /**
     * Print the monitor form
@@ -207,47 +227,52 @@ class Monitor extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      $target = $this->getFormURL();
+      $target       = $this->getFormURL();
       $withtemplate = '';
+
       if (isset($options['target'])) {
         $target = $options['target'];
       }
+
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
       }
 
-      if (!haveRight("monitor","r")) {
+      if (!haveRight("monitor", "r")) {
          return false;
       }
+
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, 'r');
       } else {
          // Create item
-         $this->check(-1,'w');
+         $this->check(-1, 'w');
       }
 
       $this->showTabs($options);
       $this->showFormHeader($options);
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
-         $template = "newcomp";
+         $template   = "newcomp";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
-         $template = "newtemplate";
+         $template   = "newtemplate";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else {
          $datestring = $LANG['common'][26]."&nbsp;: ";
-         $date = convDateTime($this->fields["date_mod"]);
-         $template = false;
+         $date       = convDateTime($this->fields["date_mod"]);
+         $template   = false;
       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
+                             $this->getType(), $this->fields["entities_id"]);
       autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>";
@@ -291,11 +316,11 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][18]."&nbsp;: </td>";
+      echo "<td>".$LANG['common'][18]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this, "contact");
       echo "</td>";
-      echo "<td>".$LANG['common'][19]."&nbsp;: </td>";
+      echo "<td>".$LANG['common'][19]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this, "serial");
       echo "</td></tr>";
@@ -310,7 +335,7 @@ class Monitor extends CommonDBTM {
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
+                             $this->getType(), $this->fields["entities_id"]);
       autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>";
 
@@ -323,11 +348,11 @@ class Monitor extends CommonDBTM {
       echo "<td>".$LANG['peripherals'][33]."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showGlobalSwitch($this->fields["id"],
-                                 array('withtemplate'=>$withtemplate,
-                                       'value'       => $this->fields["is_global"],
+                                 array('withtemplate' => $withtemplate,
+                                       'value'        => $this->fields["is_global"],
                                        'management_restrict'
-                                                     =>$CFG_GLPI["monitors_management_restrict"],
-                                       'target'     =>$target));
+                                                      => $CFG_GLPI["monitors_management_restrict"],
+                                       'target'       => $target));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -346,42 +371,43 @@ class Monitor extends CommonDBTM {
       echo "<td><table>";
       // micro?
       echo "<tr><td>".$LANG['monitors'][14]."</td><td>";
-      Dropdown::showYesNo("have_micro",$this->fields["have_micro"]);
+      Dropdown::showYesNo("have_micro", $this->fields["have_micro"]);
       // speakers?
       echo "</td><td>".$LANG['monitors'][15]."</td><td>";
-      Dropdown::showYesNo("have_speaker",$this->fields["have_speaker"]);
+      Dropdown::showYesNo("have_speaker", $this->fields["have_speaker"]);
       echo "</td></tr>";
 
      // sub-d?
       echo "<tr><td>".$LANG['monitors'][19]."</td><td>";
-      Dropdown::showYesNo("have_subd",$this->fields["have_subd"]);
+      Dropdown::showYesNo("have_subd", $this->fields["have_subd"]);
       // bnc?
       echo "</td><td>".$LANG['monitors'][20]."</td><td>";
-      Dropdown::showYesNo("have_bnc",$this->fields["have_bnc"]);
+      Dropdown::showYesNo("have_bnc", $this->fields["have_bnc"]);
       echo "</td></tr>";
 
       // dvi?
       echo "<tr><td>".$LANG['monitors'][32]."</td><td>";
-      Dropdown::showYesNo("have_dvi",$this->fields["have_dvi"]);
+      Dropdown::showYesNo("have_dvi", $this->fields["have_dvi"]);
       // pivot ?
       echo "</td><td>".$LANG['monitors'][33]."</td><td>";
-      Dropdown::showYesNo("have_pivot",$this->fields["have_pivot"]);
+      Dropdown::showYesNo("have_pivot", $this->fields["have_pivot"]);
       echo "</td></tr>";
       // hdmi?
       echo "<tr><td>".$LANG['monitors'][34]."</td><td>";
-      Dropdown::showYesNo("have_hdmi",$this->fields["have_hdmi"]);
+      Dropdown::showYesNo("have_hdmi", $this->fields["have_hdmi"]);
       // pivot ?
       echo "</td><td colspan='2'>&nbsp;";
       echo "</td></tr>";
       echo "</table></td></tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center' height='30'>".$datestring."&nbsp;".$date;
+
       if (!$template && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
          echo "(".$LANG['common'][13]."&nbsp;: ".$this->fields['template_name'].")</span>";
       }
+
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -389,7 +415,8 @@ class Monitor extends CommonDBTM {
       return true;
    }
 
-   /*
+
+   /**
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
@@ -398,9 +425,10 @@ class Monitor extends CommonDBTM {
 
       return "SELECT 'Computer', `computers_id`
               FROM `glpi_computers_items`
-              WHERE `itemtype`='".$this->getType()."'
-                    AND `items_id`='" . $this->fields['id']."'";
+              WHERE `itemtype` = '".$this->getType()."'
+                    AND `items_id` = '" . $this->fields['id']."'";
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -555,6 +583,7 @@ class Monitor extends CommonDBTM {
 
       return $tab;
    }
+
 }
 
 ?>
