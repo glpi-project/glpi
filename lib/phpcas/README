@@ -1,11 +1,11 @@
 README
-phpCAS - http://www.ja-sig.org/wiki/display/CASC/phpCAS
+phpCAS - https://wiki.jasig.org/display/CASC/phpCAS
 This software contains a client library for PHP, which can be used to identify
 Central Authentication Service (CAS) authenticated users.
 
 Please see the phpCAS website for more information.
 
-http://www.ja-sig.org/wiki/display/CASC/phpCAS
+https://wiki.jasig.org/display/CASC/phpCAS
 
 LICENSE
 Copyright © 2003-2010, The ESUP-Portail consortium & the JA-SIG Collaborative.
