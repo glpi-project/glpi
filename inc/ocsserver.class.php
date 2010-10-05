@@ -4608,6 +4608,7 @@ class OcsServer extends CommonDBTM {
                      $line = clean_cross_side_scripting_deep(addslashes_deep($line));
                      // TO TEST : PARSE NAME to have real name.
                      $print["name"] = $line["NAME"];
+
                      if (empty ($print["name"])) {
                         $print["name"] = $line["DRIVER"];
                      }
@@ -4615,10 +4616,11 @@ class OcsServer extends CommonDBTM {
                     $management_process = $cfg_ocs["import_printer"];
 
                      //Params for the dictionnary
-                     $params['name'] = $print['name'];
+                     $params['name']         = $print['name'];
                      $params['manufacturer'] = "";
-                     $params['DRIVER'] = $line['DRIVER'];
-                     $params['PORT'] = $line['PORT'];
+                     $params['DRIVER']       = $line['DRIVER'];
+                     $params['PORT']         = $line['PORT'];
+
                      if (!empty ($print["name"])) {
                         $rulecollection = new RuleDictionnaryPrinterCollection();
                         $res_rule = addslashes_deep($rulecollection->processAllRules($params,
@@ -4626,15 +4628,17 @@ class OcsServer extends CommonDBTM {
                                                                                      array()));
 
                         if (!isset($res_rule["_ignore_ocs_import"])
-                              || !$res_rule["_ignore_ocs_import"]) {
+                            || !$res_rule["_ignore_ocs_import"]) {
+
                            foreach ($res_rule as $key => $value) {
                               if ($value != '' && $value[0] != '_') {
                                  $print[$key] = $value;
                               }
                            }
 
-                           if (isset($res_rule['is_global']))
-                           logDebug($res_rule);
+                           if (isset($res_rule['is_global'])) {
+                              logDebug($res_rule);
+                           }
 
                            if (isset($res_rule['is_global'])) {
                               if (!$res_rule['is_global']) {
@@ -4650,6 +4654,7 @@ class OcsServer extends CommonDBTM {
                               $print["comment"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
                               self::analizePrinterPorts($print, $line["PORT"]);
                               $id_printer = 0;
+
                               if ($management_process == 1) {
                                  //Config says : manage printers as global
                                  //check if printers already exists in GLPI
@@ -4660,18 +4665,23 @@ class OcsServer extends CommonDBTM {
                                                  AND `is_global` = '1'
                                                  AND `entities_id` = '$entity'";
                                  $result_search = $DB->query($query);
+
                                  if ($DB->numrows($result_search) > 0) {
                                     //Periph is already in GLPI
                                     //Do not import anything just get periph ID for link
                                     $id_printer = $DB->result($result_search, 0, "id");
+
                                  } else {
                                     $input = $print;
+
                                     if ($cfg_ocs["states_id_default"]>0) {
                                        $input["states_id"] = $cfg_ocs["states_id_default"];
                                     }
                                     $input["entities_id"] = $entity;
-                                    if (isset($res_rule['is_global']))
-                                    logDebug("global",$input);
+
+                                    if (isset($res_rule['is_global'])) {
+                                       logDebug("global",$input);
+                                    }
                                     $id_printer = $p->add($input);
                                  }
 
@@ -4680,12 +4690,15 @@ class OcsServer extends CommonDBTM {
                                  //Import all printers as non global.
                                  $input = $print;
                                  $input["is_global"] = MANAGEMENT_UNITARY;
+
                                  if ($cfg_ocs["states_id_default"]>0) {
                                     $input["states_id"] = $cfg_ocs["states_id_default"];
                                  }
                                  $input["entities_id"] = $entity;
-                                    if (isset($res_rule['is_global']))
+
+                                 if (isset($res_rule['is_global'])) {
                                     logDebug("unitary",$input);
+                                 }
                                  $id_printer = $p->add($input);
                               }
 
@@ -4702,6 +4715,7 @@ class OcsServer extends CommonDBTM {
                                  $input = array ();
                                  $input["id"] = $id_printer;
                                  $input["is_deleted"] = 0;
+
                                  if ($cfg_ocs["states_id_default"]>0) {
                                     $input["states_id"] = $cfg_ocs["states_id_default"];
                                  }
