@@ -75,11 +75,11 @@ class NetworkPort extends CommonDBChild {
       // Only netpoint updates : ip and mac may be different.
       $tomatch=array("netpoints_id");
       $updates=array_intersect($this->updates,$tomatch);
-      if (count($this->updates)) {
+      if (count($updates)) {
          $save_ID=$this->fields["id"];
          $n=new NetworkPort_NetworkPort;
          if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
-            $this->updateInDB($this->updates);
+            $this->updateInDB($updates);
          }
          $this->fields["id"]=$save_ID;
       }
@@ -344,7 +344,9 @@ class NetworkPort extends CommonDBChild {
                if ($canedit && $withtemplate != 2) {
                   echo "</a>";
                }
-               echo "</strong></td>\n";
+               echo "</strong>";
+               showToolTip($netport->fields['comment']);
+               echo "</td>\n";
                echo "<td>" . $netport->fields["name"] . "</td>\n";
                echo "<td>".Dropdown::getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"])."</td>\n";
                echo "<td>" . $netport->fields["ip"] . "<br>" .$netport->fields["mac"] . "</td>\n";
@@ -419,7 +421,9 @@ class NetworkPort extends CommonDBChild {
                if ($device2->can($device2->fields["id"], 'r')) {
 
                   echo $netport->getLink();
-                  echo "</a></strong>\n " . $LANG['networking'][25] . " <strong>";
+                  echo "</a></strong>\n";
+                  showToolTip($netport->fields['comment']);
+                  echo "&nbsp;".$LANG['networking'][25] . " <strong>";
                   echo $device2->getLink();
                   echo "</strong>";
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
