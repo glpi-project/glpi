@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config","r");
+checkRight("sla","r");
 
 commonHeader($LANG['Menu'][43],$_SERVER['PHP_SELF'],"config","sla");
 

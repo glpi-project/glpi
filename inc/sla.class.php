@@ -51,11 +51,11 @@ class SLA extends CommonDBTM {
    }
 
    function canCreate() {
-      return haveRight('config', 'w');
+      return haveRight('sla', 'w');
    }
 
    function canView() {
-      return haveRight('config', 'r');
+      return haveRight('sla', 'r');
    }
 
 
@@ -87,7 +87,7 @@ class SLA extends CommonDBTM {
 
       // Show device or blank form
 
-      if (!haveRight("config","r")) {
+      if (!haveRight("sla","r")) {
          return false;
       }
 
