@@ -4156,8 +4156,11 @@ class Search {
          if (!haveRight('networking',$action)) {
             $todel = array_merge($todel, array('network', 20, 21, 22, 83, 84, 85));
          }
-         if (!$CFG_GLPI['use_ocs_mode'] || !haveRight('view_ocsng',$action)) {
-            $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103));
+         if (!$CFG_GLPI['use_ocs_mode']) {
+            if (($action=='r' && !haveRight('view_ocsng',$action))
+               || ($action=='w' &&  !haveRight('sync_ocsng',$action))) {
+               $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103,104));
+            }
          }
       }
       if (!haveRight('notes',$action)) {
@@ -4473,7 +4476,7 @@ class Search {
 
             $search[$itemtype][50]['table']        = 'glpi_budgets';
             $search[$itemtype][50]['field']        = 'name';
-            $search[$itemtype][50]['linkfield']    = '';
+            $search[$itemtype][50]['linkfield']    = 'budgets_id';
             $search[$itemtype][50]['name']         = $LANG['financial'][87];
             $search[$itemtype][50]['forcegroupby'] = true;
 
@@ -4500,6 +4503,7 @@ class Search {
             $search[$itemtype][120]['searchunit']    = 'MONTH';
             $search[$itemtype][120]['delayunit']     = 'MONTH';
             $search[$itemtype][120]['forcegroupby']  = true;
+            $search[$itemtype][120]['massiveaction'] = false;
 
             $search[$itemtype][53]['table']        = 'glpi_suppliers_infocoms';
             $search[$itemtype][53]['field']        = 'name';
