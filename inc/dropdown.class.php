@@ -1077,13 +1077,20 @@ class Dropdown {
 
 
    /**
-    * Dropdown for global item management
-    *
-    * @param $target target for actions
-    * @param $attrs //TODO define $attrs
-   **/
-   static function showGlobalSwitch($ID, $attrs=array()) {
-      global $LANG, $CFG_GLPI;
+<<<<<<< .mine
+   * Dropdown for global item management
+   *
+   * @param $ID item ID
+   * @param attrs an array which contains the extra paramters
+   *
+   * Parameters can be :
+   * - target target for actions
+   * - withtemplate template or basic computer
+   * - value value of global state
+   * - management_restrict global management restrict mode
+   */
+   static function showGlobalSwitch($ID,$attrs = array()) {
+      global $LANG,$CFG_GLPI;
 
       $params['management_restrict'] = 0;
       $params['value']               = 0;
@@ -1440,7 +1447,11 @@ class Dropdown {
       }
    }
 
-
+   /**
+    * Get the label associated with a management type
+    * @param value the type of management
+    * @return the label corresponding to it, or ""
+    */
    static function getGlobalSwitch ($value=0) {
       global $LANG;
 
