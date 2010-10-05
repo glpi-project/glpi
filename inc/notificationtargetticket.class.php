@@ -444,19 +444,23 @@ class NotificationTargetTicket extends NotificationTarget {
    function getAdditionalTargets($event='') {
       global $LANG;
 
-      $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE,$LANG['setup'][236]);
-      $this->addTarget(Notification::TICKET_RECIPIENT,$LANG['common'][37]);
-      $this->addTarget(Notification::TICKET_SUPPLIER,$LANG['financial'][26]);
-      $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." - ".
-                                                                    $LANG['setup'][248]);
-      $this->addTarget(Notification::TICKET_SUPERVISOR_REQUESTER_GROUP,$LANG['common'][64]." - ".
-                                                                       $LANG['setup'][249]);
-      $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
-      $this->addTarget(Notification::TICKET_ASSIGN_TECH,$LANG['setup'][239]);
-      $this->addTarget(Notification::TICKET_REQUESTER_GROUP,$LANG['setup'][249]);
-      $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
-      $this->addTarget(Notification::ITEM_USER,$LANG['mailing'][137]);
-      $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
+      if ($event=='update') {
+         $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE,$LANG['setup'][236]);
+      }
+      if ($event!='alertnotclosed') {
+         $this->addTarget(Notification::TICKET_RECIPIENT,$LANG['common'][37]);
+         $this->addTarget(Notification::TICKET_SUPPLIER,$LANG['financial'][26]);
+         $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,$LANG['common'][64]." - ".
+                                                                     $LANG['setup'][248]);
+         $this->addTarget(Notification::TICKET_SUPERVISOR_REQUESTER_GROUP,$LANG['common'][64]." - ".
+                                                                        $LANG['setup'][249]);
+         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
+         $this->addTarget(Notification::TICKET_ASSIGN_TECH,$LANG['setup'][239]);
+         $this->addTarget(Notification::TICKET_REQUESTER_GROUP,$LANG['setup'][249]);
+         $this->addTarget(Notification::AUTHOR,$LANG['job'][4]);
+         $this->addTarget(Notification::ITEM_USER,$LANG['mailing'][137]);
+         $this->addTarget(Notification::TICKET_ASSIGN_GROUP,$LANG['setup'][248]);
+      }
       if ($event=='validation') {
          $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,
                           $LANG['validation'][0].' - '.$LANG['validation'][21]);
