@@ -518,6 +518,12 @@ class NetworkPort extends CommonDBChild {
       $options['entities_id'] = $item->getField('entities_id');
       $this->showFormHeader($options);
 
+      $show_computer_mac=false;
+      if ((!empty ($this->fields['itemtype']) || !$options['several'] )
+            && $this->fields['itemtype'] == 'Computer') {
+         $show_computer_mac=true;
+      }
+
 
       echo "<tr class='tab_bg_1'><td>$type:</td>\n<td>";
       if (!($ID>0)){
@@ -525,8 +531,15 @@ class NetworkPort extends CommonDBChild {
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       }
       echo $link. "</td>\n";
-      echo "<td rowspan='10'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='10' class='middle'>";
+      $colspan=9;
+      if ($show_computer_mac) {
+         $colspan+=2;
+      }
+      if (!$options['several']) {
+         $colspan++;
+      }
+      echo "<td rowspan='$colspan'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='$colspan' class='middle'>";
       echo "<textarea cols='45' rows='11' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
@@ -561,8 +574,7 @@ class NetworkPort extends CommonDBChild {
       echo "</td></tr>\n";
 
       // Show device MAC adresses
-      if ((!empty ($this->fields['itemtype']) || !$options['several'] )
-            && $this->fields['itemtype'] == 'Computer') {
+      if ($show_computer_mac) {
 
          $comp = new Computer();
          $comp->getFromDB($this->fields['items_id']);
