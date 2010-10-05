@@ -1408,34 +1408,34 @@ class Rule extends CommonDBTM {
    function getCriteriaValue($ID, $condition, $value) {
       global $LANG;
 
-      $crit = $this->getCriteria($ID);
-      if (isset($crit['type'])
-          && ($condition!=Rule::PATTERN_IS
-          && $condition!=Rule::PATTERN_IS_NOT)) {
+      if ($condition!=Rule::PATTERN_IS && $condition!=Rule::PATTERN_IS_NOT) {
+         $crit = $this->getCriteria($ID);
+         if (isset($crit['type'])) {
 
-         switch ($crit['type']) {
-            case "dropdown" :
-               return Dropdown::getDropdownName($crit["table"], $value);
+            switch ($crit['type']) {
+               case "dropdown" :
+                  return Dropdown::getDropdownName($crit["table"], $value);
 
-            case "dropdown_assign" :
-            case "dropdown_users" :
-               return getUserName($value);
+               case "dropdown_assign" :
+               case "dropdown_users" :
+                  return getUserName($value);
 
-            case "yesonly" :
-            case "yesno"  :
-               if ($value) {
-                  return $LANG['choice'][1];
-               }
-               return $LANG['choice'][0];
+               case "yesonly" :
+               case "yesno"  :
+                  if ($value) {
+                     return $LANG['choice'][1];
+                  }
+                  return $LANG['choice'][0];
 
-            case "dropdown_impact" :
-               return Ticket::getImpactName($value);
+               case "dropdown_impact" :
+                  return Ticket::getImpactName($value);
 
-            case "dropdown_urgency" :
-               return Ticket::getUrgencyName($value);
+               case "dropdown_urgency" :
+                  return Ticket::getUrgencyName($value);
 
-            case "dropdown_priority" :
-               return Ticket::getPriorityName($value);
+               case "dropdown_priority" :
+                  return Ticket::getPriorityName($value);
+            }
          }
       }
       return $value;
