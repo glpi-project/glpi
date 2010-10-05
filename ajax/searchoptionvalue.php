@@ -60,22 +60,9 @@ if (isset($_REQUEST['searchtype'])) {
    //print_r($searchopt);
    $display=false;
 
-   // Fix table
-   if (isset($searchopt['table'])) {
-      switch ($searchopt['table']) {
-         case "glpi_followup_requesttypes" :
-               $searchopt['table']='glpi_requesttypes';
-            break;
-
-         case "glpi_suppliers_infocoms" :
-               $searchopt['table']='glpi_suppliers';
-            break;
-
-         //TODO voir pour authmails qui est sacrifiée
-         case "glpi_auth_tables" :
-               $searchopt['table']='glpi_authldaps';
-            break;
-      }
+   // Fix table name
+   if (isset($searchopt['realtable'])) {
+      $searchopt['table']=$searchopt['realtable'];
    }
 
 
