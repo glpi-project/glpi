@@ -3992,7 +3992,7 @@ class Search {
          }
          if (!$CFG_GLPI['use_ocs_mode'] || !haveRight('view_ocsng',$action)) {
             $todel=array_merge($todel,array('ocsng',
-                                          100,101,102,103));
+                                          100,101,102,103,104));
          }
       }
       if (!haveRight('notes',$action)) {

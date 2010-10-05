@@ -1051,6 +1051,8 @@ class Computer extends CommonDBTM {
       $tab[101]['field']     = 'use_auto_update';
       $tab[101]['linkfield'] = '';
       $tab[101]['name']      = $LANG['ocsng'][6]." ".$LANG['Menu'][33];
+      $tab[101]['datatype']  = 'bool';
+
 
       $tab[104]['table']     = 'glpi_ocslinks';
       $tab[104]['field']     = 'ocs_agent_version';
