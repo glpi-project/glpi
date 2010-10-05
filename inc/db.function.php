@@ -268,11 +268,18 @@ function countElementsInTableForEntity($table,$entity,$condition='') {
  *
  * @param $table string: table name
  * @param $condition string: condition to use
+ * @param $usecache boolean
  *
  * return array containing all the datas
  */
-function getAllDatasFromTable($table,$condition="") {
+function getAllDatasFromTable($table, $condition="", $usecache=false) {
+   static $cache = array();
    global $DB;
+
+   if (empty($condition) && $usecache && isset($cache[$table])) {
+      return $cache[$table];
+   }
+   echo "getAllDatasFromTable($table, $condition)\n";
 
    $datas=array();
    $query="SELECT *
@@ -286,6 +293,9 @@ function getAllDatasFromTable($table,$condition="") {
       while ($data=$DB->fetch_assoc($result)) {
          $datas[$data['id']]=$data;
       }
+   }
+   if (empty($condition) && $usecache) {
+      $cache[$table] = $datas;
    }
    return $datas;
 }

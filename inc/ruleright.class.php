@@ -244,8 +244,10 @@ class RuleRight extends Rule {
    }
 
    function getCriterias() {
+      static $criterias = array();
       global $LANG;
-      $criterias = array();
+
+      if (!count($criterias)) {
       $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
       $criterias['LDAP_SERVER']['field']     = 'name';
       $criterias['LDAP_SERVER']['name']      = $LANG['login'][2];
@@ -279,6 +281,7 @@ class RuleRight extends Rule {
 
       //Dynamically add all the ldap criterias to the current list of rule's criterias
       $this->addSpecificCriteriasToArray($criterias);
+      }
       return $criterias;
    }
 
@@ -322,7 +325,7 @@ class RuleRight extends Rule {
     */
    function addSpecificCriteriasToArray(&$criterias) {
 
-      foreach (getAllDatasFromTable('glpi_rulerightparameters') as $datas ) {
+      foreach (getAllDatasFromTable('glpi_rulerightparameters', '', true) as $datas ) {
          $criterias[$datas["value"]]['name']=$datas["name"];
          $criterias[$datas["value"]]['field']=$datas["value"];
          $criterias[$datas["value"]]['linkfield']='';

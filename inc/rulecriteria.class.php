@@ -156,17 +156,17 @@ class RuleCriteria extends CommonDBChild {
    /**
    * Try to match a definied rule
    *
-   * @param $criteria RuleCriteria object
+   * @param $criterion RuleCriteria object
    * @param $field the field to match
    * @param $criterias_results
    * @param $regex_result
    * @return true if the field match the rule, false if it doesn't match
    **/
-   static function match(RuleCriteria $criteria, $field, &$criterias_results, &$regex_result) {
+   static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result) {
 
-      $condition = $criteria->fields['condition'];
-      $pattern = $criteria->fields['pattern'];
-      $criteria = $criteria->fields['criteria'];
+      $condition  = $criterion->fields['condition'];
+      $pattern    = $criterion->fields['pattern'];
+      $criteria   = $criterion->fields['criteria'];
 
       //If pattern is wildcard, don't check the rule and return true
       if ($pattern == Rule::RULE_WILDCARD) {
