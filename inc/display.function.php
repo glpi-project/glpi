@@ -1026,11 +1026,16 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if (haveRight("config","w")) {
+   if (haveRight("sla","r")) {
       $menu['config']['content']['sla']['title']           = $LANG['Menu'][43];
       $menu['config']['content']['sla']['page']            = '/front/sla.php';
       $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
-      $menu['config']['content']['sla']['links']['add']    = "/front/sla.form.php";
+      if (haveRight("sla","w")) {
+         $menu['config']['content']['sla']['links']['add']    = "/front/sla.form.php";
+      }
+   }
+
+   if (haveRight("config","w")) {
 
       $menu['config']['content']['config']['title'] = $LANG['setup'][703];
       $menu['config']['content']['config']['page']  = '/front/config.form.php';

@@ -254,6 +254,14 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add calendar right users which are able to write entity_dropdown " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_profiles','sla')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `sla` CHAR( 1 ) NULL";
+      $DB->query($query) or die("0.80 add sla in glpi_profiles". $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE `glpi_profiles` SET `sla`=`entity_rule_ticket`";
+      $DB->query($query) or die("0.80 add sla right users which are able to write entity_rule_ticket " . $LANG['update'][90] . $DB->error());
+   }
+
 
    if (!FieldExists('glpi_tickets','slas_id')) {
       $query = "ALTER TABLE `glpi_tickets` ADD `slas_id` INT( 11 ) NOT NULL DEFAULT 0";
@@ -720,13 +728,13 @@ function update078to080($output='HTML') {
    if (!TableExists('glpi_ticketsatisfactions')) {
       $query = "CREATE TABLE `glpi_ticketsatisfactions` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `tickets_id` int(11) NOT NULL DEFAULT '-1',
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
                   `date_begin` DATETIME NULL ,
                   `date_answered` DATETIME NULL ,
                   `satisfaction` INT(11) NULL ,
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
-                  KEY `tickets_id` (`tickets_id`)
+                  UNIQUE KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_ticketinquests " . $LANG['update'][90] . $DB->error());
    }
@@ -745,25 +753,25 @@ function update078to080($output='HTML') {
    }
    if (!FieldExists("glpi_entitydatas","inquest_rate")) {
       $query = "ALTER TABLE `glpi_entitydatas`
-                     ADD `inquest_rate` INT(11) NULL";
+                     ADD `inquest_rate` INT(11) NOT NULL DEFAULT '-1'";
       $DB->query($query) or die("0.80 add inquest_rate  in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
    }
    if (!FieldExists("glpi_entitydatas","inquest_delay")) {
       $query = "ALTER TABLE `glpi_entitydatas`
-                     ADD `inquest_delay` INT(11) NULL";
+                     ADD `inquest_delay` INT(11) NOT NULL DEFAULT '-1'";
       $DB->query($query) or die("0.80 add inquest_delay  in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
    }
 
    // if no config inquest in the entity
    if (!FieldExists("glpi_configs","inquest_rate")) {
       $query = "ALTER TABLE `glpi_configs`
-                     ADD `inquest_rate` INT(11) NULL";
+                     ADD `inquest_rate` INT(11) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.80 add inquest_rate  in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
    if (!FieldExists("glpi_configs","inquest_delay")) {
       $query = "ALTER TABLE `glpi_configs`
-                     ADD `inquest_delay` INT(11) NULL";
+                     ADD `inquest_delay` INT(11) NOT NULL DEFAULT '0'";
       $DB->query($query) or die("0.80 add inquest_delay  in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
