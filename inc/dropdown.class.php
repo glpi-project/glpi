@@ -1119,7 +1119,8 @@ class Dropdown {
          echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
          echo "<option value='assign_vlan'>".$LANG['networking'][55]."</option>";
          echo "<option value='unassign_vlan'>".$LANG['networking'][58]."</option>";
-         echo "<option value='move'>".$LANG['buttons'][20]."</option>";
+         // Interest of this massive action ?
+//          echo "<option value='move'>".$LANG['buttons'][20]."</option>";
          echo "</select>";
 
          $params=array('action'     => '__VALUE__',

@@ -107,7 +107,9 @@ if (isset($_POST["add"])) {
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][74]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if(isset($_POST["move"])) {
+}
+// Interest of this massive action ?
+/*else if(isset($_POST["move"])) {
    checkRight("networking","w");
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
@@ -124,7 +126,7 @@ if (isset($_POST["add"])) {
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][75]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if(isset($_POST["update"])) {
+}*/else if(isset($_POST["update"])) {
    $np->check($_POST['id'],'w');
 
    $np->update($_POST);
