@@ -116,6 +116,8 @@ $LANG['buttons'][57] = "Exécuter";
 $LANG['buttons'][58] = "Mettre à jour";
 $LANG['buttons'][59] = "Dissocier";
 
+$LANG['buttons'][60] = "Fermer la fenêtre";
+
 
 $LANG['calendar'][0] = "AAAA-MM-JJ";
 $LANG['calendar'][1] = "JJ-MM-AAAA";
@@ -1473,6 +1475,7 @@ $LANG['printers'][28]="Ethernet";
 $LANG['printers'][29]="Wifi";
 $LANG['printers'][30]="Compteur de page initial";
 $LANG['printers'][31]="Pages imprimées";
+$LANG['printers'][32]="Pilote";
 
 $LANG['profiles'][0]="Droit global";
 $LANG['profiles'][1]="Droit local";
@@ -1633,6 +1636,7 @@ $LANG['rulesengine'][35]="Dictionnaire logiciel";
 $LANG['rulesengine'][36]="Dictionnaire des fabricants";
 $LANG['rulesengine'][37]="Règles d'affectation d'une catégorie aux logiciels";
 $LANG['rulesengine'][38]="Recalculer";
+$LANG['rulesengine'][39]="Dictionnaire des imprimantes";
 $LANG['rulesengine'][40]="la catégorie";
 $LANG['rulesengine'][41]="Validation";
 $LANG['rulesengine'][45]="Assigner valeur depuis expression rationnelle";

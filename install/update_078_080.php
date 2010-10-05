@@ -772,6 +772,27 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add comment  in glpi_networkports " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists('glpi_profiles','rule_dictionnary_printer')) {
+      $query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_printer` CHAR( 1 ) NULL";
+      $DB->query($query) or die("0.80 add rule_dictionnary_printer in glpi_profiles". $LANG['update'][90] . $DB->error());
+   }
+
+   if (!TableExists('glpi_rulecacheprinters')) {
+      $query = "CREATE TABLE `glpi_rulecacheprinters` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `old_value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                    `manufacturer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+                    `rules_id` int(11) NOT NULL DEFAULT '0',
+                    `new_value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                    `new_manufacturer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+                    `ignore_ocs_import` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+                    `is_global` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `old_value` (`old_value`),
+                    KEY `rules_id` (`rules_id`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->query($query) or die("0.80 add table glpi_rulecacheprinters". $LANG['update'][90] . $DB->error());
+   }
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 

@@ -4611,70 +4611,107 @@ class OcsServer extends CommonDBTM {
                      if (empty ($print["name"])) {
                         $print["name"] = $line["DRIVER"];
                      }
+
+                    $management_process = $cfg_ocs["import_printer"];
+
+                     //Params for the dictionnary
+                     $params['name'] = $print['name'];
+                     $params['manufacturer'] = "";
+                     $params['DRIVER'] = $line['DRIVER'];
+                     $params['PORT'] = $line['PORT'];
                      if (!empty ($print["name"])) {
-                        if (!in_array(stripslashes($print["name"]), $import_periph)) {
-                           // Clean printer object
-                           $p->reset();
-                           $print["comment"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
-                           self::analizePrinterPorts($print, $line["PORT"]);
-                           $id_printer = 0;
-                           if ($cfg_ocs["import_printer"] == 1) {
-                              //Config says : manage printers as global
-                              //check if printers already exists in GLPI
-                              $print["is_global"] = 1;
-                              $query = "SELECT `id`
-                                        FROM `glpi_printers`
-                                        WHERE `name` = '" . $print["name"] . "'
-                                              AND `is_global` = '1'
-                                              AND `entities_id` = '$entity'";
-                              $result_search = $DB->query($query);
-                              if ($DB->numrows($result_search) > 0) {
-                                 //Periph is already in GLPI
-                                 //Do not import anything just get periph ID for link
-                                 $id_printer = $DB->result($result_search, 0, "id");
+                        $rulecollection = new RuleDictionnaryPrinterCollection();
+                        $res_rule = addslashes_deep($rulecollection->processAllRules($params,
+                                                                                     array(),
+                                                                                     array()));
+
+                        if (!isset($res_rule["_ignore_ocs_import"])
+                              || !$res_rule["_ignore_ocs_import"]) {
+                           foreach ($res_rule as $key => $value) {
+                              if ($value != '' && $value[0] != '_') {
+                                 $print[$key] = $value;
+                              }
+                           }
+
+                           if (isset($res_rule['is_global']))
+                           logDebug($res_rule);
+
+                           if (isset($res_rule['is_global'])) {
+                              if (!$res_rule['is_global']) {
+                                 $management_process = 2;
                               } else {
+                                 $management_process = 1;
+                              }
+                           }
+
+                           if (!in_array(stripslashes($print["name"]), $import_periph)) {
+                              // Clean printer object
+                              $p->reset();
+                              $print["comment"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
+                              self::analizePrinterPorts($print, $line["PORT"]);
+                              $id_printer = 0;
+                              if ($management_process == 1) {
+                                 //Config says : manage printers as global
+                                 //check if printers already exists in GLPI
+                                 $print["is_global"] = MANAGEMENT_GLOBAL;
+                                 $query = "SELECT `id`
+                                           FROM `glpi_printers`
+                                           WHERE `name` = '" . $print["name"] . "'
+                                                 AND `is_global` = '1'
+                                                 AND `entities_id` = '$entity'";
+                                 $result_search = $DB->query($query);
+                                 if ($DB->numrows($result_search) > 0) {
+                                    //Periph is already in GLPI
+                                    //Do not import anything just get periph ID for link
+                                    $id_printer = $DB->result($result_search, 0, "id");
+                                 } else {
+                                    $input = $print;
+                                    if ($cfg_ocs["states_id_default"]>0) {
+                                       $input["states_id"] = $cfg_ocs["states_id_default"];
+                                    }
+                                    $input["entities_id"] = $entity;
+                                    if (isset($res_rule['is_global']))
+                                    logDebug("global",$input);
+                                    $id_printer = $p->add($input);
+                                 }
+
+                              } else if ($management_process == 2) {
+                                 //COnfig says : manage printers as single units
+                                 //Import all printers as non global.
                                  $input = $print;
+                                 $input["is_global"] = MANAGEMENT_UNITARY;
                                  if ($cfg_ocs["states_id_default"]>0) {
                                     $input["states_id"] = $cfg_ocs["states_id_default"];
                                  }
                                  $input["entities_id"] = $entity;
+                                    if (isset($res_rule['is_global']))
+                                    logDebug("unitary",$input);
                                  $id_printer = $p->add($input);
                               }
 
-                           } else if ($cfg_ocs["import_printer"] == 2) {
-                              //COnfig says : manage printers as single units
-                              //Import all printers as non global.
-                              $input = $print;
-                              $input["is_global"] = 0;
-                              if ($cfg_ocs["states_id_default"]>0) {
-                                 $input["states_id"] = $cfg_ocs["states_id_default"];
+                              if ($id_printer) {
+                                 $conn = new Computer_Item();
+                                 $connID = $conn->add(array('computers_id' => $computers_id,
+                                                            'itemtype'     => 'Printer',
+                                                            'items_id'     => $id_printer,
+                                                            '_no_history'  => !$dohistory));
+                                 OcsServer::addToOcsArray($computers_id,
+                                                          array ($connID => $print["name"]),
+                                                          "import_printer");
+                                 //Update column "is_deleted" set value to 0 and set status to default
+                                 $input = array ();
+                                 $input["id"] = $id_printer;
+                                 $input["is_deleted"] = 0;
+                                 if ($cfg_ocs["states_id_default"]>0) {
+                                    $input["states_id"] = $cfg_ocs["states_id_default"];
+                                 }
+                                 $p->update($input);
                               }
-                              $input["entities_id"] = $entity;
-                              $id_printer = $p->add($input);
-                           }
 
-                           if ($id_printer) {
-                              $conn = new Computer_Item();
-                              $connID = $conn->add(array('computers_id' => $computers_id,
-                                                         'itemtype'     => 'Printer',
-                                                         'items_id'     => $id_printer,
-                                                         '_no_history'  => !$dohistory));
-                              OcsServer::addToOcsArray($computers_id,
-                                                       array ($connID => $print["name"]),
-                                                       "import_printer");
-                              //Update column "is_deleted" set value to 0 and set status to default
-                              $input = array ();
-                              $input["id"] = $id_printer;
-                              $input["is_deleted"] = 0;
-                              if ($cfg_ocs["states_id_default"]>0) {
-                                 $input["states_id"] = $cfg_ocs["states_id_default"];
-                              }
-                              $p->update($input);
+                           } else {
+                              $id = array_search(stripslashes($print["name"]), $import_periph);
+                              unset ($import_periph[$id]);
                            }
-
-                        } else {
-                           $id = array_search(stripslashes($print["name"]), $import_periph);
-                           unset ($import_periph[$id]);
                         }
                      }
                   }

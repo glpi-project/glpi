@@ -947,7 +947,10 @@ class Profile extends CommonDBTM {
       echo "<td class='tab_bg_1'>";
       Profile::dropdownNoneReadWrite("entity_rule_ticket", $this->fields["entity_rule_ticket"],
                                      1, 1, 1);
-      echo "</td><td class='tab_bg_1' colspan='2'></td></tr>\n";
+      echo "</td>";
+      echo "<td>".$LANG['rulesengine'][39]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("rule_dictionnary_printer", $this->fields["rule_dictionnary_printer"], 1, 1, 1);
+      echo "</td></tr>";
 
       // Configuration
       echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['common'][12]."</td></tr>\n";
@@ -995,7 +998,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][42]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("calendar", $this->fields["calendar"], 1, 1, 1);
       echo "</td>\n";
-      echo "<td colspan='2'>";
+      echo "<td>";
       echo "</td></tr>\n";
 
       if ($canedit && $closeform) {

@@ -297,6 +297,13 @@ class RuleAction extends CommonDBChild {
                      Dropdown::showYesNo("value");
                      $display=true;
                      break;
+
+                  case "dropdown_management":
+                     Dropdown::showGlobalSwitch(0,array('name'=>'value',
+                                                        'management_restrict'=>2,
+                                                        'withtemplate'=>false));
+                     $display=true;
+                     break;
                }
             }
             if (!$display) {

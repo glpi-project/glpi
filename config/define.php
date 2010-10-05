@@ -145,6 +145,9 @@ define("NORMAL_MODE",0);
 define("TRANSLATION_MODE",1);
 define("DEBUG_MODE",2);
 
+//Management modes
+define("MANAGEMENT_UNITARY",0);
+define("MANAGEMENT_GLOBAL",1);
 
 // DEVICE INTERNAL ACTION
 define("HISTORY_ADD_DEVICE",1);
@@ -251,7 +254,7 @@ $CFG_GLPI["dictionnary_types"] = array('ComputerModel','ComputerType','MonitorMo
                                        'PeripheralModel','PeripheralType','NetworkEquipmentModel',
                                        'NetworkEquipmentType','Software','Manufacturer',
                                        'OperatingSystem','OperatingSystemServicePack',
-                                       'OperatingSystemVersion');
+                                       'OperatingSystemVersion','Printer');
 
 $CFG_GLPI["helpdesk_visible_types"] = array('Software');
 
