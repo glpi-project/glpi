@@ -531,11 +531,12 @@ $LANG['document'][20] = "Documents associés";
 $LANG['document'][21] = "Document associé";
 $LANG['document'][22] = "Fichier courant";
 
+$LANG['document'][23] = "Fichier trop volumineux pour être ajouté.";
 $LANG['document'][24] = "Suppression avec succès du fichier";
 $LANG['document'][25] = "Échec de la suppression du fichier";
 $LANG['document'][26] = "Le fichier est valide et a été téléchargé avec succès.";
 $LANG['document'][27] = "Attaque par upload potentielle. Ou fichier trop volumineux. Impossible de déplacer le fichier temporaire.";
-
+$LANG['document'][28] = "Aucun fichier spécifié.";
 $LANG['document'][29] = "Échec de la création du répertoire";
 $LANG['document'][30] = "Vérifiez que vous avez les droits";
 $LANG['document'][31] = "Répertoire de stockage des documents inexistant :";
