@@ -43,7 +43,7 @@ class Printer  extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory=true;
-   protected $forward_entity_to=array('Infocom','ReservationItem','NetworkPort');
+   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
 
 
 /**
@@ -67,47 +67,60 @@ class Printer  extends CommonDBTM {
       return haveRight('printer', 'w');
    }
 
+
    function canView() {
       return haveRight('printer', 'r');
    }
 
-   function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
 
-      $ong=array();
+   function defineTabs($options=array()) {
+      global $LANG, $CFG_GLPI;
+
+      $ong = array();
       if ($this->fields['id'] > 0) {
          if (haveRight("cartridge","r")) {
-            $ong[1]=$LANG['Menu'][21];
+            $ong[1] = $LANG['Menu'][21];
          }
+
          if (haveRight("networking","r") || haveRight("computer","r")) {
-            $ong[3]=$LANG['title'][27];
+            $ong[3] = $LANG['title'][27];
          }
+
          if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4]=$LANG['Menu'][26];
+            $ong[4] = $LANG['Menu'][26];
          }
+
          if (haveRight("document","r")) {
-            $ong[5]=$LANG['Menu'][27];
+            $ong[5] = $LANG['Menu'][27];
          }
+
          if (!isset($options['withtemplate']) || empty($options['withtemplate'])) {
             if (haveRight("show_all_ticket","1")) {
-               $ong[6]=$LANG['title'][28];
+               $ong[6] = $LANG['title'][28];
             }
+
             if (haveRight("link","r")) {
-               $ong[7]=$LANG['title'][34];
+               $ong[7] = $LANG['title'][34];
             }
+
             if (haveRight("notes","r")) {
-               $ong[10]=$LANG['title'][37];
+               $ong[10] = $LANG['title'][37];
             }
+
             if (haveRight("reservation_central","r")) {
-               $ong[11]=$LANG['Menu'][17];
+               $ong[11] = $LANG['Menu'][17];
             }
-            $ong[12]=$LANG['title'][38];
+
+            $ong[12] = $LANG['title'][38];
          }
+
       } else { // New item
-         $ong[1]=$LANG['title'][26];
+         $ong[1] = $LANG['title'][26];
       }
+
       return $ong;
    }
+
 
    /**
     * Can I change recusvive flag to false
@@ -125,29 +138,36 @@ class Printer  extends CommonDBTM {
       if ($ID<0 || !$this->fields['is_recursive']) {
          return true;
       }
+
       if (!parent::canUnrecurs()) {
-      return false;
+         return false;
       }
+
       $entities = "(".$this->fields['entities_id'];
+
       foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
          $entities .= ",$papa";
       }
+
       $entities .= ")";
 
       // RELATION : printers -> _port -> _wire -> _port -> device
 
       // Evaluate connection in the 2 ways
-      for ($tabend=array("networkports_id_1"=>"networkports_id_2",
-                         "networkports_id_2"=>"networkports_id_1");
-           list($enda,$endb)=each($tabend);) {
+      for ($tabend = array("networkports_id_1" => "networkports_id_2",
+                           "networkports_id_2" => "networkports_id_1");
+           list($enda, $endb) = each($tabend);) {
 
-         $sql = "SELECT `itemtype`, GROUP_CONCAT(DISTINCT `items_id`) AS ids
-                 FROM `glpi_networkports_networkports`, `glpi_networkports`
-                 WHERE `glpi_networkports_networkports`.$endb = `glpi_networkports`.`id`
-                       AND `glpi_networkports_networkports`.$enda IN (SELECT `id`
-                                                                      FROM `glpi_networkports`
-                                                                      WHERE `itemtype`='".$this->getType()."'
-                                                                            AND `items_id`='$ID')
+         $sql = "SELECT `itemtype`,
+                        GROUP_CONCAT(DISTINCT `items_id`) AS ids
+                 FROM `glpi_networkports_networkports`,
+                      `glpi_networkports`
+                 WHERE `glpi_networkports_networkports`.`$endb` = `glpi_networkports`.`id`
+                       AND `glpi_networkports_networkports`.`$enda`
+                            IN (SELECT `id`
+                                FROM `glpi_networkports`
+                                WHERE `itemtype` = '".$this->getType()."'
+                                      AND `items_id` = '$ID')
                  GROUP BY `itemtype`";
          $res = $DB->query($sql);
 
@@ -169,6 +189,7 @@ class Printer  extends CommonDBTM {
       return true;
    }
 
+
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && $input["id"]>0) {
@@ -186,6 +207,7 @@ class Printer  extends CommonDBTM {
       return $input;
    }
 
+
    function prepareInputForUpdate($input) {
 
       if (isset($input['init_pages_counter'])) {
@@ -195,28 +217,34 @@ class Printer  extends CommonDBTM {
       return $input;
    }
 
+
    function post_addItem() {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic= new Infocom();
+         $ic = new Infocom();
+
          if ($ic->getFromDBforDevice($this->getType(),$this->input["_oldID"])) {
-            $ic->fields["items_id"]=$this->fields['id'];
+            $ic->fields["items_id"] = $this->fields['id'];
             unset ($ic->fields["id"]);
+
             if (isset($ic->fields["immo_number"])) {
                $ic->fields["immo_number"] = autoName($ic->fields["immo_number"], "immo_number", 1,
                                                      'Infocom', $this->input['entities_id']);
             }
+
             if (empty($ic->fields['use_date'])) {
                unset($ic->fields['use_date']);
             }
+
             if (empty($ic->fields['buy_date'])) {
                unset($ic->fields['buy_date']);
             }
-            $ic->fields["entities_id"]=$this->fields['entities_id'];
-            $ic->fields["is_recursive"]=$this->fields['is_recursive'];
+
+            $ic->fields["entities_id"]  = $this->fields['entities_id'];
+            $ic->fields["is_recursive"] = $this->fields['is_recursive'];
             $ic->addToDB();
          }
 
@@ -225,23 +253,24 @@ class Printer  extends CommonDBTM {
                    FROM `glpi_networkports`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_array($result)) {
-               $np= new NetworkPort();
+               $np  = new NetworkPort();
                $npv = new NetworkPort_Vlan();
                $np->getFromDB($data["id"]);
                unset($np->fields["id"]);
                unset($np->fields["ip"]);
                unset($np->fields["mac"]);
                unset($np->fields["netpoints_id"]);
-               $np->fields["items_id"]=$this->fields['id'];
-               $np->fields["entities_id"]=$this->fields['entities_id'];
-               $np->fields["is_recursive"]=$this->fields['is_recursive'];
+               $np->fields["items_id"]     = $this->fields['id'];
+               $np->fields["entities_id"]  = $this->fields['entities_id'];
+               $np->fields["is_recursive"] = $this->fields['is_recursive'];
 
-               $portid=$np->addToDB();
+               $portid = $np->addToDB();
                foreach ($DB->request('glpi_networkports_vlans',
-                                     array('networkports_id'=>$data["id"])) as $vlan) {
+                                     array('networkports_id' => $data["id"])) as $vlan) {
                   $npv->assignVlan($portid, $vlan['vlans_id']);
                }
             }
@@ -252,13 +281,15 @@ class Printer  extends CommonDBTM {
                    FROM `glpi_contracts_items`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $contractitem=new Contract_Item();
+            $contractitem = new Contract_Item();
+
             while ($data=$DB->fetch_array($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype' => $this->getType(),
-                                        'items_id' => $this->fields['id']));
+                                        'itemtype'     => $this->getType(),
+                                        'items_id'     => $this->fields['id']));
             }
          }
 
@@ -267,17 +298,20 @@ class Printer  extends CommonDBTM {
                    FROM `glpi_documents_items`
                    WHERE `items_id` = '".$this->input["_oldID"]."'
                          AND `itemtype` = '".$this->getType()."'";
-         $result=$DB->query($query);
+         $result = $DB->query($query);
+
          if ($DB->numrows($result)>0) {
-            $docitem=new Document_Item();
+            $docitem = new Document_Item();
+
             while ($data=$DB->fetch_array($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype' => $this->getType(),
-                                   'items_id' => $this->fields['id']));
+                                   'itemtype'     => $this->getType(),
+                                   'items_id'     => $this->fields['id']));
             }
          }
       }
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -286,22 +320,24 @@ class Printer  extends CommonDBTM {
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->getType()."'
                       AND `items_id` = '".$this->fields['id']."'";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
+
             while ($data = $DB->fetch_array($result)) {
-               $data['_no_auto_action']=true;
+               $data['_no_auto_action'] = true;
                $conn->delete($data);
             }
          }
       }
 
-      $query = "UPDATE
-                `glpi_cartridges`
+      $query = "UPDATE `glpi_cartridges`
                 SET `printers_id` = NULL
                 WHERE `printers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
    }
+
 
    /**
     * Print the printer form
@@ -316,11 +352,13 @@ class Printer  extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
-      $target = $this->getFormURL();
+      $target       = $this->getFormURL();
       $withtemplate = '';
+
       if (isset($options['target'])) {
         $target = $options['target'];
       }
+
       if (isset($options['withtemplate'])) {
          $withtemplate = $options['withtemplate'];
       }
@@ -337,17 +375,19 @@ class Printer  extends CommonDBTM {
       }
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
-         $template = "newcomp";
+         $template   = "newcomp";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
-         $template = "newtemplate";
+         $template   = "newtemplate";
          $datestring = $LANG['computers'][14]."&nbsp;: ";
-         $date = convDateTime($_SESSION["glpi_currenttime"]);
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+
       } else {
          $datestring = $LANG['common'][26]."&nbsp;: ";
-         $date = convDateTime($this->fields["date_mod"]);
-         $template = false;
+         $date       = convDateTime($this->fields["date_mod"]);
+         $template   = false;
       }
 
       $this->showTabs($options);
@@ -357,8 +397,8 @@ class Printer  extends CommonDBTM {
       echo "<td>".$LANG['common'][16].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
-      autocompletionTextField($this,'name',array('value'=>$objectName));
+                             $this->getType(), $this->fields["entities_id"]);
+      autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>\n";
       echo "<td>".$LANG['state'][0]."&nbsp;:</td>\n";
       echo "<td>";
@@ -392,7 +432,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][21]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this,"contact_num");
+      autocompletionTextField($this, "contact_num");
       echo "</td>\n";
       echo "<td>".$LANG['common'][22]."&nbsp;:</td>\n";
       echo "<td>";
@@ -402,11 +442,11 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][18]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this,"contact");
+      autocompletionTextField($this, "contact");
       echo "</td>\n";
       echo "<td>".$LANG['common'][19]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this,"serial");
+      autocompletionTextField($this, "serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -419,8 +459,8 @@ class Printer  extends CommonDBTM {
       echo "<td>".$LANG['common'][20].($template?"*":"")."&nbsp;:</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"),
-                             $this->getType(),$this->fields["entities_id"]);
-      autocompletionTextField($this,'otherserial',array('value'=>$objectName));
+                             $this->getType(), $this->fields["entities_id"]);
+      autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -433,16 +473,16 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       if ($this->can($ID,'w')) {
          Dropdown::showGlobalSwitch($this->fields["id"],
-                                    array('withtemplate'=>$withtemplate,
-                                          'value'       => $this->fields["is_global"],
+                                    array('withtemplate' => $withtemplate,
+                                          'value'        => $this->fields["is_global"],
                                           'management_restrict'
-                                                        => $CFG_GLPI["printers_management_restrict"],
-                                          'target'      => $target));
+                                                         => $CFG_GLPI["printers_management_restrict"],
+                                          'target'       => $target));
       } else {
          Dropdown::showGlobalSwitch($this->fields["id"],
-                                    array('withtemplate'=>$withtemplate,
-                                          'value'       => $this->fields["is_global"],
-                                          'target'      => $target));
+                                    array('withtemplate' => $withtemplate,
+                                          'value'        => $this->fields["is_global"],
+                                          'target'       => $target));
       }
       echo "</td></tr>\n";
 
@@ -459,7 +499,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['devices'][6]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this,"memory_size");
+      autocompletionTextField($this, "memory_size");
       echo "</td>";
       echo "<td rowspan='4'>";
       echo $LANG['common'][25]."&nbsp;:</td>\n";
@@ -470,7 +510,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['printers'][30]."&nbsp;:</td>\n";
       echo "<td>";
-      autocompletionTextField($this,"init_pages_counter");
+      autocompletionTextField($this, "init_pages_counter");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -478,15 +518,15 @@ class Printer  extends CommonDBTM {
       echo "<td>\n<table>";
       // serial interface
       echo "<tr><td>".$LANG['printers'][14]."</td><td>";
-      Dropdown::showYesNo("have_serial",$this->fields["have_serial"]);
+      Dropdown::showYesNo("have_serial", $this->fields["have_serial"]);
       echo "</td></tr>";
       // parallel interface?
       echo "<tr><td>".$LANG['printers'][15]."</td><td>";
-      Dropdown::showYesNo("have_parallel",$this->fields["have_parallel"]);
+      Dropdown::showYesNo("have_parallel", $this->fields["have_parallel"]);
       echo "</td></tr>";
       // USB interface?
       echo "<tr><td>".$LANG['printers'][27]."</td><td>";
-      Dropdown::showYesNo("have_usb",$this->fields["have_usb"]);
+      Dropdown::showYesNo("have_usb", $this->fields["have_usb"]);
       echo "</td></tr>";
       // ethernet interface?
       echo "<tr><td>".$LANG['printers'][28]."</td><td>";
@@ -494,7 +534,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>";
       // wifi ?
       echo "<tr><td>".$LANG['printers'][29]."</td><td>";
-      Dropdown::showYesNo("have_wifi",$this->fields["have_wifi"]);
+      Dropdown::showYesNo("have_wifi", $this->fields["have_wifi"]);
       echo "</td></tr></table>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -511,11 +551,12 @@ class Printer  extends CommonDBTM {
       return true;
    }
 
-   /*
+
+   /**
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
-    */
+    **/
    function getSelectLinkedItem () {
 
       return "SELECT 'Computer', `computers_id`
@@ -523,6 +564,7 @@ class Printer  extends CommonDBTM {
               WHERE `itemtype` = '".$this->getType()."'
                     AND `items_id` = '" . $this->fields['id']."'";
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -675,6 +717,7 @@ class Printer  extends CommonDBTM {
 
       return $tab;
    }
+
 }
 
 ?>
