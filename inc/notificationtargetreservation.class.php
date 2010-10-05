@@ -56,8 +56,11 @@ class NotificationTargetReservation extends NotificationTarget {
          $this->addToAddressesList($data);
       }
    }
+
+
    /**
     * Get item associated with the object on which the event was raised
+    *
     * @return the object associated with the itemtype
     */
    function getObjectItem($event='') {
@@ -75,6 +78,7 @@ class NotificationTargetReservation extends NotificationTarget {
       }
    }
 
+
    function getEvents() {
       global $LANG;
 
@@ -87,6 +91,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
    function getAdditionalTargets($event='') {
       global $LANG;
+
       if ($event != 'alert') {
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,$LANG['common'][10]);
          $this->addTarget(Notification::ITEM_USER,$LANG['mailing'][137]);
@@ -114,6 +119,7 @@ class NotificationTargetReservation extends NotificationTarget {
          $reservationitem = new ReservationItem;
          $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
          $itemtype = $reservationitem->getField('itemtype');
+
          if (class_exists($itemtype)) {
             $item = new $itemtype();
             $item->getFromDB($reservationitem->getField('items_id'));
@@ -126,11 +132,12 @@ class NotificationTargetReservation extends NotificationTarget {
                                                                      $item->getField('users_id_tech'));
             }
             $this->datas['##reservation.url##'] = urldecode($CFG_GLPI["url_base"].
-                                       "/index.php?redirect=".strtolower($itemtype)."_".
-                                                      $reservationitem->getField('id'));
+                                                            "/index.php?redirect=".
+                                                            strtolower($itemtype)."_".
+                                                            $reservationitem->getField('id'));
          }
-      }
-      else {
+
+      } else {
          $this->datas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                             $options['entities_id']);
 
@@ -140,8 +147,8 @@ class NotificationTargetReservation extends NotificationTarget {
             $tmp['##reservation.itemtype##'] = $obj->getTypeName();
             $tmp['##reservation.item##']     = $item['item_name'];
             $tmp['##reservation.expirationdate##'] = convDateTime($item['end']);
-            $tmp['##reservation.url##'] = urldecode($CFG_GLPI["url_base"].
-                                                 "/index.php?redirect=reservation_".$id);
+            $tmp['##reservation.url##']      = urldecode($CFG_GLPI["url_base"].
+                                                         "/index.php?redirect=reservation_".$id);
             $this->datas['reservations'][] = $tmp;
          }
       }
@@ -152,40 +159,49 @@ class NotificationTargetReservation extends NotificationTarget {
       }
    }
 
+
    function getTags() {
       global $LANG;
 
-      $tags_all = array('reservation.item'        => $LANG['financial'][104],
-                    'reservation.itemtype'    => $LANG['reports'][12],
-                    'reservation.url'         => $LANG['common'][94]);
+      $tags_all = array('reservation.item'     => $LANG['financial'][104],
+                        'reservation.itemtype' => $LANG['reports'][12],
+                        'reservation.url'      => $LANG['common'][94]);
 
       foreach ($tags_all as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true));
       }
 
       $tags_except_alert = array('reservation.user'        => $LANG['common'][37],
-                    'reservation.begin'       => $LANG['search'][8],
-                    'reservation.end'         => $LANG['search'][9],
-                    'reservation.comment'     => $LANG['common'][25],
-                    'reservation.item.entity' => $LANG['entity'][0],
-                    'reservation.item.name'   => $LANG['financial'][104],
-                    'reservation.item.tech'   => $LANG['common'][10]);
+                                 'reservation.begin'       => $LANG['search'][8],
+                                 'reservation.end'         => $LANG['search'][9],
+                                 'reservation.comment'     => $LANG['common'][25],
+                                 'reservation.item.entity' => $LANG['entity'][0],
+                                 'reservation.item.name'   => $LANG['financial'][104],
+                                 'reservation.item.tech'   => $LANG['common'][10]);
 
       foreach ($tags_except_alert as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true,'events'=>array('new','update','delete')));
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => true,
+                                   'events' => array('new', 'update', 'delete')));
       }
 
-      $this->addTagToList(array('tag'=>'items','label'=>$LANG['reports'][57],
-                                'value'=>false,'foreach'=>true,
-                                'events'=>array('alert')));
+      $this->addTagToList(array('tag'     => 'items',
+                                'label'   => $LANG['reports'][57],
+                                'value'   => false,
+                                'foreach' => true,
+                                'events'  => array('alert')));
 
-      $tag_alert= array('reservation.expirationdate'         => $LANG['search'][9],
-                    'reservation.entity'      => $LANG['entity'][0]);
+      $tag_alert = array('reservation.expirationdate' => $LANG['search'][9],
+                         'reservation.entity'         => $LANG['entity'][0]);
+
       foreach ($tag_alert as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true,'events'=>array('alert')));
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => true,
+                                   'events' => array('alert')));
       }
 
       asort($this->tag_descriptions);
