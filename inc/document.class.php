@@ -959,9 +959,16 @@ class Document extends CommonDBTM {
       global $CFG_GLPI,$LANG;
 
       if (empty($dir)) {
-         addMessageAfterRedirect($LANG['document'][32],false,ERROR);
+         $message=$LANG['document'][32];
+         if (haveRight('dropdown','r')) {
+            $dt= new DocumentType();
+            $message.=" <a target='_blank' href='".$dt->getSearchURL()."'>
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"></a>";
+         }
+         addMessageAfterRedirect($message,false,ERROR);
          return '';
       }
+
       if (!is_dir(GLPI_DOC_DIR)) {
          addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR,false,ERROR);
          return '';
