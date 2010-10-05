@@ -164,9 +164,7 @@ class Netpoint extends CommonDropdown {
 
       // Display comment
       if ($display_comment) {
-         echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'".
-                "onmouseout='cleanhide('comment_$myname$rand')'".
-                "onmouseover='cleandisplay('comment_$myname$rand')'>";
+         showToolTip($comment);
 
          $item = new Netpoint();
          if ($item->canCreate()) {
