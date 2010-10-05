@@ -4578,6 +4578,10 @@ class Search {
                $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
             }
          }
+         // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
+         if (empty($search[$itemtype][$key]['linkfield'])) {
+            $search[$itemtype][$key]['masiveaction']=false;
+         }
       }
 
       return $search[$itemtype];
