@@ -3990,9 +3990,9 @@ class Search {
             $todel=array_merge($todel,array('network',
                                           20,21,22,83,84,85));
          }
-         if (!$CFG_GLPI['use_ocs_mode'] || !haveRight('view_ocsng',$action)) {
-            $todel=array_merge($todel,array('ocsng',
-                                          100,101,102,103,104));
+         if (($action=='r' && !haveRight('view_ocsng',$action))
+            || ($action=='w' && !haveRight('sync_ocsng',$action))) {
+            $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103,104));
          }
       }
       if (!haveRight('notes',$action)) {
