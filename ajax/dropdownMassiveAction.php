@@ -286,8 +286,8 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                $newgroup .= "<optgroup label='$val'>";
 
             } else {
-               if ($key>1 && $key!=80) {// No entities_id massive action
-                  // No ID
+               // No id and no entities_id massive action
+               if ($val["field"]!='id' && $val["linkfield"]!='entities_id') {
                   if ((!empty($val["linkfield"])
                        ||($val["table"]=="glpi_infocoms" && $key!=120) // no end_warranty
                        ||$val["table"]=="glpi_suppliers_infocoms"
