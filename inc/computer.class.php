@@ -776,9 +776,9 @@ class Computer extends CommonDBTM {
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false; // implicit key==1
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false; // implicit field is id
 
       $tab += Location::getSearchOptionsToAdd();
@@ -890,15 +890,15 @@ class Computer extends CommonDBTM {
       $tab[7]['usehaving']     = true;
       $tab[7]['massiveaction'] = false;
 
-      $tab[36]['table']        = 'glpi_computers_deviceprocessors';
-      $tab[36]['field']        = 'specificity';
-      $tab[36]['linkfield']    = '';
-      $tab[36]['name']         = $LANG['devices'][4]." ".$LANG['setup'][35];
-      $tab[36]['forcegroupby'] = true;
-      $tab[36]['usehaving']    = true;
-      $tab[36]['datatype']     = 'number';
-      $tab[36]['width']        = 100;
-      $tab[36]['massiveaction']= false;
+      $tab[36]['table']         = 'glpi_computers_deviceprocessors';
+      $tab[36]['field']         = 'specificity';
+      $tab[36]['linkfield']     = '';
+      $tab[36]['name']          = $LANG['devices'][4]." ".$LANG['setup'][35];
+      $tab[36]['forcegroupby']  = true;
+      $tab[36]['usehaving']     = true;
+      $tab[36]['datatype']      = 'number';
+      $tab[36]['width']         = 100;
+      $tab[36]['massiveaction'] = false;
 
       $tab[10]['table']         = 'glpi_devicememories';
       $tab[10]['field']         = 'designation';
@@ -957,12 +957,12 @@ class Computer extends CommonDBTM {
       $tab[34]['width']         = 1000;
       $tab[34]['massiveaction'] = false;
 
-      $tab[39]['table']        = 'glpi_devicepowersupplies';
-      $tab[39]['field']        = 'designation';
-      $tab[39]['name']         = $LANG['devices'][23];
-      $tab[39]['forcegroupby'] = true;
-      $tab[39]['usehaving']    = true;
-      $tab[39]['massiveaction']= false;
+      $tab[39]['table']         = 'glpi_devicepowersupplies';
+      $tab[39]['field']         = 'designation';
+      $tab[39]['name']          = $LANG['devices'][23];
+      $tab[39]['forcegroupby']  = true;
+      $tab[39]['usehaving']     = true;
+      $tab[39]['massiveaction'] = false;
 
       $tab['disk'] = $LANG['computers'][8];
 
@@ -1038,11 +1038,11 @@ class Computer extends CommonDBTM {
       $tab[100]['name']          = $LANG['ocsng'][7];
       $tab[100]['massiveaction'] = false;
 
-      $tab[101]['table']         = 'glpi_ocslinks';
-      $tab[101]['field']         = 'use_auto_update';
-      $tab[101]['linkfield']     = '_auto_update_ocs'; // update through compter update process
-      $tab[101]['name']          = $LANG['ocsng'][6]." ".$LANG['Menu'][33];
-      $tab[101]['datatype']      = 'bool';
+      $tab[101]['table']     = 'glpi_ocslinks';
+      $tab[101]['field']     = 'use_auto_update';
+      $tab[101]['linkfield'] = '_auto_update_ocs'; // update through compter update process
+      $tab[101]['name']      = $LANG['ocsng'][6]." ".$LANG['Menu'][33];
+      $tab[101]['datatype']  = 'bool';
 
       $tab[104]['table']         = 'glpi_ocslinks';
       $tab[104]['field']         = 'ocs_agent_version';
