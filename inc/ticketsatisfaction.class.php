@@ -83,6 +83,19 @@ class TicketSatisfaction extends CommonDropdown {
       $options['candel'] = false;
       $this->showFormButtons($options);
    }
+
+
+   function post_addItem() {
+      global $CFG_GLPI;
+
+      if ($CFG_GLPI["use_mailing"]) {
+         $ticket = new Ticket;
+         if ($ticket->getFromDB($this->fields['tickets_id'])) {
+            NotificationEvent::raiseEvent("satisfaction", $ticket);
+         }
+      }
+   }
+
 }
 
 ?>

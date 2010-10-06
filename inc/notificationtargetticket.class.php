@@ -433,7 +433,8 @@ class NotificationTargetTicket extends NotificationTarget {
                       'closed'          => $LANG['mailing'][127],
                       'delete'          => $LANG['mailing'][129],
                       'alertnotclosed'  => $LANG['crontask'][15],
-                      'recall'          => $LANG['sla'][9]);
+                      'recall'          => $LANG['sla'][9],
+                      'satisfaction'    => $LANG['satisfaction'][3]);
       asort($events);
       return $events;
    }
@@ -448,7 +449,12 @@ class NotificationTargetTicket extends NotificationTarget {
       if ($event=='update') {
          $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE, $LANG['setup'][236]);
       }
-      if ($event!='alertnotclosed') {
+
+      if ($event=='satisfaction') {
+         $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
+         $this->addTarget(Notification::TICKET_RECIPIENT, $LANG['common'][37]);
+
+      } else if ($event!='alertnotclosed') {
          $this->addTarget(Notification::TICKET_RECIPIENT, $LANG['common'][37]);
          $this->addTarget(Notification::TICKET_SUPPLIER, $LANG['financial'][26]);
          $this->addTarget(Notification::TICKET_SUPERVISOR_ASSIGN_GROUP,
@@ -462,6 +468,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
          $this->addTarget(Notification::TICKET_ASSIGN_GROUP, $LANG['setup'][248]);
       }
+
       if ($event=='validation') {
          $this->addTarget(Notification::TICKET_VALIDATION_APPROVER,
                           $LANG['validation'][0].' - '.$LANG['validation'][21]);
