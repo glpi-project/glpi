@@ -257,7 +257,8 @@ $CFG_GLPI["massiveaction_nodelete_types"] = array('Entity', 'CronTask', 'NotImpo
 
 $CFG_GLPI["notificationtemplates_types"] = array('Ticket', 'Reservation', 'Cartridge',
                                                  'Consumable', 'DBConnection', 'Contract',
-                                                  'SoftwareLicense', 'Infocom','MailCollector');
+                                                  'SoftwareLicense', 'Infocom');
+                                                  // TODO ?? 'MailCollector'
 
 $CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
 
