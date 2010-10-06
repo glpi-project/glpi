@@ -787,6 +787,26 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add rule_dictionnary_printer in glpi_profiles". $LANG['update'][90] . $DB->error());
    }
 
+   //New infocom dates
+   if (!FieldExists("glpi_infocoms","order_date")) {
+      $query = "ALTER TABLE  `glpi_infocoms` ADD  `order_date` DATE NULL";
+      $DB->query($query) or die("0.80 add order_date  in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_infocoms","delivery_date")) {
+      $query = "ALTER TABLE  `glpi_infocoms` ADD  `delivery_date` DATE NULL";
+      $DB->query($query) or die("0.80 add delivery_date  in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_infocoms","warranty_date")) {
+      $query = "ALTER TABLE  `glpi_infocoms` ADD  `warranty_date` DATE NULL";
+      $DB->query($query) or die("0.80 add warranty_date  in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+
+      $query = "UPDATE  `glpi_infocoms` SET `warranty_date`=`buy_date`";
+      $DB->query($query) or die("0.80 set copy buy_date to warranty_date in glpi_infocoms " . $LANG['update'][90] . $DB->error());
+
+   }
+
    if (!TableExists('glpi_rulecacheprinters')) {
       $query = "CREATE TABLE `glpi_rulecacheprinters` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
