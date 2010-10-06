@@ -599,6 +599,7 @@ $LANG['financial'][3]   = "Informations financières";
 $LANG['financial'][4]   = "Numéro";
 $LANG['financial'][5]   = "Coût";
 $LANG['financial'][6]   = "Type de contrat";
+$LANG['financial'][7]   = "Informations sur la garantie";
 
 $LANG['financial'][8]   = "Durée initiale du contrat";
 $LANG['financial'][9]   = "an(s)";
@@ -619,6 +620,9 @@ $LANG['financial'][23]  = "Durée d'amortissement";
 $LANG['financial'][24]  = "Ajouter Contact...";
 $LANG['financial'][25]  = "Ajouter Fournisseur...";
 $LANG['financial'][26]  = "Fournisseur";
+$LANG['financial'][27]  = "Date de livraison";
+$LANG['financial'][28]  = "Date de commande";
+$LANG['financial'][29]  = "Date de début de garantie";
 
 $LANG['financial'][30]  = "Fax";
 
