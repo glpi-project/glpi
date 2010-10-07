@@ -422,6 +422,11 @@ class Config extends CommonDBTM {
              $DBSlave->dbpassword . "\">";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][804] . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("use_slave_for_search", $CFG_GLPI["use_slave_for_search"]);
+      echo "<td colspan='2'>&nbsp;";
+      echo "</td></tr>";
+
       if ($DBSlave->connected && !$DB->isSlave()) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>" . $LANG['setup'][803] . "&nbsp;:";

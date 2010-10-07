@@ -728,6 +728,7 @@ CREATE TABLE `glpi_configs` (
   `auto_create_infocoms` tinyint(1) NOT NULL DEFAULT '0',
   `inquest_rate` int(11) NOT NULL DEFAULT '0',
   `inquest_delay` int(11) NOT NULL DEFAULT '0',
+  `use_slave_for_search` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
