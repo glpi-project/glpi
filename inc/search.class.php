@@ -538,6 +538,9 @@ class Search {
          }
       }
 
+      // Use a ReadOnly connection if available and configured to be used
+      $DBread = DBConnection::getReadConnection();
+
       // If no research limit research to display item and compute number of item using simple request
       $nosearch = true;
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
@@ -606,13 +609,13 @@ class Search {
                                            getEntitiesRestrictRequest('', $ctable, '', '',
                                                                       $citem->maybeRecursive()),
                                            $query_num);
-                  $result_num = $DB->query($query_num);
-                  $numrows   += $DB->result($result_num, 0, 0);
+                  $result_num = $DBread->query($query_num);
+                  $numrows   += $DBread->result($result_num, 0, 0);
                }
             }
          } else {
-            $result_num = $DB->query($query_num);
-            $numrows    = $DB->result($result_num,0,0);
+            $result_num = $DBread->query($query_num);
+            $numrows    = $DBread->result($result_num,0,0);
          }
       }
 
@@ -634,7 +637,7 @@ class Search {
          $HAVING = ' HAVING '.$HAVING;
       }
 
-      $DB->query("SET SESSION group_concat_max_len = 9999999;");
+      $DBread->query("SET SESSION group_concat_max_len = 9999999;");
 
       // Create QUERY
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
@@ -704,10 +707,10 @@ class Search {
       }
 
       // Get it from database and DISPLAY
-      if ($result = $DB->query($QUERY)) {
+      if ($result = $DBread->query($QUERY)) {
          // if real search or complete export : get numrows from request
          if (!$nosearch||$p['export_all']) {
-            $numrows = $DB->numrows($result);
+            $numrows = $DBread->numrows($result);
          }
          // Contruct Pager parameters
          $globallinkto = Search::getArrayUrlLink("field",$p['field']).
@@ -894,7 +897,7 @@ class Search {
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$nosearch) {
-               $DB->data_seek($result, $p['start']);
+               $DBread->data_seek($result, $p['start']);
             }
 
             // Define begin and end var for loop
@@ -913,7 +916,7 @@ class Search {
                // Column num
                $item_num = 1;
                // Get data and increment loop variables
-               $data = $DB->fetch_assoc($result);
+               $data = $DBread->fetch_assoc($result);
                $i++;
                $row_num++;
                // New line
@@ -1140,7 +1143,7 @@ class Search {
             echo Search::showError($output_type);
          }
       } else {
-         echo $DB->error();
+         echo $DBread->error();
       }
       // Clean selection
       $_SESSION['glpimassiveactionselected']=array();

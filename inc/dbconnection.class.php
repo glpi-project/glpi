@@ -144,6 +144,29 @@ class DBConnection extends CommonDBTM {
 
 
    /**
+    * Get Connection to slave, if exists,
+    * and if configured to be used for read only request
+    *
+    * @return DBmysql object
+    */
+   static function getReadConnection() {
+      global $DB, $CFG_GLPI;
+
+      if ($CFG_GLPI['use_slave_for_search']
+          && !$DB->isSlave()
+          && DBConnection::isDBSlaveActive()) {
+         include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
+         $DBread = new DBSlave();
+
+         if ($DBread->connected) {
+            return $DBread;
+         }
+      }
+      return $DB;
+   }
+
+
+   /**
     *  Establish a connection to a mysql server (main or replicate)
     *
     * @param $use_slave try to connect to slave server first not to main server
