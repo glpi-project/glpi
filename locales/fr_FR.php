@@ -327,6 +327,9 @@ $LANG['common'][95] = "Par";
 $LANG['common'][96] = "Matériels";
 $LANG['common'][97] = "Lié à";
 $LANG['common'][98] = "Duplique";
+$LANG['common'][99] = "Dates";
+$LANG['common'][100] = "Délais";
+
 
 $LANG['computers'][0]  = "Volume";
 $LANG['computers'][1]  = "Pourcentage libre";
