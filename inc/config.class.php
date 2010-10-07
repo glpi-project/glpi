@@ -433,8 +433,8 @@ class Config extends CommonDBTM {
 
       if ($DBSlave->connected && !$DB->isSlave()) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='4' class='center'>" . $LANG['setup'][803] . "&nbsp;:";
-         echo timestampToString(DBConnection::getReplicateDelay(),1);
+         echo "<td colspan='4' class='center'>";
+         DBConnection::showAllReplicateDelay();
          echo "</td>";
          echo "</tr>";
       }
