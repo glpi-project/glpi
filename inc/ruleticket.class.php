@@ -84,6 +84,7 @@ class RuleTicket extends Rule {
       foreach ($this->criterias as $criteria) {
          if ($criteria->fields['criteria'] == 'entities_id') {
             $entity_as_criteria=true;
+            break;
          }
       }
       if (!$entity_as_criteria) {
