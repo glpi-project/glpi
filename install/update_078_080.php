@@ -824,6 +824,11 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add table glpi_rulecacheprinters". $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_configs","use_slave_for_search")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `use_slave_for_search` tinyint( 1 ) NOT NULL DEFAULT '0' ";
+      $DB->query($query) or die("0.80 add use_slave_for_search field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

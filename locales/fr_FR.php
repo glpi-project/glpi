@@ -2031,6 +2031,7 @@ $LANG['setup'][800]="Réplicat MySQL";
 $LANG['setup'][801]="Activer le réplicat MySQL";
 $LANG['setup'][802]="Base";
 $LANG['setup'][803]="Écart entre le maître et l'esclave";
+$LANG['setup'][804]="Utiliser l'esclave pour le moteur de recherche";
 $LANG['setup'][806]="Durée maximum de désynchronisation (en minutes)";
 $LANG['setup'][807]="La base de donnée esclave est désynchronisée. L'écart est de";
 $LANG['setup'][808]="Base de données esclave désynchronisée !";
