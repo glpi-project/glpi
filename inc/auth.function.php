@@ -373,10 +373,14 @@ function initEntityProfiles($userID) {
 
          if ($DB->numrows($result2)) {
             while ($data = $DB->fetch_array($result2)) {
-               $_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['id']   = $data['eID'];
-               $_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['name'] = $data['name'];
-               $_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['is_recursive']
-                                                                           = $data['is_recursive'];
+               // Do not override existing entity if define as recursive
+               if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
+                  || $data['is_recursive']) {
+                  $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['id']   = $data['eID'];
+                  $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['name'] = $data['name'];
+                  $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['is_recursive']
+                                                                              = $data['is_recursive'];
+               }
             }
          }
       }
