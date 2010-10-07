@@ -807,10 +807,6 @@ class Infocom extends CommonDBTM {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
             if (!in_array($item->getType(), array('Software', 'CartridgeItem', 'ConsumableItem',
                                                   'Consumable', 'Cartridge', 'SoftwareLicense'))) {
                echo "<td>".$LANG['financial'][89]."&nbsp;:</td><td>";
