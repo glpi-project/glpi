@@ -1219,7 +1219,6 @@ ul#menu ul.ssmenu{
 	top: 5px;
 	width: 108px;
 	border: 1px solid #CC9900;
-	border-bottom: 0px;
 	-moz-border-radius: 4px;
 	background: url("../pics/fd_ssmenu.png") 0 0 repeat;
 	display: none;
@@ -1231,6 +1230,10 @@ ul#menu ul li{
 	border-bottom: 1px solid #CC9900;
 	line-height: 20px;
 	font-size: 0.9em;
+}
+
+ul#menu ul li:last-child{
+  border-bottom: 0px;
 }
 
 ul#menu ul li a{
