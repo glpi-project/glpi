@@ -1566,7 +1566,7 @@ class Rule extends CommonDBTM {
 
       $rand         = mt_rand();
       $limit_length = $_SESSION["glpidropdown_chars_limit"];
-      $use_ajax = false;
+      $use_ajax     = false;
 
       if ($CFG_GLPI["use_ajax"]) {
          $nb = countElementsInTable("glpi_rules", "`sub_type`='".$p['sub_type']."'");

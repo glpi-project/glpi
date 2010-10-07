@@ -47,9 +47,11 @@ class RuleCriteria extends CommonDBChild {
       $this->itemtype = $rule_type;
    }
 
+
    /**
-   * Get title used in rule
-   * @return Title of the rule
+    * Get title used in rule
+    *
+    * @return Title of the rule
    **/
    static function getTypeName() {
       global $LANG;
@@ -57,11 +59,14 @@ class RuleCriteria extends CommonDBChild {
       return $LANG['rulesengine'][6];
    }
 
+
    function getNameID($with_comment=0) {
       global $CFG_GLPI,$LANG;
+
       $rule = new $this->itemtype ();
       return html_clean($rule->getMinimalCriteriaText($this->fields));
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -85,13 +90,15 @@ class RuleCriteria extends CommonDBChild {
       $tab[3]['name']      = $LANG['rulesengine'][15];
       $tab[3]['datatype']  = 'text';
 
-
       return $tab;
    }
 
+
    /**
     * Get all criterias for a given rule
+    *
     * @param $ID the rule_description ID
+    *
     * @return an array of RuleCriteria objects
    **/
    function getRuleCriterias($ID) {
@@ -106,33 +113,38 @@ class RuleCriteria extends CommonDBChild {
       $rules_list = array ();
       while ($rule = $DB->fetch_assoc($result)) {
          $tmp = new RuleCriteria;
-         $tmp->fields = $rule;
+         $tmp->fields  = $rule;
          $rules_list[] = $tmp;
       }
+
       return $rules_list;
    }
 
+
    /**
     * Return a value associated with a pattern associated to a criteria to compare it
+    *
     * @param $condition condition used
     * @param $initValue the pattern
    **/
-   function getValueToMatch($condition,&$initValue) {
+   function getValueToMatch($condition, &$initValue) {
       global $LANG;
 
       $type = $this->getType();
+
       if (!empty($type)
           && ($condition!=Rule::PATTERN_IS && $condition!=Rule::PATTERN_IS_NOT)) {
+
          switch ($this->getType()) {
             case "dropdown" :
-               return Dropdown::getDropdownName($this->getTable(),$initValue);
+               return Dropdown::getDropdownName($this->getTable(), $initValue);
 
             case "dropdown_users" :
                return getUserName($initValue);
 
             case "dropdown_tracking_itemtype" :
                if (class_exists($initValue)) {
-                  $item= new $initValue();
+                  $item = new $initValue();
                   return $item->getTypeName();
                } else {
                   if (empty($initValue)) {
@@ -140,6 +152,7 @@ class RuleCriteria extends CommonDBChild {
                   }
                }
                break;
+
             case "dropdown_urgency" :
                return Ticket::getUrgencyName($initValue);
 
@@ -153,20 +166,22 @@ class RuleCriteria extends CommonDBChild {
       return $initValue;
    }
 
+
    /**
-   * Try to match a definied rule
-   *
-   * @param $criterion RuleCriteria object
-   * @param $field the field to match
-   * @param $criterias_results
-   * @param $regex_result
-   * @return true if the field match the rule, false if it doesn't match
+    * Try to match a definied rule
+    *
+    * @param $criterion RuleCriteria object
+    * @param $field the field to match
+    * @param $criterias_results
+    * @param $regex_result
+    *
+    * @return true if the field match the rule, false if it doesn't match
    **/
    static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result) {
 
-      $condition  = $criterion->fields['condition'];
-      $pattern    = $criterion->fields['pattern'];
-      $criteria   = $criterion->fields['criteria'];
+      $condition = $criterion->fields['condition'];
+      $pattern   = $criterion->fields['pattern'];
+      $criteria  = $criterion->fields['criteria'];
 
       //If pattern is wildcard, don't check the rule and return true
       if ($pattern == Rule::RULE_WILDCARD) {
@@ -180,10 +195,12 @@ class RuleCriteria extends CommonDBChild {
          // Trim for remove keyboard errors
          $field = stripslashes(trim($field));
       }
-      $pattern=trim($pattern);
+
+      $pattern = trim($pattern);
+
       if ($condition != Rule::REGEX_MATCH && $condition != Rule::REGEX_NOT_MATCH) {
          //Perform comparison with fields in lower case
-         $field = utf8_strtolower($field);
+         $field   = utf8_strtolower($field);
          $pattern = utf8_strtolower($pattern);
       }
 
@@ -271,10 +288,13 @@ class RuleCriteria extends CommonDBChild {
       return false;
    }
 
+
    /**
-   * Return the condition label by giving his ID
-   * @param $ID condition's ID
-   * @return condition's label
+    * Return the condition label by giving his ID
+    *
+    * @param $ID condition's ID
+    *
+    * @return condition's label
    **/
    static function getConditionByID($ID) {
       global $LANG;
@@ -306,33 +326,38 @@ class RuleCriteria extends CommonDBChild {
       }
    }
 
+
    static function getConditions() {
       global $LANG;
-      return array(Rule::PATTERN_IS=>$LANG['rulesengine'][0],
-                        Rule::PATTERN_IS_NOT=>$LANG['rulesengine'][1],
-                        Rule::PATTERN_CONTAIN=>$LANG['rulesengine'][2],
-                        Rule::PATTERN_NOT_CONTAIN=>$LANG['rulesengine'][3],
-                        Rule::PATTERN_BEGIN=>$LANG['rulesengine'][4],
-                        Rule::PATTERN_END=>$LANG['rulesengine'][5],
-                        Rule::REGEX_MATCH=>$LANG['rulesengine'][26],
-                        Rule::REGEX_NOT_MATCH=>$LANG['rulesengine'][27]);
+
+      return array(Rule::PATTERN_IS          => $LANG['rulesengine'][0],
+                   Rule::PATTERN_IS_NOT      => $LANG['rulesengine'][1],
+                   Rule::PATTERN_CONTAIN     => $LANG['rulesengine'][2],
+                   Rule::PATTERN_NOT_CONTAIN => $LANG['rulesengine'][3],
+                   Rule::PATTERN_BEGIN       => $LANG['rulesengine'][4],
+                   Rule::PATTERN_END         => $LANG['rulesengine'][5],
+                   Rule::REGEX_MATCH         => $LANG['rulesengine'][26],
+                   Rule::REGEX_NOT_MATCH     => $LANG['rulesengine'][27]);
    }
+
    /**
-   * Display a dropdown with all the criterias
+    * Display a dropdown with all the criterias
    **/
-   static function dropdownConditions($type,$name,$value='',$allow_condition=array()) {
+   static function dropdownConditions($type, $name, $value='', $allow_condition=array()) {
       global $LANG;
 
       $elements = array();
       foreach (RuleCriteria::getConditions() as $pattern => $label) {
          if (empty($allow_condition)
-               || (!empty($allow_condition)
-                     && in_array($pattern,$allow_condition))) {
+             || (!empty($allow_condition) && in_array($pattern,$allow_condition))) {
+
             $elements[$pattern] = $label;
          }
       }
-      return Dropdown::showFromArray($name,$elements,array('value' => $value));
+      return Dropdown::showFromArray($name, $elements,array('value' => $value));
    }
+
+
 }
 
 ?>

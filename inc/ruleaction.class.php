@@ -42,12 +42,14 @@ class RuleAction extends CommonDBChild {
    public $items_id  = 'rules_id';
    public $dohistory = true;
 
+
    function __construct($rule_type='Rule') {
       $this->itemtype = $rule_type;
    }
 
    /**
    * Get title used in rule
+   *
    * @return Title of the rule
    **/
    static function getTypeName() {
@@ -60,6 +62,7 @@ class RuleAction extends CommonDBChild {
       $rule = new $this->itemtype ();
       return html_clean($rule->getMinimalActionText($this->fields));
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -86,9 +89,12 @@ class RuleAction extends CommonDBChild {
 
       return $tab;
    }
+
    /**
     * Get all actions for a given rule
+    *
     * @param $ID the rule_description ID
+    *
     * @return an array of RuleAction objects
    **/
    function getRuleActions($ID) {
@@ -103,43 +109,46 @@ class RuleAction extends CommonDBChild {
       $rules_actions = array ();
       while ($rule = $DB->fetch_assoc($result)) {
          $tmp = new RuleAction;
-         $tmp->fields = $rule;
+         $tmp->fields     = $rule;
          $rules_actions[] = $tmp;
       }
       return $rules_actions;
    }
 
+
    /**
     * Add an action
+    *
     * @param $action action type
     * @param $ruleid rule ID
     * @param $field field name
     * @param $value value
    **/
-   function addActionByAttributes($action,$ruleid,$field,$value) {
+   function addActionByAttributes($action, $ruleid, $field, $value) {
 
-      $input["action_type"]=$action;
-      $input["field"]=$field;
-      $input["value"]=$value;
-      $input[$this->items_id]=$ruleid;
+      $input["action_type"]   = $action;
+      $input["field"]         = $field;
+      $input["value"]         = $value;
+      $input[$this->items_id] = $ruleid;
       $this->add($input);
    }
+
 
    /**
    * Display a dropdown with all the possible actions
    **/
-   static function dropdownActions($sub_type,$name,$value='') {
+   static function dropdownActions($sub_type, $name, $value='') {
       global $LANG,$CFG_GLPI;
 
       $rule = new $sub_type();
       $actions_options = $rule->getActions();
 
-      $actions=array("assign");
+      $actions = array("assign");
       if (isset($actions_options[$value]['force_actions'])) {
-         $actions=$actions_options[$value]['force_actions'];
+         $actions = $actions_options[$value]['force_actions'];
       }
 
-      $elements=array();
+      $elements = array();
       foreach ($actions as $action) {
          switch ($action) {
             case "assign" :
@@ -166,17 +175,18 @@ class RuleAction extends CommonDBChild {
                $elements["affectbymac"] = $LANG['rulesengine'][49];
                break;
 
-            case 'compute';
+            case 'compute':
                $elements['compute'] = $LANG['rulesengine'][38];
                break;
 
-            case 'send';
+            case 'send':
                $elements['send'] = $LANG['buttons'][26];
                break;
          }
       }
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
+
 
    static function getActionByID($ID) {
       global $LANG;
@@ -208,29 +218,35 @@ class RuleAction extends CommonDBChild {
       }
    }
 
-   static function getRegexResultById($action,$regex_result) {
+
+   static function getRegexResultById($action, $regex_result) {
+
       $results = array();
 
       if (count($regex_result)>0) {
          if (preg_match_all("/#([0-9])/",$action,$results)>0) {
             foreach($results[1] as $result) {
-               $action=str_replace("#$result",
-                                 (isset($regex_result[$result])?
-                                    $regex_result[$result]:''),$action);
+               $action = str_replace("#$result",
+                                     (isset($regex_result[$result])?$regex_result[$result]:''),
+                                     $action);
             }
          }
       }
       return $action;
    }
 
-   function getAlreadyUsedForRuleID($rules_id,$sub_type) {
+
+   function getAlreadyUsedForRuleID($rules_id, $sub_type) {
       global $DB;
 
       $rule = new $sub_type();
       $actions_options = $rule->getActions();
 
       $actions = array();
-      $res = $DB->query("SELECT `field` FROM `".$this->getTable()."` WHERE `".$this->items_id."`='".$rules_id."'");
+      $res = $DB->query("SELECT `field`
+                         FROM `".$this->getTable()."`
+                         WHERE `".$this->items_id."` = '".$rules_id."'");
+
       while ($action = $DB->fetch_array($res)) {
          if (isset($actions_options[$action["field"]])) {
             $actions[$action["field"]] = $action["field"];
@@ -239,78 +255,88 @@ class RuleAction extends CommonDBChild {
       return $actions;
    }
 
+
    function displayActionSelectPattern($options = array()) {
-      $display=false;
+
+      $display = false;
+
       switch ($_POST["action_type"]) {
          //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
          case "append_regex_result" :
-            autocompletionTextField($this,"value");
+            autocompletionTextField($this, "value");
             break;
+
          default :
             $actions = Rule::getActionsByType($options["sub_type"]);
             if (isset($actions[$options["field"]]['type'])) {
+
                switch($actions[$options["field"]]['type']) {
                   case "dropdown" :
-                     $table=$actions[$options["field"]]['table'];
+                     $table = $actions[$options["field"]]['table'];
                      Dropdown::show(getItemTypeForTable($table), array('name' => "value"));
-                     $display=true;
+                     $display = true;
                      break;
+
                   case "dropdown_assign" :
-                     User::dropdown(array('name' => 'value','right' => 'own_ticket'));
-                     $display=true;
+                     User::dropdown(array('name'  => 'value',
+                                          'right' => 'own_ticket'));
+                     $display = true;
                      break;
+
                   case "dropdown_users" :
-                     User::dropdown(array('name'   => 'value',
-                                          'right'  => 'all'));
-                     $display=true;
+                     User::dropdown(array('name'  => 'value',
+                                          'right' => 'all'));
+                     $display = true;
                      break;
 
                   case "dropdown_urgency" :
                      Ticket::dropdownUrgency("value");
-                     $display=true;
+                     $display = true;
                      break;
 
                   case "dropdown_impact" :
                      Ticket::dropdownImpact("value");
-                     $display=true;
+                     $display = true;
                      break;
 
                   case "dropdown_priority" :
                      if ($_POST["action_type"]!='compute') {
                         Ticket::dropdownPriority("value");
                      }
-                     $display=true;
+                     $display = true;
                      break;
 
                   case "dropdown_status" :
                      Ticket::dropdownStatus("value");
-                     $display=true;
+                     $display = true;
                      break;
 
                   case "yesonly" :
                      Dropdown::showYesNo("value",0,0);
-                     $display=true;
+                     $display = true;
                      break;
 
                   case "yesno" :
                      Dropdown::showYesNo("value");
-                     $display=true;
+                     $display = true;
                      break;
 
                   case "dropdown_management":
-                     Dropdown::showGlobalSwitch(0,array('name'=>'value',
-                                                        'management_restrict'=>2,
-                                                        'withtemplate'=>false));
-                     $display=true;
+                     Dropdown::showGlobalSwitch(0,array('name'                => 'value',
+                                                        'management_restrict' => 2,
+                                                        'withtemplate'        => false));
+                     $display = true;
                      break;
                }
             }
+
             if (!$display) {
                autocompletionTextField($this, "value");
             }
       }
    }
+
 }
 
 ?>
