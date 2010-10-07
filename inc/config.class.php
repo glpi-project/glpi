@@ -407,9 +407,13 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG['setup'][800] . "</th></tr>";
       $DBSlave = DBConnection::getDBSlaveConf();
 
+      if (is_array($DBSlave->dbhost)) {
+         $host = implode(' ', $DBSlave->dbhost);
+      } else {
+         $host = $DBSlave->dbhost;
+      }
       echo "<tr class='tab_bg_2'><td>" . $LANG['install'][30] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" .
-                 $DBSlave->dbhost . "\"></td>";
+      echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"$host\"></td>";
       echo "<td>" . $LANG['setup'][802] . "&nbsp;:</td><td>";
       echo "<input type=\"text\" name=\"_dbreplicate_dbdefault\" value=\"" .
              $DBSlave->dbdefault . "\">";

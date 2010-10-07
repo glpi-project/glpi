@@ -48,15 +48,35 @@ class DBConnection extends CommonDBTM {
    /**
     * Create slave DB configuration file
     *
-    * @param host the slave DB host
+    * @param host the slave DB host(s)
     * @param user the slave DB user
     * @param password the slave DB password
     * @param DBname the name of the slave DB
+    *
+    * @return boolean for success
     */
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
 
-      $DB_str = "<?php \n class DBSlave extends DBmysql { \n var \$slave = true; \n var \$dbhost = '" .
-                  $host . "'; \n var \$dbuser = '" . $user . "'; \n var \$dbpassword= '" .
+      $DB_str = "<?php \n class DBSlave extends DBmysql { \n var \$slave = true; \n var \$dbhost = ";
+      $host = trim($host);
+      if (strpos($host, ' ')) {
+         $hosts = explode(' ', $host);
+         $first = true;
+         foreach ($hosts as $host) {
+            if (!empty($host)) {
+               $DB_str .= ($first ? "array('" : ",'").$host."'";
+               $first = false;
+            }
+         }
+         if ($first) {
+            // no host configured
+            return false;
+         }
+         $DB_str .= ");\n";
+      } else {
+         $DB_str .= "'$host';\n";
+      }
+      $DB_str .= " var \$dbuser = '" . $user . "'; \n var \$dbpassword= '" .
                   rawurlencode($password) . "'; \n var \$dbdefault = '" . $DBname . "'; \n } \n ?>";
       $fp = fopen(GLPI_CONFIG_DIR . "/config_db_slave.php", 'wt');
       if ($fp) {
