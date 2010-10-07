@@ -237,8 +237,7 @@ class Plugin extends CommonDBTM {
             }
             if (!$usage_ok) {
                $input=$file_plugins[$plug];
-               $input['id']=$ID;
-               $this->update($input);
+               $this->unactivate($ID);
             }
          }
          // Delete plugin for file list
