@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Rule extends CommonDBTM {
 
-   public $dohistory=true;
+   public $dohistory = true;
 
    // Specific ones
    ///Actions affected to this rule
@@ -53,7 +53,7 @@ class Rule extends CommonDBTM {
    ///Criterias affected to this rule
    var $criterias = array();
    /// Right needed to use this rule
-   var $right='config';
+   var $right = 'config';
    /// Rules can be sorted ?
    var $can_sort = false;
    /// field used to order rules
@@ -93,13 +93,16 @@ class Rule extends CommonDBTM {
       $this->forceTable('glpi_rules');
    }
 
+
    function canCreate() {
       return haveRight($this->right, 'w');
    }
 
+
    function canView() {
       return haveRight($this->right, 'r');
    }
+
 
    function isEntityAssign() {
       return false;
@@ -296,23 +299,27 @@ class Rule extends CommonDBTM {
     * @param $ID the rule_description ID
     * @param $withcriterias 1 to retrieve all the criterias for a given rule
     * @param $withactions  1 to retrive all the actions for a given rule
-    **/
+   **/
    function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
 
       if ($ID == "") {
          return $this->getEmpty();
 
       } else if ($ret=$this->getFromDB($ID)) {
+
          if ($withactions) {
             $RuleAction    = new $this->ruleactionclass;
             $this->actions = $RuleAction->getRuleActions($ID);
          }
+
          if ($withcriterias) {
             $RuleCriterias   = new $this->rulecriteriaclass;
             $this->criterias = $RuleCriterias->getRuleCriterias($ID);
          }
+
          return true;
       }
+
       return false;
    }
 
@@ -744,7 +751,7 @@ class Rule extends CommonDBTM {
    function process(&$input, &$output, &$params) {
 
       if (count($this->criterias)) {
-         $this->regex_results = array();
+         $this->regex_results     = array();
          $this->criterias_results = array();
          $input = $this->prepareInputDataForProcess($input, $params);
 
@@ -770,7 +777,7 @@ class Rule extends CommonDBTM {
     * @param $input the input data used to check criterias
     *
     * @return boolean if criterias match
-    **/
+   **/
    function checkCriterias($input) {
 
       $doactions = false;
@@ -1080,7 +1087,7 @@ class Rule extends CommonDBTM {
          echo "<input type='checkbox' name='item[" . $fields["id"] . "]' value='1' $sel>";
          echo "</td>";
       }
-      $this->showMinimalAction($fields,$canedit);
+      $this->showMinimalAction($canedit);
       echo "</tr>\n";
    }
 
@@ -1213,9 +1220,8 @@ class Rule extends CommonDBTM {
     * Show the minimal infos for the action rule
     *
     * @param $fields datas used to display the action
-    * @param $canedit right to edit ?
    **/
-   function showMinimalAction($fields,$canedit) {
+   function showMinimalAction($fields) {
       echo $this->getMinimalActionText($fields);
    }
 
@@ -1454,10 +1460,9 @@ class Rule extends CommonDBTM {
    /**
     * Function used to add specific params before rule processing
     *
-    * @param $fields fields values
     * @param $params parameters
    **/
-   function addSpecificParamsForPreview($fields, $params) {
+   function addSpecificParamsForPreview($params) {
       return $params;
    }
 
@@ -1610,10 +1615,8 @@ class Rule extends CommonDBTM {
     * Return all rules from database
     *
     * @param $ID of entity
-    * @param $withcriterias import rules criterias too
-    * @param $withactions import rules actions too
    **/
-   function getRulesForEntity($ID, $withcriterias, $withactions) {
+   function getRulesForEntity($ID) {
       global $DB;
 
       $rules = array ();
@@ -1672,7 +1675,7 @@ class Rule extends CommonDBTM {
       }
 
          //Get all rules and actions
-      $rules = $this->getRulesForEntity( $ID, 0, 1);
+      $rules = $this->getRulesForEntity($ID);
 
       echo "<div class='spaced'>";
 
