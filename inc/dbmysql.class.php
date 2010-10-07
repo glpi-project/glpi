@@ -99,10 +99,13 @@ class DBmysql {
     * Constructor / Connect to the MySQL Database
     *
     * try to connect
+    *
+    * @param $choice integer, host number
+    *
     * @return nothing
     */
-   function __construct() {
-      $this->connect();
+   function __construct($choice=NULL) {
+      $this->connect($choice);
    }
 
    /**
@@ -110,15 +113,17 @@ class DBmysql {
     *
     * Use dbhost, dbuser, dbpassword and dbdefault
     *
+    * @param $choice integer, host number
+    *
     * @return nothing
     */
-   function connect() {
+   function connect($choice=NULL) {
 
       $this->connected=false;
 
       if (is_array($this->dbhost)) {
          // Round robin choice
-         $i = mt_rand(0,count($this->dbhost)-1);
+         $i = (isset($choice) ? $choice : mt_rand(0,count($this->dbhost)-1));
          $host = $this->dbhost[$i];
          //logDebug("Chosen server $i = $host");
       } else {

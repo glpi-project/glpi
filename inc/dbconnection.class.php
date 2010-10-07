@@ -100,12 +100,16 @@ class DBConnection extends CommonDBTM {
 
    /**
     * Read slave DB configuration file
+    *
+    * @param $choice integer, host number
+    *
+    * @return DBmysql object
     */
-   static function getDBSlaveConf() {
+   static function getDBSlaveConf($choice=NULL) {
 
       if (DBConnection::isDBSlaveActive()) {
          include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
-         return new DBSlave;
+         return new DBSlave($choice);
       }
    }
 
@@ -244,12 +248,17 @@ class DBConnection extends CommonDBTM {
 
 
    /**
-    *  Get delay between slave and master
+    * Get delay between slave and master
+    *
+    * @param $choice integer, host number
+    *
+    * @return integer
     */
-   static function getReplicateDelay() {
+   static function getReplicateDelay($choice=NULL) {
 
       include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
-      return (int) (DBConnection::getHistoryMaxDate(new DB) - DBConnection::getHistoryMaxDate(new DBSlave));
+      return (int) (DBConnection::getHistoryMaxDate(new DB())
+                    - DBConnection::getHistoryMaxDate(new DBSlave($choice)));
    }
 
 
@@ -328,6 +337,26 @@ class DBConnection extends CommonDBTM {
       return 0;
    }
 
+   /**
+    * Display in HTML, delay between master and slave
+    * 1 line per slave is multiple
+    */
+   static function showAllReplicateDelay() {
+      global $LANG;
+
+      $DBSlave = self::getDBSlaveConf();
+
+      if (is_array($DBSlave->dbhost)) {
+         foreach ($DBSlave->dbhost as $num => $name) {
+            echo $LANG['install'][30] . "&nbsp;: '$name', " . $LANG['setup'][803] . "&nbsp;:";
+            echo timestampToString(self::getReplicateDelay($num),1) . "<br>";
+         }
+      } else {
+         echo $LANG['setup'][803] . "&nbsp;:";
+         echo timestampToString(self::getReplicateDelay(),1);
+      }
+   }
+
 
    function showSystemInformations($width) {
       global $LANG;
@@ -335,14 +364,9 @@ class DBConnection extends CommonDBTM {
       echo "\n</pre></td>";
       echo "</tr><tr class='tab_bg_2'><th>" . $LANG['setup'][800] . "</th></tr>";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
-      if (DBConnection::isDBSlaveActive()) {
+      if (self::isDBSlaveActive()) {
          echo $LANG['common'][60]."&nbsp;: ".$LANG['choice'][1]."\n";
-
-         $task = new CronTask;
-         $task->getFromDBbyName('DBConnection','CheckDBreplicate');
-         $diff = DBConnection::getReplicateDelay();
-         echo $LANG['setup'][803]."&nbsp;: ".timestampToString($diff)."\n";
-
+         self::showAllReplicateDelay();
       } else {
          echo $LANG['common'][60]."&nbsp;: ".$LANG['choice'][0]."\n";
       }
