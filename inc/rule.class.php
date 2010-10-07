@@ -1087,7 +1087,7 @@ class Rule extends CommonDBTM {
          echo "<input type='checkbox' name='item[" . $fields["id"] . "]' value='1' $sel>";
          echo "</td>";
       }
-      $this->showMinimalAction($canedit);
+      $this->showMinimalAction($fields);
       echo "</tr>\n";
    }
 
