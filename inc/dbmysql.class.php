@@ -72,7 +72,7 @@ class DBocs extends DBmysql {
  */
 class DBmysql {
 
-   //! Database Host
+   //! Database Host - string or Array of string (round robin)
    var $dbhost = "";
    //! Database User
    var $dbuser = "";
@@ -115,7 +115,16 @@ class DBmysql {
    function connect() {
 
       $this->connected=false;
-      $this->dbh = @mysql_connect($this->dbhost, $this->dbuser, rawurldecode($this->dbpassword))
+
+      if (is_array($this->dbhost)) {
+         // Round robin choice
+         $i = mt_rand(0,count($this->dbhost)-1);
+         $host = $this->dbhost[$i];
+         //logDebug("Chosen server $i = $host");
+      } else {
+         $host = $this->dbhost;
+      }
+      $this->dbh = @mysql_connect($host, $this->dbuser, rawurldecode($this->dbpassword))
                    or $this->error = 1;
       if ($this->dbh) { // connexion ok
          @mysql_query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'",$this->dbh);
@@ -387,7 +396,7 @@ class DBmysql {
       while (!feof($DBf_handle)) {
          // specify read length to be able to read long lines
          $buffer = fgets($DBf_handle,102400);
-   
+
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
          if (substr(rtrim($formattedQuery),-1) == ";") {
