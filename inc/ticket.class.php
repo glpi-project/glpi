@@ -5025,7 +5025,7 @@ logDebug($query);
 //      printCleanArray($this->fields);
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".$LANG['common'][92]."</th></tr>";
+      echo "<tr><th colspan='2'>".$LANG['common'][99]."</th></tr>";
       echo "<tr class='tab_bg_2'><td>".$LANG['reports'][60]."&nbsp;:</td>";
       echo "<td>".convDateTime($this->fields['date'])."</td></tr>";
       echo "<tr class='tab_bg_2'><td>".$LANG['sla'][5]."&nbsp;:</td>";
@@ -5039,7 +5039,7 @@ logDebug($query);
          echo "<tr class='tab_bg_2'><td>".$LANG['reports'][61]."&nbsp;:</td>";
          echo "<td>".convDateTime($this->fields['closedate'])."</td></tr>";
       }
-      echo "<tr><th colspan='2'>".$LANG['common'][93]."</th></tr>";
+      echo "<tr><th colspan='2'>".$LANG['common'][100]."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['stats'][12]."&nbsp;:</td><td>";
       if ($this->fields['takeintoaccount_delay_stat']>0) {
