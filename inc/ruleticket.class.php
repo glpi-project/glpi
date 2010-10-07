@@ -67,7 +67,7 @@ class RuleTicket extends Rule {
       return count($this->getActions());
    }
 
-   function addSpecificParamsForPreview($input,$params) {
+   function addSpecificParamsForPreview($params) {
 
       if (!isset($params["entities_id"])) {
          $params["entities_id"] = $_SESSION["glpiactive_entity"];
