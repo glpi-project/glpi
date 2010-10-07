@@ -78,7 +78,7 @@ if (isset($_POST["test_rule"])) {
       $_POST[$key] = stripslashes($_POST[$key]);
    }
    //Add rules specific POST fields to the param array
-   $params = $rule->addSpecificParamsForPreview($_POST,$params);
+   $params = $rule->addSpecificParamsForPreview($params);
 
    $input = $rule->prepareInputDataForProcess($_POST,$params);
    //$rule->regex_results = array();
