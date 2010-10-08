@@ -2893,6 +2893,9 @@ class Search {
                             AND `$nt`.`itemtype` = '$itemtype' ".
                             getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
 
+         case "glpi_ticketsatisfactions" :
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
+
          case "glpi_contracts_items" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                     AND `$nt`.`itemtype` = '$itemtype') ";
