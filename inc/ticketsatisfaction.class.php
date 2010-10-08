@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class TicketSatisfaction extends CommonDropdown {
+class TicketSatisfaction extends CommonDBTM {
 
    static function getTypeName() {
       global $LANG;
