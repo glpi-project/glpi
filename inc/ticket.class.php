@@ -1593,24 +1593,25 @@ class Ticket extends CommonDBTM {
       $tab[59]['forcegroupby']  = true;
       $tab[59]['massiveaction'] = false;
 
+      $tab['requester'] = $LANG['job'][4];
+
+      $tab[4]['table']     = 'glpi_users';
+      $tab[4]['field']     = 'name';
+      $tab[4]['linkfield'] = 'users_id';
+      $tab[4]['name']      = $LANG['job'][4];
+
+      $tab[71]['table']     = 'glpi_groups';
+      $tab[71]['field']     = 'name';
+      $tab[71]['linkfield'] = 'groups_id';
+      $tab[71]['name']      = $LANG['common'][35];
+
+      $tab[22]['table']     = 'glpi_users';
+      $tab[22]['field']     = 'name';
+      $tab[22]['linkfield'] = 'users_id_recipient';
+      $tab[22]['name']      = $LANG['common'][37];
+
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 
-         $tab['requester'] = $LANG['job'][4];
-
-         $tab[4]['table']     = 'glpi_users';
-         $tab[4]['field']     = 'name';
-         $tab[4]['linkfield'] = 'users_id';
-         $tab[4]['name']      = $LANG['job'][4];
-
-         $tab[71]['table']     = 'glpi_groups';
-         $tab[71]['field']     = 'name';
-         $tab[71]['linkfield'] = 'groups_id';
-         $tab[71]['name']      = $LANG['common'][35];
-
-         $tab[22]['table']     = 'glpi_users';
-         $tab[22]['field']     = 'name';
-         $tab[22]['linkfield'] = 'users_id_recipient';
-         $tab[22]['name']      = $LANG['common'][37];
 
          $tab['assign'] = $LANG['job'][5];
 
