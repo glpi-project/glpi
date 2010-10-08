@@ -864,7 +864,7 @@ class CommonDBTM extends CommonGLPI {
    *
    **/
    function prepareInputForUpdate($input) {
-   return $input;
+      return $input;
    }
 
    /**
