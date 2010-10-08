@@ -57,7 +57,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
       $this->datas['##lang.dbconnection.title##']  = $LANG['setup'][808];
       $this->datas['##lang.dbconnection.delay##']  = $LANG['setup'][807];
-      $this->datas['##dbconnection.delay##']       = DBConnection::getReplicateDelay();
+      $this->datas['##dbconnection.delay##']       = $options['diff'];
    }
 
 }

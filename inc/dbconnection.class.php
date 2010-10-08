@@ -271,14 +271,16 @@ class DBConnection extends CommonDBTM {
       // 1 the master database is avalaible
       // 2 the slave database is configurated
       if (!$DB->isSlave() && DBConnection::isDBSlaveActive()) {
-         $diff = DBConnection::getReplicateDelay();
+         $diff = self::getReplicateDelay();
 
          // Quite strange, but allow simple stat
          $task->setVolume($diff);
 
          if ($diff > ($task->fields['param']*60)) {
             //Raise event if replicate is not synchronized
-            NotificationEvent::raiseEvent('desynchronization', new self());
+            $options = array('diff'        => $diff,
+                             'entities_id' => 0);
+            NotificationEvent::raiseEvent('desynchronization', new self(), $options);
          }
          return 1;
       }
