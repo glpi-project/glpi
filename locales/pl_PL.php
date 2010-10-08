@@ -1886,7 +1886,7 @@ $LANG['transfer'][7]="Pozycja do przeniesienia";
 $LANG['transfer'][8]="Tryb transferu"; 
 
 $LANG['update'][88]="Wersja bazy danych nie jest kompatybilna z wersją zainstalowanego kodu. Konieczna jest aktualizacja."; 
-$LANG['update'][89]="Próbujesz użyć GLPI z bazą w wersji zaplanowanej do późniejszych wydań. Proszę zainstaluj wersje odpowiednią dla twojej bazy danych."; 
+$LANG['update'][89]="Próbujesz użyć GLPI z plikami z wcześniejszej wersji niż obecna wersja bazy danych. Proszę zainstaluj wersje plików odpowiednią dla twojej bazy danych."; 
 $LANG['update'][90]="Błąd podczas update'u bazy danych"; 
 $LANG['update'][91]="Uwaga !"; 
 $LANG['update'][92]="Zaktualizujesz baze danych GLPI o nazwie:"; 
