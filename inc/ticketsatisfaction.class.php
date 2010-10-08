@@ -72,6 +72,7 @@ class TicketSatisfaction extends CommonDropdown {
       echo "<td>";
       echo "<input type='hidden' name='tickets_id' value='$tid'>";
       Dropdown::showInteger("satisfaction", $this->fields["satisfaction"], 0, 5);
+      echo "<span class='small_space'><font size='-5'>(".$LANG['satisfaction'][5].")</font></span>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -80,8 +81,24 @@ class TicketSatisfaction extends CommonDropdown {
       echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
+      if ($this->fields["date_answered"] >0) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='2'>".$LANG['satisfaction'][4]."&nbsp;:&nbsp;";
+         echo convDateTime($this->fields["date_answered"])."</td></tr>\n";
+      }
+
       $options['candel'] = false;
       $this->showFormButtons($options);
+   }
+
+
+   function prepareInputForUpdate($input) {
+      global $CFG_GLPI;
+
+      if ($input['satisfaction']>0) {
+         $input["date_answered"] = $_SESSION["glpi_currenttime"];
+      }
+      return $input;
    }
 
 
