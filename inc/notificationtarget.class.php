@@ -83,9 +83,7 @@ class NotificationTarget extends CommonDBChild {
 
    function __construct($entity='', $event='', $object=null, $options=array()) {
 
-      if (isset($options['entities_id'])) {
-         $this->entity = $options['entities_id'];
-      } else if ($entity == '') {
+      if ($entity === '') {
          $this->entity = (isset($_SESSION['glpiactive_entity'])?$_SESSION['glpiactive_entity']:0);
       } else {
          $this->entity = $entity;
