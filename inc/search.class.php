@@ -2729,7 +2729,7 @@ class Search {
          return "";
       }
 
-//       echo $nt.".".$linkfield.'<br>';
+//      echo $nt.".".$linkfield.'<br>';
       if (in_array($nt.".".$linkfield,$already_link_tables)) {
          return "";
       }
@@ -2844,7 +2844,7 @@ class Search {
             // Add networking device for computers
             if ($itemtype == 'Computer') {
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                          "glpi_computers_devicenetworkcards", $linkfield, $meta,
+                                          "glpi_computers_devicenetworkcards", 'computers_id', $meta,
                                           $meta_type);
             }
             return $out."
@@ -3108,7 +3108,7 @@ class Search {
          case "glpi_devicesoundcards" :
             $linktable = str_replace('glpi_', 'glpi_computers_', $new_table);
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $linktable,
-                                       $linkfield, $meta, $meta_type);
+                                       'computers_id', $meta, $meta_type);
             return $out."
                    LEFT JOIN `$new_table` $AS
                      ON (`$linktable`.`".getForeignKeyFieldForTable($new_table)."` = `$nt`.`id`) ";
