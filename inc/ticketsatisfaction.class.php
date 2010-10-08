@@ -53,6 +53,31 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 
+   function canUpdate() {
+      return (haveRight('create_ticket', 1));
+   }
+
+
+   /**
+    * Is the current user have right to update the current satisfaction
+    *
+    * @return boolean
+    */
+   function canUpdateItem() {
+
+      $tid = $this->fields['tickets_id'];
+      $ticket = new ticket();
+      if (!$ticket->getFromDB($tid)) {
+         return false;
+      }
+
+      if ($ticket->fields["users_id"] != getLoginUserID()) {
+         return false;
+      }
+      return true;
+   }
+
+
    /**
     * form for satisfaction
     *
