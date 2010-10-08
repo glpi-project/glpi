@@ -1610,6 +1610,32 @@ class Ticket extends CommonDBTM {
       $tab[22]['linkfield'] = 'users_id_recipient';
       $tab[22]['name']      = $LANG['common'][37];
 
+      $tab['satisfaction'] = $LANG['satisfaction'][3];
+
+      $tab[60]['table']     = 'glpi_ticketsatisfactions';
+      $tab[60]['field']     = 'date_begin';
+      $tab[60]['linkfield'] = '';
+      $tab[60]['name']      = $LANG['satisfaction'][6];
+      $tab[60]['datatype']  = 'datetime';
+
+      $tab[61]['table']     = 'glpi_ticketsatisfactions';
+      $tab[61]['field']     = 'date_answered';
+      $tab[61]['linkfield'] = '';
+      $tab[61]['name']      = $LANG['satisfaction'][4];
+      $tab[61]['datatype']  = 'datetime';
+
+      $tab[62]['table']     = 'glpi_ticketsatisfactions';
+      $tab[62]['field']     = 'satisfaction';
+      $tab[62]['linkfield'] = '';
+      $tab[62]['name']      = $LANG['satisfaction'][7];
+      $tab[62]['datatype']  = 'number';
+
+      $tab[63]['table']     = 'glpi_ticketsatisfactions';
+      $tab[63]['field']     = 'comment';
+      $tab[63]['linkfield'] = '';
+      $tab[63]['name']      = $LANG['satisfaction'][8];
+      $tab[63]['datatype']  = 'text';
+
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 
 

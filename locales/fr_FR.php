@@ -1738,6 +1738,9 @@ $LANG['satisfaction'][2]="Aucune enquête de générée";
 $LANG['satisfaction'][3]="Enquête de satisfaction";
 $LANG['satisfaction'][4]="Date de réponse à l'enquête de satisfaction";
 $LANG['satisfaction'][5]="1 : très insatisfait - 2 : insatisfait - 3 : moyennement satisfait - 4 : satisfait - 5 : très satisfait";
+$LANG['satisfaction'][6]="Date de création de l'enquête de satisfaction";
+$LANG['satisfaction'][7]="Degré de satisfaction";
+$LANG['satisfaction'][8]="Commentaire à l'enquête de satisfaction";
 
 $LANG['search'][0]="Recherche";
 $LANG['search'][1]="pour tous";
