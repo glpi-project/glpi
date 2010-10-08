@@ -2844,7 +2844,7 @@ class Search {
             // Add networking device for computers
             if ($itemtype == 'Computer') {
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                          "glpi_computers_devicenetworkcards", 'computers_id', $meta,
+                                          "glpi_computers_devicenetworkcards", $linkfield, $meta,
                                           $meta_type);
             }
             return $out."
@@ -3108,7 +3108,7 @@ class Search {
          case "glpi_devicesoundcards" :
             $linktable = str_replace('glpi_', 'glpi_computers_', $new_table);
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $linktable,
-                                       'computers_id', $meta, $meta_type);
+                                       $linkfield, $meta, $meta_type);
             return $out."
                    LEFT JOIN `$new_table` $AS
                      ON (`$linktable`.`".getForeignKeyFieldForTable($new_table)."` = `$nt`.`id`) ";
@@ -4575,15 +4575,20 @@ class Search {
       // Complete linkfield if not define
       foreach ($search[$itemtype] as $key => $val) {
          if (!isset($val['linkfield'])) {
-            if (strcmp($item->getTable(),$val['table'])==0) {
-               $search[$itemtype][$key]['linkfield']=$val['field'];
+            // No massive action -> no linkfield needed
+            if (isset($search[$itemtype][$key]['massiveaction']) && !$search[$itemtype][$key]['massiveaction']) {
+               $search[$itemtype][$key]['linkfield']='';
             } else {
-               $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
+               if (strcmp($item->getTable(),$val['table'])==0) {
+                  $search[$itemtype][$key]['linkfield']=$val['field'];
+               } else {
+                  $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
+               }
             }
          }
          // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
          if (empty($search[$itemtype][$key]['linkfield'])) {
-            $search[$itemtype][$key]['masiveaction']=false;
+            $search[$itemtype][$key]['massiveaction']=false;
          }
       }
 
