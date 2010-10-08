@@ -317,20 +317,33 @@ class DBConnection extends CommonDBTM {
     * @param $task to log and get param
     */
    static function cronCheckDBreplicate($task) {
-      global $DB;
+      global $DB, $LANG;
 
       //Lauch cron only is :
       // 1 the master database is avalaible
       // 2 the slave database is configurated
       if (!$DB->isSlave() && DBConnection::isDBSlaveActive()) {
-         $diff = DBConnection::getReplicateDelay();
 
-         // Quite strange, but allow simple stat
-         $task->setVolume($diff);
+         $DBslave = self::getDBSlaveConf();
+         if (is_array($DBslave->dbhost)) {
+            $hosts = $DBslave->dbhost;
+         } else {
+            $hosts = array($DBslave->dbhost);
+         }
+         foreach ($hosts as $num => $name) {
+            $diff = self::getReplicateDelay($num);
 
-         if ($diff > ($task->fields['param']*60)) {
-            //Raise event if replicate is not synchronized
-            NotificationEvent::raiseEvent('desynchronization', new self());
+            // Quite strange, but allow simple stat
+            $task->addVolume($diff);
+            $task->log($LANG['install'][30].": '$name', ".
+                       $LANG['setup'][803].": ".timestampToString($diff, true));
+
+            if ($diff > ($task->fields['param']*60)) {
+               //Raise event if replicate is not synchronized
+               $options = array('diff' => $diff,
+                                'name' => $name);
+               NotificationEvent::raiseEvent('desynchronization', new self(), $options);
+            }
          }
          return 1;
       }
