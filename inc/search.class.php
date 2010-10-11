@@ -4578,7 +4578,8 @@ class Search {
       // Complete linkfield if not define
       foreach ($search[$itemtype] as $key => $val) {
          if (!isset($val['linkfield'])) {
-            // No massive action -> no linkfield needed
+            // No massive action -> no linkfield needed : 
+            // TODO : delete it : not true : linkfield may be defined for LeftJoin : need to correct links...
             if (isset($search[$itemtype][$key]['massiveaction']) && !$search[$itemtype][$key]['massiveaction']) {
                $search[$itemtype][$key]['linkfield']='';
             } else {
