@@ -42,14 +42,14 @@ class NotificationTargetConsumable extends NotificationTarget {
    }
 
 
-      /**
+   /**
     * Get all data needed for template processing
-    */
+   **/
    function getDatasForTemplate($event, $options=array()) {
       global $LANG,$CFG_GLPI;
 
-      $this->datas['##consumable.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $options['entities_id']);
+      $this->datas['##consumable.entity##']      = Dropdown::getDropdownName('glpi_entities',
+                                                                             $options['entities_id']);
       $this->datas['##lang.consumable.entity##'] = $LANG['entity'][0];
       $this->datas['##consumable.action##']      = $LANG['mailing'][36];
 
@@ -57,9 +57,9 @@ class NotificationTargetConsumable extends NotificationTarget {
          $tmp = array();
          $tmp['##consumable.item##']      = $consumable['consname'];
          $tmp['##consumable.reference##'] = $consumable['consref'];
-         $tmp['##consumable.remaining##']     = Consumable::getUnusedNumber($id);
-         $tmp['##consumable.url##'] = urldecode($CFG_GLPI["url_base"].
-                                              "/index.php?redirect=consumableitem_".$id);
+         $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
+         $tmp['##consumable.url##']       = urldecode($CFG_GLPI["url_base"].
+                                                      "/index.php?redirect=consumableitem_".$id);
          $this->datas['consumables'][] = $tmp;
       }
 
@@ -69,23 +69,29 @@ class NotificationTargetConsumable extends NotificationTarget {
       }
    }
 
+
    function getTags() {
       global $LANG;
 
-      $tags = array('consumable.action'          =>$LANG['mailing'][36],
-                    'consumable.reference'       =>$LANG['consumables'][2],
-                    'consumable.item'            =>$LANG['financial'][104],
-                    'consumable.remaining'       =>$LANG['software'][20],
-                    'consumable.entity'          =>$LANG['entity'][0]);
+      $tags = array('consumable.action'    => $LANG['mailing'][36],
+                    'consumable.reference' => $LANG['consumables'][2],
+                    'consumable.item'      => $LANG['financial'][104],
+                    'consumable.remaining' => $LANG['software'][20],
+                    'consumable.entity'    => $LANG['entity'][0]);
+
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true));
       }
 
-      $this->addTagToList(array('tag'=>'consumables','label'=>$LANG['reports'][57],
-                                'value'=>false,'foreach'=>true));
+      $this->addTagToList(array('tag'     => 'consumables',
+                                'label'   => $LANG['reports'][57],
+                                'value'   => false,
+                                'foreach' => true));
 
       asort($this->tag_descriptions);
    }
+
 }
 ?>

@@ -39,19 +39,15 @@ class NotificationTarget extends CommonDBChild {
    // From CommonDBChild
    public $itemtype = 'Notification';
    public $items_id = 'notifications_id';
+   public $table    = 'glpi_notificationtargets';
 
-   public $table = 'glpi_notificationtargets';
-
-   var $notification_targets = array();
-
+   var $notification_targets        = array();
    var $notification_targets_labels = array();
-
-   var $notificationoptions = 0;
+   var $notificationoptions         = 0;
 
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
-   var $datas = array();
-
+   var $datas            = array();
    var $tag_descriptions = array();
 
    // From CommonDBTM
@@ -59,7 +55,6 @@ class NotificationTarget extends CommonDBChild {
 
    //Array to store emails by notification
    var $target = array();
-
    var $entity = '';
 
    //Object which raises the notification event
@@ -69,10 +64,8 @@ class NotificationTarget extends CommonDBChild {
    var $target_object = null;
 
    // array of event name => event label
-   var $events = array();
-
-   var $options = array();
-
+   var $events     = array();
+   var $options    = array();
    var $raiseevent = '';
 
    const NO_OPTION          = 0;
@@ -97,8 +90,9 @@ class NotificationTarget extends CommonDBChild {
          $this->obj = $object;
          $this->getObjectItem($event);
       }
+
       $this->raiseevent = $event;
-      $this->options = $options;
+      $this->options    = $options;
       $this->getNotificationTargets($entity);
       $this->getAdditionalTargets($event);
       asort($this->notification_targets);
@@ -109,6 +103,7 @@ class NotificationTarget extends CommonDBChild {
    function validateSendTo($user_infos) {
       return true;
    }
+
 
    function getSubjectPrefix($event='') {
       return "[GLPI] ";
@@ -124,8 +119,11 @@ class NotificationTarget extends CommonDBChild {
 
    function getNameID($with_comment=0) {
 
-      if (isset($this->notification_targets_labels[$this->getField("type")][$this->getField("items_id")])) {
-         return $this->notification_targets_labels[$this->getField("type")][$this->getField("items_id")];
+      if (isset($this->notification_targets_labels[$this->getField("type")]
+                                                  [$this->getField("items_id")])) {
+
+         return $this->notification_targets_labels[$this->getField("type")]
+                                                  [$this->getField("items_id")];
       }
       return "";
    }
@@ -139,7 +137,7 @@ class NotificationTarget extends CommonDBChild {
     * @param $options array of options
     *
     * @return a notificationtarget class or false
-    */
+   **/
    static function getInstance($item, $event='', $options=array()) {
 
       if ($plug = isPluginItemType($item->getType())) {
@@ -172,7 +170,7 @@ class NotificationTarget extends CommonDBChild {
     * @param $options array of options
     *
     * @return a notificationtarget class or false
-    */
+   **/
    static function getInstanceByType($itemtype, $event='', $options=array()) {
 
       if ($itemtype != '' && class_exists($itemtype)) {
@@ -207,7 +205,7 @@ class NotificationTarget extends CommonDBChild {
     * Display notification targets
     *
     * @param $notification the Notification object
-    */
+   **/
    function showNotificationTargets(Notification $notification) {
       global $LANG, $DB;
 
@@ -231,7 +229,8 @@ class NotificationTarget extends CommonDBChild {
                unset($this->notification_targets[Notification::USER_TYPE."_".$data["items_id"]]);
             }
 
-            if (isset($this->notification_targets_labels[Notification::USER_TYPE][$data["items_id"]])) {
+            if (isset($this->notification_targets_labels[Notification::USER_TYPE]
+                                                        [$data["items_id"]])) {
                $name = $this->notification_targets_labels[Notification::USER_TYPE][$data["items_id"]];
             } else {
                 $name = "&nbsp;";
@@ -295,23 +294,31 @@ class NotificationTarget extends CommonDBChild {
             $options .= "<option value='" . $data["id"] . "'>" . $LANG['common'][64].' '.
                         $LANG['common'][35] . " " .$data["name"] . "</option>";
 
-            if (isset($this->notification_targets[Notification::SUPERVISOR_GROUP_TYPE."_".$data["items_id"]])) {
-               unset($this->notification_targets[Notification::SUPERVISOR_GROUP_TYPE."_".$data["items_id"]]);
+            if (isset($this->notification_targets[Notification::SUPERVISOR_GROUP_TYPE."_".
+                                                  $data["items_id"]])) {
+
+               unset($this->notification_targets[Notification::SUPERVISOR_GROUP_TYPE."_".
+                                                 $data["items_id"]]);
             }
          }
 
          if ($canedit) {
             echo "<td class='right'>";
+
             if (count($this->notification_targets)) {
                echo "<select name='mailing_to_add[]' multiple size='5'>";
+
                foreach ($this->notification_targets as $key => $val) {
                   list ($type, $items_id) = explode("_", $key);
                   echo "<option value='$key'>".$this->notification_targets_labels[$type][$items_id].
                        "</option>";
                }
+
                echo "</select>";
             }
+
             echo "</td><td class='center'>";
+
             if (count($this->notification_targets)) {
                echo "<input type='submit' class='submit' name='mailing_add' value='".
                      $LANG['buttons'][8]." >>'>";
@@ -357,8 +364,8 @@ class NotificationTarget extends CommonDBChild {
                foreach ($input["mailing_to_add"] as $tmp => $val) {
                   list ($type, $items_id) = explode("_", $val);
                   $tmp = array();
-                  $tmp['items_id'] = $items_id;
-                  $tmp['type'] = $type;
+                  $tmp['items_id']         = $items_id;
+                  $tmp['type']             = $type;
                   $tmp['notifications_id'] = $input['notifications_id'];
                   $target->add($tmp);
                }
@@ -389,7 +396,7 @@ class NotificationTarget extends CommonDBChild {
     * Add new mail with lang to current email array
     *
     * @param $data : array of data (mail, lang)
-    */
+   **/
    function addToAddressesList($data) {
       global $CFG_GLPI;
 
@@ -403,8 +410,8 @@ class NotificationTarget extends CommonDBChild {
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail) && !isset($this->target[$new_mail])) {
 
-            $this->target[$new_mail] = array ('language'      => (empty($new_lang) ?
-                                                                  $CFG_GLPI["language"] :$new_lang),
+            $this->target[$new_mail] = array ('language' => (empty($new_lang) ?$CFG_GLPI["language"]
+                                                                              :$new_lang),
                                               'email'             => $new_mail,
                                               'additionnaloption' => $notificationoption);
          }
@@ -414,7 +421,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get GLPI's global administrator email
-    */
+   **/
    function getAdminAddress() {
       global $CFG_GLPI;
 
@@ -425,7 +432,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get the email of the item's user
-    */
+   **/
    function getItemAuthorAddress() {
 
       $user = new User;
@@ -440,7 +447,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get entity admin email
-    */
+   **/
    function getEntityAdminAddress() {
       global $DB, $CFG_GLPI;
 
@@ -454,7 +461,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get targets for all the users of a group
-    */
+   **/
    function getUsersAddressesByGroup($group_id) {
       global $DB;
 
@@ -472,7 +479,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get targets for all the users of a group
-    */
+   **/
    function getSupervisorAddressByGroup($groups_id) {
       global $DB;
 
@@ -501,7 +508,7 @@ class NotificationTarget extends CommonDBChild {
     * Internal use only => should use getAllEvents
     *
     * @return an array which contains : event => event label
-    */
+   **/
    function getEvents() {
       return array();
    }
@@ -511,7 +518,7 @@ class NotificationTarget extends CommonDBChild {
     * Return all (GLPI + plugins) notification events for the object type
     *
     * @return an array which contains : event => event label
-    */
+   **/
    function getAllEvents() {
 
       $this->events = $this->getEvents();
@@ -525,7 +532,7 @@ class NotificationTarget extends CommonDBChild {
    function addTarget ($target='', $label='', $type=Notification::USER_TYPE) {
 
       $key = $type.'_'.$target;
-      $this->notification_targets[$key] = $key;
+      $this->notification_targets[$key]                  = $key;
       $this->notification_targets_labels[$type][$target] = $label;
    }
 
@@ -553,7 +560,8 @@ class NotificationTarget extends CommonDBChild {
          $this->addTarget($data["id"], $LANG['common'][35] . " " .$data["name"],
                           Notification::GROUP_TYPE);
          //Add group supervisor
-         $this->addTarget($data["id"], $LANG['common'][64].' '.$LANG['common'][35]." ".$data["name"],
+         $this->addTarget($data["id"],
+                          $LANG['common'][64].' '.$LANG['common'][35]." ".$data["name"],
                           Notification::SUPERVISOR_GROUP_TYPE);
       }
    }
@@ -566,7 +574,7 @@ class NotificationTarget extends CommonDBChild {
     * Can be overwitten (like dbconnection)
     *
     * @param $entity the entity on which the event is raised
-    */
+   **/
    function getNotificationTargets($entity) {
       global $LANG;
 
@@ -586,16 +594,17 @@ class NotificationTarget extends CommonDBChild {
     * Can be overridden in some case (for example Ticket)
     *
     * @param $event specif event to get additional targets
-    */
+   **/
    function getAdditionalTargets($event='') {
    }
 
 
    /**
     * Get addresses by a method not defined in NotificationTarget (specific to an itemtype)
+    *
     * @param $data
     * @param $options
-    */
+   **/
    function getSpecificTargets ($data, $options) {
    }
 
@@ -604,7 +613,7 @@ class NotificationTarget extends CommonDBChild {
     * Get item associated with the object on which the event was raised
     *
     * @return the object associated with the itemtype
-    */
+   **/
    function getObjectItem($event='') {
       $this->target_object = $this->obj;
    }
@@ -633,6 +642,7 @@ class NotificationTarget extends CommonDBChild {
                   FROM `glpi_users`".
                   $this->getJoinProfileSql()."
                   WHERE `glpi_users`.`id` = '$id'";
+
          foreach ($DB->request($query) as $data) {
             //Add the user email and language in the notified users list
             $this->addToAddressesList($data);
@@ -643,7 +653,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get technician in charge of the item
-    */
+   **/
    function getItemTechnicianInChargeAddress() {
       $this->getUserByField('users_id_tech', true);
    }
@@ -651,7 +661,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get user owner of the material
-    */
+   **/
    function getItemOwnerAddress() {
       $this->getUserByField('users_id', true);
    }
@@ -663,7 +673,7 @@ class NotificationTarget extends CommonDBChild {
     * @param $profiles_id the profile ID to get users emails
     *
     * @return nothing
-    */
+   **/
    function getUsersAddressesByProfile($profiles_id) {
       global $DB;
 
@@ -672,7 +682,7 @@ class NotificationTarget extends CommonDBChild {
                FROM `glpi_profiles_users`".
                $this->getJoinProfileSql()."
                INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
-               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."'".
+               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."' ".
                      getEntitiesRestrictRequest(" AND", "glpi_profiles_users", "entities_id",
                                                 $this->getEntity(), true);
 
@@ -686,15 +696,15 @@ class NotificationTarget extends CommonDBChild {
     * Get admin which sends the notification
     *
     * @return the sender's address
-    */
+   **/
    function getSender($options = array()) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['entities_id'])) {
          $entity = $options['entities_id'];
       } else {
-         $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id'):
-                                                       $this->target_object->getField('entities_id'));
+         $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id')
+                                                      :$this->target_object->getField('entities_id'));
       }
 
       //If the entity administrator's address is defined, return it
@@ -712,15 +722,15 @@ class NotificationTarget extends CommonDBChild {
     * Get the reply to address
     *
     * @return the reply to address
-    */
+   **/
    function getReplyTo($options = array()) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['entities_id'])) {
          $entity = $options['entities_id'];
       } else {
-         $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id'):
-                                                       $this->target_object->getField('entities_id'));
+         $entity = ($this->obj->isField('entities_id')?$this->obj->getField('entities_id')
+                                                      :$this->target_object->getField('entities_id'));
       }
 
       //If the entity administrator's address is defined, return it
@@ -739,7 +749,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @param $data
     * @param $options
-    */
+   **/
    function getAddressesByTarget($data, $options=array()) {
 
       //Look for all targets whose type is Notification::USER_TYPE
@@ -805,7 +815,7 @@ class NotificationTarget extends CommonDBChild {
     * Get all data needed for template processing
     * Provides minimum informations for alerts
     * Can be overridden by each NotificationTartget class if needed
-    */
+   **/
    function getDatasForTemplate($event, $options=array()) {
    }
 
@@ -881,9 +891,11 @@ class NotificationTarget extends CommonDBChild {
          if (is_array($p['events'])) {
             $events = $this->getEvents();
             $tmp = array();
+
             foreach ($p['events'] as $event) {
                $tmp[$event] = $events[$event];
             }
+
             $p['events'] = $tmp;
          }
 
@@ -896,6 +908,7 @@ class NotificationTarget extends CommonDBChild {
                $tag = "##".$p['tag']."##";
                $this->tag_descriptions[NotificationTarget::TAG_VALUE][$tag] = $p;
             }
+
             if ($p['label']&&$p['lang']) {
                $tag = "##lang.".$p['tag']."##";
                $p['label'] = $p['label'];

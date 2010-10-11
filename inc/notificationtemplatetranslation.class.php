@@ -91,15 +91,17 @@ class NotificationTemplateTranslation extends CommonDBChild {
          return false;
       }
 
-       if (empty ($ID)) {
+      if (empty ($ID)) {
           if ($this->getEmpty()) {
              $notificationtemplates_id = $options['notificationtemplates_id'];
           }
+
        } else {
           if ($this->getFromDB($ID)) {
              $notificationtemplates_id = $this->getField('notificationtemplates_id');
           }
        }
+
       $canedit = haveRight("config", "w");
 
       $template = new NotificationTemplate;
@@ -150,8 +152,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<td>" .$LANG['mailing'][115]. ' '.$LANG['mailing'][116]."&nbsp;:</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_html'>".$this->fields["content_html"];
       echo "</textarea>";
-
-      echo "<input type='hidden' name='notificationtemplates_id' value='".$template->getField('id')."'>";
+      echo "<input type='hidden' name='notificationtemplates_id' value='".
+             $template->getField('id')."'>";
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -163,7 +165,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function showSummary(NotificationTemplate $template, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
-      $nID = $template->getField('id');
+      $nID     = $template->getField('id');
       $canedit = haveRight("config", "w");
 
 
@@ -190,19 +192,22 @@ class NotificationTemplateTranslation extends CommonDBChild {
             echo "<td class='center'>";
             echo "<a href='".getItemTypeFormURL('NotificationTemplateTranslation').
                   "?id=".$data['id']."&notificationtemplates_id=".$nID."'>";
+
             if ($data['language'] != '') {
                echo $CFG_GLPI['languages'][$data['language']][0];
+
             } else {
                echo $LANG['mailing'][125];
             }
+
             echo "</a></td></tr>";
          }
       }
       echo "</table>";
 
       if ($canedit) {
-         openArrowMassive("form_language",true);
-         closeArrowMassive("delete_languages",$LANG["buttons"][6]);
+         openArrowMassive("form_language", true);
+         closeArrowMassive("delete_languages", $LANG["buttons"][6]);
       }
    }
 
@@ -232,28 +237,28 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'language';
-      $tab[1]['linkfield']     = '';
-      $tab[1]['name']          = $LANG['setup'][41];
-      $tab[1]['datatype']      = 'language';
+      $tab[1]['table']     = $this->getTable();
+      $tab[1]['field']     = 'language';
+      $tab[1]['linkfield'] = '';
+      $tab[1]['name']      = $LANG['setup'][41];
+      $tab[1]['datatype']  = 'language';
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'subject';
-      $tab[2]['linkfield']     = '';
-      $tab[2]['name']          = $LANG['knowbase'][14];
+      $tab[2]['table']     = $this->getTable();
+      $tab[2]['field']     = 'subject';
+      $tab[2]['linkfield'] = '';
+      $tab[2]['name']      = $LANG['knowbase'][14];
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'content_html';
-      $tab[3]['linkfield']     = '';
-      $tab[3]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
-      $tab[3]['datatype']      = 'text';
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'content_html';
+      $tab[3]['linkfield'] = '';
+      $tab[3]['name']      = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
+      $tab[3]['datatype']  = 'text';
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'content_text';
-      $tab[4]['linkfield']     = '';
-      $tab[4]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
-      $tab[4]['datatype']      = 'text';
+      $tab[4]['table']     = $this->getTable();
+      $tab[4]['field']     = 'content_text';
+      $tab[4]['linkfield'] = '';
+      $tab[4]['name']      = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
+      $tab[4]['datatype']  = 'text';
 
       return $tab;
    }
@@ -264,14 +269,18 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',
                                              'notificationtemplates_id='.$language_id);
       $used = array();
+
       foreach ($used_languages as $used_language) {
          $used[$used_language['language']] = $used_language['language'];
       }
+
       return $used;
    }
 
+
    static function showAvailableTags($itemtype) {
       global $LANG;
+
       $target = NotificationTarget::getInstanceByType($itemtype);
       $target->getTags();
 
@@ -283,13 +292,16 @@ class NotificationTemplateTranslation extends CommonDBChild {
                 <th>".$LANG['common'][17]."</th>
                 <th>".$LANG['mailing'][147]."</th>
             </tr>";
-     foreach ($target->tag_descriptions as $tag_type => $infos)
+
+      foreach ($target->tag_descriptions as $tag_type => $infos) {
          foreach ($infos as $tag => $values) {
+
             if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
                $event = $LANG['common'][66];
             } else {
                $event = implode(', ',$values['events']);
             }
+
             $action = '';
 
             if ($values['foreach']) {
@@ -303,16 +315,18 @@ class NotificationTemplateTranslation extends CommonDBChild {
             } else {
                $allowed_values = '';
             }
-            echo "<tr class='tab_bg_1'><td>".$tag."</td>
-               <td>".($tag_type==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
-                  $values['label']."</td>
-               <td>$event</td>
-               <td>".$action."</td>
-               <td>$allowed_values</td>
-               </tr>";
-         }
 
+            echo "<tr class='tab_bg_1'><td>".$tag."</td>
+                  <td>".($tag_type==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
+                  $values['label']."</td>
+                  <td>$event</td>
+                  <td>".$action."</td>
+                  <td>$allowed_values</td>
+                  </tr>";
+         }
+      }
       echo "</table></div>";
    }
+
 }
 ?>

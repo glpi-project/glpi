@@ -44,27 +44,29 @@ class NotificationTargetTicket extends NotificationTarget {
       $this->options['sendprivate']=false;
 
       if (isset($options['followup_id'])) {
-         $fup= new TicketFollowup();
+         $fup = new TicketFollowup();
          if ($fup->getFromDB($options['followup_id'])) {
             if ($fup->fields['is_private']) {
-               $this->options['sendprivate']=true;
+               $this->options['sendprivate'] = true;
             }
          }
       }
 
       if (isset($options['task_id'])) {
-         $fup= new TicketTask();
+         $fup = new TicketTask();
          if ($fup->getFromDB($options['task_id'])) {
             if ($fup->fields['is_private']) {
-               $this->options['sendprivate']=true;
+               $this->options['sendprivate'] = true;
             }
          }
       }
 
    }
 
+
    /// Validate send before doing it (may be overloaded : exemple for private tasks or followups)
    function validateSendTo($user_infos) {
+
       // Private object and no right to see private items : do not send
       if ($this->isPrivate() && $user_infos['additionnaloption']==0) {
          return false;
@@ -75,41 +77,46 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get the email of the item's user : Overloaded manual address used
-    */
+   **/
    function getItemAuthorAddress() {
       global $CFG_GLPI;
+
       if ($this->obj->getField('use_email_notification')) {
-         $author_lang   = $CFG_GLPI["language"];
-         $author_email  = $this->obj->getField('user_email');
-         $author_id     = -1;
-         $user = new User;
+         $author_lang  = $CFG_GLPI["language"];
+         $author_email = $this->obj->getField('user_email');
+         $author_id    = -1;
+         $user         = new User;
+
          if ($this->obj->isField('users_id')
-            && $user->getFromDB($this->obj->getField('users_id'))) {
-            if ($user->getField('email')==$author_email){
-               $user_lang=$user->getField('language');
+             && $user->getFromDB($this->obj->getField('users_id'))) {
+
+            if ($user->getField('email')==$author_email) {
+               $user_lang = $user->getField('language');
+
                if (!empty($user_lang)) {
-                  $author_lang=$user_lang;
+                  $author_lang = $user_lang;
                }
-               $author_id=$user->getField('id');
+               $author_id = $user->getField('id');
             }
          }
+
          $this->addToAddressesList(array('email'    => $author_email,
                                          'language' => $author_lang,
                                          'id'       => $author_id));
-
       }
    }
+
 
    function getSubjectPrefix($event='') {
 
       if ($event !='alertnotclosed') {
          return sprintf("[GLPI #%07d] ", $this->obj->getField('id'));
-      } else {
-         return parent::getSubjectPrefix();
       }
+      return parent::getSubjectPrefix();
    }
 
-   function getSpecificTargets($data,$options) {
+
+   function getSpecificTargets($data, $options) {
 
    //Look for all targets whose type is Notification::ITEM_USER
    switch ($data['type']) {
@@ -197,12 +204,14 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get item associated with the object on which the event was raised
+    *
     * @return the object associated with the itemtype
-    */
+   **/
    function getObjectItem($event='') {
 
       if ($this->obj) {
          $itemtype = $this->obj->getField('itemtype');
+
          if ($itemtype != NOT_AVAILABLE && $itemtype != '') {
             $item = new  $itemtype ();
             $item->getFromDB($this->obj->getField('items_id'));
@@ -246,7 +255,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get supplier related to the ticket
-    */
+   **/
    function getTicketSupplierAddress($sendprivate=false) {
       global $DB;
 
@@ -267,7 +276,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get approuver related to the ticket validation
-    */
+   **/
    function getTicketValidationApproverAddress($options=array()) {
       global $DB;
 
@@ -288,7 +297,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get requester related to the ticket validation
-    */
+   **/
    function getTicketValidationRequesterAddress($options=array()) {
       global $DB;
 
@@ -309,7 +318,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get author related to the followup
-    */
+   **/
    function getTicketFollowupAuthor($options=array()) {
       global $DB;
 
@@ -329,7 +338,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get author related to the followup
-    */
+   **/
    function getTicketTaskAuthor($options=array()) {
       global $DB;
 
@@ -349,7 +358,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get author related to the followup
-    */
+   **/
    function getTicketTaskAssignUser($options=array()) {
       global $DB;
 
@@ -379,10 +388,11 @@ class NotificationTargetTicket extends NotificationTarget {
          $query = "SELECT count(*) AS cpt
                    FROM `glpi_profiles_users`
                    WHERE `users_id`='".$data['id']."' ".
-                     getEntitiesRestrictRequest("AND","glpi_profiles_users",
-                           "entities_id",$this->obj->fields['entities_id'],true)
-                     ."AND profiles_id IN (".implode(',',$this->private_profiles).")";
+                         getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
+                                                    $this->obj->fields['entities_id'], true)."
+                         AND profiles_id IN (".implode(',',$this->private_profiles).")";
          $result = $DB->query($query);
+
          if ($DB->result($result,0,'cpt')) {
             return 1;
          }
@@ -393,7 +403,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get supervisor of a group (works for request group or assigned group)
-    */
+   **/
    function getGroupSupervisorAddress ($assign=true) {
       global $DB;
 
@@ -416,7 +426,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     *Get events related to tickets
-    */
+   **/
    function getEvents() {
       global $LANG;
 
@@ -442,7 +452,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get additionnals targets for Tickets
-    */
+   **/
    function getAdditionalTargets($event='') {
       global $LANG;
 
@@ -487,13 +497,14 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
+
    function getJoinSql() {
 
       if ($this->isPrivate()) {
          return " INNER JOIN `glpi_profiles_users`
-                     ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`".
-                         getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                    $this->getEntity(),true).")
+                     ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` ".
+                         getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
+                                                    $this->getEntity(), true).")
                   INNER JOIN `glpi_profiles`
                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
                          AND `glpi_profiles`.`interface` = 'central'
@@ -501,18 +512,6 @@ class NotificationTargetTicket extends NotificationTarget {
       }
       return "";
    }
-
-// Unused
-//    function getJoinProfileSql() {
-//
-//       if ($this->isPrivate()) {
-//          return " INNER JOIN `glpi_profiles`
-//                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`
-//                          AND `glpi_profiles`.`interface` = 'central'
-//                          AND `glpi_profiles`.`show_full_ticket` = '1')";
-//       }
-//       return "";
-//    }
 
 
    function isPrivate() {
@@ -526,7 +525,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
-    */
+   **/
    function getDatasForTemplate($event, $options=array()) {
       global $LANG, $CFG_GLPI;
 
@@ -542,77 +541,87 @@ class NotificationTargetTicket extends NotificationTarget {
          foreach ($fields as $tag => $table_field) {
             $this->datas['##'.$tag.'##'] = $this->obj->getField($table_field);
          }
-         $this->datas['##ticket.id##']  = sprintf("%07d",$this->obj->getField("id"));
-         $this->datas['##ticket.url##'] = urldecode($CFG_GLPI["url_base"].
-                                                    "/index.php?redirect=ticket_".
-                                                    $this->obj->getField("id"));
-         $this->datas['##ticket.urlapprove##'] = urldecode($CFG_GLPI["url_base"].
-                                                           "/index.php?redirect=ticket_".
-                                                           $this->obj->getField("id")."_4");
-         $this->datas['##ticket.urlvalidation##'] = urldecode($CFG_GLPI["url_base"].
-                                                           "/index.php?redirect=ticket_".
-                                                           $this->obj->getField("id")."_7");
 
-         $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->getEntity());
+         $this->datas['##ticket.id##']            = sprintf("%07d",$this->obj->getField("id"));
+         $this->datas['##ticket.url##']           = urldecode($CFG_GLPI["url_base"].
+                                                              "/index.php?redirect=ticket_".
+                                                              $this->obj->getField("id"));
+         $this->datas['##ticket.urlapprove##']    = urldecode($CFG_GLPI["url_base"].
+                                                              "/index.php?redirect=ticket_".
+                                                              $this->obj->getField("id")."_4");
+         $this->datas['##ticket.urlvalidation##'] = urldecode($CFG_GLPI["url_base"].
+                                                              "/index.php?redirect=ticket_".
+                                                              $this->obj->getField("id")."_7");
+         $this->datas['##ticket.entity##']        = Dropdown::getDropdownName('glpi_entities',
+                                                                              $this->getEntity());
          $events = $this->getAllEvents();
 
          if ($event != 'validation') {
-            $this->datas['##ticket.action##']      = $events[$event];
+            $this->datas['##ticket.action##'] = $events[$event];
          } else {
-            $this->datas['##ticket.action##'] = $LANG['validation'][0].' - '.
-               TicketValidation::getStatus($options['validation_status']);
+            $this->datas['##ticket.action##']
+                        = $LANG['validation'][0].' - '.
+                          TicketValidation::getStatus($options['validation_status']);
          }
+
          $this->datas['##ticket.storestatus##'] = $this->obj->getField('status');
          $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
-         $this->datas['##ticket.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                            $this->obj->getField('requesttypes_id'));
+         $this->datas['##ticket.requesttype##']
+                     = Dropdown::getDropdownName('glpi_requesttypes',
+                                                 $this->obj->getField('requesttypes_id'));
 
-         $this->datas['##ticket.urgency##']  = Ticket::getUrgencyName($this->obj->getField('urgency'));
+         $this->datas['##ticket.urgency##']
+                     = Ticket::getUrgencyName($this->obj->getField('urgency'));
          $this->datas['##ticket.impact##']   = Ticket::getImpactName($this->obj->getField('impact'));
-         $this->datas['##ticket.priority##'] = Ticket::getPriorityName($this->obj->getField('priority'));
-         $this->datas['##ticket.time##']     = Ticket::getActionTime($this->obj->getField('actiontime'));
+         $this->datas['##ticket.priority##']
+                     = Ticket::getPriorityName($this->obj->getField('priority'));
+         $this->datas['##ticket.time##']
+                     = Ticket::getActionTime($this->obj->getField('actiontime'));
          $this->datas['##ticket.costtime##'] = $this->obj->getField('cost_time');
 
          $this->datas['##ticket.creationdate##'] = convDateTime($this->obj->getField('date'));
          $this->datas['##ticket.closedate##']    = convDateTime($this->obj->getField('closedate'));
          $this->datas['##ticket.solvedate##']    = convDateTime($this->obj->getField('solvedate'));
-         $this->datas['##ticket.duedate##']    = convDateTime($this->obj->getField('due_date'));
+         $this->datas['##ticket.duedate##']      = convDateTime($this->obj->getField('due_date'));
 
          $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
-         $this->datas['##ticket.useremailnotification##'] =
-                                 Dropdown::getYesNo($this->obj->getField('user_email_notification'));
+         $this->datas['##ticket.useremailnotification##']
+                     = Dropdown::getYesNo($this->obj->getField('user_email_notification'));
 
          $entitydata = new EntityData;
-         $autoclose_value=$CFG_GLPI['autoclose_delay'];
+         $autoclose_value = $CFG_GLPI['autoclose_delay'];
 
          if ($entitydata->getFromDB($this->getEntity())) {
-            $autoclose_value=$entitydata->getField('autoclose_delay');
+            $autoclose_value = $entitydata->getField('autoclose_delay');
+
             // Set global config value
             if ($autoclose_value == -1) {
                $autoclose_value=$CFG_GLPI['autoclose_delay'];
             }
          }
+
          if ($autoclose_value > 0) {
                   $this->datas['##ticket.autoclose##'] = $autoclose_value;
                   $this->datas['##lang.ticket.autoclosewarning##']
-                     = $LANG['job'][54]." ".$autoclose_value." ".$LANG['stats'][31];
+                              = $LANG['job'][54]." ".$autoclose_value." ".$LANG['stats'][31];
          } else {
-            $this->datas['##ticket.autoclose##'] = $LANG['setup'][307];
-            $this->datas['##lang.ticket.autoclosewarning##'] ="";
+            $this->datas['##ticket.autoclose##']             = $LANG['setup'][307];
+            $this->datas['##lang.ticket.autoclosewarning##'] = "";
          }
+
          $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
 
          if ($this->obj->getField('ticketcategories_id')) {
-            $this->datas['##ticket.category##'] = Dropdown::getDropdownName('glpi_ticketcategories',
-                                                      $this->obj->getField('ticketcategories_id'));
+            $this->datas['##ticket.category##']
+                        = Dropdown::getDropdownName('glpi_ticketcategories',
+                                                    $this->obj->getField('ticketcategories_id'));
          } else {
             $this->datas['##ticket.category##'] = '';
          }
 
          if ($this->obj->getField('slas_id')) {
-            $this->datas['##ticket.sla##'] = Dropdown::getDropdownName('glpi_slas',
-                                                      $this->obj->getField('slas_id'));
+            $this->datas['##ticket.sla##']
+                        = Dropdown::getDropdownName('glpi_slas', $this->obj->getField('slas_id'));
          } else {
             $this->datas['##ticket.sla##'] = '';
          }
@@ -622,12 +631,15 @@ class NotificationTargetTicket extends NotificationTarget {
             $user->getFromDB($this->obj->getField('users_id'));
             $this->datas['##ticket.author##']      = $user->getField('id');
             $this->datas['##ticket.author.name##'] = $user->getName();
+
             if ($user->getField('locations_id')) {
                $this->datas['##ticket.author.location##']
-                  = Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id'));
+                           = Dropdown::getDropdownName('glpi_locations',
+                                                       $user->getField('locations_id'));
             } else {
                $this->datas['##ticket.author.location##'] = '';
             }
+
             $this->datas['##ticket.author.phone##']  = $user->getField('phone');
             $this->datas['##ticket.author.phone2##'] = $user->getField('phone2');
          }
@@ -650,22 +662,24 @@ class NotificationTargetTicket extends NotificationTarget {
 
          if ($this->obj->getField('suppliers_id_assign')) {
             $this->datas['##ticket.assigntosupplier##']
-               = Dropdown::getDropdownName('glpi_suppliers',
-                                           $this->obj->getField('suppliers_id_assign'));
+                        = Dropdown::getDropdownName('glpi_suppliers',
+                                                    $this->obj->getField('suppliers_id_assign'));
          } else {
             $this->datas['##ticket.assigntosupplier##'] = '';
          }
 
          if ($this->obj->getField('groups_id')) {
             $this->datas['##ticket.group##']
-               = Dropdown::getDropdownName('glpi_groups', $this->obj->getField('groups_id'));
+                        = Dropdown::getDropdownName('glpi_groups',
+                                                    $this->obj->getField('groups_id'));
          } else {
             $this->datas['##ticket.group##'] = '';
          }
 
          if ($this->obj->getField('groups_id_assign')) {
-            $this->datas['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
-                                                         $this->obj->getField('groups_id_assign'));
+            $this->datas['##ticket.assigntogroup##']
+                        = Dropdown::getDropdownName('glpi_groups',
+                                                    $this->obj->getField('groups_id_assign'));
          } else {
             $this->datas['##ticket.group##'] = '';
          }
@@ -683,35 +697,37 @@ class NotificationTargetTicket extends NotificationTarget {
             if ($this->target_object->isField('serial')) {
                $this->datas['##ticket.item.serial##'] = $this->target_object->getField('serial');
             } else {
-               $this->datas['##ticket.item.serial##']='';
+               $this->datas['##ticket.item.serial##'] = '';
             }
 
             //Object contact
             if ($this->target_object->isField('contact')) {
                $this->datas['##ticket.item.contact##'] = $this->target_object->getField('contact');
             } else {
-               $this->datas['##ticket.item.contact##']='';
+               $this->datas['##ticket.item.contact##'] = '';
             }
 
             //Object contact num
             if ($this->target_object->isField('contact_num')) {
-               $this->datas['##ticket.item.contactnumber##'] = $this->target_object->getField('contact_num');
+               $this->datas['##ticket.item.contactnumber##']
+                           = $this->target_object->getField('contact_num');
             } else {
-               $this->datas['##ticket.item.contactnumber##']='';
+               $this->datas['##ticket.item.contactnumber##'] = '';
             }
 
             //Object otherserial
             if ($this->target_object->isField('otherserial')) {
                $this->datas['##ticket.item.otherserial##']
-                        = $this->target_object->getField('otherserial');
+                           = $this->target_object->getField('otherserial');
             } else {
-               $this->datas['##ticket.item.otherserial##']='';
+               $this->datas['##ticket.item.otherserial##'] = '';
             }
 
             //Object location
             if ($this->target_object->isField('location')) {
-               $this->datas['##ticket.item.location##'] = Dropdown::getDropdownName('glpi_locations',
-                                                                  $user->getField('locations_id'));
+               $this->datas['##ticket.item.location##']
+                           = Dropdown::getDropdownName('glpi_locations',
+                                                       $user->getField('locations_id'));
             } else {
                $this->datas['##ticket.item.locationl##']='';
             }
@@ -723,21 +739,23 @@ class NotificationTargetTicket extends NotificationTarget {
                   $this->datas['##ticket.item.user##'] = $user_tmp->getName();
                }
             }
+
             //Object group
             if ($this->obj->getField('groups_id')) {
                $this->datas['##ticket.item.group##']
-                  = Dropdown::getDropdownName('glpi_groups',
-                                              $this->target_object->getField('groups_id'));
+                           = Dropdown::getDropdownName('glpi_groups',
+                                                       $this->target_object->getField('groups_id'));
             } else {
                $this->datas['##ticket.item.group##'] = '';
             }
 
             $modeltable = getSingular($this->getTable())."models";
             $modelfield = getForeignKeyFieldForTable($modeltable);
+
             if ($this->target_object->isField($modelfield)) {
                $this->datas['##ticket.item.model##'] = $this->target_object->getField($modelfield);
             } else {
-               $this->datas['##ticket.item.model##']='';
+               $this->datas['##ticket.item.model##'] = '';
             }
 
          } else {
@@ -750,8 +768,8 @@ class NotificationTargetTicket extends NotificationTarget {
 
          if ($this->obj->getField('ticketsolutiontypes_id')) {
             $this->datas['##ticket.solution.type##']
-               = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                           $this->obj->getField('ticketsolutiontypes_id'));
+                        = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                                    $this->obj->getField('ticketsolutiontypes_id'));
          } else {
             $this->datas['##ticket.solution.type##']='';
          }
@@ -765,6 +783,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
          //Task infos
          $tasks = getAllDatasFromTable('glpi_tickettasks',$restrict);
+
          foreach ($tasks as $task) {
             $tmp = array();
             $tmp['##task.isprivate##']   = Dropdown::getYesNo($task['is_private']);
@@ -777,14 +796,15 @@ class NotificationTargetTicket extends NotificationTarget {
 
             $plan = new TicketPlanning();
             if ($plan->getFromDBbyTask($task['id'])) {
-               $tmp['##task.planning.user##']     = html_clean(getUserName($plan->fields['users_id']));
-               $tmp['##task.planning.begin##']    = convDateTime($plan->fields['begin']);
-               $tmp['##task.planning.end##']      = convDateTime($plan->fields['end']);
-               $tmp['##task.planning.status##']   = Planning::getState($plan->fields['state']);
+               $tmp['##task.planning.user##']   = html_clean(getUserName($plan->fields['users_id']));
+               $tmp['##task.planning.begin##']  = convDateTime($plan->fields['begin']);
+               $tmp['##task.planning.end##']    = convDateTime($plan->fields['end']);
+               $tmp['##task.planning.status##'] = Planning::getState($plan->fields['state']);
             }
 
             $this->datas['tasks'][] = $tmp;
          }
+
          if (!empty($this->datas['tasks'])) {
             $this->datas['##ticket.numberoftasks##'] = count($this->datas['tasks']);
          } else {
@@ -797,12 +817,13 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp = array();
             $tmp['##followup.isprivate##']   = Dropdown::getYesNo($followup['is_private']);
             $tmp['##followup.author##']      = html_clean(getUserName($followup['users_id']));
-            $tmp['##followup.requesttype##'] = Dropdown::getDropdownName('glpi_requesttypes',
-                                                                        $followup['requesttypes_id']);
+            $tmp['##followup.requesttype##']
+                  = Dropdown::getDropdownName('glpi_requesttypes', $followup['requesttypes_id']);
             $tmp['##followup.date##']        = convDateTime($followup['date']);
             $tmp['##followup.description##'] = $followup['content'];
             $this->datas['followups'][] = $tmp;
          }
+
          if (isset($this->datas['followups'])) {
             $this->datas['##ticket.numberoffollowups##'] = count($this->datas['followups']);
          } else {
@@ -811,24 +832,26 @@ class NotificationTargetTicket extends NotificationTarget {
 
          //Validation infos
          $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
+
          if (isset($options['validation_id']) && $options['validation_id']) {
             $restrict .= " AND `glpi_ticketvalidations`.`id` = '".$options['validation_id']."'";
          }
+
          $restrict .= " ORDER BY `submission_date` DESC";
          $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
 
          foreach ($validations as $validation) {
             $tmp = array();
             $tmp['##validation.submission.title##']
-               = $LANG['validation'][27]." (".$LANG['job'][4].
-                 " ".html_clean(getUserName($validation['users_id'])).")";
+                  = $LANG['validation'][27]." (".$LANG['job'][4]." ".
+                    html_clean(getUserName($validation['users_id'])).")";
             $tmp['##validation.answer.title##']
-               = $LANG['validation'][32]." (".$LANG['validation'][21].
-                 " ".html_clean(getUserName($validation['users_id_validate'])).")";
+                  = $LANG['validation'][32]." (".$LANG['validation'][21]." ".
+                    html_clean(getUserName($validation['users_id_validate'])).")";
 
-            $tmp['##validation.author##']            = html_clean(getUserName($validation['users_id']));
+            $tmp['##validation.author##']       = html_clean(getUserName($validation['users_id']));
             $tmp['##lang.validation.validationstatus##']
-               = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
+                  = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
 
             $tmp['##validation.status##']       = TicketValidation::getStatus($validation['status']);
             $tmp['##validation.storestatus##']       = $validation['status'];
@@ -856,8 +879,8 @@ class NotificationTargetTicket extends NotificationTarget {
          }
 
       } else {
-         $this->datas['##ticket.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                                       $options['entities_id']);
+         $this->datas['##ticket.entity##']      = Dropdown::getDropdownName('glpi_entities',
+                                                                            $options['entities_id']);
          $this->datas['##lang.ticket.entity##'] = $LANG['entity'][0];
          $this->datas['##ticket.action##']      = $LANG['crontask'][15];
          $tmp = array();
@@ -885,12 +908,15 @@ class NotificationTargetTicket extends NotificationTarget {
                $user->getFromDB($ticket['users_id']);
                $tmp['##ticket.author##']      = $ticket['users_id'];
                $tmp['##ticket.author.name##'] = $user->getName();
+
                if ($user->getField('locations_id')) {
                   $tmp['##ticket.author.location##']
-                     = Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id'));
+                        = Dropdown::getDropdownName('glpi_locations',
+                                                    $user->getField('locations_id'));
                } else {
                   $tmp['##ticket.author.location##'] = '';
                }
+
                $tmp['##ticket.author.phone##']  = $user->getField('phone');
                $tmp['##ticket.author.phone2##'] = $user->getField('phone2');
             }
@@ -904,16 +930,15 @@ class NotificationTargetTicket extends NotificationTarget {
             }
 
             if ($ticket['groups_id_assign']) {
-               $tmp['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
-                                                            $ticket['groups_id_assign']);
+               $tmp['##ticket.assigntogroup##']
+                     = Dropdown::getDropdownName('glpi_groups', $ticket['groups_id_assign']);
             } else {
                $tmp['##ticket.group##'] = '';
             }
 
             if ($ticket['suppliers_id_assign']) {
                $tmp['##ticket.assigntosupplier##']
-                  = Dropdown::getDropdownName('glpi_suppliers',
-                                              $ticket['suppliers_id_assign']);
+                     = Dropdown::getDropdownName('glpi_suppliers', $ticket['suppliers_id_assign']);
             } else {
                $tmp['##ticket.assigntosupplier##'] = '';
             }
@@ -936,7 +961,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $query = "SELECT COUNT(`glpi_notifications`.`id`)
                    FROM `glpi_notifications`
                    INNER JOIN `glpi_notificationtargets`
-                     ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id` )
+                     ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
                    WHERE `glpi_notifications`.`itemtype` = 'Ticket'
                          AND `glpi_notifications`.`mode` = 'mail'
                          AND `glpi_notificationtargets`.`type` = '".Notification::USER_TYPE."'
@@ -977,7 +1002,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.author.phone2'         => $LANG['help'][35].' 2',
                      'ticket.openbyuser'            => $LANG['common'][37],
                      'ticket.group'                 => $LANG['common'][35],
-                     'ticket.attribution'          => $LANG['job'][5],
+                     'ticket.attribution'           => $LANG['job'][5],
                      'ticket.assigntouser'          => $LANG['job'][5]." - ".$LANG['job'][6],
                      'ticket.assigntogroup'         => $LANG['job'][5]." - ".$LANG['common'][35],
                      'ticket.assigntosupplier'      => $LANG['job'][5]." - ".$LANG['financial'][26],
@@ -1059,7 +1084,7 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array('ticket.days'          => $LANG['stats'][31]);
+      $tags = array('ticket.days' => $LANG['stats'][31]);
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
@@ -1077,13 +1102,13 @@ class NotificationTargetTicket extends NotificationTarget {
 
       //Tags without lang
       $tags = array('validation.submission.title' => $LANG['validation'][27],
-                    'validation.answer.title'     => $LANG['validation'][32],
-                    'ticket.log.date'             => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
-                    'ticket.log.user'             => $LANG['mailing'][144]. ' : '.$LANG['common'][34],
-                    'ticket.log.field'            => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
-                    'ticket.log.content'          => $LANG['mailing'][144]. ' : '.$LANG['event'][19],
-                    'ticket.urlapprove'           => $LANG['document'][33].' '.$LANG['job'][51],
-                    'ticket.urlvalidation'        => $LANG['document'][33].' '.$LANG['validation'][26]);
+                    'validation.answer.title' => $LANG['validation'][32],
+                    'ticket.log.date'         => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
+                    'ticket.log.user'         => $LANG['mailing'][144]. ' : '.$LANG['common'][34],
+                    'ticket.log.field'        => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
+                    'ticket.log.content'      => $LANG['mailing'][144]. ' : '.$LANG['event'][19],
+                    'ticket.urlapprove'       => $LANG['document'][33].' '.$LANG['job'][51],
+                    'ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -1103,19 +1128,20 @@ class NotificationTargetTicket extends NotificationTarget {
          $allowed_validation[] = $key;
       }
 
-      $tags = array('ticket.storestatus'           => array('text'          =>$LANG['joblist'][36],
-                                                            'allowed_values' =>$allowed_ticket),
-                    'validation.validationstatus'  => array('text'           =>$LANG['joblist'][36],
-                                                            'allowed_values' => $allowed_validation));
+      $tags = array('ticket.storestatus'          => array('text'           => $LANG['joblist'][36],
+                                                           'allowed_values' => $allowed_ticket),
+                    'validation.validationstatus' => array('text'           => $LANG['joblist'][36],
+                                                           'allowed_values' => $allowed_validation));
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
-                                   'label' => $label['text'],
-                                   'value' => true,
-                                   'lang'  => false,
-                                   'allowed_values' =>$label['allowed_values']));
+         $this->addTagToList(array('tag'            => $tag,
+                                   'label'          => $label['text'],
+                                   'value'          => true,
+                                   'lang'           => false,
+                                   'allowed_values' => $label['allowed_values']));
       }
 
       asort($this->tag_descriptions);
    }
+
 }
 ?>

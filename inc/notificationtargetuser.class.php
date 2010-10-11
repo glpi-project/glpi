@@ -42,11 +42,11 @@ class NotificationTargetUser extends NotificationTarget {
    }
 
 
-
    function getNotificationTargets($entity) {
       global $LANG;
       $this->addTarget(Notification::USER,$LANG['common'][34]);
    }
+
 
    function getSpecificTargets($data,$options) {
 
@@ -63,29 +63,31 @@ class NotificationTargetUser extends NotificationTarget {
       }
    }
 
-    /**
+
+   /**
     * Get all data needed for template processing
-    */
+   **/
    function getDatasForTemplate($event, $options=array()) {
       global $LANG,$CFG_GLPI;
 
-      $events=$this->getEvents();
+      $events = $this->getEvents();
 
-      $this->datas['##user.name##'] = $this->obj->getField("name");
-      $this->datas['##user.realname##'] = $this->obj->getField("realname");
+      $this->datas['##user.name##']      = $this->obj->getField("name");
+      $this->datas['##user.realname##']  = $this->obj->getField("realname");
       $this->datas['##user.firstname##'] = $this->obj->getField("firstname");
-      $this->datas['##user.token##'] = $this->obj->getField("token");
+      $this->datas['##user.token##']     = $this->obj->getField("token");
 
-      $this->datas['##user.action##']      = $events[$event];
-      $this->datas['##user.passwordforgeturl##']      = urldecode($CFG_GLPI["url_base"].
-                                              "/front/lostpassword.php?token=".$this->obj->getField("token"));
-
+      $this->datas['##user.action##']            = $events[$event];
+      $this->datas['##user.passwordforgeturl##'] = urldecode($CFG_GLPI["url_base"].
+                                                             "/front/lostpassword.php?token=".
+                                                             $this->obj->getField("token"));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
          $this->datas[$tag] = $values['label'];
       }
    }
+
 
    function getTags() {
       global $LANG;
@@ -102,15 +104,17 @@ class NotificationTargetUser extends NotificationTarget {
                                    'value'=>true));
       }
 
-      $lang= array('user.information'=>$LANG['users'][5],
-                  'user.link'=>$LANG['users'][6]);
+      $lang = array('user.information' => $LANG['users'][5],
+                    'user.link'        => $LANG['users'][6]);
+
       foreach ($lang as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true,'lang'=>true));
+         $this->addTagToList(array('tag'   => $tag, 'label'=>$label,
+                                   'value' => true, 'lang'=>true));
       }
 
       asort($this->tag_descriptions);
       return $this->tag_descriptions;
    }
+
 }
 ?>
