@@ -45,29 +45,31 @@ class NotificationTargetContract extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
-    */
+   **/
    function getDatasForTemplate($event, $options=array()) {
       global $LANG,$CFG_GLPI;
 
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $events = $this->getEvents();
-      $this->datas['##contract.action##']      = $events[$event];
+      $this->datas['##contract.action##'] = $events[$event];
 
-      foreach($options['contracts'] as $id => $contract) {
+      foreach ($options['contracts'] as $id => $contract) {
          $tmp = array();
          $tmp['##contract.name##']   = $contract['name'];
          $tmp['##contract.number##'] = $contract['num'];
+
          if ($contract['contracttypes_id']) {
             $tmp['##contract.type##'] = Dropdown::getDropdownName('glpi_contracttypes',
                                                                   $contract['contracttypes_id']);
          } else {
             $tmp['##contract.type##'] = "";
          }
-         $tmp['##contract.time##'] = getWarrantyExpir($contract["begin_date"],$contract["duration"],
+
+         $tmp['##contract.time##'] = getWarrantyExpir($contract["begin_date"], $contract["duration"],
                                                       $contract["notice"]);
-         $tmp['##contract.url##'] = urldecode($CFG_GLPI["url_base"].
-                                              "/index.php?redirect=contract_".$id);
+         $tmp['##contract.url##']   = urldecode($CFG_GLPI["url_base"].
+                                                "/index.php?redirect=contract_".$id);
          $this->datas['contracts'][] = $tmp;
       }
 
@@ -76,29 +78,35 @@ class NotificationTargetContract extends NotificationTarget {
          $this->datas[$tag] = $values['label'];
       }
 
-      $this->datas['##lang.contract.time##']   = ($event==Alert::END?$LANG['contract'][0]:
-                                                                     $LANG['contract'][1]);
+      $this->datas['##lang.contract.time##'] = ($event==Alert::END?$LANG['contract'][0]
+                                                                  :$LANG['contract'][1]);
 
    }
+
 
    function getTags() {
       global $LANG;
 
-      $tags = array('contract.action'          =>$LANG['mailing'][39],
-                    'contract.name'            =>$LANG['common'][16],
-                    'contract.number'          =>$LANG['financial'][4],
-                    'contract.type'            =>$LANG['common'][17],
-                    'contract.time'            =>$LANG['contract'][0].'/'.$LANG['contract'][1],
-                    'contract.entity'          =>$LANG['entity'][0]);
+      $tags = array('contract.action'  => $LANG['mailing'][39],
+                    'contract.name'    => $LANG['common'][16],
+                    'contract.number'  => $LANG['financial'][4],
+                    'contract.type'    => $LANG['common'][17],
+                    'contract.time'    => $LANG['contract'][0].'/'.$LANG['contract'][1],
+                    'contract.entity'  => $LANG['entity'][0]);
+
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true));
       }
 
-      $this->addTagToList(array('tag'=>'contracts','label'=>$LANG['reports'][57],
-                                'value'=>false,'foreach'=>true));
+      $this->addTagToList(array('tag'     => 'contracts',
+                                'label'   => $LANG['reports'][57],
+                                'value'   => false,
+                                'foreach' => true));
 
       asort($this->tag_descriptions);
    }
+
 }
 ?>

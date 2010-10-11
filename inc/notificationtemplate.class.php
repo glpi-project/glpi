@@ -81,15 +81,18 @@ class NotificationTemplate extends CommonDBTM {
       }
 
      $spotted = false;
+
       if (empty ($ID)) {
          if ($this->getEmpty()) {
             $spotted = true;
          }
+
       } else {
          if ($this->getFromDB($ID)) {
             $spotted = true;
          }
       }
+
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -127,11 +130,11 @@ class NotificationTemplate extends CommonDBTM {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'itemtype';
-      $tab[4]['linkfield']     = '';
-      $tab[4]['name']          = $LANG['common'][17];
-      $tab[4]['datatype']      = 'itemtypename';
+      $tab[4]['table']     = $this->getTable();
+      $tab[4]['field']     = 'itemtype';
+      $tab[4]['linkfield'] = '';
+      $tab[4]['name']      = $LANG['common'][17];
+      $tab[4]['datatype']  = 'itemtypename';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
@@ -145,10 +148,11 @@ class NotificationTemplate extends CommonDBTM {
 
    /**
     * Display templates available for an itemtype
+    *
     * @param $name the dropdown name
     * @param $itemtype display templates for this itemtype only
     * @param $value the dropdown's default value (0 by default)
-    */
+   **/
    static function dropdownTemplates($name, $itemtype, $value=0) {
       global $DB;
 
@@ -174,8 +178,7 @@ class NotificationTemplate extends CommonDBTM {
                                   $options=array()) {
       global $LANG;
 
-      $lang = array();
-
+      $lang     = array();
       $language = $user_infos['language'];
 
       if (isset($user_infos['additionnaloption'])) {
@@ -210,7 +213,7 @@ class NotificationTemplate extends CommonDBTM {
             // Decode html chars to have clean text
             $data = html_entity_decode_deep($data);
             $template_datas['subject'] = html_entity_decode_deep($template_datas['subject']);
-            $this->signature = html_entity_decode_deep($this->signature);
+            $this->signature           = html_entity_decode_deep($this->signature);
 
             $lang['subject'] = $target->getSubjectPrefix($event) .
                                NotificationTemplate::process($template_datas['subject'], $data);
@@ -221,28 +224,26 @@ class NotificationTemplate extends CommonDBTM {
                // Encode in HTML all chars
                $data_html = htmlentities_deep($data);
                $data_html = nl2br_deep($data_html);
-               
+
                $signature_html = htmlentities_deep($this->signature);
                $signature_html = nl2br_deep($signature_html);
 
                $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
-                              \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">".
+                        'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>".
                      "<html>
                         <head>
-                         <META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">
+                         <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
                          <title>".htmlentities_deep($lang['subject'])."</title>
                         </head>
                         <body>".NotificationTemplate::process($template_datas['content_html'],
-                                                                  $data_html).
-                     "<br /><br />".$signature_html."</body></html>";
+                                                              $data_html).
+                     "<br><br>".$signature_html."</body></html>";
             }
 
             $lang['content_text'] = NotificationTemplate::process($template_datas['content_text'],
-                                                                  $data).
-                                    "\n\n".$this->signature;
+                                                                  $data)."\n\n".$this->signature;
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
-            //print_r($lang['content_text']);exit();
          }
       }
 
@@ -277,9 +278,11 @@ class NotificationTemplate extends CommonDBTM {
                $foreachvalues = $data[$tag_infos];
                if (!empty($foreachvalues)) {
                   if (isset($out[1][$id]) && $out[1][$id] != '') {
+
                      if ($out[1][$id] == 'FIRST') {
                         $foreachvalues = array_reverse($foreachvalues);
                      }
+
                      if (isset ($out[2][$id]) && $out[2][$id]) {
                         $foreachvalues = array_slice($foreachvalues,0,$out[2][$id]);
                      } else {
@@ -299,23 +302,24 @@ class NotificationTemplate extends CommonDBTM {
                   $output_foreach_string .= strtr($tmp,$data_lang_foreach);
                }
                $string = str_replace($tag_out[0],$output_foreach_string,$string);
-         } else {
-            $string = str_replace($tag_out,'',$string);
+
+            } else {
+               $string = str_replace($tag_out,'',$string);
+            }
          }
       }
-   }
 
-   foreach ($data as $field=>$value) {
-      if (is_array($value)) {
-         unset($data[$field]);
+      foreach ($data as $field=>$value) {
+         if (is_array($value)) {
+            unset($data[$field]);
+         }
       }
-   }
 
-   //Now process IF statements
-   $string = NotificationTemplate::processIf($string,$data);
-   $string = strtr($string,$data);
+      //Now process IF statements
+      $string = NotificationTemplate::processIf($string,$data);
+      $string = strtr($string,$data);
 
-   return $string;
+      return $string;
    }
 
 
@@ -328,29 +332,35 @@ class NotificationTemplate extends CommonDBTM {
             $regex_if = "/##IF".$if_field."[=]?\w*##(.*)##ENDIF".$if_field."##/Uis";
             //Get the else tag value (if one)
             $regex_else = "/##ELSE".$if_field."[=]?\w*##(.*)##ENDELSE".$if_field."##/Uis";
+
             if (empty($out[2][$key])){ // No = : check if ot empty or not null
+
                if (isset($data['##'.$if_field.'##'])
                   && $data['##'.$if_field.'##'] != ''
                   && $data['##'.$if_field.'##'] != '&nbsp;'
                   && !is_null($data['##'.$if_field.'##'])) {
                   $condition_ok=true;
+
                } else {
                   $condition_ok=false;
                }
+
             } else { // check exact match
+
                if (isset($data['##'.$if_field.'##'])
                   && $data['##'.$if_field.'##'] == $out[2][$key]) {
                   $condition_ok=true;
+
                } else {
                   $condition_ok=false;
                }
-
             }
 
             // Force only one replacement to permit multiple use of the same condition
-            if ($condition_ok){ // Do IF
+            if ($condition_ok) { // Do IF
                $string = preg_replace($regex_if, "\\1", $string,1);
                $string = preg_replace($regex_else, "",  $string,1);
+
             } else { // Do ELSE
                $string = preg_replace($regex_if, "", $string,1);
                $string = preg_replace($regex_else, "\\1",  $string,1);
@@ -364,6 +374,7 @@ class NotificationTemplate extends CommonDBTM {
    function setSignature($signature) {
       $this->signature = $signature;
    }
+
 
    function getByLanguage($language) {
       global $DB;
@@ -379,6 +390,7 @@ class NotificationTemplate extends CommonDBTM {
       if ($iterator->numrows()) {
          return $iterator->next();
       }
+
       //No template found at all!
       return false;
    }

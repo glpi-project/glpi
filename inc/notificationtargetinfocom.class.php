@@ -44,22 +44,24 @@ class NotificationTargetInfocom extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
-    */
+   **/
    function getDatasForTemplate($event, $options=array()) {
       global $LANG, $CFG_GLPI;
 
-      $this->datas['##infocom.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $options['entities_id']);
+      $this->datas['##infocom.entity##']      = Dropdown::getDropdownName('glpi_entities',
+                                                                          $options['entities_id']);
       $this->datas['##lang.infocom.entity##'] = $LANG['entity'][0];
-      $this->datas['##infocom.action##'] = $LANG['mailing'][41];
+      $this->datas['##infocom.action##']      = $LANG['mailing'][41];
+
       foreach ($options['items'] as $id => $item) {
          $tmp = array();
          $obj = new $item['itemtype'] ();
-         $tmp['##infocom.itemtype##'] = $obj->getTypeName();
-         $tmp['##infocom.item##']     = $item['item_name'];
+         $tmp['##infocom.itemtype##']       = $obj->getTypeName();
+         $tmp['##infocom.item##']           = $item['item_name'];
          $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
-         $tmp['##infocom.url##'] = urldecode($CFG_GLPI["url_base"].
-                                              "/index.php?redirect=".strtolower($item['itemtype'])."_".$id."_4");
+         $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
+                                                        "/index.php?redirect=".
+                                                        strtolower($item['itemtype'])."_".$id."_4");
          $this->datas['infocoms'][] = $tmp;
       }
 
@@ -69,23 +71,29 @@ class NotificationTargetInfocom extends NotificationTarget {
       }
    }
 
+
    function getTags() {
       global $LANG;
 
-      $tags = array('infocom.action'          =>$LANG['mailing'][41],
-                    'infocom.itemtype'        =>$LANG['reports'][12],
-                    'infocom.item'            =>$LANG['financial'][104],
-                    'infocom.expirationdate'  =>$LANG['mailing'][54],
-                    'infocom.entity'          =>$LANG['entity'][0]);
+      $tags = array('infocom.action'         => $LANG['mailing'][41],
+                    'infocom.itemtype'       => $LANG['reports'][12],
+                    'infocom.item'           => $LANG['financial'][104],
+                    'infocom.expirationdate' => $LANG['mailing'][54],
+                    'infocom.entity'         => $LANG['entity'][0]);
+
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true));
       }
 
-      $this->addTagToList(array('tag'=>'items','label'=>$LANG['reports'][57],
-                                'value'=>false,'foreach'=>true));
+      $this->addTagToList(array('tag'     => 'items',
+                                'label'   => $LANG['reports'][57],
+                                'value'   => false,
+                                'foreach' => true));
 
       asort($this->tag_descriptions);
    }
+
 }
 ?>

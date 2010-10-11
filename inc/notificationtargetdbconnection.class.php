@@ -39,9 +39,10 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
    function getNotificationTargets($entity) {
       global $LANG;
+
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);
-      $this->addTarget(Notification::GLOBAL_ADMINISTRATOR,$LANG['setup'][237]);
+      $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, $LANG['setup'][237]);
    }
 
 
@@ -57,8 +58,8 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
       $this->datas['##lang.dbconnection.title##']  = $LANG['setup'][808];
       $this->datas['##lang.dbconnection.delay##']  = $LANG['setup'][807];
-      $this->datas['##dbconnection.delay##']
-         = timestampToString($options['diff'], true)." (".$options['name'].")";
+      $this->datas['##dbconnection.delay##']       = timestampToString($options['diff'], true).
+                                                     " (".$options['name'].")";
    }
 
 }

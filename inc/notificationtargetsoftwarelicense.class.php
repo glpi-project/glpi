@@ -44,22 +44,22 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
-    */
+   **/
    function getDatasForTemplate($event, $options=array()) {
      global $LANG,$CFG_GLPI;
 
       $this->datas['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                               $options['entities_id']);
-      $this->datas['##license.action##']      = $LANG['setup'][264];
+                                                                     $options['entities_id']);
+      $this->datas['##license.action##'] = $LANG['setup'][264];
 
       foreach ($options['licenses'] as $id => $license) {
          $tmp = array();
-         $tmp['##license.item##']      = $license['softname'];
-         $tmp['##license.name##'] = $license['name'];
-         $tmp['##license.serial##']     = $license['serial'];
+         $tmp['##license.item##']           = $license['softname'];
+         $tmp['##license.name##']           = $license['name'];
+         $tmp['##license.serial##']         = $license['serial'];
          $tmp['##license.expirationdate##'] = convDate($license["expire"]);
-         $tmp['##license.url##'] = urldecode($CFG_GLPI["url_base"].
-                                             "/index.php?redirect=softwarelicense_".$id);
+         $tmp['##license.url##']            = urldecode($CFG_GLPI["url_base"].
+                                                        "/index.php?redirect=softwarelicense_".$id);
          $this->datas['licenses'][] = $tmp;
       }
 
@@ -69,23 +69,29 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
       }
    }
 
+
    function getTags() {
       global $LANG;
 
-      $tags = array('license.action'          =>$LANG['setup'][264],
-                    'license.expirationdate'  =>$LANG['mailing'][51],
-                    'license.item'            =>$LANG['help'][31],
-                    'license.serial'          =>$LANG['common'][19],
-                    'license.entity'          =>$LANG['entity'][0]);
+      $tags = array('license.action'         => $LANG['setup'][264],
+                    'license.expirationdate' => $LANG['mailing'][51],
+                    'license.item'           => $LANG['help'][31],
+                    'license.serial'         => $LANG['common'][19],
+                    'license.entity'         => $LANG['entity'][0]);
+
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true));
       }
 
-      $this->addTagToList(array('tag'=>'licenses','label'=>$LANG['reports'][57],
-                                'value'=>false,'foreach'=>true));
+      $this->addTagToList(array('tag'     => 'licenses',
+                                'label'   => $LANG['reports'][57],
+                                'value'   => false,
+                                'foreach' => true));
 
       asort($this->tag_descriptions);
    }
+
 }
 ?>
