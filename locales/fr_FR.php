@@ -2213,6 +2213,10 @@ $LANG['users'][10]="Email expédié. Veuillez vous reportez à celui-ci pour cha
 $LANG['users'][11]="Veuillez confirmer votre email et saisir votre nouveau mot de passe.";
 $LANG['users'][12]="La demande de renouvellement de mot de passe a expirée ou est invalide. Merci de la renouveller.";
 $LANG['users'][13]="Mot de passe modifié avec succès.";
+$LANG['users'][14]="Habilitations";
+$LANG['users'][15]="Import depuis les annuaires";
+$LANG['users'][16]="Import depuis les autres sources";
+
 
 $LANG['validation'][0]="Validation";
 $LANG['validation'][1]="Envoyer une demande de validation";
