@@ -53,24 +53,29 @@ class ConsumableItem extends CommonDBTM {
       return $LANG['consumables'][12];
    }
 
+
    function canCreate() {
       return haveRight('consumable', 'w');
    }
+
 
    function canView() {
       return haveRight('consumable', 'r');
    }
 
+
    /**
     * Get The Name + Ref of the Object
     *
     * @param $with_comment add comments to name
+    *
     * @return String: name of the object in the current language
-    */
+   **/
    function getName($with_comment=0) {
-      $toadd="";
+
+      $toadd = "";
       if ($with_comment) {
-         $toadd="&nbsp;".$this->getComments();
+         $toadd = "&nbsp;".$this->getComments();
       }
 
       if (isset($this->fields["name"]) && !empty($this->fields["name"])) {
@@ -79,10 +84,13 @@ class ConsumableItem extends CommonDBTM {
          if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
             $name .= " - ".$this->fields["ref"];
          }
+
          return $name.$toadd;
       }
+
       return NOT_AVAILABLE;
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -94,39 +102,47 @@ class ConsumableItem extends CommonDBTM {
       $DB->query($query);
    }
 
+
    function post_getEmpty () {
       global $CFG_GLPI;
 
-      $this->fields["alarm_threshold"]=$CFG_GLPI["default_alarm_threshold"];
+      $this->fields["alarm_threshold"] = $CFG_GLPI["default_alarm_threshold"];
    }
+
 
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong=array();
+      $ong = array();
       if ($this->fields['id'] > 0) {
-         $ong[1]=$LANG['Menu'][32];
+         $ong[1] = $LANG['Menu'][32];
+
          if (haveRight("contract","r") || haveRight("infocom","r")) {
-            $ong[4]=$LANG['Menu'][26];
+            $ong[4] = $LANG['Menu'][26];
          }
+
          if (haveRight("document","r")) {
-            $ong[5]=$LANG['Menu'][27];
+            $ong[5] = $LANG['Menu'][27];
          }
+
          if (haveRight("link","r")) {
-            $ong[7]=$LANG['title'][34];
+            $ong[7] = $LANG['title'][34];
          }
+
          if (haveRight("notes","r")) {
-            $ong[10]=$LANG['title'][37];
+            $ong[10] = $LANG['title'][37];
          }
          if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
             $ong[2] = $LANG['setup'][137];
          }
 
       } else { // New item
-         $ong[1]=$LANG['title'][26];
+         $ong[1] = $LANG['title'][26];
       }
+
       return $ong;
    }
+
 
    /**
     * Print the consumable type form
@@ -140,7 +156,7 @@ class ConsumableItem extends CommonDBTM {
     *
     **/
    function showForm ($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI, $LANG;
 
       // Show ConsumableItem or blank form
       if (!haveRight("consumable","r")) {
@@ -162,10 +178,10 @@ class ConsumableItem extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25].
-      "&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='7'>.<textarea cols='45' rows='9' name='comment' >"
-         .$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td class='center middle' rowspan='7'>";
+      echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][2]."&nbsp;:</td>\n";
@@ -216,6 +232,7 @@ class ConsumableItem extends CommonDBTM {
 
       return true;
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -282,11 +299,13 @@ class ConsumableItem extends CommonDBTM {
       return $tab;
    }
 
+
    static function cronInfo($name) {
       global $LANG;
 
       return array('description' => $LANG['crontask'][3]);
    }
+
 
    /**
     * Cron action on consumables : alert if a stock is behind the threshold
@@ -294,45 +313,50 @@ class ConsumableItem extends CommonDBTM {
     * @param $task to log, if NULL display
     *
     * @return 0 : nothing to do 1 : done with success
-    **/
+   **/
    static function cronConsumable($task=NULL) {
       global $DB,$CFG_GLPI,$LANG;
+
       $cron_status = 1;
+
       if ($CFG_GLPI["use_mailing"]) {
+         $message = array();
+         $items   = array();
+         $alert   = new Alert();
 
-         $message=array();
-         $items=array();
-         $alert=new Alert();
+         foreach (Entity::getEntitiesToNotify('consumables_alert_repeat') as $entity => $repeat) {
 
-          foreach (Entity::getEntitiesToNotify('consumables_alert_repeat') as $entity => $repeat) {
-
-            $query_alert="SELECT `glpi_consumableitems`.`id` AS consID,
-                           `glpi_consumableitems`.`entities_id` as entity,
-                           `glpi_consumableitems`.`ref` as consref,
-                           `glpi_consumableitems`.`name` AS consname,
-                           `glpi_consumableitems`.`alarm_threshold` AS threshold,
-                           `glpi_alerts`.`id` AS alertID, `glpi_alerts`.`date`
-                   FROM `glpi_consumableitems`
-                   LEFT JOIN `glpi_alerts` ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
-                                                AND `glpi_alerts`.`itemtype`='ConsumableItem')
-                   WHERE `glpi_consumableitems`.`is_deleted`='0'
-                         AND `glpi_consumableitems`.`alarm_threshold`>='0'
-                           AND `glpi_consumableitems`.`entities_id`= '".$entity."'
-                              AND (`glpi_alerts`.`date` IS NULL
-                              OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
+            $query_alert = "SELECT `glpi_consumableitems`.`id` AS consID,
+                                   `glpi_consumableitems`.`entities_id` AS entity,
+                                   `glpi_consumableitems`.`ref` AS consref,
+                                   `glpi_consumableitems`.`name` AS consname,
+                                   `glpi_consumableitems`.`alarm_threshold` AS threshold,
+                                   `glpi_alerts`.`id` AS alertID,
+                                   `glpi_alerts`.`date`
+                            FROM `glpi_consumableitems`
+                            LEFT JOIN `glpi_alerts`
+                                 ON (`glpi_consumableitems`.`id` = `glpi_alerts`.`items_id`
+                                     AND `glpi_alerts`.`itemtype`='ConsumableItem')
+                            WHERE `glpi_consumableitems`.`is_deleted` = '0'
+                                  AND `glpi_consumableitems`.`alarm_threshold` >= '0'
+                                  AND `glpi_consumableitems`.`entities_id` = '".$entity."'
+                                  AND (`glpi_alerts`.`date` IS NULL
+                                       OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
             $message = "";
-            $items=array();
+            $items   = array();
+
             foreach ($DB->request($query_alert) as $consumable) {
-               if (($unused=Consumable::getUnusedNumber($consumable["consID"]))<=$consumable["threshold"]) {
+               if (($unused=Consumable::getUnusedNumber($consumable["consID"]))
+                              <=$consumable["threshold"]) {
                   // define message alert
-                  $message.=$LANG['mailing'][35]." ".$consumable["consname"]." - ".
-                            $LANG['consumables'][2]."&nbsp;: ".$consumable["consref"]." - ".
-                            $LANG['software'][20]."&nbsp;: ".$unused."<br>";
-                  $items[$consumable["consID"]]=$consumable;
+                  $message .= $LANG['mailing'][35]." ".$consumable["consname"]." - ".
+                              $LANG['consumables'][2]."&nbsp;: ".$consumable["consref"]." - ".
+                              $LANG['software'][20]."&nbsp;: ".$unused."<br>";
+                  $items[$consumable["consID"]] = $consumable;
 
                   // if alert exists -> delete
                   if (!empty($consumable["alertID"])) {
-                     $alert->delete(array("id"=>$consumable["alertID"]));
+                     $alert->delete(array("id" => $consumable["alertID"]));
                   }
                }
             }
@@ -340,7 +364,8 @@ class ConsumableItem extends CommonDBTM {
             if (!empty($items)) {
                $options['entities_id'] = $entity;
                $options['consumables'] = $items;
-               if (NotificationEvent::raiseEvent('alert',new Consumable(),$options)) {
+
+               if (NotificationEvent::raiseEvent('alert', new Consumable(), $options)) {
                   if ($task) {
                      $task->log(Dropdown::getDropdownName("glpi_entities",
                                                           $entity)." :  $message\n");
@@ -350,21 +375,22 @@ class ConsumableItem extends CommonDBTM {
                                                                        $entity)." :  $message");
                   }
 
-                  $input["type"] = Alert::THRESHOLD;
+                  $input["type"]     = Alert::THRESHOLD;
                   $input["itemtype"] = 'ConsumableItem';
 
                   // add alerts
                   foreach ($items as $ID=>$consumable) {
-                     $input["items_id"]=$ID;
+                     $input["items_id"] = $ID;
                      $alert->add($input);
                      unset($alert->fields['id']);
                   }
+
                } else {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",$entity).
-                            " : Send consumable alert failed\n");
+                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
+                                " : Send consumable alert failed\n");
                   } else {
-                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",$entity).
+                     addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
                                              " : Send consumable alert failed",false,ERROR);
                   }
                }
@@ -374,15 +400,16 @@ class ConsumableItem extends CommonDBTM {
       return $cron_status;
    }
 
+
    function getEvents() {
       global $LANG;
+
       return array ('alert' => $LANG['crontask'][3]);
    }
 
 
    /**
     * Display debug information for current object
-    *
    **/
    function showDebug() {
 
