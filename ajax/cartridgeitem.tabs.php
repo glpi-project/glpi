@@ -65,6 +65,10 @@ if ($_POST["id"]>0 && $cartridge->can($_POST["id"],'r')) {
          Plugin::displayAction($cartridge, $_REQUEST['glpi_tab']);
          break;
 
+      case 2 :
+         $cartridge->showDebug();
+         break;
+
       case 4 :
          Infocom::showForItem($cartridge);
          break;

@@ -129,8 +129,9 @@ class NotificationEvent extends CommonDBTM {
     * Display debug information for an object
     *
     * @param $item the object
+    * @param $options array
     */
-   static function debugEvent($item) {
+   static function debugEvent($item, $options=array()) {
       global $LANG;
 
       echo "<table class='tab_cadre_fixe'>";
@@ -149,7 +150,7 @@ class NotificationEvent extends CommonDBTM {
                $email_notprocessed = array();
 
                $template = new NotificationTemplate();
-               $notificationtarget = NotificationTarget::getInstance($item,$event);
+               $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
                $entity = $notificationtarget->getEntity();
                //Foreach notification
                foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
@@ -168,7 +169,7 @@ class NotificationEvent extends CommonDBTM {
                      $notificationtarget->getFromDB($target['id']);
 
                      //Get all users affected by this notification
-                     $notificationtarget->getAddressesByTarget($target);
+                     $notificationtarget->getAddressesByTarget($target,$options);
 
                      foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
                         //If the user have not yet been notified
@@ -178,7 +179,7 @@ class NotificationEvent extends CommonDBTM {
                               unset($email_notprocessed[$users_infos['language']][$users_infos['email']]);
                            }
 
-                           if ($template->getTemplateByLanguage($notificationtarget, $users_infos, $event)) {
+                           if ($template->getTemplateByLanguage($notificationtarget, $users_infos, $event,$options)) {
                               //Send notification to the user
                               echo "<tr class='tab_bg_2'><td>".$label."</td>";
                               echo "<td>".$notificationtarget->getNameID()."</td>";

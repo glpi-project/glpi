@@ -133,6 +133,9 @@ class CartridgeItem extends CommonDBTM {
                $ong[10] = $LANG['title'][37];
             }
          }
+         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+            $ong[2] = $LANG['setup'][137];
+         }
       }
       return $ong;
    }
@@ -389,11 +392,10 @@ class CartridgeItem extends CommonDBTM {
       $cron_status = 1;
       if ($CFG_GLPI["use_mailing"]) {
          $message = array();
-         $items   = array();
          $alert   = new Alert();
 
          foreach (Entity::getEntitiesToNotify('cartridges_alert_repeat') as $entity => $repeat) {
-
+            // if you change this query, please don't forget to also change in showDebug()
             $query_alert = "SELECT `glpi_cartridgeitems`.`id` AS cartID,
                                    `glpi_cartridgeitems`.`entities_id` AS entity,
                                    `glpi_cartridgeitems`.`ref` AS cartref,
@@ -574,6 +576,26 @@ class CartridgeItem extends CommonDBTM {
       global $LANG;
 
       return array ('alert' => $LANG['crontask'][2]);
+   }
+
+
+   /**
+    * Display debug information for current object
+    *
+   **/
+   function showDebug() {
+
+      // see query_alert in cronCartridge()
+      $item = array('cartID'    => $this->fields['id'],
+                    'entity'    => $this->fields['entities_id'],
+                    'cartref'   => $this->fields['ref'],
+                    'cartname'  => $this->fields['name'],
+                    'threshold' => $this->fields['alarm_threshold']);
+
+      $options = array();
+      $options['entities_id'] = $this->getEntityID();
+      $options['cartridges']  = array($item);
+      NotificationEvent::debugEvent(new Cartridge(), $options);
    }
 }
 ?>
