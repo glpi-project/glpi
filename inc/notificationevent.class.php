@@ -56,17 +56,21 @@ class NotificationEvent extends CommonDBTM {
 
    /**
     * Raise a notification event event
+    *
     * @param $event the event raised for the itemtype
     * @param $item the object which raised the event
     * @param $options array options used
+    * @param $label used for debugEvent()
     */
-   static function raiseEvent($event, $item, $options=array()) {
+   static function raiseEvent($event, $item, $options=array(), $label='') {
       global $CFG_GLPI;
 
       //If notifications are enabled in GLPI's configuration
       if ($CFG_GLPI["use_mailing"]) {
          $email_processed = array();
          $email_notprocessed = array();
+         //Get template's informations
+         $template = new NotificationTemplate;
 
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
          $entity = $notificationtarget->getEntity();
@@ -83,35 +87,46 @@ class NotificationEvent extends CommonDBTM {
 
             //Foreach notification targets
             foreach ($targets as $target) {
-               $templates_id = $data['notificationtemplates_id'];
+               $template->getFromDB($data['notificationtemplates_id']);
 
                //Get all users affected by this notification
                $notificationtarget->getAddressesByTarget($target,$options);
 
-               //Get template's informations
-               $template = new NotificationTemplate;
-
                //Set notification's signature (the one which corresponds to the entity)
                $template->setSignature(Notification::getMailingSignature($entity));
-               $template->getFromDB($templates_id);
 
                foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
-                  if ($notificationtarget->validateSendTo($users_infos)) {
+                  if ($label || $notificationtarget->validateSendTo($users_infos)) {
                      //If the user have not yet been notified
                      if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
                         //If ther user's language is the same as the template's one
-                        if (isset($email_notprocessed[$users_infos['language']][$users_infos['email']])) {
-                           unset($email_notprocessed[$users_infos['language']][$users_infos['email']]);
+                        if (isset($email_notprocessed[$users_infos['language']]
+                                                     [$users_infos['email']])) {
+                           unset($email_notprocessed[$users_infos['language']]
+                                                    [$users_infos['email']]);
                         }
 
-                        if ($template->getTemplateByLanguage($notificationtarget, $users_infos, $event,
-                                                            $options)) {
+                        if ($template->getTemplateByLanguage($notificationtarget, $users_infos,
+                                                            $event, $options)) {
+
                            //Send notification to the user
-                           Notification::send ($template->getDataToSend($notificationtarget,
-                                                                        $users_infos, $options));
-                           $email_processed[$users_infos['language']][$users_infos['email']] = $users_infos;
+                           if ($label=='') {
+                              Notification::send ($template->getDataToSend($notificationtarget,
+                                                                           $users_infos, $options));
+                           } else {
+                              $notificationtarget->getFromDB($target['id']);
+                              echo "<tr class='tab_bg_2'><td>".$label."</td>";
+                              echo "<td>".$notificationtarget->getNameID()."</td>";
+                              echo "<td>".$template->getName()." (".$users_infos['language'].")</td>";
+                              echo "<td>".$users_infos['email']."</td>";
+                              echo "</tr>";
+                           }
+                           $email_processed[$users_infos['language']][$users_infos['email']]
+                                                                     = $users_infos;
+
                         } else {
-                           $email_notprocessed[$users_infos['language']][$users_infos['email']] = $users_infos;
+                           $email_notprocessed[$users_infos['language']][$users_infos['email']]
+                                                                        = $users_infos;
                         }
                      }
                   }
@@ -146,56 +161,9 @@ class NotificationEvent extends CommonDBTM {
             echo "<th>".$LANG['mailing'][113].'</th><th>'.$LANG['mailing'][118]."</th></tr>";
 
             foreach ($events as $event => $label) {
-               $email_processed = array();
-               $email_notprocessed = array();
-
-               $template = new NotificationTemplate();
-               $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
-               $entity = $notificationtarget->getEntity();
-               //Foreach notification
-               foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
-                                                                     $entity) as $data) {
-                  $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                                  'notifications_id='.$data['id']);
-
-                  $notificationtarget->clearAddressesList();
-
-                  //Process more infos (for example for tickets)
-                  $notificationtarget->addAdditionnalInfosForTarget();
-
-                  //Foreach notification targets
-                  foreach ($targets as $target) {
-                     $template->getFromDB($data['notificationtemplates_id']);
-                     $notificationtarget->getFromDB($target['id']);
-
-                     //Get all users affected by this notification
-                     $notificationtarget->getAddressesByTarget($target,$options);
-
-                     foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
-                        //If the user have not yet been notified
-                        if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
-                           //If ther user's language is the same as the template's one
-                           if (isset($email_notprocessed[$users_infos['language']][$users_infos['email']])) {
-                              unset($email_notprocessed[$users_infos['language']][$users_infos['email']]);
-                           }
-
-                           if ($template->getTemplateByLanguage($notificationtarget, $users_infos, $event,$options)) {
-                              //Send notification to the user
-                              echo "<tr class='tab_bg_2'><td>".$label."</td>";
-                              echo "<td>".$notificationtarget->getNameID()."</td>";
-                              echo "<td>".$template->getName()." (".$users_infos['language'].")</td>";
-                              echo "<td>".$users_infos['email']."</td>";
-                              echo "</tr>";
-                              $email_processed[$users_infos['language']][$users_infos['email']] = $users_infos;
-                           } else {
-                              $email_notprocessed[$users_infos['language']][$users_infos['email']] = $users_infos;
-                           }
-                        }
-                     }
-                  }
-               }
-
+               self::raiseEvent($event, $item, $options, $label);
             }
+
          } else  {
             echo "<tr class='tab_bg_2 center'><td colspan='4'>".$LANG['stats'][2]."</td></tr>";
          }
