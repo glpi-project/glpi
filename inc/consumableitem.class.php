@@ -118,6 +118,10 @@ class ConsumableItem extends CommonDBTM {
          if (haveRight("notes","r")) {
             $ong[10]=$LANG['title'][37];
          }
+         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+            $ong[2] = $LANG['setup'][137];
+         }
+
       } else { // New item
          $ong[1]=$LANG['title'][26];
       }
@@ -373,6 +377,26 @@ class ConsumableItem extends CommonDBTM {
    function getEvents() {
       global $LANG;
       return array ('alert' => $LANG['crontask'][3]);
+   }
+
+
+   /**
+    * Display debug information for current object
+    *
+   **/
+   function showDebug() {
+
+      // see query_alert in cronConsumable()
+      $item = array('consID'    => $this->fields['id'],
+                    'entity'    => $this->fields['entities_id'],
+                    'consref'   => $this->fields['ref'],
+                    'consname'  => $this->fields['name'],
+                    'threshold' => $this->fields['alarm_threshold']);
+
+      $options = array();
+      $options['entities_id'] = $this->getEntityID();
+      $options['consumables']  = array($item);
+      NotificationEvent::debugEvent(new Consumable(), $options);
    }
 }
 
