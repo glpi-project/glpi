@@ -158,7 +158,7 @@ class User extends CommonDBTM {
       $ong = array();
       // No add process
       if ($this->fields['id'] > 0) {
-         $ong[1] = $LANG['Menu'][35]; // principal
+         $ong[1] = $LANG['users'][14]; // principal
          $ong[4] = $LANG['Menu'][36];
          $ong[2] = $LANG['common'][96]; // materiel
 
@@ -2065,15 +2065,15 @@ class User extends CommonDBTM {
       echo "<tr><th colspan='4'>".$LANG['setup'][126]."</th></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td>\n";
-      echo "<td><input type='text' name='login'></td>";
-      echo "<td class='tab_bg_2 center'>\n";
+      echo "<td><input type='text' name='login'></td></tr>";
+      echo "<tr class='tab_bg_1'><td class='tab_bg_2 center' colspan='2'>\n";
       echo "<input type='hidden' name='ext_auth' value='1'>\n";
-      echo "<input type='submit' name='add_ext_auth_ldap' value='".$LANG['buttons'][8]." ".
-            $LANG['login'][2]."' class='submit'>\n";
-      echo "</td>";
-      echo "<td class='tab_bg_2 center'>\n";
-      echo "<input type='submit' name='add_ext_auth_simple' value='".$LANG['buttons'][8]." ".
-            $LANG['common'][62]."' class='submit'>\n";
+      echo "<input type='submit' name='add_ext_auth_ldap' value='".$LANG['users'][15].
+           "' class='submit'>\n";
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td class='tab_bg_2 center' colspan='2'>\n";
+      echo "<input type='submit' name='add_ext_auth_simple' value=\"".$LANG['users'][16].
+           "\" class='submit'>\n";
       echo "</td></tr>\n";
 
       echo "</table></form></div>\n";

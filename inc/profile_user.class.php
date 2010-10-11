@@ -103,7 +103,7 @@ class Profile_User extends CommonDBTM {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['entity'][3]."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['setup'][605]."</tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
