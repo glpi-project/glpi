@@ -329,7 +329,6 @@ class Config extends CommonDBTM {
       echo "<td>";
       State::dropdownBehaviour("state_autoupdate_mode", $LANG['setup'][197],
                                $CFG_GLPI["state_autoupdate_mode"]);
-      echo "</td>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][282] . "&nbsp;:</td>";
