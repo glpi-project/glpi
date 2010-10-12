@@ -40,22 +40,25 @@ if (!defined('GLPI_ROOT')) {
 class RuleLinkComputer extends Rule {
 
    // From Rule
-   public $right='rule_ocs';
-   public $can_sort=true;
+   public $right    = 'rule_ocs';
+   public $can_sort = true;
 
    function canCreate() {
       return haveRight('rule_ocs', 'w');
    }
 
+
    function canView() {
       return haveRight('rule_ocs', 'r');
    }
+
 
    function getTitle() {
       global $LANG;
 
       return $LANG['rulesengine'][57];
    }
+
 
    function maxActionsCount() {
       // Unlimited
@@ -66,6 +69,7 @@ class RuleLinkComputer extends Rule {
    function preProcessPreviewResults($output) {
       return $output;
    }
+
 
    function executeActions($output,$params) {
 
@@ -85,8 +89,9 @@ class RuleLinkComputer extends Rule {
                      if ($res != null) {
                         //Get the entity associated with the TAG
                         $target_entity = EntityData::getEntityIDByTag($res);
+
                         if ($target_entity != '') {
-                           $output["entities_id"]=$target_entity;
+                           $output["entities_id"] = $target_entity;
                         }
                      }
                   }
@@ -97,21 +102,22 @@ class RuleLinkComputer extends Rule {
       return $output;
    }
 
+
    function getCriterias() {
       global $LANG;
-      $criterias = array ();
 
+      $criterias = array ();
       $criterias['entities_id']['table']     = 'glpi_entities';
       $criterias['entities_id']['field']     = 'entities_id';
       $criterias['entities_id']['name']      = $LANG['ocsng'][59];
       $criterias['entities_id']['linkfield'] = 'entities_id';
-      $criterias['entities_id']['type'] = 'dropdown';
+      $criterias['entities_id']['type']      = 'dropdown';
 
       $criterias['state']['table']     = 'glpi_computers';
       $criterias['state']['field']     = 'state';
       $criterias['state']['name']      = $LANG['joblist'][0];
       $criterias['state']['linkfield'] = 'state';
-      $criterias['state']['type'] = 'state';
+      $criterias['state']['type']      = 'state';
 
       $criterias['OCS_SERVER']['table']     = 'glpi_ocsservers';
       $criterias['OCS_SERVER']['field']     = 'name';
@@ -138,8 +144,7 @@ class RuleLinkComputer extends Rule {
 
       $criterias['IPADDRESS']['table']     = 'networks';
       $criterias['IPADDRESS']['field']     = 'IPADDRESS';
-      $criterias['IPADDRESS']['name']      = $LANG['financial'][44]." ".
-                                                $LANG['networking'][14];
+      $criterias['IPADDRESS']['name']      = $LANG['financial'][44]." ". $LANG['networking'][14];
       $criterias['IPADDRESS']['linkfield'] = 'HARDWARE_ID';
 
       $criterias['MACHINE_NAME']['table']     = 'hardware';
@@ -160,10 +165,11 @@ class RuleLinkComputer extends Rule {
       return $criterias;
    }
 
+
    function getActions() {
       global $LANG;
-      $actions = array();
 
+      $actions = array();
       $actions['_fusion']['name'] = $LANG['ocsng'][58];
       $actions['_fusion']['type'] = 'text';
       $actions['_fusion']['type'] = 'yesno';
@@ -174,18 +180,17 @@ class RuleLinkComputer extends Rule {
       return $actions;
    }
 
-   function manageSpecificCriteriaValues($criteria,$name,$value) {
+
+   function manageSpecificCriteriaValues($criteria, $name, $value) {
       global $LANG;
 
       switch ($criteria['type']) {
          case "state":
-            $link_array=array("0"=>$LANG['choice'][0],
-                              "1"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][57],
-                              "2"=>$LANG['choice'][1]." : ".$LANG['ocsconfig'][56]);
-            Dropdown::showFromArray($name, $link_array,
-                                    array('value' => $value));
+            $link_array = array("0" => $LANG['choice'][0],
+                                "1" => $LANG['choice'][1]." : ".$LANG['ocsconfig'][57],
+                                "2" => $LANG['choice'][1]." : ".$LANG['ocsconfig'][56]);
 
-      }
+            Dropdown::showFromArray($name, $link_array, array('value' => $value));
       return false;
    }
 

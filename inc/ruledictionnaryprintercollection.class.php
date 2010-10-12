@@ -42,28 +42,31 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
-   public $right = 'rule_dictionnary_printer';
-   public $menu_type = 'dictionnary';
-   public $menu_option = 'printer';
+   public $right               = 'rule_dictionnary_printer';
+   public $menu_type           = 'dictionnary';
+   public $menu_option         = 'printer';
 
    /**
     * Constructor
    **/
    function __construct() {
+
       //Init cache system values
       $this->initCache("glpi_rulecacheprinters", array("name"         => "old_value",
                                                        "manufacturer" => "manufacturer"),
                        array("name"               => "new_value",
-                             "manufacturers_id"       => "new_manufacturer",
+                             "manufacturers_id"   => "new_manufacturer",
                              "_ignore_ocs_import" => "ignore_ocs_import",
                              "is_global"          => "is_global"));
    }
+
 
    function getTitle() {
       global $LANG;
 
       return $LANG['rulesengine'][39];
    }
+
 
    function cleanTestOutputCriterias($output) {
 
@@ -76,6 +79,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       return $output;
    }
 
+
    function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = array (),
                                     $params = array ()) {
       global $DB;
@@ -84,7 +88,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
          echo "replayRulesOnExistingDB started : " . date("r") . "\n";
       }
       $nb = 0;
-      $i = $offset;
+      $i  = $offset;
 
       //Select all the differents software
       $sql = "SELECT DISTINCT `glpi_printers`.`name`,
@@ -97,15 +101,17 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       // Do not replay on trash and templates
       $sql .= "WHERE `glpi_printers`.`is_deleted` = '0'
                      AND `glpi_printers`.`is_template` = '0' ";
-       if (isset ($params['manufacturer']) && $params['manufacturer'] > 0) {
+
+      if (isset ($params['manufacturer']) && $params['manufacturer'] > 0) {
          $sql .= " AND `manufacturers_id` = '" . $params['manufacturer'] . "'";
       }
+
       if ($offset) {
          $sql .= " LIMIT " . intval($offset) . ",999999999";
       }
 
-      $res = $DB->query($sql);
-      $nb = $DB->numrows($res) + $offset;
+      $res  = $DB->query($sql);
+      $nb   = $DB->numrows($res) + $offset;
       $step = ($nb > 1000 ? 50 : ($nb > 20 ? floor($DB->numrows($res) / 20) : 1));
 
       while ($input = $DB->fetch_array($res)) {
@@ -117,17 +123,19 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
                changeProgressBarPosition($i, $nb, "$i / $nb");
             }
          }
+
          //If manufacturer is set, then first run the manufacturer's dictionnary
          if (isset ($input["manufacturer"])) {
             $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
          }
+
          //Replay software dictionnary rules
-         $input = addslashes_deep($input);
+         $input    = addslashes_deep($input);
          $res_rule = $this->processAllRules($input, array (), array ());
          $res_rule = addslashes_deep($res_rule);
+
          //If the software's name or version has changed
          if (self::somethingHasChanged($res_rule,$input)) {
-
             $IDs = array ();
             //Find all the softwares in the database with the same name and manufacturer
             $sql = "SELECT `id`
@@ -135,6 +143,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
                     WHERE `name` = '" . $input["name"] . "'
                           AND `manufacturers_id` = '" . $input["manufacturers_id"] . "'";
             $res_soft = $DB->query($sql);
+
             if ($DB->numrows($res_soft) > 0) {
                //Store all the software's IDs in an array
                while ($result = $DB->fetch_array($res_soft)) {
@@ -145,6 +154,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
             }
          }
          $i++;
+
          if ($maxtime) {
             $crt = explode(" ", microtime());
             if ($crt[0] + $crt[1] > $maxtime) {
@@ -166,19 +176,19 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       return ($i == $nb ? -1 : $i);
    }
 
-   static function somethingHasChanged($res_rule,$input)  {
+
+   static function somethingHasChanged($res_rule,$input) {
+
       if ((isset ($res_rule["name"]) && $res_rule["name"] != $input["name"])
-         || (isset ($res_rule["manufacturer"])) && $res_rule["manufacturer"] != ''
-            || isset($res_rule['is_global']) && $res_rule['is_global'] != '') {
+          || (isset ($res_rule["manufacturer"]))
+          && $res_rule["manufacturer"] != ''
+          || isset($res_rule['is_global'])
+          && $res_rule['is_global'] != '') {
             return true;
-         }
-         else {
-            return false;
-         }
-
+      }
+      return false;
    }
+
 }
-
-
 
 ?>
