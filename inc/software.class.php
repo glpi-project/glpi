@@ -342,49 +342,46 @@ class Software extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab+=Location::getSearchOptionsToAdd();
 
 
-      $tab[7]['table']     = 'glpi_softwarelicenses';
-      $tab[7]['field']     = 'name';
-      $tab[7]['linkfield'] = '';
-      $tab[7]['name']      = $LANG['common'][19];
+      $tab[7]['table']         = 'glpi_softwarelicenses';
+      $tab[7]['field']         = 'name';
+      $tab[7]['name']          = $LANG['common'][19];
+      $tab[7]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = $this->getTable();
-      $tab[90]['field']     = 'notepad';
-      $tab[90]['linkfield'] = '';
-      $tab[90]['name']      = $LANG['title'][37];
+      $tab[90]['table']         = $this->getTable();
+      $tab[90]['field']         = 'notepad';
+      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['massiveaction'] = false;
 
       $tab[62]['table']     = 'glpi_softwarecategories';
       $tab[62]['field']     = 'name';
-      $tab[62]['linkfield'] = 'softwarecategories_id';
       $tab[62]['name']      = $LANG['common'][36];
 
-      $tab[19]['table']     = $this->getTable();
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
-      $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
       $tab[24]['table']     = 'glpi_users';
@@ -394,115 +391,111 @@ class Software extends CommonDBTM {
 
       $tab[70]['table']     = 'glpi_users';
       $tab[70]['field']     = 'name';
-      $tab[70]['linkfield'] = 'users_id';
       $tab[70]['name']      = $LANG['common'][34];
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'name';
-      $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
       $tab[61]['table']     = $this->getTable();
       $tab[61]['field']     = 'is_helpdesk_visible';
-      $tab[61]['linkfield'] = 'is_helpdesk_visible';
       $tab[61]['name']      = $LANG['software'][46];
       $tab[61]['datatype']  = 'bool';
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
-      $tab[72]['table']        = 'glpi_computers_softwareversions';
-      $tab[72]['field']        = 'count';
-      $tab[72]['linkfield']    = '';
-      $tab[72]['name']       = $LANG['tracking'][29]." - ".$LANG['software'][19];
-      $tab[72]['forcegroupby'] = true;
-      $tab[72]['usehaving']    = true;
-      $tab[72]['datatype']     = 'number';
-      $tab[72]['nometa']       = true;
+      $tab[72]['table']         = 'glpi_computers_softwareversions';
+      $tab[72]['field']         = 'count';
+      $tab[72]['name']          = $LANG['tracking'][29]." - ".$LANG['software'][19];
+      $tab[72]['forcegroupby']  = true;
+      $tab[72]['usehaving']     = true;
+      $tab[72]['datatype']      = 'number';
+      $tab[72]['nometa']        = true;
+      $tab[72]['massiveaction'] = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['linkfield'] = '';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']         = $this->getTable();
+      $tab[86]['field']         = 'is_recursive';
+      $tab[86]['name']          = $LANG['entity'][9];
+      $tab[86]['datatype']      = 'bool';
+      $tab[86]['massiveaction'] = false;
 
       $tab['versions'] = $LANG['software'][5];
 
-      $tab[5]['table']        = 'glpi_softwareversions';
-      $tab[5]['field']        = 'name';
-      $tab[5]['linkfield']    = '';
-      $tab[5]['name']         = $LANG['common'][16]." - ".$LANG['software'][5];
-      $tab[5]['forcegroupby'] = true;
+      $tab[5]['table']         = 'glpi_softwareversions';
+      $tab[5]['field']         = 'name';
+      $tab[5]['name']          = $LANG['common'][16]." - ".$LANG['software'][5];
+      $tab[5]['forcegroupby']  = true;
+      $tab[5]['massiveaction'] = false;
 
-      $tab[31]['table']        = 'glpi_states';
-      $tab[31]['field']        = 'name';
-      $tab[31]['linkfield']    = '';
-      $tab[31]['name']         = $LANG['state'][0];
-      $tab[31]['forcegroupby'] = true;
+      $tab[31]['table']         = 'glpi_states';
+      $tab[31]['field']         = 'name';
+      $tab[31]['name']          = $LANG['state'][0];
+      $tab[31]['forcegroupby']  = true;
+      $tab[31]['massiveaction'] = false;
 
-      $tab[170]['table']        = 'glpi_softwareversions';
-      $tab[170]['field']        = 'comment';
-      $tab[170]['linkfield']    = '';
-      $tab[170]['name']         = $LANG['common'][25]." - ".$LANG['software'][5];
-      $tab[170]['forcegroupby'] = true;
-      $tab[170]['datatype']     = 'text';
+      $tab[170]['table']         = 'glpi_softwareversions';
+      $tab[170]['field']         = 'comment';
+      $tab[170]['name']          = $LANG['common'][25]." - ".$LANG['software'][5];
+      $tab[170]['forcegroupby']  = true;
+      $tab[170]['datatype']      = 'text';
+      $tab[170]['massiveaction'] = false;
 
       $tab[4]['table']     = 'glpi_operatingsystems';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'operatingsystems_id';
       $tab[4]['name']      = $LANG['setup'][5]." - ".$LANG['software'][5];
       $tab[4]['forcegroupby'] = true;
 
 
       $tab['license'] = $LANG['software'][11];
 
-      $tab[160]['table']        = 'glpi_softwarelicenses';
-      $tab[160]['field']        = 'name';
-      $tab[160]['linkfield']    = '';
-      $tab[160]['name']         = $LANG['common'][16]." - ".$LANG['software'][11];
-      $tab[160]['forcegroupby'] = true;
+      $tab[160]['table']         = 'glpi_softwarelicenses';
+      $tab[160]['field']         = 'name';
+      $tab[160]['name']          = $LANG['common'][16]." - ".$LANG['software'][11];
+      $tab[160]['forcegroupby']  = true;
+      $tab[160]['massiveaction'] = false;
 
-      $tab[161]['table']        = 'glpi_softwarelicenses';
-      $tab[161]['field']        = 'serial';
-      $tab[161]['linkfield']    = '';
-      $tab[161]['name']         = $LANG['common'][19];
-      $tab[161]['forcegroupby'] = true;
+      $tab[161]['table']         = 'glpi_softwarelicenses';
+      $tab[161]['field']         = 'serial';
+      $tab[161]['name']          = $LANG['common'][19];
+      $tab[161]['forcegroupby']  = true;
+      $tab[161]['massiveaction'] = false;
 
-      $tab[162]['table']        = 'glpi_softwarelicenses';
-      $tab[162]['field']        = 'otherserial';
-      $tab[162]['linkfield']    = '';
-      $tab[162]['name']         = $LANG['common'][20];
-      $tab[162]['forcegroupby'] = true;
+      $tab[162]['table']         = 'glpi_softwarelicenses';
+      $tab[162]['field']         = 'otherserial';
+      $tab[162]['name']          = $LANG['common'][20];
+      $tab[162]['forcegroupby']  = true;
+      $tab[162]['massiveaction'] = false;
 
-      $tab[163]['table']        = 'glpi_softwarelicenses';
-      $tab[163]['field']        = 'number';
-      $tab[163]['linkfield']    = '';
-      $tab[163]['name']      = $LANG['tracking'][29]." - ".$LANG['software'][11];
-      $tab[163]['forcegroupby'] = true;
-      $tab[163]['usehaving']    = true;
-      $tab[163]['datatype']     = 'number';
+      $tab[163]['table']         = 'glpi_softwarelicenses';
+      $tab[163]['field']         = 'number';
+      $tab[163]['name']          = $LANG['tracking'][29]." - ".$LANG['software'][11];
+      $tab[163]['forcegroupby']  = true;
+      $tab[163]['usehaving']     = true;
+      $tab[163]['datatype']      = 'number';
+      $tab[163]['massiveaction'] = false;
 
-      $tab[164]['table']        = 'glpi_softwarelicensetypes';
-      $tab[164]['field']        = 'name';
-      $tab[164]['linkfield']    = '';
-      $tab[164]['name']         = $LANG['software'][30];
-      $tab[164]['forcegroupby'] = true;
+      $tab[164]['table']         = 'glpi_softwarelicensetypes';
+      $tab[164]['field']         = 'name';
+      $tab[164]['name']          = $LANG['software'][30];
+      $tab[164]['forcegroupby']  = true;
+      $tab[164]['massiveaction'] = false;
 
-      $tab[165]['table']        = 'glpi_softwarelicenses';
-      $tab[165]['field']        = 'comment';
-      $tab[165]['linkfield']    = '';
-      $tab[165]['name']         = $LANG['common'][25]." - ".$LANG['software'][11];
-      $tab[165]['forcegroupby'] = true;
-      $tab[165]['datatype']     = 'text';
+      $tab[165]['table']         = 'glpi_softwarelicenses';
+      $tab[165]['field']         = 'comment';
+      $tab[165]['name']          = $LANG['common'][25]." - ".$LANG['software'][11];
+      $tab[165]['forcegroupby']  = true;
+      $tab[165]['datatype']      = 'text';
+      $tab[165]['massiveaction'] = false;
 
-      $tab[166]['table']        = 'glpi_softwarelicenses';
-      $tab[166]['field']        =  'expire';
-      $tab[166]['linkfield']    ='';
-      $tab[166]['name']         = $LANG['software'][32];
-      $tab[166]['forcegroupby'] = true;
-      $tab[166]['datatype']     = 'date';
+      $tab[166]['table']         = 'glpi_softwarelicenses';
+      $tab[166]['field']         =  'expire';
+      $tab[166]['name']          = $LANG['software'][32];
+      $tab[166]['forcegroupby']  = true;
+      $tab[166]['datatype']      = 'date';
+      $tab[166]['massiveaction'] = false;
 
       return $tab;
    }

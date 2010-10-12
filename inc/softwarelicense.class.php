@@ -265,28 +265,24 @@ class SoftwareLicense extends CommonDBTM {
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'name';
-      $tab[2]['linkfield'] = 'name';
       $tab[2]['name']      = $LANG['common'][16];
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'serial';
-      $tab[3]['linkfield'] = 'serial';
       $tab[3]['name']      = $LANG['common'][19];
 
-      $tab[162]['table']     = $this->getTable();
-      $tab[162]['field']     = 'otherserial';
-      $tab[162]['linkfield'] = '';
-      $tab[162]['name']      = $LANG['common'][20];
+      $tab[162]['table']         = $this->getTable();
+      $tab[162]['field']         = 'otherserial';
+      $tab[162]['name']          = $LANG['common'][20];
+      $tab[162]['massiveaction'] = false;
 
       $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     =   'number';
-      $tab[4]['linkfield'] = 'number';
+      $tab[4]['field']     = 'number';
       $tab[4]['name']      = $LANG['tracking'][29];
       $tab[4]['datatype']  = 'number';
 
       $tab[5]['table']     = 'glpi_softwarelicensetypes';
       $tab[5]['field']     = 'name';
-      $tab[5]['linkfield'] = 'softwarelicensetypes_id';
       $tab[5]['name']      = $LANG['common'][17];
 
       $tab[6]['table']     = 'glpi_softwareversions';
@@ -301,18 +297,11 @@ class SoftwareLicense extends CommonDBTM {
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'expire';
-      $tab[8]['linkfield'] = 'expire';
       $tab[8]['name']      = $LANG['software'][32];
       $tab[8]['datatype']  = 'date';
 
-      $tab[9]['table']     = 'glpi_computers';
-      $tab[9]['field']     = 'name';
-      $tab[9]['linkfield'] = 'computers_id';
-      $tab[9]['name']      = $LANG['software'][50];
-
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 

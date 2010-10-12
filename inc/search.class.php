@@ -1653,7 +1653,12 @@ class Search {
 
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
-      $linkfield = $searchopt[$ID]["linkfield"];
+
+      $addtable="";
+      if ($table != getTableForItemType($itemtype)
+         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+         $addtable .= "_".$searchopt[$ID]["linkfield"];
+      }
 
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
          return " ORDER BY ITEM_$key $order ";
@@ -1679,11 +1684,10 @@ class Search {
 
 
          case "glpi_users.name" :
-            if (!empty($searchopt[$ID]["linkfield"])) {
-               $linkfield = "_".$searchopt[$ID]["linkfield"];
-               return " ORDER BY ".$table.$linkfield.".`realname` $order, ".
-                                 $table.$linkfield.".`firstname` $order, ".
-                                 $table.$linkfield.".`name` $order";
+            if ($itemtype!='User') {
+               return " ORDER BY ".$table.$addtable.".`realname` $order, ".
+                                 $table.$addtable.".`firstname` $order, ".
+                                 $table.$addtable.".`name` $order";
             } else {
                return " ORDER BY `".$table."`.`name` $order";
             }
@@ -1954,6 +1958,7 @@ class Search {
             break;
 
          case "glpi_entities.completename" :
+            echo $ID;
             if ($itemtype == 'User') {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
                            AS ".$NAME."_$num,
@@ -3037,10 +3042,8 @@ class Search {
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
          case "glpi_complete_entities" :
-            array_push($already_link_tables, "glpi_entities.".$linkfield);
-            if (empty($AS)) {
-               $AS = "AS glpi_entities";
-            }
+            array_push($already_link_tables, "glpi_entities");
+            $AS = "AS glpi_entities";
             return " LEFT JOIN (SELECT `id`, `name`, `entities_id`, `completename`, `comment`, `level`
                                 FROM `glpi_entities`
                                 UNION
@@ -3422,7 +3425,7 @@ class Search {
                }
                return $out;
             }
-            if (!empty($linkfield)) {
+            if ($itemtype!='User') {
                $toadd = '';
                if ($itemtype=='Ticket' && $data[$NAME.$num."_3"]>0) {
                   $userdata = getUserName($data[$NAME.$num."_3"],2);
