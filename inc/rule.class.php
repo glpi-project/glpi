@@ -143,49 +143,46 @@ class Rule extends CommonDBTM {
       $tab = array();
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'ranking';
-      $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = $LANG['rulesengine'][10];
-      $tab[3]['datatype']  = 'bool';
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'ranking';
+      $tab[3]['name']          = $LANG['rulesengine'][10];
+      $tab[3]['datatype']      = 'bool';
+      $tab[3]['massiveaction'] = false;
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'description';
-      $tab[4]['linkfield'] = '';
-      $tab[4]['name']      = $LANG['joblist'][6];
-      $tab[4]['datatype']  = 'text';
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'description';
+      $tab[4]['name']          = $LANG['joblist'][6];
+      $tab[4]['datatype']      = 'text';
+      $tab[4]['massiveaction'] = false;
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'match';
-      $tab[5]['linkfield'] = '';
-      $tab[5]['name']      = $LANG['rulesengine'][9];
-      $tab[5]['datatype']  = 'text';
+      $tab[5]['table']         = $this->getTable();
+      $tab[5]['field']         = 'match';
+      $tab[5]['name']          = $LANG['rulesengine'][9];
+      $tab[5]['datatype']      = 'text';
+      $tab[5]['massiveaction'] = false;
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'is_active';
-      $tab[8]['linkfield'] = 'is_active';
       $tab[8]['name']      = $LANG['common'][60];
       $tab[8]['datatype']  = 'bool';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
-      $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
 

@@ -70,22 +70,18 @@ class RuleAction extends CommonDBChild {
       $tab = array();
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'action_type';
-      $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['rulesengine'][7];
-      $tab[1]['datatype']      = 'text';
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'field';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['rulesengine'][12];
-      $tab[2]['datatype']  = 'text';
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'field';
+      $tab[2]['name']          = $LANG['rulesengine'][12];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'value';
-      $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = $LANG['rulesengine'][13];
-      $tab[3]['datatype']  = 'text';
-
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'value';
+      $tab[3]['name']          = $LANG['rulesengine'][13];
+      $tab[3]['massiveaction'] = false;
 
       return $tab;
    }

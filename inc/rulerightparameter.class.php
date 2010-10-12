@@ -79,7 +79,6 @@ class RuleRightParameter extends CommonDropdown {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'value';
-      $tab[11]['linkfield']     = 'value';
       $tab[11]['name']          = $LANG['rulesengine'][16];
 
       return $tab;

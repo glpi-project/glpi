@@ -133,36 +133,33 @@ class OcsServer extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'ocs_db_host';
-      $tab[3]['linkfield'] = 'ocs_db_host';
       $tab[3]['name']      = $LANG['common'][52];
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'is_active';
-      $tab[6]['linkfield'] = 'is_active';
       $tab[6]['name']      = $LANG['common'][60];
       $tab[6]['datatype']  = 'bool';
 
-      $tab[19]['table']       = $this->getTable();
-      $tab[19]['field']       = 'date_mod';
-      $tab[19]['linkfield']   = '';
-      $tab[19]['name']        = $LANG['common'][26];
-      $tab[19]['datatype']    = 'datetime';
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
