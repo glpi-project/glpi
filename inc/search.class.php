@@ -2740,7 +2740,7 @@ class Search {
       if ($linkfield==getForeignKeyFieldForTable($new_table)) {
          $tocheck=$nt;
       }
-      echo $tocheck.'<br>';
+      //echo $tocheck.'<br>';
 
       if (in_array($tocheck,$already_link_tables)) {
          return "";
