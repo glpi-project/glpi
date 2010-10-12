@@ -251,7 +251,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
-      echo "<div class='spaced' id='tabsbody'>";
+      echo "<div class='firstbloc' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -302,6 +302,7 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
 
@@ -331,33 +332,37 @@ class Config extends CommonDBTM {
                                $CFG_GLPI["state_autoupdate_mode"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][282] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['setup'][282] . "&nbsp;:</td>";
       $values[0] = $LANG['setup'][286];
       $values[1] = $LANG['setup'][284];
 
       foreach ($fields as $field) {
          echo "<td>";
          $fieldname = "is_".$field."_autoclean";
-         Dropdown::showFromArray($fieldname,$values, array('name'=>$CFG_GLPI[$fieldname]));
+         Dropdown::showFromArray($fieldname, $values, array('name' => $CFG_GLPI[$fieldname]));
          echo "</td>";
       }
+
       echo "<td>";
       State::dropdownBehaviour("state_autoclean_mode", $LANG['setup'][196],
                                $CFG_GLPI["state_autoclean_mode"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td colspan='6' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
-             $LANG['buttons'][2] . "\" ></td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='6' class='center'>";
+      echo "<input type='submit' name='update' class='submit' value='".$LANG['buttons'][2]."'>";
+      echo "</td></tr>";
+
       echo "</table></div>";
       echo "</form>";
    }
 
+
    /**
-   * Print the config form for restrictions
-   *
-   *@return Nothing (display)
-   *
+    * Print the config form for restrictions
+    *
+    * @return Nothing (display)
    **/
    function showFormAuthentication() {
       global $DB, $LANG, $CFG_GLPI;
@@ -366,39 +371,40 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . $LANG['login'][10] . "</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][124] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['setup'][124] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
-      echo "</td>";
-      echo "<td> " . $LANG['setup'][613] . "&nbsp;:</td><td>";
+      echo "</td><td> " . $LANG['setup'][613] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
-      echo " </td></tr>";
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td> " . $LANG['ldap'][45] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['ldap'][45] . "&nbsp;:</td><td>";
       AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
-      echo "</td>";
-      echo "<td> " . $LANG['setup'][186] . "&nbsp;:</td><td>";
+      echo "</td><td> " . $LANG['setup'][186] . "&nbsp;:</td><td>";
       Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update_auth\" class=\"submit\" value=\"" .
-             $LANG['buttons'][2] . "\" ></td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='4' class='center'>";
+      echo "<input type='submit' name='update_auth' class='submit' value='".$LANG['buttons'][2]."'>";
+      echo "</td></tr>";
+
       echo "</table></div>";
       echo "</form>";
    }
 
+
    /**
-   * Print the config form for slave DB
-   *
-   *@return Nothing (display)
-   *
+    * Print the config form for slave DB
+    *
+    * @return Nothing (display)
    **/
    function showFormDBSlave() {
       global $DB, $LANG, $CFG_GLPI, $DBSlave;
@@ -407,7 +413,7 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<input type='hidden' name='_dbslave_status' value='1'>";
@@ -422,15 +428,16 @@ class Config extends CommonDBTM {
       } else {
          $host = $DBSlave->dbhost;
       }
-      echo "<tr class='tab_bg_2'><td>" . $LANG['install'][30] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"$host\"></td>";
-      echo "<td>" . $LANG['setup'][802] . "&nbsp;:</td><td>";
-      echo "<input type=\"text\" name=\"_dbreplicate_dbdefault\" value=\"" .
-             $DBSlave->dbdefault . "\">";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['install'][30] . "&nbsp;:</td>";
+      echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
+      echo "<td>" . $LANG['setup'][802] . "&nbsp;:</td>";
+      echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBSlave->dbdefault."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['install'][31] . "&nbsp;:</td><td>";
-      echo "<input type=\"text\" name=\"_dbreplicate_dbuser\" value=\"" . $DBSlave->dbuser . "\">";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['install'][31] . "&nbsp;:</td>";
+      echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBSlave->dbuser."'>";
       echo "<td>" . $LANG['install'][32] . "&nbsp;:</td><td>";
       echo "<input type=\"password\" name=\"_dbreplicate_dbpassword\" value=\"" .
              $DBSlave->dbpassword . "\">";
