@@ -216,44 +216,41 @@ class MailCollector  extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'is_active';
-      $tab[2]['linkfield'] = 'is_active';
       $tab[2]['name']      = $LANG['common'][60];
       $tab[2]['datatype']  = 'bool';
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'host';
-      $tab[3]['linkfield']     = '';
       $tab[3]['name']          = $LANG['setup'][170];
+      $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'login';
-      $tab[4]['linkfield']     = '';
       $tab[4]['name']          = $LANG['login'][6];
+      $tab[4]['massiveaction'] = false;
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'filesize_max';
-      $tab[5]['linkfield'] = '';
       $tab[5]['name']      = $LANG['mailgate'][7];
       $tab[5]['datatype']  = 'integer';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[19]['table']     = $this->getTable();
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
       return $tab;
    }

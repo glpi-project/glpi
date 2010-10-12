@@ -72,19 +72,16 @@ class Holiday extends CommonDropdown {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'begin_date';
-      $tab[11]['linkfield']     = 'begin_date';
       $tab[11]['name']          = $LANG['buttons'][33];
       $tab[11]['datatype']      = 'date';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'end_date';
-      $tab[12]['linkfield']     = 'end_date';
       $tab[12]['name']          = $LANG['buttons'][32];
       $tab[12]['datatype']      = 'date';
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'is_perpetual';
-      $tab[13]['linkfield']     = 'is_perpetual';
       $tab[13]['name']          = $LANG['calendar'][3];
       $tab[13]['datatype']      = 'bool';
 

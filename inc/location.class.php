@@ -108,13 +108,11 @@ class Location extends CommonTreeDropdown {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'building';
-      $tab[11]['linkfield']     = 'building';
       $tab[11]['name']          = $LANG['setup'][99];
       $tab[11]['datatype']      = 'text';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'room';
-      $tab[12]['linkfield']     = 'room';
       $tab[12]['name']          = $LANG['setup'][100];
       $tab[12]['datatype']      = 'text';
 
