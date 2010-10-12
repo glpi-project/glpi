@@ -1628,8 +1628,8 @@ class Ticket extends CommonDBTM {
       $tab[63]['datatype']       = 'text';
       $tab[63]['massiveaction']  = false;
 
-      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 
+      if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 
          $tab['assign'] = $LANG['job'][5];
 
@@ -1671,7 +1671,6 @@ class Ticket extends CommonDBTM {
          $tab[29]['forcegroupby']  = true;
          $tab[29]['realtable']     = 'glpi_requesttypes';
          $tab[29]['massiveaction'] = false;
-
 
          $tab['task'] = $LANG['job'][7];
 
@@ -1726,7 +1725,6 @@ class Ticket extends CommonDBTM {
          $tab[44]['name']      = $LANG['job'][42];
          $tab[44]['datatype']  = 'decimal';
 
-
          $tab['notification'] = $LANG['setup'][704];
 
          $tab[35]['table']     = $this->getTable();
@@ -1738,7 +1736,6 @@ class Ticket extends CommonDBTM {
          $tab[34]['field']     = 'user_email';
          $tab[34]['name']      = $LANG['joblist'][27];
          $tab[34]['datatype']  = 'email';
-
       }
 
       return $tab;
