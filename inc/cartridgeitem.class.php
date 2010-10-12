@@ -305,29 +305,26 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab[34]['table']     = $this->getTable();
       $tab[34]['field']     = 'ref';
-      $tab[34]['linkfield'] = 'ref';
       $tab[34]['name']      = $LANG['consumables'][2];
 
       $tab[4]['table']     = 'glpi_cartridgeitemtypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'cartridgeitemtypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
-      $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
       $tab += Location::getSearchOptionsToAdd();
@@ -339,34 +336,28 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'alarm_threshold';
-      $tab[8]['linkfield'] = 'alarm_threshold';
       $tab[8]['name']      = $LANG['consumables'][38];
       $tab[8]['datatype']  = 'number';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = $this->getTable();
-      $tab[90]['field']     = 'notepad';
-      $tab[90]['linkfield'] = '';
-      $tab[90]['name']      = $LANG['title'][37];
+      $tab[90]['table']         = $this->getTable();
+      $tab[90]['field']         = 'notepad';
+      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['massiveaction'] = false;
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
-
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       $tab[40]['table']     = 'glpi_printermodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'printersmodels_id';
       $tab[40]['name']      = $LANG['setup'][96];
       $tab[40]['forcegroupby'] = true;
-
-
       return $tab;
    }
 

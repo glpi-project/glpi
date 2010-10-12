@@ -59,19 +59,17 @@ abstract class CommonDevice extends CommonDropdown {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'designation';
-      $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
-      $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 

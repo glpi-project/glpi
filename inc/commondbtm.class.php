@@ -1981,10 +1981,10 @@ class CommonDBTM extends CommonGLPI {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
       return $tab;
    }
