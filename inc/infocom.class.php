@@ -892,6 +892,8 @@ class Infocom extends CommonDBTM {
 
       $tab=array();
 
+      $tab['financial'] = $LANG['financial'][3];
+
       $tab[25]['table']        = 'glpi_infocoms';
       $tab[25]['field']        = 'immo_number';
       $tab[25]['name']         = $LANG['financial'][20];
