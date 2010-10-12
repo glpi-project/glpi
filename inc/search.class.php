@@ -2729,11 +2729,17 @@ class Search {
          return "";
       }
 
-//      echo $nt.".".$linkfield.'<br>';
-      if (in_array($nt.".".$linkfield,$already_link_tables)) {
+      // Do not take into account standard linkfield
+      $tocheck=$nt.".".$linkfield;
+      if ($linkfield==getForeignKeyFieldForTable($new_table)) {
+         $tocheck=$nt;
+      }
+      echo $tocheck.'<br>';
+
+      if (in_array($tocheck,$already_link_tables)) {
          return "";
       }
-      array_push($already_link_tables, $nt.".".$linkfield);
+      array_push($already_link_tables, $tocheck);
 
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
@@ -2844,7 +2850,7 @@ class Search {
             // Add networking device for computers
             if ($itemtype == 'Computer') {
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                          "glpi_computers_devicenetworkcards", $linkfield, $meta,
+                                          "glpi_computers_devicenetworkcards", 'computers_devicenetworkcards_id', $meta,
                                           $meta_type);
             }
             return $out."
@@ -2905,7 +2911,7 @@ class Search {
 
          case "glpi_users_validation" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                       "glpi_ticketvalidations", '');
+                                       "glpi_ticketvalidations", 'ticketvalidations_id');
             return $out."
                    LEFT JOIN `glpi_users` $AS
                      ON (`glpi_ticketvalidations`.`$linkfield` = `$nt`.`id`) ";
@@ -3111,7 +3117,7 @@ class Search {
          case "glpi_devicesoundcards" :
             $linktable = str_replace('glpi_', 'glpi_computers_', $new_table);
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $linktable,
-                                       $linkfield, $meta, $meta_type);
+                                       getForeignKeyFieldForTable($linktable), $meta, $meta_type);
             return $out."
                    LEFT JOIN `$new_table` $AS
                      ON (`$linktable`.`".getForeignKeyFieldForTable($new_table)."` = `$nt`.`id`) ";
@@ -4311,53 +4317,53 @@ class Search {
          if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
             $search[$itemtype]['network'] = $LANG['setup'][88];
 
-            $search[$itemtype][20]['table']        = 'glpi_networkports';
-            $search[$itemtype][20]['field']        = 'ip';
-            $search[$itemtype][20]['linkfield']    = '';
-            $search[$itemtype][20]['name']         = $LANG['networking'][14];
-            $search[$itemtype][20]['forcegroupby'] = true;
+            $search[$itemtype][20]['table']         = 'glpi_networkports';
+            $search[$itemtype][20]['field']         = 'ip';
+            $search[$itemtype][20]['name']          = $LANG['networking'][14];
+            $search[$itemtype][20]['forcegroupby']  = true;
+            $search[$itemtype][20]['massiveaction'] = false;
 
-            $search[$itemtype][21]['table']        = 'glpi_networkports';
-            $search[$itemtype][21]['field']        = 'mac';
-            $search[$itemtype][21]['linkfield']    = '';
-            $search[$itemtype][21]['name']         = $LANG['networking'][15];
-            $search[$itemtype][21]['forcegroupby'] = true;
+            $search[$itemtype][21]['table']         = 'glpi_networkports';
+            $search[$itemtype][21]['field']         = 'mac';
+            $search[$itemtype][21]['name']          = $LANG['networking'][15];
+            $search[$itemtype][21]['forcegroupby']  = true;
+            $search[$itemtype][21]['massiveaction'] = false;
 
-            $search[$itemtype][83]['table']        = 'glpi_networkports';
-            $search[$itemtype][83]['field']        = 'netmask';
-            $search[$itemtype][83]['linkfield']    = '';
-            $search[$itemtype][83]['name']         = $LANG['networking'][60];
-            $search[$itemtype][83]['forcegroupby'] = true;
+            $search[$itemtype][83]['table']         = 'glpi_networkports';
+            $search[$itemtype][83]['field']         = 'netmask';
+            $search[$itemtype][83]['name']          = $LANG['networking'][60];
+            $search[$itemtype][83]['forcegroupby']  = true;
+            $search[$itemtype][83]['massiveaction'] = false;
 
-            $search[$itemtype][84]['table']        = 'glpi_networkports';
-            $search[$itemtype][84]['field']        = 'subnet';
-            $search[$itemtype][84]['linkfield']    = '';
-            $search[$itemtype][84]['name']         = $LANG['networking'][61];
-            $search[$itemtype][84]['forcegroupby'] = true;
+            $search[$itemtype][84]['table']         = 'glpi_networkports';
+            $search[$itemtype][84]['field']         = 'subnet';
+            $search[$itemtype][84]['name']          = $LANG['networking'][61];
+            $search[$itemtype][84]['forcegroupby']  = true;
+            $search[$itemtype][84]['massiveaction'] = false;
 
-            $search[$itemtype][85]['table']        = 'glpi_networkports';
-            $search[$itemtype][85]['field']        = 'gateway';
-            $search[$itemtype][85]['linkfield']    = '';
-            $search[$itemtype][85]['name']         = $LANG['networking'][59];
-            $search[$itemtype][85]['forcegroupby'] = true;
+            $search[$itemtype][85]['table']         = 'glpi_networkports';
+            $search[$itemtype][85]['field']         = 'gateway';
+            $search[$itemtype][85]['name']          = $LANG['networking'][59];
+            $search[$itemtype][85]['forcegroupby']  = true;
+            $search[$itemtype][85]['massiveaction'] = false;
 
-            $search[$itemtype][22]['table']        = 'glpi_netpoints';
-            $search[$itemtype][22]['field']        = 'name';
-            $search[$itemtype][22]['linkfield']    = '';
-            $search[$itemtype][22]['name']         = $LANG['networking'][51];
-            $search[$itemtype][22]['forcegroupby'] = true;
+            $search[$itemtype][22]['table']         = 'glpi_netpoints';
+            $search[$itemtype][22]['field']         = 'name';
+            $search[$itemtype][22]['name']          = $LANG['networking'][51];
+            $search[$itemtype][22]['forcegroupby']  = true;
+            $search[$itemtype][22]['massiveaction'] = false;
 
-            $search[$itemtype][87]['table']        = 'glpi_networkinterfaces';
-            $search[$itemtype][87]['field']        = 'name';
-            $search[$itemtype][87]['linkfield']    = '';
-            $search[$itemtype][87]['name']         = $LANG['common'][65];
-            $search[$itemtype][87]['forcegroupby'] = true;
+            $search[$itemtype][87]['table']         = 'glpi_networkinterfaces';
+            $search[$itemtype][87]['field']         = 'name';
+            $search[$itemtype][87]['name']          = $LANG['common'][65];
+            $search[$itemtype][87]['forcegroupby']  = true;
+            $search[$itemtype][87]['massiveaction'] = false;
 
-            $search[$itemtype][88]['table']        = 'glpi_vlans';
-            $search[$itemtype][88]['field']        = 'name';
-            $search[$itemtype][88]['linkfield']    = '';
-            $search[$itemtype][88]['name']         = $LANG['networking'][56];
-            $search[$itemtype][88]['forcegroupby'] = true;
+            $search[$itemtype][88]['table']         = 'glpi_vlans';
+            $search[$itemtype][88]['field']         = 'name';
+            $search[$itemtype][88]['name']          = $LANG['networking'][56];
+            $search[$itemtype][88]['forcegroupby']  = true;
+            $search[$itemtype][88]['massiveaction'] = false;
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
@@ -4365,46 +4371,45 @@ class Search {
 
             $search[$itemtype][29]['table']         = 'glpi_contracts';
             $search[$itemtype][29]['field']         = 'name';
-            $search[$itemtype][29]['linkfield']     = '';
             $search[$itemtype][29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
             $search[$itemtype][29]['forcegroupby']  = true;
             $search[$itemtype][29]['datatype']      = 'itemlink';
             $search[$itemtype][29]['itemlink_type'] = 'Contract';
+            $search[$itemtype][29]['massiveaction'] = false;
 
-            $search[$itemtype][30]['table']        = 'glpi_contracts';
-            $search[$itemtype][30]['field']        = 'num';
-            $search[$itemtype][30]['linkfield']    = '';
-            $search[$itemtype][30]['name']         = $LANG['financial'][4]." ".$LANG['financial'][1];
-            $search[$itemtype][30]['forcegroupby'] = true;
+            $search[$itemtype][30]['table']         = 'glpi_contracts';
+            $search[$itemtype][30]['field']         = 'num';
+            $search[$itemtype][30]['name']          = $LANG['financial'][4]." ".$LANG['financial'][1];
+            $search[$itemtype][30]['forcegroupby']  = true;
+            $search[$itemtype][30]['massiveaction'] = false;
 
-            $search[$itemtype][130]['table']        = 'glpi_contracts';
-            $search[$itemtype][130]['field']        = 'duration';
-            $search[$itemtype][130]['linkfield']    = '';
-            $search[$itemtype][130]['name']         = $LANG['financial'][8];
-            $search[$itemtype][130]['forcegroupby'] = true;
+            $search[$itemtype][130]['table']         = 'glpi_contracts';
+            $search[$itemtype][130]['field']         = 'duration';
+            $search[$itemtype][130]['name']          = $LANG['financial'][8];
+            $search[$itemtype][130]['forcegroupby']  = true;
+            $search[$itemtype][130]['massiveaction'] = false;
 
-            $search[$itemtype][131]['table']        = 'glpi_contracts';
-            $search[$itemtype][131]['field']        = 'periodicity';
-            $search[$itemtype][131]['linkfield']    = '';
-            $search[$itemtype][131]['name']         = $LANG['financial'][69];
-            $search[$itemtype][131]['forcegroupby'] = true;
+            $search[$itemtype][131]['table']         = 'glpi_contracts';
+            $search[$itemtype][131]['field']         = 'periodicity';
+            $search[$itemtype][131]['name']          = $LANG['financial'][69];
+            $search[$itemtype][131]['forcegroupby']  = true;
+            $search[$itemtype][131]['massiveaction'] = false;
 
-            $search[$itemtype][132]['table']        = 'glpi_contracts';
-            $search[$itemtype][132]['field']        = 'begin_date';
-            $search[$itemtype][132]['linkfield']    = '';
-            $search[$itemtype][132]['name']         = $LANG['search'][8]." ".$LANG['financial'][1];
-            $search[$itemtype][132]['forcegroupby'] = true;
-            $search[$itemtype][132]['datatype']     = 'date';
+            $search[$itemtype][132]['table']         = 'glpi_contracts';
+            $search[$itemtype][132]['field']         = 'begin_date';
+            $search[$itemtype][132]['name']          = $LANG['search'][8]." ".$LANG['financial'][1];
+            $search[$itemtype][132]['forcegroupby']  = true;
+            $search[$itemtype][132]['datatype']      = 'date';
+            $search[$itemtype][132]['massiveaction'] = false;
 
-            $search[$itemtype][133]['table']        = 'glpi_contracts';
-            $search[$itemtype][133]['field']        = 'accounting_number';
-            $search[$itemtype][133]['linkfield']    = '';
-            $search[$itemtype][133]['name']         = $LANG['financial'][13]." ".$LANG['financial'][1];
-            $search[$itemtype][133]['forcegroupby'] = true;
+            $search[$itemtype][133]['table']         = 'glpi_contracts';
+            $search[$itemtype][133]['field']         = 'accounting_number';
+            $search[$itemtype][133]['name']          = $LANG['financial'][13]." ".$LANG['financial'][1];
+            $search[$itemtype][133]['forcegroupby']  = true;
+            $search[$itemtype][133]['massiveaction'] = false;
 
             $search[$itemtype][134]['table']         = 'glpi_contracts';
             $search[$itemtype][134]['field']         = 'end_date';
-            $search[$itemtype][134]['linkfield']     = '';
             $search[$itemtype][134]['name']          = $LANG['search'][9]." ".$LANG['financial'][1];
             $search[$itemtype][134]['forcegroupby']  = true;
             $search[$itemtype][134]['datatype']      = 'date_delay';
@@ -4412,31 +4417,32 @@ class Search {
             $search[$itemtype][134]['datafields'][2] = 'duration';
             $search[$itemtype][134]['searchunit']    = 'MONTH';
             $search[$itemtype][134]['delayunit']     = 'MONTH';
+            $search[$itemtype][134]['massiveaction'] = false;
 
-            $search[$itemtype][135]['table']        = 'glpi_contracts';
-            $search[$itemtype][135]['field']        = 'notice';
-            $search[$itemtype][135]['linkfield']    = '';
-            $search[$itemtype][135]['name']         = $LANG['financial'][10]." ".$LANG['financial'][1];
-            $search[$itemtype][135]['forcegroupby'] = true;
+            $search[$itemtype][135]['table']         = 'glpi_contracts';
+            $search[$itemtype][135]['field']         = 'notice';
+            $search[$itemtype][135]['name']          = $LANG['financial'][10]." ".$LANG['financial'][1];
+            $search[$itemtype][135]['forcegroupby']  = true;
+            $search[$itemtype][135]['massiveaction'] = false;
 
-            $search[$itemtype][136]['table']        = 'glpi_contracts';
-            $search[$itemtype][136]['field']        = 'cost';
-            $search[$itemtype][136]['linkfield']    = '';
-            $search[$itemtype][136]['name']         = $LANG['financial'][5]." ".$LANG['financial'][1];
-            $search[$itemtype][136]['forcegroupby'] = true;
-            $search[$itemtype][136]['datatype']     = 'decimal';
+            $search[$itemtype][136]['table']         = 'glpi_contracts';
+            $search[$itemtype][136]['field']         = 'cost';
+            $search[$itemtype][136]['name']          = $LANG['financial'][5]." ".$LANG['financial'][1];
+            $search[$itemtype][136]['forcegroupby']  = true;
+            $search[$itemtype][136]['datatype']      = 'decimal';
+            $search[$itemtype][136]['massiveaction'] = false;
 
-            $search[$itemtype][137]['table']        = 'glpi_contracts';
-            $search[$itemtype][137]['field']        = 'billing';
-            $search[$itemtype][137]['linkfield']    = '';
-            $search[$itemtype][137]['name']         = $LANG['financial'][11]." ".$LANG['financial'][1];
-            $search[$itemtype][137]['forcegroupby'] = true;
+            $search[$itemtype][137]['table']         = 'glpi_contracts';
+            $search[$itemtype][137]['field']         = 'billing';
+            $search[$itemtype][137]['name']          = $LANG['financial'][11]." ".$LANG['financial'][1];
+            $search[$itemtype][137]['forcegroupby']  = true;
+            $search[$itemtype][137]['massiveaction'] = false;
 
-            $search[$itemtype][138]['table']        = 'glpi_contracts';
-            $search[$itemtype][138]['field']        = 'renewal';
-            $search[$itemtype][138]['linkfield']    = '';
-            $search[$itemtype][138]['name']         = $LANG['financial'][107]." ".$LANG['financial'][1];
-            $search[$itemtype][138]['forcegroupby'] = true;
+            $search[$itemtype][138]['table']         = 'glpi_contracts';
+            $search[$itemtype][138]['field']         = 'renewal';
+            $search[$itemtype][138]['name']          = $LANG['financial'][107]." ".$LANG['financial'][1];
+            $search[$itemtype][138]['forcegroupby']  = true;
+            $search[$itemtype][138]['massiveaction'] = false;
          }
 
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
@@ -4444,38 +4450,32 @@ class Search {
 
             $search[$itemtype][25]['table']        = 'glpi_infocoms';
             $search[$itemtype][25]['field']        = 'immo_number';
-            $search[$itemtype][25]['linkfield']    = '';
             $search[$itemtype][25]['name']         = $LANG['financial'][20];
             $search[$itemtype][25]['forcegroupby'] = true;
 
             $search[$itemtype][26]['table']        = 'glpi_infocoms';
             $search[$itemtype][26]['field']        = 'order_number';
-            $search[$itemtype][26]['linkfield']    = '';
             $search[$itemtype][26]['name']         = $LANG['financial'][18];
             $search[$itemtype][26]['forcegroupby'] = true;
 
             $search[$itemtype][27]['table']        = 'glpi_infocoms';
             $search[$itemtype][27]['field']        = 'delivery_number';
-            $search[$itemtype][27]['linkfield']    = '';
             $search[$itemtype][27]['name']         = $LANG['financial'][19];
             $search[$itemtype][27]['forcegroupby'] = true;
 
             $search[$itemtype][28]['table']        = 'glpi_infocoms';
             $search[$itemtype][28]['field']        = 'bill';
-            $search[$itemtype][28]['linkfield']    = '';
             $search[$itemtype][28]['name']         = $LANG['financial'][82];
             $search[$itemtype][28]['forcegroupby'] = true;
 
             $search[$itemtype][37]['table']        = 'glpi_infocoms';
             $search[$itemtype][37]['field']        = 'buy_date';
-            $search[$itemtype][37]['linkfield']    = '';
             $search[$itemtype][37]['name']         = $LANG['financial'][14];
             $search[$itemtype][37]['datatype']     = 'date';
             $search[$itemtype][37]['forcegroupby'] = true;
 
             $search[$itemtype][38]['table']        = 'glpi_infocoms';
             $search[$itemtype][38]['field']        = 'use_date';
-            $search[$itemtype][38]['linkfield']    = '';
             $search[$itemtype][38]['name']         = $LANG['financial'][76];
             $search[$itemtype][38]['datatype']     = 'date';
             $search[$itemtype][38]['forcegroupby'] = true;
@@ -4488,19 +4488,16 @@ class Search {
 
             $search[$itemtype][51]['table']        = 'glpi_infocoms';
             $search[$itemtype][51]['field']        = 'warranty_duration';
-            $search[$itemtype][51]['linkfield']    = '';
             $search[$itemtype][51]['name']         = $LANG['financial'][15];
             $search[$itemtype][51]['forcegroupby'] = true;
 
             $search[$itemtype][52]['table']        = 'glpi_infocoms';
             $search[$itemtype][52]['field']        = 'warranty_info';
-            $search[$itemtype][52]['linkfield']    = '';
             $search[$itemtype][52]['name']         = $LANG['financial'][16];
             $search[$itemtype][52]['forcegroupby'] = true;
 
             $search[$itemtype][120]['table']         = 'glpi_infocoms';
             $search[$itemtype][120]['field']         = 'end_warranty';
-            $search[$itemtype][120]['linkfield']     = '';
             $search[$itemtype][120]['name']          = $LANG['financial'][80];
             $search[$itemtype][120]['datatype']      = 'date';
             $search[$itemtype][120]['datatype']      = 'date_delay';
@@ -4513,14 +4510,12 @@ class Search {
 
             $search[$itemtype][53]['table']        = 'glpi_suppliers_infocoms';
             $search[$itemtype][53]['field']        = 'name';
-            $search[$itemtype][53]['linkfield']    = '';
             $search[$itemtype][53]['name']         = $LANG['financial'][26];
             $search[$itemtype][53]['forcegroupby'] = true;
             $search[$itemtype][53]['realtable']    = 'glpi_suppliers';
 
             $search[$itemtype][54]['table']        = 'glpi_infocoms';
             $search[$itemtype][54]['field']        = 'value';
-            $search[$itemtype][54]['linkfield']    = '';
             $search[$itemtype][54]['name']         = $LANG['financial'][21];
             $search[$itemtype][54]['datatype']     = 'decimal';
             $search[$itemtype][54]['width']        = 100;
@@ -4528,7 +4523,6 @@ class Search {
 
             $search[$itemtype][55]['table']        = 'glpi_infocoms';
             $search[$itemtype][55]['field']        = 'warranty_value';
-            $search[$itemtype][55]['linkfield']    = '';
             $search[$itemtype][55]['name']         = $LANG['financial'][78];
             $search[$itemtype][55]['datatype']     = 'decimal';
             $search[$itemtype][55]['width']        = 100;
@@ -4536,31 +4530,26 @@ class Search {
 
             $search[$itemtype][56]['table']        = 'glpi_infocoms';
             $search[$itemtype][56]['field']        = 'sink_time';
-            $search[$itemtype][56]['linkfield']    = '';
             $search[$itemtype][56]['name']         = $LANG['financial'][23];
             $search[$itemtype][56]['forcegroupby'] = true;
 
             $search[$itemtype][57]['table']        = 'glpi_infocoms';
             $search[$itemtype][57]['field']        = 'sink_type';
-            $search[$itemtype][57]['linkfield']    = '';
             $search[$itemtype][57]['name']         = $LANG['financial'][22];
             $search[$itemtype][57]['forcegroupby'] = true;
 
             $search[$itemtype][58]['table']        = 'glpi_infocoms';
             $search[$itemtype][58]['field']        = 'sink_coeff';
-            $search[$itemtype][58]['linkfield']    = '';
             $search[$itemtype][58]['name']         = $LANG['financial'][77];
             $search[$itemtype][58]['forcegroupby'] = true;
 
             $search[$itemtype][59]['table']        = 'glpi_infocoms';
             $search[$itemtype][59]['field']        = 'alert';
-            $search[$itemtype][59]['linkfield']    = '';
             $search[$itemtype][59]['name']         = $LANG['common'][41];
             $search[$itemtype][59]['forcegroupby'] = true;
 
             $search[$itemtype][122]['table']        = 'glpi_infocoms';
             $search[$itemtype][122]['field']        = 'comment';
-            $search[$itemtype][122]['linkfield']    = '';
             $search[$itemtype][122]['name']         = $LANG['common'][25]." - ".$LANG['financial'][3];
             $search[$itemtype][122]['datatype']     = 'text';
             $search[$itemtype][122]['forcegroupby'] = true;
@@ -4578,16 +4567,10 @@ class Search {
       // Complete linkfield if not define
       foreach ($search[$itemtype] as $key => $val) {
          if (!isset($val['linkfield'])) {
-            // No massive action -> no linkfield needed : 
-            // TODO : delete it : not true : linkfield may be defined for LeftJoin : need to correct links...
-            if (isset($search[$itemtype][$key]['massiveaction']) && !$search[$itemtype][$key]['massiveaction']) {
-               $search[$itemtype][$key]['linkfield']='';
+            if (strcmp($item->getTable(),$val['table'])==0) {
+               $search[$itemtype][$key]['linkfield']=$val['field'];
             } else {
-               if (strcmp($item->getTable(),$val['table'])==0) {
-                  $search[$itemtype][$key]['linkfield']=$val['field'];
-               } else {
-                  $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
-               }
+               $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
             }
          }
          // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
