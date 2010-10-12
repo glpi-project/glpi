@@ -617,34 +617,38 @@ class Config extends CommonDBTM {
          echo "</tr>\n";
       }
 
-      echo "<tr class='tab_bg_2'><td colspan='7' class='center'>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='7' class='center'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
-      echo "<input type='submit' name='update' class='submit' value=\"" .
-             $LANG['buttons'][2] . "\" ></td></tr>";
+      echo "<input type='submit' name='update' class='submit' value='".$LANG['buttons'][2]."'>";
+      echo "</td></tr>";
+
       echo "</table></div>";
       echo "</form>";
    }
 
+
    /**
-   * Print the config form for default user prefs
-   *
-   *@param $data array containing datas (CFG_GLPI for global config / glpi_users fields for user prefs)
-   *
-   *@return Nothing (display)
-   *
+    * Print the config form for default user prefs
+    *
+    * @param $data array containing datas
+    * (CFG_GLPI for global config / glpi_users fields for user prefs)
+    *
+    * @return Nothing (display)
    **/
    function showFormUserPrefs($data=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
-      $oncentral=($_SESSION["glpiactiveprofile"]["interface"]=="central");
-      $userpref=false;
-      $url=getItemTypeFormURL(__CLASS__);
+      $oncentral = ($_SESSION["glpiactiveprofile"]["interface"]=="central");
+      $userpref  = false;
+      $url       = getItemTypeFormURL(__CLASS__);
+
       if (isset($data['last_login'])) {
-         $userpref=true;
-         $url=$CFG_GLPI['root_doc']."/front/preference.php";
+         $userpref = true;
+         $url      = $CFG_GLPI['root_doc']."/front/preference.php";
       }
 
-      echo "<form name='form' action=\"$url\" method=\"post\">";
+      echo "<form name='form' action='$url' method='post'>";
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -655,31 +659,31 @@ class Config extends CommonDBTM {
       echo "<td>" . $LANG['setup'][111]."&nbsp;:</td><td>";
       // Limit using global config
       Dropdown::showInteger('list_limit',
-                            ($data['list_limit']<$CFG_GLPI['list_limit_max'] ? $data['list_limit']
-                                                                       : $CFG_GLPI['list_limit_max']),
-                            5,$CFG_GLPI['list_limit_max'],5);
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][128] ."&nbsp;:</td>";
+                            ($data['list_limit']<$CFG_GLPI['list_limit_max']
+                             ? $data['list_limit'] : $CFG_GLPI['list_limit_max']),
+                            5, $CFG_GLPI['list_limit_max'], 5);
+      echo "</td><td>" . $LANG['setup'][128] ."&nbsp;:</td>";
       echo "<td>";
-      $date_formats=array(0 => $LANG['calendar'][0],
-                          1 => $LANG['calendar'][1],
-                          2 => $LANG['calendar'][2]);
-      Dropdown::showFromArray('date_format',$date_formats,array('value'=>$data["date_format"]));
+      $date_formats = array(0 => $LANG['calendar'][0],
+                            1 => $LANG['calendar'][1],
+                            2 => $LANG['calendar'][2]);
+      Dropdown::showFromArray('date_format', $date_formats, array('value' => $data["date_format"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
          echo "<td>" . $LANG['setup'][112] . "&nbsp;:</td><td>";
-            Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
+         Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
        } else {
         echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "<td>" . $LANG['setup'][150] . "&nbsp;:</td>";
-
-      $values=array(0=>'1 234.56',1=>'1,234.56',2=>'1 234,56');
+      $values = array(0 => '1 234.56',
+                      1 => '1,234.56',
+                      2 => '1 234,56');
       echo "<td>";
-      Dropdown::showFromArray('number_format',$values,array('value'=>$data["number_format"]));
+      Dropdown::showFromArray('number_format', $values, array('value' => $data["number_format"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -690,19 +694,18 @@ class Config extends CommonDBTM {
       } else {
         echo "<td colspan='2'>&nbsp;</td>";
       }
-
       echo "<td>".$LANG['setup'][10]."&nbsp;:</td><td>";
-      $values = array (REALNAME_BEFORE  =>$LANG['common'][48]." ".$LANG['common'][43],
-                       FIRSTNAME_BEFORE =>$LANG['common'][43]." ".$LANG['common'][48]);
-      Dropdown::showFromArray('names_format',$values,array('value'=>$data["names_format"]));
+      $values = array (REALNAME_BEFORE  => $LANG['common'][48]." ".$LANG['common'][43],
+                       FIRSTNAME_BEFORE => $LANG['common'][43]." ".$LANG['common'][48]);
+      Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='2'></td>";
       echo "<td>".$LANG['setup'][7]."&nbsp;:</td><td>";
-      $values = array (';'  =>';',','  =>',');
-
-      Dropdown::showFromArray('csv_delimiter',$values,array('value'=>$data["csv_delimiter"]));
+      $values = array(';' =>';',
+                      ',' =>',');
+      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -715,7 +718,7 @@ class Config extends CommonDBTM {
       }
       echo "<td>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . "&nbsp;:</td><td>";
       if (haveRight("config","w") || ! GLPI_DEMO_MODE) {
-         Dropdown::showLanguages("language", array('value'=>$data["language"]));
+         Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
          echo "&nbsp;";
       }
@@ -733,41 +736,36 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][40] . "&nbsp;:</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
-         echo "</td>";
-         echo "<td> " . $LANG['job'][44] . "&nbsp;:</td><td>";
-         Dropdown::show('RequestType',
-                        array('value'  => $data["default_requesttypes_id"],
-                              'name' => "default_requesttypes_id"));
+         echo "</td><td> " . $LANG['job'][44] . "&nbsp;:</td><td>";
+         Dropdown::show('RequestType', array('value' => $data["default_requesttypes_id"],
+                                             'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][114] . "&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . $LANG['setup'][114] . "&nbsp;:</td>";
          echo "<td colspan='3'>";
+
          echo "<table><tr>";
          echo "<td bgcolor='" . $data["priority_1"] . "'>1&nbsp;:&nbsp;";
-         echo "<input type='text' name='priority_1' size='7' value='" .
-                $data["priority_1"] . "'></td>";
+         echo "<input type='text' name='priority_1' size='7' value='".$data["priority_1"]."'></td>";
          echo "<td bgcolor='" . $data["priority_2"] . "'>2&nbsp;:&nbsp;";
-         echo "<input type='text' name='priority_2' size='7' value='" .
-                $data["priority_2"] . "'></td>";
+         echo "<input type='text' name='priority_2' size='7' value='".$data["priority_2"]."'></td>";
          echo "<td bgcolor='" . $data["priority_3"] . "'>3&nbsp;:&nbsp;";
-         echo "<input type='text' name='priority_3' size='7' value='" .
-                $data["priority_3"] . "'></td>";
+         echo "<input type='text' name='priority_3' size='7' value='".$data["priority_3"]."'></td>";
          echo "<td bgcolor='" . $data["priority_4"] . "'>4&nbsp;:&nbsp;";
-         echo "<input type='text' name='priority_4' size='7' value='" .
-                $data["priority_4"] . "'></td>";
+         echo "<input type='text' name='priority_4' size='7' value='".$data["priority_4"]."'></td>";
          echo "<td bgcolor='" . $data["priority_5"] . "'>5&nbsp;:&nbsp;";
-         echo "<input type='text' name='priority_5' size='7' value='" .
-                $data["priority_5"] . "'></td>";
+         echo "<input type='text' name='priority_5' size='7' value='".$data["priority_5"]."'></td>";
          echo "<td bgcolor='" . $data["priority_6"] . "'>6&nbsp;:&nbsp;";
-         echo "<input type='text' name='priority_6' size='7' value='" .
-                $data["priority_6"] . "'></td>";
+         echo "<input type='text' name='priority_6' size='7' value='".$data["priority_6"]."'></td>";
          echo "</tr></table>";
+
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['softwarecategories'][5] ."</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td>" . $LANG['softwarecategories'][4]."&nbsp;:</td>";
-         echo "<td>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . $LANG['softwarecategories'][4]."&nbsp;:</td><td>";
          Dropdown::showYesNo("is_categorized_soft_expanded", $data["is_categorized_soft_expanded"]);
          echo "</td><td>" . $LANG['softwarecategories'][3] . "&nbsp;:</td><td>";
          Dropdown::showYesNo("is_not_categorized_soft_expanded",
@@ -775,28 +773,28 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value='" .
-             $LANG['buttons'][2] . "' ></td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='4' class='center'>";
+      echo "<input type='submit' name='update' class='submit' value='".$LANG['buttons'][2]."'>";
+      echo "</td></tr>";
+
       echo "</table></div>";
       echo "</form>";
    }
 
 
-   /*
+   /**
     * Display a HTML report about systeme information / configuration
     *
-    */
+   **/
    function showSystemInformations () {
       global $DB,$LANG,$CFG_GLPI;
 
       echo "<div class='center' id='tabsbody'>";
-
-      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method=\"post\">";
+      echo "<form name='form' action=\"".getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
       echo "<table class='tab_cadre_fixe'>";
-
       echo "<tr><th colspan='4'>" . $LANG['setup'][70] . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -806,66 +804,70 @@ class Config extends CommonDBTM {
       $values[3] = $LANG['setup'][105];
       $values[4] = $LANG['setup'][106];
       $values[5] = $LANG['setup'][107];
-      Dropdown::showFromArray('event_loglevel',$values,array('value'=>$CFG_GLPI["event_loglevel"]));
-      echo "</td>";
-      echo "<td>".$LANG['setup'][101]."&nbsp;:</td><td>";
+      Dropdown::showFromArray('event_loglevel', $values,
+                              array('value' => $CFG_GLPI["event_loglevel"]));
+      echo "</td><td>".$LANG['setup'][101]."&nbsp;:</td><td>";
       Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['setup'][185] . "&nbsp;:</td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td>";
-      echo "<td> " . $LANG['setup'][801] . "&nbsp;:</td><td>";
+      echo "</td><td> " . $LANG['setup'][801] . "&nbsp;:</td><td>";
       $active = DBConnection::isDBSlaveActive();
       Dropdown::showYesNo("_dbslave_status", $active);
-      echo " </td></tr>";
-
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
-      echo "<strong>" . $LANG['setup'][306] .' - '.$LANG['setup'][400]. "</strong></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][52] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\">";
-      echo "</td>";
-      echo "<td>" . $LANG['setup'][175] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\">";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['login'][6] . "&nbsp;:</td>";
-      echo "<td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\">";
-      echo "</td>";
-      echo "<td>" . $LANG['login'][7] . "&nbsp;:</td>";
-      echo "<td><input type=\"password\" name=\"proxy_password\" value=\"\"  autocomplete='off'></td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' class='center b'>".$LANG['setup'][306].' - '.$LANG['setup'][400]."</td>";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type=\"submit\" name=\"update\" class=\"submit\" value=\"" .
-             $LANG['buttons'][2] . "\" ></td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['common'][52] . "&nbsp;:</td>";
+      echo "<td><input type='text' name='proxy_name' value='".$CFG_GLPI["proxy_name"]."'></td>";
+      echo "<td>" . $LANG['setup'][175] . "&nbsp;:</td>";
+      echo "<td><input type='text' name='proxy_port' value='".$CFG_GLPI["proxy_port"]."'></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['login'][6] . "&nbsp;:</td>";
+      echo "<td><input type='text' name='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
+      echo "<td>" . $LANG['login'][7] . "&nbsp;:</td>";
+      echo "<td><input type='password' name='proxy_password' value='' autocomplete='off'></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='4' class='center'>";
+      echo "<input type='submit' name='update' class='submit' value='".$LANG['buttons'][2]."'></td>";
+      echo "</tr>";
+
       echo "</table>";
       echo "</form>";
 
-      $width=128;
+      $width = 128;
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
-      echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
 
+      echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
       $oldlang = $_SESSION['glpilanguage'];
       loadLanguage('en_GB');
       echo "GLPI ".$CFG_GLPI['version']." (".$CFG_GLPI['root_doc']." => ".
             dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
+      echo "\n</pre></td></tr>";
 
-      echo "\n</pre></td></tr><tr><th>" . $LANG['common'][52] . "</th></tr>\n";
+      echo "<tr><th>" . $LANG['common'][52] . "</th></tr>\n";
+
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
-
       echo wordwrap($LANG['setup'][5]."&nbsp;: ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
       echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
       $msg = $LANG['common'][12].": ";
-      foreach (array('memory_limit',
-                     'max_execution_time',
-                     'safe_mode',
+
+      foreach (array('memory_limit', 'max_execution_time', 'safe_mode',
                      'session.save_handler') as $key) {
-         $msg.= $key.'="'.ini_get($key).'" ';
+         $msg .= $key.'="'.ini_get($key).'" ';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 
@@ -889,7 +891,7 @@ class Config extends CommonDBTM {
       echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";
 
       foreach ($CFG_GLPI["systeminformations_type"] as $type) {
-      	$tmp = new $type;
+         $tmp = new $type;
          $tmp->showSystemInformations($width);
       }
       loadLanguage($oldlang);
