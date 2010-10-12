@@ -40,9 +40,9 @@ if (!defined('GLPI_ROOT')) {
 class RuleLinkComputerCollection extends RuleCollection {
 
    // From RuleCollection
-   public $stop_on_first_match=true;
-   public $right = 'rule_ocs';
-   public $menu_option='linkcomputer';
+   public $stop_on_first_match = true;
+   public $right               = 'rule_ocs';
+   public $menu_option         = 'linkcomputer';
 
    // Specific ones
    ///Store the id of the ocs server
@@ -54,11 +54,13 @@ class RuleLinkComputerCollection extends RuleCollection {
    function __construct() {
    }
 
+
    function getTitle() {
       global $LANG;
 
       return $LANG['rulesengine'][57];
    }
+
 }
 
 
