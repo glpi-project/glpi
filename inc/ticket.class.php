@@ -1426,109 +1426,102 @@ class Ticket extends CommonDBTM {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']     = $this->getTable();
-      $tab[1]['field']     = 'name';
-      $tab[1]['linkfield'] = 'name';
-      $tab[1]['name']      = $LANG['common'][57];
-      $tab[1]['searchtype']= 'contains';
-      $tab[1]['forcegroupby']= true;
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'name';
+      $tab[1]['name']          = $LANG['common'][57];
+      $tab[1]['searchtype']    = 'contains';
+      $tab[1]['forcegroupby']  = true;
+      $tab[1]['massiveaction'] = false;
 
-      $tab[21]['table']     = $this->getTable();
-      $tab[21]['field']     = 'content';
-      $tab[21]['linkfield'] = '';
-      $tab[21]['name']      = $LANG['joblist'][6];
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'content';
+      $tab[21]['name']          = $LANG['joblist'][6];
+      $tab[21]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab[12]['table']      = $this->getTable();
       $tab[12]['field']      = 'status';
-      $tab[12]['linkfield']  = 'status';
       $tab[12]['name']       = $LANG['joblist'][0];
       $tab[12]['searchtype'] = 'equals';
 
       $tab[10]['table']      = $this->getTable();
       $tab[10]['field']      = 'urgency';
-      $tab[10]['linkfield']  = 'urgency';
       $tab[10]['name']       = $LANG['joblist'][29];
       $tab[10]['searchtype'] = 'equals';
 
       $tab[11]['table']      = $this->getTable();
       $tab[11]['field']      = 'impact';
-      $tab[11]['linkfield']  = 'impact';
       $tab[11]['name']       = $LANG['joblist'][30];
       $tab[11]['searchtype'] = 'equals';
 
       $tab[3]['table']      = $this->getTable();
       $tab[3]['field']      = 'priority';
-      $tab[3]['linkfield']  = 'priority';
       $tab[3]['name']       = $LANG['joblist'][2];
       $tab[3]['searchtype'] = 'equals';
 
-      $tab[15]['table']     = $this->getTable();
-      $tab[15]['field']     = 'date';
-      $tab[15]['linkfield'] = '';
-      $tab[15]['name']      = $LANG['reports'][60];
-      $tab[15]['datatype']  = 'datetime';
+      $tab[15]['table']         = $this->getTable();
+      $tab[15]['field']         = 'date';
+      $tab[15]['name']          = $LANG['reports'][60];
+      $tab[15]['datatype']      = 'datetime';
+      $tab[15]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'closedate';
-      $tab[16]['linkfield'] = '';
-      $tab[16]['name']      = $LANG['reports'][61];
-      $tab[16]['datatype']  = 'datetime';
+      $tab[16]['table']         = $this->getTable();
+      $tab[16]['field']         = 'closedate';
+      $tab[16]['name']          = $LANG['reports'][61];
+      $tab[16]['datatype']      = 'datetime';
+      $tab[16]['massiveaction'] = false;
 
-      $tab[18]['table']     = $this->getTable();
-      $tab[18]['field']     = 'due_date';
-      $tab[18]['linkfield'] = '';
-      $tab[18]['name']      = $LANG['sla'][5];
-      $tab[18]['datatype']  = 'datetime';
-      $tab[18]['maybefuture']  = true;
+      $tab[18]['table']         = $this->getTable();
+      $tab[18]['field']         = 'due_date';
+      $tab[18]['name']          = $LANG['sla'][5];
+      $tab[18]['datatype']      = 'datetime';
+      $tab[18]['maybefuture']   = true;
+      $tab[18]['massiveaction'] = false;
 
-      $tab[20]['table']     = 'glpi_slas';
-      $tab[20]['field']     = 'name';
-      $tab[20]['linkfield'] = 'slas_id';
-      $tab[20]['name']      = $LANG['sla'][1];
-      $tab[20]['datatype']  = 'datetime';
+      $tab[20]['table']         = 'glpi_slas';
+      $tab[20]['field']         = 'name';
+      $tab[20]['name']          = $LANG['sla'][1];
+      $tab[20]['datatype']      = 'datetime';
+      $tab[20]['massiveaction'] = false;
 
-      $tab[17]['table']     = $this->getTable();
-      $tab[17]['field']     = 'solvedate';
-      $tab[17]['linkfield'] = '';
-      $tab[17]['name']      = $LANG['reports'][64];
-      $tab[17]['datatype']  = 'datetime';
+      $tab[17]['table']         = $this->getTable();
+      $tab[17]['field']         = 'solvedate';
+      $tab[17]['name']          = $LANG['reports'][64];
+      $tab[17]['datatype']      = 'datetime';
+      $tab[17]['massiveaction'] = false;
 
-      $tab[19]['table']     = $this->getTable();
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
-      $tab[7]['table']     = 'glpi_ticketcategories';
-      $tab[7]['field']     = 'completename';
-      $tab[7]['linkfield'] = 'ticketcategories_id';
-      $tab[7]['name']      = $LANG['common'][36];
+      $tab[7]['table'] = 'glpi_ticketcategories';
+      $tab[7]['field'] = 'completename';
+      $tab[7]['name']  = $LANG['common'][36];
 
-      $tab[13]['table']     = 'glpi_tickets';
-      $tab[13]['field']     = 'items_id';
-      $tab[13]['linkfield'] = '';
-      $tab[13]['name']      = $LANG['common'][1];
-      $tab[13]['nosearch']  = true;
-      $tab[13]['nosort']  = true;
+      $tab[13]['table']         = 'glpi_tickets';
+      $tab[13]['field']         = 'items_id';
+      $tab[13]['name']          = $LANG['common'][1];
+      $tab[13]['nosearch']      = true;
+      $tab[13]['nosort']        = true;
+      $tab[13]['massiveaction'] = false;
 
-      $tab[9]['table']     = 'glpi_requesttypes';
-      $tab[9]['field']     = 'name';
-      $tab[9]['linkfield'] = 'requesttypes_id';
-      $tab[9]['name']      = $LANG['job'][44];
+      $tab[9]['table'] = 'glpi_requesttypes';
+      $tab[9]['field'] = 'name';
+      $tab[9]['name']  = $LANG['job'][44];
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       $tab[45]['table']     = $this->getTable();
       $tab[45]['field']     = 'realtime';
-      $tab[45]['linkfield'] = 'realtime';
       $tab[45]['name']      = $LANG['job'][20];
       $tab[45]['datatype']  = 'realtime';
 
@@ -1536,44 +1529,43 @@ class Ticket extends CommonDBTM {
 
       $tab[52]['table']      = 'glpi_tickets';
       $tab[52]['field']      = 'global_validation';
-      $tab[52]['linkfield']  = 'global_validation';
       $tab[52]['name']       = $LANG['validation'][0];
       $tab[52]['searchtype'] = 'equals';
 
-      $tab[53]['table']        = 'glpi_ticketvalidations';
-      $tab[53]['field']        = 'comment_submission';
-      $tab[53]['linkfield']    = '';
-      $tab[53]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][5];
-      $tab[53]['datatype']     = 'text';
-      $tab[53]['forcegroupby'] = true;
+      $tab[53]['table']         = 'glpi_ticketvalidations';
+      $tab[53]['field']         = 'comment_submission';
+      $tab[53]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][5];
+      $tab[53]['datatype']      = 'text';
+      $tab[53]['forcegroupby']  = true;
+      $tab[53]['massiveaction'] = false;
 
-      $tab[54]['table']        = 'glpi_ticketvalidations';
-      $tab[54]['field']        = 'comment_validation';
-      $tab[54]['linkfield']    = '';
-      $tab[54]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][6];
-      $tab[54]['datatype']     = 'text';
-      $tab[54]['forcegroupby'] = true;
+      $tab[54]['table']         = 'glpi_ticketvalidations';
+      $tab[54]['field']         = 'comment_validation';
+      $tab[54]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][6];
+      $tab[54]['datatype']      = 'text';
+      $tab[54]['forcegroupby']  = true;
+      $tab[54]['massiveaction'] = false;
 
-      $tab[55]['table']        = 'glpi_ticketvalidations';
-      $tab[55]['field']        = 'status';
-      $tab[55]['linkfield']    = '';
-      $tab[55]['name']         = $LANG['validation'][0]." - ".$LANG['joblist'][0];
-      $tab[55]['searchtype']   = 'equals';
-      $tab[55]['forcegroupby'] = true;
+      $tab[55]['table']         = 'glpi_ticketvalidations';
+      $tab[55]['field']         = 'status';
+      $tab[55]['name']          = $LANG['validation'][0]." - ".$LANG['joblist'][0];
+      $tab[55]['searchtype']    = 'equals';
+      $tab[55]['forcegroupby']  = true;
+      $tab[55]['massiveaction'] = false;
 
-      $tab[56]['table']        = 'glpi_ticketvalidations';
-      $tab[56]['field']        = 'submission_date';
-      $tab[56]['linkfield']    = '';
-      $tab[56]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][3];
-      $tab[56]['datatype']     = 'datetime';
-      $tab[56]['forcegroupby'] = true;
+      $tab[56]['table']         = 'glpi_ticketvalidations';
+      $tab[56]['field']         = 'submission_date';
+      $tab[56]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][3];
+      $tab[56]['datatype']      = 'datetime';
+      $tab[56]['forcegroupby']  = true;
+      $tab[56]['massiveaction'] = false;
 
-      $tab[57]['table']        = 'glpi_ticketvalidations';
-      $tab[57]['field']        = 'validation_date';
-      $tab[57]['linkfield']    = '';
-      $tab[57]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][4];
-      $tab[57]['datatype']     = 'datetime';
-      $tab[57]['forcegroupby'] = true;
+      $tab[57]['table']         = 'glpi_ticketvalidations';
+      $tab[57]['field']         = 'validation_date';
+      $tab[57]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][4];
+      $tab[57]['datatype']      = 'datetime';
+      $tab[57]['forcegroupby']  = true;
+      $tab[57]['massiveaction'] = false;
 
       $tab[58]['table']         = 'glpi_users_validation';
       $tab[58]['field']         = 'name';
@@ -1583,6 +1575,7 @@ class Ticket extends CommonDBTM {
       $tab[58]['itemlink_type'] = 'User';
       $tab[58]['forcegroupby']  = true;
       $tab[58]['massiveaction'] = false;
+      $tab[59]['realtable']     = 'glpi_users';
 
       $tab[59]['table']         = 'glpi_users_validation';
       $tab[59]['field']         = 'name';
@@ -1592,17 +1585,16 @@ class Ticket extends CommonDBTM {
       $tab[59]['itemlink_type'] = 'User';
       $tab[59]['forcegroupby']  = true;
       $tab[59]['massiveaction'] = false;
+      $tab[59]['realtable']     = 'glpi_users';
 
       $tab['requester'] = $LANG['job'][4];
 
       $tab[4]['table']     = 'glpi_users';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'users_id';
       $tab[4]['name']      = $LANG['job'][4];
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'name';
-      $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
       $tab[22]['table']     = 'glpi_users';
@@ -1612,29 +1604,29 @@ class Ticket extends CommonDBTM {
 
       $tab['satisfaction'] = $LANG['satisfaction'][3];
 
-      $tab[60]['table']     = 'glpi_ticketsatisfactions';
-      $tab[60]['field']     = 'date_begin';
-      $tab[60]['linkfield'] = '';
-      $tab[60]['name']      = $LANG['satisfaction'][6];
-      $tab[60]['datatype']  = 'datetime';
+      $tab[60]['table']          = 'glpi_ticketsatisfactions';
+      $tab[60]['field']          = 'date_begin';
+      $tab[60]['name']           = $LANG['satisfaction'][6];
+      $tab[60]['datatype']       = 'datetime';
+      $tab[60]['massiveaction']  = false;
 
-      $tab[61]['table']     = 'glpi_ticketsatisfactions';
-      $tab[61]['field']     = 'date_answered';
-      $tab[61]['linkfield'] = '';
-      $tab[61]['name']      = $LANG['satisfaction'][4];
-      $tab[61]['datatype']  = 'datetime';
+      $tab[61]['table']          = 'glpi_ticketsatisfactions';
+      $tab[61]['field']          = 'date_answered';
+      $tab[61]['name']           = $LANG['satisfaction'][4];
+      $tab[61]['datatype']       = 'datetime';
+      $tab[61]['massiveaction']  = false;
 
-      $tab[62]['table']     = 'glpi_ticketsatisfactions';
-      $tab[62]['field']     = 'satisfaction';
-      $tab[62]['linkfield'] = '';
-      $tab[62]['name']      = $LANG['satisfaction'][7];
-      $tab[62]['datatype']  = 'number';
+      $tab[62]['table']          = 'glpi_ticketsatisfactions';
+      $tab[62]['field']          = 'satisfaction';
+      $tab[62]['name']           = $LANG['satisfaction'][7];
+      $tab[62]['datatype']       = 'number';
+      $tab[62]['massiveaction']  = false;
 
-      $tab[63]['table']     = 'glpi_ticketsatisfactions';
-      $tab[63]['field']     = 'comment';
-      $tab[63]['linkfield'] = '';
-      $tab[63]['name']      = $LANG['satisfaction'][8];
-      $tab[63]['datatype']  = 'text';
+      $tab[63]['table']          = 'glpi_ticketsatisfactions';
+      $tab[63]['field']          = 'comment';
+      $tab[63]['name']           = $LANG['satisfaction'][8];
+      $tab[63]['datatype']       = 'text';
+      $tab[63]['massiveaction']  = false;
 
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
 
@@ -1658,82 +1650,79 @@ class Ticket extends CommonDBTM {
 
          $tab['followup'] = $LANG['mailing'][141];
 
-         $tab[25]['table']        = 'glpi_ticketfollowups';
-         $tab[25]['field']        = 'content';
-         $tab[25]['linkfield']    = '';
-         $tab[25]['name']         = $LANG['job'][9]." - ".$LANG['joblist'][6];
-         $tab[25]['forcegroupby'] = true;
-         $tab[25]['splititems']   = true;
+         $tab[25]['table']         = 'glpi_ticketfollowups';
+         $tab[25]['field']         = 'content';
+         $tab[25]['name']          = $LANG['job'][9]." - ".$LANG['joblist'][6];
+         $tab[25]['forcegroupby']  = true;
+         $tab[25]['splititems']    = true;
+         $tab[25]['massiveaction'] = false;
 
-         $tab[27]['table']        = 'glpi_ticketfollowups';
-         $tab[27]['field']        = 'count';
-         $tab[27]['linkfield']    = '';
-         $tab[27]['name']         = $LANG['job'][9]." - ".$LANG['tracking'][29];
-         $tab[27]['forcegroupby'] = true;
-         $tab[27]['usehaving']    = true;
-         $tab[27]['datatype']     = 'number';
+         $tab[27]['table']         = 'glpi_ticketfollowups';
+         $tab[27]['field']         = 'count';
+         $tab[27]['name']          = $LANG['job'][9]." - ".$LANG['tracking'][29];
+         $tab[27]['forcegroupby']  = true;
+         $tab[27]['usehaving']     = true;
+         $tab[27]['datatype']      = 'number';
+         $tab[27]['massiveaction'] = false;
 
-         $tab[29]['table']        = 'glpi_followup_requesttypes';
-         $tab[29]['field']        = 'name';
-         $tab[29]['linkfield']    = '';
-         $tab[29]['name']         = $LANG['job'][9]." - ".$LANG['job'][44];
-         $tab[29]['forcegroupby'] = true;
-         $tab[29]['realtable']    = 'glpi_requesttypes';
+         $tab[29]['table']         = 'glpi_followup_requesttypes';
+         $tab[29]['field']         = 'name';
+         $tab[29]['name']          = $LANG['job'][9]." - ".$LANG['job'][44];
+         $tab[29]['forcegroupby']  = true;
+         $tab[29]['realtable']     = 'glpi_requesttypes';
+         $tab[29]['massiveaction'] = false;
 
 
          $tab['task'] = $LANG['job'][7];
 
-         $tab[26]['table']        = 'glpi_tickettasks';
-         $tab[26]['field']        = 'content';
-         $tab[26]['linkfield']    = '';
-         $tab[26]['name']         = $LANG['job'][7]." - ".$LANG['joblist'][6];
-         $tab[26]['forcegroupby'] = true;
-         $tab[26]['splititems']   = true;
+         $tab[26]['table']         = 'glpi_tickettasks';
+         $tab[26]['field']         = 'content';
+         $tab[26]['name']          = $LANG['job'][7]." - ".$LANG['joblist'][6];
+         $tab[26]['forcegroupby']  = true;
+         $tab[26]['splititems']    = true;
+         $tab[26]['massiveaction'] = false;
 
-         $tab[28]['table']        = 'glpi_tickettasks';
-         $tab[28]['field']        = 'count';
-         $tab[28]['linkfield']    = '';
-         $tab[28]['name']         = $LANG['job'][7]." - ".$LANG['tracking'][29];
-         $tab[28]['forcegroupby'] = true;
-         $tab[28]['usehaving']    = true;
-         $tab[28]['datatype']     = 'number';
+         $tab[28]['table']         = 'glpi_tickettasks';
+         $tab[28]['field']         = 'count';
+         $tab[28]['name']          = $LANG['job'][7]." - ".$LANG['tracking'][29];
+         $tab[28]['forcegroupby']  = true;
+         $tab[28]['usehaving']     = true;
+         $tab[28]['datatype']      = 'number';
+         $tab[28]['massiveaction'] = false;
 
-         $tab[20]['table']        = 'glpi_taskcategories';
-         $tab[20]['field']        = 'name';
-         $tab[20]['linkfield']    = '';
-         $tab[20]['name']         = $LANG['job'][7]." - ".$LANG['common'][36];
-         $tab[20]['forcegroupby'] = true;
-         $tab[20]['splititems']   = true;
+         $tab[20]['table']         = 'glpi_taskcategories';
+         $tab[20]['field']         = 'name';
+         $tab[20]['name']          = $LANG['job'][7]." - ".$LANG['common'][36];
+         $tab[20]['forcegroupby']  = true;
+         $tab[20]['splititems']    = true;
+         $tab[20]['massiveaction'] = false;
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
          $tab[23]['table']     = 'glpi_ticketsolutiontypes';
          $tab[23]['field']     = 'name';
-         $tab[23]['linkfield'] = 'ticketsolutiontypes_id';
          $tab[23]['name']      = $LANG['job'][48];
 
-         $tab[24]['table']     = $this->getTable();
-         $tab[24]['field']     = 'solution';
-         $tab[24]['linkfield'] = '';
-         $tab[24]['name']      = $LANG['jobresolution'][1]." - ".$LANG['joblist'][6];
+         $tab[24]['table']         = $this->getTable();
+         $tab[24]['field']         = 'solution';
+         $tab[24]['name']          = $LANG['jobresolution'][1]." - ".$LANG['joblist'][6];
+         $tab[24]['datatype']      = 'text';
+         $tab[24]['massiveaction'] = false;
 
          $tab['cost'] = $LANG['financial'][5];
 
          $tab[42]['table']     = $this->getTable();
          $tab[42]['field']     = 'cost_time';
-         $tab[42]['linkfield'] = 'cost_time';
          $tab[42]['name']      = $LANG['job'][40];
          $tab[42]['datatype']  = 'decimal';
 
          $tab[43]['table']     = $this->getTable();
          $tab[43]['field']     = 'cost_fixed';
-         $tab[43]['linkfield'] = 'cost_fixed';
          $tab[43]['name']      = $LANG['job'][41];
          $tab[43]['datatype']  = 'decimal';
 
          $tab[44]['table']     = $this->getTable();
          $tab[44]['field']     = 'cost_material';
-         $tab[44]['linkfield'] = 'cost_material';
          $tab[44]['name']      = $LANG['job'][42];
          $tab[44]['datatype']  = 'decimal';
 
@@ -1742,13 +1731,11 @@ class Ticket extends CommonDBTM {
 
          $tab[35]['table']     = $this->getTable();
          $tab[35]['field']     = 'use_email_notification';
-         $tab[35]['linkfield'] = 'use_email_notification';
          $tab[35]['name']      = $LANG['job'][19];
          $tab[35]['datatype']  = 'bool';
 
          $tab[34]['table']     = $this->getTable();
          $tab[34]['field']     = 'user_email';
-         $tab[34]['linkfield'] = 'user_email';
          $tab[34]['name']      = $LANG['joblist'][27];
          $tab[34]['datatype']  = 'email';
 
