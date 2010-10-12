@@ -72,13 +72,11 @@ class DeviceNetworkCard extends CommonDevice {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'specif_default';
-      $tab[11]['linkfield']     = 'specif_default';
       $tab[11]['name']          = $LANG['device_iface'][2]." ".$LANG['devices'][24];
       $tab[11]['datatype']      = 'text';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'bandwidth';
-      $tab[12]['linkfield']     = 'bandwidth';
       $tab[12]['name']          = $LANG['device_iface'][0];
       $tab[12]['datatype']      = 'text';
 

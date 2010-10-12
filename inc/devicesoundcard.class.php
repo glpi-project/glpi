@@ -63,7 +63,6 @@ class DeviceSoundCard extends CommonDevice {
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'type';
-      $tab[12]['linkfield']     = 'type';
       $tab[12]['name']          = $LANG['common'][17];
       $tab[12]['datatype']      = 'text';
 

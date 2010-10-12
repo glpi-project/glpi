@@ -63,7 +63,6 @@ class DeviceCase extends CommonDevice {
 
       $tab[12]['table']         = 'glpi_devicecasetypes';
       $tab[12]['field']         = 'name';
-      $tab[12]['linkfield']     = 'devicecasetypes_id';
       $tab[12]['name']          = $LANG['device_case'][0];
 
       return $tab;

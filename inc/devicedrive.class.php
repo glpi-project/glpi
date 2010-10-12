@@ -69,19 +69,16 @@ class DeviceDrive extends CommonDevice {
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'is_writer';
-      $tab[12]['linkfield']     = 'is_writer';
       $tab[12]['name']          = $LANG['device_drive'][0];
       $tab[12]['datatype']      = 'bool';
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'speed';
-      $tab[13]['linkfield']     = 'speed';
       $tab[13]['name']          = $LANG['device_drive'][1];
       $tab[13]['datatype']      = 'text';
 
       $tab[14]['table']         = 'glpi_interfacetypes';
       $tab[14]['field']         = 'name';
-      $tab[14]['linkfield']     = 'interfacetypes_id';
       $tab[14]['name']          = $LANG['common'][65];
 
       return $tab;

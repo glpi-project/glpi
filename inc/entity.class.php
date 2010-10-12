@@ -300,104 +300,106 @@ class Entity extends CommonTreeDropdown {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'completename';
-      $tab[1]['linkfield']     = 'completename';
       $tab[1]['name']          = $LANG['common'][51];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = 'glpi_entitydatas';
-      $tab[3]['field']     = 'address';
-      $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = $LANG['financial'][44];
+      $tab[3]['table']         = 'glpi_entitydatas';
+      $tab[3]['field']         = 'address';
+      $tab[3]['name']          = $LANG['financial'][44];
+      $tab[3]['massiveaction'] = false;
 
-      $tab[4]['table']     = 'glpi_entitydatas';
-      $tab[4]['field']     = 'website';
-      $tab[4]['linkfield'] = '';
-      $tab[4]['name']      = $LANG['financial'][45];
+      $tab[4]['table']         = 'glpi_entitydatas';
+      $tab[4]['field']         = 'website';
+      $tab[4]['name']          = $LANG['financial'][45];
+      $tab[4]['massiveaction'] = false;
 
-      $tab[5]['table']     = 'glpi_entitydatas';
-      $tab[5]['field']     = 'phonenumber';
-      $tab[5]['linkfield'] = '';
-      $tab[5]['name']      = $LANG['help'][35];
+      $tab[5]['table']         = 'glpi_entitydatas';
+      $tab[5]['field']         = 'phonenumber';
+      $tab[5]['name']          = $LANG['help'][35];
+      $tab[5]['massiveaction'] = false;
 
-      $tab[6]['table']     = 'glpi_entitydatas';
-      $tab[6]['field']     = 'email';
-      $tab[6]['linkfield'] = '';
-      $tab[6]['name']      = $LANG['setup'][14];
-      $tab[6]['datatype']  = 'email';
 
-      $tab[7]['table']     = 'glpi_entitydatas';
-      $tab[7]['field']     = 'ldap_dn';
-      $tab[7]['linkfield'] = '';
-      $tab[7]['name']      = $LANG['entity'][12];
+      $tab[6]['table']         = 'glpi_entitydatas';
+      $tab[6]['field']         = 'email';
+      $tab[6]['name']          = $LANG['setup'][14];
+      $tab[6]['datatype']      = 'email';
+      $tab[6]['massiveaction'] = false;
 
-      $tab[8]['table']     = 'glpi_entitydatas';
-      $tab[8]['field']     = 'tag';
-      $tab[8]['linkfield'] = '';
-      $tab[8]['name']      = $LANG['entity'][13];
 
-      $tab[9]['table']     = 'glpi_authldaps';
-      $tab[9]['field']     = 'name';
-      $tab[9]['linkfield'] = 'ldapservers_id';
-      $tab[9]['name']      = $LANG['entity'][15];
+      $tab[7]['table']         = 'glpi_entitydatas';
+      $tab[7]['field']         = 'ldap_dn';
+      $tab[7]['name']          = $LANG['entity'][12];
+      $tab[7]['massiveaction'] = false;
 
-      $tab[10]['table']     = 'glpi_entitydatas';
-      $tab[10]['field']     = 'fax';
-      $tab[10]['linkfield'] = '';
-      $tab[10]['name']      = $LANG['financial'][30];
+      $tab[8]['table']         = 'glpi_entitydatas';
+      $tab[8]['field']         = 'tag';
+      $tab[8]['name']          = $LANG['entity'][13];
+      $tab[8]['massiveaction'] = false;
 
-      $tab[11]['table']     = 'glpi_entitydatas';
-      $tab[11]['field']     = 'town';
-      $tab[11]['linkfield'] = '';
-      $tab[11]['name']      = $LANG['financial'][101];
+      $tab[9]['table']         = 'glpi_authldaps';
+      $tab[9]['field']         = 'name';
+      $tab[9]['linkfield']     = 'ldapservers_id';
+      $tab[9]['name']          = $LANG['entity'][15];
+      $tab[9]['massiveaction'] = false;
 
-      $tab[12]['table']     = 'glpi_entitydatas';
-      $tab[12]['field']     = 'state';
-      $tab[12]['linkfield'] = '';
-      $tab[12]['name']      = $LANG['financial'][102];
+      $tab[10]['table']         = 'glpi_entitydatas';
+      $tab[10]['field']         = 'fax';
+      $tab[10]['name']          = $LANG['financial'][30];
+      $tab[10]['massiveaction'] = false;
+
+      $tab[11]['table']         = 'glpi_entitydatas';
+      $tab[11]['field']         = 'town';
+      $tab[11]['name']          = $LANG['financial'][101];
+      $tab[11]['massiveaction'] = false;
+
+      $tab[12]['table']         = 'glpi_entitydatas';
+      $tab[12]['field']         = 'state';
+      $tab[12]['name']          = $LANG['financial'][102];
+      $tab[12]['massiveaction'] = false;
 
       $tab[13]['table']     = 'glpi_entitydatas';
       $tab[13]['field']     = 'country';
-      $tab[13]['linkfield'] = '';
       $tab[13]['name']      = $LANG['financial'][103];
+      $tab[13]['massiveaction'] = false;
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'name';
-      $tab[14]['linkfield']     = 'name';
       $tab[14]['name']          = $LANG['common'][16];
       $tab[14]['datatype']      = 'itemlink';
       $tab[14]['itemlink_type'] = 'Entity';
+      $tab[14]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[17]['table']     = 'glpi_entitydatas';
-      $tab[17]['field']     = 'entity_ldapfilter';
-      $tab[17]['linkfield'] = '';
-      $tab[17]['name']      = $LANG['entity'][16];
+      $tab[17]['table']         = 'glpi_entitydatas';
+      $tab[17]['field']         = 'entity_ldapfilter';
+      $tab[17]['name']          = $LANG['entity'][16];
+      $tab[17]['massiveaction'] = false;
 
-      $tab[18]['table']     = 'glpi_entitydatas';
-      $tab[18]['field']     = 'admin_email';
-      $tab[18]['linkfield'] = '';
-      $tab[18]['name']      = $LANG['setup'][203];
+      $tab[18]['table']         = 'glpi_entitydatas';
+      $tab[18]['field']         = 'admin_email';
+      $tab[18]['name']          = $LANG['setup'][203];
+      $tab[18]['massiveaction'] = false;
 
-      $tab[19]['table']     = 'glpi_entitydatas';
-      $tab[19]['field']     = 'admin_reply';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['setup'][207];
+      $tab[19]['table']         = 'glpi_entitydatas';
+      $tab[19]['field']         = 'admin_reply';
+      $tab[19]['name']          = $LANG['setup'][207];
+      $tab[19]['massiveaction'] = false;
 
-      $tab[20]['table']     = 'glpi_entitydatas';
-      $tab[20]['field']     = 'mail_domain';
-      $tab[20]['linkfield'] = '';
-      $tab[20]['name']      = $LANG['setup'][732];
+      $tab[20]['table']         = 'glpi_entitydatas';
+      $tab[20]['field']         = 'mail_domain';
+      $tab[20]['name']          = $LANG['setup'][732];
+      $tab[20]['massiveaction'] = false;
 
       return $tab;
    }

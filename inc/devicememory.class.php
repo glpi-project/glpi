@@ -75,19 +75,16 @@ class DeviceMemory extends CommonDevice {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'specif_default';
-      $tab[11]['linkfield']     = 'specif_default';
       $tab[11]['name']          = $LANG['device_ram'][2]." ".$LANG['devices'][24];
       $tab[11]['datatype']      = 'text';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'frequence';
-      $tab[12]['linkfield']     = 'frequence';
       $tab[12]['name']          = $LANG['device_ram'][1];
       $tab[12]['datatype']      = 'text';
 
       $tab[13]['table']         = 'glpi_devicememorytypes';
       $tab[13]['field']         = 'name';
-      $tab[13]['linkfield']     = 'devicememorytypes_id';
       $tab[13]['name']          = $LANG['common'][17];
 
       return $tab;

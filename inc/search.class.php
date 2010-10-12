@@ -2772,8 +2772,8 @@ class Search {
 
          case "glpi_authldaps" :
             if ($itemtype=='Entity') {
-               return " LEFT JOIN `glpi_authldaps`
-                           ON (`glpi_entitydatas`.`ldapservers_id` = `glpi_authldaps`.`id`)";
+               return " LEFT JOIN `glpi_authldaps` $AS
+                           ON (`glpi_entitydatas`.`ldapservers_id` = `$nt`.`id`)";
             }
             if ($itemtype=='User') {
                return " LEFT JOIN `glpi_authldaps`

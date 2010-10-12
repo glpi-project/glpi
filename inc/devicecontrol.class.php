@@ -66,13 +66,11 @@ class DeviceControl extends CommonDevice {
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'is_raid';
-      $tab[12]['linkfield']     = 'is_raid';
       $tab[12]['name']          = $LANG['device_control'][0];
       $tab[12]['datatype']      = 'bool';
 
       $tab[14]['table']         = 'glpi_interfacetypes';
       $tab[14]['field']         = 'name';
-      $tab[14]['linkfield']     = 'interfacetypes_id';
       $tab[14]['name']          = $LANG['common'][65];
 
       return $tab;

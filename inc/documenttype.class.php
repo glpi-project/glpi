@@ -75,22 +75,19 @@ class DocumentType  extends CommonDropdown {
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'ext';
-      $tab[3]['linkfield'] = 'ext';
       $tab[3]['name']      = $LANG['document'][9];
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'icon';
-      $tab[6]['linkfield'] = '';
-      $tab[6]['name']      = $LANG['document'][10];
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'icon';
+      $tab[6]['name']          = $LANG['document'][10];
+      $tab[6]['massiveaction'] = false;
 
       $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'mime';
-      $tab[4]['linkfield'] = 'mime';
       $tab[4]['name']      = $LANG['document'][4];
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'is_uploadable';
-      $tab[5]['linkfield'] = 'is_uploadable';
       $tab[5]['name']      = $LANG['document'][15];
       $tab[5]['datatype']      = 'bool';
 
