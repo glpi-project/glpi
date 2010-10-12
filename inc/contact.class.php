@@ -234,55 +234,47 @@ class Contact extends CommonDBTM{
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][48];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
       $tab[11]['table']     = $this->getTable();
       $tab[11]['field']     = 'firstname';
-      $tab[11]['linkfield'] = 'firstname';
       $tab[11]['name']      = $LANG['common'][43];
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'phone';
-      $tab[3]['linkfield'] = 'phone';
       $tab[3]['name']      = $LANG['help'][35];
 
       $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'phone2';
-      $tab[4]['linkfield'] = 'phone2';
       $tab[4]['name']      = $LANG['help'][35]." 2";
 
       $tab[10]['table']     = $this->getTable();
       $tab[10]['field']     = 'mobile';
-      $tab[10]['linkfield'] = 'mobile';
       $tab[10]['name']      = $LANG['common'][42];
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'fax';
-      $tab[5]['linkfield'] = 'fax';
       $tab[5]['name']      = $LANG['financial'][30];
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'email';
-      $tab[6]['linkfield'] = 'email';
       $tab[6]['name']      = $LANG['setup'][14];
       $tab[6]['datatype']  = 'email';
 
       $tab[9]['table']     = 'glpi_contacttypes';
       $tab[9]['field']     = 'name';
-      $tab[9]['linkfield'] = 'contacttypes_id';
       $tab[9]['name']      = $LANG['common'][17];
 
       $tab[8]['table']         = 'glpi_suppliers';
       $tab[8]['field']         = 'name';
-      $tab[8]['linkfield']     = '';
       $tab[8]['name']          = $LANG['financial'][65];
       $tab[8]['forcegroupby']  = true;
       $tab[8]['datatype']      = 'itemlink';
@@ -290,23 +282,21 @@ class Contact extends CommonDBTM{
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = $this->getTable();
-      $tab[90]['field']     = 'notepad';
-      $tab[90]['linkfield'] = '';
-      $tab[90]['name']      = $LANG['title'][37];
+      $tab[90]['table']         = $this->getTable();
+      $tab[90]['field']         = 'notepad';
+      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['massiveaction'] = false;
 
-      $tab[80]['table']='glpi_entities';
-      $tab[80]['field']='completename';
-      $tab[80]['linkfield']='entities_id';
-      $tab[80]['name']=$LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
-      $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
 
