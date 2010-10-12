@@ -49,7 +49,7 @@ $first_group    = true;
 $newgroup       = "";
 $items_in_group = 0;
 $searchopt      = Search::getCleanedOptions($_POST["itemtype"], 'r', false);
-
+echo "<table width='100%'><tr><td class='right'>";
 echo "<select id='Search2".$_POST["itemtype"].$_POST["num"]."' name='field2[".$_POST["num"]."]' size='1'>";
 
 foreach ($searchopt as $key => $val) {
@@ -87,7 +87,9 @@ if (!empty($newgroup) && $items_in_group>0) {
 if (!$first_group) {
    echo "</optgroup>";
 }
-echo "</select>&nbsp;";
+echo "</select>";
+
+echo "</td><td class='left'>";
 
 echo "<span id='Search2Span".$_POST["itemtype"].$_POST["num"]."'>\n";
 
@@ -111,5 +113,6 @@ $params = array('field'       => '__VALUE__',
 ajaxUpdateItemOnSelectEvent("Search2".$_POST["itemtype"].$_POST["num"],
                             "Search2Span".$_POST["itemtype"].$_POST["num"],
                             $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params, false);
+echo '</td></tr></table>';
 
 ?>

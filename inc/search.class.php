@@ -1201,11 +1201,11 @@ class Search {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo "<table  width='100%'>";
+      echo "<table>";
 
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr><td class='left' width='40%'>";
+         echo "<tr><td class='left' width='50%'>";
 
          // First line display add / delete images for normal and meta search items
          if ($i==0) {
@@ -1327,7 +1327,7 @@ class Search {
             echo "selected";
          }
          echo ">".$LANG['common'][66]."</option>";
-         echo "</select>&nbsp;\n";
+         echo "</select>\n";
 
          echo "</td><td class='left'>";
          echo "<span id='SearchSpan$itemtype$i'>\n";
@@ -1381,9 +1381,10 @@ class Search {
 
       if (is_array($linked) && count($linked)>0) {
          for ($i=0 ; $i<$_SESSION["glpisearchcount2"][$itemtype] ; $i++) {
-            echo "<tr><td class='left'>";
+            echo "<tr><td class='left' colspan='2'>";
             $rand = mt_rand();
 
+            echo "<table width='100%'><tr class='left'><td width='30%'>";
             // Display link item (not for the first item)
             echo "<select name='link2[$i]'>";
             echo "<option value='AND' ";
@@ -1423,7 +1424,7 @@ class Search {
             }
             echo "</select>&nbsp;";
 
-
+            echo "</td><td>";
             // Ajax script for display search met& item
             echo "<span id='show_".$itemtype."_".$i."_$rand'>&nbsp;</span>\n";
 
@@ -1452,6 +1453,7 @@ class Search {
                                                     $p['itemtype2'][$i]."';";
                echo "</script>\n";
             }
+            echo "</td></tr></table>";
 
             echo "</td></tr>\n";
          }
