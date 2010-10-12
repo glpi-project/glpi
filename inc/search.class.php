@@ -4225,9 +4225,7 @@ class Search {
       global $LANG, $CFG_GLPI;
 
       static $search = array();
-      if (class_exists($itemtype)) {
-         $item = new $itemtype();
-      }
+
       if (!isset($search[$itemtype])) {
 
          // standard type first
@@ -4300,6 +4298,7 @@ class Search {
             $search['States'][80]['name']      = $LANG['entity'][0];
 
          } else if (class_exists($itemtype)) {
+            $item = new $itemtype();
             $search[$itemtype] = $item->getSearchOptions();
          }
 
@@ -4564,20 +4563,27 @@ class Search {
                $search[$itemtype] += $plugsearch;
             }
          }
-      }
-      // Complete linkfield if not define
-      foreach ($search[$itemtype] as $key => $val) {
-         if (!isset($val['linkfield'])) {
-            if (strcmp($item->getTable(),$val['table'])==0) {
-               $search[$itemtype][$key]['linkfield']=$val['field'];
-            } else {
-               $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
+
+         // Complete linkfield if not define
+         if ($itemtype==='States') {
+            $itemtable='states_types';
+         } else {
+            $itemtable=$item->getTable();
+         }
+         foreach ($search[$itemtype] as $key => $val) {
+            if (!isset($val['linkfield'])) {
+               if (strcmp($itemtable,$val['table'])==0) {
+                  $search[$itemtype][$key]['linkfield']=$val['field'];
+               } else {
+                  $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
+               }
+            }
+            // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
+            if (empty($search[$itemtype][$key]['linkfield'])) {
+               $search[$itemtype][$key]['massiveaction']=false;
             }
          }
-         // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
-         if (empty($search[$itemtype][$key]['linkfield'])) {
-            $search[$itemtype][$key]['massiveaction']=false;
-         }
+
       }
 
       return $search[$itemtype];
