@@ -4314,65 +4314,14 @@ class Search {
          }
 
          if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
-            $search[$itemtype]['network'] = $LANG['setup'][88];
-
-            $search[$itemtype][20]['table']         = 'glpi_networkports';
-            $search[$itemtype][20]['field']         = 'ip';
-            $search[$itemtype][20]['name']          = $LANG['networking'][14];
-            $search[$itemtype][20]['forcegroupby']  = true;
-            $search[$itemtype][20]['massiveaction'] = false;
-
-            $search[$itemtype][21]['table']         = 'glpi_networkports';
-            $search[$itemtype][21]['field']         = 'mac';
-            $search[$itemtype][21]['name']          = $LANG['networking'][15];
-            $search[$itemtype][21]['forcegroupby']  = true;
-            $search[$itemtype][21]['massiveaction'] = false;
-
-            $search[$itemtype][83]['table']         = 'glpi_networkports';
-            $search[$itemtype][83]['field']         = 'netmask';
-            $search[$itemtype][83]['name']          = $LANG['networking'][60];
-            $search[$itemtype][83]['forcegroupby']  = true;
-            $search[$itemtype][83]['massiveaction'] = false;
-
-            $search[$itemtype][84]['table']         = 'glpi_networkports';
-            $search[$itemtype][84]['field']         = 'subnet';
-            $search[$itemtype][84]['name']          = $LANG['networking'][61];
-            $search[$itemtype][84]['forcegroupby']  = true;
-            $search[$itemtype][84]['massiveaction'] = false;
-
-            $search[$itemtype][85]['table']         = 'glpi_networkports';
-            $search[$itemtype][85]['field']         = 'gateway';
-            $search[$itemtype][85]['name']          = $LANG['networking'][59];
-            $search[$itemtype][85]['forcegroupby']  = true;
-            $search[$itemtype][85]['massiveaction'] = false;
-
-            $search[$itemtype][22]['table']         = 'glpi_netpoints';
-            $search[$itemtype][22]['field']         = 'name';
-            $search[$itemtype][22]['name']          = $LANG['networking'][51];
-            $search[$itemtype][22]['forcegroupby']  = true;
-            $search[$itemtype][22]['massiveaction'] = false;
-
-            $search[$itemtype][87]['table']         = 'glpi_networkinterfaces';
-            $search[$itemtype][87]['field']         = 'name';
-            $search[$itemtype][87]['name']          = $LANG['common'][65];
-            $search[$itemtype][87]['forcegroupby']  = true;
-            $search[$itemtype][87]['massiveaction'] = false;
-
-            $search[$itemtype][88]['table']         = 'glpi_vlans';
-            $search[$itemtype][88]['field']         = 'name';
-            $search[$itemtype][88]['name']          = $LANG['networking'][56];
-            $search[$itemtype][88]['forcegroupby']  = true;
-            $search[$itemtype][88]['massiveaction'] = false;
+            $search[$itemtype] += NetworkPort::getSearchOptionsToAdd();
          }
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
-            $search[$itemtype]['contract'] = $LANG['Menu'][25];
             $search[$itemtype] += Contract::getSearchOptionsToAdd();
          }
 
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
-            $search[$itemtype]['financial'] = $LANG['financial'][3];
-
             $search[$itemtype] += Infocom::getSearchOptionsToAdd();
          }
 

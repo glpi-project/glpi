@@ -289,6 +289,8 @@ class Contract extends CommonDBTM {
 
       $tab=array();
 
+      $tab['contract'] = $LANG['Menu'][25];
+
       $tab[29]['table']         = 'glpi_contracts';
       $tab[29]['field']         = 'name';
       $tab[29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
