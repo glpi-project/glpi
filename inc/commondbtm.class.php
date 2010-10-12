@@ -185,6 +185,9 @@ class CommonDBTM extends CommonGLPI {
          $this->fields['entities_id']=$_SESSION["glpiactive_entity"];
       }
       $this->post_getEmpty();
+
+      // Call the plugin hook - $this->fields can be altered
+      doHook("item_empty", $this);
       return true;
    }
 
