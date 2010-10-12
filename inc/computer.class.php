@@ -1037,6 +1037,7 @@ class Computer extends CommonDBTM {
       $tab[100]['name']          = $LANG['ocsng'][7];
       $tab[100]['massiveaction'] = false;
 
+      // TODO : Ocslink class do not exists : create it
       $tab[101]['table']     = 'glpi_ocslinks';
       $tab[101]['field']     = 'use_auto_update';
       $tab[101]['linkfield'] = '_auto_update_ocs'; // update through compter update process
