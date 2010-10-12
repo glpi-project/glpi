@@ -146,6 +146,9 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
    } else {
       switch ($search["table"]) {
          case "glpi_infocoms" :  // infocoms case
+            echo "<input type='hidden' name='field' value='".$search["field"]."'>";
+            $FIELDNAME_PRINTED = true;
+
             switch ($search["field"]) {
                case "alert" :
                   Infocom::dropdownAlert($search["field"]);

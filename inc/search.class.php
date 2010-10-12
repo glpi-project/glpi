@@ -2950,7 +2950,7 @@ class Search {
 
          case "glpi_budgets" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_infocoms",
-                                       $linkfield);
+                                       'infocoms_id');
             return $out."
                    LEFT JOIN `$new_table` $AS ON (`glpi_infocoms`.`budgets_id` = `$nt`.`id`) ";
 
