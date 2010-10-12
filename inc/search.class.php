@@ -1958,7 +1958,6 @@ class Search {
             break;
 
          case "glpi_entities.completename" :
-            echo $ID;
             if ($itemtype == 'User') {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
                            AS ".$NAME."_$num,
