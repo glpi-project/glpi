@@ -4234,67 +4234,56 @@ class Search {
 
             $search['States'][1]['table']     = 'state_types';
             $search['States'][1]['field']     = 'name';
-            $search['States'][1]['linkfield'] = 'name';
             $search['States'][1]['name']      = $LANG['common'][16];
             $search['States'][1]['datatype']  = 'itemlink';
 
             $search['States'][2]['table']     = 'state_types';
             $search['States'][2]['field']     = 'id';
-            $search['States'][2]['linkfield'] = 'id';
             $search['States'][2]['name']      = $LANG['common'][2];
 
             $search['States'][31]['table']     = 'glpi_states';
             $search['States'][31]['field']     = 'name';
-            $search['States'][31]['linkfield'] = 'states_id';
             $search['States'][31]['name']      = $LANG['state'][0];
 
             $search['States'] += Location::getSearchOptionsToAdd();
 
             $search['States'][5]['table']     = 'state_types';
             $search['States'][5]['field']     = 'serial';
-            $search['States'][5]['linkfield'] = 'serial';
             $search['States'][5]['name']      = $LANG['common'][19];
 
             $search['States'][6]['table']     = 'state_types';
             $search['States'][6]['field']     = 'otherserial';
-            $search['States'][6]['linkfield'] = 'otherserial';
             $search['States'][6]['name']      = $LANG['common'][20];
 
             $search['States'][16]['table']     = 'state_types';
             $search['States'][16]['field']     = 'comment';
-            $search['States'][16]['linkfield'] = 'comment';
             $search['States'][16]['name']      = $LANG['common'][25];
             $search['States'][16]['datatype']  = 'text';
 
             $search['States'][70]['table']     = 'glpi_users';
             $search['States'][70]['field']     = 'name';
-            $search['States'][70]['linkfield'] = 'users_id';
             $search['States'][70]['name']      = $LANG['common'][34];
 
             $search['States'][71]['table']     = 'glpi_groups';
             $search['States'][71]['field']     = 'name';
-            $search['States'][71]['linkfield'] = 'groups_id';
             $search['States'][71]['name']      = $LANG['common'][35];
 
-            $search['States'][19]['table']     = 'state_types';
-            $search['States'][19]['field']     = 'date_mod';
-            $search['States'][19]['linkfield'] = '';
-            $search['States'][19]['name']      = $LANG['common'][26];
-            $search['States'][19]['datatype']  = 'datetime';
+            $search['States'][19]['table']          = 'state_types';
+            $search['States'][19]['field']          = 'date_mod';
+            $search['States'][19]['name']           = $LANG['common'][26];
+            $search['States'][19]['datatype']       = 'datetime';
+            $search['States'][19]['massiveaction']  = false;
 
             $search['States'][23]['table']     = 'glpi_manufacturers';
             $search['States'][23]['field']     = 'name';
-            $search['States'][23]['linkfield'] = 'manufacturers_id';
             $search['States'][23]['name']      = $LANG['common'][5];
 
             $search['States'][24]['table']     = 'glpi_users';
             $search['States'][24]['field']     = 'name';
-            $search['States'][24]['linkfield'] = 'users_id_tech';
             $search['States'][24]['name']      = $LANG['common'][10];
 
             $search['States'][80]['table']     = 'glpi_entities';
             $search['States'][80]['field']     = 'completename';
-            $search['States'][80]['linkfield'] = 'entities_id';
             $search['States'][80]['name']      = $LANG['entity'][0];
 
          } else if (class_exists($itemtype)) {
