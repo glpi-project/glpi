@@ -184,6 +184,7 @@ function addDocuments($type, $ID) {
    }
 }
 
+
 /** Generate bigdump : add infocoms to an item
  * @param $type item type
  * @param $ID item ID
@@ -198,23 +199,21 @@ function addInfocoms($type, $ID, $ID_entity) {
    $usedate      = $deliverydate+mt_rand(0, 60)*DAY_TIMESTAMP;
    $warrantydate = $deliverydate;
 
-   $orderdate=date("Y-m-d", intval($orderdate));
-   $buydate=date("Y-m-d", intval($buydate));
-   $deliverydate=date("Y-m-d", intval($deliverydate));
-   $usedate=date("Y-m-d", intval($usedate));
-   $warrantydate=date("Y-m-d", intval($warrantydate));
+   $orderdate    = date("Y-m-d", intval($orderdate));
+   $buydate      = date("Y-m-d", intval($buydate));
+   $deliverydate = date("Y-m-d", intval($deliverydate));
+   $usedate      = date("Y-m-d", intval($usedate));
+   $warrantydate = date("Y-m-d", intval($warrantydate));
 
    $query = "INSERT INTO `glpi_infocoms`
-               VALUES (NULL, '$ID', '$type', '$ID_entity', '0', '$buydate', '$usedate',
-                     '".mt_rand(12,36)."', 'infowar $type $ID',
-                     '".mt_rand($FIRST["enterprises"],$LAST['enterprises'])."',
-                     'commande $type $ID', 'BL $type $ID', 'immo $type $ID',
-                     '".mt_rand(0,5000)."', '".mt_rand(0,500)."', '".mt_rand(1,7)."',
-                     '".mt_rand(1,2)."', '".mt_rand(2,5)."', 'comment $type $ID',
-                     'facture $type $ID', '".mt_rand($FIRST['budget'],$LAST['budget'])."',
-                     '0','$orderdate','$deliverydate','$warrantydate')";
+             VALUES (NULL, '$ID', '$type', '$ID_entity', '0', '$buydate', '$usedate',
+                     '".mt_rand(12,36)."', 'infowar $type $ID', '".mt_rand($FIRST["enterprises"],
+                     $LAST['enterprises'])."', 'commande $type $ID', 'BL $type $ID',
+                     'immo $type $ID', '".mt_rand(0,5000)."', '".mt_rand(0,500)."',
+                     '".mt_rand(1,7)."', '".mt_rand(1,2)."', '".mt_rand(2,5)."', 'comment $type $ID',
+                     'facture $type $ID', '".mt_rand($FIRST['budget'], $LAST['budget'])."', '0',
+                     '$orderdate', '$deliverydate', '$warrantydate')";
    $DB->query($query) or die("PB REQUETE ".$query);
-
 }
 
 

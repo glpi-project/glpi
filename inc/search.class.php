@@ -2857,8 +2857,8 @@ class Search {
             // Add networking device for computers
             if ($itemtype == 'Computer') {
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                          "glpi_computers_devicenetworkcards", 'computers_devicenetworkcards_id', $meta,
-                                          $meta_type);
+                                          "glpi_computers_devicenetworkcards",
+                                          'computers_devicenetworkcards_id', $meta, $meta_type);
             }
             return $out."
                    LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
@@ -2876,9 +2876,11 @@ class Search {
 
          case "glpi_followup_requesttypes":
             // Link to glpi_ticketfollowups before
-            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_ticketfollowups",$linkfield);
-            return $out." LEFT JOIN `glpi_requesttypes` AS glpi_followup_requesttypes  ON (`glpi_followup_requesttypes`.`id`
-                            =`glpi_ticketfollowups`.`requesttypes_id`)";
+            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_ticketfollowups",
+                                       $linkfield);
+            return $out." LEFT JOIN `glpi_requesttypes` AS glpi_followup_requesttypes
+                           ON (`glpi_followup_requesttypes`.`id`
+                                 =`glpi_ticketfollowups`.`requesttypes_id`)";
 
          case "glpi_taskcategories":
               $out = " LEFT JOIN `glpi_taskcategories` ON (`glpi_taskcategories`.`id`
@@ -4177,8 +4179,8 @@ class Search {
          }
          if (!$CFG_GLPI['use_ocs_mode']) {
             if (($action=='r' && !haveRight('view_ocsng',$action))
-               || ($action=='w' &&  !haveRight('sync_ocsng',$action))) {
-               $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103,104));
+                || ($action=='w' && !haveRight('sync_ocsng',$action))) {
+               $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103, 104));
             }
          }
       }
