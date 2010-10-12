@@ -2056,14 +2056,18 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td>\n";
       echo "<td><input type='text' name='login'></td></tr>";
-      echo "<tr class='tab_bg_1'><td class='tab_bg_2 center' colspan='2'>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='tab_bg_2 center' colspan='2'>\n";
       echo "<input type='hidden' name='ext_auth' value='1'>\n";
       echo "<input type='submit' name='add_ext_auth_ldap' value='".$LANG['users'][15].
-           "' class='submit'>\n";
+             "' class='submit'>\n";
       echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td class='tab_bg_2 center' colspan='2'>\n";
-      echo "<input type='submit' name='add_ext_auth_simple' value=\"".$LANG['users'][16].
-           "\" class='submit'>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='tab_bg_2 center' colspan='2'>\n";
+      echo "<input type='submit' name='add_ext_auth_simple' value='".$LANG['users'][16].
+           "' class='submit'>\n";
       echo "</td></tr>\n";
 
       echo "</table></form></div>\n";
