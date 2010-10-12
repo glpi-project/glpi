@@ -4367,84 +4367,12 @@ class Search {
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
             $search[$itemtype]['contract'] = $LANG['Menu'][25];
-
-            $search[$itemtype][29]['table']         = 'glpi_contracts';
-            $search[$itemtype][29]['field']         = 'name';
-            $search[$itemtype][29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
-            $search[$itemtype][29]['forcegroupby']  = true;
-            $search[$itemtype][29]['datatype']      = 'itemlink';
-            $search[$itemtype][29]['itemlink_type'] = 'Contract';
-            $search[$itemtype][29]['massiveaction'] = false;
-
-            $search[$itemtype][30]['table']         = 'glpi_contracts';
-            $search[$itemtype][30]['field']         = 'num';
-            $search[$itemtype][30]['name']          = $LANG['financial'][4]." ".$LANG['financial'][1];
-            $search[$itemtype][30]['forcegroupby']  = true;
-            $search[$itemtype][30]['massiveaction'] = false;
-
-            $search[$itemtype][130]['table']         = 'glpi_contracts';
-            $search[$itemtype][130]['field']         = 'duration';
-            $search[$itemtype][130]['name']          = $LANG['financial'][8];
-            $search[$itemtype][130]['forcegroupby']  = true;
-            $search[$itemtype][130]['massiveaction'] = false;
-
-            $search[$itemtype][131]['table']         = 'glpi_contracts';
-            $search[$itemtype][131]['field']         = 'periodicity';
-            $search[$itemtype][131]['name']          = $LANG['financial'][69];
-            $search[$itemtype][131]['forcegroupby']  = true;
-            $search[$itemtype][131]['massiveaction'] = false;
-
-            $search[$itemtype][132]['table']         = 'glpi_contracts';
-            $search[$itemtype][132]['field']         = 'begin_date';
-            $search[$itemtype][132]['name']          = $LANG['search'][8]." ".$LANG['financial'][1];
-            $search[$itemtype][132]['forcegroupby']  = true;
-            $search[$itemtype][132]['datatype']      = 'date';
-            $search[$itemtype][132]['massiveaction'] = false;
-
-            $search[$itemtype][133]['table']         = 'glpi_contracts';
-            $search[$itemtype][133]['field']         = 'accounting_number';
-            $search[$itemtype][133]['name']          = $LANG['financial'][13]." ".$LANG['financial'][1];
-            $search[$itemtype][133]['forcegroupby']  = true;
-            $search[$itemtype][133]['massiveaction'] = false;
-
-            $search[$itemtype][134]['table']         = 'glpi_contracts';
-            $search[$itemtype][134]['field']         = 'end_date';
-            $search[$itemtype][134]['name']          = $LANG['search'][9]." ".$LANG['financial'][1];
-            $search[$itemtype][134]['forcegroupby']  = true;
-            $search[$itemtype][134]['datatype']      = 'date_delay';
-            $search[$itemtype][134]['datafields'][1] = 'begin_date';
-            $search[$itemtype][134]['datafields'][2] = 'duration';
-            $search[$itemtype][134]['searchunit']    = 'MONTH';
-            $search[$itemtype][134]['delayunit']     = 'MONTH';
-            $search[$itemtype][134]['massiveaction'] = false;
-
-            $search[$itemtype][135]['table']         = 'glpi_contracts';
-            $search[$itemtype][135]['field']         = 'notice';
-            $search[$itemtype][135]['name']          = $LANG['financial'][10]." ".$LANG['financial'][1];
-            $search[$itemtype][135]['forcegroupby']  = true;
-            $search[$itemtype][135]['massiveaction'] = false;
-
-            $search[$itemtype][136]['table']         = 'glpi_contracts';
-            $search[$itemtype][136]['field']         = 'cost';
-            $search[$itemtype][136]['name']          = $LANG['financial'][5]." ".$LANG['financial'][1];
-            $search[$itemtype][136]['forcegroupby']  = true;
-            $search[$itemtype][136]['datatype']      = 'decimal';
-            $search[$itemtype][136]['massiveaction'] = false;
-
-            $search[$itemtype][137]['table']         = 'glpi_contracts';
-            $search[$itemtype][137]['field']         = 'billing';
-            $search[$itemtype][137]['name']          = $LANG['financial'][11]." ".$LANG['financial'][1];
-            $search[$itemtype][137]['forcegroupby']  = true;
-            $search[$itemtype][137]['massiveaction'] = false;
-
-            $search[$itemtype][138]['table']         = 'glpi_contracts';
-            $search[$itemtype][138]['field']         = 'renewal';
-            $search[$itemtype][138]['name']          = $LANG['financial'][107]." ".$LANG['financial'][1];
-            $search[$itemtype][138]['forcegroupby']  = true;
-            $search[$itemtype][138]['massiveaction'] = false;
+            $search[$itemtype] += Contract::getSearchOptionsToAdd();
          }
 
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+            $search[$itemtype]['financial'] = $LANG['financial'][3];
+
             $search[$itemtype] += Infocom::getSearchOptionsToAdd();
          }
 

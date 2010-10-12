@@ -284,6 +284,89 @@ class Contract extends CommonDBTM {
    }
 
 
+   static function getSearchOptionsToAdd () {
+      global $LANG;
+
+      $tab=array();
+
+      $tab[29]['table']         = 'glpi_contracts';
+      $tab[29]['field']         = 'name';
+      $tab[29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
+      $tab[29]['forcegroupby']  = true;
+      $tab[29]['datatype']      = 'itemlink';
+      $tab[29]['itemlink_type'] = 'Contract';
+      $tab[29]['massiveaction'] = false;
+
+      $tab[30]['table']         = 'glpi_contracts';
+      $tab[30]['field']         = 'num';
+      $tab[30]['name']          = $LANG['financial'][4]." ".$LANG['financial'][1];
+      $tab[30]['forcegroupby']  = true;
+      $tab[30]['massiveaction'] = false;
+
+      $tab[130]['table']         = 'glpi_contracts';
+      $tab[130]['field']         = 'duration';
+      $tab[130]['name']          = $LANG['financial'][8];
+      $tab[130]['forcegroupby']  = true;
+      $tab[130]['massiveaction'] = false;
+
+      $tab[131]['table']         = 'glpi_contracts';
+      $tab[131]['field']         = 'periodicity';
+      $tab[131]['name']          = $LANG['financial'][69];
+      $tab[131]['forcegroupby']  = true;
+      $tab[131]['massiveaction'] = false;
+
+      $tab[132]['table']         = 'glpi_contracts';
+      $tab[132]['field']         = 'begin_date';
+      $tab[132]['name']          = $LANG['search'][8]." ".$LANG['financial'][1];
+      $tab[132]['forcegroupby']  = true;
+      $tab[132]['datatype']      = 'date';
+      $tab[132]['massiveaction'] = false;
+
+      $tab[133]['table']         = 'glpi_contracts';
+      $tab[133]['field']         = 'accounting_number';
+      $tab[133]['name']          = $LANG['financial'][13]." ".$LANG['financial'][1];
+      $tab[133]['forcegroupby']  = true;
+      $tab[133]['massiveaction'] = false;
+
+      $tab[134]['table']         = 'glpi_contracts';
+      $tab[134]['field']         = 'end_date';
+      $tab[134]['name']          = $LANG['search'][9]." ".$LANG['financial'][1];
+      $tab[134]['forcegroupby']  = true;
+      $tab[134]['datatype']      = 'date_delay';
+      $tab[134]['datafields'][1] = 'begin_date';
+      $tab[134]['datafields'][2] = 'duration';
+      $tab[134]['searchunit']    = 'MONTH';
+      $tab[134]['delayunit']     = 'MONTH';
+      $tab[134]['massiveaction'] = false;
+
+      $tab[135]['table']         = 'glpi_contracts';
+      $tab[135]['field']         = 'notice';
+      $tab[135]['name']          = $LANG['financial'][10]." ".$LANG['financial'][1];
+      $tab[135]['forcegroupby']  = true;
+      $tab[135]['massiveaction'] = false;
+
+      $tab[136]['table']         = 'glpi_contracts';
+      $tab[136]['field']         = 'cost';
+      $tab[136]['name']          = $LANG['financial'][5]." ".$LANG['financial'][1];
+      $tab[136]['forcegroupby']  = true;
+      $tab[136]['datatype']      = 'decimal';
+      $tab[136]['massiveaction'] = false;
+
+      $tab[137]['table']         = 'glpi_contracts';
+      $tab[137]['field']         = 'billing';
+      $tab[137]['name']          = $LANG['financial'][11]." ".$LANG['financial'][1];
+      $tab[137]['forcegroupby']  = true;
+      $tab[137]['massiveaction'] = false;
+
+      $tab[138]['table']         = 'glpi_contracts';
+      $tab[138]['field']         = 'renewal';
+      $tab[138]['name']          = $LANG['financial'][107]." ".$LANG['financial'][1];
+      $tab[138]['forcegroupby']  = true;
+      $tab[138]['massiveaction'] = false;
+
+      return $tab;
+   }
+
    function getSearchOptions() {
       global $LANG;
 
@@ -292,29 +375,26 @@ class Contract extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'num';
-      $tab[3]['linkfield'] = 'num';
       $tab[3]['name']      = $LANG['financial'][4];
 
       $tab[4]['table']     = 'glpi_contracttypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'contracttypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
       $tab[5]['table']        = $this->getTable();
       $tab[5]['field']        = 'begin_date';
-      $tab[5]['linkfield']    = 'begin_date';
       $tab[5]['name']         = $LANG['search'][8];
       $tab[5]['datatype']     = 'date';
       $tab[5]['maybefuture']  = true;
@@ -322,12 +402,10 @@ class Contract extends CommonDBTM {
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'duration';
-      $tab[6]['linkfield'] = 'duration';
       $tab[6]['name']      = $LANG['financial'][8];
 
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'end_date';
-      $tab[20]['linkfield']     = '';
       $tab[20]['name']          = $LANG['search'][9];
       $tab[20]['datatype']      = 'date_delay';
       $tab[20]['datafields'][1] = 'begin_date';
@@ -335,42 +413,39 @@ class Contract extends CommonDBTM {
       $tab[20]['searchunit']    = 'MONTH';
       $tab[20]['delayunit']     = 'MONTH';
       $tab[20]['maybefuture']   = true;
+      $tab[20]['massiveaction'] = false;
 
 
       $tab[7]['table']     = $this->getTable();
       $tab[7]['field']     = 'notice';
-      $tab[7]['linkfield'] = 'notice';
       $tab[7]['name']      = $LANG['financial'][10];
 
       $tab[11]['table']     = $this->getTable();
       $tab[11]['field']     = 'cost';
-      $tab[11]['linkfield'] = 'cost';
       $tab[11]['name']      = $LANG['financial'][5];
       $tab[11]['datatype']  = 'decimal';
 
-      $tab[21]['table']     = $this->getTable();
-      $tab[21]['field']     = 'periodicity';
-      $tab[21]['linkfield'] = '';
-      $tab[21]['name']      = $LANG['financial'][69];
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'periodicity';
+      $tab[21]['name']          = $LANG['financial'][69];
+      $tab[21]['massiveaction'] = false;
 
-      $tab[22]['table']     = $this->getTable();
-      $tab[22]['field']     = 'billing';
-      $tab[22]['linkfield'] = '';
-      $tab[22]['name']      = $LANG['financial'][11];
+      $tab[22]['table']         = $this->getTable();
+      $tab[22]['field']         = 'billing';
+      $tab[22]['name']          = $LANG['financial'][11];
+      $tab[22]['massiveaction'] = false;
 
       $tab[10]['table']     = $this->getTable();
       $tab[10]['field']     = 'accounting_number';
-      $tab[10]['linkfield'] = 'accounting_number';
       $tab[10]['name']      = $LANG['financial'][13];
 
-      $tab[23]['table']     = $this->getTable();
-      $tab[23]['field']     = 'renewal';
-      $tab[23]['linkfield'] = '';
-      $tab[23]['name']      = $LANG['financial'][107];
+      $tab[23]['table']         = $this->getTable();
+      $tab[23]['field']         = 'renewal';
+      $tab[23]['name']          = $LANG['financial'][107];
+      $tab[23]['massiveaction'] = false;
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'expire';
-      $tab[12]['linkfield']     = '';
       $tab[12]['name']          = $LANG['financial'][98];
       $tab[12]['datatype']      = 'date_delay';
       $tab[12]['datafields'][1] = 'begin_date';
@@ -378,10 +453,10 @@ class Contract extends CommonDBTM {
       $tab[12]['searchunit']    = 'DAY';
       $tab[12]['delayunit']     = 'MONTH';
       $tab[12]['maybefuture']   = true;
+      $tab[12]['massiveaction'] = false;
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'expire_notice';
-      $tab[13]['linkfield']     = '';
       $tab[13]['name']          = $LANG['financial'][99];
       $tab[13]['datatype']      = 'date_delay';
       $tab[13]['datafields'][1] = 'begin_date';
@@ -390,32 +465,29 @@ class Contract extends CommonDBTM {
       $tab[13]['searchunit']    = 'DAY';
       $tab[13]['delayunit']     = 'MONTH';
       $tab[13]['maybefuture']   = true;
-
+      $tab[13]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = $this->getTable();
-      $tab[90]['field']     = 'notepad';
-      $tab[90]['linkfield'] = '';
-      $tab[90]['name']      = $LANG['title'][37];
+      $tab[90]['table']         = $this->getTable();
+      $tab[90]['field']         = 'notepad';
+      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['massiveaction'] = false;
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       $tab[59]['table']     = $this->getTable();
       $tab[59]['field']     = 'alert';
-      $tab[59]['linkfield'] = 'alert';
       $tab[59]['name']      = $LANG['common'][41];
 
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
-      $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
 
