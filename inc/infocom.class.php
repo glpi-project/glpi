@@ -892,8 +892,6 @@ class Infocom extends CommonDBTM {
 
       $tab=array();
 
-      $tab['financial'] = $LANG['financial'][3];
-
       $tab[25]['table']        = 'glpi_infocoms';
       $tab[25]['field']        = 'immo_number';
       $tab[25]['name']         = $LANG['financial'][20];
@@ -1024,7 +1022,6 @@ class Infocom extends CommonDBTM {
    function getSearchOptions() {
       global $LANG;
 
-
       $tab = array();
       $tab['common']       = $LANG['common'][32];
 
@@ -1033,17 +1030,116 @@ class Infocom extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
+      $tab[4]['table']     = $this->getTable();
+      $tab[4]['field']     = 'buy_date';
+      $tab[4]['name']      = $LANG["financial"][14];
+      $tab[4]['datatype']  = 'date';
+
+      $tab[5]['table']     = $this->getTable();
+      $tab[5]['field']     = 'use_date';
+      $tab[5]['name']      = $LANG["financial"][76];
+      $tab[5]['datatype']  = 'date';
+
+      $tab[24]['table']        = 'glpi_infocoms';
+      $tab[24]['field']        = 'delivery_date';
+      $tab[24]['name']         = $LANG['financial'][27];
+      $tab[24]['datatype']     = 'date';
+      $tab[24]['forcegroupby'] = true;
+
+      $tab[23]['table']        = 'glpi_infocoms';
+      $tab[23]['field']        = 'order_date';
+      $tab[23]['name']         = $LANG['financial'][28];
+      $tab[23]['datatype']     = 'date';
+      $tab[23]['forcegroupby'] = true;
+
+      $tab[25]['table']        = 'glpi_infocoms';
+      $tab[25]['field']        = 'warranty_date';
+      $tab[25]['name']         = $LANG['financial'][29];
+      $tab[25]['datatype']     = 'date';
+      $tab[25]['forcegroupby'] = true;
+
+      $tab[6]['table']     = $this->getTable();
+      $tab[6]['field']     = 'warranty_duration';
+      $tab[6]['name']      = $LANG["financial"][15];
+      $tab[6]['datatype']  = 'integer';
+
+      $tab[7]['table']     = $this->getTable();
+      $tab[7]['field']     = 'warranty_info';
+      $tab[7]['name']      = $LANG["financial"][16];
+
+      $tab[8]['table']      = $this->getTable();
+      $tab[8]['field']      = 'warranty_value';
+      $tab[8]['name']       = $LANG["financial"][78];
+      $tab[8]['datatype']   = 'decimal';
+
+      $tab[9]['table']      = 'glpi_suppliers';
+      $tab[9]['field']      = 'name';
+      $tab[9]['name']       = $LANG["financial"][26];
+
+      $tab[10]['table']     = $this->getTable();
+      $tab[10]['field']     = 'order_number';
+      $tab[10]['name']      = $LANG["financial"][18];
+
+      $tab[11]['table']     = $this->getTable();
+      $tab[11]['field']     = 'delivry_number';
+      $tab[11]['name']      = $LANG["financial"][19];
+
+      $tab[12]['table']     = $this->getTable();
+      $tab[12]['field']     = 'immo_number';
+      $tab[12]['name']      = $LANG["financial"][20];
+
+      $tab[13]['table']     = $this->getTable();
+      $tab[13]['field']     = 'value';
+      $tab[13]['name']      = $LANG["financial"][21];
+      $tab[13]['datatype']  = 'decimal';
+
+      $tab[14]['table']     = $this->getTable();
+      $tab[14]['field']     = 'sink_time';
+      $tab[14]['name']      = $LANG["financial"][23];
+      $tab[14]['datatype']  = 'integer';
+
+      $tab[15]['table']     = $this->getTable();
+      $tab[15]['field']     = 'sink_type';
+      $tab[15]['name']      = $LANG["financial"][22];
+      $tab[15]['datatype']  = 'integer';
+
+      $tab[16]['table']     = $this->getTable();
+      $tab[16]['field']     = 'comment';
+      $tab[16]['name']      = $LANG['common'][25];
+      $tab[16]['datatype']  = 'text';
+
+      $tab[17]['table']     = $this->getTable();
+      $tab[17]['field']     = 'sink_coeff';
+      $tab[17]['name']      = $LANG["financial"][77];
+      $tab[17]['datatype']  = 'decimal';
+
+      $tab[18]['table']     = $this->getTable();
+      $tab[18]['field']     = 'bill';
+      $tab[18]['name']      = $LANG["financial"][82];
+      $tab[18]['itemtype']  = 'text';
+
+      $tab[19]['table']     = 'glpi_budgets';
+      $tab[19]['field']     = 'name';
+      $tab[19]['name']      = $LANG["financial"][87];
+      $tab[19]['datatype']  = 'text';
+      $tab[19]['datatype']  = 'itemlink';
+
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'itemtype';
       $tab[20]['name']          = $LANG['common'][17];
       $tab[20]['datatype']      = 'itemtype';
       $tab[20]['massiveaction'] = false;
 
-      $tab[21]['table']         = $this->getTable();
+      $tab[21]['table']        = $this->getTable();
       $tab[21]['field']         = 'items_id';
       $tab[21]['name']          = 'ID';
       $tab[21]['datatype']      = 'integer';
       $tab[21]['massiveaction'] = false;
+
+      $tab[22]['table']     = $this->getTable();
+      $tab[22]['field']     = 'alert';
+      $tab[22]['name']      = $LANG["setup"][247];
+      $tab[22]['datatype']  = 'integer';
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -1054,8 +1150,6 @@ class Infocom extends CommonDBTM {
       $tab[86]['field']     = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
-
-      $tab=self::getSearchOptionsToAdd();
 
       return $tab;
    }
