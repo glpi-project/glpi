@@ -1602,30 +1602,27 @@ class User extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['setup'][18];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['forcegroupby']  = true;
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab[34]['table']     = $this->getTable();
       $tab[34]['field']     = 'realname';
-      $tab[34]['linkfield'] = 'realname';
       $tab[34]['name']      = $LANG['common'][48];
 
       $tab[9]['table']     = $this->getTable();
       $tab[9]['field']     = 'firstname';
-      $tab[9]['linkfield'] = 'firstname';
       $tab[9]['name']      = $LANG['common'][43];
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'email';
-      $tab[5]['linkfield'] = 'email';
       $tab[5]['name']      = $LANG['setup'][14];
       $tab[5]['datatype']  = 'email';
 
@@ -1633,98 +1630,91 @@ class User extends CommonDBTM {
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'is_active';
-      $tab[8]['linkfield'] = 'is_active';
       $tab[8]['name']      = $LANG['common'][60];
       $tab[8]['datatype']  = 'bool';
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'phone';
-      $tab[6]['linkfield'] = 'phone';
       $tab[6]['name']      = $LANG['help'][35];
 
       $tab[10]['table']     = $this->getTable();
       $tab[10]['field']     = 'phone2';
-      $tab[10]['linkfield'] = 'phone2';
       $tab[10]['name']      = $LANG['help'][35]." 2";
 
       $tab[11]['table']     = $this->getTable();
       $tab[11]['field']     = 'mobile';
-      $tab[11]['linkfield'] = 'mobile';
       $tab[11]['name']      = $LANG['common'][42];
 
-      $tab[13]['table']          = 'glpi_groups';
-      $tab[13]['field']          = 'name';
-      $tab[13]['linkfield']      = '';
-      $tab[13]['name']           = $LANG['common'][35];
-      $tab[13]['forcegroupby']   = true;
-      $tab[13]['datatype']       = 'itemlink';
-      $tab[13]['itemlink_type']  = 'Group';
+      $tab[13]['table']         = 'glpi_groups';
+      $tab[13]['field']         = 'name';
+      $tab[13]['name']          = $LANG['common'][35];
+      $tab[13]['forcegroupby']  = true;
+      $tab[13]['datatype']      = 'itemlink';
+      $tab[13]['itemlink_type'] = 'Group';
+      $tab[13]['massiveaction'] = false;
 
-      $tab[14]['table']     = $this->getTable();
-      $tab[14]['field']     = 'last_login';
-      $tab[14]['linkfield'] = '';
-      $tab[14]['name']      = $LANG['login'][0];
-      $tab[14]['datatype']  = 'datetime';
+      $tab[14]['table']         = $this->getTable();
+      $tab[14]['field']         = 'last_login';
+      $tab[14]['name']          = $LANG['login'][0];
+      $tab[14]['datatype']      = 'datetime';
+      $tab[14]['massiveaction'] = false;
 
-      $tab[15]['table']      = 'glpi_auth_tables';
-      $tab[15]['field']      = 'name';
-      $tab[15]['linkfield']  = '';
-      $tab[15]['name']       = $LANG['login'][10];
-      $tab[15]['searchtype'] = 'contains';
+      $tab[15]['table']         = 'glpi_auth_tables';
+      $tab[15]['field']         = 'name';
+      $tab[15]['name']          = $LANG['login'][10];
+      $tab[15]['searchtype']    = 'contains';
+      $tab[15]['massiveaction'] = false;
 
-      $tab[30]['table']      = 'glpi_authldaps';
-      $tab[30]['field']      = 'name';
-      $tab[30]['linkfield']  = '';
-      $tab[30]['name']       = $LANG['login'][10]." - ".$LANG['login'][2];
+      $tab[30]['table']         = 'glpi_authldaps';
+      $tab[30]['field']         = 'name';
+      $tab[30]['name']          = $LANG['login'][10]." - ".$LANG['login'][2];
+      $tab[30]['massiveaction'] = false;
 
-      $tab[31]['table']      = 'glpi_authmails';
-      $tab[31]['field']      = 'name';
-      $tab[31]['linkfield']  = '';
-      $tab[31]['name']       = $LANG['login'][10]." - ".$LANG['login'][3];
+      $tab[31]['table']         = 'glpi_authmails';
+      $tab[31]['field']         = 'name';
+      $tab[31]['name']          = $LANG['login'][10]." - ".$LANG['login'][3];
+      $tab[31]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
       $tab[17]['table']     = $this->getTable();
       $tab[17]['field']     = 'language';
-      $tab[17]['linkfield'] = '';
       $tab[17]['name']      = $LANG['setup'][41];
       $tab[17]['datatype']  = 'language';
+      $tab[17]['massiveaction'] = false;
 
-      $tab[19]['table']     = $this->getTable();
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
-      $tab[20]['table']        = 'glpi_profiles';
-      $tab[20]['field']        = 'name';
-      $tab[20]['linkfield']    = '';
-      $tab[20]['name']         = $LANG['Menu'][35]." (- ".$LANG['entity'][0].")";
-      $tab[20]['forcegroupby'] = true;
+      $tab[20]['table']         = 'glpi_profiles';
+      $tab[20]['field']         = 'name';
+      $tab[20]['name']          = $LANG['Menu'][35]." (- ".$LANG['entity'][0].")";
+      $tab[20]['forcegroupby']  = true;
+      $tab[20]['massiveaction'] = false;
 
-      $tab[21]['table']     = $this->getTable();
-      $tab[21]['field']     = 'user_dn';
-      $tab[21]['linkfield'] = '';
-      $tab[21]['name']      = $LANG['ldap'][26];
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'user_dn';
+      $tab[21]['name']          = $LANG['ldap'][26];
+      $tab[21]['massiveaction'] = false;
 
-      $tab[80]['table']        = 'glpi_entities';
-      $tab[80]['field']        = 'completename';
-      $tab[80]['linkfield']    = 'entities_id';
-      $tab[80]['name']         = $LANG['entity'][0]." (- ".$LANG['Menu'][35].")";
-      $tab[80]['forcegroupby'] = true;
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0]." (- ".$LANG['Menu'][35].")";
+      $tab[80]['forcegroupby']  = true;
+      $tab[80]['massiveaction'] = false;
 
       $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';
-      $tab[81]['linkfield'] = 'usertitles_id';
       $tab[81]['name']      = $LANG['users'][1];
 
       $tab[82]['table']     = 'glpi_usercategories';
       $tab[82]['field']     = 'name';
-      $tab[82]['linkfield'] = 'usercategories_id';
       $tab[82]['name']      = $LANG['users'][2];
 
       return $tab;

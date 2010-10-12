@@ -80,17 +80,14 @@ class TicketCategory extends CommonTreeDropdown {
 
       $tab[70]['table']     = 'glpi_users';
       $tab[70]['field']     = 'name';
-      $tab[70]['linkfield'] = 'users_id';
       $tab[70]['name']      = $LANG['common'][10];
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'name';
-      $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'is_helpdeskvisible';
-      $tab[2]['linkfield'] = 'is_helpdeskvisible';
       $tab[2]['name']      = $LANG['tracking'][39];
       $tab[2]['datatype']  = 'bool';
 

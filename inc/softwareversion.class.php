@@ -208,24 +208,20 @@ class SoftwareVersion extends CommonDBChild {
       $tab['common'] = $LANG['common'][32];
 
       $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     =  'name';
-      $tab[2]['linkfield'] ='name';
+      $tab[2]['field']     = 'name';
       $tab[2]['name']      = $LANG['common'][16];
 
       $tab[4]['table']     = 'glpi_operatingsystems';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'operatingsystems_id';
       $tab[4]['name']      = $LANG['setup'][5];
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
       $tab[31]['table']     = 'glpi_states';
       $tab[31]['field']     = 'name';
-      $tab[31]['linkfield'] = 'states_id';
       $tab[31]['name']      = $LANG['state'][0];
 
       return $tab;
