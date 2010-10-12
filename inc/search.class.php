@@ -1865,9 +1865,10 @@ class Search {
          case "glpi_users.name" :
             if ($itemtype != 'User') {
                $linkfield = "";
-               if (!empty($searchopt[$ID]["linkfield"])) {
+               if ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
                   $linkfield = "_".$searchopt[$ID]["linkfield"];
                }
+
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT( `$table$linkfield$addtable`.`id` SEPARATOR '$$$$')
                               AS ".$NAME."_".$num.",";
@@ -1882,7 +1883,7 @@ class Search {
          case "glpi_groups.name" :
             if ($itemtype != 'Group' && $itemtype != 'User') {
                $linkfield = "";
-               if (!empty($searchopt[$ID]["linkfield"])) {
+               if ($searchopt[$ID]["linkfield"]!='groups_id') {
                   $linkfield = "_".$searchopt[$ID]["linkfield"];
                }
                return " `$table$linkfield$addtable`.`$field` AS ".$NAME."_$num, ";
@@ -2276,8 +2277,10 @@ class Search {
          case "glpi_users_validation.name" :
          case "glpi_users.name" :
             $linkfield = "";
-            if (!empty($searchopt[$ID]["linkfield"])) {
-               $linkfield = "_".$searchopt[$ID]["linkfield"];
+            if ($itemtype!='User') {
+               if ($searchopt[$ID]["linkfield"]!=getForeignKeyFieldForTable($inittable)) {
+                  $linkfield = "_".$searchopt[$ID]["linkfield"];
+               }
 
                if ($meta && getTableForItemType($itemtype)!=$inittable) {
                   $table = $inittable;
@@ -2309,14 +2312,17 @@ class Search {
 
          case "glpi_groups.name" :
             $linkfield = "";
-            if ($itemtype!='Group' && !empty($searchopt[$ID]["linkfield"])) {
-               $linkfield = "_".$searchopt[$ID]["linkfield"];
+            if ($itemtype!='Group') {
+               if ($searchopt[$ID]["linkfield"]!='groups_id') {
+                  $linkfield = "_".$searchopt[$ID]["linkfield"];
+               }
 
                if ($meta && getTableForItemType($itemtype)!=$inittable) {
                   $table = $inittable;
                   $linkfield .= "_".$itemtype;
                }
             }
+            echo $linkfield.'yy';
             if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link `$table$linkfield`.`id`".$SEARCH;
             }
@@ -2673,7 +2679,7 @@ class Search {
          case 'Ticket' :
             if (haveRight("validate_ticket",1)) {
                return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                          "glpi_ticketvalidations", "");
+                                          "glpi_ticketvalidations", "ticketvalidations_id");
             }
 
          default :
@@ -2705,15 +2711,16 @@ class Search {
       $nt = $new_table;
 
       // Multiple link possibilies case
-      if ($new_table=="glpi_users"
-          || $new_table=="glpi_groups"
-          || $new_table=="glpi_users_validation") {
+//       if ($new_table=="glpi_users"
+//           || $new_table=="glpi_groups"
+//           || $new_table=="glpi_users_validation") {
 
-         if (!empty($linkfield)) {
+         if (!empty($linkfield)
+            && $linkfield!=getForeignKeyFieldForTable($new_table)) {
             $nt .= "_".$linkfield;
             $AS .= " AS ".$nt;
          }
-      }
+//       }
 
       $addmetanum = "";
       $rt = $ref_table;
