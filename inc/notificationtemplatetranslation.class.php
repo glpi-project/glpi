@@ -237,28 +237,28 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']     = $this->getTable();
-      $tab[1]['field']     = 'language';
-      $tab[1]['linkfield'] = '';
-      $tab[1]['name']      = $LANG['setup'][41];
-      $tab[1]['datatype']  = 'language';
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'language';
+      $tab[1]['name']          = $LANG['setup'][41];
+      $tab[1]['datatype']      = 'language';
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'subject';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['knowbase'][14];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'subject';
+      $tab[2]['name']          = $LANG['knowbase'][14];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'content_html';
-      $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
-      $tab[3]['datatype']  = 'text';
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'content_html';
+      $tab[3]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
+      $tab[3]['datatype']      = 'text';
+      $tab[3]['massiveaction'] = false;
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'content_text';
-      $tab[4]['linkfield'] = '';
-      $tab[4]['name']      = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
-      $tab[4]['datatype']  = 'text';
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'content_text';
+      $tab[4]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
+      $tab[4]['datatype']      = 'text';
+      $tab[4]['massiveaction'] = false;
 
       return $tab;
    }

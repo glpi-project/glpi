@@ -64,49 +64,47 @@ class NotImportedEmail extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab[1]['table']     = 'glpi_notimportedemails';
-      $tab[1]['field']     = 'from';
-      $tab[1]['linkfield'] = '';
-      $tab[1]['name']      = $LANG['mailing'][132].' : '.$LANG['mailing'][130];
+      $tab[1]['table']         = 'glpi_notimportedemails';
+      $tab[1]['field']         = 'from';
+      $tab[1]['name']          = $LANG['mailing'][132].' : '.$LANG['mailing'][130];
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = 'glpi_notimportedemails';
-      $tab[2]['field']     = 'to';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['mailing'][132].' : '.$LANG['mailing'][131];
+      $tab[2]['table']         = 'glpi_notimportedemails';
+      $tab[2]['field']         = 'to';
+      $tab[2]['name']          = $LANG['mailing'][132].' : '.$LANG['mailing'][131];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = 'glpi_notimportedemails';
-      $tab[3]['field']     = 'subject';
-      $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = $LANG['mailing'][132].' : '.$LANG['common'][57];
+      $tab[3]['table']         = 'glpi_notimportedemails';
+      $tab[3]['field']         = 'subject';
+      $tab[3]['name']          = $LANG['mailing'][132].' : '.$LANG['common'][57];
+      $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = 'glpi_mailcollectors';
       $tab[4]['field']         = 'name';
-      $tab[4]['linkfield']     = 'mailcollectors_id';
       $tab[4]['name']          = $LANG['mailgate'][0];
       $tab[4]['datatype']      = 'itemlink';
       $tab[4]['itemlink_type'] = 'MailCollector';
 
-      $tab[5]['table']     = 'glpi_notimportedemails';
-      $tab[5]['field']     = 'messageid';
-      $tab[5]['linkfield'] = '';
-      $tab[5]['name']      = $LANG['mailing'][132].' : messageid';
+      $tab[5]['table']         = 'glpi_notimportedemails';
+      $tab[5]['field']         = 'messageid';
+      $tab[5]['name']          = $LANG['mailing'][132].' : messageid';
+      $tab[5]['massiveaction'] = false;
 
       $tab[6]['table']     = 'glpi_users';
       $tab[6]['field']     = 'name';
-      $tab[6]['linkfield'] = 'users_id';
       $tab[6]['name']      = $LANG['job'][4];
 
-      $tab[16]['table']     = 'glpi_notimportedemails';
-      $tab[16]['field']     = 'reason';
-      $tab[16]['linkfield'] = '';
-      $tab[16]['name']      = $LANG['mailgate'][13];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']         = 'glpi_notimportedemails';
+      $tab[16]['field']         = 'reason';
+      $tab[16]['name']          = $LANG['mailgate'][13];
+      $tab[16]['datatype']      = 'text';
+      $tab[16]['massiveaction'] = false;
 
-      $tab[19]['table']     = 'glpi_notimportedemails';
-      $tab[19]['field']     = 'date';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][27];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[19]['table']         = 'glpi_notimportedemails';
+      $tab[19]['field']         = 'date';
+      $tab[19]['name']          = $LANG['common'][27];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
       return $tab;
    }

@@ -186,56 +186,53 @@ class Notification extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'event';
-      $tab[2]['linkfield']     = '';
       $tab[2]['name']          = $LANG['mailing'][119];
+      $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'mode';
-      $tab[3]['linkfield']     = '';
       $tab[3]['name']          = $LANG['mailing'][120];
+      $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = 'glpi_notificationtemplates';
       $tab[4]['field']         = 'name';
-      $tab[4]['linkfield']     = 'notificationtemplates_id';
       $tab[4]['name']          = $LANG['mailing'][113];
       $tab[4]['datatype']      = 'itemlink';
       $tab[4]['itemlink_type'] = 'NotificationTemplate';
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'itemtype';
-      $tab[5]['linkfield']     = '';
       $tab[5]['name']          = $LANG['common'][17];
       $tab[5]['datatype']      = 'itemtypename';
+      $tab[5]['massiveaction'] = false;
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'is_active';
-      $tab[6]['linkfield'] = 'is_active';
       $tab[6]['name']      = $LANG['common'][60];
       $tab[6]['datatype']  = 'bool';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
-      $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
+
       return $tab;
    }
 

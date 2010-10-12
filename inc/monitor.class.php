@@ -438,131 +438,112 @@ class Monitor extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab+=Location::getSearchOptionsToAdd();
 
       $tab[4]['table']     = 'glpi_monitortypes';
       $tab[4]['field']     = 'name';
-      $tab[4]['linkfield'] = 'monitortypes_id';
       $tab[4]['name']      = $LANG['common'][17];
 
       $tab[40]['table']     = 'glpi_monitormodels';
       $tab[40]['field']     = 'name';
-      $tab[40]['linkfield'] = 'monitormodels_id';
       $tab[40]['name']      = $LANG['common'][22];
 
       $tab[31]['table']     = 'glpi_states';
       $tab[31]['field']     = 'name';
-      $tab[31]['linkfield'] = 'states_id';
       $tab[31]['name']      = $LANG['state'][0];
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';
-      $tab[5]['linkfield'] = 'serial';
       $tab[5]['name']      = $LANG['common'][19];
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'otherserial';
-      $tab[6]['linkfield'] = 'otherserial';
       $tab[6]['name']      = $LANG['common'][20];
 
       $tab[7]['table']     = $this->getTable();
       $tab[7]['field']     = 'contact';
-      $tab[7]['linkfield'] = 'contact';
       $tab[7]['name']      = $LANG['common'][18];
 
       $tab[8]['table']     = $this->getTable();
       $tab[8]['field']     = 'contact_num';
-      $tab[8]['linkfield'] = 'contact_num';
       $tab[8]['name']      = $LANG['common'][21];
 
       $tab[70]['table']     = 'glpi_users';
       $tab[70]['field']     = 'name';
-      $tab[70]['linkfield'] = 'users_id';
       $tab[70]['name']      = $LANG['common'][34];
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'name';
-      $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
-      $tab[19]['table']     = $this->getTable();
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
-      $tab[90]['table']     = $this->getTable();
-      $tab[90]['field']     = 'notepad';
-      $tab[90]['linkfield'] = '';
-      $tab[90]['name']      = $LANG['title'][37];
+      $tab[90]['table']         = $this->getTable();
+      $tab[90]['field']         = 'notepad';
+      $tab[90]['name']          = $LANG['title'][37];
+      $tab[90]['massiveaction'] = false;
 
       $tab[11]['table']     = $this->getTable();
       $tab[11]['field']     = 'size';
-      $tab[11]['linkfield'] = 'size';
       $tab[11]['name']      = $LANG['monitors'][21];
       $tab[11]['datatype']  = 'number';
 
       $tab[41]['table']     = $this->getTable();
       $tab[41]['field']     = 'have_micro';
-      $tab[41]['linkfield'] = 'have_micro';
       $tab[41]['name']      = $LANG['monitors'][14];
       $tab[41]['datatype']  = 'bool';
 
       $tab[42]['table']     = $this->getTable();
       $tab[42]['field']     = 'have_speaker';
-      $tab[42]['linkfield'] = 'have_speaker';
       $tab[42]['name']      = $LANG['monitors'][15];
       $tab[42]['datatype']  = 'bool';
 
       $tab[43]['table']     = $this->getTable();
       $tab[43]['field']     = 'have_subd';
-      $tab[43]['linkfield'] = 'have_subd';
       $tab[43]['name']      = $LANG['monitors'][19];
       $tab[43]['datatype']  = 'bool';
 
       $tab[44]['table']     = $this->getTable();
       $tab[44]['field']     = 'have_bnc';
-      $tab[44]['linkfield'] = 'have_bnc';
       $tab[44]['name']      = $LANG['monitors'][20];
       $tab[44]['datatype']  = 'bool';
 
       $tab[45]['table']     = $this->getTable();
       $tab[45]['field']     = 'have_dvi';
-      $tab[45]['linkfield'] = 'have_dvi';
       $tab[45]['name']      = $LANG['monitors'][32];
       $tab[45]['datatype']  = 'bool';
 
       $tab[46]['table']     = $this->getTable();
       $tab[46]['field']     = 'have_pivot';
-      $tab[46]['linkfield'] = 'have_pivot';
       $tab[46]['name']      = $LANG['monitors'][33];
       $tab[46]['datatype']  = 'bool';
 
       $tab[47]['table']     = $this->getTable();
       $tab[47]['field']     = 'have_hdmi';
-      $tab[47]['linkfield'] = 'have_hdmi';
       $tab[47]['name']      = $LANG['monitors'][34];
       $tab[47]['datatype']  = 'bool';
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
-      $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
       $tab[24]['table']     = 'glpi_users';
@@ -570,16 +551,16 @@ class Monitor extends CommonDBTM {
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
-      $tab[82]['table']     = $this->getTable();
-      $tab[82]['field']     = 'is_global';
-      $tab[82]['linkfield'] = '';
-      $tab[82]['name']      = $LANG['peripherals'][31];
-      $tab[82]['datatype']  = 'bool';
+      $tab[82]['table']         = $this->getTable();
+      $tab[82]['field']         = 'is_global';
+      $tab[82]['name']          = $LANG['peripherals'][31];
+      $tab[82]['datatype']      = 'bool';
+      $tab[82]['massiveaction'] = false;
 
       return $tab;
    }
