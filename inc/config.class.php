@@ -616,7 +616,6 @@ class Config extends CommonDBTM {
          }
          echo "</tr>\n";
       }
-      echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'><td colspan='7' class='center'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
