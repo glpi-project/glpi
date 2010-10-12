@@ -103,7 +103,6 @@ class ReservationItem extends CommonDBTM {
 
       $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'comment';
-      $tab[4]['linkfield'] = 'comment';
       $tab[4]['name']      = $LANG['common'][25];
       $tab[4]['datatype']  = 'text';
 
@@ -111,42 +110,38 @@ class ReservationItem extends CommonDBTM {
 
       $tab[1]['table']     = 'reservation_types';
       $tab[1]['field']     = 'name';
-      $tab[1]['linkfield'] = 'name';
       $tab[1]['name']      = $LANG['common'][16];
       $tab[1]['datatype']  = 'itemlink';
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = 'reservation_types';
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = 'id';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = 'reservation_types';
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
       $tab += Location::getSearchOptionsToAdd();
 
       $tab[16]['table']     = 'reservation_types';
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 
       $tab[70]['table']     = 'glpi_users';
       $tab[70]['field']     = 'name';
-      $tab[70]['linkfield'] = 'users_id';
       $tab[70]['name']      = $LANG['common'][34];
 
       $tab[71]['table']     = 'glpi_groups';
       $tab[71]['field']     = 'name';
-      $tab[71]['linkfield'] = 'groups_id';
       $tab[71]['name']      = $LANG['common'][35];
 
-      $tab[19]['table']     = 'reservation_types';
-      $tab[19]['field']     = 'date_mod';
-      $tab[19]['linkfield'] = '';
-      $tab[19]['name']      = $LANG['common'][26];
-      $tab[19]['datatype']  = 'datetime';
+      $tab[19]['table']         = 'reservation_types';
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
-      $tab[23]['linkfield'] = 'manufacturers_id';
       $tab[23]['name']      = $LANG['common'][5];
 
       $tab[24]['table']     = 'glpi_users';
@@ -154,10 +149,10 @@ class ReservationItem extends CommonDBTM {
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       return $tab;
    }

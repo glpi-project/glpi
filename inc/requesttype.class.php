@@ -65,15 +65,15 @@ class RequestType extends CommonDropdown {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_helpdesk_default';
-      $tab[14]['linkfield']     = '';
       $tab[14]['name']          = $LANG['tracking'][9];
       $tab[14]['datatype']      = 'bool';
+      $tab[14]['massiveaction'] = false;
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_mail_default';
-      $tab[15]['linkfield']     = '';
       $tab[15]['name']          = $LANG['tracking'][10];
       $tab[15]['datatype']      = 'bool';
+      $tab[15]['massiveaction'] = false;
 
       return $tab;
    }
