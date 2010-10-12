@@ -2698,7 +2698,7 @@ class Search {
    **/
    static function addLeftJoin ($itemtype, $ref_table, &$already_link_tables, $new_table,
                                 $linkfield, $meta=0, $meta_type=0) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
       // Rename table for meta left join
       $AS = "";
@@ -2891,13 +2891,14 @@ class Search {
                    LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
 
          case "glpi_tickets" :
-            if (!empty($linkfield)) {
+            if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
+               return " LEFT JOIN `$new_table` $AS
+                              ON (`$rt`.`id` = `$nt`.`items_id`
+                                 AND `$nt`.`itemtype` = '$itemtype' ".
+                                 getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
+            } else {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
             }
-           return " LEFT JOIN `$new_table` $AS
-                        ON (`$rt`.`id` = `$nt`.`items_id`
-                            AND `$nt`.`itemtype` = '$itemtype' ".
-                            getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
 
          case "glpi_ticketsatisfactions" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
@@ -4305,13 +4306,13 @@ class Search {
          if (in_array($itemtype, $CFG_GLPI["helpdesk_types"])) {
             $search[$itemtype]['tracking'] = $LANG['title'][24];
 
-            $search[$itemtype][60]['table']        = 'glpi_tickets';
-            $search[$itemtype][60]['field']        = 'count';
-            $search[$itemtype][60]['linkfield']    = '';
-            $search[$itemtype][60]['name']         = $LANG['stats'][13];
-            $search[$itemtype][60]['forcegroupby'] = true;
-            $search[$itemtype][60]['usehaving']    = true;
-            $search[$itemtype][60]['datatype']     = 'number';
+            $search[$itemtype][60]['table']         = 'glpi_tickets';
+            $search[$itemtype][60]['field']         = 'count';
+            $search[$itemtype][60]['name']          = $LANG['stats'][13];
+            $search[$itemtype][60]['forcegroupby']  = true;
+            $search[$itemtype][60]['usehaving']     = true;
+            $search[$itemtype][60]['datatype']      = 'number';
+            $search[$itemtype][60]['massiveaction'] = false;
          }
 
          if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
