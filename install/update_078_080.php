@@ -712,6 +712,15 @@ function update078to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
+
+   if (!FieldExists('glpi_tickets','users_id_lastupdater')) {
+      $query = "ALTER TABLE `glpi_tickets` ADD `users_id_lastupdater` INT( 11 ) NOT NULL DEFAULT 0 AFTER `date_mod`";
+      $DB->query($query) or die("0.80 add users_id_lastupdater in glpi_tickets". $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi_tickets` ADD INDEX `users_id_lastupdater` (`users_id_lastupdater`)";
+      $DB->query($query) or die("0.80 add index on users_id_lastupdater in glpi_tickets". $LANG['update'][90] . $DB->error());
+   }
+
    // Link between tickets
    if (!TableExists('glpi_tickets_tickets')) {
       $query = "CREATE TABLE `glpi_tickets_tickets` (

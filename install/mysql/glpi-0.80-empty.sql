@@ -3973,6 +3973,7 @@ CREATE TABLE `glpi_tickets` (
   `closedate` datetime DEFAULT NULL,
   `solvedate` datetime DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
+  `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
   `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'new',
   `users_id` int(11) NOT NULL DEFAULT '0',
   `users_id_recipient` int(11) NOT NULL DEFAULT '0',
@@ -4028,7 +4029,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `impact` (`impact`),
   KEY `global_validation` (`global_validation`),
   KEY `slas_id` (`slas_id`),
-  KEY `due_date` (`due_date`)
+  KEY `due_date` (`due_date`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

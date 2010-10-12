@@ -338,7 +338,8 @@ function addTracking($type, $ID, $ID_entity) {
       $query = "INSERT INTO `glpi_tickets`
                 VALUES (NULL, '$ID_entity', 'Title ".getRandomString(20)."',
                         '".date("Y-m-d H:i:s", intval($opendate))."', $closedatetoadd,
-                        $solvedatetoadd, '".date("Y-m-d H:i:s", intval($updatedate))."', '$status',
+                        $solvedatetoadd, '".date("Y-m-d H:i:s", intval($updatedate))."',
+                        '".$users[0]."', '$status',
                         '".$users[0]."', '".$users[0]."', '".mt_rand($FIRST["groups"],
                         $LAST['groups'])."', '".mt_rand(0,6)."', '".$users[1]."', '$enterprise',
                         '".mt_rand($FIRST["groups"], $LAST['groups'])."', '$type', '$ID',
