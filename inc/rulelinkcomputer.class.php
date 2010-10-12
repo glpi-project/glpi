@@ -191,6 +191,7 @@ class RuleLinkComputer extends Rule {
                                 "2" => $LANG['choice'][1]." : ".$LANG['ocsconfig'][56]);
 
             Dropdown::showFromArray($name, $link_array, array('value' => $value));
+      }
       return false;
    }
 
