@@ -46,6 +46,9 @@ class CommonDBTM extends CommonGLPI {
    /// Set false to desactivate automatic message on action
    var $auto_message_on_action=true;
 
+   /// Set true to desactivate link generation because form page do not permit show/edit item
+   var $no_form_page=false;
+
    /// Forward entity datas to linked items
    protected $forward_entity_to=array();
 
@@ -612,16 +615,21 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($this->fields['id'])) {
          return '';
       }
-      $link_item = $this->getFormURL();
-      if (!$this->can($this->fields['id'],'r')) {
+
+      if ($this->no_form_page) {
          return $this->getNameID($with_comment);
+      } else {
+         $link_item = $this->getFormURL();
+         if (!$this->can($this->fields['id'],'r')) {
+            return $this->getNameID($with_comment);
+         }
+
+         $link  = $link_item;
+         $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
+         $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
+
+         return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
       }
-
-      $link  = $link_item;
-      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
-      $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
-
-      return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
    }
 
 
