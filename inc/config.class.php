@@ -920,12 +920,15 @@ class Config extends CommonDBTM {
       Dropdown::showFromArray($name,$choices,array('value'=>$value));
    }
 
+
    /**
     * Get language in GLPI associated with the value coming from LDAP
     * Value can be, for example : English, en_EN or en
+    *
     * @param $lang : the value coming from LDAP
+    *
     * @return the locale's php page in GLPI or '' is no language associated with the value
-    */
+   **/
    static function getLanguage($lang) {
       global $CFG_GLPI;
 
@@ -933,17 +936,19 @@ class Config extends CommonDBTM {
       // ID  or extjs dico or tinymce dico
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
          if (strcasecmp($lang,$ID) == 0
-            || strcasecmp($lang,$language[2]) == 0
-            || strcasecmp($lang,$language[3]) == 0) {
+             || strcasecmp($lang,$language[2]) == 0
+             || strcasecmp($lang,$language[3]) == 0) {
             return $ID;
          }
       }
+
       // native lang
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
          if (strcasecmp($lang,$language[0]) == 0) {
             return $ID;
          }
       }
+
       // english lang name
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
          if (strcasecmp($lang,$language[4]) == 0) {
@@ -954,6 +959,7 @@ class Config extends CommonDBTM {
       return "";
    }
 
+
    static function detectRootDoc() {
       global $CFG_GLPI;
 
@@ -961,17 +967,18 @@ class Config extends CommonDBTM {
          if ( !isset($_SERVER['REQUEST_URI']) ) {
             $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
          }
-         $currentdir=getcwd();
-         chdir(GLPI_ROOT);
-         $glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
-         chdir($currentdir);
-         $globaldir=cleanParametersURL($_SERVER['REQUEST_URI']);
-         $globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
 
-         $CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
-         $CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
+         $currentdir = getcwd();
+         chdir(GLPI_ROOT);
+         $glpidir = str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
+         chdir($currentdir);
+         $globaldir = cleanParametersURL($_SERVER['REQUEST_URI']);
+         $globaldir = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
+
+         $CFG_GLPI["root_doc"] = str_replace($glpidir,"",$globaldir);
+         $CFG_GLPI["root_doc"] = preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
          // urldecode for space redirect to encoded URL : change entity
-         $CFG_GLPI["root_doc"]=urldecode($CFG_GLPI["root_doc"]);
+         $CFG_GLPI["root_doc"] = urldecode($CFG_GLPI["root_doc"]);
       }
    }
 
