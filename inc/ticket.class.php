@@ -295,6 +295,8 @@ class Ticket extends CommonDBTM {
          unset($input["solvedate"]);
       }
 
+      
+
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
          if (isset($input["users_id_assign"])) {
@@ -359,6 +361,11 @@ class Ticket extends CommonDBTM {
          }
 
          $input=$ret;
+      }
+
+      // set last updater
+      if ($lastupdater=getLoginUserID(true)) {
+         $input['users_id_lastupdater']=$lastupdater;
       }
 
       // Setting a solution type means the ticket is solved
@@ -794,6 +801,12 @@ class Ticket extends CommonDBTM {
          }
       }
 
+
+      // set last updater
+      if ($lastupdater=getLoginUserID(true)) {
+         $input['users_id_lastupdater']=$lastupdater;
+      }
+
       // No Auto set Import for external source
       if (($uid=getLoginUserID()) && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
@@ -1168,7 +1181,6 @@ class Ticket extends CommonDBTM {
    **/
    function updateDateMod($ID) {
       global $DB;
-
       if ($this->getFromDB($ID)) {
          if (haveRight("global_add_tasks","1")
               || haveRight("global_add_followups","1")
@@ -1176,15 +1188,21 @@ class Ticket extends CommonDBTM {
               || (isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups']))) {
             if ($this->fields['takeintoaccount_delay_stat']==0) {
-               $this->update(array('id'=>$ID,
+               return $this->update(array('id'=>$ID,
                                    'takeintoaccount_delay_stat'=>$this->computeTakeIntoAccountDelayStat()));
+            
             }
-         } else { // Force date mod
-            $query = "UPDATE `".$this->getTable()."`
-                     SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'
-                     WHERE `id` = '$ID'";
-            $DB->query($query);
          }
+        // Force date mod and lastupdater
+         $query = "UPDATE `".$this->getTable()."`
+                  SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
+
+         if ($lastupdater=getLoginUserID(true)) {
+            $query.=", `users_id_lastupdater` = '$lastupdater' ";
+         }
+
+         $query.="WHERE `id` = '$ID'";
+         $DB->query($query);
       }
    }
 
@@ -1524,6 +1542,12 @@ class Ticket extends CommonDBTM {
       $tab[45]['field']     = 'realtime';
       $tab[45]['name']      = $LANG['job'][20];
       $tab[45]['datatype']  = 'realtime';
+
+      $tab[64]['table']         = 'glpi_users';
+      $tab[64]['field']         = 'name';
+      $tab[64]['linkfield']     = 'users_id_lastupdater';
+      $tab[64]['name']          = $LANG['common'][101];
+      $tab[64]['massiveaction'] = false;
 
       $tab['validation'] = $LANG['validation'][0];
 
@@ -2667,7 +2691,12 @@ class Ticket extends CommonDBTM {
 
       if ($ID) {
          echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td><td>";
-         echo "<span class='tracking_small'>".convDateTime($this->fields["date_mod"])."</span>\n";
+         echo "<span class='tracking_small'>".convDateTime($this->fields["date_mod"])."\n";
+         if ($this->fields['users_id_lastupdater']>0) {
+            echo $LANG['common'][95]."&nbsp;";
+            echo getUserName($this->fields["users_id_lastupdater"],$showuserlink);
+         }
+         echo "</span>";
          echo "</td></tr>";
       }
 
