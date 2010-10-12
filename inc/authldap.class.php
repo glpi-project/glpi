@@ -536,136 +536,129 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = 'name';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'host';
-      $tab[3]['linkfield'] = 'host';
-      $tab[3]['name']      = $LANG['common'][52];
+      $tab[3]['table'] = $this->getTable();
+      $tab[3]['field'] = 'host';
+      $tab[3]['name']  = $LANG['common'][52];
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'port';
-      $tab[4]['linkfield'] = 'port';
-      $tab[4]['name']      = $LANG['setup'][175];
+      $tab[4]['table'] = $this->getTable();
+      $tab[4]['field'] = 'port';
+      $tab[4]['name']  = $LANG['setup'][175];
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'basedn';
-      $tab[5]['linkfield'] = 'basedn';
-      $tab[5]['name']      = $LANG['setup'][154];
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'basedn';
+      $tab[5]['name']  = $LANG['setup'][154];
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'condition';
-      $tab[6]['linkfield'] = 'condition';
-      $tab[6]['name']      = $LANG['setup'][159];
+      $tab[6]['table'] = $this->getTable();
+      $tab[6]['field'] = 'condition';
+      $tab[6]['name']  = $LANG['setup'][159];
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'is_default';
-      $tab[7]['linkfield'] = '';
-      $tab[7]['name']      = $LANG['ldap'][44];
-      $tab[7]['datatype']  = 'bool';
+      $tab[7]['table']         = $this->getTable();
+      $tab[7]['field']         = 'is_default';
+      $tab[7]['name']          = $LANG['ldap'][44];
+      $tab[7]['datatype']      = 'bool';
+      $tab[7]['massiveaction'] = false;
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'login_field';
-      $tab[8]['linkfield'] = '';
-      $tab[8]['name']      = $LANG['setup'][14];
+      $tab[8]['table']          = $this->getTable();
+      $tab[8]['field']          = 'login_field';
+      $tab[8]['name']           = $LANG['setup'][14];
+      $tab[8]['massiveaction']  = false;
 
-      $tab[9]['table']     = $this->getTable();
-      $tab[9]['field']     = 'realname_field';
-      $tab[9]['linkfield'] = '';
-      $tab[9]['name']      = $LANG['common'][48];
+      $tab[9]['table']          = $this->getTable();
+      $tab[9]['field']          = 'realname_field';
+      $tab[9]['name']           = $LANG['common'][48];
+      $tab[9]['massiveaction']  = false;
 
-      $tab[10]['table']     = $this->getTable();
-      $tab[10]['field']     = 'firstname_field';
-      $tab[10]['linkfield'] = '';
-      $tab[10]['name']      = $LANG['common'][43];
+      $tab[10]['table']         = $this->getTable();
+      $tab[10]['field']         = 'firstname_field';
+      $tab[10]['name']          = $LANG['common'][43];
+      $tab[10]['massiveaction'] = false;
 
-      $tab[11]['table']     = $this->getTable();
-      $tab[11]['field']     = 'phone_field';
-      $tab[11]['linkfield'] = '';
-      $tab[11]['name']      = $LANG['help'][35];
+      $tab[11]['table']         = $this->getTable();
+      $tab[11]['field']         = 'phone_field';
+      $tab[11]['name']          = $LANG['help'][35];
+      $tab[11]['massiveaction'] = false;
 
-      $tab[12]['table']     = $this->getTable();
-      $tab[12]['field']     = 'phone2_field';
-      $tab[12]['linkfield'] = '';
-      $tab[12]['name']      = $LANG['help'][35]." 2";
+      $tab[12]['table']         = $this->getTable();
+      $tab[12]['field']         = 'phone2_field';
+      $tab[12]['name']          = $LANG['help'][35]." 2";
+      $tab[12]['massiveaction'] = false;
 
-      $tab[13]['table']     = $this->getTable();
-      $tab[13]['field']     = 'mobile_field';
-      $tab[13]['linkfield'] = '';
-      $tab[13]['name']      = $LANG['common'][42];
+      $tab[13]['table']         = $this->getTable();
+      $tab[13]['field']         = 'mobile_field';
+      $tab[13]['name']          = $LANG['common'][42];
+      $tab[13]['massiveaction'] = false;
 
-      $tab[14]['table']     = $this->getTable();
-      $tab[14]['field']     = 'title_field';
-      $tab[14]['linkfield'] = '';
-      $tab[14]['name']      = $LANG['users'][1];
+      $tab[14]['table']         = $this->getTable();
+      $tab[14]['field']         = 'title_field';
+      $tab[14]['name']          = $LANG['users'][1];
+      $tab[14]['massiveaction'] = false;
 
-      $tab[15]['table']     = $this->getTable();
-      $tab[15]['field']     = 'category_field';
-      $tab[15]['linkfield'] = '';
-      $tab[15]['name']      = $LANG['users'][2];
+      $tab[15]['table']         = $this->getTable();
+      $tab[15]['field']         = 'category_field';
+      $tab[15]['name']          = $LANG['users'][2];
+      $tab[15]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
+      $tab[17]['table']         = $this->getTable();
+      $tab[17]['field']         = 'email_field';
+      $tab[17]['name']          = $LANG['setup'][14];
+      $tab[17]['massiveaction'] = false;
 
-      $tab[17]['table']     = $this->getTable();
-      $tab[17]['field']     = 'email_field';
-      $tab[17]['linkfield'] = '';
-      $tab[17]['name']      = $LANG['setup'][14];
+      $tab[18]['table']         = $this->getTable();
+      $tab[18]['field']         = 'use_dn';
+      $tab[18]['name']          = $LANG['setup'][262];
+      $tab[18]['datatype']      = 'bool';
+      $tab[18]['massiveaction'] = false;
 
-      $tab[18]['table']     = $this->getTable();
-      $tab[18]['field']     = 'use_dn';
-      $tab[18]['linkfield'] = '';
-      $tab[18]['name']      = $LANG['setup'][262];
-      $tab[18]['datatype']  = 'bool';
+      $tab[19]['table']         = $this->getTable();
+      $tab[19]['field']         = 'date_mod';
+      $tab[19]['name']          = $LANG['common'][26];
+      $tab[19]['datatype']      = 'datetime';
+      $tab[19]['massiveaction'] = false;
 
-      $tab[19]['table']       = $this->getTable();
-      $tab[19]['field']       = 'date_mod';
-      $tab[19]['linkfield']   = '';
-      $tab[19]['name']        = $LANG['common'][26];
-      $tab[19]['datatype']    = 'datetime';
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'language_field';
+      $tab[20]['name']          = $LANG['setup'][41];
+      $tab[20]['massiveaction'] = false;
 
-      $tab[20]['table']     = $this->getTable();
-      $tab[20]['field']     = 'language_field';
-      $tab[20]['linkfield'] = '';
-      $tab[20]['name']      = $LANG['setup'][41];
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'group_field';
+      $tab[21]['name']          = $LANG['setup'][260];
+      $tab[21]['massiveaction'] = false;
 
-      $tab[21]['table']     = $this->getTable();
-      $tab[21]['field']     = 'group_field';
-      $tab[21]['linkfield'] = '';
-      $tab[21]['name']      = $LANG['setup'][260];
+      $tab[22]['table']         = $this->getTable();
+      $tab[22]['field']         = 'group_condition';
+      $tab[22]['name']          = $LANG['setup'][253];
+      $tab[22]['massiveaction'] = false;
 
-      $tab[22]['table']     = $this->getTable();
-      $tab[22]['field']     = 'group_condition';
-      $tab[22]['linkfield'] = '';
-      $tab[22]['name']      = $LANG['setup'][253];
+      $tab[23]['table']         = $this->getTable();
+      $tab[23]['field']         = 'group_member_field';
+      $tab[23]['name']          = $LANG['setup'][255];
+      $tab[23]['massiveaction'] = false;
 
-      $tab[23]['table']     = $this->getTable();
-      $tab[23]['field']     = 'group_member_field';
-      $tab[23]['linkfield'] = '';
-      $tab[23]['name']      = $LANG['setup'][255];
+      $tab[24]['table']         = $this->getTable();
+      $tab[24]['field']         = 'group_search_type';
+      $tab[24]['name']          = $LANG['setup'][254];
+      $tab[24]['massiveaction'] = false;
 
-      $tab[24]['table']     = $this->getTable();
-      $tab[24]['field']     = 'group_search_type';
-      $tab[24]['linkfield'] = '';
-      $tab[24]['name']      = $LANG['setup'][254];
-
-      $tab[30]['table']     = $this->getTable();
-      $tab[30]['field']     = 'is_active';
-      $tab[30]['linkfield'] = 'is_active';
-      $tab[30]['name']      = $LANG['common'][60];
-      $tab[30]['datatype']  = 'bool';
+      $tab[30]['table']    = $this->getTable();
+      $tab[30]['field']    = 'is_active';
+      $tab[30]['name']     = $LANG['common'][60];
+      $tab[30]['datatype'] = 'bool';
 
       return $tab;
    }

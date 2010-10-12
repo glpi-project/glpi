@@ -289,8 +289,6 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                // No id and no entities_id massive action and no first item
                if ($val["field"]!='id' && $val["linkfield"]!='entities_id' && $key != 1) {
                   if ((!empty($val["linkfield"])
-//                       ||($val["table"]=="glpi_infocoms") // no end_warranty
-//                       ||$val["table"]=="glpi_suppliers_infocoms"
                        ||($val["table"]=="glpi_ocslinks" && $key==101)) // auto_update_ocs
                       && (!isset($val['massiveaction']) || $val['massiveaction'])) {
 
