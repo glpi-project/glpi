@@ -96,6 +96,9 @@ class Contract extends CommonDBTM {
             $ong[10] = $LANG['title'][37];
          }
          $ong[12] = $LANG['title'][38];
+         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+            $ong[3] = $LANG['setup'][137];
+         }
 
       } else { // New item
          $ong[1] = $LANG['title'][26];
@@ -1379,5 +1382,19 @@ class Contract extends CommonDBTM {
          $this->input['cost'] = floatval($this->input['cost']);
       }
    }
+
+
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+
+      $options['entities_id'] = $this->getEntityID();
+      $options['contracts']  = array();
+      NotificationEvent::debugEvent($this, $options);
+  //     NotificationEvent::debugEvent(new Consumable(), $options);
+
+   }
+
 }
 ?>
