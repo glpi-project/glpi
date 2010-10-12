@@ -1392,8 +1392,6 @@ class Contract extends CommonDBTM {
       $options['entities_id'] = $this->getEntityID();
       $options['contracts']  = array();
       NotificationEvent::debugEvent($this, $options);
-  //     NotificationEvent::debugEvent(new Consumable(), $options);
-
    }
 
 }
