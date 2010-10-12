@@ -886,166 +886,176 @@ class Infocom extends CommonDBTM {
    }
 
 
+
+   static function getSearchOptionsToAdd () {
+      global $LANG;
+
+      $tab=array();
+
+      $tab['financial'] = $LANG['financial'][3];
+
+      $tab[25]['table']        = 'glpi_infocoms';
+      $tab[25]['field']        = 'immo_number';
+      $tab[25]['name']         = $LANG['financial'][20];
+      $tab[25]['forcegroupby'] = true;
+
+      $tab[26]['table']        = 'glpi_infocoms';
+      $tab[26]['field']        = 'order_number';
+      $tab[26]['name']         = $LANG['financial'][18];
+      $tab[26]['forcegroupby'] = true;
+
+      $tab[27]['table']        = 'glpi_infocoms';
+      $tab[27]['field']        = 'delivery_number';
+      $tab[27]['name']         = $LANG['financial'][19];
+      $tab[27]['forcegroupby'] = true;
+
+      $tab[28]['table']        = 'glpi_infocoms';
+      $tab[28]['field']        = 'bill';
+      $tab[28]['name']         = $LANG['financial'][82];
+      $tab[28]['forcegroupby'] = true;
+
+      $tab[37]['table']        = 'glpi_infocoms';
+      $tab[37]['field']        = 'buy_date';
+      $tab[37]['name']         = $LANG['financial'][14];
+      $tab[37]['datatype']     = 'date';
+      $tab[37]['forcegroupby'] = true;
+
+      $tab[38]['table']        = 'glpi_infocoms';
+      $tab[38]['field']        = 'use_date';
+      $tab[38]['name']         = $LANG['financial'][76];
+      $tab[38]['datatype']     = 'date';
+      $tab[38]['forcegroupby'] = true;
+
+      $tab[121]['table']        = 'glpi_infocoms';
+      $tab[121]['field']        = 'delivery_date';
+      $tab[121]['name']         = $LANG['financial'][27];
+      $tab[121]['datatype']     = 'date';
+      $tab[121]['forcegroupby'] = true;
+
+      $tab[122]['table']        = 'glpi_infocoms';
+      $tab[122]['field']        = 'order_date';
+      $tab[122]['name']         = $LANG['financial'][28];
+      $tab[122]['datatype']     = 'date';
+      $tab[122]['forcegroupby'] = true;
+
+      $tab[123]['table']        = 'glpi_infocoms';
+      $tab[123]['field']        = 'warranty_date';
+      $tab[123]['name']         = $LANG['financial'][29];
+      $tab[123]['datatype']     = 'date';
+      $tab[123]['forcegroupby'] = true;
+
+      $tab[50]['table']        = 'glpi_budgets';
+      $tab[50]['field']        = 'name';
+      $tab[50]['linkfield']    = 'budgets_id';
+      $tab[50]['name']         = $LANG['financial'][87];
+      $tab[50]['forcegroupby'] = true;
+
+      $tab[51]['table']        = 'glpi_infocoms';
+      $tab[51]['field']        = 'warranty_duration';
+      $tab[51]['name']         = $LANG['financial'][15];
+      $tab[51]['forcegroupby'] = true;
+
+      $tab[52]['table']        = 'glpi_infocoms';
+      $tab[52]['field']        = 'warranty_info';
+      $tab[52]['name']         = $LANG['financial'][16];
+      $tab[52]['forcegroupby'] = true;
+
+      $tab[120]['table']         = 'glpi_infocoms';
+      $tab[120]['field']         = 'end_warranty';
+      $tab[120]['name']          = $LANG['financial'][80];
+      $tab[120]['datatype']      = 'date';
+      $tab[120]['datatype']      = 'date_delay';
+      $tab[120]['datafields'][1] = 'buy_date';
+      $tab[120]['datafields'][2] = 'warranty_duration';
+      $tab[120]['searchunit']    = 'MONTH';
+      $tab[120]['delayunit']     = 'MONTH';
+      $tab[120]['forcegroupby']  = true;
+      $tab[120]['massiveaction'] = false;
+
+      $tab[53]['table']        = 'glpi_suppliers_infocoms';
+      $tab[53]['field']        = 'name';
+      $tab[53]['name']         = $LANG['financial'][26];
+      $tab[53]['forcegroupby'] = true;
+      $tab[53]['realtable']    = 'glpi_suppliers';
+
+      $tab[54]['table']        = 'glpi_infocoms';
+      $tab[54]['field']        = 'value';
+      $tab[54]['name']         = $LANG['financial'][21];
+      $tab[54]['datatype']     = 'decimal';
+      $tab[54]['width']        = 100;
+      $tab[54]['forcegroupby'] = true;
+
+      $tab[55]['table']        = 'glpi_infocoms';
+      $tab[55]['field']        = 'warranty_value';
+      $tab[55]['name']         = $LANG['financial'][78];
+      $tab[55]['datatype']     = 'decimal';
+      $tab[55]['width']        = 100;
+      $tab[55]['forcegroupby'] = true;
+
+      $tab[56]['table']        = 'glpi_infocoms';
+      $tab[56]['field']        = 'sink_time';
+      $tab[56]['name']         = $LANG['financial'][23];
+      $tab[56]['forcegroupby'] = true;
+
+      $tab[57]['table']        = 'glpi_infocoms';
+      $tab[57]['field']        = 'sink_type';
+      $tab[57]['name']         = $LANG['financial'][22];
+      $tab[57]['forcegroupby'] = true;
+
+      $tab[58]['table']        = 'glpi_infocoms';
+      $tab[58]['field']        = 'sink_coeff';
+      $tab[58]['name']         = $LANG['financial'][77];
+      $tab[58]['forcegroupby'] = true;
+
+      $tab[59]['table']        = 'glpi_infocoms';
+      $tab[59]['field']        = 'alert';
+      $tab[59]['name']         = $LANG['common'][41];
+      $tab[59]['forcegroupby'] = true;
+
+      $tab[122]['table']        = 'glpi_infocoms';
+      $tab[122]['field']        = 'comment';
+      $tab[122]['name']         = $LANG['common'][25]." - ".$LANG['financial'][3];
+      $tab[122]['datatype']     = 'text';
+      $tab[122]['forcegroupby'] = true;
+
+      return $tab;
+   }
+
    function getSearchOptions() {
       global $LANG;
+
 
       $tab = array();
       $tab['common']       = $LANG['common'][32];
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'link';
-      $tab[3]['linkfield'] = 'link';
-      $tab[3]['name']      = $LANG['links'][1];
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'itemtype';
+      $tab[20]['name']          = $LANG['common'][17];
+      $tab[20]['datatype']      = 'itemtype';
+      $tab[20]['massiveaction'] = false;
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'buy_date';
-      $tab[4]['linkfield'] = 'buy_date';
-      $tab[4]['name']      = $LANG["financial"][14];
-      $tab[4]['datatype']  = 'date';
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'items_id';
+      $tab[21]['name']          = 'ID';
+      $tab[21]['datatype']      = 'integer';
+      $tab[21]['massiveaction'] = false;
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'use_date';
-      $tab[5]['linkfield'] = 'use_date';
-      $tab[5]['name']      = $LANG["financial"][76];
-      $tab[5]['datatype']  = 'date';
-
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'warranty_duration';
-      $tab[6]['linkfield'] = 'warranty_duration';
-      $tab[6]['name']      = $LANG["financial"][15];
-      $tab[6]['datatype']  = 'integer';
-
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'warranty_info';
-      $tab[7]['linkfield'] = 'warranty_info';
-      $tab[7]['name']      = $LANG["financial"][16];
-      $tab[7]['datatype']  = 'text';
-
-      $tab[8]['table']      = $this->getTable();
-      $tab[8]['field']      = 'warranty_value';
-      $tab[8]['linkfield']  = 'warranty_value';
-      $tab[8]['name']       = $LANG["financial"][78];
-      $tab[8]['datatype']   = 'decimal';
-
-      $tab[9]['table']      = 'glpi_suppliers';
-      $tab[9]['field']      = 'name';
-      $tab[9]['linkfield']  = 'suppliers_id';
-      $tab[9]['name']       = $LANG["financial"][26];
-      $tab[9]['datatype']   = 'text';
-      $tab[9]['table_type'] = 'single';
-
-      $tab[10]['table']     = $this->getTable();
-      $tab[10]['field']     = 'order_number';
-      $tab[10]['linkfield'] = 'order_number';
-      $tab[10]['name']      = $LANG["financial"][18];
-      $tab[10]['datatype']  = 'text';
-
-      $tab[11]['table']     = $this->getTable();
-      $tab[11]['field']     = 'delivry_number';
-      $tab[11]['linkfield'] = 'delivry_number';
-      $tab[11]['name']      = $LANG["financial"][19];
-      $tab[11]['datatype']  = 'text';
-
-      $tab[12]['table']     = $this->getTable();
-      $tab[12]['field']     = 'immo_number';
-      $tab[12]['linkfield'] = 'immo_number';
-      $tab[12]['name']      = $LANG["financial"][20];
-      $tab[12]['datatype']  = 'text';
-
-      $tab[13]['table']     = $this->getTable();
-      $tab[13]['field']     = 'value';
-      $tab[13]['linkfield'] = 'value';
-      $tab[13]['name']      = $LANG["financial"][21];
-      $tab[13]['datatype']  = 'decimal';
-
-      $tab[14]['table']     = $this->getTable();
-      $tab[14]['field']     = 'sink_time';
-      $tab[14]['linkfield'] = 'sink_time';
-      $tab[14]['name']      = $LANG["financial"][23];
-      $tab[14]['datatype']  = 'integer';
-
-      $tab[15]['table']     = $this->getTable();
-      $tab[15]['field']     = 'sink_type';
-      $tab[15]['linkfield'] = 'sink_type';
-      $tab[15]['name']      = $LANG["financial"][22];
-      $tab[15]['datatype']  = 'integer';
-
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
-
-      $tab[17]['table']     = $this->getTable();
-      $tab[17]['field']     = 'sink_coeff';
-      $tab[17]['linkfield'] = 'sink_coeff';
-      $tab[17]['name']      = $LANG["financial"][77];
-      $tab[17]['datatype']  = 'decimal';
-
-      $tab[18]['table']     = $this->getTable();
-      $tab[18]['field']     = 'bill';
-      $tab[18]['linkfield'] = 'bill';
-      $tab[18]['name']      = $LANG["financial"][82];
-      $tab[18]['itemtype']  = 'text';
-
-      $tab[19]['table']     = 'glpi_budgets';
-      $tab[19]['field']     = 'name';
-      $tab[19]['linkfield'] = 'budgets_id';
-      $tab[19]['name']      = $LANG["financial"][87];
-      $tab[19]['datatype']  = 'text';
-      $tab[19]['datatype']  = 'itemlink';
-
-      $tab[20]['table']     = $this->getTable();
-      $tab[20]['field']     = 'itemtype';
-      $tab[20]['linkfield'] = '';
-      $tab[20]['name']      = $LANG['common'][17];
-      $tab[20]['datatype']  = 'itemtype';
-
-      $tab[21]['table']     = $this->getTable();
-      $tab[21]['field']     = 'items_id';
-      $tab[21]['linkfield'] = '';
-      $tab[21]['name']      = 'ID';
-      $tab[21]['datatype']  = 'integer';
-
-      $tab[22]['table']     = $this->getTable();
-      $tab[22]['field']     = 'alert';
-      $tab[22]['linkfield'] = 'alert';
-      $tab[22]['name']      = $LANG["setup"][247];
-      $tab[22]['datatype']  = 'integer';
-
-      $tab[23]['table']     = $this->getTable();
-      $tab[23]['field']     = 'order_date';
-      $tab[23]['linkfield'] = 'order_date';
-      $tab[23]['name']      = $LANG["financial"][28];
-      $tab[23]['datatype']  = 'date';
-
-      $tab[24]['table']     = $this->getTable();
-      $tab[24]['field']     = 'delivery_date';
-      $tab[24]['linkfield'] = 'delivery_date';
-      $tab[24]['name']      = $LANG["financial"][27];
-      $tab[24]['datatype']  = 'date';
-
-      $tab[25]['table']     = $this->getTable();
-      $tab[25]['field']     = 'warranty_date';
-      $tab[25]['linkfield'] = 'warranty_date';
-      $tab[25]['name']      = $LANG["financial"][29];
-      $tab[25]['datatype']  = 'date';
-
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
-      $tab[86]['linkfield'] = 'is_recursive';
       $tab[86]['name']      = $LANG['entity'][9];
       $tab[86]['datatype']  = 'bool';
+
+      $tab=self::getSearchOptionsToAdd();
 
       return $tab;
    }
