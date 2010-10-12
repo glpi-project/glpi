@@ -978,53 +978,52 @@ class CronTask extends CommonDBTM{
       $tab['common']           = $LANG['common'][32];;
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['linkfield']     = '';
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_link'] = $this->getType();
+      $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'description';
-      $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = $LANG['joblist'][6];
-      $tab[3]['nosearch']  = true;
-      $tab[3]['nosort']    = true;
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'description';
+      $tab[3]['name']          = $LANG['joblist'][6];
+      $tab[3]['nosearch']      = true;
+      $tab[3]['nosort']        = true;
+      $tab[2]['massiveaction'] = false;
       
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'state';
-      $tab[4]['linkfield'] = '';
-      $tab[4]['name']      = $LANG['joblist'][0];
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'state';
+      $tab[4]['name']          = $LANG['joblist'][0];
+      $tab[4]['massiveaction'] = false;
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'mode';
-      $tab[5]['linkfield'] = '';
-      $tab[5]['name']      = $LANG['crontask'][36];
+      $tab[5]['table']         = $this->getTable();
+      $tab[5]['field']         = 'mode';
+      $tab[5]['name']          = $LANG['crontask'][36];
+      $tab[5]['massiveaction'] = false;
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'frequency';
-      $tab[6]['linkfield'] = '';
-      $tab[6]['name']      = $LANG['crontask'][37];
-      $tab[6]['datatype']  = 'timestamp';
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'frequency';
+      $tab[6]['name']          = $LANG['crontask'][37];
+      $tab[6]['datatype']      = 'timestamp';
+      $tab[6]['massiveaction'] = false;
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'lastrun';
-      $tab[7]['linkfield'] = '';
-      $tab[7]['name']      = $LANG['crontask'][40];
-      $tab[7]['datatype']  = 'datetime';
+      $tab[7]['table']         = $this->getTable();
+      $tab[7]['field']         = 'lastrun';
+      $tab[7]['name']          = $LANG['crontask'][40];
+      $tab[7]['datatype']      = 'datetime';
+      $tab[7]['massiveaction'] = false;
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'itemtype';
-      $tab[8]['linkfield'] = '';
-      $tab[8]['name']      = $LANG['common'][29];
+      $tab[8]['table']         = $this->getTable();
+      $tab[8]['field']         = 'itemtype';
+      $tab[8]['name']          = $LANG['common'][29];
+      $tab[8]['massiveaction'] = false;
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name']      = $LANG['common'][25];
       $tab[16]['datatype']  = 'text';
 

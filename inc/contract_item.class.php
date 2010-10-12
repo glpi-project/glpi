@@ -85,20 +85,20 @@ class Contract_Item extends CommonDBRelation{
 
       $tab = array();
 
-      $tab[2]['table']        = $this->getTable();
-      $tab[2]['field']        = 'id';
-      $tab[2]['linkfield']    = '';
-      $tab[2]['name']         = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']        = $this->getTable();
-      $tab[3]['field']        = 'items_id';
-      $tab[3]['linkfield']    = '';
-      $tab[3]['name']         = $LANG['common'][2].' '.$LANG['financial'][104];
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'items_id';
+      $tab[3]['name']          = $LANG['common'][2].' '.$LANG['financial'][104];
+      $tab[3]['massiveaction'] = false;
 
-      $tab[4]['table']        = $this->getTable();
-      $tab[4]['field']        = 'itemtype';
-      $tab[4]['linkfield']    = '';
-      $tab[4]['name']         = $LANG['common'][17];
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'itemtype';
+      $tab[4]['name']          = $LANG['common'][17];
+      $tab[4]['massiveaction'] = false;
 
       return $tab;
    }

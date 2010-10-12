@@ -66,13 +66,11 @@ class DevicePowerSupply extends CommonDevice {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'is_atx';
-      $tab[11]['linkfield']     = 'is_atx';
       $tab[11]['name']          = $LANG['device_power'][1];
       $tab[11]['datatype']      = 'bool';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'power';
-      $tab[12]['linkfield']     = 'power';
       $tab[12]['name']          = $LANG['device_power'][0];
       $tab[12]['datatype']      = 'text';
 
