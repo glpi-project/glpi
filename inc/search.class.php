@@ -1330,7 +1330,7 @@ class Search {
          echo "</select>\n";
 
          echo "</td><td class='left'>";
-         echo "<span id='SearchSpan$itemtype$i'>\n";
+         echo "<div id='SearchSpan$itemtype$i'>\n";
 
          $_POST['itemtype']   = $itemtype;
          $_POST['num']        = $i;
@@ -1340,7 +1340,7 @@ class Search {
          $_POST['value']      = (is_array($p['contains'])
                                  && isset($p['contains'][$i])?stripslashes($p['contains'][$i]):"" );
          include (GLPI_ROOT."/ajax/searchoption.php");
-         echo "</span>\n";
+         echo "</div>\n";
 
          $params = array('field'      => '__VALUE__',
                          'itemtype'   => $itemtype,
@@ -1384,7 +1384,7 @@ class Search {
             echo "<tr><td class='left' colspan='2'>";
             $rand = mt_rand();
 
-            echo "<table width='100%'><tr class='left'><td width='30%'>";
+            echo "<table width='100%'><tr class='left'><td width='35%'>";
             // Display link item (not for the first item)
             echo "<select name='link2[$i]'>";
             echo "<option value='AND' ";
@@ -3647,7 +3647,7 @@ class Search {
 
                $options['reset'] = 'reset';
 
-               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">";
+               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">";
                $out .= $data[$NAME.$num]."</a>";
             } else {
                $out = $data[$NAME.$num];
