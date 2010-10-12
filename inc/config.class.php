@@ -896,7 +896,7 @@ class Config extends CommonDBTM {
       }
       loadLanguage($oldlang);
 
-      echo "\n</td></tr>";
+      echo "\n</pre></td></tr>";
       echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
       echo "<tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>\n";
       echo "</tr>\n";
