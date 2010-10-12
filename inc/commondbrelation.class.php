@@ -54,22 +54,22 @@ abstract class CommonDBRelation extends CommonDBTM {
       $tab = array();
       $tab['common']           = $LANG['common'][32];;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'id';
-      $tab[2]['linkfield'] = '';
-      $tab[2]['name']      = $LANG['common'][2];
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = getTableForItemType($this->itemtype_1);
-      $tab[3]['field']     = $this->items_id_1;
-      $tab[3]['linkfield'] = '';
-      $tab[3]['name']      = call_user_func(array($this->itemtype_1,'getTypeName'));
-      $tab[3]['datatype']  = 'text';
+      $tab[3]['table']         = getTableForItemType($this->itemtype_1);
+      $tab[3]['field']         = $this->items_id_1;
+      $tab[3]['name']          = call_user_func(array($this->itemtype_1,'getTypeName'));
+      $tab[3]['datatype']      = 'text';
+      $tab[3]['massiveaction'] = false;
 
-      $tab[4]['table']     = getTableForItemType($this->itemtype_2);
-      $tab[4]['field']     = $this->items_id_2;
-      $tab[4]['linkfield'] = '';
-      $tab[4]['name']      = call_user_func(array($this->itemtype_2,'getTypeName'));
-      $tab[4]['datatype']  = 'text';
+      $tab[4]['table']         = getTableForItemType($this->itemtype_2);
+      $tab[4]['field']         = $this->items_id_2;
+      $tab[4]['name']          = call_user_func(array($this->itemtype_2,'getTypeName'));
+      $tab[4]['datatype']      = 'text';
+      $tab[4]['massiveaction'] = false;
 
       return $tab;
    }
