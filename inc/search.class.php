@@ -1828,12 +1828,19 @@ class Search {
       $field     = $searchopt[$ID]["field"];
       $addtable  = "";
       $NAME      = "ITEM";
+
+      if ($table != getTableForItemType($itemtype)
+         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+         $addtable .= "_".$searchopt[$ID]["linkfield"];
+      }
+
       if ($meta) {
          $NAME = "META";
          if (getTableForItemType($meta_type)!=$table) {
-            $addtable = "_".$meta_type;
+            $addtable .= "_".$meta_type;
          }
       }
+
 
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
@@ -1864,29 +1871,21 @@ class Search {
          case "glpi_users_validation.name" :
          case "glpi_users.name" :
             if ($itemtype != 'User') {
-               $linkfield = "";
-               if ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
-                  $linkfield = "_".$searchopt[$ID]["linkfield"];
-               }
 
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT( `$table$linkfield$addtable`.`id` SEPARATOR '$$$$')
+                  return " GROUP_CONCAT( `$table$addtable`.`id` SEPARATOR '$$$$')
                               AS ".$NAME."_".$num.",";
                }
-               return " `$table$linkfield$addtable`.`$field` AS ".$NAME."_$num,
-                       `$table$linkfield$addtable`.`realname` AS ".$NAME."_".$num."_2,
-                       `$table$linkfield$addtable`.`id`  AS ".$NAME."_".$num."_3,
-                       `$table$linkfield$addtable`.`firstname` AS ".$NAME."_".$num."_4, ";
+               return " `$table$addtable`.`$field` AS ".$NAME."_$num,
+                       `$table$addtable`.`realname` AS ".$NAME."_".$num."_2,
+                       `$table$addtable`.`id`  AS ".$NAME."_".$num."_3,
+                       `$table$addtable`.`firstname` AS ".$NAME."_".$num."_4, ";
             }
             break;
 
          case "glpi_groups.name" :
             if ($itemtype != 'Group' && $itemtype != 'User') {
-               $linkfield = "";
-               if ($searchopt[$ID]["linkfield"]!='groups_id') {
-                  $linkfield = "_".$searchopt[$ID]["linkfield"];
-               }
-               return " `$table$linkfield$addtable`.`$field` AS ".$NAME."_$num, ";
+               return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
             }
             break;
 
