@@ -46,11 +46,13 @@ class DeviceNetworkCard extends CommonDevice {
       return $LANG['devices'][3];
    }
 
+
    static function getSpecifityLabel() {
       global $LANG;
 
-      return array('specificity'=>$LANG['device_iface'][2]);
+      return array('specificity' => $LANG['device_iface'][2]);
    }
+
 
    function getAdditionalFields() {
       global $LANG;
@@ -65,43 +67,48 @@ class DeviceNetworkCard extends CommonDevice {
                                      'type'  => 'text')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'specif_default';
-      $tab[11]['name']          = $LANG['device_iface'][2]." ".$LANG['devices'][24];
-      $tab[11]['datatype']      = 'text';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'specif_default';
+      $tab[11]['name']     = $LANG['device_iface'][2]." ".$LANG['devices'][24];
+      $tab[11]['datatype'] = 'text';
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'bandwidth';
-      $tab[12]['name']          = $LANG['device_iface'][0];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'bandwidth';
+      $tab[12]['name']     = $LANG['device_iface'][0];
+      $tab[12]['datatype'] = 'text';
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
       $data['label'] = $data['value'] = array();
+
       if (!empty($this->fields["bandwidth"])) {
          $data['label'][] = $LANG['device_iface'][0];
          $data['value'][] = $this->fields["bandwidth"];
       }
+
       // Specificity
       $data['label'][] = $LANG['device_iface'][2];
-      $data['size'] = 18;
+      $data['size']    = 18;
 
       return $data;
    }
+
 
    /**
     * Import a device is not exists
@@ -109,19 +116,20 @@ class DeviceNetworkCard extends CommonDevice {
     * @param $input of data
     *
     * @return interger ID of existing or new Device
-    */
+   **/
    function import($input) {
       global $DB;
 
       if (!isset($input['designation']) || empty($input['designation'])) {
          return 0;
       }
+
       $query = "SELECT `id`
                 FROM `".$this->getTable()."`
                 WHERE `designation` = '" . $input['designation'] . "'";
 
       if (isset($input["bandwidth"])) {
-         $query.=" AND `bandwidth` = '".$input["bandwidth"]."'";
+         $query .= " AND `bandwidth` = '".$input["bandwidth"]."'";
       }
 
       $result = $DB->query($query);
@@ -131,6 +139,7 @@ class DeviceNetworkCard extends CommonDevice {
       }
       return $this->add($input);
    }
+
 }
 
 ?>

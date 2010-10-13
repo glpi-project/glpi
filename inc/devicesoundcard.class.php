@@ -46,9 +46,9 @@ class DeviceSoundCard extends CommonDevice {
       return $LANG['devices'][7];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'type',
@@ -56,28 +56,31 @@ class DeviceSoundCard extends CommonDevice {
                                      'type'  => 'text')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'type';
-      $tab[12]['name']          = $LANG['common'][17];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'type';
+      $tab[12]['name']     = $LANG['common'][17];
+      $tab[12]['datatype'] = 'text';
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
       $data['label'] = $data['value'] = array();
+
       if (!empty($this->fields["type"])) {
          $data['label'][] = $LANG['common'][17];
          $data['value'][] = $this->fields["type"];
@@ -85,6 +88,7 @@ class DeviceSoundCard extends CommonDevice {
 
       return $data;
    }
+
 }
 
 ?>

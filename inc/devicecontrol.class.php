@@ -46,9 +46,9 @@ class DeviceControl extends CommonDevice {
       return $LANG['devices'][20];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'is_raid',
@@ -59,28 +59,30 @@ class DeviceControl extends CommonDevice {
                                      'type'  => 'dropdownValue')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'is_raid';
-      $tab[12]['name']          = $LANG['device_control'][0];
-      $tab[12]['datatype']      = 'bool';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'is_raid';
+      $tab[12]['name']     = $LANG['device_control'][0];
+      $tab[12]['datatype'] = 'bool';
 
-      $tab[14]['table']         = 'glpi_interfacetypes';
-      $tab[14]['field']         = 'name';
-      $tab[14]['name']          = $LANG['common'][65];
+      $tab[14]['table']    = 'glpi_interfacetypes';
+      $tab[14]['field']    = 'name';
+      $tab[14]['name']     = $LANG['common'][65];
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
@@ -98,6 +100,7 @@ class DeviceControl extends CommonDevice {
 
       return $data;
    }
+
 }
 
 ?>

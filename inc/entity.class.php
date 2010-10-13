@@ -364,9 +364,9 @@ class Entity extends CommonTreeDropdown {
       $tab[12]['name']          = $LANG['financial'][102];
       $tab[12]['massiveaction'] = false;
 
-      $tab[13]['table']     = 'glpi_entitydatas';
-      $tab[13]['field']     = 'country';
-      $tab[13]['name']      = $LANG['financial'][103];
+      $tab[13]['table']         = 'glpi_entitydatas';
+      $tab[13]['field']         = 'country';
+      $tab[13]['name']          = $LANG['financial'][103];
       $tab[13]['massiveaction'] = false;
 
       $tab[14]['table']         = $this->getTable();

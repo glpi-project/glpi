@@ -46,9 +46,9 @@ class DeviceMotherboard extends CommonDevice {
       return $LANG['devices'][5];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'chipset',
@@ -56,28 +56,31 @@ class DeviceMotherboard extends CommonDevice {
                                      'type'  => 'text')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'chipset';
-      $tab[11]['name']          = $LANG['device_moboard'][0];
-      $tab[11]['datatype']      = 'text';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'chipset';
+      $tab[11]['name']     = $LANG['device_moboard'][0];
+      $tab[11]['datatype'] = 'text';
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
       $data['label'] = $data['value'] = array();
+
       if (!empty($this->fields["chipset"])) {
          $data['label'][] = $LANG['device_moboard'][0];
          $data['value'][] = $this->fields["chipset"];
@@ -85,6 +88,7 @@ class DeviceMotherboard extends CommonDevice {
 
       return $data;
    }
+
 }
 
 ?>

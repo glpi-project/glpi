@@ -57,49 +57,53 @@ class DocumentType  extends CommonDropdown {
                          'type'  => 'text'));
    }
 
+
    static function getTypeName() {
       global $LANG;
 
       return $LANG['document'][7];
    }
 
+
    /**
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'ext';
-      $tab[3]['name']      = $LANG['document'][9];
+      $tab[3]['table'] = $this->getTable();
+      $tab[3]['field'] = 'ext';
+      $tab[3]['name']  = $LANG['document'][9];
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'icon';
       $tab[6]['name']          = $LANG['document'][10];
       $tab[6]['massiveaction'] = false;
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'mime';
-      $tab[4]['name']      = $LANG['document'][4];
+      $tab[4]['table'] = $this->getTable();
+      $tab[4]['field'] = 'mime';
+      $tab[4]['name']  = $LANG['document'][4];
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'is_uploadable';
-      $tab[5]['name']      = $LANG['document'][15];
-      $tab[5]['datatype']      = 'bool';
+      $tab[5]['table']    = $this->getTable();
+      $tab[5]['field']    = 'is_uploadable';
+      $tab[5]['name']     = $LANG['document'][15];
+      $tab[5]['datatype'] = 'bool';
 
       return $tab;
    }
 
+
    function canCreate() {
-      return haveRight('typedoc','w');
+      return haveRight('typedoc', 'w');
    }
 
+
    function canView() {
-      return haveRight('typedoc','r');
+      return haveRight('typedoc', 'r');
    }
 
 }
