@@ -1654,9 +1654,9 @@ class Search {
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
 
-      $addtable="";
+      $addtable = "";
       if ($table != getTableForItemType($itemtype)
-         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -1680,22 +1680,17 @@ class Search {
             return " ORDER BY `glpi_users`.`authtype` $order,
                               `glpi_authldaps`.`name` $order,
                               `glpi_authmails`.`name` $order ";
-            break;
-
 
          case "glpi_users.name" :
             if ($itemtype!='User') {
-               return " ORDER BY ".$table.$addtable.".`realname` $order, ".
-                                 $table.$addtable.".`firstname` $order, ".
-                                 $table.$addtable.".`name` $order";
-            } else {
-               return " ORDER BY `".$table."`.`name` $order";
+               return " ORDER BY ".$table.$addtable.".`realname` $order,
+                                 ".$table.$addtable.".`firstname` $order,
+                                 ".$table.$addtable.".`name` $order";
             }
-            break;
+            return " ORDER BY `".$table."`.`name` $order";
 
          case "glpi_networkports.ip" :
             return " ORDER BY INET_ATON($table.$field) $order ";
-            break;
       }
 
       //// Default cases
@@ -1731,7 +1726,6 @@ class Search {
                                          INTERVAL (`$table`.`".$searchopt[$ID]["datafields"][2].
                                                    "` $add_minus)
                                          $interval) $order ";
-               break;
          }
       }
 
