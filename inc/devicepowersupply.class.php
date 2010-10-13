@@ -46,9 +46,9 @@ class DevicePowerSupply extends CommonDevice {
       return $LANG['devices'][23];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'is_atx',
@@ -59,43 +59,48 @@ class DevicePowerSupply extends CommonDevice {
                                      'type'  => 'text')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'is_atx';
-      $tab[11]['name']          = $LANG['device_power'][1];
-      $tab[11]['datatype']      = 'bool';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'is_atx';
+      $tab[11]['name']     = $LANG['device_power'][1];
+      $tab[11]['datatype'] = 'bool';
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'power';
-      $tab[12]['name']          = $LANG['device_power'][0];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'power';
+      $tab[12]['name']     = $LANG['device_power'][0];
+      $tab[12]['datatype'] = 'text';
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
       $data['label'] = $data['value'] = array();
+
       if ($this->fields["is_atx"]) {
          $data['label'][] = $LANG['device_power'][1];
          $data['value'][] = Dropdown::getYesNo($this->fields["is_atx"]);
       }
+
       if (!empty($this->fields["power"])) {
          $data['label'][] = $LANG['device_power'][0];
          $data['value'][] = $this->fields["power"];
       }
       return $data;
    }
+
 }
 
 ?>

@@ -46,15 +46,16 @@ class DeviceGraphicCard extends CommonDevice {
       return $LANG['devices'][2];
    }
 
+
    static function getSpecifityLabel() {
       global $LANG;
 
-      return array('specificity'=>$LANG['devices'][6]);
+      return array('specificity' => $LANG['devices'][6]);
    }
+
 
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
@@ -65,28 +66,30 @@ class DeviceGraphicCard extends CommonDevice {
                                      'type'  => 'dropdownValue')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'specif_default';
-      $tab[12]['name']          = $LANG['devices'][6]." ".$LANG['devices'][24];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'specif_default';
+      $tab[12]['name']     = $LANG['devices'][6]." ".$LANG['devices'][24];
+      $tab[12]['datatype'] = 'text';
 
-      $tab[14]['table']         = 'glpi_interfacetypes';
-      $tab[14]['field']         = 'name';
-      $tab[14]['name']          = $LANG['common'][65];
+      $tab[14]['table'] = 'glpi_interfacetypes';
+      $tab[14]['field'] = 'name';
+      $tab[14]['name']  = $LANG['common'][65];
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
@@ -98,10 +101,11 @@ class DeviceGraphicCard extends CommonDevice {
       }
       // Specificity
       $data['label'][] = $LANG['devices'][6];
-      $data['size'] = 10;
+      $data['size']    = 10;
 
       return $data;
    }
+
 }
 
 ?>

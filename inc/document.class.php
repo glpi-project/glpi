@@ -598,38 +598,38 @@ class Document extends CommonDBTM {
       $tab[3]['name']          = $LANG['document'][2];
       $tab[3]['massiveaction'] = false;
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'link';
-      $tab[4]['name']      = $LANG['document'][33];
-      $tab[4]['datatype']  = 'weblink';
+      $tab[4]['table']    = $this->getTable();
+      $tab[4]['field']    = 'link';
+      $tab[4]['name']     = $LANG['document'][33];
+      $tab[4]['datatype'] = 'weblink';
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'mime';
-      $tab[5]['name']      = $LANG['document'][4];
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'mime';
+      $tab[5]['name']  = $LANG['document'][4];
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
       $tab[90]['name']          = $LANG['title'][37];
       $tab[90]['massiveaction'] = false;
 
-      $tab[7]['table']     = 'glpi_documentcategories';
-      $tab[7]['field']     = 'name';
-      $tab[7]['name']      = $LANG['document'][3];
+      $tab[7]['table']  = 'glpi_documentcategories';
+      $tab[7]['field']  = 'name';
+      $tab[7]['name']   = $LANG['document'][3];
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';

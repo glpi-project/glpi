@@ -46,9 +46,9 @@ class DeviceDrive extends CommonDevice {
       return $LANG['devices'][19];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'is_writer',
@@ -62,45 +62,50 @@ class DeviceDrive extends CommonDevice {
                                      'type'  => 'dropdownValue')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'is_writer';
-      $tab[12]['name']          = $LANG['device_drive'][0];
-      $tab[12]['datatype']      = 'bool';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'is_writer';
+      $tab[12]['name']     = $LANG['device_drive'][0];
+      $tab[12]['datatype'] = 'bool';
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'speed';
-      $tab[13]['name']          = $LANG['device_drive'][1];
-      $tab[13]['datatype']      = 'text';
+      $tab[13]['table']    = $this->getTable();
+      $tab[13]['field']    = 'speed';
+      $tab[13]['name']     = $LANG['device_drive'][1];
+      $tab[13]['datatype'] = 'text';
 
-      $tab[14]['table']         = 'glpi_interfacetypes';
-      $tab[14]['field']         = 'name';
-      $tab[14]['name']          = $LANG['common'][65];
+      $tab[14]['table'] = 'glpi_interfacetypes';
+      $tab[14]['field'] = 'name';
+      $tab[14]['name']  = $LANG['common'][65];
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
       $data['label'] = $data['value'] = array();
+
       if ($this->fields["is_writer"]) {
          $data['label'][] = $LANG['device_drive'][0];
          $data['value'][] = Dropdown::getYesNo($this->fields["is_writer"]);
       }
+
       if (!empty($this->fields["speed"])) {
          $data['label'][] = $LANG['device_drive'][1];
          $data['value'][] = $this->fields["speed"];
       }
+
       if ($this->fields["interfacetypes_id"]) {
          $data['label'][] = $LANG['common'][65];
          $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
@@ -109,6 +114,7 @@ class DeviceDrive extends CommonDevice {
 
       return $data;
    }
+
 }
 
 ?>

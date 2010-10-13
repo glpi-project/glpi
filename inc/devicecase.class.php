@@ -46,9 +46,9 @@ class DeviceCase extends CommonDevice {
       return $LANG['devices'][22];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'devicecasetypes_id',
@@ -56,23 +56,25 @@ class DeviceCase extends CommonDevice {
                                      'type'  => 'dropdownValue')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']         = 'glpi_devicecasetypes';
-      $tab[12]['field']         = 'name';
-      $tab[12]['name']          = $LANG['device_case'][0];
+      $tab[12]['table'] = 'glpi_devicecasetypes';
+      $tab[12]['field'] = 'name';
+      $tab[12]['name']  = $LANG['device_case'][0];
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
@@ -84,6 +86,7 @@ class DeviceCase extends CommonDevice {
       }
       return $data;
    }
+
 }
 
 ?>

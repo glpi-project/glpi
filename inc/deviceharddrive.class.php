@@ -46,15 +46,16 @@ class DeviceHardDrive extends CommonDevice {
       return $LANG['devices'][1];
    }
 
+
    static function getSpecifityLabel() {
       global $LANG;
 
-      return array('specificity'=>$LANG['device_hdd'][4]);
+      return array('specificity' => $LANG['device_hdd'][4]);
    }
+
 
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
@@ -71,61 +72,67 @@ class DeviceHardDrive extends CommonDevice {
                                      'type'  => 'dropdownValue')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'specif_default';
-      $tab[11]['name']          = $LANG['device_hdd'][4]." ".$LANG['devices'][24];
-      $tab[11]['datatype']      = 'text';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'specif_default';
+      $tab[11]['name']     = $LANG['device_hdd'][4]." ".$LANG['devices'][24];
+      $tab[11]['datatype'] = 'text';
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'rpm';
-      $tab[12]['name']          = $LANG['device_hdd'][0];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'rpm';
+      $tab[12]['name']     = $LANG['device_hdd'][0];
+      $tab[12]['datatype'] = 'text';
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'cache';
-      $tab[13]['name']          = $LANG['device_hdd'][1];
-      $tab[13]['datatype']      = 'text';
+      $tab[13]['table']    = $this->getTable();
+      $tab[13]['field']    = 'cache';
+      $tab[13]['name']     = $LANG['device_hdd'][1];
+      $tab[13]['datatype'] = 'text';
 
-      $tab[14]['table']         = 'glpi_interfacetypes';
-      $tab[14]['field']         = 'name';
-      $tab[14]['name']          = $LANG['common'][65];
+      $tab[14]['table']    = 'glpi_interfacetypes';
+      $tab[14]['field']    = 'name';
+      $tab[14]['name']     = $LANG['common'][65];
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
       $data['label'] = $data['value'] = array();
+
       if (!empty($this->fields["rpm"])) {
          $data['label'][] = $LANG['device_hdd'][0];
          $data['value'][] = $this->fields["rpm"];
       }
+
       if ($this->fields["interfacetypes_id"]) {
          $data['label'][] = $LANG['common'][65];
          $data['value'][] = Dropdown::getDropdownName("glpi_interfacetypes",
                                                       $this->fields["interfacetypes_id"]);
       }
+
       if (!empty($this->fields["cache"])) {
          $data['label'][] = $LANG['device_hdd'][1];
          $data['value'][] = $this->fields["cache"];
       }
       // Specificity
       $data['label'][] = $LANG['device_hdd'][4];
-      $data['size'] = 10;
+      $data['size']    = 10;
 
       return $data;
    }
+
 }
 
 ?>

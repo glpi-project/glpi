@@ -46,15 +46,16 @@ class DeviceMemory extends CommonDevice {
       return $LANG['devices'][6];
    }
 
+
    static function getSpecifityLabel() {
       global $LANG;
 
-      return array('specificity'=>$LANG['device_ram'][2]);
+      return array('specificity' => $LANG['device_ram'][2]);
    }
+
 
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
@@ -68,52 +69,58 @@ class DeviceMemory extends CommonDevice {
                                      'type'  => 'dropdownValue')));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'specif_default';
-      $tab[11]['name']          = $LANG['device_ram'][2]." ".$LANG['devices'][24];
-      $tab[11]['datatype']      = 'text';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'specif_default';
+      $tab[11]['name']     = $LANG['device_ram'][2]." ".$LANG['devices'][24];
+      $tab[11]['datatype'] = 'text';
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'frequence';
-      $tab[12]['name']          = $LANG['device_ram'][1];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'frequence';
+      $tab[12]['name']     = $LANG['device_ram'][1];
+      $tab[12]['datatype'] = 'text';
 
-      $tab[13]['table']         = 'glpi_devicememorytypes';
-      $tab[13]['field']         = 'name';
-      $tab[13]['name']          = $LANG['common'][17];
+      $tab[13]['table'] = 'glpi_devicememorytypes';
+      $tab[13]['field'] = 'name';
+      $tab[13]['name']  = $LANG['common'][17];
 
       return $tab;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
       $data['label'] = $data['value'] = array();
+
       if ($this->fields["devicememorytypes_id"]) {
          $data['label'][] = $LANG['common'][17];
          $data['value'][] = Dropdown::getDropdownName("glpi_devicememorytypes",
                                                       $this->fields["devicememorytypes_id"]);
       }
+
       if (!empty($this->fields["frequence"])) {
          $data['label'][] = $LANG['device_ram'][1];
          $data['value'][] = $this->fields["frequence"];
       }
+
       // Specificity
       $data['label'][] = $LANG['device_ram'][2];
-      $data['size'] = 10;
+      $data['size']    = 10;
 
       return $data;
    }
+
 }
 
 ?>

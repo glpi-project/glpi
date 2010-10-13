@@ -46,9 +46,9 @@ class DeviceProcessor extends CommonDevice {
       return $LANG['devices'][4];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
@@ -59,43 +59,47 @@ class DeviceProcessor extends CommonDevice {
                                      'type'  => 'text')));
    }
 
+
    static function getSpecifityLabel() {
       global $LANG;
 
-      return array('specificity'=>$LANG['device_ram'][1]);
+      return array('specificity' => $LANG['device_ram'][1]);
    }
+
 
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'specif_default';
-      $tab[11]['name']          = $LANG['device_ram'][1]." ".$LANG['devices'][24];
-      $tab[11]['datatype']      = 'text';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'specif_default';
+      $tab[11]['name']     = $LANG['device_ram'][1]." ".$LANG['devices'][24];
+      $tab[11]['datatype'] = 'text';
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'frequence';
-      $tab[12]['name']          = $LANG['device_ram'][1];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'frequence';
+      $tab[12]['name']     = $LANG['device_ram'][1];
+      $tab[12]['datatype'] = 'text';
 
       return $tab;
    }
 
+
    function prepareInputForAdd($input) {
 
       if (isset($input['frequence']) && !is_numeric($input['frequence'])) {
-         $input['frequence']=0;
+         $input['frequence'] = 0;
       }
       return $input;
    }
+
 
    /**
     * return the display data for a specific device
     *
     * @return array
-    */
+   **/
    function getFormData() {
       global $LANG;
 
@@ -103,7 +107,7 @@ class DeviceProcessor extends CommonDevice {
 
       // Specificity
       $data['label'][] = $LANG['device_ram'][1];
-      $data['size'] = 10;
+      $data['size']    = 10;
 
       return $data;
    }
