@@ -444,7 +444,7 @@ class NetworkPort extends CommonDBChild {
 
                if ($device2->can($device2->fields["id"], 'r')) {
                   echo $netport->getLink();
-                  echo "</a></strong>\n";
+                  echo "</strong>\n";
                   showToolTip($netport->fields['comment']);
                   echo "&nbsp;".$LANG['networking'][25] . " <strong>";
                   echo $device2->getLink();
@@ -567,7 +567,7 @@ class NetworkPort extends CommonDBChild {
          $show_computer_mac = true;
       }
 
-      echo "<tr class='tab_bg_1'><td>$type:</td>\n<td>";
+      echo "<tr class='tab_bg_1'><td>$type&nbsp;:</td>\n<td>";
 
       if (!($ID>0)){
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
