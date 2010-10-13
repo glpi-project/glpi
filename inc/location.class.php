@@ -41,12 +41,14 @@ if (!defined('GLPI_ROOT')){
 class Location extends CommonTreeDropdown {
 
    function canCreate() {
-      return haveRight('entity_dropdown','w');
+      return haveRight('entity_dropdown', 'w');
    }
 
+
    function canView() {
-      return haveRight('entity_dropdown','r');
+      return haveRight('entity_dropdown', 'r');
    }
+
 
    function getAdditionalFields() {
       global $LANG;
@@ -65,70 +67,76 @@ class Location extends CommonTreeDropdown {
                          'list'  => true));
    }
 
+
    static function getTypeName() {
       global $LANG;
 
       return $LANG['common'][15];
    }
 
+
    static function getSearchOptionsToAdd () {
       global $LANG;
 
-      $tab=array();
-      $tab[3]['table']     = 'glpi_locations';
-      $tab[3]['field']     = 'completename';
-      $tab[3]['name']      = $LANG['common'][15];
+      $tab = array();
+      $tab[3]['table'] = 'glpi_locations';
+      $tab[3]['field'] = 'completename';
+      $tab[3]['name']  = $LANG['common'][15];
 
-      $tab[91]['table']     = 'glpi_locations';
-      $tab[91]['field']     = 'building';
-      $tab[91]['name']      = $LANG['common'][15]." - ".$LANG['setup'][99];
+      $tab[91]['table']         = 'glpi_locations';
+      $tab[91]['field']         = 'building';
+      $tab[91]['name']          = $LANG['common'][15]." - ".$LANG['setup'][99];
       $tab[91]['massiveaction'] = false;
 
-      $tab[92]['table']     = 'glpi_locations';
-      $tab[92]['field']     = 'room';
-      $tab[92]['name']      = $LANG['common'][15]." - ".$LANG['setup'][100];
+      $tab[92]['table']         = 'glpi_locations';
+      $tab[92]['field']         = 'room';
+      $tab[92]['name']          = $LANG['common'][15]." - ".$LANG['setup'][100];
       $tab[92]['massiveaction'] = false;
 
-      $tab[93]['table']     = 'glpi_locations';
-      $tab[93]['field']     = 'comment';
-      $tab[93]['name']      = $LANG['common'][15]." - ".$LANG['common'][25];
+      $tab[93]['table']         = 'glpi_locations';
+      $tab[93]['field']         = 'comment';
+      $tab[93]['name']          = $LANG['common'][15]." - ".$LANG['common'][25];
       $tab[93]['massiveaction'] = false;
 
       return $tab;
    }
+
    /**
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'building';
-      $tab[11]['name']          = $LANG['setup'][99];
-      $tab[11]['datatype']      = 'text';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'building';
+      $tab[11]['name']     = $LANG['setup'][99];
+      $tab[11]['datatype'] = 'text';
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'room';
-      $tab[12]['name']          = $LANG['setup'][100];
-      $tab[12]['datatype']      = 'text';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'room';
+      $tab[12]['name']     = $LANG['setup'][100];
+      $tab[12]['datatype'] = 'text';
 
       return $tab;
    }
 
+
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong=parent::defineTabs($options);
+      $ong = parent::defineTabs($options);
+
       if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['networking'][51];
       }
 
       return $ong;
    }
+
 
    /**
     * Display content of Tab
@@ -137,13 +145,15 @@ class Location extends CommonTreeDropdown {
     * @param $tab number of the tab
     *
     * @return true if handled (for class stack)
-    */
+   **/
    function showTabContent ($ID, $tab) {
+
       if ($ID>0 && !parent::showTabContent ($ID, $tab)) {
          switch ($tab) {
             case 2 :
                $this->showNetpoints($ID);
                return true;
+
             case -1 :
                $this->showNetpoints($ID);
                return false;
@@ -152,6 +162,7 @@ class Location extends CommonTreeDropdown {
       return false;
    }
 
+
    /**
     * Print the HTML array of the Netpoint associated to a Location
     *
@@ -159,8 +170,8 @@ class Location extends CommonTreeDropdown {
     *
     *@return Nothing (display)
     *
-    **/
-    function showNetpoints($ID) {
+   **/
+   function showNetpoints($ID) {
       global $DB, $CFG_GLPI, $LANG;
 
       $netpoint = new Netpoint();
@@ -179,6 +190,7 @@ class Location extends CommonTreeDropdown {
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan>".$LANG['networking'][51]." - ".$LANG['search'][15]."</th></tr>";
+
       } else {
          printAjaxPager($this->getTreeLink()." - ".$LANG['networking'][51],$start,$number);
 
@@ -187,9 +199,11 @@ class Location extends CommonTreeDropdown {
                    $CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
          }
          echo "<table class='tab_cadre_fixe'><tr>";
+
          if ($canedit) {
             echo "<th width='10'>&nbsp;</th>";
          }
+
          echo "<th>".$LANG['common'][16]."</th>"; // Name
          echo "<th>".$LANG['common'][25]."</th>"; // Comment
          echo "</tr>\n";
@@ -200,18 +214,23 @@ class Location extends CommonTreeDropdown {
                        'LIMIT'        => $_SESSION['glpilist_limit']);
 
          initNavigateListItems('Netpoint', $this->getTypeName()."= ".$this->fields['name']);
+
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
             addToNavigateListItems('Netpoint',$data["id"]);
             echo "<tr class='tab_bg_1'>";
+
             if ($canedit) {
                echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
             }
+
             echo "<td><a href='".$netpoint->getFormURL();
             echo '?id='.$data['id']."'>".$data['name']."</a></td>";
             echo "<td>".$data['comment']."</td>";
             echo "</tr>\n";
          }
+
          echo "</table>\n";
+
          if ($canedit) {
             openArrowMassive("massiveaction_form", true);
             echo "<input type='hidden' name='itemtype' value='Netpoint'>";
@@ -221,6 +240,7 @@ class Location extends CommonTreeDropdown {
             echo "</form>\n";
          }
       }
+
       if ($canedit) {
          // Minimal form for quick input.
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
@@ -230,9 +250,8 @@ class Location extends CommonTreeDropdown {
          autocompletionTextField($this, "name",array('value'=>''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\"".
-              $LANG['buttons'][8]."\" class='submit'></td>";
-         echo "</tr>\n";
+         echo "<td><input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "</td></tr>\n";
          echo "</table></form>\n";
 
          // Minimal form for massive input.
@@ -248,9 +267,8 @@ class Location extends CommonTreeDropdown {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<input type='hidden' name='_method' value='addMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\"".
-              $LANG['buttons'][8]."\" class='submit'></td>";
-         echo "</tr>\n";
+         echo "<td><input type='submit' name='execute' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "</td></tr>\n";
          echo "</table></form>\n";
       }
       echo "</div>\n";

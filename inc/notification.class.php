@@ -313,9 +313,9 @@ class Notification extends CommonDBTM {
                   ON (`glpi_entities`.`id` = `glpi_notifications`.`entities_id`)
                 WHERE `glpi_notifications`.`itemtype` = '$itemtype'
                       AND `glpi_notifications`.`event` = '$event' ".
-                      getEntitiesRestrictRequest(" AND", "glpi_notifications", 'entities_id',
+                      getEntitiesRestrictRequest("AND", "glpi_notifications", 'entities_id',
                                                  $entity, true) ."
-                        AND `glpi_notifications`.`is_active`='1'
+                      AND `glpi_notifications`.`is_active`='1'
                 ORDER BY `glpi_entities`.`level` DESC";
       return $DB->request($query);
    }

@@ -57,13 +57,16 @@ class KnowbaseItem extends CommonDBTM {
       return (haveRight('knowbase', 'r') || haveRight('faq', 'r'));
    }
 
+
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong=array();
-      $ong[1]=$LANG['title'][26];
+      $ong    = array();
+      $ong[1] = $LANG['title'][26];
+
       return $ong;
    }
+
 
    /**
     * Get The Name of the Object
@@ -71,7 +74,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $with_comment add comments to name (not used for this type)
     *
     * @return String: name of the object in the current language
-    */
+   **/
    function getName($with_comment=0) {
 
       if (isset($this->fields["question"]) && !empty($this->fields["question"])) {
@@ -85,7 +88,7 @@ class KnowbaseItem extends CommonDBTM {
     * Actions done at the end of the getEmpty function
     *
     *@return nothing
-    **/
+   **/
    function post_getEmpty () {
 
       if (haveRight("faq", "w") && !haveRight("knowbase", "w")) {
@@ -128,13 +131,13 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-   * Print out an HTML "<form>" for knowbase item
-   *
-   * @param $ID
-   * @param $options array
-   *     - target for the Form
-   *
-   * @return nothing (display the form)
+    * Print out an HTML "<form>" for knowbase item
+    *
+    * @param $ID
+    * @param $options array
+    *     - target for the Form
+    *
+    * @return nothing (display the form)
    **/
    function showForm($ID, $options=array()) {
       global $LANG;
@@ -143,6 +146,7 @@ class KnowbaseItem extends CommonDBTM {
       if (!haveRight("knowbase","w" ) && !haveRight("faq","w")) {
          return false;
       }
+
       if ($ID >0) {
          $this->check($ID,'r');
       } else {
@@ -211,8 +215,8 @@ class KnowbaseItem extends CommonDBTM {
 
          if (isMultiEntitiesMode()) {
             echo $LANG['entity'][0]."&nbsp;: ";
-            Dropdown::show('Entity', array('value'     => $this->fields["entities_id"],
-                                           'comments'  => 0 ));
+            Dropdown::show('Entity', array('value'    => $this->fields["entities_id"],
+                                           'comments' => 0 ));
             echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
             if ($canrecu) {
                Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
@@ -221,11 +225,13 @@ class KnowbaseItem extends CommonDBTM {
             }
          }
          echo "<br><br>" . $LANG['knowbase'][5]."&nbsp;: ";
+
          if (haveRight("faq","w") && haveRight("knowbase","w")) {
             Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
          } else {
             echo Dropdown::getYesNo($this->fields["is_faq"]);
          }
+
          echo "<br><br>";
          if ($ID>0) {
             echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
@@ -248,7 +254,7 @@ class KnowbaseItem extends CommonDBTM {
     * Add kb item to the public FAQ
     *
     * @return nothing
-    **/
+   **/
    function addToFaq() {
       global $DB;
 
@@ -262,7 +268,7 @@ class KnowbaseItem extends CommonDBTM {
     * Remove kb item from the public FAQ
     *
     * @return nothing
-    **/
+   **/
    function removeFromFaq() {
       global $DB;
 
@@ -276,7 +282,7 @@ class KnowbaseItem extends CommonDBTM {
     * Print out an HTML Menu for knowbase item
     *
     * @return nothing (display the form)
-    **/
+   **/
    function showMenu() {
       global $LANG, $CFG_GLPI;
 
@@ -316,8 +322,9 @@ class KnowbaseItem extends CommonDBTM {
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG['knowbase'][8].
                "' title='".$LANG['knowbase'][8]."'></a></td>\n";
          echo "<td class='center' width='33%'>";
-         echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG['common'][55]).
-               "','".$CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
+         echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".
+                addslashes($LANG['common'][55])."','".$CFG_GLPI["root_doc"].
+                "/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG['knowbase'][9].
                "' title='".$LANG['knowbase'][9]."'></a></td>";
          echo "</tr>";
@@ -332,7 +339,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $linkusers_id display users_id link
     *
     * @return nothing (display item : question and answer)
-    **/
+   **/
    function showFull($linkusers_id=true, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
@@ -366,8 +373,10 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_3'><th colspan='4'>".$LANG['common'][36]."&nbsp;:&nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/".
             (isset($_SESSION['glpiactiveprofile'])
-             && $_SESSION['glpiactiveprofile']['interface']=="central"?"knowbaseitem.php":"helpdesk.faq.php").
-            "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
+             && $_SESSION['glpiactiveprofile']['interface']=="central"
+                  ?"knowbaseitem.php"
+                  :"helpdesk.faq.php")."?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".
+            $fullcategoryname."</a>";
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][14]."</h2>";
@@ -384,6 +393,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr><th class='tdkb'  colspan='2'>";
       if ($this->fields["users_id"]) {
          echo $LANG['common'][37]."&nbsp;: ";
+
          // Integer because true may be 2 and getUserName return array
          if ($linkusers_id) {
             $linkusers_id = 1;
@@ -394,13 +404,14 @@ class KnowbaseItem extends CommonDBTM {
          echo getUserName($this->fields["users_id"], $linkusers_id);
          echo "<br>";
       }
+
       if ($this->fields["date"]) {
          echo $LANG['knowbase'][27]."&nbsp;: ". convDateTime($this->fields["date"]);
       }
 
       echo "</th>";
-
       echo "<th class='tdkb' colspan='2'>";
+
       if ($this->fields["date_mod"]) {
          echo $LANG['common'][26]."&nbsp;: ".convDateTime($this->fields["date_mod"]).
               "<br>";
@@ -409,7 +420,6 @@ class KnowbaseItem extends CommonDBTM {
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
-
 
       return true;
    }
@@ -422,7 +432,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $faq display on faq ?
     *
     * @return nothing (display the form)
-    **/
+   **/
    static function searchForm($options, $faq=0) {
       global $LANG, $CFG_GLPI;
 
@@ -433,7 +443,7 @@ class KnowbaseItem extends CommonDBTM {
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
-            $params[$key]=$val;
+            $params[$key] = $val;
          }
       }
 
@@ -468,10 +478,10 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-   *Print out list kb item
-   *
-   * @param $options : $_GET
-   * @param $faq display on faq ?
+    *Print out list kb item
+    *
+    * @param $options : $_GET
+    * @param $faq display on faq ?
    **/
    static function showList($options, $faq=0) {
       global $DB, $LANG;
@@ -484,7 +494,7 @@ class KnowbaseItem extends CommonDBTM {
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
-            $params[$key]=$val;
+            $params[$key] = $val;
          }
       }
 
@@ -547,12 +557,15 @@ class KnowbaseItem extends CommonDBTM {
          }
 
       } else { // no search -> browse by category
-         $where .= " (`glpi_knowbaseitems`.`knowbaseitemcategories_id` = '".$params["knowbaseitemcategories_id"]."')";
+         $where .= " (`glpi_knowbaseitems`.`knowbaseitemcategories_id`
+                        = '".$params["knowbaseitemcategories_id"]."')";
          $order  = " ORDER BY `glpi_knowbaseitems`.`question` ASC";
       }
+
       if (!$params["start"]) {
          $params["start"] = 0;
       }
+
       $query = "SELECT * $score
                 FROM `glpi_knowbaseitems`
                 WHERE $where
@@ -563,20 +576,22 @@ class KnowbaseItem extends CommonDBTM {
          $KbCategory = new KnowbaseItemCategory();
          $title = "";
          if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
-            $title = $LANG['common'][36]." = ".
-                        (empty($KbCategory->fields['name']) ? "(".$params['knowbaseitemcategories_id'].")"
-                         : $KbCategory->fields['name']);
+            $title = $LANG['common'][36]." = ".(empty($KbCategory->fields['name'])
+                                                ?"(".$params['knowbaseitemcategories_id'].")"
+                                                : $KbCategory->fields['name']);
          }
 
          initNavigateListItems('KnowbaseItem', $title);
 
          $numrows    = $DB->numrows($result);
          $list_limit = $_SESSION['glpilist_limit'];
+
          // Limit the result, if no limit applies, use prior result
          if ($numrows>$list_limit && !isset($_GET['export_all'])) {
             $query_limit   = $query ." LIMIT ".intval($params["start"]).", ".intval($list_limit)." ";
             $result_limit  = $DB->query($query_limit);
             $numrows_limit = $DB->numrows($result_limit);
+
          } else {
             $numrows_limit = $numrows;
             $result_limit  = $result;
@@ -585,6 +600,7 @@ class KnowbaseItem extends CommonDBTM {
          if ($numrows_limit>0) {
             // Set display type for export if define
             $output_type = HTML_OUTPUT;
+
             if (isset($_GET["display_type"])) {
                $output_type = $_GET["display_type"];
             }
@@ -598,6 +614,7 @@ class KnowbaseItem extends CommonDBTM {
                printPager($params['start'], $numrows, getItemTypeSearchURL('KnowbaseItem'),
                           $parameters, 'KnowbaseItem');
             }
+
             $nbcols = 1;
             // Display List Header
             echo Search::showHeader($output_type, $numrows_limit+1, $nbcols);
@@ -673,13 +690,14 @@ class KnowbaseItem extends CommonDBTM {
     * @param $faq display only faq
     *
     * @return nothing (display table)
-    **/
+   **/
    private static function showRecentPopular($target, $type, $faq=0) {
       global $DB, $LANG;
 
       if ($type=="recent") {
          $orderby = "ORDER BY `date` DESC";
          $title   = $LANG['knowbase'][29];
+
       } else {
          $orderby = "ORDER BY `view` DESC";
          $title   = $LANG['knowbase'][30];
@@ -688,6 +706,7 @@ class KnowbaseItem extends CommonDBTM {
       $faq_limit = "";
       if (getLoginUserID()) {
          $faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_knowbaseitems", "", "", true);
+
       } else {
          // Anonymous access
          if (isMultiEntitiesMode()) {
@@ -730,7 +749,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $faq display only faq
     *
     * @return nothing (display table)
-    **/
+   **/
    static function showViewGlobal($target, $faq=0) {
 
       echo "<div><table class='center-h' width='950px'><tr><td class='center middle'>";
@@ -760,9 +779,9 @@ class KnowbaseItem extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[4]['table']     = 'glpi_knowbaseitemcategories';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['common'][36];
+      $tab[4]['table'] = 'glpi_knowbaseitemcategories';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name']  = $LANG['common'][36];
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'date';
@@ -770,18 +789,18 @@ class KnowbaseItem extends CommonDBTM {
       $tab[5]['datatype']      = 'datetime';
       $tab[5]['massiveaction'] = false;
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'question';
-      $tab[6]['name']      = $LANG['knowbase'][14];
+      $tab[6]['table'] = $this->getTable();
+      $tab[6]['field'] = 'question';
+      $tab[6]['name'] = $LANG['knowbase'][14];
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'answer';
-      $tab[7]['name']      = $LANG['knowbase'][15];
+      $tab[7]['table'] = $this->getTable();
+      $tab[7]['field'] = 'answer';
+      $tab[7]['name']  = $LANG['knowbase'][15];
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'is_faq';
-      $tab[8]['name']      = $LANG['knowbase'][5];
-      $tab[8]['datatype']  = 'bool';
+      $tab[8]['table']    = $this->getTable();
+      $tab[8]['field']    = 'is_faq';
+      $tab[8]['name']     = $LANG['knowbase'][5];
+      $tab[8]['datatype'] = 'bool';
 
       $tab[9]['table']         = $this->getTable();
       $tab[9]['field']         = 'view';
@@ -805,13 +824,14 @@ class KnowbaseItem extends CommonDBTM {
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
 
       return $tab;
    }
+
 }
 
 ?>

@@ -221,10 +221,10 @@ class MailCollector  extends CommonDBTM {
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'is_active';
-      $tab[2]['name']      = $LANG['common'][60];
-      $tab[2]['datatype']  = 'bool';
+      $tab[2]['table']    = $this->getTable();
+      $tab[2]['field']    = 'is_active';
+      $tab[2]['name']     = $LANG['common'][60];
+      $tab[2]['datatype'] = 'bool';
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'host';
@@ -236,15 +236,15 @@ class MailCollector  extends CommonDBTM {
       $tab[4]['name']          = $LANG['login'][6];
       $tab[4]['massiveaction'] = false;
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'filesize_max';
-      $tab[5]['name']      = $LANG['mailgate'][7];
-      $tab[5]['datatype']  = 'integer';
+      $tab[5]['table']    = $this->getTable();
+      $tab[5]['field']    = 'filesize_max';
+      $tab[5]['name']     = $LANG['mailgate'][7];
+      $tab[5]['datatype'] = 'integer';
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -402,14 +402,16 @@ class MailCollector  extends CommonDBTM {
                } else {
                   $input = array();
                   $input['mailcollectors_id'] = $mailgateID;
-                  $input['from'] = $tkt['user_email'];
-                  $input['to'] = $tkt['_to'];
+                  $input['from']              = $tkt['user_email'];
+                  $input['to']                = $tkt['_to'];
+
                   if (!$tkt['users_id']) {
                      $input['reason'] = NotImportedEmail::USER_UNKNOWN;
 
                   } else {
                      $input['reason'] = NotImportedEmail::MATCH_NO_RULE;
                   }
+
                   $input['users_id']  = $tkt['users_id'];
                   $input['subject']   = $tkt['name'];
                   $input['messageid'] = $tkt['_message_id'];
@@ -422,6 +424,7 @@ class MailCollector  extends CommonDBTM {
             $this->close_mailbox();   //Close Mail Box
 
             if ($display) {
+
                if ($error==0) {
                   addMessageAfterRedirect($LANG['mailgate'][3]."&nbsp;: ".$this->fetch_emails);
                } else {
@@ -429,6 +432,7 @@ class MailCollector  extends CommonDBTM {
                                           " ($error ".$LANG['common'][63].")",
                                           false, ERROR);
                }
+
             } else {
                return "Number of messages: available=$tot, collected=".$this->fetch_emails.
                        ($error>0?" ($error error(s))":"".
@@ -492,11 +496,13 @@ class MailCollector  extends CommonDBTM {
          $body = encodeInUtf8($body,$this->charset);
          $this->body_converted = true;
       }
+
       if (!seems_utf8($body)) {
          $tkt['content'] = encodeInUtf8($body);
       } else {
          $tkt['content'] = $body;
       }
+
       // Add message from getAttached
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
@@ -504,6 +510,7 @@ class MailCollector  extends CommonDBTM {
       // Detect if it is a mail reply
       $glpi_message_match = "/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
       // See In-Reply-To field
+
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
             $tkt['tickets_id'] = (int)$match[1];
@@ -515,10 +522,12 @@ class MailCollector  extends CommonDBTM {
             $tkt['tickets_id'] = (int)$match[1];
          }
       }
+
       // See in title
       if (!isset($tkt['tickets_id']) && preg_match('/\[GLPI #(\d+)\]/', $head['subject'], $match)) {
          $tkt['tickets_id'] = (int)$match[1];
       }
+
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
          // it's a reply to a previous ticket
@@ -529,10 +538,11 @@ class MailCollector  extends CommonDBTM {
          if ($job->getFromDB($tkt['tickets_id'])
              && ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'], $head['from']))) {
 
-            $content = explode("\n", $tkt['content']);
+            $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
-            $first_comment = true;
-            $to_keep = array();
+            $first_comment  = true;
+            $to_keep        = array();
+
             foreach($content as $ID => $val) {
                if (isset($val[0])&&$val[0]=='>') {
                   // Delete line at the top of the first comment
@@ -542,11 +552,13 @@ class MailCollector  extends CommonDBTM {
                         unset($to_keep[$ID-1]);
                      }
                   }
+
                } else {
                   // Detect a signature if already keep lines
                   $to_keep[$ID] = $ID;
                }
             }
+
             foreach($to_keep as $ID ) {
                $tkt['content'] .= $content[$ID]."\n";
             }
@@ -569,20 +581,22 @@ class MailCollector  extends CommonDBTM {
          // No hardware associated
          $tkt['itemtype'] = "";
          // Mail request type
+
       } else {
          // Reopen if needed
          $tkt['add_reopen'] = 1;
       }
+
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
-      $tkt['content'] = clean_cross_side_scripting_deep(html_clean($tkt['content']));
+      $tkt['content']         = clean_cross_side_scripting_deep(html_clean($tkt['content']));
 
       if ($play_rules) {
-         $rule_options['ticket'] = $tkt;
-         $rule_options['headers'] = $head;
+         $rule_options['ticket']        = $tkt;
+         $rule_options['headers']       = $head;
          $rule_options['mailcollector'] = $options['mailgates_id'];
-         $rule_options['users_id'] = $tkt['users_id'];
+         $rule_options['users_id']      = $tkt['users_id'];
          $rulecollection = new RuleMailCollectorCollection();
-         $output = $rulecollection->processAllRules(array(), array(), $rule_options);
+         $output         = $rulecollection->processAllRules(array(), array(), $rule_options);
 
          foreach ($output as $key => $value) {
             $tkt[$key] = $value;
@@ -635,23 +649,27 @@ class MailCollector  extends CommonDBTM {
                              $fallbackCharset='iso-8859-1') {
 
       if (function_exists('mb_list_encodings') && function_exists('mb_convert_encoding')) {
-         $encodings = $this->mb_list_lowerencodings();
+         $encodings       = $this->mb_list_lowerencodings();
          $inputCharset    = utf8_strtolower($inputCharset);
          $targetCharset   = utf8_strtolower($targetCharset);
          $fallbackCharset = utf8_strtolower($fallbackCharset);
          $decodedStr      = '';
          $mimeStrs        = imap_mime_header_decode($mimeStr);
+
          for ($n=sizeOf($mimeStrs), $i=0 ; $i<$n ; $i++) {
             $mimeStr = $mimeStrs[$i];
             $mimeStr->charset = utf8_strtolower($mimeStr->charset);
+
             if (($mimeStr->charset == 'default' && $inputCharset == $targetCharset)
                 || $mimeStr->charset == $targetCharset) {
 
                $decodedStr .= $mimeStr->text;
+
             } else {
                if (in_array($mimeStr->charset, $encodings)) {
                   $this->charset = $mimeStr->charset;
                }
+
                $decodedStr .= mb_convert_encoding($mimeStr->text, $targetCharset,
                   (in_array($mimeStr->charset, $encodings) ? $mimeStr->charset : $fallbackCharset));
             }
@@ -679,6 +697,7 @@ class MailCollector  extends CommonDBTM {
 
       if ($mid != $this->mid || !$this->structure) {
          $this->structure = imap_fetchstructure($this->marubox,$mid);
+
          if ($this->structure) {
             $this->mid = $mid;
          }
@@ -688,8 +707,9 @@ class MailCollector  extends CommonDBTM {
 
    function getAdditionnalHeaders($mid) {
 
-      $head = array();
+      $head   = array();
       $header = explode("\n", imap_fetchheader($this->marubox, $mid));
+
       if (is_array($header) && count($header)) {
          foreach($header as $line) {
             // is line with additional header?
@@ -730,9 +750,11 @@ class MailCollector  extends CommonDBTM {
                                'subject'    => $mail_header->subject,
                                'to'         => $mail_header->toaddress,
                                'message_id' => $mail_header->message_id);
+
          if (isset($mail_header->references)) {
             $mail_details['references'] = $mail_header->references;
          }
+
          if (isset($mail_header->in_reply_to)) {
             $mail_details['in_reply_to'] = $mail_header->in_reply_to;
          }
@@ -742,6 +764,7 @@ class MailCollector  extends CommonDBTM {
             $mail_details[$header] = $value;
          }
       }
+
       return $mail_details;
    }
 
@@ -754,14 +777,9 @@ class MailCollector  extends CommonDBTM {
     **/
    function get_mime_type(&$structure) {
 
-      $primary_mime_type = array("TEXT",
-                                 "MULTIPART",
-                                 "MESSAGE",
-                                 "APPLICATION",
-                                 "AUDIO",
-                                 "IMAGE",
-                                 "VIDEO",
-                                 "OTHER");
+      $primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO",
+                                 "IMAGE", "VIDEO", "OTHER");
+
       if ($structure->subtype) {
          return $primary_mime_type[(int) $structure->type] . '/' . $structure->subtype;
       }
@@ -783,15 +801,19 @@ class MailCollector  extends CommonDBTM {
 
       if ($structure) {
          if ($mime_type == $this->get_mime_type($structure)) {
+
             if (!$part_number) {
                $part_number = "1";
             }
+
             $text = imap_fetchbody($stream, $msg_number, $part_number);
+
             if ($structure->encoding == 3) {
                $text =  imap_base64($text);
             } else if($structure->encoding == 4) {
                $text =  imap_qprint($text);
             }
+
             //else { return $text; }
             if ($structure->subtype && $structure->subtype=="HTML") {
                $text = str_replace("\r", "", $text);
@@ -815,6 +837,7 @@ class MailCollector  extends CommonDBTM {
          if ($structure->type == 1) { /* multipart */
             $prefix = "";
             reset($structure->parts);
+
             while (list($index, $sub_structure) = each($structure->parts)) {
                if ($part_number) {
                   $prefix = $part_number . '.';
@@ -861,9 +884,11 @@ class MailCollector  extends CommonDBTM {
       if (isset($struckture->parts) && count($struckture->parts)>0) {
          foreach ($struckture->parts as $key => $value) {
             $enc = $struckture->parts[$key]->encoding;
+
             if ($struckture->parts[$key]->ifdparameters) {
                $name = $struckture->parts[$key]->dparameters[0]->value;
                $message = imap_fetchbody($this->marubox,$mid,$key+1);
+
                if ($enc == 0) {
                   $message = imap_8bit($message);
                }
@@ -915,6 +940,7 @@ class MailCollector  extends CommonDBTM {
             $this->getRecursiveAttached($mid, $path, $maxsize, $sub,
                                         ($part ? $part.".".($index+1) : ($index+1)));
          }
+
       } else {
          $filename = '';
 
@@ -962,11 +988,13 @@ class MailCollector  extends CommonDBTM {
                                 getSize($structure->bytes) . "): ".$filename;
             return false;
          }
+
          if (!Document::isValidDoc($filename)) {
             $this->addtobody .= "<br>".$LANG['mailgate'][5]." (" .
                                 $this->get_mime_type($structure) . ") : ".$filename;
             return false;
          }
+
          if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
             switch ($structure->encoding) {
                case 1 :
@@ -985,13 +1013,14 @@ class MailCollector  extends CommonDBTM {
                   $message = quoted_printable_decode($message);
                   break;
             }
+
             if (file_put_contents($path.$filename, $message)) {
                $this->files['multiple'] = true;
                $j = count($this->files)-1;
-               $this->files[$j]['filename']['size'] = $structure->bytes;
-               $this->files[$j]['filename']['name'] = $filename;
+               $this->files[$j]['filename']['size']     = $structure->bytes;
+               $this->files[$j]['filename']['name']     = $filename;
                $this->files[$j]['filename']['tmp_name'] = $path.$filename;
-               $this->files[$j]['filename']['type'] = $this->get_mime_type($structure);
+               $this->files[$j]['filename']['type']     = $this->get_mime_type($structure);
             }
          } // fetchbody
       } // Single part
@@ -1010,9 +1039,10 @@ class MailCollector  extends CommonDBTM {
    function getAttached ($mid, $path, $maxsize) {
 
       $this->getStructure($mid);
-      $this->files = array();
+      $this->files     = array();
       $this->addtobody = "";
       $this->getRecursiveAttached($mid, $path, $maxsize, $this->structure);
+
       return ($this->files);
    }
 
@@ -1026,12 +1056,15 @@ class MailCollector  extends CommonDBTM {
 
       $this->getStructure($mid);
       $body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
+
       if ($body == "") {
          $body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN", $this->structure);
       }
+
       if ($body == "") {
          return "";
       }
+
       return $body;
    }
 
@@ -1075,8 +1108,10 @@ class MailCollector  extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_mailcollectors`
                 WHERE `is_active` = '1'";
+
       if ($result=$DB->query($query)) {
          $max = $task->fields['param'];
+
          if ($DB->numrows($result)>0) {
             $mc = new MailCollector();
 
@@ -1092,11 +1127,13 @@ class MailCollector  extends CommonDBTM {
                $max -= $mc->fetch_emails;
             }
          }
+
          if ($max == $task->fields['param']) {
             return 0; // Nothin to do
          } else if ($max > 0) {
             return 1; // done
          }
+
          return -1; // still messages to retrieve
       }
       return 0;
@@ -1127,6 +1164,7 @@ class MailCollector  extends CommonDBTM {
             $msg .= $LANG['setup'][653];
             break;
       }
+
       if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
          $msg .= " (".(empty($CFG_GLPI['smtp_username'])?'':$CFG_GLPI['smtp_username']."@").
                     $CFG_GLPI['smtp_host'].")";
@@ -1138,7 +1176,8 @@ class MailCollector  extends CommonDBTM {
          $msg = "\t".$LANG['common'][16].':"'.$mc['name'].'"  ';
          $msg .= " ".$LANG['common'][52].':'.$mc['host'];
          $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
-         $msg .= " ".$LANG['login'][7].':'.(empty($mc['password'])?$LANG['choice'][0]:$LANG['choice'][1]);
+         $msg .= " ".$LANG['login'][7].':'.
+                 (empty($mc['password'])?$LANG['choice'][0]:$LANG['choice'][1]);
          $msg .= " ".$LANG['common'][60].':'.($mc['is_active']?$LANG['choice'][1]:$LANG['choice'][0]);
          echo wordwrap($msg."\n", $width, "\n\t\t");
       }
@@ -1148,12 +1187,12 @@ class MailCollector  extends CommonDBTM {
    function sendMailRefusedResponse($to='', $subject='') {
       global $CFG_GLPI, $LANG;
 
-      $mmail = new NotificationMail;
-      $mmail->From = $CFG_GLPI["admin_email"];
+      $mmail           = new NotificationMail;
+      $mmail->From     = $CFG_GLPI["admin_email"];
       $mmail->FromName = "GLPI";
       $mmail->AddAddress($to);
-      $mmail->Subject = $LANG['mailgate'][16].' '.$subject;
-      $mmail->Body = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];
+      $mmail->Subject  = $LANG['mailgate'][16].' '.$subject;
+      $mmail->Body     = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];
       $mmail->Send();
    }
 
@@ -1176,6 +1215,7 @@ class MailCollector  extends CommonDBTM {
       $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_mailcollectors`";
       $result = $DB->query($query);
+
       return $DB->result($result, 0, 'cpt');
    }
 
