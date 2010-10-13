@@ -56,6 +56,7 @@ class SoftwareVersion extends CommonDBChild {
       return $LANG['software'][5];
    }
 
+
    function canCreate() {
       return haveRight('software', 'w');
    }
@@ -63,6 +64,7 @@ class SoftwareVersion extends CommonDBChild {
    function canView() {
       return haveRight('software', 'r');
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -73,6 +75,7 @@ class SoftwareVersion extends CommonDBChild {
                  WHERE `softwareversions_id` = '".$this->fields['id']."'";
       $DB->query($query2);
    }
+
 
    function prepareInputForAdd($input) {
 
@@ -91,28 +94,6 @@ class SoftwareVersion extends CommonDBChild {
       return false;
    }
 
-//    function isEntityAssign() {
-//       if (isset($this->fields["softwares_id"])) {
-//          // Object is instanciated (from can method, p.e.)
-//          return true;
-//       }
-//       // Not intanciated, probably to check if entities_id field exists
-//       return false;
-//    }
-//
-//    function getEntityID () {
-//
-//       $soft=new Software();
-//       $soft->getFromDB($this->fields["softwares_id"]);
-//       return $soft->getEntityID();
-//    }
-//
-//    function isRecursive () {
-//
-//       $soft=new Software();
-//       $soft->getFromDB($this->fields["softwares_id"]);
-//       return $soft->isRecursive();
-//    }
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
@@ -125,6 +106,7 @@ class SoftwareVersion extends CommonDBChild {
       return $ong;
    }
 
+
    /**
     * Print the Software / version form
     *
@@ -135,7 +117,7 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @return true if displayed  false if item not found or not right to display
     *
-    **/
+   **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
 
@@ -154,7 +136,7 @@ class SoftwareVersion extends CommonDBChild {
          $soft = new Software();
          $soft->getFromDB($softwares_id);
          // Create item
-         $input = array('entities_id' => $soft->getEntityID(),
+         $input = array('entities_id'  => $soft->getEntityID(),
                         'is_recursive' => $soft->isRecursive());
          $this->check(-1, 'w', $input);
       }
@@ -165,7 +147,7 @@ class SoftwareVersion extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td>".$LANG['help'][31]."&nbsp;:</td>";
       echo "<td>";
       if ($ID>0) {
-         $softwares_id=$this->fields["softwares_id"];
+         $softwares_id = $this->fields["softwares_id"];
       } else {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
       }
@@ -201,31 +183,33 @@ class SoftwareVersion extends CommonDBChild {
       return true;
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'name';
-      $tab[2]['name']      = $LANG['common'][16];
+      $tab[2]['table'] = $this->getTable();
+      $tab[2]['field'] = 'name';
+      $tab[2]['name']  = $LANG['common'][16];
 
-      $tab[4]['table']     = 'glpi_operatingsystems';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['setup'][5];
+      $tab[4]['table'] = 'glpi_operatingsystems';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name']  = $LANG['setup'][5];
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
-      $tab[31]['table']     = 'glpi_states';
-      $tab[31]['field']     = 'name';
-      $tab[31]['name']      = $LANG['state'][0];
+      $tab[31]['table'] = 'glpi_states';
+      $tab[31]['field'] = 'name';
+      $tab[31]['name']  = $LANG['state'][0];
 
       return $tab;
    }
+
 
    /**
     * Make a select box for  software to install
@@ -236,40 +220,42 @@ class SoftwareVersion extends CommonDBChild {
     *    - value : integer / value of the selected version
     *
     * @param options options used
-
+    *
     * @return nothing (print out an HTML select box)
-    */
+   **/
    static function dropdown($options=array()) {
       global $CFG_GLPI;
 
       //$softwares_id,$value=0
-      $p['softwares_id']=0;
-      $p['value']=0;
-      $p['name']='softwareversions_id';
+      $p['softwares_id'] = 0;
+      $p['value']        = 0;
+      $p['name']         = 'softwareversions_id';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
-            $p[$key]=$val;
+            $p[$key] = $val;
          }
       }
 
-      $rand=mt_rand();
-      $params=array('softwares_id'  => $p['softwares_id'],
-                    'myname'        => $p['name'],
-                    'value'         => $p['value']);
+      $rand   = mt_rand();
+      $params = array('softwares_id' => $p['softwares_id'],
+                      'myname'       => $p['name'],
+                      'value'        => $p['value']);
 
-      $default="<select name='".$p['name']."'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option></select>";
-      ajaxDropdown(false,"/ajax/dropdownInstallVersion.php",$params,$default,$rand);
+      $default = "<select name='".$p['name']."'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>
+                  </select>";
+      ajaxDropdown(false,"/ajax/dropdownInstallVersion.php", $params, $default, $rand);
 
       return $rand;
    }
+
 
    /**
     * Show Versions of a software
     *
     * @param $soft Software object
     * @return nothing
-    */
+   **/
    static function showForSoftware($soft) {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -310,10 +296,12 @@ class SoftwareVersion extends CommonDBChild {
                echo $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
                echo "<td>".$data['sname']."</td>";
                echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',
-                                                                   $data['operatingsystems_id'])."</td>";
+                                                                   $data['operatingsystems_id']);
+               echo "</td>";
                echo "<td class='right'>$nb&nbsp;&nbsp;</td>";
                echo "<td>".$data['comment']."</td></tr>\n";
             }
+
             echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".$LANG['common'][33]."</td>";
             echo "<td class='right b'>$tot&nbsp;&nbsp;</td><td>";
             if ($canedit) {
@@ -322,6 +310,7 @@ class SoftwareVersion extends CommonDBChild {
             }
             echo "</td></tr>";
             echo "</table>\n";
+
          } else {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".$LANG['search'][15]."</th></tr>";
@@ -336,7 +325,7 @@ class SoftwareVersion extends CommonDBChild {
       }
       echo "</div>";
    }
-}
 
+}
 
 ?>
