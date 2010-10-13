@@ -101,17 +101,17 @@ class ReservationItem extends CommonDBTM {
 
       $tab = array();
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'comment';
-      $tab[4]['name']      = $LANG['common'][25];
-      $tab[4]['datatype']  = 'text';
+      $tab[4]['table']    = $this->getTable();
+      $tab[4]['field']    = 'comment';
+      $tab[4]['name']     = $LANG['common'][25];
+      $tab[4]['datatype'] = 'text';
 
       $tab['common'] = $LANG['common'][32];
 
-      $tab[1]['table']     = 'reservation_types';
-      $tab[1]['field']     = 'name';
-      $tab[1]['name']      = $LANG['common'][16];
-      $tab[1]['datatype']  = 'itemlink';
+      $tab[1]['table']         = 'reservation_types';
+      $tab[1]['field']         = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']         = 'reservation_types';
@@ -121,18 +121,18 @@ class ReservationItem extends CommonDBTM {
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[16]['table']     = 'reservation_types';
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = 'reservation_types';
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
-      $tab[70]['table']     = 'glpi_users';
-      $tab[70]['field']     = 'name';
-      $tab[70]['name']      = $LANG['common'][34];
+      $tab[70]['table'] = 'glpi_users';
+      $tab[70]['field'] = 'name';
+      $tab[70]['name']  = $LANG['common'][34];
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'name';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['table'] = 'glpi_groups';
+      $tab[71]['field'] = 'name';
+      $tab[71]['name']  = $LANG['common'][35];
 
       $tab[19]['table']         = 'reservation_types';
       $tab[19]['field']         = 'date_mod';
@@ -140,9 +140,9 @@ class ReservationItem extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[23]['table']     = 'glpi_manufacturers';
-      $tab[23]['field']     = 'name';
-      $tab[23]['name']      = $LANG['common'][5];
+      $tab[23]['table'] = 'glpi_manufacturers';
+      $tab[23]['field'] = 'name';
+      $tab[23]['name']  = $LANG['common'][5];
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';

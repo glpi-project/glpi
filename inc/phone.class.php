@@ -51,6 +51,7 @@ class Phone extends CommonDBTM {
       return $LANG['help'][35];
    }
 
+
    function canCreate() {
       return haveRight('phone', 'w');
    }
@@ -460,41 +461,41 @@ class Phone extends CommonDBTM {
 
       $tab+=Location::getSearchOptionsToAdd();
 
-      $tab[4]['table']     = 'glpi_phonetypes';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['common'][17];
+      $tab[4]['table'] = 'glpi_phonetypes';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name'] = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_phonemodels';
-      $tab[40]['field']     = 'name';
-      $tab[40]['name']      = $LANG['common'][22];
+      $tab[40]['table'] = 'glpi_phonemodels';
+      $tab[40]['field'] = 'name';
+      $tab[40]['name']  = $LANG['common'][22];
 
-      $tab[31]['table']     = 'glpi_states';
-      $tab[31]['field']     = 'name';
-      $tab[31]['name']      = $LANG['state'][0];
+      $tab[31]['table'] = 'glpi_states';
+      $tab[31]['field'] = 'name';
+      $tab[31]['name']  = $LANG['state'][0];
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'serial';
-      $tab[5]['name']      = $LANG['common'][19];
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'serial';
+      $tab[5]['name']  = $LANG['common'][19];
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'otherserial';
-      $tab[6]['name']      = $LANG['common'][20];
+      $tab[6]['table'] = $this->getTable();
+      $tab[6]['field'] = 'otherserial';
+      $tab[6]['name']  = $LANG['common'][20];
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'contact';
-      $tab[7]['name']      = $LANG['common'][18];
+      $tab[7]['table'] = $this->getTable();
+      $tab[7]['field'] = 'contact';
+      $tab[7]['name']  = $LANG['common'][18];
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'contact_num';
-      $tab[8]['name']      = $LANG['common'][21];
+      $tab[8]['table'] = $this->getTable();
+      $tab[8]['field'] = 'contact_num';
+      $tab[8]['name']  = $LANG['common'][21];
 
-      $tab[70]['table']     = 'glpi_users';
-      $tab[70]['field']     = 'name';
-      $tab[70]['name']      = $LANG['common'][34];
+      $tab[70]['table'] = 'glpi_users';
+      $tab[70]['field'] = 'name';
+      $tab[70]['name']  = $LANG['common'][34];
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'name';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['table'] = 'glpi_groups';
+      $tab[71]['field'] = 'name';
+      $tab[71]['name']  = $LANG['common'][35];
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -502,42 +503,42 @@ class Phone extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
       $tab[90]['name']          = $LANG['title'][37];
       $tab[90]['massiveaction'] = false;
 
-      $tab[11]['table']     = $this->getTable();
-      $tab[11]['field']     = 'brand';
-      $tab[11]['name']      = $LANG['peripherals'][18];
+      $tab[11]['table'] = $this->getTable();
+      $tab[11]['field'] = 'brand';
+      $tab[11]['name']  = $LANG['peripherals'][18];
 
-      $tab[23]['table']     = 'glpi_manufacturers';
-      $tab[23]['field']     = 'name';
-      $tab[23]['name']      = $LANG['common'][5];
+      $tab[23]['table'] = 'glpi_manufacturers';
+      $tab[23]['field'] = 'name';
+      $tab[23]['name']  = $LANG['common'][5];
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
 
-      $tab[42]['table']     = 'glpi_phonepowersupplies';
-      $tab[42]['field']     = 'name';
-      $tab[42]['name']      = $LANG['phones'][36];
+      $tab[42]['table'] = 'glpi_phonepowersupplies';
+      $tab[42]['field'] = 'name';
+      $tab[42]['name']  = $LANG['phones'][36];
 
-      $tab[43]['table']     = $this->getTable();
-      $tab[43]['field']     = 'have_headset';
-      $tab[43]['name']      = $LANG['phones'][38];
-      $tab[43]['datatype']  = 'bool';
+      $tab[43]['table']    = $this->getTable();
+      $tab[43]['field']    = 'have_headset';
+      $tab[43]['name']     = $LANG['phones'][38];
+      $tab[43]['datatype'] = 'bool';
 
-      $tab[44]['table']     = $this->getTable();
-      $tab[44]['field']     = 'have_hp';
-      $tab[44]['name']      = $LANG['phones'][39];
-      $tab[44]['datatype']  = 'bool';
+      $tab[44]['table']    = $this->getTable();
+      $tab[44]['field']    = 'have_hp';
+      $tab[44]['name']     = $LANG['phones'][39];
+      $tab[44]['datatype'] = 'bool';
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';

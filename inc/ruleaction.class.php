@@ -47,10 +47,11 @@ class RuleAction extends CommonDBChild {
       $this->itemtype = $rule_type;
    }
 
+
    /**
-   * Get title used in rule
-   *
-   * @return Title of the rule
+    * Get title used in rule
+    *
+    * @return Title of the rule
    **/
    static function getTypeName() {
       global $LANG;
@@ -58,7 +59,9 @@ class RuleAction extends CommonDBChild {
       return $LANG['rulesengine'][7];
    }
 
+
    function getNameID($with_comment=0) {
+
       $rule = new $this->itemtype ();
       return html_clean($rule->getMinimalActionText($this->fields));
    }
@@ -85,6 +88,7 @@ class RuleAction extends CommonDBChild {
 
       return $tab;
    }
+
 
    /**
     * Get all actions for a given rule
@@ -131,10 +135,10 @@ class RuleAction extends CommonDBChild {
 
 
    /**
-   * Display a dropdown with all the possible actions
+    * Display a dropdown with all the possible actions
    **/
    static function dropdownActions($sub_type, $name, $value='') {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       $rule = new $sub_type();
       $actions_options = $rule->getActions();
