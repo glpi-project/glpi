@@ -329,6 +329,7 @@ $LANG['common'][97] = "Lié à";
 $LANG['common'][98] = "Duplique";
 $LANG['common'][99] = "Dates";
 $LANG['common'][100] = "Délais";
+$LANG['common'][101] = "Dernière modification par";
 
 
 $LANG['computers'][0]  = "Volume";
