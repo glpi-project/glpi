@@ -46,6 +46,7 @@ class Holiday extends CommonDropdown {
       return $LANG['calendar'][11];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
 
@@ -60,51 +61,58 @@ class Holiday extends CommonDropdown {
                          'type'  => 'bool'));
    }
 
+
    /**
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'begin_date';
-      $tab[11]['name']          = $LANG['buttons'][33];
-      $tab[11]['datatype']      = 'date';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'begin_date';
+      $tab[11]['name']     = $LANG['buttons'][33];
+      $tab[11]['datatype'] = 'date';
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'end_date';
-      $tab[12]['name']          = $LANG['buttons'][32];
-      $tab[12]['datatype']      = 'date';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'end_date';
+      $tab[12]['name']     = $LANG['buttons'][32];
+      $tab[12]['datatype'] = 'date';
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'is_perpetual';
-      $tab[13]['name']          = $LANG['calendar'][3];
-      $tab[13]['datatype']      = 'bool';
+      $tab[13]['table']    = $this->getTable();
+      $tab[13]['field']    = 'is_perpetual';
+      $tab[13]['name']     = $LANG['calendar'][3];
+      $tab[13]['datatype'] = 'bool';
 
       return $tab;
    }
 
+
    function prepareInputForAdd($input) {
+
       $input = parent::prepareInputForAdd ($input);
-      
+
       if (empty($input['end_date'])
-            || $input['end_date'] == 'NULL'
-            || $input['end_date'] < $input['begin_date']) {
+          || $input['end_date'] == 'NULL'
+          || $input['end_date'] < $input['begin_date']) {
+
          $input['end_date'] = $input['begin_date'];
       }
       return $input;
    }
 
+
    function prepareInputForUpdate($input) {
+
       $input = parent::prepareInputForUpdate($input);
 
       if (empty($input['end_date'])
-            || $input['end_date'] == 'NULL'
-            || $input['end_date'] < $input['begin_date']) {
+          || $input['end_date'] == 'NULL'
+          || $input['end_date'] < $input['begin_date']) {
+
          $input['end_date'] = $input['begin_date'];
       }
 

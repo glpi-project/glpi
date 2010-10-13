@@ -90,9 +90,9 @@ class NotImportedEmail extends CommonDBTM {
       $tab[5]['name']          = $LANG['mailing'][132].' : messageid';
       $tab[5]['massiveaction'] = false;
 
-      $tab[6]['table']     = 'glpi_users';
-      $tab[6]['field']     = 'name';
-      $tab[6]['name']      = $LANG['job'][4];
+      $tab[6]['table'] = 'glpi_users';
+      $tab[6]['field'] = 'name';
+      $tab[6]['name']  = $LANG['job'][4];
 
       $tab[16]['table']         = 'glpi_notimportedemails';
       $tab[16]['field']         = 'reason';

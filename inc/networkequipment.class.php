@@ -465,41 +465,41 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[4]['table']     = 'glpi_networkequipmenttypes';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['common'][17];
+      $tab[4]['table'] = 'glpi_networkequipmenttypes';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name']  = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_networkequipmentmodels';
-      $tab[40]['field']     = 'name';
-      $tab[40]['name']      = $LANG['common'][22];
+      $tab[40]['table'] = 'glpi_networkequipmentmodels';
+      $tab[40]['field'] = 'name';
+      $tab[40]['name']  = $LANG['common'][22];
 
-      $tab[31]['table']     = 'glpi_states';
-      $tab[31]['field']     = 'name';
-      $tab[31]['name']      = $LANG['state'][0];
+      $tab[31]['table'] = 'glpi_states';
+      $tab[31]['field'] = 'name';
+      $tab[31]['name']  = $LANG['state'][0];
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'serial';
-      $tab[5]['name']      = $LANG['common'][19];
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'serial';
+      $tab[5]['name']  = $LANG['common'][19];
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'otherserial';
-      $tab[6]['name']      = $LANG['common'][20];
+      $tab[6]['table'] = $this->getTable();
+      $tab[6]['field'] = 'otherserial';
+      $tab[6]['name']  = $LANG['common'][20];
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'contact';
-      $tab[7]['name']      = $LANG['common'][18];
+      $tab[7]['table'] = $this->getTable();
+      $tab[7]['field'] = 'contact';
+      $tab[7]['name']  = $LANG['common'][18];
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'contact_num';
-      $tab[8]['name']      = $LANG['common'][21];
+      $tab[8]['table'] = $this->getTable();
+      $tab[8]['field'] = 'contact_num';
+      $tab[8]['name']  = $LANG['common'][21];
 
-      $tab[70]['table']     = 'glpi_users';
-      $tab[70]['field']     = 'name';
-      $tab[70]['name']      = $LANG['common'][34];
+      $tab[70]['table'] = 'glpi_users';
+      $tab[70]['field'] = 'name';
+      $tab[70]['name']  = $LANG['common'][34];
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'name';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['table'] = 'glpi_groups';
+      $tab[71]['field'] = 'name';
+      $tab[71]['name']  = $LANG['common'][35];
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -507,44 +507,44 @@ class NetworkEquipment extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
       $tab[90]['name']          = $LANG['title'][37];
       $tab[90]['massiveaction'] = false;
 
-      $tab[11]['table']     = 'glpi_networkequipmentfirmwares';
-      $tab[11]['field']     = 'name';
-      $tab[11]['name']      = $LANG['setup'][71];
+      $tab[11]['table'] = 'glpi_networkequipmentfirmwares';
+      $tab[11]['field'] = 'name';
+      $tab[11]['name']  = $LANG['setup'][71];
 
-      $tab[14]['table']     = $this->getTable();
-      $tab[14]['field']     = 'ram';
-      $tab[14]['name']      = $LANG['networking'][5];
-      $tab[14]['datatype']  = 'number';
+      $tab[14]['table']    = $this->getTable();
+      $tab[14]['field']    = 'ram';
+      $tab[14]['name']     = $LANG['networking'][5];
+      $tab[14]['datatype'] = 'number';
 
-      $tab[12]['table']     = $this->getTable();
-      $tab[12]['field']     = 'ip';
-      $tab[12]['name']      = $LANG['networking'][14]." ".$LANG['help'][26];
+      $tab[12]['table'] = $this->getTable();
+      $tab[12]['field'] = 'ip';
+      $tab[12]['name']  = $LANG['networking'][14]." ".$LANG['help'][26];
 
-      $tab[13]['table']     = $this->getTable();
-      $tab[13]['field']     = 'mac';
-      $tab[13]['name']      = $LANG['networking'][15]." ".$LANG['help'][26];
+      $tab[13]['table'] = $this->getTable();
+      $tab[13]['field'] = 'mac';
+      $tab[13]['name']  = $LANG['networking'][15]." ".$LANG['help'][26];
 
-      $tab[32]['table']     = 'glpi_networks';
-      $tab[32]['field']     = 'name';
-      $tab[32]['name']      = $LANG['setup'][88];
+      $tab[32]['table'] = 'glpi_networks';
+      $tab[32]['field'] = 'name';
+      $tab[32]['name']  = $LANG['setup'][88];
 
-      $tab[33]['table']     = 'glpi_domains';
-      $tab[33]['field']     = 'name';
-      $tab[33]['name']      = $LANG['setup'][89];
+      $tab[33]['table'] = 'glpi_domains';
+      $tab[33]['field'] = 'name';
+      $tab[33]['name']  = $LANG['setup'][89];
 
-      $tab[23]['table']     = 'glpi_manufacturers';
-      $tab[23]['field']     = 'name';
-      $tab[23]['name']      = $LANG['common'][5];
+      $tab[23]['table'] = 'glpi_manufacturers';
+      $tab[23]['field'] = 'name';
+      $tab[23]['name']  = $LANG['common'][5];
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';
@@ -556,10 +556,10 @@ class NetworkEquipment extends CommonDBTM {
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
 
       return $tab;
    }

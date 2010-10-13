@@ -136,10 +136,10 @@ class NotificationTemplate extends CommonDBTM {
       $tab[4]['datatype']      = 'itemtypename';
       $tab[4]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       return $tab;
    }
@@ -338,20 +338,22 @@ class NotificationTemplate extends CommonDBTM {
                   && $data['##'.$if_field.'##'] != ''
                   && $data['##'.$if_field.'##'] != '&nbsp;'
                   && !is_null($data['##'.$if_field.'##'])) {
-                  $condition_ok=true;
+
+                  $condition_ok = true;
 
                } else {
-                  $condition_ok=false;
+                  $condition_ok = false;
                }
 
             } else { // check exact match
 
                if (isset($data['##'.$if_field.'##'])
-                  && $data['##'.$if_field.'##'] == $out[2][$key]) {
-                  $condition_ok=true;
+                   && $data['##'.$if_field.'##'] == $out[2][$key]) {
+
+                  $condition_ok = true;
 
                } else {
-                  $condition_ok=false;
+                  $condition_ok = false;
                }
             }
 
