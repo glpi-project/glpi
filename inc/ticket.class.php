@@ -295,7 +295,6 @@ class Ticket extends CommonDBTM {
          unset($input["solvedate"]);
       }
 
-      
 
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
@@ -365,7 +364,7 @@ class Ticket extends CommonDBTM {
 
       // set last updater
       if ($lastupdater=getLoginUserID(true)) {
-         $input['users_id_lastupdater']=$lastupdater;
+         $input['users_id_lastupdater'] = $lastupdater;
       }
 
       // Setting a solution type means the ticket is solved
@@ -804,7 +803,7 @@ class Ticket extends CommonDBTM {
 
       // set last updater
       if ($lastupdater=getLoginUserID(true)) {
-         $input['users_id_lastupdater']=$lastupdater;
+         $input['users_id_lastupdater'] = $lastupdater;
       }
 
       // No Auto set Import for external source
@@ -1181,27 +1180,30 @@ class Ticket extends CommonDBTM {
    **/
    function updateDateMod($ID) {
       global $DB;
+
       if ($this->getFromDB($ID)) {
          if (haveRight("global_add_tasks","1")
               || haveRight("global_add_followups","1")
               || ($this->fields["users_id_assign"]===getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups']))) {
+
             if ($this->fields['takeintoaccount_delay_stat']==0) {
-               return $this->update(array('id'=>$ID,
-                                   'takeintoaccount_delay_stat'=>$this->computeTakeIntoAccountDelayStat()));
-            
+               return $this->update(array('id' => $ID,
+                                          'takeintoaccount_delay_stat'
+                                               => $this->computeTakeIntoAccountDelayStat()));
             }
+
          }
         // Force date mod and lastupdater
          $query = "UPDATE `".$this->getTable()."`
-                  SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
+                   SET `date_mod` = '".$_SESSION["glpi_currenttime"]."'";
 
          if ($lastupdater=getLoginUserID(true)) {
-            $query.=", `users_id_lastupdater` = '$lastupdater' ";
+            $query .= ", `users_id_lastupdater` = '$lastupdater' ";
          }
 
-         $query.="WHERE `id` = '$ID'";
+         $query .= "WHERE `id` = '$ID'";
          $DB->query($query);
       }
    }
@@ -1242,8 +1244,8 @@ class Ticket extends CommonDBTM {
                                "text-decoration:underline; '>".$LANG['job'][4]."&nbsp;:</span> ".
                                $fup->getAuthorName()."\n";
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
-                               "text-decoration:underline; '>".$LANG['knowbase'][15]."</span>&nbsp;:<br>".
-                               str_replace("\n","<br>",$fup->fields["content"])."\n";
+                               "text-decoration:underline; '>".$LANG['knowbase'][15]."</span>&nbsp;:
+                                <br>".str_replace("\n","<br>",$fup->fields["content"])."\n";
                   if ($fup->fields["actiontime"]>0) {
                      $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                   "text-decoration:underline; '>".$LANG['mailing'][104]."&nbsp;:".
@@ -1538,10 +1540,10 @@ class Ticket extends CommonDBTM {
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[45]['table']     = $this->getTable();
-      $tab[45]['field']     = 'realtime';
-      $tab[45]['name']      = $LANG['job'][20];
-      $tab[45]['datatype']  = 'realtime';
+      $tab[45]['table']    = $this->getTable();
+      $tab[45]['field']    = 'realtime';
+      $tab[45]['name']     = $LANG['job'][20];
+      $tab[45]['datatype'] = 'realtime';
 
       $tab[64]['table']         = 'glpi_users';
       $tab[64]['field']         = 'name';
@@ -1613,13 +1615,13 @@ class Ticket extends CommonDBTM {
 
       $tab['requester'] = $LANG['job'][4];
 
-      $tab[4]['table']     = 'glpi_users';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['job'][4];
+      $tab[4]['table'] = 'glpi_users';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name']  = $LANG['job'][4];
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'name';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['table'] = 'glpi_groups';
+      $tab[71]['field'] = 'name';
+      $tab[71]['name']  = $LANG['common'][35];
 
       $tab[22]['table']     = 'glpi_users';
       $tab[22]['field']     = 'name';
@@ -1628,29 +1630,29 @@ class Ticket extends CommonDBTM {
 
       $tab['satisfaction'] = $LANG['satisfaction'][3];
 
-      $tab[60]['table']          = 'glpi_ticketsatisfactions';
-      $tab[60]['field']          = 'date_begin';
-      $tab[60]['name']           = $LANG['satisfaction'][6];
-      $tab[60]['datatype']       = 'datetime';
-      $tab[60]['massiveaction']  = false;
+      $tab[60]['table']         = 'glpi_ticketsatisfactions';
+      $tab[60]['field']         = 'date_begin';
+      $tab[60]['name']          = $LANG['satisfaction'][6];
+      $tab[60]['datatype']      = 'datetime';
+      $tab[60]['massiveaction'] = false;
 
-      $tab[61]['table']          = 'glpi_ticketsatisfactions';
-      $tab[61]['field']          = 'date_answered';
-      $tab[61]['name']           = $LANG['satisfaction'][4];
-      $tab[61]['datatype']       = 'datetime';
-      $tab[61]['massiveaction']  = false;
+      $tab[61]['table']         = 'glpi_ticketsatisfactions';
+      $tab[61]['field']         = 'date_answered';
+      $tab[61]['name']          = $LANG['satisfaction'][4];
+      $tab[61]['datatype']      = 'datetime';
+      $tab[61]['massiveaction'] = false;
 
-      $tab[62]['table']          = 'glpi_ticketsatisfactions';
-      $tab[62]['field']          = 'satisfaction';
-      $tab[62]['name']           = $LANG['satisfaction'][7];
-      $tab[62]['datatype']       = 'number';
-      $tab[62]['massiveaction']  = false;
+      $tab[62]['table']         = 'glpi_ticketsatisfactions';
+      $tab[62]['field']         = 'satisfaction';
+      $tab[62]['name']          = $LANG['satisfaction'][7];
+      $tab[62]['datatype']      = 'number';
+      $tab[62]['massiveaction'] = false;
 
-      $tab[63]['table']          = 'glpi_ticketsatisfactions';
-      $tab[63]['field']          = 'comment';
-      $tab[63]['name']           = $LANG['satisfaction'][8];
-      $tab[63]['datatype']       = 'text';
-      $tab[63]['massiveaction']  = false;
+      $tab[63]['table']         = 'glpi_ticketsatisfactions';
+      $tab[63]['field']         = 'comment';
+      $tab[63]['name']          = $LANG['satisfaction'][8];
+      $tab[63]['datatype']      = 'text';
+      $tab[63]['massiveaction'] = false;
 
 
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
@@ -1722,9 +1724,9 @@ class Ticket extends CommonDBTM {
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
-         $tab[23]['table']     = 'glpi_ticketsolutiontypes';
-         $tab[23]['field']     = 'name';
-         $tab[23]['name']      = $LANG['job'][48];
+         $tab[23]['table'] = 'glpi_ticketsolutiontypes';
+         $tab[23]['field'] = 'name';
+         $tab[23]['name']  = $LANG['job'][48];
 
          $tab[24]['table']         = $this->getTable();
          $tab[24]['field']         = 'solution';
@@ -1734,32 +1736,32 @@ class Ticket extends CommonDBTM {
 
          $tab['cost'] = $LANG['financial'][5];
 
-         $tab[42]['table']     = $this->getTable();
-         $tab[42]['field']     = 'cost_time';
-         $tab[42]['name']      = $LANG['job'][40];
-         $tab[42]['datatype']  = 'decimal';
+         $tab[42]['table']    = $this->getTable();
+         $tab[42]['field']    = 'cost_time';
+         $tab[42]['name']     = $LANG['job'][40];
+         $tab[42]['datatype'] = 'decimal';
 
-         $tab[43]['table']     = $this->getTable();
-         $tab[43]['field']     = 'cost_fixed';
-         $tab[43]['name']      = $LANG['job'][41];
-         $tab[43]['datatype']  = 'decimal';
+         $tab[43]['table']    = $this->getTable();
+         $tab[43]['field']    = 'cost_fixed';
+         $tab[43]['name']     = $LANG['job'][41];
+         $tab[43]['datatype'] = 'decimal';
 
-         $tab[44]['table']     = $this->getTable();
-         $tab[44]['field']     = 'cost_material';
-         $tab[44]['name']      = $LANG['job'][42];
-         $tab[44]['datatype']  = 'decimal';
+         $tab[44]['table']    = $this->getTable();
+         $tab[44]['field']    = 'cost_material';
+         $tab[44]['name']     = $LANG['job'][42];
+         $tab[44]['datatype'] = 'decimal';
 
          $tab['notification'] = $LANG['setup'][704];
 
-         $tab[35]['table']     = $this->getTable();
-         $tab[35]['field']     = 'use_email_notification';
-         $tab[35]['name']      = $LANG['job'][19];
-         $tab[35]['datatype']  = 'bool';
+         $tab[35]['table']    = $this->getTable();
+         $tab[35]['field']    = 'use_email_notification';
+         $tab[35]['name']     = $LANG['job'][19];
+         $tab[35]['datatype'] = 'bool';
 
-         $tab[34]['table']     = $this->getTable();
-         $tab[34]['field']     = 'user_email';
-         $tab[34]['name']      = $LANG['joblist'][27];
-         $tab[34]['datatype']  = 'email';
+         $tab[34]['table']    = $this->getTable();
+         $tab[34]['field']    = 'user_email';
+         $tab[34]['name']     = $LANG['joblist'][27];
+         $tab[34]['datatype'] = 'email';
       }
 
       return $tab;
@@ -2690,11 +2692,11 @@ class Ticket extends CommonDBTM {
       echo "<table>";
 
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td><td>";
-         echo "<span class='tracking_small'>".convDateTime($this->fields["date_mod"])."\n";
+         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
+         echo "<td><span class='tracking_small'>".convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
             echo $LANG['common'][95]."&nbsp;";
-            echo getUserName($this->fields["users_id_lastupdater"],$showuserlink);
+            echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
          }
          echo "</span>";
          echo "</td></tr>";
