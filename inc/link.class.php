@@ -368,8 +368,8 @@ class Link extends CommonDBTM {
                             "&amp;itemtype=$itemtype&amp;id=$ID";
                   }
                   echo "<tr class='tab_bg_2'>";
-                  echo "<td class='center'><a href='$url' target='_blank'>".
-                              $clean_name[0]."</a></td></tr>";
+                  echo "<td class='center'><a href='$url' target='_blank'>".$clean_name[0]."</a>";
+                  echo "</td></tr>";
                }
             }
          }
