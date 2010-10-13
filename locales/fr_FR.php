@@ -491,7 +491,7 @@ $LANG['device_control'][0] = "RAID";
 $LANG['device_drive'][0] = "Écriture";
 $LANG['device_drive'][1] = "Vitesse";
 
-$LANG['device_hdd'][0] = "Rpm";
+$LANG['device_hdd'][0] = "Tours par minute";
 $LANG['device_hdd'][1] = "Cache";
 
 $LANG['device_hdd'][4] = "Capacité";
