@@ -2212,6 +2212,9 @@ class OcsServer extends CommonDBTM {
                                        'comments' => 0));
                   echo "</td>\n";
                   echo "<td>";
+                  if (!isset($data['locations_id'])) {
+                     $data['locations_id'] = 0;
+                  }
                   Dropdown::show('Location',
                      array('name'  => "toimport_locations[".$tab["id"]."]=".$data['locations_id'],
                                        'value'  => $data['locations_id'],
