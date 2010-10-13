@@ -290,7 +290,7 @@ class Contract extends CommonDBTM {
    static function getSearchOptionsToAdd () {
       global $LANG;
 
-      $tab=array();
+      $tab = array();
 
       $tab['contract'] = $LANG['Menu'][25];
 
@@ -372,6 +372,7 @@ class Contract extends CommonDBTM {
       return $tab;
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
@@ -390,24 +391,24 @@ class Contract extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'num';
-      $tab[3]['name']      = $LANG['financial'][4];
+      $tab[3]['table'] = $this->getTable();
+      $tab[3]['field'] = 'num';
+      $tab[3]['name']  = $LANG['financial'][4];
 
-      $tab[4]['table']     = 'glpi_contracttypes';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['common'][17];
+      $tab[4]['table'] = 'glpi_contracttypes';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name']  = $LANG['common'][17];
 
-      $tab[5]['table']        = $this->getTable();
-      $tab[5]['field']        = 'begin_date';
-      $tab[5]['name']         = $LANG['search'][8];
-      $tab[5]['datatype']     = 'date';
-      $tab[5]['maybefuture']  = true;
+      $tab[5]['table']       = $this->getTable();
+      $tab[5]['field']       = 'begin_date';
+      $tab[5]['name']        = $LANG['search'][8];
+      $tab[5]['datatype']    = 'date';
+      $tab[5]['maybefuture'] = true;
 
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'duration';
-      $tab[6]['name']      = $LANG['financial'][8];
+      $tab[6]['table'] = $this->getTable();
+      $tab[6]['field'] = 'duration';
+      $tab[6]['name']  = $LANG['financial'][8];
 
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'end_date';
@@ -421,14 +422,14 @@ class Contract extends CommonDBTM {
       $tab[20]['massiveaction'] = false;
 
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'notice';
-      $tab[7]['name']      = $LANG['financial'][10];
+      $tab[7]['table'] = $this->getTable();
+      $tab[7]['field'] = 'notice';
+      $tab[7]['name']  = $LANG['financial'][10];
 
-      $tab[11]['table']     = $this->getTable();
-      $tab[11]['field']     = 'cost';
-      $tab[11]['name']      = $LANG['financial'][5];
-      $tab[11]['datatype']  = 'decimal';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'cost';
+      $tab[11]['name']     = $LANG['financial'][5];
+      $tab[11]['datatype'] = 'decimal';
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'periodicity';
@@ -440,9 +441,9 @@ class Contract extends CommonDBTM {
       $tab[22]['name']          = $LANG['financial'][11];
       $tab[22]['massiveaction'] = false;
 
-      $tab[10]['table']     = $this->getTable();
-      $tab[10]['field']     = 'accounting_number';
-      $tab[10]['name']      = $LANG['financial'][13];
+      $tab[10]['table']    = $this->getTable();
+      $tab[10]['field'] = 'accounting_number';
+      $tab[10]['name']  = $LANG['financial'][13];
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'renewal';
@@ -472,10 +473,10 @@ class Contract extends CommonDBTM {
       $tab[13]['maybefuture']   = true;
       $tab[13]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
@@ -487,14 +488,14 @@ class Contract extends CommonDBTM {
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[59]['table']     = $this->getTable();
-      $tab[59]['field']     = 'alert';
-      $tab[59]['name']      = $LANG['common'][41];
+      $tab[59]['table'] = $this->getTable();
+      $tab[59]['field'] = 'alert';
+      $tab[59]['name']  = $LANG['common'][41];
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
 
       return $tab;
    }

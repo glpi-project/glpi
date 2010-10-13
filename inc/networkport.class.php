@@ -37,15 +37,14 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-
 /// NetworkPort class
 class NetworkPort extends CommonDBChild {
 
-
    // From CommonDBChild
-   public $itemtype='itemtype';
-   public $items_id='items_id';
+   public $itemtype  = 'itemtype';
+   public $items_id  = 'items_id';
    public $dohistory = true;
+
 
    static function getTypeName() {
       global $LANG;
@@ -55,45 +54,56 @@ class NetworkPort extends CommonDBChild {
 
 
    function canCreate() {
+
       if (isset($this->fields['itemtype'])) {
-         $item=new $this->fields['itemtype']();
+         $item = new $this->fields['itemtype']();
          return $item->canCreate();
       }
+
       return false;
    }
 
+
    function canView() {
+
       if (isset($this->fields['itemtype'])) {
-         $item=new $this->fields['itemtype']();
+         $item = new $this->fields['itemtype']();
          return $item->canView();
       }
+
       return false;
    }
+
 
    function post_updateItem($history=1) {
 
       // Only netpoint updates : ip and mac may be different.
-      $tomatch=array("netpoints_id");
-      $updates=array_intersect($this->updates,$tomatch);
+      $tomatch = array("netpoints_id");
+      $updates = array_intersect($this->updates, $tomatch);
+
       if (count($updates)) {
-         $save_ID=$this->fields["id"];
-         $n=new NetworkPort_NetworkPort;
+         $save_ID = $this->fields["id"];
+         $n       = new NetworkPort_NetworkPort;
+
          if ($this->fields["id"]=$n->getOppositeContact($save_ID)) {
             $this->updateInDB($updates);
          }
-         $this->fields["id"]=$save_ID;
+
+         $this->fields["id"] = $save_ID;
       }
    }
+
 
    function prepareInputForUpdate($input) {
 
       // Is a preselected mac adress selected ?
       if (isset($input['pre_mac']) && !empty($input['pre_mac'])) {
-         $input['mac']=$input['pre_mac'];
+         $input['mac'] = $input['pre_mac'];
          unset($input['pre_mac']);
       }
       return $input;
    }
+
 
    function prepareInputForAdd($input) {
 
@@ -109,6 +119,7 @@ class NetworkPort extends CommonDBChild {
       if (isset($input["logical_number"]) && strlen($input["logical_number"])==0) {
          unset($input["logical_number"]);
       }
+
       $item = new $input['itemtype']();
       if ($item->getFromDB($input['items_id'])) {
          $input['entities_id']  = $item->getEntityID();
@@ -119,9 +130,11 @@ class NetworkPort extends CommonDBChild {
       return false;
    }
 
+
    function pre_deleteItem() {
-      $nn= new NetworkPort_NetworkPort();
-      if ($nn->getFromDBForNetworkPort($this->fields["id"])){
+
+      $nn = new NetworkPort_NetworkPort();
+      if ($nn->getFromDBForNetworkPort($this->fields["id"])) {
          $nn->delete($nn->fields);
       }
       return true;
@@ -142,68 +155,68 @@ class NetworkPort extends CommonDBChild {
    /**
     * Get port opposite port ID if linked item
     *
-    *@param $ID networking port ID
+    * @param $ID networking port ID
     *
-    *@return ID of the NetworkPort found, false if not found
-    **/
+    * @return ID of the NetworkPort found, false if not found
+   **/
    function getContact($ID) {
 
       $wire = new NetworkPort_NetworkPort;
       if ($contact_id = $wire->getOppositeContact($ID)) {
          return $contact_id;
-      } else {
-         return false;
       }
+      return false;
    }
+
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI;
 
-      $ong[1] = $LANG['title'][26];
-      $ong[12]=$LANG['title'][38];
+      $ong[1]  = $LANG['title'][26];
+      $ong[12] = $LANG['title'][38];
 
       return $ong;
    }
 
-   /**
-   * Delete All connection of the given network port
-   *
-   *
-   * @param $ID ID of the port
-   * @return true on success
-   */
-   function resetConnections($ID) {
 
+   /**
+    * Delete All connection of the given network port
+    *
+    * @param $ID ID of the port
+    *
+    * @return true on success
+   **/
+   function resetConnections($ID) {
    }
 
+
    /**
-   * Make a select box for  connected port
-   *
-   * Parameters which could be used in options array :
-   *    - name : string / name of the select (default is networkports_id)
-   *    - comments : boolean / is the comments displayed near the dropdown (default true)
-   *    - entity : integer or array / restrict to a defined entity or array of entities
-   *                   (default -1 : no restriction)
-   *    - entity_sons : boolean / if entity restrict specified auto select its sons
-   *                   only available if entity is a single value not an array (default false)
-   *
-   * @param $ID ID of the current port to connect
-   * @param $options possible options
-   * @return nothing (print out an HTML select box)
-   */
+    * Make a select box for  connected port
+    *
+    * Parameters which could be used in options array :
+    *    - name : string / name of the select (default is networkports_id)
+    *    - comments : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default -1 : no restriction)
+    *    - entity_sons : boolean / if entity restrict specified auto select its sons
+    *                   only available if entity is a single value not an array (default false)
+    *
+    * @param $ID ID of the current port to connect
+    * @param $options possible options
+    *
+    * @return nothing (print out an HTML select box)
+   **/
    static function dropdownConnect($ID,$options=array()) {
-      // $ID,$myname,$entity_restrict=-1
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
-      $p['name']='networkports_id';
-      $p['comments']=1;
-      $p['entity']=-1;
-      $p['entity_sons']=false;
-
+      $p['name']        = 'networkports_id';
+      $p['comments']    = 1;
+      $p['entity']      = -1;
+      $p['entity_sons'] = false;
 
      if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
-            $p[$key]=$val;
+            $p[$key] = $val;
          }
       }
 
@@ -212,11 +225,11 @@ class NetworkPort extends CommonDBChild {
          if (is_array($p['entity'])) {
             echo "entity_sons options is not available with array of entity";
          } else {
-            $p['entity'] = getSonsOf('glpi_entities',$p['entity']);
+            $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
          }
       }
 
-      $rand=mt_rand();
+      $rand = mt_rand();
       echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
       echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 
@@ -230,19 +243,21 @@ class NetworkPort extends CommonDBChild {
       }
       echo "</select>";
 
-      $params=array('itemtype'       => '__VALUE__',
-                  'entity_restrict'  => $p['entity'],
-                  'current'          => $ID,
-                  'comments'         => $p['comments'],
-                  'myname'           => $p['name']);
+      $params = array('itemtype'        => '__VALUE__',
+                      'entity_restrict' => $p['entity'],
+                      'current'         => $ID,
+                      'comments'        => $p['comments'],
+                      'myname'          => $p['name']);
 
-      ajaxUpdateItemOnSelectEvent("itemtype$rand","show_".$p['name']."$rand",$CFG_GLPI["root_doc"].
-                                 "/ajax/dropdownConnectPortDeviceType.php",$params);
+      ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
+                                  $CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",
+                                  $params);
 
       echo "<span id='show_".$p['name']."$rand'>&nbsp;</span>\n";
 
       return $rand;
    }
+
 
    /**
     * Show ports for an item
@@ -250,56 +265,63 @@ class NetworkPort extends CommonDBChild {
     * @param $itemtype integer : item type
     * @param $ID integer : item ID
     * @param $withtemplate integer : withtemplate param
-    */
+   **/
    static function showForItem($itemtype, $ID, $withtemplate = '') {
       global $DB, $CFG_GLPI, $LANG;
 
-
       $rand = mt_rand();
+
       if (!class_exists($itemtype)) {
          return false;
       }
+
       $item = new $itemtype();
       if (!haveRight('networking','r') || !$item->can($ID, 'r')) {
          return false;
       }
+
       $canedit = $item->can($ID, 'w');
 
       // Show Add Form
-      if ($canedit && (empty($withtemplate) || $withtemplate !=2)) {
+      if ($canedit
+          && (empty($withtemplate) || $withtemplate !=2)) {
          echo "\n<div class='firstbloc'><table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
-         echo "<a href=\"" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype\"><strong>";
-         echo $LANG['networking'][19];
-         echo "</strong></a></td>\n";
+         echo "<a href='" . $CFG_GLPI["root_doc"] .
+               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype'><strong>".
+               $LANG['networking'][19]."</strong></a></td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
-         echo "<a href=\"" . $CFG_GLPI["root_doc"] .
-               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=1\"><strong>";
-         echo $LANG['networking'][46];
-         echo "</strong></a></td></tr>\n";
-         echo "</table></div>\n";
+         echo "<a href='" . $CFG_GLPI["root_doc"] .
+               "/front/networkport.form.php?items_id=$ID&amp;itemtype=$itemtype&amp;several=1'>
+               <strong>".$LANG['networking'][46]."</strong></a></td>\n";
+         echo "</tr></table></div>\n";
       }
 
-      initNavigateListItems('NetworkPort',$item->getTypeName()." = ".$item->getName());
+      initNavigateListItems('NetworkPort', $item->getTypeName()." = ".$item->getName());
 
       $query = "SELECT `id`
-               FROM `glpi_networkports`
-               WHERE `items_id` = '$ID'
-                     AND `itemtype` = '$itemtype'
-               ORDER BY `name`, `logical_number`";
+                FROM `glpi_networkports`
+                WHERE `items_id` = '$ID'
+                      AND `itemtype` = '$itemtype'
+                ORDER BY `name`,
+                         `logical_number`";
+
       if ($result = $DB->query($query)) {
          echo "<div class='spaced'>";
+
          if ($DB->numrows($result) != 0) {
             $colspan = 9;
+
             if ($withtemplate != 2) {
                if ($canedit) {
                   $colspan++;
                   echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
-                        action=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php\">\n";
+                        action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>\n";
                }
             }
+
             echo "<table class='tab_cadre_fixe'>\n";
+
             echo "<tr><th colspan='$colspan'>\n";
             if ($DB->numrows($result)==1) {
                echo $LANG['networking'][12];
@@ -325,14 +347,15 @@ class NetworkPort extends CommonDBChild {
 
             $i = 0;
             $netport = new NetworkPort();
+
             while ($devid = $DB->fetch_row($result)) {
                $netport->getFromDB(current($devid));
-               addToNavigateListItems('NetworkPort',$netport->fields["id"]);
+               addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
                echo "<tr class='tab_bg_1'>\n";
                if ($withtemplate != 2 && $canedit) {
                   echo "<td class='center' width='20'>";
-                  echo "<input type='checkbox' name='del_port[" . $netport->fields["id"] . "]' value='1'>";
+                  echo "<input type='checkbox' name='del_port[".$netport->fields["id"]."]' value='1'>";
                   echo "</td>\n";
                }
                echo "<td class='center'><strong>";
@@ -348,17 +371,17 @@ class NetworkPort extends CommonDBChild {
                showToolTip($netport->fields['comment']);
                echo "</td>\n";
                echo "<td>" . $netport->fields["name"] . "</td>\n";
-               echo "<td>".Dropdown::getDropdownName("glpi_netpoints", $netport->fields["netpoints_id"])."</td>\n";
-               echo "<td>" . $netport->fields["ip"] . "<br>" .$netport->fields["mac"] . "</td>\n";
-               echo "<td>" . $netport->fields["netmask"] . "&nbsp;/&nbsp;".$netport->fields["subnet"] .
-                           "<br>".$netport->fields["gateway"] . "</td>\n";
+               echo "<td>".Dropdown::getDropdownName("glpi_netpoints",
+                                                     $netport->fields["netpoints_id"])."</td>\n";
+               echo "<td>" .$netport->fields["ip"]. "<br>" .$netport->fields["mac"] . "</td>\n";
+               echo "<td>" .$netport->fields["netmask"]. "&nbsp;/&nbsp;".
+                            $netport->fields["subnet"]."<br>".$netport->fields["gateway"]."</td>\n";
                // VLANs
                echo "<td>";
                NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
                echo "</td>\n";
-               echo "<td>" . Dropdown::getDropdownName("glpi_networkinterfaces",
-                                             $netport->fields["networkinterfaces_id"]) . "</td>\n";
-
+               echo "<td>".Dropdown::getDropdownName("glpi_networkinterfaces",
+                                                     $netport->fields["networkinterfaces_id"])."</td>\n";
                echo "<td width='300' class='tab_bg_2'>";
                self::showConnection($item, $netport, $withtemplate);
                echo "</td>\n";
@@ -376,12 +399,14 @@ class NetworkPort extends CommonDBChild {
                Dropdown::showForMassiveAction('NetworkPort');
                closeArrowMassive();
             }
+
             if ($canedit && $withtemplate != 2) {
                echo "</form>";
             }
 
          } else {
-            echo "<table class='tab_cadre_fixe'><tr><th>".$LANG['networking'][10]."</th></tr></table>";
+            echo "<table class='tab_cadre_fixe'><tr><th>".$LANG['networking'][10]."</th></tr>";
+            echo "</table>";
          }
          echo "</div>";
       }
@@ -389,13 +414,12 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
-   * Display a connection of a networking port
-   *
-   * @param $device1 the device of the port
-   * @param $netport to be displayed
-   * @param $withtemplate
-   *
-   */
+    * Display a connection of a networking port
+    *
+    * @param $device1 the device of the port
+    * @param $netport to be displayed
+    * @param $withtemplate
+   **/
    static function showConnection(& $device1, & $netport, $withtemplate = '') {
       global $CFG_GLPI, $LANG;
 
@@ -404,43 +428,48 @@ class NetworkPort extends CommonDBChild {
       }
 
       $contact = new NetworkPort_NetworkPort;
-
       $canedit = $device1->can($device1->fields["id"], 'w');
-      $ID = $netport->fields["id"];
+      $ID      = $netport->fields["id"];
 
       if ($contact_id = $contact->getOppositeContact($ID)) {
          $netport->getFromDB($contact_id);
+
          if (class_exists($netport->fields["itemtype"])) {
             $device2 = new $netport->fields["itemtype"]();
-            if ($device2->getFromDB($netport->fields["items_id"])) {
 
+            if ($device2->getFromDB($netport->fields["items_id"])) {
                echo "\n<table width='100%'>\n";
                echo "<tr " . ($device2->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
                echo "<td><strong>";
 
                if ($device2->can($device2->fields["id"], 'r')) {
-
                   echo $netport->getLink();
                   echo "</a></strong>\n";
                   showToolTip($netport->fields['comment']);
                   echo "&nbsp;".$LANG['networking'][25] . " <strong>";
                   echo $device2->getLink();
                   echo "</strong>";
+
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
-                     echo "<br>(" .Dropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
+                     echo "<br>(". Dropdown::getDropdownName("glpi_entities",
+                                                            $device2->getEntityID()) .")";
                   }
 
                   // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
                   if ($canedit || $device2->can($device2->fields["id"], 'w')) {
                      echo "</td>\n<td class='right'><strong>";
+
                      if ($withtemplate != 2) {
                         echo "<a href=\"".$netport->getFormURL()."?disconnect=".
-                              "disconnect&amp;id=".$contact->fields['id']."\">" . $LANG['buttons'][10] . "</a>";
+                              "disconnect&amp;id=".$contact->fields['id']."\">" .
+                              $LANG['buttons'][10] . "</a>";
                      } else {
                         "&nbsp;";
                      }
+
                      echo "</strong>";
                   }
+
                } else {
                   if (rtrim($netport->fields["name"]) != "") {
                      echo $netport->fields["name"];
@@ -449,25 +478,32 @@ class NetworkPort extends CommonDBChild {
                   }
                   echo "</strong> " . $LANG['networking'][25] . " <strong>";
                   echo $device2->getName();
-                  echo "</strong><br>(" .Dropdown::getDropdownName("glpi_entities", $device2->getEntityID()) .")";
+                  echo "</strong><br>(" .Dropdown::getDropdownName("glpi_entities",
+                                                                   $device2->getEntityID()) .")";
                }
+
                echo "</td></tr></table>\n";
             }
          }
+
       } else {
          echo "\n<table width='100%'><tr>";
+
          if ($canedit) {
             echo "<td class='left'>";
+
             if ($withtemplate != 2 && $withtemplate != 1) {
-                  NetworkPort::dropdownConnect($ID,
-                                          array('name'         => 'dport',
-                                                'entity'       => $device1->fields["entities_id"],
-                                                'entity_sons'  => $device1->isRecursive()));
+               NetworkPort::dropdownConnect($ID,
+                                            array('name'        => 'dport',
+                                                  'entity'      => $device1->fields["entities_id"],
+                                                  'entity_sons' => $device1->isRecursive()));
             } else {
                echo "&nbsp;";
             }
+
             echo "</td>\n";
          }
+
          echo "<td><div id='not_connected_display$ID'>" . $LANG['connect'][1] . "</div></td>";
          echo "</tr></table>\n";
       }
@@ -475,11 +511,10 @@ class NetworkPort extends CommonDBChild {
 
 
    function showForm($ID, $options=array()) {
-   //static function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
       global $CFG_GLPI, $LANG;
 
       if (!isset($options['several'])) {
-         $options['several']=false;
+         $options['several'] = false;
       }
 
       if (!haveRight("networking", "r")) {
@@ -489,21 +524,25 @@ class NetworkPort extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         $input=array('itemtype'=>$options["itemtype"],'items_id'=>$options["items_id"]);
+         $input = array('itemtype' => $options["itemtype"],
+                        'items_id' => $options["items_id"]);
          // Create item
-         $this->check(-1,'w',$input);
+         $this->check(-1, 'w', $input);
       }
 
       $type = $this->fields['itemtype'];
       $link = NOT_AVAILABLE;
+
       if (class_exists($this->fields['itemtype'])) {
          $item = new $this->fields['itemtype']();
          $type = $item->getTypeName();
-         if ($item->getFromDB($this->fields["items_id"])){
-            $link=$item->getLink();
+
+         if ($item->getFromDB($this->fields["items_id"])) {
+            $link = $item->getLink();
          } else {
             return false;
          }
+
       } else {
          // item is mandatory (for entity)
          return false;
@@ -512,7 +551,7 @@ class NetworkPort extends CommonDBChild {
       // Ajout des infos deja remplies
       if (isset ($_POST) && !empty ($_POST)) {
          foreach ($netport->fields as $key => $val) {
-            if ($key != 'id' && isset ($_POST[$key])) {
+            if ($key!='id' && isset($_POST[$key])) {
                $netport->fields[$key] = $_POST[$key];
             }
          }
@@ -522,25 +561,28 @@ class NetworkPort extends CommonDBChild {
       $options['entities_id'] = $item->getField('entities_id');
       $this->showFormHeader($options);
 
-      $show_computer_mac=false;
-      if ((!empty ($this->fields['itemtype']) || !$options['several'] )
-            && $this->fields['itemtype'] == 'Computer') {
-         $show_computer_mac=true;
+      $show_computer_mac = false;
+      if ((!empty($this->fields['itemtype']) || !$options['several'])
+          && $this->fields['itemtype'] == 'Computer') {
+         $show_computer_mac = true;
       }
 
-
       echo "<tr class='tab_bg_1'><td>$type:</td>\n<td>";
+
       if (!($ID>0)){
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       }
+
       echo $link. "</td>\n";
-      $colspan=9;
+      $colspan = 9;
+
       if ($show_computer_mac) {
-         $colspan+=2;
+         $colspan += 2;
       }
+
       if (!$options['several']) {
-         $colspan++;
+         $colspan ++;
       }
       echo "<td rowspan='$colspan'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='$colspan' class='middle'>";
@@ -550,8 +592,9 @@ class NetworkPort extends CommonDBChild {
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
          echo "<td>";
-         autocompletionTextField($this,"logical_number", array('size'=>5));
+         autocompletionTextField($this,"logical_number", array('size' => 5));
          echo "</td></tr>\n";
+
       } else {
          echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . "&nbsp;:</td>\n";
          echo "<td>";
@@ -570,7 +613,7 @@ class NetworkPort extends CommonDBChild {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . "&nbsp;:</td>\n<td>";
-      Dropdown::show('NetworkInterface', array('value'  => $this->fields["networkinterfaces_id"]));
+      Dropdown::show('NetworkInterface', array('value' => $this->fields["networkinterfaces_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . "&nbsp;:</td>\n<td>";
@@ -588,9 +631,11 @@ class NetworkPort extends CommonDBChild {
             echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . "&nbsp;:</td>\n<td>";
             echo "<select name='pre_mac'>\n";
             echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>\n";
+
             foreach ($macs as $key => $val) {
                echo "<option value='" . $val . "' >$val</option>\n";
             }
+
             echo "</select></td></tr>\n";
 
             echo "<tr class='tab_bg_2'>";
@@ -618,8 +663,9 @@ class NetworkPort extends CommonDBChild {
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . "&nbsp;:</td>\n";
          echo "<td>";
-         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"], $item->fields['locations_id'], 1,
-                        $item->getEntityID(), $this->fields["itemtype"]);
+         Netpoint::dropdownNetpoint("netpoints_id", $this->fields["netpoints_id"],
+                                    $item->fields['locations_id'], 1, $item->getEntityID(),
+                                    $this->fields["itemtype"]);
          echo "</td></tr>\n";
       }
 
@@ -629,12 +675,15 @@ class NetworkPort extends CommonDBChild {
 
 
    /**
-   * Get an Object ID by his IP address (only if one result is found in the entity)
-   * @param $value the ip address
-   * @param $type type to search : MAC or IP
-   * @param $entity the entity to look for
-   * @return an array containing the object ID or an empty array is no value of serverals ID where found
-   */
+    * Get an Object ID by his IP address (only if one result is found in the entity)
+    *
+    * @param $value the ip address
+    * @param $type type to search : MAC or IP
+    * @param $entity the entity to look for
+    *
+    * @return an array containing the object ID
+    *         or an empty array is no value of serverals ID where found
+   **/
    static function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
       global $DB;
 
@@ -645,39 +694,45 @@ class NetworkPort extends CommonDBChild {
 
          default :
             $field = "ip";
-            break;
       }
 
       //Try to get all the object (not deleted, and not template)
       //with a network port having the specified IP, in a given entity
-      $query = "SELECT `gnp`.`items_id`, `gnp`.`id` AS portID, `gnp`.`itemtype` AS itemtype
-               FROM `glpi_networkports` AS gnp
-               LEFT JOIN `glpi_computers` AS gc ON (`gnp`.`items_id` = `gc`.`id`
-                                                   AND `gc`.`entities_id` = '$entity'
-                                                   AND `gc`.`is_deleted` = '0'
-                                                   AND `gc`.`is_template` = '0'
-                                                   AND `itemtype` = 'Computer')
-               LEFT JOIN `glpi_printers` AS gp ON (`gnp`.`items_id` = `gp`.`id`
-                                                   AND `gp`.`entities_id` = '$entity'
-                                                   AND `gp`.`is_deleted` = '0'
-                                                   AND `gp`.`is_template` = '0'
-                                                   AND `itemtype` = 'Printer')
-               LEFT JOIN `glpi_networkequipments` AS gn ON (`gnp`.`items_id` = `gn`.`id`
-                                                            AND `gn`.`entities_id` = '$entity'
-                                                            AND `gn`.`is_deleted` = '0'
-                                                            AND `gn`.`is_template` = '0'
-                                                            AND `itemtype` = 'NetworkEquipment')
-               LEFT JOIN `glpi_phones` AS gph ON (`gnp`.`items_id` = `gph`.`id`
-                                                   AND `gph`.`entities_id` = '$entity'
-                                                   AND `gph`.`is_deleted` = '0'
-                                                   AND `gph`.`is_template` = '0'
-                                                   AND `itemtype` = 'Phone')
-               LEFT JOIN `glpi_peripherals` AS gpe ON (`gnp`.`items_id` = `gpe`.`id`
-                                                      AND `gpe`.`entities_id` = '$entity'
-                                                      AND `gpe`.`is_deleted` = '0'
-                                                      AND `gpe`.`is_template` = '0'
-                                                      AND `itemtype` = 'Peripheral')
-               WHERE `gnp`.`$field` = '" . $value . "'";
+      $query = "SELECT `gnp`.`items_id`,
+                       `gnp`.`id` AS portID,
+                       `gnp`.`itemtype` AS itemtype
+                FROM `glpi_networkports` AS gnp
+                LEFT JOIN `glpi_computers` AS gc
+                     ON (`gnp`.`items_id` = `gc`.`id`
+                         AND `gc`.`entities_id` = '$entity'
+                         AND `gc`.`is_deleted` = '0'
+                         AND `gc`.`is_template` = '0'
+                         AND `itemtype` = 'Computer')
+                LEFT JOIN `glpi_printers` AS gp
+                     ON (`gnp`.`items_id` = `gp`.`id`
+                         AND `gp`.`entities_id` = '$entity'
+                         AND `gp`.`is_deleted` = '0'
+                         AND `gp`.`is_template` = '0'
+                         AND `itemtype` = 'Printer')
+                LEFT JOIN `glpi_networkequipments` AS gn
+                     ON (`gnp`.`items_id` = `gn`.`id`
+                         AND `gn`.`entities_id` = '$entity'
+                         AND `gn`.`is_deleted` = '0'
+                         AND `gn`.`is_template` = '0'
+                         AND `itemtype` = 'NetworkEquipment')
+                LEFT JOIN `glpi_phones` AS gph
+                     ON (`gnp`.`items_id` = `gph`.`id`
+                         AND `gph`.`entities_id` = '$entity'
+                         AND `gph`.`is_deleted` = '0'
+                         AND `gph`.`is_template` = '0'
+                         AND `itemtype` = 'Phone')
+                LEFT JOIN `glpi_peripherals` AS gpe
+                     ON (`gnp`.`items_id` = `gpe`.`id`
+                         AND `gpe`.`entities_id` = '$entity'
+                         AND `gpe`.`is_deleted` = '0'
+                         AND `gpe`.`is_template` = '0'
+                         AND `itemtype` = 'Peripheral')
+                WHERE `gnp`.`$field` = '" . $value . "'";
 
       $result = $DB->query($query);
 
@@ -692,21 +747,20 @@ class NetworkPort extends CommonDBChild {
             //No result found with the previous request.
             //Try to look for IP in the glpi_networkequipments table directly
             $query = "SELECT `id`
-                     FROM `glpi_networkequipments`
-                     WHERE UPPER(`$field`) = UPPER('$value')
-                           AND `entities_id` = '$entity'";
+                      FROM `glpi_networkequipments`
+                      WHERE UPPER(`$field`) = UPPER('$value')
+                            AND `entities_id` = '$entity'";
             $result = $DB->query($query);
             if ($DB->numrows($result) == 1) {
-               return array ("id" => $DB->result($result, 0, "id"),
-                           "itemtype" => 'NetworkEquipment');
-            } else {
-               return array ();
+               return array ("id"       => $DB->result($result, 0, "id"),
+                             "itemtype" => 'NetworkEquipment');
             }
+            return array ();
 
          case 1 :
             $port = $DB->fetch_array($result);
-            return array ("id" => $port["items_id"],
-                        "itemtype" => $port["itemtype"]);
+            return array ("id"       => $port["items_id"],
+                          "itemtype" => $port["itemtype"]);
 
          case 2 :
             //2 ports found with the same IP
@@ -729,15 +783,17 @@ class NetworkPort extends CommonDBChild {
             if ($network_port != -1) {
                //If the 2 ports are linked each others
                $query = "SELECT `id`
-                        FROM `glpi_networkports_networkports`
-                        WHERE (`networkports_id_1` = '".$port1["portID"]."'
-                              AND `networkports_id_2` = '".$port2["portID"]."')
-                              OR (`networkports_id_1` = '".$port2["portID"]."'
-                                 AND `networkports_id_2` = '".$port1["portID"]."')";
+                         FROM `glpi_networkports_networkports`
+                         WHERE (`networkports_id_1` = '".$port1["portID"]."'
+                                AND `networkports_id_2` = '".$port2["portID"]."')
+                               OR (`networkports_id_1` = '".$port2["portID"]."'
+                                   AND `networkports_id_2` = '".$port1["portID"]."')";
                $query = $DB->query($query);
                if ($DB->numrows($query) == 1) {
-                  return array ("id" => ($network_port == 1 ? $port2["items_id"] : $port1["items_id"]),
-                              "itemtype" => ($network_port == 1 ? $port2["itemtype"] : $port1["itemtype"]));
+                  return array ("id"       => ($network_port == 1 ? $port2["items_id"]
+                                                                  : $port1["items_id"]),
+                                "itemtype" => ($network_port == 1 ? $port2["itemtype"]
+                                                                  : $port1["itemtype"]));
                }
             }
             return array ();
@@ -747,59 +803,69 @@ class NetworkPort extends CommonDBChild {
       }
    }
 
+
    /**
-   * Look for a computer or a network device with a fully qualified domain name in an entity
-   * @param fqdn fully qualified domain name
-   * @param entity the entity
-   * @return an array with the ID and itemtype or an empty array if no unique object is found
-   */
+    * Look for a computer or a network device with a fully qualified domain name in an entity
+    *
+    * @param fqdn fully qualified domain name
+    * @param entity the entity
+    *
+    * @return an array with the ID and itemtype or an empty array if no unique object is found
+   **/
    static function getUniqueObjectIDByFQDN($fqdn, $entity) {
 
       $types = array('Computer', 'NetworkEquipment', 'Printer');
 
       foreach ($types as $itemtype) {
          $result = $this->getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
+
          if (!empty ($result)) {
             return $result;
          }
       }
+
       return array ();
    }
 
+
    /**
-   * Look for a specific type of device with a fully qualified domain name in an entity
-   * @param fqdn fully qualified domain name
-   * @param $itemtype the type of object to look for
-   * @param entity the entity
-   * @return an array with the ID and itemtype or an empty array if no unique object is found
-   */
+    * Look for a specific type of device with a fully qualified domain name in an entity
+    *
+    * @param fqdn fully qualified domain name
+    * @param $itemtype the type of object to look for
+    * @param entity the entity
+    *
+    * @return an array with the ID and itemtype or an empty array if no unique object is found
+   **/
    static function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
       global $DB;
 
       if (class_exists($itemtype)) {
-
          $item = new $itemtype();
 
          $query = "SELECT `obj.id`
-                  FROM " . $item->getTable() . " AS obj, `glpi_domains` AS gdd
-                  WHERE `obj.entities_id` = '$entity'
-                        AND `obj`.`domains_id` = `gdd`.`id`
-                        AND LOWER( '$fqdn' ) = (CONCAT(LOWER(`obj`.`name`) , '.', LOWER(`gdd`.`name`)))";
+                   FROM " . $item->getTable() . " AS obj,
+                        `glpi_domains` AS gdd
+                   WHERE `obj.entities_id` = '$entity'
+                         AND `obj`.`domains_id` = `gdd`.`id`
+                         AND LOWER('$fqdn') = (CONCAT(LOWER(`obj`.`name`), '.' ,
+                                                      LOWER(`gdd`.`name`)))";
          $result = $DB->query($query);
+
          if ($DB->numrows($result) == 1) {
             $datas = $DB->fetch_array($result);
-            return array ("id" => $datas["id"],
-                        "itemtype" => $itemtype);
+            return array ("id"       => $datas["id"],
+                          "itemtype" => $itemtype);
          }
       }
       return array ();
-
    }
+
 
    static function getSearchOptionsToAdd () {
       global $LANG;
 
-      $tab=array();
+      $tab = array();
 
       $tab['network'] = $LANG['setup'][88];
 
@@ -853,6 +919,8 @@ class NetworkPort extends CommonDBChild {
 
       return $tab;
    }
+
+
    function getSearchOptions() {
       global $LANG;
 
@@ -870,14 +938,14 @@ class NetworkPort extends CommonDBChild {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'logical_number';
-      $tab[3]['name']      = $LANG["networking"][21];
-      $tab[3]['datatype']  = 'integer';
+      $tab[3]['table']    = $this->getTable();
+      $tab[3]['field']    = 'logical_number';
+      $tab[3]['name']     = $LANG["networking"][21];
+      $tab[3]['datatype'] = 'integer';
 
-      $tab[4]['table']  = $this->getTable();
-      $tab[4]['field']  = 'mac';
-      $tab[4]['name']   = $LANG["device_iface"][2];
+      $tab[4]['table'] = $this->getTable();
+      $tab[4]['field'] = 'mac';
+      $tab[4]['name']  = $LANG["device_iface"][2];
 
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'ip';
@@ -903,10 +971,10 @@ class NetworkPort extends CommonDBChild {
       $tab[10]['field'] = 'name';
       $tab[10]['name']  = $LANG['setup'][9];
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[20]['table']        = $this->getTable();
       $tab[20]['field']        = 'itemtype';
@@ -922,6 +990,7 @@ class NetworkPort extends CommonDBChild {
 
       return $tab;
    }
+
 }
 
 ?>

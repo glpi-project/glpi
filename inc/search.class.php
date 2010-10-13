@@ -2742,9 +2742,9 @@ class Search {
       }
 
       // Do not take into account standard linkfield
-      $tocheck=$nt.".".$linkfield;
+      $tocheck = $nt.".".$linkfield;
       if ($linkfield==getForeignKeyFieldForTable($new_table)) {
-         $tocheck=$nt;
+         $tocheck = $nt;
       }
       //echo $tocheck.'<br>';
 
@@ -2805,7 +2805,8 @@ class Search {
          case "glpi_operatingsystems" :
             if ($itemtype=='Software') {
                return " LEFT JOIN `glpi_operatingsystems`
-                           ON (`glpi_softwareversions`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)";
+                           ON (`glpi_softwareversions`.`operatingsystems_id`
+                                 = `glpi_operatingsystems`.`id`)";
             }
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
@@ -2907,9 +2908,9 @@ class Search {
          case "glpi_tickets" :
             if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
                return " LEFT JOIN `$new_table` $AS
-                              ON (`$rt`.`id` = `$nt`.`items_id`
-                                 AND `$nt`.`itemtype` = '$itemtype' ".
-                                 getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
+                           ON (`$rt`.`id` = `$nt`.`items_id`
+                               AND `$nt`.`itemtype` = '$itemtype' ".
+                               getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
             } else {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
             }
@@ -4338,21 +4339,21 @@ class Search {
 
          // Complete linkfield if not define
          if ($itemtype==='States') {
-            $itemtable='states_types';
+            $itemtable = 'states_types';
          } else {
-            $itemtable=$item->getTable();
+            $itemtable = $item->getTable();
          }
          foreach ($search[$itemtype] as $key => $val) {
             if (!isset($val['linkfield'])) {
                if (strcmp($itemtable,$val['table'])==0) {
-                  $search[$itemtype][$key]['linkfield']=$val['field'];
+                  $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
-                  $search[$itemtype][$key]['linkfield']=getForeignKeyFieldForTable($val['table']);
+                  $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
                }
             }
             // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
             if (empty($search[$itemtype][$key]['linkfield'])) {
-               $search[$itemtype][$key]['massiveaction']=false;
+               $search[$itemtype][$key]['massiveaction'] = false;
             }
          }
 
@@ -4553,16 +4554,15 @@ class Search {
 
 
    /**
-   * Print generic normal Item Cell
-   *
-   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *@param $value value to display
-   *@param $num column number
-   *@param $row  row number
-   *@param $extraparam extra parameters for display
-   *
-   *@return string to display
-   *
+    * Print generic normal Item Cell
+    *
+    * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param $value value to display
+    * @param $num column number
+    * @param $row  row number
+    * @param $extraparam extra parameters for display
+    *
+    *@return string to display
    **/
    static function showItem($type, $value, &$num, $row, $extraparam='') {
 
