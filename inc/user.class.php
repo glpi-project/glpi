@@ -1613,37 +1613,37 @@ class User extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[34]['table']     = $this->getTable();
-      $tab[34]['field']     = 'realname';
-      $tab[34]['name']      = $LANG['common'][48];
+      $tab[34]['table'] = $this->getTable();
+      $tab[34]['field'] = 'realname';
+      $tab[34]['name']  = $LANG['common'][48];
 
-      $tab[9]['table']     = $this->getTable();
-      $tab[9]['field']     = 'firstname';
-      $tab[9]['name']      = $LANG['common'][43];
+      $tab[9]['table'] = $this->getTable();
+      $tab[9]['field'] = 'firstname';
+      $tab[9]['name']  = $LANG['common'][43];
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'email';
-      $tab[5]['name']      = $LANG['setup'][14];
-      $tab[5]['datatype']  = 'email';
+      $tab[5]['table']    = $this->getTable();
+      $tab[5]['field']    = 'email';
+      $tab[5]['name']     = $LANG['setup'][14];
+      $tab[5]['datatype'] = 'email';
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'is_active';
-      $tab[8]['name']      = $LANG['common'][60];
-      $tab[8]['datatype']  = 'bool';
+      $tab[8]['table']    = $this->getTable();
+      $tab[8]['field']    = 'is_active';
+      $tab[8]['name']     = $LANG['common'][60];
+      $tab[8]['datatype'] = 'bool';
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'phone';
-      $tab[6]['name']      = $LANG['help'][35];
+      $tab[6]['table'] = $this->getTable();
+      $tab[6]['field'] = 'phone';
+      $tab[6]['name']  = $LANG['help'][35];
 
-      $tab[10]['table']     = $this->getTable();
-      $tab[10]['field']     = 'phone2';
-      $tab[10]['name']      = $LANG['help'][35]." 2";
+      $tab[10]['table'] = $this->getTable();
+      $tab[10]['field'] = 'phone2';
+      $tab[10]['name']  = $LANG['help'][35]." 2";
 
-      $tab[11]['table']     = $this->getTable();
-      $tab[11]['field']     = 'mobile';
-      $tab[11]['name']      = $LANG['common'][42];
+      $tab[11]['table'] = $this->getTable();
+      $tab[11]['field'] = 'mobile';
+      $tab[11]['name']  = $LANG['common'][42];
 
       $tab[13]['table']         = 'glpi_groups';
       $tab[13]['field']         = 'name';
@@ -1675,15 +1675,15 @@ class User extends CommonDBTM {
       $tab[31]['name']          = $LANG['login'][10]." - ".$LANG['login'][3];
       $tab[31]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
-      $tab[17]['table']     = $this->getTable();
-      $tab[17]['field']     = 'language';
-      $tab[17]['name']      = $LANG['setup'][41];
-      $tab[17]['datatype']  = 'language';
+      $tab[17]['table']         = $this->getTable();
+      $tab[17]['field']         = 'language';
+      $tab[17]['name']          = $LANG['setup'][41];
+      $tab[17]['datatype']      = 'language';
       $tab[17]['massiveaction'] = false;
 
       $tab[19]['table']         = $this->getTable();
@@ -1713,9 +1713,9 @@ class User extends CommonDBTM {
       $tab[81]['field']     = 'name';
       $tab[81]['name']      = $LANG['users'][1];
 
-      $tab[82]['table']     = 'glpi_usercategories';
-      $tab[82]['field']     = 'name';
-      $tab[82]['name']      = $LANG['users'][2];
+      $tab[82]['table'] = 'glpi_usercategories';
+      $tab[82]['field'] = 'name';
+      $tab[82]['name']  = $LANG['users'][2];
 
       return $tab;
    }

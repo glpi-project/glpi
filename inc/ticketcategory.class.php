@@ -41,12 +41,14 @@ if (!defined('GLPI_ROOT')){
 class TicketCategory extends CommonTreeDropdown {
 
    function canCreate() {
-      return haveRight('entity_dropdown','w');
+      return haveRight('entity_dropdown', 'w');
    }
 
+
    function canView() {
-      return haveRight('entity_dropdown','r');
+      return haveRight('entity_dropdown', 'r');
    }
+
 
    function getAdditionalFields() {
       global $LANG;
@@ -55,7 +57,7 @@ class TicketCategory extends CommonTreeDropdown {
                           'label' => $LANG['setup'][75],
                           'type'  => 'parent',
                           'list'  => false),
-                   array('name'  => 'users_id',
+                    array('name'  => 'users_id',
                           'label' => $LANG['common'][10],
                           'type'  => 'UserDropdown',
                           'list'  => true),
@@ -73,26 +75,28 @@ class TicketCategory extends CommonTreeDropdown {
                           'list'  => true));
    }
 
+
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[70]['table']     = 'glpi_users';
-      $tab[70]['field']     = 'name';
-      $tab[70]['name']      = $LANG['common'][10];
+      $tab[70]['table'] = 'glpi_users';
+      $tab[70]['field'] = 'name';
+      $tab[70]['name']  = $LANG['common'][10];
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'name';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['table'] = 'glpi_groups';
+      $tab[71]['field'] = 'name';
+      $tab[71]['name']  = $LANG['common'][35];
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'is_helpdeskvisible';
-      $tab[2]['name']      = $LANG['tracking'][39];
-      $tab[2]['datatype']  = 'bool';
+      $tab[2]['table']    = $this->getTable();
+      $tab[2]['field']    = 'is_helpdeskvisible';
+      $tab[2]['name']     = $LANG['tracking'][39];
+      $tab[2]['datatype'] = 'bool';
 
       return $tab;
    }
+
 
    static function getTypeName() {
       global $LANG;
@@ -100,17 +104,19 @@ class TicketCategory extends CommonTreeDropdown {
       return $LANG['setup'][79];
    }
 
+
    function post_getEmpty () {
       $this->fields['is_helpdeskvisible'] = 1;
    }
+
 
    /**
     * Get links to Faq
     *
     * @param $withname boolean : also display name ?
-    */
+   **/
    function getLinks($withname=false) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI, $LANG;
 
       $ret = '';
 
@@ -120,11 +126,11 @@ class TicketCategory extends CommonTreeDropdown {
       }
 
       if ($this->fields['knowbaseitemcategories_id']) {
-         $ret.= "<a href='".$CFG_GLPI["root_doc"].
-            "/front/knowbaseitem.php?knowbaseitemcategories_id=".
-            $this->fields['knowbaseitemcategories_id'].
-            "'><img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle' alt='".
-            $LANG['knowbase'][1]."' title='".$LANG['knowbase'][1]."'></a>";
+         $ret .= "<a href='".$CFG_GLPI["root_doc"].
+                   "/front/knowbaseitem.php?knowbaseitemcategories_id=".
+                   $this->fields['knowbaseitemcategories_id']."'>".
+                 "<img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle' alt='".
+                   $LANG['knowbase'][1]."' title='".$LANG['knowbase'][1]."'></a>";
       }
       return $ret;
    }
