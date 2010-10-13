@@ -221,8 +221,8 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['consumables'][38]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger('alarm_threshold',$this->fields["alarm_threshold"],0,100,1,
-             array('-1'=>$LANG['setup'][307]));
+      Dropdown::showInteger('alarm_threshold', $this->fields["alarm_threshold"], 0, 100, 1,
+                            array('-1' => $LANG['setup'][307]));
 
       Alert::displayLastAlert('ConsumableItem', $ID);
       echo "</td></tr>";
@@ -252,17 +252,17 @@ class ConsumableItem extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[34]['table']     = $this->getTable();
-      $tab[34]['field']     = 'ref';
-      $tab[34]['name']      = $LANG['consumables'][2];
+      $tab[34]['table'] = $this->getTable();
+      $tab[34]['field'] = 'ref';
+      $tab[34]['name']  = $LANG['consumables'][2];
 
-      $tab[4]['table']     = 'glpi_consumableitemtypes';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['common'][17];
+      $tab[4]['table'] = 'glpi_consumableitemtypes';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name']  = $LANG['common'][17];
 
-      $tab[23]['table']     = 'glpi_manufacturers';
-      $tab[23]['field']     = 'name';
-      $tab[23]['name']      = $LANG['common'][5];
+      $tab[23]['table'] = 'glpi_manufacturers';
+      $tab[23]['field'] = 'name';
+      $tab[23]['name']  = $LANG['common'][5];
 
       $tab+=Location::getSearchOptionsToAdd();
 

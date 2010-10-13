@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')){
 
 /**
  * Contact class
- */
+**/
 class Contact extends CommonDBTM{
 
    // From CommonDBTM
@@ -51,6 +51,7 @@ class Contact extends CommonDBTM{
       return $LANG['common'][92];
    }
 
+
    function canCreate() {
       return haveRight('contact_enterprise', 'w');
    }
@@ -59,40 +60,47 @@ class Contact extends CommonDBTM{
       return haveRight('contact_enterprise', 'r');
    }
 
+
    function cleanDBonPurge() {
 
       $cs = new Contact_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
+
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong=array();
+      $ong = array();
       if ($this->fields['id'] > 0) {
-         $ong[1]=$LANG['Menu'][23];
+         $ong[1] = $LANG['Menu'][23];
+
          if (haveRight("document","r")) {
-            $ong[5]=$LANG['Menu'][27];
+            $ong[5] = $LANG['Menu'][27];
          }
+
          if (haveRight("link","r")) {
-            $ong[7]=$LANG['title'][34];
+            $ong[7] = $LANG['title'][34];
          }
+
          if (haveRight("notes","r")) {
-            $ong[10]=$LANG['title'][37];
+            $ong[10] = $LANG['title'][37];
          }
-         $ong[12]=$LANG['title'][38];
+         $ong[12] = $LANG['title'][38];
+
       } else { // New item
-         $ong[1]=$LANG['title'][26];
+         $ong[1] = $LANG['title'][26];
       }
+
       return $ong;
    }
+
 
    /**
     * Get address of the contact (company one)
     *
     *@return string containing the address
-    *
-    **/
+   **/
    function GetAddress() {
       global $DB;
 
@@ -113,12 +121,12 @@ class Contact extends CommonDBTM{
       return "";
    }
 
+
    /**
     * Get website of the contact (company one)
     *
     *@return string containing the website
-    *
-    **/
+   **/
    function GetWebsite() {
       global $DB;
 
@@ -130,22 +138,21 @@ class Contact extends CommonDBTM{
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             return $DB->result($result, 0, "website");
-         } else {
-            return "";
          }
+         return "";
       }
    }
 
+
    /**
-   * Print the contact form
-   *
-   * @param $ID integer ID of the item
-   * @param $options array
-   *     - target filename : where to go when done.
-   *     - withtemplate boolean : template or basic item
-   *
-   * @return Nothing (display)
-   *
+    * Print the contact form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+    *
+    * @return Nothing (display)
    **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
@@ -153,6 +160,7 @@ class Contact extends CommonDBTM{
       if (!haveRight("contact_enterprise","r")) {
          return false;
       }
+
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -169,8 +177,9 @@ class Contact extends CommonDBTM{
       autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td class='center middle' rowspan='7'>.<textarea cols='45' rows='9' name='comment' >"
-         .$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td class='center middle' rowspan='7'>";
+      echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][43]."&nbsp;:</td>";
@@ -214,9 +223,10 @@ class Contact extends CommonDBTM{
       Dropdown::show('ContactType', array('value' => $this->fields["contacttypes_id"]));
       echo "</td>";
       echo "<td></td><td class='center'>";
+
       if ($ID>0) {
-         echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?getvcard=1&amp;id=$ID'>".
-                $LANG['common'][46]."</a>";
+         echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"].
+                "/front/contact.form.php?getvcard=1&amp;id=$ID'>".$LANG['common'][46]."</a>";
       }
       echo "</td></tr>";
 
@@ -225,6 +235,7 @@ class Contact extends CommonDBTM{
 
       return true;
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -239,39 +250,39 @@ class Contact extends CommonDBTM{
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
-      $tab[11]['table']     = $this->getTable();
-      $tab[11]['field']     = 'firstname';
-      $tab[11]['name']      = $LANG['common'][43];
+      $tab[11]['table'] = $this->getTable();
+      $tab[11]['field'] = 'firstname';
+      $tab[11]['name']  = $LANG['common'][43];
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'phone';
-      $tab[3]['name']      = $LANG['help'][35];
+      $tab[3]['table'] = $this->getTable();
+      $tab[3]['field'] = 'phone';
+      $tab[3]['name']  = $LANG['help'][35];
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'phone2';
-      $tab[4]['name']      = $LANG['help'][35]." 2";
+      $tab[4]['table'] = $this->getTable();
+      $tab[4]['field'] = 'phone2';
+      $tab[4]['name']  = $LANG['help'][35]." 2";
 
-      $tab[10]['table']     = $this->getTable();
-      $tab[10]['field']     = 'mobile';
-      $tab[10]['name']      = $LANG['common'][42];
+      $tab[10]['table'] = $this->getTable();
+      $tab[10]['field'] = 'mobile';
+      $tab[10]['name']  = $LANG['common'][42];
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'fax';
-      $tab[5]['name']      = $LANG['financial'][30];
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'fax';
+      $tab[5]['name']  = $LANG['financial'][30];
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'email';
-      $tab[6]['name']      = $LANG['setup'][14];
-      $tab[6]['datatype']  = 'email';
+      $tab[6]['table']    = $this->getTable();
+      $tab[6]['field']    = 'email';
+      $tab[6]['name']     = $LANG['setup'][14];
+      $tab[6]['datatype'] = 'email';
 
-      $tab[9]['table']     = 'glpi_contacttypes';
-      $tab[9]['field']     = 'name';
-      $tab[9]['name']      = $LANG['common'][17];
+      $tab[9]['table'] = 'glpi_contacttypes';
+      $tab[9]['field'] = 'name';
+      $tab[9]['name']  = $LANG['common'][17];
 
       $tab[8]['table']         = 'glpi_suppliers';
       $tab[8]['field']         = 'name';
@@ -280,10 +291,10 @@ class Contact extends CommonDBTM{
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Supplier';
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
@@ -295,39 +306,46 @@ class Contact extends CommonDBTM{
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
 
       return $tab;
    }
+
 
    /**
     * Print the HTML array for entreprises on the current contact
     *
     *@return Nothing (display)
     *
-    **/
+   **/
    function showSuppliers() {
       global $DB,$CFG_GLPI, $LANG;
 
       $instID = $this->fields['id'];
+
       if (!$this->can($instID,'r')) {
          return false;
       }
+
       $canedit = $this->can($instID,'w');
 
-      $query = "SELECT `glpi_contacts_suppliers`.`id`, `glpi_suppliers`.`id` AS entID,
-                       `glpi_suppliers`.`name` AS name, `glpi_suppliers`.`website` AS website,
-                       `glpi_suppliers`.`fax` AS fax, `glpi_suppliers`.`phonenumber` AS phone,
-                       `glpi_suppliers`.`suppliertypes_id` AS type, `glpi_suppliers`.`is_deleted`,
+      $query = "SELECT `glpi_contacts_suppliers`.`id`,
+                       `glpi_suppliers`.`id` AS entID,
+                       `glpi_suppliers`.`name` AS name,
+                       `glpi_suppliers`.`website` AS website,
+                       `glpi_suppliers`.`fax` AS fax,
+                       `glpi_suppliers`.`phonenumber` AS phone,
+                       `glpi_suppliers`.`suppliertypes_id` AS type,
+                       `glpi_suppliers`.`is_deleted`,
                        `glpi_entities`.`id` AS entity
                 FROM `glpi_contacts_suppliers`, `glpi_suppliers`
                 LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_suppliers`.`entities_id`)
                 WHERE `glpi_contacts_suppliers`.`contacts_id` = '$instID'
                       AND `glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`".
-                           getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) ."
+                      getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) ."
                 ORDER BY `glpi_entities`.`completename`, `name`";
 
       $result = $DB->query($query);
@@ -336,6 +354,7 @@ class Contact extends CommonDBTM{
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+
       echo "<tr><th colspan='7'>";
       if ($DB->numrows($result)==0) {
          echo $LANG['financial'][67];
@@ -345,6 +364,7 @@ class Contact extends CommonDBTM{
          echo $LANG['financial'][65];
       }
       echo "</th></tr>";
+
       echo "<tr><th>".$LANG['financial'][26]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
@@ -353,34 +373,40 @@ class Contact extends CommonDBTM{
       echo "<th>".$LANG['financial'][45]."</th>";
       echo "<th>&nbsp;</th></tr>";
 
-      $used=array();
+      $used = array();
       if ($number>0) {
-         initNavigateListItems('Supplier',$LANG['common'][92]." = ".$this->fields['name']);
+         initNavigateListItems('Supplier', $LANG['common'][92]." = ".$this->fields['name']);
+
          while ($data= $DB->fetch_array($result)) {
-            $ID=$data["id"];
-            addToNavigateListItems('Supplier',$data["entID"]);
-            $used[$data["entID"]]=$data["entID"];
-            $website=$data["website"];
+            $ID = $data["id"];
+            addToNavigateListItems('Supplier', $data["entID"]);
+            $used[$data["entID"]] = $data["entID"];
+            $website              = $data["website"];
+
             if (!empty($website)) {
-               $website=$data["website"];
+               $website = $data["website"];
+
                if (!preg_match("?https*://?",$website)) {
-                  $website="http://".$website;
+                  $website = "http://".$website;
                }
-               $website="<a target=_blank href='$website'>".$data["website"]."</a>";
+               $website = "<a target=_blank href='$website'>".$data["website"]."</a>";
             }
+
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".$data["entID"]."'>".
-                   Dropdown::getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$data["entity"])."</td>";
-            echo "<td class='center'>".Dropdown::getDropdownName("glpi_suppliertypes",$data["type"])."</td>";
+                   Dropdown::getDropdownName("glpi_suppliers", $data["entID"])."</a></td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entity"]);
+            echo "</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_suppliertypes", $data["type"]);
+            echo "</td>";
             echo "<td class='center' width='80'>".$data["phone"]."</td>";
             echo "<td class='center' width='80'>".$data["fax"]."</td>";
             echo "<td class='center'>".$website."</td>";
             echo "<td class='tab_bg_2 center'>";
+
             if ($canedit) {
-               echo "<a href='".
-                      $CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1".
+               echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deletecontactsupplier=1".
                      "&amp;id=$ID&amp;contacts_id=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
             } else {
                echo "&nbsp;";
@@ -388,24 +414,24 @@ class Contact extends CommonDBTM{
             echo "</td></tr>";
          }
       }
+
       if ($canedit) {
          if ($this->fields["is_recursive"]) {
-            $nb = countElementsInTableForEntity("glpi_suppliers",
-                                                getSonsOf("glpi_entities",
-                                                          $this->fields["entities_id"]));
+            $nb = countElementsInTableForEntity("glpi_suppliers", getSonsOf("glpi_entities",
+                                                $this->fields["entities_id"]));
          } else {
             $nb = countElementsInTableForEntity("glpi_suppliers", $this->fields["entities_id"]);
          }
+
          if ($nb>count($used)) {
             echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
-            Dropdown::show('Supplier',
-                            array('used'        => $used,
-                                  'entity'      => $this->fields["entities_id"],
-                                  'entity_sons' => $this->fields["is_recursive"]));
+            Dropdown::show('Supplier', array('used'        => $used,
+                                             'entity'      => $this->fields["entities_id"],
+                                             'entity_sons' => $this->fields["is_recursive"]));
 
-            echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value=\"".
-                               $LANG['buttons'][8]."\" class='submit'>";
+            echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value='".
+                               $LANG['buttons'][8]."' class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
          }
@@ -413,12 +439,13 @@ class Contact extends CommonDBTM{
       echo "</table></div></form>";
    }
 
+
    /**
     * Generate the Vcard for the current Contact
     *
     *@return Nothing (display)
     *
-    **/
+   **/
    function generateVcard() {
 
       include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
@@ -426,6 +453,7 @@ class Contact extends CommonDBTM{
       if (!$this->can($this->fields['id'],'r')) {
          return false;
       }
+
       // build the Vcard
       $vcard = new vCard();
 
@@ -435,18 +463,18 @@ class Contact extends CommonDBTM{
       $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
       $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
 
-      $addr=$this->GetAddress();
+      $addr = $this->GetAddress();
       if (is_array($addr)) {
          $vcard->setAddress($addr["name"], "", $addr["address"], $addr["town"], $addr["state"],
-                            $addr["postcode"], $addr["country"],"WORK;POSTAL");
+                            $addr["postcode"], $addr["country"], "WORK;POSTAL");
       }
       $vcard->setEmail($this->fields["email"]);
       $vcard->setNote($this->fields["comment"]);
       $vcard->setURL($this->GetWebsite(), "WORK");
 
       // send the  VCard
-      $output = $vcard->getVCard();
-      $filename =$vcard->getFileName();      // "xxx xxx.vcf"
+      $output   = $vcard->getVCard();
+      $filename = $vcard->getFileName();      // "xxx xxx.vcf"
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
       @Header("Content-Length: ".utf8_strlen($output));
@@ -455,6 +483,7 @@ class Contact extends CommonDBTM{
 
       echo $output;
    }
+
 }
 
 ?>
