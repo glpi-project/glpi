@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')){
 class SLA extends CommonDBTM {
 
    // From CommonDBTM
-   var $dohistory=true;
+   var $dohistory = true;
 
 
    static function getTypeName() {
@@ -50,9 +50,11 @@ class SLA extends CommonDBTM {
       return $LANG['sla'][1];
    }
 
+
    function canCreate() {
       return haveRight('sla', 'w');
    }
+
 
    function canView() {
       return haveRight('sla', 'r');
@@ -62,13 +64,14 @@ class SLA extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong=array();
-      $ong[1]=$LANG['title'][26];
+      $ong    = array();
+      $ong[1] = $LANG['title'][26];
       return $ong;
    }
 
+
    function post_getEmpty () {
-      $this->fields['resolution_time']=DAY_TIMESTAMP;
+      $this->fields['resolution_time'] = DAY_TIMESTAMP;
    }
 
 
@@ -81,22 +84,22 @@ class SLA extends CommonDBTM {
     *     - withtemplate boolean : template or basic item
     *
     *@return boolean item found
-    **/
+   **/
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
       // Show device or blank form
 
-      if (!haveRight("sla","r")) {
+      if (!haveRight("sla", "r")) {
          return false;
       }
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, 'r');
          $rowspan = 4;
       } else {
          // Create item
-         $this->check(-1,'w');
+         $this->check(-1, 'w');
          $rowspan = 3;
       }
 
@@ -107,20 +110,16 @@ class SLA extends CommonDBTM {
       echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
       echo "<td>";
       autocompletionTextField($this, "name", array('value' => $this->fields["name"]));
-
-      
-      echo "<td rowspan='".$rowspan."'>";
-      echo $LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='".$rowspan."'>".$LANG['common'][25]."&nbsp;:</td>";
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
-
       echo "</td></tr>";
 
       if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][26]."&nbsp;: </td>";
-         echo "<td>";
-         echo ($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"]) : $LANG['setup'][307]);
+         echo "<td>".($this->fields["date_mod"] ? convDateTime($this->fields["date_mod"])
+                                                : $LANG['setup'][307]);
          echo "</td></tr>";
       }
 
@@ -131,14 +130,15 @@ class SLA extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['sla'][2]."&nbsp;:</td>";
       echo "<td>";
-      $possible_values=array();
+      $possible_values = array();
       for ($i=1 ; $i<24 ; $i++) {
-         $possible_values[$i*HOUR_TIMESTAMP]=$i." ".$LANG['job'][21];
+         $possible_values[$i*HOUR_TIMESTAMP] = $i." ".$LANG['job'][21];
       }
       for ($i=1 ; $i<30 ; $i++) {
-         $possible_values[$i*DAY_TIMESTAMP]=$i." ".$LANG['stats'][31];
+         $possible_values[$i*DAY_TIMESTAMP] = $i." ".$LANG['stats'][31];
       }
-      Dropdown::showFromArray('resolution_time',$possible_values,array('value'=>$this->fields["resolution_time"]));
+      Dropdown::showFromArray('resolution_time', $possible_values,
+                              array('value' => $this->fields["resolution_time"]));
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -166,85 +166,98 @@ class SLA extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[4]['table']     = 'glpi_calendars';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['buttons'][15];
+      $tab[4]['table'] = 'glpi_calendars';
+      $tab[4]['field'] = 'name';
+      $tab[4]['name']  = $LANG['buttons'][15];
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = $LANG['common'][25];
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['common'][25];
+      $tab[16]['datatype'] = 'text';
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
 
       return $tab;
    }
 
+
    /**
-   * Get due date based on a sla
-   *
-   * @param $start_date datetime start date
-   * @param $additional_delay integer additional delay to add or substract (for waiting time)
-   *
-   * @return due date time (NULL if sla not exists)
+    * Get due date based on a sla
+    *
+    * @param $start_date datetime start date
+    * @param $additional_delay integer additional delay to add or substract (for waiting time)
+    *
+    * @return due date time (NULL if sla not exists)
    **/
-   function computeDueDate($start_date,$additional_delay=0) {
+   function computeDueDate($start_date, $additional_delay=0) {
+
       if (isset($this->fields['id'])) {
          // Based on a calendar
          if ($this->fields['calendars_id']>0) {
-            $cal=new Calendar();
+            $cal = new Calendar();
+
             if ($cal->getFromDB($this->fields['calendars_id'])) {
-               return $cal->computeEndDate($start_date,$this->fields['resolution_time']+$additional_delay);
+               return $cal->computeEndDate($start_date,
+                                           $this->fields['resolution_time']+$additional_delay);
             }
          }
+
          // No calendar defined or invalide calendar
-         $starttime=strtotime($start_date);
-         $endtime=$starttime+$this->fields['resolution_time'];
+         $starttime = strtotime($start_date);
+         $endtime   = $starttime+$this->fields['resolution_time'];
          return date('Y-m-d H:i:s',$endtime);
       }
+
       return NULL;
    }
 
+
    /**
-   * Get execution date of a sla level
-   *
-   * @param $start_date datetime start date
-   * @param $slalevels_id integer sla level id
-   * @param $additional_delay integer additional delay to add or substract (for waiting time)
-   *
-   * @return execution date time (NULL if sla not exists)
+    * Get execution date of a sla level
+    *
+    * @param $start_date datetime start date
+    * @param $slalevels_id integer sla level id
+    * @param $additional_delay integer additional delay to add or substract (for waiting time)
+    *
+    * @return execution date time (NULL if sla not exists)
    **/
-   function computeExecutionDate($start_date,$slalevels_id,$additional_delay=0) {
+   function computeExecutionDate($start_date, $slalevels_id, $additional_delay=0) {
+
       if (isset($this->fields['id'])) {
-         $slalevel=new SlaLevel();
+         $slalevel = new SlaLevel();
+
          if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
             if ($slalevel->fields['slas_id']==$this->fields['id']) { // correct sla level
-               $force_work_in_days=($this->fields['resolution_time']>=DAY_TIMESTAMP);
-               $delay=$this->fields['resolution_time']+$slalevel->fields['execution_time']+$additional_delay;
+               $force_work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
+               $delay = $this->fields['resolution_time']+$slalevel->fields['execution_time']
+                        +$additional_delay;
+
                // Based on a calendar
                if ($this->fields['calendars_id']>0) {
-                  $cal=new Calendar();
+                  $cal = new Calendar();
                   if ($cal->getFromDB($this->fields['calendars_id'])) {
-                     return $cal->computeEndDate($start_date,$delay,$force_work_in_days);
+                     return $cal->computeEndDate($start_date, $delay, $force_work_in_days);
                   }
                }
+
                // No calendar defined or invalide calendar
-               $starttime=strtotime($start_date);
-               $endtime=$starttime+$delay;
+               $starttime = strtotime($start_date);
+               $endtime   = $starttime+$delay;
                return date('Y-m-d H:i:s',$endtime);
             }
          }
       }
       return NULL;
    }
+
 
    /**
     * Get active time between to date time for the active calendar
@@ -253,69 +266,74 @@ class SLA extends CommonDBTM {
     * @param $end datetime end
     *
     * @return timestamp of delay
-    */
-   function getActiveTimeBetween($start,$end) {
+   **/
+   function getActiveTimeBetween($start, $end) {
+
       if ($end<$start) {
          return 0;
       }
 
       if (isset($this->fields['id'])) {
-         $slalevel=new SlaLevel();
-         $force_work_in_days=($this->fields['resolution_time']>=DAY_TIMESTAMP);
-
-         $cal=new Calendar();
+         $slalevel = new SlaLevel();
+         $cal      = new Calendar();
+         $force_work_in_days = ($this->fields['resolution_time']>=DAY_TIMESTAMP);
 
          // Based on a calendar
          if ($this->fields['calendars_id']>0) {
             if ($cal->getFromDB($this->fields['calendars_id'])) {
-               return $cal->getActiveTimeBetween($start,$end,$force_work_in_days);
+               return $cal->getActiveTimeBetween($start, $end, $force_work_in_days);
             }
+
          } else { // No calendar
-            $timestart=strtotime($start);
-            $timeend=strtotime($end);
+            $timestart = strtotime($start);
+            $timeend   = strtotime($end);
             return ($timeend-$timestart);
          }
       }
       return 0;
    }
 
+
    /**
-   * Add a level to do for a ticket
-   *
-   * @param $ticket Ticket object
-   *
-   * @return execution date time (NULL if sla not exists)
+    * Add a level to do for a ticket
+    *
+    * @param $ticket Ticket object
+    *
+    * @return execution date time (NULL if sla not exists)
    **/
    function addLevelToDo(Ticket $ticket) {
 
       if ($ticket->fields["slalevels_id"]>0) {
-         $toadd=array();
-         $toadd['date']=$this->computeExecutionDate($ticket->fields['date'],
-                                                   $ticket->fields["slalevels_id"],
-                                                   $ticket->fields['sla_waiting_duration']);
-         $toadd['slalevels_id']=$ticket->fields["slalevels_id"];
-         $toadd['tickets_id']=$ticket->fields["id"];
-         $slalevelticket=new SlaLevel_Ticket();
+         $toadd = array();
+         $toadd['date'] = $this->computeExecutionDate($ticket->fields['date'],
+                                                      $ticket->fields['slalevels_id'],
+                                                      $ticket->fields['sla_waiting_duration']);
+         $toadd['slalevels_id'] = $ticket->fields["slalevels_id"];
+         $toadd['tickets_id']   = $ticket->fields["id"];
+         $slalevelticket        = new SlaLevel_Ticket();
          $slalevelticket->add($toadd);
       }
    }
 
+
    /**
-   * Add a level to do for a ticket
-   *
-   * @param $ticket Ticket object
-   *
-   * @return execution date time (NULL if sla not exists)
+    * Add a level to do for a ticket
+    *
+    * @param $ticket Ticket object
+    *
+    * @return execution date time (NULL if sla not exists)
    **/
    function deleteLevelsToDo(Ticket $ticket) {
       global $DB;
+
       if ($ticket->fields["slalevels_id"]>0) {
-         $query="SELECT *
-                  FROM `glpi_slalevels_tickets`
-                  WHERE `tickets_id` = '".$ticket->fields["id"]."'";
-         $slalevelticket=new SlaLevel_Ticket();
+         $query = "SELECT *
+                   FROM `glpi_slalevels_tickets`
+                   WHERE `tickets_id` = '".$ticket->fields["id"]."'";
+
+         $slalevelticket = new SlaLevel_Ticket();
          foreach ($DB->request($query) as $data) {
-            $slalevelticket->delete(array('id'=>$data['id']));
+            $slalevelticket->delete(array('id' => $data['id']));
          }
       }
    }

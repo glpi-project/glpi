@@ -47,6 +47,7 @@ class RequestType extends CommonDropdown {
       return $LANG['job'][44];
    }
 
+
    function getAdditionalFields() {
       global $LANG;
 
@@ -57,6 +58,7 @@ class RequestType extends CommonDropdown {
                          'label' => $LANG['tracking'][10],
                          'type'  => 'bool'));
    }
+
 
    function getSearchOptions() {
       global $LANG;
@@ -78,51 +80,56 @@ class RequestType extends CommonDropdown {
       return $tab;
    }
 
+
    function post_addItem() {
       global $DB;
 
       if (isset($this->input["is_helpdesk_default"]) && $this->input["is_helpdesk_default"]) {
-         $query = "UPDATE ".
-                   $this->getTable()."
+         $query = "UPDATE `".$this->getTable()."`
                    SET `is_helpdesk_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
+
       if (isset($this->input["is_mail_default"]) && $this->input["is_mail_default"]) {
-         $query = "UPDATE ".
-                   $this->getTable()."
+         $query = "UPDATE `".$this->getTable()."`
                    SET `is_mail_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
    }
 
+
    function post_updateItem($history=1) {
       global $DB, $LANG;
 
       if (in_array('is_helpdesk_default',$this->updates)) {
+
          if ($this->input["is_helpdesk_default"]) {
-            $query = "UPDATE ".
-                      $this->getTable()."
+            $query = "UPDATE `".$this->getTable()."`
                       SET `is_helpdesk_default` = '0'
                       WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
+
          } else {
             addMessageAfterRedirect($LANG['setup'][313], true);
          }
       }
+
       if (in_array('is_mail_default',$this->updates)) {
+
          if ($this->input["is_mail_default"]) {
-            $query = "UPDATE ".
-                      $this->getTable()."
+            $query = "UPDATE `".$this->getTable()."`
                       SET `is_mail_default` = '0'
                       WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
+
          } else {
             addMessageAfterRedirect($LANG['setup'][313], true);
          }
       }
    }
+
 
    /**
     * Get the default request type for a given source (mail, helpdesk)
@@ -134,14 +141,16 @@ class RequestType extends CommonDropdown {
    static function getDefault($source) {
       global $DB;
 
-      if (!in_array($source, array('mail','helpdesk'))) {
+      if (!in_array($source, array('mail', 'helpdesk'))) {
          return 0;
       }
-      foreach ($DB->request('glpi_requesttypes', array('is_'.$source.'_default'=>1)) as $data) {
+
+      foreach ($DB->request('glpi_requesttypes', array('is_'.$source.'_default' => 1)) as $data) {
          return $data['id'];
       }
       return 0;
    }
+
 }
 
 ?>

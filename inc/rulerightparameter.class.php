@@ -50,13 +50,16 @@ class RuleRightParameter extends CommonDropdown {
       return $input;
    }
 
+
    function canCreate() {
-      return haveRight('rule_ldap','w');
+      return haveRight('rule_ldap', 'w');
    }
 
+
    function canView() {
-      return haveRight('rule_ldap','r');
+      return haveRight('rule_ldap', 'r');
    }
+
 
    function getAdditionalFields() {
       global $LANG;
@@ -67,22 +70,24 @@ class RuleRightParameter extends CommonDropdown {
                          'list'  => false));
    }
 
+
    /**
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'value';
-      $tab[11]['name']          = $LANG['rulesengine'][16];
+      $tab[11]['table'] = $this->getTable();
+      $tab[11]['field'] = 'value';
+      $tab[11]['name']  = $LANG['rulesengine'][16];
 
       return $tab;
    }
+
 
    static function getTypeName() {
       global $LANG;
