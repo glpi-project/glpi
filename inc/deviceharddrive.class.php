@@ -69,10 +69,7 @@ class DeviceHardDrive extends CommonDevice {
                                      'type'  => 'text'),
                                array('name'  => 'interfacetypes_id',
                                      'label' => $LANG['common'][65],
-                                     'type'  => 'dropdownValue'),
-                               array('name'  => 'serial',
-                                     'label' => $LANG['common'][19],
-                                     'type'  => 'text')));
+                                     'type'  => 'dropdownValue')));
    }
 
 
@@ -99,10 +96,6 @@ class DeviceHardDrive extends CommonDevice {
       $tab[14]['table']    = 'glpi_interfacetypes';
       $tab[14]['field']    = 'name';
       $tab[14]['name']     = $LANG['common'][65];
-
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'serial';
-      $tab[15]['name']          = $LANG['common'][19];
 
       return $tab;
    }
@@ -136,7 +129,6 @@ class DeviceHardDrive extends CommonDevice {
       // Specificity
       $data['label'][] = $LANG['device_hdd'][4];
       $data['size']    = 10;
-      $data['serial'][] = '';
 
       return $data;
    }
