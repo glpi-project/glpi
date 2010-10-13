@@ -367,7 +367,7 @@ class Link extends CommonDBTM {
                      $url = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['id'].
                             "&amp;itemtype=$itemtype&amp;id=$ID";
                   }
-                  echo "<tr class='tab_bg_2'><td class='center'>";
+                  echo "<tr class='tab_bg_2'>";
                   echo "<td class='center'><a href='$url' target='_blank'>".
                               $clean_name[0]."</a></td></tr>";
                }
