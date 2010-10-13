@@ -838,6 +838,14 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add use_slave_for_search field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_deviceharddrives","serial")) {
+      $query = "ALTER TABLE  `glpi_deviceharddrives` ADD  `serial` VARCHAR( 255 ) NULL";
+      $DB->query($query) or die("0.80 add serial field in glpi_deviceharddrives " . $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE  `glpi_deviceharddrives` ADD INDEX `serial` (  `serial` )";
+      $DB->query($query) or die("0.80 add serial index in glpi_deviceharddrives " . $LANG['update'][90] . $DB->error());
+   }
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

@@ -1084,10 +1084,12 @@ CREATE TABLE `glpi_deviceharddrives` (
   `comment` text COLLATE utf8_unicode_ci,
   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
   `specif_default` int(11) NOT NULL,
+  `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `designation` (`designation`),
   KEY `manufacturers_id` (`manufacturers_id`),
-  KEY `interfacetypes_id` (`interfacetypes_id`)
+  KEY `interfacetypes_id` (`interfacetypes_id`),
+  KEY `serial` (`serial`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
