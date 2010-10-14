@@ -97,6 +97,10 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          Document::showAssociated($user);
          break;
 
+      case 6 :
+         $user->showDebug();
+         break;
+
       case 11 :
          Reservation::showForUser($_POST["id"]);
          break;

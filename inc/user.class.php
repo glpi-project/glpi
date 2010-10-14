@@ -174,7 +174,11 @@ class User extends CommonDBTM {
          if (haveRight("user_authtype", "w")) {
             $ong[12] = $LANG['ldap'][12];
          }
-         $ong[13]=$LANG['title'][38];
+         $ong[13] = $LANG['title'][38];
+
+         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+            $ong[6] = $LANG['setup'][137];
+         }
 
       } else { // New item
          $ong[1] = $LANG['title'][26];
@@ -2533,6 +2537,17 @@ class User extends CommonDBTM {
       echo "<br>";
       echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".$LANG['buttons'][13]."</a>";
       echo "</div>";
+   }
+
+
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+
+//      $options['entities_id'] = $this->getEntityID();
+//      $options['contracts']  = array();
+      NotificationEvent::debugEvent($this);
    }
 }
 
