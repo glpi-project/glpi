@@ -64,6 +64,10 @@ class Config extends CommonDBTM {
       if (DBConnection::isDBSlaveActive()) {
          $tabs[6]  = $LANG['setup'][800];  // Slave
       }
+      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+         $tabs[7] = $LANG['setup'][137];
+      }
+
       return $tabs;
    }
 
@@ -980,6 +984,17 @@ class Config extends CommonDBTM {
          // urldecode for space redirect to encoded URL : change entity
          $CFG_GLPI["root_doc"] = urldecode($CFG_GLPI["root_doc"]);
       }
+   }
+
+
+   /**
+    * Display debug information for dbslave
+   **/
+   function showDebug() {
+
+      $options['diff'] = 0;
+      $options['name'] = '';
+      NotificationEvent::debugEvent(new DBConnection(), $options);
    }
 
 }

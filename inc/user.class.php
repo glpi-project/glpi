@@ -2544,9 +2544,6 @@ class User extends CommonDBTM {
     * Display debug information for current object
    **/
    function showDebug() {
-
-//      $options['entities_id'] = $this->getEntityID();
-//      $options['contracts']  = array();
       NotificationEvent::debugEvent($this);
    }
 }
