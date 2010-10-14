@@ -138,6 +138,9 @@ class SoftwareLicense extends CommonDBTM {
             $ong[5]=$LANG['Menu'][27];
          }
          $ong[12] = $LANG['title'][38];
+         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+            $ong[6] = $LANG['setup'][137];
+         }
       }
       return $ong;
    }
@@ -679,6 +682,22 @@ class SoftwareLicense extends CommonDBTM {
          }
       }
       echo "</div>";
+   }
+
+
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+
+      $license = array('softname' => '',
+                       'name'     => '',
+                       'serial'   => '',
+                       'expire'   => '');
+
+      $options['entities_id'] = $this->getEntityID();
+      $options['licenses'] = array($license);
+      NotificationEvent::debugEvent($this, $options);
    }
 
 }
