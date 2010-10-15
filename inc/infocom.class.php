@@ -1166,6 +1166,22 @@ class Infocom extends CommonDBTM {
          }
       }
    }
+
+
+   /**
+    * Display debug information for infocom of current object
+   **/
+   function showDebug() {
+
+      $item = array('item_name'           => '',
+                     'warrantyexpiration' => '',
+                     'itemtype'           => $this->fields['itemtype']);
+
+      $options['entities_id'] = $this->getEntityID();
+      $options['items'] = array($item);
+      NotificationEvent::debugEvent($this, $options);
+   }
+
 }
 
 ?>
