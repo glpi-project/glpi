@@ -1619,7 +1619,7 @@ $LANG['rulesengine'][81]="Résultat de la règle";
 $LANG['rulesengine'][82]="Détail du résultat";
 $LANG['rulesengine'][83]="Il est possible d'affecter le résultat d'une expression rationnelle en utilisant la chaine #0";
 $LANG['rulesengine'][84]="Tester le moteur de règles";
-$LANG['rulesengine'][85]="Résultat de l'expression rationelle";
+$LANG['rulesengine'][85]="Résultat de l'expression rationnelle";
 $LANG['rulesengine'][86]="Catégorie des logiciels supprimés par le dictionnaire";
 $LANG['rulesengine'][87]="Logiciel mis dans la corbeille par le dictionnaire GLPI";
 
