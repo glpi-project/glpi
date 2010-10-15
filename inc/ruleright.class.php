@@ -282,7 +282,7 @@ class RuleRight extends Rule {
 
          $criterias['MAIL_EMAIL']['table']     = '';
          $criterias['MAIL_EMAIL']['field']     = '';
-         $criterias['MAIL_EMAIL']['name']      = $LANG['login'][6]." ".$LANG['login'][3];
+         $criterias['MAIL_EMAIL']['name']      = $LANG['login'][28];
          $criterias['MAIL_EMAIL']['linkfield'] = '';
          $criterias['MAIL_EMAIL']['virtual']   = true;
          $criterias['MAIL_EMAIL']['id']        = 'mail_email';
