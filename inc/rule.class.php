@@ -1180,7 +1180,8 @@ class Rule extends CommonDBTM {
       }
       if (!$display) {
          $rc = new RuleCriteria();
-         autocompletionTextField($rc,"pattern",array('name'=>$name));
+         autocompletionTextField($rc,"pattern",array('name' =>$name,
+                                                     'value'=>$value));
       }
    }
 
