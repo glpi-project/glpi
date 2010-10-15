@@ -1628,7 +1628,7 @@ $LANG['rulesengine'][15]="Motif";
 $LANG['rulesengine'][16]="Critère";
 $LANG['rulesengine'][17]="Règles";
 $LANG['rulesengine'][18]="Règles d'affectation d'un ordinateur à une entité";
-$LANG['rulesengine'][19]="Règles d'affectation d'entité et de droits";
+$LANG['rulesengine'][19]="Règles d'affectation d'habilitations à un utilisateur";
 $LANG['rulesengine'][20]="Règles appliquées";
 $LANG['rulesengine'][21]="Règles applicables dans les sous-entités";
 $LANG['rulesengine'][22]="Assigner";
@@ -1685,7 +1685,7 @@ $LANG['rulesengine'][81]="Résultat de la règle";
 $LANG['rulesengine'][82]="Détail du résultat";
 $LANG['rulesengine'][83]="Il est possible d'affecter le résultat d'une expression rationnelle en utilisant la chaine #0";
 $LANG['rulesengine'][84]="Tester le moteur de règles";
-$LANG['rulesengine'][85]="Résultat de l'expression rationelle";
+$LANG['rulesengine'][85]="Résultat de l'expression rationnelle";
 $LANG['rulesengine'][86]="Catégorie des logiciels supprimés par les règles du dictionnaire";
 $LANG['rulesengine'][87]="Logiciel mis dans la corbeille par les règles du dictionnaire GLPI";
 
