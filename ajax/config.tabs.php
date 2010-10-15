@@ -84,10 +84,6 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormDBSlave();
       break;
 
-   case 7 :
-      $config->showDebug();
-      break;
-
    default :
       if (!Plugin::displayAction($config, $_REQUEST['glpi_tab'])) {
       $config->showFormDisplay();

@@ -96,9 +96,6 @@ class Contract extends CommonDBTM {
             $ong[10] = $LANG['title'][37];
          }
          $ong[12] = $LANG['title'][38];
-         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-            $ong[3] = $LANG['setup'][137];
-         }
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

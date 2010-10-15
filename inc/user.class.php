@@ -176,10 +176,6 @@ class User extends CommonDBTM {
          }
          $ong[13] = $LANG['title'][38];
 
-         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-            $ong[6] = $LANG['setup'][137];
-         }
-
       } else { // New item
          $ong[1] = $LANG['title'][26];
       }

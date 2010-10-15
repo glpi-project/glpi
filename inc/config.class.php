@@ -64,9 +64,6 @@ class Config extends CommonDBTM {
       if (DBConnection::isDBSlaveActive()) {
          $tabs[6]  = $LANG['setup'][800];  // Slave
       }
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-         $tabs[7] = $LANG['setup'][137];
-      }
 
       return $tabs;
    }

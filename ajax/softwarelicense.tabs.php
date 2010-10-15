@@ -79,10 +79,6 @@ if ($_POST["id"]>0 && $license->can($_POST["id"],'r')) {
          Document::showAssociated($license);
          break;
 
-      case 6 :
-         $license->showDebug();
-         break;
-
       case 12 :
          Log::showForItem($license);
          break;

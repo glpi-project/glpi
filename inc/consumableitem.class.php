@@ -132,9 +132,6 @@ class ConsumableItem extends CommonDBTM {
          if (haveRight("notes","r")) {
             $ong[10] = $LANG['title'][37];
          }
-         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-            $ong[2] = $LANG['setup'][137];
-         }
 
       } else { // New item
          $ong[1] = $LANG['title'][26];

@@ -133,9 +133,6 @@ class CartridgeItem extends CommonDBTM {
                $ong[10] = $LANG['title'][37];
             }
          }
-         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-            $ong[2] = $LANG['setup'][137];
-         }
       }
       return $ong;
    }

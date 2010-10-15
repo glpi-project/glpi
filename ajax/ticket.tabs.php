@@ -101,10 +101,6 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $ticket->showStats();
          break;
 
-      case 9 :
-         $ticket->showDebug();
-         break;
-
       case 10 :
       // affichage uniquement  si enquete déclenchée et status clos
          $satisfaction = new TicketSatisfaction();

@@ -138,9 +138,6 @@ class SoftwareLicense extends CommonDBTM {
             $ong[5]=$LANG['Menu'][27];
          }
          $ong[12] = $LANG['title'][38];
-         if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
-            $ong[6] = $LANG['setup'][137];
-         }
       }
       return $ong;
    }
