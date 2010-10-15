@@ -905,6 +905,12 @@ class Plugin extends CommonDBTM {
    static function displayAction(CommonGLPI $item, $onglet=1, $withtemplate=0) {
       global $PLUGIN_HOOKS;
 
+      // Show debug tab
+      if ($onglet==-2) {
+         $item->showDebugInfo();
+         return true;
+      }
+
       // Show all Case
       if ($onglet==-1) {
          if (isset($PLUGIN_HOOKS["headings_action"])

@@ -213,6 +213,15 @@ class CommonGLPI {
          $display_all = false;
          unset($onglets['no_all_tab']);
       }
+
+      $class = $this->getType();
+      if ($_SESSION['glpi_use_mode']==DEBUG_MODE
+          && (method_exists($class, 'showDebug')
+              || in_array($class, $CFG_GLPI["infocom_types"]))) {
+
+            $onglets[-2] = $LANG['setup'][137];
+      }
+
       if (count($onglets)) {
          $tabpage = $this->getTabsURL();
          $tabs = array();
@@ -272,6 +281,25 @@ class CommonGLPI {
    }
 
 
+   /**
+    * to list infos in debug tab
+   **/
+   function showDebugInfo() {
+      global $CFG_GLPI;
+
+      $class = $this->getType();
+
+      if (method_exists($class, 'showDebug')) {
+         $this->showDebug();
+      }
+
+      if (in_array($class, $CFG_GLPI["infocom_types"])) {
+         $infocom = new Infocom();
+         if ($infocom->getFromDBforDevice($class, $this->fields['id'])) {
+            $infocom->showDebug();
+         }
+      }
+   }
 }
 
 ?>
