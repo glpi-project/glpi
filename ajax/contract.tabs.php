@@ -64,10 +64,6 @@ if ($_POST['id']>0  && $contract->can($_POST['id'],'r')) {
          $contract->showItems();
          break;
 
-      case 3 :
-         $contract->showDebug();
-         break;
-
       case 5 :
          Document::showAssociated($contract);
          break;
