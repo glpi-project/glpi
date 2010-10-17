@@ -2252,157 +2252,191 @@ $LANG['state'][6] = "Type de matériel";
 $LANG['state'][7] = "Pas de matériel trouvé";
 
 
-$LANG['stats'][0]="Sélectionnez les statistiques à visualiser";
-$LANG['stats'][1]="Globales";
-$LANG['stats'][2]="Aucun élément à afficher";
-$LANG['stats'][3]="Par Intitulé";
-$LANG['stats'][5]="Nombre de tickets ouverts";
-$LANG['stats'][7]="Voir les graphiques";
-$LANG['stats'][8]="Délai moyen";
-$LANG['stats'][9]="Résolution";
-$LANG['stats'][10]="Clôture";
-$LANG['stats'][11]="Nombre de tickets fermés";
-$LANG['stats'][12]="Prise en compte";
-$LANG['stats'][13]="Nombre de tickets";
-$LANG['stats'][14]="Durée Réelle";
-$LANG['stats'][15]="Durée moyenne de traitement du ticket";
-$LANG['stats'][16]="Nom du technicien";
-$LANG['stats'][17]="Nombre de tickets clos";
-$LANG['stats'][18]="Délai moyen de clôture";
-$LANG['stats'][19]="Nombre de tickets résolus en retard";
-$LANG['stats'][20]="Nom d'utilisateur";
-$LANG['stats'][23]="Pas de statistiques disponibles";
-$LANG['stats'][25]="Durée réelle moyenne de traitement du ticket";
-$LANG['stats'][27]="Durée réelle totale de traitement des tickets";
-$LANG['stats'][30]="Délai moyen de prise en compte du ticket";
-$LANG['stats'][31]="Jour(s)";
-$LANG['stats'][33]="Min(s)";
-$LANG['stats'][34]="Sec(s)";
-$LANG['stats'][35]="Ticket(s)";
-$LANG['stats'][44]="Nom du fournisseur";
-$LANG['stats'][45]="Par matériel";
-$LANG['stats'][47]="Par ticket";
-$LANG['stats'][48]="(assigné)";
-$LANG['stats'][49]="(suivis)";
+$LANG['stats'][0]  = "Sélectionnez les statistiques à visualiser";
+$LANG['stats'][1]  = "Globales";
+$LANG['stats'][2]  = "Aucun élément à afficher";
+$LANG['stats'][3]  = "Par Intitulé";
 
-$LANG['title'][5]="Base de connaissances";
-$LANG['title'][6]="Matériels Réseau";
-$LANG['title'][9]="Statuts des matériels";
-$LANG['title'][10]="Suivi des tickets";
-$LANG['title'][13]="Informations Utilisateur";
-$LANG['title'][14]="Sources d'authentification externes";
-$LANG['title'][24]="Assistance";
-$LANG['title'][26]="Principal";
-$LANG['title'][27]="Connexions";
-$LANG['title'][28]="Tickets";
-$LANG['title'][30]="Composants";
+$LANG['stats'][5]  = "Nombre de tickets ouverts";
 
-$LANG['title'][32]="Lien externe";
-$LANG['title'][33]="Liens externes";
-$LANG['title'][34]="Liens";
-$LANG['title'][37]="Notes";
-$LANG['title'][38]="Historique";
-$LANG['title'][40]="Notes personnelles et publiques";
-$LANG['title'][42]="Modification Massive";
-$LANG['title'][43]="Registre";
+$LANG['stats'][7]  = "Voir les graphiques";
+$LANG['stats'][8]  = "Délai moyen";
+$LANG['stats'][9]  = "Résolution";
+$LANG['stats'][10] = "Clôture";
+$LANG['stats'][11] = "Nombre de tickets fermés";
+$LANG['stats'][12] = "Prise en compte";
+$LANG['stats'][13] = "Nombre de tickets";
+$LANG['stats'][14] = "Durée Réelle";
+$LANG['stats'][15] = "Durée moyenne de traitement du ticket";
+$LANG['stats'][16] = "Nom du technicien";
+$LANG['stats'][17] = "Nombre de tickets clos";
+$LANG['stats'][18] = "Délai moyen de clôture";
+$LANG['stats'][19] = "Nombre de tickets résolus en retard";
+$LANG['stats'][20] = "Nom d'utilisateur";
 
-$LANG['tracking'][1]="Mes matériels";
-$LANG['tracking'][2]="Ou recherche complète";
-$LANG['tracking'][3]="Dates invalides. Modification annulée.";
-$LANG['tracking'][4]="Votre ticket ne contient pas d'urgence, veuillez corriger.";
-$LANG['tracking'][8]="Votre ticket ne contient pas de description, veuillez corriger.";
-$LANG['tracking'][9]="Par défaut pour les tickets";
-$LANG['tracking'][10]="Par défaut pour les collecteurs";
-$LANG['tracking'][24]="Document Ticket";
-$LANG['tracking'][29]="Nombre";
-$LANG['tracking'][30]="Nouveaux";
-$LANG['tracking'][31]="En cours (attribués)";
-$LANG['tracking'][32]="En cours (planifiés)";
-$LANG['tracking'][34]="Directe";
-$LANG['tracking'][35]="Écrite";
-$LANG['tracking'][37]="Conserver les tickets à la purge d'un élément de l'inventaire";
-$LANG['tracking'][38]="Un mail de suivi a été envoyé à";
-$LANG['tracking'][39]="Visible dans l'interface simplifiée";
+$LANG['stats'][23] = "Pas de statistiques disponibles";
 
-$LANG['transfer'][1]="Transfert";
-$LANG['transfer'][3]="si n'est plus utilisé";
-$LANG['transfer'][4]="Vider la liste des éléments à transférer";
-$LANG['transfer'][5]="Vous pouvez continuer d'ajouter des éléments à transférer ou transférer dès maintenant ces éléments";
-$LANG['transfer'][6]="Pensez à faire une sauvegarde avant de transférer des éléments.";
-$LANG['transfer'][7]="Éléments à transférer";
-$LANG['transfer'][8]="Mode de transfert";
+$LANG['stats'][25] = "Durée réelle moyenne de traitement du ticket";
 
-$LANG['update'][88]="Votre version de la base de données n'est pas compatible avec la version des fichiers  installés. Une mise à jour est nécessaire.";
-$LANG['update'][89]="Vous tenter d'utiliser GLPI avec des fichiers d'une version antérieure à la version de la base de données. Veuillez installer les fichiers GLPI dans la  version correspondante à votre base de données.";
-$LANG['update'][90]="Erreur durant la mise à jour de la base de données";
-$LANG['update'][91]="Attention !";
-$LANG['update'][92]="Vous allez mettre à jour votre base de données GLPI ayant pour nom :";
-$LANG['update'][93]="Connexion à la base de données réussie";
-$LANG['update'][94]="La mise à jour est réussie, votre base de données est actualisée";
-$LANG['update'][95]="La connexion à la base de données a échouée, vérifiez les paramètres de connexion figurant dans le fichier config_db.php";
-$LANG['update'][96]="Tous vos utilisateurs ayant précédemment les droits 'admin' se sont vu attribuer les droits 'super-admin' avec l'ajout de ce nouveau type d'utilisateur";
-$LANG['update'][105]="Impossible d'accéder à la mise à jour de cette façon !!";
-$LANG['update'][106]="Retourner à GLPI";
-$LANG['update'][107]="Vous devez maintenant procéder à la mise à jour de l'ancien contenu de votre base de données";
-$LANG['update'][130]="Mise à jour des lieux";
-$LANG['update'][131]="La nouvelle structure est hiérarchique";
-$LANG['update'][132]="Si vous utilisiez un caractère de séparation vous pouvez l'indiquer pour automatiser la génération de la hiérarchie.";
-$LANG['update'][133]="Vous pouvez aussi spécifier un lieu de base qui inclura tous les lieux générés.";
-$LANG['update'][134]="Caractère de séparation";
-$LANG['update'][135]="Lieu racine";
-$LANG['update'][136]="Voici la nouvelle hiérarchie générée. Si elle vous convient, vous pouvez la valider.";
-$LANG['update'][137]="Nouvelle hiérarchie";
-$LANG['update'][138]="Lieux actuels";
-$LANG['update'][139]="Optimisation des tables";
-$LANG['update'][140]="Création d'index";
-$LANG['update'][141]="Modification du schéma";
-$LANG['update'][142]="Redressement des données";
+$LANG['stats'][27] = "Durée réelle totale de traitement des tickets";
 
-$LANG['users'][1]="Titre";
-$LANG['users'][2]="Catégorie";
-$LANG['users'][3]="Mot de passe oublié ?";
-$LANG['users'][4]="Jeton";
-$LANG['users'][5]="Vous avez demandé la réinitialisation de votre mot de passe.";
-$LANG['users'][6]="Il vous suffit de suivre ce lien (vous avez une journée) : ";
-$LANG['users'][7]="Veuillez saisir votre adresse e-mail. Vous recevrez un email vous permettant de changer votre mot de passe.";
-$LANG['users'][8]="L'email demandé est inconnu.";
-$LANG['users'][9]="La configuration de l'authentification ne vous permet pas de changer votre mot de passe.";
-$LANG['users'][10]="Email expédié. Veuillez vous reportez à celui-ci pour changer votre mot de passe.";
-$LANG['users'][11]="Veuillez confirmer votre email et saisir votre nouveau mot de passe.";
-$LANG['users'][12]="La demande de renouvellement de mot de passe a expirée ou est invalide. Merci de la renouveller.";
-$LANG['users'][13]="Mot de passe modifié avec succès.";
-$LANG['users'][14]="Habilitations";
-$LANG['users'][15]="Import depuis les annuaires";
-$LANG['users'][16]="Import depuis les autres sources";
+$LANG['stats'][30] = "Délai moyen de prise en compte du ticket";
+$LANG['stats'][31] = "Jour(s)";
+
+$LANG['stats'][33] = "Min(s)";
+$LANG['stats'][34] = "Sec(s)";
+$LANG['stats'][35] = "Ticket(s)";
+
+$LANG['stats'][44] = "Nom du fournisseur";
+$LANG['stats'][45] = "Par matériel";
+
+$LANG['stats'][47] = "Par ticket";
+$LANG['stats'][48] = "(assigné)";
+$LANG['stats'][49] = "(suivis)";
 
 
-$LANG['validation'][0]="Validation";
-$LANG['validation'][1]="Envoyer une demande de validation";
-$LANG['validation'][2]="Etat";
-$LANG['validation'][3]="Date de la demande";
-$LANG['validation'][4]="Date de la validation";
-$LANG['validation'][5]="Commentaire de la demande";
-$LANG['validation'][6]="Commentaire de la validation";
-$LANG['validation'][7]="Validation(s) pour le ticket";
-$LANG['validation'][8]="Validations";
-$LANG['validation'][9]="En attente de validation";
-$LANG['validation'][10]="Refusé";
-$LANG['validation'][11]="Accepté";
-$LANG['validation'][13]="Demande de validation envoyée à";
-$LANG['validation'][15]="Ticket attendant votre validation";
-$LANG['validation'][16]="Facultatif en cas d'acceptation";
-$LANG['validation'][18]="Demandeur de la validation";
-$LANG['validation'][19]="Validation acceptée";
-$LANG['validation'][20]="Validation refusée";
-$LANG['validation'][21]="Valideur";
-$LANG['validation'][23]="L'utilisateur choisi n'a pas d'adresse email renseignée. La demande a été créée mais l'envoi de l'email a échoué.";
-$LANG['validation'][26]="Demande de validation";
-$LANG['validation'][27]="Une demande de validation a été soumise";
-$LANG['validation'][28]="Statut de la demande de validation";
-$LANG['validation'][29]="En cas de refus de validation, vous devez indiquer un motif";
-$LANG['validation'][30]="Suppression de la demande de validation à";
-$LANG['validation'][31]="Mise à jour de la demande de validation à";
-$LANG['validation'][32]="Une réponse à une demande de validation a été effectuée";
-$LANG['validation'][33]="Des tickets sont en attente de votre validation";
+$LANG['title'][5]  = "Base de connaissances";
+$LANG['title'][6]  = "Matériels Réseaux";
+
+$LANG['title'][9]  = "Statuts des matériels";
+$LANG['title'][10] = "Suivi des tickets";
+
+$LANG['title'][13] = "Informations Utilisateur";
+$LANG['title'][14] = "Sources d'authentification externes";
+
+$LANG['title'][24] = "Assistance";
+
+$LANG['title'][26] = "Principal";
+$LANG['title'][27] = "Connexions";
+$LANG['title'][28] = "Tickets";
+
+$LANG['title'][30] = "Composants";
+
+$LANG['title'][32] = "Lien externe";
+$LANG['title'][33] = "Liens externes";
+$LANG['title'][34] = "Liens";
+
+$LANG['title'][37] = "Notes";
+$LANG['title'][38] = "Historique";
+
+$LANG['title'][40] = "Notes personnelles et publiques";
+$LANG['title'][42] = "Modification Massive";
+$LANG['title'][43] = "Registre";
+
+
+$LANG['tracking'][1]  = "Mes matériels";
+$LANG['tracking'][2]  = "Ou recherche complète";
+$LANG['tracking'][3]  = "Dates invalides. Modification annulée.";
+$LANG['tracking'][4]  = "Votre ticket ne contient pas d'urgence, veuillez corriger.";
+
+$LANG['tracking'][8]  = "Votre ticket ne contient pas de description, veuillez corriger.";
+$LANG['tracking'][9]  = "Par défaut pour les tickets";
+$LANG['tracking'][10] = "Par défaut pour les collecteurs";
+
+$LANG['tracking'][24] = "Document Ticket";
+
+$LANG['tracking'][29] = "Nombre";
+$LANG['tracking'][30] = "Nouveaux";
+$LANG['tracking'][31] = "En cours (attribués)";
+$LANG['tracking'][32] = "En cours (planifiés)";
+
+$LANG['tracking'][34] = "Directe";
+$LANG['tracking'][35] = "Écrite";
+
+$LANG['tracking'][37] = "Conserver les tickets à la purge d'un élément de l'inventaire";
+$LANG['tracking'][38] = "Un courriel de suivi a été envoyé à";
+$LANG['tracking'][39] = "Visible dans l'interface simplifiée";
+
+
+$LANG['transfer'][1] = "Transfert";
+
+$LANG['transfer'][3] = "si n'est plus utilisé";
+$LANG['transfer'][4] = "Vider la liste des éléments à transférer";
+$LANG['transfer'][5] = "Vous pouvez continuer d'ajouter des éléments à transférer ou transférer dès maintenant ces éléments";
+$LANG['transfer'][6] = "Pensez à faire une sauvegarde avant de transférer des éléments.";
+$LANG['transfer'][7] = "Éléments à transférer";
+$LANG['transfer'][8] = "Mode de transfert";
+
+
+$LANG['update'][88]  = "Votre version de la base de données n'est pas compatible avec la version des fichiers installés. Une mise à jour est nécessaire.";
+$LANG['update'][89]  = "Vous tentez d'utiliser GLPI avec des fichiers d'une version antérieure à la version de la base de données. Veuillez installer les fichiers GLPI dans la version correspondante à votre base de données.";
+$LANG['update'][90]  = "Erreur durant la mise à jour de la base de données";
+$LANG['update'][91]  = "Attention !";
+$LANG['update'][92]  = "Vous allez mettre à jour votre base de données GLPI ayant pour nom :";
+$LANG['update'][93]  = "Connexion à la base de données réussie";
+$LANG['update'][94]  = "La mise à jour est réussie, votre base de données est actualisée";
+$LANG['update'][95]  = "La connexion à la base de données a échouée, vérifiez les paramètres de connexion figurant dans le fichier config_db.php";
+$LANG['update'][96]  = "Tous vos utilisateurs ayant précédemment les droits 'admin' se sont vu attribuer les droits 'super-admin' avec l'ajout de ce nouveau type d'utilisateur";
+
+$LANG['update'][105] = "Impossible d'accéder à la mise à jour de cette façon !!";
+$LANG['update'][106] = "Retourner à GLPI";
+$LANG['update'][107] = "Vous devez maintenant procéder à la mise à jour de l'ancien contenu de votre base de données";
+
+$LANG['update'][130] = "Mise à jour des lieux";
+$LANG['update'][131] = "La nouvelle structure est hiérarchique";
+$LANG['update'][132] = "Si vous utilisiez un caractère de séparation vous pouvez l'indiquer pour automatiser la génération de la hiérarchie.";
+$LANG['update'][133] = "Vous pouvez aussi spécifier un lieu de base qui inclura tous les lieux générés.";
+$LANG['update'][134] = "Caractère de séparation";
+$LANG['update'][135] = "Lieu racine";
+$LANG['update'][136] = "Voici la nouvelle hiérarchie générée. Si elle vous convient, vous pouvez la valider.";
+$LANG['update'][137] = "Nouvelle hiérarchie";
+$LANG['update'][138] = "Lieux actuels";
+$LANG['update'][139] = "Optimisation des tables";
+$LANG['update'][140] = "Création d'index";
+$LANG['update'][141] = "Modification du schéma";
+$LANG['update'][142] = "Redressement des données";
+
+
+$LANG['users'][1]  = "Titre";
+$LANG['users'][2]  = "Catégorie";
+$LANG['users'][3]  = "Mot de passe oublié ?";
+$LANG['users'][4]  = "Jeton";
+$LANG['users'][5]  = "Vous avez demandé la réinitialisation de votre mot de passe.";
+$LANG['users'][6]  = "Il vous suffit de suivre ce lien (vous avez une journée) : ";
+$LANG['users'][7]  = "Veuillez saisir votre adresse électronique. Vous recevrez un courriel vous permettant de changer votre mot de passe.";
+$LANG['users'][8]  = "L'email demandé est inconnu.";
+$LANG['users'][9]  = "La configuration de l'authentification ne vous permet pas de changer votre mot de passe.";
+$LANG['users'][10] = "Courriel expédié. Veuillez vous reporter à celui-ci pour changer votre mot de passe.";
+$LANG['users'][11] = "Veuillez confirmer votre email et saisir votre nouveau mot de passe.";
+$LANG['users'][12] = "La demande de renouvellement de mot de passe a expirée ou est invalide. Merci de la renouveller.";
+$LANG['users'][13] = "Mot de passe modifié avec succès.";
+$LANG['users'][14] = "Habilitations";
+$LANG['users'][15] = "Import depuis les annuaires";
+$LANG['users'][16] = "Import depuis les autres sources";
+
+
+$LANG['validation'][0]  = "Validation";
+$LANG['validation'][1]  = "Envoyer une demande de validation";
+$LANG['validation'][2]  = "Etat";
+$LANG['validation'][3]  = "Date de la demande";
+$LANG['validation'][4]  = "Date de la validation";
+$LANG['validation'][5]  = "Commentaire de la demande";
+$LANG['validation'][6]  = "Commentaire de la validation";
+$LANG['validation'][7]  = "Validation(s) pour le ticket";
+$LANG['validation'][8]  = "Validations";
+$LANG['validation'][9]  = "En attente de validation";
+$LANG['validation'][10] = "Refusé";
+$LANG['validation'][11] = "Accepté";
+
+$LANG['validation'][13] = "Demande de validation envoyée à";
+
+$LANG['validation'][15] = "Ticket attendant votre validation";
+$LANG['validation'][16] = "Facultatif en cas d'acceptation";
+
+$LANG['validation'][18] = "Demandeur de la validation";
+$LANG['validation'][19] = "Validation acceptée";
+$LANG['validation'][20] = "Validation refusée";
+$LANG['validation'][21] = "Valideur";
+
+$LANG['validation'][23] = "L'utilisateur choisi n'a pas d'adresse électronique renseignée. La demande a été créée mais l'envoi du courriel a échoué.";
+
+$LANG['validation'][26] = "Demande de validation";
+$LANG['validation'][27] = "Une demande de validation a été soumise";
+$LANG['validation'][28] = "Statut de la demande de validation";
+$LANG['validation'][29] = "En cas de refus de validation, vous devez indiquer un motif";
+$LANG['validation'][30] = "Suppression de la demande de validation à";
+$LANG['validation'][31] = "Mise à jour de la demande de validation à";
+$LANG['validation'][32] = "Une réponse à une demande de validation a été effectuée";
+$LANG['validation'][33] = "Des tickets sont en attente de votre validation";
 
 ?>
