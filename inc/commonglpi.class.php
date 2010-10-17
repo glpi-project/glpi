@@ -28,26 +28,27 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
 /**
  *  Common GLPI object
- */
+*/
 class CommonGLPI {
 
    /// GLPI Item type cache : set dynamically calling getType
 
-   protected $type = -1;
+   protected $type        = -1;
    protected $displaylist = true;
 
+
    /**
-   * Return the localized name of the current Type
-   * Should be overloaded in each new class
-   *
-   * @return string
-   */
+    * Return the localized name of the current Type
+    * Should be overloaded in each new class
+    *
+    * @return string
+   **/
    static function getTypeName() {
       global $LANG;
 
@@ -56,41 +57,42 @@ class CommonGLPI {
 
 
    /**
-   * Return the type of the object : class name
-   *
-   * @return string
-   */
+    * Return the type of the object : class name
+    *
+    * @return string
+   **/
    function getType() {
+
       if ($this->type == -1) {
-         $this->type=get_class($this);
+         $this->type = get_class($this);
       }
       return $this->type;
    }
 
+
    /**
-   * Define tabs to display
-   *
-   * @param $options array
-   *     - withtemplate is a template view ?
-   *
-   *  @return array containing the onglets
-   *
+    * Define tabs to display
+    *
+    * @param $options array
+    *     - withtemplate is a template view ?
+    *
+    *  @return array containing the onglets
    **/
    function defineTabs($options=array()) {
       return array();
    }
 
+
    /**
-   * Show onglets
-   *
-   * @param $options array of parameters to add to URLs and ajax
-   *     - withtemplate is a template view ?
-   *
-   * @return Nothing ()
-   *
+    * Show onglets
+    *
+    * @param $options array of parameters to add to URLs and ajax
+    *     - withtemplate is a template view ?
+    *
+    * @return Nothing ()
    **/
    function showTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       // for objects not in table like central
       if (isset($this->fields['id'])) {
@@ -98,19 +100,22 @@ class CommonGLPI {
       } else {
         $ID = 0;
       }
-      $target = $_SERVER['PHP_SELF'];
+
+      $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
-      $extraparam = "";
-      $withtemplate = "";
+      $extraparam     = "";
+      $withtemplate   = "";
+
       if (is_array($options) && count($options)) {
          if (isset($options['withtemplate'])) {
             $withtemplate = $options['withtemplate'];
          }
          foreach ($options as $key => $val) {
             $extraparamhtml .= "&amp;$key=$val";
-            $extraparam .= "&$key=$val";
+            $extraparam     .= "&$key=$val";
          }
       }
+
       if (empty($withtemplate) && $ID && $this->getType() && $this->displaylist) {
          $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
          $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
@@ -127,20 +132,25 @@ class CommonGLPI {
          if (is_array($glpilistitems)) {
             $current = array_search($ID,$glpilistitems);
             if ($current !== false) {
+
                if (isset($glpilistitems[$current+1])) {
                   $next = $glpilistitems[$current+1];
                }
+
                if (isset($glpilistitems[$current-1])) {
                   $prev = $glpilistitems[$current-1];
                }
+
                $first = $glpilistitems[0];
                if ($first == $ID) {
                   $first = -1;
                }
+
                $last = $glpilistitems[count($glpilistitems)-1];
                if ($last == $ID) {
                   $last = -1;
                }
+
             }
          }
          $cleantarget = cleanParametersURL($target);
@@ -151,32 +161,35 @@ class CommonGLPI {
          echo "</a></li>";
 
          echo "<li><a href=\"".$glpilisturl."\">";
+
          if ($glpilisttitle) {
             if (utf8_strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = utf8_substr($glpilisttitle, 0, $_SESSION['glpidropdown_chars_limit'])
-                                            . "&hellip;";
+               $glpilisttitle = utf8_substr($glpilisttitle, 0,
+                                            $_SESSION['glpidropdown_chars_limit'])
+                                . "&hellip;";
             }
             echo $glpilisttitle;
+
          } else {
             echo $LANG['common'][53];
          }
          echo "</a>&nbsp;:&nbsp;</li>";
 
          if ($first > 0) {
-            echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][55].
+            echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/first.png' alt='".$LANG['buttons'][55].
                        "' title='".$LANG['buttons'][55]."'></a></li>";
          } else {
-            echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/first_off.png\" alt='".
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt='".
                        $LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></li>";
          }
 
          if ($prev > 0) {
-            echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12].
+            echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/left.png' alt='".$LANG['buttons'][12].
                        "' title='".$LANG['buttons'][12]."'></a></li>";
          } else {
-            echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/left_off.png\" alt='".
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt='".
                        $LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></li>";
          }
 
@@ -185,20 +198,20 @@ class CommonGLPI {
          }
 
          if ($next > 0) {
-            echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11].
+            echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/right.png' alt='".$LANG['buttons'][11].
                        "' title='".$LANG['buttons'][11]."'></a></li>";
          } else {
-            echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/right_off.png\" alt='".
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt='".
                        $LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></li>";
          }
 
          if ($last > 0) {
-            echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG['buttons'][56].
+            echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/last.png' alt='".$LANG['buttons'][56].
                        "' title='".$LANG['buttons'][56]."'></a></li>";
          } else {
-            echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/last_off.png\" alt='".
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt='".
                        $LANG['buttons'][56]."' title='".$LANG['buttons'][56]."'></li>";
          }
          echo "</ul></div>";
@@ -206,8 +219,8 @@ class CommonGLPI {
       }
       echo "<div id='tabspanel' class='center-h'></div>";
 
-      $active = 0;
-      $onglets = $this->defineTabs($options);
+      $active      = 0;
+      $onglets     = $this->defineTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
          $display_all = false;
@@ -224,56 +237,62 @@ class CommonGLPI {
 
       if (count($onglets)) {
          $tabpage = $this->getTabsURL();
-         $tabs = array();
+         $tabs    = array();
 
          foreach ($onglets as $key => $val ) {
-            $tabs[$key] = array('title'  =>$val,
-                                'url'    =>$tabpage,
-                                'params' =>"target=$target&itemtype=".$this->getType().
-                                           "&glpi_tab=$key&id=$ID$extraparam");
+            $tabs[$key] = array('title'  => $val,
+                                'url'    => $tabpage,
+                                'params' => "target=$target&itemtype=".$this->getType().
+                                            "&glpi_tab=$key&id=$ID$extraparam");
          }
+
          $plug_tabs = Plugin::getTabs($target,$this, $withtemplate);
          $tabs += $plug_tabs;
          // Not all tab for templates and if only 1 tab
          if ($display_all && empty($withtemplate) && count($tabs)>1) {
-            $tabs[-1] = array('title'  =>$LANG['common'][66],
-                              'url'    =>$tabpage,
-                              'params' =>"target=$target&itemtype=".$this->getType().
-                                         "&glpi_tab=-1&id=$ID$extraparam");
+            $tabs[-1] = array('title'  => $LANG['common'][66],
+                              'url'    => $tabpage,
+                              'params' => "target=$target&itemtype=".$this->getType().
+                                          "&glpi_tab=-1&id=$ID$extraparam");
          }
 
-         createAjaxTabs('tabspanel','tabcontent',$tabs,$this->getType());
+         createAjaxTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
       }
    }
+
 
    /**
     * Get the search page URL for the current classe
     *
     * @param $full path or relative one
-    */
+   **/
    function getTabsURL($full=true) {
       return getItemTypeTabsURL(get_class($this), $full);
    }
 
+
    /**
     * Get the search page URL for the current classe
     *
     * @param $full path or relative one
-    */
+   **/
    function getSearchURL($full=true) {
       return getItemTypeSearchURL(get_class($this), $full);
    }
 
+
    /**
     * Get the search page URL for the current classe
     *
     * @param $full path or relative one
-    */
+   **/
    function getFormURL($full=true) {
       return getItemTypeFormURL(get_class($this), $full);
    }
 
+
    function show() {
+
       $this->showTabs(0);
 
       echo "<div id='tabcontent'></div>";
@@ -300,6 +319,7 @@ class CommonGLPI {
          }
       }
    }
+
 }
 
 ?>
