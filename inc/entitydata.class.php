@@ -249,9 +249,8 @@ class EntityData extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][12]."&nbsp;:&nbsp;</td>";
          echo "<td colspan='3'>";
-         autocompletionTextField($entdata, "ldap_dn",array('size'=>100));
+         autocompletionTextField($entdata, "ldap_dn", array('size' => 100));
          echo "</td></tr>";
-
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -264,13 +263,12 @@ class EntityData extends CommonDBTM {
       autocompletionTextField($entdata, "mail_domain");
       echo "</td></tr>";
 
-
       if (canUseLdap()) {
          echo "<tr><th colspan='4'>".$LANG['entity'][24]."</th></tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][25]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         autocompletionTextField($entdata,'entity_ldapfilter');
+         autocompletionTextField($entdata, 'entity_ldapfilter');
          echo "</td>";
          echo "<td>".$LANG['entity'][15]."&nbsp;:&nbsp;</td>";
          echo "<td>";
@@ -278,7 +276,6 @@ class EntityData extends CommonDBTM {
                                            'value'      =>  $entdata->fields['ldapservers_id'],
                                            'emptylabel' => $LANG['ldap'][44],
                                            'condition'  => "`is_active`='1'"));
-
          echo "</td></tr>";
       }
 

@@ -199,20 +199,23 @@ class RuleRight extends Rule {
                                                                  $regex_result);
                            if ($res != null) {
                               switch ($action->fields["field"]) {
-                                 case "_affect_entity_by_dn":
+                                 case "_affect_entity_by_dn" :
                                     $entity_found = EntityData::getEntityIDByDN($res);
                                     break;
-                                 case "_affect_entity_by_tag":
+
+                                 case "_affect_entity_by_tag" :
                                     $entity_found = EntityData::getEntityIDByTag($res);
                                     break;
-                                 case "_affect_entity_by_domain":
+
+                                 case "_affect_entity_by_domain" :
                                     $entity_found = EntityData::getEntityIDByDomain($res);
                                     break;
+
                                  default:
                                     $entity_found = -1;
                                     break;
-
                               }
+
                               //If an entity was found
                               if ($entity_found > -1) {
                                  array_push($entity, array($entity_found, $is_recursive));
