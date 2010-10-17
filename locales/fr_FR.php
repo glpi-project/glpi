@@ -573,8 +573,8 @@ $LANG['entity'][8]  = "Par entité";
 $LANG['entity'][9]  = "Sous-entités";
 $LANG['entity'][10] = "Sélectionnez l'entité souhaitée";
 $LANG['entity'][11] = "pour voir l'entité et ses sous-entités";
-$LANG['entity'][12] = "Information LDAP représentant l'entité";
-$LANG['entity'][13] = "TAG représentant l'entité";
+$LANG['entity'][12] = "Information de l'annuaire LDAP";
+$LANG['entity'][13] = "Information de l'outil d'inventaire (TAG)";
 $LANG['entity'][14] = "Informations avancées";
 $LANG['entity'][15] = "Annuaire associé à l'entité";
 $LANG['entity'][16] = "Filtre de recherche (si nécessaire)";
@@ -584,6 +584,9 @@ $LANG['entity'][19] = "Configuration de l'enquête de satisfaction";
 $LANG['entity'][20] = "Création de l'enquête après";
 $LANG['entity'][21] = "Taux d'enquêtes à déclencher";
 $LANG['entity'][22] = "Pour les ticket fermés après le";
+$LANG['entity'][23] = "Valeurs pour les règles génériques d'affectation à l'entité";
+$LANG['entity'][24] = "Valeurs pour l'interface de recherche des utilisateurs depuis un annuaire LDAP";
+$LANG['entity'][25] = "Filtre LDAP associé à l'entité (si nécessaire)";
 
 
 $LANG['event'][0]  = "Source";
@@ -1717,7 +1720,8 @@ $LANG['rulesengine'][120]="Le moteur s'arrête à la première règle vérifiée
 $LANG['rulesengine'][121]="Le moteur traite toutes les règles.";
 $LANG['rulesengine'][122]="Le moteur transmet le résultat d'une règle aux suivantes.";
 
-$LANG['rulesengine'][130]="Entité depuis LDAP";
+$LANG['rulesengine'][129]="Entité depuis domaine de messagerie";
+$LANG['rulesengine'][130]="Entité depuis information LDAP";
 $LANG['rulesengine'][131]="Entité depuis TAG";
 $LANG['rulesengine'][132]="Ignorer l'import";
 
@@ -1732,6 +1736,7 @@ $LANG['rulesengine'][145]="Utilisateur possédant un seul profil";
 $LANG['rulesengine'][146]="Utilisateur possèdant le profil";
 $LANG['rulesengine'][147]="Utilisateur possèdant une seule fois le profil";
 $LANG['rulesengine'][148]="Domaine de messagerie connu";
+$LANG['rulesengine'][149]="Groupe importé depuis un annuaire LDAP";
 
 $LANG['rulesengine'][150]="Les règles affectées à l'entité ont été désactivées.";
 

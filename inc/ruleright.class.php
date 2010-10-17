@@ -191,19 +191,30 @@ class RuleRight extends Rule {
                   switch ($action->fields["field"]) {
                      case "_affect_entity_by_dn" :
                      case "_affect_entity_by_tag" :
+                     case "_affect_entity_by_domain" :
                         $match_entity = false;
                         $entity       = array();
                         foreach ($this->regex_results as $regex_result) {
                            $res = RuleAction::getRegexResultById($action->fields["value"],
                                                                  $regex_result);
                            if ($res != null) {
-                              if ($action->fields["field"] == "_affect_entity_by_dn") {
-                                 $entity_found = EntityData::getEntityIDByDN($res);
-                              } else {
-                                $entity_found = EntityData::getEntityIDByTag($res);
+                              switch ($action->fields["field"]) {
+                                 case "_affect_entity_by_dn":
+                                    $entity_found = EntityData::getEntityIDByDN($res);
+                                    break;
+                                 case "_affect_entity_by_tag":
+                                    $entity_found = EntityData::getEntityIDByTag($res);
+                                    break;
+                                 case "_affect_entity_by_domain":
+                                    $entity_found = EntityData::getEntityIDByDomain($res);
+                                    break;
+                                 default:
+                                    $entity_found = -1;
+                                    break;
+
                               }
                               //If an entity was found
-                              if ($entity > -1) {
+                              if ($entity_found > -1) {
                                  array_push($entity, array($entity_found, $is_recursive));
                                  $match_entity = true;
                               }
@@ -289,7 +300,7 @@ class RuleRight extends Rule {
 
          $criterias['GROUPS']['table']     = 'glpi_groups';
          $criterias['GROUPS']['field']     = 'name';
-         $criterias['GROUPS']['name']      = $LANG['Menu'][36]." ".$LANG['login'][2];
+         $criterias['GROUPS']['name']      = $LANG['rulesengine'][149];
          $criterias['GROUPS']['linkfield'] = '';
          $criterias['GROUPS']['type']      = 'dropdown';
          $criterias['GROUPS']['virtual']   = true;
@@ -319,6 +330,11 @@ class RuleRight extends Rule {
       $actions['_affect_entity_by_tag']['type']          = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_tag']['duplicatewith'] = 'entities_id';
+
+      $actions['_affect_entity_by_domain']['name']          = $LANG['rulesengine'][129];
+      $actions['_affect_entity_by_domain']['type']          = 'text';
+      $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_domain']['duplicatewith'] = 'entities_id';
 
       $actions['profiles_id']['name']  = $LANG['Menu'][35];
       $actions['profiles_id']['type']  = 'dropdown';
