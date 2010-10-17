@@ -636,7 +636,7 @@ class Supplier extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>";
       if ($DB->numrows($result)==0) {
-         echo $LANG['financial'][62];
+         echo $LANG['financial'][58];
       } else if ($DB->numrows($result)==1) {
          echo $LANG['financial'][63];
       } else {

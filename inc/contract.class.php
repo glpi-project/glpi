@@ -970,7 +970,7 @@ class Contract extends CommonDBTM {
       echo "<tr><th colspan='8'>";
 
       if ($number==0) {
-         echo $LANG['financial'][62];
+         echo $LANG['financial'][58];
       } else if ($number==1) {
          echo $LANG['financial'][63];
       } else {

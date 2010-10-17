@@ -655,13 +655,11 @@ $LANG['financial'][54]  = "Maintenance Hardware";
 $LANG['financial'][55]  = "Maintenance Software";
 $LANG['financial'][56]  = "Prestation";
 $LANG['financial'][57]  = "mois";
-
+$LANG['financial'][58]  = "Aucun contrat associé";
 $LANG['financial'][59]  = "Heures d'intervention";
 $LANG['financial'][60]  = "en semaine";
 $LANG['financial'][61]  = "le samedi";
 $LANG['financial'][62]  = "dimanche et fêtes";
-
-$LANG['financial'][62]  = "Aucun contrat associé";
 $LANG['financial'][63]  = "Contrat associé";
 $LANG['financial'][64]  = "Fournisseur associé";
 $LANG['financial'][65]  = "Fournisseurs associés";
