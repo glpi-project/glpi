@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -810,7 +810,7 @@ class MailCollector  extends CommonDBTM {
 
             if ($structure->encoding == 3) {
                $text =  imap_base64($text);
-            } else if($structure->encoding == 4) {
+            } else if ($structure->encoding == 4) {
                $text =  imap_qprint($text);
             }
 

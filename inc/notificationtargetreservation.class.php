@@ -108,7 +108,7 @@ class NotificationTargetReservation extends NotificationTarget {
       global $LANG, $CFG_GLPI;
 
       //----------- Reservation infos -------------- //
-
+logDebug("getDatasForTemplate($event");
       $events = $this->getAllEvents();
 
       $this->datas['##reservation.action##'] = $events[$event];

@@ -528,7 +528,7 @@ class SoftwareLicense extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".$LANG['search'][15]."</th></tr>\n";
 
-         if ($canedit){
+         if ($canedit) {
             echo "<tr class='tab_bg_2'><td class='center'>";
             echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
                    $LANG['software'][8]."</a>";

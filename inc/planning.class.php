@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -90,7 +90,7 @@ class Planning {
     */
    static function checkAlreadyPlanned($users_id,$begin,$end,$except=array()) {
       global $CFG_GLPI,$LANG;
-      
+
       $planned=false;
       $message='';
       foreach ($CFG_GLPI['planning_itemtype'] as $itemtype) {
@@ -98,7 +98,7 @@ class Planning {
 //         $data=$itemtype::populatePlanning($users_id, 0, $begin, $end);
          if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
-               if (!isset($except[$itemtype]) || 
+               if (!isset($except[$itemtype]) ||
                   (is_array($except[$itemtype]) && !in_array($val['id'],$except[$itemtype]))) {
                   $planned=true;
                   $message.='- '.call_user_func(array($itemtype, 'getAlreadyPlannedInformation'),$val).'<br>';
@@ -379,7 +379,7 @@ class Planning {
                                    strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+$hour*HOUR_TIMESTAMP);
                   }
                   // To midnight
-                  if($hour==$hour_end) {
+                  if ($hour==$hour_end) {
                      $end_time=date("Y-m-d H:i:s",
                                     strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+24*HOUR_TIMESTAMP);
                   } else {

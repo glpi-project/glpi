@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -160,7 +160,7 @@ class ConsumableItem extends CommonDBTM {
          return false;
       }
 
-      if ($ID > 0){
+      if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item

@@ -41,7 +41,7 @@ $csl = new Computer_SoftwareLicense();
 
 if (isset($_REQUEST["add"])) {
    checkRight("software", "w");
-   if ($_REQUEST['softwarelicenses_id'] > 0 ){
+   if ($_REQUEST['softwarelicenses_id'] > 0 ) {
       $csl->add($_REQUEST);
       Event::log($_REQUEST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][116]);
@@ -52,7 +52,7 @@ if (isset($_REQUEST["add"])) {
 // From association list
 } else if (isset($_REQUEST["move"])) {
    checkRight("software", "w");
-   if ($_REQUEST['softwarelicenses_id'] > 0 ){
+   if ($_REQUEST['softwarelicenses_id'] > 0 ) {
       foreach ($_REQUEST["item"] as $key => $val) {
          if ($val == 1) {
             $csl->upgrade($key, $_REQUEST['softwarelicenses_id']);

@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -51,7 +51,7 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()){
+   function defineTabs($options=array()) {
       global $LANG;
 
       $tabs[1] = $LANG['common'][12];
@@ -332,7 +332,7 @@ class NotificationTemplate extends CommonDBTM {
             //Get the else tag value (if one)
             $regex_else = "/##ELSE".$if_field."[=]?\w*##(.*)##ENDELSE".$if_field."##/Uis";
 
-            if (empty($out[2][$key])){ // No = : check if ot empty or not null
+            if (empty($out[2][$key])) { // No = : check if ot empty or not null
 
                if (isset($data['##'.$if_field.'##'])
                   && $data['##'.$if_field.'##'] != ''

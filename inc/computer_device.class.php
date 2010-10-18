@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -230,7 +230,7 @@ class Computer_Device extends CommonDBTM {
                      if (isset($spec['value'][$i])) {
                         echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
                         echo $spec['value'][$i]."</td>";
-                     } else if ($canedit){
+                     } else if ($canedit) {
                         // Specificity
                         echo "<td class='right' colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
                         echo "<input type='text' name='value_".$itemtype."_".$data['id']."' value='";

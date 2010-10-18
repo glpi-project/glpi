@@ -834,7 +834,7 @@ class RuleCollection extends CommonDBTM {
 
       $output = array();
 
-      if ($this->use_output_rule_process_as_next_input){
+      if ($this->use_output_rule_process_as_next_input) {
          $output = $input;
       }
 
@@ -972,7 +972,7 @@ class RuleCollection extends CommonDBTM {
       if (($check_dictionnary_type && isset($CFG_GLPI["dictionnary_types"][$itemtype]))
           || !$check_dictionnary_type) {
 
-         if(class_exists($typeclass)) {
+         if (class_exists($typeclass)) {
             return new $typeclass();
          }
          return NULL;

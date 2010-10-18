@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -46,6 +46,7 @@ abstract class CommonDropdown extends CommonDBTM {
    //Indicates if only the dropdown or the whole page is refreshed when a new dropdown value
    //is added using popup window
    public $refresh_page = false;
+
 
    /**
     * Return Additional Fileds for this type

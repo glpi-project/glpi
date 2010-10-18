@@ -51,7 +51,7 @@ if (isset($_POST["begin"]) && !empty($_POST["begin"])) {
 } else {
    $minute = (floor(date('i')/10)*10);
 
-   if ($minute<10){
+   if ($minute<10) {
       $minute = '0'.$minute;
    }
    $begin = date("Y-m-d H").":$minute:00";

@@ -59,7 +59,7 @@ if (isset($_REQUEST["table"]) && isset($_REQUEST["value"])) {
          }
          echo $tmpname["comment"];
 
-         if (isset($_REQUEST['withlink'])){
+         if (isset($_REQUEST['withlink'])) {
             echo "<script type='text/javascript' >\n";
             echo "Ext.get('".$_REQUEST['withlink']."').dom.href='".$tmpname['link']."';";
             echo "</script>\n";

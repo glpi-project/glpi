@@ -471,7 +471,7 @@ class Ticket extends CommonDBTM {
             $this->oldvalues['closedate'] = $this->fields["closedate"];
             $this->fields["closedate"] = $_SESSION["glpi_currenttime"];
             // If invalid date : set open date
-            if ($this->fields["closedate"] < $this->fields["date"]){
+            if ($this->fields["closedate"] < $this->fields["date"]) {
                $this->fields["closedate"] = $this->fields["date"];
             }
             // Set solvedate to closedate
@@ -2830,13 +2830,15 @@ class Ticket extends CommonDBTM {
          } else {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
-      } else if ($canupdate){
+
+      } else if ($canupdate) {
          echo $LANG['common'][34]."&nbsp;: </td>";
          echo "<td>";
          User::dropdown(array('value'       => $this->fields["users_id"],
                               'entity'      => $this->fields["entities_id"],
                               'right'       => 'all',
                               'ldap_import' => true));
+
       } else {
          echo $LANG['common'][34]."&nbsp;: </td>";
          echo "<td>";
@@ -3008,10 +3010,10 @@ class Ticket extends CommonDBTM {
       // Display validation state
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['validation'][0]."</td>";
-      if ($canupdate){
+      if ($canupdate) {
          echo "<td>";
          TicketValidation::dropdownStatus('global_validation',
-                                          array('value'=>$this->fields['global_validation']));
+                                          array('value' => $this->fields['global_validation']));
       } else {
          echo "<td>".TicketValidation::getStatus($this->fields['global_validation']);
       }
@@ -3047,8 +3049,9 @@ class Ticket extends CommonDBTM {
             }
             Dropdown::showYesNo('use_email_notification',!empty($email));
          } else {
-            if ($canupdate){
-               Dropdown::showYesNo('use_email_notification',$this->fields["use_email_notification"]);
+            if ($canupdate) {
+               Dropdown::showYesNo('use_email_notification',
+                                   $this->fields["use_email_notification"]);
             } else {
                if ($this->fields["use_email_notification"]) {
                   echo $LANG['choice'][1];
@@ -3085,7 +3088,7 @@ class Ticket extends CommonDBTM {
       if ($canupdate_descr) {
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
-         echo "function showName$rand(){\n";
+         echo "function showName$rand() {\n";
          echo "Ext.get('name$rand').setDisplayed('none');";
          $params = array('maxlength' => 250,
                          'size'      => 50,
@@ -3143,7 +3146,7 @@ class Ticket extends CommonDBTM {
       if ($canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
-         echo "function showDesc$rand(){\n";
+         echo "function showDesc$rand() {\n";
          echo "Ext.get('desc$rand').setDisplayed('none');";
          $params = array('rows'  => 6,
                          'cols'  => 50,
@@ -3212,21 +3215,26 @@ class Ticket extends CommonDBTM {
           || haveRight("steal_ticket","1")) {
 
          echo "<tr class='tab_bg_1'>";
+
          if ($ID) {
-            if (haveRight('delete_ticket',1)){
+            if (haveRight('delete_ticket',1)) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
-               echo "</td><td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' class='submit' name='delete' value='".$LANG['buttons'][22]."'
-                              OnClick='return window.confirm(\"".$LANG['common'][50]."\");'>";
+               echo "<input type='submit' class='submit' name='update' value='".
+                      $LANG['buttons'][7]."'></td>";
+               echo "<td class='tab_bg_2 center' colspan='2'>";
+               echo "<input type='submit' class='submit' name='delete' value='".
+                      $LANG['buttons'][22]."' OnClick='return window.confirm(\"".
+                      $LANG['common'][50]."\");'>";
             } else {
                echo "<td class='tab_bg_2 center' colspan='4'>";
-               echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
+               echo "<input type='submit' class='submit' name='update' value='".
+                      $LANG['buttons'][7]."'>";
             }
+
          } else {
             echo "<td class='tab_bg_2 center' colspan='2'>";
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'></td>";
-            echo "<td class='tab_bg_2 center' colspan='2'>";
+            echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "</td><td class='tab_bg_2 center' colspan='2'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
             echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a>";
          }
@@ -4328,7 +4336,7 @@ class Ticket extends CommonDBTM {
 
 
       // Plugin case
-      if (isPluginItemType($itemtype)){
+      if (isPluginItemType($itemtype)) {
          /// TODO maybe only check plugin of itemtype ?
          //If it's not a core's type, then check plugins
          $types = array();

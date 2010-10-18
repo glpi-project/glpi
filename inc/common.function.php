@@ -1232,7 +1232,7 @@ function sendFile($file, $filename) {
    $splitter = explode("/", $file);
    $mime     = "application/octetstream";
 
-   if (preg_match('/\.(...)$/', $file, $regs)){
+   if (preg_match('/\.(...)$/', $file, $regs)) {
       switch ($regs[1]) {
          case "sql" :
             $mime = "text/x-sql";
@@ -1310,7 +1310,7 @@ function glpi_header($dest) {
 
    echo "<script language=javascript>
          NomNav = navigator.appName;
-         if (NomNav=='Konqueror'){
+         if (NomNav=='Konqueror') {
             window.location='".$dest.$toadd."';
          } else {
             window.location='".$dest."';
@@ -1408,7 +1408,7 @@ function get_hour_from_sql($time) {
  *
  * @return number of tables
 **/
-function optimize_tables ($progress_fct=NULL){
+function optimize_tables ($progress_fct=NULL) {
    global $DB;
 
    if (function_exists($progress_fct)) {
@@ -1545,7 +1545,7 @@ function makeTextSearch($val, $not=false) {
             $begin = 1;
          }
 
-         if ($val[$length-1]=='$'){
+         if ($val[$length-1]=='$') {
             $end = 1;
          }
       }

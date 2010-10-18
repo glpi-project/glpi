@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -43,7 +43,7 @@ class Peripheral  extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to=array('Infocom','ReservationItem','NetworkPort');
+   protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
 
 
 /**

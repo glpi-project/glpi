@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -41,7 +41,7 @@ class Preference extends CommonGLPI {
       return $LANG['Menu'][11];
    }
 
-   function defineTabs($options=array()){
+   function defineTabs($options=array()) {
       global $LANG;
 
       $tabs[1] = $LANG['title'][26];

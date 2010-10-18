@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -155,7 +155,7 @@ class Computer_Item extends CommonDBRelation{
             $updates = array();
 
             if ($CFG_GLPI["is_location_autoupdate"]
-               && $comp->fields['locations_id'] != $item->getField('locations_id')){
+               && $comp->fields['locations_id'] != $item->getField('locations_id')) {
 
                $updates[] = "locations_id";
                $item->fields['locations_id'] = addslashes($comp->fields['locations_id']);

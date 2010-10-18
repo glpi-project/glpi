@@ -256,7 +256,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['inventory']['content']['software']['page']            = '/front/software.php';
       $menu['inventory']['content']['software']['links']['search'] = '/front/software.php';
 
-      if (haveRight("software","w")){
+      if (haveRight("software","w")) {
          $menu['inventory']['content']['software']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Software&amp;add=1';
          $menu['inventory']['content']['software']['links']['template']
@@ -348,7 +348,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['inventory']['content']['phone']['page']            = '/front/phone.php';
       $menu['inventory']['content']['phone']['links']['search'] = '/front/phone.php';
 
-      if (haveRight("phone","w")){
+      if (haveRight("phone","w")) {
          $menu['inventory']['content']['phone']['links']['add']
                            = '/front/setup.templates.php?'.'itemtype=Phone&amp;add=1';
          $menu['inventory']['content']['phone']['links']['template']
@@ -358,7 +358,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    }
 
 
-   if ($showstate){
+   if ($showstate) {
       $menu['inventory']['content']['state']['title']            = $LANG['Menu'][28];
       $menu['inventory']['content']['state']['shortcut']         = 'n';
       $menu['inventory']['content']['state']['page']             = '/front/states.php';
@@ -2750,7 +2750,7 @@ function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=tr
 
 
    $output .= "<script type='text/javascript'>";
-   $output .= "Ext.onReady(function(){
+   $output .= "Ext.onReady(function() {
       var md$rand = new Ext.ux.form.DateTime({
          hiddenName: '$element'
          ,id: 'date$rand'
@@ -2828,7 +2828,7 @@ function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
    echo "<input id='showdate$rand' type='text' size='10' name='$element'>";
 
    $output  = "<script type='text/javascript'>\n";
-   $output .= "Ext.onReady(function(){
+   $output .= "Ext.onReady(function() {
       var md$rand = new Ext.ux.form.XDateField({
          name: '$element'
          ,value: '".convDate($value)."'
@@ -2914,7 +2914,7 @@ function setActiveTab($itemtype, $tab) {
  * @return nothing
  **/
 function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                        $type, $size=950){
+                        $type, $size=950) {
    global $CFG_GLPI;
 
    $active_tabs = getActiveTab($type);
@@ -2956,13 +2956,13 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
                      echo "},";
 
                echo "  listeners:{ // Force glpi_tab storage
-                       beforeshow : function(panel){
+                       beforeshow : function(panel) {
                         /* clean content because append data instead of replace it : no more problem */
                         /* tabpanel.body.update(''); */
                         /* update active tab*/
                         Ext.Ajax.request({
                            url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=$key',
-                           success: function(objServerResponse){
+                           success: function(objServerResponse) {
                            //alert(objServerResponse.responseText);
                         }
                         });
@@ -2976,13 +2976,13 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
          echo "tabpanel.expand();";
 
          echo "// force first load
-            function loadDefaultTab(){
+            function loadDefaultTab() {
                tabpanel.body=Ext.get('$tabdivcontent_id');
                tabpanel.setActiveTab('$default_tab');";
          echo "}";
 
          echo "// force reload
-            function reloadTab(add){
+            function reloadTab(add) {
                var tab = tabpanel.getActiveTab();
                var opt = tab.autoLoad;
                if (add) {
@@ -3378,10 +3378,10 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
                itemtype: '".$item->getType()."',
                field: '$field'";
 
-            if ($params['entity']>=0){
+            if ($params['entity']>=0) {
                $output .= ",entity_restrict: ".$params['entity'];
             }
-            if ($params['user']>=0){
+            if ($params['user']>=0) {
                $output .= ",user_restrict: ".$params['user'];
             }
             $output .= "
@@ -3445,7 +3445,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
  *
  * @return nothing (print out an HTML div)
  **/
-function showToolTip($content, $options=array()){
+function showToolTip($content, $options=array()) {
    global $CFG_GLPI;
 
    $param['applyto']    = '';

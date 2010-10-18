@@ -82,7 +82,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
             $this->SMTPSecure = "ssl";
          }
-         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS){
+         if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
             $this->SMTPSecure = "tls";
          }
       }

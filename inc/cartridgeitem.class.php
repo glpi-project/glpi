@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -114,7 +114,7 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()){
+   function defineTabs($options=array()) {
       global $LANG;
 
       $ong[1] = $LANG['Menu'][21];
@@ -226,7 +226,7 @@ class CartridgeItem extends CommonDBTM {
         return false;
       }
 
-      if ($ID > 0){
+      if ($ID > 0) {
          $this->check($ID, 'r');
       } else {
          // Create item

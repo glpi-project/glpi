@@ -67,6 +67,7 @@ class NotificationEvent extends CommonDBTM {
 
       //If notifications are enabled in GLPI's configuration
       if ($CFG_GLPI["use_mailing"]) {
+         logDebug("debut");
          $email_processed = array();
          $email_notprocessed = array();
          //Get template's informations
@@ -77,6 +78,7 @@ class NotificationEvent extends CommonDBTM {
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
                                                                $entity) as $data) {
+         logDebug("Notification::getNotificationsByEventAndType", $data);
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id='.$data['id']);
 
@@ -149,6 +151,7 @@ class NotificationEvent extends CommonDBTM {
    static function debugEvent($item, $options=array()) {
       global $LANG;
 
+      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".$LANG['setup'][137].' - '.$LANG['setup'][704].
                "<font color='blue'> (".$item->getTypeName().")</font></th></tr>";
@@ -162,6 +165,7 @@ class NotificationEvent extends CommonDBTM {
             echo "<th>".$LANG['mailing'][113].'</th><th>'.$LANG['mailing'][118]."</th></tr>";
 
             foreach ($events as $event => $label) {
+               logDebug("before raiseEvent $event");
                self::raiseEvent($event, $item, $options, $label);
             }
 
@@ -169,7 +173,7 @@ class NotificationEvent extends CommonDBTM {
             echo "<tr class='tab_bg_2 center'><td colspan='4'>".$LANG['stats'][2]."</td></tr>";
          }
       }
-      echo "</table>";
+      echo "</table></div>";
    }
 }
 ?>

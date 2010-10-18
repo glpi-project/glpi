@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -105,7 +105,7 @@ class KnowbaseItem extends CommonDBTM {
       // set users_id
 
       // set title for question if empty
-      if(empty($input["question"])) {
+      if (empty($input["question"])) {
          $input["question"] = $LANG['common'][30];
       }
 

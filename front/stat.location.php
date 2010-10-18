@@ -53,7 +53,7 @@ if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
 
 if (!empty($_REQUEST["date1"])
     && !empty($_REQUEST["date2"])
-    && strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0) {
+    && strcmp($_REQUEST["date2"], $_REQUEST["date1"]) < 0) {
 
    $tmp = $_REQUEST["date1"];
    $_REQUEST["date1"] = $_REQUEST["date2"];
@@ -75,10 +75,10 @@ echo "<form method='get' name='form' action='stat.location.php'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name='dropdown'>";
 echo "<optgroup label='".$LANG['setup'][0]."'>";
-echo "<option value='ComputerType' ".($_REQUEST["dropdown"]=="ComputerType"?"selected":"").
-      ">".$LANG['common'][17]."</option>";
-echo "<option value='ComputerModel' ".($_REQUEST["dropdown"]=="ComputerModel"?"selected":"").
-      ">".$LANG['common'][22]."</option>";
+echo "<option value='ComputerType' ".($_REQUEST["dropdown"]=="ComputerType"?"selected":"").">".
+       $LANG['common'][17]."</option>";
+echo "<option value='ComputerModel' ".($_REQUEST["dropdown"]=="ComputerModel"?"selected":"").">".
+       $LANG['common'][22]."</option>";
 echo "<option value='OperatingSystem' ".
       ($_REQUEST["dropdown"]=="OperatingSystem"?"selected":"").">".$LANG['computers'][9]."</option>";
 echo "<option value='Location' ".($_REQUEST["dropdown"]=="Location"?"selected":"").">".
@@ -86,7 +86,7 @@ echo "<option value='Location' ".($_REQUEST["dropdown"]=="Location"?"selected":"
 echo "</optgroup>";
 
 $devices = Dropdown::getDeviceItemTypes();
-foreach($devices as $label => $dp) {
+foreach ($devices as $label => $dp) {
    echo "<optgroup label='$label'>";
    foreach ($dp as $i => $name) {
       echo "<option value='$i' ".($_REQUEST["dropdown"]==$i?"selected":"").">$name</option>";
@@ -119,7 +119,7 @@ if (!($item instanceof CommonDevice)) {
   // echo "Dropdown";
    $type = "comp_champ";
 
-   $val = Stat::getItems($_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST["dropdown"]);
+   $val = Stat::getItems($_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_REQUEST["dropdown"],
                    'date1'    => $_REQUEST["date1"],
@@ -131,7 +131,7 @@ if (!($item instanceof CommonDevice)) {
    $type = "device";
    $field = $_REQUEST["dropdown"];
 
-   $val = Stat::getItems($_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST["dropdown"]);
+   $val = Stat::getItems($_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["dropdown"]);
    $params = array('type'     => $type,
                    'dropdown' => $_REQUEST["dropdown"],
                    'date1'    => $_REQUEST["date1"],
@@ -139,60 +139,66 @@ if (!($item instanceof CommonDevice)) {
                    'start'    => $_REQUEST["start"]);
 }
 
-printPager($_REQUEST['start'],count($val),$CFG_GLPI['root_doc'].'/front/stat.location.php',
-            "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;dropdown=".$_REQUEST["dropdown"],
-            'Stat',$params);
+printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.location.php',
+           "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;dropdown=".
+               $_REQUEST["dropdown"],
+           'Stat', $params);
+
 if (!$_REQUEST['showgraph']) {
-   Stat::show($type,$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val,$_REQUEST["dropdown"]);
+   Stat::show($type, $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val,
+              $_REQUEST["dropdown"]);
 } else {
-   $data=Stat::getDatas($type,$_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST['start'],$val,$_REQUEST["dropdown"]);
+   $data = Stat::getDatas($type, $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST['start'], $val,
+                          $_REQUEST["dropdown"]);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
-      foreach($data['opened'] as $key => $val){
-         $cleandata[html_clean($key)]=$val;
+      foreach ($data['opened'] as $key => $val) {
+         $cleandata[html_clean($key)] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][5]=>$cleandata)
-                     ,array('title'=>$LANG['stats'][5],
-                           'showtotal' => 1,
-                           'unit'      => $LANG['stats'][35],
-                           'type'      => 'pie'));
+      Stat::showGraph(array($LANG['stats'][5] => $cleandata),
+                      array('title'     => $LANG['stats'][5],
+                            'showtotal' => 1,
+                            'unit'      => $LANG['stats'][35],
+                            'type'      => 'pie'));
    }
+
    if (isset($data['solved']) && is_array($data['solved'])) {
-      foreach($data['solved'] as $key => $val){
-         $cleandata[html_clean($key)]=$val;
+      foreach ($data['solved'] as $key => $val) {
+         $cleandata[html_clean($key)] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
-                     ,array('title'    => $LANG['stats'][11],
-                           'showtotal' => 1,
-                           'unit'      => $LANG['stats'][35],
-                           'type'      => 'pie'));
+      Stat::showGraph(array($LANG['stats'][11]=>$cleandata),
+                      array('title'     => $LANG['stats'][11],
+                            'showtotal' => 1,
+                            'unit'      => $LANG['stats'][35],
+                            'type'      => 'pie'));
    }
+
    if (isset($data['late']) && is_array($data['late'])) {
-      foreach($data['late'] as $key => $val){
-         $cleandata[html_clean($key)]=$val;
+      foreach ($data['late'] as $key => $val) {
+         $cleandata[html_clean($key)] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][19]=>$cleandata)
-                     ,array('title'    => $LANG['stats'][19],
-                           'showtotal' => 1,
-                           'unit'      => $LANG['stats'][35],
-                           'type'      => 'pie'));
+      Stat::showGraph(array($LANG['stats'][19]=>$cleandata),
+                      array('title'     => $LANG['stats'][19],
+                            'showtotal' => 1,
+                            'unit'      => $LANG['stats'][35],
+                            'type'      => 'pie'));
    }
+
    if (isset($data['closed']) && is_array($data['closed'])) {
-      foreach($data['closed'] as $key => $val){
+      foreach ($data['closed'] as $key => $val) {
          $newkey=html_clean($key);
          $cleandata[$newkey]=$val;
       }
-      Stat::showGraph(array($LANG['stats'][11]=>$cleandata)
-                     ,array('title'    => $LANG['stats'][17],
-                           'showtotal' => 1,
-                           'unit'      => $LANG['stats'][35],
-                           'type'      => 'pie'));
+      Stat::showGraph(array($LANG['stats'][11]=>$cleandata),
+                      array('title'     => $LANG['stats'][17],
+                            'showtotal' => 1,
+                            'unit'      => $LANG['stats'][35],
+                            'type'      => 'pie'));
    }
 
 }
-
 
 commonFooter();
 

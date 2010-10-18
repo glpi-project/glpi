@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -52,14 +52,14 @@ class Config extends CommonDBTM {
    }
 
 
-   function defineTabs($options=array()){
+   function defineTabs($options=array()) {
       global $LANG;
 
-      $tabs[1]  = $LANG['setup'][70];  // Display
-      $tabs[2]  = $LANG['setup'][48];    // Prefs
-      $tabs[3]  = $LANG['Menu'][38];  // Inventory
-      $tabs[4]  = $LANG['title'][24];   // Helpdesk
-      $tabs[5]  = $LANG['setup'][720];  // SysInfo
+      $tabs[1] = $LANG['setup'][70];  // Display
+      $tabs[2] = $LANG['setup'][48];    // Prefs
+      $tabs[3] = $LANG['Menu'][38];  // Inventory
+      $tabs[4] = $LANG['title'][24];   // Helpdesk
+      $tabs[5] = $LANG['setup'][720];  // SysInfo
 
       if (DBConnection::isDBSlaveActive()) {
          $tabs[6]  = $LANG['setup'][800];  // Slave

@@ -145,7 +145,7 @@ class Computer extends CommonDBTM {
          OcsServer::mergeOcsArray($this->fields["id"], $this->updates, "computer_update");
       }
 
-      if (isset($this->input["_auto_update_ocs"])){
+      if (isset($this->input["_auto_update_ocs"])) {
          $query = "UPDATE `glpi_ocslinks`
                    SET `use_auto_update` = '".$this->input["_auto_update_ocs"]."'
                    WHERE `computers_id` = '".$this->input["id"]."'";
@@ -177,7 +177,7 @@ class Computer extends CommonDBTM {
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
                            if ($item->getField('contact')!=$this->fields['contact']
-                               || $item->getField('contact_num')!=$this->fields['contact_num']){
+                               || $item->getField('contact_num')!=$this->fields['contact_num']) {
 
                               $tmp["id"]          = $item->getField('id');
                               $tmp['contact']     = $this->fields['contact'];
@@ -266,8 +266,8 @@ class Computer extends CommonDBTM {
                      for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
-                        if (!$item->getField('is_global')){
-                           if ($item->getField('states_id')!=$this->fields["states_id"]){
+                        if (!$item->getField('is_global')) {
+                           if ($item->getField('states_id')!=$this->fields["states_id"]) {
                               $tmp["id"]        = $item->getField('id');
                               $tmp["states_id"] = $this->fields["states_id"];
                               $item->update($tmp);

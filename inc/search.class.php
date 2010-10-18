@@ -770,7 +770,7 @@ class Search {
 
             // Form to massive actions
             $isadmin = ($item && $item->canUpdate());
-            if (!$isadmin && in_array($itemtype,$CFG_GLPI["infocom_types"])){
+            if (!$isadmin && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
                $infoc = new Infocom();
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
@@ -2054,7 +2054,7 @@ class Search {
                   $add_minus = "-`$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
                }
                if ($meta
-                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])){
+                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT
                                         CONCAT(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
                                                ',',
@@ -2395,7 +2395,7 @@ class Search {
 
          case "glpi_contracts.renewal" :
             $valid = Contract::getContractRenewalIDByName($val);
-            if ($valid>0){
+            if ($valid>0) {
                return $link." `$table`.`$field`"."="."'$valid'";
             }
             return "";
@@ -2403,7 +2403,7 @@ class Search {
          case "glpi_profiles.interface" :
             if (stristr(Profile::getInterfaceName('central'),$val)) {
                return $link." `$table`.`$field`='central'";
-            } else if (stristr(Profile::getInterfaceName('helpdesk'),$val)){
+            } else if (stristr(Profile::getInterfaceName('helpdesk'),$val)) {
                return $link." `$table`.`$field`='helpdesk'";
             }
             return "";
@@ -2579,7 +2579,7 @@ class Search {
                return makeTextCriteria($date_computation, $val, $nott, $link);
 
             case "right" :
-               if ($val=='NULL' || $val=='null'){
+               if ($val=='NULL' || $val=='null') {
                   return $link." $tocompute IS ".($nott?'NOT':'')." NULL ";
                }
                return $link." $tocompute = '$val' ";
@@ -3537,7 +3537,7 @@ class Search {
                if (!empty($data[$NAME.$num])) {
                   $split = explode("$$$$",$data[$NAME.$num]);
                   $count_display = 0;
-                  for ($k=0 ; $k<count($split) ; $k++){
+                  for ($k=0 ; $k<count($split) ; $k++) {
                      $lowstr = utf8_strtolower($split[$k]);
                      if (strlen(trim($split[$k]))>0 && !in_array($lowstr,$displayed)) {
                         if ($count_display) {
@@ -4100,13 +4100,13 @@ class Search {
          // Bookmark use
          if (isset($_GET["glpisearchcount"])) {
             $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
-         } else if (isset($_GET["field"])){
+         } else if (isset($_GET["field"])) {
             $_SESSION["glpisearchcount"][$itemtype] = count($_GET["field"]);
          }
          // Bookmark use
          if (isset($_GET["glpisearchcount2"])) {
             $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
-         } else if (isset($_GET["field2"])){
+         } else if (isset($_GET["field2"])) {
             $_SESSION["glpisearchcount2"][$itemtype] = count($_GET["field2"]);
          }
       }
@@ -4413,7 +4413,7 @@ class Search {
             // Reset search option
             $actions = array();
             $actions['searchopt'] = $searchopt[$field_num];
-            if (!is_array($actions['searchopt']['searchtype'])){
+            if (!is_array($actions['searchopt']['searchtype'])) {
                $actions['searchopt']['searchtype'] = array($actions['searchopt']['searchtype']);
             }
             foreach ($actions['searchopt']['searchtype'] as $searchtype) {

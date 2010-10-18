@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -428,7 +428,7 @@ class Consumable extends CommonDBTM {
             } else {
                echo "<th>&nbsp;</th>";
             }
-            if ($canedit){
+            if ($canedit) {
                echo "<th>&nbsp;</th>";
             }
             echo "</tr>";
@@ -519,7 +519,7 @@ class Consumable extends CommonDBTM {
     * Show the usage summary of consumables by user
     *
     **/
-   static function showSummary(){
+   static function showSummary() {
       global $DB, $LANG;
 
       if (!haveRight("consumable","r")) {

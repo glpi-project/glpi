@@ -897,7 +897,7 @@ class OcsServer extends CommonDBTM {
                $WHERE .= " AND ";
             }
             $WHERE .= " `accountinfo`.`TAG` <> '" . $splitter[0] . "' ";
-            for ($i=1 ; $i<count($splitter) ; $i++){
+            for ($i=1 ; $i<count($splitter) ; $i++) {
                $WHERE .= " AND `accountinfo`.`TAG` <> '" .$splitter[$i] . "' ";
             }
          }
@@ -3166,12 +3166,12 @@ class OcsServer extends CommonDBTM {
                         $netport["subnet"]   = $line2["IPSUBNET"];
 
                         $np = new NetworkPort();
-                        for ($j = 0; $j < count($ocs_ips); $j++) {
+                        for ($j = 0 ; $j<count($ocs_ips) ; $j++) {
                            //First search : look for the same port (same IP and same MAC)
                            $id_ip = array_search($ocs_ips[$j].self::FIELD_SEPARATOR.$line2["MACADDR"],
                                                  $import_ip);
                            //Second search : IP may have change, so look only for mac address
-                           if(!$id_ip) {
+                           if (!$id_ip) {
                               //Browse the whole import_ip array
                               foreach($import_ip as $ID => $ip) {
                                  if ($ID > 0) {
@@ -3922,7 +3922,7 @@ class OcsServer extends CommonDBTM {
                   $disk['filesystems_id'] = Dropdown::importExternal('Filesystem',
                                                                      $line["FILESYSTEM"]);
 
-               } else if (in_array($line['FILESYSTEM'], array('FAT32', 'NTFS', 'FAT')) ){
+               } else if (in_array($line['FILESYSTEM'], array('FAT32', 'NTFS', 'FAT')) ) {
                   if (!empty($line['VOLUMN'])) {
                      $disk['name'] = $line['VOLUMN'];
                   } else {
@@ -4776,7 +4776,7 @@ class OcsServer extends CommonDBTM {
                               $id_periph = $DB->result($result_search, 0, "id");
                            } else {
                               $input = $periph;
-                              if ($cfg_ocs["states_id_default"]>0){
+                              if ($cfg_ocs["states_id_default"]>0) {
                                  $input["states_id"] = $cfg_ocs["states_id_default"];
                               }
                               $input["entities_id"] = $entity;
@@ -4932,10 +4932,10 @@ class OcsServer extends CommonDBTM {
       if (preg_match("/USB[0-9]*/i",$port)) {
          $printer_infos['have_usb'] = 1;
 
-      } else if(preg_match("/IP_/i",$port)) {
+      } else if (preg_match("/IP_/i",$port)) {
          $printer_infos['have_ethernet'] = 1;
 
-      } else if(preg_match("/LPT[0-9]:/i",$port)) {
+      } else if (preg_match("/LPT[0-9]:/i",$port)) {
          $printer_infos['have_parallel'] = 1;
       }
    }

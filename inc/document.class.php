@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -370,7 +370,7 @@ class Document extends CommonDBTM {
     * @param $len maximum length of displayed string
     *
    **/
-   function getDownloadLink($params='', $len=20){
+   function getDownloadLink($params='', $len=20) {
       global $DB,$CFG_GLPI;
 
       $splitter = explode("/",$this->fields['filename']);

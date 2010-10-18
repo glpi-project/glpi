@@ -407,7 +407,7 @@ class Rule extends CommonDBTM {
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][7] . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
 
-      if ($canedit){
+      if ($canedit) {
          echo "<td>&nbsp;</td>";
       }
 
@@ -418,7 +418,7 @@ class Rule extends CommonDBTM {
 
       $nb = count($this->actions);
 
-      foreach ($this->actions as $action){
+      foreach ($this->actions as $action) {
          $this->showMinimalActionForm($action->fields, $canedit);
       }
       echo "</table>\n";
@@ -1077,7 +1077,7 @@ class Rule extends CommonDBTM {
          echo "<td width='10'>";
          $sel = "";
 
-         if (isset ($_GET["select"]) && $_GET["select"] == "all"){
+         if (isset ($_GET["select"]) && $_GET["select"] == "all") {
             $sel = "checked";
          }
 

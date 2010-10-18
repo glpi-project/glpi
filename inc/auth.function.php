@@ -170,7 +170,7 @@ function checkSeveralRightsOr($modules) {
    if (count($modules)) {
       foreach ($modules as $mod => $right) {
          // Itemtype
-         if (preg_match('/[A-Z]/', $mod[0])){
+         if (preg_match('/[A-Z]/', $mod[0])) {
             if (class_exists($mod)) {
                $item = new $mod();
                if ($item->canGlobal($right)) {
@@ -600,7 +600,7 @@ function haveRecursiveAccessToEntity($ID) {
 function haveAccessToEntity($ID, $is_recursive=0) {
 
    // Quick response when passing wrong ID : default value of getEntityID is -1
-   if ($ID<0){
+   if ($ID<0) {
       return false;
    }
 
@@ -754,7 +754,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  * Get all replicate servers for a master one
  *
  * @param $master_id : master ldap server ID
- * 
+ *
  * @return array of the replicate servers
 **/
 function getAllReplicateForAMaster($master_id) {
@@ -781,7 +781,7 @@ function getAllReplicateForAMaster($master_id) {
  * Get all replicate name servers for a master one
  *
  * @param $master_id : master ldap server ID
- * 
+ *
  * @return string containing names of the replicate servers
 **/
 function getAllReplicatesNamesForAMaster($master_id) {

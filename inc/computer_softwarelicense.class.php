@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -214,10 +214,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          echo "<td>";
          Dropdown::show('Computer', array('entity'       => $license->fields['entities_id'],
                                           'entity_sons'  => $license->fields['is_recursive']));
-   
+
          echo "</td><td><input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit' >";
          echo "</td></tr>";
-   
+
          echo "</table></form>";
       }
 
@@ -400,8 +400,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $lic=array();
       $sql = "SELECT `glpi_softwarelicenses`.*
-              FROM `glpi_softwarelicenses` 
-              INNER JOIN `glpi_computers_softwarelicenses` 
+              FROM `glpi_softwarelicenses`
+              INNER JOIN `glpi_computers_softwarelicenses`
                   ON (`glpi_softwarelicenses`.`id`
                         = `glpi_computers_softwarelicenses`.`softwarelicenses_id`
                       AND `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id')

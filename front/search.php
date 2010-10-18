@@ -54,15 +54,16 @@ if (isset($_GET["globalsearch"])) {
 
          Search::manageGetValues($itemtype,false,true);
 
-         if ($_GET["field"][0] =='view'){
-            $_GET["contains"][0] = $searchtext;
+         if ($_GET["field"][0] =='view') {
+            $_GET["contains"][0]   = $searchtext;
             $_GET["searchtype"][0] = 'contains';
-            $_SESSION["glpisearchcount"][$itemtype]=1;
+            $_SESSION["glpisearchcount"][$itemtype] = 1;
+
          } else {
             $_GET["field"][1] = 'view';
-            $_GET["contains"][1] = $searchtext;
+            $_GET["contains"][1]   = $searchtext;
             $_GET["searchtype"][1] = 'contains';
-            $_SESSION["glpisearchcount"][$itemtype]=2;
+            $_SESSION["glpisearchcount"][$itemtype] = 2;
          }
          Search::showList($itemtype,$_GET);
          unset($_GET["contains"]);

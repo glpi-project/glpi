@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 function getForeignKeyFieldForTable($table) {
 
-   if (strpos($table,'glpi_')===false){
+   if (strpos($table,'glpi_')===false) {
       return "";
    }
 
@@ -62,7 +62,7 @@ function getForeignKeyFieldForTable($table) {
  * @return string table name corresponding to a foreign key name
 **/
 function getTableNameForForeignKeyField($fkname) {
-   if (strpos($fkname,'_id')===false){
+   if (strpos($fkname,'_id')===false) {
       return "";
    }
   return "glpi_".preg_replace("/_id.*/", "", $fkname);
@@ -107,7 +107,7 @@ function getItemTypeForTable($table) {
       $itemtype=$prefix.$table;
 
       // Get real existence of itemtype
-      if (class_exists($itemtype)){
+      if (class_exists($itemtype)) {
          $item     = new $itemtype();
          $itemtype = get_class($item);
          $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
@@ -892,7 +892,7 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
    if ($table=="glpi_entities") {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', true);
 
-   } else if ($item->isEntityAssign()){
+   } else if ($item->isEntityAssign()) {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', $item->maybeRecursive());
 
    } else if ($table=="glpi_users") {
@@ -946,7 +946,7 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
    }
 
    $LEFTJOIN = '';
-   if ($table=="glpi_users"){
+   if ($table=="glpi_users") {
       $LEFTJOIN = " LEFT JOIN `glpi_profiles_users`
                            ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
    }
@@ -979,7 +979,7 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
    if ($table=="glpi_entities") {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', true);
 
-   } else if ($item->isEntityAssign()){
+   } else if ($item->isEntityAssign()) {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', $item->maybeRecursive());
 
    } else if ($table=="glpi_users") {
@@ -1028,7 +1028,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0) {
          }
       }
 
-      if($cut>0 && utf8_strlen($temp)>$cut) {
+      if ($cut>0 && utf8_strlen($temp)>$cut) {
          $temp = utf8_substr($temp, 0, $cut)." ...";
       }
 
@@ -1386,7 +1386,7 @@ function getDateRequest($field,$begin, $end) {
    }
 
    if (!empty($end)) {
-      if (!empty($sql)){
+      if (!empty($sql)) {
          $sql .= " AND ";
       }
       $sql .= " $field <= ADDDATE('$end' , INTERVAL 1 DAY) ";

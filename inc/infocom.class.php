@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -548,7 +548,7 @@ class Infocom extends CommonDBTM {
 
          case "1" :
             ########################### Calcul amortissement degressif ###########################
-            if($va>0 && $duree>0 && $coef>1 && !empty($date_achat)) {
+            if ($va>0 && $duree>0 && $coef>1 && !empty($date_achat)) {
                ## calcul du prorata temporis en mois ##
                // si l'annee fiscale debute au dela de l'annee courante
                if ($date_m>$date_m2) {

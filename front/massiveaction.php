@@ -139,7 +139,7 @@ if (isset($_POST["itemtype"])) {
          case "connect" :
             if (isset($_POST["connect_item"]) && $_POST["connect_item"]) {
                $conn = new Computer_Item();
-               foreach ($_POST["item"] as $key => $val){
+               foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
                      $input = array('computers_id' => $_POST["connect_item"],
                                     'itemtype'     => $_POST["itemtype"],
@@ -172,7 +172,7 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case "purge" :
-            foreach ($_POST["item"] as $key => $val){
+            foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
                   $item->delete(array("id"=>$key),1);
                }
@@ -197,7 +197,7 @@ if (isset($_POST["itemtype"])) {
                   $ic = new Infocom();
                   $link_entity_type = -1;
                   /// Specific entity item
-                  if ($searchopt[$_POST["id_field"]]["table"] == "glpi_suppliers_infocoms"){
+                  if ($searchopt[$_POST["id_field"]]["table"] == "glpi_suppliers_infocoms") {
                      $ent = new Supplier();
                      if ($ent->getFromDB($_POST[$_POST["field"]])) {
                         $link_entity_type = $ent->fields["entities_id"];
@@ -278,7 +278,7 @@ if (isset($_POST["itemtype"])) {
                if ($item->isEntityAssign()) {
                   $options=array('entities_id'=>$_POST['entities_id']);
                }
-               foreach ($_POST["item"] as $key => $val){
+               foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($item->getFromDB($key)) {
                         if (!$item->isEntityAssign()
