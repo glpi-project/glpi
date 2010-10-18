@@ -462,7 +462,7 @@ class Computer_Item extends CommonDBRelation{
                echo "<br>";
             }
             if ($canedit) {
-               if(empty($withtemplate) || $withtemplate != 2) {
+               if (empty($withtemplate) || $withtemplate != 2) {
                   echo "<form method='post' action=\"$target\">";
                   echo "<input type='hidden' name='computers_id' value='$ID'>";
                   echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";

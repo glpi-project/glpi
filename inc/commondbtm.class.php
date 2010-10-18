@@ -260,7 +260,7 @@ class CommonDBTM extends CommonGLPI {
 
       }
 
-      if(count($oldvalues)) {
+      if (count($oldvalues)) {
          Log::constructHistory($this, $oldvalues, $this->fields);
       }
 

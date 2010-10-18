@@ -406,7 +406,7 @@ class Bookmark extends CommonDBTM {
          echo "<th width='20px'>&nbsp;</th>";
          echo "<th>".$LANG['bookmark'][6]."</th></tr>";
 
-         if( $DB->numrows($result)) {
+         if ( $DB->numrows($result)) {
             $current_type      = -1;
             $current_type_name = NOT_AVAILABLE;
             while ($this->fields = $DB->fetch_assoc($result)) {

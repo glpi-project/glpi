@@ -72,7 +72,7 @@ if (isset($_GET["action"])) {
          if (isset($_POST["item"]) && count($_POST["item"])) {
             foreach ($_POST["item"] as $key => $val) {
                $rule->getFromDB($key);
-               $rulecollection->moveRule($key,$_POST['ranking'],$_POST['move_type']);
+               $rulecollection->moveRule($key, $_POST['ranking'], $_POST['move_type']);
             }
          }
          break;
@@ -122,11 +122,12 @@ if (isset($_GET["action"])) {
 
    if (!isset($_GET['offset'])) {
       // First run
-      $offset = $rulecollection->replayRulesOnExistingDB(0,$max,array(),$_POST);
+      $offset       = $rulecollection->replayRulesOnExistingDB(0, $max, array(), $_POST);
       $manufacturer = (isset($_POST["manufacturer"]) ? $_POST["manufacturer"] : 0);
+
    } else {
       // Next run
-      $offset = $rulecollection->replayRulesOnExistingDB($_GET['offset'],$max,array(),$_GET);
+      $offset       = $rulecollection->replayRulesOnExistingDB($_GET['offset'], $max, array(), $_GET);
       $manufacturer = $_GET["manufacturer"];
 
       // global start for stat
@@ -135,11 +136,11 @@ if (isset($_GET["action"])) {
 
    if ($offset < 0) {
       // Work ended
-      $end = explode(" ",microtime());
+      $end   = explode(" ",microtime());
       $duree = round($end[0]+$end[1]-$start);
-
       changeProgressBarMessage($LANG['rulesengine'][91]." (".timestampToString($duree).")");
       echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>";
+
    } else {
       // Need more work
       glpi_header($_SERVER['PHP_SELF']."?start=$start&replay_rule=1&offset=$offset&manufacturer=".
@@ -154,23 +155,30 @@ commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecolle
              $rulecollection->menu_option);
 
    if ($rulecollection->showInheritedTab()) {
-      $tabs[0] = array('title'  => $LANG['rulesengine'][20].' : '.Dropdown::getDropdownName('glpi_entities',$_SESSION['glpiactive_entity']),
+      $tabs[0] = array('title'  => $LANG['rulesengine'][20].' : '.
+                                   Dropdown::getDropdownName('glpi_entities',
+                                                             $_SESSION['glpiactive_entity']),
                        'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
-                       'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&inherited=1&itemtype=".get_class($rulecollection));
+                       'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=1&inherited=1&itemtype=".
+                                    get_class($rulecollection));
    }
 
    $title = $LANG['rulesengine'][17];
-   if($rulecollection->isRuleRecursive()) {
-      $title= $LANG['rulesengine'][23].' : '.Dropdown::getDropdownName('glpi_entities',$_SESSION['glpiactive_entity']);
+   if ($rulecollection->isRuleRecursive()) {
+      $title = $LANG['rulesengine'][23].' : '.Dropdown::getDropdownName('glpi_entities',
+                                                                        $_SESSION['glpiactive_entity']);
    }
    $tabs[1] = array('title'  => $title,
                     'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
-                    'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&inherited=0&itemtype=".get_class($rulecollection));
+                    'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=0&inherited=0&itemtype=".
+                                 get_class($rulecollection));
 
    if ($rulecollection->showChildrensTab()) {
       $tabs[2] = array('title'  => $LANG['rulesengine'][21],
                        'url'    => $CFG_GLPI['root_doc']."/ajax/rules.tabs.php",
-                       'params' => "target=".$_SERVER['PHP_SELF']."&glpi_tab=2&inherited=0&childrens=1&itemtype=".get_class($rulecollection));
+                       'params' => "target=".$_SERVER['PHP_SELF'].
+                                    "&glpi_tab=2&inherited=0&childrens=1&itemtype=".
+                                    get_class($rulecollection));
    }
 
 

@@ -1823,7 +1823,7 @@ class AuthLDAP extends CommonDBTM {
             }
          }
       //Check if the ldap server indicated as the last good one still exists !
-      } else if(array_key_exists($auths_id, $auth->authtypes["ldap"])) {
+      } else if (array_key_exists($auths_id, $auth->authtypes["ldap"])) {
          //A specific ldap directory is given, test it and only this one !
          $auth = AuthLdap::ldapAuth($auth, $login, $password, $auth->authtypes["ldap"][$auths_id],
                                     $user_dn);
