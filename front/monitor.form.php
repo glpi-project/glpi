@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    $monitor->delete($_POST);
 
    Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   if(!empty($_POST["withtemplate"])) {
+   if (!empty($_POST["withtemplate"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
    } else {
       glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");

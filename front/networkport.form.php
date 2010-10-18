@@ -164,7 +164,7 @@ if (isset($_POST["add"])) {
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
-} else if(isset($_POST["assign_vlan_several"])) {
+} else if (isset($_POST["assign_vlan_several"])) {
    checkRight("networking","w");
    if ($_POST["vlans_id"] >0) {
 
