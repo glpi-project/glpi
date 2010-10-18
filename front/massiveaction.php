@@ -281,7 +281,7 @@ if (isset($_POST["itemtype"])) {
                foreach ($_POST["item"] as $key => $val){
                   if ($val == 1) {
                      if ($item->getFromDB($key)) {
-                        if (!$item->isEntityAssign() 
+                        if (!$item->isEntityAssign()
                               || ($_POST['entities_id'] != $item->getEntityID())) {
                            $item->duplicate($options);
                         }
@@ -651,7 +651,7 @@ if (isset($_POST["itemtype"])) {
                      $input = $item->fields;
 
                      // Remove keys (and name, tree dropdown will use completename)
-                     if($item instanceof CommonTreeDropdown) {
+                     if ($item instanceof CommonTreeDropdown) {
                         unset($input['id'], $input['name'], $input[$fk]);
                      } else {
                         unset($input['id']);

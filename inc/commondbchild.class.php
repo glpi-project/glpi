@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -50,6 +50,7 @@ abstract class CommonDBChild extends CommonDBTM {
    * @return ID of the entity
    **/
    function getEntityID () {
+
       // Case of Duplicate Entity info to child
       if (parent::isEntityAssign()) {
          return parent::getEntityID();
@@ -60,16 +61,21 @@ abstract class CommonDBChild extends CommonDBTM {
       } else {
          $type = $this->itemtype;
       }
+
       if (class_exists($type)) {
          $item = new $type();
+
          if ($item->getFromDB($this->fields[$this->items_id]) && $item->isEntityAssign()) {
             return $item->getEntityID();
          }
+
       }
       return -1;
    }
 
+
    function isEntityAssign() {
+
       // Case of Duplicate Entity info to child
       if (parent::isEntityAssign()) {
          return true;
@@ -80,12 +86,15 @@ abstract class CommonDBChild extends CommonDBTM {
       } else {
          $type = $this->itemtype;
       }
+
       if (class_exists($type)) {
          $item = new $type();
          return $item->isEntityAssign();
       }
+
       return -1;
    }
+
 
    /**
     * Is the object may be recursive
@@ -93,6 +102,7 @@ abstract class CommonDBChild extends CommonDBTM {
     * @return boolean
    **/
    function maybeRecursive() {
+
       // Case of Duplicate Entity info to child
       if (parent::maybeRecursive()) {
          return true;
@@ -103,19 +113,23 @@ abstract class CommonDBChild extends CommonDBTM {
       } else {
          $type = $this->itemtype;
       }
+
       if (class_exists($type)) {
          $item = new $type();
          return $item->maybeRecursive();
       }
+
       return false;
    }
+
 
    /**
     * Is the object recursive
     *
     * @return boolean
-    **/
+   **/
    function isRecursive () {
+
       // Case of Duplicate Entity info to child
       if (parent::maybeRecursive()) {
           return parent::isRecursive();
@@ -126,73 +140,86 @@ abstract class CommonDBChild extends CommonDBTM {
       } else {
          $type = $this->itemtype;
       }
+
       if (class_exists($type)) {
          $item = new $type();
+
          if ($item->getFromDB($this->fields[$this->items_id])) {
             return $item->isRecursive();
          }
+
       }
       return false;
    }
+
 
    /**
     * Actions done after the ADD of the item in the database
     *
     * @return nothing
-    *
    **/
    function post_addItem() {
 
       if (isset($this->input['_no_history']) || !$this->dohistory) {
          return false;
       }
+
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
+
       if (!class_exists($type)) {
          return false;
       }
+
       $item = new $type();
       if (!$item->dohistory) {
          return false;
       }
-      $changes[0]='0';
-      $changes[1]="";
-      $changes[2]=addslashes($this->getNameID());
-      Log::history($this->fields[$this->items_id],$type,$changes,get_class($this),
+
+      $changes[0] = '0';
+      $changes[1] = "";
+      $changes[2] = addslashes($this->getNameID());
+      Log::history($this->fields[$this->items_id], $type, $changes, get_class($this),
                    HISTORY_ADD_SUBITEM);
    }
+
+
    /**
     * Actions done after the DELETE of the item in the database
     *
     *@return nothing
-    *
-    **/
+   **/
    function post_deleteFromDB() {
 
       if (isset($this->input['_no_history']) || !$this->dohistory) {
          return false;
       }
+
       if (preg_match('/^itemtype/', $this->itemtype)) {
          $type = $this->fields[$this->itemtype];
       } else {
          $type = $this->itemtype;
       }
+
       if (!class_exists($type)) {
          return false;
       }
+
       $item = new $type();
       if (!$item->dohistory) {
          return false;
       }
-      $changes[0]='0';
-      $changes[1]=addslashes($this->getNameID());
-      $changes[2]="";
-      Log::history($this->fields[$this->items_id],$type,$changes,get_class($this),
+
+      $changes[0] = '0';
+      $changes[1] = addslashes($this->getNameID());
+      $changes[2] = "";
+      Log::history($this->fields[$this->items_id], $type, $changes, get_class($this),
                    HISTORY_DELETE_SUBITEM);
    }
+
 
    /**
     * Clean the Relation Table when item of the relation is deleted
@@ -200,7 +227,7 @@ abstract class CommonDBChild extends CommonDBTM {
     *
     * @param $itemtype : type of the item
     * @param $item_id : id of the item
-    */
+   **/
    function cleanDBonItemDelete ($itemtype, $item_id) {
       global $DB;
 
@@ -208,11 +235,12 @@ abstract class CommonDBChild extends CommonDBTM {
                 FROM `".$this->getTable()."`";
 
       if ($itemtype == $this->itemtype) {
-         $where = " WHERE `".$this->items_id."`='$item_id'";
+         $where = " WHERE `".$this->items_id."` = '$item_id'";
 
       } else if (preg_match('/^itemtype/',$this->itemtype)) {
-         $where = " WHERE (`".$this->itemtype."`='$itemtype'
-                           AND `".$this->items_id."`='$item_id')";
+         $where = " WHERE (`".$this->itemtype."` = '$itemtype'
+                           AND `".$this->items_id."` = '$item_id')";
+
       } else {
          return false;
       }
@@ -223,6 +251,7 @@ abstract class CommonDBChild extends CommonDBTM {
          $this->delete($data);
       }
    }
+
 }
 
 ?>

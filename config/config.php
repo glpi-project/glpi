@@ -46,6 +46,7 @@ startGlpiSession();
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    nullHeader("DB Error",$CFG_GLPI["root_doc"]);
+
    if (!isCommandLine()) {
       echo "<div class='center'>";
       echo "<p>Error : GLPI seems to not be installed properly.</p>";
@@ -53,14 +54,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo "<p>Please restart the install process.</p>";
       echo "<p><a class='red' href='".GLPI_ROOT."'>Click here to proceed</a></p>";
       echo "</div>";
+
    } else {
       echo "Error : GLPI seems to not be installed properly.\n";
       echo "config_db.php file is missing.\n";
       echo "Please restart the install process.\n";
    }
    nullFooter();
-
    die();
+
 } else {
    require_once (GLPI_CONFIG_DIR . "/config_db.php");
    include_once (GLPI_CACHE_LITE_DIR."/Lite/Output.php");
@@ -68,7 +70,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    //Database connection
    DBConnection::establishDBConnection((isset($USEDBREPLICATE) ? $USEDBREPLICATE : 0),
-                         (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
+                                       (isset($DBCONNECTION_REQUIRED) ? $DBCONNECTION_REQUIRED : 0));
 
 
    // *************************** Statics config options **********************
@@ -79,49 +81,52 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Default Use mode
    if (!isset($_SESSION['glpi_use_mode'])) {
-      $_SESSION['glpi_use_mode']=NORMAL_MODE;
+      $_SESSION['glpi_use_mode'] = NORMAL_MODE;
    }
 
-   $config_object=new Config();
-   $config_ok=false;
+   $config_object = new Config();
+   $config_ok     = false;
 
-   if (!isset($_GET['donotcheckversion']) && // use normal config table on restore process
-         (isset($TRY_OLD_CONFIG_FIRST) // index case
-         || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST']))) { // backup case
+   if (!isset($_GET['donotcheckversion'])  // use normal config table on restore process
+       && (isset($TRY_OLD_CONFIG_FIRST) // index case
+           || (isset($_SESSION['TRY_OLD_CONFIG_FIRST']) && $_SESSION['TRY_OLD_CONFIG_FIRST']))) { // backup case
 
       if (isset($_SESSION['TRY_OLD_CONFIG_FIRST'])) {
          unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
       }
+
       // First try old config table : for update proces management from < 0.80 to >= 0.80
       $config_object->forceTable('glpi_config');
+
       if ($config_object->getFromDB(1)) {
-         $config_ok=true;
+         $config_ok = true;
       } else {
          $config_object->forceTable('glpi_configs');
          if ($config_object->getFromDB(1)) {
-            $config_ok=true;
+            $config_ok = true;
          }
       }
+
    } else { // Normal load process : use normal config table. If problem try old one
-      if($config_object->getFromDB(1)) {
-         $config_ok=true;
+      if ($config_object->getFromDB(1)) {
+         $config_ok = true;
       } else {
          // Manage glpi_config table before 0.80
          $config_object->forceTable('glpi_config');
          if ($config_object->getFromDB(1)) {
-            $config_ok=true;
+            $config_ok = true;
          }
       }
    }
 
    if ($config_ok) {
-      $CFG_GLPI=array_merge($CFG_GLPI,$config_object->fields);
-      $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],true);
-
+      $CFG_GLPI = array_merge($CFG_GLPI,$config_object->fields);
+      $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],
+                                                       true);
       Config::detectRootDoc();
-
       // Path for icon of document type
       $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
+
    } else {
       echo "Error accessing config table";
       exit();
@@ -134,6 +139,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       // Recommended development settings
       error_reporting(E_ALL | E_STRICT);
       set_error_handler('userErrorHandlerDebug');
+
    } else {
       // Recommended production settings
       ini_set('display_errors','Off');
@@ -148,7 +154,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // Override cfg_features by session value
    foreach ($CFG_GLPI['user_pref_field'] as $field) {
       if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
-         $_SESSION["glpi$field"]=$CFG_GLPI[$field];
+         $_SESSION["glpi$field"] = $CFG_GLPI[$field];
       }
    }
 
@@ -156,36 +162,41 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
        && !isset($_GET["donotcheckversion"])) {
 
       loadLanguage();
+
       if (isCommandLine()) {
          echo $LANG['update'][88] . "\n";
+
       } else {
          nullHeader("UPDATE NEEDED",$CFG_GLPI["root_doc"]);
          echo "<div class='center'>";
          echo "<table class='tab_check'>";
-         $error=commonCheckForUseGLPI();
+         $error = commonCheckForUseGLPI();
          echo "</table><br>";
 
          if (!$error) {
             if (!isset($CFG_GLPI["version"]) || trim($CFG_GLPI["version"])<GLPI_VERSION) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
                echo "<p class='red'>".$LANG['update'][88]."</p>";
-               echo "<input type='submit' name='from_update' value='".
-                      $LANG['install'][4]."' class='submit'>";
+               echo "<input type='submit' name='from_update' value='".$LANG['install'][4].
+                      "' class='submit'>";
                echo "</form>";
+
             } else if (trim($CFG_GLPI["version"])>GLPI_VERSION) {
                echo "<p class='red'>".$LANG['update'][89]."</p>";
             }
+
          } else {
-            echo "<form action=\"".$CFG_GLPI["root_doc"]."/index.php\" method='post'>";
-            echo "<input type='submit' name='submit' class='submit' value=\"".
-                   $LANG['install'][27]."\" />";
+            echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
+            echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][27]."'>";
             echo "</form>";
          }
+
          echo "</div>";
          nullFooter();
       }
       exit();
    }
+
 }
 
 ?>

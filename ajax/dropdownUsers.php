@@ -110,7 +110,7 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]
 
 if ($_POST['all']==0) {
    echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
-} else if($_POST['all']==1) {
+} else if ($_POST['all']==1) {
    echo "<option value='0'>[".$LANG['common'][66]."]</option>";
 }
 

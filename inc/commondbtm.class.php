@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -51,7 +51,6 @@ class CommonDBTM extends CommonGLPI {
 
    /// Forward entity datas to linked items
    protected $forward_entity_to = array();
-
    /// Table name cache : set dynamically calling getTable
    protected $table = "";
    /// Foreign key field cache : set dynamically calling getForeignKeyField
@@ -201,8 +200,9 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (array_key_exists('entities_id',$this->fields) && isset($_SESSION["glpiactive_entity"])) {
-         $this->fields['entities_id']=$_SESSION["glpiactive_entity"];
+         $this->fields['entities_id'] = $_SESSION["glpiactive_entity"];
       }
+
       $this->post_getEmpty();
 
       // Call the plugin hook - $this->fields can be altered
@@ -299,14 +299,17 @@ class CommonDBTM extends CommonGLPI {
 
          $query .= ") VALUES (";
          for ($i=0 ; $i<$nb_fields ; $i++) {
+
             if ($values[$i]=='NULL') {
                $query .= $values[$i];
             } else {
                $query .= "'".$values[$i]."'";
             }
+
             if ($i!=$nb_fields-1) {
                $query .= ",";
             }
+
          }
          $query .= ")";
 
@@ -334,6 +337,7 @@ class CommonDBTM extends CommonGLPI {
          if (isset($this->fields['date_mod'])) {
             $toadd = ", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
          }
+
          $query = "UPDATE `".$this->getTable()."`
                    SET `is_deleted`='0' $toadd
                    WHERE `id` = '".$this->fields['id']."'";
@@ -378,6 +382,7 @@ class CommonDBTM extends CommonGLPI {
          if (isset($this->fields['date_mod'])) {
             $toadd = ", `date_mod` ='".$_SESSION["glpi_currenttime"]."' ";
          }
+
          $query = "UPDATE `".$this->getTable()."`
                    SET `is_deleted`='1' $toadd
                    WHERE `id` = '".$this->fields['id']."'";
@@ -386,7 +391,9 @@ class CommonDBTM extends CommonGLPI {
          if ($result = $DB->query($query)) {
             return true;
          }
+
       }
+
       return false;
    }
 
@@ -426,16 +433,16 @@ class CommonDBTM extends CommonGLPI {
             if ($tablename[0]!='_') {
 
                if (!is_array($field)) {
-                  $query="UPDATE `$tablename`
-                          SET `$field` = '$newval'
-                          WHERE `$field` = '".$this->fields['id']."'";
+                  $query = "UPDATE `$tablename`
+                            SET `$field` = '$newval'
+                            WHERE `$field` = '".$this->fields['id']."'";
                   $DB->query($query);
 
                } else {
                   foreach ($field as $f) {
-                     $query="UPDATE `$tablename`
-                             SET `$f` = '$newval'
-                             WHERE `$f` = '".$this->fields['id']."'";
+                     $query = "UPDATE `$tablename`
+                               SET `$f` = '$newval'
+                               WHERE `$f` = '".$this->fields['id']."'";
                      $DB->query($query);
                   }
                }
@@ -501,6 +508,7 @@ class CommonDBTM extends CommonGLPI {
       // If this type have INFOCOM, clean one associated to purged item
       if (in_array($this->getType(),$CFG_GLPI['infocom_types'])) {
          $infocom = new Infocom();
+
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
              $infocom->delete(array('id' => $infocom->fields['id']));
          }
@@ -532,6 +540,7 @@ class CommonDBTM extends CommonGLPI {
       // If this type is RESERVABLE clean one associated to purged item
       if (in_array($this->getType(),$CFG_GLPI['reservation_types'])) {
          $rr = new ReservationItem();
+
          if ($rr->getFromDBbyItem($this->getType(), $this->fields['id'])) {
              $rr->delete(array('id' => $infocom->fields['id']));
          }
@@ -582,10 +591,12 @@ class CommonDBTM extends CommonGLPI {
       doHook("pre_item_add", $this);
 
       if ($this->input && is_array($this->input)) {
+
          if (isset($this->input['add'])) {
             $this->input['_add'] = $this->input['add'];
             unset($this->input['add']);
          }
+
          $this->input = $this->prepareInputForAdd($this->input);
          //Check values to inject
          $this->checkValues();
@@ -613,11 +624,11 @@ class CommonDBTM extends CommonGLPI {
             doHook("item_add", $this);
 
             // Auto create infocoms
-            if ($CFG_GLPI["auto_create_infocoms"]
-                && in_array($this->getType(),$CFG_GLPI["infocom_types"])) {
+            if ($CFG_GLPI["auto_create_infocoms"] && in_array($this->getType(),
+                                                              $CFG_GLPI["infocom_types"])) {
                $ic = new Infocom();
 
-               if (!$ic->getFromDBforDevice($this->getType(),$this->fields['id'])) {
+               if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
                   $ic->add(array('itemtype' => $this->getType(),
                                  'items_id' => $this->fields['id']));
                }
@@ -709,6 +720,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
+
          // Do not display quotes
          if (isset($this->fields['name'])) {
             $this->fields['name'] = stripslashes($this->fields['name']);
@@ -763,6 +775,7 @@ class CommonDBTM extends CommonGLPI {
       if (!$this->getFromDB($input[$this->getIndexName()])) {
          return false;
       }
+
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -789,6 +802,7 @@ class CommonDBTM extends CommonGLPI {
 
          foreach ($this->input as $key => $val) {
             if (array_key_exists($key,$this->fields)) {
+
                // Prevent history for date statement (for date for example)
                if (is_null($this->fields[$key]) && $this->input[$key]=='NULL') {
                   $this->fields[$key] = 'NULL';
@@ -796,10 +810,12 @@ class CommonDBTM extends CommonGLPI {
 
                if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
                   if ($key!="id") {
+
                      // Store old values
                      if (!in_array($key,$this->history_blacklist)) {
                         $this->oldvalues[$key] = $this->fields[$key];
                      }
+
                      $this->fields[$key] = $this->input[$key];
                      $this->updates[$x]  = $key;
                      $x++;
@@ -809,10 +825,10 @@ class CommonDBTM extends CommonGLPI {
             }
          }
 
-         if(count($this->updates)) {
+         if (count($this->updates)) {
             if (array_key_exists('date_mod',$this->fields)) {
                // is a non blacklist field exists
-               if (count(array_diff($this->updates,$this->history_blacklist)) > 0) {
+               if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
                   $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
                   $this->updates[$x++]      = 'date_mod';
                }
@@ -1011,6 +1027,7 @@ class CommonDBTM extends CommonGLPI {
 
             } else {
                $this->addMessageOnDeleteAction();
+
                if ($this->dohistory&&$history) {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
@@ -1018,6 +1035,7 @@ class CommonDBTM extends CommonGLPI {
                   Log::history($this->fields["id"], $this->getType(), $changes, 0,
                                HISTORY_DELETE_ITEM);
                }
+
                doHook("item_delete",$this);
             }
 
@@ -1039,6 +1057,7 @@ class CommonDBTM extends CommonGLPI {
       if (!isset($link)) {
          return;
       }
+
       if (!$this->maybeDeleted()) {
          return;
       }
@@ -1116,6 +1135,7 @@ class CommonDBTM extends CommonGLPI {
          $input['_restore'] = $input['restore'];
          unset($input['restore']);
       }
+
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
       doHook("pre_item_restore", $this);
@@ -1337,8 +1357,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $entities .= ")";
-
-      $RELATION = getDbRelations();
+      $RELATION  = getDbRelations();
 
       if ($this instanceof CommonTreeDropdown) {
          $f = getForeignKeyFieldForTable($this->getTable());
@@ -1394,10 +1413,10 @@ class CommonDBTM extends CommonGLPI {
                            if ($item->isEntityAssign()) {
                               if (countElementsInTable("$tablename, $itemtable",
                                                        "`$tablename`.`$field`='$ID'
-                                                         AND `$tablename`.`$typefield`='$itemtype'
-                                                         AND `$tablename`.`$devfield`=`$itemtable`.id
-                                                         AND `$itemtable`.`entities_id`
-                                                               NOT IN $entities")>'0') {
+                                                        AND `$tablename`.`$typefield`='$itemtype'
+                                                        AND `$tablename`.`$devfield`=`$itemtable`.id
+                                                        AND `$itemtable`.`entities_id`
+                                                             NOT IN $entities")>'0') {
                                  return false;
                               }
                            }
@@ -1415,9 +1434,9 @@ class CommonDBTM extends CommonGLPI {
                            foreach ($rel[$tablename] as $otherfield) {
                               if (countElementsInTable("$tablename, $othertable",
                                                        "`$tablename`.`$field`='$ID'
-                                                         AND `$tablename`.`$otherfield`
+                                                        AND `$tablename`.`$otherfield`
                                                                   =`$othertable`.id
-                                                         AND `$othertable`.`entities_id`
+                                                        AND `$othertable`.`entities_id`
                                                                   NOT IN $entities")>'0') {
                                  return false;
                               }
@@ -1427,8 +1446,8 @@ class CommonDBTM extends CommonGLPI {
                            $otherfield = $rel[$tablename];
                            if (countElementsInTable("$tablename, $othertable",
                                                     "`$tablename`.`$field`=$ID
-                                                      AND `$tablename`.`$otherfield`=`$othertable`.id
-                                                      AND `$othertable`.`entities_id`
+                                                     AND `$tablename`.`$otherfield`=`$othertable`.id
+                                                     AND `$othertable`.`entities_id`
                                                                NOT IN $entities")>'0') {
                               return false;
                            }
@@ -1445,9 +1464,9 @@ class CommonDBTM extends CommonGLPI {
       if ($this->getType() > 0
           && countElementsInTable("`glpi_documents_items`, `glpi_documents`",
                                   "`glpi_documents_items`.`items_id`='$ID'
-                                    AND `glpi_documents_items`.`itemtype`=".$this->getType()."
-                                    AND `glpi_documents_items`.`documents_id`=`glpi_documents`.`id`
-                                    AND `glpi_documents`.`entities_id` NOT IN $entities")>'0') {
+                                   AND `glpi_documents_items`.`itemtype`=".$this->getType()."
+                                   AND `glpi_documents_items`.`documents_id`=`glpi_documents`.`id`
+                                   AND `glpi_documents`.`entities_id` NOT IN $entities")>'0') {
          return false;
       }
       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
@@ -1734,13 +1753,12 @@ class CommonDBTM extends CommonGLPI {
          }
          return ($this->canCreate() && $this->canCreateItem());
 
-      } else {
-         // Get item if not already loaded
-         if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
-            // Item not found : no right
-            if (!$this->getFromDB($ID)) {
-               return false;
-            }
+      }
+      // else : Get item if not already loaded
+      if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
+         // Item not found : no right
+         if (!$this->getFromDB($ID)) {
+            return false;
          }
       }
 
@@ -2236,7 +2254,7 @@ class CommonDBTM extends CommonGLPI {
     * Clean all infos which match some criteria
     *
     * @param $crit array of criteria (ex array('is_active'=>'1'))
-    **/
+   **/
    function deleteByCriteria($crit=array()) {
       global $DB;
 
