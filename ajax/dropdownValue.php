@@ -436,7 +436,7 @@ if ($item instanceof CommonTreeDropdown) {
                  $LIMIT";
    }
 
-   if ($result = $DB->query($query)){
+   if ($result = $DB->query($query)) {
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
              size='1'";
 

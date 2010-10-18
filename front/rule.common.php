@@ -78,7 +78,7 @@ if (isset($_GET["action"])) {
          break;
 
       case "activate_rule" :
-         if (isset($_POST["item"])){
+         if (isset($_POST["item"])) {
             $rule = new Rule();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {

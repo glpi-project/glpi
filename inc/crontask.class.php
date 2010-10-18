@@ -928,8 +928,8 @@ class CronTask extends CommonDBTM{
          WHERE `id`='$logid' OR `crontasklogs_id`='$logid'
          ORDER BY `id` ASC";
 
-      if ($result=$DB->query($query)){
-         if ($data=$DB->fetch_assoc($result)){
+      if ($result=$DB->query($query)) {
+         if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".$LANG['common'][27]."</th>"; // Date
             echo "<th>".$LANG['joblist'][0]."</th>"; // statut
@@ -994,7 +994,7 @@ class CronTask extends CommonDBTM{
       $tab[3]['nosearch']      = true;
       $tab[3]['nosort']        = true;
       $tab[2]['massiveaction'] = false;
-      
+
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'state';
       $tab[4]['name']          = $LANG['joblist'][0];

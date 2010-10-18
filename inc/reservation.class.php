@@ -46,6 +46,7 @@ class Reservation extends CommonDBTM {
       return $LANG['Menu'][17];
    }
 
+
    function pre_deleteItem() {
       global $CFG_GLPI;
 
@@ -56,35 +57,33 @@ class Reservation extends CommonDBTM {
          // Processing Email
          if ($CFG_GLPI["use_mailing"]) {
             NotificationEvent::raiseEvent("delete",$this);
-            //$mail = new MailingResa($this,"delete");
-            //$mail->send();
          }
       }
       return true;
    }
 
+
    function prepareInputForUpdate($input) {
 
-
-      $item=0;
+      $item = 0;
       if (isset($input['_item'])) {
-         $item=$_POST['_item'];
+         $item = $_POST['_item'];
       }
 
       $this->getFromDB($input["id"]);
       // Save fields
-      $oldfields=$this->fields;
+      $oldfields = $this->fields;
       // Needed for test already planned
       $this->fields["begin"] = $input["begin"];
-      $this->fields["end"] = $input["end"];
+      $this->fields["end"]   = $input["end"];
 
       if (!$this->test_valid_date()) {
-         $this->displayError("date",$item);
+         $this->displayError("date", $item);
          return false;
       }
 
       if ($this->is_reserved()) {
-         $this->displayError("is_res",$item);
+         $this->displayError("is_res", $item);
          return false;
       }
 
@@ -93,6 +92,7 @@ class Reservation extends CommonDBTM {
 
       return $input;
    }
+
 
    function post_updateItem($history=1) {
       global $CFG_GLPI;
@@ -104,6 +104,7 @@ class Reservation extends CommonDBTM {
       }
    }
 
+
    function prepareInputForAdd($input) {
 
       // Error on previous added reservation on several add
@@ -114,7 +115,7 @@ class Reservation extends CommonDBTM {
       // set new date.
       $this->fields["reservationitems_id"] = $input["reservationitems_id"];
       $this->fields["begin"] = $input["begin"];
-      $this->fields["end"] = $input["end"];
+      $this->fields["end"]   = $input["end"];
 
       if (!$this->test_valid_date()) {
          $this->displayError("date",$input["reservationitems_id"]);
@@ -129,6 +130,7 @@ class Reservation extends CommonDBTM {
       return $input;
    }
 
+
    function post_addItem() {
       global $CFG_GLPI;
 
@@ -137,13 +139,14 @@ class Reservation extends CommonDBTM {
       }
    }
 
+
    // SPECIFIC FUNCTIONS
 
    /**
     * Is the item already reserved ?
     *
     *@return boolean
-    **/
+   **/
    function is_reserved() {
       global $DB;
 
@@ -153,38 +156,43 @@ class Reservation extends CommonDBTM {
       }
 
       // When modify a reservation do not itself take into account
-      $ID_where="";
+      $ID_where = "";
       if (isset($this->fields["id"])) {
-         $ID_where=" `id` <> '".$this->fields["id"]."' AND ";
+         $ID_where = " `id` <> '".$this->fields["id"]."' AND ";
       }
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE $ID_where
                          `reservationitems_id` = '".$this->fields["reservationitems_id"]."'
-                     AND '".$this->fields["begin"]."' < `end`
-                     AND '".$this->fields["end"]."' > `begin`";
+                      AND '".$this->fields["begin"]."' < `end`
+                      AND '".$this->fields["end"]."' > `begin`";
       if ($result=$DB->query($query)) {
          return ($DB->numrows($result)>0);
       }
       return true;
    }
 
+
    /**
     * Current dates are valid ? begin before end
     *
     *@return boolean
-    **/
+   **/
    function test_valid_date() {
-      return (!empty($this->fields["begin"]) && !empty($this->fields["end"])
+
+      return (!empty($this->fields["begin"])
+              && !empty($this->fields["end"])
               && strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
    }
+
 
    /**
     * display error message
     * @param $type error type : date / is_res / other
     * @param $ID ID of the item
-    *@return nothing
-    **/
+    *
+    * @return nothing
+   **/
    function displayError($type,$ID) {
       global $LANG;
 
@@ -201,39 +209,48 @@ class Reservation extends CommonDBTM {
          default :
             echo "Unknown error";
       }
+
       echo "<br><a href='reservation.php?reservationitems_id=$ID'>".$LANG['reservation'][20]."</a>";
       echo "</div>";
    }
 
 
-   function can($ID,$right,&$input=NULL) {
+   function can($ID, $right, &$input=NULL) {
+
       if (empty($ID) || $ID<=0) {
-         return haveRight("reservation_helpdesk","1");
+         return haveRight("reservation_helpdesk", "1");
       }
+
       if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
          // Item not found : no right
          if (!$this->getFromDB($ID)) {
             return false;
          }
       }
+
       // Original user always have right
       if ($this->fields['users_id']===getLoginUserID()) {
          return true;
       }
+
       if (!haveRight("reservation_central",$right)) {
          return false;
       }
-      $ri=new ReservationItem();
+
+      $ri = new ReservationItem();
       if (!$ri->getFromDB($this->fields["reservationitems_id"])) {
          return false;
       }
+
       if (!class_exists($ri->fields["itemtype"])) {
          return false;
       }
+
       $item = new $ri->fields["itemtype"]();
       if (!$item->getFromDB($ri->fields["items_id"])) {
          return false;
       }
+
       return haveAccessToEntity($item->getEntityID());
    }
 
@@ -242,7 +259,7 @@ class Reservation extends CommonDBTM {
    * Show reservation calendar
    *
    * @param $ID ID of the reservation item (if empty display all)
-   */
+   **/
    static function showCalendar($ID="") {
       global $LANG, $CFG_GLPI;
 
@@ -251,136 +268,143 @@ class Reservation extends CommonDBTM {
       }
 
       if (!isset($_GET["mois_courant"])) {
-         $mois_courant=strftime("%m");
+         $mois_courant = strftime("%m");
       } else {
-         $mois_courant=$_GET["mois_courant"];
-      }
-      if (!isset($_GET["annee_courante"])) {
-         $annee_courante=strftime("%Y");
-      } else {
-         $annee_courante=$_GET["annee_courante"];
+         $mois_courant = $_GET["mois_courant"];
       }
 
-      $mois_suivant=$mois_courant+1;
-      $mois_precedent=$mois_courant-1;
-      $annee_suivante=$annee_courante;
-      $annee_precedente=$annee_courante;
+      if (!isset($_GET["annee_courante"])) {
+         $annee_courante = strftime("%Y");
+      } else {
+         $annee_courante = $_GET["annee_courante"];
+      }
+
+      $mois_suivant     = $mois_courant+1;
+      $mois_precedent   = $mois_courant-1;
+      $annee_suivante   = $annee_courante;
+      $annee_precedente = $annee_courante;
+
       if ($mois_precedent==0) {
-         $mois_precedent=12;
+         $mois_precedent = 12;
          $annee_precedente--;
       }
 
-      if ($mois_suivant==13){
-         $mois_suivant=1;
+      if ($mois_suivant==13) {
+         $mois_suivant = 1;
          $annee_suivante++;
       }
 
-      $str_suivant="?reservationitems_id=$ID&amp;mois_courant=$mois_suivant&amp;".
-                  "annee_courante=$annee_suivante";
-      $str_precedent="?reservationitems_id=$ID&amp;mois_courant=$mois_precedent&amp;".
-                     "annee_courante=$annee_precedente";
+      $str_suivant = "?reservationitems_id=$ID&amp;mois_courant=$mois_suivant&amp;".
+                     "annee_courante=$annee_suivante";
+      $str_precedent = "?reservationitems_id=$ID&amp;mois_courant=$mois_precedent&amp;".
+                       "annee_courante=$annee_precedente";
 
       if (!empty($ID)) {
-         $m=new ReservationItem;
+         $m = new ReservationItem;
          $m->getFromDB($ID);
-         if ((!isset($m->fields['is_active'])) OR (!$m->fields['is_active'])) {
+
+         if ((!isset($m->fields['is_active'])) || !$m->fields['is_active']) {
             echo "<div class='center'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>";
-            echo "<strong>";
-            echo $LANG['reservation'][2];
-            echo "</td></tr>";
-            echo "<tr class='tab_bg_1'><td class='center'>";
+            echo "<td class='center b'>".$LANG['reservation'][2]."</td></tr>";
+            echo "<tr class='tab_bg_1'><td class='center b'>";
             displayBackLink();
-            echo "</strong>";
-            echo "</td>";
-            echo "</tr>";
+            echo "</td></tr>";
             echo "</table>";
             echo "</div>";
             return false;
          }
-         $type=$m->fields["itemtype"];
-         $name=NOT_AVAILABLE;
-         if (class_exists($m->fields["itemtype"])){
-            $item= new $m->fields["itemtype"]();
-            $type=$item->getTypeName();
+         $type = $m->fields["itemtype"];
+         $name = NOT_AVAILABLE;
+         if (class_exists($m->fields["itemtype"])) {
+            $item = new $m->fields["itemtype"]();
+            $type  =$item->getTypeName();
+
             if ($item->getFromDB($m->fields["items_id"])) {
-               $name=$item->getName();
+               $name = $item->getName();
             }
-            $name=$type." - ".$name;
+            $name = $type." - ".$name;
          }
 
-         $all="<a href='reservation.php?reservationitems_id=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
+         $all = "<a href='reservation.php?reservationitems_id=&amp;mois_courant=".
+                  "$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
+
       } else {
-         $type="";
-         $name=$LANG['reservation'][25];
-         $all="&nbsp;";
+         $type = "";
+         $name = $LANG['reservation'][25];
+         $all  = "&nbsp;";
       }
 
       echo "<div class='center'><table class='tab_glpi'><tr><td>";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td>";
-      echo "<td><strong><span class='icon_consol'>".$name."</span></strong></td></tr>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt='' title=''></td>";
+      echo "<td class ='b'><span class='icon_consol'>".$name."</span></td></tr>";
       echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div>\n";
 
       // Check bisextile years
       if (($annee_courante%4)==0) {
-         $fev=29;
+         $fev = 29;
       } else {
-         $fev=28;
+         $fev = 28;
       }
-      $nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
+      $nb_jour = array(31, $fev, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
       // Datas used to put right informations in columns
-      $jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
+      $jour_debut_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, 1, $annee_courante));
       if ($jour_debut_mois==0) {
-         $jour_debut_mois=7;
+         $jour_debut_mois = 7;
       }
-      $jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
+      $jour_fin_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, $nb_jour[$mois_courant-1],
+                                             $annee_courante));
 
       echo "<div class='center'>";
-      echo "<table class='tab_glpi'><tr><td><a href=\"reservation.php".$str_precedent."\">";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".
-            $LANG['buttons'][12]."'></a></td>";
-      echo "<td><strong>".$LANG['calendarM'][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td>";
-      echo "<td><a href=\"reservation.php".$str_suivant."\">";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".
-            $LANG['buttons'][11]."'></a></td></tr></table>\n";
+      echo "<table class='tab_glpi'><tr><td><a href='reservation.php".$str_precedent."'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt='".$LANG['buttons'][12].
+             "' title='".$LANG['buttons'][12]."'></a></td>";
+      echo "<td class='b'>".$LANG['calendarM'][$mois_courant-1]."&nbsp;".$annee_courante."</td>";
+      echo "<td><a href='reservation.php".$str_suivant."'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt='".$LANG['buttons'][11].
+             "' title='".$LANG['buttons'][11]."'></a></td></tr></table>\n";
+
       // test
       echo "<table width='90%' class='tab_glpi'><tr><td class='top' width='100px'>";
 
       echo "<table><tr><td width='100px' class='top'>";
 
       // today date
-      $today=getdate(time());
-      $mois=$today["mon"];
-      $annee=$today["year"];
+      $today = getdate(time());
+      $mois  = $today["mon"];
+      $annee = $today["year"];
 
       $annee_avant = $annee_courante - 1;
       $annee_apres = $annee_courante + 1;
 
       echo "<div class='calendrier_mois'>";
-      echo "<div class='center'><strong>$annee_avant</strong></div>";
-      for ($i=$mois_courant; $i < 13; $i++) {
+      echo "<div class='center b'>$annee_avant</div>";
+
+      for ($i=$mois_courant ; $i<13 ; $i++) {
          echo "<div class='calendrier_case2'>";
-         echo "<a href=\"reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-               "annee_courante=$annee_avant\">".$LANG['calendarM'][$i-1]."</a></div>";
+         echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
+               "annee_courante=$annee_avant'>".$LANG['calendarM'][$i-1]."</a></div>";
       }
-      echo "<div class='center'><strong>$annee_courante</strong></div>";
-      for ($i=1; $i < 13; $i++) {
+
+      echo "<div class='center b'>$annee_courante</div>";
+
+      for ($i=1 ; $i<13 ; $i++) {
          if ($i == $mois_courant) {
-            echo "<div class='calendrier_case1'><strong>".$LANG['calendarM'][$i-1]."</strong></div>\n";
+            echo "<div class='calendrier_case1 b'>".$LANG['calendarM'][$i-1]."</div>\n";
          } else {
             echo "<div class='calendrier_case2'>";
-            echo "<a href=\"reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-                  "annee_courante=$annee_courante\">".$LANG['calendarM'][$i-1]."</a></div>\n";
+            echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
+                  "annee_courante=$annee_courante'>".$LANG['calendarM'][$i-1]."</a></div>\n";
          }
       }
       echo "<div class='center'><strong>$annee_apres</strong></div>\n";
-      for ($i=1; $i < $mois_courant+1; $i++) {
+
+      for ($i=1 ; $i<$mois_courant+1 ; $i++) {
          echo "<div class='calendrier_case2'>";
-         echo "<a href=\"reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
-               "annee_courante=$annee_apres\">".$LANG['calendarM'][$i-1]."</a></div>\n";
+         echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
+               "annee_courante=$annee_apres'>".$LANG['calendarM'][$i-1]."</a></div>\n";
       }
       echo "</div>";
       echo "</td></tr></table>";
@@ -399,33 +423,36 @@ class Reservation extends CommonDBTM {
       echo "<tr class='tab_bg_3' >";
 
       // Insert blank cell before the first day of the month
-      for ($i=1;$i<$jour_debut_mois;$i++) {
+      for ($i=1 ; $i<$jour_debut_mois ; $i++) {
          echo "<td class='calendrier_case_white'>&nbsp;</td>";
       }
 
       // voici le remplissage proprement dit
       if ($mois_courant<10&&strlen($mois_courant)==1) {
-         $mois_courant="0".$mois_courant;
+         $mois_courant = "0".$mois_courant;
       }
-      for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++) {
+
+      for ($i=1 ; $i<$nb_jour[$mois_courant-1]+1 ; $i++) {
          if ($i<10) {
-            $ii="0".$i;
+            $ii = "0".$i;
          } else {
-            $ii=$i;
+            $ii = $i;
          }
+
          echo "<td class='top' height='100px'>";
          echo "<table class='center' width='100%'><tr><td class='center'>";
          echo "<span class='calendrier_jour'>".$i."</span></td></tr>\n";
 
          if (!empty($ID)) {
             echo "<tr><td class='center'>";
-            echo "<a href=\"reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
-                  "date=".$annee_courante."-".$mois_courant."-".$ii."\">";
-            echo "<img  src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".
+            echo "<a href='reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
+                  "date=".$annee_courante."-".$mois_courant."-".$ii."'>";
+            echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt='".
                   $LANG['reservation'][8]."' title='".$LANG['reservation'][8]."'></a></td></tr>\n";
          }
+
          echo "<tr><td>";
-         Reservation::displayReservationDay($ID,$annee_courante."-".$mois_courant."-".$ii);
+         Reservation::displayReservationDay($ID, $annee_courante."-".$mois_courant."-".$ii);
          echo "</td></tr></table>\n";
          echo "</td>";
 
@@ -440,7 +467,7 @@ class Reservation extends CommonDBTM {
 
       // on recommence pour finir le tableau proprement pour les m�es raisons
       if ($jour_fin_mois!=0) {
-         for ($i=0;$i<7-$jour_fin_mois;$i++) {
+         for ($i=0 ; $i<7-$jour_fin_mois ; $i++) {
             echo "<td class='calendrier_case_white'>&nbsp;</td>";
          }
       }
@@ -449,34 +476,37 @@ class Reservation extends CommonDBTM {
       echo "</td></tr></table></div>\n";
    }
 
+
    /**
-   * Display for reservation
-   *
-   * @param $ID ID of the reservation (empty for create new)
-   * @param $options array
-   *     - item  reservation items ID for creation process
-   *     - date date for creation process
-   */
+    * Display for reservation
+    *
+    * @param $ID ID of the reservation (empty for create new)
+    * @param $options array
+    *     - item  reservation items ID for creation process
+    *     - date date for creation process
+   **/
    function showForm($ID, $options=array()) {
-    //$items=array(),$date='') {
       global $LANG;
 
       if (!haveRight("reservation_helpdesk","1")) {
          return false;
       }
+
       if (count($options['item'])==0) {
          return false;
       }
 
-      $resa= new Reservation;
+      $resa = new Reservation;
 
       if (!empty($ID)) {
          if (!$resa->getFromDB($ID)) {
             return false;
          }
+
          if (!$resa->can($ID,"w")) {
             return false;
          }
+
       } else {
          $resa->getEmpty();
          $resa->fields["begin"] = $options['date']." 12:00:00";
@@ -488,24 +518,27 @@ class Reservation extends CommonDBTM {
       if (!empty($ID)) {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
+
       echo "<table class='tab_cadre'>";
       echo "<tr><th colspan='2'>".$LANG['reservation'][9]."</th></tr>\n";
 
       // Add Hardware name
-      $r=new ReservationItem;
+      $r = new ReservationItem;
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][1]."&nbsp;:</td>";
       echo "<td>";
       foreach ($options['item'] as $itemID) {
          $r->getFromDB($itemID);
-         $type=$r->fields["itemtype"];
-         $name=NOT_AVAILABLE;
-         $item=NULL;
-         if (class_exists($r->fields["itemtype"])){
-            $item= new $r->fields["itemtype"]();
-            $type=$item->getTypeName();
+         $type = $r->fields["itemtype"];
+         $name = NOT_AVAILABLE;
+         $item = NULL;
+
+         if (class_exists($r->fields["itemtype"])) {
+            $item = new $r->fields["itemtype"]();
+            $type = $item->getTypeName();
+
             if ($item->getFromDB($r->fields["items_id"])) {
-               $name=$item->getName();
+               $name = $item->getName();
             } else {
                $item = NULL;
             }
@@ -514,12 +547,14 @@ class Reservation extends CommonDBTM {
          echo "<strong>$type - $name</strong><br>";
          echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
       }
+
       echo "</td></tr>\n";
       if (!haveRight("reservation_central","w")
-         || is_null($item)
-         || !haveAccessToEntity($item->fields["entities_id"])) {
+          || is_null($item)
+          || !haveAccessToEntity($item->fields["entities_id"])) {
 
          echo "<input type='hidden' name='users_id' value='".getLoginUserID()."'>";
+
       } else {
          echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:</td>";
          echo "<td>";
@@ -535,11 +570,11 @@ class Reservation extends CommonDBTM {
          echo "</td></tr>\n";
       }
       echo "<tr class='tab_bg_2'><td>".$LANG['search'][8]."&nbsp;:</td><td>";
-      showDateTimeFormItem("begin",$resa->fields["begin"],-1,false);
+      showDateTimeFormItem("begin", $resa->fields["begin"], -1, false);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['search'][9]."&nbsp;:</td><td>";
-      showDateTimeFormItem("end",$resa->fields["end"],-1,false);
+      showDateTimeFormItem("end", $resa->fields["end"], -1, false);
       Alert::displayLastAlert('Reservation', $ID);
       echo "</td></tr>\n";
 
@@ -550,7 +585,7 @@ class Reservation extends CommonDBTM {
          echo "<option value='day'>".$LANG['reservation'][29]."</option>\n";
          echo "<option value='week'>".$LANG['reservation'][28]."</option>\n";
          echo "</select>";
-         Dropdown::showInteger('periodicity_times',1,1,60);
+         Dropdown::showInteger('periodicity_times', 1, 1, 60);
          echo $LANG['reservation'][30];
          echo "</td></tr>\n";
       }
@@ -562,50 +597,52 @@ class Reservation extends CommonDBTM {
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' class='top center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
          echo "</td></tr>\n";
+
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='top center'>";
-         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+         echo "<input type='submit' name='delete' value='".$LANG['buttons'][6]."' class='submit'>";
          echo "</td><td class='top center'>";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
+         echo "<input type='submit' name='update' value='".$LANG['buttons'][14]."' class='submit'>";
          echo "</td></tr>\n";
       }
       echo "</table></form></div>\n";
    }
 
 
-
    /**
-   * Display for reservation
-   *
-   * @param $ID ID a the reservation item (empty to show all)
-   * @param $date date to display
-   */
+    * Display for reservation
+    *
+    * @param $ID ID a the reservation item (empty to show all)
+    * @param $date date to display
+   **/
    static function displayReservationDay($ID,$date) {
       global $DB;
 
       if (!empty($ID)) {
-         Reservation::displayReservationsForAnItem($ID,$date);
+         Reservation::displayReservationsForAnItem($ID, $date);
+
       } else {
-         $debut=$date." 00:00:00";
-         $fin=$date." 23:59:59";
+         $debut = $date." 00:00:00";
+         $fin   = $date." 23:59:59";
 
          $query = "SELECT DISTINCT `glpi_reservationitems`.`id`
-                  FROM `glpi_reservationitems`
-                  INNER JOIN `glpi_reservations`
+                   FROM `glpi_reservationitems`
+                   INNER JOIN `glpi_reservations`
                      ON (`glpi_reservationitems`.`id` = `glpi_reservations`.`reservationitems_id`)
-                  WHERE `is_active` = '1'
-                        AND '".$debut."' < `end`
-                        AND '".$fin."' > `begin`
-                  ORDER BY `begin`";
-         $result=$DB->query($query);
+                   WHERE `is_active` = '1'
+                         AND '".$debut."' < `end`
+                         AND '".$fin."' > `begin`
+                   ORDER BY `begin`";
+         $result = $DB->query($query);
 
          if ($DB->numrows($result)>0) {
-            $m=new ReservationItem;
+            $m = new ReservationItem;
             while ($data=$DB->fetch_array($result)) {
                $m->getFromDB($data['id']);
+
                if (!class_exists($m->fields["itemtype"])) {
                   continue;
                }
@@ -614,13 +651,14 @@ class Reservation extends CommonDBTM {
                if ($item->getFromDB($m->fields["items_id"])
                   && haveAccessToEntity($item->fields["entities_id"])) {
 
-                  $typename=$item->getTypeName();
+                  $typename = $item->getTypeName();
+
                   if ($m->fields["itemtype"] == 'Peripheral') {
                      if (isset($item->fields["peripheraltypes_id"])
                         && $item->fields["peripheraltypes_id"]!=0) {
 
                         $typename=Dropdown::getDropdownName("glpi_peripheraltypes",
-                                                $item->fields["peripheraltypes_id"]);
+                                                            $item->fields["peripheraltypes_id"]);
                      }
                   }
 
@@ -638,28 +676,29 @@ class Reservation extends CommonDBTM {
       }
    }
 
-   /**
-   * Display a reservation
-   *
-   * @param $ID ID a the reservation item
-   * @param $date date to display
-   */
-   static function displayReservationsForAnItem($ID,$date) {
-      global $DB,$LANG;
 
-      $users_id=getLoginUserID();
-      $resa = new Reservation();
-      $user=new User;
-      list($year,$month,$day)=explode("-",$date);
-      $debut=$date." 00:00:00";
-      $fin=$date." 23:59:59";
+   /**
+    * Display a reservation
+    *
+    * @param $ID ID a the reservation item
+    * @param $date date to display
+   **/
+   static function displayReservationsForAnItem($ID,$date) {
+      global $DB, $LANG;
+
+      $users_id = getLoginUserID();
+      $resa     = new Reservation();
+      $user     = new User;
+      list($year, $month, $day) = explode("-", $date);
+      $debut    = $date." 00:00:00";
+      $fin      = $date." 23:59:59";
 
       $query = "SELECT *
-               FROM `glpi_reservations`
-               WHERE '$debut' < `end`
-                     AND '$fin' > `begin`
-                     AND `reservationitems_id` = '$ID'
-               ORDER BY `begin`";
+                FROM `glpi_reservations`
+                WHERE '$debut' < `end`
+                      AND '$fin' > `begin`
+                      AND `reservationitems_id` = '$ID'
+                ORDER BY `begin`";
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -667,43 +706,47 @@ class Reservation extends CommonDBTM {
             while ($row=$DB->fetch_array($result)) {
                echo "<tr>";
                $user->getFromDB($row["users_id"]);
-               $display="";
+               $display = "";
 
                if ($debut>$row['begin']) {
-                  $heure_debut="00:00";
+                  $heure_debut = "00:00";
                } else {
-                  $heure_debut=get_hour_from_sql($row['begin']);
+                  $heure_debut = get_hour_from_sql($row['begin']);
                }
 
                if ($fin<$row['end']) {
-                  $heure_fin="24:00";
+                  $heure_fin = "24:00";
                } else {
-                  $heure_fin=get_hour_from_sql($row['end']);
+                  $heure_fin = get_hour_from_sql($row['end']);
                }
 
                if (strcmp($heure_debut,"00:00")==0 && strcmp($heure_fin,"24:00")==0) {
-                  $display=$LANG['planning'][5];
+                  $display = $LANG['planning'][5];
+
                } else if (strcmp($heure_debut,"00:00")==0) {
-                  $display=$LANG['reservation'][16]."&nbsp;".$heure_fin;
+                  $display = $LANG['reservation'][16]."&nbsp;".$heure_fin;
+
                } else if (strcmp($heure_fin,"24:00")==0) {
-                  $display=$LANG['reservation'][17]."&nbsp;".$heure_debut;
+                  $display = $LANG['reservation'][17]."&nbsp;".$heure_debut;
+
                } else {
-                  $display=$heure_debut."-".$heure_fin;
+                  $display = $heure_debut."-".$heure_fin;
                }
 
-               $rand=mt_rand();
-               $modif=$modif_end="";
+               $rand  = mt_rand();
+               $modif = $modif_end = "";
                if ($resa->can($row['id'],"w")) {
-                  $modif="<a id='content_".$ID.$rand."'
-                           href=\"reservation.form.php?id=".$row['id']."&amp;item[$ID]=$ID&amp;".
-                           "mois_courant=$month&amp;annee_courante=$year\">";
-                  $modif_end="</a>";
-                  $modif_end.=showToolTip($row["comment"],
-                                 array('applyto'=>"content_".$ID.$rand,'display'=>false));
+                  $modif = "<a id='content_".$ID.$rand."'
+                             href='reservation.form.php?id=".$row['id']."&amp;item[$ID]=$ID&amp;".
+                             "mois_courant=$month&amp;annee_courante=$year'>";
+                  $modif_end = "</a>";
+                  $modif_end .= showToolTip($row["comment"],
+                                            array('applyto' => "content_".$ID.$rand,
+                                                  'display' => false));
                }
 
                echo "<td class='tab_resa center'>". $modif."<span>".$display."<br><strong>".
-               formatUserName($user->fields["id"],$user->fields["name"],$user->fields["realname"],
+               formatUserName($user->fields["id"], $user->fields["name"], $user->fields["realname"],
                               $user->fields["firstname"]);
                echo "</strong></span>";
                echo $modif_end;
@@ -715,37 +758,37 @@ class Reservation extends CommonDBTM {
    }
 
 
-
    /**
-   * Display reservations for an item
-   *
-   * @param $ID ID a the item
-   * @param $itemtype item type
-   */
+    * Display reservations for an item
+    *
+    * @param $ID ID a the item
+    * @param $itemtype item type
+   **/
    static function showForItem($itemtype,$ID) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $LANG, $CFG_GLPI;
 
-      $resaID=0;
-      if (!haveRight("reservation_central","r")) {
+      $resaID = 0;
+      if (!haveRight("reservation_central", "r")) {
          return false;
       }
 
       echo "<div class='firstbloc'>";
-      ReservationItem::showActivationFormForItem($itemtype,$ID);
+      ReservationItem::showActivationFormForItem($itemtype, $ID);
 
-      $ri=new ReservationItem;
+      $ri = new ReservationItem;
       if ($ri->getFromDBbyItem($itemtype,$ID)) {
-         $now=$_SESSION["glpi_currenttime"];
+         $now = $_SESSION["glpi_currenttime"];
 
          // Print reservation in progress
          $query = "SELECT *
-                  FROM `glpi_reservations`
-                  WHERE `end` > '$now'
-                        AND `reservationitems_id` = '".$ri->fields['id']."'
-                  ORDER BY `begin`";
-         $result=$DB->query($query);
+                   FROM `glpi_reservations`
+                   WHERE `end` > '$now'
+                         AND `reservationitems_id` = '".$ri->fields['id']."'
+                   ORDER BY `begin`";
+         $result = $DB->query($query);
 
          echo "<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
+
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."' >".$LANG['reservation'][35]."</a>";
@@ -753,14 +796,17 @@ class Reservation extends CommonDBTM {
             echo $LANG['reservation'][35];
          }
          echo "</th></tr>\n";
+
          if ($DB->numrows($result) == 0) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
+
          } else {
             echo "<tr><th>".$LANG['search'][8]."</th>";
             echo "<th>".$LANG['search'][9]."</th>";
             echo "<th>".$LANG['common'][95]."</th>";
             echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
                echo "<td class='center'>".convDateTime($data["begin"])."</td>";
@@ -770,7 +816,7 @@ class Reservation extends CommonDBTM {
                      getUserName($data["users_id"])."</a></td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
-               list($annee,$mois,$jour)=explode("-",$data["begin"]);
+               list($annee, $mois, $jour) = explode("-", $data["begin"]);
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
                      $LANG['reservation'][21]."'>";
@@ -782,13 +828,14 @@ class Reservation extends CommonDBTM {
 
          // Print old reservations
          $query = "SELECT *
-                  FROM `glpi_reservations`
-                  WHERE `end` <= '$now'
-                        AND `reservationitems_id` = '".$ri->fields['id']."'
-                  ORDER BY `begin` DESC";
-         $result=$DB->query($query);
+                   FROM `glpi_reservations`
+                   WHERE `end` <= '$now'
+                         AND `reservationitems_id` = '".$ri->fields['id']."'
+                   ORDER BY `begin` DESC";
+         $result = $DB->query($query);
 
          echo "<div class='spaced'<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
+
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                    $ri->fields['id']."' >".$LANG['reservation'][36]."</a>";
@@ -800,11 +847,13 @@ class Reservation extends CommonDBTM {
          if ($DB->numrows($result)==0) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>\n";
+
          } else {
             echo "<tr><th>".$LANG['search'][8]."</th>";
             echo "<th>".$LANG['search'][9]."</th>";
             echo "<th>".$LANG['common'][95]."</th>";
             echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
                echo "<td class='center'>".convDateTime($data["begin"])."</td>";
@@ -814,12 +863,12 @@ class Reservation extends CommonDBTM {
                      getUserName($data["users_id"])."</a></td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
-               list($annee,$mois,$jour)=explode("-",$data["begin"]);
+               list($annee, $mois ,$jour) = explode("-", $data["begin"]);
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
                      $LANG['reservation'][21]."'>";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
-               echo "</td></tr>\n";
+               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>";
+               echo "</a></td></tr>\n";
             }
          }
          echo "</table>\n";
@@ -827,22 +876,23 @@ class Reservation extends CommonDBTM {
       echo "</div>\n";
    }
 
+
    /**
-   * Display reservations for an user
-   *
-   * @param $ID ID a the user
-   */
+    * Display reservations for an user
+    *
+    * @param $ID ID a the user
+   **/
    static function showForUser($ID) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $LANG, $CFG_GLPI;
 
-      $resaID=0;
+      $resaID = 0;
 
-      if (!haveRight("reservation_central","r")) {
+      if (!haveRight("reservation_central", "r")) {
          return false;
       }
 
       echo "<div class='firstbloc'>";
-      $now=$_SESSION["glpi_currenttime"];
+      $now = $_SESSION["glpi_currenttime"];
 
       // Print reservation in progress
       $query = "SELECT *
@@ -855,35 +905,42 @@ class Reservation extends CommonDBTM {
       $ri = new ReservationItem();
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
+
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr\n>";
+
       } else {
          echo "<tr><th>".$LANG['search'][8]."</th>";
          echo "<th>".$LANG['search'][9]."</th>";
          echo "<th>".$LANG['common'][1]."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".convDateTime($data["begin"])."</td>";
             echo "<td class='center'>".convDateTime($data["end"])."</td>";
+
             if ($ri->getFromDB($data["reservationitems_id"])) {
-               $link="&nbsp;";
+               $link = "&nbsp;";
+
                if (class_exists($ri->fields['itemtype'])) {
                   $item = new $ri->fields['itemtype'];
                   if ($item->getFromDB($ri->fields['items_id'])) {
-                     $link=$item->getLink();
+                     $link = $item->getLink();
                   }
                }
                echo "<td class='center'>$link</td>";
+
             } else {
                echo "<td class='center'>&nbsp;</td>";
             }
+
             echo "<td class='center'>".getUserName($data["users_id"])."</td>";
             echo "<td class='center'>".nl2br($data["comment"])."</td>";
             echo "<td class='center'>";
-            list($annee,$mois,$jour)=explode("-",$data["begin"]);
+            list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;".
                   "annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".
@@ -904,21 +961,26 @@ class Reservation extends CommonDBTM {
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>\n";
+
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr>\n";
+
       } else {
          echo "<tr><th>".$LANG['search'][8]."</th>";
          echo "<th>".$LANG['search'][9]."</th>";
          echo "<th>".$LANG['common'][1]."</th>";
          echo "<th>".$LANG['common'][95]."</th>";
          echo "<th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>\n";
+
          while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".convDateTime($data["begin"])."</td>";
             echo "<td class='center'>".convDateTime($data["end"])."</td>";
+
             if ($ri->getFromDB($data["reservationitems_id"])) {
-               $link="&nbsp;";
+               $link = "&nbsp;";
+
                if (class_exists($ri->fields['itemtype'])) {
                   $item = new $ri->fields['itemtype'];
                   if ($item->getFromDB($ri->fields['items_id'])) {
@@ -926,25 +988,26 @@ class Reservation extends CommonDBTM {
                   }
                }
                echo "<td class='center'>$link</td>";
+
             } else {
                echo "<td class='center'>&nbsp;</td>";
             }
+
             echo "<td class='center'>".getUserName($data["users_id"])."</td>";
             echo "<td class='center'>".nl2br($data["comment"])."</td>";
             echo "<td class='center'>";
-            list($annee,$mois,$jour)=explode("-",$data["begin"]);
+            list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
                   "title='".$LANG['reservation'][21]."'>";
-            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png' alt='' title=''></a>";
             echo "</td></tr>\n";
          }
       }
       echo "</table></div>\n";
    }
 
+
 }
-
-
 
 ?>

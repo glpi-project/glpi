@@ -275,7 +275,7 @@ function step3($host, $user, $password, $update) {
          mysql_close($link);
          echo "</form>";
 
-      } else if($update == "yes") {
+      } else if ($update == "yes") {
          echo "<p>".$LANG['install'][40]."</p>";
          echo "<form action='install.php' method='post'>";
 
@@ -379,7 +379,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
          }
       }
 
-   } else if(!empty($newdatabasename)) { // create new db
+   } else if (!empty($newdatabasename)) { // create new db
       // Try to connect
       if (mysql_select_db($newdatabasename, $link)) {
          echo "<p>".$LANG['install'][82]."</p>";

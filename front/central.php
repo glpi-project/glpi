@@ -43,7 +43,7 @@ checkCentralAccess();
 if (isset ($_POST['newprofile'])) {
    if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
       changeProfile($_POST['newprofile']);
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
          glpi_header($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
       }
       glpi_header($_SERVER['PHP_SELF']);

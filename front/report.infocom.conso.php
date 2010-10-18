@@ -227,11 +227,11 @@ function display_infocoms_report($itemtype, $begin, $end) {
 }
 
 
-$types = array('Consumable', 'Cartridge', 'SoftwareLicense');
+$types = array('Cartridge', 'Consumable', 'SoftwareLicense');
 
 $i = 0;
 while (count($types)>0) {
-   if ($i==0){
+   if ($i==0) {
       echo "<table width='90%'><tr><td class='center top'>";
    }
    $type = array_shift($types);
@@ -240,7 +240,7 @@ while (count($types)>0) {
       echo "</td>";
       $i++;
 
-      if (($i%2)==0){
+      if (($i%2)==0) {
          echo "</tr><tr>";
       }
 
@@ -248,11 +248,11 @@ while (count($types)>0) {
    }
 }
 
-if (($i%2)==0){
+if (($i%2)==0) {
    echo "</td><td>&nbsp;";
 }
 
-if ($i>0){
+if ($i>0) {
    echo "&nbsp;</td></tr></table>";
 }
 

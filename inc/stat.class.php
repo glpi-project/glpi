@@ -354,7 +354,7 @@ class Stat {
                }
             }
             $total_actiontime=array_sum($data);
-            
+
             if ($nb_solved>0) {
                $timedisplay=$total_actiontime/$nb_solved;
             } else {
@@ -1070,7 +1070,7 @@ class Stat {
                         if (!isset($values[$key])) {
                            $values[$key]=array();
                         }
-                        if ($param['datatype']=='average'){
+                        if ($param['datatype']=='average') {
                            $val=round($val,2);
                         }
                         $values[$key][$row_num]=$val;

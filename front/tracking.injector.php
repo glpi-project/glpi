@@ -52,10 +52,8 @@ if (empty($_POST) || count($_POST) == 0) {
 
 if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
    nullHeader($LANG['title'][10]);
-
 } else if ($_POST["_from_helpdesk"]) {
    helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
-
 } else {
    commonHeader($LANG['Menu'][31],'',$_SESSION["glpiname"],"maintain","tracking");
 }
@@ -72,21 +70,22 @@ if (!isset($_POST["itemtype"]) || (empty($_POST["items_id"]) && $_POST["itemtype
    $_POST["items_id"] = 0;
 }
 
-if ($newID = $track->add($_POST)){
+if ($newID = $track->add($_POST)) {
    if (isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
       echo "<div class='center'>".$LANG['help'][18]."<br><br>";
       displayBackLink();
       echo "</div>";
    } else {
       echo "<div class='center b'>";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'><br><br>";
       echo $LANG['help'][18]." (".$LANG['job'][38]."&nbsp;";;
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$newID'>$newID</a>)<br>";
       echo $LANG['help'][19]."</div>";
    }
+
 } else {
    echo "<div class='center'>";
-   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt='warning'><br></div>";
+   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br></div>";
    displayMessageAfterRedirect();
    displayBackLink();
 }

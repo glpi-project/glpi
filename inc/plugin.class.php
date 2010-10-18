@@ -238,7 +238,7 @@ class Plugin extends CommonDBTM {
                }
             }
             $function = "plugin_".$plug."_check_config";
-            if (function_exists($function)){
+            if (function_exists($function)) {
                if (!$function()) {
                   $usage_ok = false;
                }
@@ -303,7 +303,7 @@ class Plugin extends CommonDBTM {
             }
             $i++;
             $class = 'tab_bg_1';
-            if ($i%2==0){
+            if ($i%2==0) {
                $class = 'tab_bg_2';
             }
             echo "<tr class='$class'>";

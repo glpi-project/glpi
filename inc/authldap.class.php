@@ -1669,7 +1669,7 @@ class AuthLDAP extends CommonDBTM {
 
     * @return link to the LDAP server : false if connection failed
    **/
-   static function tryToConnectToServer($ldap_method, $login, $password){
+   static function tryToConnectToServer($ldap_method, $login, $password) {
 
       $ds = AuthLdap::connectToServer($ldap_method['host'], $ldap_method['port'],
                                       $ldap_method['rootdn'], $ldap_method['rootdn_password'],
@@ -2252,7 +2252,7 @@ class AuthLDAP extends CommonDBTM {
                   if (($value[0] == '^')) {
                      $begin = 1;
                   }
-                  if ($value[$length-1] == '$'){
+                  if ($value[$length-1] == '$') {
                      $end = 1;
                   }
                }

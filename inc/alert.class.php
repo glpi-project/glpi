@@ -104,7 +104,7 @@ class Alert extends CommonDBTM {
    static function dropdownYesNo($options = array()) {
       global $LANG;
 
-      if (!isset($options['value'])){
+      if (!isset($options['value'])) {
          $value = 0;
       } else {
          $value = $options['value'];
@@ -132,7 +132,7 @@ class Alert extends CommonDBTM {
       } else {
          $p['toadd'][0] = $LANG['setup'][307];
       }
-   
+
       if (isset($options['inherit_global']) && $options['inherit_global']) {
          $p['toadd'][-1] = $LANG['setup'][731];
       }

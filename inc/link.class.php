@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -357,7 +357,7 @@ class Link extends CommonDBTM {
             if (count($contents)) {
                foreach ($contents as $title => $link) {
                   $current_name = $name;
-                  if (!empty($title)){
+                  if (!empty($title)) {
                      $current_name = $title;
                   }
                   $clean_name=Link::generateLinkContents($current_name, $item, $name, true);

@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -965,7 +965,7 @@ class Dropdown {
 
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
-      echo "function setPrivate$rand(){\n";
+      echo "function setPrivate$rand() {\n";
 
          $params = array('is_private'   => 1,
                          'is_recursive' => $is_recursive,
@@ -976,7 +976,7 @@ class Dropdown {
                               $CFG_GLPI["root_doc"]."/ajax/private_public.php", $params, false);
       echo "};";
 
-      echo "function setPublic$rand(){\n";
+      echo "function setPublic$rand() {\n";
 
          $params = array('is_private'   => 0,
                          'is_recursive' => $is_recursive,
@@ -1007,12 +1007,12 @@ class Dropdown {
       $rand = mt_rand();
       $url  = $CFG_GLPI["root_doc"]."/ajax/ldapdaterestriction.php";
       echo "<script type='text/javascript' >\n";
-      echo "function activateRestriction(){\n";
+      echo "function activateRestriction() {\n";
          $params = array('enabled'=> 1);
          ajaxUpdateItemJsCode('date_restriction', $url, $params, false);
       echo "};";
 
-      echo "function deactivateRestriction(){\n";
+      echo "function deactivateRestriction() {\n";
          $params = array('enabled' => 0);
          ajaxUpdateItemJsCode('date_restriction', $url, $params, false);
       echo "};";

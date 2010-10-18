@@ -358,7 +358,7 @@ class TicketFollowup  extends CommonDBTM {
       echo "<td>";
       if ($canedit) {
          echo "\n<script type='text/javascript' >\n";
-         echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand(){\n";
+         echo "function viewEditFollowup" . $ticket->fields['id'] . $this->fields["id"] . "$rand() {\n";
          $params = array ('type'       => __CLASS__,
                           'tickets_id' => $this->fields["tickets_id"],
                           'id'         => $this->fields["id"]);
@@ -583,7 +583,7 @@ class TicketFollowup  extends CommonDBTM {
       }
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
-         echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand(){\n";
+         echo "function viewAddFollowup" . $ticket->fields['id'] . "$rand() {\n";
          $params = array ('type'       => __CLASS__,
                           'tickets_id' => $ticket->fields['id'],
                           'id'         => -1);

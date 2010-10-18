@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -45,25 +45,29 @@ class State extends CommonDropdown {
 
       return $LANG['setup'][83];
    }
+
+
    /**
-   * Dropdown of states for behaviour config
-   *
-   * @param $name select name
-   * @param $lib string to add for -1 value
-   * @param $value default value
-   */
+    * Dropdown of states for behaviour config
+    *
+    * @param $name select name
+    * @param $lib string to add for -1 value
+    * @param $value default value
+   **/
    static function dropdownBehaviour ($name, $lib="", $value=0) {
       global $DB, $LANG;
 
-      $elements=array("0"=>$LANG['setup'][195]);
+      $elements = array("0" => $LANG['setup'][195]);
+
       if ($lib) {
-         $elements["-1"]=$lib;
+         $elements["-1"] = $lib;
       }
 
-      $queryStateList = "SELECT `id`,`name`
-                        FROM `glpi_states`
-                        ORDER BY `name`";
+      $queryStateList = "SELECT `id`, `name`
+                         FROM `glpi_states`
+                         ORDER BY `name`";
       $result = $DB->query($queryStateList);
+
       if ($DB->numrows($result) > 0) {
          while (($data = $DB->fetch_assoc($result))) {
             $elements[$data["id"]] = $LANG['setup'][198] . " : " . $data["name"];
@@ -72,30 +76,33 @@ class State extends CommonDropdown {
       Dropdown::showFromArray($name, $elements, array('value' => $value));
    }
 
+
    static function showSummary() {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $LANG, $CFG_GLPI;
 
-      $state_type=$CFG_GLPI["state_types"];
+      $state_type = $CFG_GLPI["state_types"];
+      $states     = array();
 
-      $states=array();
       foreach ($state_type as $key=>$itemtype) {
          if (class_exists($itemtype)) {
             $item = new $itemtype();
+
             if (!$item->canView()) {
                unset($state_type[$key]);
+
             } else {
-               $table=getTableForItemType($itemtype);
+               $table = getTableForItemType($itemtype);
                $query = "SELECT `states_id`, COUNT(*) AS cpt
-                        FROM `$table` ".
-                        getEntitiesRestrictRequest("WHERE",$table)."
+                         FROM `$table` ".
+                         getEntitiesRestrictRequest("WHERE",$table)."
                               AND `is_deleted` = '0'
                               AND `is_template` = '0'
-                        GROUP BY `states_id`";
+                         GROUP BY `states_id`";
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
                      while ($data=$DB->fetch_array($result)) {
-                        $states[$data["states_id"]][$itemtype]=$data["cpt"];
+                        $states[$data["states_id"]][$itemtype] = $data["cpt"];
                      }
                   }
                }
@@ -119,55 +126,63 @@ class State extends CommonDropdown {
                unset($state_type[$key]);
             }
          }
+
          echo "<th>".$LANG['common'][33]."</th>";
          echo "</tr>";
          $query = "SELECT *
-                  FROM `glpi_states`
-                  ORDER BY `name`";
+                   FROM `glpi_states`
+                   ORDER BY `name`";
          $result = $DB->query($query);
 
          // No state
-         $tot=0;
+         $tot = 0;
          echo "<tr class='tab_bg_2'><td>---</td>";
          foreach ($state_type as $itemtype) {
             echo "<td class='center tab_bg_1'>";
+
             if (isset($states[0][$itemtype])) {
                echo $states[0][$itemtype];
-               $total[$itemtype]+=$states[0][$itemtype];
-               $tot+=$states[0][$itemtype];
+               $total[$itemtype] += $states[0][$itemtype];
+               $tot += $states[0][$itemtype];
             } else {
                echo "&nbsp;";
             }
+
             echo "</td>";
          }
          echo "<td class='right b'>$tot &nbsp;&nbsp;</td></tr>";
 
          while ($data=$DB->fetch_array($result)) {
-            $tot=0;
+            $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset=reset&amp;contains[0]=$$$$".
-                  $data["id"]."&amp;searchtype[0]=contains&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset=reset&amp;contains[0]=".
+                   "$$$$".$data["id"]."&amp;searchtype[0]=contains&amp;field[0]=31&amp;sort=".
+                   "1&amp;start=0'>".$data["name"]."</a></td>";
 
             foreach ($state_type as $itemtype) {
                echo "<td class='center tab_bg_1'>";
+
                if (isset($states[$data["id"]][$itemtype])) {
                   echo $states[$data["id"]][$itemtype];
-                  $total[$itemtype]+=$states[$data["id"]][$itemtype];
-                  $tot+=$states[$data["id"]][$itemtype];
+                  $total[$itemtype] += $states[$data["id"]][$itemtype];
+                  $tot += $states[$data["id"]][$itemtype];
                } else {
                   echo "&nbsp;";
                }
+
                echo "</td>";
             }
             echo "<td class='right b'>$tot &nbsp;&nbsp;</td>";
             echo "</tr>";
          }
          echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['common'][33]."</td>";
-         $tot=0;
+         $tot = 0;
+
          foreach ($state_type as $itemtype) {
             echo "<td class='center b'>".$total[$itemtype]."</td>";
-            $tot+=$total[$itemtype];
+            $tot += $total[$itemtype];
          }
+
          echo "<td class='right b '>$tot &nbsp;&nbsp;</td></tr>";
          echo "</table></div>";
 

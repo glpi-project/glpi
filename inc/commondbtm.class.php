@@ -150,11 +150,11 @@ class CommonDBTM extends CommonGLPI {
          $query .= " WHERE $condition";
       }
 
-      if (!empty($order)){
+      if (!empty($order)) {
          $query .= " ORDER BY $order";
       }
 
-      if (!empty($limit)){
+      if (!empty($limit)) {
          $query .= " LIMIT ".intval($limit);
       }
 
@@ -403,7 +403,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return nothing
    **/
-   function cleanHistory(){
+   function cleanHistory() {
       global $DB;
 
       if ($this->dohistory) {
@@ -1514,7 +1514,7 @@ class CommonDBTM extends CommonGLPI {
       if ($params['withtemplate'] || $ID<=0) {
          echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
 
-         if ($ID<=0 || $params['withtemplate']==2){
+         if ($ID<=0 || $params['withtemplate']==2) {
             echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
          } else {
             echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
@@ -1531,7 +1531,7 @@ class CommonDBTM extends CommonGLPI {
             echo "</td>\n";
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n";
 
-            if ($this->isDeleted()){
+            if ($this->isDeleted()) {
                echo "<input type='submit' name='restore' value='".$LANG['buttons'][21]."'
                       class='submit'>";
                echo "<span class='small_space'>
@@ -1772,14 +1772,14 @@ class CommonDBTM extends CommonGLPI {
 
          case 'w' :
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()){
+            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
                return true;
             }
             return ($this->canUpdate() && $this->canUpdateItem());
 
          case 'd' :
             // Personnal item
-            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()){
+            if ($this->isPrivate() && $this->fields['users_id']===getLoginUserID()) {
                return true;
             }
             return ($this->canDelete() && $this->canDeleteItem());

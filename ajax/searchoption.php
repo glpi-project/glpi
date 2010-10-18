@@ -73,7 +73,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
    $searchopt    = array();
 
    echo "<table><tr><td>";
-   if (count($actions)>0){
+   if (count($actions)>0) {
 
       // get already get search options
       if (isset($actions['searchopt'])) {

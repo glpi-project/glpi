@@ -139,11 +139,11 @@ abstract class CommonDBRelation extends CommonDBTM {
          if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
 
             // get items if needed : need to have entity set
-            if (!isset($item1->fields['id'])){
+            if (!isset($item1->fields['id'])) {
                $item1->getFromDB($input[$this->items_id_1]);
             }
 
-            if (!isset($item2->fields['id'])){
+            if (!isset($item2->fields['id'])) {
                $item2->getFromDB($input[$this->items_id_2]);
             }
 

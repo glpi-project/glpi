@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -52,7 +52,7 @@ class Ticket_Ticket extends CommonDBRelation {
    function canCreateItem() {
       $ticket = new Ticket();
       print_r($this);
-      return $ticket->can($this->fields['tickets_id_1'],'w') 
+      return $ticket->can($this->fields['tickets_id_1'],'w')
             || $ticket->can($this->fields['tickets_id_2'],'w');
    }
    /**
@@ -120,18 +120,18 @@ class Ticket_Ticket extends CommonDBRelation {
                                  Ticket::getStatus($ticket->fields["status"])."'>";
                if ($canupdate) {
                   echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
-                        "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID&amp;tickets_id=$ID\" 
+                        "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID&amp;tickets_id=$ID\"
                            title='".$LANG['reservation'][6]."'>
-                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" 
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
                         alt='".$LANG['buttons'][6]."' title='".$LANG['buttons'][6]."'></a>";
                }
             }
-   
+
             echo '<br>';
          }
       }
    }
-   
+
 
    /**
     * Dropdown for links between tickets
@@ -166,13 +166,13 @@ class Ticket_Ticket extends CommonDBRelation {
    }
    function prepareInputForAdd($input) {
       $ticket= new Ticket();
-      if (!isset($input['tickets_id_1']) || !isset($input['tickets_id_2']) 
+      if (!isset($input['tickets_id_1']) || !isset($input['tickets_id_2'])
          || $input['tickets_id_2'] == $input['tickets_id_1']
          || !$ticket->getFromDB($input['tickets_id_1'])
          || !$ticket->getFromDB($input['tickets_id_2'])) {
          return false;
       }
-      
+
       return $input;
    }
 
@@ -184,7 +184,7 @@ class Ticket_Ticket extends CommonDBRelation {
     *
    **/
    static function manageLinkedTicketsOnSolved ($ID) {
-      
+
       $ticket = new Ticket();
 
       if ($ticket->getfromDB($ID)) {

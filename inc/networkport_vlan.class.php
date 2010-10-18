@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 class NetworkPort_Vlan extends CommonDBRelation {
@@ -45,11 +45,12 @@ class NetworkPort_Vlan extends CommonDBRelation {
    public $itemtype_2 = 'Vlan';
    public $items_id_2 = 'vlans_id';
 
+
    /**
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       global $LANG;
 

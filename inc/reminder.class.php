@@ -260,7 +260,7 @@ class Reminder extends CommonDBTM {
 
       if ($canedit) {
          echo "<script type='text/javascript' >\n";
-         echo "function showPlan(){\n";
+         echo "function showPlan() {\n";
             echo "Ext.get('plan').setDisplayed('none');";
             $params = array('form' => 'remind');
 

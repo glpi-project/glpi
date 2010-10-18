@@ -234,7 +234,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       $crit = array($fk     => $ID,
                     'ORDER' => 'name');
 
-      if ($entity_assign){
+      if ($entity_assign) {
          if ($fk == 'entities_id') {
             $crit['id']  = $_SESSION['glpiactiveentities'];
             $crit['id'] += $_SESSION['glpiparententities'];

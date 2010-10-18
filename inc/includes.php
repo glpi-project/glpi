@@ -49,7 +49,7 @@ function __autoload($classname) {
    static $notfound = array();
 
    // empty classname or non concerted plugin
-   if (empty($classname) || is_numeric($classname)){
+   if (empty($classname) || is_numeric($classname)) {
       return false;
    }
 

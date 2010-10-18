@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -569,7 +569,7 @@ class NetworkPort extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>$type&nbsp;:</td>\n<td>";
 
-      if (!($ID>0)){
+      if (!($ID>0)) {
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       }

@@ -156,7 +156,7 @@ class Budget extends CommonDropdown{
 
    function prepareInputForAdd($input) {
 
-      if (isset($input["id"])&&$input["id"]>0){
+      if (isset($input["id"])&&$input["id"]>0) {
          $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
@@ -485,7 +485,7 @@ class Budget extends CommonDropdown{
                foreach ($found_types as $type => $typename) {
                   echo "<td class='right'>";
                   $typevalue = 0;
-                  if (isset($entitiestype_values[$entity][$type])){
+                  if (isset($entitiestype_values[$entity][$type])) {
                      $typevalue = $entitiestype_values[$entity][$type];
                   }
                   echo formatNumber($typevalue);

@@ -317,6 +317,7 @@ class Notification extends CommonDBTM {
                                                  $entity, true) ."
                       AND `glpi_notifications`.`is_active`='1'
                 ORDER BY `glpi_entities`.`level` DESC";
+logDebug($query);
       return $DB->request($query);
    }
 
