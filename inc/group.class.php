@@ -209,17 +209,20 @@ class Group extends CommonDBTM {
       $tab[16]['name']     = $LANG['common'][25];
       $tab[16]['datatype'] = 'text';
 
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'ldap_field';
-      $tab[3]['name']  = $LANG['setup'][260];
+      if (AuthLdap::useAuthLdap()) {
 
-      $tab[4]['table'] = $this->getTable();
-      $tab[4]['field'] = 'ldap_value';
-      $tab[4]['name']  = $LANG['setup'][601];
+         $tab[3]['table'] = $this->getTable();
+         $tab[3]['field'] = 'ldap_field';
+         $tab[3]['name']  = $LANG['setup'][260];
 
-      $tab[5]['table'] = $this->getTable();
-      $tab[5]['field'] = 'ldap_group_dn';
-      $tab[5]['name']  = $LANG['setup'][261];
+         $tab[4]['table'] = $this->getTable();
+         $tab[4]['field'] = 'ldap_value';
+         $tab[4]['name']  = $LANG['setup'][601];
+
+         $tab[5]['table'] = $this->getTable();
+         $tab[5]['field'] = 'ldap_group_dn';
+         $tab[5]['name']  = $LANG['setup'][261];
+      }
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'is_recursive';
