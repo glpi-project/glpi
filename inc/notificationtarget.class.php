@@ -411,6 +411,16 @@ class NotificationTarget extends CommonDBChild {
          $new_lang = trim($data['language']);
       }
 
+      $username='';
+      if (isset($data['name']) && !empty($data['name'])) {
+         $username = $data['name'];
+      } else if (isset($data['id'])) {
+         $user = new User;
+         if ($user->getFromDB($data['id'])) {
+            $username=formatUserName(0, $user->getField('name'), $user->getField('realname'),
+                                 $user->getField('firstname'), 0, 0, true);
+         }
+      }
       $notificationoption = $this->addAdditionnalUserInfo($data);
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail) && !isset($this->target[$new_mail])) {
@@ -418,7 +428,8 @@ class NotificationTarget extends CommonDBChild {
             $this->target[$new_mail] = array ('language' => (empty($new_lang) ?$CFG_GLPI["language"]
                                                                               :$new_lang),
                                               'email'             => $new_mail,
-                                              'additionnaloption' => $notificationoption);
+                                              'additionnaloption' => $notificationoption,
+                                              'username'          => $username);
          }
       }
    }

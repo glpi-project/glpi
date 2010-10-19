@@ -200,7 +200,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       global $LANG;
 
       $mmail = new NotificationMail();
-      $mmail->From = $options['from'];
+      $mmail->SetFrom($options['from'],'');
       if ($options['replyto']) {
          $mmail->AddReplyTo($options['replyto'], '');
       }
@@ -214,7 +214,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $mmail->Body    = $options['content_html'];
          $mmail->AltBody = $options['content_text'];
       }
-      $mmail->AddAddress($options['to'], "");
+      $mmail->AddAddress($options['to'], $options['toname']);
+
       $mmail->MessageID = "GLPI-".$options["items_id"].".".time().".".rand(). "@".php_uname('n');
 
       $messageerror = $LANG['mailing'][47];
