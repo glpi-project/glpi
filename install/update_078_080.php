@@ -597,6 +597,7 @@ function update078to080($output='HTML') {
       $DB->query($query) or die("0.80 add auto_create_infocoms field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
+
    if (!FieldExists("glpi_configs","csv_delimiter")) {
       $query = "ALTER TABLE `glpi_configs` ADD `csv_delimiter` CHAR( 1 ) NOT NULL AFTER `number_format` ";
       $DB->query($query) or die("0.80 add csv_delimiter field in glpi_configs " . $LANG['update'][90] . $DB->error());
@@ -667,6 +668,15 @@ function update078to080($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
 
    $query="UPDATE `glpi_users` SET `language`='nl_NL' WHERE `language`='nl_BE';";
+   $DB->query($query) or die("0.80 drop nl_be langage" .
+                                 $LANG['update'][90] . $DB->error());
+
+   // CLean sl_SL
+   $query="UPDATE `glpi_configs` SET `language`='sl_SI' WHERE `language`='sl_SL';";
+   $DB->query($query) or die("0.80 drop nl_be langage" .
+                                 $LANG['update'][90] . $DB->error());
+
+   $query="UPDATE `glpi_users` SET `language`='sl_SI' WHERE `language`='sl_SL';";
    $DB->query($query) or die("0.80 drop nl_be langage" .
                                  $LANG['update'][90] . $DB->error());
 
