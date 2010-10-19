@@ -442,6 +442,7 @@ class NotificationTarget extends CommonDBChild {
       global $CFG_GLPI;
 
       $this->addToAddressesList(array("email"    => $CFG_GLPI["admin_email"],
+                                      "name"     => $CFG_GLPI["admin_email_name"]
                                       "language" => $CFG_GLPI["language"]));
    }
 
@@ -470,6 +471,7 @@ class NotificationTarget extends CommonDBChild {
       foreach ($DB->request('glpi_entitydatas', array('entities_id' => $this->entity)) as $row) {
          $data['language'] = $CFG_GLPI['language'];
          $data['email']    = $row['admin_email'];
+         $data['name']     = $row['admin_email_name'];
          $this->addToAddressesList($data);
       }
    }
@@ -719,11 +721,11 @@ class NotificationTarget extends CommonDBChild {
       //If the entity administrator's address is defined, return it
       foreach ($DB->request('glpi_entitydatas', array('entities_id' => $this->getEntity())) as $data) {
          if (NotificationMail::isUserAddressValid($data['admin_email'])) {
-            return $data['admin_email'];
+            return array('email'=>$data['admin_email'],'name'=>$data['admin_email_name']);
          }
       }
       //Entity admin is not defined, return the global admin's address
-      return $CFG_GLPI["admin_email"];
+      return array('email'=>$CFG_GLPI['admin_email'],'name'=>$CFG_GLPI['admin_email_name']);
    }
 
 
@@ -738,11 +740,11 @@ class NotificationTarget extends CommonDBChild {
       //If the entity administrator's address is defined, return it
       foreach ($DB->request('glpi_entitydatas', array('entities_id' => $this->getEntity())) as $data) {
          if (NotificationMail::isUserAddressValid($data['admin_reply'])) {
-            return $data['admin_reply'];
+            return array('email'=>$data['admin_reply'],'name'=>$data['admin_reply_name']);
          }
       }
       //Entity admin is not defined, return the global admin's address
-      return $CFG_GLPI["admin_reply"];
+      return array('email'=>$CFG_GLPI['admin_reply'],'name'=>$CFG_GLPI['admin_reply_name']);
    }
 
 

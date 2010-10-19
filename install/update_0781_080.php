@@ -848,6 +848,26 @@ function update0781to080($output='HTML') {
       $DB->query($query) or die("0.80 add use_slave_for_search field in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
+   if (!FieldExists("glpi_configs","admin_email_name")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `admin_email_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`";
+      $DB->query($query) or die("0.80 add admin_email_name field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_configs","admin_reply_name")) {
+      $query = "ALTER TABLE `glpi_configs` ADD `admin_reply_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`";
+      $DB->query($query) or die("0.80 add admin_reply_name field in glpi_configs " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_entitydatas","admin_email_name")) {
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `admin_email_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`";
+      $DB->query($query) or die("0.80 add admin_email_name field in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
+   }
+
+   if (!FieldExists("glpi_entitydatas","admin_reply_name")) {
+      $query = "ALTER TABLE `glpi_entitydatas` ADD `admin_reply_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`";
+      $DB->query($query) or die("0.80 add admin_reply_name field in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
+   }
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

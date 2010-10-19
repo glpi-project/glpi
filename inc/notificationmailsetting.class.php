@@ -118,23 +118,34 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</td>";
 
       if ($CFG_GLPI['use_mailing']) {
-         echo "<td>" . $LANG['setup'][203] . "&nbsp;:</td>";
+
+         echo "<td >" . $LANG['setup'][227] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='url_base' size='40' value='".$CFG_GLPI["url_base"]."'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>" . $LANG['setup'][203] . "&nbsp;:</td>";
          echo "<td><input type='text' name='admin_email' size='40' value=\"" .
                     $CFG_GLPI["admin_email"] . "\">";
          if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_email"])) {
              echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
+         echo " </td>";
+         echo "<td >" . $LANG['setup'][208] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='admin_email_name' size='40' value=\"" .
+                    $CFG_GLPI["admin_email_name"] . "\">";
          echo " </td></tr>";
 
-         echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][227] . "&nbsp;:</td>";
-         echo "<td><input type='text' name='url_base' size='40' value='".$CFG_GLPI["url_base"]."'>";
-         echo "</td>";
+         echo "<tr class='tab_bg_2'>";
          echo "<td >" . $LANG['setup'][207] . "&nbsp;:</td>";
          echo "<td><input type='text' name='admin_reply' size='40' value=\"" .
                     $CFG_GLPI["admin_reply"] . "\">";
          if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_reply"])) {
             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
          }
+         echo " </td>";
+         echo "<td >" . $LANG['setup'][209] . "&nbsp;:</td>";
+         echo "<td><input type='text' name='admin_reply_name' size='40' value=\"" .
+                    $CFG_GLPI["admin_reply_name"] . "\">";
          echo " </td></tr>";
          if (!function_exists('mail')) {
              echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";

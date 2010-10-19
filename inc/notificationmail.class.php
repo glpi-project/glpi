@@ -158,9 +158,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       global $CFG_GLPI,$LANG;
 
       $mmail= new NotificationMail;
-      $mmail->From = $CFG_GLPI["admin_email"];
-      $mmail->FromName = $CFG_GLPI["admin_email"];
-      $mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
+      $mmail->SetFrom($CFG_GLPI["admin_email"],$CFG_GLPI["admin_email_name"]);
+      $mmail->AddAddress($CFG_GLPI["admin_email"],$CFG_GLPI["admin_email_name"]);
       $mmail->Subject = "[GLPI] ".$LANG['mailing'][32];
       $mmail->Body = $LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
 
@@ -200,11 +199,10 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       global $LANG;
 
       $mmail = new NotificationMail();
-      $mmail->SetFrom($options['from'],'');
+      $mmail->SetFrom($options['from'],$options['fromname']);
       if ($options['replyto']) {
-         $mmail->AddReplyTo($options['replyto'], '');
+         $mmail->AddReplyTo($options['replyto'], $options['replytoname']);
       }
-      $mmail->FromName = $options['from'];
       $mmail->Subject  = $options['subject'];
       if (empty($options['content_html'])) {
          $mmail->isHTML(false);
