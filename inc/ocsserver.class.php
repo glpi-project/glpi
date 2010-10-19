@@ -4636,9 +4636,9 @@ class OcsServer extends CommonDBTM {
                               }
                            }
 
-                           if (isset($res_rule['is_global'])) {
-                              logDebug($res_rule);
-                           }
+//                            if (isset($res_rule['is_global'])) {
+//                               logDebug($res_rule);
+//                            }
 
                            if (isset($res_rule['is_global'])) {
                               if (!$res_rule['is_global']) {
@@ -4679,9 +4679,9 @@ class OcsServer extends CommonDBTM {
                                     }
                                     $input["entities_id"] = $entity;
 
-                                    if (isset($res_rule['is_global'])) {
-                                       logDebug("global",$input);
-                                    }
+//                                     if (isset($res_rule['is_global'])) {
+//                                        logDebug("global",$input);
+//                                     }
                                     $id_printer = $p->add($input);
                                  }
 
@@ -4696,9 +4696,9 @@ class OcsServer extends CommonDBTM {
                                  }
                                  $input["entities_id"] = $entity;
 
-                                 if (isset($res_rule['is_global'])) {
-                                    logDebug("unitary",$input);
-                                 }
+//                                  if (isset($res_rule['is_global'])) {
+//                                     logDebug("unitary",$input);
+//                                  }
                                  $id_printer = $p->add($input);
                               }
 

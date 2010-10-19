@@ -149,17 +149,17 @@ class NotificationTarget extends CommonDBChild {
       $entity = 0;
       if (class_exists($name)) {
          //Item which raises the event contains an entityID
-         logDebug("getInstance ($event)", $item, "options", $options);
+//          logDebug("getInstance ($event)", $item, "options", $options);
          if ($item->getEntityID() >=0 ) {
             $entity = $item->getEntityID();
-            logDebug("Entity from item = $entity");
+//             logDebug("Entity from item = $entity");
 
          //Entity ID exists in the options array
          } else if (isset($options['entities_id'])) {
             $entity = $options['entities_id'];
-         logDebug("Entity from option = $entity");
+//          logDebug("Entity from option = $entity");
          }
-         else logDebug("No Entity");
+//          else logDebug("No Entity");
 
          return new $name($entity, $event, $item, $options);
       }
@@ -690,7 +690,7 @@ class NotificationTarget extends CommonDBChild {
                WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."' ".
                      getEntitiesRestrictRequest(" AND", "glpi_profiles_users", "entities_id",
                                                 $this->getEntity(), true);
-
+//       logDebug($query);
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
       }
