@@ -172,7 +172,7 @@ if (isset($_POST["add"])) {
    $npv->check(-1,'w',$_POST);
 
    if (isset($_POST["vlans_id"]) && $_POST["vlans_id"] >0) {
-      $npv->assignVlan($_POST["id"],$_POST["vlans_id"]);
+      $npv->assignVlan($_POST["networkports_id"],$_POST["vlans_id"]);
       Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);

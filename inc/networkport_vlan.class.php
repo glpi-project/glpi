@@ -169,7 +169,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
          echo "\n<div class='center'>";
          echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>";
-         echo "<input type='hidden' name='id' value='$ID'>\n";
+         echo "<input type='hidden' name='networkports_id' value='$ID'>\n";
 
          echo "<table class='tab_cadre'>";
          echo "<tr><th>" . $LANG['setup'][90] . "</th></tr>\n";
