@@ -230,7 +230,8 @@ class CommonGLPI {
       $class = $this->getType();
       if ($_SESSION['glpi_use_mode']==DEBUG_MODE
           && (method_exists($class, 'showDebug')
-              || in_array($class, $CFG_GLPI["infocom_types"]))) {
+              || in_array($class, $CFG_GLPI["infocom_types"])
+              || in_array($class, $CFG_GLPI["reservation_types"]))) {
 
             $onglets[-2] = $LANG['setup'][137];
       }
@@ -316,6 +317,13 @@ class CommonGLPI {
          $infocom = new Infocom();
          if ($infocom->getFromDBforDevice($class, $this->fields['id'])) {
             $infocom->showDebug();
+         }
+      }
+
+      if (in_array($class, $CFG_GLPI["reservation_types"])) {
+         $resitem = new ReservationItem();
+         if ($resitem->getFromDBbyItem($class, $this->fields['id'])) {
+            $resitem->showDebug();
          }
       }
    }
