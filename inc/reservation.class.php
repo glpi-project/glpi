@@ -38,7 +38,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Reservation class
-class Reservation extends CommonDBTM {
+class Reservation extends CommonDBChild {
+
+   // From CommonDBChild
+   public $itemtype = 'ReservationItem';
+   public $items_id = 'reservationitems_id';
 
    static function getTypeName() {
       global $LANG;

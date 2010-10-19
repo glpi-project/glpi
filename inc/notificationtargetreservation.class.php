@@ -35,45 +35,6 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetReservation extends NotificationTarget {
 
-   /**
-    * Get users emails by profile
-    * @param $profiles_id the profile ID to get users emails
-    *
-    * @return nothing
-    */
-   function getUsersAddressesByProfile($profiles_id) {
-      global $DB;
-
-      $query = $this->getDistinctUserSql().", glpi_profiles_users.entities_id AS entity
-               FROM `glpi_profiles_users`".
-               $this->getJoinProfileSql()."
-               INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
-               WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."'".
-                     getEntitiesRestrictRequest("AND","glpi_profiles_users","entities_id",
-                                                $this->target_object->getEntityID(),true);
-
-      foreach ($DB->request($query) as $data) {
-         $this->addToAddressesList($data);
-      }
-   }
-   /**
-    * Get item associated with the object on which the event was raised
-    * @return the object associated with the itemtype
-    */
-   function getObjectItem($event='') {
-      if ($event != 'alert') {
-         $ri = new ReservationItem;
-         if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
-            $itemtype = $ri->getField('itemtype');
-            $item = new  $itemtype ();
-            $item->getFromDB($ri->getField('items_id'));
-            $this->target_object = $item;
-         }
-      }
-      else {
-         $this->target_object = $this->obj;
-      }
-   }
 
    function getEvents() {
       global $LANG;
