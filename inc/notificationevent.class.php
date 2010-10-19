@@ -78,7 +78,7 @@ class NotificationEvent extends CommonDBTM {
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
                                                                $entity) as $data) {
-         logDebug("Notification::getNotificationsByEventAndType", $data);
+
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id='.$data['id']);
 

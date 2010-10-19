@@ -410,9 +410,9 @@ class ReservationItem extends CommonDBTM {
             $message = $items_messages[$entity];
             $cron_status = 1;
             if ($task) {
+               $task->addVolume(1);
                $task->log(Dropdown::getDropdownName("glpi_entities",
                                                     $entity).":  $message\n");
-               $task->addVolume(1);
             } else {
                addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
                                                                  $entity).":  $message");
