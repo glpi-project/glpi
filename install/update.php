@@ -684,10 +684,12 @@ function updateDbUpTo031() {
       case "0.72.4" :
          include("update_0723_078.php");
          update0723to078();
-
       case "0.78" :
-         include("update_078_080.php");
-         update078to080();
+         include("update_078_0781.php");
+         update078to0781();
+      case "0.78.1" :
+         include("update_0781_080.php");
+         update0781to080();
          break;
 
       case "0.80" :
@@ -729,8 +731,10 @@ function updateDbUpTo031() {
          update0722to0723();
          include("update_0723_078.php");
          update0723to078();
-         include("update_078_080.php");
-         update078to080();
+         include("update_078_0781.php");
+         update078to0781();
+         include("update_0781_080.php");
+         update0781to080();
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
