@@ -59,6 +59,8 @@ class EntityData extends CommonDBTM {
                                                          'autoclose_delay'),
                                        // Notification
                                        'notification' => array('admin_email', 'admin_reply',
+                                                               'admin_email_name',
+                                                               'admin_reply_name',
                                                                'mailing_signature',
                                                                'cartridges_alert_repeat',
                                                                'consumables_alert_repeat',
@@ -344,17 +346,27 @@ class EntityData extends CommonDBTM {
       echo "<td>";
       autocompletionTextField($entitynotification, "admin_email");
       echo "</td>";
-      echo "<td rowspan='2' class='middle right'>" . $LANG['setup'][204] . "</td>";
-      echo "<td rowspan='2' class='middle right'>";
-      echo "<textarea cols='60' rows='5' name='mailing_signature'>".
-             $entitynotification->fields["mailing_signature"]."</textarea>";
+      echo "<td>" . $LANG['setup'][208] . "</td><td>";
+      autocompletionTextField($entitynotification, "admin_email_name");
       echo "</td></tr>";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][207]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       autocompletionTextField($entitynotification, "admin_reply");
+      echo "</td>";
+      echo "<td>" . $LANG['setup'][209] . "</td><td>";
+      autocompletionTextField($entitynotification, "admin_reply_name");
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='middle right'>" . $LANG['setup'][204] . "</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='60' rows='5' name='mailing_signature'>".
+             $entitynotification->fields["mailing_signature"]."</textarea>";
+      echo "</td></tr>";
+
 
       echo "<tr><th colspan='4'>".$LANG['setup'][242]."</th></tr>";
       echo "<tr class='tab_bg_1'>";
