@@ -125,7 +125,7 @@ class DBmysql {
          // Round robin choice
          $i = (isset($choice) ? $choice : mt_rand(0,count($this->dbhost)-1));
          $host = $this->dbhost[$i];
-         //logDebug("Chosen server $i = $host");
+
       } else {
          $host = $this->dbhost;
       }
