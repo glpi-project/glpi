@@ -3442,6 +3442,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
  *   - linkid : string / html id to put to the link link (used for ajax)
  *   - linktarget : string / target for the link
  *   - display : boolean / display the item : false return the datas
+ *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
  *
  * @return nothing (print out an HTML div)
  **/
@@ -3456,6 +3457,7 @@ function showToolTip($content, $options=array()) {
    $param['linktarget'] = '';
    $param['ajax']       = '';
    $param['display']    = true;
+   $param['autoclose']  = true;
 
    if (is_array($options) && count($options)) {
       foreach ($options as $key => $val) {
@@ -3499,8 +3501,17 @@ function showToolTip($content, $options=array()) {
             target: '".$param['applyto']."',
             anchor: 'left',
             autoShow: true,
-            autoHide: true,
-            dismissDelay: 0";
+            ";
+
+   if ($param['autoclose']) {
+      $out .= "autoHide: true,
+            
+               dismissDelay: 0";
+   } else {
+      $out .= "autoHide: false,
+               closable: true,
+               autoScroll: true";
+   }
 
    if (!empty($param['title'])) {
       $out .= ",title: \"".$param['title']."\"";

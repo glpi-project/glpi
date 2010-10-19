@@ -4584,7 +4584,30 @@ class Search {
 
          default :
             //TODO supprimer valign pour mettre class mais conflit avec $extraparam
-            $out = "<td $extraparam valign='top'>".$value."</td>\n";
+            $out = "<td $extraparam valign='top'>";
+
+            if (!preg_match('/<hr>/',$value)) {
+               $values = preg_split("/<br>/i",$value);
+               $line_delimiter = '<br>';
+            } else {
+               $values = preg_split("/<hr>/i",$value);
+               $line_delimiter = '<hr>';
+            }
+
+            $limitto = 20;
+            if (count($values) > $limitto) {
+               for ( $i=0 ; $i<$limitto ; $i++) {
+                  $out .= $values[$i].$line_delimiter;
+               }
+               $rand=mt_rand();
+               $out .= "...&nbsp;";
+               $out .= showToolTip($value,array('display'   => false,
+                                                'autoclose' => false));
+
+            } else {
+               $out.= $value;
+            }
+            $out.= "</td>\n";
       }
       $num++;
       return $out;
