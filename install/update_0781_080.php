@@ -44,7 +44,7 @@
  *
  * @return bool for success (will die for most error)
  */
-function update078to080($output='HTML') {
+function update0781to080($output='HTML') {
 	global $DB, $LANG;
 
    $updateresult = true;
