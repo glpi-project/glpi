@@ -443,7 +443,7 @@ class NotificationTarget extends CommonDBChild {
 
       $this->addToAddressesList(array("email"    => $CFG_GLPI["admin_email"],
                                       "name"     => $CFG_GLPI["admin_email_name"]
-                                      "language" => $CFG_GLPI["language"]));
+                                      "language" => $CFG_GLPI["language"]);
    }
 
 
