@@ -1624,7 +1624,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 
       if ($fp) {
          $request  = "GET $url HTTP/1.1\r\n";
-         $request .= "Host: ".$CFG_GLPI["proxy_name"]."\r\n";
+         $request .= "Host: ".$taburl["host"]."\r\n";
          if (!empty($CFG_GLPI["proxy_user"])) {
             $request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".
                         $CFG_GLPI["proxy_password"]) . "\r\n";
