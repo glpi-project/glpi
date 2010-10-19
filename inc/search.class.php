@@ -4586,7 +4586,7 @@ class Search {
             //TODO supprimer valign pour mettre class mais conflit avec $extraparam
             $out = "<td $extraparam valign='top'>";
 
-            if (!preg_match('/<hr>/',$value)) {
+/*            if (!preg_match('/<hr>/',$value)) {
                $values = preg_split("/<br>/i",$value);
                $line_delimiter = '<br>';
             } else {
@@ -4604,9 +4604,9 @@ class Search {
                $out .= showToolTip($value,array('display'   => false,
                                                 'autoclose' => false));
 
-            } else {
-               $out.= $value;
-            }
+            } else {*/
+            $out.= $value;
+//             }
             $out.= "</td>\n";
       }
       $num++;
