@@ -67,7 +67,6 @@ class NotificationEvent extends CommonDBTM {
 
       //If notifications are enabled in GLPI's configuration
       if ($CFG_GLPI["use_mailing"]) {
-//          logDebug("debut");
          $email_processed = array();
          $email_notprocessed = array();
          //Get template's informations
@@ -165,7 +164,6 @@ class NotificationEvent extends CommonDBTM {
             echo "<th>".$LANG['mailing'][113].'</th><th>'.$LANG['mailing'][118]."</th></tr>";
 
             foreach ($events as $event => $label) {
-//                logDebug("before raiseEvent $event");
                self::raiseEvent($event, $item, $options, $label);
             }
 
