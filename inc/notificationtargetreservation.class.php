@@ -52,7 +52,7 @@ class NotificationTargetReservation extends NotificationTarget {
                INNER JOIN `glpi_users` ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id`)
                WHERE `glpi_profiles_users`.`profiles_id` = '".$profiles_id."' ".
                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
-                                                $this->target_object->getEntityID(), true);
+                                                $this->entity, true);
 
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
