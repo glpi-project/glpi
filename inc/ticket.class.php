@@ -5030,7 +5030,7 @@ class Ticket extends CommonDBTM {
                                         INTERVAL $delay DAY)<NOW()
                             AND `glpi_ticketsatisfactions`.`id` IS NULL
                       ORDER BY `closedate` ASC";
-logDebug($query);
+// logDebug($query);
             $nb = 0;
             $max_closedate = '';
 
