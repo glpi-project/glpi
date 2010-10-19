@@ -442,8 +442,8 @@ class NotificationTarget extends CommonDBChild {
       global $CFG_GLPI;
 
       $this->addToAddressesList(array("email"    => $CFG_GLPI["admin_email"],
-                                      "name"     => $CFG_GLPI["admin_email_name"]
-                                      "language" => $CFG_GLPI["language"]);
+                                      "name"     => $CFG_GLPI["admin_email_name"],
+                                      "language" => $CFG_GLPI["language"]));
    }
 
 
