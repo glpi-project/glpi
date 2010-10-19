@@ -1007,21 +1007,33 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
  *@param $firstname string : firstname of the user
  *@param $link int : include link (only if $link==1)
  *@param $cut int : limit string length (0 = no limit)
+ *@param $force_config boolean : force order and id_visible to use common config
  *
  *@return string : formatted username
 **/
-function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0) {
+function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $force_config=false) {
    global $CFG_GLPI;
 
    $before = "";
    $after  = "";
    $viewID = "";
 
+   $order = $CFG_GLPI["names_format"];
+   if (isset($_SESSION["glpinames_format"]) && !$force_config ) {
+      $order = $_SESSION["glpinames_format"];
+   }
+
+   $id_visible = $CFG_GLPI["is_ids_visible"];
+   if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config ) {
+      $id_visible = $_SESSION["glpiis_ids_visible"];
+   }
+
+
    if (strlen($realname)>0) {
       $temp = $realname;
 
       if (strlen($firstname)>0) {
-         if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
+         if ($order==FIRSTNAME_BEFORE) {
             $temp = $firstname." ".$temp;
          } else {
             $temp .= " ".$firstname;
@@ -1036,7 +1048,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0) {
       $temp = $login;
    }
 
-   if ($ID>0 && (strlen($temp)==0 || $_SESSION["glpiis_ids_visible"])) {
+   if ($ID>0 && (strlen($temp)==0 || $id_visible)) {
       $viewID = "&nbsp;($ID)";
    }
 

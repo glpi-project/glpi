@@ -281,8 +281,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $query = "SELECT DISTINCT `glpi_users`.`email` AS email,
-                          `glpi_users`.`language` AS language
+         $query = $this->getDistinctUserSql()."
                    FROM `glpi_ticketvalidations`
                    LEFT JOIN `glpi_users`
                         ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
@@ -302,8 +301,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $query = "SELECT DISTINCT `glpi_users`.`email` AS email,
-                          `glpi_users`.`language` AS language
+         $query = $this->getDistinctUserSql()."
                    FROM `glpi_ticketvalidations`
                    LEFT JOIN `glpi_users`
                         ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
@@ -323,8 +321,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['followup_id'])) {
-         $query = "SELECT DISTINCT `glpi_users`.`email` AS email,
-                          `glpi_users`.`language` AS language
+         $query = $this->getDistinctUserSql()."
                    FROM `glpi_ticketfollowups`
                    LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)
                    WHERE `glpi_ticketfollowups`.`id` = '".$options['followup_id']."'";
@@ -343,8 +340,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['task_id'])) {
-         $query = "SELECT DISTINCT `glpi_users`.`email` AS email,
-                          `glpi_users`.`language` AS language
+         $query = $this->getDistinctUserSql()."
                    FROM `glpi_tickettasks`
                    LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)
                    WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
@@ -363,8 +359,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['task_id'])) {
-         $query = "SELECT DISTINCT `glpi_users`.`email` AS email,
-                          `glpi_users`.`language` AS language
+         $query = $this->getDistinctUserSql()."
                    FROM `glpi_tickettasks`
                    LEFT JOIN `glpi_ticketplannings`
                         ON (`glpi_ticketplannings`.`tickettasks_id` = `glpi_tickettasks`.`id`)
