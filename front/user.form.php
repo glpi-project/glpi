@@ -138,10 +138,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'],'w');
 
    if (isset($_POST["auths_id"])) {
-      $input["id"] = $_POST["id"];
-      $input["authtype"] = $_POST["authtype"];
-      $input["auths_id"] = $_POST["auths_id"];
-      $user->update($input);
+      User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
