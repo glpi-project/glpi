@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -43,21 +42,25 @@
  *       empty = no ouput for PHPUnit
  *
  * @return bool for success (will die for most error)
- */
+**/
 function update0781to080($output='HTML') {
-	global $DB, $LANG;
+   global $DB, $LANG;
 
-   $updateresult = true;
+   $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
    if ($output) {
       echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
    }
+
+   $migration = new Migration("080");
+
    displayMigrationMessage("080"); // Start
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Calendar'); // Updating schema
 
-   $default_calendar_id=0;
+
+   $default_calendar_id = 0;
    if (!TableExists('glpi_calendars')) {
       $query = "CREATE TABLE `glpi_calendars` (
                   `id` int(11) NOT NULL auto_increment,
@@ -75,12 +78,14 @@ function update0781to080($output='HTML') {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_calendars " . $LANG['update'][90] . $DB->error());
 
-      $ADDTODISPLAYPREF['Calendar']=array(19);
+      $ADDTODISPLAYPREF['Calendar'] = array(19);
       // Create default calendar : use existing config planning_begin _end
-      $query="INSERT INTO `glpi_calendars` (`name`,`entities_id`,`is_recursive`,`comment`)
-                  VALUES ('Default',0,1,'Default calendar');";
-      $DB->query($query) or die("0.80 add default glpi_calendars " . $LANG['update'][90] . $DB->error());
-      $default_calendar_id=$DB->insert_id();
+      $query = "INSERT INTO `glpi_calendars`
+                       (`name`, `entities_id`, `is_recursive`, `comment`)
+                VALUES ('Default', 0, 1, 'Default calendar');";
+      $DB->query($query)
+      or die("0.80 add default glpi_calendars " . $LANG['update'][90] . $DB->error());
+      $default_calendar_id = $DB->insert_id();
    }
 
    if (!TableExists('glpi_calendarsegments')) {
@@ -96,18 +101,26 @@ function update0781to080($output='HTML') {
                   KEY `calendars_id` (`calendars_id`),
                   KEY `day` (`day`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query) or die("0.80 create glpi_calendarsegments " . $LANG['update'][90] . $DB->error());
+      $DB->query($query)
+      or die("0.80 create glpi_calendarsegments " . $LANG['update'][90] . $DB->error());
+
       // add defautl days : from monday to friday
       if ($default_calendar_id>0) {
-         $query="SELECT `planning_begin`, `planning_end` FROM `glpi_configs` WHERE id=1";
+         $query = "SELECT `planning_begin`, `planning_end`
+                   FROM `glpi_configs`
+                   WHERE `id` = '1'";
+
          if ($result = $DB->query($query)) {
-            $begin=$DB->result($result,0,'planning_begin');
-            $end=$DB->result($result,0,'planning_end');
+            $begin = $DB->result($result, 0, 'planning_begin');
+            $end   = $DB->result($result, 0, 'planning_end');
+
             if ($begin < $end) {
-               for ($i=1;$i<6;$i++) {
-                  $query="INSERT INTO `glpi_calendarsegments` (`calendars_id`,`day`,`begin`,`end`)
-                        VALUES ($default_calendar_id,$i,'$begin','$end');";
-                  $DB->query($query) or die("0.80 add default glpi_calendarsegments " . $LANG['update'][90] . $DB->error());
+               for ($i=1 ; $i<6 ; $i++) {
+                  $query = "INSERT INTO `glpi_calendarsegments`
+                                   (`calendars_id`, `day`, `begin`, `end`)
+                            VALUES ($default_calendar_id, $i, '$begin', '$end')";
+                  $DB->query($query)
+                  or die("0.80 add default glpi_calendarsegments " . $LANG['update'][90] . $DB->error());
                }
             }
          }
@@ -117,11 +130,13 @@ function update0781to080($output='HTML') {
          include_once (GLPI_ROOT . "/inc/commondbchild.class.php");
          include_once (GLPI_ROOT . "/inc/calendarsegment.class.php");
          include_once (GLPI_ROOT . "/inc/calendar.class.php");
-         $calendar=new Calendar();
+         $calendar = new Calendar();
          if ($calendar->getFromDB($default_calendar_id)) {
-            $query="UPDATE `glpi_calendars` SET `cache_duration`='".exportArrayToDB($calendar->getDaysDurations())."'
-                        WHERE `id`='$default_calendar_id';";
-                  $DB->query($query) or die("0.80 update default calendar cache " . $LANG['update'][90] . $DB->error());
+            $query = "UPDATE `glpi_calendars`
+                      SET `cache_duration` = '".exportArrayToDB($calendar->getDaysDurations())."'
+                      WHERE `id` = '$default_calendar_id'";
+                  $DB->query($query)
+                  or die("0.80 update default calendar cache " . $LANG['update'][90] . $DB->error());
          }
       }
 
@@ -144,7 +159,7 @@ function update0781to080($output='HTML') {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_holidays " . $LANG['update'][90] . $DB->error());
 
-      $ADDTODISPLAYPREF['Holiday']=array(11,12,13);
+      $ADDTODISPLAYPREF['Holiday'] = array(11, 12, 13);
 
 //       $perpetualaddday=array(array('date'=>'2000-01-01','name'=>"New Year Day"),
 //                            array('date'=>'2000-03-17','name'=>"St. Patrick\'s Day"),
@@ -177,7 +192,8 @@ function update0781to080($output='HTML') {
                   UNIQUE KEY `unicity` (`calendars_id`,`holidays_id`),
                   KEY `holidays_id` (`holidays_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query) or die("0.80 create glpi_calendars_holidays " . $LANG['update'][90] . $DB->error());
+      $DB->query($query)
+      or die("0.80 create glpi_calendars_holidays " . $LANG['update'][90] . $DB->error());
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - SLA'); // Updating schema
@@ -202,19 +218,22 @@ function update0781to080($output='HTML') {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_slas " . $LANG['update'][90] . $DB->error());
 
-      $ADDTODISPLAYPREF['SLA']=array(4);
+      $ADDTODISPLAYPREF['SLA'] = array(4);
 
       // Get first Ticket template
-      $query="SELECT id FROM `glpi_notificationtemplates` WHERE `itemtype` LIKE 'Ticket%' ORDER BY id ASC";
+      $query = "SELECT `id`
+                FROM `glpi_notificationtemplates`
+                WHERE `itemtype` LIKE 'Ticket%'
+                ORDER BY `id` ASC";
+
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
 
-            $query="INSERT INTO `glpi_notifications`
-                                    VALUES (NULL, 'Ticket Recall', 0, 'Ticket', 'recall',
-                                             'mail',".$DB->result($result,0,0).",
-                                             '', 1, 1, NOW());";
+            $query = "INSERT INTO `glpi_notifications`
+                      VALUES (NULL, 'Ticket Recall', 0, 'Ticket', 'recall', 'mail',
+                              ".$DB->result($result,0,0).", '', 1, 1, NOW());";
             $DB->query($query)
-               or die("0.80 insert notification" . $LANG['update'][90] . $DB->error());
+            or die("0.80 insert notification" . $LANG['update'][90] . $DB->error());
          }
       }
 
@@ -237,219 +256,202 @@ function update0781to080($output='HTML') {
 
    if (!TableExists('glpi_slalevelactions')) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_slalevelactions` (
-         `id` int(11) NOT NULL auto_increment,
-         `slalevels_id` int(11) NOT NULL default '0',
-         `action_type` varchar(255) collate utf8_unicode_ci default NULL,
-         `field` varchar(255) collate utf8_unicode_ci default NULL,
-         `value` varchar(255) collate utf8_unicode_ci default NULL,
-         PRIMARY KEY  (`id`),
-         KEY `slalevels_id` (`slalevels_id`)
-         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
-      $DB->query($query) or die("0.80 create glpi_slalevelactions " . $LANG['update'][90] . $DB->error());
+                  `id` int(11) NOT NULL auto_increment,
+                  `slalevels_id` int(11) NOT NULL default '0',
+                  `action_type` varchar(255) collate utf8_unicode_ci default NULL,
+                  `field` varchar(255) collate utf8_unicode_ci default NULL,
+                  `value` varchar(255) collate utf8_unicode_ci default NULL,
+                  PRIMARY KEY  (`id`),
+                  KEY `slalevels_id` (`slalevels_id`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+      $DB->query($query)
+      or die("0.80 create glpi_slalevelactions " . $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists('glpi_profiles','calendar')) {
-      $query = "ALTER TABLE `glpi_profiles` ADD `calendar` CHAR( 1 ) NULL";
-      $DB->query($query) or die("0.80 add calendar in glpi_profiles". $LANG['update'][90] . $DB->error());
-
-      $query = "UPDATE `glpi_profiles` SET `calendar`=`entity_dropdown`";
-      $DB->query($query) or die("0.80 add calendar right users which are able to write entity_dropdown " . $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_profiles", "calendar", "CHAR( 1 ) NULL")) {
+      $migration->migrationOneTable('glpi_profiles');
+      $query = "UPDATE `glpi_profiles`
+                SET `calendar` = `entity_dropdown`";
+      $DB->query($query)
+      or die("0.80 add calendar right users which are able to write entity_dropdown " . $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists('glpi_profiles','sla')) {
-      $query = "ALTER TABLE `glpi_profiles` ADD `sla` CHAR( 1 ) NULL";
-      $DB->query($query) or die("0.80 add sla in glpi_profiles". $LANG['update'][90] . $DB->error());
-
-      $query = "UPDATE `glpi_profiles` SET `sla`=`entity_rule_ticket`";
-      $DB->query($query) or die("0.80 add sla right users which are able to write entity_rule_ticket " . $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_profiles", "sla", "CHAR( 1 ) NULL")) {
+      $migration->migrationOneTable('glpi_profiles');
+      $query = "UPDATE `glpi_profiles`
+                SET `sla` = `entity_rule_ticket`";
+      $DB->query($query)
+      or die("0.80 add sla right users which are able to write entity_rule_ticket " . $LANG['update'][90] . $DB->error());
    }
 
-
-   if (!FieldExists('glpi_tickets','slas_id')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `slas_id` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add slas_id in glpi_tickets". $LANG['update'][90] . $DB->error());
-
-      $query = "ALTER TABLE `glpi_tickets` ADD INDEX `slas_id` (`slas_id`)";
-      $DB->query($query) or die("0.80 add index on slas_id in glpi_tickets". $LANG['update'][90] . $DB->error());
-
-   }
-
-   if (!FieldExists('glpi_tickets','slalevels_id')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `slalevels_id` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add slalevels_id in glpi_tickets". $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_tickets','due_date')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `due_date` datetime default NULL";
-      $DB->query($query) or die("0.80 add due_date in glpi_tickets". $LANG['update'][90] . $DB->error());
-
-      $query = "ALTER TABLE `glpi_tickets` ADD INDEX `due_date` (`due_date`)";
-      $DB->query($query) or die("0.80 add index on due_date in glpi_tickets". $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_tickets','begin_waiting_date')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `begin_waiting_date` datetime default NULL";
-      $DB->query($query) or die("0.80 add begin_waiting_date in glpi_tickets". $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_tickets','sla_waiting_duration')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `sla_waiting_duration` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add sla_waiting_duration in glpi_tickets". $LANG['update'][90] . $DB->error());
-   }
-
+   $migration->addField("glpi_tickets", "slas_id", "INT( 11 ) NOT NULL DEFAULT 0");
+   $migration->addKey("glpi_tickets", "slas_id");
+   $migration->addField("glpi_tickets", "slalevels_id", "INT( 11 ) NOT NULL DEFAULT 0");
+   $migration->addField("glpi_tickets", "due_date", "datetime default NULL");
+   $migration->addKey("glpi_tickets", "due_date");
+   $migration->addField("glpi_tickets", "begin_waiting_date", "datetime default NULL");
+   $migration->addField("glpi_tickets", "sla_waiting_duration", "INT( 11 ) NOT NULL DEFAULT 0");
 
    if (!TableExists('glpi_slalevels_tickets')) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_slalevels_tickets` (
-         `id` int(11) NOT NULL auto_increment,
-         `tickets_id` int(11) NOT NULL default '0',
-         `slalevels_id` int(11) NOT NULL default '0',
-         `date` datetime default NULL,
-         PRIMARY KEY  (`id`),
-         KEY `tickets_id` (`tickets_id`),
-         KEY `slalevels_id` (`slalevels_id`)
-         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
-      $DB->query($query) or die("0.80 create glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
+                  `id` int(11) NOT NULL auto_increment,
+                  `tickets_id` int(11) NOT NULL default '0',
+                  `slalevels_id` int(11) NOT NULL default '0',
+                  `date` datetime default NULL,
+                  PRIMARY KEY  (`id`),
+                  KEY `tickets_id` (`tickets_id`),
+                  KEY `slalevels_id` (`slalevels_id`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+      $DB->query($query)
+      or die("0.80 create glpi_slalevels_tickets " . $LANG['update'][90] . $DB->error());
 
-      $query="INSERT INTO `glpi_crontasks`
-         (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-         VALUES
-         ('SlaLevel_Ticket', 'slaticket', 300, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL)";
-      $DB->query($query) or die("0.80 populate glpi_crontasks for slaticket" . $LANG['update'][90] . $DB->error());
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('SlaLevel_Ticket', 'slaticket', 300, NULL, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->query($query)
+      or die("0.80 populate glpi_crontasks for slaticket" . $LANG['update'][90] . $DB->error());
 
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - PasswordForget'); // Updating schema
 
-   if (!FieldExists('glpi_users','token')) {
-      $query = "ALTER TABLE `glpi_users` ADD `token` char( 40 ) NULL DEFAULT ''";
-      $DB->query($query) or die("0.80 add token in glpi_users". $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_users", "token", "char( 40 ) NULL DEFAULT ''");
+   $migration->addField("glpi_users", "tokendate", "datetime NULL DEFAULT NULL");
 
-   if (!FieldExists('glpi_users','tokendate')) {
-      $query = "ALTER TABLE `glpi_users` ADD `tokendate` datetime NULL DEFAULT NULL";
-      $DB->query($query) or die("0.80 add tokendate in glpi_users". $LANG['update'][90] . $DB->error());
-   }
-
-   $query="SELECT * FROM `glpi_notificationtemplates` WHERE `name` = 'Password Forget'";
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `name` = 'Password Forget'";
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==0) {
          $query = "INSERT INTO `glpi_notificationtemplates`
-                     VALUES(NULL, 'Password Forget', 'User', NOW(),'');";
-         $DB->query($query) or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
-         $notid=$DB->insert_id();
+                   VALUES(NULL, 'Password Forget', 'User', NOW(),'');";
+         $DB->query($query)
+         or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
+         $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                                 VALUES(NULL, $notid, '','##user.action##',
-                        '##lang.user.realname## ##lang.user.firstname##
+                   VALUES(NULL, $notid, '','##user.action##',
+                          '##lang.user.realname## ##lang.user.firstname##
 
 ##lang.user.information##
 
 ##lang.user.link## ##user.passwordforgeturl##',
-                        '&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
+                          '&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.user.information##&lt;/p&gt;
 &lt;p&gt;##lang.user.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');";
-      $DB->query($query) or die("0.80 add password forget notification translation" . $LANG['update'][90] . $DB->error());
+      $DB->query($query)
+      or die("0.80 add password forget notification translation" . $LANG['update'][90] . $DB->error());
 
-      $query="INSERT INTO `glpi_notifications`
-                                VALUES (NULL, 'Password Forget', 0, 'User', 'passwordforget',
-                                       'mail',$notid,
-                                       '', 1, 1, NOW());";
-      $DB->query($query) or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
-      $notifid=$DB->insert_id();
+      $query = "INSERT INTO `glpi_notifications`
+                VALUES (NULL, 'Password Forget', 0, 'User', 'passwordforget', 'mail', $notid, '',
+                        1, 1, NOW());";
+      $DB->query($query)
+      or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
+      $notifid = $DB->insert_id();
 
       $query = "INSERT INTO `glpi_notificationtargets`
-                     (`id`, `notifications_id`, `type`, `items_id`)
-                     VALUES (NULL, $notifid, 1, 19);";
-      $DB->query($query) or die("0.80 add password forget notification target" . $LANG['update'][90] . $DB->error());
+                       (`id`, `notifications_id`, `type`, `items_id`)
+                VALUES (NULL, $notifid, 1, 19);";
+      $DB->query($query)
+      or die("0.80 add password forget notification target" . $LANG['update'][90] . $DB->error());
       }
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Ticket'); // Updating schema
 
+   $migration->addField("glpi_tickets", "ticket_waiting_duration", "INT( 11 ) NOT NULL DEFAULT 0");
 
-   if (!FieldExists('glpi_tickets','ticket_waiting_duration')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `ticket_waiting_duration` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add ticket_waiting_duration in glpi_tickets". $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_entitydatas", "calendars_id", "INT( 11 ) NOT NULL DEFAULT 0");
 
-   if (!FieldExists('glpi_entitydatas','calendars_id')) {
-      $query = "ALTER TABLE `glpi_entitydatas` ADD `calendars_id` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add calendars_id in glpi_entitydatas". $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_tickets','close_delay_stat')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `close_delay_stat` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add close_delay_stat in glpi_tickets". $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_tickets", "close_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0")) {
+      $migration->migrationOneTable('glpi_tickets');
       // Manage stat computation for existing tickets
-      $query="UPDATE `glpi_tickets`
-               SET `close_delay_stat` = (UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))
-               WHERE `glpi_tickets`.`status` = 'closed'
-                  AND `glpi_tickets`.`date` IS NOT NULL
-                  AND `glpi_tickets`.`closedate` IS NOT NULL
-                  AND `glpi_tickets`.`closedate` > `glpi_tickets`.`date`";
-      $DB->query($query) or die("0.80 update ticket close_delay_stat value". $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_tickets`
+                SET `close_delay_stat`
+                  = (UNIX_TIMESTAMP(`glpi_tickets`.`closedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))
+                WHERE `glpi_tickets`.`status` = 'closed'
+                      AND `glpi_tickets`.`date` IS NOT NULL
+                      AND `glpi_tickets`.`closedate` IS NOT NULL
+                      AND `glpi_tickets`.`closedate` > `glpi_tickets`.`date`";
+      $DB->query($query)
+      or die("0.80 update ticket close_delay_stat value". $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists('glpi_tickets','solve_delay_stat')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `solve_delay_stat` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add solve_delay_stat in glpi_tickets". $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_tickets", "solve_delay_stat", "INT( 11 ) NOT NULL DEFAULT 0")) {
+      $migration->migrationOneTable('glpi_tickets');
       // Manage stat computation for existing tickets
-      $query="UPDATE `glpi_tickets`
-               SET `solve_delay_stat` = (UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))
-               WHERE (`glpi_tickets`.`status` = 'closed' OR `glpi_tickets`.`status` = 'solved')
-                  AND `glpi_tickets`.`date` IS NOT NULL
-                  AND `glpi_tickets`.`solvedate` IS NOT NULL
-                  AND `glpi_tickets`.`solvedate` > `glpi_tickets`.`date`";
-      $DB->query($query) or die("0.80 update solve_delay_stat values in glpi_tickets". $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_tickets`
+                SET `solve_delay_stat`
+                  = (UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`))
+                WHERE (`glpi_tickets`.`status` = 'closed'
+                        OR `glpi_tickets`.`status` = 'solved')
+                      AND `glpi_tickets`.`date` IS NOT NULL
+                      AND `glpi_tickets`.`solvedate` IS NOT NULL
+                      AND `glpi_tickets`.`solvedate` > `glpi_tickets`.`date`";
+      $DB->query($query)
+      or die("0.80 update solve_delay_stat values in glpi_tickets". $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists('glpi_tickets','takeintoaccount_delay_stat')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `takeintoaccount_delay_stat` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 add takeintoaccount_delay_stat in glpi_tickets". $LANG['update'][90] . $DB->error());
-
+   if ($migration->addField("glpi_tickets", "takeintoaccount_delay_stat",
+                            "INT( 11 ) NOT NULL DEFAULT 0")) {
+      $migration->migrationOneTable('glpi_tickets');
       // Manage stat computation for existing tickets
       // Solved tickets
-      $query="SELECT `glpi_tickets`.`id` AS ID,
-                  MIN(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
-                  MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
-                  MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
+      $query = "SELECT `glpi_tickets`.`id` AS ID,
+                       MIN(UNIX_TIMESTAMP(`glpi_tickets`.`solvedate`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS OPEN,
+                       MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
+                       MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
                FROM `glpi_tickets`
-               LEFT JOIN `glpi_ticketfollowups` ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
-               LEFT JOIN `glpi_tickettasks` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)
-               WHERE (`glpi_tickets`.`status` = 'closed' OR `glpi_tickets`.`status` = 'solved')
+               LEFT JOIN `glpi_ticketfollowups`
+                     ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
+               LEFT JOIN `glpi_tickettasks`
+                     ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)
+               WHERE (`glpi_tickets`.`status` = 'closed'
+                      OR `glpi_tickets`.`status` = 'solved')
                      AND `glpi_tickets`.`solvedate` IS NOT NULL
                GROUP BY `glpi_tickets`.`id`";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
-               $firstactiontime=min($data['OPEN'],$data['FIRST'],$data['FIRST2']);
-               $firstactiontime=max(0,$firstactiontime);
-               $query2="UPDATE `glpi_tickets` SET `takeintoaccount_delay_stat`='$firstactiontime'
-                        WHERE `id` = '".$data['ID']."'";
-               $DB->query($query2) or die("0.80 update takeintoaccount_delay_stat values for #".
-                                          $data['ID']." ". $LANG['update'][90] . $DB->error());
+               $firstactiontime = min($data['OPEN'], $data['FIRST'], $data['FIRST2']);
+               $firstactiontime = max(0, $firstactiontime);
+               $query2 = "UPDATE `glpi_tickets`
+                          SET `takeintoaccount_delay_stat` = '$firstactiontime'
+                          WHERE `id` = '".$data['ID']."'";
+               $DB->query($query2)
+               or die("0.80 update takeintoaccount_delay_stat values for #".
+                      $data['ID']." ". $LANG['update'][90] . $DB->error());
             }
          }
       }
       // Not solved tickets
-      $query="SELECT `glpi_tickets`.`id` AS ID,
-                  MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
-                  MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
+      $query = "SELECT `glpi_tickets`.`id` AS ID,
+                       MIN(UNIX_TIMESTAMP(`glpi_ticketfollowups`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST,
+                       MIN(UNIX_TIMESTAMP(`glpi_tickettasks`.`date`) - UNIX_TIMESTAMP(`glpi_tickets`.`date`)) AS FIRST2
                FROM `glpi_tickets`
-               LEFT JOIN `glpi_ticketfollowups` ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
-               LEFT JOIN `glpi_tickettasks` ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)
-               WHERE (`glpi_tickets`.`status` <> 'closed' AND `glpi_tickets`.`status` <> 'solved')
+               LEFT JOIN `glpi_ticketfollowups`
+                     ON (`glpi_ticketfollowups`.`tickets_id` = `glpi_tickets`.`id`)
+               LEFT JOIN `glpi_tickettasks`
+                     ON (`glpi_tickettasks`.`tickets_id` = `glpi_tickets`.`id`)
+               WHERE (`glpi_tickets`.`status` <> 'closed'
+                      AND `glpi_tickets`.`status` <> 'solved')
                      OR `glpi_tickets`.`solvedate` IS NULL
                GROUP BY `glpi_tickets`.`id`";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
-               $firstactiontime=min($data['FIRST'],$data['FIRST2']);
-               $firstactiontime=max(0,$firstactiontime);
-               $query2="UPDATE `glpi_tickets` SET `takeintoaccount_delay_stat`='$firstactiontime'
-                        WHERE `id` = '".$data['ID']."'";
-               $DB->query($query2) or die("0.80 update takeintoaccount_delay_stat values for #".
-                                          $data['ID']." ". $LANG['update'][90] . $DB->error());
+               $firstactiontime = min($data['FIRST'], $data['FIRST2']);
+               $firstactiontime = max(0, $firstactiontime);
+               $query2 = "UPDATE `glpi_tickets`
+                          SET `takeintoaccount_delay_stat` = '$firstactiontime'
+                          WHERE `id` = '".$data['ID']."'";
+               $DB->query($query2)
+               or die("0.80 update takeintoaccount_delay_stat values for #".$data['ID']. " ".
+                      $LANG['update'][90] . $DB->error());
             }
          }
       }
@@ -457,87 +459,90 @@ function update0781to080($output='HTML') {
    }
 
    // Put realtime in seconds
-   if (!FieldExists('glpi_tickets','actiontime')) {
-
-      $query = "ALTER TABLE `glpi_tickets` ADD `actiontime` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 alter realtime to actiontime in glpi_tickets". $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_tickets", "actiontime", "INT( 11 ) NOT NULL DEFAULT 0")) {
+      $migration->migrationOneTable('glpi_tickets');
 
       if (FieldExists('glpi_tickets','realtime')) {
-         $query = "UPDATE `glpi_tickets` SET `actiontime` = ROUND(realtime * 3600)";
-         $DB->query($query) or die("0.80 compute actiontime value in glpi_tickets". $LANG['update'][90] . $DB->error());
-         $query = "ALTER TABLE `glpi_tickets` DROP `realtime`";
-         $DB->query($query) or die("0.80 alter realtime in glpi_tickets". $LANG['update'][90] . $DB->error());
+         $query = "UPDATE `glpi_tickets`
+                   SET `actiontime` = ROUND(realtime * 3600)";
+         $DB->query($query)
+         or die("0.80 compute actiontime value in glpi_tickets". $LANG['update'][90] . $DB->error());
+
+         $migration->dropKey("glpi_tickets", "realtime");
       }
    }
 
-   if (!FieldExists('glpi_tickettasks','actiontime')) {
-
-      $query = "ALTER TABLE `glpi_tickettasks` ADD `actiontime` INT( 11 ) NOT NULL DEFAULT 0";
-      $DB->query($query) or die("0.80 alter realtime to actiontime in glpi_tickettasks". $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_tickettasks", "actiontime", "INT( 11 ) NOT NULL DEFAULT 0")) {
+      $migration->migrationOneTable('glpi_tickettasks');
 
       if (FieldExists('glpi_tickettasks','realtime')) {
-         $query = "UPDATE `glpi_tickettasks` SET `actiontime` = ROUND(realtime * 3600)";
-         $DB->query($query) or die("0.80 compute actiontime value in glpi_tickettasks". $LANG['update'][90] . $DB->error());
+         $query = "UPDATE `glpi_tickettasks`
+                   SET `actiontime` = ROUND(realtime * 3600)";
+         $DB->query($query)
+         or die("0.80 compute actiontime value in glpi_tickettasks". $LANG['update'][90] . $DB->error());
 
-         $query = "ALTER TABLE `glpi_tickettasks` DROP `realtime`";
-         $DB->query($query) or die("0.80 alter realtime in glpi_tickettasks". $LANG['update'][90] . $DB->error());
+         $migration->dropKey("glpi_tickettasks", "realtime");
       }
    }
 
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Software'); // Updating schema
 
-
-   if (!FieldExists("glpi_softwareversions","operatingsystems_id")) {
-      $query = "ALTER TABLE  `glpi_softwareversions` ADD  `operatingsystems_id` INT( 11 ) NOT NULL";
-      $DB->query($query) or die("0.80 add operatingsystems_id field in glpi_softwareversions" . $LANG['update'][90] . $DB->error());
-      $query = "ALTER TABLE `glpi_softwareversions` ADD INDEX `operatingsystems_id` (`operatingsystems_id`)";
-      $DB->query($query) or die("0.80 add index on operatingsystems_id in glpi_softwareversions". $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_softwareversions", "operatingsystems_id", "INT( 11 ) NOT NULL")) {
+      $migration->addKey("glpi_softwareversions", "operatingsystems_id");
+      $migration->migrationOneTable('glpi_softwareversions');
 
       $query = "UPDATE `glpi_softwareversions`,
-                        (SELECT `id`, `operatingsystems_id` FROM `glpi_softwares`) AS SOFT
-                           SET `glpi_softwareversions`.`operatingsystems_id` = `SOFT`.`operatingsystems_id`
-                       WHERE `glpi_softwareversions`.`softwares_id` = `SOFT`.`id` ";
-      $DB->query($query) or die("0.80 transfer operatingsystems_id from glpi_softwares to glpi_softwareversions" . $LANG['update'][90] . $DB->error());
-      $query = "ALTER TABLE  `glpi_softwares` DROP  `operatingsystems_id`";
-      $DB->query($query) or die("0.80 drop operatingsystems_id field in glpi_softwares " . $LANG['update'][90] . $DB->error());
+                        (SELECT `id`, `operatingsystems_id`
+                         FROM `glpi_softwares`) AS SOFT
+                SET `glpi_softwareversions`.`operatingsystems_id` = `SOFT`.`operatingsystems_id`
+                WHERE `glpi_softwareversions`.`softwares_id` = `SOFT`.`id` ";
+      $DB->query($query)
+      or die("0.80 transfer operatingsystems_id from glpi_softwares to glpi_softwareversions" . $LANG['update'][90] . $DB->error());
+
+      $migration->dropKey("glpi_softwares", "operatingsystems_id");
    }
 
 
    if (!isIndex("glpi_computers_softwareversions","unicity")) {
       // clean datas
-      $query="SELECT `computers_id`, `softwareversions_id`, COUNT(*) AS CPT
+      $query = "SELECT `computers_id`,
+                       `softwareversions_id`,
+                       COUNT(*) AS CPT
                FROM `glpi_computers_softwareversions`
                GROUP BY `computers_id`, `softwareversions_id`
                HAVING CPT > 1";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
-               $query2="SELECT `id` FROM `glpi_computers_softwareversions`
-                        WHERE `computers_id` = '".$data['computers_id']."'
-                           AND `softwareversions_id` = '".$data['softwareversions_id']."'
-                        LIMIT 1";
+               $query2 = "SELECT `id`
+                          FROM `glpi_computers_softwareversions`
+                          WHERE `computers_id` = '".$data['computers_id']."'
+                                AND `softwareversions_id` = '".$data['softwareversions_id']."'
+                          LIMIT 1";
+
                if ($result2= $DB->query($query2)) {
                   if ($DB->numrows($result2)) {
                      $keep_id=$DB->result($result2,0,0);
-                     $query3="DELETE FROM `glpi_computers_softwareversions`
-                           WHERE `computers_id` = '".$data['computers_id']."'
-                           AND `softwareversions_id` = '".$data['softwareversions_id']."'
-                           AND `id` <> $keep_id";
-                     $DB->query($query3) or die("0.80 clean glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
+                     $query3 = "DELETE FROM `glpi_computers_softwareversions`
+                                WHERE `computers_id` = '".$data['computers_id']."'
+                                      AND `softwareversions_id` = '".$data['softwareversions_id']."'
+                                      AND `id` <> $keep_id";
+                     $DB->query($query3)
+                     or die("0.80 clean glpi_computers_softwareversions " . $LANG['update'][90] .
+                            $DB->error());
                   }
                }
             }
          }
       }
-      $query="ALTER TABLE `glpi_computers_softwareversions` ADD UNIQUE `unicity` ( `computers_id` , `softwareversions_id` )";
-      $DB->query($query) or die("0.80 add unicity index from glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
+
+      $migration->addKey("glpi_computers_softwareversions",
+                         array('computers_id', 'softwareversions_id'), 'unicity', "UNIQUE");
    }
 
-   if (isIndex("glpi_computers_softwareversions","computers_id")) {
-      $query="ALTER TABLE `glpi_computers_softwareversions` DROP INDEX `computers_id`";
-      $DB->query($query) or die("0.80 drop computers_id index from glpi_computers_softwareversions " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->dropKey("glpi_computers_softwareversions", "computers_id");
 
    if (!TableExists("glpi_computers_softwarelicenses")) {
       $query = "CREATE TABLE `glpi_computers_softwarelicenses` (
@@ -549,187 +554,164 @@ function update0781to080($output='HTML') {
                   KEY `softwarelicenses_id` (`softwarelicenses_id`),
                   UNIQUE `unicity` ( `computers_id` , `softwarelicenses_id` )
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query) or die("0.80 create glpi_tickettasks " . $LANG['update'][90] . $DB->error());
+      $DB->query($query)
+      or die("0.80 create glpi_tickettasks " . $LANG['update'][90] . $DB->error());
    }
 
    if (FieldExists("glpi_softwarelicenses","computers_id")) {
-      $query = "SELECT * FROM `glpi_softwarelicenses` WHERE `computers_id` > 0 and `computers_id` IS NOT NULL";
+      $query = "SELECT *
+                FROM `glpi_softwarelicenses`
+                WHERE `computers_id` > 0
+                      AND `computers_id` IS NOT NULL";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
-               $query="INSERT INTO `glpi_computers_softwarelicenses` (`computers_id`, `softwarelicenses_id`)
-                              VALUES  ('".$data['computers_id']."','".$data['id']."')";
-               $DB->query($query) or die("0.80 migrate data to computers_softwarelicenses table " . $LANG['update'][90] . $DB->error());
+               $query = "INSERT INTO `glpi_computers_softwarelicenses`
+                                (`computers_id`, `softwarelicenses_id`)
+                         VALUES ('".$data['computers_id']."','".$data['id']."')";
+               $DB->query($query)
+               or die("0.80 migrate data to computers_softwarelicenses table " .
+                      $LANG['update'][90] . $DB->error());
             }
          }
       }
 
-      $query = "ALTER TABLE `glpi_softwarelicenses` DROP `computers_id`";
-      $DB->query($query) or die("0.80 drop computers_id field in glpi_softwarelicenses " . $LANG['update'][90] . $DB->error());
+      $migration->dropKey("glpi_softwarelicenses", "computers_id");
    }
 
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - Common'); // Updating schema
 
-
-   if (!FieldExists("glpi_softwarelicenses","date_mod")) {
-      $query = "ALTER TABLE `glpi_softwarelicenses` ADD `date_mod`  DATETIME NULL, ADD INDEX `date_mod` (`date_mod`)";
-      $DB->query($query) or die("0.80 add date_mod field in glpi_softwarelicenses " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_softwarelicenses", "date_mod", "DATETIME NULL");
+   $migration->addKey("glpi_softwarelicenses", "date_mod");
 
    if (TableExists("glpi_cartridges_printermodels")) {
-      $query = "RENAME TABLE `glpi_cartridges_printermodels`  TO `glpi_cartridgeitems_printermodels`  ;";
-      $DB->query($query) or die("0.80 rename glpi_cartridges_printermodels " . $LANG['update'][90] . $DB->error());
+      $query = "RENAME TABLE `glpi_cartridges_printermodels` TO `glpi_cartridgeitems_printermodels`  ;";
+      $DB->query($query)
+      or die("0.80 rename glpi_cartridges_printermodels " . $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists("glpi_monitors","have_hdmi")) {
-      $query = "ALTER TABLE `glpi_monitors` ADD `have_hdmi`  tinyint(1) NOT NULL DEFAULT 0 AFTER `have_pivot`";
-      $DB->query($query) or die("0.80 add have_hdmi field in glpi_monitors " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_monitors", "have_hdmi",
+                        "tinyint(1) NOT NULL DEFAULT 0 AFTER `have_pivot`");
 
-   if (FieldExists("glpi_configs","dbreplicate_email")) {
-      $query = "ALTER TABLE `glpi_configs` DROP `dbreplicate_email`";
-      $DB->query($query) or die("0.80 drop dbreplicate_email field in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->dropKey("glpi_configs", "dbreplicate_email");
+   $migration->addField("glpi_configs", "auto_create_infocoms", "tinyint(1) NOT NULL DEFAULT 0");
+   if ($migration->addField("glpi_configs", "csv_delimiter",
+                            "CHAR( 1 ) NOT NULL AFTER `number_format`")) {
+      $migration->migrationOneTable('glpi_configs');
 
-   if (!FieldExists("glpi_configs","auto_create_infocoms")) {
-      $query = "ALTER TABLE `glpi_configs` ADD `auto_create_infocoms` tinyint( 1 ) NOT NULL DEFAULT '0' ";
-      $DB->query($query) or die("0.80 add auto_create_infocoms field in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
-
-
-   if (!FieldExists("glpi_configs","csv_delimiter")) {
-      $query = "ALTER TABLE `glpi_configs` ADD `csv_delimiter` CHAR( 1 ) NOT NULL AFTER `number_format` ";
-      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_configs " . $LANG['update'][90] . $DB->error());
-      $query = "UPDATE `glpi_configs` SET `csv_delimiter` = ';'";
+      $query = "UPDATE `glpi_configs`
+                SET `csv_delimiter` = ';'";
       $DB->query($query);
    }
 
-   if (!FieldExists("glpi_users","csv_delimiter")) {
-      $query = "ALTER TABLE `glpi_users` ADD `csv_delimiter` CHAR( 1 ) NULL AFTER `number_format` ";
-      $DB->query($query) or die("0.80 add csv_delimiter field in glpi_users " . $LANG['update'][90] . $DB->error());
+   $migration->addField("glpi_users", "csv_delimiter", "CHAR( 1 ) NULL AFTER `number_format`");
+   $migration->addField("glpi_users", "names_format",
+                        "INT( 11 ) NULL DEFAULT NULL AFTER `number_format`");
 
+   // drop car fait sur mauvais champ
+   $migration->dropKey("glpi_budgets", "end_date");
+   $migration->migrationOneTable("glpi_budgets");
+   $migration->addKey("glpi_budgets", "end_date");
+
+   $migration->addField("glpi_ocsservers", "ocs_db_utf8",
+                        "tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`");
+
+   if ($migration->addField("glpi_authldaps", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'")) {
+      $migration->migrationOneTable('glpi_authldaps');
+
+      $query = "UPDATE `glpi_authldaps`
+                SET `is_active` = '1'";
+      $DB->query($query)
+      or die("0.80 set all ldap servers active". $LANG['update'][90] . $DB->error());
+
+      $ADDTODISPLAYPREF['AuthLdap'] = array(30);
    }
 
-   if (!FieldExists('glpi_users','names_format')) {
-      $query = "ALTER TABLE `glpi_users`
-                ADD `names_format` INT( 11 ) NULL DEFAULT NULL AFTER `number_format`";
+   if ($migration->addField("glpi_authmails", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'")) {
+      $migration->migrationOneTable('glpi_authmails');
 
-      $DB->query($query) or die("0.80 add names_format in glpi_users" .
-                                 $LANG['update'][90] . $DB->error());
+      $query = "UPDATE `glpi_authmails`
+                SET `is_active` = '1'";
+      $DB->query($query)
+      or die("0.80 set all ldap servers active". $LANG['update'][90] . $DB->error());
+
+      $ADDTODISPLAYPREF['AuthMail'] = array(6);
    }
 
-   if (isIndex("glpi_budgets","end_date")) {
-      $query = "ALTER TABLE `glpi_budgets` DROP INDEX `end_date` ";
-      $DB->query($query) or die("0.80 correct end_date index " . $LANG['update'][90] . $DB->error());
-   }
+   if ($migration->addField("glpi_ocsservers", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'")) {
+      $migration->migrationOneTable('glpi_ocsservers');
 
-   if (!isIndex("glpi_budgets","end_date")) {
-      $query = "ALTER TABLE `glpi_budgets` ADD INDEX `end_date` ( `end_date` ) ";
-      $DB->query($query) or die("0.80 correct end_date index " . $LANG['update'][90] . $DB->error());
-   }
+       $query = "UPDATE `glpi_ocsservers`
+                 SET `is_active` = '1'";
+      $DB->query($query)
+      or die("0.80 set all ocs servers active". $LANG['update'][90] . $DB->error());
 
-
-   if (!FieldExists('glpi_ocsservers','ocs_db_utf8')) {
-      $query = "ALTER TABLE `glpi_ocsservers`
-                ADD `ocs_db_utf8` tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`";
-
-      $DB->query($query) or die("0.80 add ocs_db_utf8 in glpi_ocsservers" .
-                                 $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_authldaps','is_active')) {
-      $query = "ALTER TABLE  `glpi_authldaps` ADD  `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'";
-      $DB->query($query) or die("0.80 add is_active in glpi_authldaps". $LANG['update'][90] . $DB->error());
-      $query = "UPDATE `glpi_authldaps` set `is_active`='1'";
-      $DB->query($query) or die("0.80 set all ldap servers active". $LANG['update'][90] . $DB->error());
-      $ADDTODISPLAYPREF['AuthLdap']=array(30);
-   }
-
-   if (!FieldExists('glpi_authmails','is_active')) {
-      $query = "ALTER TABLE  `glpi_authmails` ADD  `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'";
-      $DB->query($query) or die("0.80 add is_active in glpi_authmails". $LANG['update'][90] . $DB->error());
-      $query = "UPDATE `glpi_authmails` set `is_active`='1'";
-      $DB->query($query) or die("0.80 set all ldap servers active". $LANG['update'][90] . $DB->error());
-      $ADDTODISPLAYPREF['AuthMail']=array(6);
-   }
-
-   if (!FieldExists('glpi_ocsservers','is_active')) {
-      $query = "ALTER TABLE  `glpi_ocsservers` ADD  `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'";
-      $DB->query($query) or die("0.80 add is_active in glpi_ocsservers". $LANG['update'][90] . $DB->error());
-      $query = "UPDATE `glpi_ocsservers` set `is_active`='1'";
-      $DB->query($query) or die("0.80 set all ocs servers active". $LANG['update'][90] . $DB->error());
-      $ADDTODISPLAYPREF['OcsServer']=array(6);
+      $ADDTODISPLAYPREF['OcsServer'] = array(6);
    }
 
    // Drop nl_be langage
-   $query="UPDATE `glpi_configs` SET `language`='nl_NL' WHERE `language`='nl_BE';";
-   $DB->query($query) or die("0.80 drop nl_be langage" .
-                                 $LANG['update'][90] . $DB->error());
+   $migration->migrationOneTable('glpi_configs');
+   $query = "UPDATE `glpi_configs`
+             SET `language` = 'nl_NL'
+             WHERE `language` = 'nl_BE';";
+   $DB->query($query) or die("0.80 drop nl_be langage" . $LANG['update'][90] . $DB->error());
 
-   $query="UPDATE `glpi_users` SET `language`='nl_NL' WHERE `language`='nl_BE';";
-   $DB->query($query) or die("0.80 drop nl_be langage" .
-                                 $LANG['update'][90] . $DB->error());
+   $migration->migrationOneTable('glpi_users');
+   $query = "UPDATE `glpi_users`
+             SET `language` = 'nl_NL'
+             WHERE `language` = 'nl_BE';";
+   $DB->query($query) or die("0.80 drop nl_be langage" . $LANG['update'][90] . $DB->error());
 
    // CLean sl_SL
-   $query="UPDATE `glpi_configs` SET `language`='sl_SI' WHERE `language`='sl_SL';";
-   $DB->query($query) or die("0.80 drop nl_be langage" .
-                                 $LANG['update'][90] . $DB->error());
+   $query = "UPDATE `glpi_configs`
+             SET `language` = 'sl_SI'
+             WHERE `language` = 'sl_SL';";
+   $DB->query($query) or die("0.80 drop nl_be langage" . $LANG['update'][90] . $DB->error());
 
-   $query="UPDATE `glpi_users` SET `language`='sl_SI' WHERE `language`='sl_SL';";
-   $DB->query($query) or die("0.80 drop nl_be langage" .
-                                 $LANG['update'][90] . $DB->error());
+   $query = "UPDATE `glpi_users`
+             SET `language` = 'sl_SI'
+             WHERE `language` = 'sl_SL';";
+   $DB->query($query) or die("0.80 drop nl_be langage" . $LANG['update'][90] . $DB->error());
 
 
-   if (!FieldExists('glpi_knowbaseitemcategories','entities_id')) {
-      $query = "ALTER TABLE `glpi_knowbaseitemcategories`
-                    ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
-                    ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
-                    ADD INDEX `entities_id` (`entities_id`),ADD INDEX `is_recursive` (`is_recursive`)";
-      $DB->query($query) or die("0.80 add entities_id,is_recursive in glpi_knowbaseitemcategories" .
-                                 $LANG['update'][90] . $DB->error());
+   $migration->dropKey("glpi_knowbaseitemcategories", "unicity");
+   $migration->addField("glpi_knowbaseitemcategories", "entities_id",
+                        "INT NOT NULL DEFAULT '0' AFTER `id`");
+
+   $migration->addKey("glpi_knowbaseitemcategories", "entities_id");
+
+   if ($migration->addField("glpi_knowbaseitemcategories", "is_recursive",
+                            "TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`")) {
+
+      $migration->addKey("glpi_knowbaseitemcategories", "is_recursive");
+
+      $migration->migrationOneTable('glpi_knowbaseitemcategories');
 
       // Set existing categories recursive global
-      $query = "UPDATE `glpi_knowbaseitemcategories` SET `is_recursive` = '1'";
-      $DB->query($query) or die("0.80 set value of is_recursive in glpi_knowbaseitemcategories" .
-                                $LANG['update'][90] . $DB->error());
-
-      $query = "ALTER TABLE `glpi_knowbaseitemcategories` DROP INDEX `unicity` ,
-               ADD UNIQUE `unicity` ( `entities_id`, `knowbaseitemcategories_id` , `name` ) ";
-      $DB->query($query) or die("0.80 update unicity index on glpi_knowbaseitemcategories" .
-                                $LANG['update'][90] . $DB->error());
-
-
+      $query = "UPDATE `glpi_knowbaseitemcategories`
+                SET `is_recursive` = '1'";
+      $DB->query($query)
+      or die("0.80 set value of is_recursive in glpi_knowbaseitemcategories" .
+             $LANG['update'][90] . $DB->error());
    }
-
-   if (FieldExists('glpi_configs','use_auto_assign_to_tech')) {
-      $query = "ALTER TABLE `glpi_configs`
-                    CHANGE `use_auto_assign_to_tech` `auto_assign_mode` INT( 11 ) NOT NULL DEFAULT '1'";
-      $DB->query($query) or die("0.80 alter use_auto_assign_to_tech in glpi_configs " .
-                                 $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_entitydatas','auto_assign_mode')) {
-      $query = "ALTER TABLE `glpi_entitydatas`
-                    ADD `auto_assign_mode` INT( 11 ) NOT NULL DEFAULT '-1'";
-      $DB->query($query) or die("0.80 add auto_assign_mode in glpi_entitydatas " .
-                                 $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_users','user_dn')) {
-      $query = "ALTER TABLE  `glpi_users` ADD  `user_dn` TEXT DEFAULT NULL";
-      $DB->query($query) or die("0.80 add user_dn in glpi_users " .
-                                 $LANG['update'][90] . $DB->error());
-   }
+   $migration->addKey("glpi_knowbaseitemcategories",
+                      array('entities_id', 'knowbaseitemcategories_id', 'name'),
+                      "unicity", "UNIQUE");
 
 
-   if (!FieldExists('glpi_tickets','users_id_lastupdater')) {
-      $query = "ALTER TABLE `glpi_tickets` ADD `users_id_lastupdater` INT( 11 ) NOT NULL DEFAULT 0 AFTER `date_mod`";
-      $DB->query($query) or die("0.80 add users_id_lastupdater in glpi_tickets". $LANG['update'][90] . $DB->error());
+   $migration->changeField("glpi_configs", "use_auto_assign_to_tech", "auto_assign_mode",
+                           "INT( 11 ) NOT NULL DEFAULT '1'");
 
-      $query = "ALTER TABLE `glpi_tickets` ADD INDEX `users_id_lastupdater` (`users_id_lastupdater`)";
-      $DB->query($query) or die("0.80 add index on users_id_lastupdater in glpi_tickets". $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_entitydatas", "auto_assign_mode", "INT( 11 ) NOT NULL DEFAULT '-1'");
+
+   $migration->addField("glpi_users", "user_dn", "TEXT DEFAULT NULL");
+
+   $migration->addField("glpi_tickets", "users_id_lastupdater",
+                        "INT( 11 ) NOT NULL DEFAULT 0 AFTER `date_mod`");
+   $migration->addKey("glpi_tickets", "users_id_lastupdater");
+
 
    // Link between tickets
    if (!TableExists('glpi_tickets_tickets')) {
@@ -761,69 +743,39 @@ function update0781to080($output='HTML') {
    }
 
    // config inquest by entity
-   if (!FieldExists("glpi_entitydatas","max_closedate")) {
-      $query = "ALTER TABLE `glpi_entitydatas`
-                     ADD `max_closedate` DATETIME NULL";
-      $DB->query($query) or die("0.80 add max_closedate  in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
+   if ($migration->addField("glpi_entitydatas", "max_closedate", "DATETIME NULL")) {
 
       $query = "INSERT INTO `glpi_crontasks`
-                  (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
-                VALUES
-                 ('Ticket', 'createinquest', 86400, NULL, 1, 1, 3, 0, 24, 30, NULL, NULL, NULL)";
-      $DB->query($query) or die("0.80 populate glpi_crontasks for ticketsatisfaction" . $LANG['update'][90] . $DB->error());
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('Ticket', 'createinquest', 86400, NULL, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->query($query)
+      or die("0.80 populate glpi_crontasks for ticketsatisfaction" . $LANG['update'][90] . $DB->error());
    }
-   if (!FieldExists("glpi_entitydatas","inquest_rate")) {
-      $query = "ALTER TABLE `glpi_entitydatas`
-                     ADD `inquest_rate` INT(11) NOT NULL DEFAULT '-1'";
-      $DB->query($query) or die("0.80 add inquest_rate  in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
-   }
-   if (!FieldExists("glpi_entitydatas","inquest_delay")) {
-      $query = "ALTER TABLE `glpi_entitydatas`
-                     ADD `inquest_delay` INT(11) NOT NULL DEFAULT '-1'";
-      $DB->query($query) or die("0.80 add inquest_delay  in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
-   }
+
+   $migration->addField("glpi_entitydatas", "inquest_rate", "INT(11) NOT NULL DEFAULT '-1'");
+   $migration->addField("glpi_entitydatas", "inquest_delay", "INT(11) NOT NULL DEFAULT '-1'");
 
    // if no config inquest in the entity
-   if (!FieldExists("glpi_configs","inquest_rate")) {
-      $query = "ALTER TABLE `glpi_configs`
-                     ADD `inquest_rate` INT(11) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 add inquest_rate  in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_configs", "inquest_rate", "INT(11) NOT NULL DEFAULT '0'");
+   $migration->addField("glpi_configs", "inquest_delay", "INT(11) NOT NULL DEFAULT '0'");
 
-   if (!FieldExists("glpi_configs","inquest_delay")) {
-      $query = "ALTER TABLE `glpi_configs`
-                     ADD `inquest_delay` INT(11) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 add inquest_delay  in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_networkports", "comment", "TEXT COLLATE utf8_unicode_ci");
 
-   if (!FieldExists("glpi_networkports","comment")) {
-      $query = "ALTER TABLE  `glpi_networkports` ADD  `comment` TEXT COLLATE utf8_unicode_ci";
-      $DB->query($query) or die("0.80 add comment  in glpi_networkports " . $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists('glpi_profiles','rule_dictionnary_printer')) {
-      $query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_printer` CHAR( 1 ) NULL";
-      $DB->query($query) or die("0.80 add rule_dictionnary_printer in glpi_profiles". $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL");
 
    //New infocom dates
-   if (!FieldExists("glpi_infocoms","order_date")) {
-      $query = "ALTER TABLE  `glpi_infocoms` ADD  `order_date` DATE NULL";
-      $DB->query($query) or die("0.80 add order_date  in glpi_infocoms " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_infocoms", "order_date", "DATE NULL");
+   $migration->addField("glpi_infocoms", "delivery_date", "DATE NULL");
 
-   if (!FieldExists("glpi_infocoms","delivery_date")) {
-      $query = "ALTER TABLE  `glpi_infocoms` ADD  `delivery_date` DATE NULL";
-      $DB->query($query) or die("0.80 add delivery_date  in glpi_infocoms " . $LANG['update'][90] . $DB->error());
-   }
+   if ($migration->addField("glpi_infocoms", "warranty_date", "DATE NULL")) {
+      $migration->migrationOneTable("glpi_infocoms");
 
-   if (!FieldExists("glpi_infocoms","warranty_date")) {
-      $query = "ALTER TABLE  `glpi_infocoms` ADD  `warranty_date` DATE NULL";
-      $DB->query($query) or die("0.80 add warranty_date  in glpi_infocoms " . $LANG['update'][90] . $DB->error());
-
-      $query = "UPDATE  `glpi_infocoms` SET `warranty_date`=`buy_date`";
-      $DB->query($query) or die("0.80 set copy buy_date to warranty_date in glpi_infocoms " . $LANG['update'][90] . $DB->error());
-
+      $query = "UPDATE  `glpi_infocoms`
+                SET `warranty_date` = `buy_date`";
+      $DB->query($query)
+      or die("0.80 set copy buy_date to warranty_date in glpi_infocoms " . $LANG['update'][90] . $DB->error());
    }
 
    if (!TableExists('glpi_rulecacheprinters')) {
@@ -840,69 +792,70 @@ function update0781to080($output='HTML') {
                     KEY `old_value` (`old_value`),
                     KEY `rules_id` (`rules_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->query($query) or die("0.80 add table glpi_rulecacheprinters". $LANG['update'][90] . $DB->error());
+      $DB->query($query)
+      or die("0.80 add table glpi_rulecacheprinters". $LANG['update'][90] . $DB->error());
    }
 
-   if (!FieldExists("glpi_configs","use_slave_for_search")) {
-      $query = "ALTER TABLE `glpi_configs` ADD `use_slave_for_search` tinyint( 1 ) NOT NULL DEFAULT '0' ";
-      $DB->query($query) or die("0.80 add use_slave_for_search field in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_configs", "use_slave_for_search", "tinyint( 1 ) NOT NULL DEFAULT '0'");
+   $migration->addField("glpi_configs", "admin_email_name",
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`");
+   $migration->addField("glpi_configs", "admin_reply_name",
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`");
 
-   if (!FieldExists("glpi_configs","admin_email_name")) {
-      $query = "ALTER TABLE `glpi_configs` ADD `admin_email_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`";
-      $DB->query($query) or die("0.80 add admin_email_name field in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
+   $migration->addField("glpi_entitydatas", "admin_email_name",
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`");
+   $migration->addField("glpi_entitydatas", "admin_reply_name",
+                        "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`");
 
-   if (!FieldExists("glpi_configs","admin_reply_name")) {
-      $query = "ALTER TABLE `glpi_configs` ADD `admin_reply_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`";
-      $DB->query($query) or die("0.80 add admin_reply_name field in glpi_configs " . $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists("glpi_entitydatas","admin_email_name")) {
-      $query = "ALTER TABLE `glpi_entitydatas` ADD `admin_email_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_email`";
-      $DB->query($query) or die("0.80 add admin_email_name field in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
-   }
-
-   if (!FieldExists("glpi_entitydatas","admin_reply_name")) {
-      $query = "ALTER TABLE `glpi_entitydatas` ADD `admin_reply_name` varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`";
-      $DB->query($query) or die("0.80 add admin_reply_name field in glpi_entitydatas " . $LANG['update'][90] . $DB->error());
-   }
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $query="SELECT DISTINCT users_id FROM glpi_displaypreferences WHERE itemtype='$type';";
+      $query = "SELECT DISTINCT users_id
+                FROM `glpi_displaypreferences`
+                WHERE `itemtype` = '$type';";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             while ($data = $DB->fetch_assoc($result)) {
-               $query="SELECT max(rank) FROM glpi_displaypreferences
-                           WHERE users_id='".$data['users_id']."' AND `itemtype`='$type';";
-               $result=$DB->query($query);
-               $rank=$DB->result($result,0,0);
+               $query = "SELECT MAX(rank)
+                         FROM `glpi_displaypreferences`
+                         WHERE `users_id` = '".$data['users_id']."'
+                               AND `itemtype` = '$type'";
+               $result = $DB->query($query);
+               $rank   = $DB->result($result,0,0);
                $rank++;
+
                foreach ($tab as $newval) {
-                  $query="SELECT * FROM glpi_displaypreferences
-                           WHERE users_id='".$data['users_id']."' AND num=$newval AND itemtype='$type';";
+                  $query = "SELECT *
+                            FROM `glpi_displaypreferences`
+                            WHERE `users_id` = '".$data['users_id']."'
+                                  AND `num` = '$newval'
+                                  AND `itemtype` = '$type';";
                   if ($result2=$DB->query($query)) {
                      if ($DB->numrows($result2)==0) {
-                        $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                 VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."');";
+                        $query = "INSERT INTO `glpi_displaypreferences`
+                                        (`itemtype` ,`num` ,`rank` ,`users_id`)
+                                 VALUES ('$type', '$newval', '".$rank++."', '".$data['users_id']."')";
                         $DB->query($query);
                      }
                   }
                }
             }
+
          } else { // Add for default user
-            $rank=1;
+            $rank = 1;
             foreach ($tab as $newval) {
-               $query="INSERT INTO glpi_displaypreferences (`itemtype` ,`num` ,`rank` ,`users_id`)
-                        VALUES ('$type', '$newval', '".$rank++."', '0');";
+               $query = "INSERT INTO `glpi_displaypreferences`
+                               (`itemtype` ,`num` ,`rank` ,`users_id`)
+                        VALUES ('$type', '$newval', '".$rank++."', '0')";
                $DB->query($query);
             }
          }
       }
    }
 
+   $migration->executeMigration();
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
