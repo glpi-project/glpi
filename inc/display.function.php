@@ -1929,7 +1929,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
         RequestType::getDefault('helpdesk')."'>";
    if ($CFG_GLPI['urgency_mask']==(1<<3)) {
       // Dont show dropdown if only 1 value enabled
-      echo "<input 'type='hidden' name='urgency' value='3'>";
+      echo "<input type='hidden' name='urgency' value='3'>";
    }
    echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
    echo "<div class='center'><table class='tab_cadre'>";
