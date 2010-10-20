@@ -2083,7 +2083,7 @@ class User extends CommonDBTM {
                                                     Auth::EXTERNAL))) {
          $where = implode("','",$IDs);
          $query = "UPDATE `glpi_users`
-                   SET `authtype` = '$authtype', `auths_id` = '$server'
+                   SET `authtype` = '$authtype', `auths_id` = '$server', `password` = ''
                    WHERE `id` IN ('$where')";
          $DB->query($query);
       }
