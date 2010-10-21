@@ -48,6 +48,7 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
    function __construct() {
       $this->item_table="glpi_manufacturers";
       //Init cache system values
+      // TODO This table doesn't' exists !
       $this->initCache("glpi_rulecachemanufacturers");
       $this->menu_option="manufacturers";
    }
