@@ -887,7 +887,7 @@ class Document extends CommonDBTM {
                addMessageAfterRedirect($LANG['document'][23],false,ERROR);
                break;
             case 4 :
-               addMessageAfterRedirect($LANG['document'][28],false,ERROR);
+//                addMessageAfterRedirect($LANG['document'][28],false,ERROR);
                break;
          }
          return false;
