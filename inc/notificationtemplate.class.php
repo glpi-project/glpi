@@ -403,8 +403,8 @@ class NotificationTemplate extends CommonDBTM {
       $user_email = $user_infos['email'];
       $user_name  = $user_infos['username'];
 
-      $sender=$target->getSender($options);
-      $replyto=$target->getReplyTo($options);
+      $sender  = $target->getSender($options);
+      $replyto = $target->getReplyTo($options);
 
       $mailing_options['to']          = $user_email;
       $mailing_options['toname']      = $user_name;

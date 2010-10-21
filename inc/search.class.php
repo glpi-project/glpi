@@ -4605,9 +4605,9 @@ class Search {
                                                 'autoclose' => false));
 
             } else {*/
-            $out.= $value;
+            $out .= $value;
 //             }
-            $out.= "</td>\n";
+            $out .= "</td>\n";
       }
       $num++;
       return $out;

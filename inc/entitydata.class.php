@@ -350,7 +350,6 @@ class EntityData extends CommonDBTM {
       autocompletionTextField($entitynotification, "admin_email_name");
       echo "</td></tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][207]."&nbsp;:&nbsp;</td>";
       echo "<td>";
