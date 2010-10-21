@@ -35,7 +35,7 @@
 
 define('GLPI_ROOT','..');
 // Include plugin if it is a plugin table
-if (!strstr($_POST['table'],"plugin")) {
+if (!strstr($_POST['itemtype'],"Plugin")) {
    $AJAX_INCLUDE=1;
 }
 include (GLPI_ROOT."/inc/includes.php");
@@ -86,7 +86,7 @@ $query = "SELECT DISTINCT `".$_POST['field']."` AS VAL
           LIMIT ".intval($_POST['start']).",".intval($_POST['limit']);
 
 if ($result=$DB->query($query)) {
-   echo '{"totalCount":"'.$totnum.'","items":[';
+   echo '{"totalCount":'.$totnum.',"items":[';
    if ($DB->numrows($result)>0) {
       $first=true;
       while ($data=$DB->fetch_array($result)) {
