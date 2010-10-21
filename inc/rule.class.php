@@ -230,7 +230,7 @@ class Rule extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['rulesengine'][9]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      $this->dropdownRulesMatch("match", $this->fields["match"],$this->restrict_matching);
+      $this->dropdownRulesMatch("match", $this->fields["match"], $this->restrict_matching);
       echo "</td>";
       echo "<td>".$LANG['common'][60]."&nbsp;:&nbsp;</td>";
       echo "<td>";
@@ -282,11 +282,13 @@ class Rule extends CommonDBTM {
     * @param $name dropdown name
     * @param $value default value
    **/
-   function dropdownRulesMatch($name, $value='',$restrict=false) {
+   function dropdownRulesMatch($name, $value='', $restrict=false) {
       global $LANG;
+
       if (!$restrict || $restrict == Rule::AND_MATCHING) {
          $elements[Rule::AND_MATCHING] = $LANG['choice'][3];
       }
+
       if (!$restrict || $restrict == Rule::OR_MATCHING) {
          $elements[Rule::OR_MATCHING]  = $LANG['choice'][2];
       }

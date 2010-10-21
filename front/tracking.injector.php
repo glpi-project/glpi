@@ -39,7 +39,9 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (empty($_POST["type"]) || ($_POST["type"] != "Helpdesk") || !$CFG_GLPI["use_anonymous_helpdesk"]) {
+if (empty($_POST["type"])
+    || ($_POST["type"] != "Helpdesk")
+    || !$CFG_GLPI["use_anonymous_helpdesk"]) {
    checkRight("create_ticket","1");
 }
 
@@ -82,7 +84,7 @@ if ($newID = $track->add($_POST)) {
       echo $LANG['help'][18]." (".$LANG['job'][38]."&nbsp;";;
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$newID'>$newID</a>)<br>";
       echo $LANG['help'][19]."</div>";
-      $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+      $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
    }
 
 } else {
@@ -91,6 +93,7 @@ if ($newID = $track->add($_POST)) {
    displayMessageAfterRedirect();
    displayBackLink();
 }
+
 nullFooter();
 
 ?>

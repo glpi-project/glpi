@@ -3010,7 +3010,7 @@ class Ticket extends CommonDBTM {
       // Display validation state
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['validation'][0]."</td>";
-         echo "<td>";
+      echo "<td>";
       if ($canupdate) {
          TicketValidation::dropdownStatus('global_validation',
                                           array('value' => $this->fields['global_validation']));
@@ -5032,7 +5032,7 @@ class Ticket extends CommonDBTM {
                                         INTERVAL $delay DAY)<NOW()
                             AND `glpi_ticketsatisfactions`.`id` IS NULL
                       ORDER BY `closedate` ASC";
-// logDebug($query);
+
             $nb = 0;
             $max_closedate = '';
 
@@ -5068,10 +5068,11 @@ class Ticket extends CommonDBTM {
 
    function showStats() {
       global $LANG;
+
       if (!haveRight('observe_ticket',1) || !isset($this->fields['id'])) {
          return false;
       }
-//      printCleanArray($this->fields);
+
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['common'][99]."</th></tr>";
@@ -5084,6 +5085,7 @@ class Ticket extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>".$LANG['reports'][64]."&nbsp;:</td>";
          echo "<td>".convDateTime($this->fields['solvedate'])."</td></tr>";
       }
+
       if ($this->fields['status']=='closed') {
          echo "<tr class='tab_bg_2'><td>".$LANG['reports'][61]."&nbsp;:</td>";
          echo "<td>".convDateTime($this->fields['closedate'])."</td></tr>";
@@ -5100,6 +5102,7 @@ class Ticket extends CommonDBTM {
 
       if ($this->fields['status']=='solved' || $this->fields['status']=='closed') {
          echo "<tr class='tab_bg_2'><td>".$LANG['stats'][9]."&nbsp;:</td><td>";
+
          if ($this->fields['solve_delay_stat']>0) {
             echo timestampToString($this->fields['solve_delay_stat'],0);
          } else {
@@ -5130,10 +5133,10 @@ class Ticket extends CommonDBTM {
       echo "</div>";
    }
 
+
    /**
     * Display debug information for current object
-    *
-    */
+   **/
    function showDebug() {
       NotificationEvent::debugEvent($this);
    }
