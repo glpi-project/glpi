@@ -2761,13 +2761,11 @@ class Search {
       switch ($new_table) {
          // No link
          case "glpi_auth_tables" :
-            return " LEFT JOIN `glpi_authldaps`
-                        ON (`glpi_users`.`authtype` = ".Auth::LDAP."
-                            AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)
-                     LEFT JOIN `glpi_authmails`
-                        ON (`glpi_users`.`authtype` = ".Auth::MAIL."
-                            AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
-
+               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
+                                       'authldaps_id');
+               $out .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
+                                       'authmails_id');
+               return $out;
          case "glpi_authldaps" :
             if ($itemtype=='Entity') {
                return " LEFT JOIN `glpi_authldaps` $AS
