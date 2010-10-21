@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -36,6 +36,10 @@ textarea.x-form-field {
     line-height:18px;
 }
 
+.ext-ie6 .x-form-field-wrap .x-form-file-btn, .ext-ie7 .x-form-field-wrap .x-form-file-btn {
+    top: -1px; /* because of all these margin hacks, these buttons are off by one pixel in IE6,7 */
+}
+
 .ext-ie6 textarea.x-form-field, .ext-ie7 textarea.x-form-field {
     margin:-1px 0; /* ie bogus margin bug */
 }
@@ -48,13 +52,19 @@ textarea.x-form-field {
     margin-bottom:-2px; /* another bogus margin bug, safari/mac only */
 }
 
+/*
 .ext-strict .ext-ie8 .x-form-text, .ext-strict .ext-ie8 textarea.x-form-field {
-	margin-bottom: 1px;
+    margin-bottom: 1px;
 }
+*/
 
 .ext-gecko .x-form-text , .ext-ie8 .x-form-text {
     padding-top:2px; /* FF won't center the text vertically */
     padding-bottom:0;
+}
+
+.ext-ie6 .x-form-composite .x-form-text.x-box-item, .ext-ie7 .x-form-composite .x-form-text.x-box-item {
+    margin: 0 !important; /* clear ie bogus margin bug fix */
 }
 
 textarea {
@@ -76,7 +86,7 @@ textarea {
 /* 2.0.2 style */
 .x-form-check-wrap {
     line-height:18px;
-    height: 22px;
+    height: auto;
 }
 
 .ext-ie .x-form-check-wrap input {
@@ -119,10 +129,6 @@ textarea {
     cursor:pointer;
 }
 
-.ext-webkit .x-form-field-wrap .x-form-trigger{
-    right:0;
-}
-
 .x-form-field-wrap .x-form-twin-triggers .x-form-trigger{
     position:static;
     top:auto;
@@ -132,8 +138,13 @@ textarea {
 .x-form-field-wrap {
     position:relative;
     left:0;top:0;
+    text-align: left;
     zoom:1;
     white-space: nowrap;
+}
+
+.ext-strict .ext-ie8 .x-toolbar-cell .x-form-field-trigger-wrap .x-form-trigger {
+    right: 0; /* IE8 Strict mode trigger bug */
 }
 
 .x-form-field-wrap .x-form-trigger-over{
@@ -176,21 +187,17 @@ textarea {
 
 /* field focus style */
 .x-form-focus, textarea.x-form-focus{
-	border: 1px solid;
+    border: 1px solid;
 }
 
 /* invalid fields */
 .x-form-invalid, textarea.x-form-invalid{
-	background:repeat-x bottom;
-	border: 1px solid;
-}
-
-.ext-webkit .x-form-invalid{
-	border: 1px solid;
+    background:repeat-x bottom;
+    border: 1px solid;
 }
 
 .x-form-inner-invalid, textarea.x-form-inner-invalid{
-	background:repeat-x bottom;
+    background:repeat-x bottom;
 }
 
 /* editors */
@@ -202,11 +209,11 @@ textarea {
 
 .x-form-grow-sizer {
     left: -10000px;
-	padding: 8px 3px;
+    padding: 8px 3px;
     position: absolute;
     visibility:hidden;
     top: -10000px;
-	white-space: pre-wrap;
+    white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
     white-space: -o-pre-wrap;
@@ -319,6 +326,10 @@ textarea {
     height:19px;
 }
 
+.ext-webkit .x-small-editor .x-form-field-wrap .x-form-trigger{
+    height:21px;
+}
+
 .ext-webkit .x-small-editor .x-form-text{padding-top:3px;font-size:100%;}
 
 .x-form-clear {
@@ -337,7 +348,7 @@ textarea {
 }
 
 .ext-ie6 .x-form-check-wrap input, .ext-border-box .x-form-check-wrap input{
-   margin-top: 3px; 
+   margin-top: 3px;
 }
 
 .x-form-cb-label {
@@ -381,59 +392,59 @@ textarea {
 
 /* buttons */
 .x-form .x-form-btns-ct .x-btn{
-	float:right;
-	clear:none;
+    float:right;
+    clear:none;
 }
 
 .x-form .x-form-btns-ct .x-form-btns td {
-	border:0;
-	padding:0;
+    border:0;
+    padding:0;
 }
 
 .x-form .x-form-btns-ct .x-form-btns-right table{
-	float:right;
-	clear:none;
+    float:right;
+    clear:none;
 }
 
 .x-form .x-form-btns-ct .x-form-btns-left table{
-	float:left;
-	clear:none;
+    float:left;
+    clear:none;
 }
 
 .x-form .x-form-btns-ct .x-form-btns-center{
-	text-align:center; /*ie*/
+    text-align:center; /*ie*/
 }
 
 .x-form .x-form-btns-ct .x-form-btns-center table{
-	margin:0 auto; /*everyone else*/
+    margin:0 auto; /*everyone else*/
 }
 
 .x-form .x-form-btns-ct table td.x-form-btn-td{
-	padding:3px;
+    padding:3px;
 }
 
 .x-form .x-form-btns-ct .x-btn-focus .x-btn-left{
-	background-position:0 -147px;
+    background-position:0 -147px;
 }
 
 .x-form .x-form-btns-ct .x-btn-focus .x-btn-right{
-	background-position:0 -168px;
+    background-position:0 -168px;
 }
 
 .x-form .x-form-btns-ct .x-btn-focus .x-btn-center{
-	background-position:0 -189px;
+    background-position:0 -189px;
 }
 
 .x-form .x-form-btns-ct .x-btn-click .x-btn-center{
-	background-position:0 -126px;
+    background-position:0 -126px;
 }
 
 .x-form .x-form-btns-ct .x-btn-click  .x-btn-right{
-	background-position:0 -84px;
+    background-position:0 -84px;
 }
 
 .x-form .x-form-btns-ct .x-btn-click .x-btn-left{
-	background-position:0 -63px;
+    background-position:0 -63px;
 }
 
 .x-form-invalid-icon {
@@ -458,7 +469,7 @@ textarea {
 /* make top of checkbox/tools visible in webkit */
 .ext-webkit .x-fieldset-header {
     padding-top: 1px;
-}        
+}
 
 .ext-ie .x-fieldset legend {
     margin-bottom:10px;
@@ -487,8 +498,8 @@ fieldset.x-panel-collapsed {
     border-width: 1px 1px 0 1px !important;
     border-left-color: transparent;
     border-right-color: transparent;
-}      
-  
+}
+
 .ext-ie6 fieldset.x-panel-collapsed{
     padding-bottom:0 !important;
     border-width: 1px 0 0 0 !important;
@@ -524,11 +535,15 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
     position: absolute;
     left:16px;
 }
-        
+
 .ext-gecko .x-window-body .x-form-item {
     -moz-outline: none;
     outline: none;
     overflow: auto;
+}
+
+.ext-mac.ext-gecko .x-window-body .x-form-item {
+    overflow:hidden;
 }
 
 .ext-gecko .x-form-item {
@@ -560,5 +575,3 @@ fieldset.x-panel-collapsed .x-fieldset-bwrap {
 .x-fieldset-body {
     overflow:hidden;
 }
-
-

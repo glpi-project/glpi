@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -46,9 +46,11 @@
     background-color: #deecfd;
 }
 
+/*
 .x-color-palette em:hover, .x-color-palette span:hover{   
     background-color: #deecfd;
 }
+*/
 
 .x-color-palette em {
     border-color:#aca899;

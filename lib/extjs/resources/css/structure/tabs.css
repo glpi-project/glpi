@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -186,6 +186,9 @@ ul.x-tab-strip li.x-tab-edge {
 }
 .ext-ie8 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
     top:4px;
+}
+.ext-ie8 .x-tab-strip-bottom .x-tab-right{
+    top:0;
 }
 
 

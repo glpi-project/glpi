@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -123,7 +123,7 @@
 .x-panel-reset .x-panel-body :before, .x-panel-reset .x-panel-body :after { white-space: pre-line }
 .x-panel-reset .x-panel-body center          { text-align: center }
 .x-panel-reset .x-panel-body :link, .x-panel-reset .x-panel-body :visited { text-decoration: underline }
-.x-panel-reset .x-panel-body :focus          { outline: thin dotted invert }
+.x-panel-reset .x-panel-body :focus          { outline: invert dotted thin }
 
 /* Begin bidirectionality settings (do not change) */
 .x-panel-reset .x-panel-body BDO[DIR="ltr"]  { direction: ltr; unicode-bidi: bidi-override }

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -16,16 +16,20 @@
     line-height: 14px;
 }
 
+.x-list-body-inner {
+    background-color:#1B232B;
+}
+
 .x-list-body dt em {
     font:normal 14px arial, tahoma, helvetica, sans-serif;
 }
 
 .x-list-over {
-    background-color:#eee;
+    background-color:#7E5530;
 }
 
 .x-list-selected {
-    background-color:#dfe8f6;
+    background-color:#E5872C;
 }
 
 .x-list-resizer {

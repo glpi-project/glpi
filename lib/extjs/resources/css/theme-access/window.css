@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -10,7 +10,7 @@
 }
 
 .x-window-tl .x-window-header {
-    color:fff;
+    color:#fff;
 	font:bold 14px tahoma,arial,verdana,sans-serif;
 }
 

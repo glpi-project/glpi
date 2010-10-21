@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -46,9 +46,11 @@
     background-color: #deecfd;
 }
 
+/*
 .x-color-palette em:hover, .x-color-palette span:hover{   
     background-color: #deecfd;
 }
+*/
 
 .x-color-palette em {
     border-color:#aca899;
@@ -198,11 +200,11 @@ ul.x-tab-strip-bottom{
 
 .x-tab-panel-bbar .x-toolbar, .x-tab-panel-tbar .x-toolbar {
     border-color:#99bbe8;
-}.x-form-field{
+}.x-form-field {
     font:normal 12px tahoma, arial, helvetica, sans-serif;
 }
 
-.x-form-text, textarea.x-form-field{
+.x-form-text, textarea.x-form-field {
     background-color:#fff;
     background-image:url(../images/default/form/text-bg.gif);
     border-color:#b5b8c8;
@@ -222,51 +224,57 @@ ul.x-tab-strip-bottom{
     background-color:#fff;
 }
 
-.x-form-field-wrap .x-form-trigger{
+.x-form-field-wrap .x-form-trigger {
     background-image:url(../images/default/form/trigger.gif);
     border-bottom-color:#b5b8c8;
 }
 
-.x-form-field-wrap .x-form-date-trigger{
+.x-form-field-wrap .x-form-date-trigger {
     background-image: url(../images/default/form/date-trigger.gif);
 }
 
-.x-form-field-wrap .x-form-clear-trigger{
+.x-form-field-wrap .x-form-clear-trigger {
     background-image: url(../images/default/form/clear-trigger.gif);
 }
 
-.x-form-field-wrap .x-form-search-trigger{
+.x-form-field-wrap .x-form-search-trigger {
     background-image: url(../images/default/form/search-trigger.gif);
 }
 
-.x-trigger-wrap-focus .x-form-trigger{
+.x-trigger-wrap-focus .x-form-trigger {
     border-bottom-color:#7eadd9;
 }
 
-.x-item-disabled .x-form-trigger-over{
+.x-item-disabled .x-form-trigger-over {
     border-bottom-color:#b5b8c8;
 }
 
-.x-item-disabled .x-form-trigger-click{
+.x-item-disabled .x-form-trigger-click {
     border-bottom-color:#b5b8c8;
 }
 
-.x-form-focus, textarea.x-form-focus{
+.x-form-focus, textarea.x-form-focus {
 	border-color:#7eadd9;
 }
 
-.x-form-invalid, textarea.x-form-invalid{
+.x-form-invalid, textarea.x-form-invalid {
     background-color:#fff;
 	background-image:url(../images/default/grid/invalid_line.gif);
 	border-color:#c30;
 }
 
-.ext-webkit .x-form-invalid{
-	background-color:#fee;
-	border-color:#ff7870;
+.x-form-invalid.x-form-composite {
+    border: none;
+    background-image: none;
 }
 
-.x-form-inner-invalid, textarea.x-form-inner-invalid{
+.x-form-invalid.x-form-composite .x-form-invalid {
+    background-color:#fff;
+	background-image:url(../images/default/grid/invalid_line.gif);
+	border-color:#c30;
+}
+
+.x-form-inner-invalid, textarea.x-form-inner-invalid {
     background-color:#fff;
 	background-image:url(../images/default/grid/invalid_line.gif);
 }
@@ -459,7 +467,7 @@ ul.x-tab-strip-bottom{
 }
 
 .x-item-disabled .x-tbar-loading{
-	background-image: url(../images/default/grid/loading.gif) !important;
+	background-image: url(../images/default/grid/refresh-disabled.gif) !important;
 }
 
 .x-item-disabled .x-tbar-page-first{
@@ -529,9 +537,14 @@ ul.x-tab-strip-bottom{
     border-color:#99bbe8;
 }
 
-.x-grid3-hd-row td, .x-grid3-row td, .x-grid3-summary-row td{
-	font:normal 11px arial, tahoma, helvetica, sans-serif;
+.x-grid3-row td, .x-grid3-summary-row td{
+	font:normal 11px/13px arial, tahoma, helvetica, sans-serif;
 }
+
+.x-grid3-hd-row td {
+	font:normal 11px/15px arial, tahoma, helvetica, sans-serif;
+}
+
 
 .x-grid3-hd-row td {
     border-left-color:#eee;
@@ -623,6 +636,10 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 
 .col-move-bottom{
 	background-image:url(../images/default/grid/col-move-bottom.gif);
+}
+
+td.grid-hd-group-cell {
+    background: url(../images/default/grid/grid3-hrow.gif) repeat-x bottom;
 }
 
 .x-grid3-row-selected {
@@ -782,6 +799,26 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 
 .x-grid-with-col-lines .x-grid3-row-selected {
 	border-top-color:#a3bae9;
+}.x-pivotgrid .x-grid3-header-offset table td {
+    background: url(../images/default/grid/grid3-hrow.gif) repeat-x 50% 100%;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-left-color: #EEE;
+    border-right-color: #D0D0D0;
+}
+
+.x-pivotgrid .x-grid3-row-headers {
+    background-color: #f9f9f9;
+}
+
+.x-pivotgrid .x-grid3-row-headers table td {
+    background: #EEE url(../images/default/grid/grid3-rowheader.gif) repeat-x left top;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-left-color: #EEE;
+    border-right-color: #D0D0D0;
+    border-bottom: 1px solid;
+    border-bottom-color: #D0D0D0;
 }.x-dd-drag-ghost{
 	color:#000;
 	font: normal 11px arial, helvetica, sans-serif;

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -11,7 +11,8 @@
 .ext-el-mask-msg {
     border-color:#999;
     background-color:#ddd;
-    background-image:url(../images/default/box/tb.gif);
+    background-image:url(../images/gray/panel/white-top-bottom.gif);
+    background-position: 0 -1px;
 }
 .ext-el-mask-msg div {
     background-color: #eee;
@@ -46,9 +47,11 @@
     background-color: #eaeaea;
 }
 
+/*
 .x-color-palette em:hover, .x-color-palette span:hover{   
     background-color: #eaeaea;
 }
+*/
 
 .x-color-palette em {
     border-color:#aca899;
@@ -1010,8 +1013,8 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 }
 
 .x-date-inner .x-date-selected a{
+    background-image: none;
     background-color:#D8D8D8;
-    background-image:url(../images/gray/glass-bg.gif);
 	border-color:#DCDCDC;
 }
 
@@ -1605,7 +1608,7 @@ body.x-body-masked .x-window-plain .x-window-mc {
 }
 
 .x-list-header-inner em.sort-asc, .x-list-header-inner em.sort-desc {
-    background-image:url(../images/default/grid/sort-hd.gif);
+    background-image:none;
     border-color: #d0d0d0;
 }
 .x-slider-horz, .x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {
