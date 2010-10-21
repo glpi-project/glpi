@@ -84,6 +84,7 @@ if ($newID = $track->add($_POST)){
       echo $LANG['help'][18]." (".$LANG['job'][38]."&nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=$newID'>$newID</a>)<br>";
       echo $LANG['help'][19]."</div>";
+      $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
    }
 } else {
    echo "<div class='center'>";
