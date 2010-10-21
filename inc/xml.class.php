@@ -126,7 +126,7 @@ class XML {
       fputs($fp, "<?xml version=\"1.0\"?>\n");
       fputs($fp, "<dataxml>\n");
 
-      foreach($this->SqlString as $strqry) {
+      foreach ($this->SqlString as $strqry) {
          if ($strqry == "") {
             $this->IsError = 1;
             $this->ErrorString = "Error the query can't be a null string";

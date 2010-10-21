@@ -176,7 +176,7 @@ class Profile extends CommonDBTM {
    function cleanProfile() {
 
       if ($this->fields["interface"]=="helpdesk") {
-         foreach($this->fields as $key=>$val) {
+         foreach ($this->fields as $key=>$val) {
             if (!in_array($key,self::$common_fields) && !in_array($key,self::$helpdesk_rights)) {
                unset($this->fields[$key]);
             }
@@ -456,7 +456,7 @@ class Profile extends CommonDBTM {
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
-      foreach($CFG_GLPI["helpdesk_types"] as $key => $itemtype) {
+      foreach ($CFG_GLPI["helpdesk_types"] as $key => $itemtype) {
 
          if (class_exists($itemtype)) {
             if (!isPluginItemType($itemtype)) { // No Plugin for the moment

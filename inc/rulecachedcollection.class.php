@@ -170,7 +170,7 @@ class RuleCachedCollection extends RuleCollection {
       $where = "";
       $first = true;
 
-      foreach($this->cache_params["input_value"] as $param => $value) {
+      foreach ($this->cache_params["input_value"] as $param => $value) {
          if (isset($input[$param])) {
             $where .= (!$first?" AND ":"")." `".$value."` = '".$input[$param]."'";
             $first = false;
@@ -211,7 +211,7 @@ class RuleCachedCollection extends RuleCollection {
       $old_values = "";
       $into_old   = "";
 
-      foreach($this->cache_params["input_value"] as $param => $value) {
+      foreach ($this->cache_params["input_value"] as $param => $value) {
          $into_old .= "`".$value."`, ";
          // Input are slashes protected...
          $old_values .= "'".$input[$param]."', ";
@@ -220,7 +220,7 @@ class RuleCachedCollection extends RuleCollection {
       $into_new   = "";
       $new_values = "";
 
-      foreach($this->cache_params["output_value"] as $param => $value) {
+      foreach ($this->cache_params["output_value"] as $param => $value) {
          if (!isset($output[$param])) {
             $output[$param] = "";
          }

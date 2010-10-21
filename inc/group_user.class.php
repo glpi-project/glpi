@@ -94,7 +94,7 @@ class Group_User extends CommonDBRelation{
       $groups = Group_User::getUserGroups($ID);
       $used   = array();
       if (!empty($groups)) {
-         foreach($groups as $data) {
+         foreach ($groups as $data) {
             $used[$data["id"]] = $data["id"];
          }
       }
@@ -139,7 +139,7 @@ class Group_User extends CommonDBRelation{
       if (!empty($groups)) {
          initNavigateListItems('Group', $user->getTypeName()." = ".$user->getName());
          $i = 0;
-         foreach($groups as $data) {
+         foreach ($groups as $data) {
             addToNavigateListItems('Group', $data["id"]);
             if ($i%$nb_per_line == 0) {
                if ($i != 0) {

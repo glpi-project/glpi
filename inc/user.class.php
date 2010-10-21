@@ -589,8 +589,8 @@ class User extends CommonDBTM {
             }
 
             if (count($rights)>0 && count($entities)>0) {
-               foreach($rights as $right) {
-                  foreach($entities as $entity_tab) {
+               foreach ($rights as $right) {
+                  foreach ($entities as $entity_tab) {
                      foreach ($entity_tab as $entity) {
                         $affectation['entities_id']  = $entity[0];
                         $affectation['profiles_id']  = $right;
@@ -1784,7 +1784,7 @@ class User extends CommonDBTM {
          } else {
             $first = true;
          }
-         foreach($used as $val) {
+         foreach ($used as $val) {
             if ($first) {
                $first = false;
             } else {
