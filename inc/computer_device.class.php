@@ -208,7 +208,7 @@ class Computer_Device extends CommonDBTM {
                   GROUP BY `$fk` $specif_text";
 
          $prev = '';
-         foreach($DB->request($query) as $data) {
+         foreach ($DB->request($query) as $data) {
             addToNavigateListItems($itemtype, $data[$fk]);
 
             if ($device->getFromDB($data[$fk])) {

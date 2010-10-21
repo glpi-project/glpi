@@ -1265,7 +1265,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
             $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                            'Printer');
 
-            foreach($types as $t) {
+            foreach ($types as $t) {
                $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
                          FROM `$table`
                          WHERE `$field` LIKE '$like'
@@ -1435,7 +1435,7 @@ function importArrayFromDB($DATA) {
    if (!is_array($TAB)) {
       $TAB = array();
 
-      foreach(explode(" ", $DATA) as $ITEM) {
+      foreach (explode(" ", $DATA) as $ITEM) {
          $A = explode("=>", $ITEM);
 
          if (strlen($A[0])>0 && isset($A[1])) {

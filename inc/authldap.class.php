@@ -681,7 +681,7 @@ class AuthLDAP extends CommonDBTM {
                             $LANG['setup'][180] => 'use_tls');
             $msg = '';
             $first = true;
-            foreach($fields as $label => $field) {
+            foreach ($fields as $label => $field) {
                $msg .= (!$first?', ':'').$label.': '.($value[$field] != ''?'\''.$value[$field].
                         '\'':$LANG['common'][49]);
                $first = false;
@@ -1991,7 +1991,7 @@ class AuthLDAP extends CommonDBTM {
             $options['interface'] = AuthLdap::SIMPLE_INTERFACE;
          }
 
-         foreach($fields as $field) {
+         foreach ($fields as $field) {
             if (isset($options[$field])) {
                $_SESSION['ldap_import'][$field] = $options[$field];
             }

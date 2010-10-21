@@ -305,10 +305,10 @@ class CronTask extends CommonDBTM{
             // Global lock
             return false;
          }
-         $locks=array();
-         foreach(glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
+         $locks = array();
+         foreach (glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
             if (preg_match('!.*/(.*).lock$!', $lock, $reg)) {
-               $locks[]=$reg[1];
+               $locks[] = $reg[1];
             }
          }
          if (count($locks)) {

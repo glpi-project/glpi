@@ -46,7 +46,7 @@ if (isset($_GET["globalsearch"])) {
    $types = array('Ticket','Computer', 'Monitor', 'Software', 'NetworkEquipment', 'Peripheral', 'Printer',
                   'Phone', 'Contact', 'Supplier', 'Document');
 
-   foreach($types as $itemtype) {
+   foreach ($types as $itemtype) {
       $item = new $itemtype();
       if ($item->canView()) {
          $_GET["reset"] = 'reset';
