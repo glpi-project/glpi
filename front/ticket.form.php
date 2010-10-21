@@ -46,6 +46,8 @@ if (!isset($_GET['id'])) {
    $_GET['id'] = "";
 }
 
+
+
 if (isset($_POST["add"])) {
    $track->check(-1,'w',$_POST);
 
@@ -63,6 +65,15 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['update'])) {
    $track->check($_POST['id'],'w');
+
+   if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
+      $splitter = explode("_",$_POST["_my_items"]);
+      if (count($splitter) == 2) {
+         $_POST["itemtype"] = $splitter[0];
+         $_POST["items_id"] = $splitter[1];
+      }
+   }
+
    $track->update($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
