@@ -60,8 +60,8 @@ if (!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 
 if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
    if (preg_match('/(.*)_([1-9]+)/',$_POST["_my_items"],$matches)) {
-      $_POST["itemtype"] = $matches[1];
-      $_POST["items_id"] = $matches[2];
+      $_POST["itemtype"] = $matches[0];
+      $_POST["items_id"] = $matches[1];
    }
 }
 
