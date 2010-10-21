@@ -788,9 +788,10 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
          $msg = '';
-         foreach($ocsServers as $ocsServer) {
+         foreach ($ocsServers as $ocsServer) {
                $msg .= $LANG['ocsconfig'][2]." : '".$ocsServer['ocs_db_host']."'";
-               $msg .= ', '.(OcsServer::checkOCSconnection($ocsServer['id'])?$LANG['ocsng'][18]:$LANG['ocsng'][18]);
+               $msg .= ', '.(OcsServer::checkOCSconnection($ocsServer['id'])?$LANG['ocsng'][18]
+                                                                            :$LANG['ocsng'][18]);
                $msg .= ', '.$LANG['ocsconfig'][38]. " : ".$ocsServer['use_soft_dict'];
          }
       }
@@ -3173,7 +3174,7 @@ class OcsServer extends CommonDBTM {
                            //Second search : IP may have change, so look only for mac address
                            if (!$id_ip) {
                               //Browse the whole import_ip array
-                              foreach($import_ip as $ID => $ip) {
+                              foreach ($import_ip as $ID => $ip) {
                                  if ($ID > 0) {
                                     $tmp = explode(self::FIELD_SEPARATOR,$ip);
                                     //Port was found by looking at the mac address
@@ -3368,7 +3369,7 @@ class OcsServer extends CommonDBTM {
       //If import_ip is empty : machine comes from pre 0.70 version
       //or new machine to be imported in glpi
       if (count($import_ip) > 1) {
-         foreach($import_ip as $importip_ID => $value) {
+         foreach ($import_ip as $importip_ID => $value) {
             if ($importip_ID > 0) {
                //Delete old value in the array (ID => IP)
                OcsServer::deleteInOcsArray($computers_id, $importip_ID, "import_ip");
@@ -3376,9 +3377,9 @@ class OcsServer extends CommonDBTM {
                $query = "SELECT `mac`, `ip`
                          FROM `glpi_networkports`
                          WHERE `id` = '$importip_ID'";
-               $result = $DB->query($query);
-               $datas = $DB->fetch_array($result);
-               $new_ip = (isset($datas["ip"])?$datas["ip"]:"");
+               $result  = $DB->query($query);
+               $datas   = $DB->fetch_array($result);
+               $new_ip  = (isset($datas["ip"])?$datas["ip"]:"");
                $new_mac = (isset($datas["mac"])?$datas["mac"]:"");
 
                //Add new value (ID => IP.$$$$$.MAC)

@@ -114,7 +114,7 @@ if ($DB->numrows($result) == 0 && $_GET["ldapservers_id"] != NOT_AVAILABLE) {
    echo "LDAP Server not found or inactive";
 
 } else {
-   foreach($DB->request($sql) as $datas) {
+   foreach ($DB->request($sql) as $datas) {
       echo "Processing LDAP Server : ".$datas['name']."\n";
       $options['ldapservers_id'] = $datas['id'];
       import ($options);

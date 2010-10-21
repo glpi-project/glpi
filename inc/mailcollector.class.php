@@ -543,7 +543,7 @@ class MailCollector  extends CommonDBTM {
             $first_comment  = true;
             $to_keep        = array();
 
-            foreach($content as $ID => $val) {
+            foreach ($content as $ID => $val) {
                if (isset($val[0])&&$val[0]=='>') {
                   // Delete line at the top of the first comment
                   if ($first_comment) {
@@ -559,7 +559,7 @@ class MailCollector  extends CommonDBTM {
                }
             }
 
-            foreach($to_keep as $ID ) {
+            foreach ($to_keep as $ID ) {
                $tkt['content'] .= $content[$ID]."\n";
             }
 
@@ -711,7 +711,7 @@ class MailCollector  extends CommonDBTM {
       $header = explode("\n", imap_fetchheader($this->marubox, $mid));
 
       if (is_array($header) && count($header)) {
-         foreach($header as $line) {
+         foreach ($header as $line) {
             // is line with additional header?
             if (preg_match("/^X-/i", $line)) {
                // separate name and value

@@ -225,7 +225,7 @@ class RuleAction extends CommonDBChild {
 
       if (count($regex_result)>0) {
          if (preg_match_all("/#([0-9])/",$action,$results)>0) {
-            foreach($results[1] as $result) {
+            foreach ($results[1] as $result) {
                $action = str_replace("#$result",
                                      (isset($regex_result[$result])?$regex_result[$result]:''),
                                      $action);

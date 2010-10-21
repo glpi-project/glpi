@@ -121,7 +121,7 @@ class RuleRight extends Rule {
       $RuleAction    = new RuleAction;
       $this->actions = $RuleAction->getRuleActions($this->fields["id"]);
 
-      foreach($this->actions as $action) {
+      foreach ($this->actions as $action) {
          switch ($action->fields["field"]) {
             case "_affect_entity_by_dn" :
                unset($actions["_affect_entity_by_tag"]);

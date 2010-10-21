@@ -893,7 +893,7 @@ class RuleCollection extends CommonDBTM {
    function cleanTestOutputCriterias($output) {
 
       //If output array contains keys begining with _ : drop it
-      foreach($output as $criteria => $value) {
+      foreach ($output as $criteria => $value) {
          if ($criteria[0]=='_') {
             unset($output[$criteria]);
          }

@@ -775,7 +775,7 @@ class Software extends CommonDBTM {
          echo "<th>".$LANG['software'][19]."</th>";
          echo "<th>".$LANG['software'][11]."</th></tr>";
 
-         foreach($req as $data) {
+         foreach ($req as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
             echo "<td<a href='".$link."?id=".$data["id"]."'>".$data["name"]."</a></td>";

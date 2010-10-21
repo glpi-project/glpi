@@ -372,7 +372,7 @@ class SoftwareLicense extends CommonDBTM {
          $message = "";
          $items   = array();
 
-         foreach($DB->request($query) as $license) {
+         foreach ($DB->request($query) as $license) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
             $message .= $LANG['mailing'][51]." ".$name.": ".convDate($license["expire"])."<br>\n";
             $items[$license['id']] = $license;

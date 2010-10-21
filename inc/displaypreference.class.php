@@ -436,65 +436,70 @@ class DisplayPreference extends CommonDBTM {
 
       // print entity
       if (isMultiEntitiesMode()
-      && (isset($CFG_GLPI["union_search_type"][$itemtype])
-         || ($item && $item->maybeRecursive())
-         || count($_SESSION["glpiactiveentities"])>1)
-      && isset($searchopt[80])) {
+          && (isset($CFG_GLPI["union_search_type"][$itemtype])
+              || ($item && $item->maybeRecursive())
+              || count($_SESSION["glpiactiveentities"])>1)
+          && isset($searchopt[80])) {
+
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' width='50%'>".$searchopt[80]["name"]."</td>";
          echo "<td colspan='3'>&nbsp;</td>";
          echo "</tr>";
       }
 
-
-      $i=0;
+      $i = 0;
       if ($numrows) {
          while ($data=$DB->fetch_array($result)) {
             if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
-               echo "<tr class='tab_bg_2'><td class='center' width='50%' >";
+               echo "<tr class='tab_bg_2'><td class='center' width='50%'>";
                echo $searchopt[$data["num"]]["name"];
                echo "</td>";
+
                if ($global_write) {
                   if ($i!=0) {
                      echo "<td class='center middle'>";
-                     echo "<form method='post' action=\"$target\">";
+                     echo "<form method='post' action='$target'>";
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                     echo "<input type='image' name='up'  value=\"".$LANG['buttons'][24]."\" src=\"".
+                     echo "<input type='image' name='up' value='".$LANG['buttons'][24]."' src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".
-                            $LANG['buttons'][24]."\"  title=\"".$LANG['buttons'][24]."\" >";
+                            $LANG['buttons'][24]."'  title='".$LANG['buttons'][24]."'>";
                      echo "</form>";
                      echo "</td>";
+
                   } else {
                      echo "<td>&nbsp;</td>\n";
                   }
+
                   if ($i!=$numrows-1) {
                      echo "<td class='center middle'>";
-                     echo "<form method='post' action=\"$target\">";
+                     echo "<form method='post' action='$target'>";
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                     echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src=\"".
-                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png\" alt=\"".
-                            $LANG['buttons'][25]."\"  title=\"".$LANG['buttons'][25]."\" >";
+                     echo "<input type='image' name='down' value='".$LANG['buttons'][25]."' src='".
+                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt='".
+                            $LANG['buttons'][25]."' title='".$LANG['buttons'][25]."'>";
                      echo "</form>";
                      echo "</td>";
+
                   } else {
                      echo "<td>&nbsp;</td>\n";
                   }
 
                   echo "<td class='center middle'>";
-                  echo "<form method='post' action=\"$target\">";
+                  echo "<form method='post' action='$target'>";
                   echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\"src=\"".
-                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png\" alt=\"".
-                         $LANG['buttons'][6]."\"  title=\"".$LANG['buttons'][6]."\" >";
+                  echo "<input type='image' name='delete' value='".$LANG['buttons'][6]."' src='".
+                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt='".
+                         $LANG['buttons'][6]."' title='".$LANG['buttons'][6]."'>";
                   echo "</form>";
                   echo "</td>\n";
                }
+
                echo "</tr>";
                $i++;
             }
