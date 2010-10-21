@@ -962,7 +962,7 @@ class Document extends CommonDBTM {
                break;
 
             case 4 :
-               addMessageAfterRedirect($LANG['document'][28],false,ERROR);
+//                addMessageAfterRedirect($LANG['document'][28],false,ERROR);
                break;
          }
 
