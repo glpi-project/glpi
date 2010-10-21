@@ -464,10 +464,10 @@ class TicketValidation  extends CommonDBChild {
       $rand = mt_rand();
 
       echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
- 
+
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
-         echo "function viewAddValidation" . $tID . "$rand(){\n";
+         echo "function viewAddValidation" . $tID . "$rand() {\n";
          $params = array ('type'       => __CLASS__,
                           'tickets_id' => $tID,
                           'id'         => -1);
@@ -526,7 +526,7 @@ class TicketValidation  extends CommonDBChild {
             echo "<td>";
             if ($canedit) {
                echo "\n<script type='text/javascript' >\n";
-               echo "function viewEditValidation" . $ticket->fields['id'] . $row["id"] . "$rand(){\n";
+               echo "function viewEditValidation" . $ticket->fields['id'] . $row["id"] . "$rand() {\n";
                $params = array ('type'     => __CLASS__,
                               'tickets_id' => $this->fields["tickets_id"],
                               'id'         => $row["id"]);
@@ -574,7 +574,7 @@ class TicketValidation  extends CommonDBChild {
 
       $this->check($ID,'w');
 
-      if ($ID>0){
+      if ($ID>0) {
          $tickets_id = $this->fields["tickets_id"];
       } else {
          $tickets_id = $options['ticket']->fields["id"];

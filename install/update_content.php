@@ -64,7 +64,7 @@ set_error_handler("userErrorHandlerDebug");
 function loadLang() {
    global $LANG;
 
-   if (isset($LANG)){
+   if (isset($LANG)) {
       unset($LANG);
    }
 
@@ -271,7 +271,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
 
    }
 
-   if ($DB->error()){
+   if ($DB->error()) {
       echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
    }
 

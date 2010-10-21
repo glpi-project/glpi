@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -1108,7 +1108,7 @@ class Transfer extends CommonDBTM {
     *
     * @return new location ID
    **/
-   function transferDropdownLocation($locID){
+   function transferDropdownLocation($locID) {
       global $DB;
 
       if ($locID>0) {
@@ -1239,7 +1239,7 @@ class Transfer extends CommonDBTM {
 
                   // 1 - Search carttype destination ?
                   // Already transfer carttype :
-                  if (isset($this->already_transfer['CartridgeItem'][$data['cartridgeitems_id']])){
+                  if (isset($this->already_transfer['CartridgeItem'][$data['cartridgeitems_id']])) {
                      $newcarttypeID
                            = $this->already_transfer['CartridgeItem'][$data['cartridgeitems_id']];
 
@@ -2602,7 +2602,7 @@ class Transfer extends CommonDBTM {
                   // is already transfer ?
                   if (isset($this->already_transfer['Contact'][$item_ID])) {
                      $newcontactID = $this->already_transfer['Contact'][$item_ID];
-                     if ($newcontactID != $item_ID){
+                     if ($newcontactID != $item_ID) {
                         $need_clean_process = true;
                      }
 

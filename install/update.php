@@ -133,7 +133,7 @@ if (!function_exists('loadLang')) {
    function loadLang($LANGuage) {
       global $LANG;
 
-      if (isset($LANG)){
+      if (isset($LANG)) {
          unset($LANG);
       }
       $file = GLPI_ROOT ."/locales/".$LANGuage.".php";
@@ -238,7 +238,7 @@ function validate_new_location() {
 }
 
 
-function display_new_locations(){
+function display_new_locations() {
    global $DB;
 
    $MAX_LEVEL  = 10;
