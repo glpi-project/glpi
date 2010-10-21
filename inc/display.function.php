@@ -3146,7 +3146,7 @@ function printCleanArray($tab, $pad=0) {
       echo "<table class='tab_cadre'>";
       echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
-      foreach($tab as $key => $val) {
+      foreach ($tab as $key => $val) {
          echo "<tr class='tab_bg_1'><td class='top right'>";
          echo $key;
          echo "</td><td class='top'>=></td><td class='top tab_bg_1'>";
