@@ -1188,7 +1188,7 @@ class MailCollector  extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       $mmail           = new NotificationMail;
-      $mmail->SetFrom($CFG_GLPI["admin_email"],$CFG_GLPI["admin_email_name"]);
+      $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($to);
       $mmail->Subject  = $LANG['mailgate'][16].' '.$subject;
       $mmail->Body     = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];

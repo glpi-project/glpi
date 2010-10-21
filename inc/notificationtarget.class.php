@@ -413,8 +413,8 @@ class NotificationTarget extends CommonDBChild {
       } else if (isset($data['id'])) {
          $user = new User;
          if ($user->getFromDB($data['id'])) {
-            $username=formatUserName(0, $user->getField('name'), $user->getField('realname'),
-                                 $user->getField('firstname'), 0, 0, true);
+            $username = formatUserName(0, $user->getField('name'), $user->getField('realname'),
+                                       $user->getField('firstname'), 0, 0, true);
          }
       }
       $notificationoption = $this->addAdditionnalUserInfo($data);
@@ -715,13 +715,17 @@ class NotificationTarget extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
-      foreach ($DB->request('glpi_entitydatas', array('entities_id' => $this->getEntity())) as $data) {
+      foreach ($DB->request('glpi_entitydatas',
+               array('entities_id' => $this->getEntity())) as $data) {
+
          if (NotificationMail::isUserAddressValid($data['admin_email'])) {
-            return array('email'=>$data['admin_email'],'name'=>$data['admin_email_name']);
+            return array('email' => $data['admin_email'],
+                         'name'  => $data['admin_email_name']);
          }
       }
       //Entity admin is not defined, return the global admin's address
-      return array('email'=>$CFG_GLPI['admin_email'],'name'=>$CFG_GLPI['admin_email_name']);
+      return array('email' => $CFG_GLPI['admin_email'],
+                   'name'  => $CFG_GLPI['admin_email_name']);
    }
 
 
@@ -734,13 +738,17 @@ class NotificationTarget extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
-      foreach ($DB->request('glpi_entitydatas', array('entities_id' => $this->getEntity())) as $data) {
+      foreach ($DB->request('glpi_entitydatas',
+               array('entities_id' => $this->getEntity())) as $data) {
+
          if (NotificationMail::isUserAddressValid($data['admin_reply'])) {
-            return array('email'=>$data['admin_reply'],'name'=>$data['admin_reply_name']);
+            return array('email' => $data['admin_reply'],
+                         'name'  => $data['admin_reply_name']);
          }
       }
       //Entity admin is not defined, return the global admin's address
-      return array('email'=>$CFG_GLPI['admin_reply'],'name'=>$CFG_GLPI['admin_reply_name']);
+      return array('email' => $CFG_GLPI['admin_reply'],
+                   'name'  => $CFG_GLPI['admin_reply_name']);
    }
 
 

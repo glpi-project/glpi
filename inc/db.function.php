@@ -1048,7 +1048,8 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
       $temp = $login;
    }
 
-   if ($ID>0 && (strlen($temp)==0 || $id_visible)) {
+   if ($ID>0
+       && (strlen($temp)==0 || $id_visible)) {
       $viewID = "&nbsp;($ID)";
    }
 
