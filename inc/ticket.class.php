@@ -2926,13 +2926,14 @@ class Ticket extends CommonDBTM {
       // Display validation state
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['validation'][0]."</td>";
+      echo "<td>";
       if ($canupdate){
-         echo "<td>";
          TicketValidation::dropdownStatus('global_validation',
                                           array('value'=>$this->fields['global_validation']));
       } else {
-         echo "<td>".TicketValidation::getStatus($this->fields['global_validation']);
+         echo TicketValidation::getStatus($this->fields['global_validation']);
       }
+      echo "</td>";
       // Need comment right to add a followup with the realtime
       if (haveRight("global_add_followups","1") && !$ID) {
          echo "<td>".$LANG['job'][20]."&nbsp;: </td>";
