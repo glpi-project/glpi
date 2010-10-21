@@ -430,9 +430,9 @@ class DisplayPreference extends CommonDBTM {
       echo "<td class='center' width='50%'>".$searchopt[1]["name"];
 
       if ($global_write) {
-         echo "</td><td colspan='3'>&nbsp;</td>";
+         echo "</td><td colspan='3'>&nbsp;";
       }
-      echo "</tr>";
+      echo "</td></tr>";
 
       // print entity
       if (isMultiEntitiesMode()
