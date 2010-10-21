@@ -39,28 +39,30 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 // COMPUTER ONLY UNDEF CATEGORIES
-$ONLY_UNDEFINED=true;
+$ONLY_UNDEFINED = true;
 
 
 $softcatrule = new RuleSoftwareCategoryCollection;
-$soft = new Software;
+$soft        = new Software;
 
-$query="SELECT id, ticketcategories_id FROM glpi_softwares";
+$query = "SELECT `id`, `ticketcategories_id`
+          FROM `glpi_softwares`";
 
-if ($result=$DB->query($query)){
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_array($result)){
-			if (!$ONLY_UNDEFINED||$data['ticketcategories_id']==0){
-				$params = array();
-				//Get software name and manufacturer
-				$soft->getFromDB($data['id']);
-				$params["name"]=$soft->fields["name"];
-				$params["manufacturers_id"]=$soft->fields["manufacturers_id"];
-								
-				//Process rules
-				$soft->update($softcatrule->processAllRules(null,$soft->fields,$params));
-			}
-		}
-	}
+if ($result=$DB->query($query)) {
+   if ($DB->numrows($result)>0) {
+      while ($data=$DB->fetch_array($result)) {
+         if (!$ONLY_UNDEFINED || $data['ticketcategories_id']==0) {
+            $params = array();
+
+            //Get software name and manufacturer
+            $soft->getFromDB($data['id']);
+            $params["name"]             = $soft->fields["name"];
+            $params["manufacturers_id"] = $soft->fields["manufacturers_id"];
+
+            //Process rules
+            $soft->update($softcatrule->processAllRules(null, $soft->fields, $params));
+         }
+      }
+   }
 }
 ?>

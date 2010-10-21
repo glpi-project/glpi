@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -83,7 +83,7 @@ class TicketSatisfaction extends CommonDBTM {
     *
     * @param $ticket Object : the ticket
    **/
-   function showSatisfactionForm($ticket){
+   function showSatisfactionForm($ticket) {
       global $LANG;
 
       $tid = $ticket->fields['id'];

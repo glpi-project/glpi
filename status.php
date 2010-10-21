@@ -52,7 +52,7 @@ $ok        = true;
 
 // Check slave server connection
 if (DBConnection::isDBSlaveActive()) {
-   if (DBConnection::establishDBConnection(true,true,false)){
+   if (DBConnection::establishDBConnection(true,true,false)) {
       echo "GLPI_DBSLAVE_OK\n";
    } else {
       echo "GLPI_DBSLAVE_PROBLEM\n";

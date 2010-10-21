@@ -67,7 +67,7 @@ function getNextNETPOINT() {
 
 /** Generate bigdump : Get next IP address
 **/
-function getNextIP(){
+function getNextIP() {
    global $IP;
 
    $IP[3] = max(1, ($IP[3]+1)%254);
@@ -129,7 +129,7 @@ function getNextMAC() {
  * @param $ID item ID
  * @param $ID_entity item entity ID
 **/
-function addReservation($type, $ID, $ID_entity){
+function addReservation($type, $ID, $ID_entity) {
    global $percent, $DB, $FIRST, $LAST;
 
    $current_year = date("Y");
@@ -221,7 +221,7 @@ function addInfocoms($type, $ID, $ID_entity) {
  * @param $type item type
  * @param $ID item ID
 **/
-function addContracts($type, $ID){
+function addContracts($type, $ID) {
    global $CONTRACT_PER_ITEM, $DB, $FIRST, $LAST;
 
    $nb  = mt_rand(0, $CONTRACT_PER_ITEM);
