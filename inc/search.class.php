@@ -2762,10 +2762,11 @@ class Search {
          // No link
          case "glpi_auth_tables" :
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
-                                       'authldaps_id');
+                                          'authldaps_id');
                $out .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
-                                       'authmails_id');
+                                           'authmails_id');
                return $out;
+
          case "glpi_authldaps" :
             if ($itemtype=='Entity') {
                return " LEFT JOIN `glpi_authldaps` $AS
