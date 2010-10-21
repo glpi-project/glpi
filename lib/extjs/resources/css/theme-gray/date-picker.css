@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -53,8 +53,8 @@
 }
 
 .x-date-inner .x-date-selected a{
+    background-image: none;
     background-color:#D8D8D8;
-    background-image:url(../images/gray/glass-bg.gif);
 	border-color:#DCDCDC;
 }
 

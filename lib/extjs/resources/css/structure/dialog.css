@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -45,12 +45,9 @@
     height:32px;
 }
 
-.ext-ie .x-window-dlg .ext-mb-icon {
-    width:44px; /* 3px IE margin issue */
-}
-
 .x-window-dlg .x-dlg-icon .ext-mb-content{
-    zoom: 1; margin-left: 47px;
+    zoom: 1; 
+    margin-left: 47px;
 }
 
 .x-window-dlg .ext-mb-info, .x-window-dlg .ext-mb-warning, .x-window-dlg .ext-mb-question, .x-window-dlg .ext-mb-error {

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -11,7 +11,7 @@
 
 .x-btn button{
     border:0 none;
-    background:transparent;
+    background-color:transparent;
     padding-left:3px;
     padding-right:3px;
     cursor:pointer;
@@ -26,7 +26,7 @@
     width:1px;
 }
 
-.ext-gecko .x-btn button {
+.ext-gecko .x-btn button, .ext-webkit .x-btn button {
     padding-left:0;
     padding-right:0;
 }
@@ -343,7 +343,7 @@
 /* height adjustment class */
 .x-btn-as-arrow .x-btn-mc em {
     display:block;
-    background:transparent;
+    background-color:transparent;
 	padding-bottom:14px;
 }
 
@@ -402,7 +402,7 @@
 }
 
 .x-btn-group-mc .x-btn-group-body {
-    background:transparent;
+    background-color:transparent;
     border: 0 none;
 }
 

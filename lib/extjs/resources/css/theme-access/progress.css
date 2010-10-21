@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -19,15 +19,17 @@
     border-top-color:#a66900;
     border-bottom-color:#a66900;
     border-right-color:#ffb941;
+    height: 20px !important; /* structural override for Accessibility Theme */
 }
 
 .x-progress-text {
     font-size:14px;
     font-weight:bold;
     color:#fff;
+    padding: 0 5px !important; /* structural override for Accessibility Theme */
 }
 
 .x-progress-text-back {
     color:#aaa;
-    line-height: 11px;
+    line-height: 19px;
 }

@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -203,6 +203,10 @@ ul.x-tab-strip-bottom{
     border-width:2px;
 }
 
+.ext-webkit .x-form-text, .ext-webkit textarea.x-form-field{
+    border-width:2px;
+}
+
 .x-form-text, .ext-ie .x-form-file {
     height:26px;
 }
@@ -242,7 +246,7 @@ ul.x-tab-strip-bottom{
 }
 
 .x-small-editor .x-form-field-wrap .x-form-trigger {
-    height:20px;
+    height:24px;
 }
 
 .x-form-field-wrap .x-form-trigger-over {
@@ -293,16 +297,19 @@ ul.x-tab-strip-bottom{
 	border-color:#ff9c33;
 }
 
-.x-form-invalid, textarea.x-form-invalid{
+.x-form-invalid, textarea.x-form-invalid,
+.ext-webkit .x-form-invalid, .ext-webkit textarea.x-form-invalid{
     background-color:#15171a;
 	background-image:url(../images/access/grid/invalid_line.gif);
 	border-color:#c30;
 }
 
+/*
 .ext-safari .x-form-invalid{
 	background-color:#fee;
 	border-color:#ff7870;
 }
+*/
 
 .x-form-inner-invalid, textarea.x-form-inner-invalid{
     background-color:#fff;
@@ -328,7 +335,7 @@ ul.x-tab-strip-bottom{
 }
 
 .x-small-editor .x-form-text {
-    height: 22px;
+    height: 26px;
 }
 
 .x-small-editor .x-form-field {
@@ -352,7 +359,7 @@ ul.x-tab-strip-bottom{
 
 .x-fieldset legend {
     font:bold 14px tahoma, arial, helvetica, sans-serif;
-    color:fff;
+    color:#fff;
 }
 .x-btn {
 	font:normal 14px tahoma, verdana, helvetica;
@@ -1457,6 +1464,7 @@ a.x-menu-item {
 }
 .x-panel {
     border-color: #18181a;
+    font-size: 14px;
 }
 
 .x-panel-header {
@@ -1548,7 +1556,7 @@ a.x-menu-item {
 }
 
 .x-window-tl .x-window-header {
-    color:fff;
+    color:#fff;
 	font:bold 14px tahoma,arial,verdana,sans-serif;
 }
 
@@ -1716,17 +1724,19 @@ body.x-body-masked .x-window-plain .x-window-mc {
     border-top-color:#a66900;
     border-bottom-color:#a66900;
     border-right-color:#ffb941;
+    height: 20px !important; /* structural override for Accessibility Theme */
 }
 
 .x-progress-text {
     font-size:14px;
     font-weight:bold;
     color:#fff;
+    padding: 0 5px !important; /* structural override for Accessibility Theme */
 }
 
 .x-progress-text-back {
     color:#aaa;
-    line-height: 11px;
+    line-height: 19px;
 }
 .x-list-header{
     background-color:#393d4e;
@@ -1740,16 +1750,20 @@ body.x-body-masked .x-window-plain .x-window-mc {
     line-height: 14px;
 }
 
+.x-list-body-inner {
+    background-color:#1B232B;
+}
+
 .x-list-body dt em {
     font:normal 14px arial, tahoma, helvetica, sans-serif;
 }
 
 .x-list-over {
-    background-color:#eee;
+    background-color:#7E5530;
 }
 
 .x-list-selected {
-    background-color:#dfe8f6;
+    background-color:#E5872C;
 }
 
 .x-list-resizer {

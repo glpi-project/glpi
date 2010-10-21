@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -12,9 +12,14 @@
     border-color:#99bbe8;
 }
 
-.x-grid3-hd-row td, .x-grid3-row td, .x-grid3-summary-row td{
-	font:normal 11px arial, tahoma, helvetica, sans-serif;
+.x-grid3-row td, .x-grid3-summary-row td{
+	font:normal 11px/13px arial, tahoma, helvetica, sans-serif;
 }
+
+.x-grid3-hd-row td {
+	font:normal 11px/15px arial, tahoma, helvetica, sans-serif;
+}
+
 
 .x-grid3-hd-row td {
     border-left-color:#eee;
@@ -106,6 +111,10 @@ td.x-grid3-hd-over .x-grid3-hd-inner, td.sort-desc .x-grid3-hd-inner, td.sort-as
 
 .col-move-bottom{
 	background-image:url(../images/default/grid/col-move-bottom.gif);
+}
+
+td.grid-hd-group-cell {
+    background: url(../images/default/grid/grid3-hrow.gif) repeat-x bottom;
 }
 
 .x-grid3-row-selected {
