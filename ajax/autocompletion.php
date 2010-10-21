@@ -35,9 +35,10 @@
 
 define('GLPI_ROOT','..');
 // Include plugin if it is a plugin table
-if (!strstr($_POST['table'],"plugin")) {
+if (!strstr($_POST['itemtype'],"Plugin")) {
    $AJAX_INCLUDE=1;
 }
+
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
