@@ -819,7 +819,7 @@ class RuleCollection extends CommonDBTM {
 
    static function getByItemType($itemtype) {
       global $CFG_GLPI;
-      if (isset($CFG_GLPI["dictionnary_types"][$itemtype])) {
+      if (in_array($itemtype, $CFG_GLPI["dictionnary_types"])) {
          $collection_name = 'RuleDictionnary'.$itemtype.'Collection';
          if (class_exists($collection_name)) {
             return new $collection_name;
