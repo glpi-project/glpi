@@ -81,7 +81,7 @@ $query = "SELECT `glpi_netpoints`.`comment` AS comment, `glpi_netpoints`.`id`,
           FROM `glpi_netpoints`
           LEFT JOIN `glpi_locations` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`) ";
 
-if (isset($_POST["devtype"]) && $_POST["devtype"]>0) {
+if (isset($_POST["devtype"]) && !empty($_POST["devtype"])) {
    $query .= "LEFT JOIN `glpi_networkports`
                  ON (`glpi_netpoints`.`id` = `glpi_networkports`.`netpoints_id`
                      AND `glpi_networkports`.`itemtype`";
