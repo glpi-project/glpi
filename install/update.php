@@ -48,6 +48,7 @@ include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
 include_once (GLPI_ROOT . "/inc/plugin.class.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
+include_once (GLPI_ROOT . "/inc/migration.class.php");
 
 // Old itemtype for compatibility
 define("GENERAL_TYPE",         0);
@@ -684,9 +685,11 @@ function updateDbUpTo031() {
       case "0.72.4" :
          include("update_0723_078.php");
          update0723to078();
+
       case "0.78" :
          include("update_078_0781.php");
          update078to0781();
+
       case "0.78.1" :
          include("update_0781_080.php");
          update0781to080();
