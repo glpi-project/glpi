@@ -101,7 +101,7 @@ class RuleCached extends Rule {
       }
 
       echo "</table><br><br>\n";
-      echo "<a href=\"$target\">".$LANG['buttons'][13]."</a></div>";
+      echo "<a href=\"$target\">".$LANG['buttons'][13]." (".$LANG['rulesengine'][100].")</a></div>";
    }
 
    /// Display Header for cache display

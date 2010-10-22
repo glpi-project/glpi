@@ -130,8 +130,8 @@ class RuleCachedCollection extends RuleCollection {
       $total = 0;
       while ($datas = $DB->fetch_array($res_count)) {
          echo "<tr><td class='tab_bg_2'>";
-         echo "<a href='/front/popup.php?popup=show_cache&amp;sub_type=".$this->getRuleClassName().
-              "&amp;rules_id=".$datas["rules_id"]."' >";
+         echo "<a href='".$CFG_GLPI['root_doc']."/front/popup.php?popup=show_cache&amp;sub_type=".
+              $this->getRuleClassName()."&amp;rules_id=".$datas["rules_id"]."' >";
          echo $datas["name"];
          echo "</a></td>";
          echo "<td class='tab_bg_2'>".$datas["cpt"]."</td></tr>\n";
