@@ -2164,7 +2164,7 @@ class Search {
                   $name2='firstname';
                }
                if ($searchtype=='equals') {
-                  return " $link `$table$linkfield`.`id`".$SEARCH;
+		  return " $link (`$table$linkfield`.`id`".$SEARCH.($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
                } else {
                   return $link." (`$table$linkfield`.`$name1` $SEARCH
                                  OR `$table$linkfield`.`$name2` $SEARCH
@@ -2186,7 +2186,7 @@ class Search {
                }
             }
             if ($searchtype=='equals') {
-               return " $link `$table$linkfield`.`id`".$SEARCH;
+	       return " $link (`$table$linkfield`.`id`".$SEARCH.($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
             } else {
                return makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,$link);
             }
