@@ -71,10 +71,13 @@ class TicketSatisfaction extends CommonDBTM {
          return false;
       }
 
-      if ($ticket->fields["users_id"] != getLoginUserID()) {
-         return false;
+      if ($ticket->fields["users_id"] === getLoginUserID()
+          || $this->fields["users_id_recipient"] === getLoginUserID()
+          || (!isset($_SESSION["glpigroups"])
+              && !in_array($this->fields["groups_id"], $_SESSION['glpigroups']))) {
+         return true;
       }
-      return true;
+      return false;
    }
 
 
