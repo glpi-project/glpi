@@ -48,7 +48,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       global $DB,$LANG;
 
       // Model check : need to check using manufacturer extra data so specific function
-      if ($this->show_cache){
+      if (strpos($this->item_table,'models')) {
          return $this->replayRulesOnExistingDBForModel($offset,$maxtime);
       }
 
