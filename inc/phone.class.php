@@ -488,7 +488,11 @@ class Phone extends CommonDBTM {
       $tab[8]['table'] = $this->getTable();
       $tab[8]['field'] = 'contact_num';
       $tab[8]['name']  = $LANG['common'][21];
-
+      
+      $tab[9]['table']     = $this->getTable();
+      $tab[9]['field']     = 'number_line';
+      $tab[9]['name']      = $LANG['phones'][40];
+      
       $tab[70]['table'] = 'glpi_users';
       $tab[70]['field'] = 'name';
       $tab[70]['name']  = $LANG['common'][34];
