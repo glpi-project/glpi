@@ -579,8 +579,8 @@ $LANG['entity'][8]  = "Par entité";
 $LANG['entity'][9]  = "Sous-entités";
 $LANG['entity'][10] = "Sélectionnez l'entité souhaitée";
 $LANG['entity'][11] = "pour voir l'entité et ses sous-entités";
-$LANG['entity'][12] = "Information de l'annuaire LDAP";
-$LANG['entity'][13] = "Information de l'outil d'inventaire (TAG)";
+$LANG['entity'][12] = "Information de l'annuaire LDAP représentant l'entité";
+$LANG['entity'][13] = "Information de l'outil d'inventaire (TAG) représentant l'entité";
 $LANG['entity'][14] = "Informations avancées";
 $LANG['entity'][15] = "Annuaire associé à l'entité";
 $LANG['entity'][16] = "Filtre de recherche (si nécessaire)";
@@ -593,6 +593,8 @@ $LANG['entity'][22] = "Pour les ticket fermés après le";
 $LANG['entity'][23] = "Valeurs pour les règles génériques d'affectation à l'entité";
 $LANG['entity'][24] = "Valeurs pour l'interface de recherche des utilisateurs depuis un annuaire LDAP";
 $LANG['entity'][25] = "Filtre LDAP associé à l'entité (si nécessaire)";
+$LANG['entity'][26] = "Ces paramètres sont utilisés comme actions des règles génériques d'affectation à une entité";
+$LANG['entity'][27] = "Domaine de messagerie représentant l'entité";
 
 
 $LANG['event'][0]  = "Source";
