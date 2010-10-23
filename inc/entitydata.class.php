@@ -246,32 +246,34 @@ class EntityData extends CommonDBTM {
       }
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>".$LANG['entity'][23]."</th></tr>";
+      echo "<tr><th colspan='2'>".$LANG['entity'][23]."</th></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".$LANG['entity'][26]."</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['entity'][13]."&nbsp;:&nbsp;</td>";
+      echo "<td>";
+      autocompletionTextField($entdata, "tag", array('size' => 100));
+      echo "</td></tr>";
+
       if (canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][12]."&nbsp;:&nbsp;</td>";
-         echo "<td colspan='3'>";
+         echo "<td>";
          autocompletionTextField($entdata, "ldap_dn", array('size' => 100));
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][13]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['entity'][27]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($entdata, "tag");
-      echo "</td>";
-      echo "<td>".$LANG['setup'][732]."&nbsp;:&nbsp;</td>";
-      echo "<td>";
-      autocompletionTextField($entdata, "mail_domain");
+      autocompletionTextField($entdata, "mail_domain", array('size' => 100));
       echo "</td></tr>";
 
       if (canUseLdap()) {
-         echo "<tr><th colspan='4'>".$LANG['entity'][24]."</th></tr>";
+         echo "<tr><th colspan='2'>".$LANG['entity'][24]."</th></tr>";
+
+
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][25]."&nbsp;:&nbsp;</td>";
-         echo "<td>";
-         autocompletionTextField($entdata, 'entity_ldapfilter');
-         echo "</td>";
          echo "<td>".$LANG['entity'][15]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          Dropdown::show('AuthLDAP', array ('name'       => 'ldapservers_id',
@@ -279,11 +281,17 @@ class EntityData extends CommonDBTM {
                                            'emptylabel' => $LANG['ldap'][44],
                                            'condition'  => "`is_active`='1'"));
          echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['entity'][25]."&nbsp;:&nbsp;</td>";
+         echo "<td>";
+         autocompletionTextField($entdata, 'entity_ldapfilter', array('size' => 100));
+         echo "</td></tr>";
       }
 
      if ($canedit) {
          echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<td class='tab_bg_2 center' colspan='2'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
 
          if ($entdata->fields["id"]) {
