@@ -1307,7 +1307,6 @@ $LANG['Menu'][37] = "Entités";
 $LANG['Menu'][38] = "Inventaire";
 $LANG['Menu'][39] = "Collecteurs";
 $LANG['Menu'][40] = "Marque-pages";
-$LANG['Menu'][41] = "Droits";
 $LANG['Menu'][42] = "Calendriers";
 $LANG['Menu'][43] = "SLAs";
 
@@ -2213,8 +2212,6 @@ $LANG['software'][46] = "Associable à un ticket";
 $LANG['software'][47] = "Regroupement";
 $LANG['software'][48] = "Regrouper";
 $LANG['software'][49] = "Logiciel mis dans la corbeille après regroupement";
-$LANG['software'][50] = "Affectée à l'ordinateur";
-$LANG['software'][51] ="Le nombre doit être 1 pour pouvoir affecter";
 
 
 $LANG['softwarecategories'][2] = "Logiciels sans catégorie";
@@ -2290,7 +2287,6 @@ $LANG['title'][28] = "Tickets";
 
 $LANG['title'][30] = "Composants";
 
-$LANG['title'][32] = "Lien externe";
 $LANG['title'][33] = "Liens externes";
 $LANG['title'][34] = "Liens";
 
