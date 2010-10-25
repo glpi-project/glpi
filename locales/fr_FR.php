@@ -2007,7 +2007,7 @@ $LANG['setup'][159] = "Filtre de connexion";
 
 $LANG['setup'][162] = "Configuration serveur de messagerie";
 
-$LANG['setup'][164] = "Nom domaine de messagerie <br>(adresse électronique de type identifiant@domaine)";
+$LANG['setup'][164] = "Nom domaine de messagerie <br>(adresse de messagerie de type identifiant@domaine)";
 $LANG['setup'][165] = "L'extension IMAP de votre parseur PHP n'est pas installée";
 $LANG['setup'][166] = "Impossible d'utiliser la messagerie comme source de connexion externe";
 $LANG['setup'][167] = "Liaison à l'annuaire LDAP";
@@ -2031,7 +2031,7 @@ $LANG['setup'][185] = "Traceurs dans fichiers (SQL, courriel, action automatique
 $LANG['setup'][186] = "Fuseau horaire de l'annuaire LDAP";
 
 $LANG['setup'][190] = "Authentification par certificat x509";
-$LANG['setup'][191] = "Attribut adresse électronique pour authentification par certificat x509";
+$LANG['setup'][191] = "Attribut adresse de messagerie pour authentification par certificat x509";
 $LANG['setup'][192] = "Activé";
 $LANG['setup'][193] = "Champ de stockage de l'identifiant dans la requête HTTP";
 $LANG['setup'][194] = "Contrôle d'accès et informations complémentaires";
@@ -2398,7 +2398,7 @@ $LANG['users'][3]  = "Mot de passe oublié ?";
 $LANG['users'][4]  = "Jeton";
 $LANG['users'][5]  = "Vous avez demandé la réinitialisation de votre mot de passe.";
 $LANG['users'][6]  = "Il vous suffit de suivre ce lien (vous avez une journée) : ";
-$LANG['users'][7]  = "Veuillez saisir votre adresse électronique. Vous recevrez un courriel vous permettant de changer votre mot de passe.";
+$LANG['users'][7]  = "Veuillez saisir votre adresse de messagerie. Vous recevrez un courriel vous permettant de changer votre mot de passe.";
 $LANG['users'][8]  = "L'adresse demandée est inconnue.";
 $LANG['users'][9]  = "La configuration de l'authentification ne vous permet pas de changer votre mot de passe.";
 $LANG['users'][10] = "Courriel expédié. Veuillez vous reporter à celui-ci pour changer votre mot de passe.";
@@ -2433,7 +2433,7 @@ $LANG['validation'][19] = "Validation acceptée";
 $LANG['validation'][20] = "Validation refusée";
 $LANG['validation'][21] = "Valideur";
 
-$LANG['validation'][23] = "L'utilisateur choisi n'a pas d'adresse électronique renseignée. La demande a été créée mais l'envoi du courriel a échoué.";
+$LANG['validation'][23] = "L'utilisateur choisi n'a pas d'adresse de messagerie renseignée. La demande a été créée mais l'envoi du courriel a échoué.";
 
 $LANG['validation'][26] = "Demande de validation";
 $LANG['validation'][27] = "Une demande de validation a été soumise";
