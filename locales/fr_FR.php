@@ -868,7 +868,6 @@ $LANG['install'][105] = "L'extension mbstring de votre parseur PHP n'est pas ins
 $LANG['install'][106] = "Test d'écriture des fichiers de graphiques";
 
 
-$LANG['job'][3]  = "Aucun ticket";
 $LANG['job'][4]  = "Demandeur";
 $LANG['job'][5]  = "Attribué à";
 $LANG['job'][6]  = "Technicien";
@@ -971,7 +970,6 @@ $LANG['knowbase'][8]  = "Modifier cet élément";
 $LANG['knowbase'][9]  = "Supprimer cet élément";
 $LANG['knowbase'][10] = "Cet élément fait partie de la FAQ";
 $LANG['knowbase'][11] = "Cet élément ne fait pas partie de la FAQ";
-$LANG['knowbase'][12] = "Racine";
 $LANG['knowbase'][13] = "Nom de la catégorie";
 $LANG['knowbase'][14] = "Sujet";
 $LANG['knowbase'][15] = "Contenu";
@@ -1093,7 +1091,6 @@ $LANG['log'][62]  = "suppression utilisateur à l'entité";
 $LANG['log'][64]  = "modification du champ";
 $LANG['log'][65]  = "règle";
 $LANG['log'][66]  = "Sécurité";
-$LANG['log'][67]  = "modification des notes";
 
 $LANG['log'][70]  = "ajout d'un port réseau";
 $LANG['log'][71]  = "ajout de plusieurs ports réseau";
@@ -1203,21 +1200,12 @@ $LANG['mailing'][5]   = "Description du ticket";
 
 $LANG['mailing'][10]  = "Nouveau suivi pour ce ticket";
 
-$LANG['mailing'][12]  = "Attribution du ticket";
 
-$LANG['mailing'][14]  = "Changement de catégorie du ticket";
-$LANG['mailing'][15]  = "Changement de priorité du ticket";
-
-$LANG['mailing'][17]  = "Changement du matériel concerné par le ticket";
-$LANG['mailing'][18]  = "Changement du demandeur du ticket";
 $LANG['mailing'][19]  = "Nouvelle réservation";
-$LANG['mailing'][20]  = "Changement de groupe demandeur du ticket";
-$LANG['mailing'][21]  = "Changement de la source du ticket";
 
 $LANG['mailing'][23]  = "Modification réservation";
 
 $LANG['mailing'][26]  = "Document ajouté :";
-$LANG['mailing'][27]  = "Changement de statut du ticket";
 
 $LANG['mailing'][29]  = "Annulation réservation";
 $LANG['mailing'][30]  = "Modification Ticket";
@@ -1232,30 +1220,15 @@ $LANG['mailing'][37]  = "Contrat entré dans la période de préavis :";
 $LANG['mailing'][39]  = "Alerte Contrats";
 $LANG['mailing'][40]  = "Matériel arrivé en fin de garantie :";
 $LANG['mailing'][41]  = "Alerte Informations Financières";
-$LANG['mailing'][42]  = "Changement du coût horaire";
-$LANG['mailing'][43]  = "Changement du coût fixe";
-$LANG['mailing'][44]  = "Changement du coût matériel";
-$LANG['mailing'][45]  = "Changement du titre du ticket";
-$LANG['mailing'][46]  = "Changement de la description du ticket";
 $LANG['mailing'][47]  = "Erreur dans l'envoi du courriel";
-$LANG['mailing'][48]  = "Changement de la date d'ouverture";
-$LANG['mailing'][49]  = "Changement de la date de clôture";
-$LANG['mailing'][50]  = "Changement du receveur du ticket";
 $LANG['mailing'][51]  = "Licence expirée :";
 $LANG['mailing'][52]  = "Alerte envoyée le ";
-$LANG['mailing'][53]  = "Changement de solution";
 $LANG['mailing'][54]  = "Date d'expiration";
 
 $LANG['mailing'][100] = "Pas de catégorie attribuée";
-$LANG['mailing'][101] = "Le suivi par courriel a été activé";
-$LANG['mailing'][102] = "Le suivi par courriel a été désactivé";
 
 $LANG['mailing'][104] = "Durée de l'intervention";
-$LANG['mailing'][105] = "Non attribué";
 
-$LANG['mailing'][107] = "Pas de matériel concerné";
-
-$LANG['mailing'][109] = "Pas de groupe";
 $LANG['mailing'][110] = "Adresse invalide";
 $LANG['mailing'][111] = "Adresse de courriel";
 
