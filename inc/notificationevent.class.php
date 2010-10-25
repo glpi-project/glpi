@@ -161,7 +161,7 @@ class NotificationEvent extends CommonDBTM {
 
          if (count($events)>0) {
             echo "<tr><th>".$LANG['mailing'][119].'</th><th>'.$LANG['mailing'][121]."</th>";
-            echo "<th>".$LANG['mailing'][113].'</th><th>'.$LANG['mailing'][118]."</th></tr>";
+            echo "<th>".$LANG['mailing'][113].'</th><th>'.$LANG['mailing'][111]."</th></tr>";
 
             foreach ($events as $event => $label) {
                self::raiseEvent($event, $item, $options, $label);

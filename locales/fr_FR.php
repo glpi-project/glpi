@@ -1176,7 +1176,7 @@ $LANG['login'][32] = "Authentification sur la base GLPI";
 $LANG['login'][33] = "Authentification sur le serveur de messagerie";
 
 
-$LANG['mailgate'][0]  = "Collecteur Mail";
+$LANG['mailgate'][0]  = "Collecteur Courriel";
 
 $LANG['mailgate'][2]  = "Récupérer maintenant";
 $LANG['mailgate'][3]  = "Nombre de messages disponibles et récupérés";
@@ -1185,12 +1185,12 @@ $LANG['mailgate'][5]  = "Fichier attaché invalide";
 $LANG['mailgate'][6]  = "Fichier attaché trop volumineux";
 $LANG['mailgate'][7]  = "Taille maximale des fichiers importés par le collecteur";
 
-$LANG['mailgate'][9]  = "Votre email n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
-$LANG['mailgate'][10] = "Email rejeté";
-$LANG['mailgate'][11] = "Processus d'import d'emails";
-$LANG['mailgate'][12] = "Impossible d'affecter l'email à une entité";
+$LANG['mailgate'][9]  = "Votre courriel n'a pu être traité.\nVeuillez contacter l'administrateur si le problème persiste";
+$LANG['mailgate'][10] = "Courriel rejeté";
+$LANG['mailgate'][11] = "Processus d'import des courriels";
+$LANG['mailgate'][12] = "Impossible d'affecter le courriel à une entité";
 $LANG['mailgate'][13] = "Raison du refus";
-$LANG['mailgate'][14] = "Email absent. Import impossible";
+$LANG['mailgate'][14] = "Courriel absent. Import impossible";
 
 $LANG['mailgate'][16] = "Re:";
 
@@ -1221,8 +1221,8 @@ $LANG['mailing'][27]  = "Changement de statut du ticket";
 
 $LANG['mailing'][29]  = "Annulation réservation";
 $LANG['mailing'][30]  = "Modification Ticket";
-$LANG['mailing'][31]  = "Ceci est le mail de test d'envoi de mail";
-$LANG['mailing'][32]  = "Mail Test";
+$LANG['mailing'][31]  = "Ceci est le courriel de test.";
+$LANG['mailing'][32]  = "Courriel Test";
 $LANG['mailing'][33]  = "Alerte Cartouches";
 
 $LANG['mailing'][35]  = "Seuil d'alerte atteint pour le type de consommable :";
@@ -1256,14 +1256,15 @@ $LANG['mailing'][105] = "Non attribué";
 $LANG['mailing'][107] = "Pas de matériel concerné";
 
 $LANG['mailing'][109] = "Pas de groupe";
-$LANG['mailing'][110] = "Email invalide";
+$LANG['mailing'][110] = "Adresse invalide";
+$LANG['mailing'][111] = "Adresse de courriel";
 
 $LANG['mailing'][113] = "Modèles de notifications";
 $LANG['mailing'][114] = "Corps";
-$LANG['mailing'][115] = "Corps de l'email";
+$LANG['mailing'][115] = "Corps du courriel";
 $LANG['mailing'][116] = "HTML";
 $LANG['mailing'][117] = "texte";
-$LANG['mailing'][118] = "Email";
+$LANG['mailing'][118] = "Courriel";
 $LANG['mailing'][119] = "Événement";
 $LANG['mailing'][120] = "Mode de notification";
 $LANG['mailing'][121] = "Destinataires";
@@ -1778,7 +1779,7 @@ $LANG['rulesengine'][66]  = "Types";
 $LANG['rulesengine'][67]  = "Dictionnaire des systèmes d'exploitation";
 $LANG['rulesengine'][68]  = "Dictionnaire des service packs";
 $LANG['rulesengine'][69]  = "Dictionnaire des versions";
-$LANG['rulesengine'][70]  = "Règles d'affectation d'un ticket ouvert par email";
+$LANG['rulesengine'][70]  = "Règles d'affectation d'un ticket ouvert par courriel";
 
 $LANG['rulesengine'][76]  = "Rejouer les règles du dictionnaire";
 $LANG['rulesengine'][77]  = "Dictionnaires";
@@ -1825,8 +1826,8 @@ $LANG['rulesengine'][130] = "Entité depuis information LDAP";
 $LANG['rulesengine'][131] = "Entité depuis TAG";
 $LANG['rulesengine'][132] = "Ignorer l'import";
 $LANG['rulesengine'][133] = "Entité depuis domaine";
-$LANG['rulesengine'][134] = "Refuser email (pas de réponse par courriel)";
-$LANG['rulesengine'][135] = "Refuser email (avec réponse par courriel)";
+$LANG['rulesengine'][134] = "Refuser courriel (pas de réponse par courriel)";
+$LANG['rulesengine'][135] = "Refuser courriel (avec réponse par courriel)";
 
 $LANG['rulesengine'][138] = "Critères LDAP";
 
@@ -1890,7 +1891,7 @@ $LANG['setup'][8]   = "Activer les informations financières par défaut";
 $LANG['setup'][9]   = "Interface réseau";
 $LANG['setup'][10]  = "Ordre d'affichage du nom complet";
 
-$LANG['setup'][14]  = "Email";
+$LANG['setup'][14]  = "Courriel";
 
 $LANG['setup'][18]  = "Identifiant";
 $LANG['setup'][19]  = "Mot de passe";
@@ -2006,7 +2007,7 @@ $LANG['setup'][159] = "Filtre de connexion";
 
 $LANG['setup'][162] = "Configuration serveur de messagerie";
 
-$LANG['setup'][164] = "Nom domaine de messagerie <br>(email de type identifiant@domaine)";
+$LANG['setup'][164] = "Nom domaine de messagerie <br>(adresse électronique de type identifiant@domaine)";
 $LANG['setup'][165] = "L'extension IMAP de votre parseur PHP n'est pas installée";
 $LANG['setup'][166] = "Impossible d'utiliser la messagerie comme source de connexion externe";
 $LANG['setup'][167] = "Liaison à l'annuaire LDAP";
@@ -2026,11 +2027,11 @@ $LANG['setup'][180] = "Utiliser TLS";
 $LANG['setup'][181] = "Fonction ldap_start_tls inexistante";
 $LANG['setup'][182] = "Adresse web de retour à la déconnexion (logout)";
 
-$LANG['setup'][185] = "Traceurs dans fichiers (SQL, mail, action automatique...)";
+$LANG['setup'][185] = "Traceurs dans fichiers (SQL, courriel, action automatique...)";
 $LANG['setup'][186] = "Fuseau horaire de l'annuaire LDAP";
 
 $LANG['setup'][190] = "Authentification par certificat x509";
-$LANG['setup'][191] = "Attribut mail pour authentification par certificat x509";
+$LANG['setup'][191] = "Attribut adresse électronique pour authentification par certificat x509";
 $LANG['setup'][192] = "Activé";
 $LANG['setup'][193] = "Champ de stockage de l'identifiant dans la requête HTTP";
 $LANG['setup'][194] = "Contrôle d'accès et informations complémentaires";
@@ -2049,7 +2050,7 @@ $LANG['setup'][206] = "Échec de l'envoi du courriel de test à l'administrateur
 $LANG['setup'][207] = "Courriel de réponse (si nécessaire)";
 $LANG['setup'][208] = "Nom de l'administrateur";
 $LANG['setup'][209] = "Nom de réponse (si nécessaire)";
-$LANG['setup'][217] = "La fonction mail PHP  n'existe pas ou est désactivée sur votre système";
+$LANG['setup'][217] = "La fonction mail PHP n'existe pas ou est désactivée sur votre système";
 $LANG['setup'][218] = "L'utilisation d'un serveur SMTP est indispensable";
 $LANG['setup'][219] = "Autoriser les ouvertures de tickets anonymes (helpdesk.html, collecteur)";
 
@@ -2057,7 +2058,7 @@ $LANG['setup'][221] = "Date de début de l'exercice fiscal";
 
 $LANG['setup'][223] = "Limite des horaires pour le planning";
 
-$LANG['setup'][227] = "Addresse web de l'application";
+$LANG['setup'][227] = "Adresse web de l'application";
 $LANG['setup'][228] = "Champ de l'identifiant";
 $LANG['setup'][229] = "Envoyer un courriel de test à l'administrateur";
 
@@ -2168,8 +2169,8 @@ $LANG['setup'][651] = "SMTP";
 $LANG['setup'][652] = "SMTP+SSL";
 $LANG['setup'][653] = "SMTP+TLS";
 
-$LANG['setup'][660] = "Serveur mail";
-$LANG['setup'][661] = "Configuration des notifications impossible : veuillez configurer le suivi par email dans la configuration ci-dessus.";
+$LANG['setup'][660] = "Serveur courriel";
+$LANG['setup'][661] = "Configuration des notifications impossible : veuillez configurer le suivi par courriel dans la configuration ci-dessus.";
 
 $LANG['setup'][703] = "Générale";
 $LANG['setup'][704] = "Notifications";
@@ -2398,10 +2399,10 @@ $LANG['users'][4]  = "Jeton";
 $LANG['users'][5]  = "Vous avez demandé la réinitialisation de votre mot de passe.";
 $LANG['users'][6]  = "Il vous suffit de suivre ce lien (vous avez une journée) : ";
 $LANG['users'][7]  = "Veuillez saisir votre adresse électronique. Vous recevrez un courriel vous permettant de changer votre mot de passe.";
-$LANG['users'][8]  = "L'email demandé est inconnu.";
+$LANG['users'][8]  = "L'adresse demandée est inconnue.";
 $LANG['users'][9]  = "La configuration de l'authentification ne vous permet pas de changer votre mot de passe.";
 $LANG['users'][10] = "Courriel expédié. Veuillez vous reporter à celui-ci pour changer votre mot de passe.";
-$LANG['users'][11] = "Veuillez confirmer votre email et saisir votre nouveau mot de passe.";
+$LANG['users'][11] = "Veuillez confirmer votre courriel et saisir votre nouveau mot de passe.";
 $LANG['users'][12] = "La demande de renouvellement de mot de passe a expirée ou est invalide. Merci de la renouveller.";
 $LANG['users'][13] = "Mot de passe modifié avec succès.";
 $LANG['users'][14] = "Habilitations";
