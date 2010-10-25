@@ -1891,7 +1891,7 @@ $LANG['setup'][8]   = "Activer les informations financières par défaut";
 $LANG['setup'][9]   = "Interface réseau";
 $LANG['setup'][10]  = "Ordre d'affichage du nom complet";
 
-$LANG['setup'][14]  = "Courriel";
+$LANG['setup'][14]  = "Adresse de messagerie";
 
 $LANG['setup'][18]  = "Identifiant";
 $LANG['setup'][19]  = "Mot de passe";
