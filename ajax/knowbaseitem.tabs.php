@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: link.tabs.php 11396 2010-04-27 17:50:23Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

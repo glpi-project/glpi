@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: central.class.php 11581 2010-06-09 11:30:44Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

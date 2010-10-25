@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownInstallVersion.php 11725 2010-06-15 18:27:56Z tsmr $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.

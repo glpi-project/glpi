@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: slalevel_ticket.class.php 12195 2010-08-26 11:20:05Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
