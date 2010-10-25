@@ -519,7 +519,7 @@ if (isset($_POST["itemtype"])) {
             break;
 
          case "replay_dictionnary" :
-            $softdictionnayrule = new RuleSoftwareCategoryCollection;
+            $softdictionnayrule = new RuleDictionnarySoftwareCollection();
             $ids = array();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
