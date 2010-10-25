@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: tickettask.form.php 10411 2010-02-09 07:58:26Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
