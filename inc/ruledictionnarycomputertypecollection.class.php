@@ -46,7 +46,11 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
     * Constructor
    **/
    function __construct() {
-      parent::__construct();
+
+      $this->item_table="glpi_computertypes";
+      //Init cache system values
+      $this->initCache("glpi_rulecachecomputertypes");
+      $this->menu_option="type.computer";
    }
 
    function getTitle() {
