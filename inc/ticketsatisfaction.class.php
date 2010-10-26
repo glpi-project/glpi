@@ -163,6 +163,29 @@ class TicketSatisfaction extends CommonDBTM {
       }
    }
 
+   /**
+    * display satisfaction value
+    *
+    * @param $value decimal between 0 and 5
+   **/
+   static function displaySatisfaction($value) {
+
+      if ($value<0) {
+         $value=0;
+      }
+      if ($value>5) {
+         $value=5;
+      }
+      echo '<div style="width: 81px;"  class="x-starslider x-starslider-horz">';
+      echo '<div  class="x-starslider-end">';
+      echo '<div style="width: 81px;" class="x-starslider-inner">';
+      echo "<div style='width: ".intval($value*16)."px;' class='x-starslider-thumb'>";
+      echo '</div></div></div></div>';
+         
+
+
+   }
+
 }
 
 ?>
