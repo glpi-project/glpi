@@ -2100,7 +2100,7 @@ function deleteDir($dir) {
 
       if (is_dir($dir)) {
          $id_dir = opendir($dir);
-         while(($element = readdir($id_dir)) !== false) {
+         while (($element = readdir($id_dir)) !== false) {
             if ($element != "." && $element != "..") {
 
                if (is_dir($dir."/".$element)) {
@@ -2361,12 +2361,13 @@ function manageBeginAndEndPlanDates(&$data) {
  * @return encrypted string
 **/
 function encrypt($string, $key) {
+
   $result = '';
-  for($i=0; $i<strlen($string); $i++) {
-    $char = substr($string, $i, 1);
+  for($i=0 ; $i<strlen($string) ; $i++) {
+    $char    = substr($string, $i, 1);
     $keychar = substr($key, ($i % strlen($key))-1, 1);
-    $char = chr(ord($char)+ord($keychar));
-    $result.=$char;
+    $char    = chr(ord($char)+ord($keychar));
+    $result .= $char;
   }
 
   return base64_encode($result);
@@ -2382,14 +2383,15 @@ function encrypt($string, $key) {
  * @return decrypted string
 **/
 function decrypt($string, $key) {
+
   $result = '';
   $string = base64_decode($string);
 
-  for($i=0; $i<strlen($string); $i++) {
-    $char = substr($string, $i, 1);
+  for($i=0 ; $i<strlen($string) ; $i++) {
+    $char    = substr($string, $i, 1);
     $keychar = substr($key, ($i % strlen($key))-1, 1);
-    $char = chr(ord($char)-ord($keychar));
-    $result.=$char;
+    $char    = chr(ord($char)-ord($keychar));
+    $result .= $char;
   }
 
   return $result;

@@ -2107,7 +2107,6 @@ $LANG['setup'][312] = "Pas de données disponible sur le site";
 $LANG['setup'][313] = "Attention : il n'y a plus de valeur par défaut";
 $LANG['setup'][314] = "Nombre maximum de caractères affichés pour les URL";
 
-
 $LANG['setup'][350] = "Liaison avec les matériels pour la création de tickets";
 $LANG['setup'][351] = "Tous les matériels";
 $LANG['setup'][352] = "Matériels associables à un ticket";
