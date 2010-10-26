@@ -519,7 +519,7 @@ class EntityData extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
       $options = array('value'      => $entdata->fields["calendars_id"],
-                       'emptylabel' => $LANG['calendar'][9]);
+                       'emptylabel' => $LANG['common'][102]);
 
       if ($ID==0) {
          $options['emptylabel'] = DROPDOWN_EMPTY_VALUE;

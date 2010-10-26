@@ -128,7 +128,6 @@ $LANG['calendar'][5]  = "Plage horaire";
 $LANG['calendar'][6]  = "Ajouter une plage horaire";
 $LANG['calendar'][7]  = "Jour";
 $LANG['calendar'][8]  = "Impossible d'ajouter une plage chevauchant une plage existante";
-$LANG['calendar'][9]  = "Hérité de l'entité parente";
 $LANG['calendar'][10] = "Plages horaires";
 $LANG['calendar'][11] = "Périodes de fermeture";
 $LANG['calendar'][12] = "jour(s)";
@@ -333,6 +332,7 @@ $LANG['common'][98]  = "Duplique";
 $LANG['common'][99]  = "Dates";
 $LANG['common'][100] = "Délais";
 $LANG['common'][101] = "Dernière modification par";
+$LANG['common'][102] = "Hérité de l'entité parente";
 
 
 $LANG['computers'][0]  = "Volume";
