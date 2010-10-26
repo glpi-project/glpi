@@ -45,6 +45,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    public $itemtype_2 = 'SoftwareLicense';
    public $items_id_2 = 'softwarelicenses_id';
 
+
    /**
     * Get number of installed licenses of a license
     *
@@ -52,7 +53,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @param $entity to search for computer in (default = all active entities)
     *
     * @return number of installations
-    */
+   **/
    static function countForLicense($softwarelicenses_id, $entity='') {
       global $DB;
 
@@ -73,12 +74,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       return 0;
    }
 
+
    /**
     * Get number of installed licenses of a software
     *
     * @param $softwares_id software ID
+    *
     * @return number of installations
-    */
+   **/
    static function countForSoftware($softwares_id) {
       global $DB;
 
@@ -102,13 +105,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       return 0;
    }
 
+
    /**
     * Show number of installation per entity
     *
     * @param $license SoftwareLicense object
     *
     * @return nothing
-    */
+   **/
    static function showForLicenseByEntity(SoftwareLicense $license) {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -124,13 +128,13 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       echo "<th>&nbsp;".$LANG['software'][9]."&nbsp;-&nbsp;".$LANG['tracking'][29]."</th>";
       echo "</tr>\n";
 
-      $tot=0;
+      $tot = 0;
       if (in_array(0,$_SESSION["glpiactiveentities"])) {
          $nb = self::countForLicense($softwarelicense_id,0);
          if ($nb>0) {
             echo "<tr class='tab_bg_2'><td>" . $LANG['entity'][2] . "</td>";
             echo "<td class='right'>" . $nb . "</td></tr>\n";
-            $tot+=$nb;
+            $tot += $nb;
          }
       }
       $sql = "SELECT `id`, `completename`
@@ -143,9 +147,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          if ($nb>0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
             echo "<td class='right'>".$nb."</td></tr>\n";
-            $tot+=$nb;
+            $tot += $nb;
          }
       }
+
       if ($tot>0) {
          echo "<tr class='tab_bg_1'><td class='right b'>".$LANG['common'][33]."</td>";
          echo "<td class='right b'>".$tot."</td></tr>\n";
@@ -155,12 +160,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       echo "</table></div>";
    }
 
+
    /**
     * Show computers linked to a License
     *
     * @param $license SoftwareLicense object
+    *
     * @return nothing
-    */
+   **/
    static function showForLicense (SoftwareLicense $license) {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -170,7 +177,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          return false;
       }
 
-      $canedit = haveRight("software", "w");
+      $canedit         = haveRight("software", "w");
       $canshowcomputer = haveRight("computer", "r");
 
       if (isset($_REQUEST["start"])) {
@@ -187,24 +194,23 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
          // manage several param like location,compname : order first
-         $tmp=explode(",",$_REQUEST["sort"]);
-         $sort="`".implode("` $order,`",$tmp)."`";
+         $tmp  = explode(",",$_REQUEST["sort"]);
+         $sort = "`".implode("` $order,`",$tmp)."`";
       } else {
          $sort = "`entity` $order, `compname`";
       }
 
-
       //SoftwareLicense ID
       $query_number = "SELECT COUNT(*) AS cpt
-               FROM `glpi_computers_softwarelicenses`
-               INNER JOIN `glpi_computers`
-                     ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
-               WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id`=$searchID" .
-               getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-               AND `glpi_computers`.`is_deleted`=0
-               AND `glpi_computers`.`is_template`=0";
+                       FROM `glpi_computers_softwarelicenses`
+                       INNER JOIN `glpi_computers`
+                           ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
+                       WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$searchID'" .
+                             getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
+                             AND `glpi_computers`.`is_deleted` = '0'
+                             AND `glpi_computers`.`is_template` = '0'";
 
-      $number=0;
+      $number = 0;
       if ($result =$DB->query($query_number)) {
          $number  = $DB->result($result,0,0);
       }
@@ -212,22 +218,22 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       echo "<div class='center'>";
 
       if ($canedit) {
-         echo "<form method='post' action=\"".
-                  $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php\">";
+         echo "<form method='post' action='".
+                $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php'>";
          echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'>";
          echo "<td>";
-         Dropdown::show('Computer', array('entity'       => $license->fields['entities_id'],
-                                          'entity_sons'  => $license->fields['is_recursive']));
+         Dropdown::show('Computer', array('entity'      => $license->fields['entities_id'],
+                                          'entity_sons' => $license->fields['is_recursive']));
 
-         echo "</td><td><input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit' >";
+         echo "</td>";
+         echo "<td><input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
          echo "</td></tr>";
 
          echo "</table></form>";
       }
-
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
@@ -237,7 +243,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
 
       // Display the pager
-      printAjaxPager($LANG['software'][9],$start,$number);
+      printAjaxPager($LANG['software'][9], $start, $number);
 
       $query = "SELECT `glpi_computers_softwarelicenses`.*,
                        `glpi_computers`.`name` AS compname,
@@ -261,7 +267,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 INNER JOIN `glpi_computers`
                      ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
                 LEFT JOIN `glpi_entities` ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
-                LEFT JOIN `glpi_locations` ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)
+                LEFT JOIN `glpi_locations`
+                     ON (`glpi_computers`.`locations_id` = `glpi_locations`.`id`)
                 LEFT JOIN `glpi_states` ON (`glpi_computers`.`states_id` = `glpi_states`.`id`)
                 LEFT JOIN `glpi_groups` ON (`glpi_computers`.`groups_id` = `glpi_groups`.`id`)
                 LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id`)
@@ -280,15 +287,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $soft = new Software;
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
-            $title=$LANG['help'][31] ." = ". $soft->fields["name"];
-            $title .= " - " . $data["vername"];
+            $title      =$LANG['help'][31] ." = ". $soft->fields["name"]." - " . $data["vername"];
 
             initNavigateListItems('Computer',$title);
-            $sort_img="<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                        ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
+            $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
+                        ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
             if ($canedit) {
-               echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".
-                      $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php\">";
+               echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post'
+                      action='".$CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php'>";
                echo "<table class='tab_cadre_fixehov'><tr>";
                echo "<th>&nbsp;</th>";
             } else {
@@ -296,32 +302,33 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             }
 
             echo "<th>".($sort=="`compname`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=compname&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=compname&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][16]."</a></th>";
+
             if ($showEntity) {
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").
-                         "<a href='javascript:reloadTab(\"sort=entity,compname&amp;order=".
-                           ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0].
-                         "</a></th>";
+                    "<a href='javascript:reloadTab(\"sort=entity,compname&amp;order=".
+                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0]."</a></th>";
             }
+
             echo "<th>".($sort=="`serial`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][19]."</a></th>";
             echo "<th>".($sort=="`otherserial`"?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][20]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][20]."</a></th>";
             echo "<th>".(strstr($sort,"`location`")?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][15]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][15]."</a></th>";
             echo "<th>".(strstr($sort,"state")?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=state,compname&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['state'][0]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=state,compname&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['state'][0]."</a></th>";
             echo "<th>".(strstr($sort,"groupe")?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=groupe,compname&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][35]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=groupe,compname&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][35]."</a></th>";
             echo "<th>".(strstr($sort,"username")?$sort_img:"").
-                      "<a href='javascript:reloadTab(\"sort=username,compname&amp;order=".
-                        ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][34]."</a></th>";
+                 "<a href='javascript:reloadTab(\"sort=username,compname&amp;order=".
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['common'][34]."</a></th>";
             echo "</tr>\n";
 
             do {
@@ -331,15 +338,18 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                if ($canedit) {
                   echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
                }
-               $compname=$data['compname'];
+
+               $compname = $data['compname'];
                if (empty($compname) || $_SESSION['glpiis_ids_visible']) {
                   $compname .= " (".$data['cID'].")";
                }
+
                if ($canshowcomputer) {
                   echo "<td><a href='computer.form.php?id=".$data['cID']."'>$compname</a></td>";
                } else {
                   echo "<td>".$compname."</td>";
                }
+
                if ($showEntity) {
                   echo "<td>".(empty($data['entity']) ? $LANG['entity'][2] : $data['entity'])."</td>";
                }
@@ -358,8 +368,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                openArrowMassive("softinstall".$rand."",true);
                Dropdown::show('SoftwareLicense',
-                     array('condition' => "`glpi_softwarelicenses`.`softwares_id` = '".$license->fields['softwares_id']."'",
-                           'used'      => array($searchID)));
+                              array('condition' => "`glpi_softwarelicenses`.`softwares_id`
+                                                      = '".$license->fields['softwares_id']."'",
+                           '        used'       => array($searchID)));
 
                echo "&nbsp;<input type='submit' name='move' value=\"".
                      $LANG['buttons'][20]."\" class='submit'>&nbsp;";
@@ -367,6 +378,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
                echo "</form>";
             }
+
          } else { // Not found
             echo $LANG['search'][15];
          }
@@ -375,14 +387,15 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
    }
 
+
    /**
-   * Update license associated on a computer
-   *
-   * @param $licID ID of the install software lienk
-   * @param $softwarelicenses_id ID of the new license
-   *
-   * @return nothing
-   */
+    * Update license associated on a computer
+    *
+    * @param $licID ID of the install software lienk
+    * @param $softwarelicenses_id ID of the new license
+    *
+    * @return nothing
+   **/
    function upgrade($licID, $softwarelicenses_id) {
       global $DB;
 
@@ -394,33 +407,34 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
    }
 
+
    /**
-   * Get licenses list corresponding to an installation
-   *
-   * @param $computers_id ID of the computer
-   * @param $softwareversions_id ID of the version
-   *
-   * @return nothing
-   */
-   static function GetLicenseForInstallation($computers_id,$softwareversions_id) {
+    * Get licenses list corresponding to an installation
+    *
+    * @param $computers_id ID of the computer
+    * @param $softwareversions_id ID of the version
+    *
+    * @return nothing
+   **/
+   static function GetLicenseForInstallation($computers_id, $softwareversions_id) {
       global $DB;
 
-      $lic=array();
+      $lic = array();
       $sql = "SELECT `glpi_softwarelicenses`.*,
                      `glpi_softwarelicensetypes`.`name` AS type
               FROM `glpi_softwarelicenses`
               INNER JOIN `glpi_computers_softwarelicenses`
                   ON (`glpi_softwarelicenses`.`id`
-                        = `glpi_computers_softwarelicenses`.`softwarelicenses_id`
+                           = `glpi_computers_softwarelicenses`.`softwarelicenses_id`
                       AND `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id')
-            LEFT JOIN `glpi_softwarelicensetypes`
-               ON (`glpi_softwarelicenses`.`softwarelicensetypes_id`
-                     =`glpi_softwarelicensetypes`.`id`)
+              LEFT JOIN `glpi_softwarelicensetypes`
+                  ON (`glpi_softwarelicenses`.`softwarelicensetypes_id`
+                           =`glpi_softwarelicensetypes`.`id`)
               WHERE `glpi_softwarelicenses`.`softwareversions_id_use` = '$softwareversions_id'
                     OR `glpi_softwarelicenses`.`softwareversions_id_buy` = '$softwareversions_id'";
 
       foreach ($DB->request($sql) as $ID => $data) {
-         $lic[$data['id']]=$data;
+         $lic[$data['id']] = $data;
       }
       return $lic;
    }

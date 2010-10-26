@@ -2537,7 +2537,7 @@ class User extends CommonDBTM {
 
    /**
     * Display information from LDAP server for user
-    */
+   **/
    private function showLdapDebug() {
       global $LANG;
 
@@ -2554,25 +2554,28 @@ class User extends CommonDBTM {
       if ($this->fields['user_dn']) {
          echo "<tr class='tab_bg_2'><td>".$LANG['title'][13]."&nbsp;:</td><td>";
          $config_ldap = new AuthLDAP();
-         $ds = false;
+         $ds          = false;
+
          if ($config_ldap->getFromDB($this->fields['auths_id'])) {
             $ds = $config_ldap->connect();
          }
 
          if ($ds) {
-            $info = AuthLdap::getUserByDn($ds,
-                                          $this->fields['user_dn'],
+            $info = AuthLdap::getUserByDn($ds, $this->fields['user_dn'],
                                           array('*', 'createTimeStamp', 'modifyTimestamp'));
             if (is_array($info)) {
                printCleanArray($info);
             } else {
                echo $LANG['stats'][2];
             }
+
          } else {
             echo $LANG['log'][41];
          }
+
          echo "</td></tr>\n";
       }
+
       echo "</table></div>";
    }
 
@@ -2580,6 +2583,7 @@ class User extends CommonDBTM {
     * Display debug information for current object
    **/
    function showDebug() {
+
       NotificationEvent::debugEvent($this);
       $this->showLdapDebug();
    }
