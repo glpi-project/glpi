@@ -2535,12 +2535,58 @@ class User extends CommonDBTM {
       echo "</div>";
    }
 
+   /**
+    * Display information from LDAP server for user
+    */
+   private function showLdapDebug() {
+      global $LANG;
+
+      if ($this->fields['authtype'] != Auth::LDAP) {
+         return false;
+      }
+      echo "<div class='spaced'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".$LANG['setup'][137].' - '.$LANG['login'][2]."</th></tr>";
+
+      echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][26]."&nbsp;:</td>";
+      echo "<td>".$this->fields['user_dn']."</td></tr>\n";
+
+      if ($this->fields['user_dn']) {
+         echo "<tr class='tab_bg_2'><td>".$LANG['title'][13]."&nbsp;:</td><td>";
+         $config_ldap = new AuthLDAP();
+         $ds = false;
+         if ($config_ldap->getFromDB($this->fields['auths_id'])) {
+            $ds = AuthLdap::connectToServer($config_ldap->fields['host'],
+                                            $config_ldap->fields['port'],
+                                            $config_ldap->fields['rootdn'],
+                                            decrypt($config_ldap->fields['rootdn_password'],GLPIKEY),
+                                            $config_ldap->fields['use_tls'],
+                                            $config_ldap->fields['deref_option']);
+         }
+
+         if ($ds) {
+            $info = AuthLdap::getUserByDn($ds,
+                                          $this->fields['user_dn'],
+                                          array('*', 'createTimeStamp', 'modifyTimestamp'));
+            if (is_array($info)) {
+               printCleanArray($info);
+            } else {
+               echo $LANG['stats'][2];
+            }
+         } else {
+            echo $LANG['log'][41];
+         }
+         echo "</td></tr>\n";
+      }
+      echo "</table></div>";
+   }
 
    /**
     * Display debug information for current object
    **/
    function showDebug() {
       NotificationEvent::debugEvent($this);
+      $this->showLdapDebug();
    }
 }
 
