@@ -173,7 +173,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                $tocheck[$data["id"]][]=$ID;
                $sql = "UPDATE
                        `$model_table`
-                       SET `model` = '$ID'
+                       SET `$model_field` = '$ID'
                        WHERE `$model_field` = '".$data['id']."'";
                if (empty($data['idmanu'])) {
                   $sql .= " AND (`manufacturers_id` IS NULL
