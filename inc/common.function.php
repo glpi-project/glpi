@@ -2100,10 +2100,10 @@ function deleteDir($dir) {
 
       if (is_dir($dir)) {
          $id_dir = opendir($dir);
-         while ($element = readdir($id_dir)) {
+         while(($element = readdir($id_dir)) !== false) {
             if ($element != "." && $element != "..") {
 
-               if (is_dir($element)) {
+               if (is_dir($dir."/".$element)) {
                   deleteDir($dir."/".$element);
                } else {
                   unlink($dir."/".$element);
