@@ -40,22 +40,25 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
 
    // Specific ones
    /// dropdown table
-   var $item_table="";
+   var $item_table = "";
 
    /**
     * Constructor
    **/
    function __construct() {
 
-      $this->item_table="glpi_computertypes";
+      $this->item_table = "glpi_computertypes";
       //Init cache system values
       $this->initCache("glpi_rulecachecomputertypes");
-      $this->menu_option="type.computer";
+      $this->menu_option = "type.computer";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][60];
+
+      return $LANG['rulesengine'][60];
    }
+
 }
 ?>

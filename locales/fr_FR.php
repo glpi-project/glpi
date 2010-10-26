@@ -1204,7 +1204,6 @@ $LANG['mailing'][6]   = "CSS";
 
 $LANG['mailing'][10]  = "Nouveau suivi pour ce ticket";
 
-
 $LANG['mailing'][19]  = "Nouvelle réservation";
 
 $LANG['mailing'][23]  = "Modification réservation";
@@ -1224,9 +1223,12 @@ $LANG['mailing'][37]  = "Contrat entré dans la période de préavis :";
 $LANG['mailing'][39]  = "Alerte Contrats";
 $LANG['mailing'][40]  = "Matériel arrivé en fin de garantie :";
 $LANG['mailing'][41]  = "Alerte Informations Financières";
+
 $LANG['mailing'][47]  = "Erreur dans l'envoi du courriel";
+
 $LANG['mailing'][51]  = "Licence expirée :";
 $LANG['mailing'][52]  = "Alerte envoyée le ";
+
 $LANG['mailing'][54]  = "Date d'expiration";
 
 $LANG['mailing'][100] = "Pas de catégorie attribuée";
@@ -1311,6 +1313,7 @@ $LANG['Menu'][37] = "Entités";
 $LANG['Menu'][38] = "Inventaire";
 $LANG['Menu'][39] = "Collecteurs";
 $LANG['Menu'][40] = "Marque-pages";
+
 $LANG['Menu'][42] = "Calendriers";
 $LANG['Menu'][43] = "SLAs";
 

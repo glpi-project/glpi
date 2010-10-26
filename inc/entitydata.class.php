@@ -220,7 +220,7 @@ class EntityData extends CommonDBTM {
 
    /**
     *
-    */
+   **/
    static function showAdvancedOptions(Entity $entity) {
       global $DB, $LANG;
 
@@ -247,6 +247,7 @@ class EntityData extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='2'>".$LANG['entity'][23]."</th></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".$LANG['entity'][26]."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -272,14 +273,13 @@ class EntityData extends CommonDBTM {
       if (canUseLdap()) {
          echo "<tr><th colspan='2'>".$LANG['entity'][24]."</th></tr>";
 
-
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][15]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          Dropdown::show('AuthLDAP', array ('name'       => 'ldapservers_id',
-                                           'value'      =>  $entdata->fields['ldapservers_id'],
+                                           'value'      => $entdata->fields['ldapservers_id'],
                                            'emptylabel' => $LANG['ldap'][44],
-                                           'condition'  => "`is_active`='1'"));
+                                           'condition'  => "`is_active` = '1'"));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
