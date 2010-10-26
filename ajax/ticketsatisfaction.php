@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownNetpoint.php 12810 2010-10-21 08:28:53Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
