@@ -122,7 +122,7 @@ class RuleCachedCollection extends RuleCollection {
     * Show cache status by rules
    **/
    function showCacheStatusForRuleType() {
-      global $DB, $LANG;
+      global $DB, $LANG, $CFG_GLPI;
 
       echo "<div class='center'>";
       echo "<table  class='tab_cadre_fixe'>";
