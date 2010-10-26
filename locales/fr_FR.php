@@ -1822,7 +1822,7 @@ $LANG['rulesengine'][150] = "Les règles affectées à l'entité ont été désa
 
 $LANG['satisfaction'][0] = "Satisfaction";
 $LANG['satisfaction'][1] = "Satisfaction sur la résolution du ticket";
-$LANG['satisfaction'][2] = "Aucune enquête de générée";
+$LANG['satisfaction'][2] = "Aucune enquête générée";
 $LANG['satisfaction'][3] = "Enquête de satisfaction";
 $LANG['satisfaction'][4] = "Date de réponse à l'enquête de satisfaction";
 $LANG['satisfaction'][5] = "1 : très insatisfait - 2 : insatisfait - 3 : moyennement satisfait - 4 : satisfait - 5 : très satisfait";
