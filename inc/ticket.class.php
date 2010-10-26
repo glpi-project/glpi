@@ -50,6 +50,10 @@ class Ticket extends CommonDBTM {
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
    var $computerfound = 0;
 
+   // Request type
+   const INCIDENT_TYPE = 1;
+   // Demand type
+   const DEMAND_TYPE   = 2;
 
 /**
  * Name of the type
@@ -1827,6 +1831,7 @@ class Ticket extends CommonDBTM {
    }
 
 
+
    /**
     * Get ticket priority Name
     *
@@ -1856,6 +1861,59 @@ class Ticket extends CommonDBTM {
       }
    }
 
+   /**
+   * Dropdown of ticket type
+   *
+   * @param $name select name
+   * @param $value default value
+   * @param $complete see also at least selection (major included)
+   * @param $major display major priority
+   *
+   * @return string id of the select
+   */
+   static function dropdownType($name, $value=0, $config=false) {
+      global $LANG;
+
+//       if ($value==0) {
+//          $options[0] = DROPDOWN_EMPTY_VALUE;
+//       }
+
+      $options = getTypes();
+
+      return Dropdown::showFromArray($name, $options, array('value' => $value));
+      
+   }
+
+   /**
+   * Get ticket types
+   *
+   * @return array of types
+   */
+   static function getTypes() {
+      global $LANG;
+
+      $options[self::INCIDENT_TYPE] = $LANG['job'][1];
+      $options[self::DEMAND_TYPE]  = $LANG['job'][2];
+
+      return $options;
+   }
+
+   /**
+    * Get ticket type Name
+    *
+    * @param $value type ID
+    */
+   static function getTicketTypeName($value) {
+      global $LANG;
+
+      switch ($value) {
+         case self::INCIDENT_TYPE :
+            return $LANG['job'][1];
+
+         case self::DEMAND_TYPE :
+            return $LANG['job'][2];
+      }
+   }
 
    /**
     * Dropdown of ticket Urgency
@@ -1907,9 +1965,9 @@ class Ticket extends CommonDBTM {
 
 
    /**
-    * Get ticket Urgence Name
+    * Get ticket Urgencu Name
     *
-    * @param $value status ID
+    * @param $value urgency ID
     */
    static function getUrgencyName($value) {
       global $LANG;
@@ -2888,6 +2946,19 @@ class Ticket extends CommonDBTM {
       echo "</td>";
       echo "<th class='center b' colspan='2'>".$LANG['job'][5]."&nbsp;: </th>";
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td >";
+      // Permit to set type when creating ticket without update right
+      if ($canupdate || !$ID) {
+         self::dropdownType('type',$this->fields["type"]);
+      } else {
+         echo self::getTicketTypeName($this->fields["type"]);
+      }
+      echo "</td>";
+
+      echo "<td colspan='2'>WILL BE REVIEW WHEN MULTI REQUESTER / ASSIGn will be done</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;: </td>";

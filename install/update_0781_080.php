@@ -712,6 +712,10 @@ function update0781to080($output='HTML') {
                         "INT( 11 ) NOT NULL DEFAULT 0 AFTER `date_mod`");
    $migration->addKey("glpi_tickets", "users_id_lastupdater");
 
+   $migration->addField("glpi_tickets", "type",
+                        "INT( 11 ) NOT NULL DEFAULT 1 AFTER `ticketcategories_id`");
+   $migration->addKey("glpi_tickets", "type");
+
 
    // Link between tickets
    if (!TableExists('glpi_tickets_tickets')) {

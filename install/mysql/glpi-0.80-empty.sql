@@ -3997,6 +3997,7 @@ CREATE TABLE `glpi_tickets` (
   `user_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `use_email_notification` tinyint(1) NOT NULL DEFAULT '0',
   `ticketcategories_id` int(11) NOT NULL DEFAULT '0',
+  `type` int(11) NOT NULL DEFAULT '1',
   `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
@@ -4036,7 +4037,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `global_validation` (`global_validation`),
   KEY `slas_id` (`slas_id`),
   KEY `due_date` (`due_date`),
-  KEY `users_id_lastupdater` (`users_id_lastupdater`)
+  KEY `users_id_lastupdater` (`users_id_lastupdater`),
+  KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
