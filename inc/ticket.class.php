@@ -42,7 +42,7 @@ class Ticket extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to=array('TicketValidation');
+   protected $forward_entity_to = array('TicketValidation');
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData
@@ -55,13 +55,13 @@ class Ticket extends CommonDBTM {
    // Demand type
    const DEMAND_TYPE   = 2;
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
- */
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+    *
+    * @return $LANG
+   **/
    static function getTypeName($nb=0) {
       global $LANG;
 
@@ -95,7 +95,7 @@ class Ticket extends CommonDBTM {
     * Is the current user have right to show the current ticket ?
     *
     * @return boolean
-    */
+   **/
    function canViewItem() {
 
       if (!haveAccessToEntity($this->getEntityID())) {
@@ -123,7 +123,7 @@ class Ticket extends CommonDBTM {
     * Is the current user have right to create the current ticket ?
     *
     * @return boolean
-    */
+   **/
    function canCreateItem() {
 
       if (!haveAccessToEntity($this->getEntityID())) {
@@ -137,7 +137,7 @@ class Ticket extends CommonDBTM {
     * Is the current user have right to update the current ticket ?
     *
     * @return boolean
-    */
+   **/
    function canUpdateItem() {
 
       if (!haveAccessToEntity($this->getEntityID())) {
@@ -157,7 +157,7 @@ class Ticket extends CommonDBTM {
     * Is the current user have right to delete the current ticket ?
     *
     * @return boolean
-    */
+   **/
    function canDeleteItem() {
 
       if (!haveAccessToEntity($this->getEntityID())) {
@@ -211,12 +211,13 @@ class Ticket extends CommonDBTM {
    /**
     * Retrieve an item from the database with datas associated (hardwares)
     *
-    *@param $ID ID of the item to get
-    *@param $purecontent boolean : true : nothing change / false : convert to HTML display
-    *@return true if succeed else false
+    * @param $ID ID of the item to get
+    * @param $purecontent boolean : true : nothing change / false : convert to HTML display
+    *
+    * @return true if succeed else false
    **/
-   function getFromDBwithData ($ID,$purecontent) {
-      global $DB,$LANG;
+   function getFromDBwithData ($ID, $purecontent) {
+      global $DB, $LANG;
 
       if ($this->getFromDB($ID)) {
          if (!$purecontent) {
@@ -233,7 +234,7 @@ class Ticket extends CommonDBTM {
    /**
     * Retrieve data of the hardware linked to the ticket if exists
     *
-    *@return nothing : set computerfound to 1 if founded
+    * @return nothing : set computerfound to 1 if founded
    **/
    function getHardwareData() {
 
@@ -242,6 +243,7 @@ class Ticket extends CommonDBTM {
          if ($item->getFromDB($this->fields["items_id"])) {
             $this->hardwaredatas=$item;
          }
+
       } else {
          $this->hardwaredatas=NULL;
       }
@@ -254,7 +256,7 @@ class Ticket extends CommonDBTM {
       $query = "SELECT `id`
                 FROM `glpi_tickettasks`
                 WHERE `tickets_id` = '".$this->fields['id']."'";
-      $result=$DB->query($query);
+      $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
          while ($data=$DB->fetch_array($result)) {
@@ -288,6 +290,7 @@ class Ticket extends CommonDBTM {
       if (isset($input["date"]) && empty($input["date"])) {
          unset($input["date"]);
       }
+
       if (isset($input["closedate"]) && empty($input["closedate"])) {
          unset($input["closedate"]);
       }
@@ -301,6 +304,7 @@ class Ticket extends CommonDBTM {
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
          if (isset($input["users_id_assign"])) {
             $this->getFromDB($input['id']);
+
             // must own_ticket to grab a non assign ticket
             if ($this->fields['users_id_assign']==0) {
                if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
@@ -316,9 +320,11 @@ class Ticket extends CommonDBTM {
                }
             }
          }
+
          if (isset($input["suppliers_id_assign"])) {
             unset($input["suppliers_id_assign"]);
          }
+
          if (isset($input["groups_id_assign"])) {
             unset($input["groups_id_assign"]);
          }
@@ -340,7 +346,7 @@ class Ticket extends CommonDBTM {
          }
 
          // Can only update content if no followups already added
-         $ret["id"]=$input["id"];
+         $ret["id"] = $input["id"];
          if (isset($input["content"])) {
             $ret["content"] = $input["content"];
          }
@@ -360,7 +366,7 @@ class Ticket extends CommonDBTM {
             $ret["name"] = $input["name"];
          }
 
-         $input=$ret;
+         $input = $ret;
       }
 
       // set last updater
@@ -391,8 +397,10 @@ class Ticket extends CommonDBTM {
                }
             }
          }
+
       } else if (isset($input["itemtype"]) && empty($input["itemtype"])) {
          $input["items_id"]=0;
+
       } else {
          unset($input["items_id"]);
          unset($input["itemtype"]);
@@ -569,20 +577,26 @@ class Ticket extends CommonDBTM {
 
          // Compute ticket waiting time use calendar if existsdard
          $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
-         $calendar = new Calendar();
-         $delay_time=0;
+         $calendar     = new Calendar();
+         $delay_time   = 0;
+
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-            $delay_time=$calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],$_SESSION["glpi_currenttime"]);
+            $delay_time = $calendar->getActiveTimeBetween($this->fields['begin_waiting_date'],
+                                                          $_SESSION["glpi_currenttime"]);
             // compute new due date using calendar
             $this->updates[] = "due_date";
-            $this->fields['due_date']=$calendar->computeEndDate($this->fields['due_date'],$delay_time);
+            $this->fields['due_date'] = $calendar->computeEndDate($this->fields['due_date'],
+                                                                  $delay_time);
          } else { // Not calendar defined
-            $delay_time=strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['begin_waiting_date']);
+            $delay_time = strtotime($_SESSION["glpi_currenttime"])
+                                                   -strtotime($this->fields['begin_waiting_date']);
             // compute new due date : no calendar so add computed delay_time
             $this->updates[] = "due_date";
-            $this->fields['due_date']=date('Y-m-d H:i:s',$delay_time+strtotime($this->fields['due_date']));
+            $this->fields['due_date'] = date('Y-m-d H:i:s',$delay_time
+                                                            +strtotime($this->fields['due_date']));
          }
+
          $this->updates[] = "ticket_waiting_duration";
          $this->fields["ticket_waiting_duration"] += $delay_time;
 
@@ -594,19 +608,19 @@ class Ticket extends CommonDBTM {
       // solve_delay_stat : use delay between opendate and solvedate
       if (in_array("solvedate",$this->updates)) {
          $this->updates[] = "solve_delay_stat";
-         $this->fields['solve_delay_stat']=$this->computeSolveDelayStat();
+         $this->fields['solve_delay_stat'] = $this->computeSolveDelayStat();
       }
       // close_delay_stat : use delay between opendate and closedate
       if (in_array("closedate",$this->updates)) {
          $this->updates[] = "close_delay_stat";
-         $this->fields['close_delay_stat']=$this->computeCloseDelayStat();
+         $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
       }
 
       // takeintoaccount :
       //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
       if ($this->canUpdateItem() && $this->fields['takeintoaccount_delay_stat']==0) {
          $this->updates[] = "takeintoaccount_delay_stat";
-         $this->fields['takeintoaccount_delay_stat']=$this->computeTakeIntoAccountDelayStat();
+         $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
 
       // Do not take into account date_mod if no update is done
@@ -615,55 +629,72 @@ class Ticket extends CommonDBTM {
       }
    }
 
+
    /// Compute take into account stat of the current ticket
    function computeTakeIntoAccountDelayStat() {
+
       if (isset($this->fields['id'])) {
-         $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
-         $calendar = new Calendar();
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendar     = new Calendar();
+
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-            return $calendar->getActiveTimeBetween($this->fields['date'],$_SESSION["glpi_currenttime"]);
-         } else { // Not calendar defined
-            return strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']);
+            return $calendar->getActiveTimeBetween($this->fields['date'],
+                                                   $_SESSION["glpi_currenttime"]);
          }
+         // Not calendar defined
+         return strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']);
       }
       return 0;
    }
+
+
    /// Compute solve delay stat of the current ticket
    function computeSolveDelayStat() {
+
       if (isset($this->fields['id'])) {
-         $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
-         $calendar = new Calendar();
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendar     = new Calendar();
+
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
-            return $calendar->getActiveTimeBetween($this->fields['date'],$this->fields['solvedate'])-$this->fields["ticket_waiting_duration"];
-         } else { // Not calendar defined
-            return strtotime($this->fields['solvedate'])-strtotime($this->fields['date'])-$this->fields["ticket_waiting_duration"];
+            return $calendar->getActiveTimeBetween($this->fields['date'],
+                                                   $this->fields['solvedate'])
+                                                         -$this->fields["ticket_waiting_duration"];
          }
+         // Not calendar defined
+         return strtotime($this->fields['solvedate'])-strtotime($this->fields['date'])
+                                                     -$this->fields["ticket_waiting_duration"];
       }
       return 0;
    }
+
+
    /// Compute close delay stat of the current ticket
    function computeCloseDelayStat() {
+
       if (isset($this->fields['id'])) {
-        $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
-         $calendar = new Calendar();
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendar     = new Calendar();
+
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
             return $calendar->getActiveTimeBetween($this->fields['date'],$this->fields['closedate'])-$this->fields["ticket_waiting_duration"];
-         } else { // Not calendar defined
-            return strtotime($this->fields['closedate'])-strtotime($this->fields['date'])-$this->fields["ticket_waiting_duration"];
          }
+         // Not calendar defined
+         return strtotime($this->fields['closedate'])-strtotime($this->fields['date'])
+                                                     -$this->fields["ticket_waiting_duration"];
       }
       return 0;
    }
 
+
    function post_updateItem($history=1) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI, $LANG;
 
       if (count($this->updates)) {
          // New values for add followup in change
-         $change_followup_content="";
+         $change_followup_content = "";
          if (isset($this->input['_doc_added']) && count($this->input['_doc_added'])>0) {
             foreach ($this->input['_doc_added'] as $name) {
                $change_followup_content .= $LANG['mailing'][26]." $name\n";
@@ -679,7 +710,7 @@ class Ticket extends CommonDBTM {
                $item = new $this->fields["itemtype"]();
                if ($item->getFromDB($this->fields["items_id"])) {
                   $newinput = array();
-                  $newinput['id'] = $this->fields["items_id"];
+                  $newinput['id']         = $this->fields["items_id"];
                   $newinput['ticket_tco'] = self::computeTco($item);
                   $item->update($newinput);
                }
@@ -733,10 +764,10 @@ class Ticket extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI, $LANG;
 
       // Check mandatory
-      $mandatory_ok=true;
+      $mandatory_ok = true;
 
       // Do not check mandatory on auto import (mailgates)
       if (!isset($input['_auto_import'])) {
@@ -746,24 +777,28 @@ class Ticket extends CommonDBTM {
             addMessageAfterRedirect($LANG['tracking'][4], false, ERROR);
             $mandatory_ok = false;
          }
+
          if ($CFG_GLPI["is_ticket_content_mandatory"]
              && (!isset($input['content']) || empty($input['content']))) {
 
             addMessageAfterRedirect($LANG['tracking'][8], false, ERROR);
             $mandatory_ok = false;
          }
+
          if ($CFG_GLPI["is_ticket_title_mandatory"]
              && (!isset($input['name']) || empty($input['name']))) {
 
             addMessageAfterRedirect($LANG['help'][40], false, ERROR);
             $mandatory_ok = false;
          }
+
          if ($CFG_GLPI["is_ticket_category_mandatory"]
              && (!isset($input['ticketcategories_id']) || empty($input['ticketcategories_id']))) {
 
             addMessageAfterRedirect($LANG['help'][41], false, ERROR);
             $mandatory_ok = false;
          }
+
          if (isset($input['use_email_notification']) && $input['use_email_notification']
              && (!isset($input['user_email']) || empty($input['user_email']))) {
 
@@ -775,6 +810,7 @@ class Ticket extends CommonDBTM {
             return false;
          }
       }
+
       if (!isset($input["urgency"])
           || !($CFG_GLPI['urgency_mask']&(1<<$input["urgency"]))) {
          $input["urgency"] = 3;
@@ -798,7 +834,6 @@ class Ticket extends CommonDBTM {
          }
       }
 
-
       // set last updater
       if ($lastupdater=getLoginUserID(true)) {
          $input['users_id_lastupdater'] = $lastupdater;
@@ -810,18 +845,19 @@ class Ticket extends CommonDBTM {
       } else if ($input["users_id"]) {
          $input["users_id_recipient"] = $input["users_id"];
       }
+
       if (!isset($input["requesttypes_id"])) {
          $input["requesttypes_id"] = RequestType::getDefault('helpdesk');
       }
       if (!isset($input["status"])) {
-         $input["status"]="new";
+         $input["status"] = "new";
       }
       if (!isset($input["date"]) || empty($input["date"])) {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
 
       // Set default dropdown
-      $dropdown_fields = array('entities_id','groups_id', 'groups_id_assign', 'items_id',
+      $dropdown_fields = array('entities_id', 'groups_id', 'groups_id_assign', 'items_id',
                                'users_id', 'users_id_assign', 'suppliers_id_assign',
                                'ticketcategories_id');
       foreach ($dropdown_fields as $field ) {
@@ -843,7 +879,6 @@ class Ticket extends CommonDBTM {
          }
       }
 
-
       // Auto group define from item
       if ($item != NULL) {
          if ($item->isField('groups_id')
@@ -854,12 +889,12 @@ class Ticket extends CommonDBTM {
 
       // Manage auto assign
       $entitydata = new EntityData;
-      $auto_assign_mode=$CFG_GLPI['auto_assign_mode'];
+      $auto_assign_mode = $CFG_GLPI['auto_assign_mode'];
       if ($entitydata->getFromDB($input['entities_id'])) {
-         $auto_assign_mode=$entitydata->getField('auto_assign_mode');
+         $auto_assign_mode = $entitydata->getField('auto_assign_mode');
          // Set global config value
          if ($auto_assign_mode == -1) {
-            $auto_assign_mode=$CFG_GLPI['auto_assign_mode'];
+            $auto_assign_mode = $CFG_GLPI['auto_assign_mode'];
          }
       }
       switch ($auto_assign_mode) {
@@ -869,7 +904,6 @@ class Ticket extends CommonDBTM {
          case AUTO_ASSIGN_HARDWARE_CATEGORY :
             // Auto assign tech from item
             if ($input["users_id_assign"]==0 && $item!=NULL) {
-
                if ($item->isField('users_id_tech')) {
                   $input["users_id_assign"] = $item->getField('users_id_tech');
                   if ($input["users_id_assign"]>0) {
@@ -877,7 +911,6 @@ class Ticket extends CommonDBTM {
                   }
                }
             }
-
             // Auto assign tech/group from Category
             if ($input['ticketcategories_id']>0
                && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
@@ -909,7 +942,6 @@ class Ticket extends CommonDBTM {
             }
             // Auto assign tech from item
             if ($input["users_id_assign"]==0 && $item!=NULL) {
-
                if ($item->isField('users_id_tech')) {
                   $input["users_id_assign"] = $item->getField('users_id_tech');
                   if ($input["users_id_assign"]>0) {
@@ -917,7 +949,6 @@ class Ticket extends CommonDBTM {
                   }
                }
             }
-
             break;
       }
 
@@ -930,8 +961,7 @@ class Ticket extends CommonDBTM {
          $input['users_locations'] = $user->fields['locations_id'];
       }
 
-
-      $input = $rules->processAllRules($input,$input,array('recursive'=>true));
+      $input = $rules->processAllRules($input, $input, array('recursive' => true));
 
       if (isset($input["use_email_notification"])
           && $input["use_email_notification"]
@@ -952,8 +982,8 @@ class Ticket extends CommonDBTM {
 
       if (isset($input["hour"]) && isset($input["minute"])) {
          $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
-         $input["_hour"]    = $input["hour"];
-         $input["_minute"]  = $input["minute"];
+         $input["_hour"]      = $input["hour"];
+         $input["_minute"]    = $input["minute"];
          unset($input["hour"]);
          unset($input["minute"]);
       }
@@ -969,7 +999,7 @@ class Ticket extends CommonDBTM {
 
       // Set begin wainting time if status is waiting
       if (isset($input["status"]) && $input["status"]=="waiting") {
-         $input['begin_waiting_date']=$input['date'];
+         $input['begin_waiting_date'] = $input['date'];
       }
 
       // No name set name
@@ -992,61 +1022,61 @@ class Ticket extends CommonDBTM {
             unset($input["due_date"]);
          }
       }
+
       if (isset($input["slas_id"]) && $input["slas_id"]>0) {
-         $sla=new SLA();
+
+         $sla = new SLA();
          if ($sla->getFromDB($input["slas_id"])) {
             // Get first SLA Level
             $input["slalevels_id"] = SlaLevel::getFirstSlaLevel($input["slas_id"]);
             // Compute due_date
-            $input['due_date'] = $sla->computeDueDate($input['date']);
-            $input['sla_waiting_duration']=0;
+            $input['due_date']             = $sla->computeDueDate($input['date']);
+            $input['sla_waiting_duration'] = 0;
+
          } else {
-            $input["slalevels_id"]=0;
-            $input["slas_id"]=0;
-            $input['sla_waiting_duration']=0;
+            $input["slalevels_id"]         = 0;
+            $input["slas_id"]              = 0;
+            $input['sla_waiting_duration'] = 0;
          }
       }
 
       // auto set type if not set
       if (!isset($input["type"])) {
-         $input['type'] = EntityData::getUsedConfig('tickettype',$input['entities_id']);
+         $input['type'] = EntityData::getUsedConfig('tickettype', $input['entities_id']);
       }
-
-
 
       return $input;
    }
 
 
    function post_addItem() {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       // Add document if needed
       $this->addFiles($this->fields['id']);
 
       // Log this event
       Event::log($this->fields['id'], "ticket", 4, "tracking",
-                  getUserName($this->input["users_id"])." ".$LANG['log'][20]);
+                 getUserName($this->input["users_id"])." ".$LANG['log'][20]);
 
       $already_mail = false;
       if (((isset($this->input["_followup"])
             && is_array($this->input["_followup"])
-            && strlen($this->input["_followup"]['content']) > 0
-           )
-           || isset($this->input["plan"])
-          )
+            && strlen($this->input["_followup"]['content']) > 0)
+           || isset($this->input["plan"]))
           || (isset($this->input["_hour"])
               && isset($this->input["_minute"])
               && isset($this->input["actiontime"])
               && $this->input["actiontime"]>0)) {
 
-         $fup = new TicketFollowup();
+         $fup  = new TicketFollowup();
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
             $type = "finish";
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->input['id']);
+
          if (isset($this->input["_hour"])) {
             $toadd["hour"] = $this->input["_hour"];
          }
@@ -1068,9 +1098,12 @@ class Ticket extends CommonDBTM {
       }
 
       // Manage SLA Level : add actions
-      if (isset($this->input["slas_id"]) && $this->input["slas_id"]>0
-         && isset($this->input["slalevels_id"]) && $this->input["slalevels_id"]>0) {
-         $sla=new SLA();
+      if (isset($this->input["slas_id"])
+          && $this->input["slas_id"]>0
+          && isset($this->input["slalevels_id"])
+          && $this->input["slalevels_id"]>0) {
+
+         $sla = new SLA();
          if ($sla->getFromDB($this->input["slas_id"])) {
             // Add first level in working table
             if ($this->input["slalevels_id"]>0) {
@@ -1091,13 +1124,13 @@ class Ticket extends CommonDBTM {
             $type = "finish";
          }
 
-         NotificationEvent::raiseEvent($type,$this);
+         NotificationEvent::raiseEvent($type, $this);
       }
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
          addMessageAfterRedirect($LANG['help'][18]." (".$LANG['job'][38]."&nbsp;".
-            "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
-            $this->fields['id']."'>".$this->fields['id']."</a>)");
+                                 "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+                                 $this->fields['id']."'>".$this->fields['id']."</a>)");
       }
 
    }
@@ -1107,8 +1140,9 @@ class Ticket extends CommonDBTM {
    /**
     * Number of followups of the ticket
     *
-    *@param $with_private boolean : true : all ticket / false : only public ones
-    *@return followup count
+    * @param $with_private boolean : true : all ticket / false : only public ones
+    *
+    * @return followup count
    **/
    function numberOfFollowups($with_private=1) {
       global $DB;
@@ -1124,14 +1158,16 @@ class Ticket extends CommonDBTM {
                       $RESTRICT";
       $result = $DB->query($query);
 
-      return $DB->result($result,0,0);
+      return $DB->result($result, 0, 0);
    }
+
 
    /**
     * Number of tasks of the ticket
     *
-    *@param $with_private boolean : true : all ticket / false : only public ones
-    *@return followup count
+    * @param $with_private boolean : true : all ticket / false : only public ones
+    *
+    * @return followup count
    **/
    function numberOfTasks($with_private=1) {
       global $DB;
@@ -1147,14 +1183,16 @@ class Ticket extends CommonDBTM {
                       $RESTRICT";
       $result = $DB->query($query);
 
-      return $DB->result($result,0,0);
+      return $DB->result($result, 0, 0);
    }
+
 
    /**
     * Update actiontime of the ticket based on actiontime of the followups and tasks
     *
-    *@param $ID ID of the ticket
-    *@return boolean : success
+    * @param $ID ID of the ticket
+    *
+    * @return boolean : success
    **/
    function updateActionTime($ID) {
       global $DB;
@@ -1182,22 +1220,22 @@ class Ticket extends CommonDBTM {
    /**
     * Update date mod of the ticket
     *
-    *@param $ID ID of the ticket
+    * @param $ID ID of the ticket
    **/
    function updateDateMod($ID) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
-         if (haveRight("global_add_tasks","1")
-              || haveRight("global_add_followups","1")
-              || ($this->fields["users_id_assign"]===getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups']))) {
+         if (haveRight("global_add_tasks", "1")
+             || haveRight("global_add_followups", "1")
+             || ($this->fields["users_id_assign"]===getLoginUserID())
+             || (isset($_SESSION["glpigroups"])
+                 && in_array($this->fields["groups_id_assign"], $_SESSION['glpigroups']))) {
 
             if ($this->fields['takeintoaccount_delay_stat']==0) {
-               return $this->update(array('id' => $ID,
+               return $this->update(array('id'     => $ID,
                                           'takeintoaccount_delay_stat'
-                                               => $this->computeTakeIntoAccountDelayStat()));
+                                                   => $this->computeTakeIntoAccountDelayStat()));
             }
 
          }
@@ -1220,7 +1258,7 @@ class Ticket extends CommonDBTM {
     *
     * @param $format text or html
     * @param $sendprivate true if both public and private followups have to be printed in the email
-    */
+   **/
    function textFollowups($format="text", $sendprivate=false) {
       global $DB,$LANG;
 
@@ -1232,7 +1270,7 @@ class Ticket extends CommonDBTM {
                          ($sendprivate?"":" AND `is_private` = '0' ")."
                    ORDER by `date` DESC";
 
-         $result = $DB->query($query);
+         $result   = $DB->query($query);
          $nbfollow = $DB->numrows($result);
 
          $fup = new TicketFollowup();
@@ -1252,6 +1290,7 @@ class Ticket extends CommonDBTM {
                   $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                "text-decoration:underline; '>".$LANG['knowbase'][15]."</span>&nbsp;:
                                 <br>".str_replace("\n","<br>",$fup->fields["content"])."\n";
+
                   if ($fup->fields["actiontime"]>0) {
                      $message .= "<span style='color:#8B8C8F; font-weight:bold; ".
                                   "text-decoration:underline; '>".$LANG['mailing'][104]."&nbsp;:".
@@ -1277,6 +1316,7 @@ class Ticket extends CommonDBTM {
                   $message .= $LANG['mailing'][0]."\n";
                }
             }
+
          } else { // text format
             $message = $LANG['mailing'][1]."\n".$LANG['mailing'][4]." : $nbfollow\n".
                        $LANG['mailing'][1]."\n";
@@ -1322,8 +1362,9 @@ class Ticket extends CommonDBTM {
     * Get users_id name
     *
     * @param $link boolean with link ?
+    *
     * @return string users_id name
-    */
+   **/
    function getAuthorName($link=0) {
       return getUserName($this->fields["users_id"],$link);
    }
@@ -1333,7 +1374,7 @@ class Ticket extends CommonDBTM {
     * Is the current user have right to add followups to the current ticket ?
     *
     * @return boolean
-    */
+   **/
    function canAddFollowups() {
 
       return ((haveRight("add_followups","1") && $this->fields["users_id"]===getLoginUserID())
@@ -1347,10 +1388,11 @@ class Ticket extends CommonDBTM {
    }
 
 
-   /**
+   /*
     * Is the current user have right to show the current ticket ?
     *
     * @return boolean
+
    function canUserView() {
 
       return (haveRight("show_all_ticket","1")
@@ -1360,8 +1402,8 @@ class Ticket extends CommonDBTM {
                   && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
               || (haveRight("show_assign_ticket",'1')
                   && ($this->fields["users_id_assign"]===getLoginUserID())
-                      || (isset($_SESSION["glpigroups"])
-                          && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"])))));
+                  || (isset($_SESSION["glpigroups"])
+                      && in_array($this->fields["groups_id_assign"], $_SESSION["glpigroups"]))));
    }
     */
 
@@ -1374,7 +1416,7 @@ class Ticket extends CommonDBTM {
     * @param $id of the ticket
     *
     * @return array of doc added name
-    */
+   **/
    function addFiles ($id) {
       global $LANG, $CFG_GLPI;
 
@@ -1382,8 +1424,8 @@ class Ticket extends CommonDBTM {
          return array();
       }
       $docadded = array();
-      $doc = new Document();
-      $docitem = new Document_Item();
+      $doc      = new Document();
+      $docitem  = new Document_Item();
 
       // add Document if exists
       if (isset($_FILES['multiple']) ) {
@@ -1392,10 +1434,12 @@ class Ticket extends CommonDBTM {
       } else {
          $TMPFILE = array( $_FILES );
       }
+
       foreach ($TMPFILE as $_FILES) {
          if (isset($_FILES['filename'])
              && count($_FILES['filename'])>0
              && $_FILES['filename']["size"]>0) {
+
             // Check for duplicate
             if ($doc->getFromDBbyContent($this->fields["entities_id"],
                                          $_FILES['filename']['tmp_name'])) {
@@ -1414,7 +1458,7 @@ class Ticket extends CommonDBTM {
                if ($docitem->add(array('documents_id' => $docID,
                                        'itemtype'     => $this->getType(),
                                        'items_id'     => $id))) {
-                  $docadded[] = stripslashes($doc->fields["name"] . " - " . $doc->fields["filename"]);
+                  $docadded[] = stripslashes($doc->fields["name"]." - ".$doc->fields["filename"]);
                }
             }
 
@@ -1429,7 +1473,8 @@ class Ticket extends CommonDBTM {
    }
 
 
-   /** Get default values to search engine to override
+   /**
+    * Get default values to search engine to override
    **/
    static function getDefaultSearchRequest() {
 
@@ -1662,7 +1707,6 @@ class Ticket extends CommonDBTM {
 
 
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
-
          $tab['assign'] = $LANG['job'][5];
 
          $tab[5]['table']     = 'glpi_users';
@@ -1781,7 +1825,7 @@ class Ticket extends CommonDBTM {
     * @param $impact integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
-    */
+   **/
    static function computePriority ($urgency, $impact) {
       global $CFG_GLPI;
 
@@ -1794,15 +1838,15 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Dropdown of ticket priority
-   *
-   * @param $name select name
-   * @param $value default value
-   * @param $complete see also at least selection (major included)
-   * @param $major display major priority
-   *
-   * @return string id of the select
-   */
+    * Dropdown of ticket priority
+    *
+    * @param $name select name
+    * @param $value default value
+    * @param $complete see also at least selection (major included)
+    * @param $major display major priority
+    *
+    * @return string id of the select
+   **/
    static function dropdownPriority($name, $value=0, $complete=false, $major=false) {
       global $LANG;
 
@@ -1841,7 +1885,7 @@ class Ticket extends CommonDBTM {
     * Get ticket priority Name
     *
     * @param $value status ID
-    */
+   **/
    static function getPriorityName($value) {
       global $LANG;
 
@@ -1867,21 +1911,20 @@ class Ticket extends CommonDBTM {
    }
 
    /**
-   * Dropdown of ticket type
-   *
-   * @param $name select name
-   * @param $value default value
-   * @param $complete see also at least selection (major included)
-   * @param $major display major priority
-   *
-   * @return string id of the select
-   */
+    * Dropdown of ticket type
+    *
+    * @param $name select name
+    * @param $value default value
+    * @param $toadd
+    *
+    * @return string id of the select
+   **/
    static function dropdownType($name, $value=0, $toadd=array()) {
       global $LANG;
 
-      $options=array();
+      $options = array();
       if (count($toadd)>0) {
-         $options=$toadd;
+         $options = $toadd;
       }
 
       $options += self::getTypes();
@@ -1889,25 +1932,27 @@ class Ticket extends CommonDBTM {
       return Dropdown::showFromArray($name, $options, array('value' => $value));
    }
 
+
    /**
-   * Get ticket types
-   *
-   * @return array of types
-   */
+    * Get ticket types
+    *
+    * @return array of types
+   **/
    static function getTypes() {
       global $LANG;
 
       $options[self::INCIDENT_TYPE] = $LANG['job'][1];
-      $options[self::DEMAND_TYPE]  = $LANG['job'][2];
+      $options[self::DEMAND_TYPE]   = $LANG['job'][2];
 
       return $options;
    }
+
 
    /**
     * Get ticket type Name
     *
     * @param $value type ID
-    */
+   **/
    static function getTicketTypeName($value) {
       global $LANG;
 
@@ -1920,6 +1965,7 @@ class Ticket extends CommonDBTM {
       }
    }
 
+
    /**
     * Dropdown of ticket Urgency
     *
@@ -1928,7 +1974,7 @@ class Ticket extends CommonDBTM {
     * @param $complete see also at least selection
     *
     * @return string id of the select
-    */
+   **/
    static function dropdownUrgency($name, $value=0, $complete=false) {
       global $LANG, $CFG_GLPI;
 
@@ -1949,20 +1995,24 @@ class Ticket extends CommonDBTM {
                 $LANG['help'][46]."</option>";
       }
 
-
       if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<5))) {
          echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][42]."</option>";
       }
+
       if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<4))) {
          echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][43]."</option>";
       }
+
       echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][44]."</option>";
+
       if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<2))) {
          echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][45]."</option>";
       }
+
       if ($complete || ($CFG_GLPI['urgency_mask'] & (1<<1))) {
          echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][46]."</option>";
       }
+
       echo "</select>";
 
       return $id;
@@ -1973,7 +2023,7 @@ class Ticket extends CommonDBTM {
     * Get ticket Urgencu Name
     *
     * @param $value urgency ID
-    */
+   **/
    static function getUrgencyName($value) {
       global $LANG;
 
@@ -1997,14 +2047,14 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Dropdown of ticket Impact
-   *
-   * @param $name select name
-   * @param $value default value
-   * @param $complete see also at least selection (major included)
-   *
-   * @return string id of the select
-   */
+    * Dropdown of ticket Impact
+    *
+    * @param $name select name
+    * @param $value default value
+    * @param $complete see also at least selection (major included)
+    *
+    * @return string id of the select
+   **/
    static function dropdownImpact($name, $value=0, $complete=false) {
       global $LANG, $CFG_GLPI;
 
@@ -2028,16 +2078,21 @@ class Ticket extends CommonDBTM {
       if ($complete || ($CFG_GLPI['impact_mask'] & (1<<5))) {
          echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][47]."</option>";
       }
+
       if ($complete || ($CFG_GLPI['impact_mask'] & (1<<4))) {
          echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][48]."</option>";
       }
+
       echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][49]."</option>";
+
       if ($complete || ($CFG_GLPI['impact_mask'] & (1<<2))) {
          echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][50]."</option>";
       }
+
       if ($complete || ($CFG_GLPI['impact_mask'] & (1<<1))) {
          echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][51]."</option>";
       }
+
       echo "</select>";
 
       return $id;
@@ -2048,7 +2103,7 @@ class Ticket extends CommonDBTM {
     * Get ticket Impact Name
     *
     * @param $value status ID
-    */
+   **/
    static function getImpactName($value) {
       global $LANG;
 
@@ -2075,17 +2130,18 @@ class Ticket extends CommonDBTM {
     * get the Ticket status list
     *
     * @param $withmetaforsearch boolean
+    *
     * @return an array
-    */
+   **/
    static function getAllStatusArray($withmetaforsearch=false) {
       global $LANG;
 
-      $tab = array('new'      => $LANG['joblist'][9],
-                   'assign'   => $LANG['joblist'][18],
-                   'plan'     => $LANG['joblist'][19],
-                   'waiting'  => $LANG['joblist'][26],
-                   'solved'   => $LANG['joblist'][32],
-                   'closed'   => $LANG['joblist'][33]);
+      $tab = array('new'     => $LANG['joblist'][9],
+                   'assign'  => $LANG['joblist'][18],
+                   'plan'    => $LANG['joblist'][19],
+                   'waiting' => $LANG['joblist'][26],
+                   'solved'  => $LANG['joblist'][32],
+                   'closed'  => $LANG['joblist'][33]);
 
       if ($withmetaforsearch) {
          $tab['notold']    = $LANG['joblist'][34];
@@ -2102,8 +2158,9 @@ class Ticket extends CommonDBTM {
     * get the Ticket status allowed for a current status
     *
     * @param $current status
+    *
     * @return an array
-    */
+   **/
    static function getAllowedStatusArray($current) {
       global $LANG;
 
@@ -2111,6 +2168,7 @@ class Ticket extends CommonDBTM {
       if (!isset($current)) {
          $current = 'new';
       }
+
       foreach ($tab as $status => $label) {
          if ($status != $current
              && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current][$status])
@@ -2130,7 +2188,7 @@ class Ticket extends CommonDBTM {
     * @param $option list proposed 0:normal, 1:search, 2:allowed
     *
     * @return nothing (display)
-    */
+   **/
    static function dropdownStatus($name, $value='new', $option=0) {
 
       if ($option == 2) {
@@ -2152,7 +2210,7 @@ class Ticket extends CommonDBTM {
     * Get ticket status Name
     *
     * @param $value status ID
-    */
+   **/
    static function getStatus($value) {
       global $LANG;
 
@@ -2162,9 +2220,9 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Form to add a solution to a ticket
-   *
-   */
+    * Form to add a solution to a ticket
+    *
+   **/
    function showSolutionForm() {
       global $LANG;
 
@@ -2182,6 +2240,7 @@ class Ticket extends CommonDBTM {
           || ($current!='solved'
               && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])
               && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])) {
+
          // Settings a solution will set status to solved
          echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                         $this->getField('ticketsolutiontypes_id'));
@@ -2207,30 +2266,29 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Make a select box for Ticket my devices
-   *
-   *
-   * @param $userID User ID for my device section
-   * @param $entity_restrict restrict to a specific entity
-   * @param $itemtype of selected item
-   * @param $items_id of selected item
-   *
-   * @return nothing (print out an HTML select box)
-   */
+    * Make a select box for Ticket my devices
+    *
+    *
+    * @param $userID User ID for my device section
+    * @param $entity_restrict restrict to a specific entity
+    * @param $itemtype of selected item
+    * @param $items_id of selected item
+    *
+    * @return nothing (print out an HTML select box)
+   **/
    static function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_id=0) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $LANG, $CFG_GLPI;
 
       if ($userID == 0) {
          $userID = getLoginUserID();
       }
 
-      $rand = mt_rand();
+      $rand        = mt_rand();
       $already_add = array();
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)) {
          $my_devices = "";
-
-         $my_item = $itemtype.'_'.$items_id;
+         $my_item    = $itemtype.'_'.$items_id;
 
          // My items
          foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
@@ -2297,6 +2355,7 @@ class Ticket extends CommonDBTM {
                       WHERE `glpi_groups_users`.`users_id` = '$userID' ".
                             getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict,true);
             $result = $DB->query($query);
+
             $first = true;
             if ($DB->numrows($result)>0) {
                while ($data=$DB->fetch_array($result)) {
@@ -2483,23 +2542,26 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Make a select box for Tracking All Devices
-   *
-   * @param $myname select name
-   * @param $itemtype preselected value.for item type
-   * @param $items_id preselected value for item ID
-   * @param $admin is an admin access ?
-   * @param $entity_restrict Restrict to a defined entity
-   * @return nothing (print out an HTML select box)
-   */
-   static function dropdownAllDevices($myname,$itemtype,$items_id=0,$admin=0,$entity_restrict=-1) {
-      global $LANG,$CFG_GLPI,$DB;
+    * Make a select box for Tracking All Devices
+    *
+    * @param $myname select name
+    * @param $itemtype preselected value.for item type
+    * @param $items_id preselected value for item ID
+    * @param $admin is an admin access ?
+    * @param $entity_restrict Restrict to a defined entity
+    *
+    * @return nothing (print out an HTML select box)
+   **/
+   static function dropdownAllDevices($myname, $itemtype, $items_id=0, $admin=0,
+                                      $entity_restrict=-1) {
+      global $LANG, $CFG_GLPI, $DB;
 
       $rand = mt_rand();
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
          echo "<input type='hidden' name='$myname' value='0'>";
          echo "<input type='hidden' name='items_id' value='0'>";
+
       } else {
          echo "<div id='tracking_all_devices'>";
          if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)) {
@@ -2609,8 +2671,7 @@ class Ticket extends CommonDBTM {
     *@param $item CommonDBTM object of the item
     *
     *@return float
-    *
-    **/
+   **/
    static function computeTco(CommonDBTM $item) {
       global $DB;
 
@@ -2628,7 +2689,7 @@ class Ticket extends CommonDBTM {
       $i = 0;
       if ($DB->numrows($result)) {
          while ($data=$DB->fetch_array($result)) {
-            $totalcost += self::trackingTotalCost($data["actiontime"],$data["cost_time"],
+            $totalcost += self::trackingTotalCost($data["actiontime"], $data["cost_time"],
                                                   $data["cost_fixed"], $data["cost_material"]);
          }
       }
@@ -2643,18 +2704,19 @@ class Ticket extends CommonDBTM {
     * @param $cost_time float : ticket time cost
     * @param $cost_fixed float : ticket fixed cost
     * @param $cost_material float : ticket material cost
+    *
     * @return total cost formatted string
-    */
+   **/
    static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material) {
       return formatNumber(($actiontime*$cost_time)+$cost_fixed+$cost_material,true);
    }
 
 
    function showForm($ID, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
-      $canupdate = haveRight('update_ticket','1');
-      $canpriority = haveRight('update_priority','1');
+      $canupdate    = haveRight('update_ticket','1');
+      $canpriority  = haveRight('update_priority','1');
       $showuserlink = 0;
       if (haveRight('user','r')) {
          $showuserlink = 1;
@@ -2678,7 +2740,6 @@ class Ticket extends CommonDBTM {
       echo "<div class='spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
-
       if (!$ID) {
          //Get all the user's entities
          $all_entities = Profile_User::getUserEntities($options["users_id"], true);
@@ -2700,15 +2761,17 @@ class Ticket extends CommonDBTM {
       // Optional line
       $ismultientities=isMultiEntitiesMode();
       echo '<tr><th colspan="4">';
+
       if ($ID) {
          echo $this->getTypeName()." - ".$LANG['common'][2]." $ID ";
          if ($ismultientities) {
             echo "(".Dropdown::getDropdownName('glpi_entities',$this->fields['entities_id']) . ")";
          }
+
       } else {
          if ($ismultientities) {
-            echo $LANG['job'][46]."&nbsp;:&nbsp;".Dropdown::getDropdownName("glpi_entities",
-                                                                  $this->fields['entities_id']);
+            echo $LANG['job'][46]."&nbsp;:&nbsp;".
+                 Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']);
          } else {
             echo $LANG['job'][13];
          }
@@ -2721,12 +2784,12 @@ class Ticket extends CommonDBTM {
       echo "<tr>";
       echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
       echo "<td>";
-      $date=$this->fields["date"];
+      $date = $this->fields["date"];
       if (!$ID) {
-         $date=date("Y-m-d H:i:s");
+         $date = date("Y-m-d H:i:s");
       }
       if ($canupdate) {
-         showDateTimeFormItem("date",$this->fields["date"],1,false);
+         showDateTimeFormItem("date", $this->fields["date"], 1, false);
       } else {
          echo convDateTime($date);
       }
@@ -2740,7 +2803,7 @@ class Ticket extends CommonDBTM {
                                  'entity' => $this->fields["entities_id"],
                                  'right'  => 'all'));
          } else {
-            echo getUserName($this->fields["users_id_recipient"],$showuserlink);
+            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
          }
          echo "</td></tr>";
       }
@@ -2771,9 +2834,9 @@ class Ticket extends CommonDBTM {
             echo convDateTime($this->fields["due_date"])."</span>";
 
             echo "</td></tr><tr><td>".$LANG['sla'][1]."&nbsp;:</td><td>";
-            echo Dropdown::getDropdownName("glpi_slas",$this->fields["slas_id"]);
+            echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
             $commentsla = "";
-            $slalevel = new SlaLevel();
+            $slalevel   = new SlaLevel();
             if ($slalevel->getFromDB($this->fields['slalevels_id'])) {
                $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
                               $slalevel->getName().'<br><br>';
@@ -2783,6 +2846,7 @@ class Ticket extends CommonDBTM {
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
                $commentsla .= '<strong>'.$LANG['sla'][8]."&nbsp;:&nbsp;</strong>".
                               convDateTime($nextaction->fields['date']).'<br>';
+
                if ($slalevel->getFromDB(SlaLevel::getNextSlaLevel($this->fields["slas_id"],
                                                                   $this->fields['slalevels_id']))) {
                   $commentsla .= '<strong>'.$LANG['sla'][6]."&nbsp;:&nbsp;</strong>".
@@ -2800,13 +2864,14 @@ class Ticket extends CommonDBTM {
             }
 
          } else {
-            showDateTimeFormItem("due_date",$this->fields["due_date"],1,false,$canupdate);
+            showDateTimeFormItem("due_date",$this->fields["due_date"], 1, false, $canupdate);
          }
+
       } else { // New Ticket
          if ($this->fields["due_date"]=='NULL') {
             $this->fields["due_date"]='';
          }
-         showDateTimeFormItem("due_date",$this->fields["due_date"],1,false,$canupdate);
+         showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
 /*         echo $LANG['choice'][2]." ".$LANG['sla'][1]." : ";
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                     'value' =>$this->fields["slas_id"]));*/
@@ -2819,7 +2884,7 @@ class Ticket extends CommonDBTM {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
                echo "<td>";
-               showDateTimeFormItem("closedate",$this->fields["closedate"],1,false,$canupdate);
+               showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false, $canupdate);
                echo "</td></tr>";
                break;
 
@@ -2827,7 +2892,7 @@ class Ticket extends CommonDBTM {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
                echo "<td>";
-               showDateTimeFormItem("solvedate",$this->fields["solvedate"],1,false,$canupdate);
+               showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false, $canupdate);
                echo "</td></tr>";
                break;
          }
@@ -2835,14 +2900,13 @@ class Ticket extends CommonDBTM {
 
       echo "</table>";
 
-      echo "</th>";
-      echo "</tr>";
+      echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='60'>".$LANG['joblist'][0]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
-         self::dropdownStatus("status",$this->fields["status"],2); // Allowed status
+         self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       } else {
          echo self::getStatus($this->fields["status"]);
       }
@@ -2853,11 +2917,13 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['joblist'][29]."&nbsp;: </td>";
       echo "<td>";
+
       if (($canupdate && $canpriority)
-            || !$ID
-            || $canupdate_descr) {
+          || !$ID
+          || $canupdate_descr) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
-         $idurgency = self::dropdownUrgency("urgency",$this->fields["urgency"]);
+         $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
+
       } else {
          $idurgency = "value_urgency".mt_rand();
          echo "<input id='$idurgency' type='hidden' name='urgency' value='".$this->fields["urgency"]."'>";
@@ -2879,7 +2945,7 @@ class Ticket extends CommonDBTM {
                                  'helpdesk_ajax' => 1,
                                  'ldap_import'   => true));
          } else {
-            echo getUserName($this->fields["users_id"],$showuserlink);
+            echo getUserName($this->fields["users_id"], $showuserlink);
          }
 
          //If user have access to more than one entity, then display a combobox
@@ -2912,7 +2978,7 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['joblist'][30]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
-         $idimpact = self::dropdownImpact("impact",$this->fields["impact"]);
+         $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       } else {
          echo self::getImpactName($this->fields["impact"]);
       }
@@ -2920,26 +2986,28 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['common'][35]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
-         Dropdown::show('Group',
-                        array('value'  => $this->fields["groups_id"],
-                              'entity' => $this->fields["entities_id"]));
+         Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
+                                       'entity' => $this->fields["entities_id"]));
       } else {
-         echo Dropdown::getDropdownName("glpi_groups",$this->fields["groups_id"]);
+         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
       echo "<td>";
+
       if ($canupdate && $canpriority) {
          $idpriority = self::dropdownPriority("priority", $this->fields["priority"], false, true);
-         $idajax = 'change_priority_' . mt_rand();
+         $idajax     = 'change_priority_' . mt_rand();
          echo "&nbsp;<span id='$idajax' style='display:none'></span>";
+
       } else {
-         $idajax = 'change_priority_' . mt_rand();
+         $idajax     = 'change_priority_' . mt_rand();
          $idpriority = 0;
          echo "<span id='$idajax'>".self::getPriorityName($this->fields["priority"])."</span>";
       }
+
       if ($canupdate) {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
@@ -2956,12 +3024,11 @@ class Ticket extends CommonDBTM {
       echo "<td >";
       // Permit to set type when creating ticket without update right
       if ($canupdate || !$ID) {
-         self::dropdownType('type',$this->fields["type"]);
+         self::dropdownType('type', $this->fields["type"]);
       } else {
          echo self::getTicketTypeName($this->fields["type"]);
       }
       echo "</td>";
-
       echo "<td colspan='2'>empty space but will be review when multi requester / assign will be done</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -2973,9 +3040,10 @@ class Ticket extends CommonDBTM {
                         array('value'  => $this->fields["ticketcategories_id"],
                               'entity' => $this->fields["entities_id"]));
       } else {
-         echo Dropdown::getDropdownName("glpi_ticketcategories",$this->fields["ticketcategories_id"]);
+         echo Dropdown::getDropdownName("glpi_ticketcategories", $this->fields["ticketcategories_id"]);
       }
       echo "</td>";
+
       if (haveRight("assign_ticket","1")) {
          echo "<td>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
@@ -2985,6 +3053,7 @@ class Ticket extends CommonDBTM {
                               'entity'      => $this->fields["entities_id"],
                               'ldap_import' => true));
          echo "</td>";
+
       } else if (haveRight("steal_ticket","1")) {
          echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
@@ -2993,6 +3062,7 @@ class Ticket extends CommonDBTM {
                               'entity'      => $this->fields["entities_id"],
                               'ldap_import' => true));
          echo "</td>";
+
       } else if (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0) {
          echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
@@ -3001,11 +3071,10 @@ class Ticket extends CommonDBTM {
                               'entity'      => $this->fields["entities_id"],
                               'ldap_import' => true));
          echo "</td>";
+
       } else {
          echo "<td>".$LANG['job'][6]."&nbsp;: </td>";
-         echo "<td>";
-         echo getUserName($this->fields["users_id_assign"],$showuserlink);
-         echo "</td>";
+         echo "<td>".getUserName($this->fields["users_id_assign"], $showuserlink)."</td>";
       }
       echo "</tr>";
 
@@ -3013,23 +3082,23 @@ class Ticket extends CommonDBTM {
       echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
-         Dropdown::show('RequestType',array('value' => $this->fields["requesttypes_id"]));
+         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
       } else {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
       }
       echo "</td>";
+
       if (haveRight("assign_ticket","1")) {
          echo "<td>".$LANG['common'][35]."&nbsp;: </td>";
          echo "<td>";
-         Dropdown::show('Group',
-                        array('name'   => 'groups_id_assign',
-                              'value'  => $this->fields["groups_id_assign"],
-                              'entity' => $this->fields["entities_id"]));
+         Dropdown::show('Group', array('name'   => 'groups_id_assign',
+                                       'value'  => $this->fields["groups_id_assign"],
+                                       'entity' => $this->fields["entities_id"]));
          echo "</td>";
+
       } else {
          echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
-         echo "<td>";
-         echo Dropdown::getDropdownName("glpi_groups",$this->fields["groups_id_assign"]);
+         echo "<td>".Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id_assign"]);
          echo "</td>";
       }
       echo "</tr>";
@@ -3041,8 +3110,9 @@ class Ticket extends CommonDBTM {
       // Select hardware on creation or if have update right
       if ($canupdate || !$ID || $canupdate_descr) {
          if ($ID) {
-            if ($this->fields['itemtype'] && class_exists($this->fields['itemtype'])
-                  && $this->fields["items_id"]) {
+            if ($this->fields['itemtype']
+                && class_exists($this->fields['itemtype'])
+                && $this->fields["items_id"]) {
                $item = new $this->fields['itemtype']();
                if ($item->can($this->fields["items_id"],'r')) {
                   echo $item->getTypeName()." - ".$item->getLink(true);
@@ -3051,8 +3121,8 @@ class Ticket extends CommonDBTM {
                }
             }
          }
-         self::dropdownMyDevices($this->fields["users_id"],$this->fields["entities_id"],
-                                    $this->fields["itemtype"], $this->fields["items_id"]);
+         self::dropdownMyDevices($this->fields["users_id"], $this->fields["entities_id"],
+                                 $this->fields["itemtype"], $this->fields["items_id"]);
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
                                   1, $this->fields["entities_id"]);
       } else {
@@ -3069,15 +3139,14 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['financial'][26]."&nbsp;: </td>";
       if (haveRight("assign_ticket","1")) {
          echo "<td>";
-         Dropdown::show('Supplier',
-                        array('name'   => 'suppliers_id_assign',
-                              'value'  => $this->fields["suppliers_id_assign"],
-                              'entity' => $this->fields["entities_id"]));
+         Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
+                                          'value'  => $this->fields["suppliers_id_assign"],
+                                          'entity' => $this->fields["entities_id"]));
 
          echo "</td>";
       } else {
          echo "<td>";
-         echo Dropdown::getDropdownName("glpi_suppliers",$this->fields["suppliers_id_assign"]);
+         echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
          echo "</td>";
       }
       echo "</tr>\n";
@@ -3103,6 +3172,7 @@ class Ticket extends CommonDBTM {
          Dropdown::showInteger('minute',$options['minute'],0,59);
          echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
          echo "</td>";
+
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
       }
@@ -3122,9 +3192,9 @@ class Ticket extends CommonDBTM {
 
             $email = "";
             if ($result && $DB->numrows($result)) {
-               $email = $DB->result($result,0,"email");
+               $email = $DB->result($result, 0, "email");
             }
-            Dropdown::showYesNo('use_email_notification',!empty($email));
+            Dropdown::showYesNo('use_email_notification', !empty($email));
          } else {
             if ($canupdate) {
                Dropdown::showYesNo('use_email_notification',
@@ -3143,21 +3213,24 @@ class Ticket extends CommonDBTM {
          if (!$ID) {
             echo "<input type='text' size='30' name='user_email' value='$email'>";
          } else {
+
             if ($canupdate) {
                autocompletionTextField($this,"user_email");
                if (!empty($this->fields["user_email"])) {
                   echo "<a href='mailto:".$this->fields["user_email"]."'>";
                   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
                }
+
             } else if (!empty($this->fields["user_email"])) {
-               echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"]."</a>";
+               echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"].
+                    "</a>";
+
             } else {
                echo "&nbsp;";
             }
          }
          echo "</td></tr>";
       }
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
@@ -3171,7 +3244,7 @@ class Ticket extends CommonDBTM {
                          'size'      => 50,
                          'name'      => 'name',
                          'data'      => rawurlencode($this->fields["name"]));
-         ajaxUpdateItemJsCode("viewname$rand",$CFG_GLPI["root_doc"]."/ajax/inputtext.php",$params,
+         ajaxUpdateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
                               false);
          echo "}";
          echo "</script>\n";
@@ -3190,6 +3263,7 @@ class Ticket extends CommonDBTM {
             showName$rand();
             </script>";
          }
+
       } else {
          if (empty($this->fields["name"])) {
             echo $LANG['reminder'][15];
@@ -3208,14 +3282,13 @@ class Ticket extends CommonDBTM {
          if ($canupdate) {
             $rand_linked_ticket = mt_rand();
             echo "&nbsp;&nbsp;<a class='tracking'
-               onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
+                  onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\">\n";
             echo $LANG['buttons'][8];
             echo "</a>\n";
          }
 
       }
       echo "</th></tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='1'>".$LANG['joblist'][6]."</td>";
@@ -3229,7 +3302,7 @@ class Ticket extends CommonDBTM {
                          'cols'  => 50,
                          'name'  => 'content',
                          'data'  => rawurlencode($this->fields["content"]));
-         ajaxUpdateItemJsCode("viewdesc$rand",$CFG_GLPI["root_doc"]."/ajax/textarea.php",$params,
+         ajaxUpdateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params,
                               false);
          echo "}";
          echo "</script>\n";
@@ -3247,13 +3320,13 @@ class Ticket extends CommonDBTM {
             showDesc$rand();
             </script>";
          }
+
       } else {
          echo nl2br($this->fields["content"]);
       }
       echo "</td>";
 
       if ($view_linked_tickets) {
-
          echo "<td colspan='2'>";
          Ticket_Ticket::displayLinkedTicketsTo($ID);
 
@@ -3268,17 +3341,18 @@ class Ticket extends CommonDBTM {
             echo "</div>";
          }
          echo "</td>";
+
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "</tr>";
 
 
-
       // Permit to add doc when creating a ticket
       if (!$ID) {
-         echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"".
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
                $LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
          echo "</td>";
@@ -3318,7 +3392,6 @@ class Ticket extends CommonDBTM {
          echo "</td></tr>";
       }
 
-
       echo "</table>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</div>";
@@ -3331,8 +3404,8 @@ class Ticket extends CommonDBTM {
    }
 
 
-   static function showCentralList($start,$status="process",$showgrouptickets=true) {
-      global $DB,$CFG_GLPI, $LANG;
+   static function showCentralList($start, $status="process", $showgrouptickets=true) {
+      global $DB, $CFG_GLPI, $LANG;
 
       if (!haveRight("show_all_ticket","1")
           && !haveRight("show_assign_ticket","1")
@@ -3342,12 +3415,14 @@ class Ticket extends CommonDBTM {
       }
 
       $search_users_id = " (`glpi_tickets`.`users_id` = '".getLoginUserID()."') ";
-      $search_assign = " `users_id_assign` = '".getLoginUserID()."' ";
+      $search_assign   = " `users_id_assign` = '".getLoginUserID()."' ";
+
       if ($showgrouptickets) {
          $search_users_id = " 0 = 1 ";
-         $search_assign = " 0 = 1 ";
+         $search_assign   = " 0 = 1 ";
+
          if (count($_SESSION['glpigroups'])) {
-            $groups = implode("','",$_SESSION['glpigroups']);
+            $groups        = implode("','",$_SESSION['glpigroups']);
             $search_assign = " `groups_id_assign` IN ('$groups') ";
             if (haveRight("show_group_ticket",1)) {
                $search_users_id = " (`groups_id` IN ('$groups')) ";
@@ -3362,33 +3437,36 @@ class Ticket extends CommonDBTM {
          case "waiting" : // on affiche les tickets en attente
             $query .= "WHERE ($search_assign)
                              AND `status` = 'waiting' ".
-                             getEntitiesRestrictRequest("AND","glpi_tickets");
+                             getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "process" : // on affiche les tickets planifiés ou assignés au user
             $query .= "WHERE ( $search_assign )
                              AND (`status` IN ('plan','assign')) ".
-                             getEntitiesRestrictRequest("AND","glpi_tickets");
+                             getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "toapprove" : // on affiche les tickets planifiés ou assignés au user
             $query .= "WHERE (`status` = 'solved')
-                            AND ($search_users_id";
+                             AND ($search_users_id";
             if (!$showgrouptickets) {
                $query .= " OR `glpi_tickets`.users_id_recipient = '".getLoginUserID()."' ";
             }
-            $query .= ")".getEntitiesRestrictRequest("AND","glpi_tickets");
+            $query .= ")".
+                      getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
+
          case "tovalidate" : // on affiche les tickets à valider
-            $query .= "LEFT JOIN `glpi_ticketvalidations`
+            $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         WHERE `users_id_validate` = '".getLoginUserID()."'
-                              AND `glpi_ticketvalidations`.`status` = 'waiting' ";
-            $query .= getEntitiesRestrictRequest("AND","glpi_tickets");
+                              AND `glpi_ticketvalidations`.`status` = 'waiting' ".
+                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
                // à quelqu'un d'autre (exclut les self-tickets)
+
          default :
             $query .= "WHERE ($search_users_id)
                             AND (`status` IN ('new', 'plan', 'assign', 'waiting'))
@@ -3396,19 +3474,20 @@ class Ticket extends CommonDBTM {
                             getEntitiesRestrictRequest("AND","glpi_tickets");
       }
 
-      $query .= " ORDER BY date_mod DESC";
-      $result = $DB->query($query);
+      $query  .= " ORDER BY date_mod DESC";
+      $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      $query .= " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
-      $result = $DB->query($query);
+      $query  .= " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
+      $result  = $DB->query($query);
+
       $i = 0;
       $number = $DB->numrows($result);
       if ($number > 0) {
          echo "<table class='tab_cadrehov' style='width:420px'>";
          echo "<tr><th colspan='5'>";
 
-         $options['reset']  = 'reset';
+         $options['reset'] = 'reset';
          if ($showgrouptickets) {
             switch ($status) {
                case "waiting" :
@@ -3416,7 +3495,6 @@ class Ticket extends CommonDBTM {
                   $options['searchtype'][0] = 'equals';
                   $options['contains'][0]   = 'waiting';
                   $options['link'][0]       = 'AND';
-
                   $num = 1;
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 8; // groups_id_assign
@@ -3425,7 +3503,6 @@ class Ticket extends CommonDBTM {
                      $options['link'][$num]       = ($num==1?'AND':'OR');
                      $num++;
                   }
-
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         append_params($options,'&amp;')."\">".$LANG['joblist'][13].
                         " (".$LANG['joblist'][26].")"."</a>";
@@ -3436,7 +3513,6 @@ class Ticket extends CommonDBTM {
                   $options['searchtype'][0] = 'equals';
                   $options['contains'][0]   = 'solved';
                   $options['link'][0]       = 'AND';
-
                   $num = 1;
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 71; // groups_id
@@ -3445,7 +3521,6 @@ class Ticket extends CommonDBTM {
                      $options['link'][$num]       = ($num==1?'AND':'OR');
                      $num++;
                   }
-
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
                   break;
@@ -3455,7 +3530,6 @@ class Ticket extends CommonDBTM {
                      $options['searchtype'][0] = 'equals';
                      $options['contains'][0]   = 'process';
                      $options['link'][0]       = 'AND';
-
                      $num = 1;
                      foreach ($_SESSION['glpigroups'] as $gID) {
                         $options['field'][$num]      = 8; // groups_id_assign
@@ -3464,7 +3538,6 @@ class Ticket extends CommonDBTM {
                         $options['link'][$num]       = ($num==1?'AND':'OR');
                         $num++;
                      }
-
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                            append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
                      break;
@@ -3475,7 +3548,6 @@ class Ticket extends CommonDBTM {
                      $options['searchtype'][0] = 'equals';
                      $options['contains'][0]   = 'process';
                      $options['link'][0]       = 'AND';
-
                      $num = 1;
                      foreach ($_SESSION['glpigroups'] as $gID) {
                         $options['field'][$num]      = 71; // groups_id
@@ -3484,7 +3556,6 @@ class Ticket extends CommonDBTM {
                         $options['link'][$num]       = ($num==1?'AND':'OR');
                         $num++;
                      }
-
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                            append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
             }
@@ -3587,6 +3658,7 @@ class Ticket extends CommonDBTM {
             $i++;
          }
          echo "</table>";
+
       } else {
          echo "<table class='tab_cadrehov' style='width:420px'>";
          echo "<tr><th>";
@@ -3618,16 +3690,17 @@ class Ticket extends CommonDBTM {
 
 
    static function showCentralCount() {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       // show a tab with count of jobs in the central and give link
       if (!haveRight("show_all_ticket","1")) {
          return false;
       }
 
-      $query = "SELECT `status`, count(*) AS COUNT
+      $query = "SELECT `status`,
+                       COUNT(*) AS COUNT
                 FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets")."
+                getEntitiesRestrictRequest("WHERE", "glpi_tickets")."
                 GROUP BY `status`";
       $result = $DB->query($query);
 
@@ -3648,56 +3721,51 @@ class Ticket extends CommonDBTM {
       $options['searchtype'][0] = 'equals';
       $options['contains'][0]   = 'all';
       $options['link'][0]       = 'AND';
-      $options['reset']='reset';
+      $options['reset']         ='reset';
 
       echo "<table class='tab_cadrehov' >";
       echo "<tr><th colspan='2'>";
 
-      $options['contains'][0]   = 'process';
+      $options['contains'][0]    = 'process';
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
             $LANG['title'][10]."</a></th></tr>";
+
       echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
 
-      $options['contains'][0]   = 'new';
+      $options['contains'][0]    = 'new';
       echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['tracking'][30]."</a> </td>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 append_params($options,'&amp;')."\">".$LANG['tracking'][30]."</a></td>";
       echo "<td>".$status["new"]."</td></tr>";
 
-      $options['contains'][0]   = 'assign';
+      $options['contains'][0]    = 'assign';
       echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['tracking'][31]."</a></td>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 append_params($options,'&amp;')."\">".$LANG['tracking'][31]."</a></td>";
       echo "<td>".$status["assign"]."</td></tr>";
 
-      $options['contains'][0]   = 'plan';
+      $options['contains'][0]    = 'plan';
       echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['tracking'][32]."</a></td>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 append_params($options,'&amp;')."\">".$LANG['tracking'][32]."</a></td>";
       echo "<td>".$status["plan"]."</td></tr>";
 
       $options['contains'][0]   = 'waiting';
       echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['joblist'][26]."</a></td>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 append_params($options,'&amp;')."\">".$LANG['joblist'][26]."</a></td>";
       echo "<td>".$status["waiting"]."</td></tr>";
 
-      $options['contains'][0]   = 'solved';
+      $options['contains'][0]    = 'solved';
       echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['job'][15]."</a></td>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 append_params($options,'&amp;')."\">".$LANG['job'][15]."</a></td>";
       echo "<td>".$status["solved"]."</td></tr>";
 
-      $options['contains'][0]   = 'closed';
+      $options['contains'][0]    = 'closed';
       echo "<tr class='tab_bg_2'>";
-      echo "<td>";
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['joblist'][33]."</a></td>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 append_params($options,'&amp;')."\">".$LANG['joblist'][33]."</a></td>";
       echo "<td>".$status["closed"]."</td></tr>";
 
       echo "</table><br>";
@@ -3705,7 +3773,7 @@ class Ticket extends CommonDBTM {
 
 
    static function showCentralNewList() {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       if (!haveRight("show_all_ticket","1")) {
          return false;
@@ -3727,12 +3795,12 @@ class Ticket extends CommonDBTM {
          $options['searchtype'][0] = 'equals';
          $options['contains'][0]   = 'new';
          $options['link'][0]       = 'AND';
-         $options['reset']='reset';
+         $options['reset']         ='reset';
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;').
-               "'>".$LANG['buttons'][40]."</a>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
 
          self::commonListHeader(HTML_OUTPUT);
@@ -3742,6 +3810,7 @@ class Ticket extends CommonDBTM {
             self::showShort($data, 0);
          }
          echo "</table></div>";
+
       } else {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -3790,16 +3859,16 @@ class Ticket extends CommonDBTM {
 
    /**
    * Display tickets for an item
-   *
-   * Will also display tickets of linked items
-   *
-   * @param $itemtype
-   * @param $items_id
-   *
-   * @return nothing (display a table)
-   */
+    *
+    * Will also display tickets of linked items
+    *
+    * @param $itemtype
+    * @param $items_id
+    *
+    * @return nothing (display a table)
+   **/
    static function showListForItem($itemtype, $items_id) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI, $LANG;
 
       if (!haveRight("show_all_ticket","1")) {
          return false;
@@ -3824,8 +3893,9 @@ class Ticket extends CommonDBTM {
 
       // Ticket for the item
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+
       if ($number > 0) {
-         initNavigateListItems('Ticket',$item->getTypeName()." = ".$item->getName());
+         initNavigateListItems('Ticket', $item->getTypeName()." = ".$item->getName());
 
          $options['field'][0]      = 12;
          $options['searchtype'][0] = 'equals';
@@ -4034,11 +4104,11 @@ class Ticket extends CommonDBTM {
       // Make new job object and fill it from database, if success, print it
       $job = new self();
       $job->fields = $data;
-      $candelete = haveRight("delete_ticket","1");
-      $canupdate = haveRight("update_ticket","1");
+      $candelete   = haveRight("delete_ticket","1");
+      $canupdate   = haveRight("update_ticket","1");
       $showprivate = haveRight("show_full_ticket","1");
-      $align = "class='center";
-      $align_desc = "class='left";
+      $align       = "class='center";
+      $align_desc  = "class='left";
       if ($followups) {
          $align .= " top'";
          $align_desc .= " top'";
@@ -4055,12 +4125,13 @@ class Ticket extends CommonDBTM {
          // First column
          $first_col = "ID : ".$data["id"];
          if ($output_type == HTML_OUTPUT) {
-            $first_col .= "<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data["status"].".png\"
+            $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$data["status"].".png'
                            alt='".self::getStatus($data["status"])."' title='".
                            self::getStatus($data["status"])."'>";
          } else {
             $first_col .= " - ".self::getStatus($data["status"]);
          }
+
          if (($candelete || $canupdate)
              && $output_type == HTML_OUTPUT) {
 
@@ -4084,6 +4155,7 @@ class Ticket extends CommonDBTM {
                $second_col .= "<br>";
             }
             $second_col .= "&nbsp;".convDateTime($data["date"])."</span>";
+
          } else {
             $second_col .= "<div class='tracking_hour'>".$LANG['joblist'][11]."&nbsp;:";
             if ($output_type == HTML_OUTPUT) {
@@ -4105,11 +4177,11 @@ class Ticket extends CommonDBTM {
             $second_col .= "&nbsp;".self::getActionTime($data["actiontime"])."</div>";
          }
 
-         echo Search::showItem($output_type,$second_col,$item_num,$row_num,$align." width=130");
+         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
 
          // Second BIS column
          $second_col = convDateTime($data["date_mod"]);
-         echo Search::showItem($output_type,$second_col,$item_num,$row_num,$align." width=90");
+         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=90");
 
          // Second TER column
          if (count($_SESSION["glpiactiveentities"]) > 1) {
@@ -4118,7 +4190,8 @@ class Ticket extends CommonDBTM {
             } else {
                $second_col = $data['entityname'];
             }
-            echo Search::showItem($output_type,$second_col,$item_num,$row_num,$align." width=100");
+            echo Search::showItem($output_type, $second_col, $item_num, $row_num,
+                                  $align." width=100");
          }
 
          // Third Column
@@ -4129,7 +4202,7 @@ class Ticket extends CommonDBTM {
          // Fourth Column
          $fourth_col = "";
          if ($data['users_id']) {
-            $userdata = getUserName($data['users_id'],2);
+            $userdata    = getUserName($data['users_id'],2);
             $fourth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
             if ($output_type == HTML_OUTPUT) {
                $fourth_col .= showToolTip($userdata["comment"],
@@ -4146,9 +4219,9 @@ class Ticket extends CommonDBTM {
          // Fifth column
          $fifth_col = "";
          if ($data["users_id_assign"]>0) {
-            $userdata = getUserName($data['users_id_assign'],2);
+            $userdata        = getUserName($data['users_id_assign'],2);
             $comment_display = "";
-            $fifth_col = "<strong>".$userdata['name']."</strong>&nbsp;";
+            $fifth_col  = "<strong>".$userdata['name']."</strong>&nbsp;";
             $fifth_col .= showToolTip($userdata["comment"], array('link'    => $userdata["link"],
                                                                   'display' => false));
          }
@@ -4178,7 +4251,6 @@ class Ticket extends CommonDBTM {
                   $is_deleted = $item->isDeleted();
 
                   $sixth_col .= $item->getTypeName();
-
                   $sixth_col .= "<br><strong>";
                   if ($item->canView()) {
                      $sixth_col .= $item->getLink($output_type==HTML_OUTPUT);
@@ -4188,6 +4260,7 @@ class Ticket extends CommonDBTM {
                   $sixth_col .= "</strong>";
                }
             }
+
          } else if (empty($data["itemtype"])) {
             $sixth_col = $LANG['help'][30];
          }
@@ -4240,14 +4313,14 @@ class Ticket extends CommonDBTM {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers = haveRight("user","r");
+      $viewusers   = haveRight("user","r");
       $showprivate = haveRight("show_full_ticket",1);
 
-      $job = new self();
+      $job  = new self();
       $rand = mt_rand();
       if ($job->getFromDBwithData($ID,0)) {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
-         $rand = mt_rand();
+   //      $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' bgcolor='$bgcolor' >ID : ".$job->fields["id"]."</td>";
          echo "<td class='center'>";
@@ -4255,11 +4328,11 @@ class Ticket extends CommonDBTM {
          $userdata = getUserName($job->fields['users_id'],2);
          echo "<strong>".$userdata['name']."</strong>&nbsp;";
          if ($viewusers) {
-            showToolTip($userdata["comment"],array('link'=>$userdata["link"]));
+            showToolTip($userdata["comment"], array('link' => $userdata["link"]));
          }
 
          if ($job->fields["groups_id"]) {
-            echo "<br>".Dropdown::getDropdownName("glpi_groups",$job->fields["groups_id"]);
+            echo "<br>".Dropdown::getDropdownName("glpi_groups", $job->fields["groups_id"]);
          }
          echo "</td>";
 
@@ -4272,18 +4345,21 @@ class Ticket extends CommonDBTM {
             echo $job->hardwaredatas->getTypeName()."<br>";
             echo "<strong>".$job->hardwaredatas->getLink()."</strong>";
             echo "</td>";
+
          } else if ($job->hardwaredatas) {
             echo "<td class='center' >".$job->hardwaredatas->getTypeName()."<br><strong>".
                   $job->hardwaredatas->getNameID()."</strong></td>";
+
          } else {
             echo "<td class='center' >".$LANG['help'][30]."</td>";
          }
          echo "<td>";
 
-         echo "<a id='ticket".$job->fields["id"].$rand."' href=\"".$CFG_GLPI["root_doc"].
-               "/front/ticket.form.php?id=".$job->fields["id"]."\">";
-         echo "<strong>".$job->fields["name"]."</strong>";
-         echo "</a>&nbsp;(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).")&nbsp;";
+         echo "<a id='ticket".$job->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
+               "/front/ticket.form.php?id=".$job->fields["id"]."'>";
+         echo "<strong>".$job->fields["name"]."</strong></a>&nbsp;";
+         echo "(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).
+              ")&nbsp;";
          showToolTip($job->fields['content'], array('applyto' => 'ticket'.$job->fields["id"].$rand));
 
          echo "</td>";
@@ -4307,7 +4383,7 @@ class Ticket extends CommonDBTM {
 //       $output .= round((($actiontime-floor($actiontime))*60))." ".$LANG['job'][22];
 //       return $output;
 
-      return timestampToString($actiontime,false);
+      return timestampToString($actiontime, false);
    }
 
 
@@ -4316,7 +4392,7 @@ class Ticket extends CommonDBTM {
       $SELECT = "";
       if (count($_SESSION["glpiactiveentities"])>1) {
          $SELECT .= ", `glpi_entities`.`completename` AS entityname,
-                     `glpi_tickets`.`entities_id` AS entityID ";
+                       `glpi_tickets`.`entities_id` AS entityID ";
       }
 
       return " DISTINCT `glpi_tickets`.*,
@@ -4372,9 +4448,9 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Get all available types to which a ticket can be assigned
-   *
-   */
+    * Get all available types to which a ticket can be assigned
+    *
+   **/
    static function getAllTypesForHelpdesk() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
 
@@ -4383,7 +4459,7 @@ class Ticket extends CommonDBTM {
       //Types of the plugins (keep the plugin hook for right check)
       if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
          foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
-            $types = doOneHook($plugin,'AssignToTicket',$types);
+            $types = doOneHook($plugin, 'AssignToTicket', $types);
          }
       }
 
@@ -4404,13 +4480,14 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Check if it's possible to assign ticket to a type (core or plugin)
-   * @param $itemtype the object's type
-   * @return true if ticket can be assign to this type, false if not
-   */
+    * Check if it's possible to assign ticket to a type (core or plugin)
+    *
+    * @param $itemtype the object's type
+    *
+    * @return true if ticket can be assign to this type, false if not
+   **/
    static function isPossibleToAssignType($itemtype) {
       global $PLUGIN_HOOKS;
-
 
       // Plugin case
       if (isPluginItemType($itemtype)) {
@@ -4425,8 +4502,9 @@ class Ticket extends CommonDBTM {
                return true;
             }
          }
-      } else { // standard case
-         if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+      // standard case
+      } else {
+         if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             return true;
          }
       }
@@ -4435,7 +4513,7 @@ class Ticket extends CommonDBTM {
    }
 
 
-   static function getAssignName($ID,$itemtype,$link=0) {
+   static function getAssignName($ID, $itemtype, $link=0) {
 
       switch ($itemtype) {
          case 'User' :
@@ -4443,7 +4521,6 @@ class Ticket extends CommonDBTM {
                return "";
             }
             return getUserName($ID,$link);
-            break;
 
          case 'Supplier' :
          case 'Group' :
@@ -4462,31 +4539,35 @@ class Ticket extends CommonDBTM {
 
 
    /** Get users which have intervention assigned to  between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct users which have any intervention assigned to.
-   */
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct users which have any intervention assigned to.
+   **/
    static function getUsedTechBetween($date1='',$date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_tickets`.`users_id_assign`, `glpi_users`.`name` AS name,
-                       `glpi_users`.`realname` AS realname, `glpi_users`.`firstname` AS firstname
+      $query = "SELECT DISTINCT `glpi_tickets`.`users_id_assign`,
+                                `glpi_users`.`name` AS name,
+                                `glpi_users`.`realname` AS realname,
+                                `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_assign`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1)||!empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
 
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["users_id_assign"];
+            $tmp['id']   = $line["users_id_assign"];
             $tmp['link'] = formatUserName($line["users_id_assign"], $line["name"],
                                           $line["realname"], $line["firstname"],1);
             $tab[] = $tmp;
@@ -4497,27 +4578,32 @@ class Ticket extends CommonDBTM {
 
 
    /** Get users which have followup assigned to  between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct users which have any followup assigned to.
-   */
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct users which have any followup assigned to.
+   **/
    static function getUsedTechFollowupBetween($date1='',$date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_ticketfollowups`.`users_id` AS users_id,
-                       `glpi_users`.`name` AS name, `glpi_users`.`realname` AS realname,
-                       `glpi_users`.`firstname` AS firstname
+                                `glpi_users`.`name` AS name,
+                                `glpi_users`.`realname` AS realname,
+                                `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_ticketfollowups`
                      ON (`glpi_tickets`.`id` = `glpi_ticketfollowups`.`tickets_id`)
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)
-                LEFT JOIN `glpi_profiles_users` ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
-                LEFT JOIN `glpi_profiles` ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)".
+                LEFT JOIN `glpi_profiles_users`
+                     ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
+                LEFT JOIN `glpi_profiles`
+                     ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2).";
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .="     AND `glpi_profiles`.`own_ticket` = 1
                      AND `glpi_ticketfollowups`.`users_id` <> '0'
@@ -4525,13 +4611,13 @@ class Ticket extends CommonDBTM {
                ORDER BY realname, firstname, name";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
 
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["users_id"];
+            $tmp['id']   = $line["users_id"];
             $tmp['link'] = formatUserName($line["users_id"], $line["name"], $line["realname"],
-                                          $line["firstname"],1);
+                                          $line["firstname"], 1);
             $tab[] = $tmp;
          }
       }
@@ -4540,31 +4626,33 @@ class Ticket extends CommonDBTM {
 
 
    /** Get enterprises which have followup assigned to between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct enterprises which have any tickets assigned to.
-   */
-   static function getUsedSupplierBetween($date1='',$date2='') {
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct enterprises which have any tickets assigned to.
+   **/
+   static function getUsedSupplierBetween($date1='', $date2='') {
       global $DB,$CFG_GLPI;
 
       $query = "SELECT DISTINCT `glpi_tickets`.`suppliers_id_assign` AS suppliers_id_assign,
-                       `glpi_suppliers`.`name` AS name
+                                `glpi_suppliers`.`name` AS name
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_suppliers`
                      ON (`glpi_suppliers`.`id` = `glpi_tickets`.`suppliers_id_assign`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY name";
 
-      $tab = array();
+      $tab    = array();
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp["id"] = $line["suppliers_id_assign"];
+            $tmp["id"]   = $line["suppliers_id_assign"];
             $tmp["link"] = "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
                            $line["suppliers_id_assign"]."'>".$line["name"]."</a>";
             $tab[] = $tmp;
@@ -4575,32 +4663,35 @@ class Ticket extends CommonDBTM {
 
 
    /** Get users_ids of tickets between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct users_ids which have tickets
-   */
-   static function getUsedAuthorBetween($date1='',$date2='') {
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct users_ids which have tickets
+   **/
+   static function getUsedAuthorBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_tickets`.`users_id`, `glpi_users`.`name` AS name,
-                       `glpi_users`.`realname` AS realname, `glpi_users`.`firstname` AS firstname
+                                `glpi_users`.`realname` AS realname,
+                                `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
-                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`)".
+                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["users_id"];
+            $tmp['id']   = $line["users_id"];
             $tmp['link'] = formatUserName($line["users_id"], $line["name"], $line["realname"],
-                                          $line["firstname"],1);
+                                          $line["firstname"], 1);
             $tab[] = $tmp;
          }
       }
@@ -4609,32 +4700,35 @@ class Ticket extends CommonDBTM {
 
 
    /** Get recipient of tickets between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct recipents which have tickets
-   */
-   static function getUsedRecipientBetween($date1='',$date2='') {
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct recipents which have tickets
+   **/
+   static function getUsedRecipientBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_tickets`.`users_id_recipient`, `glpi_users`.`name` AS name,
-                       `glpi_users`.`realname` AS realname, `glpi_users`.`firstname` AS firstname
+                                `glpi_users`.`realname` AS realname,
+                                `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_users`
-                     ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_recipient`)".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                     ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_recipient`) ".
+                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2).";
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
 
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["users_id_recipient"];
+            $tmp['id']   = $line["users_id_recipient"];
             $tmp['link'] = formatUserName($line["users_id_recipient"], $line["name"],
                                           $line["realname"], $line["firstname"], 1);
             $tab[] = $tmp;
@@ -4645,11 +4739,13 @@ class Ticket extends CommonDBTM {
 
 
    /** Get groups which have tickets between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct groups of tickets
-   */
-   static function getUsedGroupBetween($date1='',$date2='') {
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct groups of tickets
+   **/
+   static function getUsedGroupBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
@@ -4658,19 +4754,19 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY `glpi_groups`.`name`";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
 
       if ($DB->numrows($result) >=1 ) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["id"];
+            $tmp['id']   = $line["id"];
             $tmp['link'] = $line["name"];
-            $tab[] = $tmp;
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4678,11 +4774,13 @@ class Ticket extends CommonDBTM {
 
 
    /** Get groups assigned to tickets between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct groups assigned to a tickets
-   */
-   static function getUsedAssignGroupBetween($date1='',$date2='') {
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct groups assigned to a tickets
+   **/
+   static function getUsedAssignGroupBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
@@ -4692,18 +4790,18 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY `glpi_groups`.`name`";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["id"];
+            $tmp['id']   = $line["id"];
             $tmp['link'] = $line["name"];
-            $tab[] = $tmp;
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4711,33 +4809,34 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Get priorities of tickets between 2 dates
-   *
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct priorities of tickets
-   */
-   static function getUsedPriorityBetween($date1='',$date2='') {
+    * Get priorities of tickets between 2 dates
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct priorities of tickets
+   **/
+   static function getUsedPriorityBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `priority`
                 FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY `priority`";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
       if ($DB->numrows($result) >= 1) {
          $i = 0;
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["priority"];
+            $tmp['id']   = $line["priority"];
             $tmp['link'] = self::getPriorityName($line["priority"]);
-            $tab[] = $tmp;
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4745,13 +4844,14 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Get urgencies of tickets between 2 dates
-   *
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct priorities of tickets
-   */
-   static function getUsedUrgencyBetween($date1='',$date2='') {
+    * Get urgencies of tickets between 2 dates
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct priorities of tickets
+   **/
+   static function getUsedUrgencyBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `urgency`
@@ -4759,20 +4859,20 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
       }
       $query .= " ORDER BY `urgency`";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
 
       if ($DB->numrows($result) >= 1) {
          $i = 0;
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["urgency"];
+            $tmp['id']   = $line["urgency"];
             $tmp['link'] = self::getUrgencyName($line["urgency"]);
-            $tab[] = $tmp;
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4780,13 +4880,14 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Get impacts of tickets between 2 dates
-   *
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct priorities of tickets
-   */
-   static function getUsedImpactBetween($date1='',$date2='') {
+    * Get impacts of tickets between 2 dates
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct priorities of tickets
+   **/
+   static function getUsedImpactBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `impact`
@@ -4794,19 +4895,19 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY `impact`";
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
 
       if ($DB->numrows($result) >= 1) {
          $i = 0;
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["impact"];
+            $tmp['id']   = $line["impact"];
             $tmp['link'] = self::getImpactName($line["impact"]);
-            $tab[] = $tmp;
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4814,13 +4915,14 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Get request types of tickets between 2 dates
-   *
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct request types of tickets
-   */
-   static function getUsedRequestTypeBetween($date1='',$date2='') {
+    * Get request types of tickets between 2 dates
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct request types of tickets
+   **/
+   static function getUsedRequestTypeBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `requesttypes_id`
@@ -4828,18 +4930,18 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY `requesttypes_id`";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["requesttypes_id"];
-            $tmp['link'] = Dropdown::getDropdownName('glpi_requesttypes',$line["requesttypes_id"]);
-            $tab[] = $tmp;
+            $tmp['id']   = $line["requesttypes_id"];
+            $tmp['link'] = Dropdown::getDropdownName('glpi_requesttypes', $line["requesttypes_id"]);
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4847,13 +4949,14 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Get solution types of tickets between 2 dates
-   *
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @return array contains the distinct request types of tickets
-   */
-   static function getUsedSolutionTypeBetween($date1='',$date2='') {
+    * Get solution types of tickets between 2 dates
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    *
+    * @return array contains the distinct request types of tickets
+   **/
+   static function getUsedSolutionTypeBetween($date1='', $date2='') {
       global $DB;
 
       $query = "SELECT DISTINCT `ticketsolutiontypes_id`
@@ -4861,19 +4964,19 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`",$date1,$date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`",$date1,$date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY `ticketsolutiontypes_id`";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line["ticketsolutiontypes_id"];
+            $tmp['id']   = $line["ticketsolutiontypes_id"];
             $tmp['link'] = Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                                      $line["ticketsolutiontypes_id"]);
-            $tab[] = $tmp;
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4881,12 +4984,14 @@ class Ticket extends CommonDBTM {
 
 
    /** Get recipient of tickets between 2 dates
-   * @param $date1 date : begin date
-   * @param $date2 date : end date
-   * @param title : indicates if stat if by title (true) or type (false)
-   * @return array contains the distinct recipents which have tickets
-   */
-   static function getUsedUserTitleOrTypeBetween($date1='',$date2='',$title=true) {
+    *
+    * @param $date1 date : begin date
+    * @param $date2 date : end date
+    * @param title : indicates if stat if by title (true) or type (false)
+    *
+    * @return array contains the distinct recipents which have tickets
+   **/
+   static function getUsedUserTitleOrTypeBetween($date1='', $date2='', $title=true) {
       global $DB;
 
       if ($title) {
@@ -4900,22 +5005,22 @@ class Ticket extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_users`.`$field`
                 FROM `glpi_tickets`
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`)
-                LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`)".
+                LEFT JOIN `$table` ON (`$table`.`id` = `glpi_users`.`$field`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1)||!empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2);
-         $query .= " OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
+                          OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .=" ORDER BY `glpi_users`.`$field`";
 
       $result = $DB->query($query);
-      $tab = array();
+      $tab    = array();
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id'] = $line[$field];
-            $tmp['link'] = Dropdown::getDropdownName($table,$line[$field]);
-            $tab[] = $tmp;
+            $tmp['id']   = $line[$field];
+            $tmp['link'] = Dropdown::getDropdownName($table, $line[$field]);
+            $tab[]       = $tmp;
          }
       }
       return $tab;
@@ -4926,24 +5031,24 @@ class Ticket extends CommonDBTM {
     * Is the current user have right to approve solution of the current ticket ?
     *
     * @return boolean
-    */
+   **/
    function canApprove() {
 
       return ($this->fields["status"] == 'solved'
               && ($this->fields["users_id_recipient"] === getLoginUserID()
-                 || $this->fields["users_id"] === getLoginUserID()
-                 || (isset($_SESSION["glpigroups"])
-                     && in_array($this->fields["groups_id"],$_SESSION['glpigroups']))));
+                  || $this->fields["users_id"] === getLoginUserID()
+                  || (isset($_SESSION["glpigroups"])
+                      && in_array($this->fields["groups_id"],$_SESSION['glpigroups']))));
    }
 
 
    /**
     * Give cron informations
+    *
     * @param $name : task's name
     *
     * @return arrray of informations
-    *
-    */
+   **/
    static function cronInfo($name) {
       global $LANG;
 
@@ -4960,11 +5065,11 @@ class Ticket extends CommonDBTM {
 
    /**
     * Cron for ticket's automatic close
+    *
     * @param $task : crontask object
     *
     * @return integer (0 : nothing done - 1 : done)
-    *
-    */
+   **/
    static function cronCloseTicket($task) {
       global $DB;
 
@@ -4975,20 +5080,21 @@ class Ticket extends CommonDBTM {
       foreach (Entity::getEntitiesToNotify('autoclose_delay') as $entity => $delay) {
          if ($delay>=0) {
             $query = "SELECT *
-                     FROM `glpi_tickets`
-                     WHERE `entities_id` = '".$entity."'
-                           AND `status` = 'solved'
-                           AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < CURDATE()";
+                      FROM `glpi_tickets`
+                      WHERE `entities_id` = '".$entity."'
+                            AND `status` = 'solved'
+                            AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < CURDATE()";
             $nb = 0;
             foreach ($DB->request($query) as $tick) {
-               $ticket->update(array('id'     => $tick['id'],
+               $ticket->update(array('id'    => $tick['id'],
                                     'status' => 'closed'));
                $nb++;
             }
+
             if ($nb) {
                $tot += $nb;
                $task->addVolume($nb);
-               $task->log(Dropdown::getDropdownName('glpi_entities',$entity)." : $nb");
+               $task->log(Dropdown::getDropdownName('glpi_entities', $entity)." : $nb");
             }
          }
       }
@@ -4999,13 +5105,13 @@ class Ticket extends CommonDBTM {
 
    /**
     * Cron for alert old tickets which are not solved
+    *
     * @param $task : crontask object
     *
     * @return integer (0 : nothing done - 1 : done)
-    *
-    */
+   **/
    static function cronAlertNotClosed($task) {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_mailing"]) {
          return 0;
@@ -5061,7 +5167,7 @@ class Ticket extends CommonDBTM {
 
                $tot += count($tickets);
                $task->addVolume(count($tickets));
-               $task->log(Dropdown::getDropdownName('glpi_entities',$entity)." : ".count($tickets));
+               $task->log(Dropdown::getDropdownName('glpi_entities', $entity)." : ".count($tickets));
             }
          }
       }
@@ -5072,11 +5178,11 @@ class Ticket extends CommonDBTM {
 
    /**
     * Cron for ticketsatisfaction's automatic generated
+    *
     * @param $task : crontask object
     *
     * @return integer (0 : nothing done - 1 : done)
-    *
-    */
+   **/
    static function cronCreateInquest($task) {
       global $DB, $CFG_GLPI;
 
@@ -5087,10 +5193,8 @@ class Ticket extends CommonDBTM {
       foreach (Entity::getEntitiesToNotify('inquest_rate') as $entity => $rate) {
 
          if ($rate>0 && $conf->getFromDB($entity)) {
-
-            $delay = ($conf->fields['inquest_delay']<0
-                      ? $CFG_GLPI['inquest_delay']
-                      : $conf->fields['inquest_delay']);
+            $delay = ($conf->fields['inquest_delay']<0 ? $CFG_GLPI['inquest_delay']
+                                                       : $conf->fields['inquest_delay']);
 
             $max_closedate = $conf->fields['max_closedate'];
 
@@ -5103,8 +5207,7 @@ class Ticket extends CommonDBTM {
                       WHERE `glpi_tickets`.`entities_id` = '$entity'
                             AND `glpi_tickets`.`status` = 'closed'
                             AND `glpi_tickets`.`closedate` > '$max_closedate'
-                            AND ADDDATE(`glpi_tickets`.`closedate`,
-                                        INTERVAL $delay DAY)<=NOW()
+                            AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
                             AND `glpi_ticketsatisfactions`.`id` IS NULL
                       ORDER BY `closedate` ASC";
 
@@ -5113,7 +5216,7 @@ class Ticket extends CommonDBTM {
 
             foreach ($DB->request($query) as $tick) {
                $max_closedate = $tick['closedate'];
-               if (mt_rand(1, 100)<=$rate) {
+               if (mt_rand(1,100)<=$rate) {
                   $inquest = new TicketSatisfaction();
                   if ($inquest->add(array('tickets_id'  => $tick['id'],
                                           'date_begin'  => $_SESSION["glpi_currenttime"],

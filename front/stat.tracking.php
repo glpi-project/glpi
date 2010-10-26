@@ -68,49 +68,44 @@ if (!isset($_REQUEST["start"])) {
 }
 
 $items =
-   array($LANG['job'][4] => array('user'  => array('title' => $LANG['job'][4],
+   array($LANG['job'][4]
+            => array('user'               => array('title' => $LANG['job'][4],
                                                    'field' => 'glpi_tickets.users_id'),
-                                  'users_id_recipient'
-                                          => array('title' => $LANG['common'][37],
+                     'users_id_recipient' => array('title' => $LANG['common'][37],
                                                    'field' => 'glpi_tickets.users_id_recipient'),
-                                  'group' => array('title' => $LANG['common'][35],
+                     'group'              => array('title' => $LANG['common'][35],
                                                    'field' => 'glpi_tickets.groups_id'),
-                                  'usertitles_id'
-                                          => array('title' => $LANG['users'][1],
+                     'usertitles_id'      => array('title' => $LANG['users'][1],
                                                    'field' => 'glpi_usertitles.usertitles_id'),
-                                  'usercategories_id'
-                                          => array('title' => $LANG['users'][2],
+                     'usercategories_id'  => array('title' => $LANG['users'][2],
                                                    'field' => 'glpi_users.usercategories_id')),
-         $LANG['common'][32] => array('type'
-                                                 => array('title' => $LANG['common'][17],
-                                                          'field' => 'glpi_tickets.type'),
-                                      'ticketcategories_id'
-                                                 => array('title' => $LANG['common'][36],
-                                                          'field' => 'glpi_tickets.ticketcategories_id'),
-                                      'urgency'  => array('title' => $LANG['joblist'][29],
-                                                          'field' => 'glpi_tickets.urgency'),
-                                      'impact'   => array('title' => $LANG['joblist'][30],
-                                                          'field' => 'glpi_tickets.impact'),
-                                      'priority' => array('title' => $LANG['joblist'][2],
-                                                          'field' => 'glpi_tickets.priority'),
-                                      'requesttypes_id'
-                                                 => array('title' => $LANG['job'][44],
-                                                          'field' => 'glpi_tickets.requesttypes_id'),
-                                      'ticketsolutiontypes_id'
-                                                 => array('title' => $LANG['job'][48],
-                                                          'field' => 'glpi_tickets.ticketsolutiontypes_id')),
-         $LANG['job'][5] => array('technicien'
-                                       => array('title' => $LANG['job'][6]." ".$LANG['stats'][48],
-                                                'field' => 'glpi_tickets.users_id_assign'),
-                                  'technicien_followup'
-                                       => array('title' => $LANG['job'][6]." ".$LANG['stats'][49],
-                                                'field' => 'glpi_followup.users_id'),
-                                  'groups_id_assign'
-                                       => array('title' => $LANG['common'][35],
-                                                'field' => 'glpi_tickets.groups_id_assign'),
-                                  'enterprise'
-                                       => array('title' => $LANG['financial'][26],
-                                                'field' => 'glpi_tickets.suppliers_id_assign')));
+         $LANG['common'][32]
+            => array('type'                => array('title' => $LANG['common'][17],
+                                                    'field' => 'glpi_tickets.type'),
+                     'ticketcategories_id' => array('title' => $LANG['common'][36],
+                                                    'field' => 'glpi_tickets.ticketcategories_id'),
+                     'urgency'             => array('title' => $LANG['joblist'][29],
+                                                    'field' => 'glpi_tickets.urgency'),
+                     'impact'              => array('title' => $LANG['joblist'][30],
+                                                    'field' => 'glpi_tickets.impact'),
+                     'priority'            => array('title' => $LANG['joblist'][2],
+                                                    'field' => 'glpi_tickets.priority'),
+                     'requesttypes_id'     => array('title' => $LANG['job'][44],
+                                                    'field' => 'glpi_tickets.requesttypes_id'),
+                     'ticketsolutiontypes_id'
+                                           => array('title' => $LANG['job'][48],
+                                                    'field' => 'glpi_tickets.ticketsolutiontypes_id')),
+         $LANG['job'][5]
+            => array('technicien'       => array('title' => $LANG['job'][6]." ".$LANG['stats'][48],
+                                                 'field' => 'glpi_tickets.users_id_assign'),
+                     'technicien_followup'
+                                        => array('title' => $LANG['job'][6]." ".$LANG['stats'][49],
+                                                 'field' => 'glpi_followup.users_id'),
+                     'groups_id_assign' => array('title' => $LANG['common'][35],
+                                                 'field' => 'glpi_tickets.groups_id_assign'),
+                     'enterprise'       => array('title' => $LANG['financial'][26],
+                                                 'field' => 'glpi_tickets.suppliers_id_assign')));
+
 $INSELECT = "";
 foreach ($items as $label => $tab) {
    $INSELECT .= "<optgroup label=\"$label\">";
@@ -126,28 +121,24 @@ foreach ($items as $label => $tab) {
 }
 
 echo "<div class='center'><form method='get' name='form' action='stat.tracking.php'>";
-echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-echo "<td rowspan='2' class='center'>";
-echo "<select name='type'>";
-echo $INSELECT;
-echo "</select></td>";
+echo "<table class='tab_cadre'>";
+echo "<tr class='tab_bg_2'><td rowspan='2' class='center'>";
+echo "<select name='type'>".$INSELECT."</select></td>";
 echo "<td class='right'>".$LANG['search'][8]."&nbsp;:</td><td>";
-showDateFormItem("date1",$_REQUEST["date1"]);
+showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td>";
 echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
-
 echo "<td rowspan='2' class='center'>";
 echo "<input type='submit' class='button' name='submit' value='". $LANG['buttons'][7] ."'></td></tr>";
+
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
 showDateFormItem("date2",$_REQUEST["date2"]);
 echo "</td><td class='center'>";
 Dropdown::showYesNo('showgraph',$_REQUEST['showgraph']);
-echo "</td>";
-
-echo "</tr>";
+echo "</td></tr>";
 echo "</table></form></div>";
 
-$val = Stat::getItems($_REQUEST["date1"],$_REQUEST["date2"],$_REQUEST["type"]);
+$val    = Stat::getItems($_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"]);
 $params = array('type'  => $_REQUEST["type"],
                 'field' => $field,
                 'date1' => $_REQUEST["date1"],
@@ -155,8 +146,8 @@ $params = array('type'  => $_REQUEST["type"],
                 'start' => $_REQUEST["start"]);
 
 printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
-           "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"].
-               "&amp;type=".$_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"],
+           "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"]."&amp;type=".
+               $_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"],
            'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
@@ -171,7 +162,7 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = html_clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][5]=>$cleandata),
+      Stat::showGraph(array($LANG['stats'][5] => $cleandata),
                       array('title'     => $LANG['stats'][5],
                             'showtotal' => 1,
                             'unit'      => $LANG['stats'][35],
@@ -183,7 +174,7 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = html_clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][11]=>$cleandata),
+      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
                       array('title'     => $LANG['stats'][11],
                             'showtotal' => 1,
                             'unit'      => $LANG['stats'][35],
@@ -196,7 +187,7 @@ if (!$_REQUEST['showgraph']) {
          $cleandata[$newkey] = $val;
       }
 
-      Stat::showGraph(array($LANG['stats'][19]=>$cleandata),
+      Stat::showGraph(array($LANG['stats'][19] => $cleandata),
                       array('title'     => $LANG['stats'][19],
                             'showtotal' => 1,
                             'unit'      => $LANG['stats'][35],
@@ -209,7 +200,7 @@ if (!$_REQUEST['showgraph']) {
          $newkey             = html_clean($key);
          $cleandata[$newkey] = $val;
       }
-      Stat::showGraph(array($LANG['stats'][11]=>$cleandata),
+      Stat::showGraph(array($LANG['stats'][11] => $cleandata),
                       array('title'     => $LANG['stats'][17],
                             'showtotal' => 1,
                             'unit'      => $LANG['stats'][35],
