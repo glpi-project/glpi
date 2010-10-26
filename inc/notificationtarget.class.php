@@ -150,13 +150,14 @@ class NotificationTarget extends CommonDBChild {
 
       $entity = 0;
       if (class_exists($name)) {
+         //Entity ID exists in the options array
+         if (isset($options['entities_id'])) {
+            $entity = $options['entities_id'];
+
          //Item which raises the event contains an entityID
-         if ($item->getField('entities_id') !== NOT_AVAILABLE) {
+         } else if ($item->getEntityID() >= 0) {
             $entity = $item->getEntityID();
 
-         //Entity ID exists in the options array
-         } else if (isset($options['entities_id'])) {
-            $entity = $options['entities_id'];
          }
          return new $name($entity, $event, $item, $options);
       }
