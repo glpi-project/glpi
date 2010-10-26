@@ -168,8 +168,8 @@ class NotificationMailSetting extends CommonDBTM {
          Dropdown::showFromArray("smtp_mode", $mail_methods,
                                  array('value' => $CFG_GLPI["smtp_mode"]));
          echo "</td><td colspan='2' class='center'>";
-         echo "<input class='submit' type='submit' name='test_smtp_send' value='".
-                $LANG['setup'][229]."'>";
+         echo "<input class='submit' type='submit' name='test_smtp_send' value=\"".
+                $LANG['setup'][229]."\">";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "&nbsp;:</td>";
