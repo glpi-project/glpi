@@ -2301,7 +2301,8 @@ class Search {
             }
 
             if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link (`$table$linkfield`.`id`".$SEARCH.($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
+               return " $link (`$table$linkfield`.`id`".$SEARCH.
+                               ($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
             }
             return $link." (`$table$linkfield`.`$name1` $SEARCH
                             OR `$table$linkfield`.`$name2` $SEARCH
@@ -2322,7 +2323,8 @@ class Search {
                }
             }
             if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link (`$table$linkfield`.`id`".$SEARCH.($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
+               return " $link (`$table$linkfield`.`id`".$SEARCH.
+                               ($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
             }
             return makeTextCriteria("`$table$linkfield`.`$field`", $val, $nott, $link);
 
