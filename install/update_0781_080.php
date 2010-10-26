@@ -715,6 +715,7 @@ function update0781to080($output='HTML') {
    $migration->addField("glpi_tickets", "type",
                         "INT( 11 ) NOT NULL DEFAULT 1 AFTER `ticketcategories_id`");
    $migration->addKey("glpi_tickets", "type");
+   $migration->addField("glpi_entitydatas", "tickettype", "INT( 11 ) NOT NULL DEFAULT 0");
 
 
    // Link between tickets
