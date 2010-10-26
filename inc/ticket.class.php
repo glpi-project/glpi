@@ -5104,7 +5104,7 @@ class Ticket extends CommonDBTM {
                             AND `glpi_tickets`.`status` = 'closed'
                             AND `glpi_tickets`.`closedate` > '$max_closedate'
                             AND ADDDATE(`glpi_tickets`.`closedate`,
-                                        INTERVAL $delay DAY)<NOW()
+                                        INTERVAL $delay DAY)<=NOW()
                             AND `glpi_ticketsatisfactions`.`id` IS NULL
                       ORDER BY `closedate` ASC";
 
