@@ -2957,7 +2957,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
-      echo "<td colspan='2'>WILL BE REVIEW WHEN MULTI REQUESTER / ASSIGn will be done</td></tr>";
+      echo "<td colspan='2'>empty space but will be review when multi requester / assign will be done</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;: </td>";

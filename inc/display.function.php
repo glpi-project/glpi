@@ -2184,6 +2184,9 @@ function printHelpDesk ($ID, $from_helpdesk) {
    if (isset($_SESSION["helpdeskSaved"]["ticketcategories_id"])) {
       $ticketcategories_id = stripslashes($_SESSION["helpdeskSaved"]["ticketcategories_id"]);
    }
+   if (isset($_SESSION["helpdeskSaved"]["type"])) {
+      $type = stripslashes($_SESSION["helpdeskSaved"]["type"]);
+   }
    if (isset($_SESSION["helpdeskSaved"]["urgency"])) {
       $urgency = stripslashes($_SESSION["helpdeskSaved"]["urgency"]);
    }
@@ -2238,6 +2241,11 @@ function printHelpDesk ($ID, $from_helpdesk) {
       Ticket::dropdownAllDevices("itemtype", $itemtype, $items_id, 0, $_SESSION["glpiactive_entity"]);
       echo "</td></tr>";
    }
+
+   echo "<tr class='tab_bg_1'>";
+   echo "<td>".$LANG['common'][17]."&nbsp;:&nbsp;</td><td>";
+   Ticket::dropdownType('type',$type);
+   echo "</td></tr>";
 
    echo "<tr class='tab_bg_1'>";
    echo "<td>".$LANG['common'][36]."&nbsp;:&nbsp;</td><td>";
