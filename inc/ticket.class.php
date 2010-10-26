@@ -1878,7 +1878,7 @@ class Ticket extends CommonDBTM {
 //          $options[0] = DROPDOWN_EMPTY_VALUE;
 //       }
 
-      $options = getTypes();
+      $options = self::getTypes();
 
       return Dropdown::showFromArray($name, $options, array('value' => $value));
       
@@ -2709,7 +2709,6 @@ class Ticket extends CommonDBTM {
          }
       }
       echo '</th></tr>';
-
       echo "<tr>";
       echo "<th class='left' colspan='2' width='50%'>";
 
