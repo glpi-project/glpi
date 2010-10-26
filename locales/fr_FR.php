@@ -332,7 +332,7 @@ $LANG['common'][98]  = "Duplique";
 $LANG['common'][99]  = "Dates";
 $LANG['common'][100] = "Délais";
 $LANG['common'][101] = "Dernière modification par";
-$LANG['common'][102] = "Hérité de l'entité parente";
+$LANG['common'][102] = "Héritage de l'entité parente";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -1820,16 +1820,17 @@ $LANG['rulesengine'][149] = "Groupe importé depuis un annuaire LDAP";
 $LANG['rulesengine'][150] = "Les règles affectées à l'entité ont été désactivées.";
 
 
-$LANG['satisfaction'][0] = "Satisfaction";
-$LANG['satisfaction'][1] = "Satisfaction sur la résolution du ticket";
-$LANG['satisfaction'][2] = "Aucune enquête générée";
-$LANG['satisfaction'][3] = "Enquête de satisfaction";
-$LANG['satisfaction'][4] = "Date de réponse à l'enquête de satisfaction";
-$LANG['satisfaction'][5] = "1 : très insatisfait - 2 : insatisfait - 3 : moyennement satisfait - 4 : satisfait - 5 : très satisfait";
-$LANG['satisfaction'][6] = "Date de création de l'enquête de satisfaction";
-$LANG['satisfaction'][7] = "Degré de satisfaction";
-$LANG['satisfaction'][8] = "Commentaire à l'enquête de satisfaction";
-
+$LANG['satisfaction'][0]  = "Satisfaction";
+$LANG['satisfaction'][1]  = "Satisfaction sur la résolution du ticket";
+$LANG['satisfaction'][2]  = "Aucune enquête générée";
+$LANG['satisfaction'][3]  = "Enquête de satisfaction";
+$LANG['satisfaction'][4]  = "Date de réponse à l'enquête de satisfaction";
+$LANG['satisfaction'][5]  = "1 : très insatisfait - 2 : insatisfait - 3 : moyennement satisfait - 4 : satisfait - 5 : très satisfait";
+$LANG['satisfaction'][6]  = "Date de création de l'enquête de satisfaction";
+$LANG['satisfaction'][7]  = "Degré de satisfaction";
+$LANG['satisfaction'][8]  = "Commentaire à l'enquête de satisfaction";
+$LANG['satisfaction'][9]  = "Enquête interne";
+$LANG['satisfaction'][10] = "Enquête externe";
 
 $LANG['search'][0]  = "Recherche";
 $LANG['search'][1]  = "pour tous";

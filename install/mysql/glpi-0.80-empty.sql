@@ -1597,14 +1597,15 @@ CREATE TABLE `glpi_entitydatas` (
   `notclosed_delay` int(11) NOT NULL DEFAULT '-1',
   `calendars_id` int(11) NOT NULL DEFAULT '0',
   `auto_assign_mode` int(11) NOT NULL DEFAULT '-1',
+  `inquest_config` int(11) NOT NULL DEFAULT '1',
   `max_closedate` datetime DEFAULT NULL,
   `inquest_rate` int(11) NOT NULL DEFAULT '-1',
   `inquest_delay` int(11) NOT NULL DEFAULT '-1',
+  `inquest_URL` varchar(255) NULL,
   `tickettype` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 ### Dump table glpi_events
 

@@ -759,8 +759,10 @@ function update0781to080($output='HTML') {
       or die("0.80 populate glpi_crontasks for ticketsatisfaction" . $LANG['update'][90] . $DB->error());
    }
 
+   $migration->addField("glpi_entitydatas", "inquest_config", "INT(11) NOT NULL DEFAULT '1' AFTER `auto_assign_mode`");
    $migration->addField("glpi_entitydatas", "inquest_rate", "INT(11) NOT NULL DEFAULT '-1'");
    $migration->addField("glpi_entitydatas", "inquest_delay", "INT(11) NOT NULL DEFAULT '-1'");
+   $migration->addField("glpi_entitydatas", "inquest_URL", "VARCHAR( 255 ) NULL");
 
    // if no config inquest in the entity
    $migration->addField("glpi_configs", "inquest_rate", "INT(11) NOT NULL DEFAULT '0'");

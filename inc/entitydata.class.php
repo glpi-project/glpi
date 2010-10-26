@@ -496,7 +496,7 @@ class EntityData extends CommonDBTM {
 
 
    static function showHelpdeskOptions(Entity $entity) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r')) {
@@ -576,21 +576,25 @@ class EntityData extends CommonDBTM {
 
       echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][19]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      Dropdown::showInteger('inquest_delay', $entdata->fields['inquest_delay'],
-                            0, 90, 1, array(-1 => $LANG['setup'][731]));
-      echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
+      $rand = Dropdown::showFromArray('inquest_config', array(0 => $LANG['common'][102],
+                                                      1 => $LANG['satisfaction'][9],
+                                                      2 => $LANG['satisfaction'][10]),
+                              $options = array('value' => $entdata->fields['inquest_config']));
+      echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
-      echo "<td colspan='2'>";
-      Dropdown::showInteger('inquest_rate', $entdata->fields['inquest_rate'],
-                            10, 100, 10, array(-1 => $LANG['setup'][731],
-                                                0 => $LANG['crontask'][31]));
-      echo "&nbsp;%</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4'>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
-      echo "<td colspan='2'>" . convDateTime($entdata->fields['max_closedate'])."</td></tr>";
+      $_REQUEST = array('inquest_config' => $entdata->fields['inquest_config'],
+                        'entities_id'    => $ID);
+      $params = array('inquest_config' => '__VALUE__',
+                      'entities_id'    => $ID);
+      echo "<div id='inquestconfig'>";
+      include GLPI_ROOT.'/ajax/ticketsatisfaction.php';
+      echo "</div>\n";
+
+      echo "</td></tr>";
 
       if ($canedit) {
          echo "<tr>";
@@ -612,10 +616,12 @@ class EntityData extends CommonDBTM {
       }
 
       echo "</div>";
+
+      ajaxUpdateItemOnSelectEvent("dropdown_inquest_config$rand", "inquestconfig",
+                                  $CFG_GLPI["root_doc"]."/ajax/ticketsatisfaction.php", $params);
    }
 
 
-   
    static function getUsedConfig($field,$entities_id) {
 
       $entdata= new EntityData();
