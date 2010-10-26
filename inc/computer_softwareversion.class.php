@@ -171,24 +171,38 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       // Total Number of events
       if ($crit=="softwares_id") {
+
          // Software ID
-         $number = countElementsInTable("glpi_computers_softwareversions, glpi_computers,
-                                         glpi_softwareversions",
-                 "glpi_computers_softwareversions.computers_id = glpi_computers.id
-                  AND glpi_computers_softwareversions.softwareversions_id = glpi_softwareversions.id
-                  AND glpi_softwareversions.softwares_id=$searchID" .
+         $query_number = "SELECT COUNT(*) AS cpt
+                  FROM `glpi_computers_softwareversions`
+                  INNER JOIN `glpi_softwareversions`
+                        ON (`glpi_computers_softwareversions`.`softwareversions_id` = `glpi_softwareversions`.`id`)
+                  INNER JOIN `glpi_computers`
+                        ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
+                  WHERE `glpi_softwareversions`.`softwares_id`=$searchID" .
                   getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                  AND glpi_computers.is_deleted=0
-                  AND glpi_computers.is_template=0");
+                  AND `glpi_computers`.`is_deleted`=0
+                  AND `glpi_computers`.`is_template`=0";
+
+
+
       } else {
          //SoftwareVersion ID
-         $number = countElementsInTable("glpi_computers_softwareversions, glpi_computers",
-                              "glpi_computers_softwareversions.computers_id = glpi_computers.id
-                               AND glpi_computers_softwareversions.softwareversions_id = $searchID" .
-                               getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                               AND glpi_computers.is_deleted=0
-                               AND glpi_computers.is_template=0");
+         $query_number = "SELECT COUNT(*) AS cpt
+                  FROM `glpi_computers_softwareversions`
+                  INNER JOIN `glpi_computers`
+                        ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
+                  WHERE `glpi_computers_softwareversions`.`softwareversions_id`=$searchID" .
+                  getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
+                  AND `glpi_computers`.`is_deleted`=0
+                  AND `glpi_computers`.`is_template`=0";
       }
+      $number=0;
+      if ($result =$DB->query($query_number)) {
+         $number  = $DB->result($result,0,0);
+      }
+      
+
 
       echo "<div class='center'>";
       if ($number < 1) {

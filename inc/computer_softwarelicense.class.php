@@ -195,12 +195,19 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
 
       //SoftwareLicense ID
-      $number = countElementsInTable("glpi_computers_softwarelicenses, glpi_computers",
-                           "glpi_computers_softwarelicenses.computers_id = glpi_computers.id
-                              AND glpi_computers_softwarelicenses.softwarelicenses_id = $searchID" .
-                              getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
-                              AND glpi_computers.is_deleted=0
-                              AND glpi_computers.is_template=0");
+      $query_number = "SELECT COUNT(*) AS cpt
+               FROM `glpi_computers_softwarelicenses`
+               INNER JOIN `glpi_computers`
+                     ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
+               WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id`=$searchID" .
+               getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
+               AND `glpi_computers`.`is_deleted`=0
+               AND `glpi_computers`.`is_template`=0";
+
+      $number=0;
+      if ($result =$DB->query($query_number)) {
+         $number  = $DB->result($result,0,0);
+      }
 
       echo "<div class='center'>";
 
