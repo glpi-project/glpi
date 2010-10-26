@@ -96,6 +96,10 @@ function includeCommonHtmlHeader($title='') {
    echo "<link rel='stylesheet' type='text/css' href='".
           $CFG_GLPI["root_doc"]."/lib/extjs/resources/css/ext-all.css' media='screen' >\n";
    echo "<link rel='stylesheet' type='text/css' href='".
+          $CFG_GLPI["root_doc"]."/lib/extrajs/starslider/slider.css' media='screen' >\n";
+
+
+   echo "<link rel='stylesheet' type='text/css' href='".
           $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
 
    if (isset($_SESSION['glpilanguage'])) {
@@ -111,6 +115,8 @@ function includeCommonHtmlHeader($title='') {
           $CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
    echo "<script type='text/javascript' src='".
           $CFG_GLPI["root_doc"]."/lib/extrajs/spancombobox.js'></script>\n";
+   echo "<script type='text/javascript' src='".
+          $CFG_GLPI["root_doc"]."/lib/extrajs/starslider/slider.js'></script>\n";
 
    echo "<script type='text/javascript'>\n";
    echo "//<![CDATA[ \n";
