@@ -253,13 +253,11 @@ class Group_User extends CommonDBRelation{
 
             if ($group->fields["is_recursive"]) {
                User::dropdown(array('right'  => "all",
-                                    'all'    => -1,
                                     'entity' => getSonsOf("glpi_entities",
                                                           $group->fields["entities_id"]),
                                     'used'   => $used_ids));
             } else {
                User::dropdown(array('right'  => "all",
-                                    'all'    => -1,
                                     'entity' => $group->fields["entities_id"],
                                     'used'   => $used_ids));
             }

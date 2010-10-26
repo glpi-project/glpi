@@ -78,7 +78,6 @@ if (isset($_REQUEST['searchtype'])) {
                   User::dropdown(array('name'     => $inputname,
                                        'value'    => $_REQUEST['value'],
                                        'comments' => false,
-                                       'all'      => -1,
                                        'right'    => 'validate_ticket'));
                   $display = true;
                   break;
@@ -87,7 +86,6 @@ if (isset($_REQUEST['searchtype'])) {
                   User::dropdown(array('name'     => $inputname,
                                        'value'    => $_REQUEST['value'],
                                        'comments' => false,
-                                       'all'      => -1,
                                        'right'    => 'create_validation'));
                   $display = true;
                   break;
@@ -106,8 +104,7 @@ if (isset($_REQUEST['searchtype'])) {
                case "Ticket.users_id_assign" :
                   User::dropdown(array('name'  => $inputname,
                                        'value' => $_REQUEST['value'],
-                                       'right' => 'own_ticket',
-                                       'all'   => 1));
+                                       'right' => 'own_ticket'));
                   $display = true;
                   break;
             }
@@ -146,7 +143,6 @@ if (isset($_REQUEST['searchtype'])) {
                   User::dropdown(array('name'     => $inputname,
                                        'value'    => $_REQUEST['value'],
                                        'comments' => false,
-                                       'all'      => -1,
                                        'right'    => 'all'));
                   $display = true;
                   break;
