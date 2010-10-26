@@ -2020,7 +2020,7 @@ class Ticket extends CommonDBTM {
 
 
    /**
-    * Get ticket Urgencu Name
+    * Get ticket Urgency Name
     *
     * @param $value urgency ID
    **/
