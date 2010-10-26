@@ -705,7 +705,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $licids = array();
       foreach ($DB->request($query) as $licdata) {
          $licids[] = $licdata['id'];
-         echo "<strong>". $licdata['name'] . "</strong>&nbsp; ";
+         echo "<strong>". $licdata['name'] . "</strong> -&nbsp;".$licdata['serial']." ";
          if ($licdata['type']) {
             echo "(".$licdata['type'].")&nbsp; ";
          }
@@ -772,7 +772,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                "?install=install&amp;softwareversions_id=$ID&amp;computers_id=$computers_id\">";
          echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
       }
-      echo "</td></td><strong>" . $data["name"] . "</strong>&nbsp; ";
+      echo "</td></td><strong>" . $data["name"] . "</strong> -&nbsp;".$data["serial"]."&nbsp; ";
       if ($data["softwarelicensetypes_id"]) {
          echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
