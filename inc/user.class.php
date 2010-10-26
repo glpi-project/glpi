@@ -2556,12 +2556,7 @@ class User extends CommonDBTM {
          $config_ldap = new AuthLDAP();
          $ds = false;
          if ($config_ldap->getFromDB($this->fields['auths_id'])) {
-            $ds = AuthLdap::connectToServer($config_ldap->fields['host'],
-                                            $config_ldap->fields['port'],
-                                            $config_ldap->fields['rootdn'],
-                                            decrypt($config_ldap->fields['rootdn_password'],GLPIKEY),
-                                            $config_ldap->fields['use_tls'],
-                                            $config_ldap->fields['deref_option']);
+            $ds = $config_ldap->connect();
          }
 
          if ($ds) {

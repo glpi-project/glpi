@@ -1032,11 +1032,7 @@ class AuthLDAP extends CommonDBTM {
       if ($values['order'] != "DESC") {
          $values['order'] = "ASC";
       }
-      $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
-                                      $config_ldap->fields['rootdn'],
-                                      decrypt($config_ldap->fields['rootdn_password'],GLPIKEY),
-                                      $config_ldap->fields['use_tls'],
-                                      $config_ldap->fields['deref_option']);
+      $ds = $config_ldap->connect();
       if ($ds) {
          //Search for ldap login AND modifyTimestamp,
          //which indicates the last update of the object in directory
@@ -1280,11 +1276,7 @@ class AuthLDAP extends CommonDBTM {
       $infos = array();
       $groups = array();
 
-      $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
-                                      $config_ldap->fields['rootdn'],
-                                      decrypt($config_ldap->fields['rootdn_password'],GLPIKEY),
-                                      $config_ldap->fields['use_tls'],
-                                      $config_ldap->fields['deref_option']);
+      $ds = $config_ldap->connect();
       if ($ds) {
          switch ($config_ldap->fields["group_search_type"]) {
             case 0 :
@@ -1500,11 +1492,7 @@ class AuthLDAP extends CommonDBTM {
       if (isset($conn_cache[$ldap_server])) {
          $ds = $conn_cache[$ldap_server];
       } else {
-         $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
-                                         $config_ldap->fields['rootdn'],
-                                         decrypt($config_ldap->fields['rootdn_password'],GLPIKEY),
-                                         $config_ldap->fields['use_tls'],
-                                         $config_ldap->fields['deref_option']);
+         $ds = $config_ldap->connect();
       }
       if ($ds) {
          $conn_cache[$ldap_server] = $ds;
@@ -1600,11 +1588,7 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //Connect to the directory
-      $ds = AuthLdap::connectToServer($config_ldap->fields['host'], $config_ldap->fields['port'],
-                                      $config_ldap->fields['rootdn'],
-                                      decrypt($config_ldap->fields['rootdn_password'],GLPIKEY),
-                                      $config_ldap->fields['use_tls'],
-                                      $config_ldap->fields['deref_option']);
+      $ds = $config_ldap->connect();
       if ($ds) {
          $group_infos = AuthLdap::getGroupByDn($ds,
                                                stripslashes($group_dn));
@@ -1624,6 +1608,17 @@ class AuthLDAP extends CommonDBTM {
       }
    }
 
+   /**
+    * Open LDAP connexion to current serveur
+    */
+   function connect() {
+      return $this->connectToServer($this->fields['host'],
+                                    $this->fields['port'],
+                                    $this->fields['rootdn'],
+                                    decrypt($this->fields['rootdn_password'],GLPIKEY),
+                                    $this->fields['use_tls'],
+                                    $this->fields['deref_option']);
+   }
 
    /**
     * Connect to a LDAP serveur
