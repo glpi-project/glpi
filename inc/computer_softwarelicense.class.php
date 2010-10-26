@@ -406,12 +406,16 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       global $DB;
 
       $lic=array();
-      $sql = "SELECT `glpi_softwarelicenses`.*
+      $sql = "SELECT `glpi_softwarelicenses`.*,
+                     `glpi_softwarelicensetypes`.`name` AS type
               FROM `glpi_softwarelicenses`
               INNER JOIN `glpi_computers_softwarelicenses`
                   ON (`glpi_softwarelicenses`.`id`
                         = `glpi_computers_softwarelicenses`.`softwarelicenses_id`
                       AND `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id')
+            LEFT JOIN `glpi_softwarelicensetypes`
+               ON (`glpi_softwarelicenses`.`softwarelicensetypes_id`
+                     =`glpi_softwarelicensetypes`.`id`)
               WHERE `glpi_softwarelicenses`.`softwareversions_id_use` = '$softwareversions_id'
                     OR `glpi_softwarelicenses`.`softwareversions_id_buy` = '$softwareversions_id'";
 
