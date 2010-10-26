@@ -3047,10 +3047,10 @@ class Search {
                         ON (`$rt`.`$linkfield` = `glpi_entities`.`id`) ";
 
          case "glpi_groups":
-            if (empty($linkfield)) {
+            if ($itemtype=='User') {
                // Link to glpi_users_group before
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_groups_users",
-                                          $linkfield, $meta, $meta_type);
+                                          '', $meta, $meta_type);
                return $out."
                       LEFT JOIN `$new_table` $AS
                         ON (`glpi_groups_users$addmetanum`.`groups_id` = `$nt`.`id`) ";
