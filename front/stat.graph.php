@@ -124,6 +124,16 @@ switch($_GET["type"]) {
       $title = $LANG['common'][36]."&nbsp;: ".Dropdown::getDropdownName("glpi_ticketcategories",$_GET["id"]);
       break;
 
+   case "type" :
+      $val1 = $_GET["id"];
+      $val2 = "";
+
+      // Only 2 items
+      $next = ($_GET["id"]%2)+1;
+      $prev = ($_GET["id"]%2)+1;
+      $title = $LANG['common'][17]."&nbsp;: ".Ticket::getTicketTypeName($_GET["id"]);
+      break;
+
    case "group" :
       $val1 = $_GET["id"];
       $val2 = "";

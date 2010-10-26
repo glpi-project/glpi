@@ -86,6 +86,15 @@ class Stat {
                }
             }
             break;
+         case "type" :
+            $types= Ticket::getTypes();
+            $val=array();
+            foreach ($types as $id => $v) {
+               $tmp['id']=$id;
+               $tmp['link']=$v;
+               $val[]=$tmp;
+            }
+            break;
 
          case "group" :
             $val = Ticket::getUsedGroupBetween($date1,$date2);
@@ -420,6 +429,9 @@ class Stat {
             $WHERE .= " AND `glpi_tickets`.`users_id_recipient` = '$value'";
             break;
 
+         case "type" :
+            $WHERE .= " AND `glpi_tickets`.`type` = '$value'";
+            break;
          case "ticketcategories_id" :
             if (!empty($value)) {
                // do not merge for pie chart

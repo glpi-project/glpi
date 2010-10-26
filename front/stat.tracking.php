@@ -81,7 +81,10 @@ $items =
                                   'usercategories_id'
                                           => array('title' => $LANG['users'][2],
                                                    'field' => 'glpi_users.usercategories_id')),
-         $LANG['common'][32] => array('ticketcategories_id'
+         $LANG['common'][32] => array('type'
+                                                 => array('title' => $LANG['common'][17],
+                                                          'field' => 'glpi_tickets.type'),
+                                      'ticketcategories_id'
                                                  => array('title' => $LANG['common'][36],
                                                           'field' => 'glpi_tickets.ticketcategories_id'),
                                       'urgency'  => array('title' => $LANG['joblist'][29],
