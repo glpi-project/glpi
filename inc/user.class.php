@@ -1930,7 +1930,7 @@ class User extends CommonDBTM {
       $default.= utf8_substr($user["name"],0,$_SESSION["glpidropdown_chars_limit"])."</option>";
       $default.= "</select>";
       if (empty($value) || $value==0) {
-         $default = "<select name='$myname'><option value='0'>[ ".$LANG['common'][66]." ]</option>";
+         $default = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
          $default.= "</select>";
       }
 

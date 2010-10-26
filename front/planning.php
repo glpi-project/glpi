@@ -50,11 +50,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 
    switch ($_GET["usertype"]) {
       case "user" :
-         $_GET['gID'] = -1;
+         $_GET['gID'] = 0;
          break;
 
       case "group" :
-         $_GET['uID'] = -1;
+         $_GET['uID'] = 0;
          break;
 
       case "user_group" :

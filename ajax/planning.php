@@ -79,7 +79,6 @@ if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
    User::dropdown(array('name'   => "plan[users_id]",
                         'value'  => $_POST["users_id"],
                         'right'  => "own_ticket",
-                        'all'    => -1,
                         'entity' => $_POST["entity"]));
    echo "</td></tr>\n";
 }

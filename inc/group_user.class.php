@@ -235,10 +235,10 @@ class Group_User extends CommonDBRelation{
             echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
             if ($group->fields["is_recursive"]) {
-               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>getSonsOf("glpi_entities",
+               User::dropdown(array('right'=>"all",'entity'=>getSonsOf("glpi_entities",
                                                         $group->fields["entities_id"]),'used'=>$used_ids));
             } else {
-               User::dropdown(array('right'=>"all",'all'=>-1,'entity'=>$group->fields["entities_id"],'used'=>$used_ids));
+               User::dropdown(array('right'=>"all",'entity'=>$group->fields["entities_id"],'used'=>$used_ids));
             }
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name'is_dynamic' value='0'>";
