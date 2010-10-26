@@ -1,0 +1,52 @@
+.x-starslider {
+    zoom:1;
+    cursor:pointer;
+}
+.x-starslider-inner {
+    position:relative;
+    left:0;
+    top:0;
+    overflow:visible;
+    zoom:1;
+}
+.x-starslider-focus {
+	position:absolute;
+	left:0;
+	top:0;
+	width:1px;
+	height:1px;
+    line-height:1px;
+    font-size:1px;
+    -moz-outline:0 none;
+    outline:0 none;
+    -moz-user-select: text;
+    -khtml-user-select: text;
+}
+
+/* Horizontal styles */
+.x-starslider-horz {
+    padding-left:7px;
+    background:transparent url(./images/slider-bg.png) no-repeat 0 -22px;
+}
+.x-starslider-horz .x-starslider-end {
+    zoom:1;
+    background:transparent url(./images/slider-bg.png) no-repeat right -44px;
+}
+.x-starslider-horz .x-starslider-inner {
+    background:transparent url(./images/slider-bg.png) repeat-x 0 0;
+    height:22px;
+}
+.x-starslider-horz .x-starslider-thumb {
+    width:14px;
+    height:15px;
+    position:absolute;
+    left:0;
+    top:0px;
+    background:transparent url(./images/slider-thumb.png) repeat-x 0 0;
+}
+.x-starslider-horz .x-starslider-thumb-over {
+    background-position: 0px 0px;
+}
+.x-starslider-horz .x-starslider-thumb-drag {
+    background-position: -28px -30px;
+}
