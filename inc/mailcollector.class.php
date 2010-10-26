@@ -98,12 +98,11 @@ class MailCollector  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-
       if (isset($input["password"])) {
          if (empty($input["password"])) {
             unset($input["password"]);
          } else {
-            $input["password"]=encrypt($input["password"],GLPIKEY);
+            $input["password"] = encrypt($input["password"], GLPIKEY);
          }
       }
 
@@ -689,8 +688,8 @@ class MailCollector  extends CommonDBTM {
     ///Connect To the Mail Box
    function connect() {
 
-      $this->marubox=@imap_open($this->fields['host'], $this->fields['login'],
-                                decrypt($this->fields['password'],GLPIKEY), 1);
+      $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
+                                  decrypt($this->fields['password'],GLPIKEY), 1);
    }
 
 

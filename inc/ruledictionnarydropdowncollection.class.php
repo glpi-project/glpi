@@ -37,19 +37,19 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
    // From RuleCollection
 //   public $rule_class_name = 'RuleDictionnaryDropdown';
-   public $right='rule_dictionnary_dropdown';
-   public $menu_type='dictionnary';
+   public $right     = 'rule_dictionnary_dropdown';
+   public $menu_type = 'dictionnary';
 
    // Specific ones
    /// dropdown table
-   var $item_table="";
+   var $item_table = "";
 
-   function replayRulesOnExistingDB($offset=0,$maxtime=0, $items=array(),$params=array()) {
+   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB,$LANG;
 
       // Model check : need to check using manufacturer extra data so specific function
       if (strpos($this->item_table,'models')) {
-         return $this->replayRulesOnExistingDBForModel($offset,$maxtime);
+         return $this->replayRulesOnExistingDBForModel($offset, $maxtime);
       }
 
       if (isCommandLine()) {
@@ -68,23 +68,28 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       $i  = $offset;
       if ($result && $nb>$offset) {
          // Step to refresh progressbar
-         $step=($nb>20 ? floor($nb/20) : 1);
+         $step = ($nb>20 ? floor($nb/20) : 1);
          $send = array ();
          $send["tablename"] = $this->item_table;
+
          while ($data = $DB->fetch_array($result)) {
             if (!($i % $step)) {
+
                if (isCommandLine()) {
                   echo "replayRulesOnExistingDB : $i/$nb\r";
                } else {
                   changeProgressBarPosition($i,$nb,"$i / $nb");
                }
             }
+
             //Replay Type dictionnary
-            $ID=Dropdown::importExternal(getItemTypeForTable($this->item_table),addslashes($data["name"]),
-                                         -1, array(), addslashes($data["comment"]));
+            $ID=Dropdown::importExternal(getItemTypeForTable($this->item_table),
+                                         addslashes($data["name"]), -1, array(),
+                                         addslashes($data["comment"]));
             if ($data['id'] != $ID) {
-               $tomove[$data['id']]=$ID;
+               $tomove[$data['id']] = $ID;
                $type = GetItemTypeForTable($this->item_table);
+
                if (class_exists($type)) {
                   $dropdown = new $type();
                   $dropdown->delete(array('id'          => $data['id'],
@@ -92,8 +97,9 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                }
             }
             $i++;
+
             if ($maxtime) {
-               $crt=explode(" ",microtime());
+               $crt = explode(" ", microtime());
                if ($crt[0]+$crt[1] > $maxtime) {
                   break;
                }
@@ -109,14 +115,17 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       return ($i==$nb ? -1 : $i);
    }
 
+
    /**
     * Replay collection rules on an existing DB for model dropdowns
+    *
     * @param $offset offset used to begin
     * @param $maxtime maximum time of process (reload at the end)
+    *
     * @return -1 on completion else current offset
    **/
-   function replayRulesOnExistingDBForModel($offset=0,$maxtime=0) {
-      global $DB,$LANG;
+   function replayRulesOnExistingDBForModel($offset=0, $maxtime=0) {
+      global $DB, $LANG;
 
       if (isCommandLine()) {
          echo "replayRulesOnExistingDB started : " . date("r") . "\n";
@@ -128,7 +137,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
          return false;
       }
 
-      $model_table = getPlural(str_replace('models','',$this->item_table));
+      $model_table = getPlural(str_replace('models', '', $this->item_table));
       $model_field = getForeignKeyFieldForTable($this->item_table);
 
       // Need to give manufacturer from item table
@@ -142,6 +151,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
               LEFT JOIN `glpi_manufacturers`
                   ON (`$model_table`.`manufacturers_id` = `glpi_manufacturers`.`id`)
               WHERE `$model_table`.`$model_field` = `".$this->item_table."`.`id`";
+
       if ($offset) {
          $Sql .= " LIMIT ".intval($offset).",999999999";
       }
@@ -152,29 +162,35 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
       if ($result && $nb>$offset) {
          // Step to refresh progressbar
-         $step=($nb>20 ? floor($nb/20) : 1);
-         $tocheck=array();
+         $step    = ($nb>20 ? floor($nb/20) : 1);
+         $tocheck = array();
+
          while ($data = $DB->fetch_array($result)) {
             if (!($i % $step)) {
+
                if (isCommandLine()) {
                   echo "replayRulesOnExistingDB : $i/$nb\r";
                } else {
-                  changeProgressBarPosition($i,$nb,"$i / $nb");
+                  changeProgressBarPosition($i, $nb, "$i / $nb");
                }
             }
+
             // Model case
             if (isset($data["manufacturer"])) {
                $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
             }
+
             //Replay Type dictionnary
-            $ID=Dropdown::importExternal(getItemTypeForTable($this->item_table),addslashes($data["name"]),
-                                         -1,$data,addslashes($data["comment"]));
+            $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
+                                           addslashes($data["name"]), -1, $data,
+                                           addslashes($data["comment"]));
+
             if ($data['id'] != $ID) {
-               $tocheck[$data["id"]][]=$ID;
-               $sql = "UPDATE
-                       `$model_table`
+               $tocheck[$data["id"]][] = $ID;
+               $sql = "UPDATE `$model_table`
                        SET `$model_field` = '$ID'
                        WHERE `$model_field` = '".$data['id']."'";
+
                if (empty($data['idmanu'])) {
                   $sql .= " AND (`manufacturers_id` IS NULL
                                  OR `manufacturers_id` = '0')";
@@ -183,39 +199,44 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                }
                $DB->query($sql);
             }
+
             $i++;
             if ($maxtime) {
-               $crt=explode(" ",microtime());
+               $crt = explode(" ",microtime());
                if ($crt[0]+$crt[1] > $maxtime) {
                   break;
                }
             }
          }
+
          foreach ($tocheck AS $ID => $tab) {
             $sql = "SELECT COUNT(*)
                     FROM `$model_table`
                     WHERE `$model_field` = '$ID'";
             $result = $DB->query($sql);
-            $deletecartmodel=false;
+            $deletecartmodel = false;
+
             // No item left : delete old item
             if ($result && $DB->result($result,0,0)==0) {
                $Sql = "DELETE
                        FROM `".$this->item_table."`
                        WHERE `id` = '$ID'";
                $resdel = $DB->query($Sql);
-               $deletecartmodel=true;
+               $deletecartmodel = true;
             }
+
             // Manage cartridge assoc Update items
             if ($this->getRuleClassName()=='RuleDictionnaryPrinterModel') {
                $sql = "SELECT *
                        FROM `glpi_cartridgeitems_printermodels`
                        WHERE `printermodels_id` = '$ID'";
+
                if ($result=$DB->query($sql)) {
                   if ($DB->numrows($result)) {
                      // Get compatible cartridge type
-                     $carttype=array();
+                     $carttype = array();
                      while ($data=$DB->fetch_array($result)) {
-                        $carttype[]=$data['cartridgeitems_id'];
+                        $carttype[] = $data['cartridgeitems_id'];
                      }
                      // Delete cartrodges_assoc
                      if ($deletecartmodel) {
@@ -228,10 +249,10 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                      if (!class_exists('CartridgeItem')) {
                         include_once (GLPI_ROOT . "/inc/cartridgeitem.function.php");
                      }
-                     $ct=new CartridgeItem();
+                     $ct = new CartridgeItem();
                      foreach ($carttype as $cartID) {
                         foreach ($tab as $model) {
-                           $ct->addCompatibleType($cartID,$model);
+                           $ct->addCompatibleType($cartID, $model);
                         }
                      }
                   }
@@ -239,10 +260,11 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             }
          } // each tocheck
       }
+
       if (isCommandLine()) {
          echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
       } else {
-         changeProgressBarPosition($i,$nb,"$i / $nb");
+         changeProgressBarPosition($i, $nb, "$i / $nb");
       }
       return ($i==$nb ? -1 : $i);
    }

@@ -238,7 +238,7 @@ class NotificationTemplate extends CommonDBTM {
                         <head>
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
                          <title>".htmlentities_deep($lang['subject'])."</title>
-                         <style type=\"text/css\">
+                         <style type='text/css'>
                            ".$this->fields['css']."
                          </style>
                         </head>

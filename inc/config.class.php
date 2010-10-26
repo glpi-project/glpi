@@ -89,7 +89,7 @@ class Config extends CommonDBTM {
          if (empty($input["smtp_password"])) {
             unset($input["smtp_password"]);
          } else {
-            $input["smtp_password"]=encrypt($input["smtp_password"],GLPIKEY);
+            $input["smtp_password"] = encrypt($input["smtp_password"], GLPIKEY);
          }
       }
 
@@ -97,13 +97,13 @@ class Config extends CommonDBTM {
          if (empty($input["proxy_password"])) {
             unset($input["proxy_password"]);
          } else {
-            $input["proxy_password"]=encrypt($input["proxy_password"],GLPIKEY);
+            $input["proxy_password"] = encrypt($input["proxy_password"], GLPIKEY);
          }
       }
 
       // Manage DB Slave process
       if (isset($input['_dbslave_status'])) {
-         $already_active=DBConnection::isDBSlaveActive();
+         $already_active = DBConnection::isDBSlaveActive();
 
          if ($input['_dbslave_status']) {
             DBConnection::changeCronTaskStatus(true);
