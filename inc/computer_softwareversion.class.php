@@ -346,7 +346,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                if (count($lics)) {
                   foreach ($lics as $data) {
                      echo "<a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'];
-                     echo "</a><br>";
+                     echo "</a> - ".$data['serial'];
+                     if (!empty($data['type'])) {
+                        echo "&nbsp;(".$data['type'].")";
+                     }
+                     echo "<br>";
                   }
                }
                echo "</td>";
@@ -706,7 +710,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       foreach ($DB->request($query) as $licdata) {
          $licids[] = $licdata['id'];
          echo "<strong>". $licdata['name'] . "</strong> -&nbsp;".$licdata['serial']." ";
-         if ($licdata['type']) {
+         if (!empty($licdata['type'])) {
             echo "(".$licdata['type'].")&nbsp; ";
          }
          $link_item = getItemTypeFormURL('SoftwareLicense');
