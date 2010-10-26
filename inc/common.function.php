@@ -1627,7 +1627,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
          $request .= "Host: ".$taburl["host"]."\r\n";
          if (!empty($CFG_GLPI["proxy_user"])) {
             $request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".
-                        $CFG_GLPI["proxy_password"]) . "\r\n";
+                        decrypt($CFG_GLPI["proxy_password"],GLPIKEY)) . "\r\n";
          }
 
       } else {
@@ -2321,6 +2321,10 @@ function sylk_clean($value) {
 
 /**
  * Clean all parameters of an URL. Get a clean URL
+ *
+ * @param $url string URL
+ *
+ * @return clean URL
 **/
 function cleanParametersURL($url) {
 
@@ -2332,6 +2336,10 @@ function cleanParametersURL($url) {
 /**
  * Manage planning posted datas (must have begin + duration or end)
  * Compute end if duration is set
+ *
+ * @param $data array data to process
+ *
+ * @return processed datas
 **/
 function manageBeginAndEndPlanDates(&$data) {
 
@@ -2342,6 +2350,49 @@ function manageBeginAndEndPlanDates(&$data) {
          unset($data['_duration']);
       }
    }
+}
+
+/**
+ * Encrypt a string
+ *
+ * @param $string string to encrypt
+ * @param $key string key used to encrypt
+ *
+ * @return encrypted string
+**/
+function encrypt($string, $key) {
+  $result = '';
+  for($i=0; $i<strlen($string); $i++) {
+    $char = substr($string, $i, 1);
+    $keychar = substr($key, ($i % strlen($key))-1, 1);
+    $char = chr(ord($char)+ord($keychar));
+    $result.=$char;
+  }
+
+  return base64_encode($result);
+}
+
+
+/**
+ * Decrypt a string
+ *
+ * @param $string string to decrypt
+ * @param $key string key used to decrypt
+ *
+ * @return decrypted string
+**/
+function decrypt($string, $key) {
+  $result = '';
+  $string = base64_decode($string);
+
+  for($i=0; $i<strlen($string); $i++) {
+    $char = substr($string, $i, 1);
+    $keychar = substr($key, ($i % strlen($key))-1, 1);
+    $char = chr(ord($char)-ord($keychar));
+    $result.=$char;
+  }
+
+  return $result;
 }
 
 ?>

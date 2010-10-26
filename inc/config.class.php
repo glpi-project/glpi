@@ -85,12 +85,20 @@ class Config extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
-      if (isset($input["smtp_password"]) && empty($input["smtp_password"])) {
-         unset($input["smtp_password"]);
+      if (isset($input["smtp_password"])) {
+         if (empty($input["smtp_password"])) {
+            unset($input["smtp_password"]);
+         } else {
+            $input["smtp_password"]=encrypt($input["smtp_password"],GLPIKEY);
+         }
       }
 
-      if (isset($input["proxy_password"]) && empty($input["proxy_password"])) {
-         unset($input["proxy_password"]);
+      if (isset($input["proxy_password"])) {
+         if (empty($input["proxy_password"])) {
+            unset($input["proxy_password"]);
+         } else {
+            $input["proxy_password"]=encrypt($input["proxy_password"],GLPIKEY);
+         }
       }
 
       // Manage DB Slave process
