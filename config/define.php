@@ -77,6 +77,10 @@ $CFG_GLPI['glpitables']=array();
 
 define("NOT_AVAILABLE",'N/A');
 
+// key used to crypt passwords in DB for external access : proxy / smtp / ldap /  mailcollectors
+// This key is not used to crypt user's passwords
+// If you hav to define passwords again
+define("GLPIKEY","GLPI£i'snarss'ç");
 
 // TIMES
 define("MINUTE_TIMESTAMP",60);
