@@ -3416,13 +3416,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
          resizable:true,
          width: ".($params['size']*7).",
          minListWidth:".($params['size']*5).", // IE problem : wrong computation of the width of the ComboBox field
-         applyTo: 'text$name',
-         listeners: { // extjs problem with IE7 : fixed in extjs 3.1.2 : to be cleaned
-            expand : function(combo) {
-            if (combo.assetHeight == 0 && combo.pageSize > 0 && Ext.isIE7)
-               combo.assetHeight = 28;
-            }
-         }
+         applyTo: 'text$name'
       });";
 
       $output .= "</script>";
