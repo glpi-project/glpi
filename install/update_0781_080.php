@@ -809,6 +809,9 @@ function update0781to080($output='HTML') {
 
    $migration->addField("glpi_notificationtemplates", "css", "text COLLATE utf8_unicode_ci");
 
+   $migration->addField("glpi_configs", "url_maxlength",
+                           "int(11) NOT NULL DEFAULT '30' AFTER `list_limit_max`");
+
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {

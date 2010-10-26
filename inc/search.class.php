@@ -3891,8 +3891,8 @@ class Search {
                   // strip begin of link
                   $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
                   $link = preg_replace('/\/$/', '', $link);
-                  if (utf8_strlen($link)>30) {
-                     $link = utf8_substr($link, 0, 30)."...";
+                  if (utf8_strlen($link)>$CFG_GLPI["url_maxlength"]) {
+                     $link = utf8_substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
                   }
                   return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                }
