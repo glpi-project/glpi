@@ -807,6 +807,7 @@ function update0781to080($output='HTML') {
    $migration->addField("glpi_entitydatas", "admin_reply_name",
                         "varchar( 255 ) collate utf8_unicode_ci default NULL AFTER `admin_reply`");
 
+   $migration->addField("glpi_notificationtemplates", "css", "text COLLATE utf8_unicode_ci");
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
 

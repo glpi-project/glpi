@@ -1197,6 +1197,7 @@ $LANG['mailing'][1]   = "=======================================================
 
 $LANG['mailing'][4]   = "Suivi(s) déjà effectué(s)";
 $LANG['mailing'][5]   = "Description du ticket";
+$LANG['mailing'][6]   = "CSS";
 
 $LANG['mailing'][10]  = "Nouveau suivi pour ce ticket";
 

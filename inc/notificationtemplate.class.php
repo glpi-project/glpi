@@ -108,7 +108,11 @@ class NotificationTemplate extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td colspan='3'><textarea cols='45' rows='9' name='comment' >".$this->fields["comment"].
+      echo "<td colspan='3'><textarea cols='60' rows='5' name='comment' >".$this->fields["comment"].
+            "</textarea></td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['mailing'][6]."&nbsp;: </td>";
+      echo "<td colspan='3'><textarea cols='60' rows='5' name='css' >".$this->fields["css"].
             "</textarea></td></tr>";
 
       $this->showFormButtons($options);
@@ -234,6 +238,9 @@ class NotificationTemplate extends CommonDBTM {
                         <head>
                          <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
                          <title>".htmlentities_deep($lang['subject'])."</title>
+                         <style type=\"text/css\">
+                           ".$this->fields['css']."
+                         </style>
                         </head>
                         <body>".NotificationTemplate::process($template_datas['content_html'],
                                                               $data_html).
