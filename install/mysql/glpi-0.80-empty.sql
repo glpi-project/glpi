@@ -1600,6 +1600,7 @@ CREATE TABLE `glpi_entitydatas` (
   `max_closedate` datetime DEFAULT NULL,
   `inquest_rate` int(11) NOT NULL DEFAULT '-1',
   `inquest_delay` int(11) NOT NULL DEFAULT '-1',
+  `tickettype` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

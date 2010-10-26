@@ -595,6 +595,7 @@ $LANG['entity'][24] = "Valeurs pour l'interface de recherche des utilisateurs de
 $LANG['entity'][25] = "Filtre LDAP associé à l'entité (si nécessaire)";
 $LANG['entity'][26] = "Ces paramètres sont utilisés comme actions des règles génériques d'affectation à une entité";
 $LANG['entity'][27] = "Domaine de messagerie représentant l'entité";
+$LANG['entity'][28] = "Type par défaut pour les tickets";
 
 
 $LANG['event'][0]  = "Source";

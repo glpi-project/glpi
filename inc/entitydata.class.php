@@ -529,7 +529,24 @@ class EntityData extends CommonDBTM {
       if ($entdata->fields["calendars_id"] == 0) {
          $calendar = new Calendar();
 
-         if ($calendar->getFromDB(self::getUsedCalendar($ID))) {
+         if ($calendar->getFromDB(self::getUsedConfig('calendars_id',$ID))) {
+            echo " - ".$calendar->getLink();
+         }
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][28]."&nbsp;:&nbsp;</td>";
+      echo "<td colspan='2'>";
+      $toadd=array();
+      if ($ID!=0) {
+         $toadd = array(0 => $LANG['common'][102]);
+      }
+      Ticket::dropdownType('tickettype', $entdata->fields["tickettype"],$toadd);
+
+      if ($entdata->fields["calendars_id"] == 0) {
+         $calendar = new Calendar();
+
+         if ($calendar->getFromDB(self::getUsedConfig('calendars_id',$ID))) {
             echo " - ".$calendar->getLink();
          }
       }
@@ -598,7 +615,8 @@ class EntityData extends CommonDBTM {
    }
 
 
-   static function getUsedCalendar($entities_id) {
+   
+   static function getUsedConfig($field,$entities_id) {
 
       $entdata= new EntityData();
 
@@ -606,21 +624,30 @@ class EntityData extends CommonDBTM {
       if ($entdata->getFromDB($entities_id)) {
 
          // Calendar defined : use it
-         if (isset($entdata->fields['calendars_id']) && $entdata->fields['calendars_id'] >0 ) {
-            return $entdata->fields['calendars_id'];
+         if (isset($entdata->fields[$field]) && $entdata->fields[$field] >0 ) {
+            return $entdata->fields[$field];
          }
       }
 
-      // Entity data not found or not defined calendar : search in parent one
+      // Entity data not found or not defined : search in parent one
       if ($entities_id > 0) {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            return EntityData::getUsedCalendar($current->fields['entities_id']);
+            return EntityData::getUsedConfig($field,$current->fields['entities_id']);
          }
+      }
+
+      switch ($field) {
+         case "tickettype" :
+            // Default is Incident if not set
+            return Ticket::INCIDENT_TYPE;
+            break;
       }
       return -1;
    }
+
+
 }
 
 ?>

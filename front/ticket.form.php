@@ -164,7 +164,8 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    'plan'                 => array(),
                    'global_validation'    => 'accepted',
                    'due_date'             => '',
-                   'slas_id'              => 0);
+                   'slas_id'              => 0,
+                   'type'                 => -1);
 
    // Restore saved value or override with page parameter
    foreach ($values as $name => $value) {
@@ -181,6 +182,10 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    if (isset($_SESSION["helpdeskSaved"])) {
       unset($_SESSION["helpdeskSaved"]);
    }
+   if ($values['type']<=0) {
+      $values['type'] = EntityData::getUsedConfig('tickettype',$values['entities_id']);
+   }
+
    $track->showForm(0, $values);
 }
 

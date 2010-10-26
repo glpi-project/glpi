@@ -567,8 +567,8 @@ class Ticket extends CommonDBTM {
             $sla->addLevelToDo($this);
          }
 
-         // Compute ticket waiting time use calendar if exists
-         $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+         // Compute ticket waiting time use calendar if existsdard
+         $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
          $calendar = new Calendar();
          $delay_time=0;
          // Using calendar
@@ -618,7 +618,7 @@ class Ticket extends CommonDBTM {
    /// Compute take into account stat of the current ticket
    function computeTakeIntoAccountDelayStat() {
       if (isset($this->fields['id'])) {
-         $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+         $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
          $calendar = new Calendar();
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
@@ -632,7 +632,7 @@ class Ticket extends CommonDBTM {
    /// Compute solve delay stat of the current ticket
    function computeSolveDelayStat() {
       if (isset($this->fields['id'])) {
-         $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+         $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
          $calendar = new Calendar();
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
@@ -646,7 +646,7 @@ class Ticket extends CommonDBTM {
    /// Compute close delay stat of the current ticket
    function computeCloseDelayStat() {
       if (isset($this->fields['id'])) {
-        $calendars_id = EntityData::getUsedCalendar($this->fields['entities_id']);
+        $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
          $calendar = new Calendar();
          // Using calendar
          if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
@@ -788,9 +788,6 @@ class Ticket extends CommonDBTM {
       }
 
       unset($_SESSION["helpdeskSaved"]);
-
-      // Manage helpdesk.html submission type
-      unset($input["type"]);
 
       // No Auto set Import for external source
       if (!isset($input['_auto_import'])) {
@@ -1009,6 +1006,14 @@ class Ticket extends CommonDBTM {
             $input['sla_waiting_duration']=0;
          }
       }
+
+      // auto set type if not set
+      if (!isset($input["type"])) {
+         $input['type'] = EntityData::getUsedConfig('tickettype',$input['entities_id']);
+      }
+
+
+
       return $input;
    }
 
@@ -1871,17 +1876,17 @@ class Ticket extends CommonDBTM {
    *
    * @return string id of the select
    */
-   static function dropdownType($name, $value=0, $config=false) {
+   static function dropdownType($name, $value=0, $toadd=array()) {
       global $LANG;
 
-//       if ($value==0) {
-//          $options[0] = DROPDOWN_EMPTY_VALUE;
-//       }
+      $options=array();
+      if (count($toadd)>0) {
+         $options=$toadd;
+      }
 
-      $options = self::getTypes();
+      $options += self::getTypes();
 
       return Dropdown::showFromArray($name, $options, array('value' => $value));
-      
    }
 
    /**
