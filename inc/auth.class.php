@@ -542,7 +542,7 @@ class Auth {
                   $ds = AuthLdap::connectToServer($ldap_method["host"],
                                                   $ldap_method["port"],
                                                   $ldap_method["rootdn"],
-                                                  decrypt($ldap_method["rootdn_password"],GLPIKEY),
+                                                  decrypt($ldap_method["rootdn_secret"],GLPIKEY),
                                                   $ldap_method["use_tls"],
                                                   $ldap_method["deref_option"]);
 
