@@ -38,6 +38,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
+// Obsolete function provided to detect compatibility issue
+function registerPluginType($name) {
+   global $LANG;
+
+   echo "</table>";
+   displayErrorAndDie($LANG['plugins'][10]."&nbsp;: $name");
+}
+
 $plugin = new Plugin();
 
 commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","plugins");
