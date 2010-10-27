@@ -183,7 +183,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          echo "</td>";
          echo "<td >" . $LANG['setup'][235] . "&nbsp;:</td>";
-         echo "<td><input type='password' name='smtp_password' size='40' value='' autocomplete='off'>";
+         echo "<td><input type='password' name='smtp_passwd' size='40' value='' autocomplete='off'>";
          echo "</td></tr>";
 
       } else {

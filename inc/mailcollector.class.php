@@ -98,11 +98,11 @@ class MailCollector  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($input["password"])) {
-         if (empty($input["password"])) {
-            unset($input["password"]);
+      if (isset($input["passwd"])) {
+         if (empty($input["passwd"])) {
+            unset($input["passwd"]);
          } else {
-            $input["password"] = encrypt($input["password"], GLPIKEY);
+            $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
          }
       }
 
@@ -178,7 +178,7 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."&nbsp;:</td>";
-      echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'></td>";
+      echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -689,7 +689,7 @@ class MailCollector  extends CommonDBTM {
    function connect() {
 
       $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                  decrypt($this->fields['password'],GLPIKEY), 1);
+                                  decrypt($this->fields['passwd'],GLPIKEY), 1);
    }
 
 
@@ -1182,7 +1182,7 @@ class MailCollector  extends CommonDBTM {
          $msg .= " ".$LANG['common'][52].':'.$mc['host'];
          $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
          $msg .= " ".$LANG['login'][7].':'.
-                 (empty($mc['password'])?$LANG['choice'][0]:$LANG['choice'][1]);
+                 (empty($mc['passwd'])?$LANG['choice'][0]:$LANG['choice'][1]);
          $msg .= " ".$LANG['common'][60].':'.($mc['is_active']?$LANG['choice'][1]:$LANG['choice'][0]);
          echo wordwrap($msg."\n", $width, "\n\t\t");
       }

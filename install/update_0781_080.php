@@ -821,8 +821,11 @@ function update0781to080($output='HTML') {
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - passwords encryption');
 
-   /// how not to replay password encryption ?
-   if (FieldExists('glpi_configs','proxy_password')) {
+
+   if ($migration->addField('glpi_configs', 'proxy_passwd',
+                            'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
+      $migration->migrationOneTable('glpi_configs');
+
       $query = "SELECT `proxy_password`
                 FROM `glpi_configs`
                 WHERE `id` = '1'";
@@ -832,16 +835,20 @@ function update0781to080($output='HTML') {
             $value = $DB->result($result,0,0);
             if (!empty($value)) {
                $query = "UPDATE `glpi_configs`
-                         SET `proxy_password` = '".addslashes(encrypt($value,GLPIKEY))."'
+                         SET `proxy_passwd` = '".addslashes(encrypt($value,GLPIKEY))."'
                          WHERE `id` = '1' ";
                $DB->query($query)
-               or die("0.80 update proxy_password in glpi_configs ".$LANG['update'][90]. $DB->error());
+               or die("0.80 update proxy_passwd in glpi_configs ".$LANG['update'][90]. $DB->error());
             }
          }
       }
+      $migration->dropField('glpi_configs', 'proxy_password');
    }
 
-   if (FieldExists('glpi_configs','smtp_password')) {
+   if ($migration->addField('glpi_configs', 'smtp_passwd',
+                            'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
+      $migration->migrationOneTable('glpi_configs');
+
       $query = "SELECT `smtp_password`
                 FROM `glpi_configs`
                 WHERE `id` = '1'";
@@ -851,17 +858,17 @@ function update0781to080($output='HTML') {
             $value = $DB->result($result,0,0);
             if (!empty($value)) {
                $query = "UPDATE `glpi_configs`
-                         SET `smtp_password` = '".addslashes(encrypt($value,GLPIKEY))."'
+                         SET `smtp_passwd` = '".addslashes(encrypt($value,GLPIKEY))."'
                          WHERE `id` = '1' ";
                $DB->query($query)
-               or die("0.80 update smtp_password in glpi_configs ".$LANG['update'][90]. $DB->error());
+               or die("0.80 update smtp_passwd in glpi_configs ".$LANG['update'][90]. $DB->error());
             }
          }
       }
+      $migration->dropField('glpi_configs', 'smtp_password');
    }
 
-   // pour que la procedure soit re-entrante
-   if ($migration->addField('glpi_authldaps', 'rootdn_secret',
+   if ($migration->addField('glpi_authldaps', 'rootdn_passwd',
                             'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
       $migration->migrationOneTable('glpi_authldaps');
 
@@ -875,11 +882,11 @@ function update0781to080($output='HTML') {
             while ($data = $DB->fetch_assoc($result)) {
                if (!empty($data['rootdn_password'])) {
                   $query = "UPDATE `glpi_authldaps`
-                            SET `rootdn_secret` = '".addslashes(encrypt($data['rootdn_password'],
+                            SET `rootdn_passwd` = '".addslashes(encrypt($data['rootdn_password'],
                                                                         GLPIKEY))."'
                             WHERE `id` = '".$data['id']."' ";
                   $DB->query($query)
-                  or die("0.80 update rootdn_secret in glpi_authldaps ".$LANG['update'][90]. $DB->error());
+                  or die("0.80 update rootdn_passwd in glpi_authldaps ".$LANG['update'][90]. $DB->error());
                }
             }
          }
@@ -887,7 +894,10 @@ function update0781to080($output='HTML') {
       $migration->dropField('glpi_authldaps', 'rootdn_password');
    }
 
-   if (FieldExists('glpi_mailcollectors','password')) {
+   if ($migration->addField('glpi_mailcollectors', 'passwd',
+                            'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
+      $migration->migrationOneTable('glpi_mailcollectors');
+
       $query = "SELECT *
                 FROM `glpi_mailcollectors`
                 WHERE `password` IS NOT NULL
@@ -898,14 +908,15 @@ function update0781to080($output='HTML') {
             while ($data = $DB->fetch_assoc($result)) {
                if (!empty($data['password'])) {
                   $query = "UPDATE `glpi_mailcollectors`
-                            SET `password` = '".addslashes(encrypt($data['password'],GLPIKEY))."'
+                            SET `passwd` = '".addslashes(encrypt($data['password'],GLPIKEY))."'
                             WHERE `id`= '".$data['id']."' ";
                   $DB->query($query)
-                  or die("0.80 update password in glpi_mailcollectors ".$LANG['update'][90]. $DB->error());
+                  or die("0.80 update passwd in glpi_mailcollectors ".$LANG['update'][90]. $DB->error());
                }
             }
          }
       }
+      $migration->dropField('glpi_mailcollectors', 'password');
    }
 
 
