@@ -876,8 +876,12 @@ class Config extends CommonDBTM {
       echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
       $msg = $LANG['common'][12].": ";
 
-      foreach (array('memory_limit', 'max_execution_time', 'safe_mode',
-                     'session.save_handler') as $key) {
+      foreach (array('memory_limit',
+                     'max_execution_time',
+                     'safe_mode',
+                     'session.save_handler',
+                     'post_max_size',
+                     'upload_max_filesize') as $key) {
          $msg .= $key.'="'.ini_get($key).'" ';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
