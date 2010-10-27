@@ -2168,6 +2168,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
    $title               = "";
    $ticketcategories_id = 0;
    $urgency             = 3;
+   $type                = 0;
 
    if (isset($_SESSION["helpdeskSaved"]["use_email_notification"])) {
       $use_email_notification = stripslashes($_SESSION["helpdeskSaved"]["use_email_notification"]);
