@@ -1515,16 +1515,17 @@ $LANG['planning'][17] = "A faire";
 $LANG['planning'][18] = "Fait";
 
 
-$LANG['plugins'][0] = "Liste des plugins";
+$LANG['plugins'][0]  = "Liste des plugins";
 
-$LANG['plugins'][2] = "Installé / non configuré";
-$LANG['plugins'][3] = "Installé / non activé";
-$LANG['plugins'][4] = "Erreur / à nettoyer";
-$LANG['plugins'][5] = "Fonction(s) inexistante(s)";
-$LANG['plugins'][6] = "A mettre à jour";
-$LANG['plugins'][7] = "Aucun plugin installé";
-$LANG['plugins'][8] = "Voir le catalogue des plugins";
-$LANG['plugins'][9] = "Auteurs";
+$LANG['plugins'][2]  = "Installé / non configuré";
+$LANG['plugins'][3]  = "Installé / non activé";
+$LANG['plugins'][4]  = "Erreur / à nettoyer";
+$LANG['plugins'][5]  = "Fonction(s) inexistante(s)";
+$LANG['plugins'][6]  = "A mettre à jour";
+$LANG['plugins'][7]  = "Aucun plugin installé";
+$LANG['plugins'][8]  = "Voir le catalogue des plugins";
+$LANG['plugins'][9]  = "Auteurs";
+$LANG['plugins'][10] ="Plugin incompatible avec cette version de GLPI";
 
 
 $LANG['printers'][14] = "Série";
