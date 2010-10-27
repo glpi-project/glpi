@@ -570,13 +570,14 @@ class Ticket extends CommonDBTM {
 
             // Compute new due date
             $this->updates[] = "due_date";
-            $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],$this->fields["sla_waiting_duration"]);
+            $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],
+                                                             $this->fields["sla_waiting_duration"]);
             // Add current level to do
             $sla->addLevelToDo($this);
          }
 
          // Compute ticket waiting time use calendar if existsdard
-         $calendars_id = EntityData::getUsedConfig('calendars_id',$this->fields['entities_id']);
+         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
          $delay_time   = 0;
 

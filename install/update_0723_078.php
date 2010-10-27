@@ -2138,7 +2138,7 @@ function update0723to078($output='HTML') {
       }
    }
    // Clean plugin lock
-   foreach(glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
+   foreach (glob(GLPI_CRON_DIR. '/*.lock') as $lock) {
       unlink($lock);
    }
 
@@ -3130,7 +3130,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.creationdate##&lt;/span&gt;&lt;/td&gt;
 &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.content##&lt;/span&gt;&lt;/td&gt;
 &lt;/tr&gt;
-##FOREACHtickets##                   
+##FOREACHtickets##
 &lt;tr&gt;
 &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##ticket.author.name##&lt;/span&gt;&lt;/td&gt;
 &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;&lt;a href=\"##ticket.url##\"&gt;##ticket.title##&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;

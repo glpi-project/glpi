@@ -537,16 +537,16 @@ class EntityData extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][28]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      $toadd=array();
+      $toadd = array();
       if ($ID!=0) {
          $toadd = array(0 => $LANG['common'][102]);
       }
-      Ticket::dropdownType('tickettype', $entdata->fields["tickettype"],$toadd);
+      Ticket::dropdownType('tickettype', $entdata->fields["tickettype"], $toadd);
 
       if ($entdata->fields["calendars_id"] == 0) {
          $calendar = new Calendar();
 
-         if ($calendar->getFromDB(self::getUsedConfig('calendars_id',$ID))) {
+         if ($calendar->getFromDB(self::getUsedConfig('calendars_id', $ID))) {
             echo " - ".$calendar->getLink();
          }
       }
@@ -622,9 +622,9 @@ class EntityData extends CommonDBTM {
    }
 
 
-   static function getUsedConfig($field,$entities_id) {
+   static function getUsedConfig($field, $entities_id) {
 
-      $entdata= new EntityData();
+      $entdata = new EntityData();
 
       // Search in entity data of the current entity
       if ($entdata->getFromDB($entities_id)) {
@@ -640,7 +640,7 @@ class EntityData extends CommonDBTM {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            return EntityData::getUsedConfig($field,$current->fields['entities_id']);
+            return EntityData::getUsedConfig($field, $current->fields['entities_id']);
          }
       }
 
@@ -648,7 +648,6 @@ class EntityData extends CommonDBTM {
          case "tickettype" :
             // Default is Incident if not set
             return Ticket::INCIDENT_TYPE;
-            break;
       }
       return -1;
    }
