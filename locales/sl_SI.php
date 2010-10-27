@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="Posodobi";
 $LANG['plugins'][7]="Noben vtičnik ni nameščen"; 
 $LANG['plugins'][8]="Poglej katalog vtičnikov"; 
 $LANG['plugins'][9]="Avtorji"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="Serijska (zaporedna)"; 
 $LANG['printers'][15]="Pararelna (vzporedna)"; 

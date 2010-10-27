@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="更新するには";
 $LANG['plugins'][7]="インストールされたプラグインなし"; 
 $LANG['plugins'][8]="プラグイン一覧を参照"; 
 $LANG['plugins'][9]="著作者"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="シリアル"; 
 $LANG['printers'][15]="パラレル"; 

@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="Do uaktualnienia";
 $LANG['plugins'][7]="Nie zainstalowano wtyczek"; 
 $LANG['plugins'][8]="Zobacz katalog wtyczek"; 
 $LANG['plugins'][9]="Autorzy"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="Serial"; 
 $LANG['printers'][15]="Równoległy"; 

@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="Frissíteni";
 $LANG['plugins'][7]="Nincsenek telepített bővítmények"; 
 $LANG['plugins'][8]="Bővítmények katalógusának megtekintése"; 
 $LANG['plugins'][9]="Szerzők"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="Soros interfész"; 
 $LANG['printers'][15]="Párhuzamos interfész"; 

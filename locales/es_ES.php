@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="A actualizar";
 $LANG['plugins'][7]="Ningún plugin instalado"; 
 $LANG['plugins'][8]="Ver listado de plugins"; 
 $LANG['plugins'][9]="Autores"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="Serie"; 
 $LANG['printers'][15]="Paralelo"; 

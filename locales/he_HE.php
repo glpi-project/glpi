@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="לעדכן";
 $LANG['plugins'][7]="לא מותקנים תוספים"; 
 $LANG['plugins'][8]="ראה את קטלוג התוספים"; 
 $LANG['plugins'][9]="עורכים"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="טורי"; 
 $LANG['printers'][15]="מקבילי"; 

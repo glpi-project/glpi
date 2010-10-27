@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="Обновляя";
 $LANG['plugins'][7]="Нет установленных плагинов"; 
 $LANG['plugins'][8]="Посмотреть каталог плагинов"; 
 $LANG['plugins'][9]="Авторы"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="COM-интерфейс"; 
 $LANG['printers'][15]="LTP-интерфейс"; 

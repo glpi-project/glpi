@@ -1253,6 +1253,7 @@ $LANG['plugins'][6]="Aktualisieren";
 $LANG['plugins'][7]="Kein Plugin ist installiert"; 
 $LANG['plugins'][8]="Zum Plugin-Katalog"; 
 $LANG['plugins'][9]="Autoren"; 
+$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
 
 $LANG['printers'][14]="Seriell"; 
 $LANG['printers'][15]="Parallel"; 
@@ -1643,7 +1644,7 @@ $LANG['setup'][185]="Protokoll in Dateien (SQL, Mail, automatische Jobs)";
 $LANG['setup'][186]="Zeitzone"; 
 $LANG['setup'][190]="x509 Zertifikat"; 
 $LANG['setup'][191]="Mailattribut für x509"; 
-$LANG['setup'][192]="Aktivität"; 
+$LANG['setup'][192]="Aktiv"; 
 $LANG['setup'][193]="Login Speicherfeld im _SERVER Variable"; 
 $LANG['setup'][194]="Beschaffung zusätzlicher Informationen aus dem LDAP-Verzeichnis"; 
 $LANG['setup'][195]="Status beibehalten"; 
