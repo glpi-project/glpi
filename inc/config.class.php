@@ -85,19 +85,19 @@ class Config extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
-      if (isset($input["smtp_password"])) {
-         if (empty($input["smtp_password"])) {
-            unset($input["smtp_password"]);
+      if (isset($input["smtp_passwd"])) {
+         if (empty($input["smtp_passwd"])) {
+            unset($input["smtp_passwd"]);
          } else {
-            $input["smtp_password"] = encrypt($input["smtp_password"], GLPIKEY);
+            $input["smtp_passwd"] = encrypt($input["smtp_passwd"], GLPIKEY);
          }
       }
 
-      if (isset($input["proxy_password"])) {
-         if (empty($input["proxy_password"])) {
-            unset($input["proxy_password"]);
+      if (isset($input["proxy_passwd"])) {
+         if (empty($input["proxy_passwd"])) {
+            unset($input["proxy_passwd"]);
          } else {
-            $input["proxy_password"] = encrypt($input["proxy_password"], GLPIKEY);
+            $input["proxy_passwd"] = encrypt($input["proxy_passwd"], GLPIKEY);
          }
       }
 
@@ -844,7 +844,7 @@ class Config extends CommonDBTM {
       echo "<td>" . $LANG['login'][6] . "&nbsp;:</td>";
       echo "<td><input type='text' name='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
       echo "<td>" . $LANG['login'][7] . "&nbsp;:</td>";
-      echo "<td><input type='password' name='proxy_password' value='' autocomplete='off'></td>";
+      echo "<td><input type='password' name='proxy_passwd' value='' autocomplete='off'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";

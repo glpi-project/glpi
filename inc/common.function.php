@@ -1627,7 +1627,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
          $request .= "Host: ".$taburl["host"]."\r\n";
          if (!empty($CFG_GLPI["proxy_user"])) {
             $request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".
-                        decrypt($CFG_GLPI["proxy_password"],GLPIKEY)) . "\r\n";
+                        decrypt($CFG_GLPI["proxy_passwd"],GLPIKEY)) . "\r\n";
          }
 
       } else {
