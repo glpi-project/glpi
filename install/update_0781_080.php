@@ -860,8 +860,11 @@ function update0781to080($output='HTML') {
       }
    }
 
+   // pour que la procedure soit re-entrante
+   if ($migration->addField('glpi_authldaps', 'rootdn_secret',
+                            'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
+      $migration->migrationOneTable('glpi_authldaps');
 
-   if (FieldExists('glpi_authldaps','rootdn_password')) {
       $query = "SELECT *
                 FROM `glpi_authldaps`
                 WHERE `rootdn_password` IS NOT NULL
@@ -872,15 +875,16 @@ function update0781to080($output='HTML') {
             while ($data = $DB->fetch_assoc($result)) {
                if (!empty($data['rootdn_password'])) {
                   $query = "UPDATE `glpi_authldaps`
-                            SET `rootdn_password` = '".addslashes(encrypt($data['rootdn_password'],
-                                                                          GLPIKEY))."'
+                            SET `rootdn_secret` = '".addslashes(encrypt($data['rootdn_password'],
+                                                                        GLPIKEY))."'
                             WHERE `id` = '".$data['id']."' ";
                   $DB->query($query)
-                  or die("0.80 update rootdn_password in glpi_authldaps ".$LANG['update'][90]. $DB->error());
+                  or die("0.80 update rootdn_secret in glpi_authldaps ".$LANG['update'][90]. $DB->error());
                }
             }
          }
       }
+      $migration->dropField('glpi_authldaps', 'rootdn_password');
    }
 
    if (FieldExists('glpi_mailcollectors','password')) {

@@ -123,7 +123,7 @@ if (( $ok_master || $ok_slave ) && DBConnection::establishDBConnection(false,fal
          echo " ".$method['name'];
 
          if (AuthLdap::tryToConnectToServer($method, $method["rootdn"],
-                                            decrypt($method["rootdn_password"],GLPIKEY))) {
+                                            decrypt($method["rootdn_secret"],GLPIKEY))) {
             echo "_OK";
          } else {
             echo "_PROBLEM";

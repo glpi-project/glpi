@@ -138,11 +138,11 @@ class AuthLDAP extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($input["rootdn_password"])) {
-         if (empty($input["rootdn_password"])) {
-            unset($input["rootdn_password"]);
+      if (isset($input["rootdn_secret"])) {
+         if (empty($input["rootdn_secret"])) {
+            unset($input["rootdn_secret"]);
          } else {
-            $input["rootdn_password"] = encrypt($input["rootdn_password"], GLPIKEY);
+            $input["rootdn_secret"] = encrypt($input["rootdn_secret"], GLPIKEY);
          }
       }
 
@@ -236,7 +236,7 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][156] . "&nbsp;:</td>";
-         echo "<td><input type='password' name='rootdn_password' value='' autocomplete='off'></td>";
+         echo "<td><input type='password' name='rootdn_secret' value='' autocomplete='off'></td>";
          echo "<td>" . $LANG['setup'][228] . "&nbsp;:</td>";
          echo "<td><input type='text' name='login_field' value='".$this->fields["login_field"]."'>";
          echo "</td></tr>";
@@ -859,7 +859,7 @@ class AuthLDAP extends CommonDBTM {
          $port = $config_ldap->fields['port'];
       }
       $ds = AuthLdap::connectToServer($host, $port, $config_ldap->fields['rootdn'],
-                                      decrypt($config_ldap->fields['rootdn_password'], GLPIKEY),
+                                      decrypt($config_ldap->fields['rootdn_secret'], GLPIKEY),
                                       $config_ldap->fields['use_tls'],
                                       $config_ldap->fields['deref_option']);
       if ($ds) {
@@ -1617,7 +1617,7 @@ class AuthLDAP extends CommonDBTM {
 
       return $this->connectToServer($this->fields['host'], $this->fields['port'],
                                     $this->fields['rootdn'],
-                                    decrypt($this->fields['rootdn_password'], GLPIKEY),
+                                    decrypt($this->fields['rootdn_secret'], GLPIKEY),
                                     $this->fields['use_tls'], $this->fields['deref_option']);
    }
 
@@ -1674,7 +1674,7 @@ class AuthLDAP extends CommonDBTM {
 
       $ds = AuthLdap::connectToServer($ldap_method['host'], $ldap_method['port'],
                                       $ldap_method['rootdn'],
-                                      decrypt($ldap_method['rootdn_password'], GLPIKEY),
+                                      decrypt($ldap_method['rootdn_secret'], GLPIKEY),
                                       $ldap_method['use_tls'], $ldap_method['deref_option']);
 
       // Test with login and password of the user if exists
@@ -1689,7 +1689,7 @@ class AuthLDAP extends CommonDBTM {
          foreach (getAllReplicateForAMaster($ldap_method['id']) as $replicate) {
             $ds = AuthLdap::connectToServer($replicate["host"], $replicate["port"],
                                             $ldap_method['rootdn'],
-                                            decrypt($ldap_method['rootdn_password'], GLPIKEY),
+                                            decrypt($ldap_method['rootdn_secret'], GLPIKEY),
                                             $ldap_method['use_tls'], $ldap_method['deref_option']);
 
             // Test with login and password of the user
@@ -2301,7 +2301,7 @@ class AuthLDAP extends CommonDBTM {
 
       if (AuthLdap::connectToServer($authldap->getField('host'), $authldap->getField('port'),
                                     $authldap->getField('rootdn'),
-                                    decrypt($authldap->getField('rootdn_password'), GLPIKEY),
+                                    decrypt($authldap->getField('rootdn_secret'), GLPIKEY),
                                     $authldap->getField('use_tls'),
                                     $authldap->getField('deref_option'))) {
          AuthLdap::showLdapUsers();
