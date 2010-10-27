@@ -803,7 +803,9 @@ class Config extends CommonDBTM {
       foreach (array('memory_limit',
                      'max_execution_time',
                      'safe_mode',
-                     'session.save_handler') as $key) {
+                     'session.save_handler',
+                     'post_max_size',
+                     'upload_max_filesize') as $key) {
          $msg.= $key.'="'.ini_get($key).'" ';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
