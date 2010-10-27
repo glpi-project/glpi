@@ -97,31 +97,32 @@ class TicketSatisfaction extends CommonDBTM {
 
       // Set default satisfaction to 3 if not set
       if (is_null($this->fields["satisfaction"])) {
-         $this->fields["satisfaction"]=3;
+         $this->fields["satisfaction"] = 3;
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['satisfaction'][1]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       echo "<input type='hidden' name='tickets_id' value='$tid'>";
-      echo "<input type='hidden' id='satisfaction' name='satisfaction' value='".$this->fields["satisfaction"]."'>";
+      echo "<input type='hidden' id='satisfaction' name='satisfaction' value='".
+             $this->fields["satisfaction"]."'>";
 
 //      Dropdown::showInteger("satisfaction", $this->fields["satisfaction"], 0, 5);
 
 //      echo "<span class='small_space'><font size='-5'>(".$LANG['satisfaction'][5].")</font></span>";
 
-   echo  "<script type='text/javascript'>\n
-      Ext.onReady(function() {
-      var md = new Ext.form.StarRate({
-                 hiddenName: 'satisfaction',
-                 starConfig: {
-                 	minValue: 0,
-                 	maxValue: 5,
-                  value:".$this->fields["satisfaction"]."
-                 },
-                 applyTo : 'satisfaction'
-      });
-      })
-      </script>";
+      echo  "<script type='text/javascript'>\n
+         Ext.onReady(function() {
+         var md = new Ext.form.StarRate({
+                    hiddenName: 'satisfaction',
+                    starConfig: {
+                    	minValue: 0,
+                    	maxValue: 5,
+                     value:".$this->fields["satisfaction"]."
+                    },
+                    applyTo : 'satisfaction'
+         });
+         })
+         </script>";
 
       echo "</td></tr>";
 
@@ -163,6 +164,7 @@ class TicketSatisfaction extends CommonDBTM {
       }
    }
 
+
    /**
     * display satisfaction value
     *
@@ -171,19 +173,16 @@ class TicketSatisfaction extends CommonDBTM {
    static function displaySatisfaction($value) {
 
       if ($value<0) {
-         $value=0;
+         $value = 0;
       }
       if ($value>5) {
-         $value=5;
+         $value = 5;
       }
       echo '<div style="width: 81px;"  class="x-starslider x-starslider-horz">';
       echo '<div  class="x-starslider-end">';
       echo '<div style="width: 81px;" class="x-starslider-inner">';
       echo "<div style='width: ".intval($value*16)."px;' class='x-starslider-thumb'>";
       echo '</div></div></div></div>';
-         
-
-
    }
 
 }

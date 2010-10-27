@@ -1609,17 +1609,18 @@ class AuthLDAP extends CommonDBTM {
       }
    }
 
+
    /**
     * Open LDAP connexion to current serveur
-    */
+   **/
    function connect() {
-      return $this->connectToServer($this->fields['host'],
-                                    $this->fields['port'],
+
+      return $this->connectToServer($this->fields['host'], $this->fields['port'],
                                     $this->fields['rootdn'],
                                     decrypt($this->fields['rootdn_password'], GLPIKEY),
-                                    $this->fields['use_tls'],
-                                    $this->fields['deref_option']);
+                                    $this->fields['use_tls'], $this->fields['deref_option']);
    }
+
 
    /**
     * Connect to a LDAP serveur
