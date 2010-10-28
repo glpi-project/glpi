@@ -2809,9 +2809,13 @@ class Ticket extends CommonDBTM {
       echo "<td >";
       // Permit to set category when creating ticket without update right
       if ($canupdate || !$ID || $canupdate_descr) {
+         $options=array('value'  => $this->fields["ticketcategories_id"],
+                              'entity' => $this->fields["entities_id"]);
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+            $options['condition']='`is_helpdeskvisible`=1';
+         }
          Dropdown::show('TicketCategory',
-                        array('value'  => $this->fields["ticketcategories_id"],
-                              'entity' => $this->fields["entities_id"]));
+                        $options);
       } else {
          echo Dropdown::getDropdownName("glpi_ticketcategories",$this->fields["ticketcategories_id"]);
       }
