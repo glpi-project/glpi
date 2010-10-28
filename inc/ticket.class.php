@@ -3036,7 +3036,7 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['common'][36]."&nbsp;: </td>";
       echo "<td >";
       // Permit to set category when creating ticket without update right
-      if ($canupdate || !$ID) {
+      if ($canupdate || !$ID || $canupdate_descr) {
          $opt=array('value'  => $this->fields["ticketcategories_id"],
                         'entity' => $this->fields["entities_id"]);
          if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
