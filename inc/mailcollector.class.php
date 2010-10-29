@@ -405,8 +405,8 @@ class MailCollector  extends CommonDBTM {
                } else {
                   $input = array();
                   $input['mailcollectors_id'] = $mailgateID;
-                  $input['from'] = $tkt['user_email'];
-                  $input['to'] = $tkt['_to'];
+                  $input['from'] = $tkt['_head']['from'];
+                  $input['to'] = $tkt['_head']['to'];
                   if (!$tkt['users_id']) {
                      $input['reason'] = NotImportedEmail::USER_UNKNOWN;
 
@@ -414,8 +414,8 @@ class MailCollector  extends CommonDBTM {
                      $input['reason'] = NotImportedEmail::MATCH_NO_RULE;
                   }
                   $input['users_id']  = $tkt['users_id'];
-                  $input['subject']   = $tkt['name'];
-                  $input['messageid'] = $tkt['_message_id'];
+                  $input['subject']   = $this->textCleaner($tkt['_head']['subject']);
+                  $input['messageid'] = $tkt['_head']['message_id'];
                   $input['date']      = $_SESSION["glpi_currenttime"];
                   $rejected->add($input);
                }
@@ -488,8 +488,7 @@ class MailCollector  extends CommonDBTM {
       $body = $this->getBody($i);
       // Do it before using charset variable
       $head['subject'] = $this->decodeMimeString($head['subject']);
-      $tkt['_to'] = $head['to'];
-      $tkt['_message_id'] = $head['message_id'];
+      $tkt['_head'] = $head;
 
       if (!empty($this->charset) && !$this->body_converted) {
          $body = encodeInUtf8($body,$this->charset);
