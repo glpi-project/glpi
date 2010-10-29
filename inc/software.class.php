@@ -469,7 +469,8 @@ class Software extends CommonDBTM {
       $tab[4]['field']        = 'name';
       $tab[4]['name']         = $LANG['setup'][5]." - ".$LANG['software'][5];
       $tab[4]['forcegroupby'] = true;
-
+      $tab[4]['joinparams']   = array('beforejoin' => 
+                                      array('table' => 'glpi_softwareversions'));
       $tab['license'] = $LANG['software'][11];
 
       $tab[160]['table']         = 'glpi_softwarelicenses';
