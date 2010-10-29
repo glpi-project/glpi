@@ -440,7 +440,7 @@ function showLocationUpdateForm() {
             "<input type='text' name='car_sep' value='".$_POST['car_sep']."'></p>";
       echo "<p>".$LANG['update'][135].": ".
             "<input type='text' name='root' value='".$_POST['root']."'></p>";
-      echo "<input type='submit' class='submit' name='new_location' value='".$LANG['buttons'][2]."'>";
+      echo "<input type='submit' class='submit' name='new_location' value=\"".$LANG['buttons'][2]."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       echo "</form>";
       echo "</div>";
@@ -847,7 +847,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
              $DB->dbdefault ."</h3>";
 
       echo "<form action='update.php' method='post'>";
-      echo "<input type='submit' class='submit' name='continuer' value='".$LANG['install'][26] ."'>";
+      echo "<input type='submit' class='submit' name='continuer' value=\"".$LANG['install'][26]."\">";
       echo "</form></div>";
    }
 

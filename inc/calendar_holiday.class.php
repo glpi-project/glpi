@@ -120,7 +120,7 @@ class Calendar_Holiday extends CommonDBRelation {
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
          Dropdown::show('Holiday', array('used' => $used));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
       }
 

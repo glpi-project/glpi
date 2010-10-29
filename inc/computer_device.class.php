@@ -259,7 +259,7 @@ class Computer_Device extends CommonDBTM {
          echo "<tr><td colspan='63' class='tab_bg_1 center'>";
          echo $LANG['devices'][0]."&nbsp;: ";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</tr></table></form>";
       } else {
       echo "</table>";

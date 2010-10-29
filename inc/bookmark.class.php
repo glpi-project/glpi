@@ -179,7 +179,7 @@ class Bookmark extends CommonDBTM {
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
          echo "<div class='center'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</div></td></tr>";
 
       } else {
@@ -187,9 +187,9 @@ class Bookmark extends CommonDBTM {
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<div class='center'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "<input type='hidden' name='id' value='$ID'>";
-         echo "<input type='submit' name='delete' value='".$LANG['buttons'][6]."' class='submit'>";
+         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
          echo "</div></td></tr>";
       }
       echo "</table></div></form>";

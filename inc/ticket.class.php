@@ -3342,7 +3342,8 @@ class Ticket extends CommonDBTM {
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
             echo "&nbsp;";
-            echo "<input type='submit' name='add_link' value='".$LANG['buttons'][8]."' class='submit'></td>";
+            echo "<input type='submit' name='add_link' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'></td>";
             echo "</div>";
          }
          echo "</td>";
@@ -3389,10 +3390,10 @@ class Ticket extends CommonDBTM {
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='2'>";
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td><td class='tab_bg_2 center' colspan='2'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
-            echo "<input type='button' value='".$LANG['buttons'][16]."' class='submit'></a>";
+            echo "<input type='button' value=\"".$LANG['buttons'][16]."\" class='submit'></a>";
          }
          echo "</td></tr>";
       }

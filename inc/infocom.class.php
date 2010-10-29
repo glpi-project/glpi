@@ -872,10 +872,12 @@ class Infocom extends CommonDBTM {
                echo "<tr>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
                echo "<input type='hidden' name='id' value='".$ic->fields['id']."'>";
-               echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+               echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+                      class='submit'>";
                echo "</td>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' name='delete' value='".$LANG['buttons'][6]."' class='submit'>";
+               echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\"
+                      class='submit'>";
                echo "</td></tr>";
                echo "</table></div></form>";
             } else {

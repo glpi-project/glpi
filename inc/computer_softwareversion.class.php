@@ -497,7 +497,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo $LANG['Menu'][4]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
-         echo "<input type='submit' name='install' value='".$LANG['buttons'][4]."' class='submit'>";
+         echo "<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\" class='submit'>";
          echo "</form>";
          echo "</td>";
          echo "<td class='cneter' clospan='2'>";
@@ -506,7 +506,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo $LANG['software'][11]."&nbsp;:&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
-         echo "<input type='submit' name='add' value='" .$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"" .$LANG['buttons'][8]."\" class='submit'>";
          echo "</form>";
          echo "</td></tr>\n";
       }

@@ -1515,9 +1515,9 @@ class CommonDBTM extends CommonGLPI {
          echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
 
          if ($ID<=0 || $params['withtemplate']==2) {
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          } else {
-            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
 
       } else {
@@ -1527,21 +1527,21 @@ class CommonDBTM extends CommonGLPI {
 
          if ($params['candel']) {
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."'>\n";
-            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
             echo "</td>\n";
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n";
 
             if ($this->isDeleted()) {
-               echo "<input type='submit' name='restore' value='".$LANG['buttons'][21]."'
+               echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\"
                       class='submit'>";
                echo "<span class='small_space'>
-                     <input type='submit' name='purge' value='".$LANG['buttons'][22]."'
+                     <input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\"
                       class='submit'>
                      </span>";
 
             } else {
                if (!$this->maybeDeleted()) {
-                  echo "<input type='submit' name='delete' value='".$LANG['buttons'][22]."'
+                  echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][22]."\"
                          class='submit' OnClick='return window.confirm('".$LANG['common'][50]."');'>";
                } else {
                   echo "<input type='submit' name='delete' value='" . $LANG['buttons'][6] ."'
@@ -1551,7 +1551,8 @@ class CommonDBTM extends CommonGLPI {
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>\n";
-            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+                   class='submit'>";
          }
       }
 

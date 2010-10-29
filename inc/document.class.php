@@ -1332,7 +1332,7 @@ class Document extends CommonDBTM {
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
 
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td>";
 
             if ($item->getType() == 'Document') {

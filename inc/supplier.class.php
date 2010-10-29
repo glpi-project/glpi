@@ -455,7 +455,7 @@ class Supplier extends CommonDBTM {
                                  'entity_sons' => $this->fields["is_recursive"]));
 
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addcontactsupplier' value='".$LANG['buttons'][8]."'
+            echo "<input type='submit' name='addcontactsupplier' value=\"".$LANG['buttons'][8]."\"
                    class='submit'>";
             echo "</td></tr>";
          }
@@ -711,8 +711,8 @@ class Supplier extends CommonDBTM {
                                     'entity_sons'  => $this->fields["is_recursive"],
                                     'nochecklimit' => true));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='addcontractsupplier' value='".$LANG['buttons'][8].
-                   "' class='submit'>";
+            echo "<input type='submit' name='addcontractsupplier' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td></tr>";
          }

@@ -234,14 +234,14 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<br><br>";
          if ($ID>0) {
-            echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
+            echo "<input type='submit' class='submit' name='update' value=\"".$LANG['buttons'][7]."\">";
          } else {
             echo "<input type='hidden' name='users_id' value=\"".getLoginUserID()."\">";
-            echo "<input type='submit' class='submit' name='add' value='".$LANG['buttons'][8]."'>";
+            echo "<input type='submit' class='submit' name='add' value=\"".$LANG['buttons'][8]."\">";
          }
 
          echo "<span class='big_space'>";
-         echo "<input type='reset' class='submit' value='".$LANG['buttons'][16]."'></span>";
+         echo "<input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\"></span>";
          echo "</p></form></div>";
          return true;
       }
@@ -458,7 +458,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2 center'><td>";
       echo "<input type='text' size='30' name='contains' value='".
              stripslashes(cleanInputText($params["contains"]))."'></td>";
-      echo "<td><input type='submit' value='".$LANG['buttons'][0]."' class='submit' ></td></tr>";
+      echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' ></td></tr>";
       echo "</table></form>";
 
       echo "</td>";
@@ -470,7 +470,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => '$params["knowbaseitemcategories_id)"]'));
-         echo "</td><td><input type='submit' value='".$LANG['buttons'][2]."' class='submit' ></td>";
+         echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit'></td>";
          echo "</tr></table></form></td>";
       }
       echo "</tr></table></div>";

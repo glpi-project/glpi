@@ -250,7 +250,7 @@ class Location extends CommonTreeDropdown {
          autocompletionTextField($this, "name",array('value'=>''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<td><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
 
@@ -267,7 +267,8 @@ class Location extends CommonTreeDropdown {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<input type='hidden' name='_method' value='addMulti'></td>";
-         echo "<td><input type='submit' name='execute' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<td><input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\"
+                    class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       }

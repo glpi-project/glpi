@@ -472,7 +472,7 @@ class Computer_Item extends CommonDBRelation{
                   Computer_Item::dropdownConnect($itemtype, 'Computer', "items_id",
                                                  $comp->fields["entities_id"], $withtemplate,
                                                  $used);
-                  echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
+                  echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
                          class='submit'>";
                   echo "</form>";
                }
@@ -565,7 +565,7 @@ class Computer_Item extends CommonDBRelation{
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
                                               $item->getEntityID(), 0, $used);
             }
-            echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
+            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
                    class='submit'>";
             echo "</form>";
          } else {
@@ -589,7 +589,7 @@ class Computer_Item extends CommonDBRelation{
                Computer_Item::dropdownConnect('Computer', $item->getType(), "computers_id",
                                               $item->getEntityID(), 0, $used);
             }
-            echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."'
+            echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\"
                    class='submit'>";
             echo "</form>";
          } else {

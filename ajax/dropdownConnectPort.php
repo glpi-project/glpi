@@ -102,7 +102,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
    }
    echo "</select>";
 
-   echo "<input type='submit' name='connect' value='".$LANG['buttons'][9]."' class='submit'>";
+   echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 }
 
 ?>

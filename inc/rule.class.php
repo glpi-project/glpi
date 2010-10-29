@@ -466,7 +466,7 @@ class Rule extends CommonDBTM {
       echo "</span></td>\n";
       echo "<td class='tab_bg_2 left' width='80px'>";
       echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='add_action' value='".$LANG['buttons'][8]."' class='submit'>";
+      echo "<input type='submit' name='add_action' value=\"".$LANG['buttons'][8]."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table></div>";
    }
@@ -494,7 +494,7 @@ class Rule extends CommonDBTM {
       echo "</span></td>\n";
       echo "<td class='tab_bg_2' width='80px'>";
       echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='add_criteria' value='".$LANG['buttons'][8]."' class='submit'>";
+      echo "<input type='submit' name='add_criteria' value=\"".$LANG['buttons'][8]."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table></div>";
    }
@@ -1529,7 +1529,8 @@ class Rule extends CommonDBTM {
          $this->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-         echo "<input type='submit' name='test_rule' value='".$LANG['buttons'][50]."' class='submit'>";
+         echo "<input type='submit' name='test_rule' value=\"".$LANG['buttons'][50]."\"
+                class='submit'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
          echo "</td></tr>\n";
@@ -1664,7 +1665,7 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='addRule'>";
-      echo "<input type='submit' name='execute' value='".$LANG['buttons'][8]."' class='submit'>";
+      echo "<input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table></form>";
    }

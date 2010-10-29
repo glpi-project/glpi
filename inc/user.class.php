@@ -1511,7 +1511,7 @@ class User extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></form></div>";
@@ -2065,14 +2065,14 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";
       echo "<input type='hidden' name='ext_auth' value='1'>\n";
-      echo "<input type='submit' name='add_ext_auth_ldap' value='".$LANG['users'][15].
-             "' class='submit'>\n";
+      echo "<input type='submit' name='add_ext_auth_ldap' value=\"".$LANG['users'][15]."\"
+             class='submit'>\n";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='tab_bg_2 center' colspan='2'>\n";
-      echo "<input type='submit' name='add_ext_auth_simple' value='".$LANG['users'][16].
-           "' class='submit'>\n";
+      echo "<input type='submit' name='add_ext_auth_simple' value=\"".$LANG['users'][16]."\"
+             class='submit'>\n";
       echo "</td></tr>\n";
 
       echo "</table></form></div>\n";
@@ -2426,7 +2426,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_2 center'><td colspan='2'>";
          echo "<input type='hidden' name='token' value='$token'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td></tr>";
 
         echo "</table></form>";
@@ -2452,7 +2452,7 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_2 center'>";
       echo "<td><input type='text' size='60' name='email' value=''></td>";
-      echo "<td><input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
+      echo "<td><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
       echo "</td></tr>";
 
       echo "</table></form></div>";

@@ -507,7 +507,7 @@ class Reservation extends CommonDBChild {
             return false;
          }
          // Set item if not set
-         if ((!isset($options['item']) || count($options['item'])==0) 
+         if ((!isset($options['item']) || count($options['item'])==0)
             && $itemid=$resa->getField('reservationitems_id')) {
             $options['item'][$itemid]=$itemid;
          }
@@ -607,15 +607,15 @@ class Reservation extends CommonDBChild {
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='2' class='top center'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>\n";
 
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='top center'>";
-         echo "<input type='submit' name='delete' value='".$LANG['buttons'][6]."' class='submit'>";
+         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
          echo "</td><td class='top center'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][14]."' class='submit'>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
          echo "</td></tr>\n";
       }
       echo "</table></form></div>\n";

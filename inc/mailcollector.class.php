@@ -206,7 +206,7 @@ class MailCollector  extends CommonDBTM {
       echo "<form name='form' method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input type='submit' name='get_mails' value='".$LANG['mailgate'][2]."' class='submit'>";
+      echo "<input type='submit' name='get_mails' value=\"".$LANG['mailgate'][2]."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
       echo "</table></form></div>";

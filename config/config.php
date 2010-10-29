@@ -177,8 +177,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             if (!isset($CFG_GLPI["version"]) || trim($CFG_GLPI["version"])<GLPI_VERSION) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
                echo "<p class='red'>".$LANG['update'][88]."</p>";
-               echo "<input type='submit' name='from_update' value='".$LANG['install'][4].
-                      "' class='submit'>";
+               echo "<input type='submit' name='from_update' value=\"".$LANG['install'][4].
+                      "\" class='submit'>";
                echo "</form>";
 
             } else if (trim($CFG_GLPI["version"])>GLPI_VERSION) {
@@ -187,7 +187,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
          } else {
             echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
-            echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][27]."'>";
+            echo "<input type='submit' name='submit' class='submit' value=\"".
+                   $LANG['install'][27]."\">";
             echo "</form>";
          }
 
