@@ -1101,7 +1101,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $menu['config']['content']['mailcollector']['links']['search'] = '/front/mailcollector.php';
          $menu['config']['content']['mailcollector']['links']['add']    = '/front/mailcollector.form.php';
          $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']
-                                                                        = '/front/rejectedemail.php';
+                                                                        = '/front/notimportedemail.php';
       }
    }
 
