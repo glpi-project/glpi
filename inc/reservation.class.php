@@ -468,9 +468,6 @@ class Reservation extends CommonDBChild {
       if (!haveRight("reservation_helpdesk","1")) {
          return false;
       }
-      if (count($options['item'])==0) {
-         return false;
-      }
 
       $resa= new Reservation;
 
@@ -481,10 +478,18 @@ class Reservation extends CommonDBChild {
          if (!$resa->can($ID,"w")) {
             return false;
          }
+         // Set item if not set
+         if ((!isset($options['item']) || count($options['item'])==0) 
+            && $itemid=$resa->getField('reservationitems_id')) {
+            $options['item'][$itemid]=$itemid;
+         }
       } else {
          $resa->getEmpty();
          $resa->fields["begin"] = $options['date']." 12:00:00";
          $resa->fields["end"]   = $options['date']." 13:00:00";
+      }
+      if (!isset($options['item']) || count($options['item'])==0) {
+         return false;
       }
 
       echo "<div class='center'><form method='post' name=form action='reservation.form.php'>";
