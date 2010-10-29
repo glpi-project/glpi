@@ -463,7 +463,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<input type='image' name='up' value='".$LANG['buttons'][24]."' src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".
+                            $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
                             $LANG['buttons'][24]."'  title='".$LANG['buttons'][24]."'>";
                      echo "</form>";
                      echo "</td>";
