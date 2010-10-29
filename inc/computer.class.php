@@ -1032,12 +1032,14 @@ class Computer extends CommonDBTM {
       $tab[102]['name']          = $LANG['ocsng'][13];
       $tab[102]['datatype']      = 'datetime';
       $tab[102]['massiveaction'] = false;
+      $tab[102]['joinparams']    = array('ischild' => true);
 
       $tab[103]['table']         = 'glpi_ocslinks';
       $tab[103]['field']         = 'last_ocs_update';
       $tab[103]['name']          = $LANG['ocsng'][14];
       $tab[103]['datatype']      = 'datetime';
       $tab[103]['massiveaction'] = false;
+      $tab[103]['joinparams']    = array('ischild' => true);
 
       $tab[100]['table']         = $this->getTable();
       $tab[100]['field']         = 'is_ocs_import';
@@ -1049,11 +1051,13 @@ class Computer extends CommonDBTM {
       $tab[101]['linkfield'] = '_auto_update_ocs'; // update through compter update process
       $tab[101]['name']      = $LANG['ocsng'][6]." ".$LANG['Menu'][33];
       $tab[101]['datatype']  = 'bool';
+      $tab[101]['joinparams']    = array('ischild' => true);
 
       $tab[104]['table']         = 'glpi_ocslinks';
       $tab[104]['field']         = 'ocs_agent_version';
       $tab[104]['name']          = $LANG['ocsng'][49];
       $tab[104]['massiveaction'] = false;
+      $tab[104]['joinparams']    = array('ischild' => true);
 
       $tab['registry'] = $LANG['title'][43];
 
@@ -1062,12 +1066,15 @@ class Computer extends CommonDBTM {
       $tab[110]['name']          = $LANG['title'][43]." : ".$LANG['registry'][3];
       $tab[110]['forcegroupby']  = true;
       $tab[110]['massiveaction'] = false;
+      $tab[110]['joinparams']    = array('ischild' => true);
+
 
       $tab[111]['table']         = 'glpi_registrykeys';
       $tab[111]['field']         = 'ocs_name';
       $tab[111]['name']          = $LANG['title'][43]." : ".$LANG['registry'][6];
       $tab[111]['forcegroupby']  = true;
       $tab[111]['massiveaction'] = false;
+      $tab[111]['joinparams']    = array('ischild' => true);
 
       return $tab;
    }

@@ -2817,13 +2817,13 @@ class Search {
 //                            ON (`glpi_cartridgeitems_printermodels`.`printermodels_id` = `$nt`.`id`) ";
 //             }
 
-         case "glpi_operatingsystems" :
-            if ($itemtype=='Software') {
+//          case "glpi_operatingsystems" :
+/*            if ($itemtype=='Software') {
                return " LEFT JOIN `glpi_operatingsystems`
                            ON (`glpi_softwareversions`.`operatingsystems_id`
                                  = `glpi_operatingsystems`.`id`)";
-            }
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+            }*/
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
          case "glpi_reservationitems" :
             return "";
@@ -2835,18 +2835,18 @@ class Search {
 //                    LEFT JOIN `$new_table` $AS
 //                      ON (`glpi_computerdisks`.`filesystems_id` = `$nt`.`id`) ";
 
-         case "glpi_entitydatas" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
+//          case "glpi_entitydatas" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
 
-         case "glpi_mailcollectors" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`mailcollectors_id` = `$nt`.`id`) ";
+//          case "glpi_mailcollectors" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`mailcollectors_id` = `$nt`.`id`) ";
 
-         case "glpi_ocslinks" :
-         case "glpi_registrykeys":
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
+//          case "glpi_ocslinks" :
+//          case "glpi_registrykeys":
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
 
-         case "glpi_operatingsystems" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`operatingsystems_id` = `$nt`.`id`) ";
+//          case "glpi_operatingsystems" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`operatingsystems_id` = `$nt`.`id`) ";
 
          case "glpi_locations" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`locations_id` = `$nt`.`id`) ";

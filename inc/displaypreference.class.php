@@ -455,7 +455,7 @@ class DisplayPreference extends CommonDBTM {
             if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
 
                echo "<tr class='tab_bg_2'><td class='center' width='50%'>";
-               echo $searchopt[$data["num"]]["name"].$data['num'];
+               echo $searchopt[$data["num"]]["name"];
                echo "</td>";
 
                if ($global_write) {
