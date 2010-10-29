@@ -747,8 +747,7 @@ class Reservation extends CommonDBChild {
                $modif = $modif_end = "";
                if ($resa->can($row['id'],"w")) {
                   $modif = "<a id='content_".$ID.$rand."'
-                             href='reservation.form.php?id=".$row['id']."&amp;item[$ID]=$ID&amp;".
-                             "mois_courant=$month&amp;annee_courante=$year'>";
+                             href='reservation.form.php?id=".$row['id']."'>";
                   $modif_end = "</a>";
                   $modif_end .= showToolTip($row["comment"],
                                             array('applyto' => "content_".$ID.$rand,
