@@ -2813,12 +2813,12 @@ class Search {
          case "glpi_reservationitems" :
             return "";
 
-         case "glpi_filesystems" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_computerdisks",
-                                       $linkfield);
-            return $out."
-                   LEFT JOIN `$new_table` $AS
-                     ON (`glpi_computerdisks`.`filesystems_id` = `$nt`.`id`) ";
+//          case "glpi_filesystems" :
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_computerdisks",
+//                                        'computerdisks_id');
+//             return $out."
+//                    LEFT JOIN `$new_table` $AS
+//                      ON (`glpi_computerdisks`.`filesystems_id` = `$nt`.`id`) ";
 
          case "glpi_entitydatas" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
@@ -2904,7 +2904,7 @@ class Search {
                return " LEFT JOIN `$new_table` $AS
                            ON (`$rt`.`id` = `$nt`.`items_id`
                                AND `$nt`.`itemtype` = '$itemtype' ".
-                               getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
+                               geglpi_computerdiskstEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
             } else {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
             }
@@ -3157,14 +3157,36 @@ class Search {
                   $addcondition = " AND ".$condition." ";
                }
 
+               $before='';
+               if (isset($joinparams['beforejoin']) 
+                  && is_array($joinparams['beforejoin']) ) {
+                  if (isset($joinparams['beforejoin']['table'])) {
+                     $intertable=$joinparams['beforejoin']['table'];
+                     if (isset($joinparams['beforejoin']['linkfield'])){
+                        $interlinkfield = $joinparams['beforejoin']['linkfield'];
+                     } else {
+                        $interlinkfield = getForeignKeyFieldForTable($intertable);
+                     }
+                     $interjoinparams=array();
+                     if (isset($joinparams['beforejoin']['joinparams'])){
+                        $interjoinparams = $joinparams['beforejoin']['joinparams'];
+                     } 
+
+                     $before = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
+                                        $interlinkfield,$meta, $meta_type,$interjoinparams);
+                  }
+                     $rt=$intertable.$addmetanum;
+               }
+
+
                // Child join 
                if (isset($joinparams['ischild']) && $joinparams['ischild'] ) {
-                  return " LEFT JOIN `$new_table` $AS 
+                  return $before." LEFT JOIN `$new_table` $AS 
                               ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($ref_table)."` 
                                     $addcondition)";
                } else {
                   // Standard join 
-                 return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
+                 return $before." LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
                }
             }
             return '';

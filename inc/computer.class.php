@@ -1021,7 +1021,9 @@ class Computer extends CommonDBTM {
       $tab[155]['name']          = $LANG['computers'][4];
       $tab[155]['forcegroupby']  = true;
       $tab[155]['massiveaction'] = false;
-
+      $tab[155]['joinparams']    = array('beforejoin' => 
+                                      array('table'      => 'glpi_computerdisks',
+                                            'joinparams' => array('ischild' => true)));
 
       $tab['ocsng'] = $LANG['Menu'][33];
 
