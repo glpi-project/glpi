@@ -358,11 +358,13 @@ class MailCollector  extends CommonDBTM {
                //If entity assigned, or email refused by rule, or no user associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"] ||$tkt['users_id'] > 0);
 
-               if ((isset($tkt['entities_id']) && $user_condition)
+               // entities_id set when new ticket / tickets_id when new followup
+               if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
+                        && $user_condition)
                    || isset($tkt['_refuse_email_no_response'])
                    || isset($tkt['_refuse_email_with_response'])) {
 
-                  if (isset($tkt['entities_id'])) {
+                  if (isset($tkt['entities_id']) || isset($tkt['tickets_id'])) {
                      $tkt['_mailgate'] = $mailgateID;
                      $result = imap_fetchheader($this->marubox, $i);
 
