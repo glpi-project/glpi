@@ -880,7 +880,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       if (canUseImapPop()) {
          $menu['config']['content']['mailcollector']['links']['search']='/front/mailcollector.php';
          $menu['config']['content']['mailcollector']['links']['add']='/front/mailcollector.form.php';
-         $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']='/front/rejectedemail.php';
+         $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']='/front/notimportedemail.php';
       }
    }
 
