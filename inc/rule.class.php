@@ -336,7 +336,7 @@ class Rule extends CommonDBTM {
    function getTitleAction($target) {
       global $LANG, $CFG_GLPI;
 
-      foreach($this->getActions() as $key => $val) {
+      foreach ($this->getActions() as $key => $val) {
          if (isset($val['force_actions'])
              && (in_array('regex_result',$val['force_actions'])
                  || in_array('append_regex_result',$val['force_actions']))) {
