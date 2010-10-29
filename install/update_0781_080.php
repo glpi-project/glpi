@@ -737,6 +737,7 @@ function update0781to080($output='HTML') {
       $query = "CREATE TABLE `glpi_ticketsatisfactions` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `type` int(11) NOT NULL DEFAULT '1'
                   `date_begin` DATETIME NULL ,
                   `date_answered` DATETIME NULL ,
                   `satisfaction` INT(11) NULL ,
@@ -746,6 +747,10 @@ function update0781to080($output='HTML') {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query) or die("0.80 create glpi_ticketinquests " . $LANG['update'][90] . $DB->error());
    }
+
+//TODO a supprimer avant publication juste pour ceux ayant deja installe la svn
+   $migration->addField("glpi_ticketsatisfactions", "type",
+                        "int(11) NOT NULL DEFAULT '0' AFTER `tickets_id`");
 
    // config inquest by entity
    if ($migration->addField("glpi_entitydatas", "max_closedate", "DATETIME NULL")) {
