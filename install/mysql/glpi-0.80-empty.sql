@@ -39,7 +39,7 @@ CREATE TABLE `glpi_authldaps` (
   `host` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `basedn` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rootdn` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rootdn_secret` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `rootdn_passwd` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `port` int(11) NOT NULL DEFAULT '389',
   `condition` text COLLATE utf8_unicode_ci,
   `login_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'uid',
