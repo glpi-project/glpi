@@ -2898,11 +2898,6 @@ class Search {
                                  =`glpi_ticketfollowups`.`requesttypes_id`)";
 
          case "glpi_taskcategories":
-              $out = " LEFT JOIN `glpi_taskcategories` ON (`glpi_taskcategories`.`id`
-                            =`glpi_tickettasks`.`taskcategories_id`)";
-              return $out;
-
-         case "glpi_taskcategories":
             // Link to glpi_tickettasks before
             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickettasks",$linkfield);
             return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
