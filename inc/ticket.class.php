@@ -5226,7 +5226,8 @@ class Ticket extends CommonDBTM {
                   $inquest = new TicketSatisfaction();
                   if ($inquest->add(array('tickets_id'  => $tick['id'],
                                           'date_begin'  => $_SESSION["glpi_currenttime"],
-                                          'entities_id' => $tick['entities_id']))) {
+                                          'entities_id' => $tick['entities_id'],
+                                          'type'        => $conf->fields['inquest_config']))) {
                      $nb++;
                   }
                }

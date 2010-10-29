@@ -4063,6 +4063,7 @@ DROP TABLE IF EXISTS `glpi_ticketsatisfactions`;
 CREATE TABLE `glpi_ticketsatisfactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tickets_id` int(11) NOT NULL DEFAULT '0',
+  `type` int(11) NOT NULL DEFAULT '1',
   `date_begin` datetime DEFAULT NULL,
   `date_answered` datetime DEFAULT NULL,
   `satisfaction` int(11) DEFAULT NULL,
