@@ -206,7 +206,7 @@ class DisplayPreference extends CommonDBTM {
     * @return nothing
    **/
    function showFormPerso($target,$itemtype) {
-      global $SEARCH_OPTION, $CFG_GLPI, $LANG, $DB;
+      global $CFG_GLPI, $LANG, $DB;
 
       $searchopt = Search::getCleanedOptions($itemtype);
       if (!is_array($searchopt)) {
@@ -309,9 +309,9 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                     echo "<input type='image' name='up' value='".$LANG['buttons'][24]."' src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt='".
-                            $LANG['buttons'][24]."' title='".$LANG['buttons'][24]."'>";
+                     echo "<input type='image' name='up' value=\"".$LANG['buttons'][24]."\" src='".
+                            $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
+                            $LANG['buttons'][24]."\" title=\"".$LANG['buttons'][24]."\">";
                      echo "</form></td>\n";
 
                   } else {
@@ -324,9 +324,9 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                     echo "<input type='image' name='down' value='".$LANG['buttons'][25]."' src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt='".
-                            $LANG['buttons'][25]."' title='".$LANG['buttons'][25]."'>";
+                     echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src='".
+                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
+                            $LANG['buttons'][25]."\" title=\"".$LANG['buttons'][25]."\">";
                      echo "</form></td>\n";
 
                   } else {
@@ -338,9 +338,9 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<input type='image' name='delete' value='".$LANG['buttons'][6]."' src='".
-                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt='".
-                         $LANG['buttons'][6]."' title='".$LANG['buttons'][6]."'>";
+                  echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\" src='".
+                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
+                         $LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\">";
                   echo "</form></td>\n";
                   echo "</tr>";
                   $i++;
@@ -384,8 +384,8 @@ class DisplayPreference extends CommonDBTM {
                 WHERE `itemtype` = '$itemtype'
                       AND `users_id` = '$IDuser'
                 ORDER BY `rank`";
+
       $result  = $DB->query($query);
-      $numrows = 0;
       $numrows = $DB->numrows($result);
 
       echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
@@ -448,11 +448,14 @@ class DisplayPreference extends CommonDBTM {
       }
 
       $i = 0;
+
       if ($numrows) {
          while ($data=$DB->fetch_array($result)) {
+
             if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
+
                echo "<tr class='tab_bg_2'><td class='center' width='50%'>";
-               echo $searchopt[$data["num"]]["name"];
+               echo $searchopt[$data["num"]]["name"].$data['num'];
                echo "</td>";
 
                if ($global_write) {
@@ -462,9 +465,9 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                     echo "<input type='image' name='up' value='".$LANG['buttons'][24]."' src='".
+                     echo "<input type='image' name='up' value=\"".$LANG['buttons'][24]."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
-                            $LANG['buttons'][24]."'  title='".$LANG['buttons'][24]."'>";
+                            $LANG['buttons'][24]."\"  title=\"".$LANG['buttons'][24]."\">";
                      echo "</form>";
                      echo "</td>";
 
@@ -478,9 +481,9 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                     echo "<input type='image' name='down' value='".$LANG['buttons'][25]."' src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt='".
-                            $LANG['buttons'][25]."' title='".$LANG['buttons'][25]."'>";
+                     echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src='".
+                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
+                            $LANG['buttons'][25]."\" title=\"".$LANG['buttons'][25]."\">";
                      echo "</form>";
                      echo "</td>";
 
@@ -493,9 +496,9 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='id' value='".$data["id"]."'>";
                   echo "<input type='hidden' name='users_id' value='$IDuser'>";
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-                  echo "<input type='image' name='delete' value='".$LANG['buttons'][6]."' src='".
-                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt='".
-                         $LANG['buttons'][6]."' title='".$LANG['buttons'][6]."'>";
+                  echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\" src='".
+                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
+                         $LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\">";
                   echo "</form>";
                   echo "</td>\n";
                }
