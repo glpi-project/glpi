@@ -488,6 +488,7 @@ class Reservation extends CommonDBChild {
          $resa->fields["begin"] = $options['date']." 12:00:00";
          $resa->fields["end"]   = $options['date']." 13:00:00";
       }
+      // No item : problem
       if (!isset($options['item']) || count($options['item'])==0) {
          return false;
       }
