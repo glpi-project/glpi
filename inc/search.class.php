@@ -1837,6 +1837,12 @@ class Search {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       } 
 
+      if (isset($searchopt[$ID]['joinparams'])
+         && isset($searchopt[$ID]['joinparams']['condition'])) {
+         $addtable .= "_".sha1($searchopt[$ID]['joinparams']['condition']);
+      }
+
+
       if ($meta) {
          $NAME = "META";
          if (getTableForItemType($meta_type)!=$table) {
@@ -1969,8 +1975,10 @@ class Search {
          case "glpi_auth_tables.name":
             return " `glpi_users`.`authtype` AS ".$NAME."_".$num.",
                      `glpi_users`.`auths_id` AS ".$NAME."_".$num."_2,
-                     `glpi_authldaps$addtable`.`$field` AS ".$NAME."_".$num."_3,
-                     `glpi_authmails$addtable`.`$field` AS ".$NAME."_".$num."_4, ";
+                     `glpi_authldaps".$addtable."_".
+                           sha1("REFTABLE.`authtype` = ".Auth::LDAP)."`.`$field` AS ".$NAME."_".$num."_3,
+                     `glpi_authmails".$addtable."_".
+                           sha1("REFTABLE.`authtype` = ".Auth::MAIL)."`.`$field` AS ".$NAME."_".$num."_4, ";
 
          case "glpi_softwarelicenses.name" :
          case "glpi_softwareversions.name" :
@@ -2719,11 +2727,18 @@ class Search {
 //           || $new_table=="glpi_groups"
 //           || $new_table=="glpi_users_validation") {
 
-         if (!empty($linkfield)
-            && $linkfield!=getForeignKeyFieldForTable($new_table)) {
-            $nt .= "_".$linkfield;
-            $AS .= " AS ".$nt;
-         }
+      if (!empty($linkfield)
+         && $linkfield!=getForeignKeyFieldForTable($new_table)) {
+         $nt .= "_".$linkfield;
+         $AS = " AS ".$nt;
+      }
+
+      if (isset($joinparams['condition'])) {
+         $nt .= "_".sha1($joinparams['condition']);
+         $AS = " AS ".$nt;
+      }
+
+
 //       }
 
       $addmetanum = "";
@@ -2794,13 +2809,13 @@ class Search {
 //             }
 //             break;
 
-         case "glpi_printermodels" :
-            if ($itemtype=='CartridgeItem') {
-               return " LEFT JOIN `glpi_cartridgeitems_printermodels`
-                           ON (`glpi_cartridgeitems_printermodels`.`cartridgeitems_id` = `$rt`.`id`)
-                        LEFT JOIN `$new_table` $AS
-                           ON (`glpi_cartridgeitems_printermodels`.`printermodels_id` = `$nt`.`id`) ";
-            }
+//          case "glpi_printermodels" :
+//             if ($itemtype=='CartridgeItem') {
+//                return " LEFT JOIN `glpi_cartridgeitems_printermodels`
+//                            ON (`glpi_cartridgeitems_printermodels`.`cartridgeitems_id` = `$rt`.`id`)
+//                         LEFT JOIN `$new_table` $AS
+//                            ON (`glpi_cartridgeitems_printermodels`.`printermodels_id` = `$nt`.`id`) ";
+//             }
 
          case "glpi_operatingsystems" :
             if ($itemtype=='Software') {
@@ -3151,10 +3166,10 @@ class Search {
             
             if (!empty($linkfield)) {
                $addcondition='';
-               if (isset($joinparams['condition']) ) {
+               if (isset($joinparams['condition'])) {
                   $addcondition=str_replace("REFTABLE", "`$rt`", $joinparams['condition']);
                   $addcondition=str_replace("NEWTABLE", "`$nt`", $addcondition);
-                  $addcondition = " AND ".$condition." ";
+                  $addcondition = " AND ".$addcondition." ";
                }
 
                $before='';
