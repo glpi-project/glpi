@@ -360,11 +360,13 @@ class MailCollector  extends CommonDBTM {
                //If entity assigned, or email refused by rule, or no user associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"] ||$tkt['users_id'] > 0);
 
-               if ((isset($tkt['entities_id']) && $user_condition)
+               // entities_id set when new ticket / tickets_id when new followup
+               if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
+                        && $user_condition)
                    || isset($tkt['_refuse_email_no_response'])
                    || isset($tkt['_refuse_email_with_response'])) {
 
-                  if (isset($tkt['entities_id'])) {
+                  if (isset($tkt['entities_id']) || isset($tkt['tickets_id'])) {
                      $tkt['_mailgate'] = $mailgateID;
                      $result = imap_fetchheader($this->marubox, $i);
 
@@ -407,8 +409,8 @@ class MailCollector  extends CommonDBTM {
                } else {
                   $input = array();
                   $input['mailcollectors_id'] = $mailgateID;
-                  $input['from']              = $tkt['user_email'];
-                  $input['to']                = $tkt['_to'];
+                  $input['from']              = $tkt['_head']['from'];
+                  $input['to']                = $tkt['_head']['to'];
 
                   if (!$tkt['users_id']) {
                      $input['reason'] = NotImportedEmail::USER_UNKNOWN;
@@ -418,8 +420,8 @@ class MailCollector  extends CommonDBTM {
                   }
 
                   $input['users_id']  = $tkt['users_id'];
-                  $input['subject']   = $tkt['name'];
-                  $input['messageid'] = $tkt['_message_id'];
+                  $input['subject']   = $this->textCleaner($tkt['_head']['subject']);
+                  $input['messageid'] = $tkt['_head']['message_id'];
                   $input['date']      = $_SESSION["glpi_currenttime"];
                   $rejected->add($input);
                }
@@ -494,8 +496,7 @@ class MailCollector  extends CommonDBTM {
       $body = $this->getBody($i);
       // Do it before using charset variable
       $head['subject'] = $this->decodeMimeString($head['subject']);
-      $tkt['_to'] = $head['to'];
-      $tkt['_message_id'] = $head['message_id'];
+      $tkt['_head'] = $head;
 
       if (!empty($this->charset) && !$this->body_converted) {
          $body = encodeInUtf8($body,$this->charset);
