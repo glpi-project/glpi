@@ -554,6 +554,9 @@ class MailCollector  extends CommonDBTM {
                $tkt['content'] .= $content[$ID]."\n";
             }
 
+         // Do not play rules for followups
+         $play_rules = false;
+
          } else {
             unset($tkt['tickets_id']);
          }
