@@ -2045,7 +2045,7 @@ class Search {
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE",$table.$addtable, $tocompute);
+         $tocompute = str_replace("TABLE","`$table.$addtable`", $tocompute);
       }
 
       // Preformat items
@@ -3159,7 +3159,9 @@ class Search {
             if (!empty($linkfield)) {
                $out = " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`";
                if (isset($joinparams['condition']) ) {
-                  $out.= " AND ".str_replace("REFTABLE","`$rt`", $joinparams['condition']);
+                  $condition=str_replace("REFTABLE", "`$rt`", $joinparams['condition'])
+                  $condition=str_replace("NEWTABLE", "`$nt`", $condition)
+                  $out.= " AND ".$condition;
                }
                $out .= ') ';
             }
