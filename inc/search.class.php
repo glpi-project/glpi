@@ -211,7 +211,8 @@ class Search {
       foreach ($toview as $key => $val) {
          $FROM .= Search::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                       $searchopt[$itemtype][$val]["table"],
-                                      $searchopt[$itemtype][$val]["linkfield"]);
+                                      $searchopt[$itemtype][$val]["linkfield"],0,0,
+                                      $searchopt[$itemtype][$val]["joinparams"]);
       }
 
       // Search all case :
@@ -221,7 +222,8 @@ class Search {
             if (is_array($val)) {
                $FROM .= Search::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                             $searchopt[$itemtype][$key]["table"],
-                                            $searchopt[$itemtype][$key]["linkfield"]);
+                                            $searchopt[$itemtype][$key]["linkfield"],0,0,
+                                            $searchopt[$itemtype][$key]["joinparams"]);
             }
          }
       }
@@ -448,7 +450,8 @@ class Search {
                                                $already_link_tables2,
                                                $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"],
                                                $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["linkfield"],
-                                               1, $p['itemtype2'][$i]);
+                                               1, $p['itemtype2'][$i],
+                                               $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"]);
                }
             }
          }
@@ -1832,7 +1835,7 @@ class Search {
       if ($table != getTableForItemType($itemtype)
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
-      }
+      } 
 
       if ($meta) {
          $NAME = "META";
@@ -2698,12 +2701,13 @@ class Search {
    *@param $linkfield linkfield for LeftJoin
    *@param $meta is it a meta item ?
    *@param $meta_type meta type table
+   *@param $joinparams join parameters (condition / joinbefore...)
    *
    *@return Left join string
    *
    **/
    static function addLeftJoin ($itemtype, $ref_table, &$already_link_tables, $new_table,
-                                $linkfield, $meta=0, $meta_type=0) {
+                                $linkfield, $meta=0, $meta_type=0,$joinparams=array()) {
       global $LANG,$CFG_GLPI;
 
       // Rename table for meta left join
@@ -2741,7 +2745,7 @@ class Search {
       if ($linkfield==getForeignKeyFieldForTable($new_table)) {
          $tocheck = $nt;
       }
-      //echo $tocheck.'<br>';
+//       echo $tocheck.'<br>';
 
       if (in_array($tocheck,$already_link_tables)) {
          return "";
@@ -2763,30 +2767,32 @@ class Search {
          // No link
          case "glpi_auth_tables" :
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
-                                          'authldaps_id');
+                                          'auths_id',0,0,
+                                          array('condition'=>"REFTABLE.`authtype` = ".Auth::LDAP));
                $out .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
-                                           'authmails_id');
+                                           'auths_id',0,0,
+                                          array('condition'=>"REFTABLE.`authtype` = ".Auth::MAIL));
                return $out;
 
-         case "glpi_authldaps" :
-            if ($itemtype=='Entity') {
-               return " LEFT JOIN `glpi_authldaps` $AS
-                           ON (`glpi_entitydatas`.`ldapservers_id` = `$nt`.`id`)";
-            }
-            if ($itemtype=='User') {
-               return " LEFT JOIN `glpi_authldaps`
-                           ON (`glpi_users`.`authtype` = ".Auth::LDAP."
-                               AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)";
-            }
-            break;
+//          case "glpi_authldaps" :
+//             if ($itemtype=='Entity') {
+//                return " LEFT JOIN `glpi_authldaps` $AS
+//                            ON (`glpi_entitydatas`.`ldapservers_id` = `$nt`.`id`)";
+//             }
+//             if ($itemtype=='User') {
+//                return " LEFT JOIN `glpi_authldaps`
+//                            ON (`glpi_users`.`authtype` = ".Auth::LDAP."
+//                                AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)";
+//             }
+//             break;
 
-         case "glpi_authmails" :
-            if ($itemtype=='User') {
-               return " LEFT JOIN `glpi_authmails`
-                           ON (`glpi_users`.`authtype` = ".Auth::MAIL."
-                               AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
-            }
-            break;
+//          case "glpi_authmails" :
+//             if ($itemtype=='User') {
+//                return " LEFT JOIN `glpi_authmails`
+//                            ON (`glpi_users`.`authtype` = ".Auth::MAIL."
+//                                AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
+//             }
+//             break;
 
          case "glpi_printermodels" :
             if ($itemtype=='CartridgeItem') {
@@ -3147,10 +3153,17 @@ class Search {
                   }
                }
             }
+            
+            
+            $out='';
             if (!empty($linkfield)) {
-               return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+               $out = " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`";
+               if (isset($joinparams['condition']) ) {
+                  $out.= " AND ".str_replace("REFTABLE","`$rt`", $joinparams['condition']);
+               }
+               $out .= ') ';
             }
-            return "";
+            return $out;
       }
    }
 
@@ -4348,6 +4361,10 @@ class Search {
             // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
             if (empty($search[$itemtype][$key]['linkfield'])) {
                $search[$itemtype][$key]['massiveaction'] = false;
+            }
+            // Add default joinparams
+            if (!isset($val['joinparams'])) {
+               $search[$itemtype][$key]['joinparams']=array();
             }
          }
 

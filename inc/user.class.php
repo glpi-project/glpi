@@ -1661,19 +1661,24 @@ class User extends CommonDBTM {
 
       $tab[15]['table']         = 'glpi_auth_tables';
       $tab[15]['field']         = 'name';
+      $tab[15]['linkfield']     = 'auths_id';
       $tab[15]['name']          = $LANG['login'][10];
       $tab[15]['searchtype']    = 'contains';
       $tab[15]['massiveaction'] = false;
 
       $tab[30]['table']         = 'glpi_authldaps';
       $tab[30]['field']         = 'name';
+      $tab[30]['linkfield']     = 'auths_id';
       $tab[30]['name']          = $LANG['login'][10]." - ".$LANG['login'][2];
       $tab[30]['massiveaction'] = false;
+      $tab[30]['joinparams']    = array('condition' => "REFTABLE.`authtype` = ".Auth::LDAP);
 
       $tab[31]['table']         = 'glpi_authmails';
       $tab[31]['field']         = 'name';
+      $tab[31]['linkfield']     = 'auths_id';
       $tab[31]['name']          = $LANG['login'][10]." - ".$LANG['login'][3];
       $tab[31]['massiveaction'] = false;
+      $tab[31]['joinparams']    = array('condition' => "REFTABLE.`authtype` = ".Auth::MAIL);
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
