@@ -154,7 +154,7 @@ class Search {
 
       // Add searched items
       if (count($p['field'])>0) {
-         foreach($p['field'] as $key => $val) {
+         foreach ($p['field'] as $key => $val) {
             if (!in_array($val,$toview) && $val!='all' && $val!='view') {
                array_push($toview,$val);
             }
@@ -389,7 +389,7 @@ class Search {
 
       //// 4 - ORDER
       $ORDER = " ORDER BY `id` ";
-      foreach($toview as $key => $val) {
+      foreach ($toview as $key => $val) {
          if ($p['sort']==$val) {
             $ORDER = Search::addOrderBy($itemtype, $p['sort'], $p['order'], $key);
          }
@@ -3574,7 +3574,7 @@ class Search {
             if (!empty($data[$NAME.$num])) {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
-               foreach($split as $val) {
+               foreach ($split as $val) {
                   $out .= (empty($out)?'':'<br>');
                   if ($val>0) {
                      $out .= $val." ".$LANG['financial'][9];
@@ -3588,7 +3588,7 @@ class Search {
             if (!empty($data[$NAME.$num])) {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
-               foreach($split as $val) {
+               foreach ($split as $val) {
                   $out .= (empty($out)?'':'<br>');
                   if ($val>0) {
                      $out .= $val." ".$LANG['financial'][57];
@@ -3604,7 +3604,7 @@ class Search {
          case "glpi_infocoms.sink_type" :
             $split = explode("$$$$", $data[$NAME.$num]);
             $out   = '';
-            foreach($split as $val) {
+            foreach ($split as $val) {
                $out .= (empty($out)?'':'<br>').Infocom::getAmortTypeName($val);
             }
             return $out;
@@ -3748,7 +3748,7 @@ class Search {
          case "glpi_tickets.global_validation" :
             $split = explode("$$$$",$data[$NAME.$num]);
             $out   = '';
-            foreach($split as $val) {
+            foreach ($split as $val) {
                $status  = TicketValidation::getStatus($val);
                $bgcolor = TicketValidation::getStatusColor($val);
                $out .= (empty($out)?'':'<br>').
@@ -3848,7 +3848,7 @@ class Search {
             case "date" :
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
-               foreach($split as $val) {
+               foreach ($split as $val) {
                   $out .= (empty($out)?'':'<br>').convDate($val);
                }
                return $out;
@@ -3856,7 +3856,7 @@ class Search {
             case "datetime" :
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
-               foreach($split as $val) {
+               foreach ($split as $val) {
                   $out .= (empty($out)?'':'<br>').convDateTime($val);
                }
                return $out;
@@ -3870,7 +3870,7 @@ class Search {
             case "date_delay" :
                $split = explode('$$$$', $data[$NAME.$num]);
                $out   = '';
-               foreach($split as $val) {
+               foreach ($split as $val) {
                   if (strpos($val,',')) {
                      list($dat,$dur) = explode(',', $val);
                      if (!empty($dat)) {
@@ -4370,7 +4370,7 @@ class Search {
 
       $out = "";
       if (is_array($array) && count($array)>0) {
-         foreach($array as $key => $val) {
+         foreach ($array as $key => $val) {
             $out .= "&amp;".$name."[$key]=".urlencode(stripslashes($val));
          }
       }

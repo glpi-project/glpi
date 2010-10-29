@@ -344,8 +344,8 @@ function addTracking($type, $ID, $ID_entity) {
                         '".$users[1]."', '$enterprise', '".mt_rand($FIRST["groups"],
                         $LAST['groups'])."', '$type', '$ID', 'tracking ".getRandomString(15)."',
                         '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."', '', '0',
-                        '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."', '$hour_cost', '0', '0',
-                        '".mt_rand(0, $MAX['ticketsolutions'])."',
+                        '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."',
+                        '$hour_cost', '0', '0', '".mt_rand(0, $MAX['ticketsolutions'])."',
                         'Solution ".getRandomString(20)."', 'accepted', 0, 0, NULL, NULL, 0, 0,
                         $closetime, $solvetime, $firstactiontime, '$actiontime')";
       $DB->query($query) or die("PB REQUETE ".$query);
