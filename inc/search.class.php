@@ -2813,12 +2813,6 @@ class Search {
          case "glpi_reservationitems" :
             return "";
 
-         case "glpi_computerdisks" :
-            if ($meta) {
-               return " INNER JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
-            }
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
-
          case "glpi_filesystems" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_computerdisks",
                                        $linkfield);
@@ -3155,17 +3149,25 @@ class Search {
             }
             
             
-            $out='';
             if (!empty($linkfield)) {
-               $out = " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`";
+               $addcondition='';
                if (isset($joinparams['condition']) ) {
-                  $condition=str_replace("REFTABLE", "`$rt`", $joinparams['condition']);
-                  $condition=str_replace("NEWTABLE", "`$nt`", $condition);
-                  $out.= " AND ".$condition;
+                  $addcondition=str_replace("REFTABLE", "`$rt`", $joinparams['condition']);
+                  $addcondition=str_replace("NEWTABLE", "`$nt`", $addcondition);
+                  $addcondition = " AND ".$condition." ";
                }
-               $out .= ') ';
+
+               // Child join 
+               if (isset($joinparams['ischild']) && $joinparams['ischild'] ) {
+                  return " LEFT JOIN `$new_table` $AS 
+                              ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($ref_table)."` 
+                                    $addcondition)";
+               } else {
+                  // Standard join 
+                 return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
+               }
             }
-            return $out;
+            return '';
       }
    }
 
