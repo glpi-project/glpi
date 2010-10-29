@@ -2278,7 +2278,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td colspan='2' class='center'>";
-   echo "<input type='submit' value='".$LANG['help'][14]."' class='submit'>";
+   echo "<input type='submit' value=\"".$LANG['help'][14]."\" class='submit'>";
    echo "</td></tr>";
 
    echo "</table></div></form>";
@@ -2440,7 +2440,7 @@ function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
       echo "<option value='-".CSV_OUTPUT."'>".$LANG['buttons'][45]."</option>";
       echo "</select>&nbsp;";
       echo "<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
-             title='".$LANG['buttons'][31]."' value='".$LANG['buttons'][31]."'>";
+             title='".$LANG['buttons'][31]."' value=\"".$LANG['buttons'][31]."\">";
       echo "</form>";
       echo "</td>" ;
    }
@@ -3055,7 +3055,7 @@ function showNotesForm($target, $itemtype, $id) {
    echo "<input type='hidden' name='id' value=$id>";
 
    if ($canedit) {
-      echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
    }
    echo "</td></tr>";
    echo "</table></div>";

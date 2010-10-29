@@ -341,7 +341,7 @@ class OcsServer extends CommonDBTM {
       echo "</table>\n";
 
       echo "<p class='submit'>";
-      echo "<input type='submit' name='update_server' class='submit' value='".$LANG['buttons'][2]."'>";
+      echo "<input type='submit' name='update_server' class='submit' value=\"".$LANG['buttons'][2]."\">";
       echo "</p></form></div>\n";
    }
 
@@ -2052,7 +2052,8 @@ class OcsServer extends CommonDBTM {
             echo "<th>&nbsp;</th></tr>\n";
 
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-            echo "<input class='submit' type='submit' name='update_ok' value='".$LANG['ldap'][15]."'>";
+            echo "<input class='submit' type='submit' name='update_ok' value=\"".
+                   $LANG['ldap'][15]."\">";
             echo "</td></tr>\n";
 
             foreach ($already_linked as $ID => $tab) {
@@ -2066,7 +2067,8 @@ class OcsServer extends CommonDBTM {
                            ($check == "all" ? "checked" : "") . "></td></tr>\n";
             }
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
-            echo "<input class='submit' type='submit' name='update_ok' value='".$LANG['ldap'][15]."'>";
+            echo "<input class='submit' type='submit' name='update_ok' value=\"".
+                   $LANG['ldap'][15]."\">";
             echo "<input type=hidden name='ocsservers_id' value='" . $ocsservers_id . "'>";
             echo "</td></tr>";
             echo "</table></form>\n";
@@ -2285,7 +2287,8 @@ class OcsServer extends CommonDBTM {
             echo "<th>&nbsp;</th></tr>\n";
 
             echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
-            echo "<input class='submit' type='submit' name='import_ok' value='".$LANG['buttons'][37]."'>";
+            echo "<input class='submit' type='submit' name='import_ok' value=\"".
+                   $LANG['buttons'][37]."\">";
             echo "</td></tr>\n";
 
             $rule = new RuleOcsCollection($ocsservers_id);
@@ -2344,7 +2347,8 @@ class OcsServer extends CommonDBTM {
                echo "</td></tr>\n";
             }
             echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
-            echo "<input class='submit' type='submit' name='import_ok' value='".$LANG['buttons'][37]."'>\n";
+            echo "<input class='submit' type='submit' name='import_ok' value=\"".
+                   $LANG['buttons'][37]."\">\n";
             echo "<input type=hidden name='ocsservers_id' value='" . $ocsservers_id . "'>";
             echo "</td></tr>";
             echo "</table></form>\n";

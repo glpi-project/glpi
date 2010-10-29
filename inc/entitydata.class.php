@@ -202,9 +202,10 @@ class EntityData extends CommonDBTM {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit' >";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+                   class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit' >";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -296,9 +297,10 @@ class EntityData extends CommonDBTM {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+                   class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -431,9 +433,10 @@ class EntityData extends CommonDBTM {
 
          if ($entitynotification->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entitynotification->fields["id"]."'>";
-            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+                   class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -603,9 +606,10 @@ class EntityData extends CommonDBTM {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+                   class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value='".$LANG['buttons'][7]."' class='submit'>";
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          }
 
          echo "</td></tr>";

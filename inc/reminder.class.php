@@ -320,7 +320,7 @@ class Reminder extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
          echo "<div class='center'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</div>";
          echo "</td></tr>\n";
 
@@ -328,9 +328,9 @@ class Reminder extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='id' value='$ID'>\n";
          echo "<div class='center'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][7]."' class='submit'>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "<input type='hidden' name='id' value='$ID'><span class='medium_space'>";
-         echo "<input type='submit' name='delete' value='".$LANG['buttons'][22]."'
+         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][22]."\"
                 class='submit' OnClick='return window.confirm(\"" .$LANG['common'][50]. "\");'>
                </span>";
          echo "</div>";

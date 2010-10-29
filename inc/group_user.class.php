@@ -121,7 +121,8 @@ class Group_User extends CommonDBRelation{
             Dropdown::show('Group', array('entity' => $strict_entities,
                                           'used'   => $used));
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addgroup' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<input type='submit' name='addgroup' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";
          } else {
             echo $LANG['common'][49];
          }
@@ -263,7 +264,8 @@ class Group_User extends CommonDBRelation{
             }
             echo "</td><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name'is_dynamic' value='0'>";
-            echo "<input type='submit' name='adduser' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";
             echo "</td></tr>";
             echo "</table></div>";
          }

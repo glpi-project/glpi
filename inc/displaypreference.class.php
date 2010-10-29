@@ -238,7 +238,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo $LANG['setup'][241]."<span class='small_space'>";
-         echo "<input type='submit' name='activate' value='".$LANG['buttons'][2]."' class='submit' >";
+         echo "<input type='submit' name='activate' value=\"".$LANG['buttons'][2]."\" class='submit'>";
          echo "</span></form></th></tr></table>\n";
 
       } else {
@@ -271,7 +271,7 @@ class DisplayPreference extends CommonDBTM {
             echo "</optgroup>\n";
          }
          echo "</select><span class='small_space'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit' >";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</span></form>";
          echo "</td></tr>\n";
 
@@ -420,7 +420,7 @@ class DisplayPreference extends CommonDBTM {
          }
 
          echo "</select><span class='small_space'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit' >";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</span></form>";
          echo "</td></tr>";
       }

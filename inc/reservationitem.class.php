@@ -192,15 +192,15 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$ri->fields['id']."'>";
          if ($ri->fields["is_active"]) {
             echo "<input type='hidden' name='is_active' value='0'>";
-            echo "<input type='submit' name='update' value='".$LANG['reservation'][3]."'
+            echo "<input type='submit' name='update' value=\"".$LANG['reservation'][3]."\"
                    class='submit'>";
          } else {
             echo "<input type='hidden' name='is_active' value='1'>";
-            echo "<input type='submit' name='update' value='".$LANG['reservation'][5]."'
+            echo "<input type='submit' name='update' value=\"".$LANG['reservation'][5]."\"
                    class='submit'>";
          }
          echo "<span class='small_space'>";
-         echo "<input type='submit' name='delete' value='".$LANG['reservation'][6]."'
+         echo "<input type='submit' name='delete' value=\"".$LANG['reservation'][6]."\"
                class='submit' OnClick='return window.confirm(\"".$LANG['reservation'][38]. "\")'>";
          echo "</span></td>";
       } else {
@@ -209,7 +209,7 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='entities_id' value='".$item->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
-         echo "<input type='submit' name='add' value='".$LANG['reservation'][7]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['reservation'][7]."\" class='submit'>";
          echo "</td>";
       }
       echo "</tr></table></form></div>";
@@ -246,11 +246,11 @@ class ReservationItem extends CommonDBTM {
          echo "<td class='b'>$type - $name</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;:</td>";
-         echo "<td><textarea name='comment' cols='30' rows='10' >".$r->fields["comment"]."</textarea>";
-         echo "</td></tr>\n";
+         echo "<td><textarea name='comment' cols='30' rows='10' >".$r->fields["comment"];
+         echo "</textarea></td></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][14]."' class='submit'>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
          echo "</td></tr>\n";
 
          echo "</table></form></div>";
@@ -331,7 +331,7 @@ class ReservationItem extends CommonDBTM {
       }
       if ($ok) {
          echo "<tr class='tab_bg_1 center'><td colspan='".($showentity?"5":"4")."'>";
-         echo "<input type='submit' value='".$LANG['buttons'][8]."' class='submit'></td></tr>\n";
+         echo "<input type='submit' value=\"".$LANG['buttons'][8]."\" class='submit'></td></tr>\n";
       }
       echo "</table>\n";
       echo "<input type='hidden' name='id' value=''>";

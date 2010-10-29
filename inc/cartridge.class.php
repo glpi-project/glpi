@@ -602,7 +602,8 @@ class Cartridge extends CommonDBTM {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2'>";
-         echo "<input type='submit' name='add_several' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add_several' value=\"".$LANG['buttons'][8]."\"
+                class='submit'>";
          echo "<input type='hidden' name='tID' value='$ID'>\n";
          echo "<span class='small_space'>";
          Dropdown::showInteger('to_add',1,1,100);
@@ -745,7 +746,7 @@ class Cartridge extends CommonDBTM {
          echo "<input type='hidden' name='pID' value='$instID'>";
 
          if (CartridgeItem::dropdownForPrinter($printer)) {
-            echo "&nbsp;<input type='submit' name='install' value='".$LANG['buttons'][4]."'
+            echo "&nbsp;<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\"
                          class='submit'>";
          }
          echo "</form></td><td class='tab_bg_2 center'>&nbsp;";

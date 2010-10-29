@@ -730,8 +730,8 @@ class Contract extends CommonDBTM {
                                  'entity'       => $this->fields["entities_id"],
                                  'entity_sons'  => $this->fields["is_recursive"]));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='addcontractsupplier' value='".$LANG['buttons'][8].
-                  "' class='submit'>";
+            echo "<input type='submit' name='addcontractsupplier' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
          }
@@ -889,7 +889,8 @@ class Contract extends CommonDBTM {
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
                                    $CFG_GLPI["contract_types"]);
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";
             echo "</td><td>&nbsp;</td></tr>";
          }
          echo "</table>";
@@ -1053,7 +1054,8 @@ class Contract extends CommonDBTM {
             Contract::dropdown(array('entity' => $item->getEntityID(),
                                      'used'   => $contracts));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value='".$LANG['buttons'][8]."' class='submit'>";
+            echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
          }

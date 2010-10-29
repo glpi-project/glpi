@@ -229,7 +229,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                           'entity_sons' => $license->fields['is_recursive']));
 
          echo "</td>";
-         echo "<td><input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<td><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></form>";

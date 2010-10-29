@@ -2942,8 +2942,8 @@ class Transfer extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 top' colspan='4'>";
          echo "<div class='center'>";
          Dropdown::show('Entity', array('name' => 'to_entity'));
-         echo "&nbsp;<input type='submit' name='transfer' value='".$LANG['buttons'][48]."'".
-               "class='submit'></div>";
+         echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG['buttons'][48]."\"
+                      class='submit'></div>";
          echo "</td></tr>";
       }
 

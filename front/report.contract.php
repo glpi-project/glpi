@@ -76,7 +76,7 @@ for ($i=$y-10 ; $i<=$y ; $i++) {
 echo "</select></p></td></tr>";
 
 echo "<tr><td class='tab_bg_1 center' colspan='2'>";
-echo "<p><input type='submit' value='".$LANG['reports'][15]."' class='submit'></p></td></tr>";
+echo "<p><input type='submit' value=\"".$LANG['reports'][15]."\" class='submit'></p></td></tr>";
 
 echo "</table>";
 echo "</form>";

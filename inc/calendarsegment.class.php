@@ -253,7 +253,7 @@ class CalendarSegment extends CommonDBChild {
          echo "</td><td class='center'>".$LANG['buttons'][32]."&nbsp;: ";
          Dropdown::showHours("end",(date('H')+1).":00");
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></div>";

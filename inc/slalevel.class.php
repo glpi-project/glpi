@@ -116,7 +116,7 @@ class SlaLevel extends RuleTicket {
          echo "</td><td class='center'>".$LANG['common'][60]."&nbsp;: ";
          Dropdown::showYesNo("is_active",array('value'=>1));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></div><br>";

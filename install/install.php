@@ -133,7 +133,7 @@ function acceptLicence() {
    echo "<br>";
    echo "<input type='radio' name='install' value='lang_select' id='disagree' checked='checked'>";
    echo " <label for='disagree'>".$LANG['install'][94]." </label>";
-   echo "<p><input type='submit' name='submit' class='submit' value='".$LANG['install'][26]."'></p>";
+   echo "<p><input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\"></p>";
    echo "</form>";
    echo "</div>";
 }
@@ -149,13 +149,13 @@ function step0() {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='no'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][3]."'></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][3]."\"></p>";
    echo "</form>";
 
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='yes'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][4]."'></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][4]."\"></p>";
    echo "</form>";
 }
 
@@ -176,7 +176,7 @@ function step1($update) {
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
-         echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][26]."'>";
+         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
          echo "</p></form>";
          break;
 
@@ -185,13 +185,13 @@ function step1($update) {
          echo "<form action='install.php' method='post'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
-         echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][26]."'>";
+         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
          echo "</p></form> &nbsp;&nbsp;";
 
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-         echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][27]."'>";
+         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][27]."\">";
          echo "</p></form>";
          break;
 
@@ -200,7 +200,7 @@ function step1($update) {
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='".$update."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-         echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][27]."'>";
+         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][27]."\">";
          echo "</p></form>";
          break;
    }
@@ -490,7 +490,7 @@ function update1($host, $user, $password, $DBname) {
       echo "<form action='install.php' method='post'>";
       echo "<input type='hidden' name='update' value='yes'>";
       echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-      echo "<input type='submit' name='submit' class='submit' value='".$LANG['install'][25]."'>";
+      echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][25]."\">";
       echo "</p></form>";
    }
 }
