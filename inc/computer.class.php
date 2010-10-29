@@ -970,6 +970,7 @@ class Computer extends CommonDBTM {
       $tab[156]['name']          = $LANG['common'][16]." ".$LANG['computers'][0];
       $tab[156]['forcegroupby']  = true;
       $tab[156]['massiveaction'] = false;
+      $tab[156]['joinparams']    = array('ischild' => true);
 
       $tab[150]['table']         = 'glpi_computerdisks';
       $tab[150]['field']         = 'totalsize';
@@ -979,6 +980,7 @@ class Computer extends CommonDBTM {
       $tab[150]['datatype']      = 'number';
       $tab[150]['width']         = 1000;
       $tab[150]['massiveaction'] = false;
+      $tab[150]['joinparams']    = array('ischild' => true);
 
       $tab[151]['table']         = 'glpi_computerdisks';
       $tab[151]['field']         = 'freesize';
@@ -987,6 +989,7 @@ class Computer extends CommonDBTM {
       $tab[151]['datatype']      = 'number';
       $tab[151]['width']         = 1000;
       $tab[151]['massiveaction'] = false;
+      $tab[151]['joinparams']    = array('ischild' => true);
 
       $tab[152]['table']         = 'glpi_computerdisks';
       $tab[152]['field']         = 'freepercent';
@@ -997,19 +1000,21 @@ class Computer extends CommonDBTM {
       $tab[152]['computation']   = "ROUND(100*TABLE.freesize/TABLE.totalsize)";
       $tab[152]['unit']          = '%';
       $tab[152]['massiveaction'] = false;
-
+      $tab[152]['joinparams']    = array('ischild' => true);
 
       $tab[153]['table']         = 'glpi_computerdisks';
       $tab[153]['field']         = 'mountpoint';
       $tab[153]['name']          = $LANG['computers'][5];
       $tab[153]['forcegroupby']  = true;
       $tab[153]['massiveaction'] = false;
+      $tab[153]['joinparams']    = array('ischild' => true);
 
       $tab[154]['table']         = 'glpi_computerdisks';
       $tab[154]['field']         = 'device';
       $tab[154]['name']          = $LANG['computers'][6];
       $tab[154]['forcegroupby']  = true;
       $tab[154]['massiveaction'] = false;
+      $tab[154]['joinparams']    = array('ischild' => true);
 
       $tab[155]['table']         = 'glpi_filesystems';
       $tab[155]['field']         = 'name';
