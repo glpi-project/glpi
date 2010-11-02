@@ -880,8 +880,8 @@ function update0781to080($output='HTML') {
                     `tickets_id` int(11) NOT NULL DEFAULT '0',
                     `users_id` int(11) NOT NULL DEFAULT '0',
                     `type` int(11) NOT NULL DEFAULT '1',
-                    `use_email_notification` tinyint(1) NOT NULL DEFAULT '0',
-                    `user_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                    `use_notification` tinyint(1) NOT NULL DEFAULT '0',
+                    `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                     PRIMARY KEY (`id`),
                     KEY `tickets_id` (`tickets_id`),
                     KEY `user` (`users_id`,`type`)
@@ -918,7 +918,7 @@ function update0781to080($output='HTML') {
                   }
                   
                   $query = "INSERT INTO `glpi_tickets_users`
-                              (`tickets_id`, `users_id`,`type`,`use_email_notification`,`user_email`)
+                              (`tickets_id`, `users_id`,`type`,`use_notification`,`alternative_email`)
                            VALUES ('".$data['id']."','$user_id','".Ticket::REQUESTER."',
                                  '".$data['use_email_notification']."','$user_email')";
                   $DB->query($query)

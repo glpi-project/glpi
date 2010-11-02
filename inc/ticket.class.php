@@ -59,6 +59,8 @@ class Ticket extends CommonDBTM {
    const REQUESTER = 1;
    // Assign
    const ASSIGN = 2;
+   // Observer
+   const OBSERVER = 3;
 
    /**
     * Name of the type
