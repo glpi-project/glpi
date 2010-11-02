@@ -644,6 +644,8 @@ class Document extends CommonDBTM {
       $tab[72]['usehaving']     = true;
       $tab[72]['datatype']      = 'number';
       $tab[72]['massiveaction'] = false;
+      $tab[72]['joinparams']    = array('ischild' => true);
+
 
       return $tab;
    }
