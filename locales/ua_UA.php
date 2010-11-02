@@ -1253,7 +1253,7 @@ $LANG['plugins'][6]="Оновити";
 $LANG['plugins'][7]="Немає встановлених плагінів"; 
 $LANG['plugins'][8]="Дивіться каталог плагінів"; 
 $LANG['plugins'][9]="Автори"; 
-$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
+$LANG['plugins'][10]="Плагін несумісний з цією версією GLPI"; 
 
 $LANG['printers'][14]="Послідовний інтерфейс"; 
 $LANG['printers'][15]="Паралельний інтерфейс"; 

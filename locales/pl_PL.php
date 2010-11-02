@@ -339,7 +339,7 @@ $LANG['contract'][1]="Kontrakty z uwagami od czasu";
 
 $LANG['crontask'][0]="Akcje automatyczne"; 
 $LANG['crontask'][1]="Synchronizuj urządzenia z OCS Inventory NG"; 
-$LANG['crontask'][2]="Wyślij alarm na kardlidzach"; 
+$LANG['crontask'][2]="Wyślij alarm o kartridżach"; 
 $LANG['crontask'][3]="Wyślij alarm na cześciach"; 
 $LANG['crontask'][4]="Wysyłaj alarmy o wygaśnietych licencjach"; 
 $LANG['crontask'][5]="Wysyłaj alarmy o umowach"; 
@@ -1253,7 +1253,7 @@ $LANG['plugins'][6]="Do uaktualnienia";
 $LANG['plugins'][7]="Nie zainstalowano wtyczek"; 
 $LANG['plugins'][8]="Zobacz katalog wtyczek"; 
 $LANG['plugins'][9]="Autorzy"; 
-$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
+$LANG['plugins'][10]="Dodatek niekompatybilny z tą wersją GLPI"; 
 
 $LANG['printers'][14]="Serial"; 
 $LANG['printers'][15]="Równoległy"; 
@@ -1356,7 +1356,7 @@ $LANG['reports'][58]="Raport materiałów wg lat";
 $LANG['reports'][60]="termin otwarcia"; 
 $LANG['reports'][61]="Data zamknięcia"; 
 $LANG['reports'][62]="Informacje finansowe o sprzęcie"; 
-$LANG['reports'][63]="Inne informacje finansowe (licencje, kardlidże, materiały eksploatacyjne)"; 
+$LANG['reports'][63]="Inne informacje finansowe (licencje, kartridże, materiały eksploatacyjne)"; 
 $LANG['reports'][64]="Data ustanowienia"; 
 
 $LANG['reservation'][1]="Pozycje możliwe do rezerwacji"; 
@@ -1577,7 +1577,7 @@ $LANG['setup'][102]="Poziom Logowania";
 $LANG['setup'][103]="1- Krytyczny (tylko błędy logowania)"; 
 $LANG['setup'][104]="2- Ciężki (Nie używany)"; 
 $LANG['setup'][105]="3- Ważny (poprawne logowania)"; 
-$LANG['setup'][106]="4- Zauważalny (Dodanie, usunięcie, śledzenie)"; 
+$LANG['setup'][106]="4- Informacje (Dodanie, usunięcie, śledzenie)"; 
 $LANG['setup'][107]="5- Całkowity (Wszystko)"; 
 $LANG['setup'][109]="Jak długo logi maja zostać w bazie (w dniach, 0=bez ograniczeń)"; 
 $LANG['setup'][110]="Pokaż nowe zgłoszenia na stronie głównej"; 
