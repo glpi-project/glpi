@@ -1882,7 +1882,7 @@ class Search {
             if ($itemtype != 'User') {
 
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT( `$table$addtable`.`id` SEPARATOR '$$$$')
+                  return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '$$$$')
                               AS ".$NAME."_".$num.",";
                }
                return " `$table$addtable`.`$field` AS ".$NAME."_$num,
