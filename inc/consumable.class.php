@@ -433,6 +433,7 @@ class Consumable extends CommonDBTM {
          $leftjoin  = " LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_consumables`.`users_id`) ";
          $addselect = ", `glpi_users`.`realname` AS REALNAME,
                         `glpi_users`.`firstname` AS FIRSTNAME,
+                        `glpi_users`.`id` AS USERID,
                         `glpi_users`.`name` AS USERNAME ";
       }
       $query = "SELECT `glpi_consumables`.*
@@ -455,14 +456,7 @@ class Consumable extends CommonDBTM {
 
             if ($show_old) {
                echo "<td class='center'>";
-               if (!empty($data["REALNAME"])) {
-                  echo $data["REALNAME"];
-                  if (!empty($data["FIRSTNAME"])) {
-                     echo " ".$data["FIRSTNAME"];
-                  }
-               } else {
-                  echo $data["USERNAME"];
-               }
+               echo formatUserName($data["USERID"], $data["REALNAME"], $data["REALNAME"], $data["FIRSTNAME"]);
                echo "</td>";
             }
             echo "<td class='center'>";
