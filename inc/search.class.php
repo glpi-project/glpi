@@ -2194,6 +2194,19 @@ class Search {
          $table .= "_".$itemtype;
       }
 
+
+      if (isset($searchopt[$ID]['joinparams'])
+         && isset($searchopt[$ID]['joinparams']['condition'])) {
+         $table .= "_".md5($searchopt[$ID]['joinparams']['condition']);
+      }
+
+      if (isset($searchopt[$ID]['joinparams'])
+         && isset($searchopt[$ID]['joinparams']['beforejoin'])
+         && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])) {
+         $table .= "_".md5($searchopt[$ID]['joinparams']['beforejoin']['table']);
+      }
+
+
       // Hack to allow search by ID on every sub-table
       if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)) {
          return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".
