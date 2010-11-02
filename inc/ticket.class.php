@@ -1576,7 +1576,7 @@ class Ticket extends CommonDBTM {
       $tab[7]['field'] = 'completename';
       $tab[7]['name']  = $LANG['common'][36];
 
-      $tab[13]['table']         = 'glpi_tickets';
+      $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'items_id';
       $tab[13]['name']          = $LANG['common'][1];
       $tab[13]['nosearch']      = true;
@@ -1605,7 +1605,7 @@ class Ticket extends CommonDBTM {
 
       $tab['validation'] = $LANG['validation'][0];
 
-      $tab[52]['table']      = 'glpi_tickets';
+      $tab[52]['table']      = $this->getTable();
       $tab[52]['field']      = 'global_validation';
       $tab[52]['name']       = $LANG['validation'][0];
       $tab[52]['searchtype'] = 'equals';
@@ -1616,7 +1616,7 @@ class Ticket extends CommonDBTM {
       $tab[53]['datatype']      = 'text';
       $tab[53]['forcegroupby']  = true;
       $tab[53]['massiveaction'] = false;
-      $tab[53]['joinparams']    = array('ischild' => true);
+      $tab[53]['joinparams']    = array('jointype' => 'child');
 
       $tab[54]['table']         = 'glpi_ticketvalidations';
       $tab[54]['field']         = 'comment_validation';
@@ -1624,7 +1624,7 @@ class Ticket extends CommonDBTM {
       $tab[54]['datatype']      = 'text';
       $tab[54]['forcegroupby']  = true;
       $tab[54]['massiveaction'] = false;
-      $tab[54]['joinparams']    = array('ischild' => true);
+      $tab[54]['joinparams']    = array('jointype' => 'child');
 
       $tab[55]['table']         = 'glpi_ticketvalidations';
       $tab[55]['field']         = 'status';
@@ -1632,7 +1632,7 @@ class Ticket extends CommonDBTM {
       $tab[55]['searchtype']    = 'equals';
       $tab[55]['forcegroupby']  = true;
       $tab[55]['massiveaction'] = false;
-      $tab[55]['joinparams']    = array('ischild' => true);
+      $tab[55]['joinparams']    = array('jointype' => 'child');
 
       $tab[56]['table']         = 'glpi_ticketvalidations';
       $tab[56]['field']         = 'submission_date';
@@ -1640,7 +1640,7 @@ class Ticket extends CommonDBTM {
       $tab[56]['datatype']      = 'datetime';
       $tab[56]['forcegroupby']  = true;
       $tab[56]['massiveaction'] = false;
-      $tab[56]['joinparams']    = array('ischild' => true);
+      $tab[56]['joinparams']    = array('jointype' => 'child');
 
       $tab[57]['table']         = 'glpi_ticketvalidations';
       $tab[57]['field']         = 'validation_date';
@@ -1648,7 +1648,7 @@ class Ticket extends CommonDBTM {
       $tab[57]['datatype']      = 'datetime';
       $tab[57]['forcegroupby']  = true;
       $tab[57]['massiveaction'] = false;
-      $tab[57]['joinparams']    = array('ischild' => true);
+      $tab[57]['joinparams']    = array('jointype' => 'child');
 
       $tab[58]['table']         = 'glpi_users';
       $tab[58]['field']         = 'name';
@@ -1659,7 +1659,7 @@ class Ticket extends CommonDBTM {
       $tab[58]['massiveaction'] = false;
       $tab[58]['joinparams']    = array('beforejoin' =>
                                       array('table'      => 'glpi_ticketvalidations',
-                                            'joinparams' => array('ischild' => true)));
+                                            'joinparams' => array('jointype' => 'child')));
 
       $tab[59]['table']         = 'glpi_users';
       $tab[59]['field']         = 'name';
@@ -1671,7 +1671,7 @@ class Ticket extends CommonDBTM {
       $tab[59]['massiveaction'] = false;
       $tab[59]['joinparams']    = array('beforejoin' =>
                                       array('table'      => 'glpi_ticketvalidations',
-                                            'joinparams' => array('ischild' => true)));
+                                            'joinparams' => array('jointype' => 'child')));
 
       $tab['requester'] = $LANG['job'][4];
 
@@ -1741,7 +1741,7 @@ class Ticket extends CommonDBTM {
          $tab[25]['forcegroupby']  = true;
          $tab[25]['splititems']    = true;
          $tab[25]['massiveaction'] = false;
-         $tab[25]['joinparams']    = array('ischild' => true);
+         $tab[25]['joinparams']    = array('jointype' => 'child');
 
          $tab[27]['table']         = 'glpi_ticketfollowups';
          $tab[27]['field']         = 'count';
@@ -1750,7 +1750,7 @@ class Ticket extends CommonDBTM {
          $tab[27]['usehaving']     = true;
          $tab[27]['datatype']      = 'number';
          $tab[27]['massiveaction'] = false;
-         $tab[27]['joinparams']    = array('ischild' => true);
+         $tab[27]['joinparams']    = array('jointype' => 'child');
 
          $tab[29]['table']         = 'glpi_requesttypes';
          $tab[29]['field']         = 'name';
@@ -1760,7 +1760,7 @@ class Ticket extends CommonDBTM {
          $tab[29]['massiveaction'] = false;
          $tab[29]['joinparams']    = array('beforejoin' =>
                                        array('table'      => 'glpi_ticketfollowups',
-                                             'joinparams' => array('ischild' => true)));
+                                             'joinparams' => array('jointype' => 'child')));
 
 
          $tab['task'] = $LANG['job'][7];
@@ -1771,7 +1771,7 @@ class Ticket extends CommonDBTM {
          $tab[26]['forcegroupby']  = true;
          $tab[26]['splititems']    = true;
          $tab[26]['massiveaction'] = false;
-         $tab[26]['joinparams']    = array('ischild' => true);
+         $tab[26]['joinparams']    = array('jointype' => 'child');
 
          $tab[28]['table']         = 'glpi_tickettasks';
          $tab[28]['field']         = 'count';
@@ -1780,7 +1780,7 @@ class Ticket extends CommonDBTM {
          $tab[28]['usehaving']     = true;
          $tab[28]['datatype']      = 'number';
          $tab[28]['massiveaction'] = false;
-         $tab[28]['joinparams']    = array('ischild' => true);
+         $tab[28]['joinparams']    = array('jointype' => 'child');
 
          $tab[20]['table']         = 'glpi_taskcategories';
          $tab[20]['field']         = 'name';
@@ -1790,7 +1790,7 @@ class Ticket extends CommonDBTM {
          $tab[20]['massiveaction'] = false;
          $tab[20]['joinparams']    = array('beforejoin' =>
                                        array('table'      => 'glpi_tickettasks',
-                                             'joinparams' => array('ischild' => true)));
+                                             'joinparams' => array('jointype' => 'child')));
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
