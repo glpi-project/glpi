@@ -1652,6 +1652,10 @@ class User extends CommonDBTM {
       $tab[13]['datatype']      = 'itemlink';
       $tab[13]['itemlink_type'] = 'Group';
       $tab[13]['massiveaction'] = false;
+      $tab[13]['joinparams']    = array('beforejoin'=>
+                                    array('table'      => 'glpi_groups_users',
+                                          'joinparams' => array('jointype'=>'child')));;
+
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'last_login';
