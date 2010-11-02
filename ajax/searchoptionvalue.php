@@ -97,7 +97,9 @@ if (isset($_REQUEST['searchtype'])) {
             switch ($_REQUEST['itemtype'].".".$searchopt['linkfield']) {
                case "Ticket.users_id_recipient" :
                case "Ticket.users_id" :
-                  User::dropdownForTicket($inputname, $_REQUEST['value'], $searchopt['linkfield']);
+                  User::dropdown(array('name'  => $inputname,
+                                       'value' => $_REQUEST['value'],
+                                       'right' => 'all'));
                   $display = true;
                   break;
 

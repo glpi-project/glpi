@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 
 checkCentralAccess();
 
+/// TODO DELETE THIS FILE
+
 // Security
 if ( ! FieldExists("glpi_tickets",$_POST['field']) ) {
    exit();
