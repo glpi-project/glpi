@@ -437,10 +437,16 @@ class Stat {
       $query    = "";
       $WHERE    = getEntitiesRestrictRequest("WHERE", "glpi_tickets");
       $LEFTJOIN = "";
+      $LEFTJOINUSER = "LEFT JOIN `glpi_tickets_users`
+                           ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)";
+      $LEFTJOINGROUP = "LEFT JOIN `glpi_groups_tickets`
+               ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`)";
 
       switch ($param) {
          case "technicien" :
-            $WHERE .= " AND `glpi_tickets`.`users_id_assign` = '$value'";
+            $LEFTJOIN=$LEFTJOINUSER;
+            $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
+                              AND `glpi_tickets_users`.`type`='".Ticket::ASSIGN."')";
             break;
 
          case "technicien_followup" :
@@ -456,7 +462,10 @@ class Stat {
             break;
 
          case "user" :
-            $WHERE .= " AND `glpi_tickets`.`users_id` = '$value'";
+            $LEFTJOIN=$LEFTJOINUSER;
+
+            $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
+                              AND `glpi_tickets_users`.`type` ='".Ticket::REQUESTER."')";
             break;
 
          case "users_id_recipient" :
@@ -484,10 +493,18 @@ class Stat {
             break;
 
          case "group" :
-            $WHERE .= " AND `glpi_tickets`.`groups_id` = '$value'";
+            $LEFTJOIN=$LEFTJOINGROUP;
+
+            $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
+                              AND `glpi_groups_tickets`.`type` = '".Ticket::REQUESTER."')";
             break;
 
          case "groups_id_assign" :
+            $LEFTJOIN=$LEFTJOINGROUP;
+
+            $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
+                              AND `glpi_groups_tickets`.`type` = '".Ticket::ASSIGN."')";
+            break;
          case "requesttypes_id" :
          case "ticketsolutiontypes_id" :
          case "urgency" :
@@ -656,6 +673,7 @@ class Stat {
                                  AS date_unix,
                              AVG(takeintoaccount_delay_stat) AS total_visites
                       FROM `glpi_tickets`
+                      $LEFTJOIN
                       $WHERE
                       GROUP BY `glpi_tickets`.`id`
                       ORDER BY `glpi_tickets`.`solvedate`";

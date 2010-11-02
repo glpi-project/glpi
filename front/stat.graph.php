@@ -252,7 +252,7 @@ switch($_GET["type"]) {
       break;
 }
 
-echo "<div class='center'>";
+echo "<div align='center'>";
 echo "<table class='tab_cadre_navigation'>";
 echo "<tr><td>";
 if ($prev > 0) {
