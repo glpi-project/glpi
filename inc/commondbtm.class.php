@@ -125,6 +125,8 @@ class CommonDBTM extends CommonGLPI {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)==1) {
             $this->fields = $DB->fetch_assoc($result);
+            $this->post_getFromDB();
+
             return true;
          }
       }
@@ -132,6 +134,14 @@ class CommonDBTM extends CommonGLPI {
       return false;;
    }
 
+
+   /**
+    * Actions done at the end of the getFromDB function
+    *
+    * @return nothing
+   **/
+   function post_getFromDB () {
+   }
 
    /**
     * Retrieve all items from the database

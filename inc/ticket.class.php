@@ -50,6 +50,11 @@ class Ticket extends CommonDBTM {
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
    var $computerfound = 0;
 
+   /// Users by type
+   protected $users = array();
+   /// Groups by type
+   protected $groups = array();
+
    // Request type
    const INCIDENT_TYPE = 1;
    // Demand type
@@ -110,12 +115,12 @@ class Ticket extends CommonDBTM {
       }
 
       return (haveRight("show_all_ticket","1")
-              || $this->fields["users_id"] === getLoginUserID()
+              || $this->isUser(self::REQUESTER,getLoginUserID())
               || (haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
               || (haveRight("show_assign_ticket",'1')
-                  && ($this->fields["users_id_assign"] === getLoginUserID()
+                  && ($this->isUser(self::ASSIGN,getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && in_array($this->fields["groups_id_assign"],$_SESSION["glpigroups"]))
                       || (haveRight('assign_ticket',1) && $this->fields["status"]=='new')
@@ -123,6 +128,24 @@ class Ticket extends CommonDBTM {
                  )
               || (haveRight('validate_ticket','1') && TicketValidation::canValidate($this->fields["id"]))
              );
+   }
+
+
+      /**
+      * Is a user linked to the ticket ?
+      *
+      * @param $type type to search (see constants)
+      * @param $users_id integer user ID
+      *
+      * @return boolean
+      **/
+      function isUser($type,$users_id) {
+      if (isset($this->users[$type])
+         && isset($this->users[$type][$users_id])) {
+         return true;
+      }
+
+      return false;
    }
 
 
@@ -152,7 +175,7 @@ class Ticket extends CommonDBTM {
       }
 
       if ($this->numberOfFollowups()==0  && $this->numberOfTasks()==0
-            && $this->fields['users_id'] === getLoginUserID()) {
+            && $this->isUser(self::REQUESTER,getLoginUserID())) {
          return true;
       }
 
@@ -180,6 +203,11 @@ class Ticket extends CommonDBTM {
       return true;
    }
 
+
+   function post_getFromDB () {
+      $this->groups=Group_Ticket::getTicketGroups($this->fields['id']);
+      $this->users=Ticket_User::getTicketUsers($this->fields['id']);
+   }
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI, $DB;
@@ -1236,7 +1264,7 @@ class Ticket extends CommonDBTM {
       if ($this->getFromDB($ID)) {
          if (haveRight("global_add_tasks", "1")
              || haveRight("global_add_followups", "1")
-             || ($this->fields["users_id_assign"]===getLoginUserID())
+             || ($this->isUser(self::ASSIGN,getLoginUserID()))
              || (isset($_SESSION["glpigroups"])
                  && in_array($this->fields["groups_id_assign"], $_SESSION['glpigroups']))) {
 
@@ -1367,53 +1395,21 @@ class Ticket extends CommonDBTM {
 
 
    /**
-    * Get users_id name
-    *
-    * @param $link boolean with link ?
-    *
-    * @return string users_id name
-   **/
-   function getAuthorName($link=0) {
-      return getUserName($this->fields["users_id"],$link);
-   }
-
-
-   /**
     * Is the current user have right to add followups to the current ticket ?
     *
     * @return boolean
    **/
    function canAddFollowups() {
 
-      return ((haveRight("add_followups","1") && $this->fields["users_id"]===getLoginUserID())
+      return ((haveRight("add_followups","1") && $this->isUser(self::REQUESTER,getLoginUserID()) )
               || haveRight("global_add_followups","1")
               || (haveRight("group_add_followups","1")
                   && isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id"],$_SESSION['glpigroups']))
-              || ($this->fields["users_id_assign"]===getLoginUserID())
+              || ($this->isUser(self::ASSIGN,getLoginUserID()))
               || (isset($_SESSION["glpigroups"])
                   && in_array($this->fields["groups_id_assign"],$_SESSION['glpigroups'])));
    }
-
-
-   /*
-    * Is the current user have right to show the current ticket ?
-    *
-    * @return boolean
-
-   function canUserView() {
-
-      return (haveRight("show_all_ticket","1")
-              || ($this->fields["users_id"]===getLoginUserID())
-              || (haveRight("show_group_ticket",'1')
-                  && isset($_SESSION["glpigroups"])
-                  && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
-              || (haveRight("show_assign_ticket",'1')
-                  && ($this->fields["users_id_assign"]===getLoginUserID())
-                  || (isset($_SESSION["glpigroups"])
-                      && in_array($this->fields["groups_id_assign"], $_SESSION["glpigroups"]))));
-   }
-    */
 
 
    /**
@@ -2778,7 +2774,7 @@ class Ticket extends CommonDBTM {
 
       $canupdate_descr = $canupdate || ($this->numberOfFollowups() == 0
                                         && $this->numberOfTasks() == 0
-                                        && $this->fields['users_id'] === getLoginUserID());
+                                        && $this->isUser(self::REQUESTER,getLoginUserID()));
 
       echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
             $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
@@ -3464,8 +3460,10 @@ class Ticket extends CommonDBTM {
          return false;
       }
 
-      $search_users_id = " (`glpi_tickets`.`users_id` = '".getLoginUserID()."') ";
-      $search_assign   = " `users_id_assign` = '".getLoginUserID()."' ";
+      $search_users_id = " (`glpi_tickets_users`.`users_id` = '".getLoginUserID()."'
+                           AND `glpi_tickets_users`.`type` = '".self::REQUESTER."') ";
+      $search_assign   = " (`users_id` = '".getLoginUserID()."'
+                           AND `glpi_tickets_users`.`type` = '".self::ASSIGN."')";
 
       if ($showgrouptickets) {
          $search_users_id = " 0 = 1 ";
@@ -3473,15 +3471,21 @@ class Ticket extends CommonDBTM {
 
          if (count($_SESSION['glpigroups'])) {
             $groups        = implode("','",$_SESSION['glpigroups']);
-            $search_assign = " `groups_id_assign` IN ('$groups') ";
+            $search_assign = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
+                              AND `glpi_groups_ticket`.`type` = '".self::ASSIGN."')";
             if (haveRight("show_group_ticket",1)) {
-               $search_users_id = " (`groups_id` IN ('$groups')) ";
+               $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
+                                 AND `glpi_groups_ticket`.`type` = '".self::REQUESTER."') ";
             }
          }
       }
 
       $query = "SELECT `glpi_tickets`.`id`
-                FROM `glpi_tickets`";
+                FROM `glpi_tickets`
+                LEFT JOIN `glpi_tickets_users`
+                     ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
+                LEFT JOIN `glpi_groups_tickets`
+                     ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)";
 
       switch ($status) {
          case "waiting" : // on affiche les tickets en attente

@@ -62,7 +62,6 @@ $cleantarget = preg_replace("/[&]date[12]=[0-9-]*/","",$_SERVER['QUERY_STRING'])
 $cleantarget = preg_replace("/[&]*id=([0-9]+[&]{0,1})/","",$cleantarget);
 $cleantarget = preg_replace("/&/","&amp;",$cleantarget);
 
-$job  = new Ticket();
 $next = 0;
 $prev = 0;
 $title = "";
@@ -95,19 +94,17 @@ switch($_GET["type"]) {
    case "user" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $job->fields["users_id"] = $_GET["id"];
       $next  = getNextItem("glpi_users", $_GET["id"]);
       $prev  = getPreviousItem("glpi_users", $_GET["id"]);
-      $title = $LANG['stats'][20]."&nbsp;: ".$job->getAuthorName(1);
+      $title = $LANG['stats'][20]."&nbsp;: ".getUserName($_GET["id"],1);
       break;
 
    case "users_id_recipient" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $job->fields["users_id"] = $_GET["id"];
       $next  = getNextItem("glpi_users", $_GET["id"]);
       $prev  = getPreviousItem("glpi_users", $_GET["id"]);
-      $title = $LANG['stats'][20]."&nbsp;: ".$job->getAuthorName(1);
+      $title = $LANG['stats'][20]."&nbsp;: ".getUserName($_GET["id"],1);
       break;
 
    case "ticketcategories_id" :
