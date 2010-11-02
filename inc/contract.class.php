@@ -291,6 +291,10 @@ class Contract extends CommonDBTM {
 
       $tab['contract'] = $LANG['Menu'][25];
 
+      $joinparams = array('beforejoin'=>
+                              array('table'      => 'glpi_contracts_items',
+                                    'joinparams' => array('jointype' => 'itemtype_item')));
+
       $tab[29]['table']         = 'glpi_contracts';
       $tab[29]['field']         = 'name';
       $tab[29]['name']          = $LANG['common'][16]." ".$LANG['financial'][1];
@@ -298,24 +302,28 @@ class Contract extends CommonDBTM {
       $tab[29]['datatype']      = 'itemlink';
       $tab[29]['itemlink_type'] = 'Contract';
       $tab[29]['massiveaction'] = false;
+      $tab[29]['joinparams']    = $joinparams;
 
       $tab[30]['table']         = 'glpi_contracts';
       $tab[30]['field']         = 'num';
       $tab[30]['name']          = $LANG['financial'][4]." ".$LANG['financial'][1];
       $tab[30]['forcegroupby']  = true;
       $tab[30]['massiveaction'] = false;
+      $tab[30]['joinparams']    = $joinparams;
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
       $tab[130]['name']          = $LANG['financial'][8];
       $tab[130]['forcegroupby']  = true;
       $tab[130]['massiveaction'] = false;
+      $tab[130]['joinparams']    = $joinparams;
 
       $tab[131]['table']         = 'glpi_contracts';
       $tab[131]['field']         = 'periodicity';
       $tab[131]['name']          = $LANG['financial'][69];
       $tab[131]['forcegroupby']  = true;
       $tab[131]['massiveaction'] = false;
+      $tab[131]['joinparams']    = $joinparams;
 
       $tab[132]['table']         = 'glpi_contracts';
       $tab[132]['field']         = 'begin_date';
@@ -323,12 +331,14 @@ class Contract extends CommonDBTM {
       $tab[132]['forcegroupby']  = true;
       $tab[132]['datatype']      = 'date';
       $tab[132]['massiveaction'] = false;
+      $tab[132]['joinparams']    = $joinparams;
 
       $tab[133]['table']         = 'glpi_contracts';
       $tab[133]['field']         = 'accounting_number';
       $tab[133]['name']          = $LANG['financial'][13]." ".$LANG['financial'][1];
       $tab[133]['forcegroupby']  = true;
       $tab[133]['massiveaction'] = false;
+      $tab[133]['joinparams']    = $joinparams;
 
       $tab[134]['table']         = 'glpi_contracts';
       $tab[134]['field']         = 'end_date';
@@ -340,12 +350,14 @@ class Contract extends CommonDBTM {
       $tab[134]['searchunit']    = 'MONTH';
       $tab[134]['delayunit']     = 'MONTH';
       $tab[134]['massiveaction'] = false;
+      $tab[134]['joinparams']    = $joinparams;
 
       $tab[135]['table']         = 'glpi_contracts';
       $tab[135]['field']         = 'notice';
       $tab[135]['name']          = $LANG['financial'][10]." ".$LANG['financial'][1];
       $tab[135]['forcegroupby']  = true;
       $tab[135]['massiveaction'] = false;
+      $tab[135]['joinparams']    = $joinparams;
 
       $tab[136]['table']         = 'glpi_contracts';
       $tab[136]['field']         = 'cost';
@@ -353,18 +365,21 @@ class Contract extends CommonDBTM {
       $tab[136]['forcegroupby']  = true;
       $tab[136]['datatype']      = 'decimal';
       $tab[136]['massiveaction'] = false;
+      $tab[136]['joinparams']    = $joinparams;
 
       $tab[137]['table']         = 'glpi_contracts';
       $tab[137]['field']         = 'billing';
       $tab[137]['name']          = $LANG['financial'][11]." ".$LANG['financial'][1];
       $tab[137]['forcegroupby']  = true;
       $tab[137]['massiveaction'] = false;
+      $tab[137]['joinparams']    = $joinparams;
 
       $tab[138]['table']         = 'glpi_contracts';
       $tab[138]['field']         = 'renewal';
       $tab[138]['name']          = $LANG['financial'][107]." ".$LANG['financial'][1];
       $tab[138]['forcegroupby']  = true;
       $tab[138]['massiveaction'] = false;
+      $tab[138]['joinparams']    = $joinparams;
 
       return $tab;
    }

@@ -2936,9 +2936,9 @@ class Search {
          case "glpi_ticketsatisfactions" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
 
-         case "glpi_contracts_items" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
-                                                    AND `$nt`.`itemtype` = '$itemtype') ";
+//          case "glpi_contracts_items" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
+//                                                     AND `$nt`.`itemtype` = '$itemtype') ";
 
 //          case "glpi_users" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
@@ -3083,12 +3083,12 @@ class Search {
             }
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-         case "glpi_contracts" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_contracts_items",
-                                       $linkfield, $meta, $meta_type);
-            return $out."
-                   LEFT JOIN `$new_table` $AS
-                     ON (`glpi_contracts_items$addmetanum`.`contracts_id` = `$nt`.`id`) ";
+//          case "glpi_contracts" :
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_contracts_items",
+//                                        $linkfield, $meta, $meta_type);
+//             return $out."
+//                    LEFT JOIN `$new_table` $AS
+//                      ON (`glpi_contracts_items$addmetanum`.`contracts_id` = `$nt`.`id`) ";
 
          case "glpi_softwarelicensetypes" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwarelicenses",
