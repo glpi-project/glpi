@@ -1733,6 +1733,7 @@ class Ticket extends CommonDBTM {
          $tab[25]['forcegroupby']  = true;
          $tab[25]['splititems']    = true;
          $tab[25]['massiveaction'] = false;
+         $tab[25]['joinparams']    = array('ischild' => true);
 
          $tab[27]['table']         = 'glpi_ticketfollowups';
          $tab[27]['field']         = 'count';
@@ -1741,13 +1742,18 @@ class Ticket extends CommonDBTM {
          $tab[27]['usehaving']     = true;
          $tab[27]['datatype']      = 'number';
          $tab[27]['massiveaction'] = false;
+         $tab[27]['joinparams']    = array('ischild' => true);
 
-         $tab[29]['table']         = 'glpi_followup_requesttypes';
+         $tab[29]['table']         = 'glpi_requesttypes';
          $tab[29]['field']         = 'name';
          $tab[29]['name']          = $LANG['job'][9]." - ".$LANG['job'][44];
          $tab[29]['forcegroupby']  = true;
          $tab[29]['realtable']     = 'glpi_requesttypes';
          $tab[29]['massiveaction'] = false;
+         $tab[29]['joinparams']    = array('beforejoin' =>
+                                       array('table'      => 'glpi_ticketfollowups',
+                                             'joinparams' => array('ischild' => true)));
+
 
          $tab['task'] = $LANG['job'][7];
 
@@ -1757,6 +1763,7 @@ class Ticket extends CommonDBTM {
          $tab[26]['forcegroupby']  = true;
          $tab[26]['splititems']    = true;
          $tab[26]['massiveaction'] = false;
+         $tab[26]['joinparams']    = array('ischild' => true);
 
          $tab[28]['table']         = 'glpi_tickettasks';
          $tab[28]['field']         = 'count';
@@ -1765,6 +1772,7 @@ class Ticket extends CommonDBTM {
          $tab[28]['usehaving']     = true;
          $tab[28]['datatype']      = 'number';
          $tab[28]['massiveaction'] = false;
+         $tab[28]['joinparams']    = array('ischild' => true);
 
          $tab[20]['table']         = 'glpi_taskcategories';
          $tab[20]['field']         = 'name';
@@ -1772,6 +1780,9 @@ class Ticket extends CommonDBTM {
          $tab[20]['forcegroupby']  = true;
          $tab[20]['splititems']    = true;
          $tab[20]['massiveaction'] = false;
+         $tab[20]['joinparams']    = array('beforejoin' =>
+                                       array('table'      => 'glpi_tickettasks',
+                                             'joinparams' => array('ischild' => true)));
 
          $tab['solution'] = $LANG['jobresolution'][1];
 

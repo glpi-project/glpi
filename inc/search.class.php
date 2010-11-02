@@ -1839,7 +1839,13 @@ class Search {
 
       if (isset($searchopt[$ID]['joinparams'])
          && isset($searchopt[$ID]['joinparams']['condition'])) {
-         $addtable .= "_".sha1($searchopt[$ID]['joinparams']['condition']);
+         $addtable .= "_".md5($searchopt[$ID]['joinparams']['condition']);
+      }
+
+      if (isset($searchopt[$ID]['joinparams'])
+         && isset($searchopt[$ID]['joinparams']['beforejoin'])
+         && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])) {
+         $addtable .= "_".md5($searchopt[$ID]['joinparams']['beforejoin']['table']);
       }
 
 
@@ -1976,9 +1982,9 @@ class Search {
             return " `glpi_users`.`authtype` AS ".$NAME."_".$num.",
                      `glpi_users`.`auths_id` AS ".$NAME."_".$num."_2,
                      `glpi_authldaps".$addtable."_".
-                           sha1("REFTABLE.`authtype` = ".Auth::LDAP)."`.`$field` AS ".$NAME."_".$num."_3,
+                           md5("REFTABLE.`authtype` = ".Auth::LDAP)."`.`$field` AS ".$NAME."_".$num."_3,
                      `glpi_authmails".$addtable."_".
-                           sha1("REFTABLE.`authtype` = ".Auth::MAIL)."`.`$field` AS ".$NAME."_".$num."_4, ";
+                           md5("REFTABLE.`authtype` = ".Auth::MAIL)."`.`$field` AS ".$NAME."_".$num."_4, ";
 
          case "glpi_softwarelicenses.name" :
          case "glpi_softwareversions.name" :
@@ -2734,7 +2740,12 @@ class Search {
       }
 
       if (isset($joinparams['condition'])) {
-         $nt .= "_".sha1($joinparams['condition']);
+         $nt .= "_".md5($joinparams['condition']);
+         $AS = " AS ".$nt;
+      }
+
+      if (isset($joinparams['beforejoin']) && isset($joinparams['beforejoin']['table'])) {
+         $nt .= "_".md5($joinparams['beforejoin']['table']);
          $AS = " AS ".$nt;
       }
 
@@ -2825,8 +2836,8 @@ class Search {
             }*/
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-         case "glpi_reservationitems" :
-            return "";
+//          case "glpi_reservationitems" :
+//             return "";
 
 //          case "glpi_filesystems" :
 //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_computerdisks",
@@ -2848,8 +2859,8 @@ class Search {
 //          case "glpi_operatingsystems" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`operatingsystems_id` = `$nt`.`id`) ";
 
-         case "glpi_locations" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`locations_id` = `$nt`.`id`) ";
+//          case "glpi_locations" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`locations_id` = `$nt`.`id`) ";
 
          case "glpi_vlans" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
@@ -2885,23 +2896,23 @@ class Search {
                                        $linkfield);
             return $out."
                    LEFT JOIN `$new_table` $AS ON (`glpi_networkports`.`netpoints_id` = `$nt`.`id`) ";
-
+/*
          case "glpi_ticketfollowups" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
+            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";*/
 
-         case "glpi_followup_requesttypes":
-            // Link to glpi_ticketfollowups before
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_ticketfollowups",
-                                       $linkfield);
-            return $out." LEFT JOIN `glpi_requesttypes` AS glpi_followup_requesttypes
-                           ON (`glpi_followup_requesttypes`.`id`
-                                 =`glpi_ticketfollowups`.`requesttypes_id`)";
+//          case "glpi_followup_requesttypes":
+//             // Link to glpi_ticketfollowups before
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_ticketfollowups",
+//                                        $linkfield);
+//             return $out." LEFT JOIN `glpi_requesttypes` AS glpi_followup_requesttypes
+//                            ON (`glpi_followup_requesttypes`.`id`
+//                                  =`glpi_ticketfollowups`.`requesttypes_id`)";
 
-         case "glpi_taskcategories":
-            // Link to glpi_tickettasks before
-            $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickettasks",$linkfield);
-            return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
-                          =`glpi_tickettasks`.`taskcategories_id`)";
+//          case "glpi_taskcategories":
+//             // Link to glpi_tickettasks before
+//             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickettasks",$linkfield);
+//             return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
+//                           =`glpi_tickettasks`.`taskcategories_id`)";
 
          case "glpi_ticketvalidations" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_tickets",
