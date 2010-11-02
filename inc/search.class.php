@@ -3215,6 +3215,7 @@ class Search {
                                        $addcondition)";
 
                   case "itemtype_item" :
+                     // Itemtype join
                      return $before." LEFT JOIN `$new_table` $AS
                                  ON (`$rt`.`id` = `$nt`.`items_id`
                                     AND `$nt`.`itemtype` = '$itemtype' $addcondition) ";

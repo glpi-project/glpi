@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class DBConnection extends CommonDBTM {
 
+   var $notable = true;
+
    static function getTypeName() {
       global $LANG;
 
