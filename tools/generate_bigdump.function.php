@@ -339,18 +339,31 @@ function addTracking($type, $ID, $ID_entity) {
                 VALUES (NULL, '$ID_entity', 'Title ".getRandomString(20)."',
                         '".date("Y-m-d H:i:s", intval($opendate))."', $closedatetoadd,
                         $solvedatetoadd, '".date("Y-m-d H:i:s", intval($updatedate))."',
-                        '".$users[0]."', '$status', '".$users[0]."', '".$users[0]."',
-                        '".mt_rand($FIRST["groups"], $LAST['groups'])."', '".mt_rand(0,6)."',
-                        '".$users[1]."', '$enterprise', '".mt_rand($FIRST["groups"],
-                        $LAST['groups'])."', '$type', '$ID', 'tracking ".getRandomString(15)."',
-                        '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."', '', '0',
+                        '".$users[0]."', '$status', '".$users[0]."', '".mt_rand(0,6)."',
+                        '$enterprise', '$type', '$ID', 'tracking ".getRandomString(15)."',
+                        '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."', 
                         '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."',
                         '$hour_cost', '0', '0', '".mt_rand(0, $MAX['ticketsolutions'])."',
                         'Solution ".getRandomString(20)."', 'accepted', 0, 0, NULL, NULL, 0, 0,
                         $closetime, $solvetime, $firstactiontime, '$actiontime')";
       $DB->query($query) or die("PB REQUETE ".$query);
-
+      
       $tID = $DB->insert_id();
+
+      // Add users and groups
+      $query="INSERT INTO `glpi_tickets_users`
+               VALUES(NULL,'$tID','".$users[0]."','".Ticket::REQUESTER."','1','');";
+      $DB->query($query) or die("PB REQUETE ".$query);
+      $query="INSERT INTO `glpi_tickets_users`
+               VALUES(NULL,'$tID','".$users[1]."','".Ticket::ASSIGN."','1','');";
+      $DB->query($query) or die("PB REQUETE ".$query);
+      $query="INSERT INTO `glpi_groups_tickets`
+               VALUES(NULL,'$tID','".mt_rand($FIRST["groups"], $LAST['groups'])."','".Ticket::ASSIGN."');";
+      $DB->query($query) or die("PB REQUETE ".$query);
+      $query="INSERT INTO `glpi_groups_tickets`
+               VALUES(NULL,'$tID','".mt_rand($FIRST["groups"], $LAST['groups'])."','".Ticket::REQUESTER."');";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
 
       // Add followups
       $i     = 0;
