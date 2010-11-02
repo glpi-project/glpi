@@ -2756,6 +2756,9 @@ class Ticket extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI, $LANG;
 
+      /// TODO clean it
+      $tobereview=0;
+
       $canupdate    = haveRight('update_ticket','1');
       $canpriority  = haveRight('update_priority','1');
       $showuserlink = 0;
@@ -2976,7 +2979,7 @@ class Ticket extends CommonDBTM {
          echo $LANG['job'][4]."&nbsp;: </td>";
          echo "<td>";
 
-         if (haveRight("update_ticket","1")) {
+         if ($tobereview && haveRight("update_ticket","1")) {
             //List all users in the active entities
             User::dropdown(array('value'         => $options["users_id"],
                                  'entity'        => $_SESSION['glpiactiveentities'],
@@ -3000,7 +3003,7 @@ class Ticket extends CommonDBTM {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
 
-      } else if ($canupdate) {
+      } else if ($tobereview && $canupdate) {
          echo $LANG['common'][34]."&nbsp;: </td>";
          echo "<td>";
          User::dropdown(array('value'       => $this->fields["users_id"],
@@ -3011,7 +3014,11 @@ class Ticket extends CommonDBTM {
       } else {
          echo $LANG['common'][34]."&nbsp;: </td>";
          echo "<td>";
-         echo getUserName($this->fields["users_id"],$showuserlink);
+         if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])) {
+            foreach ($this->users[self::REQUESTER] as $k => $d) {
+               echo getUserName($k,$showuserlink);
+            }
+         }
       }
       echo "</td></tr>";
 
@@ -3026,11 +3033,15 @@ class Ticket extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][35]."&nbsp;: </td>";
       echo "<td>";
-      if ($canupdate) {
+      if ($tobereview && $canupdate) {
          Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
                                        'entity' => $this->fields["entities_id"]));
       } else {
-         echo Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id"]);
+         if (isset($this->groups[self::REQUESTER]) && count($this->groups[self::REQUESTER])) {
+            foreach ($this->groups[self::REQUESTER] as $k => $d) {
+               echo Dropdown::getDropdownName("glpi_groups", $k);
+            }
+         }
       }
       echo "</td></tr>";
 
@@ -3089,7 +3100,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
-      if (haveRight("assign_ticket","1")) {
+      if ($tobereview && haveRight("assign_ticket","1")) {
          echo "<td>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
          User::dropdown(array('name'        => 'users_id_assign',
@@ -3099,7 +3110,7 @@ class Ticket extends CommonDBTM {
                               'ldap_import' => true));
          echo "</td>";
 
-      } else if (haveRight("steal_ticket","1")) {
+      } else if ($tobereview && haveRight("steal_ticket","1")) {
          echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
          User::dropdown(array('name'        => 'users_id_assign',
@@ -3108,7 +3119,7 @@ class Ticket extends CommonDBTM {
                               'ldap_import' => true));
          echo "</td>";
 
-      } else if (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0) {
+      } else if ($tobereview && haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0) {
          echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
          echo "<td>";
          User::dropdown(array('name'        => 'users_id_assign',
@@ -3119,7 +3130,13 @@ class Ticket extends CommonDBTM {
 
       } else {
          echo "<td>".$LANG['job'][6]."&nbsp;: </td>";
-         echo "<td>".getUserName($this->fields["users_id_assign"], $showuserlink)."</td>";
+         echo "<td>";
+         if (isset($this->users[self::ASSIGN]) && count($this->users[self::ASSIGN])) {
+            foreach ($this->users[self::ASSIGN] as $k => $d) {
+               echo getUserName($k,$showuserlink);
+            }
+         }
+         echo "</td>";
       }
       echo "</tr>";
 
@@ -3133,7 +3150,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
-      if (haveRight("assign_ticket","1")) {
+      if ($tobereview && haveRight("assign_ticket","1")) {
          echo "<td>".$LANG['common'][35]."&nbsp;: </td>";
          echo "<td>";
          Dropdown::show('Group', array('name'   => 'groups_id_assign',
@@ -3143,7 +3160,12 @@ class Ticket extends CommonDBTM {
 
       } else {
          echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
-         echo "<td>".Dropdown::getDropdownName("glpi_groups", $this->fields["groups_id_assign"]);
+         echo "<td>";
+         if (isset($this->groups[self::ASSIGN]) && count($this->groups[self::ASSIGN])) {
+            foreach ($this->groups[self::ASSIGN] as $k => $d) {
+               echo Dropdown::getDropdownName("glpi_groups", $k);
+            }
+         }
          echo "</td>";
       }
       echo "</tr>";
