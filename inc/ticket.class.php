@@ -4632,12 +4632,15 @@ class Ticket extends CommonDBTM {
    static function getUsedTechBetween($date1='',$date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_tickets`.`users_id_assign`,
+      $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
-                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id_assign`) ".
+                LEFT JOIN `glpi_tickets_users`
+                           ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
+                                 AND `glpi_tickets_users`.`type` = '".self::ASSIGN."')
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1)||!empty($date2)) {
@@ -4651,8 +4654,8 @@ class Ticket extends CommonDBTM {
 
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["users_id_assign"];
-            $tmp['link'] = formatUserName($line["users_id_assign"], $line["name"],
+            $tmp['id']   = $line["users_id"];
+            $tmp['link'] = formatUserName($line["users_id"], $line["name"],
                                           $line["realname"], $line["firstname"],1);
             $tab[] = $tmp;
          }
@@ -4671,7 +4674,7 @@ class Ticket extends CommonDBTM {
    static function getUsedTechFollowupBetween($date1='',$date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_ticketfollowups`.`users_id` AS users_id,
+      $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
@@ -4719,7 +4722,7 @@ class Ticket extends CommonDBTM {
    static function getUsedSupplierBetween($date1='', $date2='') {
       global $DB,$CFG_GLPI;
 
-      $query = "SELECT DISTINCT `glpi_tickets`.`suppliers_id_assign` AS suppliers_id_assign,
+      $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_suppliers`
@@ -4756,11 +4759,14 @@ class Ticket extends CommonDBTM {
    static function getUsedAuthorBetween($date1='', $date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_tickets`.`users_id`, `glpi_users`.`name` AS name,
+      $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id, `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
-                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`) ".
+                LEFT JOIN `glpi_tickets_users`
+                           ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
+                                 AND `glpi_tickets_users`.`type` = '".self::REQUESTER."')
+                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`) ".
                 getEntitiesRestrictRequest("WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
@@ -4793,7 +4799,7 @@ class Ticket extends CommonDBTM {
    static function getUsedRecipientBetween($date1='', $date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_tickets`.`users_id_recipient`, `glpi_users`.`name` AS name,
+      $query = "SELECT DISTINCT `glpi_users`.`id` AS user_id, `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
@@ -4802,7 +4808,7 @@ class Ticket extends CommonDBTM {
                 getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
-         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2).";
+         $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
                           OR ".getDateRequest("`glpi_tickets`.`closedate`", $date1, $date2).") ";
       }
       $query .= " ORDER BY realname, firstname, name";
@@ -4812,8 +4818,8 @@ class Ticket extends CommonDBTM {
 
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
-            $tmp['id']   = $line["users_id_recipient"];
-            $tmp['link'] = formatUserName($line["users_id_recipient"], $line["name"],
+            $tmp['id']   = $line["user_id"];
+            $tmp['link'] = formatUserName($line["user_id"], $line["name"],
                                           $line["realname"], $line["firstname"], 1);
             $tab[] = $tmp;
          }
@@ -4834,7 +4840,10 @@ class Ticket extends CommonDBTM {
 
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
                 FROM `glpi_tickets`
-                LEFT JOIN `glpi_groups` ON (`glpi_tickets`.`groups_id` = `glpi_groups`.`id`)".
+                LEFT JOIN `glpi_groups_tickets`
+                           ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
+                                 AND `glpi_groups_tickets`.`type` = '".self::REQUESTER."')
+                LEFT JOIN `glpi_groups` ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)".
                 getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
@@ -4869,8 +4878,11 @@ class Ticket extends CommonDBTM {
 
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
                 FROM `glpi_tickets`
+                LEFT JOIN `glpi_groups_tickets`
+                           ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
+                                 AND `glpi_groups_tickets`.`type` = '".self::ASSIGN."')
                 LEFT JOIN `glpi_groups`
-                     ON (`glpi_tickets`.`groups_id_assign` = `glpi_groups`.`id`)".
+                     ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)".
                 getEntitiesRestrictRequest(" WHERE","glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
