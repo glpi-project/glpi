@@ -46,6 +46,9 @@ class CommonDBTM extends CommonGLPI {
    /// Set false to desactivate automatic message on action
    var $auto_message_on_action=true;
 
+   /// Set true to desactivate auto compute table name
+   var $notable = false;
+
    /// Forward entity datas to linked items
    protected $forward_entity_to=array();
 
@@ -67,7 +70,7 @@ class CommonDBTM extends CommonGLPI {
    * @return string
    */
    function getTable() {
-      if (empty($this->table)) {
+      if (empty($this->table) && !$this->notable) {
          $this->table=getTableForItemType($this->getType());
       }
       return $this->table;
@@ -174,7 +177,10 @@ class CommonDBTM extends CommonGLPI {
       //make an empty database object
       global $DB;
 
-      if ($fields = $DB->list_fields($this->getTable())) {
+      //make an empty database object
+      $table=$this->getTable();
+
+      if (!empty($table) && $fields = $DB->list_fields($table)) {
          foreach ($fields as $key => $val) {
             $this->fields[$key] = "";
          }
