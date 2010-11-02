@@ -1681,6 +1681,8 @@ class Ticket extends CommonDBTM {
       $tab[4]['table'] = 'glpi_users';
       $tab[4]['field'] = 'name';
       $tab[4]['name']  = $LANG['job'][4];
+      $tab[4]['forcegroupby']  = true;
+      $tab[4]['massiveaction'] = false;
       $tab[4]['joinparams'] = array('beforejoin'=>
                                     array('table'      => 'glpi_tickets_users',
                                           'joinparams' => array('jointype'=>'child',
@@ -1690,6 +1692,8 @@ class Ticket extends CommonDBTM {
       $tab[71]['table'] = 'glpi_groups';
       $tab[71]['field'] = 'name';
       $tab[71]['name']  = $LANG['common'][35];
+      $tab[71]['forcegroupby']  = true;
+      $tab[71]['massiveaction'] = false;
       $tab[71]['joinparams'] = array('beforejoin'=>
                                     array('table'      => 'glpi_groups_tickets',
                                           'joinparams' => array('jointype'=>'child',
@@ -1737,6 +1741,8 @@ class Ticket extends CommonDBTM {
          $tab[5]['table']      = 'glpi_users';
          $tab[5]['field']      = 'name';
          $tab[5]['name']       = $LANG['job'][5]." - ".$LANG['job'][6];
+         $tab[5]['forcegroupby']  = true;
+         $tab[5]['massiveaction'] = false;
          $tab[5]['joinparams'] = array('beforejoin'=>array('table'=>'glpi_tickets_users',
                                           'joinparams' => array('jointype'=>'child',
                                                                 'condition' => 'NEWTABLE.`type` = '.self::ASSIGN)));
@@ -1750,6 +1756,8 @@ class Ticket extends CommonDBTM {
          $tab[8]['table']     = 'glpi_groups';
          $tab[8]['field']     = 'name';
          $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
+         $tab[8]['forcegroupby']  = true;
+         $tab[8]['massiveaction'] = false;
          $tab[8]['joinparams'] = array('beforejoin'=>array('table'=>'glpi_groups_tickets',
                                           'joinparams' => array('jointype'=>'child',
                                                                 'condition' => 'NEWTABLE.`type` = '.self::ASSIGN)));
