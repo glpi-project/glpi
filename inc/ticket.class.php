@@ -1695,24 +1695,28 @@ class Ticket extends CommonDBTM {
       $tab[60]['name']          = $LANG['satisfaction'][6];
       $tab[60]['datatype']      = 'datetime';
       $tab[60]['massiveaction'] = false;
+      $tab[60]['joinparams']    = array('jointype' => 'child');
 
       $tab[61]['table']         = 'glpi_ticketsatisfactions';
       $tab[61]['field']         = 'date_answered';
       $tab[61]['name']          = $LANG['satisfaction'][4];
       $tab[61]['datatype']      = 'datetime';
       $tab[61]['massiveaction'] = false;
+      $tab[61]['joinparams']    = array('jointype' => 'child');
 
       $tab[62]['table']         = 'glpi_ticketsatisfactions';
       $tab[62]['field']         = 'satisfaction';
       $tab[62]['name']          = $LANG['satisfaction'][7];
       $tab[62]['datatype']      = 'number';
       $tab[62]['massiveaction'] = false;
+      $tab[62]['joinparams']    = array('jointype' => 'child');
 
       $tab[63]['table']         = 'glpi_ticketsatisfactions';
       $tab[63]['field']         = 'comment';
       $tab[63]['name']          = $LANG['satisfaction'][8];
       $tab[63]['datatype']      = 'text';
       $tab[63]['massiveaction'] = false;
+      $tab[63]['joinparams']    = array('jointype' => 'child');
 
 
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {

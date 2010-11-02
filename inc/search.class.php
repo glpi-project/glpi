@@ -2933,8 +2933,8 @@ class Search {
 //                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 //             }
 
-         case "glpi_ticketsatisfactions" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
+//          case "glpi_ticketsatisfactions" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
 
 //          case "glpi_contracts_items" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
@@ -2950,27 +2950,27 @@ class Search {
 //                    LEFT JOIN `glpi_users` $AS
 //                      ON (`glpi_ticketvalidations`.`$linkfield` = `$nt`.`id`) ";
 
-         case "glpi_suppliers" :
-            if ($itemtype == 'Contact') {
-               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                          "glpi_contacts_suppliers", "contacts_id");
-               return $out."
-                      LEFT JOIN `$new_table` $AS
-                        ON (`glpi_contacts_suppliers`.`suppliers_id` = `$nt`.`id` ".
-                            getEntitiesRestrictRequest("AND", "glpi_suppliers", '', '', true).") ";
-            }
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+//          case "glpi_suppliers" :
+//             if ($itemtype == 'Contact') {
+//                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+//                                           "glpi_contacts_suppliers", "contacts_id");
+//                return $out."
+//                       LEFT JOIN `$new_table` $AS
+//                         ON (`glpi_contacts_suppliers`.`suppliers_id` = `$nt`.`id` ".
+//                             getEntitiesRestrictRequest("AND", "glpi_suppliers", '', '', true).") ";
+//             }
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-         case "glpi_contacts" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                       "glpi_contacts_suppliers", "suppliers_id");
-            return $out."
-                   LEFT JOIN `$new_table` $AS
-                     ON (`glpi_contacts_suppliers`.`contacts_id` = `$nt`.`id` ".
-                         getEntitiesRestrictRequest("AND", "glpi_contacts", '', '', true)." ) ";
-
-         case "glpi_contacts_suppliers" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`$linkfield`) ";
+//          case "glpi_contacts" :
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+//                                        "glpi_contacts_suppliers", "suppliers_id");
+//             return $out."
+//                    LEFT JOIN `$new_table` $AS
+//                      ON (`glpi_contacts_suppliers`.`contacts_id` = `$nt`.`id` ".
+//                          getEntitiesRestrictRequest("AND", "glpi_contacts", '', '', true)." ) ";
+// 
+//          case "glpi_contacts_suppliers" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`$linkfield`) ";
 
 //          case "glpi_manufacturers" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`manufacturers_id` = `$nt`.`id`) ";
@@ -3223,6 +3223,7 @@ class Search {
                if (!isset($joinparams['jointype'])) {
                   $joinparams['jointype']='standard';
                }
+
                switch ($joinparams['jointype']) {
                   case 'child' :
                      // Child join
