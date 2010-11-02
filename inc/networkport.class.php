@@ -871,8 +871,8 @@ class NetworkPort extends CommonDBChild {
 
       $joinparams=array('jointype' => 'itemtype_item');
       if ($itemtype=='Computer') {
-         $joinparams['addjoin'] = array('table' => 'glpi_computers_devicenetworkcards',
-                                                      'joinparams' => array('jointype' => 'child'));
+         $joinparams['beforejoin'] = array('table' => 'glpi_computers_devicenetworkcards',
+                                        'joinparams' => array('jointype' => 'child', 'nolink'=>true));
       }
 
       $tab[20]['table']         = 'glpi_networkports';
@@ -927,11 +927,18 @@ class NetworkPort extends CommonDBChild {
       $tab[87]['joinparams']    = array('beforejoin' => array('table' => 'glpi_networkports',
                                                               'joinparams' => $joinparams));
 
+      $netportjoin = array(array('table' => 'glpi_networkports',
+                                 'joinparams' => array('jointype'=>'itemtype_item')),
+                           array('table' => 'glpi_networkports_vlans',
+                                 'joinparams' => array('jointype'=>'child')));
+
       $tab[88]['table']         = 'glpi_vlans';
       $tab[88]['field']         = 'name';
       $tab[88]['name']          = $LANG['networking'][56];
       $tab[88]['forcegroupby']  = true;
       $tab[88]['massiveaction'] = false;
+      $tab[88]['joinparams']    = array('beforejoin' => $netportjoin);
+
 
       return $tab;
    }

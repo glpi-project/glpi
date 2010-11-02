@@ -2865,14 +2865,14 @@ class Search {
 //          case "glpi_locations" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`locations_id` = `$nt`.`id`) ";
 
-         case "glpi_vlans" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
-                                       'networkports_id',0,0,array('jointype'=>'itemtype_item'));
-            return $out."
-                   LEFT JOIN `glpi_networkports_vlans`
-                     ON (`glpi_networkports_vlans`.`networkports_id` = `glpi_networkports`.`id`)
-                   LEFT JOIN `$new_table` $AS
-                     ON (`glpi_networkports_vlans`.`vlans_id` = `$nt`.`id`) ";
+//          case "glpi_vlans" :
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
+//                                        'networkports_id',0,0,array('jointype'=>'itemtype_item'));
+//             return $out."
+//                    LEFT JOIN `glpi_networkports_vlans`
+//                      ON (`glpi_networkports_vlans`.`networkports_id` = `glpi_networkports`.`id`)
+//                    LEFT JOIN `$new_table` $AS
+//                      ON (`glpi_networkports_vlans`.`vlans_id` = `$nt`.`id`) ";
 
 //          case "glpi_networkinterfaces" :
 //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
@@ -3174,50 +3174,41 @@ class Search {
             if (!empty($linkfield)) {
 
                $before='';
-               // Additional join 
-               if (isset($joinparams['addjoin'])
-                  && is_array($joinparams['addjoin']) ) {
-                  if (isset($joinparams['addjoin']['table'])) {
-                     $intertable=$joinparams['addjoin']['table'];
-                     if (isset($joinparams['addjoin']['linkfield'])){
-                        $interlinkfield = $joinparams['addjoin']['linkfield'];
-                     } else {
-                        $interlinkfield = getForeignKeyFieldForTable($intertable);
-                     }
-                     $interjoinparams=array();
-                     if (isset($joinparams['addjoin']['joinparams'])){
-                        $interjoinparams = $joinparams['addjoin']['joinparams'];
-                     } 
-                     $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
-                                        $interlinkfield,$meta, $meta_type,$interjoinparams);
-                  }
-               }
 
                if (isset($joinparams['beforejoin'])
                   && is_array($joinparams['beforejoin']) ) {
+
                   if (isset($joinparams['beforejoin']['table'])) {
-                     $intertable=$joinparams['beforejoin']['table'];
-                     if (isset($joinparams['beforejoin']['linkfield'])){
-                        $interlinkfield = $joinparams['beforejoin']['linkfield'];
-                     } else {
-                        $interlinkfield = getForeignKeyFieldForTable($intertable);
+                     $joinparams['beforejoin']=array($joinparams['beforejoin']);
+                  }
+                  foreach ($joinparams['beforejoin'] as $tab) {
+                     if (isset($tab['table'])) {
+
+                        $intertable=$tab['table'];
+                        if (isset($tab['linkfield'])){
+                           $interlinkfield = $tab['linkfield'];
+                        } else {
+                           $interlinkfield = getForeignKeyFieldForTable($intertable);
+                        }
+                        $interjoinparams=array();
+                        if (isset($tab['joinparams'])){
+                           $interjoinparams = $tab['joinparams'];
+                        }
+
+                        $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
+                                          $interlinkfield,$meta, $meta_type,$interjoinparams);
                      }
-                     $interjoinparams=array();
-                     if (isset($joinparams['beforejoin']['joinparams'])){
-                        $interjoinparams = $joinparams['beforejoin']['joinparams'];
+                     if (isset($interjoinparams['condition'])) {
+                        $intertable .= "_".md5($interjoinparams['condition']);
                      }
 
-                     $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
-                                        $interlinkfield,$meta, $meta_type,$interjoinparams);
+                     if (isset($interjoinparams['beforejoin']) && isset($interjoinparams['beforejoin']['table'])) {
+                        $intertable .= "_".md5($interjoinparams['beforejoin']['table']);
+                     }
+                     if (!isset($tab['nojoin']) || !$tab['nolink']) {
+                        $rt=$intertable.$addmetanum;
+                     }
                   }
-                  if (isset($interjoinparams['condition'])) {
-                     $intertable .= "_".md5($interjoinparams['condition']);
-                  }
-
-                  if (isset($interjoinparams['beforejoin']) && isset($interjoinparams['beforejoin']['table'])) {
-                     $intertable .= "_".md5($interjoinparams['beforejoin']['table']);
-                  }
-                  $rt=$intertable.$addmetanum;
                }
 
 
