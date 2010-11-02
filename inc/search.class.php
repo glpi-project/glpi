@@ -2972,8 +2972,8 @@ class Search {
          case "glpi_contacts_suppliers" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`$linkfield`) ";
 
-         case "glpi_manufacturers" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`manufacturers_id` = `$nt`.`id`) ";
+//          case "glpi_manufacturers" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`manufacturers_id` = `$nt`.`id`) ";
 
          case "glpi_suppliers_infocoms" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_infocoms",
@@ -3111,8 +3111,8 @@ class Search {
             }
             return "";
 
-         case "glpi_documents_items" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`documents_id`) ";
+//          case "glpi_documents_items" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`documents_id`) ";
 
          case "glpi_computers_softwareversions" :
             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwareversions",
@@ -3121,41 +3121,41 @@ class Search {
                    LEFT JOIN `$new_table` $AS
                      ON (`glpi_softwareversions$addmetanum`.`id` = `$nt`.`softwareversions_id`) ";
 
-         case "glpi_computers_devicecases" :
-         case "glpi_computers_devicecontrols" :
-         case "glpi_computers_devicedrives" :
-         case "glpi_computers_devicegraphiccards" :
-         case "glpi_computers_deviceharddrives" :
-         case "glpi_computers_devicememories" :
-         case "glpi_computers_devicemotherboards" :
-         case "glpi_computers_devicenetworkcards" :
-         case "glpi_computers_devicepcis" :
-         case "glpi_computers_devicepowersupplies" :
-         case "glpi_computers_deviceprocessors" :
-         case "glpi_computers_devicesoundcards" :
-            return " LEFT JOIN `$new_table` ON (`$rt`.`id` = `$new_table`.`computers_id`) ";
+//          case "glpi_computers_devicecases" :
+//          case "glpi_computers_devicecontrols" :
+//          case "glpi_computers_devicedrives" :
+//          case "glpi_computers_devicegraphiccards" :
+//          case "glpi_computers_deviceharddrives" :
+//          case "glpi_computers_devicememories" :
+//          case "glpi_computers_devicemotherboards" :
+//          case "glpi_computers_devicenetworkcards" :
+//          case "glpi_computers_devicepcis" :
+//          case "glpi_computers_devicepowersupplies" :
+//          case "glpi_computers_deviceprocessors" :
+//          case "glpi_computers_devicesoundcards" :
+//             return " LEFT JOIN `$new_table` ON (`$rt`.`id` = `$new_table`.`computers_id`) ";
+// 
+//          case "glpi_devicecases" :
+//          case "glpi_devicecontrols" :
+//          case "glpi_devicedrives" :
+//          case "glpi_devicegraphiccards" :
+//          case "glpi_deviceharddrives" :
+//          case "glpi_devicememories" :
+//          case "glpi_devicemotherboards" :
+//          case "glpi_devicenetworkcards" :
+//          case "glpi_devicepcis" :
+//          case "glpi_devicepowersupplies" :
+//          case "glpi_deviceprocessors" :
+//          case "glpi_devicesoundcards" :
+//             $linktable = str_replace('glpi_', 'glpi_computers_', $new_table);
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $linktable,
+//                                        getForeignKeyFieldForTable($linktable), $meta, $meta_type);
+//             return $out."
+//                    LEFT JOIN `$new_table` $AS
+//                      ON (`$linktable`.`".getForeignKeyFieldForTable($new_table)."` = `$nt`.`id`) ";
 
-         case "glpi_devicecases" :
-         case "glpi_devicecontrols" :
-         case "glpi_devicedrives" :
-         case "glpi_devicegraphiccards" :
-         case "glpi_deviceharddrives" :
-         case "glpi_devicememories" :
-         case "glpi_devicemotherboards" :
-         case "glpi_devicenetworkcards" :
-         case "glpi_devicepcis" :
-         case "glpi_devicepowersupplies" :
-         case "glpi_deviceprocessors" :
-         case "glpi_devicesoundcards" :
-            $linktable = str_replace('glpi_', 'glpi_computers_', $new_table);
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $linktable,
-                                       getForeignKeyFieldForTable($linktable), $meta, $meta_type);
-            return $out."
-                   LEFT JOIN `$new_table` $AS
-                     ON (`$linktable`.`".getForeignKeyFieldForTable($new_table)."` = `$nt`.`id`) ";
-
-         case "glpi_plugins":
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`directory`) ";
+//          case "glpi_plugins":
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`directory`) ";
 
          default :
             // Link with plugin tables : need to know left join structure

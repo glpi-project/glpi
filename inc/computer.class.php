@@ -889,6 +889,10 @@ class Computer extends CommonDBTM {
       $tab[7]['forcegroupby']  = true;
       $tab[7]['usehaving']     = true;
       $tab[7]['massiveaction'] = false;
+      $tab[7]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_deviceprocessors',
+                                          'joinparams' => array('ischild'=>true)));
+
 
       $tab[36]['table']         = 'glpi_computers_deviceprocessors';
       $tab[36]['field']         = 'specificity';
@@ -898,6 +902,7 @@ class Computer extends CommonDBTM {
       $tab[36]['datatype']      = 'number';
       $tab[36]['width']         = 100;
       $tab[36]['massiveaction'] = false;
+      $tab[36]['joinparams']    = array('ischild' => true);
 
       $tab[10]['table']         = 'glpi_devicememories';
       $tab[10]['field']         = 'designation';
@@ -905,6 +910,9 @@ class Computer extends CommonDBTM {
       $tab[10]['forcegroupby']  = true;
       $tab[10]['usehaving']     = true;
       $tab[10]['massiveaction'] = false;
+      $tab[10]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_devicememories',
+                                          'joinparams' => array('ischild'=>true)));
 
       $tab[35]['table']         = 'glpi_computers_devicememories';
       $tab[35]['field']         = 'specificity';
@@ -914,30 +922,44 @@ class Computer extends CommonDBTM {
       $tab[35]['datatype']      = 'number';
       $tab[35]['width']         = 100;
       $tab[35]['massiveaction'] = false;
+      $tab[35]['joinparams']    = array('ischild' => true);
+
 
       $tab[11]['table']         = 'glpi_devicenetworkcards';
       $tab[11]['field']         = 'designation';
       $tab[11]['name']          = $LANG['setup'][9];
       $tab[11]['forcegroupby']  = true;
       $tab[11]['massiveaction'] = false;
+      $tab[11]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_devicenetworkcards',
+                                          'joinparams' => array('ischild'=>true)));
 
       $tab[12]['table']         = 'glpi_devicesoundcards';
       $tab[12]['field']         = 'designation';
       $tab[12]['name']          = $LANG['devices'][7];
       $tab[12]['forcegroupby']  = true;
       $tab[12]['massiveaction'] = false;
+      $tab[12]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_devicesoundcards',
+                                          'joinparams' => array('ischild'=>true)));
 
       $tab[13]['table']         = 'glpi_devicegraphiccards';
       $tab[13]['field']         = 'designation';
       $tab[13]['name']          = $LANG['devices'][2];
       $tab[13]['forcegroupby']  = true;
       $tab[13]['massiveaction'] = false;
+      $tab[13]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_devicegraphiccards',
+                                          'joinparams' => array('ischild'=>true)));
 
       $tab[14]['table']         = 'glpi_devicemotherboards';
       $tab[14]['field']         = 'designation';
       $tab[14]['name']          = $LANG['devices'][5];
       $tab[14]['forcegroupby']  = true;
       $tab[14]['massiveaction'] = false;
+      $tab[14]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_devicemotherboards',
+                                          'joinparams' => array('ischild'=>true)));
 
 
       $tab[15]['table']         = 'glpi_deviceharddrives';
@@ -946,6 +968,9 @@ class Computer extends CommonDBTM {
       $tab[15]['forcegroupby']  = true;
       $tab[15]['usehaving']     = true;
       $tab[15]['massiveaction'] = false;
+      $tab[15]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_deviceharddrives',
+                                          'joinparams' => array('ischild'=>true)));
 
       $tab[34]['table']         = 'glpi_computers_deviceharddrives';
       $tab[34]['field']         = 'specificity';
@@ -955,6 +980,8 @@ class Computer extends CommonDBTM {
       $tab[34]['datatype']      = 'number';
       $tab[34]['width']         = 1000;
       $tab[34]['massiveaction'] = false;
+      $tab[34]['joinparams']    = array('ischild' => true);
+
 
       $tab[39]['table']         = 'glpi_devicepowersupplies';
       $tab[39]['field']         = 'designation';
@@ -962,6 +989,9 @@ class Computer extends CommonDBTM {
       $tab[39]['forcegroupby']  = true;
       $tab[39]['usehaving']     = true;
       $tab[39]['massiveaction'] = false;
+      $tab[39]['joinparams']    = array('beforejoin' =>
+                                    array('table'      => 'glpi_computers_devicepowersupplies',
+                                          'joinparams' => array('ischild'=>true)));
 
       $tab['disk'] = $LANG['computers'][8];
 
