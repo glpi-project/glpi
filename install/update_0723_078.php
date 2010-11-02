@@ -4315,9 +4315,9 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                WHERE groups_id IN (
                   SELECT `id`
                   FROM `glpi_groups`
-                  WHERE `ldap_group_dn` IS NOT NULL
-                    OR (`ldap_field` IS NOT NULL
-                       AND `ldap_value` IS NOT NULL))";
+                  WHERE (`ldap_group_dn` IS NOT NULL AND `ldap_group_dn` <> '')
+                    OR ((`ldap_field` IS NOT NULL AND `ldap_field` <> '')
+                       AND (`ldap_value` IS NOT NULL AND `ldap_value` <> ''))";
       $DB->query($query) or die("0.78 update is_dynamic in glpi_groups_users " . $LANG['update'][90] . $DB->error());
    }
 
