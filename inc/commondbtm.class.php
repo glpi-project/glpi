@@ -49,6 +49,9 @@ class CommonDBTM extends CommonGLPI {
    /// Set true to desactivate link generation because form page do not permit show/edit item
    var $no_form_page = false;
 
+   /// Set true to desactivate auto compute table name
+   var $notable = false;
+
    /// Forward entity datas to linked items
    protected $forward_entity_to = array();
    /// Table name cache : set dynamically calling getTable
@@ -71,7 +74,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getTable() {
 
-      if (empty($this->table)) {
+      if (empty($this->table) && !$this->notable) {
          $this->table = getTableForItemType($this->getType());
       }
 
@@ -189,8 +192,9 @@ class CommonDBTM extends CommonGLPI {
    function getEmpty () {
       global $DB;
       //make an empty database object
+      $table=$this->getTable();
 
-      if ($fields = $DB->list_fields($this->getTable())) {
+      if (!empty($table) && $fields = $DB->list_fields($table)) {
          foreach ($fields as $key => $val) {
             $this->fields[$key] = "";
          }
