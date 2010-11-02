@@ -1616,6 +1616,7 @@ class Ticket extends CommonDBTM {
       $tab[53]['datatype']      = 'text';
       $tab[53]['forcegroupby']  = true;
       $tab[53]['massiveaction'] = false;
+      $tab[53]['joinparams']    = array('ischild' => true);
 
       $tab[54]['table']         = 'glpi_ticketvalidations';
       $tab[54]['field']         = 'comment_validation';
@@ -1623,6 +1624,7 @@ class Ticket extends CommonDBTM {
       $tab[54]['datatype']      = 'text';
       $tab[54]['forcegroupby']  = true;
       $tab[54]['massiveaction'] = false;
+      $tab[54]['joinparams']    = array('ischild' => true);
 
       $tab[55]['table']         = 'glpi_ticketvalidations';
       $tab[55]['field']         = 'status';
@@ -1630,6 +1632,7 @@ class Ticket extends CommonDBTM {
       $tab[55]['searchtype']    = 'equals';
       $tab[55]['forcegroupby']  = true;
       $tab[55]['massiveaction'] = false;
+      $tab[55]['joinparams']    = array('ischild' => true);
 
       $tab[56]['table']         = 'glpi_ticketvalidations';
       $tab[56]['field']         = 'submission_date';
@@ -1637,6 +1640,7 @@ class Ticket extends CommonDBTM {
       $tab[56]['datatype']      = 'datetime';
       $tab[56]['forcegroupby']  = true;
       $tab[56]['massiveaction'] = false;
+      $tab[56]['joinparams']    = array('ischild' => true);
 
       $tab[57]['table']         = 'glpi_ticketvalidations';
       $tab[57]['field']         = 'validation_date';
@@ -1644,18 +1648,20 @@ class Ticket extends CommonDBTM {
       $tab[57]['datatype']      = 'datetime';
       $tab[57]['forcegroupby']  = true;
       $tab[57]['massiveaction'] = false;
+      $tab[57]['joinparams']    = array('ischild' => true);
 
-      $tab[58]['table']         = 'glpi_users_validation';
+      $tab[58]['table']         = 'glpi_users';
       $tab[58]['field']         = 'name';
-      $tab[58]['linkfield']     = 'users_id';
       $tab[58]['name']          = $LANG['validation'][0]." - ".$LANG['job'][4];
       $tab[58]['datatype']      = 'itemlink';
       $tab[58]['itemlink_type'] = 'User';
       $tab[58]['forcegroupby']  = true;
       $tab[58]['massiveaction'] = false;
-      $tab[59]['realtable']     = 'glpi_users';
+      $tab[58]['joinparams']    = array('beforejoin' =>
+                                      array('table'      => 'glpi_ticketvalidations',
+                                            'joinparams' => array('ischild' => true)));
 
-      $tab[59]['table']         = 'glpi_users_validation';
+      $tab[59]['table']         = 'glpi_users';
       $tab[59]['field']         = 'name';
       $tab[59]['linkfield']     = 'users_id_validate';
       $tab[59]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][21];
@@ -1663,7 +1669,9 @@ class Ticket extends CommonDBTM {
       $tab[59]['itemlink_type'] = 'User';
       $tab[59]['forcegroupby']  = true;
       $tab[59]['massiveaction'] = false;
-      $tab[59]['realtable']     = 'glpi_users';
+      $tab[59]['joinparams']    = array('beforejoin' =>
+                                      array('table'      => 'glpi_ticketvalidations',
+                                            'joinparams' => array('ischild' => true)));
 
       $tab['requester'] = $LANG['job'][4];
 
