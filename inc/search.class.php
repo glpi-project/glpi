@@ -2186,13 +2186,15 @@ class Search {
       global $LANG;
 
       $searchopt = &Search::getOptions($itemtype);
-      $table = $searchopt[$ID]["table"];
-      $field = $searchopt[$ID]["field"];
+      $table     = $searchopt[$ID]["table"];
+      $field     = $searchopt[$ID]["field"];
 
       $inittable = $table;
-      if ($meta && getTableForItemType($itemtype)!=$table) {
-         $table .= "_".$itemtype;
-      }
+
+      if ($table != getTableForItemType($itemtype)
+         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+         $table .= "_".$searchopt[$ID]["linkfield"];
+      } 
 
 
       if (isset($searchopt[$ID]['joinparams'])
@@ -2206,6 +2208,10 @@ class Search {
          $table .= "_".md5($searchopt[$ID]['joinparams']['beforejoin']['table']);
       }
 
+
+      if ($meta && getTableForItemType($itemtype)!=$table) {
+         $table .= "_".$itemtype;
+      }
 
       // Hack to allow search by ID on every sub-table
       if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)) {
@@ -2303,24 +2309,13 @@ class Search {
       }
 
       switch ($inittable.".".$field) {
-         case "glpi_users_validation.name" :
+//          case "glpi_users_validation.name" :
          case "glpi_users.name" :
-            $linkfield = "";
-            if ($itemtype!='User') {
-               if ($searchopt[$ID]["linkfield"]!=getForeignKeyFieldForTable($inittable)) {
-                  $linkfield = "_".$searchopt[$ID]["linkfield"];
-               }
-
-               if ($meta && getTableForItemType($itemtype)!=$inittable) {
-                  $table = $inittable;
-                  $linkfield .= "_".$itemtype;
-               }
-            }
             if ($itemtype == 'User') { // glpi_users case / not link table
                if (in_array($searchtype, array('equals', 'notequals'))) {
-                  return " $link `$table$linkfield`.`id`".$SEARCH;
+                  return " $link `$table`.`id`".$SEARCH;
                }
-               return makeTextCriteria("`$table$linkfield`.`$field`", $val, $nott, $link);
+               return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
             }
             if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
                $name1 = 'firstname';
@@ -2331,32 +2326,22 @@ class Search {
             }
 
             if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link (`$table$linkfield`.`id`".$SEARCH.
-                               ($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
+               return " $link (`$table`.`id`".$SEARCH.
+                               ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
-            return $link." (`$table$linkfield`.`$name1` $SEARCH
-                            OR `$table$linkfield`.`$name2` $SEARCH
-                            OR CONCAT(`$table$linkfield`.`$name1`, ' ',
-                                      `$table$linkfield`.`$name2`) $SEARCH".
-                            makeTextCriteria("`$table$linkfield`.`$field`",$val,$nott,'OR').") ";
+            return $link." (`$table`.`$name1` $SEARCH
+                            OR `$table`.`$name2` $SEARCH
+                            OR CONCAT(`$table`.`$name1`, ' ',
+                                      `$table`.`$name2`) $SEARCH".
+                            makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
 
          case "glpi_groups.name" :
             $linkfield = "";
-            if ($itemtype!='Group') {
-               if ($searchopt[$ID]["linkfield"]!='groups_id') {
-                  $linkfield = "_".$searchopt[$ID]["linkfield"];
-               }
-
-               if ($meta && getTableForItemType($itemtype)!=$inittable) {
-                  $table = $inittable;
-                  $linkfield .= "_".$itemtype;
-               }
-            }
             if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link (`$table$linkfield`.`id`".$SEARCH.
-                               ($val==0?" OR `$table$linkfield`.`id` IS NULL":'').') ';
+               return " $link (`$table`.`id`".$SEARCH.
+                               ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
-            return makeTextCriteria("`$table$linkfield`.`$field`", $val, $nott, $link);
+            return makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
          case "glpi_networkports.mac" :
             if ($itemtype == 'Computer') {
@@ -2709,7 +2694,8 @@ class Search {
          case 'Ticket' :
             if (haveRight("validate_ticket",1)) {
                return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                          "glpi_ticketvalidations", "ticketvalidations_id");
+                                          "glpi_ticketvalidations", "ticketvalidations_id",0,0,
+                                          array('ischild' => true));
             }
 
          default :
@@ -2752,6 +2738,8 @@ class Search {
          $AS = " AS ".$nt;
       }
 
+      $complexjoin=false;
+
       if (isset($joinparams['condition'])) {
          $nt .= "_".md5($joinparams['condition']);
          $AS = " AS ".$nt;
@@ -2784,12 +2772,14 @@ class Search {
       if ($linkfield==getForeignKeyFieldForTable($new_table)) {
          $tocheck = $nt;
       }
-//       echo $tocheck.'<br>';
+//       echo '->'.$tocheck.'<br>';
 
       if (in_array($tocheck,$already_link_tables)) {
          return "";
       }
       array_push($already_link_tables, $tocheck);
+
+//       echo "DONE<br>";
 
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
@@ -2927,11 +2917,11 @@ class Search {
 //             return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
 //                           =`glpi_tickettasks`.`taskcategories_id`)";
 
-         case "glpi_ticketvalidations" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_tickets",
-                                       $linkfield);
-            return $out."
-                   LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
+//          case "glpi_ticketvalidations" :
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_tickets",
+//                                        $linkfield);
+//             return $out."
+//                    LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
 
          case "glpi_tickets" :
             if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
@@ -2950,15 +2940,15 @@ class Search {
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                     AND `$nt`.`itemtype` = '$itemtype') ";
 
-         case "glpi_users" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+//          case "glpi_users" :
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-         case "glpi_users_validation" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                       "glpi_ticketvalidations", 'ticketvalidations_id');
-            return $out."
-                   LEFT JOIN `glpi_users` $AS
-                     ON (`glpi_ticketvalidations`.`$linkfield` = `$nt`.`id`) ";
+//          case "glpi_users_validation" :
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+//                                        "glpi_ticketvalidations", 'ticketvalidations_id');
+//             return $out."
+//                    LEFT JOIN `glpi_users` $AS
+//                      ON (`glpi_ticketvalidations`.`$linkfield` = `$nt`.`id`) ";
 
          case "glpi_suppliers" :
             if ($itemtype == 'Contact') {
@@ -3181,8 +3171,6 @@ class Search {
                   }
                }
             }
-            
-            
             if (!empty($linkfield)) {
                $addcondition='';
                if (isset($joinparams['condition'])) {
@@ -3196,6 +3184,7 @@ class Search {
                   && is_array($joinparams['beforejoin']) ) {
                   if (isset($joinparams['beforejoin']['table'])) {
                      $intertable=$joinparams['beforejoin']['table'];
+
                      if (isset($joinparams['beforejoin']['linkfield'])){
                         $interlinkfield = $joinparams['beforejoin']['linkfield'];
                      } else {
@@ -3209,9 +3198,9 @@ class Search {
                      $before = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
                                         $interlinkfield,$meta, $meta_type,$interjoinparams);
                   }
-                     $rt=$intertable.$addmetanum;
+                  $rt=$intertable.$addmetanum;
                }
-
+//                echo $before.'<br>';
 
                // Child join 
                if (isset($joinparams['ischild']) && $joinparams['ischild'] ) {
@@ -3461,7 +3450,7 @@ class Search {
       $linkfield = $searchopt[$ID]["linkfield"];
 
       switch ($table.'.'.$field) {
-         case "glpi_users_validation.name" :
+//          case "glpi_users_validation.name" :
          case "glpi_users.name" :
             // USER search case
             if ($itemtype != 'User'
@@ -4541,12 +4530,12 @@ class Search {
             }
          }
 
-         switch ($searchopt[$field_num]['table']) {
-            case 'glpi_users_validation' :
-               return array('equals'    => $LANG['rulesengine'][0],
-                            'notequals' => $LANG['rulesengine'][1],
-                            'searchopt' => $searchopt[$field_num]);
-         }
+//          switch ($searchopt[$field_num]['table']) {
+//             case 'glpi_users_validation' :
+//                return array('equals'    => $LANG['rulesengine'][0],
+//                             'notequals' => $LANG['rulesengine'][1],
+//                             'searchopt' => $searchopt[$field_num]);
+//          }
 
          switch ($searchopt[$field_num]['field']) {
             case 'id' :

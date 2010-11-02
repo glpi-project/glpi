@@ -71,26 +71,26 @@ if (isset($_REQUEST['searchtype'])) {
       case "morethan" :
       case "lessthan" :
         // Specific cases with linkfield
-        if (!$display && isset($searchopt['linkfield'])) {
-            // Specific cases
-            switch ($searchopt['table'].".".$searchopt['linkfield']) {
-               case "glpi_users_validation.users_id_validate" :
-                  User::dropdown(array('name'     => $inputname,
-                                       'value'    => $_REQUEST['value'],
-                                       'comments' => false,
-                                       'right'    => 'validate_ticket'));
-                  $display = true;
-                  break;
-
-               case "glpi_users_validation.users_id" :
-                  User::dropdown(array('name'     => $inputname,
-                                       'value'    => $_REQUEST['value'],
-                                       'comments' => false,
-                                       'right'    => 'create_validation'));
-                  $display = true;
-                  break;
-            }
-         }
+//         if (!$display && isset($searchopt['linkfield'])) {
+//             // Specific cases
+//             switch ($searchopt['table'].".".$searchopt['linkfield']) {
+//                case "glpi_users_validation.users_id_validate" :
+//                   User::dropdown(array('name'     => $inputname,
+//                                        'value'    => $_REQUEST['value'],
+//                                        'comments' => false,
+//                                        'right'    => 'validate_ticket'));
+//                   $display = true;
+//                   break;
+// 
+//                case "glpi_users_validation.users_id" :
+//                   User::dropdown(array('name'     => $inputname,
+//                                        'value'    => $_REQUEST['value'],
+//                                        'comments' => false,
+//                                        'right'    => 'create_validation'));
+//                   $display = true;
+//                   break;
+//             }
+//          }
 
         // Specific cases with linkfield
         if (!$display && isset($searchopt['linkfield'])) {
