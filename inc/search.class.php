@@ -1788,7 +1788,7 @@ class Search {
                   $linkfield="_".$searchopt[$ID]["linkfield"];
                }
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return "GROUP_CONCAT( `$table$linkfield$addtable`.`id` SEPARATOR '$$$$') AS ".$NAME."_".$num.",";
+                  return "GROUP_CONCAT(DISTINCT  `$table$linkfield$addtable`.`id` SEPARATOR '$$$$') AS ".$NAME."_".$num.",";
                }
                return "`$table$linkfield$addtable`.`$field` AS ".$NAME."_$num,
                      `$table$linkfield$addtable`.`realname` AS ".$NAME."_".$num."_2,
