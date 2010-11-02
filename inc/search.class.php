@@ -1837,17 +1837,13 @@ class Search {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       } 
 
-      if (isset($searchopt[$ID]['joinparams'])
-         && isset($searchopt[$ID]['joinparams']['condition'])) {
-         $addtable .= "_".md5($searchopt[$ID]['joinparams']['condition']);
+      if (isset($searchopt[$ID]['joinparams'])) {
+         $complexjoin=self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+         
+         if (!empty($complexjoin)) {
+            $addtable .= "_".$complexjoin;
+         }
       }
-
-      if (isset($searchopt[$ID]['joinparams'])
-         && isset($searchopt[$ID]['joinparams']['beforejoin'])
-         && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])) {
-         $addtable .= "_".md5($searchopt[$ID]['joinparams']['beforejoin']['table']);
-      }
-
 
       if ($meta) {
          $NAME = "META";
@@ -2197,15 +2193,12 @@ class Search {
       } 
 
 
-      if (isset($searchopt[$ID]['joinparams'])
-         && isset($searchopt[$ID]['joinparams']['condition'])) {
-         $table .= "_".md5($searchopt[$ID]['joinparams']['condition']);
-      }
-
-      if (isset($searchopt[$ID]['joinparams'])
-         && isset($searchopt[$ID]['joinparams']['beforejoin'])
-         && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])) {
-         $table .= "_".md5($searchopt[$ID]['joinparams']['beforejoin']['table']);
+      if (isset($searchopt[$ID]['joinparams'])) {
+         $complexjoin=self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+         
+         if (!empty($complexjoin)) {
+            $table .= "_".$complexjoin;
+         }
       }
 
 
@@ -2738,18 +2731,12 @@ class Search {
          $AS = " AS ".$nt;
       }
 
-      $complexjoin=false;
-
-      if (isset($joinparams['condition'])) {
-         $nt .= "_".md5($joinparams['condition']);
+      $complexjoin=self::computeComplexJoinID($joinparams);
+      
+      if (!empty($complexjoin)) {
+         $nt .= "_".$complexjoin;
          $AS = " AS ".$nt;
       }
-
-      if (isset($joinparams['beforejoin']) && isset($joinparams['beforejoin']['table'])){
-         $nt .= "_".md5($joinparams['beforejoin']['table']);
-         $AS = " AS ".$nt;
-      }
-
 
 //       }
 
@@ -3072,16 +3059,16 @@ class Search {
                                        '' AS comment, -1 AS level) $AS
                         ON (`$rt`.`$linkfield` = `glpi_entities`.`id`) ";
 
-         case "glpi_groups":
-            if ($itemtype=='User') {
-               // Link to glpi_users_group before
-               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_groups_users",
-                                          '', $meta, $meta_type);
-               return $out."
-                      LEFT JOIN `$new_table` $AS
-                        ON (`glpi_groups_users$addmetanum`.`groups_id` = `$nt`.`id`) ";
-            }
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+//          case "glpi_groups":
+//             if ($itemtype=='User') {
+//                // Link to glpi_users_group before
+//                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_groups_users",
+//                                           '', $meta, $meta_type);
+//                return $out."
+//                       LEFT JOIN `$new_table` $AS
+//                         ON (`glpi_groups_users$addmetanum`.`groups_id` = `$nt`.`id`) ";
+//             }
+//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
 //          case "glpi_contracts" :
 //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_contracts_items",
@@ -3198,14 +3185,14 @@ class Search {
                         $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
                                           $interlinkfield,$meta, $meta_type,$interjoinparams);
                      }
-                     if (isset($interjoinparams['condition'])) {
-                        $intertable .= "_".md5($interjoinparams['condition']);
-                     }
 
-                     if (isset($interjoinparams['beforejoin']) && isset($interjoinparams['beforejoin']['table'])) {
-                        $intertable .= "_".md5($interjoinparams['beforejoin']['table']);
-                     }
-                     if (!isset($tab['nojoin']) || !$tab['nolink']) {
+
+                     if (!isset($tab['nolink']) || !$tab['nolink']) {
+                        $complexjoin=self::computeComplexJoinID($interjoinparams);
+         
+                        if (!empty($complexjoin)) {
+                           $intertable .= "_".$complexjoin;
+                        }
                         $rt=$intertable.$addmetanum;
                      }
                   }
@@ -4946,6 +4933,35 @@ class Search {
             $out = "</tr>";
       }
       return $out;
+   }
+
+   static function computeComplexJoinID($joinparams) {
+
+      $complexjoin='';
+      
+      if (isset($joinparams['condition'])) {
+         $complexjoin .= $joinparams['condition'];
+      }
+
+      if (isset($joinparams['beforejoin']) && isset($joinparams['beforejoin']['table'])){
+
+         if (isset($joinparams['beforejoin']['table'])) {
+            $joinparams['beforejoin']=array($joinparams['beforejoin']);
+         }
+         foreach ($joinparams['beforejoin'] as $tab) {
+            if (isset($tab['table'])) {
+               $complexjoin.=$tab['table'];
+            }
+            if (isset($tab['joinparams']) && isset($tab['joinparams']['condition'])) {
+               $complexjoin.=$tab['joinparams']['condition'];
+            }
+         }
+
+      }
+      if (!empty($complexjoin)) {
+         $complexjoin=md5($complexjoin);
+      }
+      return $complexjoin;
    }
 
 }

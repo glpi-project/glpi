@@ -1685,10 +1685,19 @@ class Ticket extends CommonDBTM {
       $tab[4]['table'] = 'glpi_users';
       $tab[4]['field'] = 'name';
       $tab[4]['name']  = $LANG['job'][4];
+      $tab[4]['joinparams'] = array('beforejoin'=>
+                                    array('table'      => 'glpi_tickets_users',
+                                          'joinparams' => array('jointype'=>'child',
+                                                                'condition' => 'NEWTABLE.`type` = '.self::REQUESTER)));
+
 
       $tab[71]['table'] = 'glpi_groups';
       $tab[71]['field'] = 'name';
       $tab[71]['name']  = $LANG['common'][35];
+      $tab[71]['joinparams'] = array('beforejoin'=>
+                                    array('table'      => 'glpi_groups_tickets',
+                                          'joinparams' => array('jointype'=>'child',
+                                                                'condition' => 'NEWTABLE.`type` = '.self::REQUESTER)));
 
       $tab[22]['table']     = 'glpi_users';
       $tab[22]['field']     = 'name';
@@ -1729,10 +1738,13 @@ class Ticket extends CommonDBTM {
       if (haveRight("show_all_ticket","1") || haveRight("show_assign_ticket",'1')) {
          $tab['assign'] = $LANG['job'][5];
 
-         $tab[5]['table']     = 'glpi_users';
-         $tab[5]['field']     = 'name';
-         $tab[5]['linkfield'] = 'users_id_assign';
-         $tab[5]['name']      = $LANG['job'][5]." - ".$LANG['job'][6];
+         $tab[5]['table']      = 'glpi_users';
+         $tab[5]['field']      = 'name';
+         $tab[5]['name']       = $LANG['job'][5]." - ".$LANG['job'][6];
+         $tab[5]['joinparams'] = array('beforejoin'=>array('table'=>'glpi_tickets_users',
+                                          'joinparams' => array('jointype'=>'child',
+                                                                'condition' => 'NEWTABLE.`type` = '.self::ASSIGN)));
+
 
          $tab[6]['table']     = 'glpi_suppliers';
          $tab[6]['field']     = 'name';
@@ -1741,8 +1753,10 @@ class Ticket extends CommonDBTM {
 
          $tab[8]['table']     = 'glpi_groups';
          $tab[8]['field']     = 'name';
-         $tab[8]['linkfield'] = 'groups_id_assign';
          $tab[8]['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
+         $tab[8]['joinparams'] = array('beforejoin'=>array('table'=>'glpi_groups_tickets',
+                                          'joinparams' => array('jointype'=>'child',
+                                                                'condition' => 'NEWTABLE.`type` = '.self::ASSIGN)));
 
          $tab['followup'] = $LANG['mailing'][141];
 
