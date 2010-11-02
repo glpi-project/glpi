@@ -55,6 +55,11 @@ class Ticket extends CommonDBTM {
    // Demand type
    const DEMAND_TYPE   = 2;
 
+   // Requester
+   const REQUESTER = 1;
+   // Assign
+   const ASSIGN = 2;
+
    /**
     * Name of the type
     *
