@@ -62,7 +62,8 @@ if (isset($_GET["lID"])) {
             if ($mc) {
                @set_magic_quotes_runtime(0);
             }
-            echo $content_data[0];
+            // May have several values due to network datas : use only first one
+            echo current($content_data);
 
             if ($mc) {
                @set_magic_quotes_runtime($mc);
