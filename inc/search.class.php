@@ -2695,7 +2695,7 @@ class Search {
             if (haveRight("validate_ticket",1)) {
                return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                           "glpi_ticketvalidations", "ticketvalidations_id",0,0,
-                                          array('ischild' => true));
+                                          array('jointype' => 'child'));
             }
 
          default :
@@ -2923,15 +2923,15 @@ class Search {
 //             return $out."
 //                    LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
 
-         case "glpi_tickets" :
-            if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
-               return " LEFT JOIN `$new_table` $AS
-                           ON (`$rt`.`id` = `$nt`.`items_id`
-                               AND `$nt`.`itemtype` = '$itemtype' ".
-                               geglpi_computerdiskstEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
-            } else {
-               return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
-            }
+//          case "glpi_tickets" :
+//             if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
+//                return " LEFT JOIN `$new_table` $AS
+//                            ON (`$rt`.`id` = `$nt`.`items_id`
+//                                AND `$nt`.`itemtype` = '$itemtype' ".
+//                                getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
+//             } else {
+//                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+//             }
 
          case "glpi_ticketsatisfactions" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
@@ -3172,12 +3172,6 @@ class Search {
                }
             }
             if (!empty($linkfield)) {
-               $addcondition='';
-               if (isset($joinparams['condition'])) {
-                  $addcondition=str_replace("REFTABLE", "`$rt`", $joinparams['condition']);
-                  $addcondition=str_replace("NEWTABLE", "`$nt`", $addcondition);
-                  $addcondition = " AND ".$addcondition." ";
-               }
 
                $before='';
                if (isset($joinparams['beforejoin']) 
@@ -3202,14 +3196,34 @@ class Search {
                }
 //                echo $before.'<br>';
 
-               // Child join 
-               if (isset($joinparams['ischild']) && $joinparams['ischild'] ) {
-                  return $before." LEFT JOIN `$new_table` $AS 
-                              ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($ref_table)."` 
-                                    $addcondition)";
-               } else {
-                  // Standard join 
-                 return $before." LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
+               $addcondition='';
+               if (isset($joinparams['condition'])) {
+                  $from=array("`REFTABLE`","REFTABLE","`NEWTABLE`","NEWTABLE");
+                  $to=array("`$rt`","`$rt`","`$nt`","`$nt`");
+                  $addcondition=str_replace($from, $to, $joinparams['condition']);
+                  $addcondition = " AND ".$addcondition." ";
+               }
+
+               if (!isset($joinparams['jointype'])) {
+                  $joinparams['jointype']='standard';
+               }
+               switch ($joinparams['jointype']) {
+                  case 'child' :
+                     // Child join
+                     return $before." LEFT JOIN `$new_table` $AS 
+                                 ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($ref_table)."` 
+                                       $addcondition)";
+
+                  case "itemtype_item" :
+                     return $before." LEFT JOIN `$new_table` $AS
+                                 ON (`$rt`.`id` = `$nt`.`items_id`
+                                    AND `$nt`.`itemtype` = '$itemtype' $addcondition) ";
+
+                  default :
+                     // Standard join 
+                     return $before." LEFT JOIN `$new_table` $AS
+                                       ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
+
                }
             }
             return '';
@@ -4364,12 +4378,15 @@ class Search {
             $search[$itemtype]['tracking'] = $LANG['title'][24];
 
             $search[$itemtype][60]['table']         = 'glpi_tickets';
+            $search[$itemtype][60]['linkfield']     = 'items_id';
             $search[$itemtype][60]['field']         = 'count';
             $search[$itemtype][60]['name']          = $LANG['stats'][13];
             $search[$itemtype][60]['forcegroupby']  = true;
             $search[$itemtype][60]['usehaving']     = true;
             $search[$itemtype][60]['datatype']      = 'number';
             $search[$itemtype][60]['massiveaction'] = false;
+            $search[$itemtype][60]['joinparams']    = array('jointype' => "itemtype_item",
+                                                            'condition' => getEntitiesRestrictRequest('', 'NEWTABLE'));
          }
 
          if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
