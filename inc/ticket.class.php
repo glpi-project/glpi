@@ -169,15 +169,15 @@ class Ticket extends CommonDBTM {
    * Is a group linked to the ticket ?
    *
    * @param $type type to search (see constants)
-   * @param $groups_id array of group ID
+   * @param $groups array of group ID
    *
    * @return boolean
    **/
    function haveAGroup($type,$groups) {
+
       if (is_array($groups) && count($groups)) {
          foreach ($groups as $groups_id) {
-            if (isset($this->groups[$type])
-               && isset($this->groups[$type][$users_id])) {
+            if (isset($this->groups[$type]) && isset($this->groups[$type][$groups_id])) {
                return true;
             }
          }
