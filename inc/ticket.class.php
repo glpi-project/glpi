@@ -132,48 +132,50 @@ class Ticket extends CommonDBTM {
 
 
    /**
-   * Is a user linked to the ticket ?
-   *
-   * @param $type type to search (see constants)
-   * @param $users_id integer user ID
-   *
-   * @return boolean
+    * Is a user linked to the ticket ?
+    *
+    * @param $type type to search (see constants)
+    * @param $users_id integer user ID
+    *
+    * @return boolean
    **/
-   function isUser($type,$users_id) {
-      if (isset($this->users[$type])
-         && isset($this->users[$type][$users_id])) {
+   function isUser($type, $users_id) {
+
+      if (isset($this->users[$type]) && isset($this->users[$type][$users_id])) {
          return true;
       }
 
       return false;
    }
 
+
    /**
-   * Is a group linked to the ticket ?
-   *
-   * @param $type type to search (see constants)
-   * @param $groups_id integer group ID
-   *
-   * @return boolean
+    * Is a group linked to the ticket ?
+    *
+    * @param $type type to search (see constants)
+    * @param $groups_id integer group ID
+    *
+    * @return boolean
    **/
-   function isGroup($type,$groups_id) {
-      if (isset($this->groups[$type])
-         && isset($this->groups[$type][$groups_id])) {
+   function isGroup($type, $groups_id) {
+
+      if (isset($this->groups[$type]) && isset($this->groups[$type][$groups_id])) {
          return true;
       }
 
       return false;
    }
 
+
    /**
-   * Is a group linked to the ticket ?
-   *
-   * @param $type type to search (see constants)
-   * @param $groups array of group ID
-   *
-   * @return boolean
+    * Is a group linked to the ticket ?
+    *
+    * @param $type type to search (see constants)
+    * @param $groups array of group ID
+    *
+    * @return boolean
    **/
-   function haveAGroup($type,$groups) {
+   function haveAGroup($type, $groups) {
 
       if (is_array($groups) && count($groups)) {
          foreach ($groups as $groups_id) {
@@ -185,6 +187,7 @@ class Ticket extends CommonDBTM {
 
       return false;
    }
+
 
    /**
     * Is the current user have right to create the current ticket ?
@@ -242,9 +245,11 @@ class Ticket extends CommonDBTM {
 
 
    function post_getFromDB () {
-      $this->groups=Group_Ticket::getTicketGroups($this->fields['id']);
-      $this->users=Ticket_User::getTicketUsers($this->fields['id']);
+
+      $this->groups = Group_Ticket::getTicketGroups($this->fields['id']);
+      $this->users  = Ticket_User::getTicketUsers($this->fields['id']);
    }
+
 
    function defineTabs($options=array()) {
       global $LANG, $CFG_GLPI, $DB;
@@ -1438,7 +1443,8 @@ class Ticket extends CommonDBTM {
    **/
    function canAddFollowups() {
 
-      return ((haveRight("add_followups","1") && $this->isUser(self::REQUESTER,getLoginUserID()) )
+      return ((haveRight("add_followups","1")
+               && $this->isUser(self::REQUESTER,getLoginUserID()))
               || haveRight("global_add_followups","1")
               || (haveRight("group_add_followups","1")
                   && isset($_SESSION["glpigroups"])
@@ -1727,7 +1733,6 @@ class Ticket extends CommonDBTM {
                                                                  'condition' => 'NEWTABLE.`type` ' .
                                                                                 '= '.self::REQUESTER)));
 
-
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'name';
       $tab[71]['name']          = $LANG['common'][35];
@@ -1790,7 +1795,6 @@ class Ticket extends CommonDBTM {
                                                            => array('jointype'  => 'child',
                                                                     'condition' => 'NEWTABLE.`type` ' .
                                                                                    '= '.self::ASSIGN)));
-
 
          $tab[6]['table']     = 'glpi_suppliers';
          $tab[6]['field']     = 'name';
@@ -2812,7 +2816,7 @@ class Ticket extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       /// TODO clean it
-      $tobereview=0;
+      $tobereview = 0;
 
       $canupdate    = haveRight('update_ticket','1');
       $canpriority  = haveRight('update_priority','1');
@@ -3069,9 +3073,10 @@ class Ticket extends CommonDBTM {
       } else {
          echo $LANG['common'][34]."&nbsp;: </td>";
          echo "<td>";
+
          if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])) {
             foreach ($this->users[self::REQUESTER] as $k => $d) {
-               echo getUserName($k,$showuserlink);
+               echo getUserName($k, $showuserlink);
             }
          }
       }
@@ -3088,6 +3093,7 @@ class Ticket extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['common'][35]."&nbsp;: </td>";
       echo "<td>";
+
       if ($tobereview && $canupdate) {
          Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
                                        'entity' => $this->fields["entities_id"]));
@@ -3188,7 +3194,7 @@ class Ticket extends CommonDBTM {
          echo "<td>";
          if (isset($this->users[self::ASSIGN]) && count($this->users[self::ASSIGN])) {
             foreach ($this->users[self::ASSIGN] as $k => $d) {
-               echo getUserName($k,$showuserlink);
+               echo getUserName($k, $showuserlink);
             }
          }
          echo "</td>";
@@ -3538,9 +3544,9 @@ class Ticket extends CommonDBTM {
       }
 
       $search_users_id = " (`glpi_tickets_users`.`users_id` = '".getLoginUserID()."'
-                           AND `glpi_tickets_users`.`type` = '".self::REQUESTER."') ";
+                            AND `glpi_tickets_users`.`type` = '".self::REQUESTER."') ";
       $search_assign   = " (`users_id` = '".getLoginUserID()."'
-                           AND `glpi_tickets_users`.`type` = '".self::ASSIGN."')";
+                            AND `glpi_tickets_users`.`type` = '".self::ASSIGN."')";
 
       if ($showgrouptickets) {
          $search_users_id = " 0 = 1 ";
@@ -3549,10 +3555,11 @@ class Ticket extends CommonDBTM {
          if (count($_SESSION['glpigroups'])) {
             $groups        = implode("','",$_SESSION['glpigroups']);
             $search_assign = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
-                              AND `glpi_groups_tickets`.`type` = '".self::ASSIGN."')";
+                                AND `glpi_groups_tickets`.`type` = '".self::ASSIGN."')";
+
             if (haveRight("show_group_ticket",1)) {
                $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
-                                 AND `glpi_groups_tickets`.`type` = '".self::REQUESTER."') ";
+                                     AND `glpi_groups_tickets`.`type` = '".self::REQUESTER."') ";
             }
          }
       }
@@ -4178,7 +4185,7 @@ class Ticket extends CommonDBTM {
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
                 WHERE (`glpi_tickets_users`.`users_id` = '$userID') ".
-                      getEntitiesRestrictRequest("AND","glpi_tickets")."
+                      getEntitiesRestrictRequest("AND", "glpi_tickets")."
                 ORDER BY `glpi_tickets`.`date_mod` DESC
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
@@ -4224,7 +4231,7 @@ class Ticket extends CommonDBTM {
    }
 
 
-   static function showShort($id, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
+   static function showShort($id, $followups, $output_type=HTML_OUTPUT, $row_num=0) {
       global $CFG_GLPI, $LANG;
 
       $rand = mt_rand();
@@ -4242,6 +4249,7 @@ class Ticket extends CommonDBTM {
       $showprivate = haveRight("show_full_ticket","1");
       $align       = "class='center";
       $align_desc  = "class='left";
+
       if ($followups) {
          $align .= " top'";
          $align_desc .= " top'";
@@ -4249,6 +4257,7 @@ class Ticket extends CommonDBTM {
          $align .= "'";
          $align_desc .= "'";
       }
+
       if ($job->getFromDB($id)) {
          $item_num = 1;
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
@@ -4275,7 +4284,8 @@ class Ticket extends CommonDBTM {
             if (isset($_SESSION['glpimassiveactionselected'][$job->fields["id"]])) {
                $sel = "checked";
             }
-            $first_col .= "&nbsp;<input type='checkbox' name='item[".$job->fields["id"]."]' value='1' $sel>";
+            $first_col .= "&nbsp;<input type='checkbox' name='item[".$job->fields["id"]."]'
+                                  value='1' $sel>";
          }
 
          echo Search::showItem($output_type,$first_col,$item_num,$row_num,$align);
@@ -4291,19 +4301,23 @@ class Ticket extends CommonDBTM {
 
          } else {
             $second_col .= "<div class='tracking_hour'>".$LANG['joblist'][11]."&nbsp;:";
+
             if ($output_type == HTML_OUTPUT) {
                $second_col .= "<br>";
             }
             $second_col .= "&nbsp;<span class='tracking_bold'>".convDateTime($job->fields["date"]).
                            "</span><br>".$LANG['joblist'][12]."&nbsp;:";
+
             if ($output_type == HTML_OUTPUT) {
                $second_col .= "<br>";
             }
-            $second_col .= "&nbsp;<span class='tracking_bold'>".convDateTime($job->fields["closedate"]).
-                           "</span><br>";
+            $second_col .= "&nbsp;<span class='tracking_bold'>".
+                                   convDateTime($job->fields["closedate"])."</span><br>";
+
             if ($job->fields["actiontime"] > 0) {
                $second_col .= $LANG['job'][20]."&nbsp;: ";
             }
+
             if ($output_type == HTML_OUTPUT) {
                $second_col .= "<br>";
             }
@@ -4337,38 +4351,38 @@ class Ticket extends CommonDBTM {
 
          if (isset($job->users[self::REQUESTER]) && count($job->users[self::REQUESTER])) {
             foreach ($job->users[self::REQUESTER] as $k => $d) {
-               $userdata = getUserName($k,2);
-               $fourth_col.= "<strong>".$userdata['name']."</strong>&nbsp;";
-               $fourth_col .= showToolTip($userdata["comment"], array('link' => $userdata["link"],
-                                                                  'display' => false));
+               $userdata    = getUserName($k,2);
+               $fourth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
+               $fourth_col .= showToolTip($userdata["comment"], array('link'    => $userdata["link"],
+                                                                      'display' => false));
                $fourth_col .= "<br>";
             }
          }
-
 
          if (isset($job->groups[self::REQUESTER]) && count($job->groups[self::REQUESTER])) {
             foreach ($job->groups[self::REQUESTER] as $k => $d) {
-               $fourth_col.= Dropdown::getDropdownName("glpi_groups", $k);
+               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $k);
                $fourth_col .= "<br>";
             }
          }
-         echo Search::showItem($output_type,$fourth_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type, $fourth_col, $item_num, $row_num, $align);
 
          // Fifth column
          $fifth_col = "";
 
          if (isset($job->users[self::ASSIGN]) && count($job->users[self::ASSIGN])) {
             foreach ($job->users[self::ASSIGN] as $k => $d) {
-               $userdata = getUserName($k,2);
-               $fifth_col.= "<strong>".$userdata['name']."</strong>&nbsp;";
-               $fifth_col .= showToolTip($userdata["comment"], array('link' => $userdata["link"],
-                                                                  'display' => false));
+               $userdata = getUserName($k, 2);
+               $fifth_col .= "<strong>".$userdata['name']."</strong>&nbsp;";
+               $fifth_col .= showToolTip($userdata["comment"], array('link'    => $userdata["link"],
+                                                                     'display' => false));
                $fifth_col .= "<br>";
             }
          }
+
          if (isset($job->groups[self::ASSIGN]) && count($job->groups[self::ASSIGN])) {
             foreach ($job->groups[self::ASSIGN] as $k => $d) {
-               $fourth_col.= Dropdown::getDropdownName("glpi_groups", $k);
+               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $k);
                $fourth_col .= "<br>";
             }
          }
@@ -4378,12 +4392,12 @@ class Ticket extends CommonDBTM {
             if (!empty($fifth_col)) {
                $fifth_col .= "<br>";
             }
-            $fifth_col .= self::getAssignName($job->fields["suppliers_id_assign"],'Supplier',1);
+            $fifth_col .= self::getAssignName($job->fields["suppliers_id_assign"], 'Supplier', 1);
          }
          echo Search::showItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
          // Sixth Colum
-         $sixth_col = "";
+         $sixth_col  = "";
          $is_deleted = false;
          if (!empty($job->fields["itemtype"]) && $job->fields["items_id"]>0) {
             if (class_exists($job->fields["itemtype"])) {
@@ -4410,10 +4424,12 @@ class Ticket extends CommonDBTM {
                                ($is_deleted?" class='center deleted' ":$align));
 
          // Seventh column
-         echo Search::showItem($output_type, "<strong>".
-               Dropdown::getDropdownName('glpi_ticketcategories',$job->fields["ticketcategories_id"])
-               ."</strong>", $item_num,
-                               $row_num, $align);
+         echo Search::showItem($output_type,
+                               "<strong>".
+                                 Dropdown::getDropdownName('glpi_ticketcategories',
+                                                           $job->fields["ticketcategories_id"]).
+                               "</strong>",
+                               $item_num, $row_num, $align);
 
          // Eigth column
          $eigth_column = "<strong>".$job->fields["name"]."</strong>&nbsp;";
@@ -4426,15 +4442,16 @@ class Ticket extends CommonDBTM {
             if ($followups && $output_type == HTML_OUTPUT) {
                $eigth_column .= TicketFollowup::showShortForTicket($job->fields["id"]);
             } else {
-               $eigth_column .= "&nbsp;(".$job->numberOfFollowups($showprivate).
-                                 "-".$job->numberOfTasks($showprivate).")";
+               $eigth_column .= "&nbsp;(".$job->numberOfFollowups($showprivate)."-".
+                                        $job->numberOfTasks($showprivate).")";
             }
          }
 
          if ($output_type == HTML_OUTPUT) {
             $eigth_column .= "&nbsp;".showToolTip($job->fields['content'],
                                                   array('display' => false,
-                                                        'applyto' => "ticket".$job->fields["id"].$rand));
+                                                        'applyto' => "ticket".$job->fields["id"].
+                                                                     $rand));
          }
 
          echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
@@ -4551,7 +4568,7 @@ class Ticket extends CommonDBTM {
 
       return " DISTINCT `glpi_tickets`.*,
                         `glpi_ticketcategories`.`completename` AS catname
-                        $SELECT";
+               $SELECT";
    }
 
 
@@ -4563,8 +4580,10 @@ class Ticket extends CommonDBTM {
                         ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
       }
 
-      return " LEFT JOIN `glpi_groups_tickets` ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
-               LEFT JOIN `glpi_tickets_users` ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
+      return " LEFT JOIN `glpi_groups_tickets`
+                  ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
+               LEFT JOIN `glpi_tickets_users`
+                  ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
                LEFT JOIN `glpi_ticketcategories`
                   ON (`glpi_tickets`.`ticketcategories_id` = `glpi_ticketcategories`.`id`)
                $FROM";
@@ -4709,9 +4728,9 @@ class Ticket extends CommonDBTM {
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_tickets_users`
                            ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
-                                 AND `glpi_tickets_users`.`type` = '".self::ASSIGN."')
+                               AND `glpi_tickets_users`.`type` = '".self::ASSIGN."')
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`) ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if (!empty($date1)||!empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -4725,8 +4744,8 @@ class Ticket extends CommonDBTM {
       if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["users_id"];
-            $tmp['link'] = formatUserName($line["users_id"], $line["name"],
-                                          $line["realname"], $line["firstname"],1);
+            $tmp['link'] = formatUserName($line["users_id"], $line["name"], $line["realname"],
+                                          $line["firstname"], 1);
             $tab[] = $tmp;
          }
       }
@@ -4797,7 +4816,7 @@ class Ticket extends CommonDBTM {
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_suppliers`
                      ON (`glpi_suppliers`.`id` = `glpi_tickets`.`suppliers_id_assign`) ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -4834,10 +4853,10 @@ class Ticket extends CommonDBTM {
                                 `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_tickets_users`
-                           ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
-                                 AND `glpi_tickets_users`.`type` = '".self::REQUESTER."')
+                     ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
+                         AND `glpi_tickets_users`.`type` = '".self::REQUESTER."')
                 INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets_users`.`users_id`) ".
-                getEntitiesRestrictRequest("WHERE","glpi_tickets");
+                getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -4869,7 +4888,8 @@ class Ticket extends CommonDBTM {
    static function getUsedRecipientBetween($date1='', $date2='') {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_users`.`id` AS user_id, `glpi_users`.`name` AS name,
+      $query = "SELECT DISTINCT `glpi_users`.`id` AS user_id,
+                                `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
                                 `glpi_users`.`firstname` AS firstname
                 FROM `glpi_tickets`
@@ -4889,8 +4909,8 @@ class Ticket extends CommonDBTM {
       if ($DB->numrows($result) >= 1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["user_id"];
-            $tmp['link'] = formatUserName($line["user_id"], $line["name"],
-                                          $line["realname"], $line["firstname"], 1);
+            $tmp['link'] = formatUserName($line["user_id"], $line["name"], $line["realname"],
+                                          $line["firstname"], 1);
             $tab[] = $tmp;
          }
       }
@@ -4911,10 +4931,11 @@ class Ticket extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_groups_tickets`
-                           ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
-                                 AND `glpi_groups_tickets`.`type` = '".self::REQUESTER."')
-                LEFT JOIN `glpi_groups` ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)".
-                getEntitiesRestrictRequest(" WHERE","glpi_tickets");
+                     ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
+                         AND `glpi_groups_tickets`.`type` = '".self::REQUESTER."')
+                LEFT JOIN `glpi_groups`
+                     ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)".
+                getEntitiesRestrictRequest(" WHERE", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."
@@ -4949,11 +4970,11 @@ class Ticket extends CommonDBTM {
       $query = "SELECT DISTINCT `glpi_groups`.`id`, `glpi_groups`.`name`
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_groups_tickets`
-                           ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
-                                 AND `glpi_groups_tickets`.`type` = '".self::ASSIGN."')
+                     ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
+                         AND `glpi_groups_tickets`.`type` = '".self::ASSIGN."')
                 LEFT JOIN `glpi_groups`
                      ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)".
-                getEntitiesRestrictRequest(" WHERE","glpi_tickets");
+                getEntitiesRestrictRequest(" WHERE", "glpi_tickets");
 
       if (!empty($date1) || !empty($date2)) {
          $query .= " AND (".getDateRequest("`glpi_tickets`.`date`", $date1, $date2)."

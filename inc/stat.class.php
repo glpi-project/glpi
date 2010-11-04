@@ -434,17 +434,17 @@ class Stat {
                                         $value2="") {
       global $DB;
 
-      $query    = "";
-      $WHERE    = getEntitiesRestrictRequest("WHERE", "glpi_tickets");
-      $LEFTJOIN = "";
-      $LEFTJOINUSER = "LEFT JOIN `glpi_tickets_users`
+      $query         = "";
+      $WHERE         = getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+      $LEFTJOIN      = "";
+      $LEFTJOINUSER  = "LEFT JOIN `glpi_tickets_users`
                            ON (`glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`)";
       $LEFTJOINGROUP = "LEFT JOIN `glpi_groups_tickets`
-               ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`)";
+                           ON (`glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`)";
 
       switch ($param) {
          case "technicien" :
-            $LEFTJOIN=$LEFTJOINUSER;
+            $LEFTJOIN = $LEFTJOINUSER;
             $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
                               AND `glpi_tickets_users`.`type`='".Ticket::ASSIGN."')";
             break;
@@ -462,8 +462,7 @@ class Stat {
             break;
 
          case "user" :
-            $LEFTJOIN=$LEFTJOINUSER;
-
+            $LEFTJOIN = $LEFTJOINUSER;
             $WHERE .= " AND (`glpi_tickets_users`.`users_id` = '$value'
                               AND `glpi_tickets_users`.`type` ='".Ticket::REQUESTER."')";
             break;
@@ -493,18 +492,17 @@ class Stat {
             break;
 
          case "group" :
-            $LEFTJOIN=$LEFTJOINGROUP;
-
+            $LEFTJOIN = $LEFTJOINGROUP;
             $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
                               AND `glpi_groups_tickets`.`type` = '".Ticket::REQUESTER."')";
             break;
 
          case "groups_id_assign" :
-            $LEFTJOIN=$LEFTJOINGROUP;
-
+            $LEFTJOIN = $LEFTJOINGROUP;
             $WHERE .= " AND (`glpi_groups_tickets`.`groups_id` = '$value'
                               AND `glpi_groups_tickets`.`type` = '".Ticket::ASSIGN."')";
             break;
+
          case "requesttypes_id" :
          case "ticketsolutiontypes_id" :
          case "urgency" :
