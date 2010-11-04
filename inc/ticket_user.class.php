@@ -48,6 +48,7 @@ class Ticket_User extends CommonDBTM {
       $query = "SELECT `glpi_tickets_users`.*
                 FROM `glpi_tickets_users`
                 WHERE `tickets_id` = '$tickets_id'";
+
       foreach ($DB->request($query) as $data) {
          $users[$data['type']][$data['users_id']] = $data;
       }
