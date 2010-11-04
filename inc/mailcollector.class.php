@@ -362,7 +362,7 @@ class MailCollector  extends CommonDBTM {
 
                // entities_id set when new ticket / tickets_id when new followup
                if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
-                        && $user_condition)
+                    && $user_condition)
                    || isset($tkt['_refuse_email_no_response'])
                    || isset($tkt['_refuse_email_with_response'])) {
 

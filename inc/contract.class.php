@@ -291,9 +291,8 @@ class Contract extends CommonDBTM {
 
       $tab['contract'] = $LANG['Menu'][25];
 
-      $joinparams = array('beforejoin'=>
-                              array('table'      => 'glpi_contracts_items',
-                                    'joinparams' => array('jointype' => 'itemtype_item')));
+      $joinparams = array('beforejoin' => array('table'      => 'glpi_contracts_items',
+                                                'joinparams' => array('jointype' => 'itemtype_item')));
 
       $tab[29]['table']         = 'glpi_contracts';
       $tab[29]['field']         = 'name';

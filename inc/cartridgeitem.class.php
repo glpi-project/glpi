@@ -355,9 +355,9 @@ class CartridgeItem extends CommonDBTM {
       $tab[40]['field']     = 'name';
       $tab[40]['name']      = $LANG['setup'][96];
       $tab[40]['forcegroupby'] = true;
-      $tab[40]['joinparams']    = array('beforejoin' => 
-                                      array('table'      => 'glpi_cartridgeitems_printermodels',
-                                            'joinparams' => array('jointype' => 'child')));
+      $tab[40]['joinparams']    = array('beforejoin'
+                                        =>  array('table'     => 'glpi_cartridgeitems_printermodels',
+                                            '     joinparams' => array('jointype' => 'child')));
 
       return $tab;
    }

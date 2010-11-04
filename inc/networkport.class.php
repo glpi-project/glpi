@@ -869,10 +869,11 @@ class NetworkPort extends CommonDBChild {
 
       $tab['network'] = $LANG['setup'][88];
 
-      $joinparams=array('jointype' => 'itemtype_item');
+      $joinparams = array('jointype' => 'itemtype_item');
       if ($itemtype=='Computer') {
-         $joinparams['beforejoin'] = array('table' => 'glpi_computers_devicenetworkcards',
-                                        'joinparams' => array('jointype' => 'child', 'nolink'=>true));
+         $joinparams['beforejoin'] = array('table'      => 'glpi_computers_devicenetworkcards',
+                                           'joinparams' => array('jointype' => 'child',
+                                                                 'nolink'   => true));
       }
 
       $tab[20]['table']         = 'glpi_networkports';
@@ -896,7 +897,6 @@ class NetworkPort extends CommonDBChild {
       $tab[83]['massiveaction'] = false;
       $tab[83]['joinparams']    = $joinparams;
 
-
       $tab[84]['table']         = 'glpi_networkports';
       $tab[84]['field']         = 'subnet';
       $tab[84]['name']          = $LANG['networking'][61];
@@ -916,7 +916,7 @@ class NetworkPort extends CommonDBChild {
       $tab[22]['name']          = $LANG['networking'][51];
       $tab[22]['forcegroupby']  = true;
       $tab[22]['massiveaction'] = false;
-      $tab[22]['joinparams']    = array('beforejoin' => array('table' => 'glpi_networkports',
+      $tab[22]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
                                                               'joinparams' => $joinparams));
 
       $tab[87]['table']         = 'glpi_networkinterfaces';
@@ -924,13 +924,13 @@ class NetworkPort extends CommonDBChild {
       $tab[87]['name']          = $LANG['common'][65];
       $tab[87]['forcegroupby']  = true;
       $tab[87]['massiveaction'] = false;
-      $tab[87]['joinparams']    = array('beforejoin' => array('table' => 'glpi_networkports',
+      $tab[87]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
                                                               'joinparams' => $joinparams));
 
-      $netportjoin = array(array('table' => 'glpi_networkports',
-                                 'joinparams' => array('jointype'=>'itemtype_item')),
-                           array('table' => 'glpi_networkports_vlans',
-                                 'joinparams' => array('jointype'=>'child')));
+      $netportjoin = array(array('table'      => 'glpi_networkports',
+                                 'joinparams' => array('jointype' => 'itemtype_item')),
+                           array('table'      => 'glpi_networkports_vlans',
+                                 'joinparams' => array('jointype' => 'child')));
 
       $tab[88]['table']         = 'glpi_vlans';
       $tab[88]['field']         = 'name';

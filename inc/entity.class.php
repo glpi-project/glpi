@@ -347,7 +347,6 @@ class Entity extends CommonTreeDropdown {
       $tab[8]['massiveaction'] = false;
       $tab[8]['joinparams']    = array('jointype' => 'child');
 
-
       $tab[9]['table']         = 'glpi_authldaps';
       $tab[9]['field']         = 'name';
       $tab[9]['linkfield']     = 'ldapservers_id';
@@ -371,7 +370,6 @@ class Entity extends CommonTreeDropdown {
       $tab[12]['name']          = $LANG['financial'][102];
       $tab[12]['massiveaction'] = false;
       $tab[12]['joinparams']    = array('jointype' => 'child');
-
 
       $tab[13]['table']         = 'glpi_entitydatas';
       $tab[13]['field']         = 'country';

@@ -288,8 +288,9 @@ class Supplier extends CommonDBTM {
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Contact';
       $tab[8]['massiveaction'] = false;
-      $tab[8]['joinparams']    = array('beforejoin' => array('table' => 'glpi_contacts_suppliers',
-                                                     'joinparams' => array('jointype' => 'child')));
+      $tab[8]['joinparams']    = array('beforejoin'
+                                       => array('table'      => 'glpi_contacts_suppliers',
+                                                'joinparams' => array('jointype' => 'child')));
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';

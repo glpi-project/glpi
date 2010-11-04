@@ -588,7 +588,7 @@ function update0781to080($output='HTML') {
 
    if (!TableExists('glpi_cartridgeitems_printermodels')
          && TableExists("glpi_cartridges_printermodels")) {
-      $query = "RENAME TABLE `glpi_cartridges_printermodels` TO `glpi_cartridgeitems_printermodels`  ;";
+      $query = "RENAME TABLE `glpi_cartridges_printermodels` TO `glpi_cartridgeitems_printermodels`";
       $DB->query($query)
       or die("0.80 rename glpi_cartridges_printermodels " . $LANG['update'][90] . $DB->error());
    }
@@ -729,7 +729,8 @@ function update0781to080($output='HTML') {
                   PRIMARY KEY  (`id`),
                   KEY `unicity` (`tickets_id_1`,`tickets_id_2`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query) or die("0.80 create glpi_tickets_tickets " . $LANG['update'][90] . $DB->error());
+      $DB->query($query)
+      or die("0.80 create glpi_tickets_tickets " . $LANG['update'][90] . $DB->error());
    }
 
 
@@ -746,7 +747,8 @@ function update0781to080($output='HTML') {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query) or die("0.80 create glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
+      $DB->query($query)
+      or die("0.80 create glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
    }
 
 //TODO a supprimer avant publication juste pour ceux ayant deja installe la svn
@@ -804,7 +806,7 @@ function update0781to080($output='HTML') {
                     PRIMARY KEY (`id`),
                     KEY `old_value` (`old_value`),
                     KEY `rules_id` (`rules_id`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.80 add table glpi_rulecacheprinters". $LANG['update'][90] . $DB->error());
    }
@@ -831,38 +833,41 @@ function update0781to080($output='HTML') {
    if (!TableExists('glpi_groups_tickets')) {
 
       $query = "CREATE TABLE `glpi_groups_tickets` (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `tickets_id` int(11) NOT NULL DEFAULT '0',
-                    `groups_id` int(11) NOT NULL DEFAULT '0',
-                    `type` int(11) NOT NULL DEFAULT '1',
-                    PRIMARY KEY (`id`),
-                    KEY `unicity` (`tickets_id`,`type`,`groups_id`),
-                    KEY `group` (`groups_id`,`type`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `groups_id` int(11) NOT NULL DEFAULT '0',
+                  `type` int(11) NOT NULL DEFAULT '1',
+                  PRIMARY KEY (`id`),
+                  KEY `unicity` (`tickets_id`,`type`,`groups_id`),
+                  KEY `group` (`groups_id`,`type`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.80 add table glpi_groups_tickets". $LANG['update'][90] . $DB->error());
 
 
 
-      $query="SELECT `id`, `groups_id`, `groups_id_assign` FROM `glpi_tickets`;";
+      $query = "SELECT `id`, `groups_id`, `groups_id_assign`
+                FROM `glpi_tickets`";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                if ($data['groups_id']>0) {
                   $query = "INSERT INTO `glpi_groups_tickets`
-                                 (`tickets_id`, `groups_id`,`type`)
-                           VALUES ('".$data['id']."','".$data['groups_id']."','".Ticket::REQUESTER."')";
+                                   (`tickets_id`, `groups_id`, `type`)
+                            VALUES ('".$data['id']."', '".$data['groups_id']."',
+                                    '".Ticket::REQUESTER."')";
                   $DB->query($query)
-                  or die("0.80 migrate data to glpi_groups_tickets table " .
-                        $LANG['update'][90] . $DB->error());
+                  or die("0.80 migrate data to glpi_groups_tickets table ".$LANG['update'][90] .
+                         $DB->error());
                }
                if ($data['groups_id_assign']>0) {
                   $query = "INSERT INTO `glpi_groups_tickets`
-                                 (`tickets_id`, `groups_id`,`type`)
-                           VALUES ('".$data['id']."','".$data['groups_id_assign']."','".Ticket::ASSIGN."')";
+                                  (`tickets_id`, `groups_id`, `type`)
+                           VALUES ('".$data['id']."', '".$data['groups_id_assign']."',
+                                   '".Ticket::ASSIGN."')";
                   $DB->query($query)
-                  or die("0.80 migrate data to glpi_groups_tickets table " .
-                        $LANG['update'][90] . $DB->error());
+                  or die("0.80 migrate data to glpi_groups_tickets table ".$LANG['update'][90] .
+                         $DB->error());
                }
             }
          }
@@ -876,54 +881,59 @@ function update0781to080($output='HTML') {
 
    if (!TableExists('glpi_tickets_users')) {
       $query = "CREATE TABLE `glpi_tickets_users` (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `tickets_id` int(11) NOT NULL DEFAULT '0',
-                    `users_id` int(11) NOT NULL DEFAULT '0',
-                    `type` int(11) NOT NULL DEFAULT '1',
-                    `use_notification` tinyint(1) NOT NULL DEFAULT '0',
-                    `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                    PRIMARY KEY (`id`),
-                    KEY `tickets_id` (`tickets_id`),
-                    KEY `user` (`users_id`,`type`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `type` int(11) NOT NULL DEFAULT '1',
+                  `use_notification` tinyint(1) NOT NULL DEFAULT '0',
+                  `alternative_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `tickets_id` (`tickets_id`),
+                  KEY `user` (`users_id`,`type`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
       or die("0.80 add table glpi_tickets_users". $LANG['update'][90] . $DB->error());
 
-      $query="SELECT `glpi_tickets`.`id`, `glpi_tickets`.`users_id_assign`,
-                  `glpi_tickets`.`users_id`, `glpi_tickets`.`use_email_notification`,
-                  `glpi_tickets`.`user_email`, `glpi_users`.`email` AS EMAIL
-                     
-               FROM `glpi_tickets`
-               LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`);";
+      $query = "SELECT `glpi_tickets`.`id`,
+                       `glpi_tickets`.`users_id_assign`,
+                       `glpi_tickets`.`users_id`,
+                       `glpi_tickets`.`use_email_notification`,
+                       `glpi_tickets`.`user_email`,
+                       `glpi_users`.`email` AS EMAIL
+                FROM `glpi_tickets`
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickets`.`users_id`)";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                if ($data['users_id_assign']>0) {
                   $query = "INSERT INTO `glpi_tickets_users`
-                                 (`tickets_id`, `users_id`,`type`)
-                           VALUES ('".$data['id']."','".$data['users_id_assign']."','".Ticket::ASSIGN."')";
+                                  (`tickets_id`, `users_id`, `type`)
+                           VALUES ('".$data['id']."', '".$data['users_id_assign']."',
+                                   '".Ticket::ASSIGN."')";
                   $DB->query($query)
-                  or die("0.80 migrate data to glpi_tickets_users table " .
-                        $LANG['update'][90] . $DB->error());
+                  or die("0.80 migrate data to glpi_tickets_users table ".$LANG['update'][90] .
+                         $DB->error());
                }
                if ($data['users_id']>0
-                  || ($data['use_email_notification'] && !empty($data['user_email']))) {
-                  $user_id=0;
+                   || ($data['use_email_notification'] && !empty($data['user_email']))) {
+                  $user_id = 0;
                   if ($data['users_id']>0) {
                      $user_id = $data['users_id'];
                   }
-                  $user_email='';
-                  if (strcasecmp($data['user_email'],$data['EMAIL'])!= 0){
-                     $user_email=$data['user_email'];
+                  $user_email = '';
+                  if (strcasecmp($data['user_email'],$data['EMAIL'])!= 0) {
+                     $user_email = $data['user_email'];
                   }
-                  
+
                   $query = "INSERT INTO `glpi_tickets_users`
-                              (`tickets_id`, `users_id`,`type`,`use_notification`,`alternative_email`)
-                           VALUES ('".$data['id']."','$user_id','".Ticket::REQUESTER."',
-                                 '".$data['use_email_notification']."','$user_email')";
+                                  (`tickets_id`, `users_id`,`type`, `use_notification`,
+                                   `alternative_email`)
+                           VALUES ('".$data['id']."', '$user_id', '".Ticket::REQUESTER."',
+                                   '".$data['use_email_notification']."', '$user_email')";
                   $DB->query($query)
-                  or die("0.80 migrate data to glpi_tickets_users table " .
-                        $LANG['update'][90] . $DB->error());
+                  or die("0.80 migrate data to glpi_tickets_users table ".$LANG['update'][90] .
+                         $DB->error());
                }
             }
          }
