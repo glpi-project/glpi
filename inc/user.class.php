@@ -1652,9 +1652,9 @@ class User extends CommonDBTM {
       $tab[13]['datatype']      = 'itemlink';
       $tab[13]['itemlink_type'] = 'Group';
       $tab[13]['massiveaction'] = false;
-      $tab[13]['joinparams']    = array('beforejoin'=>
-                                    array('table'      => 'glpi_groups_users',
-                                          'joinparams' => array('jointype'=>'child')));;
+      $tab[13]['joinparams']    = array('beforejoin'=> array('table' => 'glpi_groups_users',
+                                                             'joinparams'
+                                                                     => array('jointype'=>'child')));
 
 
       $tab[14]['table']         = $this->getTable();
@@ -1996,8 +1996,8 @@ class User extends CommonDBTM {
 // Obsolete function
 //    static function dropdownForTicket($myname,$value,$field,$display_comment=1) {
 //       global $CFG_GLPI, $LANG, $DB;
-// 
-// 
+//
+//
 //       $rand = mt_rand();
 //       $use_ajax = false;
 //       if ($CFG_GLPI["use_ajax"]) {
@@ -2008,14 +2008,14 @@ class User extends CommonDBTM {
 //                       FROM `glpi_tickets` ".
 //                       getEntitiesRestrictRequest("WHERE","glpi_tickets");
 //             $result = $DB->query($query);
-// 
+//
 //             $nb = $DB->result($result,0,0);
 //             if ($nb > $CFG_GLPI["ajax_limit_count"]) {
 //                $use_ajax = true;
 //             }
 //          }
 //       }
-// 
+//
 //       $user = getUserName($value, 2);
 //       $default  = "<select name='$myname'><option value='$value'>";
 //       $default .= utf8_substr($user["name"],0,$_SESSION["glpidropdown_chars_limit"])."</option>";
@@ -2024,16 +2024,16 @@ class User extends CommonDBTM {
 //          $default  = "<select name='$myname'><option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 //          $default .= "</select>";
 //       }
-// 
+//
 //       $params = array('searchText' => '__VALUE__',
 //                       'value'      => $value,
 //                       'field'      => $field,
 //                       'myname'     => $myname,
 //                       'comment'    => $display_comment,
 //                       'rand'       => $rand);
-// 
+//
 //       ajaxDropdown($use_ajax, "/ajax/dropdownUsersTracking.php", $params, $default, $rand);
-// 
+//
 //       if (!haveRight("user","r")) {
 //          $user["link"] = '';
 //       } else if (empty($user["link"])) {
