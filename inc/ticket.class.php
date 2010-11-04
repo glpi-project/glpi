@@ -158,7 +158,7 @@ class Ticket extends CommonDBTM {
    **/
    function isGroup($type,$groups_id) {
       if (isset($this->groups[$type])
-         && isset($this->groups[$type][$users_id])) {
+         && isset($this->groups[$type][$groups_id])) {
          return true;
       }
 
