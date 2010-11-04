@@ -211,7 +211,7 @@ class Search {
       foreach ($toview as $key => $val) {
          $FROM .= Search::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                       $searchopt[$itemtype][$val]["table"],
-                                      $searchopt[$itemtype][$val]["linkfield"],0,0,
+                                      $searchopt[$itemtype][$val]["linkfield"], 0, 0,
                                       $searchopt[$itemtype][$val]["joinparams"]);
       }
 
@@ -222,7 +222,7 @@ class Search {
             if (is_array($val)) {
                $FROM .= Search::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                             $searchopt[$itemtype][$key]["table"],
-                                            $searchopt[$itemtype][$key]["linkfield"],0,0,
+                                            $searchopt[$itemtype][$key]["linkfield"], 0, 0,
                                             $searchopt[$itemtype][$key]["joinparams"]);
             }
          }
@@ -427,8 +427,8 @@ class Search {
                if (!in_array(getTableForItemType($p['itemtype2'][$i]), $already_link_tables2)) {
                   $FROM .= Search::addMetaLeftJoin($itemtype, $p['itemtype2'][$i],
                                                    $already_link_tables2,
-                                                   (($p['contains2'][$i]=="NULL") || (strstr($p['link2'][$i],
-                                                                                             "NOT"))));
+                                                   (($p['contains2'][$i]=="NULL")
+                                                    || (strstr($p['link2'][$i], "NOT"))));
                }
             }
          }
@@ -1835,11 +1835,11 @@ class Search {
       if ($table != getTableForItemType($itemtype)
          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
-      } 
+      }
 
       if (isset($searchopt[$ID]['joinparams'])) {
-         $complexjoin=self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-         
+         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+
          if (!empty($complexjoin)) {
             $addtable .= "_".$complexjoin;
          }
@@ -2055,7 +2055,7 @@ class Search {
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE","`$table.$addtable`", $tocompute);
+         $tocompute = str_replace("TABLE", "`$table.$addtable`", $tocompute);
       }
 
       // Preformat items
@@ -2188,14 +2188,13 @@ class Search {
       $inittable = $table;
 
       if ($table != getTableForItemType($itemtype)
-         && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $table .= "_".$searchopt[$ID]["linkfield"];
-      } 
-
+      }
 
       if (isset($searchopt[$ID]['joinparams'])) {
-         $complexjoin=self::computeComplexJoinID($searchopt[$ID]['joinparams']);
-         
+         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+
          if (!empty($complexjoin)) {
             $table .= "_".$complexjoin;
          }
@@ -2687,7 +2686,7 @@ class Search {
          case 'Ticket' :
             if (haveRight("validate_ticket",1)) {
                return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                          "glpi_ticketvalidations", "ticketvalidations_id",0,0,
+                                          "glpi_ticketvalidations", "ticketvalidations_id", 0, 0,
                                           array('jointype' => 'child'));
             }
 
@@ -2713,7 +2712,7 @@ class Search {
    *
    **/
    static function addLeftJoin ($itemtype, $ref_table, &$already_link_tables, $new_table,
-                                $linkfield, $meta=0, $meta_type=0,$joinparams=array()) {
+                                $linkfield, $meta=0, $meta_type=0, $joinparams=array()) {
       global $LANG,$CFG_GLPI;
 
       // Rename table for meta left join
@@ -2725,17 +2724,16 @@ class Search {
 //           || $new_table=="glpi_groups"
 //           || $new_table=="glpi_users_validation") {
 
-      if (!empty($linkfield)
-         && $linkfield!=getForeignKeyFieldForTable($new_table)) {
+      if (!empty($linkfield) && $linkfield!=getForeignKeyFieldForTable($new_table)) {
          $nt .= "_".$linkfield;
-         $AS = " AS ".$nt;
+         $AS  = " AS ".$nt;
       }
 
-      $complexjoin=self::computeComplexJoinID($joinparams);
-      
+      $complexjoin = self::computeComplexJoinID($joinparams);
+
       if (!empty($complexjoin)) {
          $nt .= "_".$complexjoin;
-         $AS = " AS ".$nt;
+         $AS  = " AS ".$nt;
       }
 
 //       }
@@ -2783,11 +2781,11 @@ class Search {
          // No link
          case "glpi_auth_tables" :
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
-                                          'auths_id',0,0,
-                                          array('condition'=>"REFTABLE.`authtype` = ".Auth::LDAP));
+                                          'auths_id', 0, 0,
+                                          array('condition' => "REFTABLE.`authtype` = ".Auth::LDAP));
                $out .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
-                                           'auths_id',0,0,
-                                          array('condition'=>"REFTABLE.`authtype` = ".Auth::MAIL));
+                                           'auths_id', 0, 0,
+                                           array('condition' => "REFTABLE.`authtype` = ".Auth::MAIL));
                return $out;
 
 //          case "glpi_authldaps" :
@@ -2890,7 +2888,7 @@ class Search {
          case "glpi_ticketfollowups" :
             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";*/
 
-//          case "glpi_followup_requesttypes":
+//          case "glpi_followup_requesttypes" :
 //             // Link to glpi_ticketfollowups before
 //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_ticketfollowups",
 //                                        $linkfield);
@@ -2898,7 +2896,7 @@ class Search {
 //                            ON (`glpi_followup_requesttypes`.`id`
 //                                  =`glpi_ticketfollowups`.`requesttypes_id`)";
 
-//          case "glpi_taskcategories":
+//          case "glpi_taskcategories" :
 //             // Link to glpi_tickettasks before
 //             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickettasks",$linkfield);
 //             return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
@@ -2955,7 +2953,7 @@ class Search {
 //                    LEFT JOIN `$new_table` $AS
 //                      ON (`glpi_contacts_suppliers`.`contacts_id` = `$nt`.`id` ".
 //                          getEntitiesRestrictRequest("AND", "glpi_contacts", '', '', true)." ) ";
-// 
+//
 //          case "glpi_contacts_suppliers" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`$linkfield`) ";
 
@@ -3121,7 +3119,7 @@ class Search {
 //          case "glpi_computers_deviceprocessors" :
 //          case "glpi_computers_devicesoundcards" :
 //             return " LEFT JOIN `$new_table` ON (`$rt`.`id` = `$new_table`.`computers_id`) ";
-// 
+//
 //          case "glpi_devicecases" :
 //          case "glpi_devicecontrols" :
 //          case "glpi_devicedrives" :
@@ -3159,75 +3157,76 @@ class Search {
                }
             }
             if (!empty($linkfield)) {
+               $before = '';
 
-               $before='';
-
-               if (isset($joinparams['beforejoin'])
-                  && is_array($joinparams['beforejoin']) ) {
+               if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin']) ) {
 
                   if (isset($joinparams['beforejoin']['table'])) {
-                     $joinparams['beforejoin']=array($joinparams['beforejoin']);
+                     $joinparams['beforejoin'] = array($joinparams['beforejoin']);
                   }
                   foreach ($joinparams['beforejoin'] as $tab) {
                      if (isset($tab['table'])) {
+                        $intertable = $tab['table'];
 
-                        $intertable=$tab['table'];
                         if (isset($tab['linkfield'])){
                            $interlinkfield = $tab['linkfield'];
                         } else {
                            $interlinkfield = getForeignKeyFieldForTable($intertable);
                         }
-                        $interjoinparams=array();
+
+                        $interjoinparams = array();
                         if (isset($tab['joinparams'])){
                            $interjoinparams = $tab['joinparams'];
                         }
 
-                        $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
-                                          $interlinkfield,$meta, $meta_type,$interjoinparams);
+                        $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                                       $intertable, $interlinkfield, $meta,
+                                                       $meta_type, $interjoinparams);
                      }
 
-
                      if (!isset($tab['nolink']) || !$tab['nolink']) {
-                        $complexjoin=self::computeComplexJoinID($interjoinparams);
-         
+                        $complexjoin = self::computeComplexJoinID($interjoinparams);
+
                         if (!empty($complexjoin)) {
                            $intertable .= "_".$complexjoin;
                         }
-                        $rt=$intertable.$addmetanum;
+                        $rt = $intertable.$addmetanum;
                      }
                   }
                }
 
-
-               $addcondition='';
+               $addcondition = '';
                if (isset($joinparams['condition'])) {
-                  $from=array("`REFTABLE`","REFTABLE","`NEWTABLE`","NEWTABLE");
-                  $to=array("`$rt`","`$rt`","`$nt`","`$nt`");
-                  $addcondition=str_replace($from, $to, $joinparams['condition']);
+                  $from = array("`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE");
+                  $to   = array("`$rt`", "`$rt`", "`$nt`", "`$nt`");
+                  $addcondition = str_replace($from, $to, $joinparams['condition']);
                   $addcondition = " AND ".$addcondition." ";
                }
 
                if (!isset($joinparams['jointype'])) {
-                  $joinparams['jointype']='standard';
+                  $joinparams['jointype'] = 'standard';
                }
 
                switch ($joinparams['jointype']) {
                   case 'child' :
                      // Child join
-                     return $before." LEFT JOIN `$new_table` $AS 
-                                 ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($ref_table)."` 
-                                       $addcondition)";
+                     return $before."
+                            LEFT JOIN `$new_table` $AS
+                                 ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($ref_table)."`
+                                                  $addcondition)";
 
                   case "itemtype_item" :
                      // Itemtype join
-                     return $before." LEFT JOIN `$new_table` $AS
+                     return $before."
+                            LEFT JOIN `$new_table` $AS
                                  ON (`$rt`.`id` = `$nt`.`items_id`
-                                    AND `$nt`.`itemtype` = '$itemtype' $addcondition) ";
+                                     AND `$nt`.`itemtype` = '$itemtype' $addcondition) ";
 
                   default :
-                     // Standard join 
-                     return $before." LEFT JOIN `$new_table` $AS
-                                       ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
+                     // Standard join
+                     return $before."
+                            LEFT JOIN `$new_table` $AS
+                                 ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
 
                }
             }
@@ -4390,8 +4389,10 @@ class Search {
             $search[$itemtype][60]['usehaving']     = true;
             $search[$itemtype][60]['datatype']      = 'number';
             $search[$itemtype][60]['massiveaction'] = false;
-            $search[$itemtype][60]['joinparams']    = array('jointype' => "itemtype_item",
-                                                            'condition' => getEntitiesRestrictRequest('', 'NEWTABLE'));
+            $search[$itemtype][60]['joinparams']    = array('jointype'  => "itemtype_item",
+                                                            'condition'
+                                                             => getEntitiesRestrictRequest('',
+                                                                                           'NEWTABLE'));
          }
 
          if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
@@ -4435,7 +4436,7 @@ class Search {
             }
             // Add default joinparams
             if (!isset($val['joinparams'])) {
-               $search[$itemtype][$key]['joinparams']=array();
+               $search[$itemtype][$key]['joinparams'] = array();
             }
          }
 
@@ -4909,12 +4910,11 @@ class Search {
 
 
    /**
-   * Print generic end line
-   *
-   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *
-   *@return string to display
-   *
+    * Print generic end line
+    *
+    * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @return string to display
    **/
    static function showEndLine($type) {
 
@@ -4935,31 +4935,33 @@ class Search {
       return $out;
    }
 
+
    static function computeComplexJoinID($joinparams) {
 
-      $complexjoin='';
-      
+      $complexjoin = '';
+
       if (isset($joinparams['condition'])) {
          $complexjoin .= $joinparams['condition'];
       }
 
-      if (isset($joinparams['beforejoin']) && isset($joinparams['beforejoin']['table'])){
+      if (isset($joinparams['beforejoin']) && isset($joinparams['beforejoin']['table'])) {
 
          if (isset($joinparams['beforejoin']['table'])) {
-            $joinparams['beforejoin']=array($joinparams['beforejoin']);
+            $joinparams['beforejoin'] = array($joinparams['beforejoin']);
          }
+
          foreach ($joinparams['beforejoin'] as $tab) {
             if (isset($tab['table'])) {
-               $complexjoin.=$tab['table'];
+               $complexjoin .= $tab['table'];
             }
             if (isset($tab['joinparams']) && isset($tab['joinparams']['condition'])) {
-               $complexjoin.=$tab['joinparams']['condition'];
+               $complexjoin .= $tab['joinparams']['condition'];
             }
          }
 
       }
       if (!empty($complexjoin)) {
-         $complexjoin=md5($complexjoin);
+         $complexjoin = md5($complexjoin);
       }
       return $complexjoin;
    }

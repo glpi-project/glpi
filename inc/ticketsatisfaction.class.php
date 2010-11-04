@@ -149,6 +149,7 @@ class TicketSatisfaction extends CommonDBTM {
       if ($input['satisfaction']>0) {
          $input["date_answered"] = $_SESSION["glpi_currenttime"];
       }
+
       return $input;
    }
 

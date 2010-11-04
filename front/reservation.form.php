@@ -124,10 +124,12 @@ if (isset($_POST["update"])) {
    if (!isset($_GET['date'])) {
       $_GET['date'] = date('Y-m-d');
    }
-   if (empty($_GET["id"]) && (!isset($_GET['item']) || count($_GET['item']) == 0 )) {
+   if (empty($_GET["id"])
+       && (!isset($_GET['item']) || count($_GET['item']) == 0 )) {
       glpi_header($_SERVER['HTTP_REFERER']);
    }
-   if (!empty($_GET["id"]) || (isset($_GET['item']) && isset($_GET['date']))) {
+   if (!empty($_GET["id"])
+       || (isset($_GET['item']) && isset($_GET['date']))) {
       $rr->showForm($_GET['id'], $_GET);
    }
 }

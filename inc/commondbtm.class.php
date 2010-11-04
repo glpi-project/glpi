@@ -143,6 +143,7 @@ class CommonDBTM extends CommonGLPI {
    function post_getFromDB () {
    }
 
+
    /**
     * Retrieve all items from the database
     *
@@ -201,14 +202,14 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getEmpty () {
       global $DB;
+
       //make an empty database object
-      $table=$this->getTable();
+      $table = $this->getTable();
 
       if (!empty($table) && $fields = $DB->list_fields($table)) {
          foreach ($fields as $key => $val) {
             $this->fields[$key] = "";
          }
-
       } else {
          return false;
       }
