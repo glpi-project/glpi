@@ -185,6 +185,7 @@ class Location extends CommonTreeDropdown {
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan>".$LANG['networking'][51]." - ".$LANG['search'][15]."</th></tr>";
+         echo "</table>\n";
       } else {
          printAjaxPager($this->getTreeLink()." - ".$LANG['networking'][51],$start,$number);
 
@@ -257,8 +258,6 @@ class Location extends CommonTreeDropdown {
          echo "<td><input type='submit' name='execute' value=\"".
               $LANG['buttons'][8]."\" class='submit'></td>";
          echo "</tr>\n";
-         echo "</table></form>\n";
-      } else {
          echo "</table></form>\n";
       }
       echo "</div>\n";
