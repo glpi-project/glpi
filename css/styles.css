@@ -38,7 +38,8 @@ body{
 	font-size: 12px;
 	margin: 0;
 	padding: 0;
-	background: white;
+	
+   background:  #dfdfdf url("../pics/fond_body.png") repeat-x; 
 }
 
 ul, li, dt, dl, dd, form,img, input{
@@ -141,7 +142,19 @@ hr{
 
 /* ################--------------- Page ---------------#################### */
 
-#page {margin: 0 auto; text-align:center;}
+#page {
+
+/*margin: 0 auto; text-align:center;*/
+
+margin: 25px 10px;
+	background: #FFFFFF  repeat-x top left;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	-moz-box-shadow: 0px 7px 10px ;
+	-webkit-box-shadow: 0px 7px 10px ;
+	box-shadow: 0px 7px 10px;
+	padding: 8px 8px 20px 8px;}
 
 #page form  {font-size: 12px;
 	margin:0;
@@ -171,6 +184,7 @@ select {
 	border: 1px solid #888888;
 	color: black;
 	background-color: white;
+   height: 19px;
 }
 
 
@@ -181,12 +195,36 @@ textarea, input {
 	font-size: 11px;
 }
 
+input {
+	height: 17px;
+	padding: 2px;
+	vertical-align: middle;
+}
+
+input[type="image"] {
+	height: auto;
+	background-color: transparent;
+	border: 0;
+}
+
+input[type="file"] {
+	height: 22px;	
+	border: 1px solid #4E6378;
+}
+
 input.submit {
 	font-size: 11px;
 	border: 1px solid #888888;
 	background-color:#eeeeee;
 	cursor:pointer;
 	background:  url("../pics/fond_form.png") repeat-x; 
+   -moz-box-shadow: 0px 1px 3px;
+	-webkit-box-shadow: 0px 1px 3px ;
+	box-shadow: 0px 1px 3px ;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+   height: auto;
 	}
 	
 input.submit:hover {
@@ -291,6 +329,12 @@ td { }
 	width:950px;
 	/* background-color: #FFF4DF; */
 	background : url("../pics/fond-central.png") repeat-x top right ;
+   -moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 0px 2px 5px #666;
+	-webkit-box-shadow: 0px 2px 5px #666;
+	box-shadow: 0px 2px 5px #666;
 }
 
 
@@ -309,15 +353,25 @@ td { }
 }
 
 .tab_cadre_fixe, .tab_cadre_fixehov{
-	margin: 0 auto;
+	margin: 0 auto 10px auto;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	-o-border-radius: 4px;
-	border: 1px solid #cccccc;
+	/*border: 1px solid #cccccc;*/
+   background: #f2f2f2;
 	z-index:1;
 	text-align: left;
 	font-size: 11px;
 	width:950px;
+}
+
+.tab_cadre_fixe tr, .tab_cadre_fixe td {
+	background-color: transparent;
+}
+
+
+.tab_cadre_fixe img {
+	vertical-align: middle;	
 }
 
 
@@ -332,6 +386,10 @@ td { }
 	font-size: 11px;
 	width: 80%;
 	background-color: #ffffff;
+   -moz-box-shadow: 0px 2px 5px #666;
+	-webkit-box-shadow: 0px 2px 5px #666;
+	box-shadow: 0px 2px 5px #666;
+   
 	
 }
 
@@ -349,16 +407,21 @@ td { }
 }
 
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th  {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: bold;
-	background-color: #fccc6f;
+	background-color: #e1cc7b;
 	text-align: center;
-	background:  url("../pics/fond_th.png") repeat-x; 
+   -moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-o-border-radius: 4px;
+   padding: 2px;
+	/*background:  url("../pics/fond_th.png") repeat-x; 
 	border-bottom:1px solid #cccccc;
+   padding: 2px;*/
 }
 
 .tab_cadre td, .tab_cadre_fixe td, .tab_cadre_fixehov td, .tab_cadrehov td, .tab_cadrehov_pointer td , .tab_cadre_report td  {
-	padding-left: 5px;
+	padding: 3px 5px;
 }
 
 .tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover {
@@ -411,7 +474,7 @@ td { }
 }
 
 .tab_bg_2 {
-	background-color: #e4e4e2;
+	background-color: #f2f2f2;;
 
 }
 
@@ -495,7 +558,7 @@ td { }
 /* ################--------------- Bouton navigation   ---------------#################### */
 /* (obsolète mais encore utilisés)							*/
 
-.icon_consol_hov, .icon_consol{
+.icon_consol{
 	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
 	font-size : 12px;
 	font-weight: bold;
@@ -504,13 +567,38 @@ td { }
 	margin: 1px;
 	border: 1px solid #aaaaaa;
 	background-color: #e4e4e4;
-	background:  url("../pics/fond_ico_cons.png") repeat-x; 
+	/*background:  url("../pics/fond_ico_cons.png") repeat-x; */
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-o-border-radius: 5px;
 
 }
 
+
+a.icon_consol_hov{
+color: black;
+
+}
+
+.icon_consol_hov{
+	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+	font-size : 12px;
+   font-weight: bold;
+	padding: 4px;
+	padding-right: 8px;
+	margin: 1px;
+   border: 1px solid #888888;
+	
+	cursor:pointer;
+	background:  #f4d57d ; 
+   -moz-box-shadow: 0px 1px 3px;
+	-webkit-box-shadow: 0px 1px 3px ;
+	box-shadow: 0px 1px 3px ;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+   
+}
 
 .icon_consol_hov img{
 	padding-bottom: 10px;
@@ -522,7 +610,8 @@ td { }
 	margin: 1px;
 	border: 1px inset #888888;
 	background-color: white;
-	background:  url("../pics/fond_ico_cons_on.png") repeat-x; 
+	/*background:  url("../pics/fond_ico_cons_on.png") repeat-x; */
+   background:  #efc24b url("../pics/fond_form_on.png") repeat-x; 
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-o-border-radius: 5px;
@@ -626,15 +715,16 @@ margin-left:8px;}
 /* ################--------------- Calendrier  / reservation ---------------#################### */
 
 .calendrier{
-	border: 1px solid #888888;
-	background-color:#eeeeee;
 	vertical-align:middle;
-	background:  url("../pics/fond_form.png") repeat-x; 
+   /*border: 1px solid #888888;
+	background-color:#eeeeee;
+	
+	background:  url("../pics/fond_form.png") repeat-x; */
 	}
 	
 .calendrier:hover{
-	border: 1px inset #888888;
-	background-color:#ffffff;
+	/*border: 1px inset #888888;
+	background-color:#ffffff;*/
 	cursor:pointer;
 	}
 
@@ -808,166 +898,7 @@ a.icon_nav_move:hover img {
 }
 
 
-/* ################--------------- Onglet  ---------------#################### */
 
-
-div#menu_navigate{
-	margin: 0 auto;
-	z-index:1;
-	font-size: 10px;
-	width:950px;
-}
-
-div#menu_navigate li {
-margin-left:2px;
-display:block;
-float:left;   
-padding:2px;
-}
-
-
-
-
-#barre_onglets {
-
-	width:950px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom:0;
-	padding-bottom:0;
-}
-
-#barre_onglets_percent {
-
-	width:80%;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom:0;
-	padding-bottom:0;
-}
-
-ul#onglet {
-	list-style-type: none;
-	padding-bottom: 24px;
-	border-bottom: 1px solid #ffffff;
-	margin: 0;
-	padding-left:0;
-}
-
-ul#onglet li {
-
-	float: left;
-	height: 21px;
-	background-color: #eeeeee;
-	margin: 2px 2px 0 1px;
-	border: 1px solid #CC9900;
-	border-bottom: 1px solid #fff;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-o-border-radius: 4px;
-	background:  url("../pics/fond_onglet.png") repeat-x; 	
-}
-
-ul#onglet li.actif {
-	border-bottom: 1px ridge #659900;
-	background-color: #fff;
-}
-
-ul#onglet li.invisible {
-	border-bottom: 1px solid #fff;
-	border: 1px solid #fff;
-	background-color: #ffffff;
-	width: 15px;
-	background:  transparent; 
-}
-
-ul#onglet li.actif a {
-	color: #000;
-}
-
-#onglet a {
-	float: left;
-	display: block;
-	color: #666;
-	text-decoration: none;
-	padding: 3px;
-	font-size: 10px;
-	font-family:  Verdana,Arial,Helvetica,sans-serif;
-	font-weight: bold;
-}
-
-#onglet a:hover {
-		color : #659900;
-
-}
-
-ul#onglet span.fake{
-	float: left;
-	display: block;
-	color: #666;
-	text-decoration: none;
-	padding: 3px;
-	font-size: 10px;
-	font-family:  Verdana,Arial,Helvetica,sans-serif;
-	font-weight: bold;
-	cursor:pointer;
-
-}
-
-
-
-/* Over onglet div */
-#onglet_plugins{
-	display: none; 
-	position: absolute;
-	top:21px;
-	left:-20px;
-	padding: 5px;
-	font-size: 8px;
-	width:100px;
-	background: transparent url("../pics/fd_hoverlink.png") repeat; 
-	border: 1px solid gray;	
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-o-border-radius: 5px;
-}
-
- #onglet_plugins dl{
-	margin: 0;
-	padding: 0;
-	list-style-type: none;	
-	border:0;
-
-}
-
-#onglet_plugins dt {
-	text-align: center;
-	padding: 2px;
-	background:none;
-	border:0;
-	width:100%;
-	height:18px;
-
-}
-#onglet_plugins dt a {
-	font-size:10px;	
-	color: #000;
-	text-decoration: none;
-	display: block;
-	border: 0 none;
-}
-#onglet_plugins dt a:hover {
-	color: #000;
-	background: #fccc6f;
-
-}
-
-
-#onglet_plugins dt:hover {
-	color: #000;
-	background: #fccc6f;
-
-}
 
 /* ################--------------- box (redirect and other)  ---------------#################### */
 .box {margin: 0 auto; width:700px;	text-align:center;}
@@ -1145,8 +1076,16 @@ padding:0;
 
 /* ################--------------- Header / menu  ---------------#################### */
 div#header{
-	background: url("../pics/fd_nav1.png") 0 0 repeat-x;
-	margin-bottom:10px;
+	background: #f1f4e3 url("../pics/fd_nav1.png") 0 0 repeat-x;
+	margin: 0px 10px 10px 10px;
+	-moz-border-radius: 0px 0px 8px 8px;
+	-webkit-border-radius: 0px 0px 8px 8px;
+	border-radius: 0px 0px 8px 8px;
+	-moz-box-shadow: 0px 7px 10px #011E3A;
+	-webkit-box-shadow: 0px 7px 10px #011E3A;
+	box-shadow: 0px 7px 10px #011E3A;
+   padding-bottom: 8px;
+	
 }
 
 div#c_preference{
@@ -1253,11 +1192,14 @@ ul#menu ul.ssmenu{
 	top: 5px;
 	width: 108px;
 	border: 1px solid #CC9900;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-o-border-radius: 4px;
 	background: url("../pics/fd_ssmenu.png") 0 0 repeat;
 	display: none;
+   -moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	-moz-box-shadow: 0px 0px 4px #000000;
+	-webkit-box-shadow: 0px 0px 4px #000000;
+	box-shadow: 0px 0px 4px #000000;	
 }
 
 ul#menu ul li{
@@ -1477,9 +1419,12 @@ div#show_all_menu{
         left:5px;
         border: 1px solid  #CC9900;
 		background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
-      	-o-border-radius: 5px;
+         -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+	-moz-box-shadow: 0px 0px 4px #000000;
+	-webkit-box-shadow: 0px 0px 4px #000000;
+	box-shadow: 0px 0px 4px #000000;	
         padding: 5px;
         font-size: 11px;
         text-align: left;
@@ -1492,9 +1437,20 @@ div#show_all_menu{
 	background: url("../pics/fd_footer.png") 0 0 repeat-x;
 	font-size: 9px;	
 	color :#757575;
-	padding: 3px;
-	margin-top: 200px;
-	clear:both;
+	padding: 6px;
+	border: 2px solid #cccccc;
+	position: relative;
+	float: right;
+	right: 10px;
+	height: 18px;
+	width: 50%;
+	
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	-moz-box-shadow: 0px 7px 10px ;
+	-webkit-box-shadow: 0px 7px 10px ;
+	box-shadow: 0px 7px 10px ;
 	
 	}
 
