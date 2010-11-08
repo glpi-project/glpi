@@ -271,6 +271,8 @@ class Location extends CommonTreeDropdown {
                     class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
+      } else {
+         echo "</table></form>\n";
       }
       echo "</div>\n";
    }
