@@ -112,7 +112,7 @@ if (isset($_POST["add"])) {
       $ticket_ticket->check(-1,'w',$_REQUEST['_link']);
 
       $ticket_ticket->add($_REQUEST['_link']);
-   
+
       Event::log($_REQUEST['_link']['tickets_id_1'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][119]);
    }
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['id']);
@@ -162,7 +162,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    'itemtype'             => '',
                    'items_id'             => 0,
                    'plan'                 => array(),
-                   'global_validation'    => 'accepted',
+                   'global_validation'    => 'none',
                    'due_date'             => '',
                    'slas_id'              => 0,
                    'type'                 => -1);

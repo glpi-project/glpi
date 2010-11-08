@@ -1118,7 +1118,7 @@ class NotificationTargetTicket extends NotificationTarget {
       foreach ($status as $key => $value) {
          $allowed_ticket[] = $key;
       }
-      $status = TicketValidation::getAllStatusArray(false);
+      $status = TicketValidation::getAllStatusArray(false,true);
       foreach ($status as $key => $value) {
          $allowed_validation[] = $key;
       }
