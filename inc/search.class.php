@@ -2337,10 +2337,11 @@ class Search {
             break;
          case "glpi_tickets.global_validation" :
          case "glpi_ticketvalidations.status" :
-            $tocheck=array('waiting'=>array('waiting'),
-                           'rejected'=>array('rejected'),
-                           'accepted'=>array('accepted'),
-                           'all'=>array('waiting','rejected','accepted'));
+            $tocheck=array('none'     => array('none'),
+                           'waiting'  => array('waiting'),
+                           'rejected' => array('rejected'),
+                           'accepted' => array('accepted'),
+                           'all'      => array('none', 'waiting', 'rejected', 'accepted'));
             if (isset($tocheck[$val])) {
                foreach ($tocheck[$val] as $key=>$nval) {
                   $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
@@ -2600,7 +2601,7 @@ class Search {
 
       switch ($new_table) {
          // No link
-         case "glpi_auth_tables" :            
+         case "glpi_auth_tables" :
                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
                                        $linkfield);
                $out .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
