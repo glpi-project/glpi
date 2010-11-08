@@ -151,7 +151,8 @@ class TicketValidation  extends CommonDBChild {
       $mailsend = false;
       if ($job->getFromDB($this->fields["tickets_id"])) {
          // Set global validation to waiting
-         if ($job->fields['global_validation'] == 'accepted') {
+         if ($job->fields['global_validation'] == 'accepted'
+             || $job->fields['global_validation'] == 'none') {
             $input['id'] = $this->fields["tickets_id"];
             $input['global_validation'] = 'waiting';
             $job->update($input);
@@ -280,14 +281,19 @@ class TicketValidation  extends CommonDBChild {
     * get the Ticket validation status list
     *
     * @param $withmetaforsearch boolean
+    * @param $global boolean (true for global tatus, with "no validation" option)
+    *
     * @return an array
     */
-   static function getAllStatusArray($withmetaforsearch=false) {
+   static function getAllStatusArray($withmetaforsearch=false, $global=false) {
       global $LANG;
 
       $tab = array('waiting'  => $LANG['validation'][9],
                    'rejected' => $LANG['validation'][10],
                    'accepted' => $LANG['validation'][11]);
+      if ($global) {
+         $tab['none'] = $LANG['validation'][12];
+      }
 
       if ($withmetaforsearch) {
          $tab['all'] = $LANG['common'][66];
@@ -309,15 +315,19 @@ class TicketValidation  extends CommonDBChild {
    */
    static function dropdownStatus($name, $options=array()) {
 
-      $value = 'waiting';
-      $all = false;
+      $value  = 'waiting';
+      $global = false;
+      $all    = false;
       if (isset($options['value'])) {
          $value = $options['value'];
       }
       if (isset($options['all'])) {
          $all = $options['all'];
       }
-      $tab = self::getAllStatusArray($all);
+      if (isset($options['global'])) {
+         $global = $options['global'];
+      }
+      $tab = self::getAllStatusArray($all, $global);
 
       echo "<select name='$name'>";
       foreach ($tab as $key => $val) {
@@ -334,7 +344,7 @@ class TicketValidation  extends CommonDBChild {
     */
    static function getStatus($value) {
 
-      $tab = self::getAllStatusArray(true);
+      $tab = self::getAllStatusArray(true, true);
       return (isset($tab[$value]) ? $tab[$value] : '');
    }
 

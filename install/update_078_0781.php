@@ -108,6 +108,11 @@ function update078to0781($output='HTML') {
       }
    }
 
+   $query = "UPDATE `glpi_tickets`
+             SET `global_validation`='none'
+             WHERE `id` NOT IN (SELECT DISTINCT `tickets_id`
+                                FROM `glpi_ticketvalidations`)";
+   $DB->query($query) or die("0.78.1 update ticket global_validation state");
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0781"); // End

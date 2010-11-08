@@ -81,7 +81,7 @@ if (isset($_REQUEST['searchtype'])) {
 //                                        'right'    => 'validate_ticket'));
 //                   $display = true;
 //                   break;
-// 
+//
 //                case "glpi_users_validation.users_id" :
 //                   User::dropdown(array('name'     => $inputname,
 //                                        'value'    => $_REQUEST['value'],
@@ -136,8 +136,9 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_tickets.global_validation" :
-                  TicketValidation::dropdownStatus($inputname, array('value' => $_REQUEST['value'],
-                                                                     'all'   => 1));
+                  TicketValidation::dropdownStatus($inputname, array('value'  => $_REQUEST['value'],
+                                                                     'global' => true,
+                                                                     'all'    => 1));
                   $display =true;
                   break;
 
