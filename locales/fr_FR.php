@@ -2106,6 +2106,7 @@ $LANG['validation'][4]="Date de la validation";
 $LANG['validation'][5]="Commentaire de la demande";
 $LANG['validation'][6]="Commentaire de la validation";
 $LANG['validation'][7]="Validation(s) pour le ticket";
+$LANG['validation'][8]="Non soumis à validation";
 $LANG['validation'][9]="En attente de validation";
 $LANG['validation'][10]="Refusé";
 $LANG['validation'][11]="Accepté";

@@ -134,7 +134,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    'itemtype'             => '',
                    'items_id'             => 0,
                    'plan'                 => array(),
-                   'global_validation'    => 'accepted');
+                   'global_validation'    => 'none');
 
    // Restore saved value or override with page parameter
    foreach ($values as $name => $value) {

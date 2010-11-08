@@ -930,6 +930,9 @@ class Ticket extends CommonDBTM {
       if (!isset($input["status"])) {
          $input["status"]="new";
       }
+      if (!isset($input['global_validation'])) {
+         $input['global_validation'] = 'none';
+      }
       if (!isset($input["date"]) || empty($input["date"])) {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
@@ -2933,7 +2936,8 @@ class Ticket extends CommonDBTM {
       echo "<td>";
       if ($canupdate){
          TicketValidation::dropdownStatus('global_validation',
-                                          array('value'=>$this->fields['global_validation']));
+                                          array('global' => true,
+                                                'value'  => $this->fields['global_validation']));
       } else {
          echo TicketValidation::getStatus($this->fields['global_validation']);
       }
