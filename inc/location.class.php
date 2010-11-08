@@ -258,6 +258,8 @@ class Location extends CommonTreeDropdown {
               $LANG['buttons'][8]."\" class='submit'></td>";
          echo "</tr>\n";
          echo "</table></form>\n";
+      } else {
+         echo "</table></form>\n";
       }
       echo "</div>\n";
    }
