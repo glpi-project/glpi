@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="チケットの有効化";
 $LANG['validation'][9]="有効化待ち"; 
 $LANG['validation'][10]="拒否"; 
 $LANG['validation'][11]="承認された"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="有効化依頼を送信"; 
 $LANG['validation'][15]="有効化待ちのチケット"; 
 $LANG['validation'][16]="同意するかどうかは任意"; 

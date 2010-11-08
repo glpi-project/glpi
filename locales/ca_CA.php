@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Validació(ns) per l'incident";
 $LANG['validation'][9]="En espera de validació"; 
 $LANG['validation'][10]="Rebutjat"; 
 $LANG['validation'][11]="Acceptada"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Sol·licitud de validació enviada a"; 
 $LANG['validation'][15]="Incident en espera de la seva validació"; 
 $LANG['validation'][16]="Opcional si acceptada"; 

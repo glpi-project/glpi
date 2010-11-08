@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="核准這些問題單";
 $LANG['validation'][9]="等待核准"; 
 $LANG['validation'][10]="拒絕"; 
 $LANG['validation'][11]="准予"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="核准請求以發送至"; 
 $LANG['validation'][15]="待您核准的問題單"; 
 $LANG['validation'][16]="核准時可填寫"; 

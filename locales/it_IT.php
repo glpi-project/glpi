@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Convalida per la chiamata";
 $LANG['validation'][9]="In attesa di convalida"; 
 $LANG['validation'][10]="Rifiutato"; 
 $LANG['validation'][11]="Accettato"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Richieste di convalida inviate a"; 
 $LANG['validation'][15]="Chiamate in attesa della tua convalida"; 
 $LANG['validation'][16]="Facoltativo se accettato"; 

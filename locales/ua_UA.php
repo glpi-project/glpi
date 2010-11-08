@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Затвердження для заявки";
 $LANG['validation'][9]="В очікуванні на затвердження"; 
 $LANG['validation'][10]="Відхилено"; 
 $LANG['validation'][11]="Прийнято"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Запит на затвердження надіслано"; 
 $LANG['validation'][15]="Заявки, які очікують на ваше затвердження"; 
 $LANG['validation'][16]="Додатково, якщо прийнято"; 

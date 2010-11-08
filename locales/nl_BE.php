@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Validaties voor het Incident-ticket";
 $LANG['validation'][9]="Wachtrij validatie"; 
 $LANG['validation'][10]="Geweigerd"; 
 $LANG['validation'][11]="Geaccepteerd"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Aanvraag validatie verzonden naar"; 
 $LANG['validation'][15]="Incident-ticket wacht op uw validatie"; 
 $LANG['validation'][16]="Facultatief in het geval van acceptatie"; 

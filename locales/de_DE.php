@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Genehmigungen für das Ticket";
 $LANG['validation'][9]="Wartet auf Genehmigung"; 
 $LANG['validation'][10]="Abgelehnt"; 
 $LANG['validation'][11]="Genehmigt"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Genehmigungsanfrage gesendet an"; 
 $LANG['validation'][15]="Auf Ihre Genehmigung wartende Tickets"; 
 $LANG['validation'][16]="Optional bei einer Genehmigung"; 

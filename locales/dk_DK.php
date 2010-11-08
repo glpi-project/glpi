@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Validering(er) af sagen";
 $LANG['validation'][9]="Venter på validering"; 
 $LANG['validation'][10]="Refused"; 
 $LANG['validation'][11]="Accepteret"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Approval request send to"; 
 $LANG['validation'][15]="Sager der afventer din validering"; 
 $LANG['validation'][16]="Optional when approved"; 

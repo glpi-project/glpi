@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Approval(s) for the ticket";
 $LANG['validation'][9]="Aguardando aprovação"; 
 $LANG['validation'][10]="Recusado"; 
 $LANG['validation'][11]="Aceito"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Approval request send to"; 
 $LANG['validation'][15]="Tiquetes aguardando por sua aprovação"; 
 $LANG['validation'][16]="Optional when approved"; 

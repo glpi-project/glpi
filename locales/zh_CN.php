@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="批准标签";
 $LANG['validation'][9]="等待批准"; 
 $LANG['validation'][10]="拒绝"; 
 $LANG['validation'][11]="已接受"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="审批要求发送到"; 
 $LANG['validation'][15]="标签等待你的批准"; 
 $LANG['validation'][16]="批准时可选"; 

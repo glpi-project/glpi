@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Утверждение(я) для заявки";
 $LANG['validation'][9]="В ожидании утверждения"; 
 $LANG['validation'][10]="Отклонено"; 
 $LANG['validation'][11]="Принятый"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Запрос на утверждение, отправленный"; 
 $LANG['validation'][15]="Заявка ожидающая вашего утверждения"; 
 $LANG['validation'][16]="Дополнительно, если принято"; 

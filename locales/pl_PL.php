@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Sprawdzenie(a) zgłoszenia";
 $LANG['validation'][9]="Oczekiwanie na sprawdzenie"; 
 $LANG['validation'][10]="Odrzucono"; 
 $LANG['validation'][11]="Zaakceptowane"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Żądanie sprawdzania wysłane do"; 
 $LANG['validation'][15]="Zgłoszenie czeka na weryfikację."; 
 $LANG['validation'][16]="Opcjonalne jeżeli zaakceptowane"; 

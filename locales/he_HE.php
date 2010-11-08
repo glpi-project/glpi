@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="אישור/ים עבור הקריאה";
 $LANG['validation'][9]="ממתין לאישור"; 
 $LANG['validation'][10]="נדחה"; 
 $LANG['validation'][11]="התקבל"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="בקשה לאישור נשלחה ל"; 
 $LANG['validation'][15]="קריאה הממתינה לאישורך"; 
 $LANG['validation'][16]="אפשרי כאשר אושר"; 

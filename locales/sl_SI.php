@@ -1926,6 +1926,7 @@ $LANG['validation'][7]="Potrditev, uzakonitev opravila";
 $LANG['validation'][9]="Čakajoč na legalizacijo, uzakonitev opravila"; 
 $LANG['validation'][10]="Zavrnjen"; 
 $LANG['validation'][11]="Sprejeto"; 
+$LANG['validation'][12]="Not subject to approval"; 
 $LANG['validation'][13]="Prošnja za uzakonitev poslana"; 
 $LANG['validation'][15]="Opravila čakajo na tvojo potrditev"; 
 $LANG['validation'][16]="Neobvezno, če bo sprejet"; 
