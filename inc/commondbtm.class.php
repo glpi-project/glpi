@@ -1889,25 +1889,25 @@ class CommonDBTM extends CommonGLPI {
       }
       if ($this->isField('locations_id')) {
          $tmp=Dropdown::getDropdownName("glpi_locations",$this->getField('locations_id'));
-         if (!empty($tmp)&&$tmp!='&nbsp;'){
+         if (strlen($tmp)!=0&&$tmp!='&nbsp;'){
             $comment.="<strong>".$LANG['common'][15]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
       if ($this->isField('users_id')) {
          $tmp=getUserName($this->getField('users_id'));
-         if (!empty($tmp)&&$tmp!='&nbsp;') {
+         if (strlen($tmp)!=0&&$tmp!='&nbsp;') {
             $comment.="<strong>".$LANG['common'][34]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
       if ($this->isField('groups_id')) {
          $tmp=Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
-         if (!empty($tmp)&&$tmp!='&nbsp;') {
+         if (strlen($tmp)!=0&&$tmp!='&nbsp;') {
             $comment.="<strong>".$LANG['common'][35]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
       if ($this->isField('users_id_tech')) {
          $tmp=getUserName($this->getField('users_id_tech'));
-         if (!empty($tmp)&&$tmp!='&nbsp;') {
+         if (strlen($tmp)!=0&&$tmp!='&nbsp;') {
             $comment.="<strong>".$LANG['common'][10]."&nbsp;: "."</strong>".$tmp."<br>";
          }
       }
