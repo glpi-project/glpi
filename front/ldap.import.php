@@ -60,12 +60,12 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
    $_REQUEST['target'] = $_SERVER['PHP_SELF'];
 
    $authldap = new AuthLDAP;
-   $authldap->getFromDB($_SESSION['ldap_import']['ldapservers_id']);
+   $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
 
    AuthLdap::showUserImportForm($authldap);
 
-   if (isset($_SESSION['ldap_import']['ldapservers_id'])
-       && $_SESSION['ldap_import']['ldapservers_id'] != NOT_AVAILABLE
+   if (isset($_SESSION['ldap_import']['authldaps_id'])
+       && $_SESSION['ldap_import']['authldaps_id'] != NOT_AVAILABLE
        && isset($_SESSION['ldap_import']['criterias'])
        && !empty($_SESSION['ldap_import']['criterias'])) {
 
@@ -84,7 +84,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
          AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                   'value'  => $key),
                                             $_SESSION['ldap_import']["mode"],
-                                            $_SESSION['ldap_import']["ldapservers_id"],
+                                            $_SESSION['ldap_import']["authldaps_id"],
                                             true);
          glpi_header($_SERVER['PHP_SELF']);
 
@@ -94,7 +94,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
 
          echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
-         unset($_SESSION["ldapservers_id"]);
+         unset($_SESSION["authldaps_id"]);
          unset($_SESSION["mode"]);
          unset($_SESSION["interface"]);
          $_SESSION['ldap_import']['action'] = 'show';
@@ -104,7 +104,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
    } else {
       if (count($_POST['toprocess']) >0) {
          $_SESSION["ldap_process_count"] = 0;
-         $_SESSION["ldapservers_id"] = $_SESSION['ldap_import']['ldapservers_id'];
+         $_SESSION["authldaps_id"] = $_SESSION['ldap_import']['authldaps_id'];
 
          foreach ($_POST['toprocess'] as $key => $val) {
             if ($val == "on") {

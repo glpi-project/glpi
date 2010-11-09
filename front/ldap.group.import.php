@@ -62,7 +62,7 @@ if (isset($_GET['next'])) {
          }
 
          AuthLdap::ldapImportGroup($key,
-                                   array("ldapservers_id" => $_SESSION["ldap_server"],
+                                   array("authldaps_id" => $_SESSION["ldap_server"],
                                          "entities_id"    => $entity,
                                          "is_recursive"   => $_SESSION["ldap_import_recursive"][$key],
                                          "type"           => $_SESSION["ldap_import_type"][$key]));
