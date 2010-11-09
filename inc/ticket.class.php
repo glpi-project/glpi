@@ -1647,7 +1647,7 @@ class Ticket extends CommonDBTM {
       $tab[80]['massiveaction'] = false;
 
       $tab[45]['table']    = $this->getTable();
-      $tab[45]['field']    = 'realtime';
+      $tab[45]['field']    = 'actiontime';
       $tab[45]['name']     = $LANG['job'][20];
       $tab[45]['datatype'] = 'realtime';
 
