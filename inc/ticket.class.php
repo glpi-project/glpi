@@ -487,9 +487,12 @@ class Ticket extends CommonDBTM {
             addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
+               unset($this->oldvalues['date']);
+
             }
             if (($key=array_search('closedate',$this->updates)) !== false) {
                unset($this->updates[$key]);
+               unset($this->oldvalues['closedate']);
             }
          }
       }
