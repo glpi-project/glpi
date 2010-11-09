@@ -1936,7 +1936,7 @@ class CommonDBTM extends CommonGLPI {
          $toadd="&nbsp;".$this->getComments();
       }
 
-      if (isset($this->fields["name"]) && !empty($this->fields["name"])) {
+      if (isset($this->fields["name"]) && strlen($this->fields["name"])!=0) {
          return $this->fields["name"].$toadd;
       }
       return NOT_AVAILABLE;
