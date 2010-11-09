@@ -41,10 +41,6 @@ include_once (GLPI_ROOT . "/inc/setup.function.php");
 function update0713to072() {
 	global $DB, $CFG_GLPI, $LANG;
 
-	// TO TRY for software update
-
-	ini_set("max_execution_time", "0");
-
 	echo "<h3>".$LANG['install'][4]." -&gt; 0.72</h3>";
 	displayMigrationMessage("072"); // Start
 

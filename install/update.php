@@ -604,6 +604,9 @@ function updateDbUpTo031() {
    // Save if problem with session during update
    $glpilanguage = $_SESSION["glpilanguage"];
 
+   // To prevent problem of execution time
+	ini_set("max_execution_time", "0");
+
    switch ($current_version) {
       case "0.31" :
          include("update_031_04.php");
