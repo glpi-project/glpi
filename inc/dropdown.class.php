@@ -96,7 +96,7 @@ class Dropdown {
          }
       }
 
-      $name="------";
+      $name=DROPDOWN_EMPTY_VALUE;
       $comment="";
       $limit_length=$_SESSION["glpidropdown_chars_limit"];
 
@@ -368,7 +368,7 @@ class Dropdown {
    static function dropdownTypes($name,$value=0,$types=array(),$used=array()) {
       global $CFG_GLPI;
 
-      $options=array(''=>'----');
+      $options=array(''=>DROPDOWN_EMPTY_VALUE);
       if (count($types)) {
          foreach ($types as $type) {
             if (class_exists($type)) {
