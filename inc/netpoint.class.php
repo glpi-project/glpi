@@ -168,7 +168,7 @@ class Netpoint extends CommonDropdown {
 
          $item = new Netpoint();
          if ($item->canCreate()) {
-            echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
+            echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
                   "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;' ".
                   "onClick=\"var w = window.open('".$item->getFormURL().
                   "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".

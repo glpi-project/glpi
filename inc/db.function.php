@@ -1054,7 +1054,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
    }
 
    if ($link==1&&$ID>0) {
-      $before = "<a title='".$temp."' href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID."'>";
+      $before = "<a title=\"".$temp."\" href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID."'>";
       $after  = "</a>";
    }
 

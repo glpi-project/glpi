@@ -457,8 +457,8 @@ class Reminder extends CommonDBTM {
          $img      = "rdv_public.png";
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG['title'][37].
-             "'>&nbsp;";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".$LANG['title'][37].
+             "\">&nbsp;";
       echo "<a id='reminder_".$val["reminders_id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
 
@@ -558,8 +558,8 @@ class Reminder extends CommonDBTM {
          if (isset($is_private)) {
             echo "<span class='reminder_right'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?is_private=$is_private'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title='".
-                  $LANG['buttons'][8]."'></a></span>";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='+' title=\"".
+                  $LANG['buttons'][8]."\"></a></span>";
          }
 
          echo "</div></th></tr>\n";
@@ -581,8 +581,8 @@ class Reminder extends CommonDBTM {
                echo "<span class='reminder_right'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                      "&amp;type=day'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt='".$LANG['Menu'][29].
-                     "' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".$LANG['Menu'][29].
+                     "\" title=\"".convDateTime($data["begin"])."=>".convDateTime($data["end"])."\">";
                echo "</a></span>";
             }
 
@@ -696,8 +696,8 @@ class Reminder extends CommonDBTM {
                         "&amp;type=day'>";
                }
 
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt='".$LANG['Menu'][29].
-                     "' title='".$LANG['Menu'][29]."'>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"".$LANG['Menu'][29].
+                     "\" title=\"".$LANG['Menu'][29]."\">";
 
                if ($planningRight) {
                   echo "</a>";

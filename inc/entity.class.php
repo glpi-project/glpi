@@ -430,8 +430,8 @@ class Entity extends CommonTreeDropdown {
       echo "<div class='center'>";
       echo "<span class='b'>".$LANG['entity'][10]." ( <img src='".$CFG_GLPI["root_doc"].
             "/pics/entity_all.png' alt=''> ".$LANG['entity'][11].")</span><br>";
-      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title='".
-             $LANG['buttons'][40]."'>".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
+      echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
+             $LANG['buttons'][40]."\">".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
 

@@ -333,15 +333,15 @@ class Supplier extends CommonDBTM {
 
       if (!empty($this->fields['website'])) {
          $ret .= "<a href='".formatOutputWebLink($this->fields['website'])."' target='_blank'>
-                  <img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle'alt='".
-                   $LANG['common'][4]."' title='".$LANG['common'][4]."'></a>&nbsp;&nbsp;";
+                  <img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt=\"".
+                   $LANG['common'][4]."\" title=\"".$LANG['common'][4]."\"></a>&nbsp;&nbsp;";
       }
 
       if ($this->can($this->fields['id'],'r')) {
          $ret .= "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
                    $this->fields['id']."'>
-                  <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".
-                   $LANG['buttons'][14]."' title='".$LANG['buttons'][14]."'></a>";
+                  <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt=\"".
+                   $LANG['buttons'][14]."\" title=\"".$LANG['buttons'][14]."\"></a>";
       }
       return $ret;
    }

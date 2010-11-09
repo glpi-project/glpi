@@ -197,7 +197,7 @@ class Dropdown {
          if (($item instanceof CommonDropdown)
                && $item->canCreate()) {
 
-               echo "<img alt='' title='".$LANG['buttons'][8]."' src='".$CFG_GLPI["root_doc"].
+               echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                      onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
                      $params['rand']."' ,'glpipopup', 'height=400, ".
@@ -1106,11 +1106,11 @@ class Dropdown {
          echo $LANG['peripherals'][31];
 
          if ($params['management_restrict'] == 2) {
-            echo "&nbsp;<a title='".$LANG['common'][39]."'
+            echo "&nbsp;<a title=\"".$LANG['common'][39]."\"
                          href=\"javascript:confirmAction('".addslashes($LANG['common'][40])."\\n".
                          addslashes($LANG['common'][39])."','".$params['target'].
                          "?unglobalize=unglobalize&amp;id=$ID')\">".$LANG['common'][38]."</a>&nbsp;";
-            echo "<img alt='".$LANG['common'][39]."' title='".$LANG['common'][39]."' src='".
+            echo "<img alt='".$LANG['common'][39]."' title=\"".$LANG['common'][39]."\" src='".
                    $CFG_GLPI["root_doc"]."/pics/aide.png'>";
          }
 

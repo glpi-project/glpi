@@ -1978,7 +1978,7 @@ class User extends CommonDBTM {
           && $p['ldap_import']
           && EntityData::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         echo "<img alt='' title='".$LANG['ldap'][35]."' src='".$CFG_GLPI["root_doc"].
+         echo "<img alt='' title=\"".$LANG['ldap'][35]."\" src='".$CFG_GLPI["root_doc"].
                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                 onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
                "/front/popup.php?popup=add_ldapuser&amp;rand=$rand&amp;entity=".

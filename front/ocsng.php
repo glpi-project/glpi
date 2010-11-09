@@ -66,7 +66,7 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
    }
    echo "<div class='center'>";
    echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png' alt='" .
-         $LANG['ocsng'][0] . "' title='" . $LANG['ocsng'][0] . "' ></td>";
+         $LANG['ocsng'][0] . "' title=\"" . $LANG['ocsng'][0] . "\" ></td>";
    echo "</div>";
 
    echo "<div class='center'><table class='tab_cadre'>";

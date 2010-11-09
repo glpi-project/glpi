@@ -363,12 +363,12 @@ class Reservation extends CommonDBChild {
 
       echo "<div class='center'>";
       echo "<table class='tab_glpi'><tr><td><a href='reservation.php".$str_precedent."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt='".$LANG['buttons'][12].
-             "' title='".$LANG['buttons'][12]."'></a></td>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
+             "\" title=\"".$LANG['buttons'][12]."\"></a></td>";
       echo "<td class='b'>".$LANG['calendarM'][$mois_courant-1]."&nbsp;".$annee_courante."</td>";
       echo "<td><a href='reservation.php".$str_suivant."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt='".$LANG['buttons'][11].
-             "' title='".$LANG['buttons'][11]."'></a></td></tr></table>\n";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
+             "\" title=\"".$LANG['buttons'][11]."\"></a></td></tr></table>\n";
 
       // test
       echo "<table width='90%' class='tab_glpi'><tr><td class='top' width='100px'>";
@@ -451,8 +451,8 @@ class Reservation extends CommonDBChild {
             echo "<tr><td class='center'>";
             echo "<a href='reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
                   "date=".$annee_courante."-".$mois_courant."-".$ii."'>";
-            echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt='".
-                  $LANG['reservation'][8]."' title='".$LANG['reservation'][8]."'></a></td></tr>\n";
+            echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt=\"".
+                  $LANG['reservation'][8]."\" title=\"".$LANG['reservation'][8]."\"></a></td></tr>\n";
          }
 
          echo "<tr><td>";
@@ -827,8 +827,8 @@ class Reservation extends CommonDBChild {
                echo "<td class='center'>";
                list($annee, $mois, $jour) = explode("-", $data["begin"]);
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                     $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
-                     $LANG['reservation'][21]."'>";
+                     $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
+                     $LANG['reservation'][21]."\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
                echo "</td></tr>\n";
             }
@@ -874,8 +874,8 @@ class Reservation extends CommonDBChild {
                echo "<td class='center'>";
                list($annee, $mois ,$jour) = explode("-", $data["begin"]);
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                     $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".
-                     $LANG['reservation'][21]."'>";
+                     $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
+                     $LANG['reservation'][21]."\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>";
                echo "</a></td></tr>\n";
             }
@@ -952,7 +952,7 @@ class Reservation extends CommonDBChild {
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;".
-                  "annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".
+                  "annee_courante=$annee' title=\"".$LANG['reservation'][21]."\"><img src=\"".
                   $CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
             echo "</td></tr>\n";
          }
@@ -1008,7 +1008,7 @@ class Reservation extends CommonDBChild {
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
-                  "title='".$LANG['reservation'][21]."'>";
+                  "title=\"".$LANG['reservation'][21]."\">";
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png' alt='' title=''></a>";
             echo "</td></tr>\n";
          }

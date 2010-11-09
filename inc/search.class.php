@@ -835,8 +835,8 @@ class Search {
                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
                         "'height=400, width=1000, top=100, left=100, scrollbars=yes' ); w.focus();\"";
 
-                  $search_config = "<img alt='".$LANG['setup'][252]."' title='".$LANG['setup'][252].
-                                    "' src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+                  $search_config = "<img alt=\"".$LANG['setup'][252]."\" title=\"".$LANG['setup'][252].
+                                    "\" src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
                   $search_config .= $tmp.">";
                }
                echo Search::showHeaderItem($output_type, $search_config, $header_num, "", 0,
@@ -1052,9 +1052,9 @@ class Search {
                         echo Search::showItem($output_type,
                                               "<a href=\"".getItemTypeFormURL($itemtype)."?id=".
                                                 $data["refID"]."&amp;is_active=".($data["ACTIVE"]?0:1).
-                                                "&amp;update=update\" "."title='".
+                                                "&amp;update=update\" "."title=\"".
                                                 ($data["ACTIVE"]?$LANG['buttons'][42]:$LANG['buttons'][41]).
-                                                "'><img src=\"".$CFG_GLPI["root_doc"]."/pics/".
+                                                "\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/".
                                                 ($data["ACTIVE"]?"moins":"plus").".png\" alt='' title=''></a>",
                                               $item_num, $row_num, "class='center'");
 
@@ -1063,8 +1063,8 @@ class Search {
                                                 addslashes($LANG['reservation'][38])."\\n".
                                                 addslashes($LANG['reservation'][39])."','".
                                                 getItemTypeFormURL($itemtype)."?id=".$data["refID"].
-                                                "&amp;delete=delete')\" title='".$LANG['reservation'][6].
-                                                "'><img src=\"".$CFG_GLPI["root_doc"].
+                                                "&amp;delete=delete')\" title=\"".$LANG['reservation'][6].
+                                                "\"><img src=\"".$CFG_GLPI["root_doc"].
                                                 "/pics/delete.png\" alt='' title=''></a>",
                                               $item_num, $row_num, "class='center'");
                      }
@@ -1072,8 +1072,8 @@ class Search {
                   if ($data["ACTIVE"]) {
                      echo Search::showItem($output_type,
                                            "<a href='reservation.php?reservationitems_id=".
-                                             $data["refID"]."' title='".$LANG['reservation'][21].
-                                             "'><img src=\"".$CFG_GLPI["root_doc"].
+                                             $data["refID"]."' title=\"".$LANG['reservation'][21].
+                                             "\"><img src=\"".$CFG_GLPI["root_doc"].
                                              "/pics/reservation-3.png\" alt='' title=''></a>",
                                            $item_num, $row_num, "class='center'");
                   } else {
@@ -1216,31 +1216,31 @@ class Search {
                    value='1'>";
             echo "<a href='#' onClick = \"document.getElementById('add_search_count').disabled=false;
                    document.forms['searchform$itemtype'].submit();\">";
-            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".
-                   $LANG['search'][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+            echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
+                   $LANG['search'][17]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             if ($_SESSION["glpisearchcount"][$itemtype]>1) {
                echo "<input type='hidden' disabled id='delete_search_count'
                       name='delete_search_count' value='1'>";
                echo "<a href='#' onClick = \"document.getElementById('delete_search_count').disabled=false;
                       document.forms['searchform$itemtype'].submit();\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".
-                     $LANG['search'][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
+                     $LANG['search'][18]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             }
             if (isset($metaactivated[$itemtype])) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
                       value='1'>";
                echo "<a href='#' onClick = \"document.getElementById('add_search_count2').disabled=false;
                       document.forms['searchform$itemtype'].submit();\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".
-                      $LANG['search'][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
+                      $LANG['search'][19]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
                if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
                   echo "<input type='hidden' disabled id='delete_search_count2'
                          name='delete_search_count2' value='1'>";
                   echo "<a href='#' onClick = \"document.getElementById('delete_search_count2').disabled=false;
                          document.forms['searchform$itemtype'].submit();\">";
-                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".
-                        $LANG['search'][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                  echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
+                        $LANG['search'][20]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                }
             }
 
@@ -1251,9 +1251,9 @@ class Search {
                echo "<a href='#' onClick = \"toogle('is_deleted','','','');
                       document.forms['searchform$itemtype'].submit();\">
                       <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
-                       (!$p['is_deleted']?'_no':'').".png\" name='img_deleted'  alt='".
-                       (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."' title='".
-                       (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."' ></a>";
+                       (!$p['is_deleted']?'_no':'').".png\" name='img_deleted'  alt=\"".
+                       (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."\" title=\"".
+                       (!$p['is_deleted']?$LANG['common'][3]:$LANG['common'][81])."\" ></a>";
                // Dropdown::showYesNo("is_deleted",$p['is_deleted']);
                echo '&nbsp;&nbsp;';
             }
@@ -1503,7 +1503,7 @@ class Search {
       echo "</td><td>";
       Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
       echo "<a href='$target?reset=reset' >";
-      echo "&nbsp;&nbsp;<img title='".$LANG['buttons'][16]."' alt='".$LANG['buttons'][16]."' src='".
+      echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 
       echo "</td></tr></table>\n";
@@ -3746,11 +3746,11 @@ class Search {
 
          case "glpi_reservationitems.comment" :
             if (empty($data[$NAME.$num])) {
-               return "<a title='".$LANG['reservation'][22]."'
+               return "<a title=\"".$LANG['reservation'][22]."\"
                         href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
                         $data["refID"]."' >".$LANG['common'][49]."</a>";
             }
-            return "<a title='".$LANG['reservation'][22]."'
+            return "<a title=\"".$LANG['reservation'][22]."\"
                      href='".$CFG_GLPI["root_doc"]."/front/reservationitem.form.php?id=".
                      $data['refID']."' >".resume_text($data[$NAME.$num])."</a>";
 
@@ -3784,7 +3784,7 @@ class Search {
          case 'glpi_tickets.status':
             $status=Ticket::getStatus($data[$NAME.$num]);
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
-                     alt='$status' title='$status'><br>$status";
+                     alt=\"$status\" title=\"$status\"><br>$status";
 
          case 'glpi_tickets.priority':
             return Ticket::getPriorityName($data[$NAME.$num]);

@@ -428,7 +428,7 @@ class CronTask extends CommonDBTM{
       } else {
          echo convDateTime($this->fields['lastrun']);
          echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetdate=1'><img src='".GLPI_ROOT."/pics/reset.png' ";
-         echo " alt='".$LANG['buttons'][16]."' title='".$LANG['buttons'][16]."'></a>";
+         echo " alt=\"".$LANG['buttons'][16]."\" title=\"".$LANG['buttons'][16]."\"></a>";
       }
       echo "</td></tr>";
 
@@ -479,7 +479,7 @@ class CronTask extends CommonDBTM{
       }
       if ($tmpstate == self::STATE_RUNNING) {
          echo " <a href='".$this->getFormURL()."?id=$ID&amp;resetstate=1'><img src='".GLPI_ROOT."/pics/reset.png' ";
-         echo " alt='".$LANG['buttons'][16]."' title='".$LANG['buttons'][16]."'></a>";
+         echo " alt=\"".$LANG['buttons'][16]."\" title=\"".$LANG['buttons'][16]."\"></a>";
       }
       echo "</td></tr>";
 
