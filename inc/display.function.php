@@ -3225,8 +3225,8 @@ function showProfileSelecter($target) {
       });";
       echo "</script>";
 
-      echo "<a onclick='entity_window.show();' href='#modal_entity_content' title='".
-             $_SESSION["glpiactive_entity_name"]."' class='entity_select' id='global_entity_select'>".
+      echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
+             $_SESSION["glpiactive_entity_name"]."\" class='entity_select' id='global_entity_select'>".
              $_SESSION["glpiactive_entity_shortname"]."</a>";
 
       echo "</li>";
