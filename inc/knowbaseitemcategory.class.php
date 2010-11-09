@@ -92,7 +92,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       }
 
       if ($faq) {
-         if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r")) {
+         if (!$CFG_GLPI["use_public_faq"] && !haveRight("faq","r")) {
             return false;
          }
 
