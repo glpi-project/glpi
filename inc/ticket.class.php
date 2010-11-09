@@ -497,17 +497,19 @@ class Ticket extends CommonDBTM {
       // Check dates change interval due to the fact that second are not displayed in form
       if (($key=array_search('date',$this->updates)) !== false
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
-
          unset($this->updates[$key]);
+         unset($this->oldvalues['date']);
       }
       if (($key=array_search('closedate',$this->updates)) !== false
           && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
          unset($this->updates[$key]);
+         unset($this->oldvalues['closedate']);
       }
 
       if (($key=array_search('solvedate',$this->updates)) !== false
           && (substr($this->fields["solvedate"],0,16) == substr($this->oldvalues['solvedate'],0,16))) {
          unset($this->updates[$key]);
+         unset($this->oldvalues['solvedate']);
       }
 
       if (in_array("users_id",$this->updates)) {

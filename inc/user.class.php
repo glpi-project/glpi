@@ -1458,6 +1458,8 @@ class User extends CommonDBTM {
 
          if ($DB->numrows($result) > 0) {
             unset($this->updates[$key]);
+            unset($this->oldvalues['name']);
+
             /// For displayed message
             $this->fields['name'] = $this->oldvalues['name'];
             addMessageAfterRedirect($LANG['setup'][614], false, ERROR);
@@ -1484,7 +1486,9 @@ class User extends CommonDBTM {
                         if (!empty($val)
                             && ($key2 = array_search($key,$this->updates)) !== false) {
 
-                           unset ($this->updates[$key2]);
+                           unset($this->updates[$key2]);
+                           unset($this->oldvalues[$key]);
+
                         }
                      }
                   }
@@ -1494,15 +1498,18 @@ class User extends CommonDBTM {
                if (isset($this->fields["authtype"]) && $this->fields["authtype"] == Auth::MAIL) {
                   if (($key = array_search("email", $this->updates)) !== false) {
                      unset ($this->updates[$key]);
+                     unset($this->oldvalues['email']);
                   }
                }
 
                if (($key = array_search("is_active",$this->updates)) !== false) {
                   unset ($this->updates[$key]);
+                  unset($this->oldvalues['is_active']);
                }
 
                if (($key = array_search("comment",$this->updates)) !== false) {
                   unset ($this->updates[$key]);
+                  unset($this->oldvalues['comment']);
                }
             }
          }
