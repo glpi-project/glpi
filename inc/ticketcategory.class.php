@@ -123,11 +123,16 @@ class TicketCategory extends CommonTreeDropdown {
       }
 
       if ($this->fields['knowbaseitemcategories_id']) {
+         $title=$LANG['knowbase'][1];
+         if (isset($_SESSION['glpiactiveprofile'])
+            && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+            $title=$LANG['Menu'][19];
+         }
          $ret.= "<a href='".$CFG_GLPI["root_doc"].
             "/front/knowbaseitem.php?knowbaseitemcategories_id=".
             $this->fields['knowbaseitemcategories_id'].
-            "'><img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle' alt='".
-            $LANG['knowbase'][1]."' title='".$LANG['knowbase'][1]."'></a>";
+            "'><img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle'
+                  alt=\"$title\" title=\"$title\"></a>";
       }
       return $ret;
    }
