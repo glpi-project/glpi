@@ -40,7 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Entity Data class
  */
-class EntityData extends CommonDBTM {
+class EntityData extends CommonDBChild {
+
+
+   // From CommonDBChild
+   public $itemtype = 'Entity';
+   public $items_id = 'entities_id';
 
    // From CommonDBTM
    public $table = 'glpi_entitydatas';
@@ -89,6 +94,27 @@ class EntityData extends CommonDBTM {
 
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
 
+      return $this->checkRightDatas($input);
+   }
+
+
+   function prepareInputForUpdate($input) {
+
+
+      // Si on change le taux de déclanchement de l'enquête (enquête activée),
+      // cela s'applique aux prochains tickets - Pas à l'historique
+      if (isset($input['inquest_rate'])
+          && $input['inquest_rate']!=$this->fields['inquest_rate']) {
+
+         $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+      }
+      return $this->checkRightDatas($input);
+
+   }
+
+
+   /// TODO do it in the future in filterDatas or checkValues ?
+   function checkRightDatas($input) {
       foreach (self::$field_right as $right => $fields) {
          if (!haveRight($right, 'w')) {
 
@@ -99,24 +125,9 @@ class EntityData extends CommonDBTM {
             }
          }
       }
+
       return $input;
    }
-
-
-   function prepareInputForUpdate($input) {
-
-      // Si on change le taux de déclanchement de l'enquête (enquête activée),
-      // cela s'applique aux prochains tickets - Pas à l'historique
-
-      if (isset($input['inquest_rate'])
-          && $input['inquest_rate']!=$this->fields['inquest_rate']) {
-
-         $input['max_closedate'] = $_SESSION["glpi_currenttime"];
-      }
-
-      return $this->prepareInputForAdd($input);
-   }
-
 
    /**
     *
