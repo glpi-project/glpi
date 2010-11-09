@@ -899,6 +899,20 @@ a.icon_nav_move:hover img {
 
 
 
+/* ################--------------- Menu navigation  ---------------#################### */
+div#menu_navigate{
+        margin: 0 auto;
+        z-index:1;
+        font-size: 10px;
+        width:950px;
+}
+
+div#menu_navigate li {
+margin-left:2px;
+display:block;
+float:left;
+padding:2px;
+}
 
 /* ################--------------- box (redirect and other)  ---------------#################### */
 .box {margin: 0 auto; width:700px;	text-align:center;}
