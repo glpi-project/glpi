@@ -75,7 +75,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       global $DB,$LANG,$CFG_GLPI;
 
       if ($faq) {
-         if ($CFG_GLPI["use_public_faq"] && !haveRight("faq","r")) {
+         if (!$CFG_GLPI["use_public_faq"] && !haveRight("faq","r")) {
             return false;
          }
 
