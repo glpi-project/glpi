@@ -2124,10 +2124,18 @@ class Search {
             return getEntitiesRestrictRequest("","glpi_profiles_users");
 
          case 'Ticket' :
+            $condition='';
             if (!haveRight("show_all_ticket","1")) {
+               $condition="(";
+
+               if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
+                  $condition .= " glpi_tickets.users_id= '".getLoginUserID()."' ";
+               } else { // Can own ticket : show my and assign to me
+                  $condition .= " glpi_tickets.users_id= '".getLoginUserID()."' OR glpi_tickets.users_id_assign= '".getLoginUserID()."' ";
+               }
+
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
-                  $condition =" (glpi_tickets.users_id= '".getLoginUserID()."'
-                                 OR `glpi_tickets`.`users_id_assign` = '".getLoginUserID()."'";
+                  $condition .=" OR `glpi_tickets`.`users_id_assign` = '".getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR `glpi_tickets`.`groups_id_assign`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
@@ -2135,28 +2143,19 @@ class Search {
                   if (haveRight('assign_ticket',1)) {
                      $condition .= " OR `glpi_tickets`.`status`='new'";
                   }
-
-               } else {
-                  if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                     $condition = " (glpi_tickets.users_id= '".getLoginUserID()."' ";
-                  } else { // Can own ticket : show my and assign to me
-                     $condition = " (glpi_tickets.users_id= '".getLoginUserID()."'
-                                     OR glpi_tickets.users_id_assign= '".getLoginUserID()."' ";
-                  }
-                  if (haveRight("show_group_ticket",1)) {
-                     if (count($_SESSION['glpigroups'])) {
-                        $condition .= " OR `glpi_tickets`.`groups_id`
-                                                IN ('".implode("','",$_SESSION['glpigroups'])."') ";
-                     }
-                  }
-                  if (haveRight("validate_ticket",1)) {
-                     $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".
-                                     getLoginUserID()."'";
+               }
+               if (haveRight("show_group_ticket",1)) {
+                  if (count($_SESSION['glpigroups'])) {
+                     $condition .= " OR `glpi_tickets`.`groups_id`
+                                             IN ('".implode("','",$_SESSION['glpigroups'])."') ";
                   }
                }
-               $condition .= ") ";
-               return $condition;
+               if (haveRight("validate_ticket",1)) {
+                  $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".getLoginUserID()."'";
+               }
+               $condition.=") ";
             }
+            return $condition;
 
          default :
             return "";
