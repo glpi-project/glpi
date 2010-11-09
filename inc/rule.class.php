@@ -592,7 +592,7 @@ class Rule extends CommonDBTM {
 
       if ($this->specific_parameters) {
          $itemtype = get_class($this).'Parameter';
-         echo "<img alt='' title='".$LANG['rulesengine'][140]."' src='".$CFG_GLPI["root_doc"].
+         echo "<img alt='' title=\"".$LANG['rulesengine'][140]."\" src='".$CFG_GLPI["root_doc"].
                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                 onClick=\"var w = window.open('".getItemTypeFormURL($itemtype)."?popup=1&amp;rand=".
                 $params['rand']."' ,'glpipopup', 'height=400, "."width=1000, top=100, left=100,

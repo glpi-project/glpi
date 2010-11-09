@@ -364,8 +364,8 @@ class Plugin extends CommonDBTM {
             echo "<td>";
             if (!empty($weblink)) {
                echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".
-                      $LANG['common'][4]."' title='".$LANG['common'][4]."' ></a>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt=\"".
+                      $LANG['common'][4]."\" title=\"".$LANG['common'][4]."\" ></a>";
             } else {
                echo "&nbsp;";
             }

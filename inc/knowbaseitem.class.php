@@ -308,25 +308,25 @@ class KnowbaseItem extends CommonDBTM {
             if ($isFAQ) {
                echo "<td class='center' width='33%'><a class='icon_nav_move' href=\"".
                      $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;removefromfaq=yes\">
-                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".
-                        $LANG['knowbase'][7]."' title='".$LANG['knowbase'][7]."'></a></td>\n";
+                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt=\"".
+                        $LANG['knowbase'][7]."\" title=\"".$LANG['knowbase'][7]."\"></a></td>\n";
             } else {
                echo "<td class='center' width='33%'><a  class='icon_nav_move' href=\"".
                      $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;addtofaq=yes\">
-                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".
-                        $LANG['knowbase'][5]."' title='".$LANG['knowbase'][5]."'></a></td>\n";
+                     <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt=\"".
+                        $LANG['knowbase'][5]."\" title=\"".$LANG['knowbase'][5]."\"></a></td>\n";
             }
          }
          echo "<td class='center' width='34%'><a class='icon_nav_move' href=\"".
                $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;modify=yes\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG['knowbase'][8].
-               "' title='".$LANG['knowbase'][8]."'></a></td>\n";
+         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".$LANG['knowbase'][8].
+               "\" title=\"".$LANG['knowbase'][8]."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
          echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".
                 addslashes($LANG['common'][55])."','".$CFG_GLPI["root_doc"].
                 "/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG['knowbase'][9].
-               "' title='".$LANG['knowbase'][9]."'></a></td>";
+         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt=\"".$LANG['knowbase'][9].
+               "\" title=\"".$LANG['knowbase'][9]."\"></a></td>";
          echo "</tr>";
       }
       echo "</table><br>";

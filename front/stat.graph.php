@@ -258,7 +258,7 @@ echo "<tr><td>";
 if ($prev > 0) {
    echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
           $_POST["date2"]."&amp;id=$prev'><img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt='".
-          $LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a>";
+          $LANG['buttons'][12]."' title=\"".$LANG['buttons'][12]."\"></a>";
 }
 echo "</td>";
 
@@ -267,7 +267,7 @@ echo "<td>";
 if ($next > 0) {
    echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
           $_POST["date2"]."&amp;id=$next'><img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt='".
-          $LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a>";
+          $LANG['buttons'][11]."' title=\"".$LANG['buttons'][11]."\"></a>";
 }
 echo "</td>";
 echo "</tr>";

@@ -401,8 +401,8 @@ class Document extends CommonDBTM {
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
                $icon = $DB->result($result,0,'icon');
-               $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt='".
-                               $fileout."' title='".$fileout."' src='".
+               $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
+                               $fileout."\" title=\"".$fileout."\" src='".
                                $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
             }
          }

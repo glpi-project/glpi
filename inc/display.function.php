@@ -177,7 +177,7 @@ function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_bt
    echo "<div class='center'><table border='0' class='tab_glpi'><tr>";
 
    if ($ref_pic_link!="") {
-      echo "<td><img src='".$ref_pic_link."' alt='".$ref_pic_text."' title='".$ref_pic_text."'></td>";
+      echo "<td><img src='".$ref_pic_link."' alt=\"".$ref_pic_text."\" title=\"".$ref_pic_text."\"></td>";
    }
 
    if ($ref_title!="") {
@@ -403,8 +403,8 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          $opt['link'][1]       = 'AND';
 
 
-         $pic_validate = "<img title='".$LANG['validation'][15]."' alt='".$LANG['validation'][15].
-                           "' src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+         $pic_validate = "<img title=\"".$LANG['validation'][15]."\" alt=\"".$LANG['validation'][15].
+                           "\" src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
 
          $menu['maintain']['content']['ticket']['links'][$pic_validate]
                            = '/front/ticket.php?'.append_params($opt, '&amp;');
@@ -1139,7 +1139,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
    echo "<div id='header'>";
    echo "<div id='c_logo'>";
-   echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG['central'][5]."'></a>";
+   echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".$LANG['central'][5]."\"></a>";
    echo "</div>";
 
    /// Prefs / Logout link
@@ -1152,7 +1152,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
       echo "?noAUTO=1";
    }
-   echo "' title='".$LANG['central'][6]."'>".$LANG['central'][6]."</a>";
+   echo "' title=\"".$LANG['central'][6]."\">".$LANG['central'][6]."</a>";
 
    // check user id : header used for display messages when session logout
    if (getLoginUserID()) {
@@ -1165,11 +1165,11 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
    echo "<li><a href='".
          (empty($CFG_GLPI["central_doc_url"])?"http://glpi-project.org/help-central":
-         $CFG_GLPI["central_doc_url"])."' target='_blank' title='".$LANG['central'][7]."'>".
+         $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".$LANG['central'][7]."\">".
          $LANG['central'][7]."</a></li>";
 
-   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title='".
-              $LANG['Menu'][11]."'>".$LANG['Menu'][11]."</a></li>";
+   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+              $LANG['Menu'][11]."\">".$LANG['Menu'][11]."</a></li>";
 
    echo "</ul>";
    echo "<div class='sep'></div>";
@@ -1179,8 +1179,8 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    echo "<div id='c_recherche' >\n";
    echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
    echo "<div id='boutonRecherche'>";
-   echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png' value='OK' title='".
-          $LANG['buttons'][2]."'  alt='".$LANG['buttons'][2]."'></div>";
+   echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png' value='OK' title=\"".
+          $LANG['buttons'][2]."\"  alt=\"".$LANG['buttons'][2]."\"></div>";
    echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".
           $LANG['buttons'][0]."' onfocus=\"this.value='';\"></div>";
    echo "</form>";
@@ -1274,7 +1274,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    echo "<ul>";
 
    // Display item
-   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG['central'][5]."'>".
+   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".$LANG['central'][5]."\">".
               $LANG['central'][5]."</a> ></li>";
 
    if (isset($menu[$sector])) {
@@ -1283,7 +1283,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       if (isset($menu[$sector]['default'])) {
          $link = $menu[$sector]['default'];
       }
-      echo "<li><a href='".$CFG_GLPI["root_doc"].$link."' title='".$menu[$sector]['title']."'>".
+      echo "<li><a href='".$CFG_GLPI["root_doc"].$link."' title=\"".$menu[$sector]['title']."\">".
                  $menu[$sector]['title']."</a> ></li>";
    }
 
@@ -1300,16 +1300,16 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
       if (isset($menu[$sector]['content'][$item]['page'])) {
          echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' ".
-                    ($with_option?"":"class='here'")." title='".
-                    $menu[$sector]['content'][$item]['title']."' >".
+                    ($with_option?"":"class='here'")." title=\"".
+                    $menu[$sector]['content'][$item]['title']."\" >".
                     $menu[$sector]['content'][$item]['title']."</a>".(!$with_option?"":" > ")."</li>";
       }
 
       if ($with_option) {
          echo "<li><a href='".$CFG_GLPI["root_doc"].
                     $menu[$sector]['content'][$item]['options'][$option]['page'].
-                    "' class='here' title='".
-                    $menu[$sector]['content'][$item]['options'][$option]['title']."' >";
+                    "' class='here' title=\"".
+                    $menu[$sector]['content'][$item]['options'][$option]['title']."\" >";
          echo resume_name($menu[$sector]['content'][$item]['options'][$option]['title'], 17);
          echo "</a></li>";
       }
@@ -1335,24 +1335,24 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       echo "<li>";
       if (isset($links['add'])) {
          echo "<a href='".$CFG_GLPI["root_doc"].$links['add']."'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title='".
-                $LANG['buttons'][8]."' alt='".$LANG['buttons'][8]."'></a>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
+                $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"'></a>";
 
       } else {
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title='".
-                $LANG['buttons'][8]."' alt='".$LANG['buttons'][8]."'>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title=\"".
+                $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\">";
       }
       echo "</li>";
 
       // Search Item
       if (isset($links['search'])) {
          echo "<li><a href='".$CFG_GLPI["root_doc"].$links['search']."'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title='".
-                $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></a></li>";
+         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title=\"".
+                $LANG['buttons'][0]."\" alt=\"".$LANG['buttons'][0]."\"></a></li>";
 
       } else {
-         echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title='".
-                    $LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></li>";
+         echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title=\"".
+                    $LANG['buttons'][0]."\" alt=\"".$LANG['buttons'][0]."\"></li>";
       }
       // Links
       if (count($links)>0) {
@@ -1364,26 +1364,26 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
                   break;
 
                case "template" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title='".
-                             $LANG['common'][8]."' alt='".$LANG['common'][8]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
+                             $LANG['common'][8]."\" alt=\"".$LANG['common'][8]."\" src='".
                              $CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png'></a></li>";
                   break;
 
                case "showall" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title='".
-                             $LANG['buttons'][40]."' alt='".$LANG['buttons'][40]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
+                             $LANG['buttons'][40]."\" alt=\"".$LANG['buttons'][40]."\" src='".
                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a></li>";
                   break;
 
                case "summary" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title='".
-                             $LANG['state'][1]."' alt='".$LANG['state'][1]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
+                             $LANG['state'][1]."\" alt=\"".$LANG['state'][1]."\" src='".
                              $CFG_GLPI["root_doc"]."/pics/menu_show.png'></a></li>";
                   break;
 
                case "config" :
-                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title='".
-                             $LANG['common'][12]."' alt='".$LANG['common'][12]."' src='".
+                  echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
+                             $LANG['common'][12]."\" alt=\"".$LANG['common'][12]."\" src='".
                              $CFG_GLPI["root_doc"]."/pics/menu_config.png'></a></li>";
                   break;
 
@@ -1422,7 +1422,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          }
 
          echo "<tr><td class='tab_bg_1 b'>";
-         echo "<a href='$link' title='".$data['title']."' class='itemP'>".$data['title']."</a>";
+         echo "<a href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
          echo "</td></tr>";
          $i++;
 
@@ -1457,8 +1457,8 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
    echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
           "/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, top=100,".
           "left=100, scrollbars=yes' );w.focus();\">";
-   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title='".$LANG['buttons'][52]." ".
-          $LANG['bookmark'][1]."'  alt='".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."'>";
+   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG['buttons'][52]." ".
+          $LANG['bookmark'][1]."\"  alt=\"".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."\">";
    echo "</a></li>";
 
    /// MENU ALL
@@ -1578,13 +1578,13 @@ function helpHeader($title, $url='') {
    // Main Headline
    echo "<div id='header'>";
    echo "<div id='c_logo' >";
-   echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='0' title='".
-          $LANG['central'][5]."'><span class='invisible'>Logo</span></a></div>";
+   echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='0' title=\"".
+          $LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
 
    // Les préférences + lien déconnexion
    echo "<div id='c_preference' >";
-   echo "<ul><li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/logout.php' title='".
-               $LANG['central'][6]."'>".$LANG['central'][6]."</a>";
+   echo "<ul><li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/logout.php' title=\"".
+               $LANG['central'][6]."\">".$LANG['central'][6]."</a>";
 
    // check user id : header used for display messages when session logout
    if (getLoginUserID()) {
@@ -1597,9 +1597,9 @@ function helpHeader($title, $url='') {
 
    echo "<li><a href='".(empty($CFG_GLPI["helpdesk_doc_url"])?
               "http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdesk_doc_url"]).
-              "' target='_blank' title='".$LANG['central'][7]."'> ".$LANG['central'][7]."</a></li>";
-   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title='".
-               $LANG['Menu'][11]."'>".$LANG['Menu'][11]."</a></li>\n";
+              "' target='_blank' title=\"".$LANG['central'][7]."\"> ".$LANG['central'][7]."</a></li>";
+   echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+               $LANG['Menu'][11]."\">".$LANG['Menu'][11]."</a></li>\n";
 
    echo "</ul>";
    echo "<div class='sep'></div>";
@@ -1619,32 +1619,32 @@ function helpHeader($title, $url='') {
    // Ticket
    if (haveRight("create_ticket","1")) {
       echo "<li id='menu1'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title='".
-             $LANG['job'][13]."' class='itemP'>".$LANG['central'][5]."</a>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
+             $LANG['job'][13]."\" class='itemP'>".$LANG['central'][5]."</a>";
       echo "</li>";
    }
 
    //  Suivi ticket
    if (haveRight("observe_ticket","1")) {
       echo "<li id='menu2'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title='".
-             $LANG['title'][10]."' class='itemP'>".$LANG['title'][28]."</a>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
+             $LANG['title'][10]."\" class='itemP'>".$LANG['title'][28]."</a>";
       echo "</li>";
    }
 
    // Reservation
    if (haveRight("reservation_helpdesk","1")) {
       echo "<li id='menu3'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title='".
-             $LANG['Menu'][17]."' class='itemP'>".$LANG['Menu'][17]."</a>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
+             $LANG['Menu'][17]."\" class='itemP'>".$LANG['Menu'][17]."</a>";
       echo "</li>";
    }
 
    // FAQ
    if (haveRight("faq","r")) {
       echo "<li id='menu4' >";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title='".
-             $LANG['knowbase'][1]."' class='itemP'>".$LANG['Menu'][20]."</a>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
+             $LANG['knowbase'][1]."\" class='itemP'>".$LANG['Menu'][20]."</a>";
       echo "</li>";
    }
 
@@ -1672,7 +1672,7 @@ function helpHeader($title, $url='') {
 
       asort($list);
       echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-      echo "<a href='#' title='".$LANG['common'][29]."' class='itemP'>".
+      echo "<a href='#' title=\"".$LANG['common'][29]."\" class='itemP'>".
              $LANG['common'][29]."</a>";  // default none
       echo "<ul class='ssmenu'>";
 
@@ -1720,8 +1720,8 @@ function helpHeader($title, $url='') {
 
 
       $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt,'&amp;');
-      $pic_validate = "<a href='$url_validate'><img title='".$LANG['validation'][15]."' alt='".
-                        $LANG['validation'][15]."' src='".
+      $pic_validate = "<a href='$url_validate'><img title=\"".$LANG['validation'][15]."\" alt=\"".
+                        $LANG['validation'][15]."\" src='".
                         $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a>";
       echo "<li>$pic_validate</li>\n";
 
@@ -1766,8 +1766,8 @@ function simpleHeader($title, $links=array()) {
    // Main Headline
    echo "<div id='header'>";
    echo "<div id='c_logo'>";
-   echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='0' title='".
-          $LANG['central'][5]."'><span class='invisible'>Logo</span></a></div>";
+   echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='0' title=\"".
+          $LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
 
    // Les préférences + lien déconnexion
    echo "<div id='c_preference'>";
@@ -1789,7 +1789,7 @@ function simpleHeader($title, $links=array()) {
 
       foreach ($links as $name => $link) {
          echo "<li id='menu$i'>";
-         echo "<a href='$link' title='".$name."' class='itemP'>".$name."</a>";
+         echo "<a href='$link' title=\"".$name."\" class='itemP'>".$name."</a>";
          echo "</li>";
          $i++;
       }
@@ -1973,7 +1973,7 @@ function commonFooter($keepDB=false) {
 
    if (!empty($CFG_GLPI["founded_new_version"])) {
       echo "<td class='copyright'>".$LANG['setup'][301].
-            "<a href='http://www.glpi-project.org' target='_blank' title='".$LANG['setup'][302]."'> ".
+            "<a href='http://www.glpi-project.org' target='_blank' title=\"".$LANG['setup'][302]."\"> ".
                $CFG_GLPI["founded_new_version"]."</a></td>";
    }
    echo "<td class='right'>";
@@ -2146,8 +2146,8 @@ function printHelpDesk ($ID, $from_helpdesk) {
       $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($opt, '&amp;');
 
       if (TicketValidation::getNumberTicketsToValidate(getLoginUserID()) >0) {
-         echo "<a href='$url_validate' title='".$LANG['validation'][15]."'
-                alt='".$LANG['validation'][15]."'>".$LANG['validation'][33]."</a><br><br>";
+         echo "<a href='$url_validate' title=\"".$LANG['validation'][15]."\"
+                alt=\"".$LANG['validation'][15]."\">".$LANG['validation'][33]."</a><br><br>";
       }
    }
 
@@ -2388,13 +2388,13 @@ function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
    if (!$start==0) {
       echo "<th class='left'>";
       echo "<a href='$target?$parameters&amp;start=0'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt='".$LANG['buttons'][33].
-            "' title='".$LANG['buttons'][33]."'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".$LANG['buttons'][33].
+            "\" title=\"".$LANG['buttons'][33]."\">";
       echo "</a></th>";
       echo "<th class='left'>";
       echo "<a href='$target?$parameters&amp;start=$back'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt='".$LANG['buttons'][12].
-            "' title='".$LANG['buttons'][12]."'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
+            "\" title=\"".$LANG['buttons'][12]."\">";
       echo "</a></th>";
    }
 
@@ -2440,7 +2440,7 @@ function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
       echo "<option value='-".CSV_OUTPUT."'>".$LANG['buttons'][45]."</option>";
       echo "</select>&nbsp;";
       echo "<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
-             title='".$LANG['buttons'][31]."' value=\"".$LANG['buttons'][31]."\">";
+             title=\"".$LANG['buttons'][31]."\" value=\"".$LANG['buttons'][31]."\">";
       echo "</form>";
       echo "</td>" ;
    }
@@ -2454,14 +2454,14 @@ function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
    if ($forward<$numrows) {
       echo "<th class='right'>";
       echo "<a href='$target?$parameters&amp;start=$forward'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt='".$LANG['buttons'][11].
-            "' title='".$LANG['buttons'][11]."'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
+            "\" title=\"".$LANG['buttons'][11]."\">";
       echo "</a></th>\n";
 
       echo "<th class='right'>";
       echo "<a href='$target?$parameters&amp;start=$end'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt='".$LANG['buttons'][32].
-             "' title='".$LANG['buttons'][32]."'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".$LANG['buttons'][32].
+             "\" title=\"".$LANG['buttons'][32]."\">";
       echo "</a></th>\n";
    }
    // End pager
@@ -2514,11 +2514,11 @@ function printAjaxPager($title, $start, $numrows) {
    // Back and fast backward button
    if (!$start==0) {
       echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
-            <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt='".$LANG['buttons'][33].
-             "' title='".$LANG['buttons'][33]."'></a></th>";
+            <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".$LANG['buttons'][33].
+             "\" title=\"".$LANG['buttons'][33]."\"></a></th>";
       echo "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
-            <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt='".$LANG['buttons'][12].
-             "' title='".$LANG['buttons'][12]."'></th>";
+            <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
+             "\" title=\"".$LANG['buttons'][12]."\"></th>";
    }
 
    echo "<td width='50%' class='tab_bg_2'>";
@@ -2534,11 +2534,11 @@ function printAjaxPager($title, $start, $numrows) {
    // Forward and fast forward button
    if ($forward<$numrows) {
       echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
-            <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt='".$LANG['buttons'][11].
-             "' title='".$LANG['buttons'][11]."'></a></th>";
+            <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
+             "\" title=\"".$LANG['buttons'][11]."\"></a></th>";
       echo "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
-            <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt='".$LANG['buttons'][32].
-             "' title='".$LANG['buttons'][32]."'></th>";
+            <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".$LANG['buttons'][32].
+             "\" title=\"".$LANG['buttons'][32]."\"></th>";
    }
 
    // End pager

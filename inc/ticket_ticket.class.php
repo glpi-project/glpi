@@ -116,14 +116,14 @@ class Ticket_Ticket extends CommonDBRelation {
             if ($ticket->getFromDB($data['tickets_id'])) {
                echo $ticket->getLink();
                echo  "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$ticket->fields["status"].".png\"
-                                 alt='".Ticket::getStatus($ticket->fields["status"])."' title='".
-                                 Ticket::getStatus($ticket->fields["status"])."'>";
+                                 alt=\"".Ticket::getStatus($ticket->fields["status"])."\" title=\"".
+                                 Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
                   echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
                         "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID&amp;tickets_id=$ID\"
-                           title='".$LANG['reservation'][6]."'>
+                           title=\"".$LANG['reservation'][6]."\">
                         <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
-                        alt='".$LANG['buttons'][6]."' title='".$LANG['buttons'][6]."'></a>";
+                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
                }
             }
 

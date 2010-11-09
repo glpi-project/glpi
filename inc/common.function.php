@@ -634,7 +634,7 @@ function commonCheckForUseGLPI() {
                <img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][10]."</td></tr>";
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][11].
-                    "' title='".$LANG['install'][11]."'></td></tr>";
+                    "' title=\"".$LANG['install'][11]."\"></td></tr>";
       }
 
    } else { // PHP <5
@@ -650,8 +650,8 @@ function commonCheckForUseGLPI() {
       echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][72]."</td></tr>";
       $error = 2;
    } else {
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][73].
-                 "' title='".$LANG['install'][73]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][73].
+                 "\" title=\"".$LANG['install'][73]."\"></td></tr>";
    }
 
    // session test
@@ -664,8 +664,8 @@ function commonCheckForUseGLPI() {
 
    } else if ((isset($_SESSION["Test_session_GLPI"]) && $_SESSION["Test_session_GLPI"] == 1) // From install
               || isset($_SESSION["glpi_currenttime"])) { // From Update
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][14].
-                 "' title='".$LANG['install'][14]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][14].
+                 "\" title=\"".$LANG['install'][14]."\"></td></tr>";
 
    } else if ($error != 2) {
       echo "<td class='red'>";
@@ -690,8 +690,8 @@ function commonCheckForUseGLPI() {
       $error = 2;
 
    } else {
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][76].
-                 "' title='".$LANG['install'][76]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][76].
+                 "\" title=\"".$LANG['install'][76]."\"></td></tr>";
    }
 
    //Test for sybase extension loaded or not.
@@ -703,8 +703,8 @@ function commonCheckForUseGLPI() {
       $error = 2;
 
    } else {
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][67].
-                 "' title='".$LANG['install'][67]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][67].
+                 "\" title=\"".$LANG['install'][67]."\"></td></tr>";
    }
 
    //Test for json_encode function.
@@ -715,8 +715,8 @@ function commonCheckForUseGLPI() {
       $error = 2;
 
    } else {
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][85].
-                 "' title='".$LANG['install'][85]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][85].
+                 "\" title=\"".$LANG['install'][85]."\"></td></tr>";
    }
 
    //Test for mbstring extension.
@@ -727,8 +727,8 @@ function commonCheckForUseGLPI() {
       $error = 2;
 
    } else {
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][85].
-                 "' title='".$LANG['install'][85]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][85].
+                 "\" title=\"".$LANG['install'][85]."\"></td></tr>";
    }
 
    // memory test
@@ -737,14 +737,14 @@ function commonCheckForUseGLPI() {
    $mem = getMemoryLimit();
 
    if ( $mem == "" ) { // memory_limit non compilé -> no memory limit
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][95]." - ".
-                 $LANG['install'][89]."' title='".$LANG['install'][95]." - ".
-                 $LANG['install'][89]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][95]." - ".
+                 $LANG['install'][89]."\" title=\"".$LANG['install'][95]." - ".
+                 $LANG['install'][89]."\"></td></tr>";
 
    } else if ( $mem == "-1" ) { // memory_limit compilé mais illimité
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][96]." - ".
-                 $LANG['install'][89]."' title='".$LANG['install'][96]." - ".
-                 $LANG['install'][89]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][96]." - ".
+                 $LANG['install'][89]."\" title=\"".$LANG['install'][96]." - ".
+                 $LANG['install'][89]."\"></td></tr>";
 
    } else if ($mem<64*1024*1024) { // memoire insuffisante
       $showmem = $mem/1048576;
@@ -754,9 +754,9 @@ function commonCheckForUseGLPI() {
       $error = 2;
 
    } else { // on a sufisament de mémoire on passe à la suite
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png\' alt='".$LANG['install'][91]." - ".
-                 $LANG['install'][89]."' title='".$LANG['install'][91]." - ".
-                 $LANG['install'][89]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png\' alt=\"".$LANG['install'][91]." - ".
+                 $LANG['install'][89]."\" title=\"".$LANG['install'][91]." - ".
+                 $LANG['install'][89]."\"></td></tr>";
    }
 
    $suberr = checkWriteAccessToDirs();
@@ -814,8 +814,8 @@ function checkWriteAccessToDirs() {
             break;
 
          default :
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][20].
-                       "' title='".$LANG['install'][20]."'></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][20].
+                       "\" title=\"".$LANG['install'][20]."\"></td></tr>";
       }
    }
 
@@ -823,8 +823,8 @@ function checkWriteAccessToDirs() {
    echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][53]."</td>";
 
    if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
-      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][22].
-                 "' title='".$LANG['install'][22]."'></td></tr>";
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][22].
+                 "\" title=\"".$LANG['install'][22]."\"></td></tr>";
 
    } else {
       echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".$LANG['install'][19].

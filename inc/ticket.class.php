@@ -2439,7 +2439,7 @@ class Ticket extends CommonDBTM {
                            $output .= " - ".$data['otherserial'];
                         }
                      }
-                     $my_devices .= "<option title='$output' value='".$itemtype."_".$data["id"].
+                     $my_devices .= "<option title=\"$output\" value='".$itemtype."_".$data["id"].
                                     "' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">".
                                     utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]).
                                     "</option>";
@@ -2516,7 +2516,7 @@ class Ticket extends CommonDBTM {
                               if (isset($data['otherserial'])) {
                                  $output .= " - ".$data['otherserial'];
                               }
-                              $tmp_device .= "<option title='$output' value='".$itemtype."_".
+                              $tmp_device .= "<option title=\"$output\" value='".$itemtype."_".
                                              $data["id"]."' ".
                                              ($my_item==$itemtype."_".$data["id"]?"selected":"").">".
                                              utf8_substr($output,0,
@@ -2579,7 +2579,7 @@ class Ticket extends CommonDBTM {
                            if ($itemtype != 'Software') {
                               $output .= " - ".$data['serial']." - ".$data['otherserial'];
                            }
-                           $tmp_device .= "<option title='$output' value='".$itemtype."_".
+                           $tmp_device .= "<option title=\"$output\" value='".$itemtype."_".
                                           $data["id"]."' ".
                                           ($my_item==$itemtype."_".$data["id"]?"selected":"").">".
                                           utf8_substr($output,0,
@@ -2626,7 +2626,7 @@ class Ticket extends CommonDBTM {
                         $output = "$type_name - ".$data["name"]." (v. ".$data["version"].")".
                                   ($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"");
 
-                        $tmp_device .= "<option title='$output' value='Software_".$data["id"]."' ".
+                        $tmp_device .= "<option title=\"$output\" value='Software_".$data["id"]."' ".
                                        ($my_item == 'Software'."_".$data["id"]?"selected":"").">".
                                        utf8_substr($output,0,$_SESSION["glpidropdown_chars_limit"]).
                                        "</option>";
@@ -4277,8 +4277,8 @@ class Ticket extends CommonDBTM {
          $first_col = "ID : ".$job->fields["id"];
          if ($output_type == HTML_OUTPUT) {
             $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
-                           alt='".self::getStatus($job->fields["status"])."' title='".
-                           self::getStatus($job->fields["status"])."'>";
+                           alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
+                           self::getStatus($job->fields["status"])."\">";
          } else {
             $first_col .= " - ".self::getStatus($job->fields["status"]);
          }

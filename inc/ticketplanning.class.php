@@ -488,10 +488,10 @@ class TicketPlanning extends CommonDBTM {
          }
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".
-             $LANG['planning'][8]."'>&nbsp;&nbsp;";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
+             $LANG['planning'][8]."\">&nbsp;&nbsp;";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png' alt='".
-             Ticket::getStatus($val["status"])."' title='".Ticket::getStatus($val["status"])."'>";
+             Ticket::getStatus($val["status"])."' title=\"".Ticket::getStatus($val["status"])."\">";
       echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
                    href='".$CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$val["tickets_id"]."'
                    style='$styleText'>";

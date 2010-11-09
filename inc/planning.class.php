@@ -171,8 +171,8 @@ class Planning {
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                         "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID\">";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".
-            $LANG['buttons'][12]."'></a>";
+      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt=\"".$LANG['buttons'][12]."\"
+            title=\"".$LANG['buttons'][12]."\"></a>";
       echo "</td>";
       echo "<td>";
       if (haveRight("show_all_planning","1")) {
@@ -228,20 +228,23 @@ class Planning {
       echo "</td>\n";
 
       echo "<td>";
-      echo "<a target='_blank' href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID."&amp;usertype=".$usertype."\" title='".
-            $LANG['planning'][12]."'><span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
+      echo "<a target='_blank'
+            href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
+                  "&amp;gID=".$gID."&amp;usertype=".$usertype."\"
+            title=\"".$LANG['planning'][12]."\"><span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
       echo "<br>";
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
       echo "<a  target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
-            "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID."&amp;usertype=".$usertype."\" title='".$LANG['planning'][13]."'>";
+            "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
+                  "&amp;usertype=".$usertype."\" title=\"".$LANG['planning'][13]."\">";
       echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
       echo "</td>\n";
 
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                      "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID\">";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11].
-            "' title='".$LANG['buttons'][11]."'></a>";
+      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt=\"".$LANG['buttons'][11].
+            "\" title=\"".$LANG['buttons'][11]."\"></a>";
       echo "</td>";
       echo "</tr>";
       echo "</table></form></div>\n";
