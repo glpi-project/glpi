@@ -225,13 +225,13 @@ if ($item instanceof CommonTreeDropdown) {
       if ($display_selected) {
          $outputval = Dropdown::getDropdownName($table, $_POST['value']);
 
-         if (!empty($outputval) && $outputval!="&nbsp;") {
+         if (strlen($outputval)!=0 && $outputval!="&nbsp;") {
 
             if (utf8_strlen($outputval)>$_POST["limit"]) {
                // Completename for tree dropdown : keep right
                $outputval = "&hellip;".utf8_substr($outputval, -$_POST["limit"]);
             }
-            if ($_SESSION["glpiis_ids_visible"] || empty($outputval)) {
+            if ($_SESSION["glpiis_ids_visible"] || strlen($outputval)==0) {
                $outputval .= " (".$_POST['value'].")";
             }
             echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
@@ -250,7 +250,7 @@ if ($item instanceof CommonTreeDropdown) {
 
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
-                  if (isset($data[$key]) && !empty($data[$key])) {
+                  if (isset($data[$key]) && strlen($data[$key])!=0) {
                      $output .= " - ".$data[$key];
                   }
                }
@@ -346,7 +346,7 @@ if ($item instanceof CommonTreeDropdown) {
                }
             }
 
-            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+            if ($_SESSION["glpiis_ids_visible"] || strlen($output)==0) {
                $output .= " ($ID)";
             }
             $addcomment = "";
@@ -454,7 +454,7 @@ if ($item instanceof CommonTreeDropdown) {
 
       $output = Dropdown::getDropdownName($table,$_POST['value']);
 
-      if (!empty($output) && $output!="&nbsp;") {
+      if (strlen($output)!=0 && $output!="&nbsp;") {
          if ($_SESSION["glpiis_ids_visible"]) {
             $output .= " (".$_POST['value'].")";
          }
@@ -469,7 +469,7 @@ if ($item instanceof CommonTreeDropdown) {
 
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
-                  if (isset($data[$key]) && !empty($data[$key])) {
+                  if (isset($data[$key]) && strlen($data[$key])!=0) {
                      $output .= " - ".$data[$key];
                   }
                }
@@ -480,7 +480,7 @@ if ($item instanceof CommonTreeDropdown) {
             if (isset($data["comment"])) {
                $addcomment = " - ".$data["comment"];
             }
-            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
+            if ($_SESSION["glpiis_ids_visible"] || strlen($output)==0) {
                $output .= " ($ID)";
             }
 
