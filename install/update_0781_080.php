@@ -707,6 +707,9 @@ function update0781to080($output='HTML') {
 
    $migration->addField("glpi_entitydatas", "auto_assign_mode", "INT( 11 ) NOT NULL DEFAULT '-1'");
 
+   $migration->changeField("glpi_entitydatas", "ldapservers_id", "authldaps_id",
+                           "INT( 11 ) NOT NULL DEFAULT '0'");
+
    $migration->addField("glpi_users", "user_dn", "TEXT DEFAULT NULL");
 
    $migration->addField("glpi_tickets", "users_id_lastupdater",
@@ -1046,6 +1049,7 @@ function update0781to080($output='HTML') {
       }
       $migration->dropField('glpi_mailcollectors', 'password');
    }
+
 
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');

@@ -53,7 +53,7 @@ class EntityData extends CommonDBTM {
                                                          'state', 'country', 'website',
                                                          'phonenumber', 'fax', 'email', 'notepad',
                                                          // Advanced (could be user_authtype ?)
-                                                         'ldap_dn', 'tag', 'ldapservers_id',
+                                                         'ldap_dn', 'tag', 'authldaps_id',
                                                          'entity_ldapfilter',
                                                          // Helpdesk config (could be another right)
                                                          'autoclose_delay'),
@@ -277,8 +277,7 @@ class EntityData extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['entity'][15]."&nbsp;:&nbsp;</td>";
          echo "<td>";
-         Dropdown::show('AuthLDAP', array ('name'       => 'ldapservers_id',
-                                           'value'      => $entdata->fields['ldapservers_id'],
+         Dropdown::show('AuthLDAP', array ('value'      => $entdata->fields['authldaps_id'],
                                            'emptylabel' => $LANG['ldap'][44],
                                            'condition'  => "`is_active` = '1'"));
          echo "</td></tr>";
@@ -486,7 +485,7 @@ class EntityData extends CommonDBTM {
       $entitydatas = new EntityData;
 
       if ($entitydatas->getFromDB($entities_id)
-          && $entitydatas->getField('ldapservers_id') != NOT_AVAILABLE) {
+          && $entitydatas->getField('authldaps_id') != NOT_AVAILABLE) {
          return true;
       }
 

@@ -50,7 +50,7 @@ if ($argv) {
 if ((isset($argv) && in_array('help',$argv))
     || isset($_GET['help'])) {
 
-   echo "Usage : php -q -f ldap_mass_sync.php [action=<option>]  [ldapservers_id=ID]\n";
+   echo "Usage : php -q -f ldap_mass_sync.php [action=<option>]  [authldaps_id|ldapservers_id=ID]\n";
    echo "Options values :\n";
    echo "0 : import users only\n";
    echo "1 : synchronize existing users only\n";
@@ -69,7 +69,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 //  - 1 : synchronize users
 //  - 2 : force synchronization of all the users (even if ldap timestamp wasn't modified)
 $options['action']         = AuthLDAP::ACTION_SYNCHRONIZE;
-$options['ldapservers_id'] = NOT_AVAILABLE;
+$options['authldaps_id'] = NOT_AVAILABLE;
 $options['filter']         = '';
 $options['before-days']    = 0;
 $options['after-days']     = 0;
@@ -104,19 +104,24 @@ $sql = "SELECT `id`, `name`
         FROM  `glpi_authldaps`
         WHERE `is_active` = '1'";
 
+// Compatiblity
+if (isset($_GET["ldapservers_id"])) {
+   $_GET["authldaps_id"] = $_GET["ldapservers_id"];
+}
+
 //Get the ldap server's id by his name
-if ($_GET["ldapservers_id"] != '') {
-   $sql .= " AND id = '" . $options['ldapservers_id']."'";
+if ($_GET["authldaps_id"] != '') {
+   $sql .= " AND id = '" . $options['authldaps_id']."'";
 }
 
 $result = $DB->query($sql);
-if ($DB->numrows($result) == 0 && $_GET["ldapservers_id"] != NOT_AVAILABLE) {
+if ($DB->numrows($result) == 0 && $_GET["authldaps_id"] != NOT_AVAILABLE) {
    echo "LDAP Server not found or inactive";
 
 } else {
    foreach ($DB->request($sql) as $datas) {
       echo "Processing LDAP Server : ".$datas['name']."\n";
-      $options['ldapservers_id'] = $datas['id'];
+      $options['authldaps_id'] = $datas['id'];
       import ($options);
    }
 }
@@ -139,7 +144,7 @@ function import($options) {
       $result = AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                          'value'  => $user["user"]),
                                                    $options['action'],
-                                                   $options['ldapservers_id']);
+                                                   $options['authldaps_id']);
       if ($result) {
          $results[$result['action']] += 1;
       }

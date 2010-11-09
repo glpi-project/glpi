@@ -1583,7 +1583,7 @@ CREATE TABLE `glpi_entitydatas` (
   `notepad` longtext COLLATE utf8_unicode_ci,
   `ldap_dn` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `tag` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ldapservers_id` int(11) NOT NULL DEFAULT '0',
+  `authldaps_id` int(11) NOT NULL DEFAULT '0',
   `mail_domain` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entity_ldapfilter` text COLLATE utf8_unicode_ci,
   `mailing_signature` text COLLATE utf8_unicode_ci,
