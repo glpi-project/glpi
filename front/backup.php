@@ -558,10 +558,10 @@ if (haveRight("check_update","r")) {
 
 // Title backup
 echo "<div class='center'><table class='tab_glpi'><tr><td>".
-      "<img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG['common'][28]."'>".
-      "</td><td><a href=\"javascript:dump('".$LANG['backup'][19]."')\"  class='icon_consol b'>".
+      "<img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt=\"".$LANG['common'][28]."\">".
+      "</td><td><a href=\"javascript:dump(\"".$LANG['backup'][19]."\")\"  class='icon_consol b'>".
       $LANG['backup'][0]."</a></td><td>".
-      "<a href=\"javascript:xmlnow('".$LANG['backup'][19]."')\" class='icon_consol'><b>".
+      "<a href=\"javascript:xmlnow(\"".$LANG['backup'][19]."\")\" class='icon_consol'><b>".
       $LANG['backup'][1]."</b></a></td></tr></table>";
 
 ?>

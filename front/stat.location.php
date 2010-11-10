@@ -74,7 +74,7 @@ echo "<form method='get' name='form' action='stat.location.php'>";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name='dropdown'>";
-echo "<optgroup label='".$LANG['setup'][0]."'>";
+echo "<optgroup label=\"".$LANG['setup'][0]."\">";
 echo "<option value='ComputerType' ".($_REQUEST["dropdown"]=="ComputerType"?"selected":"").">".
        $LANG['common'][17]."</option>";
 echo "<option value='ComputerModel' ".($_REQUEST["dropdown"]=="ComputerModel"?"selected":"").">".

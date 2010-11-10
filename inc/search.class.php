@@ -1499,7 +1499,7 @@ class Search {
 
       // Display submit button
       echo "<td width='80' class='center'>";
-      echo "<input type='submit' value='".$LANG['buttons'][0]."' class='submit' >";
+      echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
       echo "</td><td>";
       Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
       echo "<a href='$target?reset=reset' >";
@@ -2124,14 +2124,15 @@ class Search {
             return getEntitiesRestrictRequest("","glpi_profiles_users");
 
          case 'Ticket' :
-            $condition='';
+            $condition = '';
             if (!haveRight("show_all_ticket","1")) {
-               $condition="(";
+               $condition = "(";
 
                if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                  $condition .= " glpi_tickets.users_id= '".getLoginUserID()."' ";
+                  $condition .= " glpi_tickets.users_id = '".getLoginUserID()."' ";
                } else { // Can own ticket : show my and assign to me
-                  $condition .= " glpi_tickets.users_id= '".getLoginUserID()."' OR glpi_tickets.users_id_assign= '".getLoginUserID()."' ";
+                  $condition .= " glpi_tickets.users_id = '".getLoginUserID()."'
+                                 OR glpi_tickets.users_id_assign = '".getLoginUserID()."' ";
                }
 
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
@@ -2153,7 +2154,7 @@ class Search {
                if (haveRight("validate_ticket",1)) {
                   $condition .= " OR `glpi_ticketvalidations`.`users_id_validate` = '".getLoginUserID()."'";
                }
-               $condition.=") ";
+               $condition .= ") ";
             }
             return $condition;
 
