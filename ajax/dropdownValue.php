@@ -321,7 +321,7 @@ if ($item instanceof CommonTreeDropdown) {
                   $output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
                }
             }
-            if ($_SESSION["glpiis_ids_visible"] || strlen($data[$key])==0) {
+            if ($_SESSION["glpiis_ids_visible"] || strlen($output)==0) {
                $output.=" ($ID)";
             }
             $addcomment="";
