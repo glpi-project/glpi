@@ -2475,6 +2475,7 @@ class Search {
                              'waiting'  => array('waiting'),
                              'rejected' => array('rejected'),
                              'accepted' => array('accepted'),
+                             'can'      => array('none', 'accepted'),
                              'all'      => array('none', 'waiting', 'rejected', 'accepted'));
             if (isset($tocheck[$val])) {
                foreach ($tocheck[$val] as $key=>$nval) {
