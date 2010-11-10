@@ -184,7 +184,7 @@ select {
 	border: 1px solid #888888;
 	color: black;
 	background-color: white;
-        /**height: 19px; Problem for multiple select (in profile for example)*/
+        line-height: 19px; /* do not set height because using multiple select*/
 }
 
 
