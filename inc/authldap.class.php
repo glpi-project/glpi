@@ -2106,9 +2106,9 @@ class AuthLDAP extends CommonDBTM {
                if (AuthLdap::getNumberOfServers() > 1) {
                   echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][4]."</td><td colspan='3'>";
                   Dropdown::show('AuthLdap',
-                                 array('name'   => 'authldaps_id',
-                                       'value'  => $_SESSION['ldap_import']['authldaps_id'],
-                                       'condition'=>"`is_active`='1'",
+                                 array('name'                => 'authldaps_id',
+                                       'value'           => $_SESSION['ldap_import']['authldaps_id'],
+                                       'condition'           => "`is_active` = '1'",
                                        'display_emptychoice' => false));
                   echo "&nbsp;<input class='submit' type='submit' name='change_directory'
                         value=\"".$LANG['ldap'][41]."\">";

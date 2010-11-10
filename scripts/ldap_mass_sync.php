@@ -50,7 +50,7 @@ if ($argv) {
 if ((isset($argv) && in_array('help',$argv))
     || isset($_GET['help'])) {
 
-   echo "Usage : php -q -f ldap_mass_sync.php [action=<option>]  [authldaps_id|ldapservers_id=ID]\n";
+   echo "Usage : php -f ldap_mass_sync.php [action=<option>]  [authldaps_id=ID | ldapservers_id=ID]\n";
    echo "Options values :\n";
    echo "0 : import users only\n";
    echo "1 : synchronize existing users only\n";

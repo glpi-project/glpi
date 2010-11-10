@@ -1110,7 +1110,7 @@ class Dropdown {
                          href=\"javascript:confirmAction('".addslashes($LANG['common'][40])."\\n".
                          addslashes($LANG['common'][39])."','".$params['target'].
                          "?unglobalize=unglobalize&amp;id=$ID')\">".$LANG['common'][38]."</a>&nbsp;";
-            echo "<img alt='".$LANG['common'][39]."' title=\"".$LANG['common'][39]."\" src='".
+            echo "<img alt=\"".$LANG['common'][39]."\" title=\"".$LANG['common'][39]."\" src='".
                    $CFG_GLPI["root_doc"]."/pics/aide.png'>";
          }
 

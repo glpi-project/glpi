@@ -2530,8 +2530,8 @@ class Ticket extends CommonDBTM {
                   }
                }
                if (!empty($tmp_device)) {
-                  $my_devices .= "<optgroup label='".$LANG['tracking'][1]." - ".$LANG['common'][35]."'>";
-                  $my_devices .= $tmp_device."</optgroup>";
+                  $my_devices .= "<optgroup label=\"".$LANG['tracking'][1]." - ".
+                                   $LANG['common'][35]."\">".$tmp_device."</optgroup>";
                }
             }
          }
@@ -2593,7 +2593,7 @@ class Ticket extends CommonDBTM {
                }
             }
             if (!empty($tmp_device)) {
-               $my_devices .= "<optgroup label='".$LANG['reports'][36]."'>".$tmp_device."</optgroup>";
+               $my_devices .= "<optgroup label=\"".$LANG['reports'][36]."\">".$tmp_device."</optgroup>";
             }
 
             // Software

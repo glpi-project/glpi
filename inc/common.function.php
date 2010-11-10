@@ -633,8 +633,8 @@ function commonCheckForUseGLPI() {
          echo "<td class='red'>
                <img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][10]."</td></tr>";
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='".$LANG['install'][11].
-                    "' title=\"".$LANG['install'][11]."\"></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][11]."\"
+                    title=\"".$LANG['install'][11]."\"></td></tr>";
       }
 
    } else { // PHP <5

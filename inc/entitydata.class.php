@@ -100,8 +100,7 @@ class EntityData extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-
-      // Si on change le taux de déclanchement de l'enquête (enquête activée),
+      // Si on change le taux de déclenchement de l'enquête (enquête activée),
       // cela s'applique aux prochains tickets - Pas à l'historique
       if (isset($input['inquest_rate'])
           && $input['inquest_rate']!=$this->fields['inquest_rate']) {
@@ -115,6 +114,7 @@ class EntityData extends CommonDBChild {
 
    /// TODO do it in the future in filterDatas or checkValues ?
    function checkRightDatas($input) {
+
       foreach (self::$field_right as $right => $fields) {
          if (!haveRight($right, 'w')) {
 
@@ -129,9 +129,10 @@ class EntityData extends CommonDBChild {
       return $input;
    }
 
+
    /**
     *
-    */
+   **/
    static function showStandardOptions(Entity $entity) {
       global $LANG;
 

@@ -281,7 +281,7 @@ class TicketValidation  extends CommonDBChild {
     * get the Ticket validation status list
     *
     * @param $withmetaforsearch boolean
-    * @param $global boolean (true for global tatus, with "no validation" option)
+    * @param $global boolean (true for global status, with "no validation" option)
     *
     * @return an array
     */
