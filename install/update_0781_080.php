@@ -677,31 +677,6 @@ function update0781to080($output='HTML') {
    $DB->query($query) or die("0.80 drop nl_be langage" . $LANG['update'][90] . $DB->error());
 
 
-   $migration->dropKey("glpi_knowbaseitemcategories", "unicity");
-   $migration->addField("glpi_knowbaseitemcategories", "entities_id",
-                        "INT NOT NULL DEFAULT '0' AFTER `id`");
-
-   $migration->addKey("glpi_knowbaseitemcategories", "entities_id");
-
-   if ($migration->addField("glpi_knowbaseitemcategories", "is_recursive",
-                            "TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`")) {
-
-      $migration->addKey("glpi_knowbaseitemcategories", "is_recursive");
-
-      $migration->migrationOneTable('glpi_knowbaseitemcategories');
-
-      // Set existing categories recursive global
-      $query = "UPDATE `glpi_knowbaseitemcategories`
-                SET `is_recursive` = '1'";
-      $DB->query($query)
-      or die("0.80 set value of is_recursive in glpi_knowbaseitemcategories" .
-             $LANG['update'][90] . $DB->error());
-   }
-   $migration->addKey("glpi_knowbaseitemcategories",
-                      array('entities_id', 'knowbaseitemcategories_id', 'name'),
-                      "unicity", "UNIQUE");
-
-
    $migration->changeField("glpi_configs", "use_auto_assign_to_tech", "auto_assign_mode",
                            "INT( 11 ) NOT NULL DEFAULT '1'");
 
