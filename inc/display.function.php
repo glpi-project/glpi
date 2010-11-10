@@ -1336,7 +1336,7 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       if (isset($links['add'])) {
          echo "<a href='".$CFG_GLPI["root_doc"].$links['add']."'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
-                $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"'></a>";
+                $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"></a>";
 
       } else {
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title=\"".
