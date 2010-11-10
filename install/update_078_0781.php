@@ -108,6 +108,10 @@ function update078to0781($output='HTML') {
       }
    }
 
+   $query = "ALTER TABLE `glpi_tickets`
+             CHANGE `global_validation` `global_validation` VARCHAR(255) DEFAULT 'none'";
+   $DB->query($query) or die("0.78.1 change ticket global_validation default state");
+
    $query = "UPDATE `glpi_tickets`
              SET `global_validation`='none'
              WHERE `id` NOT IN (SELECT DISTINCT `tickets_id`
