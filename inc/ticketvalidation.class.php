@@ -293,6 +293,10 @@ class TicketValidation  extends CommonDBChild {
                    'accepted' => $LANG['validation'][11]);
       if ($global) {
          $tab['none'] = $LANG['validation'][12];
+
+         if ($withmetaforsearch) {
+            $tab['can'] = $LANG['validation'][11]." + ".$LANG['validation'][12];
+         }
       }
 
       if ($withmetaforsearch) {
