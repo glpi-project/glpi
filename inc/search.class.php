@@ -4423,16 +4423,17 @@ class Search {
             $itemtable = $item->getTable();
          }
          foreach ($search[$itemtype] as $key => $val) {
-            if (!isset($val['linkfield']) || strlen($val['linkfield'])==0) {
+            // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
+            if (empty($val['linkfield'])) {
+               $search[$itemtype][$key]['massiveaction'] = false;
+            }
+
+            if (!isset($val['linkfield']) || empty($val['linkfield'])) {
                if (strcmp($itemtable,$val['table'])==0) {
                   $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
                   $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
                }
-            }
-            // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
-            if (empty($search[$itemtype][$key]['linkfield'])) {
-               $search[$itemtype][$key]['massiveaction'] = false;
             }
             // Add default joinparams
             if (!isset($val['joinparams'])) {
