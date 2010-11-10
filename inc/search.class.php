@@ -4423,7 +4423,7 @@ class Search {
             $itemtable = $item->getTable();
          }
          foreach ($search[$itemtype] as $key => $val) {
-            if (!isset($val['linkfield'])) {
+            if (!isset($val['linkfield']) || strlen($val['linkfield'])==0) {
                if (strcmp($itemtable,$val['table'])==0) {
                   $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
