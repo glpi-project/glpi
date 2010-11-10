@@ -42,6 +42,8 @@ class CommonGLPI {
    protected $type        = -1;
    protected $displaylist = true;
 
+   public $showdebug      = false;
+
 
    /**
     * Return the localized name of the current Type
@@ -229,6 +231,7 @@ class CommonGLPI {
 
       $class = $this->getType();
       if ($_SESSION['glpi_use_mode']==DEBUG_MODE
+          && ($ID > 0 || $this->showdebug)
           && (method_exists($class, 'showDebug')
               || in_array($class, $CFG_GLPI["infocom_types"])
               || in_array($class, $CFG_GLPI["reservation_types"]))) {
