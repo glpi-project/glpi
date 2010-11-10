@@ -124,17 +124,17 @@ function update078to0781($output='HTML') {
                     ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
                     ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,
                     ADD INDEX `entities_id` (`entities_id`),ADD INDEX `is_recursive` (`is_recursive`)";
-      $DB->query($query) or die("0.80 add entities_id,is_recursive in glpi_knowbaseitemcategories" .
+      $DB->query($query) or die("0.78.1 add entities_id,is_recursive in glpi_knowbaseitemcategories" .
                                  $LANG['update'][90] . $DB->error());
 
       // Set existing categories recursive global
       $query = "UPDATE `glpi_knowbaseitemcategories` SET `is_recursive` = '1'";
-      $DB->query($query) or die("0.80 set value of is_recursive in glpi_knowbaseitemcategories" .
+      $DB->query($query) or die("0.78.1 set value of is_recursive in glpi_knowbaseitemcategories" .
                                 $LANG['update'][90] . $DB->error());
 
       $query = "ALTER TABLE `glpi_knowbaseitemcategories` DROP INDEX `unicity` ,
                ADD UNIQUE `unicity` ( `entities_id`, `knowbaseitemcategories_id` , `name` ) ";
-      $DB->query($query) or die("0.80 update unicity index on glpi_knowbaseitemcategories" .
+      $DB->query($query) or die("0.78.1 update unicity index on glpi_knowbaseitemcategories" .
                                 $LANG['update'][90] . $DB->error());
    }
 
