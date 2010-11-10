@@ -44,6 +44,7 @@ class Config extends CommonDBTM {
 
    // From CommonDBTM
    public $auto_message_on_action = false;
+   public $showdebug              = true;
 
    static function getTypeName() {
       global $LANG;
