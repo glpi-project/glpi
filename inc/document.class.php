@@ -51,9 +51,32 @@ class Document extends CommonDBTM {
       return $LANG['Menu'][27];
    }
 
+
    function canCreate() {
+
+      if ($_SESSION["glpiactiveprofile"]["interface"] == 'helpdesk') {
+         return true;
+      }
       return haveRight('document', 'w');
    }
+
+
+   function canCreateItem() {
+      //
+      if ($_SESSION["glpiactiveprofile"]["interface"] == 'helpdesk'
+          && isset($this->fields['itemtype'])
+          && $this->fields['itemtype']== 'Ticket'
+          && isset($this->fields['items_id'])
+          && $this->fields['items_id']>0) {
+
+         $ticket = new Ticket();
+         if ($ticket->getFromDB($this->fields['items_id'])) {
+            return $ticket->canAddFollowups();
+         }
+      }
+      return parent::canCreateItem();
+   }
+
 
    function canView() {
       return haveRight('document', 'r');
@@ -1163,7 +1186,7 @@ class Document extends CommonDBTM {
 
             if ($withtemplate<2) {
                echo "<td class='tab_bg_2 center b'>";
-               if ($canedit) {
+               if ($canedit && haveRight('document','r')) {
                   echo "<a href='".$CFG_GLPI["root_doc"];
                   echo "/front/document.form.php?deletedocumentitem=1&amp;id=$assocID";
                   echo "&amp;itemtype=".$item->getType()."&amp;items_id=$ID&amp;documents_id=$docID'>";
