@@ -3370,8 +3370,18 @@ class Ticket extends CommonDBTM {
                }
             }
          }
-         self::dropdownMyDevices($this->fields["users_id"], $this->fields["entities_id"],
-                                 $this->fields["itemtype"], $this->fields["items_id"]);
+         $dev_user_id=0;
+         if (!$ID) {
+            $dev_user_id=$options['_ticket_user_requester'];
+         } else if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])==1) {
+            foreach ($this->users[self::REQUESTER] as $user_id_single) {
+               $dev_user_id = $user_id_single['users_id'];
+            }
+         }
+         if ($dev_user_id > 0) {
+            self::dropdownMyDevices($dev_user_id, $this->fields["entities_id"],
+                                   $this->fields["itemtype"], $this->fields["items_id"]);
+         }
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
                                   1, $this->fields["entities_id"]);
       } else {
