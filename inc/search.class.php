@@ -2144,7 +2144,7 @@ class Search {
                   $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
                   $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
 
-                  $condition .=" OR $assign_table.`users_id_assign` = '".getLoginUserID()."'";
+                  $condition .=" OR $assign_table.`users_id` = '".getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $assigngroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
