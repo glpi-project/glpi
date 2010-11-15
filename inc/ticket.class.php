@@ -3705,57 +3705,57 @@ class Ticket extends CommonDBTM {
       }
 
       // Mailing ? Y or no ?
-      if ($CFG_GLPI["use_mailing"]==1) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['job'][19]."&nbsp;: </td>";
-         echo "<td>";
-         if (!$ID) {
-            $query = "SELECT `email`
-                      FROM `glpi_users`
-                      WHERE `id` ='".$this->fields["users_id"]."'";
-            $result = $DB->query($query);
-
-            $email = "";
-            if ($result && $DB->numrows($result)) {
-               $email = $DB->result($result, 0, "email");
-            }
-            Dropdown::showYesNo('use_email_notification', !empty($email));
-         } else {
-            if ($canupdate) {
-               Dropdown::showYesNo('use_email_notification',
-                                   $this->fields["use_email_notification"]);
-            } else {
-               if ($this->fields["use_email_notification"]) {
-                  echo $LANG['choice'][1];
-               } else {
-                  echo $LANG['choice'][0];
-               }
-            }
-         }
-
-         echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
-         echo "<td>";
-         if (!$ID) {
-            echo "<input type='text' size='30' name='user_email' value='$email'>";
-         } else {
-
-            if ($canupdate) {
-               autocompletionTextField($this,"user_email");
-               if (!empty($this->fields["user_email"])) {
-                  echo "<a href='mailto:".$this->fields["user_email"]."'>";
-                  echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
-               }
-
-            } else if (!empty($this->fields["user_email"])) {
-               echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"].
-                    "</a>";
-
-            } else {
-               echo "&nbsp;";
-            }
-         }
-         echo "</td></tr>";
-      }
+//       if ($CFG_GLPI["use_mailing"]==1) {
+//          echo "<tr class='tab_bg_1'>";
+//          echo "<td>".$LANG['job'][19]."&nbsp;: </td>";
+//          echo "<td>";
+//          if (!$ID) {
+//             $query = "SELECT `email`
+//                       FROM `glpi_users`
+//                       WHERE `id` ='".$this->fields["users_id"]."'";
+//             $result = $DB->query($query);
+// 
+//             $email = "";
+//             if ($result && $DB->numrows($result)) {
+//                $email = $DB->result($result, 0, "email");
+//             }
+//             Dropdown::showYesNo('use_email_notification', !empty($email));
+//          } else {
+//             if ($canupdate) {
+//                Dropdown::showYesNo('use_email_notification',
+//                                    $this->fields["use_email_notification"]);
+//             } else {
+//                if ($this->fields["use_email_notification"]) {
+//                   echo $LANG['choice'][1];
+//                } else {
+//                   echo $LANG['choice'][0];
+//                }
+//             }
+//          }
+// 
+//          echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
+//          echo "<td>";
+//          if (!$ID) {
+//             echo "<input type='text' size='30' name='user_email' value='$email'>";
+//          } else {
+// 
+//             if ($canupdate) {
+//                autocompletionTextField($this,"user_email");
+//                if (!empty($this->fields["user_email"])) {
+//                   echo "<a href='mailto:".$this->fields["user_email"]."'>";
+//                   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
+//                }
+// 
+//             } else if (!empty($this->fields["user_email"])) {
+//                echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"].
+//                     "</a>";
+// 
+//             } else {
+//                echo "&nbsp;";
+//             }
+//          }
+//          echo "</td></tr>";
+//       }
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
