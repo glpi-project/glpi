@@ -3475,7 +3475,7 @@ class Ticket extends CommonDBTM {
             echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
             echo "&nbsp;";
             echo "<input type='submit' name='add_link' value=\"".$LANG['buttons'][8]."\"
-                   class='submit'></td>";
+                   class='submit'>";
             echo "</div>";
          }
          echo "</td>";
