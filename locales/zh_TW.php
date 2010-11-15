@@ -1253,7 +1253,7 @@ $LANG['plugins'][6]="要更新";
 $LANG['plugins'][7]="沒有安裝插件"; 
 $LANG['plugins'][8]="檢視插件目錄"; 
 $LANG['plugins'][9]="作者"; 
-$LANG['plugins'][10]="Incompatible plugin with this version of GLPI"; 
+$LANG['plugins'][10]="與此GLPI版本不兼容的插件"; 
 
 $LANG['printers'][14]="Serial"; 
 $LANG['printers'][15]="Parallel"; 
@@ -1926,7 +1926,7 @@ $LANG['validation'][7]="核准這些問題單";
 $LANG['validation'][9]="等待核准"; 
 $LANG['validation'][10]="拒絕"; 
 $LANG['validation'][11]="准予"; 
-$LANG['validation'][12]="Not subject to approval"; 
+$LANG['validation'][12]="不須經批准"; 
 $LANG['validation'][13]="核准請求以發送至"; 
 $LANG['validation'][15]="待您核准的問題單"; 
 $LANG['validation'][16]="核准時可填寫"; 
