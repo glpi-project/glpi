@@ -4434,7 +4434,7 @@ class Search {
          }
          foreach ($search[$itemtype] as $key => $val) {
             // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
-            if (empty($val['linkfield'])) {
+            if (isset($val['linkfield']) && empty($val['linkfield'])) {
                $search[$itemtype][$key]['massiveaction'] = false;
             }
 
