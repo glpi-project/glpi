@@ -38,8 +38,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Group_Ticket
-class Group_Ticket extends CommonDBTM {
-/// TODO make it CommonDBRelation
+class Group_Ticket extends CommonDBRelation {
+
+   // From CommonDBRelation
+   public $itemtype_1 = 'Ticket';
+   public $items_id_1 = 'tickets_id';
+   public $itemtype_2 = 'Group';
+   public $items_id_2 = 'groups_id';
 
    static function getTicketGroups($tickets_id) {
       global $DB;
