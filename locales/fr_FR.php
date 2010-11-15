@@ -334,6 +334,7 @@ $LANG['common'][100] = "Délais";
 $LANG['common'][101] = "Dernière modification par";
 $LANG['common'][102] = "Héritage de l'entité parente";
 $LANG['common'][103] = "Acteurs";
+$LANG['common'][104] = "Observateur";
 
 
 $LANG['computers'][0]  = "Volume";
