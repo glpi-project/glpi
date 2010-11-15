@@ -116,9 +116,11 @@ class Ticket extends CommonDBTM {
 
       return (haveRight("show_all_ticket","1")
               || $this->isUser(self::REQUESTER,getLoginUserID())
+              || $this->isUser(self::OBESERVER,getLoginUserID())
               || (haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
-                  && in_array($this->fields["groups_id"],$_SESSION["glpigroups"]))
+                  && ($this->haveAGroup(self::REQUESTER,$_SESSION["glpigroups"])
+                     || $this->haveAGroup(self::OBSERVER,$_SESSION["glpigroups"])))
               || (haveRight("show_assign_ticket",'1')
                   && ($this->isUser(self::ASSIGN,getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -1758,6 +1760,32 @@ class Ticket extends CommonDBTM {
       $tab[22]['linkfield'] = 'users_id_recipient';
       $tab[22]['name']      = $LANG['common'][37];
 
+      $tab['observer'] = $LANG['common'][104];
+
+      $tab[66]['table']         = 'glpi_users';
+      $tab[66]['field']         = 'name';
+      $tab[66]['name']          = $LANG['common'][104]." - ".$LANG['common'][34];
+      $tab[66]['forcegroupby']  = true;
+      $tab[66]['massiveaction'] = false;
+      $tab[66]['joinparams']    = array('beforejoin'
+                                       => array('table' => 'glpi_tickets_users',
+                                                'joinparams'
+                                                        => array('jointype'  => 'child',
+                                                                 'condition' => 'NEWTABLE.`type` ' .
+                                                                                '= '.self::OBSERVER)));
+
+      $tab[65]['table']         = 'glpi_groups';
+      $tab[65]['field']         = 'name';
+      $tab[65]['name']          = $LANG['common'][104]." - ".$LANG['common'][35];
+      $tab[65]['forcegroupby']  = true;
+      $tab[65]['massiveaction'] = false;
+      $tab[65]['joinparams']    = array('beforejoin'
+                                        => array('table' => 'glpi_groups_tickets',
+                                                 'joinparams'
+                                                         => array('jointype'  => 'child',
+                                                                  'condition' => 'NEWTABLE.`type` ' .
+                                                                                 '= '.self::OBSERVER)));
+
       $tab['satisfaction'] = $LANG['satisfaction'][3];
 
       $tab[60]['table']         = 'glpi_ticketsatisfactions';
@@ -2822,6 +2850,11 @@ class Ticket extends CommonDBTM {
 
    function showActorsPartForm($ID,$options) {
       global $LANG;
+
+      $showuserlink = 0;
+      if (haveRight('user','r')) {
+         $showuserlink = 1;
+      }
 
       // Manage actors : requester and assign
       echo "<tr class='tab_bg_1'>";
