@@ -478,17 +478,48 @@ class Ticket extends CommonDBTM {
 
       }
 
+      // Status solved : check dates
+      if ($this->fields["status"]=="solved"
+          && (in_array("date",$this->updates) || in_array("solvedate",$this->updates))) {
+
+         // Invalid dates : no change
+         // solvedate must be > create date
+         if ($this->fields["solvedate"] < $this->fields["date"]) {
+            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+
+            if (($key=array_search('date',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['date']);
+            }
+            if (($key=array_search('solvedate',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['solvedate']);
+            }
+          }
+      }
+
       // Status close : check dates
       if ($this->fields["status"]=="closed"
           && (in_array("date",$this->updates) || in_array("closedate",$this->updates))) {
 
          // Invalid dates : no change
-         if ($this->fields["closedate"]<$this->fields["date"]) {
+         // closedate must be > solvedate
+         if ($this->fields["closedate"] < $this->fields["solvedate"]) {
             addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+
+            if (($key=array_search('closedate',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['closedate']);
+            }
+         }
+
+         // closedate must be > create date
+         if ($this->fields["closedate"] < $this->fields["date"]) {
+            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
                unset($this->oldvalues['date']);
-
             }
             if (($key=array_search('closedate',$this->updates)) !== false) {
                unset($this->updates[$key]);
