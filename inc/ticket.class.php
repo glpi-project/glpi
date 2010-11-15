@@ -2820,6 +2820,141 @@ class Ticket extends CommonDBTM {
    }
 
 
+   function showActorsPartForm($ID,$options) {
+      global $LANG;
+
+      // Manage actors : requester and assign
+      echo "<tr class='tab_bg_1'>";
+      echo "<th rowspan='2'>".$LANG['common'][103]."</th>";
+      echo "<th colspan='2'>".$LANG['job'][4]."</th>";
+      echo "<th>".$LANG['job'][5]."</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>";
+      // Requester
+      if (!$ID) {
+         echo 'USERICON&nbsp;';
+         if (haveRight("update_ticket","1")) {
+            //List all users in the active entities
+            User::dropdown(array('name'          => '_ticket_user_requester',
+                                 'value'         => $options["_ticket_user_requester"],
+                                 'entity'        => $_SESSION['glpiactiveentities'],
+                                 //'entity'        => $this->fields["entities_id"],
+                                 //'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
+                                 'right'         => 'all',
+                                 'helpdesk_ajax' => 1,
+                                 'ldap_import'   => true));
+         } else {
+            echo getUserName($options["_ticket_user_requester"], $showuserlink);
+         }
+
+         //If user have access to more than one entity, then display a combobox
+         if ($this->countentitiesforuser > 1) {
+            $rand = Dropdown::show('Entity',
+                                   array('value'       => $this->fields["entities_id"],
+                                         'entity'      => $values,
+                                         'auto_submit' => 1));
+
+         } else {
+            echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+         }
+         echo '<br>';
+      } else {
+         if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])) {
+            foreach ($this->users[self::REQUESTER] as $k => $d) {
+               echo 'USERICON&nbsp;';
+               echo getUserName($k, $showuserlink);
+               echo "<br>";
+            }
+         }
+         /// TODO : ADD delete link + edit link for mail options + icons
+      }
+      // Requester Group
+      if (!$ID) {
+         echo 'GROUPICON&nbsp;';
+         Dropdown::show('Group', array('name'   => '_ticket_group_requester',
+                                       'value'  => $options["_ticket_group_requester"],
+                                       'entity' => $this->fields["entities_id"]));
+      } else {
+         if (isset($this->groups[self::REQUESTER]) && count($this->groups[self::REQUESTER])) {
+            foreach ($this->groups[self::REQUESTER] as $k => $d) {
+               echo 'GROUPICON&nbsp;';
+               echo Dropdown::getDropdownName("glpi_groups", $k).'<br>';
+            }
+         }
+      }
+      echo "</td>";
+      echo "<td>";
+      // Assign User
+      if (!$ID) {
+         if (haveRight("assign_ticket","1")) {
+            echo 'USERICON&nbsp;';
+            User::dropdown(array('name'        => '_ticket_user_assign',
+                                 'value'       => $options["_ticket_user_assign"],
+                                 'right'       => 'own_ticket',
+                                 'entity'      => $this->fields["entities_id"],
+                                 'ldap_import' => true));
+            echo '<br>';
+         } else if (haveRight("steal_ticket","1") ||
+                  (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0)) {
+            echo 'USERICON&nbsp;';
+            User::dropdown(array('name'        => '_ticket_user_assign',
+                                 'value'       => $options["_ticket_user_assign"],
+                                 'entity'      => $this->fields["entities_id"],
+                                 'ldap_import' => true));
+            echo '<br>';
+         }
+      } else {
+         if (isset($this->users[self::ASSIGN]) && count($this->users[self::ASSIGN])) {
+            foreach ($this->users[self::ASSIGN] as $k => $d) {
+               echo 'USERICON&nbsp;';
+               echo getUserName($k, $showuserlink);
+               echo '<br>';
+            }
+         }
+         /// TODO : ADD delete link + edit link for mail options + icons
+      }
+
+      // Assign Groups
+      if (!$ID) {
+         if (haveRight("assign_ticket","1")) {
+            echo 'GROUPICON&nbsp;';
+            Dropdown::show('Group', array('name'   => '_ticket_group_assign',
+                                          'value'  => $options["_ticket_group_assign"],
+                                          'entity' => $this->fields["entities_id"]));
+            echo '<br>';
+         }
+      } else {
+         if (isset($this->groups[self::ASSIGN]) && count($this->groups[self::ASSIGN])) {
+            foreach ($this->groups[self::ASSIGN] as $k => $d) {
+               echo 'GROUPICON&nbsp;';
+               echo Dropdown::getDropdownName("glpi_groups", $k);
+               echo '<br>';
+            }
+         }
+      }
+      // Supplier
+      if (!$ID) {
+         if (haveRight("assign_ticket","1")) {
+            echo 'SUPPLIERICON&nbsp;';
+            Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
+                                             'value'  => $this->fields["suppliers_id_assign"],
+                                             'entity' => $this->fields["entities_id"]));
+
+            echo '<br>';
+         }
+      } else {
+         if ($this->fields["suppliers_id_assign"]) {
+            echo 'SUPPLIERICON&nbsp;';
+            echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
+            echo '<br>';
+         }
+      }
+      echo "</td>";
+      echo "</tr>";
+   }
+
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -2846,10 +2981,6 @@ class Ticket extends CommonDBTM {
                                         && $this->numberOfTasks() == 0
                                         && $this->isUser(self::REQUESTER,getLoginUserID()));
 
-      echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
-            $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
-      echo "<div class='spaced' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe'>";
 
       if (!$ID) {
          //Get all the user's entities
@@ -2861,13 +2992,18 @@ class Ticket extends CommonDBTM {
                $values[] = $ID_entity;
             }
          }
-         $count = count($values);
-         if ($count>0 && !in_array($this->fields["entities_id"],$values)) {
+         $this->countentitiesforuser = count($values);
+         if ($this->countentitiesforuser>0 && !in_array($this->fields["entities_id"],$values)) {
             // If entity is not in the list of user's entities,
             // then use as default value the first value of the user's entites list
             $this->fields["entities_id"] = $values[0];
          }
       }
+
+      echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
+            $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
+      echo "<div class='spaced' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
 
       // Optional line
       $ismultientities=isMultiEntitiesMode();
@@ -3013,6 +3149,9 @@ class Ticket extends CommonDBTM {
 
       echo "</th></tr>";
 
+      $this->showActorsPartForm($ID,$options);
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td width='60'>".$LANG['joblist'][0]."&nbsp;: </td>";
       echo "<td>";
@@ -3022,7 +3161,16 @@ class Ticket extends CommonDBTM {
          echo self::getStatus($this->fields["status"]);
       }
       echo "</td>";
-      echo "<th class='center b' colspan='2'>".$LANG['job'][4]."&nbsp;: </th>";
+
+      echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
+      echo "<td>";
+      if ($canupdate) {
+         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
+      } else {
+         echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
+      }
+      echo "</td>";
+
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -3041,118 +3189,7 @@ class Ticket extends CommonDBTM {
          echo self::getUrgencyName($this->fields["urgency"]);
       }
       echo "</td>";
-      echo "<td>";
-      if (!$ID) {
-         echo $LANG['job'][4]."&nbsp;: </td>";
-         echo "<td>";
 
-         if ($tobereview && haveRight("update_ticket","1")) {
-            //List all users in the active entities
-            User::dropdown(array('value'         => $options["users_id"],
-                                 'entity'        => $_SESSION['glpiactiveentities'],
-                                 //'entity'        => $this->fields["entities_id"],
-                                 //'entity_sons'   => haveAccessToEntity($this->fields["entities_id"],true),
-                                 'right'         => 'all',
-                                 'helpdesk_ajax' => 1,
-                                 'ldap_import'   => true));
-         } else {
-            echo getUserName($this->fields["users_id"], $showuserlink);
-         }
-
-         //If user have access to more than one entity, then display a combobox
-         if ($count > 1) {
-            $rand = Dropdown::show('Entity',
-                                   array('value'       => $this->fields["entities_id"],
-                                         'entity'      => $values,
-                                         'auto_submit' => 1));
-
-         } else {
-            echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-         }
-
-      } else if ($tobereview && $canupdate) {
-         echo $LANG['common'][34]."&nbsp;: </td>";
-         echo "<td>";
-         User::dropdown(array('value'       => $this->fields["users_id"],
-                              'entity'      => $this->fields["entities_id"],
-                              'right'       => 'all',
-                              'ldap_import' => true));
-
-      } else {
-         echo $LANG['common'][34]."&nbsp;: </td>";
-         echo "<td>";
-
-         if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])) {
-            foreach ($this->users[self::REQUESTER] as $k => $d) {
-               echo getUserName($k, $showuserlink);
-            }
-         }
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['joblist'][30]."&nbsp;: </td>";
-      echo "<td>";
-      if ($canupdate) {
-         $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
-      } else {
-         echo self::getImpactName($this->fields["impact"]);
-      }
-      echo "</td>";
-      echo "<td>".$LANG['common'][35]."&nbsp;: </td>";
-      echo "<td>";
-
-      if ($tobereview && $canupdate) {
-         Dropdown::show('Group', array('value'  => $this->fields["groups_id"],
-                                       'entity' => $this->fields["entities_id"]));
-      } else {
-         if (isset($this->groups[self::REQUESTER]) && count($this->groups[self::REQUESTER])) {
-            foreach ($this->groups[self::REQUESTER] as $k => $d) {
-               echo Dropdown::getDropdownName("glpi_groups", $k);
-            }
-         }
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
-      echo "<td>";
-
-      if ($canupdate && $canpriority) {
-         $idpriority = self::dropdownPriority("priority", $this->fields["priority"], false, true);
-         $idajax     = 'change_priority_' . mt_rand();
-         echo "&nbsp;<span id='$idajax' style='display:none'></span>";
-
-      } else {
-         $idajax     = 'change_priority_' . mt_rand();
-         $idpriority = 0;
-         echo "<span id='$idajax'>".self::getPriorityName($this->fields["priority"])."</span>";
-      }
-
-      if ($canupdate) {
-         $params = array('urgency'  => '__VALUE0__',
-                         'impact'   => '__VALUE1__',
-                         'priority' => $idpriority);
-         ajaxUpdateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
-                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
-      }
-      echo "</td>";
-      echo "<th class='center b' colspan='2'>".$LANG['job'][5]."&nbsp;: </th>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
-      echo "<td >";
-      // Permit to set type when creating ticket without update right
-      if ($canupdate || !$ID) {
-         self::dropdownType('type', $this->fields["type"]);
-      } else {
-         echo self::getTicketTypeName($this->fields["type"]);
-      }
-      echo "</td>";
-      echo "<td colspan='2'>empty space but will be review when multi requester / assign will be done</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;: </td>";
       echo "<td >";
       // Permit to set category when creating ticket without update right
@@ -3168,80 +3205,20 @@ class Ticket extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_ticketcategories", $this->fields["ticketcategories_id"]);
       }
       echo "</td>";
-
-      if ($tobereview && haveRight("assign_ticket","1")) {
-         echo "<td>".$LANG['job'][6]."&nbsp;: </td>";
-         echo "<td>";
-         User::dropdown(array('name'        => 'users_id_assign',
-                              'value'       => $this->fields["users_id_assign"],
-                              'right'       => 'own_ticket',
-                              'entity'      => $this->fields["entities_id"],
-                              'ldap_import' => true));
-         echo "</td>";
-
-      } else if ($tobereview && haveRight("steal_ticket","1")) {
-         echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
-         echo "<td>";
-         User::dropdown(array('name'        => 'users_id_assign',
-                              'value'       => $this->fields["users_id_assign"],
-                              'entity'      => $this->fields["entities_id"],
-                              'ldap_import' => true));
-         echo "</td>";
-
-      } else if ($tobereview && haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0) {
-         echo "<td class='right'>".$LANG['job'][6]."&nbsp;: </td>";
-         echo "<td>";
-         User::dropdown(array('name'        => 'users_id_assign',
-                              'value'       => $this->fields["users_id_assign"],
-                              'entity'      => $this->fields["entities_id"],
-                              'ldap_import' => true));
-         echo "</td>";
-
-      } else {
-         echo "<td>".$LANG['job'][6]."&nbsp;: </td>";
-         echo "<td>";
-         if (isset($this->users[self::ASSIGN]) && count($this->users[self::ASSIGN])) {
-            foreach ($this->users[self::ASSIGN] as $k => $d) {
-               echo getUserName($k, $showuserlink);
-            }
-         }
-         echo "</td>";
-      }
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['job'][44]."&nbsp;: </td>";
+      echo "<td>".$LANG['joblist'][30]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
-         Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
+         $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       } else {
-         echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
+         echo self::getImpactName($this->fields["impact"]);
       }
       echo "</td>";
 
-      if ($tobereview && haveRight("assign_ticket","1")) {
-         echo "<td>".$LANG['common'][35]."&nbsp;: </td>";
-         echo "<td>";
-         Dropdown::show('Group', array('name'   => 'groups_id_assign',
-                                       'value'  => $this->fields["groups_id_assign"],
-                                       'entity' => $this->fields["entities_id"]));
-         echo "</td>";
-
-      } else {
-         echo "<td class='left'>".$LANG['common'][35]."&nbsp;: </td>";
-         echo "<td>";
-         if (isset($this->groups[self::ASSIGN]) && count($this->groups[self::ASSIGN])) {
-            foreach ($this->groups[self::ASSIGN] as $k => $d) {
-               echo Dropdown::getDropdownName("glpi_groups", $k);
-            }
-         }
-         echo "</td>";
-      }
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='left'>".$LANG['common'][1]."&nbsp;: </td>";
-      echo "<td>";
+      echo "<td class='left' rowspan='2'>".$LANG['common'][1]."&nbsp;: </td>";
+      echo "<td rowspan='2'>";
 
       // Select hardware on creation or if have update right
       if ($canupdate || !$ID || $canupdate_descr) {
@@ -3271,24 +3248,45 @@ class Ticket extends CommonDBTM {
          }
       }
       echo "</td>";
+      echo "</tr>";
 
-      echo "<td>".$LANG['financial'][26]."&nbsp;: </td>";
-      if (haveRight("assign_ticket","1")) {
-         echo "<td>";
-         Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
-                                          'value'  => $this->fields["suppliers_id_assign"],
-                                          'entity' => $this->fields["entities_id"]));
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='left'>".$LANG['joblist'][2]."&nbsp;: </td>";
+      echo "<td>";
 
-         echo "</td>";
+      if ($canupdate && $canpriority) {
+         $idpriority = self::dropdownPriority("priority", $this->fields["priority"], false, true);
+         $idajax     = 'change_priority_' . mt_rand();
+         echo "&nbsp;<span id='$idajax' style='display:none'></span>";
+
       } else {
-         echo "<td>";
-         echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
-         echo "</td>";
+         $idajax     = 'change_priority_' . mt_rand();
+         $idpriority = 0;
+         echo "<span id='$idajax'>".self::getPriorityName($this->fields["priority"])."</span>";
       }
-      echo "</tr>\n";
+
+      if ($canupdate) {
+         $params = array('urgency'  => '__VALUE0__',
+                         'impact'   => '__VALUE1__',
+                         'priority' => $idpriority);
+         ajaxUpdateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
+                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
+      }
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][17]."&nbsp;: </td>";
+      echo "<td >";
+      // Permit to set type when creating ticket without update right
+      if ($canupdate || !$ID) {
+         self::dropdownType('type', $this->fields["type"]);
+      } else {
+         echo self::getTicketTypeName($this->fields["type"]);
+      }
+      echo "</td>";
 
       // Display validation state
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['validation'][0]."</td>";
       echo "<td>";
       if ($canupdate) {
@@ -3300,21 +3298,21 @@ class Ticket extends CommonDBTM {
       }
       echo "</td>";
 
+      echo "</tr>";
+
+
       // Need comment right to add a followup with the actiontime
-      if (haveRight("global_add_followups","1") && !$ID) {
+      if (!$ID && haveRight("global_add_followups","1")) {
+         echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['job'][20]."&nbsp;: </td>";
-         echo "<td class='center' colspan='3'>";
+         echo "<td class='left' colspan='3'>";
          Dropdown::showInteger('hour',$options['hour'],0,100);
          echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
          Dropdown::showInteger('minute',$options['minute'],0,59);
          echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
          echo "</td>";
-
-      } else {
-         echo "<td colspan='2'>&nbsp;</td>";
+         echo "</tr>";
       }
-
-      echo "</tr>";
 
       // Mailing ? Y or no ?
       if ($CFG_GLPI["use_mailing"]==1) {
