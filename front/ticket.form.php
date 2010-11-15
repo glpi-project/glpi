@@ -145,6 +145,8 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    '_ticket_group_requester' => 0,
                    '_ticket_user_assign'     => 0,
                    '_ticket_group_assign'    => 0,
+                   '_ticket_user_observer'   => 0,
+                   '_ticket_group_observer'  => 0,
                    'suppliers_id_assign'     => 0,
                    'name'                    => '',
                    'content'                 => '',
