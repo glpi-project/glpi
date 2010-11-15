@@ -3472,7 +3472,9 @@ class Ticket extends CommonDBTM {
 
       echo "</th></tr>";
 
-      $this->showActorsPartForm($ID,$options);
+      if (!$ID) {
+         $this->showActorsPartForm($ID,$options);
+      }
 
 
       echo "<tr class='tab_bg_1'>";
@@ -3645,6 +3647,10 @@ class Ticket extends CommonDBTM {
          echo "&nbsp;".$LANG['job'][22]."&nbsp;&nbsp;";
          echo "</td>";
          echo "</tr>";
+      }
+
+      if ($ID) {
+         $this->showActorsPartForm($ID,$options);
       }
 
       // Mailing ? Y or no ?
