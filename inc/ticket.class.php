@@ -3167,7 +3167,7 @@ class Ticket extends CommonDBTM {
          } else {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
-         echo '<br>';
+         echo '<hr>';
 
       } else {
          $this->showUsersAssociated(self::REQUESTER,$candeleterequester);
@@ -3219,7 +3219,7 @@ class Ticket extends CommonDBTM {
                echo "TODO : PERMIT TO SELECT NOTIF OPTIONS";
             }
 
-            echo '<br>';
+            echo '<hr>';
          }
 
       } else {
@@ -3273,7 +3273,7 @@ class Ticket extends CommonDBTM {
                echo "TODO : PERMIT TO SELECT NOTIF OPTIONS";
             }
 
-            echo '<br>';
+            echo '<hr>';
 
          } else if (haveRight("steal_ticket","1") ||
                   (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0)) {
@@ -3296,7 +3296,7 @@ class Ticket extends CommonDBTM {
             Dropdown::show('Group', array('name'   => '_ticket_group_assign',
                                           'value'  => $options["_ticket_group_assign"],
                                           'entity' => $this->fields["entities_id"]));
-            echo '<br>';
+            echo '<hr>';
          }
 
       } else {
@@ -3394,7 +3394,7 @@ class Ticket extends CommonDBTM {
       }
       echo '</th></tr>';
       echo "<tr>";
-      echo "<th class='left' colspan='2' width='50%'>";
+      echo "<th class='left' colspan='2'>";
 
       echo "<table>";
       echo "<tr>";
@@ -3426,7 +3426,7 @@ class Ticket extends CommonDBTM {
       echo "</table>";
       echo "</th>";
 
-      echo "<th class='left' colspan='2' width='50%'>";
+      echo "<th class='left' colspan='2'>";
       echo "<table>";
 
       if ($ID) {
@@ -3524,7 +3524,7 @@ class Ticket extends CommonDBTM {
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td width='60'>".$LANG['joblist'][0]."&nbsp;: </td>";
+      echo "<td>".$LANG['joblist'][0]."&nbsp;: </td>";
       echo "<td>";
       if ($canupdate) {
          self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
