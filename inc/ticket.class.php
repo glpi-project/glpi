@@ -1280,7 +1280,7 @@ class Ticket extends CommonDBTM {
       $group_ticket = new Group_Ticket;
 
       if (isset($this->input["_users_id_requester"])
-          && isset($this->input["_users_id_requester"])
+           && $this->input["_users_id_requester"]>0) {
          $ticket_user->add(array('tickets_id' => $this->fields['id'],
                                  'users_id'   => $this->input["_users_id_requester"],
                                  'type'       => Ticket::REQUESTER));
