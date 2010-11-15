@@ -50,15 +50,28 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          $right = 'all';
          // Only steal or own ticket whit empty assign
          if ($_POST["actortype"]=='assign') {
-            $right = "own";
+            $right="own_ticket";
             if (!haveRight("assign_ticket","1")) {
                $right = 'id';
             }
          }
-         User::dropdown(array('name'        => '_ticket_'.$_POST["actortype"].'[users_id]',
+         $rand=User::dropdown(array('name'        => '_ticket_'.$_POST["actortype"].'[users_id]',
                               'entity'      => $_POST['entity_restrict'],
                               'right'       => $right,
                               'ldap_import' => true));
+
+         if ($CFG_GLPI["use_mailing"]==1) {
+            echo "<br><span id='notif_user_$rand'>";
+            echo "</span>";
+            $paramscomment = array('value'      => '__VALUE__',
+                                   'field' => "_ticket_".$_POST["actortype"]);
+
+            ajaxUpdateItemOnSelectEvent("dropdown__ticket_".$_POST["actortype"]."[users_id]".$rand,
+                                       "notif_user_$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
+                                       false);
+
+         }
          break;
 
       case "group" :

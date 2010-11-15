@@ -155,11 +155,11 @@ if ($is_helpdesk_multientity) {
                                   $CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",
                                   $paramscomment, false);
 
-      $paramscomment = array('value' => '__VALUE__');
+/*      $paramscomment = array('value' => '__VALUE__');
 
       ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"], "user_email_result",
                                   $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                                  false);
+                                  false);*/
    }
 }
 

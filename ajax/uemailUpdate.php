@@ -42,27 +42,28 @@ header_nocache();
 
 checkCentralAccess();
 
-$query = "SELECT `email`
-          FROM `glpi_users`
-          WHERE `id` = '".$_POST["value"]."'";
+if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
 
-$email = "";
-if ($result=$DB->query($query)) {
-   if ($DB->numrows($result)) {
-      $email = $DB->result($result, 0, "email");
+   $query = "SELECT `email`
+            FROM `glpi_users`
+            WHERE `id` = '".$_REQUEST["value"]."'";
+   $email = "";
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)) {
+         $email = $DB->result($result, 0, "email");
+      }
    }
+   echo $LANG['job'][19].'&nbsp;:&nbsp;';
+
+   $rand=Dropdown::showYesNo($_REQUEST['field'].'[use_notification]',true);
+
+   echo '<br>'.$LANG['mailing'][118]."&nbsp;:&nbsp;";
+   if (!empty($email) && NotificationMail::isUserAddressValid($email)) {
+      echo $email;
+   } else {
+      echo "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
+               value='$email'>";
+   }   
 }
-echo "<input type='text' size='30' name='user_email' value='$email'>";
-
-echo "<script type='text/javascript' >\n";
-
-if (!empty($email)) {
-   echo "window.document.getElementById('dropdownyesno_use_email_notification').value='1';";
-
-} else {
-   echo "window.document.getElementById('dropdownyesno_use_email_notification').value='0';";
-}
-
-echo "</script>\n";
 
 ?>
