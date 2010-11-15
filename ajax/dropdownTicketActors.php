@@ -43,16 +43,16 @@ checkCentralAccess();
 
 // Make a select box
 if (isset($_POST["type"]) && isset($_POST["actortype"])) {
-   $rand     = mt_rand();
+   $rand = mt_rand();
 
    switch ($_POST["type"]) {
-      case "user":
-         $right='all';
+      case "user" :
+         $right = 'all';
          // Only steal or own ticket whit empty assign
          if ($_POST["actortype"]=='assign') {
-            $right="own";
+            $right = "own";
             if (!haveRight("assign_ticket","1")) {
-               $right='id';
+               $right = 'id';
             }
          }
          User::dropdown(array('name'        => '_ticket_'.$_POST["actortype"].'[users_id]',
@@ -61,7 +61,7 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
                               'ldap_import' => true));
          break;
 
-      case "group":
+      case "group" :
          Dropdown::show('Group', array('name'   => '_ticket_'.$_POST["actortype"].'[groups_id]',
                                        'entity' => $_POST['entity_restrict']));
          break;

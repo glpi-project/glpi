@@ -37,7 +37,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkLoginUser();
-$fup = new TicketFollowup();
+$fup   = new TicketFollowup();
 $track = new Ticket();
 
 if (!isset($_GET['id'])) {
@@ -74,6 +74,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+
 } else if (isset($_POST['delete'])) {
    $track->check($_POST['id'],'d');
    $track->delete($_POST);
@@ -93,53 +94,57 @@ if (isset($_POST["add"])) {
                $_POST["tickets_id"]."&glpi_tab=1&itemtype=Ticket");
 
 */
+
 } else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"],'w');
 
-   $_POST['slas_id']=0;
-   $_POST['slalevels_id']=0;
-   $_POST['sla_wainting_duration']=0;
+   $_POST['slas_id']               = 0;
+   $_POST['slalevels_id']          = 0;
+   $_POST['sla_wainting_duration'] = 0;
 
    $track->update($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+
 } else if (isset($_REQUEST['delete_link'])) {
-   $ticket_ticket=new Ticket_Ticket();
+   $ticket_ticket = new Ticket_Ticket();
    $ticket_ticket->check($_REQUEST['id'],'w');
 
    $ticket_ticket->delete($_REQUEST);
 
-   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][120]);
+   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][120]);
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+
 } else if (isset($_REQUEST['delete_user'])) {
-   $ticket_user=new Ticket_User();
-   $ticket_user->check($_REQUEST['id'],'w');
+   $ticket_user = new Ticket_User();
+   $ticket_user->check($_REQUEST['id'], 'w');
    $ticket_user->delete($_REQUEST);
 
-   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][122]);
+   Event::log($_REQUEST['tickets_id'], "ticket", 4,
+              "tracking", $_SESSION["glpiname"]." ".$LANG['log'][122]);
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+
 } else if (isset($_REQUEST['delete_group'])) {
-   $group_ticket=new Group_Ticket();
-   $group_ticket->check($_REQUEST['id'],'w');
+   $group_ticket = new Group_Ticket();
+   $group_ticket->check($_REQUEST['id'], 'w');
    $group_ticket->delete($_REQUEST);
 
-   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][122]);
+   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+              $_SESSION["glpiname"]." ".$LANG['log'][122]);
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 }
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {
-
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       helpHeader($LANG['Menu'][5],'',$_SESSION["glpiname"]);
    } else {
       commonHeader($LANG['Menu'][5],'',"maintain","ticket");
    }
-
    $track->showForm($_GET["id"]);
 
 } else {
-
    commonHeader($LANG['job'][13],'',"maintain","ticket");
 
    // Set default value...

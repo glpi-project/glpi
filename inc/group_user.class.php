@@ -47,6 +47,7 @@ class Group_User extends CommonDBRelation{
    public $itemtype_2 = 'Group';
    public $items_id_2 = 'groups_id';
 
+
    static function getUserGroups($users_id) {
       global $DB;
 
@@ -70,7 +71,7 @@ class Group_User extends CommonDBRelation{
    /**  Show groups of a user
     *
     * @param $user the user
-    */
+   **/
    static function showForUser(User $user) {
       global $CFG_GLPI, $LANG;
 
@@ -200,7 +201,7 @@ class Group_User extends CommonDBRelation{
     *
     * @param $target string : where to go on action
     * @param $group the group
-    */
+   **/
    static function showForGroup($target, Group $group) {
       global $DB, $LANG;
 
@@ -215,7 +216,7 @@ class Group_User extends CommonDBRelation{
 
       $query = "SELECT `glpi_users`.*,
                        `glpi_groups_users`.`id` AS linkID,
-                      `glpi_groups_users`.`is_dynamic` AS is_dynamic
+                       `glpi_groups_users`.`is_dynamic` AS is_dynamic
                 FROM `glpi_groups_users`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
                 WHERE `glpi_groups_users`.`groups_id`='$ID'
@@ -234,7 +235,8 @@ class Group_User extends CommonDBRelation{
       $used_ids = array_keys($used);
       if ($canedit) {
          $headerspan = $nb_per_line*2;
-         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action='$target'>";
+         echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
+                action='$target'>";
 
          if ($group->fields["is_recursive"]) {
             $res = User::getSqlSearchResult (true, "all", getSonsOf("glpi_entities",
@@ -334,7 +336,7 @@ class Group_User extends CommonDBRelation{
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       global $LANG;
 
