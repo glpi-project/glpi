@@ -2126,19 +2126,27 @@ class Search {
          case 'Ticket' :
             $condition = '';
             if (!haveRight("show_all_ticket","1")) {
+
+               $searchopt = &Search::getOptions($itemtype);
+               $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
+               $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
+
                $condition = "(";
 
                if (!haveRight("own_ticket","1")) { // Cannot own ticket : show only mine
-                  $condition .= " glpi_tickets.users_id = '".getLoginUserID()."' ";
+                  $condition .= " $requester_table.users_id = '".getLoginUserID()."' ";
                } else { // Can own ticket : show my and assign to me
-                  $condition .= " glpi_tickets.users_id = '".getLoginUserID()."'
-                                 OR glpi_tickets.users_id_assign = '".getLoginUserID()."' ";
+                  $condition .= " $requester_table.users_id = '".getLoginUserID()."'
+                                 OR $assign_table.users_id = '".getLoginUserID()."' ";
                }
 
                if (haveRight("show_assign_ticket","1")) { // show mine + assign to me
-                  $condition .=" OR `glpi_tickets`.`users_id_assign` = '".getLoginUserID()."'";
+                  $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
+                  $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
+
+                  $condition .=" OR $assign_table.`users_id_assign` = '".getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR `glpi_tickets`.`groups_id_assign`
+                     $condition .= " OR $assigngroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
                   if (haveRight('assign_ticket',1)) {
@@ -2147,7 +2155,7 @@ class Search {
                }
                if (haveRight("show_group_ticket",1)) {
                   if (count($_SESSION['glpigroups'])) {
-                     $condition .= " OR `glpi_tickets`.`groups_id`
+                     $condition .= " OR $requestergroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."') ";
                   }
                }
