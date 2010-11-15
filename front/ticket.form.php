@@ -150,7 +150,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    // Set default value...
    $values = array('_users_id_requester'  => getLoginUserID(),
                    '_groups_id_requester' => 0,
-                   '_user_id_assign'     => 0,
+                   '_users_id_assign'     => 0,
                    '_groups_id_assign'    => 0,
                    '_users_id_observer'   => 0,
                    '_groups_id_observer'  => 0,
