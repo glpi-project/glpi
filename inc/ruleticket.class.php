@@ -176,11 +176,11 @@ class RuleTicket extends Rule {
       $criterias['ticketcategories_id']['linkfield'] = 'ticketcategories_id';
       $criterias['ticketcategories_id']['type']  = 'dropdown';
 
-      $criterias['users_id']['table']     = 'glpi_users';
-      $criterias['users_id']['field']     = 'name';
-      $criterias['users_id']['name']      = $LANG['job'][4]." - ".$LANG['common'][34];
-      $criterias['users_id']['linkfield'] = 'users_id';
-      $criterias['users_id']['type']      = 'dropdown_users';
+      $criterias['_ticket_user_requester']['table']     = 'glpi_users';
+      $criterias['_ticket_user_requester']['field']     = 'name';
+      $criterias['_ticket_user_requester']['name']      = $LANG['job'][4]." - ".$LANG['common'][34];
+      $criterias['_ticket_user_requester']['linkfield'] = 'users_id';
+      $criterias['_ticket_user_requester']['type']      = 'dropdown_users';
 
       $criterias['users_locations']['table']     = 'glpi_locations';
       $criterias['users_locations']['field']     = 'completename';
@@ -188,23 +188,23 @@ class RuleTicket extends Rule {
       $criterias['users_locations']['linkfield'] = 'users_locations';
       $criterias['users_locations']['type']      = 'dropdown';
 
-      $criterias['groups_id']['table']     = 'glpi_groups';
-      $criterias['groups_id']['field']     = 'name';
-      $criterias['groups_id']['name']      = $LANG['job'][4]." - ".$LANG['common'][35];
-      $criterias['groups_id']['linkfield'] = 'groups_id';
-      $criterias['groups_id']['type']      = 'dropdown';
+      $criterias['_ticket_group_requester']['table']     = 'glpi_groups';
+      $criterias['_ticket_group_requester']['field']     = 'name';
+      $criterias['_ticket_group_requester']['name']      = $LANG['job'][4]." - ".$LANG['common'][35];
+      $criterias['_ticket_group_requester']['linkfield'] = 'groups_id';
+      $criterias['_ticket_group_requester']['type']      = 'dropdown';
 
-      $criterias['users_id_assign']['table']     = 'glpi_users';
-      $criterias['users_id_assign']['field']     = 'name';
-      $criterias['users_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['job'][6];
-      $criterias['users_id_assign']['linkfield'] = 'users_id_assign';
-      $criterias['users_id_assign']['type']      = 'dropdown_users';
+      $criterias['_ticket_user_assign']['table']     = 'glpi_users';
+      $criterias['_ticket_user_assign']['field']     = 'name';
+      $criterias['_ticket_user_assign']['name']      = $LANG['job'][5]." - ".$LANG['job'][6];
+      $criterias['_ticket_user_assign']['linkfield'] = 'users_id_assign';
+      $criterias['_ticket_user_assign']['type']      = 'dropdown_users';
 
-      $criterias['groups_id_assign']['table']     = 'glpi_groups';
-      $criterias['groups_id_assign']['field']     = 'name';
-      $criterias['groups_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
-      $criterias['groups_id_assign']['linkfield'] = 'groups_id_assign';
-      $criterias['groups_id_assign']['type']      = 'dropdown';
+      $criterias['_ticket_group_assign']['table']     = 'glpi_groups';
+      $criterias['_ticket_group_assign']['field']     = 'name';
+      $criterias['_ticket_group_assign']['name']      = $LANG['job'][5]." - ".$LANG['common'][35];
+      $criterias['_ticket_group_assign']['linkfield'] = 'groups_id_assign';
+      $criterias['_ticket_group_assign']['type']      = 'dropdown';
 
       $criterias['suppliers_id_assign']['table']     = 'glpi_suppliers';
       $criterias['suppliers_id_assign']['field']     = 'name';
@@ -254,19 +254,19 @@ class RuleTicket extends Rule {
       $actions['ticketcategories_id']['type']  = 'dropdown';
       $actions['ticketcategories_id']['table'] = 'glpi_ticketcategories';
 
-      $actions['users_id']['name'] = $LANG['job'][4]." - ".$LANG['common'][34];
-      $actions['users_id']['type'] = 'dropdown_users';
+      $actions['_ticket_user_requester']['name'] = $LANG['job'][4]." - ".$LANG['common'][34];
+      $actions['_ticket_user_requester']['type'] = 'dropdown_users';
 
-      $actions['groups_id']['name']  = $LANG['job'][4]." - ".$LANG['common'][35];
-      $actions['groups_id']['type']  = 'dropdown';
-      $actions['groups_id']['table'] = 'glpi_groups';
+      $actions['_ticket_group_requester']['name']  = $LANG['job'][4]." - ".$LANG['common'][35];
+      $actions['_ticket_group_requester']['type']  = 'dropdown';
+      $actions['_ticket_group_requester']['table'] = 'glpi_groups';
 
-      $actions['users_id_assign']['name'] = $LANG['job'][5]." - ".$LANG['job'][6];
-      $actions['users_id_assign']['type'] = 'dropdown_assign';
+      $actions['_ticket_user_assign']['name'] = $LANG['job'][5]." - ".$LANG['job'][6];
+      $actions['_ticket_user_assign']['type'] = 'dropdown_assign';
 
-      $actions['groups_id_assign']['table'] = 'glpi_groups';
-      $actions['groups_id_assign']['name']  = $LANG['job'][5]." - ".$LANG['common'][35];
-      $actions['groups_id_assign']['type']  = 'dropdown';
+      $actions['_ticket_group_assign']['table'] = 'glpi_groups';
+      $actions['_ticket_group_assign']['name']  = $LANG['job'][5]." - ".$LANG['common'][35];
+      $actions['_ticket_group_assign']['type']  = 'dropdown';
 
       $actions['suppliers_id_assign']['table'] = 'glpi_suppliers';
       $actions['suppliers_id_assign']['name']  = $LANG['job'][5]." - ".$LANG['financial'][26];

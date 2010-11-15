@@ -890,12 +890,12 @@ class Ticket extends CommonDBTM {
             $mandatory_ok = false;
          }
 
-         if (isset($input['use_email_notification']) && $input['use_email_notification']
-             && (!isset($input['user_email']) || empty($input['user_email']))) {
-
-            addMessageAfterRedirect($LANG['help'][16], false, ERROR);
-            $mandatory_ok = false;
-         }
+//          if (isset($input['use_email_notification']) && $input['use_email_notification']
+//              && (!isset($input['user_email']) || empty($input['user_email']))) {
+// 
+//             addMessageAfterRedirect($LANG['help'][16], false, ERROR);
+//             $mandatory_ok = false;
+//          }
 
          if (!$mandatory_ok) {
             return false;
@@ -920,7 +920,7 @@ class Ticket extends CommonDBTM {
       if (!isset($input['_auto_import'])) {
          if (!isset($input["users_id"])) {
             if ($uid=getLoginUserID()) {
-               $input["users_id"] = $uid;
+               $input["_ticket_user_requester"] = $uid;
             }
          }
       }
@@ -951,8 +951,7 @@ class Ticket extends CommonDBTM {
       }
 
       // Set default dropdown
-      $dropdown_fields = array('entities_id', 'groups_id', 'groups_id_assign', 'items_id',
-                               'users_id', 'users_id_assign', 'suppliers_id_assign',
+      $dropdown_fields = array('entities_id', 'items_id', 'suppliers_id_assign',
                                'ticketcategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
@@ -974,12 +973,12 @@ class Ticket extends CommonDBTM {
       }
 
       // Auto group define from item
-      if ($item != NULL) {
-         if ($item->isField('groups_id')
-             && (!isset($input["groups_id"]) || $input["groups_id"]==0)) {
-            $input["groups_id"] = $item->getField('groups_id');
-         }
-      }
+//       if ($item != NULL) {
+//          if ($item->isField('groups_id')
+//              && (!isset($input["_ticket_group_requester"]) || $input["_ticket_group_requester"]==0)) {
+//             $input["_ticket_group_requester"] = $item->getField('groups_id');
+//          }
+//       }
 
       // Manage auto assign
       $entitydata = new EntityData;
@@ -997,25 +996,25 @@ class Ticket extends CommonDBTM {
 
          case AUTO_ASSIGN_HARDWARE_CATEGORY :
             // Auto assign tech from item
-            if ($input["users_id_assign"]==0 && $item!=NULL) {
+            if ($input["_ticket_user_assign"]==0 && $item!=NULL) {
                if ($item->isField('users_id_tech')) {
-                  $input["users_id_assign"] = $item->getField('users_id_tech');
-                  if ($input["users_id_assign"]>0) {
+                  $input["_ticket_user_assign"] = $item->getField('users_id_tech');
+                  if ($input["_ticket_user_assign"]>0) {
                      $input["status"] = "assign";
                   }
                }
             }
             // Auto assign tech/group from Category
             if ($input['ticketcategories_id']>0
-               && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
+               && (!$input['_ticket_user_assign'] || !$input['_ticket_group_assign'])) {
 
                $cat = new TicketCategory();
                $cat->getFromDB($input['ticketcategories_id']);
-               if (!$input['users_id_assign'] && $cat->isField('users_id')) {
-                  $input['users_id_assign'] = $cat->getField('users_id');
+               if (!$input['_ticket_user_assign'] && $cat->isField('users_id')) {
+                  $input['_ticket_user_assign'] = $cat->getField('users_id');
                }
-               if (!$input['groups_id_assign'] && $cat->isField('groups_id')) {
-                  $input['groups_id_assign'] = $cat->getField('groups_id');
+               if (!$input['_ticket_group_assign'] && $cat->isField('groups_id')) {
+                  $input['_ticket_group_assign'] = $cat->getField('groups_id');
                }
             }
             break;
@@ -1023,22 +1022,22 @@ class Ticket extends CommonDBTM {
          case AUTO_ASSIGN_CATEGORY_HARDWARE :
             // Auto assign tech/group from Category
             if ($input['ticketcategories_id']>0
-               && (!$input['users_id_assign'] || !$input['groups_id_assign'])) {
+               && (!$input['_ticket_user_assign'] || !$input['_ticket_group_assign'])) {
 
                $cat = new TicketCategory();
                $cat->getFromDB($input['ticketcategories_id']);
-               if (!$input['users_id_assign'] && $cat->isField('users_id')) {
-                  $input['users_id_assign'] = $cat->getField('users_id');
+               if (!$input['_ticket_user_assign'] && $cat->isField('users_id')) {
+                  $input['_ticket_user_assign'] = $cat->getField('users_id');
                }
-               if (!$input['groups_id_assign'] && $cat->isField('groups_id')) {
-                  $input['groups_id_assign'] = $cat->getField('groups_id');
+               if (!$input['_ticket_group_assign'] && $cat->isField('groups_id')) {
+                  $input['_ticket_group_assign'] = $cat->getField('groups_id');
                }
             }
             // Auto assign tech from item
-            if ($input["users_id_assign"]==0 && $item!=NULL) {
+            if ($input["_ticket_user_assign"]==0 && $item!=NULL) {
                if ($item->isField('users_id_tech')) {
-                  $input["users_id_assign"] = $item->getField('users_id_tech');
-                  if ($input["users_id_assign"]>0) {
+                  $input["_ticket_user_assign"] = $item->getField('users_id_tech');
+                  if ($input["_ticket_user_assign"]>0) {
                      $input["status"] = "assign";
                   }
                }
@@ -1051,23 +1050,23 @@ class Ticket extends CommonDBTM {
 
       // Set unset variables with are needed
       $user = new User();
-      if ($user->getFromDB($input["users_id"])) {
+      if ($user->getFromDB($input["_ticket_user_requester"])) {
          $input['users_locations'] = $user->fields['locations_id'];
       }
 
       $input = $rules->processAllRules($input, $input, array('recursive' => true));
 
-      if (isset($input["use_email_notification"])
-          && $input["use_email_notification"]
-          && empty($input["user_email"])) {
+//       if (isset($input["use_email_notification"])
+//           && $input["use_email_notification"]
+//           && empty($input["user_email"])) {
+// 
+//          if ($user->getFromDB($input["users_id"])) {
+//             $input["user_email"] = $user->fields["email"];
+//          }
+//       }
 
-         if ($user->getFromDB($input["users_id"])) {
-            $input["user_email"] = $user->fields["email"];
-         }
-      }
-
-      if (($input["users_id_assign"]>0
-           || $input["groups_id_assign"]>0
+      if (($input["_ticket_user_assign"]>0
+           || $input["_ticket_group_assign"]>0
            || $input["suppliers_id_assign"]>0)
           && $input["status"]=="new") {
 
@@ -1151,7 +1150,7 @@ class Ticket extends CommonDBTM {
 
       // Log this event
       Event::log($this->fields['id'], "ticket", 4, "tracking",
-                 getUserName($this->input["users_id"])." ".$LANG['log'][20]);
+                 getUserName(getLoginUserID())." ".$LANG['log'][20]);
 
       $already_mail = false;
       if (((isset($this->input["_followup"])
@@ -1204,6 +1203,47 @@ class Ticket extends CommonDBTM {
                $sla->addLevelToDo($this);
             }
          }
+      }
+
+
+      // Add user groups linked to tickets
+      $ticket_user=new Ticket_User;
+      $group_ticket=new Group_Ticket;
+      if (isset($this->input["_ticket_user_requester"])
+          && $this->input["_ticket_user_requester"]>0) {
+         $ticket_user->add(array('tickets_id' => $this->fields['id'],
+                                 'users_id'   => $this->input["_ticket_user_requester"],
+                                 'type'       => Ticket::REQUESTER));
+      }
+      if (isset($this->input["_ticket_user_observer"])
+          && $this->input["_ticket_user_observer"]>0) {
+         $ticket_user->add(array('tickets_id' => $this->fields['id'],
+                                 'users_id'   => $this->input["_ticket_user_observer"],
+                                 'type'       => Ticket::OBSERVER));
+      }
+      if (isset($this->input["_ticket_user_assign"])
+          && $this->input["_ticket_user_assign"]>0) {
+         $ticket_user->add(array('tickets_id' => $this->fields['id'],
+                                 'users_id'   => $this->input["_ticket_user_assign"],
+                                 'type'       => Ticket::ASSIGN));
+      }
+      if (isset($this->input["_ticket_group_requester"])
+          && $this->input["_ticket_group_requester"]>0) {
+         $group_ticket->add(array('tickets_id' => $this->fields['id'],
+                                 'groups_id'   => $this->input["_ticket_group_requester"],
+                                 'type'       => Ticket::REQUESTER));
+      }
+      if (isset($this->input["_ticket_group_assign"])
+          && $this->input["_ticket_group_assign"]>0) {
+         $group_ticket->add(array('tickets_id' => $this->fields['id'],
+                                 'groups_id'   => $this->input["_ticket_group_assign"],
+                                 'type'       => Ticket::ASSIGN));
+      }
+      if (isset($this->input["_ticket_group_observer"])
+          && $this->input["_ticket_group_observer"]>0) {
+         $group_ticket->add(array('tickets_id' => $this->fields['id'],
+                                 'groups_id'   => $this->input["_ticket_group_observer"],
+                                 'type'       => Ticket::OBSERVER));
       }
 
       // Processing Email
@@ -2908,7 +2948,7 @@ class Ticket extends CommonDBTM {
          if ($this->countentitiesforuser > 1) {
             $rand = Dropdown::show('Entity',
                                    array('value'       => $this->fields["entities_id"],
-                                         'entity'      => $values,
+                                         'entity'      => $this->userentities,
                                          'auto_submit' => 1));
 
          } else {
@@ -3080,19 +3120,19 @@ class Ticket extends CommonDBTM {
 
       if (!$ID) {
          //Get all the user's entities
-         $all_entities = Profile_User::getUserEntities($options["users_id"], true);
-         $values = array();
+         $all_entities = Profile_User::getUserEntities($options["_ticket_user_requester"], true);
+         $this->userentities = array();
          //For each user's entity, check if the technician which creates the ticket have access to it
          foreach ($all_entities as $tmp => $ID_entity) {
             if (haveAccessToEntity($ID_entity)) {
-               $values[] = $ID_entity;
+               $this->userentities[] = $ID_entity;
             }
          }
-         $this->countentitiesforuser = count($values);
-         if ($this->countentitiesforuser>0 && !in_array($this->fields["entities_id"],$values)) {
+         $this->countentitiesforuser = count($this->userentities);
+         if ($this->countentitiesforuser>0 && !in_array($this->fields["entities_id"],$this->userentities)) {
             // If entity is not in the list of user's entities,
             // then use as default value the first value of the user's entites list
-            $this->fields["entities_id"] = $values[0];
+            $this->fields["entities_id"] = $this->userentities[0];
          }
       }
 
