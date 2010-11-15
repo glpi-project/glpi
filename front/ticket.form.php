@@ -148,12 +148,12 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    commonHeader($LANG['job'][13],'',"maintain","ticket");
 
    // Set default value...
-   $values = array('_ticket_user_requester'  => getLoginUserID(),
-                   '_ticket_group_requester' => 0,
-                   '_ticket_user_assign'     => 0,
-                   '_ticket_group_assign'    => 0,
-                   '_ticket_user_observer'   => 0,
-                   '_ticket_group_observer'  => 0,
+   $values = array('_users_id_requester'  => getLoginUserID(),
+                   '_groups_id_requester' => 0,
+                   '_user_id_assign'     => 0,
+                   '_groups_id_assign'    => 0,
+                   '_users_id_observer'   => 0,
+                   '_groups_id_observer'  => 0,
                    'suppliers_id_assign'     => 0,
                    'name'                    => '',
                    'content'                 => '',

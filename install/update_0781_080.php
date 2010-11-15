@@ -1028,10 +1028,10 @@ function update0781to080($output='HTML') {
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - rule ticket migration');
    // For Rule::RULE_TRACKING_AUTO_ACTION
-   $changes[2] = array('users_id'         => '_ticket_user_requester',
-                       'groups_id'        => '_ticket_group_requester',
-                       'users_id_assign'  => '_ticket_user_assign',
-                       'groups_id_assign' => '_ticket_group_assign');
+   $changes[2] = array('users_id'         => '_users_id_requester',
+                       'groups_id'        => '_groups_id_requester',
+                       'users_id_assign'  => '_users_id_assign',
+                       'groups_id_assign' => '_groups_id_assign');
 
    $DB->query("SET SESSION group_concat_max_len = 9999999;");
    foreach ($changes as $ruletype => $tab) {
