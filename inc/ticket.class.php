@@ -378,6 +378,13 @@ class Ticket extends CommonDBTM {
          unset($input["solvedate"]);
       }
 
+      if (isset($_REQUEST['_link'])) {
+         $ticket_ticket=new Ticket_Ticket();
+         $ticket_ticket->check(-1,'w',$_REQUEST['_link']);
+
+         $ticket_ticket->add($_REQUEST['_link']);
+         Event::log($_REQUEST['_link']['tickets_id_1'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][119]);
+      }
 
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
@@ -707,9 +714,8 @@ class Ticket extends CommonDBTM {
          $this->updates[] = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
-
       // Do not take into account date_mod if no update is done
-      if (count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false) {
+      if ((count($this->updates)==1 && ($key=array_search('date_mod',$this->updates)) !== false)) {
          unset($this->updates[$key]);
       }
    }
@@ -3562,8 +3568,8 @@ class Ticket extends CommonDBTM {
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
             echo "&nbsp;";
-            echo "<input type='submit' name='add_link' value=\"".$LANG['buttons'][8]."\"
-                   class='submit'>";
+/*            echo "<input type='submit' name='add_link' value=\"".$LANG['buttons'][8]."\"
+                   class='submit'>";*/
             echo "</div>";
          }
          echo "</td>";

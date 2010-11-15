@@ -172,9 +172,33 @@ class Ticket_Ticket extends CommonDBRelation {
          || !$ticket->getFromDB($input['tickets_id_2'])) {
          return false;
       }
+      // No multiple links
+      $tickets=self::getLinkedTicketsTo($input['tickets_id_1']);
+      if (count($tickets)) {
+         foreach ($tickets as $t) {
+            if ($t['tickets_id']==$input['tickets_id_2']) {
+               return false;
+            }
+         }
+      }
 
       return $input;
    }
+
+   function post_deleteFromDB() {
+      $t=new Ticket();
+      $t->updateDateMod($this->fields['tickets_id_1']);
+      $t->updateDateMod($this->fields['tickets_id_2']);
+      parent::post_deleteFromDB();
+   }
+
+   function post_addItem() {
+      $t=new Ticket();
+      $t->updateDateMod($this->fields['tickets_id_1']);
+      $t->updateDateMod($this->fields['tickets_id_2']);
+      parent::post_addItem();
+   }
+
 
   /**
     * Affect the same solution for duplicates tickets
