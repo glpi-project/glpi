@@ -160,7 +160,6 @@ class NotificationMail extends phpmailer implements NotificationInterface {
                $isValid = false;
             }
          }
-
          return $isValid;
    }
 
