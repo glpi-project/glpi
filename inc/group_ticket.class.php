@@ -60,6 +60,17 @@ class Group_Ticket extends CommonDBRelation {
       return $groups;
    }
 
+   function post_deleteFromDB() {
+      $t=new Ticket();
+      $t->updateDateMod($this->fields['tickets_id']);
+      parent::post_deleteFromDB();
+   }
+
+   function post_addItem() {
+      $t=new Ticket();
+      $t->updateDateMod($this->fields['tickets_id']);
+      parent::post_addItem();
+   }
 
 }
 
