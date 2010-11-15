@@ -2826,12 +2826,27 @@ class Ticket extends CommonDBTM {
       // Manage actors : requester and assign
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2'>".$LANG['common'][103]."</th>";
-      echo "<th colspan='2'>".$LANG['job'][4]."</th>";
-      echo "<th>".$LANG['job'][5]."</th>";
+      echo "<th>".$LANG['job'][4];
+      if ($ID) {
+         echo "ADD LINK";
+      }
+      echo "</th>";
+
+      echo "<th>".$LANG['common'][104];
+      if ($ID) {
+         echo "ADD LINK";
+      }
+      echo "</th>";
+
+      echo "<th>".$LANG['job'][5];
+      if ($ID) {
+         echo "ADD LINK";
+      }
+      echo "</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>";
+      echo "<td>";
       // Requester
       if (!$ID) {
          echo 'USERICON&nbsp;';
@@ -2885,6 +2900,49 @@ class Ticket extends CommonDBTM {
          }
       }
       echo "</td>";
+
+      echo "<td>";
+      // Observer
+      if (!$ID) {
+         if (haveRight("update_ticket","1")) {
+            echo 'USERICON&nbsp;';
+            //List all users in the active entities
+            User::dropdown(array('name'          => '_ticket_user_observer',
+                                 'value'         => $options["_ticket_user_observer"],
+                                 'entity'        => $_SESSION['glpiactiveentities'],
+                                 'right'         => 'all',
+                                 'helpdesk_ajax' => 1,
+                                 'ldap_import'   => true));
+            echo '<br>';
+         }
+      } else {
+         if (isset($this->users[self::OBSERVER]) && count($this->users[self::OBSERVER])) {
+            foreach ($this->users[self::OBSERVER] as $k => $d) {
+               echo 'USERICON&nbsp;';
+               echo getUserName($k, $showuserlink);
+               echo "<br>";
+            }
+         }
+         /// TODO : ADD delete link + edit link for mail options + icons
+      }
+      // Requester Group
+      if (!$ID) {
+         echo 'GROUPICON&nbsp;';
+         Dropdown::show('Group', array('name'   => '_ticket_group_observer',
+                                       'value'  => $options["_ticket_group_observer"],
+                                       'entity' => $this->fields["entities_id"]));
+      } else {
+         if (isset($this->groups[self::OBSERVER]) && count($this->groups[self::OBSERVER])) {
+            foreach ($this->groups[self::OBSERVER] as $k => $d) {
+               echo 'GROUPICON&nbsp;';
+               echo Dropdown::getDropdownName("glpi_groups", $k).'<br>';
+            }
+         }
+      }
+      echo "</td>";
+
+
+
       echo "<td>";
       // Assign User
       if (!$ID) {
