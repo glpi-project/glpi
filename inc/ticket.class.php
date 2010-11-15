@@ -378,13 +378,76 @@ class Ticket extends CommonDBTM {
          unset($input["solvedate"]);
       }
 
-      if (isset($_REQUEST['_link'])) {
+      if (isset($input['_link'])) {
          $ticket_ticket=new Ticket_Ticket();
-         $ticket_ticket->check(-1,'w',$_REQUEST['_link']);
-
-         $ticket_ticket->add($_REQUEST['_link']);
-         Event::log($_REQUEST['_link']['tickets_id_1'], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][119]);
+         if ($ticket_ticket->can(-1,'w',$input['_link'])) {
+            $ticket_ticket->add($input['_link']);
+         }
       }
+
+      if (isset($input['_ticket_requester'])) {
+         if (isset($input['_ticket_requester']['_type'])) {
+            $input['_ticket_requester']['type']=Ticket::REQUESTER;
+            $input['_ticket_requester']['tickets_id']=$input['id'];
+            switch ($input['_ticket_requester']['_type']) {
+               case "user":
+                  $ticket_user=new Ticket_User();
+                  if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
+                     $ticket_user->add($input['_ticket_requester']);
+                  }
+                  break;
+               case "group":
+                  $group_ticket=new Group_Ticket();
+                  if ($group_ticket->can(-1,'w',$input['_ticket_requester'])) {
+                     $group_ticket->add($input['_ticket_requester']);
+                  }
+                  break;
+            }
+         }
+      }
+
+      if (isset($input['_ticket_observer'])) {
+         if (isset($input['_ticket_observer']['_type'])) {
+            $input['_ticket_observer']['type']=Ticket::OBSERVER;
+            $input['_ticket_observer']['tickets_id']=$input['id'];
+            switch ($input['_ticket_observer']['_type']) {
+               case "user":
+                  $ticket_user=new Ticket_User();
+                  if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
+                     $ticket_user->add($input['_ticket_observer']);
+                  }
+                  break;
+               case "group":
+                  $group_ticket=new Group_Ticket();
+                  if ($group_ticket->can(-1,'w',$input['_ticket_observer'])) {
+                     $group_ticket->add($input['_ticket_observer']);
+                  }
+                  break;
+            }
+         }
+      }
+
+      if (isset($input['_ticket_assign'])) {
+         if (isset($input['_ticket_assign']['_type'])) {
+            $input['_ticket_assign']['type']=Ticket::ASSIGN;
+            $input['_ticket_assign']['tickets_id']=$input['id'];
+            switch ($input['_ticket_assign']['_type']) {
+               case "user":
+                  $ticket_user=new Ticket_User();
+                  if ($ticket_user->can(-1,'w',$input['_ticket_assign'])) {
+                     $ticket_user->add($input['_ticket_assign']);
+                  }
+                  break;
+               case "group":
+                  $group_ticket=new Group_Ticket();
+                  if ($group_ticket->can(-1,'w',$input['_ticket_assign'])) {
+                     $group_ticket->add($input['_ticket_assign']);
+                  }
+                  break;
+            }
+         }
+      }
+
 
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
@@ -2907,26 +2970,67 @@ class Ticket extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2'>".$LANG['common'][103]."</th>";
       echo "<th>".$LANG['job'][4];
-      if ($ID) {
-         echo "ADD LINK";
+      $rand_requester_ticket = -1;
+      $candeleterequester=false;
+      if ($ID && haveRight("update_ticket","1")) {
+         $rand_requester_ticket = mt_rand();
+         echo "&nbsp;&nbsp;<a class='tracking'
+               onClick=\"Ext.get('ticketactor$rand_requester_ticket').setDisplayed('block')\">\n";
+         echo $LANG['buttons'][8];
+         echo "</a>\n";
+         $candeleterequester=true;
       }
       echo "</th>";
 
       echo "<th>".$LANG['common'][104];
-      if ($ID) {
-         echo "ADD LINK";
+      $rand_observer_ticket = -1;
+      $candeleteobserver=false;
+      if ($ID && haveRight("update_ticket","1")) {
+         $rand_observer_ticket = mt_rand();
+         echo "&nbsp;&nbsp;<a class='tracking'
+               onClick=\"Ext.get('ticketactor$rand_observer_ticket').setDisplayed('block')\">\n";
+         echo $LANG['buttons'][8];
+         echo "</a>\n";
+         $candeleteobserver=true;
       }
       echo "</th>";
 
       echo "<th>".$LANG['job'][5];
-      if ($ID) {
-         echo "ADD LINK";
+      $rand_assign_ticket = -1;
+      $candeleteassign=false;
+      if ($ID && (haveRight("assign_ticket","1") || haveRight("steal_ticket","1")
+                  || (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0))) {
+         $rand_assign_ticket = mt_rand();
+         echo "&nbsp;&nbsp;<a class='tracking'
+               onClick=\"Ext.get('ticketactor$rand_assign_ticket').setDisplayed('block')\">\n";
+         echo $LANG['buttons'][8];
+         echo "</a>\n";
+      }
+      if ($ID && haveRight("assign_ticket","1")) {
+         $candeleteassign=true;
       }
       echo "</th>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1 top'>";
       echo "<td>";
+
+      if ($rand_requester_ticket>=0) {
+         echo "<div style='display:none' id='ticketactor$rand_requester_ticket'>";
+         $types=array(''      => DROPDOWN_EMPTY_VALUE,
+                      'user'  => $LANG['common'][34],
+                      'group' => $LANG['common'][35]);
+         $rand=Dropdown::showFromArray("_ticket_requester[_type]", $types);
+         $params = array('type'             => '__VALUE__',
+                         'actortype'        => 'requester',
+                         'entity_restrict'  => $this->fields['entities_id']);
+
+         ajaxUpdateItemOnSelectEvent("dropdown__ticket_requester[_type]$rand", "showticketrequester_$rand",
+                                     $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php", $params);
+         echo "<span id='showticketrequester_$rand'>&nbsp;</span>";
+         echo "</div>";
+      }
+      
       // Requester
       if (!$ID) {
          echo "$usericon&nbsp;";
@@ -2960,10 +3064,16 @@ class Ticket extends CommonDBTM {
             foreach ($this->users[self::REQUESTER] as $k => $d) {
                echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
+               if ($candeleterequester) {
+                  echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
+                        "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id']."&amp;tickets_id=$ID\"
+                           title=\"".$LANG['reservation'][6]."\">
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
+                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+               }
                echo "<br>";
             }
          }
-         /// TODO : ADD delete link + edit link for mail options + icons
       }
       // Requester Group
       if (!$ID) {
@@ -2975,13 +3085,39 @@ class Ticket extends CommonDBTM {
          if (isset($this->groups[self::REQUESTER]) && count($this->groups[self::REQUESTER])) {
             foreach ($this->groups[self::REQUESTER] as $k => $d) {
                echo "$groupicon&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $k).'<br>';
+               echo Dropdown::getDropdownName("glpi_groups", $k);
+               if ($candeleterequester) {
+                  echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
+                        "/front/ticket.form.php?delete_group=delete_group&amp;id=".$d['id']."&amp;tickets_id=$ID\"
+                           title=\"".$LANG['reservation'][6]."\">
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
+                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+               }
+
+               echo '<br>';
             }
          }
       }
       echo "</td>";
 
       echo "<td>";
+
+      if ($rand_observer_ticket>=0) {
+         echo "<div style='display:none' id='ticketactor$rand_observer_ticket'>";
+         $types=array(''      => DROPDOWN_EMPTY_VALUE,
+                      'user'  => $LANG['common'][34],
+                      'group' => $LANG['common'][35]);
+         $rand=Dropdown::showFromArray("_ticket_observer[_type]", $types);
+         $params = array('type'             => '__VALUE__',
+                         'actortype'        => 'observer',
+                         'entity_restrict'  => $this->fields['entities_id']);
+
+         ajaxUpdateItemOnSelectEvent("dropdown__ticket_observer[_type]$rand", "showticketobserver_$rand",
+                                     $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php", $params);
+         echo "<span id='showticketobserver_$rand'>&nbsp;</span>";
+         echo "</div>";
+      }
+
       // Observer
       if (!$ID) {
          if (haveRight("update_ticket","1")) {
@@ -3000,12 +3136,19 @@ class Ticket extends CommonDBTM {
             foreach ($this->users[self::OBSERVER] as $k => $d) {
                echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
+               if ($candeleteobserver) {
+                  echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
+                        "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id']."&amp;tickets_id=$ID\"
+                           title=\"".$LANG['reservation'][6]."\">
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
+                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+               }
+
                echo "<br>";
             }
          }
-         /// TODO : ADD delete link + edit link for mail options + icons
       }
-      // Requester Group
+      // Observer Group
       if (!$ID) {
          echo "$groupicon&nbsp;";
          Dropdown::show('Group', array('name'   => '_ticket_group_observer',
@@ -3015,7 +3158,16 @@ class Ticket extends CommonDBTM {
          if (isset($this->groups[self::OBSERVER]) && count($this->groups[self::OBSERVER])) {
             foreach ($this->groups[self::OBSERVER] as $k => $d) {
                echo "$groupicon&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $k).'<br>';
+               echo Dropdown::getDropdownName("glpi_groups", $k);
+               if ($candeleteobserver) {
+                  echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
+                        "/front/ticket.form.php?delete_group=delete_group&amp;id=".$d['id']."&amp;tickets_id=$ID\"
+                           title=\"".$LANG['reservation'][6]."\">
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
+                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+               }
+
+               echo '<br>';
             }
          }
       }
@@ -3024,6 +3176,26 @@ class Ticket extends CommonDBTM {
 
 
       echo "<td>";
+
+      if ($rand_assign_ticket>=0) {
+         echo "<div style='display:none' id='ticketactor$rand_assign_ticket'>";
+         $types=array(''      => DROPDOWN_EMPTY_VALUE,
+                      'user'  => $LANG['common'][34]);
+
+         if (haveRight("assign_ticket","1")) {
+            $types['group'] = $LANG['common'][35];
+         }
+         $rand=Dropdown::showFromArray("_ticket_assign[_type]", $types);
+         $params = array('type'             => '__VALUE__',
+                         'actortype'        => 'assign',
+                         'entity_restrict'  => $this->fields['entities_id']);
+
+         ajaxUpdateItemOnSelectEvent("dropdown__ticket_assign[_type]$rand", "showticketassign_$rand",
+                                     $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php", $params);
+         echo "<span id='showticketassign_$rand'>&nbsp;</span>";
+         echo "</div>";
+      }
+
       // Assign User
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
@@ -3048,10 +3220,17 @@ class Ticket extends CommonDBTM {
             foreach ($this->users[self::ASSIGN] as $k => $d) {
                echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
+               if ($candeleteassign) {
+                  echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
+                        "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id']."&amp;tickets_id=$ID\"
+                           title=\"".$LANG['reservation'][6]."\">
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
+                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+               }
+
                echo '<br>';
             }
          }
-         /// TODO : ADD delete link + edit link for mail options + icons
       }
 
       // Assign Groups
@@ -3068,6 +3247,14 @@ class Ticket extends CommonDBTM {
             foreach ($this->groups[self::ASSIGN] as $k => $d) {
                echo "$groupicon&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $k);
+               if ($candeleteassign) {
+                  echo "&nbsp;<a href=\"".$CFG_GLPI["root_doc"].
+                        "/front/ticket.form.php?delete_group=delete_group&amp;id=".$d['id']."&amp;tickets_id=$ID\"
+                           title=\"".$LANG['reservation'][6]."\">
+                        <img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\"
+                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+               }
+
                echo '<br>';
             }
          }
@@ -3618,8 +3805,6 @@ class Ticket extends CommonDBTM {
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "<input type='text' name='_link[tickets_id_2]' value='' size='10'>\n";
             echo "&nbsp;";
-/*            echo "<input type='submit' name='add_link' value=\"".$LANG['buttons'][8]."\"
-                   class='submit'>";*/
             echo "</div>";
          }
          echo "</td>";
