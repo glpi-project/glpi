@@ -2963,9 +2963,37 @@ class Ticket extends CommonDBTM {
    }
 
 
+   /**
+    * show tooltip for user notification informations
+    *
+    * @param $userdata array : data of ticket_user table
+    *
+    * @return nothing display
+   **/
+   static function showUserNotificationTooltip($userdata) {
+      global $CFG_GLPI,$LANG;
+      if ($CFG_GLPI['use_mailing']) {
+            $text=$LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($userdata['use_notification']).'<br>';
+            if ($userdata['use_notification']) {
+               $user=new User;
+               $uemail=$userdata['alternative_email'];
+               if (empty($uemail) && $user->getFromDB($userdata['users_id'])) {
+                  $uemail=$user->getField('email');
+               }
+               $text.=$LANG['mailing'][118]."&nbsp;:&nbsp;".$uemail;
+               if (NotificationMail::isUserAddressValid($uemail)) {
+                  $text.="<br><span class='red'>".$LANG['mailing'][110]."</span>";
+               }
+            }
+            echo "&nbsp;";
+            showToolTip($text);
+         }
+   }
+
    function showActorsPartForm($ID,$options) {
       global $LANG, $CFG_GLPI;
 
+      $user=new User;
       $showuserlink = 0;
       if (haveRight('user','r')) {
          $showuserlink = 1;
@@ -3038,6 +3066,7 @@ class Ticket extends CommonDBTM {
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
                                      $params);
          echo "<span id='showticketrequester_$rand'>&nbsp;</span>";
+         echo "<hr>";
          echo "</div>";
       }
 
@@ -3074,6 +3103,7 @@ class Ticket extends CommonDBTM {
             foreach ($this->users[self::REQUESTER] as $k => $d) {
                echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
+               self::showUserNotificationTooltip($d);
                if ($candeleterequester) {
                   echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
                         "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id'].
@@ -3126,6 +3156,7 @@ class Ticket extends CommonDBTM {
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
                                      $params);
          echo "<span id='showticketobserver_$rand'>&nbsp;</span>";
+         echo "<hr>";
          echo "</div>";
       }
 
@@ -3148,6 +3179,7 @@ class Ticket extends CommonDBTM {
             foreach ($this->users[self::OBSERVER] as $k => $d) {
                echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
+               self::showUserNotificationTooltip($d);
                if ($candeleteobserver) {
                   echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
                         "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id'].
@@ -3203,6 +3235,7 @@ class Ticket extends CommonDBTM {
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
                                      $params);
          echo "<span id='showticketassign_$rand'>&nbsp;</span>";
+         echo "<hr>";
          echo "</div>";
       }
 
@@ -3232,6 +3265,7 @@ class Ticket extends CommonDBTM {
             foreach ($this->users[self::ASSIGN] as $k => $d) {
                echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
+               self::showUserNotificationTooltip($d);
                if ($candeleteassign) {
                   echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
                         "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id'].
