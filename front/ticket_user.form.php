@@ -29,38 +29,23 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE = 1;
+$ticket_user = new Ticket_User();
 
-define('GLPI_ROOT','..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+if (isset($_REQUEST["update"])) {
+   $ticket_user->check($_REQUEST["id"], 'w');
 
-checkCentralAccess();
+   $ticket_user->update($_REQUEST);
+   echo "<script type='text/javascript' >\n";
+   echo "window.opener.location.reload();";
+   echo "window.close()";
+   echo "</script>";
 
-if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
-
-   $user = new User;
-   $email = "";
-   if ($user->getFromDB($_REQUEST["value"])) {
-      $email=$user->getField('email');
-   }
-
-   echo $LANG['job'][19].'&nbsp;:&nbsp;';
-
-   $rand=Dropdown::showYesNo($_REQUEST['field'].'[use_notification]',true);
-
-   echo '<br>'.$LANG['mailing'][118]."&nbsp;:&nbsp;";
-   if (!empty($email) && NotificationMail::isUserAddressValid($email)) {
-      echo $email;
-   } else {
-      echo "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
-               value='$email'>";
-   }
+} else if (isset($_REQUEST["id"])) {
+   $ticket_user->showForm($_REQUEST["id"]);
 }
 
 ?>

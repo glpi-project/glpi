@@ -2054,15 +2054,20 @@ class Ticket extends CommonDBTM {
 
          $tab['notification'] = $LANG['setup'][704];
 
-         $tab[35]['table']    = $this->getTable();
-         $tab[35]['field']    = 'use_email_notification';
-         $tab[35]['name']     = $LANG['job'][19];
-         $tab[35]['datatype'] = 'bool';
+         $tab[35]['table']      = 'glpi_tickets_users';
+         $tab[35]['field']      = 'use_notification';
+         $tab[35]['name']       = $LANG['job'][19];
+         $tab[35]['datatype']   = 'bool';
+         $tab[35]['joinparams'] = array('jointype'  => 'child',
+                                        'condition' => 'NEWTABLE.`type` = '.self::REQUESTER);
 
-         $tab[34]['table']    = $this->getTable();
-         $tab[34]['field']    = 'user_email';
-         $tab[34]['name']     = $LANG['joblist'][27];
-         $tab[34]['datatype'] = 'email';
+
+         $tab[34]['table']      = 'glpi_tickets_users';
+         $tab[34]['field']      = 'alternative_email';
+         $tab[34]['name']       = $LANG['joblist'][27];
+         $tab[34]['datatype']   = 'email';
+         $tab[34]['joinparams'] = array('jointype'  => 'child',
+                                        'condition' => 'NEWTABLE.`type` = '.self::REQUESTER);
       }
 
       return $tab;
@@ -2966,40 +2971,103 @@ class Ticket extends CommonDBTM {
    /**
     * show tooltip for user notification informations
     *
-    * @param $userdata array : data of ticket_user table
+    * @param $type integer : user type
+    * @param $canedit boolean : can edit ?
     *
     * @return nothing display
    **/
-   static function showUserNotificationTooltip($userdata) {
+   function showGroupsAssociated($type,$canedit) {
       global $CFG_GLPI,$LANG;
-      if ($CFG_GLPI['use_mailing']) {
-            $text=$LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($userdata['use_notification']).'<br>';
-            if ($userdata['use_notification']) {
-               $user=new User;
-               $uemail=$userdata['alternative_email'];
-               if (empty($uemail) && $user->getFromDB($userdata['users_id'])) {
-                  $uemail=$user->getField('email');
-               }
-               $text.=$LANG['mailing'][118]."&nbsp;:&nbsp;".$uemail;
-               if (NotificationMail::isUserAddressValid($uemail)) {
-                  $text.="<br><span class='red'>".$LANG['mailing'][110]."</span>";
-               }
+
+
+      $showgrouplink = 0;
+      if (haveRight('group','r')) {
+         $showgrouplink = 1;
+      }
+
+      $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'>";
+      $group=new Group();
+      if (isset($this->groups[$type]) && count($this->groups[$type])) {
+         foreach ($this->groups[$type] as $k => $d) {
+            echo "$groupicon&nbsp;";
+            if ($group->getFromDB($k)) {
+               echo $group->getLink($showgrouplink);
             }
-            echo "&nbsp;";
-            showToolTip($text);
+            if ($canedit) {
+               echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
+                     "/front/ticket.form.php?delete_group=delete_group&amp;id=".$d['id'].
+                     "&amp;tickets_id=".$this->fields['id']."' title=\"".$LANG['reservation'][6]."\">
+                     <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+                     alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+            }
+            echo '<br>';
          }
+      }
+
+   }
+   /**
+    * show tooltip for user notification informations
+    *
+    * @param $type integer : user type
+    * @param $canedit boolean : can edit ?
+    *
+    * @return nothing display
+   **/
+   function showUsersAssociated($type,$canedit) {
+      global $CFG_GLPI,$LANG;
+
+      $showuserlink = 0;
+      if (haveRight('user','r')) {
+         $showuserlink = 2;
+      }
+
+      $usericon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
+      $user = new User;
+
+      if (isset($this->users[$type]) && count($this->users[$type])) {
+         foreach ($this->users[$type] as $k => $d) {
+            echo "$usericon&nbsp;";
+            $userdata=getUserName($k,$showuserlink);
+            echo $userdata['name']."&nbsp;".
+                     showToolTip($userdata["comment"],
+                                 array('link'    => $userdata["link"],
+                                       'display' => false));
+
+            if ($CFG_GLPI['use_mailing']) {
+               $text=$LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($d['use_notification']).'<br>';
+               if ($d['use_notification']) {
+                  $user=new User;
+                  $uemail=$d['alternative_email'];
+                  if (empty($uemail) && $user->getFromDB($d['users_id'])) {
+                     $uemail=$user->getField('email');
+                  }
+                  $text.=$LANG['mailing'][118]."&nbsp;:&nbsp;".$uemail;
+                  if (!NotificationMail::isUserAddressValid($uemail)) {
+                     $text.="<span class='red'>".$LANG['mailing'][110]."</span>";
+                  }
+               }
+               echo "&nbsp;";
+               showToolTip($text,array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                       'popup' => 'edit_user_notification&amp;id='.$d['id']));
+            }
+            if ($canedit) {
+               echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
+                     "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id'].
+                     "&amp;tickets_id=".$this->fields['id']."' title=\"".$LANG['buttons'][6]."\">
+                     <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+                     alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+            }
+            echo "<br>";
+         }
+      }
    }
 
    function showActorsPartForm($ID,$options) {
       global $LANG, $CFG_GLPI;
 
-      $user=new User;
-      $showuserlink = 0;
-      if (haveRight('user','r')) {
-         $showuserlink = 1;
-      }
-      $usericon  = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
+      $usericon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
       $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'>";
+      
       // Manage actors : requester and assign
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2'>".$LANG['common'][103]."</th>";
@@ -3083,6 +3151,9 @@ class Ticket extends CommonDBTM {
                                  'right'         => 'all',
                                  'helpdesk_ajax' => 1,
                                  'ldap_import'   => true));
+            if ($CFG_GLPI['use_mailing']) {
+               echo "TODO : PERMIT TO SELECT NOTIF OPTIONS";
+            }
          } else {
             echo getUserName($options["_ticket_user_requester"], $showuserlink);
          }
@@ -3099,21 +3170,7 @@ class Ticket extends CommonDBTM {
          echo '<br>';
 
       } else {
-         if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])) {
-            foreach ($this->users[self::REQUESTER] as $k => $d) {
-               echo "$usericon&nbsp;";
-               echo getUserName($k, $showuserlink);
-               self::showUserNotificationTooltip($d);
-               if ($candeleterequester) {
-                  echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
-                        "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id'].
-                        "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
-               }
-               echo "<br>";
-            }
-         }
+         $this->showUsersAssociated(self::REQUESTER,$candeleterequester);
       }
 
       // Requester Group
@@ -3123,20 +3180,7 @@ class Ticket extends CommonDBTM {
                                        'value'  => $options["_ticket_group_requester"],
                                        'entity' => $this->fields["entities_id"]));
       } else {
-         if (isset($this->groups[self::REQUESTER]) && count($this->groups[self::REQUESTER])) {
-            foreach ($this->groups[self::REQUESTER] as $k => $d) {
-               echo "$groupicon&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $k);
-               if ($candeleterequester) {
-                  echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
-                        "/front/ticket.form.php?delete_group=delete_group&amp;id=".$d['id'].
-                        "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
-               }
-               echo '<br>';
-            }
-         }
+         $this->showGroupsAssociated(self::REQUESTER,$candeleterequester);
       }
       echo "</td>";
 
@@ -3171,25 +3215,15 @@ class Ticket extends CommonDBTM {
                                  'right'         => 'all',
                                  'helpdesk_ajax' => 1,
                                  'ldap_import'   => true));
+            if ($CFG_GLPI['use_mailing']) {
+               echo "TODO : PERMIT TO SELECT NOTIF OPTIONS";
+            }
+
             echo '<br>';
          }
 
       } else {
-         if (isset($this->users[self::OBSERVER]) && count($this->users[self::OBSERVER])) {
-            foreach ($this->users[self::OBSERVER] as $k => $d) {
-               echo "$usericon&nbsp;";
-               echo getUserName($k, $showuserlink);
-               self::showUserNotificationTooltip($d);
-               if ($candeleteobserver) {
-                  echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
-                        "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id'].
-                        "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
-               }
-               echo "<br>";
-            }
-         }
+         $this->showUsersAssociated(self::OBSERVER,$candeleteobserver);
       }
 
       // Observer Group
@@ -3199,20 +3233,7 @@ class Ticket extends CommonDBTM {
                                        'value'  => $options["_ticket_group_observer"],
                                        'entity' => $this->fields["entities_id"]));
       } else {
-         if (isset($this->groups[self::OBSERVER]) && count($this->groups[self::OBSERVER])) {
-            foreach ($this->groups[self::OBSERVER] as $k => $d) {
-               echo "$groupicon&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $k);
-               if ($candeleteobserver) {
-                  echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
-                        "/front/ticket.form.php?delete_group=delete_group&amp;id=".$d['id'].
-                        "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
-               }
-               echo '<br>';
-            }
-         }
+         $this->showGroupsAssociated(self::OBSERVER,$candeleteobserver);
       }
       echo "</td>";
 
@@ -3248,6 +3269,10 @@ class Ticket extends CommonDBTM {
                                  'right'       => 'own_ticket',
                                  'entity'      => $this->fields["entities_id"],
                                  'ldap_import' => true));
+            if ($CFG_GLPI['use_mailing']) {
+               echo "TODO : PERMIT TO SELECT NOTIF OPTIONS";
+            }
+
             echo '<br>';
 
          } else if (haveRight("steal_ticket","1") ||
@@ -3261,21 +3286,7 @@ class Ticket extends CommonDBTM {
          }
 
       } else {
-         if (isset($this->users[self::ASSIGN]) && count($this->users[self::ASSIGN])) {
-            foreach ($this->users[self::ASSIGN] as $k => $d) {
-               echo "$usericon&nbsp;";
-               echo getUserName($k, $showuserlink);
-               self::showUserNotificationTooltip($d);
-               if ($candeleteassign) {
-                  echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
-                        "/front/ticket.form.php?delete_user=delete_user&amp;id=".$d['id'].
-                        "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
-               }
-               echo '<br>';
-            }
-         }
+         $this->showUsersAssociated(self::ASSIGN,$candeleteassign);
       }
 
       // Assign Groups
@@ -3289,20 +3300,7 @@ class Ticket extends CommonDBTM {
          }
 
       } else {
-         if (isset($this->groups[self::ASSIGN]) && count($this->groups[self::ASSIGN])) {
-            foreach ($this->groups[self::ASSIGN] as $k => $d) {
-               echo "$groupicon&nbsp;";
-               echo Dropdown::getDropdownName("glpi_groups", $k);
-               if ($candeleteassign) {
-                  echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
-                        "/front/ticket.form.php?delete_group=delete_group&amp;id=".$d['id'].
-                        "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                        alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
-               }
-               echo '<br>';
-            }
-         }
+         $this->showGroupsAssociated(self::ASSIGN,$candeleteassign);
       }
 
       // Supplier

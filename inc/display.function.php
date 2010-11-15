@@ -2170,6 +2170,10 @@ function printHelpDesk ($ID, $from_helpdesk) {
    $urgency             = 3;
    $type                = 0;
 
+   if ($CFG_GLPI['use_mailing']) {
+      echo "TODO : do requester correct set + notif options";
+   }
+
    if (isset($_SESSION["helpdeskSaved"]["use_email_notification"])) {
       $use_email_notification = stripslashes($_SESSION["helpdeskSaved"]["use_email_notification"]);
    }
@@ -3450,6 +3454,8 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
  *   - link : string / link to put on displayed image if contentid is empty
  *   - linkid : string / html id to put to the link link (used for ajax)
  *   - linktarget : string / target for the link
+ *   - popup : string / popup action : link not needed to use it
+ *   - img : string / url of a specific img to use
  *   - display : boolean / display the item : false return the datas
  *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
  *
@@ -3464,6 +3470,8 @@ function showToolTip($content, $options=array()) {
    $param['link']       = '';
    $param['linkid']     = '';
    $param['linktarget'] = '';
+   $param['img']        = $CFG_GLPI["root_doc"]."/pics/aide.png";
+   $param['popup']      = '';
    $param['ajax']       = '';
    $param['display']    = true;
    $param['autoclose']  = true;
@@ -3481,6 +3489,11 @@ function showToolTip($content, $options=array()) {
    $rand = mt_rand();
    $out  = '';
 
+   // Force link for popup
+   if (!empty($param['popup'])) {
+      $param['link']='#';
+   }
+
    if (empty($param['applyto'])) {
       if (!empty($param['link'])) {
          $out .= "<a id='".(!empty($param['linkid'])?$param['linkid']:"tooltiplink$rand")."'";
@@ -3488,9 +3501,16 @@ function showToolTip($content, $options=array()) {
          if (!empty($param['linktarget'])) {
             $out .= " target='".$param['linktarget']."' ";
          }
-         $out .= " href='".$param['link']."'>";
+         $out .= " href='".$param['link']."'";
+
+         if (!empty($param['popup'])) {
+            $out.=" onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
+            "/front/popup.php?popup=".$param['popup']."' ,'glpibookmarks', 'height=400, ".
+            "width=600, top=100, left=100, scrollbars=yes' );w.focus();\" ";
+         }
+         $out.='>';
       }
-      $out .= "<img id='tooltip$rand' alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
+      $out .= "<img id='tooltip$rand' alt='' src='".$param['img']."'>";
 
       if (!empty($param['link'])) {
          $out .= "</a>";

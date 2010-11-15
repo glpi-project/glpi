@@ -81,6 +81,10 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          $_GET["action"] = "edit";
          include "bookmark.php";
          break;
+      case "edit_user_notification" :
+         popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
+         include "ticket_user.form.php";
+         break;
       case "add_ldapuser" :
          popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
          include "ldap.import.php";
