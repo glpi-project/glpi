@@ -116,7 +116,7 @@ class Ticket extends CommonDBTM {
 
       return (haveRight("show_all_ticket","1")
               || $this->isUser(self::REQUESTER,getLoginUserID())
-              || $this->isUser(self::OBESERVER,getLoginUserID())
+              || $this->isUser(self::OBSERVER,getLoginUserID())
               || (haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
                   && ($this->haveAGroup(self::REQUESTER,$_SESSION["glpigroups"])
@@ -379,25 +379,27 @@ class Ticket extends CommonDBTM {
       }
 
       if (isset($input['_link'])) {
-         $ticket_ticket=new Ticket_Ticket();
-         if ($ticket_ticket->can(-1,'w',$input['_link'])) {
+         $ticket_ticket = new Ticket_Ticket();
+         if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
             $ticket_ticket->add($input['_link']);
          }
       }
 
       if (isset($input['_ticket_requester'])) {
          if (isset($input['_ticket_requester']['_type'])) {
-            $input['_ticket_requester']['type']=Ticket::REQUESTER;
-            $input['_ticket_requester']['tickets_id']=$input['id'];
+            $input['_ticket_requester']['type']       = Ticket::REQUESTER;
+            $input['_ticket_requester']['tickets_id'] = $input['id'];
+
             switch ($input['_ticket_requester']['_type']) {
-               case "user":
-                  $ticket_user=new Ticket_User();
+               case "user" :
+                  $ticket_user = new Ticket_User();
                   if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
                      $ticket_user->add($input['_ticket_requester']);
                   }
                   break;
-               case "group":
-                  $group_ticket=new Group_Ticket();
+
+               case "group" :
+                  $group_ticket = new Group_Ticket();
                   if ($group_ticket->can(-1,'w',$input['_ticket_requester'])) {
                      $group_ticket->add($input['_ticket_requester']);
                   }
@@ -408,17 +410,19 @@ class Ticket extends CommonDBTM {
 
       if (isset($input['_ticket_observer'])) {
          if (isset($input['_ticket_observer']['_type'])) {
-            $input['_ticket_observer']['type']=Ticket::OBSERVER;
-            $input['_ticket_observer']['tickets_id']=$input['id'];
+            $input['_ticket_observer']['type']       = Ticket::OBSERVER;
+            $input['_ticket_observer']['tickets_id'] = $input['id'];
+
             switch ($input['_ticket_observer']['_type']) {
-               case "user":
-                  $ticket_user=new Ticket_User();
+               case "user" :
+                  $ticket_user = new Ticket_User();
                   if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
                      $ticket_user->add($input['_ticket_observer']);
                   }
                   break;
-               case "group":
-                  $group_ticket=new Group_Ticket();
+
+               case "group" :
+                  $group_ticket = new Group_Ticket();
                   if ($group_ticket->can(-1,'w',$input['_ticket_observer'])) {
                      $group_ticket->add($input['_ticket_observer']);
                   }
@@ -429,17 +433,19 @@ class Ticket extends CommonDBTM {
 
       if (isset($input['_ticket_assign'])) {
          if (isset($input['_ticket_assign']['_type'])) {
-            $input['_ticket_assign']['type']=Ticket::ASSIGN;
-            $input['_ticket_assign']['tickets_id']=$input['id'];
+            $input['_ticket_assign']['type']       = Ticket::ASSIGN;
+            $input['_ticket_assign']['tickets_id'] = $input['id'];
+
             switch ($input['_ticket_assign']['_type']) {
-               case "user":
-                  $ticket_user=new Ticket_User();
+               case "user" :
+                  $ticket_user = new Ticket_User();
                   if ($ticket_user->can(-1,'w',$input['_ticket_assign'])) {
                      $ticket_user->add($input['_ticket_assign']);
                   }
                   break;
-               case "group":
-                  $group_ticket=new Group_Ticket();
+
+               case "group" :
+                  $group_ticket = new Group_Ticket();
                   if ($group_ticket->can(-1,'w',$input['_ticket_assign'])) {
                      $group_ticket->add($input['_ticket_assign']);
                   }
@@ -1270,8 +1276,8 @@ class Ticket extends CommonDBTM {
 
 
       // Add user groups linked to tickets
-      $ticket_user=new Ticket_User;
-      $group_ticket=new Group_Ticket;
+      $ticket_user  = new Ticket_User;
+      $group_ticket = new Group_Ticket;
       if (isset($this->input["_ticket_user_requester"])
           && $this->input["_ticket_user_requester"]>0) {
          $ticket_user->add(array('tickets_id' => $this->fields['id'],
@@ -1293,20 +1299,20 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["_ticket_group_requester"])
           && $this->input["_ticket_group_requester"]>0) {
          $group_ticket->add(array('tickets_id' => $this->fields['id'],
-                                 'groups_id'   => $this->input["_ticket_group_requester"],
-                                 'type'       => Ticket::REQUESTER));
+                                  'groups_id'  => $this->input["_ticket_group_requester"],
+                                  'type'       => Ticket::REQUESTER));
       }
       if (isset($this->input["_ticket_group_assign"])
           && $this->input["_ticket_group_assign"]>0) {
          $group_ticket->add(array('tickets_id' => $this->fields['id'],
-                                 'groups_id'   => $this->input["_ticket_group_assign"],
-                                 'type'       => Ticket::ASSIGN));
+                                  'groups_id'  => $this->input["_ticket_group_assign"],
+                                  'type'       => Ticket::ASSIGN));
       }
       if (isset($this->input["_ticket_group_observer"])
           && $this->input["_ticket_group_observer"]>0) {
          $group_ticket->add(array('tickets_id' => $this->fields['id'],
-                                 'groups_id'   => $this->input["_ticket_group_observer"],
-                                 'type'       => Ticket::OBSERVER));
+                                  'groups_id'  => $this->input["_ticket_group_observer"],
+                                  'type'       => Ticket::OBSERVER));
       }
 
       // Processing Email
@@ -1877,11 +1883,11 @@ class Ticket extends CommonDBTM {
       $tab[66]['forcegroupby']  = true;
       $tab[66]['massiveaction'] = false;
       $tab[66]['joinparams']    = array('beforejoin'
-                                       => array('table' => 'glpi_tickets_users',
-                                                'joinparams'
-                                                        => array('jointype'  => 'child',
-                                                                 'condition' => 'NEWTABLE.`type` ' .
-                                                                                '= '.self::OBSERVER)));
+                                        => array('table' => 'glpi_tickets_users',
+                                                 'joinparams'
+                                                         => array('jointype'  => 'child',
+                                                                  'condition' => 'NEWTABLE.`type` ' .
+                                                                                 '= '.self::OBSERVER)));
 
       $tab[65]['table']         = 'glpi_groups';
       $tab[65]['field']         = 'name';
@@ -2048,19 +2054,15 @@ class Ticket extends CommonDBTM {
 
          $tab['notification'] = $LANG['setup'][704];
 
-         $tab[35]['table']      = 'glpi_tickets_users';
-         $tab[35]['field']      = 'use_notification';
-         $tab[35]['name']       = $LANG['job'][19];
-         $tab[35]['datatype']   = 'bool';
-         $tab[35]['joinparams'] = array('jointype'  => 'child',
-                                        'condition' => 'NEWTABLE.`type` = '.self::REQUESTER);
+         $tab[35]['table']    = $this->getTable();
+         $tab[35]['field']    = 'use_email_notification';
+         $tab[35]['name']     = $LANG['job'][19];
+         $tab[35]['datatype'] = 'bool';
 
-         $tab[34]['table']      = 'glpi_tickets_users';
-         $tab[34]['field']      = 'alternative_email';
-         $tab[34]['name']       = $LANG['joblist'][27];
-         $tab[34]['datatype']   = 'email';
-         $tab[34]['joinparams'] = array('jointype'  => 'child',
-                                        'condition' => 'NEWTABLE.`type` = '.self::REQUESTER);
+         $tab[34]['table']    = $this->getTable();
+         $tab[34]['field']    = 'user_email';
+         $tab[34]['name']     = $LANG['joblist'][27];
+         $tab[34]['datatype'] = 'email';
       }
 
       return $tab;
@@ -2982,7 +2984,7 @@ class Ticket extends CommonDBTM {
                onClick=\"Ext.get('ticketactor$rand_requester_ticket').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
-         $candeleterequester=true;
+         $candeleterequester = true;
       }
       echo "</th>";
 
@@ -2995,7 +2997,7 @@ class Ticket extends CommonDBTM {
                onClick=\"Ext.get('ticketactor$rand_observer_ticket').setDisplayed('block')\">\n";
          echo $LANG['buttons'][8];
          echo "</a>\n";
-         $candeleteobserver=true;
+         $candeleteobserver = true;
       }
       echo "</th>";
 
@@ -3185,18 +3187,19 @@ class Ticket extends CommonDBTM {
       echo "<td>";
       if ($rand_assign_ticket>=0) {
          echo "<div style='display:none' id='ticketactor$rand_assign_ticket'>";
-         $types  =array(''     => DROPDOWN_EMPTY_VALUE,
+         $types = array(''     => DROPDOWN_EMPTY_VALUE,
                         'user' => $LANG['common'][34]);
 
          if (haveRight("assign_ticket","1")) {
             $types['group'] = $LANG['common'][35];
          }
-         $rand = Dropdown::showFromArray("_ticket_assign[_type]", $types);
+         $rand   = Dropdown::showFromArray("_ticket_assign[_type]", $types);
          $params = array('type'            => '__VALUE__',
                          'actortype'       => 'assign',
                          'entity_restrict' => $this->fields['entities_id']);
 
-         ajaxUpdateItemOnSelectEvent("dropdown__ticket_assign[_type]$rand", "showticketassign_$rand",
+         ajaxUpdateItemOnSelectEvent("dropdown__ticket_assign[_type]$rand",
+                                     "showticketassign_$rand",
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownTicketActors.php",
                                      $params);
          echo "<span id='showticketassign_$rand'>&nbsp;</span>";
@@ -3325,7 +3328,9 @@ class Ticket extends CommonDBTM {
             }
          }
          $this->countentitiesforuser = count($this->userentities);
-         if ($this->countentitiesforuser>0 && !in_array($this->fields["entities_id"],$this->userentities)) {
+
+         if ($this->countentitiesforuser>0
+             && !in_array($this->fields["entities_id"],$this->userentities)) {
             // If entity is not in the list of user's entities,
             // then use as default value the first value of the user's entites list
             $this->fields["entities_id"] = $this->userentities[0];
@@ -3568,20 +3573,23 @@ class Ticket extends CommonDBTM {
                }
             }
          }
-         $dev_user_id=0;
+         $dev_user_id = 0;
          if (!$ID) {
-            $dev_user_id=$options['_ticket_user_requester'];
-         } else if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])==1) {
+            $dev_user_id = $options['_ticket_user_requester'];
+
+         } else if (isset($this->users[self::REQUESTER])
+                    && count($this->users[self::REQUESTER])==1) {
             foreach ($this->users[self::REQUESTER] as $user_id_single) {
                $dev_user_id = $user_id_single['users_id'];
             }
          }
          if ($dev_user_id > 0) {
             self::dropdownMyDevices($dev_user_id, $this->fields["entities_id"],
-                                   $this->fields["itemtype"], $this->fields["items_id"]);
+                                    $this->fields["itemtype"], $this->fields["items_id"]);
          }
          self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
                                   1, $this->fields["entities_id"]);
+
       } else {
          if ($ID && $this->fields['itemtype'] && class_exists($this->fields['itemtype'])) {
             $item = new $this->fields['itemtype']();
@@ -3663,57 +3671,57 @@ class Ticket extends CommonDBTM {
       }
 
       // Mailing ? Y or no ?
-//       if ($CFG_GLPI["use_mailing"]==1) {
-//          echo "<tr class='tab_bg_1'>";
-//          echo "<td>".$LANG['job'][19]."&nbsp;: </td>";
-//          echo "<td>";
-//          if (!$ID) {
-//             $query = "SELECT `email`
-//                       FROM `glpi_users`
-//                       WHERE `id` ='".$this->fields["users_id"]."'";
-//             $result = $DB->query($query);
-// 
-//             $email = "";
-//             if ($result && $DB->numrows($result)) {
-//                $email = $DB->result($result, 0, "email");
-//             }
-//             Dropdown::showYesNo('use_email_notification', !empty($email));
-//          } else {
-//             if ($canupdate) {
-//                Dropdown::showYesNo('use_email_notification',
-//                                    $this->fields["use_email_notification"]);
-//             } else {
-//                if ($this->fields["use_email_notification"]) {
-//                   echo $LANG['choice'][1];
-//                } else {
-//                   echo $LANG['choice'][0];
-//                }
-//             }
-//          }
-// 
-//          echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
-//          echo "<td>";
-//          if (!$ID) {
-//             echo "<input type='text' size='30' name='user_email' value='$email'>";
-//          } else {
-// 
-//             if ($canupdate) {
-//                autocompletionTextField($this,"user_email");
-//                if (!empty($this->fields["user_email"])) {
-//                   echo "<a href='mailto:".$this->fields["user_email"]."'>";
-//                   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
-//                }
-// 
-//             } else if (!empty($this->fields["user_email"])) {
-//                echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"].
-//                     "</a>";
-// 
-//             } else {
-//                echo "&nbsp;";
-//             }
-//          }
-//          echo "</td></tr>";
-//       }
+      if ($CFG_GLPI["use_mailing"]==1) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['job'][19]."&nbsp;: </td>";
+         echo "<td>";
+         if (!$ID) {
+            $query = "SELECT `email`
+                      FROM `glpi_users`
+                      WHERE `id` ='".$this->fields["users_id"]."'";
+            $result = $DB->query($query);
+
+            $email = "";
+            if ($result && $DB->numrows($result)) {
+               $email = $DB->result($result, 0, "email");
+            }
+            Dropdown::showYesNo('use_email_notification', !empty($email));
+         } else {
+            if ($canupdate) {
+               Dropdown::showYesNo('use_email_notification',
+                                   $this->fields["use_email_notification"]);
+            } else {
+               if ($this->fields["use_email_notification"]) {
+                  echo $LANG['choice'][1];
+               } else {
+                  echo $LANG['choice'][0];
+               }
+            }
+         }
+
+         echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
+         echo "<td>";
+         if (!$ID) {
+            echo "<input type='text' size='30' name='user_email' value='$email'>";
+         } else {
+
+            if ($canupdate) {
+               autocompletionTextField($this,"user_email");
+               if (!empty($this->fields["user_email"])) {
+                  echo "<a href='mailto:".$this->fields["user_email"]."'>";
+                  echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
+               }
+
+            } else if (!empty($this->fields["user_email"])) {
+               echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"].
+                    "</a>";
+
+            } else {
+               echo "&nbsp;";
+            }
+         }
+         echo "</td></tr>";
+      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
