@@ -2849,13 +2849,14 @@ class Ticket extends CommonDBTM {
 
 
    function showActorsPartForm($ID,$options) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       $showuserlink = 0;
       if (haveRight('user','r')) {
          $showuserlink = 1;
       }
-
+      $usericon="<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
+      $groupicon="<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'>";
       // Manage actors : requester and assign
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2'>".$LANG['common'][103]."</th>";
@@ -2882,7 +2883,7 @@ class Ticket extends CommonDBTM {
       echo "<td>";
       // Requester
       if (!$ID) {
-         echo 'USERICON&nbsp;';
+         echo "$usericon&nbsp;";
          if (haveRight("update_ticket","1")) {
             //List all users in the active entities
             User::dropdown(array('name'          => '_ticket_user_requester',
@@ -2911,7 +2912,7 @@ class Ticket extends CommonDBTM {
       } else {
          if (isset($this->users[self::REQUESTER]) && count($this->users[self::REQUESTER])) {
             foreach ($this->users[self::REQUESTER] as $k => $d) {
-               echo 'USERICON&nbsp;';
+               echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
                echo "<br>";
             }
@@ -2920,14 +2921,14 @@ class Ticket extends CommonDBTM {
       }
       // Requester Group
       if (!$ID) {
-         echo 'GROUPICON&nbsp;';
+         echo "$groupicon&nbsp;";
          Dropdown::show('Group', array('name'   => '_ticket_group_requester',
                                        'value'  => $options["_ticket_group_requester"],
                                        'entity' => $this->fields["entities_id"]));
       } else {
          if (isset($this->groups[self::REQUESTER]) && count($this->groups[self::REQUESTER])) {
             foreach ($this->groups[self::REQUESTER] as $k => $d) {
-               echo 'GROUPICON&nbsp;';
+               echo "$groupicon&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $k).'<br>';
             }
          }
@@ -2938,7 +2939,7 @@ class Ticket extends CommonDBTM {
       // Observer
       if (!$ID) {
          if (haveRight("update_ticket","1")) {
-            echo 'USERICON&nbsp;';
+            echo "$usericon&nbsp;";
             //List all users in the active entities
             User::dropdown(array('name'          => '_ticket_user_observer',
                                  'value'         => $options["_ticket_user_observer"],
@@ -2951,7 +2952,7 @@ class Ticket extends CommonDBTM {
       } else {
          if (isset($this->users[self::OBSERVER]) && count($this->users[self::OBSERVER])) {
             foreach ($this->users[self::OBSERVER] as $k => $d) {
-               echo 'USERICON&nbsp;';
+               echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
                echo "<br>";
             }
@@ -2960,14 +2961,14 @@ class Ticket extends CommonDBTM {
       }
       // Requester Group
       if (!$ID) {
-         echo 'GROUPICON&nbsp;';
+         echo "$groupicon&nbsp;";
          Dropdown::show('Group', array('name'   => '_ticket_group_observer',
                                        'value'  => $options["_ticket_group_observer"],
                                        'entity' => $this->fields["entities_id"]));
       } else {
          if (isset($this->groups[self::OBSERVER]) && count($this->groups[self::OBSERVER])) {
             foreach ($this->groups[self::OBSERVER] as $k => $d) {
-               echo 'GROUPICON&nbsp;';
+               echo "$groupicon&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $k).'<br>';
             }
          }
@@ -2980,7 +2981,7 @@ class Ticket extends CommonDBTM {
       // Assign User
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
-            echo 'USERICON&nbsp;';
+            echo "$usericon&nbsp;";
             User::dropdown(array('name'        => '_ticket_user_assign',
                                  'value'       => $options["_ticket_user_assign"],
                                  'right'       => 'own_ticket',
@@ -2989,7 +2990,7 @@ class Ticket extends CommonDBTM {
             echo '<br>';
          } else if (haveRight("steal_ticket","1") ||
                   (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0)) {
-            echo 'USERICON&nbsp;';
+            echo "$usericon&nbsp;";
             User::dropdown(array('name'        => '_ticket_user_assign',
                                  'value'       => $options["_ticket_user_assign"],
                                  'entity'      => $this->fields["entities_id"],
@@ -2999,7 +3000,7 @@ class Ticket extends CommonDBTM {
       } else {
          if (isset($this->users[self::ASSIGN]) && count($this->users[self::ASSIGN])) {
             foreach ($this->users[self::ASSIGN] as $k => $d) {
-               echo 'USERICON&nbsp;';
+               echo "$usericon&nbsp;";
                echo getUserName($k, $showuserlink);
                echo '<br>';
             }
@@ -3010,7 +3011,7 @@ class Ticket extends CommonDBTM {
       // Assign Groups
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
-            echo 'GROUPICON&nbsp;';
+            echo "$groupicon&nbsp;";
             Dropdown::show('Group', array('name'   => '_ticket_group_assign',
                                           'value'  => $options["_ticket_group_assign"],
                                           'entity' => $this->fields["entities_id"]));
@@ -3019,22 +3020,20 @@ class Ticket extends CommonDBTM {
       } else {
          if (isset($this->groups[self::ASSIGN]) && count($this->groups[self::ASSIGN])) {
             foreach ($this->groups[self::ASSIGN] as $k => $d) {
-               echo 'GROUPICON&nbsp;';
+               echo "$groupicon&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $k);
                echo '<br>';
             }
          }
       }
       // Supplier
-      if (!$ID) {
-         if (haveRight("assign_ticket","1")) {
-            echo 'SUPPLIERICON&nbsp;';
-            Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
-                                             'value'  => $this->fields["suppliers_id_assign"],
-                                             'entity' => $this->fields["entities_id"]));
+      if (haveRight("assign_ticket","1")) {
+         echo 'SUPPLIERICON&nbsp;';
+         Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
+                                          'value'  => $this->fields["suppliers_id_assign"],
+                                          'entity' => $this->fields["entities_id"]));
 
-            echo '<br>';
-         }
+         echo '<br>';
       } else {
          if ($this->fields["suppliers_id_assign"]) {
             echo 'SUPPLIERICON&nbsp;';
