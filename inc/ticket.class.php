@@ -651,11 +651,58 @@ class Ticket extends CommonDBTM {
 
       }
 
+      // check dates
+
+      // check due_date (SLA)
+      if ($this->fields["due_date"] < $this->fields["date"]) {
+         addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+
+         if (($key=array_search('date',$this->updates)) !== false) {
+            unset($this->updates[$key]);
+            unset($this->oldvalues['date']);
+         }
+         if (($key=array_search('due_date',$this->updates)) !== false) {
+            unset($this->updates[$key]);
+            unset($this->oldvalues['due_date']);
+         }
+      }
+
+      // Status solved : check dates
+      if ($this->fields["status"]=="solved"
+          && (in_array("date",$this->updates) || in_array("solvedate",$this->updates))) {
+
+         // Invalid dates : no change
+         // solvedate must be > create date
+         if ($this->fields["solvedate"] < $this->fields["date"]) {
+            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+
+            if (($key=array_search('date',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['date']);
+            }
+            if (($key=array_search('solvedate',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['solvedate']);
+            }
+          }
+      }
+
       // Status close : check dates
       if ($this->fields["status"]=="closed"
           && (in_array("date",$this->updates) || in_array("closedate",$this->updates))) {
 
          // Invalid dates : no change
+         // closedate must be > solvedate
+         if ($this->fields["closedate"] < $this->fields["solvedate"]) {
+            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+
+            if (($key=array_search('closedate',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['closedate']);
+            }
+         }
+
+         // closedate must be > create date
          if ($this->fields["closedate"]<$this->fields["date"]) {
             addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
             if (($key=array_search('date',$this->updates)) !== false) {
@@ -3069,7 +3116,7 @@ class Ticket extends CommonDBTM {
 
       $usericon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
       $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'>";
-      
+
       // Manage actors : requester and assign
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2'>".$LANG['common'][103]."&nbsp;:</th>";
@@ -3713,7 +3760,7 @@ class Ticket extends CommonDBTM {
 //                       FROM `glpi_users`
 //                       WHERE `id` ='".$this->fields["users_id"]."'";
 //             $result = $DB->query($query);
-// 
+//
 //             $email = "";
 //             if ($result && $DB->numrows($result)) {
 //                $email = $DB->result($result, 0, "email");
@@ -3731,24 +3778,24 @@ class Ticket extends CommonDBTM {
 //                }
 //             }
 //          }
-// 
+//
 //          echo "<td>".$LANG['joblist'][27]."&nbsp;: </td>";
 //          echo "<td>";
 //          if (!$ID) {
 //             echo "<input type='text' size='30' name='user_email' value='$email'>";
 //          } else {
-// 
+//
 //             if ($canupdate) {
 //                autocompletionTextField($this,"user_email");
 //                if (!empty($this->fields["user_email"])) {
 //                   echo "<a href='mailto:".$this->fields["user_email"]."'>";
 //                   echo "<img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
 //                }
-// 
+//
 //             } else if (!empty($this->fields["user_email"])) {
 //                echo "<a href='mailto:".$this->fields["user_email"]."'>".$this->fields["user_email"].
 //                     "</a>";
-// 
+//
 //             } else {
 //                echo "&nbsp;";
 //             }
