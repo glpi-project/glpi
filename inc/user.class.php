@@ -593,7 +593,9 @@ class User extends CommonDBTM {
    function syncLdapGroups() {
       global $DB;
 
+      // input["_groups"] not set when update from user.form or preference
       if (isset($this->fields["authtype"])
+          && isset($this->input["_groups"])
           && ($this->fields["authtype"] == Auth::LDAP
               || Auth::isAlternateAuthWithLdap($this->fields['authtype']))) {
 
@@ -601,9 +603,6 @@ class User extends CommonDBTM {
             $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
 
             if (count($authtype)) {
-               if (!isset($this->input["_groups"])) {
-                  $this->input["_groups"] = array();
-               }
                // Clean groups
                $this->input["_groups"] = array_unique ($this->input["_groups"]);
 
@@ -865,6 +864,9 @@ class User extends CommonDBTM {
                }
             }
          }
+
+         // Empty array to ensure than syncLdapGroups will be done
+         $this->fields["_groups"] = array();
 
          ///The groups are retrieved by looking into an ldap user object
          if ($ldap_method["group_search_type"] == 0 || $ldap_method["group_search_type"] == 2) {
