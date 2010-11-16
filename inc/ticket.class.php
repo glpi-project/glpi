@@ -3204,7 +3204,7 @@ class Ticket extends CommonDBTM {
                echo "<br>TODO : PERMIT TO SELECT NOTIF OPTIONS<br>";
             }
          } else {
-            echo getUserName($options["_users_id_requester"], $showuserlink);
+            echo getUserName($options["_users_id_requester"]);
          }
 
          //If user have access to more than one entity, then display a combobox
