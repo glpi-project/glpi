@@ -1472,7 +1472,8 @@ class CommonDBTM extends CommonGLPI {
                   $entity = $this->fields['entities_id'];
                }
                echo "<input type='hidden' name='entities_id' value='$entity'>";
-            } else {
+
+            } else if ($this->getType() != 'User') {
                echo "<input type='hidden' name='entities_id' value='0'>";
 
             }
