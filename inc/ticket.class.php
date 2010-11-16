@@ -3117,6 +3117,10 @@ class Ticket extends CommonDBTM {
       $usericon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
       $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'>";
 
+      $showuserlink = 0;
+      if (haveRight('user','r')) {
+         $showuserlink = 1;
+      }
       // Manage actors : requester and assign
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2'>".$LANG['common'][103]."&nbsp;:</th>";
@@ -3204,7 +3208,7 @@ class Ticket extends CommonDBTM {
                echo "<br>TODO : PERMIT TO SELECT NOTIF OPTIONS<br>";
             }
          } else {
-            echo getUserName($options["_users_id_requester"]);
+            echo getUserName($options["_users_id_requester"],$showuserlink);
          }
 
          //If user have access to more than one entity, then display a combobox
