@@ -2310,9 +2310,17 @@ class Search {
                            'plan'=>array('plan'),);
             if (isset($tocheck[$val])) {
                foreach ($tocheck[$val] as $key=>$nval) {
-                  $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
+                  if ($nott) {
+                     $tocheck[$val][$key]=" `$table`.`$field` <> '$nval' ";
+                  } else {
+                     $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
+                  }
                }
-               return $link.'('.implode(' OR ',$tocheck[$val]).')';
+               if ($nott) {
+                  return $link.'('.implode(' AND ',$tocheck[$val]).')';
+               } else {
+                  return $link.'('.implode(' OR ',$tocheck[$val]).')';
+               }
             } else {
                if ($val=='all') {
                   return "";
