@@ -69,7 +69,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 //  - 2 : force synchronization of all the users (even if ldap timestamp wasn't modified)
 $options['action'] = AuthLDAP::ACTION_SYNCHRONIZE;
 $options['ldapservers_id'] = NOT_AVAILABLE;
-$options['filter'] = '';
+$options['ldap_filter'] = '';
 $options['before-days'] = 0;
 $options['after-days'] = 0;
 $options['script'] = 1;
@@ -99,7 +99,7 @@ if (!canUseLdap() || !countElementsInTable('glpi_authldaps')) {
 
 $sql = "SELECT `id`, `name` FROM  `glpi_authldaps`";
 //Get the ldap server's id by his name
-if ($_GET["ldapservers_id"] != '') {
+if ($options['ldapservers_id'] != NOT_AVAILABLE) {
    $sql.= " WHERE id=" . $options['ldapservers_id'];
 }
 
@@ -109,9 +109,9 @@ if ($DB->numrows($result) == 0 && $_GET["ldapservers_id"] != NOT_AVAILABLE) {
 }
 else
 {
-   foreach($DB->request($sql) as $datas) {
-      echo "Processing LDAP Server: ".$datas['name']."\n";
-      $options['ldapservers_id'] = $datas['id'];
+   foreach($DB->request($sql) as $data) {
+      echo "Processing LDAP Server: ".$data['name'].", ID: ".$data['id']." \n";
+      $options['ldapservers_id'] = $data['id'];
       import ($options);
    }
 }
@@ -131,8 +131,8 @@ function import($options)
    foreach (AuthLdap::getAllUsers($options,$results,$limitexceeded) as $user) {
       $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
                                                          'value'=>$user["user"]),
-                                         $options['action'],
-                                         $options['ldapservers_id']);
+                                                   $options['action'],
+                                                   $options['ldapservers_id']);
       if ($result) {
          $results[$result['action']] += 1;
       }
