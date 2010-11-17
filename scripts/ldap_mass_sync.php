@@ -128,15 +128,19 @@ function import($options)
                     AuthLDAP::USER_DELETED_LDAP=>0);
    //The ldap server id is passed in the script url (parameter server_id)
    $limitexceeded = false;
-   foreach (AuthLdap::getAllUsers($options,$results,$limitexceeded) as $user) {
-      $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                         'value'=>$user["user"]),
-                                                   $options['action'],
-                                                   $options['ldapservers_id']);
-      if ($result) {
-         $results[$result['action']] += 1;
+
+   $users = AuthLdap::getAllUsers($options,$results,$limitexceeded);
+   if (is_array($users)) {
+      foreach ($users as $user) {
+         $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                                            'value'=>$user["user"]),
+                                                      $options['action'],
+                                                      $options['ldapservers_id']);
+         if ($result) {
+            $results[$result['action']] += 1;
+         }
+         echo ".";
       }
-      echo ".";
    }
    if ($limitexceeded) {
       echo "LDAP Server size limit exceeded\n";
