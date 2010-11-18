@@ -554,7 +554,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          self::load($this->fields['directory'],true);
-         $function = 'plugin_' . $this->fields['directory'] . 'check_prerequisites';
+         $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
          if (function_exists($function)) {
             if (!$function()) {
                return false;
