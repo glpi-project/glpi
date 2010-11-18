@@ -48,6 +48,7 @@ class Ticket_User extends CommonDBRelation {
 
    var $no_form_page = true;
 
+
    static function getTicketUsers($tickets_id) {
       global $DB;
 
@@ -62,18 +63,19 @@ class Ticket_User extends CommonDBRelation {
       return $users;
    }
 
+
    function canUpdateItem() {
       return parent::canUpdateItem() || $this->fields['users_id'] == getLoginUserID();
    }
 
+
    /**
-   * Print the ticket user form for notification
-   *
-   * @param $ID integer ID of the item
-   * @param $options array
-   *
-   *@return Nothing (display)
-   *
+    * Print the ticket user form for notification
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *
+    * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI,$LANG;
@@ -83,45 +85,48 @@ class Ticket_User extends CommonDBRelation {
       echo "<br><form method='post' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr  class='tab_bg_2'><td>".$LANG['job'][38]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".$LANG['job'][38]."&nbsp;:</td>";
       echo "<td>";
-      $ticket=new Ticket();
+      $ticket = new Ticket();
       if ($ticket->getFromDB($this->fields["tickets_id"])) {
          echo $ticket->getField('name');
       }
       echo "</td></tr>";
 
-      $user = new User;
+      $user  = new User;
       $email = "";
       if ($user->getFromDB($this->fields["users_id"])) {
-         $email=$user->getField('email');
+         $email = $user->getField('email');
       }
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][34]."&nbsp;:</td>";
-      echo "<td>";
-      echo $user->getName();
-      echo "</td></tr>";
+      echo "<td>".$user->getName()."</td></tr>";
+
       echo "<tr class='tab_bg_1'><td>".$LANG['job'][19]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showYesNo('use_notification',$this->fields['use_notification']);
+      Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td>".$LANG['mailing'][118]."&nbsp;:</td>";
       echo "<td>";
       if (!empty($email) && NotificationMail::isUserAddressValid($email)) {
          echo $email;
       } else {
-         echo "<input type='text' size='40' name='alternative_email' value='".$this->fields['alternative_email']."'>";
+         echo "<input type='text' size='40' name='alternative_email' value='".
+                $this->fields['alternative_email']."'>";
       }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>";
-
       echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
+
       echo "</table></div></form>";
    }
+
+
    function post_deleteFromDB() {
 
       $t = new Ticket();

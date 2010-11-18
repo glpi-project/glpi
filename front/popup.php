@@ -40,7 +40,7 @@ if (isset($_GET["popup"])) {
 if (isset($_SESSION["glpipopup"]["name"])) {
    switch ($_SESSION["glpipopup"]["name"]) {
       case "search_config" :
-         popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
+         popHeader($LANG['common'][12], $_SERVER['PHP_SELF']);
          if (isset($_POST["add"])
              || isset($_POST["delete"])
              || isset($_POST["delete_x"])
@@ -56,17 +56,17 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "test_rule" :
-         popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']);
+         popHeader($LANG['buttons'][50], $_SERVER['PHP_SELF']);
          include "rule.test.php";
          break;
 
       case "test_all_rules" :
-         popHeader($LANG['rulesengine'][84],$_SERVER['PHP_SELF']);
+         popHeader($LANG['rulesengine'][84], $_SERVER['PHP_SELF']);
          include "rulesengine.test.php";
          break;
 
       case "show_cache" :
-         popHeader($LANG['rulesengine'][100],$_SERVER['PHP_SELF']);
+         popHeader($LANG['rulesengine'][100], $_SERVER['PHP_SELF']);
          include "rule.cache.php";
          break;
 
@@ -77,24 +77,28 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "edit_bookmark" :
-         popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
+         popHeader($LANG['Menu'][40], $_SERVER['PHP_SELF']);
          $_GET["action"] = "edit";
          include "bookmark.php";
          break;
+
       case "edit_user_notification" :
-         popHeader($LANG['Menu'][40],$_SERVER['PHP_SELF']);
+         popHeader($LANG['Menu'][40], $_SERVER['PHP_SELF']);
          include "ticket_user.form.php";
          break;
+
       case "add_ldapuser" :
-         popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
+         popHeader($LANG['ldap'][35], $_SERVER['PHP_SELF']);
          include "ldap.import.php";
          break;
+
       case "add_ruleparameter" :
-         popHeader($LANG['ldap'][35],$_SERVER['PHP_SELF']);
+         popHeader($LANG['ldap'][35], $_SERVER['PHP_SELF']);
          include strtolower($_GET['sub_type']."Parameter.php");
          break;
+
       case "list_notificationtags" :
-         popHeader($LANG['mailing'][138],$_SERVER['PHP_SELF']);
+         popHeader($LANG['mailing'][138], $_SERVER['PHP_SELF']);
          include "notification.tags.php";
          break;
    }

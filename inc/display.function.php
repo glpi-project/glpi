@@ -3491,7 +3491,7 @@ function showToolTip($content, $options=array()) {
 
    // Force link for popup
    if (!empty($param['popup'])) {
-      $param['link']='#';
+      $param['link'] = '#';
    }
 
    if (empty($param['applyto'])) {
@@ -3504,11 +3504,12 @@ function showToolTip($content, $options=array()) {
          $out .= " href='".$param['link']."'";
 
          if (!empty($param['popup'])) {
-            $out.=" onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-            "/front/popup.php?popup=".$param['popup']."' ,'glpibookmarks', 'height=400, ".
-            "width=600, top=100, left=100, scrollbars=yes' );w.focus();\" ";
+            $out .= " onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=".
+                                                  $param['popup']."', 'glpibookmarks', 'height=400, ".
+                                                  "width=600, top=100, left=100, scrollbars=yes' ); ".
+                    "w.focus();\" ";
          }
-         $out.='>';
+         $out .= '>';
       }
       $out .= "<img id='tooltip$rand' alt='' src='".$param['img']."'>";
 
