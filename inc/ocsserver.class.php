@@ -3763,7 +3763,8 @@ class OcsServer extends CommonDBTM {
                   $disk['filesystems_id']=Dropdown::importExternal('Filesystem', $line["TYPE"]);
                } else if (in_array($line['FILESYSTEM'],array('ext4','ext3','ext2','ffs','jfs','jfs2',
                                                              'xfs','smbfs','nfs','hfs','ufs',
-                                                             'Journaled HFS+','fusefs','fuseblk')) ) {
+                                                             'Journaled HFS+','fusefs','fuseblk',
+                                                             'reiserfs')) ) {
                   // Try to detect mount point : OCS database is dirty
                   $disk['mountpoint']=$line['VOLUMN'];
                   $disk['device']=$line['TYPE'];
