@@ -43,23 +43,22 @@ header_nocache();
 checkCentralAccess();
 
 if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
-
    $user = new User;
    $email = "";
    if ($user->getFromDB($_REQUEST["value"])) {
-      $email=$user->getField('email');
+      $email = $user->getField('email');
    }
 
    echo $LANG['job'][19].'&nbsp;:&nbsp;';
 
-   $rand=Dropdown::showYesNo($_REQUEST['field'].'[use_notification]',true);
+   $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', true);
 
    echo '<br>'.$LANG['mailing'][118]."&nbsp;:&nbsp;";
    if (!empty($email) && NotificationMail::isUserAddressValid($email)) {
       echo $email;
    } else {
       echo "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
-               value='$email'>";
+             value='$email'>";
    }
 }
 

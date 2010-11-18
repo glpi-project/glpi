@@ -2455,9 +2455,9 @@ class Search {
             if (isset($tocheck[$val])) {
                foreach ($tocheck[$val] as $key=>$nval) {
                   if ($nott) {
-                     $tocheck[$val][$key]=" `$table`.`$field` <> '$nval' ";
+                     $tocheck[$val][$key] = " `$table`.`$field` <> '$nval' ";
                   } else {
-                     $tocheck[$val][$key]=" `$table`.`$field` = '$nval' ";
+                     $tocheck[$val][$key] = " `$table`.`$field` = '$nval' ";
                   }
                }
                if ($nott) {

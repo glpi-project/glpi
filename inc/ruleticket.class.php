@@ -43,29 +43,36 @@ class RuleTicket extends Rule {
    public $right='entity_rule_ticket';
    public $can_sort=true;
 
+
    function canCreate() {
       return haveRight('entity_rule_ticket', 'w');
    }
+
 
    function canView() {
       return haveRight('entity_rule_ticket', 'r');
    }
 
+
    function maybeRecursive() {
       return true;
    }
+
 
    function isEntityAssign() {
       return true;
    }
 
+
    function canUnrecurs() {
       return true;
    }
 
+
    function maxActionsCount() {
       return count($this->getActions());
    }
+
 
    function addSpecificParamsForPreview($params) {
 
@@ -75,15 +82,18 @@ class RuleTicket extends Rule {
       return $params;
    }
 
+
    /**
     * Function used to display type specific criterias during rule's preview
+    *
     * @param $fields fields values
-    */
+   **/
    function showSpecificCriteriasForPreview($fields) {
-      $entity_as_criteria=false;
+
+      $entity_as_criteria = false;
       foreach ($this->criterias as $criteria) {
          if ($criteria->fields['criteria'] == 'entities_id') {
-            $entity_as_criteria=true;
+            $entity_as_criteria = true;
             break;
          }
       }
@@ -92,22 +102,24 @@ class RuleTicket extends Rule {
       }
    }
 
+
    function executeActions($output,$params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
             switch ($action->fields["action_type"]) {
                case "send" :
-                  $ticket=new Ticket();
+                  $ticket = new Ticket();
                   if ($ticket->getFromDB($output['id'])) {
-                     NotificationEvent::raiseEvent('recall',$ticket);
+                     NotificationEvent::raiseEvent('recall', $ticket);
                   }
                   break;
+
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
                   break;
 
-               case 'compute':
+               case 'compute' :
                   // Value could be not set (from test)
                   $urgency = (isset($output['urgency'])?$output['urgency']:3);
                   $impact  = (isset($output['impact'])?$output['impact']:3);
@@ -119,14 +131,14 @@ class RuleTicket extends Rule {
                case "affectbyfqdn" :
                case "affectbymac" :
                   if (!isset($output["entities_id"])) {
-                     $output["entities_id"]=$params["entities_id"];
+                     $output["entities_id"] = $params["entities_id"];
                   }
                   $regexvalue = RuleAction::getRegexResultById($action->fields["value"],
                                                                $this->regex_results[0]);
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
-                        $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",
-                                                                    $output["entities_id"]);
+                        $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue, "IP",
+                                                                                 $output["entities_id"]);
                         break;
 
                      case "affectbyfqdn" :
@@ -136,15 +148,15 @@ class RuleTicket extends Rule {
 
                      case "affectbymac" :
                         $result = NetworkPort::getUniqueObjectIDByIPAddressOrMac($regexvalue,"MAC",
-                                                                    $output["entities_id"]);
+                                                                                 $output["entities_id"]);
                         break;
 
                      default:
-                        $result=array();
+                        $result = array();
                   }
                   if (!empty($result)) {
-                     $output["itemtype"]=$result["itemtype"];
-                     $output["items_id"]=$result["id"];
+                     $output["itemtype"] = $result["itemtype"];
+                     $output["items_id"] = $result["id"];
                   }
                   break;
             }
@@ -153,12 +165,15 @@ class RuleTicket extends Rule {
       return $output;
    }
 
+
    function preProcessPreviewResults($output) {
       return Ticket::showPreviewAssignAction($output);
    }
 
+
    function getCriterias() {
       global $LANG;
+
       $criterias = array();
       $criterias['name']['table']     = 'glpi_tickets';
       $criterias['name']['field']     = 'name';
@@ -170,11 +185,11 @@ class RuleTicket extends Rule {
       $criterias['content']['name']      = $LANG['joblist'][6];
       $criterias['content']['linkfield'] = 'content';
 
-      $criterias['ticketcategories_id']['table'] = 'glpi_ticketcategories';
-      $criterias['ticketcategories_id']['field'] = 'name';
-      $criterias['ticketcategories_id']['name']  = $LANG['common'][36];
+      $criterias['ticketcategories_id']['table']     = 'glpi_ticketcategories';
+      $criterias['ticketcategories_id']['field']     = 'name';
+      $criterias['ticketcategories_id']['name']      = $LANG['common'][36];
       $criterias['ticketcategories_id']['linkfield'] = 'ticketcategories_id';
-      $criterias['ticketcategories_id']['type']  = 'dropdown';
+      $criterias['ticketcategories_id']['type']      = 'dropdown';
 
       $criterias['_users_id_requester']['table']     = 'glpi_users';
       $criterias['_users_id_requester']['field']     = 'name';
@@ -247,8 +262,10 @@ class RuleTicket extends Rule {
       return $criterias;
    }
 
+
    function getActions() {
       global $LANG;
+
       $actions = array();
       $actions['ticketcategories_id']['name']  = $LANG['common'][36];
       $actions['ticketcategories_id']['type']  = 'dropdown';
@@ -279,16 +296,16 @@ class RuleTicket extends Rule {
       $actions['impact']['name'] = $LANG['joblist'][30];
       $actions['impact']['type'] = 'dropdown_impact';
 
-      $actions['priority']['name'] = $LANG['joblist'][2];
-      $actions['priority']['type'] = 'dropdown_priority';
-      $actions['priority']['force_actions'] = array('assign','compute');
+      $actions['priority']['name']          = $LANG['joblist'][2];
+      $actions['priority']['type']          = 'dropdown_priority';
+      $actions['priority']['force_actions'] = array('assign', 'compute');
 
       $actions['status']['name'] = $LANG['joblist'][0];
       $actions['status']['type'] = 'dropdown_status';
 
       $actions['affectobject']['name']          = $LANG['common'][1];
       $actions['affectobject']['type']          = 'text';
-      $actions['affectobject']['force_actions'] = array('affectbyip','affectbyfqdn','affectbymac');
+      $actions['affectobject']['force_actions'] = array('affectbyip', 'affectbyfqdn', 'affectbymac');
 
       $actions['slas_id']['table'] = 'glpi_slas';
       $actions['slas_id']['name']  = $LANG['sla'][1];
@@ -296,6 +313,7 @@ class RuleTicket extends Rule {
 
       return $actions;
    }
+
 }
 
 ?>
