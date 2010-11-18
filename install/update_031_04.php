@@ -33,6 +33,24 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+/**
+* Test if there is an user with superadmin rights
+*
+*
+* @returns boolean true if its ok, elsewhere false.
+*/
+function superAdminExists() {
+        global $DB;
+        $query = "select type, password from glpi_users";
+        $result = $DB->query($query);
+        $var1 = false;
+        while($line = $DB->fetch_array($result)) {
+                if($line["type"] == "super-admin" && !empty($line["password"])) $var1 = true;
+        }
+        return $var1;
+}
+
+
 /// Update from 0.31 to 0.4
 function update031to04(){
 	global $DB,$LANG;
