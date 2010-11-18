@@ -592,11 +592,33 @@ class EntityData extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][19]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
-      $rand = Dropdown::showFromArray('inquest_config', array(0 => $LANG['common'][102],
-                                                      1 => $LANG['satisfaction'][9],
-                                                      2 => $LANG['satisfaction'][10]),
-                              $options = array('value' => $entdata->fields['inquest_config']));
+      $typeinquest = array(0 => $LANG['common'][102],
+                           1 => $LANG['satisfaction'][9],
+                           2 => $LANG['satisfaction'][10]);
+      $rand = Dropdown::showFromArray('inquest_config', $typeinquest,
+                                      $options = array('value' => $entdata->fields['inquest_config']));
       echo "</td></tr>\n";
+
+      if ($entdata->fields['inquest_config'] == 0) {
+         $inquestconfig = EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
+         $inquestrate   = EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+                                                    'inquest_rate');
+         echo "<tr><td colspan='4' class='green center'>".$LANG['common'][102]."&nbsp;:&nbsp;";
+         if ($inquestrate == 0) {
+            echo $LANG['crontask'][31];
+         } else {
+            echo $typeinquest[$inquestconfig];
+            echo " - " .EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+                                                  'inquest_delay');
+            echo "&nbsp;".$LANG['stats'][31]." - ";
+            echo $inquestrate."%";
+            if ($inquestconfig == 2) {
+               echo " - ".EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
+                                              'inquest_URL');
+            }
+         }
+         echo "</td></tr>\n";
+      }
 
       echo "<tr class='tab_bg_1'><td colspan='4'>";
 
@@ -636,8 +658,19 @@ class EntityData extends CommonDBChild {
                                   $CFG_GLPI["root_doc"]."/ajax/ticketsatisfaction.php", $params);
    }
 
+   /**
+    * Recovery datas of current entity or parent entity
+    *
+    * @param $fieldref  string name of the referent field to know if we look at parent entity
+    * @param $entities_id
+    * @param $fieldval string name of the field that we want value
+   **/
+   static function getUsedConfig($fieldref, $entities_id, $fieldval='') {
 
-   static function getUsedConfig($field, $entities_id) {
+   // for calendar
+   if (empty($fieldval)) {
+      $fieldval = $fieldref;
+   }
 
       $entdata = new EntityData();
 
@@ -645,8 +678,8 @@ class EntityData extends CommonDBChild {
       if ($entdata->getFromDB($entities_id)) {
 
          // Calendar defined : use it
-         if (isset($entdata->fields[$field]) && $entdata->fields[$field] >0 ) {
-            return $entdata->fields[$field];
+         if (isset($entdata->fields[$fieldref]) && $entdata->fields[$fieldref] >0 ) {
+            return $entdata->fields[$fieldval];
          }
       }
 
@@ -655,11 +688,11 @@ class EntityData extends CommonDBChild {
          $current = new Entity();
 
          if ($current->getFromDB($entities_id)) {
-            return EntityData::getUsedConfig($field, $current->fields['entities_id']);
+            return EntityData::getUsedConfig($fieldref, $current->fields['entities_id'], $fieldval);
          }
       }
 
-      switch ($field) {
+      switch ($fieldval) {
          case "tickettype" :
             // Default is Incident if not set
             return Ticket::INCIDENT_TYPE;

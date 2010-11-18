@@ -60,15 +60,13 @@ if (isset($_REQUEST['inquest_config'])
       echo "<table class='tab_cadre_fixe' width='50%'>";
       echo "<tr class='tab_bg_1'><td width='50%'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      Dropdown::showInteger('inquest_delay', $inquest_delay, 0, 90, 1,
-                            array(-1 => $LANG['setup'][731]));
+      Dropdown::showInteger('inquest_delay', $inquest_delay, 0, 90, 1);
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='1'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='1'>";
       Dropdown::showInteger('inquest_rate', $inquest_rate, 10, 100, 10,
-                            array(-1 => $LANG['setup'][731],
-                                  0  => $LANG['crontask'][31]));
+                            array(0 => $LANG['crontask'][31]));
       echo "&nbsp;%</td></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
