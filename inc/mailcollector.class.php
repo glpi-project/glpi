@@ -531,6 +531,7 @@ class MailCollector  extends CommonDBTM {
          // Check if ticket  exists and users_id exists in GLPI
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
+             && $job->fields['status'] != 'closed'
              && ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'], $head['from']))) {
 
             $content = explode("\n", $tkt['content']);
