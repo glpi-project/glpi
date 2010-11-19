@@ -150,39 +150,7 @@ class RuleAction extends CommonDBChild {
 
       $elements = array();
       foreach ($actions as $action) {
-         switch ($action) {
-            case "assign" :
-               $elements["assign"] = $LANG['rulesengine'][22];
-               break;
-
-            case "regex_result" :
-               $elements["regex_result"] = $LANG['rulesengine'][45];
-               break;
-
-            case "append_regex_result" :
-               $elements["append_regex_result"] = $LANG['rulesengine'][79];
-               break;
-
-            case "affectbyip" :
-               $elements["affectbyip"] = $LANG['rulesengine'][46];
-               break;
-
-            case "affectbyfqdn" :
-               $elements["affectbyfqdn"] = $LANG['rulesengine'][47];
-               break;
-
-            case "affectbymac" :
-               $elements["affectbymac"] = $LANG['rulesengine'][49];
-               break;
-
-            case 'compute':
-               $elements['compute'] = $LANG['rulesengine'][38];
-               break;
-
-            case 'send':
-               $elements['send'] = $LANG['buttons'][26];
-               break;
-         }
+         $elements[$action] = self::getActionByID($action);
       }
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
@@ -214,6 +182,7 @@ class RuleAction extends CommonDBChild {
             return $LANG['rulesengine'][38];
 
          case 'send' :
+         case 'add_validation' :
             return $LANG['buttons'][26];
       }
    }
@@ -326,6 +295,13 @@ class RuleAction extends CommonDBChild {
                      Dropdown::showGlobalSwitch(0,array('name'                => 'value',
                                                         'management_restrict' => 2,
                                                         'withtemplate'        => false));
+                     $display = true;
+                     break;
+                  
+                  case "dropdown_users_validate" :
+                     User::dropdown(array('name'   => "value",
+                              'right'  => 'validate_ticket'));
+
                      $display = true;
                      break;
                }

@@ -174,6 +174,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
                    'global_validation'    => 'none',
                    'due_date'             => '',
                    'slas_id'              => 0,
+                   '_add_validation'      => 0,
                    'type'                 => -1);
 
    // Restore saved value or override with page parameter

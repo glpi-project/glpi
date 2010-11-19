@@ -1383,6 +1383,7 @@ class Rule extends CommonDBTM {
 
             case "dropdown_assign" :
             case "dropdown_users" :
+            case "dropdown_users_validate" :
                return getUserName($value);
 
             case "yesonly" :
