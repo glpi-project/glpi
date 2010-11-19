@@ -348,7 +348,7 @@ class MailCollector  extends CommonDBTM {
             $error = 0;
             $refused = 0;
 
-            for($i=1 ; $i<=$tot && $this->fetch_emails<=$this->maxfetch_emails ; $i++) {
+            for($i=1 ; $i<=$tot && $this->fetch_emails<$this->maxfetch_emails ; $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
                                                    'play_rules'   => true));
 
