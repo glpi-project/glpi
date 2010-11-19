@@ -1306,6 +1306,10 @@ class Ticket extends CommonDBTM {
          $already_mail = true;
       }
 
+      if (isset($this->input["_linkedto"])) {
+         // TODO manage link to old ticket (new mail received about a closed ticket)
+      }
+
       // Manage SLA Level : add actions
       if (isset($this->input["slas_id"])
           && $this->input["slas_id"]>0
