@@ -87,6 +87,17 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
             return false;
          }
 
+
+         $faq_limit = '';
+         if (getLoginUserID()) {
+            $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "", "", true);
+         } else {
+            // Anonymous access
+            if (isMultiEntitiesMode()) {
+               $faq_limit = " AND (glpi_knowbaseitemcategories.`entities_id` = '0'
+                                    AND glpi_knowbaseitemcategories.`is_recursive` = '1')";
+            }
+         }
          // Get All FAQ categories
          if (!isset($_SESSION['glpi_faqcategories'])) {
             $_SESSION['glpi_faqcategories']='(0)';
@@ -95,9 +106,8 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                     FROM `glpi_knowbaseitems`
                     LEFT JOIN `glpi_knowbaseitemcategories`
                     ON (`glpi_knowbaseitemcategories`.`id` = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
-                    WHERE `glpi_knowbaseitems`.`is_faq` = 1 "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
+                    WHERE `glpi_knowbaseitems`.`is_faq` = 1 $faq_limit";
+
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
                   while ($data=$DB->fetch_array($result)) {
