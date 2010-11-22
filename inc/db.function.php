@@ -1266,6 +1266,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
                            'Printer');
 
             foreach ($types as $t) {
+               $table = getTableForItemType($t);
                $query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code
                          FROM `$table`
                          WHERE `$field` LIKE '$like'
