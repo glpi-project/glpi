@@ -114,9 +114,11 @@ class RuleTicket extends Rule {
                      NotificationEvent::raiseEvent('recall', $ticket);
                   }
                   break;
+
                case "add_validation" :
                   $output['_add_validation'] = $action->fields["value"];
                   break;
+
                case "assign" :
                   $output[$action->fields["field"]] = $action->fields["value"];
                   break;
@@ -312,9 +314,9 @@ class RuleTicket extends Rule {
       $actions['slas_id']['table'] = 'glpi_slas';
       $actions['slas_id']['name']  = $LANG['sla'][1];
       $actions['slas_id']['type']  = 'dropdown';
-      
-      $actions['users_id_validate']['name']  = $LANG['validation'][1];
-      $actions['users_id_validate']['type']  = 'dropdown_users_validate';
+
+      $actions['users_id_validate']['name']          = $LANG['validation'][1];
+      $actions['users_id_validate']['type']          = 'dropdown_users_validate';
       $actions['users_id_validate']['force_actions'] = array('add_validation');
 
       return $actions;
