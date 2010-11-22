@@ -128,9 +128,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                    FROM `glpi_knowbaseitemcategories`
                    WHERE `id` IN ".$_SESSION['glpi_faqcategories']."
                          AND (`glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
-                              '$knowbaseitemcategories_id') "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
+                              '$knowbaseitemcategories_id') $faq_limit";
          $query.= " ORDER BY `name` ASC";
       } else {
          if (!haveRight("knowbase","r")) {
@@ -140,9 +138,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          $query = "SELECT *
                    FROM `glpi_knowbaseitemcategories`
                    WHERE `glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
-                         '$knowbaseitemcategories_id' "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
+                         '$knowbaseitemcategories_id' $faq_limit";
          $query.= " ORDER BY `name` ASC";
       }
 
@@ -159,9 +155,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
             while ($tmpID!=0) {
                $query2="SELECT *
                         FROM `glpi_knowbaseitemcategories`
-                        WHERE `id`='$tmpID' "
-                    .getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories","entities_id",
-                                                 $_SESSION['glpiactiveentities'],true);
+                        WHERE `id`='$tmpID' $faq_limit";
                $result2=$DB->query($query2);
                if ($DB->numrows($result2)==1) {
                   $data=$DB->fetch_assoc($result2);
