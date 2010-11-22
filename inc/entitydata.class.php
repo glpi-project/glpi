@@ -100,10 +100,15 @@ class EntityData extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
-      // Si on change le taux de déclenchement de l'enquête (enquête activée),
+      // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
       // cela s'applique aux prochains tickets - Pas à l'historique
-      if (isset($input['inquest_rate'])
-          && $input['inquest_rate']!=$this->fields['inquest_rate']) {
+      if ((isset($input['inquest_rate'])
+           && $this->fields['inquest_rate'] == 0
+           && $input['inquest_rate'] != $this->fields['inquest_rate'])
+          || (isset($input['inquest_config'])
+              && $this->fields['inquest_config'] == 0
+              && $input['inquest_config']!= $this->fields['inquest_config'])) {
+
 
          $input['max_closedate'] = $_SESSION["glpi_currenttime"];
       }
@@ -667,10 +672,10 @@ class EntityData extends CommonDBChild {
    **/
    static function getUsedConfig($fieldref, $entities_id, $fieldval='') {
 
-   // for calendar
-   if (empty($fieldval)) {
-      $fieldval = $fieldref;
-   }
+      // for calendar
+      if (empty($fieldval)) {
+         $fieldval = $fieldref;
+      }
 
       $entdata = new EntityData();
 
