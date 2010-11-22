@@ -1376,21 +1376,21 @@ class Ticket extends CommonDBTM {
 
          NotificationEvent::raiseEvent($type, $this);
       }
-      
+
       //Action for send_validation rule
-      if ($CFG_GLPI["use_mailing"] 
-         && isset($this->input["_add_validation"])
+      if ($CFG_GLPI["use_mailing"]
+          && isset($this->input["_add_validation"])
           && $this->input["_add_validation"]>0) {
-         
+
          $validation = new Ticketvalidation();
-         $values['tickets_id']= $this->fields['id'];
+         $values['tickets_id']       = $this->fields['id'];
          $values['users_id_validate']= $this->input["_add_validation"];
-         
-         $validation->check(-1,'w',$values);
+
+         $validation->check(-1, 'w', $values);
          $validation->add($values);
 
          Event::log($this->fields['id'], "ticket", 4, "tracking",
-              $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+                    $_SESSION["glpiname"]."  ".$LANG['log'][21]);
       }
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {

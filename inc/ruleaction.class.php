@@ -297,11 +297,10 @@ class RuleAction extends CommonDBChild {
                                                         'withtemplate'        => false));
                      $display = true;
                      break;
-                  
+
                   case "dropdown_users_validate" :
                      User::dropdown(array('name'   => "value",
-                              'right'  => 'validate_ticket'));
-
+                                          'right'  => 'validate_ticket'));
                      $display = true;
                      break;
                }
