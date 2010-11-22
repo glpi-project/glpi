@@ -3386,7 +3386,7 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
       $rand = mt_rand();
       $name = "field_".$params['name'].$rand;
       echo "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
-            "' value='".cleanInputText($params['value'])."' size='".$params['size']."'>\n";
+            "' value=\"".cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
       $output = "<script type='text/javascript' >\n";
 
       $output .= "var text$name = new Ext.data.Store({
@@ -3435,8 +3435,8 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
       echo $output;
 
    } else {
-      echo "<input ".$params['option']." type='text' name='".$params['name']."' value='".
-             cleanInputText($params['value'])."' size='".$params['size']."'>\n";
+      echo "<input ".$params['option']." type='text' name='".$params['name']."' 
+      value=\"".cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
    }
 }
 
