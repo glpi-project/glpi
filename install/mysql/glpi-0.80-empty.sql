@@ -729,8 +729,6 @@ CREATE TABLE `glpi_configs` (
   `notclosed_delay` int(11) NOT NULL DEFAULT '0',
   `user_deleted_ldap` tinyint(1) NOT NULL DEFAULT '0',
   `auto_create_infocoms` tinyint(1) NOT NULL DEFAULT '0',
-  `inquest_rate` int(11) NOT NULL DEFAULT '0',
-  `inquest_delay` int(11) NOT NULL DEFAULT '0',
   `use_slave_for_search` tinyint(1) NOT NULL DEFAULT '0',
   `proxy_passwd` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `smtp_passwd` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

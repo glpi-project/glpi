@@ -729,9 +729,13 @@ function update0781to080($output='HTML') {
       or die("0.80 create glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
    }
 
-//TODO a supprimer avant publication juste pour ceux ayant deja installe la svn
+
+//TODO a supprimer avant publication (juste pour ceux ayant deja installe la svn)
    $migration->addField("glpi_ticketsatisfactions", "type",
                         "int(11) NOT NULL DEFAULT '0' AFTER `tickets_id`");
+   $migration->dropField("glpi_configs", "inquest_rate");
+   $migration->dropField("glpi_configs", "inquest_delay");
+
 
    // config inquest by entity
    if ($migration->addField("glpi_entitydatas", "max_closedate", "DATETIME NULL")) {
@@ -749,10 +753,6 @@ function update0781to080($output='HTML') {
    $migration->addField("glpi_entitydatas", "inquest_rate", "INT(11) NOT NULL DEFAULT '-1'");
    $migration->addField("glpi_entitydatas", "inquest_delay", "INT(11) NOT NULL DEFAULT '-1'");
    $migration->addField("glpi_entitydatas", "inquest_URL", "VARCHAR( 255 ) NULL");
-
-   // if no config inquest in the entity
-   $migration->addField("glpi_configs", "inquest_rate", "INT(11) NOT NULL DEFAULT '0'");
-   $migration->addField("glpi_configs", "inquest_delay", "INT(11) NOT NULL DEFAULT '0'");
 
    $migration->addField("glpi_networkports", "comment", "TEXT COLLATE utf8_unicode_ci");
 
