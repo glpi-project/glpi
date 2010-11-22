@@ -1862,12 +1862,12 @@ $LANG['title'][43]="Registrierung";
 
 $LANG['tracking'][1]="Meine Geräte"; 
 $LANG['tracking'][2]="Oder vollständige Suche"; 
-$LANG['tracking'][3]="Falsche Daten. Aktualisierung abgebrochen"; 
+$LANG['tracking'][3]="Inkonsistente Datumsangabe. Aktualisierung abgebrochen"; 
 $LANG['tracking'][4]="Ihrem Ticket wurde keine Dringlichkeit zugewiesen, bitte korrigieren Sie dies."; 
-$LANG['tracking'][8]="Ihr Ticket enthält keine Beschreibung, bitte korrigieren."; 
+$LANG['tracking'][8]="Ihr Ticket enthält keine Beschreibung, bitte korrigieren Sie dies."; 
 $LANG['tracking'][9]="Standard für die Tickets"; 
 $LANG['tracking'][10]="Standard für die Mail-Gateways"; 
-$LANG['tracking'][24]="Dokument Tracking"; 
+$LANG['tracking'][24]="Dokument Ticket"; 
 $LANG['tracking'][29]="Anzahl"; 
 $LANG['tracking'][30]="Neu"; 
 $LANG['tracking'][31]="In Arbeit (zugewiesen)"; 

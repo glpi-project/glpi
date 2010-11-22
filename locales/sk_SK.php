@@ -1261,7 +1261,7 @@ $LANG['printers'][18]="Porty";
 $LANG['printers'][27]="USB"; 
 $LANG['printers'][28]="Ethernet"; 
 $LANG['printers'][29]="Wifi"; 
-$LANG['printers'][30]="Číslo prvej stránky"; 
+$LANG['printers'][30]="Počiatočný počet stránok"; 
 $LANG['printers'][31]="Vytlačených stránok"; 
 
 $LANG['profiles'][0]="Globálne oprávnenia"; 
