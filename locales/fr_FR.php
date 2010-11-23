@@ -888,7 +888,7 @@ $LANG['job'][14] = "Ouverts";
 $LANG['job'][15] = "Résolus";
 $LANG['job'][16] = "Clos";
 $LANG['job'][17] = "En retard";
-
+$LANG['job'][18] = "Demandeurs";
 $LANG['job'][19] = "Suivi par courriel";
 $LANG['job'][20] = "Durée totale";
 $LANG['job'][21] = "Heure(s)";
