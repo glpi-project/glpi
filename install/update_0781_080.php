@@ -918,6 +918,9 @@ function update0781to080($output='HTML') {
 
    }
 
+   $query="DELETE FROM `glpi_notificationtargets` WHERE `type` = 1 AND `items_id` = 4 ";
+   $DB->query($query) or die("0.80 drop old assign notification ".$LANG['update'][90] .
+                         $DB->error());
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - passwords encryption');
 

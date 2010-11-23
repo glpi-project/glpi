@@ -56,7 +56,7 @@ class Notification extends CommonDBTM {
    //Notification to the owner of the item
    const AUTHOR = 3;
    //Notification to the technician previously in charge of the ticket
-   const TICKET_OLD_TECH_IN_CHARGE = 4;
+//    const TICKET_OLD_TECH_IN_CHARGE = 4; // Not used more
    //Notification to the technician in charge of the item
    const ITEM_TECH_IN_CHARGE = 5;
    //Notification to the item's user

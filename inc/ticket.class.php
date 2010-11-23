@@ -150,6 +150,53 @@ class Ticket extends CommonDBTM {
       return false;
    }
 
+   /**
+    * count users linked to tickets by type or global
+    *
+    * @param $type type to search (see constants) / 0 for all
+    *
+    * @return boolean
+   **/
+   function countUsers($type=0) {
+      if ($type>0) {
+         if (isset($this->users[$type])) {
+            return $this->users[$type];
+         }
+      } else {
+         if (count($this->users)) {
+            $count=0;
+            foreach ($this->users as $u) {
+               $count += count($u);
+            }
+            return $count;
+         }
+      }
+      return 0;
+   }
+
+   /**
+    * count groups linked to tickets by type or global
+    *
+    * @param $type type to search (see constants) / 0 for all
+    *
+    * @return boolean
+   **/
+   function countGroups($type=0) {
+      if ($type>0) {
+         if (isset($this->groups[$type])) {
+            return $this->groups[$type];
+         }
+      } else {
+         if (count($this->groups)) {
+            $count=0;
+            foreach ($this->groups as $u) {
+               $count += count($u);
+            }
+            return $count;
+         }
+      }
+      return 0;
+   }
 
    /**
     * Is a group linked to the ticket ?
@@ -378,110 +425,44 @@ class Ticket extends CommonDBTM {
          unset($input["solvedate"]);
       }
 
-      if (isset($input['_link'])) {
-         $ticket_ticket = new Ticket_Ticket();
-         if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
-            $ticket_ticket->add($input['_link']);
-         }
-      }
 
-      if (isset($input['_ticket_requester'])) {
-         if (isset($input['_ticket_requester']['_type'])) {
-            $input['_ticket_requester']['type']       = Ticket::REQUESTER;
-            $input['_ticket_requester']['tickets_id'] = $input['id'];
-
-            switch ($input['_ticket_requester']['_type']) {
-               case "user" :
-                  $ticket_user = new Ticket_User();
-                  if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
-                     $ticket_user->add($input['_ticket_requester']);
-                  }
-                  break;
-
-               case "group" :
-                  $group_ticket = new Group_Ticket();
-                  if ($group_ticket->can(-1,'w',$input['_ticket_requester'])) {
-                     $group_ticket->add($input['_ticket_requester']);
-                  }
-                  break;
-            }
-         }
-      }
-
-      if (isset($input['_ticket_observer'])) {
-         if (isset($input['_ticket_observer']['_type'])) {
-            $input['_ticket_observer']['type']       = Ticket::OBSERVER;
-            $input['_ticket_observer']['tickets_id'] = $input['id'];
-
-            switch ($input['_ticket_observer']['_type']) {
-               case "user" :
-                  $ticket_user = new Ticket_User();
-                  if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
-                     $ticket_user->add($input['_ticket_observer']);
-                  }
-                  break;
-
-               case "group" :
-                  $group_ticket = new Group_Ticket();
-                  if ($group_ticket->can(-1,'w',$input['_ticket_observer'])) {
-                     $group_ticket->add($input['_ticket_observer']);
-                  }
-                  break;
-            }
-         }
-      }
-
-      if (isset($input['_ticket_assign'])) {
-         if (isset($input['_ticket_assign']['_type'])) {
-            $input['_ticket_assign']['type']       = Ticket::ASSIGN;
-            $input['_ticket_assign']['tickets_id'] = $input['id'];
-
-            switch ($input['_ticket_assign']['_type']) {
-               case "user" :
-                  $ticket_user = new Ticket_User();
-                  if ($ticket_user->can(-1,'w',$input['_ticket_assign'])) {
-                     $ticket_user->add($input['_ticket_assign']);
-                  }
-                  break;
-
-               case "group" :
-                  $group_ticket = new Group_Ticket();
-                  if ($group_ticket->can(-1,'w',$input['_ticket_assign'])) {
-                     $group_ticket->add($input['_ticket_assign']);
-                  }
-                  break;
-            }
-         }
-      }
 
 
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
-         if (isset($input["users_id_assign"])) {
+         if (isset($input["_ticket_assign"])
+            && isset($input['_ticket_assign']['_type'])
+            && $input['_ticket_assign']['_type'] == 'user') {
             $this->getFromDB($input['id']);
 
             // must own_ticket to grab a non assign ticket
-            if ($this->fields['users_id_assign']==0) {
+            if ($this->countUsers(self::ASSIGN)==0) {
                if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
-                   || ($input["users_id_assign"]!=getLoginUserID())) {
-                  unset($input["users_id_assign"]);
+                   || !isset($input["_ticket_assign"]['users_id'])
+                   || ($input["_ticket_assign"]['users_id'] != getLoginUserID())) {
+                  unset($input["_ticket_assign"]);
                }
 
             } else {
                // Can not steal or can steal and not assign to me
                if (!haveRight("steal_ticket","1")
-                   || $input["users_id_assign"] != getLoginUserID()) {
-                  unset($input["users_id_assign"]);
+                   || !isset($input["_ticket_assign"]['users_id'])
+                   || ($input["_ticket_assign"]['users_id'] != getLoginUserID())) {
+                  unset($input["_ticket_assign"]);
                }
             }
          }
 
+         // No supplier assign
          if (isset($input["suppliers_id_assign"])) {
             unset($input["suppliers_id_assign"]);
          }
 
-         if (isset($input["groups_id_assign"])) {
-            unset($input["groups_id_assign"]);
+         // No group 
+         if (isset($input["_ticket_assign"])
+            && isset($input['_ticket_assign']['_type'])
+            && $input['_ticket_assign']['_type'] == 'group') {
+            unset($input["_ticket_assign"]);
          }
       }
 
@@ -490,14 +471,11 @@ class Ticket extends CommonDBTM {
             $ret["status"] = $input["status"];
          }
          // Manage assign and steal right
-         if (isset($input["users_id_assign"])) {
-            $ret["users_id_assign"] = $input["users_id_assign"];
+         if (isset($input["_ticket_assign"])) {
+            $ret["_ticket_assign"] = $input["_ticket_assign"];
          }
          if (isset($input["suppliers_id_assign"])) {
             $ret["suppliers_id_assign"] = $input["suppliers_id_assign"];
-         }
-         if (isset($input["groups_id_assign"])) {
-            $ret["groups_id_assign"] = $input["groups_id_assign"];
          }
 
          // Can only update content if no followups already added
@@ -523,6 +501,92 @@ class Ticket extends CommonDBTM {
 
          $input = $ret;
       }
+
+      if (isset($input['_link'])) {
+         $ticket_ticket = new Ticket_Ticket();
+         if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
+            $ticket_ticket->add($input['_link']);
+            $input['_forcenotif'] = true;
+         }
+      }
+
+      if (isset($input['_ticket_requester'])) {
+         if (isset($input['_ticket_requester']['_type'])) {
+            $input['_ticket_requester']['type']       = Ticket::REQUESTER;
+            $input['_ticket_requester']['tickets_id'] = $input['id'];
+
+            switch ($input['_ticket_requester']['_type']) {
+               case "user" :
+                  $ticket_user = new Ticket_User();
+                  if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
+                     $ticket_user->add($input['_ticket_requester']);
+                     $input['_forcenotif'] = true;
+                  }
+                  break;
+
+               case "group" :
+                  $group_ticket = new Group_Ticket();
+                  if ($group_ticket->can(-1,'w',$input['_ticket_requester'])) {
+                     $group_ticket->add($input['_ticket_requester']);
+                     $input['_forcenotif'] = true;
+                  }
+                  break;
+            }
+         }
+      }
+
+      if (isset($input['_ticket_observer'])) {
+         if (isset($input['_ticket_observer']['_type'])) {
+            $input['_ticket_observer']['type']       = Ticket::OBSERVER;
+            $input['_ticket_observer']['tickets_id'] = $input['id'];
+
+            switch ($input['_ticket_observer']['_type']) {
+               case "user" :
+                  $ticket_user = new Ticket_User();
+                  if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
+                     $ticket_user->add($input['_ticket_observer']);
+                     $input['_forcenotif'] = true;
+                  }
+                  break;
+
+               case "group" :
+                  $group_ticket = new Group_Ticket();
+                  if ($group_ticket->can(-1,'w',$input['_ticket_observer'])) {
+                     $group_ticket->add($input['_ticket_observer']);
+                     $input['_forcenotif'] = true;
+                  }
+                  break;
+            }
+         }
+      }
+
+      if (isset($input['_ticket_assign'])) {
+         if (isset($input['_ticket_assign']['_type'])) {
+            $input['_ticket_assign']['type']       = Ticket::ASSIGN;
+            $input['_ticket_assign']['tickets_id'] = $input['id'];
+
+            switch ($input['_ticket_assign']['_type']) {
+               case "user" :
+                  $ticket_user = new Ticket_User();
+                  if ($ticket_user->can(-1,'w',$input['_ticket_assign'])) {
+                     $ticket_user->add($input['_ticket_assign']);
+                     $input['_forcenotif'] = true;
+                     $input['_assignadd'] = true;
+                  }
+                  break;
+
+               case "group" :
+                  $group_ticket = new Group_Ticket();
+                  if ($group_ticket->can(-1,'w',$input['_ticket_assign'])) {
+                     $group_ticket->add($input['_ticket_assign']);
+                     $input['_forcenotif'] = true;
+                     $input['_assignadd'] = true;
+                  }
+                  break;
+            }
+         }
+      }
+
 
       // set last updater
       if ($lastupdater=getLoginUserID(true)) {
@@ -587,7 +651,6 @@ class Ticket extends CommonDBTM {
          }
          unset($input["document"]);
       }
-
       return $input;
    }
 
@@ -595,11 +658,9 @@ class Ticket extends CommonDBTM {
    function pre_updateInDB() {
       global $LANG;
 
-      if (((in_array("users_id_assign",$this->updates) && $this->input["users_id_assign"]>0)
-           || (in_array("suppliers_id_assign",$this->updates)
+      if ((in_array("suppliers_id_assign",$this->updates)
                && $this->input["suppliers_id_assign"]>0)
-           || (in_array("groups_id_assign",$this->updates) && $this->input["groups_id_assign"]>0))
-          && $this->fields["status"]=="new") {
+               || isset($this->input["_assignadd"])) {
 
          if (!in_array('status', $this->updates)) {
             $this->oldvalues['status'] = $this->fields['status'];
@@ -610,11 +671,8 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["status"])) {
          if (isset($this->input["suppliers_id_assign"])
              && $this->input["suppliers_id_assign"] == 0
-             && isset($this->input["groups_id_assign"])
-             && $this->input["groups_id_assign"] == 0
-             && isset($this->input["users_id_assign"])
-             && $this->input["users_id_assign"] == 0
-             && $this->input["status"]=="assign") {
+             && $this->countUsers(self::ASSIGN) == 0
+             && $this->countGroups(self::ASSIGN) == 0) {
 
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
@@ -901,6 +959,12 @@ class Ticket extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI, $LANG;
 
+      $donotif = false;
+
+      if (isset($this->input['_forcenotif'])) {
+         $donotif = true;
+      }
+
       if (count($this->updates)) {
          // New values for add followup in change
          $change_followup_content = "";
@@ -933,41 +997,35 @@ class Ticket extends CommonDBTM {
             Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
          }
 
-         if (!in_array("users_id_assign",$this->updates)) {
-            unset($this->input["_old_assign"]);
-         }
-
          // Clean content to mail
          $this->fields["content"] = stripslashes($this->fields["content"]);
+         $donotif = true;
 
+      }
 
-         if (count($this->updates)>0 && $CFG_GLPI["use_mailing"]) {
-            $mailtype = "update";
+      if ($donotif && $CFG_GLPI["use_mailing"]) {
+         $mailtype = "update";
 
-            if (isset($this->input["status"])
-                && $this->input["status"]
-                && in_array("status",$this->updates)
-                && $this->input["status"]=="solved") {
+         if (isset($this->input["status"])
+               && $this->input["status"]
+               && in_array("status",$this->updates)
+               && $this->input["status"]=="solved") {
 
-               $mailtype = "solved";
-            }
-
-            if (isset($this->input["status"])
-                && $this->input["status"]
-                && in_array("status",$this->updates)
-                && $this->input["status"]=="closed") {
-
-               $mailtype = "closed";
-            }
-
-            //TODO : manage assignation
-
-            if (isset($this->input["_old_assign"])) {
-               $this->fields["_old_assign"] = $this->input["_old_assign"];
-            }
-            NotificationEvent::raiseEvent($mailtype, $this);
-
+            $mailtype = "solved";
          }
+
+         if (isset($this->input["status"])
+               && $this->input["status"]
+               && in_array("status",$this->updates)
+               && $this->input["status"]=="closed") {
+
+            $mailtype = "closed";
+         }
+
+         // Read again ticket to be sure that all data are up to date
+         $this->getFromDB($this->field['id']);
+         NotificationEvent::raiseEvent($mailtype, $this);
+
       }
    }
 

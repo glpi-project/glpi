@@ -143,9 +143,9 @@ class NotificationTargetTicket extends NotificationTarget {
                break;
 
             //Send to the technician previously in charge of the ticket (before reassignation)
-            case Notification::TICKET_OLD_TECH_IN_CHARGE :
-               $this->getTicketOldAssignTechnicianAddress();
-               break;
+//             case Notification::TICKET_OLD_TECH_IN_CHARGE :
+//                $this->getTicketOldAssignTechnicianAddress();
+//                break;
 
             //Assign to a supplier
             case Notification::TICKET_SUPPLIER :
@@ -242,9 +242,9 @@ class NotificationTargetTicket extends NotificationTarget {
    }
 
 
-   function getTicketOldAssignTechnicianAddress () {
-      return $this->getUserByField ("_old_assign");
-   }
+//    function getTicketOldAssignTechnicianAddress () {
+//       return $this->getUserByField ("_old_assign");
+//    }
 
 
    //Get receipient
@@ -451,9 +451,9 @@ class NotificationTargetTicket extends NotificationTarget {
    function getAdditionalTargets($event='') {
       global $LANG;
 
-      if ($event=='update') {
-         $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE, $LANG['setup'][236]);
-      }
+//       if ($event=='update') {
+//          $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE, $LANG['setup'][236]);
+//       }
 
       if ($event=='satisfaction') {
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
