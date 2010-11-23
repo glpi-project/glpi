@@ -87,6 +87,13 @@ class Notification extends CommonDBTM {
    const TICKET_FOLLOWUP_AUTHOR = 18;
    //Notification to the user
    const USER = 19;
+   //Notification to the ticket's observer group
+   const TICKET_OBSERVER_GROUP = 20;
+   //Notification to the ticket's observer user
+   const TICKET_OBSERVER = 21;
+   //Notification to the supervisor of the ticket's observer group
+   const TICKET_SUPERVISOR_OBSERVER_GROUP = 22;
+
 
    // From CommonDBTM
    public $dohistory = true;

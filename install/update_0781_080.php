@@ -916,11 +916,39 @@ function update0781to080($output='HTML') {
       $migration->dropField('glpi_tickets', 'use_email_notification');
       $migration->dropField('glpi_tickets', 'user_email');
 
+      $query="DELETE FROM `glpi_notificationtargets` WHERE `type` = 1 AND `items_id` = 4 ";
+      $DB->query($query) or die("0.80 drop old assign notification ".$LANG['update'][90] .
+                           $DB->error());
+
+
+      // ADD observer when requester is set : 3>21 / 13>20 / 12 >22
+      $fromto=array(3  => 21, // USER
+                    13 => 20, // GROUP
+                    12 => 22); // GROUP_SUPERVISOR
+      foreach ($fromto as $from => $to) {
+         $query = "SELECT * FROM `glpi_notificationtargets`
+                     INNER JOIN `glpi_notifications` ON (`glpi_notifications`.`id`
+                     = `glpi_notificationtargets`.`notifications_id`)
+                  WHERE `glpi_notifications`.`itemtype` = 'Ticket'
+                     AND `glpi_notificationtargets`.`type` = 1
+                     AND `glpi_notificationtargets`.`items_id` = $from";
+         
+         if ($result=$DB->query($query)) {
+            if ($DB->numrows($result)) {
+               while ($data = $DB->fetch_assoc($result)) {
+                  $query = "INSERT INTO `glpi_notificationtargets`
+                           (`items_id` ,`type` ,`notifications_id`)
+                           VALUES ('$to', '1', '".$data['notifications_id']."');";
+                  $DB->query($query) or die("0.80 insert default notif for observer
+                                             ".$LANG['update'][90] .$DB->error());
+               }
+            }
+         }
+      }
    }
 
-   $query="DELETE FROM `glpi_notificationtargets` WHERE `type` = 1 AND `items_id` = 4 ";
-   $DB->query($query) or die("0.80 drop old assign notification ".$LANG['update'][90] .
-                         $DB->error());
+
+
 
    displayMigrationMessage("080", $LANG['update'][142] . ' - passwords encryption');
 
