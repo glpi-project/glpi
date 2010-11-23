@@ -47,6 +47,15 @@ class Holiday extends CommonDropdown {
    }
 
 
+   function canCreate() {
+      return haveRight('calendar', 'w');
+   }
+
+
+   function canView() {
+      return haveRight('calendar', 'r');
+   }
+
    function getAdditionalFields() {
       global $LANG;
 

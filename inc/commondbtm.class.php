@@ -1426,7 +1426,7 @@ class CommonDBTM extends CommonGLPI {
                            $item      = new $itemtype();
 
                            if ($item->isEntityAssign()) {
-                              if (countElementsInTable("$tablename, $itemtable",
+                              if (countElementsInTable(array($tablename, $itemtable),
                                                        "`$tablename`.`$field`='$ID'
                                                         AND `$tablename`.`$typefield`='$itemtype'
                                                         AND `$tablename`.`$devfield`=`$itemtable`.id
@@ -1447,7 +1447,7 @@ class CommonDBTM extends CommonGLPI {
                      if ($item->isEntityAssign()) {
                         if (is_array($rel[$tablename])) {
                            foreach ($rel[$tablename] as $otherfield) {
-                              if (countElementsInTable("$tablename, $othertable",
+                              if (countElementsInTable(array($tablename, $othertable),
                                                        "`$tablename`.`$field`='$ID'
                                                         AND `$tablename`.`$otherfield`
                                                                   =`$othertable`.id
@@ -1459,7 +1459,7 @@ class CommonDBTM extends CommonGLPI {
 
                         } else {
                            $otherfield = $rel[$tablename];
-                           if (countElementsInTable("$tablename, $othertable",
+                           if (countElementsInTable(array($tablename, $othertable),
                                                     "`$tablename`.`$field`=$ID
                                                      AND `$tablename`.`$otherfield`=`$othertable`.id
                                                      AND `$othertable`.`entities_id`
@@ -1477,7 +1477,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Doc links to this item
       if ($this->getType() > 0
-          && countElementsInTable("`glpi_documents_items`, `glpi_documents`",
+          && countElementsInTable(array('glpi_documents_items', 'glpi_documents'),
                                   "`glpi_documents_items`.`items_id`='$ID'
                                    AND `glpi_documents_items`.`itemtype`=".$this->getType()."
                                    AND `glpi_documents_items`.`documents_id`=`glpi_documents`.`id`

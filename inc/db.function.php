@@ -219,13 +219,17 @@ function isDeviceTable($tablename) {
 /**
  * Count the number of elements in a table.
  *
- * @param $table string: table name
+ * @param $table string/array: table names
  * @param $condition string: condition to use
  *
  * @return int nb of elements in table
 **/
 function countElementsInTable($table, $condition="") {
    global $DB;
+
+   if (is_array($table)) {
+      $table=implode('`,`',$table);
+   }
 
    $query = "SELECT COUNT(*) AS cpt
              FROM `$table`";
