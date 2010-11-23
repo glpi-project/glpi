@@ -818,6 +818,8 @@ class Ticket extends CommonDBTM {
          */
          if (!in_array("users_id_assign",$this->updates)) {
             unset($this->input["_old_assign"]);
+         } else {
+            $this->fields["_old_assign"] = $this->input["_old_assign"];
          }
 /*         $mail_send=false;
 
