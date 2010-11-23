@@ -1308,15 +1308,17 @@ class Ticket extends CommonDBTM {
          $already_mail = true;
       }
 
+      // From interface 
+      if (isset($input['_link'])) {
+      }
+
+      // From mailcollector : do not check rights
       if (isset($this->input["_linkedto"])) {
-         // TODO manage link to old ticket (new mail received about a closed ticket)
          $ticket_ticket = new Ticket_Ticket();
          $input2['tickets_id_1'] = $this->fields['id'];
          $input2['tickets_id_2'] = $this->input["_linkedto"];
          $input2['link'] = Ticket_Ticket::LINK_TO;
-         if ($ticket_ticket->can(-1, 'w', $input2)) {
-            $ticket_ticket->add($input2);
-         }
+         $ticket_ticket->add($input2);
       }
 
       // Manage SLA Level : add actions
