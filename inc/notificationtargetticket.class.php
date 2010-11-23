@@ -770,6 +770,28 @@ class NotificationTargetTicket extends NotificationTarget {
          }
          $this->datas['##ticket.solution.description##'] = $this->obj->getField('solution');
 
+
+         // Linked tickets
+         $this->datas['##lang.ticket.linkedtickets##'] = $LANG['job'][55];
+
+         $linked_tickets = Ticket_Ticket::getLinkedTicketsTo($this->obj->getField('id'));
+         if (count($linked_tickets)) {
+            $linkedticket = new Ticket();
+            foreach ($linked_tickets as $data) {
+               $tmp = array();
+               $tmp['##linkedticket.id##'] = $data['tickets_id'];
+               $tmp['##linkedticket.link##'] = Ticket_Ticket::getLinkName($data['link']);
+               $tmp['##linkedticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
+                                                   "?redirect=ticket_".$data['tickets_id']);
+
+               $linkedticket->getFromDB($data['tickets_id']);
+               $tmp['##linkedticket.title##'] = $linkedticket->getField('name');
+               $tmp['##linkedticket.content##'] = $linkedticket->getField('content');
+
+               $this->datas['linkedtickets'][] = $tmp;
+            }
+         }
+
          $restrict = "`tickets_id`='".$this->obj->getField('id')."'";
          if (!isset($options['additionnaloption']) || !$options['additionnaloption']) {
             $restrict .= " AND `is_private` = '0'";
@@ -1036,11 +1058,12 @@ class NotificationTargetTicket extends NotificationTarget {
                      'followup.description'         => $LANG['joblist'][6],
                      'followup.requesttype'         => $LANG['job'][44],
                      'ticket.numberoffollowups'     => $LANG['mailing'][4],
-                     'ticket.numberoftasks'         => $LANG['mailing'][122],
+                     'ticket.numberoftasks'         => $LANG['mailing'][122], 
                      'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                      'ticket.action'                => $LANG['mailing'][119],
                      'ticket.autoclose'             => $LANG['entity'][18],
-                     'ticket.useremailnotification' => $LANG['job'][19]);
+                     'ticket.useremailnotification' => $LANG['job'][19],
+                  );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -1066,10 +1089,11 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
      //Foreach global tags
-     $tags = array('followups'   => $LANG['mailing'][141],
-                   'tasks'       => $LANG['mailing'][142],
-                   'log'         => $LANG['mailing'][144],
-                   'validation'  => $LANG['mailing'][143]);
+     $tags = array('followups'     => $LANG['mailing'][141],
+                   'tasks'         => $LANG['mailing'][142],
+                   'log'           => $LANG['mailing'][144],
+                   'validation'    => $LANG['mailing'][143],
+                   'linkedtickets' => $LANG['job'][55]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -1079,7 +1103,8 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array('ticket.days' => $LANG['stats'][31]);
+      $tags = array('ticket.days' => $LANG['stats'][31],
+                    'ticket.linkedtickets' => $LANG['job'][55]);
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
@@ -1103,7 +1128,13 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.log.field'        => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
                     'ticket.log.content'      => $LANG['mailing'][144]. ' : '.$LANG['event'][19],
                     'ticket.urlapprove'       => $LANG['document'][33].' '.$LANG['job'][51],
-                    'ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26]);
+                    'ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26],
+                    'linkedticket.id'         => $LANG['job'][55]." - ".$LANG['common'][2],
+                    'linkedticket.link'       => $LANG['job'][55]." - ".$LANG['setup'][620],
+                    'linkedticket.url'        => $LANG['job'][55]." - ".$LANG['common'][94],
+                    'linkedticket.title'      => $LANG['job'][55]." - ".$LANG['common'][16],
+                    'linkedticket.content'    => $LANG['job'][55]." - ".$LANG['joblist'][6],
+);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
