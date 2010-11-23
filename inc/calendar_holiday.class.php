@@ -118,7 +118,7 @@ class Calendar_Holiday extends CommonDBRelation {
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
-         Dropdown::show('Holiday', array('used' => $used));
+         Dropdown::show('Holiday', array('used' => $used,'entity' => $calendar->fields["entities_id"]));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
