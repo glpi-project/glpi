@@ -149,10 +149,13 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
 
    // Set default value...
    $values = array('_users_id_requester'  => getLoginUserID(),
+                   '_users_id_requester_notif' => array('use_notification' => 1),
                    '_groups_id_requester' => 0,
                    '_users_id_assign'     => 0,
+                   '_users_id_assign_notif' => array('use_notification' => 1),
                    '_groups_id_assign'    => 0,
                    '_users_id_observer'   => 0,
+                   '_users_id_observer_notif' => array('use_notification' => 1),
                    '_groups_id_observer'  => 0,
                    'suppliers_id_assign'  => 0,
                    'name'                 => '',
@@ -185,6 +188,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
          $values[$name] = $_SESSION["helpdeskSaved"]["$name"];
       }
    }
+
    // Clean text fields
    $values['name'] = stripslashes($values['name']);
    $values['content'] = cleanPostForTextArea($values['content']);

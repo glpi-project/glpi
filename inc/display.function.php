@@ -2170,12 +2170,9 @@ function printHelpDesk ($ID, $from_helpdesk) {
    $urgency             = 3;
    $type                = 0;
 
-   if ($CFG_GLPI['use_mailing']) {
-      echo "TODO : do requester correct set + notif options";
-   }
-
-   if (isset($_SESSION["helpdeskSaved"]["use_email_notification"])) {
-      $use_email_notification = stripslashes($_SESSION["helpdeskSaved"]["use_email_notification"]);
+   if (isset($_SESSION["helpdeskSaved"]['_users_id_requester_notif'])
+      && isset($_SESSION["helpdeskSaved"]['_users_id_requester_notif']['use_notification'])) {
+      $use_email_notification = stripslashes($_SESSION["helpdeskSaved"]['_users_id_requester_notif']['use_notification']);
    }
    if (isset($_SESSION["helpdeskSaved"]["email"])) {
       $email = stripslashes($_SESSION["helpdeskSaved"]["user_email"]);
@@ -2235,12 +2232,12 @@ function printHelpDesk ($ID, $from_helpdesk) {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][8]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      Dropdown::showYesNo('use_email_notification',$use_email_notification);
-      echo "</td></tr>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][11]."&nbsp;:&nbsp;</td>";
-      echo "<td><input name='user_email' value=\"$email\" size='50'
-                 onchange=\"use_email_notification.value='1'\">";
+
+      $_REQUEST['value'] = getLoginUserID();
+      $_REQUEST['field'] = '_users_id_requester_notif';
+      $_REQUEST['use_notification'] = $use_email_notification;
+      include (GLPI_ROOT."/ajax/uemailUpdate.php");
+
       echo "</td></tr>";
    }
 
