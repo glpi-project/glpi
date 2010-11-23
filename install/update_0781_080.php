@@ -147,6 +147,8 @@ function update0781to080($output='HTML') {
       $query = "CREATE TABLE `glpi_holidays` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
+                  `entities_id` int(11) NOT NULL default '0',
+                  `is_recursive` tinyint(1) NOT NULL default '0',
                   `comment` TEXT DEFAULT NULL ,
                   `begin_date` date default NULL,
                   `end_date` date default NULL,
@@ -728,13 +730,6 @@ function update0781to080($output='HTML') {
       $DB->query($query)
       or die("0.80 create glpi_ticketsatisfactions " . $LANG['update'][90] . $DB->error());
    }
-
-
-//TODO a supprimer avant publication (juste pour ceux ayant deja installe la svn)
-   $migration->addField("glpi_ticketsatisfactions", "type",
-                        "int(11) NOT NULL DEFAULT '0' AFTER `tickets_id`");
-   $migration->dropField("glpi_configs", "inquest_rate");
-   $migration->dropField("glpi_configs", "inquest_delay");
 
 
    // config inquest by entity
