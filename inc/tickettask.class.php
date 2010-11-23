@@ -115,9 +115,9 @@ class TicketTask  extends CommonDBTM {
          return false;
       }
       return (haveRight("global_add_tasks","1")
-              || ($ticket->fields["users_id_assign"] === getLoginUserID())
+              || $ticket->isUser(self::ASSIGN, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && in_array($ticket->fields["groups_id_assign"],$_SESSION['glpigroups'])));
+                  && $ticket->haveAGroup(self::ASSIGN,$_SESSION['glpigroups'])));
    }
 
    /**
@@ -342,35 +342,6 @@ class TicketTask  extends CommonDBTM {
                return false;
             }
          }
-/*
-         // TODO add + close from solution tab, not from followup
-         if ($this->input["_close"] && $this->input["_type"]!="update"
-                                    && $this->input["_type"]!="finish") {
-            $updates[] = "status";
-            $updates[] = "closedate";
-            $this->input["_job"]->fields["status"] = "solved";
-            $this->input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
-            $this->input["_job"]->updateInDB($updates);
-         }
-      }
-
-      // No check on admin because my be used by mailgate
-      if (isset($this->input["_reopen"])
-          && $this->input["_reopen"]
-          && strstr($this->input["_job"]->fields["status"],"old_")) {
-
-         $updates[]="status";
-         if ($this->input["_job"]->fields["users_id_assign"]>0
-             || $this->input["_job"]->fields["groups_id_assign"]>0
-             || $this->input["_job"]->fields["suppliers_id_assign"]>0) {
-
-            $this->input["_job"]->fields["status"]="assign";
-         } else {
-            $this->input["_job"]->fields["status"] = "new";
-         }
-         $this->input["_job"]->updateInDB($updates);
-      }
-*/
       if ($donotif) {
          if ($this->input["_close"]) {
             $this->input["_type"] = "finish";
