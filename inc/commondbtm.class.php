@@ -1640,6 +1640,7 @@ class CommonDBTM extends CommonGLPI {
 
                echo "<input type='hidden' name='entities_id' value='$entity'>";
 
+	    /// TODO : why set entities_id for non assign item ?
             } else if ($this->getType() != 'User') {
                echo "<input type='hidden' name='entities_id' value='0'>";
 
