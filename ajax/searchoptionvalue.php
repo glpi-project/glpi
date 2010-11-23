@@ -103,12 +103,12 @@ if (isset($_REQUEST['searchtype'])) {
                   $display = true;
                   break;
 
-               case "Ticket.users_id_assign" :
+/*               case "Ticket.users_id_assign" :
                   User::dropdown(array('name'  => $inputname,
                                        'value' => $_REQUEST['value'],
                                        'right' => 'own_ticket'));
                   $display = true;
-                  break;
+                  break;*/
             }
         }
 

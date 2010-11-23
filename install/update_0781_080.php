@@ -849,7 +849,6 @@ function update0781to080($output='HTML') {
       $migration->dropField('glpi_tickets', 'groups_id');
       $migration->dropField('glpi_tickets', 'groups_id_assign');
 
-      /// TODO drop groups_id / groups_id_assign in tickets
    }
 
    if (!TableExists('glpi_tickets_users')) {
