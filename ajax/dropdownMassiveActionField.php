@@ -196,11 +196,11 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
          case "glpi_users" : // users
             switch ($search["linkfield"]) {
-               case "users_id_assign" :
-                  User::dropdown(array('name'   => $search["linkfield"],
-                                       'right'  => 'own_ticket',
-                                       'entity' => $_SESSION["glpiactive_entity"]));
-                  break;
+//                case "users_id_assign" :
+//                   User::dropdown(array('name'   => $search["linkfield"],
+//                                        'right'  => 'own_ticket',
+//                                        'entity' => $_SESSION["glpiactive_entity"]));
+//                   break;
 
                case "users_id_tech" :
                   User::dropdown(array('name'   => $search["linkfield"],
