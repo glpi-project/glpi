@@ -1270,30 +1270,18 @@ class Ticket extends CommonDBTM {
       Event::log($this->fields['id'], "ticket", 4, "tracking",
                  getUserName(getLoginUserID())." ".$LANG['log'][20]);
 
-      $already_mail = false;
-      if (((isset($this->input["_followup"])
+      if (isset($this->input["_followup"])
             && is_array($this->input["_followup"])
-            && strlen($this->input["_followup"]['content']) > 0)
-           || isset($this->input["plan"]))
-          || (isset($this->input["_hour"])
-              && isset($this->input["_minute"])
-              && isset($this->input["actiontime"])
-              && $this->input["actiontime"]>0)) {
+            && strlen($this->input["_followup"]['content']) > 0
+           ) {
 
-         $fup  = new TicketFollowup();
+         $fup = new TicketFollowup();
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
             $type = "finish";
          }
          $toadd = array("type"       => $type,
-                        "tickets_id" => $this->input['id']);
-
-         if (isset($this->input["_hour"])) {
-            $toadd["hour"] = $this->input["_hour"];
-         }
-         if (isset($this->input["_minute"])) {
-            $toadd["minute"] = $this->input["_minute"];
-         }
+                        "tickets_id" => $this->fields['id']);
          if (isset($this->input["_followup"]['content'])
              && strlen($this->input["_followup"]['content']) > 0) {
             $toadd["content"] = $this->input["_followup"]['content'];
@@ -1301,11 +1289,36 @@ class Ticket extends CommonDBTM {
          if (isset($this->input["_followup"]['is_private'])) {
             $toadd["is_private"] = $this->input["_followup"]['is_private'];
          }
+         $toadd['_no_notif']=true;
+
+         $fup->add($toadd);
+      }
+
+      if (isset($this->input["plan"])
+         || (isset($this->input["_hour"])
+              && isset($this->input["_minute"])
+              && isset($this->input["realtime"])
+              && $this->input["realtime"]>0)) {
+
+         $task = new TicketTask();
+         $type = "new";
+         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
+            $type = "finish";
+         }
+         $toadd = array("type"       => $type,
+                        "tickets_id" => $this->fields['id']);
+         if (isset($this->input["_hour"])) {
+            $toadd["hour"] = $this->input["_hour"];
+         }
+         if (isset($this->input["_minute"])) {
+            $toadd["minute"] = $this->input["_minute"];
+         }
          if (isset($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
          }
-         $fup->add($toadd);
-         $already_mail = true;
+         $toadd['_no_notif']=true;
+
+         $task->add($toadd);
       }
 
       // From interface 
@@ -1379,7 +1392,7 @@ class Ticket extends CommonDBTM {
       }
 
       // Processing Email
-      if ($CFG_GLPI["use_mailing"] && !$already_mail) {
+      if ($CFG_GLPI["use_mailing"]) {
          $user = new User();
          $user->getFromDB($this->input["users_id"]);
          // Clean reload of the ticket

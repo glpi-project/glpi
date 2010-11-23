@@ -319,6 +319,12 @@ class TicketTask  extends CommonDBTM {
    function post_addItem() {
       global $CFG_GLPI;
 
+      $donotif = $CFG_GLPI["use_mailing"];
+
+      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+         $donotif = false;
+      }
+
       $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
 
       if (isset($this->input["actiontime"]) && $this->input["actiontime"]>0) {
@@ -365,7 +371,7 @@ class TicketTask  extends CommonDBTM {
          $this->input["_job"]->updateInDB($updates);
       }
 */
-      if ($CFG_GLPI["use_mailing"]) {
+      if ($donotif) {
          if ($this->input["_close"]) {
             $this->input["_type"] = "finish";
          }
