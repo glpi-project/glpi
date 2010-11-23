@@ -1023,7 +1023,7 @@ class Ticket extends CommonDBTM {
          }
 
          // Read again ticket to be sure that all data are up to date
-         $this->getFromDB($this->field['id']);
+         $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
 
       }

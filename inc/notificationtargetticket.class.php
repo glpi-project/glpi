@@ -81,29 +81,7 @@ class NotificationTargetTicket extends NotificationTarget {
    function getItemAuthorAddress() {
       global $CFG_GLPI;
 
-      if ($this->obj->getField('use_email_notification')) {
-         $author_lang  = $CFG_GLPI["language"];
-         $author_email = $this->obj->getField('user_email');
-         $author_id    = -1;
-         $user         = new User;
-
-         if ($this->obj->isField('users_id')
-             && $user->getFromDB($this->obj->getField('users_id'))) {
-
-            if ($user->getField('email')==$author_email) {
-               $user_lang = $user->getField('language');
-
-               if (!empty($user_lang)) {
-                  $author_lang = $user_lang;
-               }
-               $author_id = $user->getField('id');
-            }
-         }
-
-         $this->addToAddressesList(array('email'    => $author_email,
-                                         'language' => $author_lang,
-                                         'id'       => $author_id));
-      }
+      $this->getLinkedUserByType(Ticket::REQUESTER);
    }
 
 
@@ -124,12 +102,12 @@ class NotificationTargetTicket extends NotificationTarget {
 
          switch ($data['items_id']) {
             case Notification::TICKET_ASSIGN_TECH :
-               $this->getTicketAssignTechnicianAddress();
+               $this->getLinkedUserByType(Ticket::ASSIGN);
                break;
 
             //Send to the group in charge of the ticket supervisor
             case Notification::TICKET_SUPERVISOR_ASSIGN_GROUP :
-               $this->getGroupSupervisorAddress(true);
+               $this->getLinkedGroupSupervisorByType(Ticket::ASSIGN);
                break;
 
             //Send to the user who's got the issue
@@ -139,7 +117,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
             //Send to the supervisor of the requester's group
             case Notification::TICKET_SUPERVISOR_REQUESTER_GROUP :
-               $this->getGroupSupervisorAddress(false);
+               $this->getLinkedGroupSupervisorByType(Ticket::REQUESTER);
                break;
 
             //Send to the technician previously in charge of the ticket (before reassignation)
@@ -153,11 +131,11 @@ class NotificationTargetTicket extends NotificationTarget {
                break;
 
             case Notification::TICKET_REQUESTER_GROUP :
-               $this->getRequestGroupAddresses();
+               $this->getLinkedGroupByType(Ticket::REQUESTER);
                break;
 
             case Notification::TICKET_ASSIGN_GROUP :
-               $this->getAssignGroupAddresses();
+               $this->getLinkedGroupByType(Ticket::ASSIGN);
                break;
 
             //Send to the ticket validation approver
@@ -184,6 +162,19 @@ class NotificationTargetTicket extends NotificationTarget {
             case Notification::TICKET_TASK_ASSIGN_TECH :
                $this->getTicketTaskAssignUser($options);
                break;
+            //Notification to the ticket's observer group
+            case Notification::TICKET_OBSERVER_GROUP :
+               $this->getLinkedGroupByType(Ticket::OBSERVER);
+               break;
+            //Notification to the ticket's observer user
+            case Notification::TICKET_OBSERVER :
+               $this->getLinkedUserByType(Ticket::OBSERVER);
+               break;
+            //Notification to the supervisor of the ticket's observer group
+            case Notification::TICKET_SUPERVISOR_OBSERVER_GROUP :
+               $this->getLinkedGroupSupervisorByType(Ticket::OBSERVER);
+               break;
+
          }
       }
    }
@@ -220,21 +211,123 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
+   /**
+    * Add linked users to the notified users list
+    *
+    * @param $type type of linked users
+    */
+   function getLinkedUserByType ($type) {
+      global $DB,$CFG_GLPI;
 
-   function getRequestGroupAddresses() {
+      //Look for the user by his id
+      $query = $this->getDistinctUserSql().", `glpi_tickets_users`.`use_notification` AS notif,
+               `glpi_tickets_users`.`alternative_email` AS altemail
+               FROM `glpi_tickets_users`
+               LEFT JOIN `glpi_users` ON (`glpi_tickets_users`.`users_id` = `glpi_users`.`id`)
+               WHERE `glpi_tickets_users`.`tickets_id` = '".$this->obj->fields["id"]."'
+                  AND `glpi_tickets_users`.`type` = '$type';";
 
-      if ($this->obj->fields['groups_id']) {
-         $this->getUsersAddressesByGroup($this->obj->fields['groups_id']);
+      foreach ($DB->request($query) as $data) {
+         //Add the user email and language in the notified users list
+         if ($data['notif']) {
+            $author_email = $data['email'];
+            $author_lang  = $data["language"];
+            $author_id    = $data['id'];
+            
+            if (!empty($data['altemail']) && $data['altemail'] != $data['email']
+               && NotificationMail::isUserAddressValid($data['altemail'])) {
+               $author_email = $data['altemail'];
+            }
+            if (empty($author_lang)) {
+               $author_lang = $CFG_GLPI["language"];
+            }
+            if (empty($author_id)) {
+               $author_id = -1;
+            }
+            $this->addToAddressesList(array('email'    => $author_email,
+                                            'language' => $author_lang,
+                                            'id'       => $author_id));
+         }
       }
    }
 
 
-   function getAssignGroupAddresses() {
+   /**
+    * Add linked group to the notified user list
+    *
+    * @param $type type of linked groups
+    */
+   function getLinkedGroupByType ($type) {
+      global $DB;
 
-      if ($this->obj->fields['groups_id_assign']) {
-         $this->getUsersAddressesByGroup($this->obj->fields['groups_id_assign']);
+      //Look for the user by his id
+      $query = "SELECT `groups_id`
+               FROM `glpi_groups_tickets`
+               WHERE `glpi_groups_tickets`.`tickets_id` = '".$this->obj->fields["id"]."'
+                  AND `glpi_groups_tickets`.`type` = '$type';";
+
+      foreach ($DB->request($query) as $data) {
+         //Add the group in the notified users list
+         $this->getUsersAddressesByGroup($data['groups_id']);
       }
    }
+
+   /**
+    * Add linked group supervisor to the notified user list
+    *
+    * @param $type type of linked groups
+    */
+   function getLinkedGroupSupervisorByType ($type) {
+      global $DB;
+
+      //Look for the user by his id
+      $query = $this->getDistinctUserSql()."
+               FROM `glpi_groups_tickets`
+               INNER JOIN `glpi_groups` ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)
+               INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)
+               WHERE `glpi_groups_tickets`.`tickets_id` = '".$this->obj->fields["id"]."'
+                  AND `glpi_groups_tickets`.`type` = '$type';";
+
+      foreach ($DB->request($query) as $data) {
+         //Add the group in the notified users list
+         $this->addToAddressesList($data);
+      }
+   }
+
+
+//    function getGroupSupervisorAddress ($assign=true) {
+//       global $DB;
+// 
+//       $group_field = ($assign?"groups_id_assign":"groups_id");
+// 
+//       if (isset($this->obj->fields[$group_field]) && $this->obj->fields[$group_field]>0) {
+// 
+//          $query = $this->getDistinctUserSql()."
+//                   FROM `glpi_groups`
+//                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
+//                   $this->getJoinSql()."
+//                   WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
+// 
+//          foreach ($DB->request($query) as $data) {
+//             $this->addToAddressesList($data);
+//          }
+//       }
+//    }
+
+//    function getRequestGroupAddresses() {
+// 
+//       if ($this->obj->fields['groups_id']) {
+//          $this->getUsersAddressesByGroup($this->obj->fields['groups_id']);
+//       }
+//    }
+
+
+//    function getAssignGroupAddresses() {
+// 
+//       if ($this->obj->fields['groups_id_assign']) {
+//          $this->getUsersAddressesByGroup($this->obj->fields['groups_id_assign']);
+//       }
+//    }
 
 
    function getTicketAssignTechnicianAddress () {
@@ -397,29 +490,6 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
    /**
-    * Get supervisor of a group (works for request group or assigned group)
-   **/
-   function getGroupSupervisorAddress ($assign=true) {
-      global $DB;
-
-      $group_field = ($assign?"groups_id_assign":"groups_id");
-
-      if (isset($this->obj->fields[$group_field]) && $this->obj->fields[$group_field]>0) {
-
-         $query = $this->getDistinctUserSql()."
-                  FROM `glpi_groups`
-                  LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
-                  $this->getJoinSql()."
-                  WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
-
-         foreach ($DB->request($query) as $data) {
-            $this->addToAddressesList($data);
-         }
-      }
-   }
-
-
-   /**
     *Get events related to tickets
    **/
    function getEvents() {
@@ -472,6 +542,10 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
          $this->addTarget(Notification::TICKET_ASSIGN_GROUP, $LANG['setup'][248]);
+         $this->addTarget(Notification::TICKET_OBSERVER_GROUP, $LANG['setup'][251]);
+         $this->addTarget(Notification::TICKET_OBSERVER, $LANG['common'][104]);
+         $this->addTarget(Notification::TICKET_SUPERVISOR_OBSERVER_GROUP,
+                          $LANG['common'][64]." - ".$LANG['setup'][251]);
       }
 
       if ($event=='validation') {
@@ -561,6 +635,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
          $this->datas['##ticket.storestatus##'] = $this->obj->getField('status');
          $this->datas['##ticket.status##']      = Ticket::getStatus($this->obj->getField('status'));
+         $this->datas['##ticket.type##']        = Ticket::getTicketTypeName($this->obj->getField('type'));
          $this->datas['##ticket.requesttype##']
                      = Dropdown::getDropdownName('glpi_requesttypes',
                                                  $this->obj->getField('requesttypes_id'));
@@ -1006,6 +1081,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.content'               => $LANG['joblist'][6],
                      'ticket.description'           => $LANG['mailing'][5],
                      'ticket.status'                => $LANG['joblist'][0],
+                     'ticket.type'                  => $LANG['common'][17],
                      'ticket.creationdate'          => $LANG['reports'][60],
                      'ticket.closedate'             => $LANG['reports'][61],
                      'ticket.solvedate'             => $LANG['reports'][64],

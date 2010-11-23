@@ -2067,7 +2067,7 @@ $LANG['setup'][247] = "Alertes sur les informations financières";
 $LANG['setup'][248] = "Groupe chargé du ticket";
 $LANG['setup'][249] = "Groupe demandeur";
 $LANG['setup'][250] = "Affichage recherche par défaut";
-
+$LANG['setup'][251] = "Groupe observateur";
 $LANG['setup'][252] = "Sélectionnez les éléments à afficher par défaut";
 $LANG['setup'][253] = "Filtre pour la recherche dans les groupes";
 $LANG['setup'][254] = "Type de recherche";
