@@ -874,6 +874,12 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##ticket.assigntouser##'] = '';
             }
 
+            if ($ticket['groups_id']) {
+               $tmp['##ticket.group##'] = Dropdown::getDropdownName('glpi_groups', $ticket['groups_id']);
+            } else {
+               $tmp['##ticket.group##'] = '';
+            }
+
             if ($ticket['groups_id_assign']) {
                $tmp['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
                                                             $ticket['groups_id_assign']);
