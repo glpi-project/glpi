@@ -119,7 +119,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $canupdate = haveRight('update_ticket','1');
 
       $ticket = new Ticket();
-      if (count($tickets)) {
+      if (is_array($tickets) && count($tickets)) {
          foreach ($tickets as $linkID => $data) {
             echo self::getLinkName($data['link'])."&nbsp;";
             if (!$_SESSION['glpiis_ids_visible']) {
