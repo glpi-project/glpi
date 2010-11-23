@@ -1308,9 +1308,6 @@ class Ticket extends CommonDBTM {
          $already_mail = true;
       }
 
-      if (isset($input['_link'])) {
-      }
-
       if (isset($this->input["_linkedto"])) {
          // TODO manage link to old ticket (new mail received about a closed ticket)
          $ticket_ticket = new Ticket_Ticket();
