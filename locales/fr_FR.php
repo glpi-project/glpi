@@ -873,6 +873,7 @@ $LANG['install'][106] = "Test d'écriture des fichiers de graphiques";
 
 $LANG['job'][1]  = "Incident";
 $LANG['job'][2]  = "Demande";
+$LANG['job'][3]  = "Techniciens";
 $LANG['job'][4]  = "Demandeur";
 $LANG['job'][5]  = "Attribué à";
 $LANG['job'][6]  = "Technicien";

@@ -230,13 +230,13 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       $mmail->MessageID = "GLPI-".$options["items_id"].".".time().".".rand(). "@".php_uname('n');
 
       $messageerror = $LANG['mailing'][47];
-      logInFile("mail",$LANG['tracking'][38]." ".$options['to'].": ".$options['subject']."\n");
-//       if (!$mmail->Send()) {
-//          $senderror = true;
-//          addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
-//       } else {
-//          logInFile("mail",$LANG['tracking'][38]." ".$options['to'].": ".$options['subject']."\n");
-//       }
+
+      if (!$mmail->Send()) {
+         $senderror = true;
+         addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
+      } else {
+         logInFile("mail",$LANG['tracking'][38]." ".$options['to'].": ".$options['subject']."\n");
+      }
 
       $mmail->ClearAddresses();
       return true;

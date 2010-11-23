@@ -151,6 +151,38 @@ class Ticket extends CommonDBTM {
    }
 
    /**
+    * get users linked to a ticket
+    *
+    * @param $type type to search (see constants)
+    *
+    * @return array
+   **/
+   function getUsers($type) {
+
+      if (isset($this->users[$type])) {
+         return $this->users[$type];
+      }
+
+      return array();
+   }
+
+   /**
+    * get groups linked to a ticket
+    *
+    * @param $type type to search (see constants)
+    *
+    * @return array
+   **/
+   function getGroups($type) {
+
+      if (isset($this->groups[$type])) {
+         return $this->groups[$type];
+      }
+
+      return array();
+   }
+
+   /**
     * count users linked to tickets by type or global
     *
     * @param $type type to search (see constants) / 0 for all
