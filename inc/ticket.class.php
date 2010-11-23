@@ -654,16 +654,18 @@ class Ticket extends CommonDBTM {
       // check dates
 
       // check due_date (SLA)
-      if ($this->fields["due_date"] < $this->fields["date"]) {
-         addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+      if (!is_null($this->fields["due_date"])) { // Date set
+         if ($this->fields["due_date"] < $this->fields["date"]) {
+            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
 
-         if (($key=array_search('date',$this->updates)) !== false) {
-            unset($this->updates[$key]);
-            unset($this->oldvalues['date']);
-         }
-         if (($key=array_search('due_date',$this->updates)) !== false) {
-            unset($this->updates[$key]);
-            unset($this->oldvalues['due_date']);
+            if (($key=array_search('date',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['date']);
+            }
+            if (($key=array_search('due_date',$this->updates)) !== false) {
+               unset($this->updates[$key]);
+               unset($this->oldvalues['due_date']);
+            }
          }
       }
 
