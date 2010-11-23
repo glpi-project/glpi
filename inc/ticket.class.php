@@ -1360,19 +1360,37 @@ class Ticket extends CommonDBTM {
       $group_ticket = new Group_Ticket;
 
       if (isset($this->input["_users_id_requester"]) && $this->input["_users_id_requester"]>0) {
-         $ticket_user->add(array('tickets_id' => $this->fields['id'],
+         $input2=array('tickets_id' => $this->fields['id'],
                                  'users_id'   => $this->input["_users_id_requester"],
-                                 'type'       => Ticket::REQUESTER));
+                                 'type'       => Ticket::REQUESTER);
+         if (isset($this->input["_users_id_requester_notif"])) {
+            foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
+               $input2[$key] = $val;
+            }
+         }
+         $ticket_user->add($input2);
       }
       if (isset($this->input["_users_id_observer"]) && $this->input["_users_id_observer"]>0) {
-         $ticket_user->add(array('tickets_id' => $this->fields['id'],
+         $input2=array('tickets_id' => $this->fields['id'],
                                  'users_id'   => $this->input["_users_id_observer"],
-                                 'type'       => Ticket::OBSERVER));
+                                 'type'       => Ticket::OBSERVER);
+         if (isset($this->input["_users_id_observer_notif"])) {
+            foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
+               $input2[$key] = $val;
+            }
+         }
+         $ticket_user->add($input2);
       }
       if (isset($this->input["_users_id_assign"]) && $this->input["_users_id_assign"]>0) {
-         $ticket_user->add(array('tickets_id' => $this->fields['id'],
+         $input2=array('tickets_id' => $this->fields['id'],
                                  'users_id'   => $this->input["_users_id_assign"],
-                                 'type'       => Ticket::ASSIGN));
+                                 'type'       => Ticket::ASSIGN);
+         if (isset($this->input["_users_id_assign_notif"])) {
+            foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
+               $input2[$key] = $val;
+            }
+         }
+         $ticket_user->add($input2);
       }
 
       if (isset($this->input["_groups_id_requester"]) && $this->input["_groups_id_requester"]>0) {
@@ -3141,8 +3159,10 @@ class Ticket extends CommonDBTM {
                   }
                }
                echo "&nbsp;";
-               showToolTip($text, array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                                        'popup' => 'edit_user_notification&amp;id='.$d['id']));
+               if ($canedit || $d['users_id'] == getLoginUserID()) {
+                  showToolTip($text, array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                          'popup' => 'edit_user_notification&amp;id='.$d['id']));
+               }
             }
             if ($canedit) {
                echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
@@ -3243,7 +3263,7 @@ class Ticket extends CommonDBTM {
          echo "$usericon&nbsp;";
          if (haveRight("update_ticket","1")) {
             //List all users in the active entities
-            User::dropdown(array('name'          => '_users_id_requester',
+            $rand = User::dropdown(array('name'          => '_users_id_requester',
                                  'value'         => $options["_users_id_requester"],
                                  'entity'        => $_SESSION['glpiactiveentities'],
                                  //'entity'        => $this->fields["entities_id"],
@@ -3251,8 +3271,23 @@ class Ticket extends CommonDBTM {
                                  'right'         => 'all',
                                  'helpdesk_ajax' => 1,
                                  'ldap_import'   => true));
+
             if ($CFG_GLPI['use_mailing']) {
-               echo "<br>TODO : PERMIT TO SELECT NOTIF OPTIONS<br>";
+               echo "<br><span id='notif_requester_$rand'>";
+               echo "</span>";
+               $paramscomment = array('value'          => '__VALUE__',
+                                    'field'            => "_users_id_requester_notif",
+                                    'use_notification' => $options["_users_id_requester_notif"]['use_notification']);
+
+               ajaxUpdateItemOnSelectEvent("dropdown__users_id_requester".$rand,
+                                          "notif_requester_$rand",
+                                          $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                          $paramscomment, false);
+               echo "<script type='text/javascript'>";
+               ajaxUpdateItemJsCode("notif_requester_$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
+                                    false,"dropdown__users_id_requester".$rand);
+               echo "</script>";
             }
          } else {
             echo getUserName($options["_users_id_requester"], $showuserlink);
@@ -3260,6 +3295,7 @@ class Ticket extends CommonDBTM {
 
          //If user have access to more than one entity, then display a combobox
          if ($this->countentitiesforuser > 1) {
+            echo "<br>";
             $rand = Dropdown::show('Entity', array('value'       => $this->fields["entities_id"],
                                                    'entity'      => $this->userentities,
                                                    'auto_submit' => 1));
@@ -3310,14 +3346,28 @@ class Ticket extends CommonDBTM {
             echo "$usericon&nbsp;";
 
             //List all users in the active entities
-            User::dropdown(array('name'          => '_users_id_observer',
+            $rand = User::dropdown(array('name'          => '_users_id_observer',
                                  'value'         => $options["_users_id_observer"],
                                  'entity'        => $_SESSION['glpiactiveentities'],
                                  'right'         => 'all',
                                  'ldap_import'   => true));
 
             if ($CFG_GLPI['use_mailing']) {
-               echo "<br>TODO : PERMIT TO SELECT NOTIF OPTIONS<br>";
+               echo "<br><span id='notif_observer_$rand'>";
+               echo "</span>";
+               $paramscomment = array('value'          => '__VALUE__',
+                                    'field'            => "_users_id_observer_notif",
+                                    'use_notification' => $options["_users_id_observer_notif"]['use_notification']);
+
+               ajaxUpdateItemOnSelectEvent("dropdown__users_id_observer".$rand,
+                                          "notif_observer_$rand",
+                                          $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                          $paramscomment, false);
+               echo "<script type='text/javascript'>";
+               ajaxUpdateItemJsCode("notif_observer_$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
+                                    false,"dropdown__users_id_observer".$rand);
+               echo "</script>";
             }
 
             echo '<hr>';
@@ -3365,14 +3415,28 @@ class Ticket extends CommonDBTM {
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
             echo "$usericon&nbsp;";
-            User::dropdown(array('name'        => '_users_id_assign',
+            $rand = User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
                                  'right'       => 'own_ticket',
                                  'entity'      => $this->fields["entities_id"],
                                  'ldap_import' => true));
 
             if ($CFG_GLPI['use_mailing']) {
-               echo "<br>TODO : PERMIT TO SELECT NOTIF OPTIONS<br>";
+               echo "<br><span id='notif_assign_$rand'>";
+               echo "</span>";
+               $paramscomment = array('value'          => '__VALUE__',
+                                    'field'            => "_users_id_assign_notif",
+                                    'use_notification' => $options["_users_id_assign_notif"]['use_notification']);
+
+               ajaxUpdateItemOnSelectEvent("dropdown__users_id_assign".$rand,
+                                          "notif_assign_$rand",
+                                          $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                          $paramscomment, false);
+               echo "<script type='text/javascript'>";
+               ajaxUpdateItemJsCode("notif_assign_$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
+                                    false,"dropdown__users_id_assign".$rand);
+               echo "</script>";
             }
 
             echo '<hr>';

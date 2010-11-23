@@ -65,7 +65,27 @@ class Ticket_User extends CommonDBRelation {
 
 
    function canUpdateItem() {
-      return parent::canUpdateItem() || $this->fields['users_id'] == getLoginUserID();
+      return (parent::canUpdateItem() || $this->fields['users_id'] == getLoginUserID());
+   }
+
+
+   /**
+    * Check right on an item - overloaded to check user access to its datas
+    *
+    * @param $ID ID of the item (-1 if new item)
+    * @param $right Right to check : r / w / recursive
+    * @param $input array of input data (used for adding item)
+    *
+    * @return boolean
+   **/
+   function can($ID, $right, &$input=NULL) {
+
+      if ($ID>0) {
+       if ($this->fields['users_id']===getLoginUserID()) {
+         return true;
+       }
+      }
+      return parent::can($ID,$right,$input);
    }
 
 

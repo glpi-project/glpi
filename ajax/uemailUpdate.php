@@ -34,13 +34,14 @@
 // ----------------------------------------------------------------------
 
 $AJAX_INCLUDE = 1;
+if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
+   define('GLPI_ROOT','..');
+   include (GLPI_ROOT."/inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   header_nocache();
+}
 
-define('GLPI_ROOT','..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-checkCentralAccess();
+checkLoginUser();
 
 if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
    $user = new User;
@@ -51,14 +52,19 @@ if (isset($_REQUEST['field']) && $_REQUEST["value"]>0) {
 
    echo $LANG['job'][19].'&nbsp;:&nbsp;';
 
-   $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', true);
+   $default_notif = true;
+   if (isset($_REQUEST['use_notification'])) {
+      $default_notif = $_REQUEST['use_notification'];
+   }
+
+   $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', $default_notif);
 
    echo '<br>'.$LANG['mailing'][118]."&nbsp;:&nbsp;";
    if (!empty($email) && NotificationMail::isUserAddressValid($email)) {
       echo $email;
    } else {
       echo "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
-             value='$email'>";
+            value='$email'>";
    }
 }
 
