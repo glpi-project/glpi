@@ -159,6 +159,7 @@ class Ticket_User extends CommonDBRelation {
 
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id']);
+
       parent::post_addItem();
    }
 

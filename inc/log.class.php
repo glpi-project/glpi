@@ -118,12 +118,9 @@ class Log extends CommonDBTM {
             foreach ($searchopt as $key2 => $val2) {
                // Linkfield or standard field not massive action enable
                if ($val2["linkfield"] == $key
-                   || (empty ($val2["linkfield"])
-                       && $key == $val2["field"]
+                   || ($key == $val2["field"]
                        && $val2["table"] == $item->getTable())) {
-
                   $id_search_option = $key2; // Give ID of the $SEARCHOPTION
-
                   // 1st case : Ticket specific dropdown case (without table)
                   if ($real_type=='Ticket' && in_array($key, array('status', 'urgency', 'impact',
                                                                    'priority'))) {
@@ -151,9 +148,7 @@ class Log extends CommonDBTM {
                                              addslashes(Ticket::getPriorityName($oldval)),
                                              addslashes(Ticket::getPriorityName($values[$key])));
                            break;
-
                      }
-
                   } else if ($val2["table"] == $item->getTable()) {
                      // 2nd case : text field -> keep datas
                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);
@@ -564,8 +559,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = $LANG['log'][64];
                   break;
             }
-
-            if (!isset($tmp['change'])) {
+            if (empty($tmp['change'])) {
                $tmp['change'] = "\"".$data["old_value"]."\" --> \"". $data["new_value"]."\"";
             }
          }
