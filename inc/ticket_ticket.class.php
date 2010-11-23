@@ -49,6 +49,15 @@ class Ticket_Ticket extends CommonDBRelation {
 
    public $check_entities = false;
 
+   // Ticket links
+   const LINK_TO = 1;
+   const DUPLICATE_WITH = 2;
+
+
+   function canCreate() {
+      return haveRight('create_ticket', 1) // Add on creation
+            || haveRight('update_ticket', 1);
+   }
 
    function canCreateItem() {
 
@@ -142,11 +151,11 @@ class Ticket_Ticket extends CommonDBRelation {
     * @param $myname select name
     * @param $value default value
    **/
-   static function dropdownLinks($myname, $value=LINK_TO) {
+   static function dropdownLinks($myname, $value=self::LINK_TO) {
       global $LANG;
 
-      $tmp[LINK_TO]        = $LANG['common'][97];
-      $tmp[DUPLICATE_WITH] = $LANG['common'][98];
+      $tmp[self::LINK_TO]        = $LANG['common'][97];
+      $tmp[self::DUPLICATE_WITH] = $LANG['common'][98];
       Dropdown::showFromArray($myname, $tmp, array('value' => $value));
    }
 
@@ -160,8 +169,8 @@ class Ticket_Ticket extends CommonDBRelation {
    static function getLinkName($value) {
       global $LANG;
 
-      $tmp[LINK_TO]        = $LANG['common'][97];
-      $tmp[DUPLICATE_WITH] = $LANG['common'][98];
+      $tmp[self::LINK_TO]        = $LANG['common'][97];
+      $tmp[self::DUPLICATE_WITH] = $LANG['common'][98];
 
       if (isset($tmp[$value])) {
          return $tmp[$value];
