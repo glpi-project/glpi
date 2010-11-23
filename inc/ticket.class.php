@@ -1101,16 +1101,10 @@ class Ticket extends CommonDBTM {
       Event::log($this->fields['id'], "ticket", 4, "tracking",
                   getUserName($this->input["users_id"])." ".$LANG['log'][20]);
 
-      if (((isset($this->input["_followup"])
+      if (isset($this->input["_followup"])
             && is_array($this->input["_followup"])
             && strlen($this->input["_followup"]['content']) > 0
-           )
-           || isset($this->input["plan"])
-          )
-          || (isset($this->input["_hour"])
-              && isset($this->input["_minute"])
-              && isset($this->input["realtime"])
-              && $this->input["realtime"]>0)) {
+           ) {
 
          $fup = new TicketFollowup();
          $type = "new";
@@ -1119,12 +1113,6 @@ class Ticket extends CommonDBTM {
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id']);
-         if (isset($this->input["_hour"])) {
-            $toadd["hour"] = $this->input["_hour"];
-         }
-         if (isset($this->input["_minute"])) {
-            $toadd["minute"] = $this->input["_minute"];
-         }
          if (isset($this->input["_followup"]['content'])
              && strlen($this->input["_followup"]['content']) > 0) {
             $toadd["content"] = $this->input["_followup"]['content'];
@@ -1137,7 +1125,8 @@ class Ticket extends CommonDBTM {
          $fup->add($toadd);
       }
 
-      if ((isset($this->input["_hour"])
+      if (isset($this->input["plan"])
+         || (isset($this->input["_hour"])
               && isset($this->input["_minute"])
               && isset($this->input["realtime"])
               && $this->input["realtime"]>0)) {
