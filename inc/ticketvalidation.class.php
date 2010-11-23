@@ -490,8 +490,8 @@ class TicketValidation  extends CommonDBChild {
          echo "};";
          echo "</script>\n";
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
-            echo "<p><a href='javascript:viewAddValidation".$tID."$rand();'>";
-            echo $LANG['validation'][1]."</a></p><br>\n";
+            echo "<div class='center'><a href='javascript:viewAddValidation".$tID."$rand();'>";
+            echo $LANG['validation'][1]."</a></div><br>\n";
          }
       }
 
@@ -571,7 +571,7 @@ class TicketValidation  extends CommonDBChild {
          }
          echo "</table>";
       } else {
-         echo '<div><strong>'.$LANG['search'][15].'</strong></div>';
+         echo "<div class='center'><strong>".$LANG['search'][15]."</strong></div>";
       }
    }
 
