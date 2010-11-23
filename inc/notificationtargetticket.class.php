@@ -638,7 +638,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
                                                          $this->obj->getField('groups_id_assign'));
          } else {
-            $this->datas['##ticket.group##'] = '';
+            $this->datas['##ticket.assigntogroup##'] = '';
          }
 
          //Tags associated with the object linked to the ticket
@@ -878,7 +878,7 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##ticket.assigntogroup##'] = Dropdown::getDropdownName('glpi_groups',
                                                             $ticket['groups_id_assign']);
             } else {
-               $tmp['##ticket.group##'] = '';
+               $tmp['##ticket.assigntogroup##'] = '';
             }
 
             if ($ticket['suppliers_id_assign']) {
