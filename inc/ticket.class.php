@@ -1309,10 +1309,11 @@ class Ticket extends CommonDBTM {
       }
 
       // From interface 
-      if (isset($input['_link'])) {
+      if (isset($this->input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
-         if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
-            $ticket_ticket->add($input['_link']);
+         $this->input['_link']['tickets_id_1'] = $this->fields['id'];
+         if ($ticket_ticket->can(-1, 'w', $this->input['_link'])) {
+            $ticket_ticket->add($this->input['_link']);
          }
       }
 
@@ -3844,7 +3845,7 @@ class Ticket extends CommonDBTM {
 //       }
 
 
-      $view_linked_tickets = ($ID && $canupdate);
+      $view_linked_tickets = ($ID || $canupdate);
       $titlecolspan        = ($view_linked_tickets?1:3);
 
       echo "<tr class='tab_bg_1'>";
