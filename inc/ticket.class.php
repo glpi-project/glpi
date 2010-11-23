@@ -3281,7 +3281,7 @@ class Ticket extends CommonDBTM {
       if ($ID
           && (haveRight("assign_ticket","1")
               || haveRight("steal_ticket","1")
-              || (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0))) {
+              || (haveRight("own_ticket","1") && $this->countUsers(self::ASSIGN)==0))) {
          $rand_assign_ticket = mt_rand();
          echo "&nbsp;&nbsp;<a class='tracking'
                onClick=\"Ext.get('ticketactor$rand_assign_ticket').setDisplayed('block')\">\n";
@@ -3500,7 +3500,7 @@ class Ticket extends CommonDBTM {
             echo '<hr>';
 
          } else if (haveRight("steal_ticket","1")
-                    || (haveRight("own_ticket","1") && $this->fields["users_id_assign"]==0)) {
+                    || (haveRight("own_ticket","1") && $this->countUsers(self::ASSIGN)==0)) {
             echo "$usericon&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
