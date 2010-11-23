@@ -3926,7 +3926,7 @@ class Ticket extends CommonDBTM {
       $titlecolspan        = ($view_linked_tickets?1:3);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['common'][57]."&nbsp;: </th>";
+      echo "<td class='b'>".$LANG['common'][57]."&nbsp;: </td>";
       echo "<td colspan='$titlecolspan'>";
       if ($canupdate_descr) {
          $rand = mt_rand();
