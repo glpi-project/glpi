@@ -1310,6 +1310,10 @@ class Ticket extends CommonDBTM {
 
       // From interface 
       if (isset($input['_link'])) {
+         $ticket_ticket = new Ticket_Ticket();
+         if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
+            $ticket_ticket->add($input['_link']);
+         }
       }
 
       // From mailcollector : do not check rights
