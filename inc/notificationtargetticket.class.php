@@ -722,12 +722,18 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.openbyuser##'] = '';
          }
 
-         if ($this->obj->getField('users_id_assign')) {
-            $user_tmp = new User;
-            $user_tmp->getFromDB($this->obj->getField('users_id_assign'));
-            $this->datas['##ticket.assigntouser##'] = $user_tmp->getName();
+         if ($this->obj->countUsers(Ticket::ASSIGN)) {
+            $users=array();
+
+            foreach ($this->obj->getUsers(Ticket::ASSIGN) as $uid => $tmp) {
+               $user_tmp = new User;
+               $user_tmp->getFromDB($uid);
+
+               $users[$uid] = $user_tmp->getName();
+            }
+            $this->datas['##ticket.assigntousers##'] = implode(', ',$users);
          } else {
-            $this->datas['##ticket.assigntouser##'] = '';
+            $this->datas['##ticket.assigntousers##'] = '';
          }
 
          if ($this->obj->getField('suppliers_id_assign')) {
@@ -738,20 +744,36 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.assigntosupplier##'] = '';
          }
 
-         if ($this->obj->getField('groups_id')) {
-            $this->datas['##ticket.group##']
-                        = Dropdown::getDropdownName('glpi_groups',
-                                                    $this->obj->getField('groups_id'));
+         if ($this->obj->countGroups(Ticket::REQUESTER)) {
+            $groups=array();
+            foreach ($this->obj->getUsers(Ticket::REQUESTER) as $gid => $tmp) {
+               $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+            }
+            $this->datas['##ticket.groups##'] = implode(', ',$groups);
          } else {
-            $this->datas['##ticket.group##'] = '';
+            $this->datas['##ticket.groups##'] = '';
          }
 
-         if ($this->obj->getField('groups_id_assign')) {
-            $this->datas['##ticket.assigntogroup##']
-                        = Dropdown::getDropdownName('glpi_groups',
-                                                    $this->obj->getField('groups_id_assign'));
+         if ($this->obj->countGroups(Ticket::OBSERVER)) {
+            $groups=array();
+
+            foreach ($this->obj->getGroups(Ticket::OBSERVER) as $gid => $tmp) {
+               $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+            }
+            $this->datas['##ticket.observergroups##'] = implode(', ',$groups);
          } else {
-            $this->datas['##ticket.group##'] = '';
+            $this->datas['##ticket.observergroups##'] = '';
+         }
+
+         if ($this->obj->countGroups(Ticket::ASSIGN)) {
+            $groups=array();
+
+            foreach ($this->obj->getGroups(Ticket::ASSIGN) as $gid => $tmp) {
+               $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+            }
+            $this->datas['##ticket.assigntogroups##'] = implode(', ',$groups);
+         } else {
+            $this->datas['##ticket.assigntogroups##'] = '';
          }
 
          //Tags associated with the object linked to the ticket
@@ -976,8 +998,10 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##lang.ticket.entity##'] = $LANG['entity'][0];
          $this->datas['##ticket.action##']      = $LANG['crontask'][15];
          $tmp = array();
-
+         $t = new Ticket();
          foreach ($options['tickets'] as $ticket) {
+            $t->getFromDB($ticket['id']);
+
             $tmp['##ticket.id##']           = sprintf("%07d",$ticket['id']);
             $tmp['##ticket.url##']          = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=ticket_".$ticket['id']);
@@ -1013,19 +1037,65 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##ticket.author.phone2##'] = $user->getField('phone2');
             }
 
-            if ($ticket['users_id_assign']) {
-               $user_tmp = new User;
-               $user_tmp->getFromDB($ticket['users_id_assign']);
-               $tmp['##ticket.assigntouser##'] = $user_tmp->getName();
+            if ($t->countUsers(Ticket::ASSIGN)) {
+               $users=array();
+
+               foreach ($t->getUsers(Ticket::ASSIGN) as $uid => $tmp) {
+                  $user_tmp = new User;
+                  $user_tmp->getFromDB($uid);
+
+                  $users[$uid] = $user_tmp->getName();
+               }
+               $tmp['##ticket.assigntousers##'] = implode(', ',$users);
             } else {
-               $tmp['##ticket.assigntouser##'] = '';
+               $tmp['##ticket.assigntousers##'] = '';
             }
 
-            if ($ticket['groups_id_assign']) {
-               $tmp['##ticket.assigntogroup##']
-                     = Dropdown::getDropdownName('glpi_groups', $ticket['groups_id_assign']);
+            if ($t->countGroups(Ticket::ASSIGN)) {
+               $groups=array();
+
+               foreach ($t->getGroups(Ticket::ASSIGN) as $gid => $tmp) {
+                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+               }
+               $tmp['##ticket.assigntogroups##'] = implode(', ',$groups);
             } else {
-               $tmp['##ticket.group##'] = '';
+               $tmp['##ticket.assigntogroups##'] = '';
+            }
+
+            if ($t->countGroups(Ticket::REQUESTER)) {
+               $groups=array();
+
+               foreach ($t->getGroups(Ticket::REQUESTER) as $gid => $tmp) {
+                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+               }
+               $tmp['##ticket.groups##'] = implode(', ',$groups);
+            } else {
+               $tmp['##ticket.groups##'] = '';
+            }
+
+            if ($t->countUsers(Ticket::OBSERVER)) {
+               $users=array();
+
+               foreach ($t->getUsers(Ticket::OBSERVER) as $uid => $tmp) {
+                  $user_tmp = new User;
+                  $user_tmp->getFromDB($uid);
+
+                  $users[$uid] = $user_tmp->getName();
+               }
+               $tmp['##ticket.observerusers##'] = implode(', ',$users);
+            } else {
+               $tmp['##ticket.observerusers##'] = '';
+            }
+
+            if ($t->countGroups(Ticket::OBSERVER)) {
+               $groups=array();
+
+               foreach ($t->getGroups(Ticket::OBSERVER) as $gid => $tmp) {
+                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+               }
+               $tmp['##ticket.observergroups##'] = implode(', ',$groups);
+            } else {
+               $tmp['##ticket.observergroups##'] = '';
             }
 
             if ($ticket['suppliers_id_assign']) {
@@ -1094,11 +1164,16 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.author.phone'          => $LANG['help'][35],
                      'ticket.author.phone2'         => $LANG['help'][35].' 2',
                      'ticket.openbyuser'            => $LANG['common'][37],
-                     'ticket.group'                 => $LANG['common'][35],
+//                      'ticket.group'                 => $LANG['common'][35],
+                     'ticket.groups'                => $LANG['common'][53]." : ".$LANG['common'][35],
                      'ticket.attribution'           => $LANG['job'][5],
-                     'ticket.assigntouser'          => $LANG['job'][5]." - ".$LANG['job'][6],
-                     'ticket.assigntogroup'         => $LANG['job'][5]." - ".$LANG['common'][35],
+//                     'ticket.assigntouser'          => $LANG['job'][5]." - ".$LANG['job'][6],
+                     'ticket.assigntousers'          => $LANG['job'][5]." - ".$LANG['job'][3],
+//                      'ticket.assigntogroup'         => $LANG['job'][5]." - ".$LANG['common'][35],
+                     'ticket.assigntogroups'        => $LANG['job'][5]." - ".$LANG['Menu'][36],
                      'ticket.assigntosupplier'      => $LANG['job'][5]." - ".$LANG['financial'][26],
+                     'ticket.observergroups'        => $LANG['common'][104]." - ".$LANG['Menu'][36],
+                     'ticket.observerusers'         => $LANG['common'][104]." - ".$LANG['Menu'][14],
                      'ticket.itemtype'              => $LANG['reports'][12],
                      'ticket.item.name'             => $LANG['financial'][104],
                      'ticket.item.serial'           => $LANG['common'][19],

@@ -849,6 +849,33 @@ function update0781to080($output='HTML') {
       $migration->dropField('glpi_tickets', 'groups_id');
       $migration->dropField('glpi_tickets', 'groups_id_assign');
 
+      // Migrate templates
+      $from = array('ticket.group##','ticket.assigntogroup##','ticket.assigntouser##');
+      $to   = array('ticket.groups##','ticket.assigntogroups##','ticket.assigntousers##');
+
+      // TODO : migrate ticket.author ?? : several sub fields :(
+      // Only manage used by core : .ticket.author.name## ?
+      $query = "SELECT `glpi_notificationtemplatetranslations`.* FROM `glpi_notificationtemplatetranslations`
+                  INNER JOIN `glpi_notificationtemplates`
+                     ON (`glpi_notificationtemplates`.`id`
+                           = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
+               WHERE `glpi_notificationtemplates`.`itemtype` = 'Ticket'";
+
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "UPDATE `glpi_notificationtemplatetranslations`
+                        SET `subject` = '".addslashes(str_replace($from,$to,$data['subject']))."',
+                           `content_text` = '".addslashes(str_replace($from,$to,$data['content_text']))."',
+                           `content_html` = '".addslashes(str_replace($from,$to,$data['content_html']))."'
+                        WHERE `id` = ".$data['id'].";";
+               $DB->query($query) or die("0.80 insert default notif for observer
+                                          ".$LANG['update'][90] .$DB->error());
+            }
+         }
+      }
+
+
    }
 
    if (!TableExists('glpi_tickets_users')) {
