@@ -850,11 +850,11 @@ function update0781to080($output='HTML') {
       $migration->dropField('glpi_tickets', 'groups_id_assign');
 
       // Migrate templates
-      $from = array('ticket.group##','ticket.assigntogroup##','ticket.assigntouser##');
-      $to   = array('ticket.groups##','ticket.assigntogroups##','ticket.assigntousers##');
+      $from = array('ticket.group##','ticket.assigntogroup##','ticket.assigntouser##',
+                  'ticket.author.name##','ticket.author##');
+      $to   = array('ticket.groups##','ticket.assigntogroups##','ticket.assigntousers##',
+                  'ticket.authors##','author.id##');
 
-      // TODO : migrate ticket.author ?? : several sub fields :(
-      // Only manage used by core : .ticket.author.name## ?
       $query = "SELECT `glpi_notificationtemplatetranslations`.* FROM `glpi_notificationtemplatetranslations`
                   INNER JOIN `glpi_notificationtemplates`
                      ON (`glpi_notificationtemplates`.`id`

@@ -1035,6 +1035,10 @@ class Ticket extends CommonDBTM {
 
       }
 
+      if (isset($this->input['_disablenotif'])) {
+         $donotif = false;
+      }
+
       if ($donotif && $CFG_GLPI["use_mailing"]) {
          $mailtype = "update";
 
@@ -1368,7 +1372,7 @@ class Ticket extends CommonDBTM {
          $fup = new TicketFollowup();
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type = "finish";
+            $type = "solved";
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id']);
@@ -1393,7 +1397,7 @@ class Ticket extends CommonDBTM {
          $task = new TicketTask();
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type = "finish";
+            $type = "solved";
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id']);
@@ -1508,9 +1512,8 @@ class Ticket extends CommonDBTM {
 
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type = "finish";
+            $type = "solved";
          }
-
          NotificationEvent::raiseEvent($type, $this);
       }
 
@@ -1624,21 +1627,24 @@ class Ticket extends CommonDBTM {
     * Update date mod of the ticket
     *
     * @param $ID ID of the ticket
+    * @param $no_stat_computation boolean do not cumpute take into account stat
    **/
-   function updateDateMod($ID) {
+   function updateDateMod($ID,$no_stat_computation=false) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
-         if (haveRight("global_add_tasks", "1")
-             || haveRight("global_add_followups", "1")
-             || ($this->isUser(self::ASSIGN,getLoginUserID()))
-             || (isset($_SESSION["glpigroups"])
-                 && $this->haveAGroup(self::ASSIGN, $_SESSION['glpigroups']))) {
+         if (!$no_stat_computation
+            && (haveRight("global_add_tasks", "1")
+               || haveRight("global_add_followups", "1")
+               || ($this->isUser(self::ASSIGN,getLoginUserID()))
+               || (isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(self::ASSIGN, $_SESSION['glpigroups'])))) {
 
-            if ($this->fields['takeintoaccount_delay_stat']==0) {
+            if ($this->fields['takeintoaccount_delay_stat'] == 0) {
                return $this->update(array('id'     => $ID,
                                           'takeintoaccount_delay_stat'
-                                                   => $this->computeTakeIntoAccountDelayStat()));
+                                                   => $this->computeTakeIntoAccountDelayStat(),
+                                          '_disablenotif' => true));
             }
 
          }

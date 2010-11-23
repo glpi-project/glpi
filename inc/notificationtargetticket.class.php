@@ -696,22 +696,37 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.sla##'] = '';
          }
 
-         if ($this->obj->getField('users_id')) {
-            $user = new User;
-            $user->getFromDB($this->obj->getField('users_id'));
-            $this->datas['##ticket.author##']      = $user->getField('id');
-            $this->datas['##ticket.author.name##'] = $user->getName();
+         if ($this->obj->countUsers(Ticket::REQUESTER)) {
+            $users=array();
 
-            if ($user->getField('locations_id')) {
-               $this->datas['##ticket.author.location##']
-                           = Dropdown::getDropdownName('glpi_locations',
-                                                       $user->getField('locations_id'));
-            } else {
-               $this->datas['##ticket.author.location##'] = '';
+            foreach ($this->obj->getUsers(Ticket::REQUESTER) as $uid => $tmp) {
+               $user_tmp = new User;
+               $user_tmp->getFromDB($uid);
+
+               $users[$uid] = $user_tmp->getName();
+
+
+               $tmp = array();
+               $tmp['##author##'] = $uid;
+               $tmp['##author.name##'] = $user_tmp->getName();
+
+               if ($user_tmp->getField('locations_id')) {
+                  $tmp['##author.location##']
+                              = Dropdown::getDropdownName('glpi_locations',
+                                                         $user_tmp->getField('locations_id'));
+               } else {
+                  $tmp['##author.location##'] = '';
+               }
+
+               $tmp['##author.phone##']  = $user_tmp->getField('phone');
+               $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
+
+               $this->datas['##authors##'][] = $tmp;
+
             }
-
-            $this->datas['##ticket.author.phone##']  = $user->getField('phone');
-            $this->datas['##ticket.author.phone2##'] = $user->getField('phone2');
+            $this->datas['##ticket.authors##'] = implode(', ',$users);
+         } else {
+            $this->datas['##ticket.authors##'] = '';
          }
 
          if ($this->obj->getField('users_id_recipient')) {
@@ -1019,23 +1034,41 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##ticket.creationdate##'] = convDateTime($ticket['date']);
             $tmp['##ticket.content##']      = $ticket['content'];
 
-            if ($ticket['users_id']) {
-               $user = new User;
-               $user->getFromDB($ticket['users_id']);
-               $tmp['##ticket.author##']      = $ticket['users_id'];
-               $tmp['##ticket.author.name##'] = $user->getName();
 
-               if ($user->getField('locations_id')) {
-                  $tmp['##ticket.author.location##']
-                        = Dropdown::getDropdownName('glpi_locations',
-                                                    $user->getField('locations_id'));
-               } else {
-                  $tmp['##ticket.author.location##'] = '';
+
+            if ($t->countUsers(Ticket::REQUESTER)) {
+               $users=array();
+
+               foreach ($t->getUsers(Ticket::REQUESTER) as $uid => $tmp) {
+                  $user_tmp = new User;
+                  $user_tmp->getFromDB($uid);
+
+                  $users[$uid] = $user_tmp->getName();
+
+
+                  $tmp2 = array();
+                  $tmp2['##author##'] = $uid;
+                  $tmp2['##author.name##'] = $user_tmp->getName();
+
+                  if ($user_tmp->getField('locations_id')) {
+                     $tmp2['##author.location##']
+                                 = Dropdown::getDropdownName('glpi_locations',
+                                                            $user_tmp->getField('locations_id'));
+                  } else {
+                     $tmp2['##author.location##'] = '';
+                  }
+
+                  $tmp2['##author.phone##']  = $user_tmp->getField('phone');
+                  $tmp2['##author.phone2##'] = $user_tmp->getField('phone2');
+
+                  $tmp['##authors##'][] = $tmp2;
+
                }
-
-               $tmp['##ticket.author.phone##']  = $user->getField('phone');
-               $tmp['##ticket.author.phone2##'] = $user->getField('phone2');
+               $tmp['##ticket.authors##'] = implode(', ',$users);
+            } else {
+               $tmp['##ticket.authors##'] = '';
             }
+
 
             if ($t->countUsers(Ticket::ASSIGN)) {
                $users=array();
@@ -1158,11 +1191,12 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.sla'                   => $LANG['sla'][1],
                      'ticket.duedate'               => $LANG['sla'][5],
                      'ticket.requesttype'           => $LANG['job'][44],
-                     'ticket.author'                => $LANG['common'][2].' '.$LANG['job'][4],
-                     'ticket.author.name'           => $LANG['job'][4],
-                     'ticket.author.location'       => $LANG['common'][15],
-                     'ticket.author.phone'          => $LANG['help'][35],
-                     'ticket.author.phone2'         => $LANG['help'][35].' 2',
+                     'ticket.authors'               => $LANG['job'][18],
+                     'author'                       => $LANG['common'][2].' '.$LANG['job'][4],
+                     'author.name'                  => $LANG['job'][4],
+                     'author.location'              => $LANG['common'][15],
+                     'author.phone'                 => $LANG['help'][35],
+                     'author.phone2'                => $LANG['help'][35].' 2',
                      'ticket.openbyuser'            => $LANG['common'][37],
 //                      'ticket.group'                 => $LANG['common'][35],
                      'ticket.groups'                => $LANG['common'][53]." : ".$LANG['common'][35],
@@ -1244,7 +1278,8 @@ class NotificationTargetTicket extends NotificationTarget {
                    'tasks'         => $LANG['mailing'][142],
                    'log'           => $LANG['mailing'][144],
                    'validation'    => $LANG['mailing'][143],
-                   'linkedtickets' => $LANG['job'][55]);
+                   'linkedtickets' => $LANG['job'][55],
+                   'authors'       => $LANG['job'][55],);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
