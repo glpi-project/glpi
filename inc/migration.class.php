@@ -37,10 +37,36 @@ class Migration {
 
    private $change    = array();
    private $version;
+   private $deb;
 
 
    function __construct($ver) {
+      global $LANG;
+
+      // begin of global message
+      echo "<div id='migration_message_$ver'>
+            <p class='center'>".$LANG['rulesengine'][90]."</p></div>";
+
+      $this->deb = time();
       $this->version = $ver;
+   }
+
+
+   /**
+    * Additional message in global message
+    *
+    * @param $msg text to display
+   **/
+
+   function displayMessage ($msg) {
+      global $LANG;
+
+      $fin = time();
+      $tps = timestampToString($fin-$this->deb);
+      echo "<script type='text/javascript'>document.getElementById('migration_message_".
+             $this->version."').innerHTML='<p class=\"center\">$msg ($tps)</p>';</script>\n";
+
+      glpi_flush();
    }
 
 
@@ -165,7 +191,10 @@ class Migration {
 
       foreach ($this->change as $table => $tab) {
          $this->migrationOneTable($table);
-       }
+      }
+
+      // end of global message
+      $this->displayMessage($LANG['rulesengine'][91]);
    }
 
 }

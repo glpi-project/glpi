@@ -150,7 +150,10 @@ if (!function_exists('loadLang')) {
 /* ----------------------------------------------------------------- */
 
 /*---------------------------------------------------------------------*/
-
+/**
+ * To be conserved to migrations before 0.80
+ * since 0.80, migration is a new class
+**/
 function displayMigrationMessage ($id, $msg="") {
    global $LANG;
    static $created = 0;
