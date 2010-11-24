@@ -69,8 +69,8 @@ if ($_POST['softwares_id']>0) {
          if (empty($output) || $_SESSION['glpiis_ids_visible']) {
             $output .= " ($ID)";
          }
-         echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title='".
-                cleanInputText($output)."'>".$output."</option>";
+         echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
+                cleanInputText($output)."\">".$output."</option>";
       }
    }
    echo "</select>&nbsp;";

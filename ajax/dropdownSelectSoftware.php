@@ -70,7 +70,7 @@ if ($DB->numrows($result)) {
    while ($data=$DB->fetch_array($result)) {
       $softwares_id = $data["id"];
       $output       = $data["name"];
-      echo "<option value='$softwares_id' title='".cleanInputText($output)."'>".
+      echo "<option value='$softwares_id' title=\"".cleanInputText($output)."\">".
              utf8_substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 }

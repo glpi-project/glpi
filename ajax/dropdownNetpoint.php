@@ -143,7 +143,7 @@ if ($DB->numrows($result)) {
          $output .= " ($loc)";
       }
 
-      echo "<option value='$ID' title='".cleanInputText($output.$addcomment)."'";
+      echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\"";
       echo ">".$output."</option>";
    }
 }

@@ -314,8 +314,8 @@ if ($item instanceof CommonTreeDropdown) {
                            }
 
                            $to_display = "<option disabled value='$work_parentID' $class2
-                                           title='".cleanInputText($item->fields['completename'].
-                                             $addcomment)."'>".
+                                           title=\"".cleanInputText($item->fields['completename'].
+                                             $addcomment)."\">".
                                          str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
                                          $raquo2.$output2."</option>".$to_display;
 
@@ -354,8 +354,8 @@ if ($item instanceof CommonTreeDropdown) {
             if (isset($data["comment"])) {
                $addcomment = " - ".$data["comment"];
             }
-            echo "<option value='$ID' $class title='".cleanInputText($data['completename'].
-                   $addcomment)."'>".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
+            echo "<option value='$ID' $class title=\"".cleanInputText($data['completename'].
+                   $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
                  "</option>";
          }
          if ($multi) {
@@ -492,7 +492,7 @@ if ($item instanceof CommonTreeDropdown) {
                echo "<optgroup label='". Dropdown::getDropdownName("glpi_entities", $prev) ."'>";
             }
 
-            echo "<option value='$ID' title='".cleanInputText($output.$addcomment)."'>".
+            echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".
                   utf8_substr($output, 0, $_POST["limit"])."</option>";
          }
 

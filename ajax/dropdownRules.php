@@ -85,7 +85,7 @@ if ($DB->numrows($result)) {
    while ($data =$DB->fetch_array($result)) {
       $ID   = $data['id'];
       $name = $data['name'];
-      echo "<option value='$ID' title='".cleanInputText($name)."'>".
+      echo "<option value='$ID' title=\"".cleanInputText($name)."\">".
             utf8_substr($name, 0, $_POST["limit"])."</option>";
    }
 }

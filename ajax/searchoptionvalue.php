@@ -213,8 +213,8 @@ if (isset($_REQUEST['searchtype'])) {
 
    // Default case : text field
    if (!$display) {
-        echo "<input type='text' size='13' name='$inputname' value='".
-               cleanInputText($_REQUEST['value'])."'>";
+        echo "<input type='text' size='13' name='$inputname' value=\"".
+               cleanInputText($_REQUEST['value'])."\">";
    }
 }
 
