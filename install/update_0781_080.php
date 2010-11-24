@@ -55,9 +55,7 @@ function update0781to080($output='HTML') {
 
    $migration = new Migration("080");
 
-   displayMigrationMessage("080"); // Start
-
-   displayMigrationMessage("080", $LANG['update'][141] . ' - Calendar'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Calendar'); // Updating schema
 
 
    $default_calendar_id = 0;
@@ -198,7 +196,7 @@ function update0781to080($output='HTML') {
       or die("0.80 create glpi_calendars_holidays " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - SLA'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - SLA'); // Updating schema
 
 
    if (!TableExists('glpi_slas')) {
@@ -317,7 +315,7 @@ function update0781to080($output='HTML') {
 
    }
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - PasswordForget'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - PasswordForget'); // Updating schema
 
    $migration->addField("glpi_users", "token", "char( 40 ) NULL DEFAULT ''");
    $migration->addField("glpi_users", "tokendate", "datetime NULL DEFAULT NULL");
@@ -361,7 +359,7 @@ function update0781to080($output='HTML') {
       }
    }
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - Ticket'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Ticket'); // Updating schema
 
    $migration->addField("glpi_tickets", "ticket_waiting_duration", "INT( 11 ) NOT NULL DEFAULT 0");
 
@@ -488,7 +486,7 @@ function update0781to080($output='HTML') {
    }
 
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - Software'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Software'); // Updating schema
 
    if ($migration->addField("glpi_softwareversions", "operatingsystems_id", "INT( 11 ) NOT NULL")) {
       $migration->addKey("glpi_softwareversions", "operatingsystems_id");
@@ -583,7 +581,7 @@ function update0781to080($output='HTML') {
    }
 
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - Common'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Common'); // Updating schema
 
    $migration->addField("glpi_softwarelicenses", "date_mod", "DATETIME NULL");
    $migration->addKey("glpi_softwarelicenses", "date_mod");
@@ -800,7 +798,7 @@ function update0781to080($output='HTML') {
    $migration->addField("glpi_configs", "url_maxlength",
                         "int(11) NOT NULL DEFAULT '30' AFTER `list_limit_max`");
 
-   displayMigrationMessage("080", $LANG['update'][142] . ' - Multi user group for tickets');
+   $migration->displayMessage($LANG['update'][142] . ' - Multi user group for tickets');
 
    include_once (GLPI_ROOT . "/inc/ticket.class.php");
    if (!TableExists('glpi_groups_tickets')) {
@@ -959,7 +957,7 @@ function update0781to080($output='HTML') {
                   WHERE `glpi_notifications`.`itemtype` = 'Ticket'
                      AND `glpi_notificationtargets`.`type` = 1
                      AND `glpi_notificationtargets`.`items_id` = $from";
-         
+
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -975,10 +973,7 @@ function update0781to080($output='HTML') {
    }
 
 
-
-
-   displayMigrationMessage("080", $LANG['update'][142] . ' - passwords encryption');
-
+   $migration->displayMessage($LANG['update'][142] . ' - passwords encryption');
 
    if ($migration->addField('glpi_configs', 'proxy_passwd',
                             'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
@@ -1078,7 +1073,7 @@ function update0781to080($output='HTML') {
    }
 
 
-   displayMigrationMessage("080", $LANG['update'][142] . ' - rule ticket migration');
+   $migration->displayMessage($LANG['update'][142] . ' - rule ticket migration');
    // For Rule::RULE_TRACKING_AUTO_ACTION
    $changes[2] = array('users_id'         => '_users_id_requester',
                        'groups_id'        => '_groups_id_requester',
@@ -1119,7 +1114,7 @@ function update0781to080($output='HTML') {
    }
 
 
-   displayMigrationMessage("080", $LANG['update'][142] . ' - glpi_displaypreferences');
+   $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT users_id
@@ -1166,10 +1161,8 @@ function update0781to080($output='HTML') {
       }
    }
 
+   // must always be at the end
    $migration->executeMigration();
-
-   // Display "Work ended." message - Keep this as the last action.
-   displayMigrationMessage("080"); // End
 
    return $updateresult;
 }
