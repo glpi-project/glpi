@@ -1109,7 +1109,7 @@ class Ticket extends CommonDBTM {
          $fup = new TicketFollowup();
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type = "finish";
+            $type = "solved";
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id']);
@@ -1134,7 +1134,7 @@ class Ticket extends CommonDBTM {
          $task = new TicketTask();
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type = "finish";
+            $type = "solved";
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id']);
@@ -1162,7 +1162,7 @@ class Ticket extends CommonDBTM {
 
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type = "finish";
+            $type = "solved";
          }
 
          NotificationEvent::raiseEvent($type,$this);

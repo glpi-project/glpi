@@ -363,9 +363,6 @@ class TicketTask  extends CommonDBTM {
       }
 */
       if ($donotif) {
-         if ($this->input["_close"]) {
-            $this->input["_type"] = "finish";
-         }
          $options = array('task_id' => $this->fields["id"]);
          NotificationEvent::raiseEvent('add_task',$this->input["_job"],$options);
       }
