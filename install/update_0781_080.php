@@ -555,7 +555,7 @@ function update0781to080($output='HTML') {
                   UNIQUE `unicity` ( `computers_id` , `softwarelicenses_id` )
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
-      or die("0.80 create glpi_tickettasks " . $LANG['update'][90] . $DB->error());
+      or die("0.80 create glpi_computers_softwarelicenses " . $LANG['update'][90] . $DB->error());
    }
 
    if (FieldExists("glpi_softwarelicenses","computers_id")) {
