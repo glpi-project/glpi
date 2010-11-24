@@ -71,7 +71,7 @@ foreach ($searchopt as $key => $val) {
       // No search on plugins
       echo $key."--";
       if (!isPluginItemType($key) && !isset($val["nometa"])) {
-         $newgroup .= "<option value='$key' title='".cleanInputText($val["name"])."'";
+         $newgroup .= "<option value='$key' title=\"".cleanInputText($val["name"])."\"";
          if ($key == $_POST["field"]) {
             $newgroup .= "selected";
          }

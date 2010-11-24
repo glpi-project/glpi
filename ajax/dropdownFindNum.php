@@ -131,7 +131,7 @@ if ($DB->numrows($result)) {
       if (empty($output) || $_SESSION['glpiis_ids_visible']) {
          $output .= " (".$data['id'].")";
       }
-      echo "<option value='".$data['id']."' title='".cleanInputText($output)."'>".
+      echo "<option value='".$data['id']."' title=\"".cleanInputText($output)."\">".
             utf8_substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 }
