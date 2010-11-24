@@ -173,7 +173,7 @@ class Migration {
 
       if (isset($this->change[$table])) {
          $query = "ALTER TABLE `$table` ".implode($this->change[$table], " ,\n")." ";
-         displayMigrationMessage($this->version, $LANG['update'][141] . ' - '.$table);
+         $this->displayMessage( $LANG['update'][141] . ' - '.$table);
          $DB->query($query)
          or die($this->version." multiple alter in $table " . $LANG['update'][90] . $DB->error());
 
