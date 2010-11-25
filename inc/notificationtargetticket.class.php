@@ -233,7 +233,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $author_email = $data['email'];
             $author_lang  = $data["language"];
             $author_id    = $data['id'];
-            
+
             if (!empty($data['altemail']) && $data['altemail'] != $data['email']
                && NotificationMail::isUserAddressValid($data['altemail'])) {
                $author_email = $data['altemail'];
@@ -297,17 +297,17 @@ class NotificationTargetTicket extends NotificationTarget {
 
 //    function getGroupSupervisorAddress ($assign=true) {
 //       global $DB;
-// 
+//
 //       $group_field = ($assign?"groups_id_assign":"groups_id");
-// 
+//
 //       if (isset($this->obj->fields[$group_field]) && $this->obj->fields[$group_field]>0) {
-// 
+//
 //          $query = $this->getDistinctUserSql()."
 //                   FROM `glpi_groups`
 //                   LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)".
 //                   $this->getJoinSql()."
 //                   WHERE `glpi_groups`.`id` = '".$this->obj->fields[$group_field]."'";
-// 
+//
 //          foreach ($DB->request($query) as $data) {
 //             $this->addToAddressesList($data);
 //          }
@@ -315,7 +315,7 @@ class NotificationTargetTicket extends NotificationTarget {
 //    }
 
 //    function getRequestGroupAddresses() {
-// 
+//
 //       if ($this->obj->fields['groups_id']) {
 //          $this->getUsersAddressesByGroup($this->obj->fields['groups_id']);
 //       }
@@ -323,7 +323,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
 //    function getAssignGroupAddresses() {
-// 
+//
 //       if ($this->obj->fields['groups_id_assign']) {
 //          $this->getUsersAddressesByGroup($this->obj->fields['groups_id_assign']);
 //       }
@@ -991,6 +991,23 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['validations'][] = $tmp;
          }
 
+         // Ticket Satisfaction
+         $inquest = new TicketSatisfaction();
+         if ($inquest->getFromDB($this->obj->getField('id'))) {
+            $this->datas['##inquest.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
+            $this->datas['##inquest.datebegin##']    = convDateTime($inquest['date_begin']);
+            $this->datas['##inquest.dateanswered##'] = convDateTime($inquest['date_answered']);
+            $this->datas['##inquest.satisfaction##'] = $inquest['satisfaction'];
+            $this->datas['##inquest.description##']  = $inquest['content'];
+         } else {
+            $this->datas['##inquest.type##']         = '';
+            $this->datas['##inquest.datebegin##']    = '';
+            $this->datas['##inquest.dateanswered##'] = '';
+            $this->datas['##inquest.satisfaction##'] = '';
+            $this->datas['##inquest.description##']  = '';
+         }
+
+
          // Use list_limit_max or load the full history ?
          foreach (Log::getHistoryData($this->obj,0,$CFG_GLPI['list_limit_max']) as $data) {
             $tmp = array();
@@ -1243,7 +1260,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'followup.description'         => $LANG['joblist'][6],
                      'followup.requesttype'         => $LANG['job'][44],
                      'ticket.numberoffollowups'     => $LANG['mailing'][4],
-                     'ticket.numberoftasks'         => $LANG['mailing'][122], 
+                     'ticket.numberoftasks'         => $LANG['mailing'][122],
                      'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                      'ticket.action'                => $LANG['mailing'][119],
                      'ticket.autoclose'             => $LANG['entity'][18],
@@ -1271,6 +1288,22 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'label'  => $label,
                                    'value'  => true,
                                    'events' => array('validation')));
+      }
+
+      // Events for ticket satisfaction
+     $tags = array('satisfaction.type'                => $LANG['satisfaction'][9]." - ".
+                                                         $LANG['satisfaction'][10],
+                   'satisfaction.datebegin'           => $LANG['satisfaction'][6],
+                   'satisfaction.dateanswered'        => $LANG['satisfaction'][4],
+                   'satisfaction.satisfactionlevel'   => $LANG['satisfaction'][7],
+                   'satisfaction.satisfactioncomment' => $LANG['satisfaction'][8]);
+
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => true,
+                                   'events' => array('satisfaction')));
       }
 
      //Foreach global tags
