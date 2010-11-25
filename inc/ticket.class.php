@@ -490,7 +490,7 @@ class Ticket extends CommonDBTM {
             unset($input["suppliers_id_assign"]);
          }
 
-         // No group 
+         // No group
          if (isset($input["_ticket_assign"])
             && isset($input['_ticket_assign']['_type'])
             && $input['_ticket_assign']['_type'] == 'group') {
@@ -1415,7 +1415,7 @@ class Ticket extends CommonDBTM {
          $task->add($toadd);
       }
 
-      // From interface 
+      // From interface
       if (isset($this->input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
          $this->input['_link']['tickets_id_1'] = $this->fields['id'];
@@ -2108,6 +2108,11 @@ class Ticket extends CommonDBTM {
                                                                                  '= '.self::OBSERVER)));
 
       $tab['satisfaction'] = $LANG['satisfaction'][3];
+
+      $tab[31]['table']      = 'glpi_ticketsatisfactions';
+      $tab[31]['field']      = 'type';
+      $tab[31]['name']       = $LANG['common'][17];
+      $tab[31]['searchtype'] = 'equals';
 
       $tab[60]['table']         = 'glpi_ticketsatisfactions';
       $tab[60]['field']         = 'date_begin';
