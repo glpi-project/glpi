@@ -186,6 +186,24 @@ class TicketSatisfaction extends CommonDBTM {
       echo '</div></div></div></div>';
    }
 
+
+   /**
+    * Get name of inquest type
+    *
+    * @param $value status ID
+   **/
+   static function getTypeInquestName($value) {
+      global $LANG;
+
+      switch ($value) {
+         case 1 :
+            return $LANG['satisfaction'][9];
+
+         case 2 :
+            return $LANG['satisfaction'][10];
+      }
+   }
+
 }
 
 ?>

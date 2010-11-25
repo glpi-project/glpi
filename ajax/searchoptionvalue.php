@@ -156,6 +156,12 @@ if (isset($_REQUEST['searchtype'])) {
                   $display = true;
                   break;
 
+               case "glpi_ticketsatisfactions.type" :
+                  Dropdown::showFromArray($inputname, array(1 => $LANG['satisfaction'][9],
+                                                            2 => $LANG['satisfaction'][10]));
+                  $display = true;
+                  break;
+
             }
 
             // Standard datatype usage

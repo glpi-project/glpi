@@ -2504,6 +2504,10 @@ class Search {
                return "";
             }
             break;
+
+         case "glpi_ticketsatisfactions.type" :
+            return $link." `$table`.`$field` = '$val' ";
+
       }
 
       //// Default cases
@@ -3842,7 +3846,7 @@ class Search {
                                      'display' => false));
             return $out;
 
-         case 'glpi_ticketvalidations.status':
+         case 'glpi_ticketvalidations.status' :
          case "glpi_tickets.global_validation" :
             $split = explode("$$$$",$data[$NAME.$num]);
             $out   = '';
@@ -3853,6 +3857,9 @@ class Search {
                        "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
             }
             return $out;
+
+         case 'glpi_ticketsatisfactions.type':
+            return TicketSatisfaction::getTypeInquestName($data[$NAME.$num]);
 
          case 'glpi_notimportedemails.reason':
             return NotImportedEmail::getReason($data[$NAME.$num]);
