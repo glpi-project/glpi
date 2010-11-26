@@ -364,7 +364,21 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function getID (&$input) {
       global $DB;
 
-      if (!empty($input["name"])) {
+      if (isset($input['completename']) && !empty($input['completename'])) {
+         $query = "SELECT `id`
+                   FROM `".$this->getTable()."`
+                   WHERE `completename` = '".$input['completename']."'";
+         if ($this->isEntityAssign()) {
+            $query .= getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
+                                                 $input['entities_id'],$this->maybeRecursive());
+         }
+         // Check twin :
+         if ($result_twin = $DB->query($query) ) {
+            if ($DB->numrows($result_twin) > 0) {
+               return $DB->result($result_twin,0,"id");
+            }
+         }
+      } else if (isset($input['name']) && !empty($input['name'])) {
          $fk = $this->getForeignKeyField();
 
          $query = "SELECT `id`
