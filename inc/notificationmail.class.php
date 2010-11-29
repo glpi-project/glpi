@@ -235,7 +235,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $senderror = true;
          addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
       } else {
-         logInFile("mail",$LANG['tracking'][38]." ".$options['to'].": ".$options['subject']."\n");
+         logInFile("mail", $LANG['tracking'][38]." ".$options['to']." : ".$options['subject']."\n");
       }
 
       $mmail->ClearAddresses();

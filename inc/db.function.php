@@ -228,7 +228,7 @@ function countElementsInTable($table, $condition="") {
    global $DB;
 
    if (is_array($table)) {
-      $table=implode('`,`',$table);
+      $table = implode('`,`',$table);
    }
 
    $query = "SELECT COUNT(*) AS cpt

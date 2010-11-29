@@ -162,14 +162,17 @@ class NotificationTargetTicket extends NotificationTarget {
             case Notification::TICKET_TASK_ASSIGN_TECH :
                $this->getTicketTaskAssignUser($options);
                break;
+
             //Notification to the ticket's observer group
             case Notification::TICKET_OBSERVER_GROUP :
                $this->getLinkedGroupByType(Ticket::OBSERVER);
                break;
+
             //Notification to the ticket's observer user
             case Notification::TICKET_OBSERVER :
                $this->getLinkedUserByType(Ticket::OBSERVER);
                break;
+
             //Notification to the supervisor of the ticket's observer group
             case Notification::TICKET_SUPERVISOR_OBSERVER_GROUP :
                $this->getLinkedGroupSupervisorByType(Ticket::OBSERVER);
@@ -211,21 +214,23 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
+
    /**
     * Add linked users to the notified users list
     *
     * @param $type type of linked users
-    */
+   **/
    function getLinkedUserByType ($type) {
       global $DB,$CFG_GLPI;
 
       //Look for the user by his id
-      $query = $this->getDistinctUserSql().", `glpi_tickets_users`.`use_notification` AS notif,
-               `glpi_tickets_users`.`alternative_email` AS altemail
+      $query =        $this->getDistinctUserSql().",
+                      `glpi_tickets_users`.`use_notification` AS notif,
+                      `glpi_tickets_users`.`alternative_email` AS altemail
                FROM `glpi_tickets_users`
                LEFT JOIN `glpi_users` ON (`glpi_tickets_users`.`users_id` = `glpi_users`.`id`)
                WHERE `glpi_tickets_users`.`tickets_id` = '".$this->obj->fields["id"]."'
-                  AND `glpi_tickets_users`.`type` = '$type';";
+                     AND `glpi_tickets_users`.`type` = '$type'";
 
       foreach ($DB->request($query) as $data) {
          //Add the user email and language in the notified users list
@@ -234,8 +239,9 @@ class NotificationTargetTicket extends NotificationTarget {
             $author_lang  = $data["language"];
             $author_id    = $data['id'];
 
-            if (!empty($data['altemail']) && $data['altemail'] != $data['email']
-               && NotificationMail::isUserAddressValid($data['altemail'])) {
+            if (!empty($data['altemail'])
+                && $data['altemail'] != $data['email']
+                && NotificationMail::isUserAddressValid($data['altemail'])) {
                $author_email = $data['altemail'];
             }
             if (empty($author_lang)) {
@@ -256,15 +262,15 @@ class NotificationTargetTicket extends NotificationTarget {
     * Add linked group to the notified user list
     *
     * @param $type type of linked groups
-    */
+   **/
    function getLinkedGroupByType ($type) {
       global $DB;
 
       //Look for the user by his id
       $query = "SELECT `groups_id`
-               FROM `glpi_groups_tickets`
-               WHERE `glpi_groups_tickets`.`tickets_id` = '".$this->obj->fields["id"]."'
-                  AND `glpi_groups_tickets`.`type` = '$type';";
+                FROM `glpi_groups_tickets`
+                WHERE `glpi_groups_tickets`.`tickets_id` = '".$this->obj->fields["id"]."'
+                      AND `glpi_groups_tickets`.`type` = '$type'";
 
       foreach ($DB->request($query) as $data) {
          //Add the group in the notified users list
@@ -272,21 +278,22 @@ class NotificationTargetTicket extends NotificationTarget {
       }
    }
 
+
    /**
     * Add linked group supervisor to the notified user list
     *
     * @param $type type of linked groups
-    */
+   **/
    function getLinkedGroupSupervisorByType ($type) {
       global $DB;
 
       //Look for the user by his id
-      $query = $this->getDistinctUserSql()."
+      $query =        $this->getDistinctUserSql()."
                FROM `glpi_groups_tickets`
                INNER JOIN `glpi_groups` ON (`glpi_groups_tickets`.`groups_id` = `glpi_groups`.`id`)
                INNER JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups`.`users_id`)
                WHERE `glpi_groups_tickets`.`tickets_id` = '".$this->obj->fields["id"]."'
-                  AND `glpi_groups_tickets`.`type` = '$type';";
+                     AND `glpi_groups_tickets`.`type` = '$type'";
 
       foreach ($DB->request($query) as $data) {
          //Add the group in the notified users list
@@ -374,7 +381,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $query = $this->getDistinctUserSql()."
+         $query =        $this->getDistinctUserSql()."
                    FROM `glpi_ticketvalidations`
                    LEFT JOIN `glpi_users`
                         ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id_validate`)
@@ -394,7 +401,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['validation_id'])) {
-         $query = $this->getDistinctUserSql()."
+         $query =        $this->getDistinctUserSql()."
                    FROM `glpi_ticketvalidations`
                    LEFT JOIN `glpi_users`
                         ON (`glpi_users`.`id` = `glpi_ticketvalidations`.`users_id`)
@@ -414,7 +421,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['followup_id'])) {
-         $query = $this->getDistinctUserSql()."
+         $query =        $this->getDistinctUserSql()."
                    FROM `glpi_ticketfollowups`
                    LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_ticketfollowups`.`users_id`)
                    WHERE `glpi_ticketfollowups`.`id` = '".$options['followup_id']."'";
@@ -433,7 +440,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['task_id'])) {
-         $query = $this->getDistinctUserSql()."
+         $query =        $this->getDistinctUserSql()."
                    FROM `glpi_tickettasks`
                    LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_tickettasks`.`users_id`)
                    WHERE `glpi_tickettasks`.`id` = '".$options['task_id']."'";
@@ -452,7 +459,7 @@ class NotificationTargetTicket extends NotificationTarget {
       global $DB;
 
       if (isset($options['task_id'])) {
-         $query = $this->getDistinctUserSql()."
+         $query =        $this->getDistinctUserSql()."
                    FROM `glpi_tickettasks`
                    LEFT JOIN `glpi_ticketplannings`
                         ON (`glpi_ticketplannings`.`tickettasks_id` = `glpi_tickettasks`.`id`)
@@ -472,20 +479,19 @@ class NotificationTargetTicket extends NotificationTarget {
 
       if (!isset($data['id'])) {
          return 1;
-      } else {
-         $query = "SELECT count(*) AS cpt
-                   FROM `glpi_profiles_users`
-                   WHERE `users_id`='".$data['id']."' ".
-                         getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
-                                                    $this->obj->fields['entities_id'], true)."
-                         AND profiles_id IN (".implode(',',$this->private_profiles).")";
-         $result = $DB->query($query);
-
-         if ($DB->result($result,0,'cpt')) {
-            return 1;
-         }
-         return 0;
       }
+      $query = "SELECT COUNT(*) AS cpt
+                FROM `glpi_profiles_users`
+                WHERE `users_id`='".$data['id']."' ".
+                      getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
+                                                 $this->obj->fields['entities_id'], true)."
+                      AND profiles_id IN (".implode(',',$this->private_profiles).")";
+      $result = $DB->query($query);
+
+      if ($DB->result($result,0,'cpt')) {
+         return 1;
+      }
+      return 0;
    }
 
 
@@ -697,23 +703,20 @@ class NotificationTargetTicket extends NotificationTarget {
          }
 
          if ($this->obj->countUsers(Ticket::REQUESTER)) {
-            $users=array();
-
+            $users = array();
             foreach ($this->obj->getUsers(Ticket::REQUESTER) as $uid => $tmp) {
                $user_tmp = new User;
                $user_tmp->getFromDB($uid);
-
                $users[$uid] = $user_tmp->getName();
 
-
                $tmp = array();
-               $tmp['##author##'] = $uid;
+               $tmp['##author##']      = $uid;
                $tmp['##author.name##'] = $user_tmp->getName();
 
                if ($user_tmp->getField('locations_id')) {
                   $tmp['##author.location##']
-                              = Dropdown::getDropdownName('glpi_locations',
-                                                         $user_tmp->getField('locations_id'));
+                                   = Dropdown::getDropdownName('glpi_locations',
+                                                               $user_tmp->getField('locations_id'));
                } else {
                   $tmp['##author.location##'] = '';
                }
@@ -722,7 +725,6 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##author.phone2##'] = $user_tmp->getField('phone2');
 
                $this->datas['##authors##'][] = $tmp;
-
             }
             $this->datas['##ticket.authors##'] = implode(', ',$users);
          } else {
@@ -738,8 +740,7 @@ class NotificationTargetTicket extends NotificationTarget {
          }
 
          if ($this->obj->countUsers(Ticket::ASSIGN)) {
-            $users=array();
-
+            $users = array();
             foreach ($this->obj->getUsers(Ticket::ASSIGN) as $uid => $tmp) {
                $user_tmp = new User;
                $user_tmp->getFromDB($uid);
@@ -753,16 +754,16 @@ class NotificationTargetTicket extends NotificationTarget {
 
          if ($this->obj->getField('suppliers_id_assign')) {
             $this->datas['##ticket.assigntosupplier##']
-                        = Dropdown::getDropdownName('glpi_suppliers',
-                                                    $this->obj->getField('suppliers_id_assign'));
+                          = Dropdown::getDropdownName('glpi_suppliers',
+                                                      $this->obj->getField('suppliers_id_assign'));
          } else {
             $this->datas['##ticket.assigntosupplier##'] = '';
          }
 
          if ($this->obj->countGroups(Ticket::REQUESTER)) {
-            $groups=array();
+            $groups = array();
             foreach ($this->obj->getUsers(Ticket::REQUESTER) as $gid => $tmp) {
-               $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+               $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
             }
             $this->datas['##ticket.groups##'] = implode(', ',$groups);
          } else {
@@ -770,10 +771,9 @@ class NotificationTargetTicket extends NotificationTarget {
          }
 
          if ($this->obj->countGroups(Ticket::OBSERVER)) {
-            $groups=array();
-
+            $groups = array();
             foreach ($this->obj->getGroups(Ticket::OBSERVER) as $gid => $tmp) {
-               $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+               $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
             }
             $this->datas['##ticket.observergroups##'] = implode(', ',$groups);
          } else {
@@ -781,10 +781,9 @@ class NotificationTargetTicket extends NotificationTarget {
          }
 
          if ($this->obj->countGroups(Ticket::ASSIGN)) {
-            $groups=array();
-
+            $groups = array();
             foreach ($this->obj->getGroups(Ticket::ASSIGN) as $gid => $tmp) {
-               $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+               $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
             }
             $this->datas['##ticket.assigntogroups##'] = implode(', ',$groups);
          } else {
@@ -1052,10 +1051,8 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##ticket.content##']      = $ticket['content'];
 
 
-
             if ($t->countUsers(Ticket::REQUESTER)) {
-               $users=array();
-
+               $users = array();
                foreach ($t->getUsers(Ticket::REQUESTER) as $uid => $tmp) {
                   $user_tmp = new User;
                   $user_tmp->getFromDB($uid);
@@ -1064,7 +1061,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
                   $tmp2 = array();
-                  $tmp2['##author##'] = $uid;
+                  $tmp2['##author##']      = $uid;
                   $tmp2['##author.name##'] = $user_tmp->getName();
 
                   if ($user_tmp->getField('locations_id')) {
@@ -1079,7 +1076,6 @@ class NotificationTargetTicket extends NotificationTarget {
                   $tmp2['##author.phone2##'] = $user_tmp->getField('phone2');
 
                   $tmp['##authors##'][] = $tmp2;
-
                }
                $tmp['##ticket.authors##'] = implode(', ',$users);
             } else {
@@ -1088,8 +1084,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
             if ($t->countUsers(Ticket::ASSIGN)) {
-               $users=array();
-
+               $users = array();
                foreach ($t->getUsers(Ticket::ASSIGN) as $uid => $tmp) {
                   $user_tmp = new User;
                   $user_tmp->getFromDB($uid);
@@ -1102,10 +1097,9 @@ class NotificationTargetTicket extends NotificationTarget {
             }
 
             if ($t->countGroups(Ticket::ASSIGN)) {
-               $groups=array();
-
+               $groups = array();
                foreach ($t->getGroups(Ticket::ASSIGN) as $gid => $tmp) {
-                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
                }
                $tmp['##ticket.assigntogroups##'] = implode(', ',$groups);
             } else {
@@ -1113,10 +1107,9 @@ class NotificationTargetTicket extends NotificationTarget {
             }
 
             if ($t->countGroups(Ticket::REQUESTER)) {
-               $groups=array();
-
+               $groups = array();
                foreach ($t->getGroups(Ticket::REQUESTER) as $gid => $tmp) {
-                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
                }
                $tmp['##ticket.groups##'] = implode(', ',$groups);
             } else {
@@ -1124,12 +1117,10 @@ class NotificationTargetTicket extends NotificationTarget {
             }
 
             if ($t->countUsers(Ticket::OBSERVER)) {
-               $users=array();
-
+               $users = array();
                foreach ($t->getUsers(Ticket::OBSERVER) as $uid => $tmp) {
                   $user_tmp = new User;
                   $user_tmp->getFromDB($uid);
-
                   $users[$uid] = $user_tmp->getName();
                }
                $tmp['##ticket.observerusers##'] = implode(', ',$users);
@@ -1138,10 +1129,9 @@ class NotificationTargetTicket extends NotificationTarget {
             }
 
             if ($t->countGroups(Ticket::OBSERVER)) {
-               $groups=array();
-
+               $groups = array();
                foreach ($t->getGroups(Ticket::OBSERVER) as $gid => $tmp) {
-                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups',$gid);
+                  $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
                }
                $tmp['##ticket.observergroups##'] = implode(', ',$groups);
             } else {
@@ -1312,7 +1302,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    'log'           => $LANG['mailing'][144],
                    'validation'    => $LANG['mailing'][143],
                    'linkedtickets' => $LANG['job'][55],
-                   'authors'       => $LANG['job'][55],);
+                   'authors'       => $LANG['job'][55]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

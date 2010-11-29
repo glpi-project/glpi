@@ -41,11 +41,13 @@ if (!defined('GLPI_ROOT')) {
 // Log class
 class Log extends CommonDBTM {
 
+
    static function getTypeName() {
       global $LANG;
 
       return $LANG['title'][38];
    }
+
 
    /**
     * Construct  history for an item
@@ -55,7 +57,7 @@ class Log extends CommonDBTM {
     * @param $values array of all values of the item
     *
     * @return boolean for success (at least 1 log entry added)
-    **/
+   **/
    static function constructHistory(CommonDBTM $item, & $oldvalues, & $values) {
       global $LANG;
 
@@ -118,9 +120,9 @@ class Log extends CommonDBTM {
             foreach ($searchopt as $key2 => $val2) {
                // Linkfield or standard field not massive action enable
                if ($val2["linkfield"] == $key
-                   || ($key == $val2["field"]
-                       && $val2["table"] == $item->getTable())) {
+                   || ($key == $val2["field"] && $val2["table"] == $item->getTable())) {
                   $id_search_option = $key2; // Give ID of the $SEARCHOPTION
+
                   // 1st case : Ticket specific dropdown case (without table)
                   if ($real_type=='Ticket' && in_array($key, array('status', 'urgency', 'impact',
                                                                    'priority'))) {
@@ -149,6 +151,7 @@ class Log extends CommonDBTM {
                                              addslashes(Ticket::getPriorityName($values[$key])));
                            break;
                      }
+
                   } else if ($val2["table"] == $item->getTable()) {
                      // 2nd case : text field -> keep datas
                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);

@@ -2171,7 +2171,7 @@ function printHelpDesk ($ID, $from_helpdesk) {
    $type                = 0;
 
    if (isset($_SESSION["helpdeskSaved"]['_users_id_requester_notif'])
-      && isset($_SESSION["helpdeskSaved"]['_users_id_requester_notif']['use_notification'])) {
+       && isset($_SESSION["helpdeskSaved"]['_users_id_requester_notif']['use_notification'])) {
       $use_email_notification = stripslashes($_SESSION["helpdeskSaved"]['_users_id_requester_notif']['use_notification']);
    }
    if (isset($_SESSION["helpdeskSaved"]["email"])) {
@@ -2233,8 +2233,8 @@ function printHelpDesk ($ID, $from_helpdesk) {
       echo "<td>".$LANG['help'][8]."&nbsp;:&nbsp;</td>";
       echo "<td>";
 
-      $_REQUEST['value'] = getLoginUserID();
-      $_REQUEST['field'] = '_users_id_requester_notif';
+      $_REQUEST['value']            = getLoginUserID();
+      $_REQUEST['field']            = '_users_id_requester_notif';
       $_REQUEST['use_notification'] = $use_email_notification;
       include (GLPI_ROOT."/ajax/uemailUpdate.php");
 
@@ -2246,7 +2246,8 @@ function printHelpDesk ($ID, $from_helpdesk) {
       echo "<td>".$LANG['help'][24]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       Ticket::dropdownMyDevices(getLoginUserID(), $_SESSION["glpiactive_entity"]);
-      Ticket::dropdownAllDevices("itemtype", $itemtype, $items_id, 0, $_SESSION["glpiactive_entity"]);
+      Ticket::dropdownAllDevices("itemtype", $itemtype, $items_id, 0,
+                                 $_SESSION["glpiactive_entity"]);
       echo "</td></tr>";
    }
 

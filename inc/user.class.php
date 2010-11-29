@@ -718,12 +718,11 @@ class User extends CommonDBTM {
 
       if (isset($this->fields["id"]) && $this->fields["id"]>0) {
          return formatUserName($this->fields["id"],
-                              $this->fields["name"],
-                              (isset($this->fields["realname"]) ? $this->fields["realname"] : ''),
-                              (isset($this->fields["firstname"]) ? $this->fields["firstname"] : ''));
-      } else {
-         return NOT_AVAILABLE;
+                               $this->fields["name"],
+                               (isset($this->fields["realname"]) ? $this->fields["realname"] : ''),
+                               (isset($this->fields["firstname"]) ? $this->fields["firstname"] : ''));
       }
+      return NOT_AVAILABLE;
    }
 
 

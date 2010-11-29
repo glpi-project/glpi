@@ -462,8 +462,7 @@ class TicketValidation  extends CommonDBChild {
     * Print the validation list into ticket
     *
     * @param $ticket class
-    *
-    **/
+   **/
    function showSummary($ticket) {
       global $DB, $LANG, $CFG_GLPI;
 
@@ -541,9 +540,9 @@ class TicketValidation  extends CommonDBChild {
             if ($canedit) {
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditValidation" . $ticket->fields['id'] . $row["id"] . "$rand() {\n";
-               $params = array ('type'     => __CLASS__,
-                              'tickets_id' => $this->fields["tickets_id"],
-                              'id'         => $row["id"]);
+               $params = array ('type'       => __CLASS__,
+                                'tickets_id' => $this->fields["tickets_id"],
+                                'id'         => $row["id"]);
                ajaxUpdateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/viewfollowup.php", $params, false);
                echo "};";
@@ -571,7 +570,7 @@ class TicketValidation  extends CommonDBChild {
          }
          echo "</table>";
       } else {
-         echo "<div class='center'><strong>".$LANG['search'][15]."</strong></div>";
+         echo "<div class='center b'>".$LANG['search'][15]."</strong>";
       }
    }
 

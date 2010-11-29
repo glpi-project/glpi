@@ -384,7 +384,6 @@ $RELATION = array("glpi_authldaps"
                   "glpi_softwarelicensetypes"
                         => array('glpi_softwarelicenses' =>'softwarelicensetypes_id'),
 
-
                   "glpi_softwareversions"
                         => array('glpi_computers_softwareversions' => 'softwareversions_id',
                                  'glpi_softwarelicenses' => array('softwareversions_id_buy',

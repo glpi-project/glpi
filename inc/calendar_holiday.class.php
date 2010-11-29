@@ -49,6 +49,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
 
    function canCreateItem() {
+
       $calendar = new Calendar();
       return $calendar->can($this->fields['calendars_id'],'w');
    }
@@ -118,7 +119,8 @@ class Calendar_Holiday extends CommonDBRelation {
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
-         Dropdown::show('Holiday', array('used' => $used,'entity' => $calendar->fields["entities_id"]));
+         Dropdown::show('Holiday', array('used'   => $used,
+                                         'entity' => $calendar->fields["entities_id"]));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
