@@ -369,8 +369,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                    FROM `".$this->getTable()."`
                    WHERE `completename` = '".$input['completename']."'";
          if ($this->isEntityAssign()) {
-            $query .= getEntitiesRestrictRequest(' AND ',$this->getTable(),'',
-                                                 $input['entities_id'],$this->maybeRecursive());
+            $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
+                                                 $input['entities_id'], $this->maybeRecursive());
          }
          // Check twin :
          if ($result_twin = $DB->query($query) ) {
@@ -378,6 +378,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                return $DB->result($result_twin,0,"id");
             }
          }
+
       } else if (isset($input['name']) && !empty($input['name'])) {
          $fk = $this->getForeignKeyField();
 
