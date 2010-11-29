@@ -50,21 +50,22 @@ class Ticket_Ticket extends CommonDBRelation {
    public $check_entities = false;
 
    // Ticket links
-   const LINK_TO = 1;
+   const LINK_TO        = 1;
    const DUPLICATE_WITH = 2;
 
 
    function canCreate() {
+
       return haveRight('create_ticket', 1) // Add on creation
-            || haveRight('update_ticket', 1);
+             || haveRight('update_ticket', 1);
    }
+
 
    function canCreateItem() {
 
       $ticket = new Ticket();
-  //    print_r($this);
-      return $ticket->can($this->fields['tickets_id_1'],'w')
-             || $ticket->can($this->fields['tickets_id_2'],'w');
+      return $ticket->can($this->fields['tickets_id_1'], 'w')
+             || $ticket->can($this->fields['tickets_id_2'], 'w');
    }
 
 
@@ -128,15 +129,15 @@ class Ticket_Ticket extends CommonDBRelation {
 
             if ($ticket->getFromDB($data['tickets_id'])) {
                echo $ticket->getLink();
-               echo  "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$ticket->fields["status"].
-                             ".png\" alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
+               echo  "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/".$ticket->fields["status"].
+                             ".png' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
                   echo "&nbsp;<a href='".$CFG_GLPI["root_doc"].
                                "/front/ticket.form.php?delete_link=delete_link&amp;id=$linkID".
                                "&amp;tickets_id=$ID' title=\"".$LANG['reservation'][6]."\">
-                        <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                         alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
+                               <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+                                alt=\"".$LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\"></a>";
                }
             }
             echo '<br>';
@@ -181,7 +182,7 @@ class Ticket_Ticket extends CommonDBRelation {
 
    function prepareInputForAdd($input) {
 
-      $ticket= new Ticket();
+      $ticket = new Ticket();
       if (!isset($input['tickets_id_1'])
           || !isset($input['tickets_id_2'])
           || $input['tickets_id_2'] == $input['tickets_id_1']

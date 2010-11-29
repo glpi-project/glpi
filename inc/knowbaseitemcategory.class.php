@@ -41,12 +41,14 @@ if (!defined('GLPI_ROOT')) {
 class KnowbaseItemCategory extends CommonTreeDropdown {
 
    function canCreate() {
-      return haveRight('entity_dropdown','w');
+      return haveRight('entity_dropdown', 'w');
    }
 
+
    function canView() {
-      return haveRight('entity_dropdown','r');
+      return haveRight('entity_dropdown', 'r');
    }
+
 
    static function getTypeName() {
       global $LANG;
@@ -54,10 +56,11 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       return $LANG['setup'][87];
    }
 
+
    /**
     * Report if a dropdown have Child
     * Used to (dis)allow delete action
-    */
+   **/
    function haveChildren() {
 
       if (parent::haveChildren()) {
@@ -70,6 +73,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       return (countElementsInTable($kb->getTable(),"`$fk`='$id'")>0);
    }
 
+
    /**
     * Show KB categories
     *
@@ -77,7 +81,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
     * @param $faq display on faq ?
     *
     * @return nothing (display the form)
-    **/
+   **/
    static function showFirstLevel($options, $faq=0) {
       global $DB, $LANG, $CFG_GLPI;
 
@@ -99,25 +103,28 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          }
 
          if (getLoginUserID()) {
-            $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "", "", true);
+            $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "", "",
+                                                    true);
          } else {
             // Anonymous access
             if (isMultiEntitiesMode()) {
-               $faq_limit = " AND (glpi_knowbaseitemcategories.`entities_id` = '0'
-                                    AND glpi_knowbaseitemcategories.`is_recursive` = '1')";
+               $faq_limit = " AND (`glpi_knowbaseitemcategories`.`entities_id` = '0'
+                                   AND `glpi_knowbaseitemcategories`.`is_recursive` = '1')";
             }
          }
 
          // Get All FAQ categories
          if (!isset($_SESSION['glpi_faqcategories'])) {
 
-            $_SESSION['glpi_faqcategories']='(0)';
+            $_SESSION['glpi_faqcategories'] = '(0)';
             $tmp = array();
             $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
                       FROM `glpi_knowbaseitems`
                       LEFT JOIN `glpi_knowbaseitemcategories`
-                        ON (`glpi_knowbaseitemcategories`.`id` = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
-                      WHERE `glpi_knowbaseitems`.`is_faq` = '1' $faq_limit";
+                           ON (`glpi_knowbaseitemcategories`.`id`
+                                 = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
+                      WHERE `glpi_knowbaseitems`.`is_faq` = '1'
+                            $faq_limit";
 
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
@@ -138,24 +145,24 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          $query = "SELECT DISTINCT `glpi_knowbaseitemcategories`.*
                    FROM `glpi_knowbaseitemcategories`
                    WHERE `id` IN ".$_SESSION['glpi_faqcategories']."
-                         AND (`glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
-                              '".$params["knowbaseitemcategories_id"]."') $faq_limit";
-         $query .= " ORDER BY `name` ASC";
+                         AND (`glpi_knowbaseitemcategories`.`knowbaseitemcategories_id`
+                                 = '".$params["knowbaseitemcategories_id"]."')
+                         $faq_limit
+                   ORDER BY `name` ASC";
 
       } else {
          if (!haveRight("knowbase", "r")) {
             return false;
          }
-         $faq_limit = getEntitiesRestrictRequest("AND","glpi_knowbaseitemcategories","entities_id",
-                                                      $_SESSION['glpiactiveentities'],true);
+         $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "entities_id",
+                                                 $_SESSION['glpiactiveentities'], true);
 
          $query = "SELECT *
                    FROM `glpi_knowbaseitemcategories`
-                   WHERE `glpi_knowbaseitemcategories`.`knowbaseitemcategories_id` =
-                                             '".$params["knowbaseitemcategories_id"]."' $faq_limit";
-                        ;
-
-         $query .= " ORDER BY `name` ASC";
+                   WHERE `glpi_knowbaseitemcategories`.`knowbaseitemcategories_id`
+                              = '".$params["knowbaseitemcategories_id"]."'
+                         $faq_limit
+                   ORDER BY `name` ASC";
       }
 
       // Show category
@@ -166,15 +173,18 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
          // Display Category
          if ($params["knowbaseitemcategories_id"]!=0) {
-            $tmpID = $params["knowbaseitemcategories_id"];
+            $tmpID     = $params["knowbaseitemcategories_id"];
             $todisplay = "";
+
             while ($tmpID!=0) {
                $query2 = "SELECT *
                           FROM `glpi_knowbaseitemcategories`
-                          WHERE `id` = '$tmpID' $faq_limit";
+                          WHERE `id` = '$tmpID'
+                                $faq_limit";
                $result2 = $DB->query($query2);
+
                if ($DB->numrows($result2)==1) {
-                  $data = $DB->fetch_assoc($result2);
+                  $data  = $DB->fetch_assoc($result2);
                   $tmpID = $data["knowbaseitemcategories_id"];
                   $todisplay = "<a href='".$params['target']."?knowbaseitemcategories_id=".
                                  $data["id"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").
@@ -209,6 +219,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          echo "<tr><td colspan='3'>&nbsp;</td></tr></table><br>";
       }
    }
+
 }
 
 ?>

@@ -891,13 +891,13 @@ class NotificationTargetTicket extends NotificationTarget {
             $linkedticket = new Ticket();
             foreach ($linked_tickets as $data) {
                $tmp = array();
-               $tmp['##linkedticket.id##'] = $data['tickets_id'];
+               $tmp['##linkedticket.id##']   = $data['tickets_id'];
                $tmp['##linkedticket.link##'] = Ticket_Ticket::getLinkName($data['link']);
-               $tmp['##linkedticket.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
-                                                   "?redirect=ticket_".$data['tickets_id']);
+               $tmp['##linkedticket.url##']  = urldecode($CFG_GLPI["url_base"]."/index.php".
+                                                         "?redirect=ticket_".$data['tickets_id']);
 
                $linkedticket->getFromDB($data['tickets_id']);
-               $tmp['##linkedticket.title##'] = $linkedticket->getField('name');
+               $tmp['##linkedticket.title##']   = $linkedticket->getField('name');
                $tmp['##linkedticket.content##'] = $linkedticket->getField('content');
 
                $this->datas['linkedtickets'][] = $tmp;
@@ -1070,7 +1070,7 @@ class NotificationTargetTicket extends NotificationTarget {
                   if ($user_tmp->getField('locations_id')) {
                      $tmp2['##author.location##']
                                  = Dropdown::getDropdownName('glpi_locations',
-                                                            $user_tmp->getField('locations_id'));
+                                                             $user_tmp->getField('locations_id'));
                   } else {
                      $tmp2['##author.location##'] = '';
                   }
@@ -1264,7 +1264,7 @@ class NotificationTargetTicket extends NotificationTarget {
                      'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                      'ticket.action'                => $LANG['mailing'][119],
                      'ticket.autoclose'             => $LANG['entity'][18],
-                     'ticket.useremailnotification' => $LANG['job'][19],
+                     'ticket.useremailnotification' => $LANG['job'][19]
                   );
 
       foreach ($tags as $tag => $label) {
@@ -1322,7 +1322,7 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array('ticket.days' => $LANG['stats'][31],
+      $tags = array('ticket.days'          => $LANG['stats'][31],
                     'ticket.linkedtickets' => $LANG['job'][55]);
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -1352,8 +1352,8 @@ class NotificationTargetTicket extends NotificationTarget {
                     'linkedticket.link'       => $LANG['job'][55]." - ".$LANG['setup'][620],
                     'linkedticket.url'        => $LANG['job'][55]." - ".$LANG['common'][94],
                     'linkedticket.title'      => $LANG['job'][55]." - ".$LANG['common'][16],
-                    'linkedticket.content'    => $LANG['job'][55]." - ".$LANG['joblist'][6],
-);
+                    'linkedticket.content'    => $LANG['job'][55]." - ".$LANG['joblist'][6]
+                   );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
