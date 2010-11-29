@@ -3432,8 +3432,8 @@ function autocompletionTextField(CommonDBTM $item, $field, $options=array()) {
       echo $output;
 
    } else {
-      echo "<input ".$params['option']." type='text' name='".$params['name']."' 
-      value=\"".cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+      echo "<input ".$params['option']." type='text' name='".$params['name']."'
+             value=\"".cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
    }
 }
 

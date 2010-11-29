@@ -44,13 +44,13 @@ class TicketTask  extends CommonDBTM {
    public $auto_message_on_action = false;
 
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
- */
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+    *
+    * @return $LANG
+   **/
    static function getTypeName($nb=0) {
       global $LANG;
 
@@ -70,22 +70,27 @@ class TicketTask  extends CommonDBTM {
       $DB->query($querydel);
    }
 
+
    function canCreate() {
+
       return (haveRight('global_add_tasks', 1)
               || haveRight('own_ticket', 1));
    }
 
+
    function canView() {
+
       return (haveRight('observe_ticket', 1)
               || haveRight('show_full_ticket', 1)
               || haveRight('own_ticket', 1));
    }
 
+
    /**
     * Is the current user have right to show the current task ?
     *
     * @return boolean
-    */
+   **/
    function canViewItem() {
 
       $ticket = new Ticket();
@@ -104,53 +109,63 @@ class TicketTask  extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Is the current user have right to create the current task ?
     *
     * @return boolean
-    */
+   **/
    function canCreateItem() {
+
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;
       }
+
       return (haveRight("global_add_tasks","1")
               || $ticket->isUser(self::ASSIGN, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && $ticket->haveAGroup(self::ASSIGN,$_SESSION['glpigroups'])));
+                  && $ticket->haveAGroup(self::ASSIGN, $_SESSION['glpigroups'])));
    }
+
 
    /**
     * Is the current user have right to update the current task ?
     *
     * @return boolean
-    */
+   **/
    function canUpdateItem() {
 
       if ($this->fields["users_id"] != getLoginUserID() && !haveRight('update_tasks',1)) {
          return false;
       }
+
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'),'r')) {
          return false;
       }
+
       return true;
    }
+
 
    /**
     * Is the current user have right to delete the current task ?
     *
     * @return boolean
-    */
+   **/
    function canDeleteItem() {
       return $this->canUpdateItem();
    }
 
+
    function post_getEmpty() {
+
       if (isset($_SESSION['glpitask_private']) && $_SESSION['glpitask_private']) {
          $this->fields['is_private'] = 1;
       }
    }
+
 
    function post_deleteFromDB() {
 
@@ -163,10 +178,11 @@ class TicketTask  extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
-      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_DELETE_SUBITEM);
+      Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
+                   HISTORY_DELETE_SUBITEM);
 
       $options = array('task_id' => $this->fields["id"]);
-      NotificationEvent::raiseEvent('delete_task',$job,$options);
+      NotificationEvent::raiseEvent('delete_task', $job, $options);
    }
 
 
@@ -189,22 +205,20 @@ class TicketTask  extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-      $update_done=false;
-
-      $job = new Ticket;
-      $mailsend = false;
+      $update_done = false;
+      $job         = new Ticket;
+      $mailsend    = false;
 
       if ($job->getFromDB($this->input["tickets_id"])) {
          $job->updateDateMod($this->input["tickets_id"]);
 
          if (count($this->updates)) {
-            $update_done=true;
-            if ($CFG_GLPI["use_mailing"]
-                && (in_array("content",$this->updates))) {
+            $update_done = true;
 
+            if ($CFG_GLPI["use_mailing"] && (in_array("content",$this->updates))) {
                $options = array('task_id' => $this->fields["id"]);
-               NotificationEvent::raiseEvent('update_task',$job,$options);
-               $mailsend=true;
+               NotificationEvent::raiseEvent('update_task', $job, $options);
+               $mailsend = true;
             }
 
             if (in_array("actiontime",$this->updates)) {
@@ -214,23 +228,25 @@ class TicketTask  extends CommonDBTM {
       }
 
       if (isset($this->input["_plan"])) {
-         $update_done=true;
+         $update_done = true;
          $pt = new TicketPlanning();
+
          // Update case
          if (isset($this->input["_plan"]["id"])) {
             $this->input["_plan"]['tickettasks_id'] = $this->input["id"];
-            $this->input["_plan"]['tickets_id'] = $this->input['tickets_id'];
-            $this->input["_plan"]['_nomail'] = $mailsend;
+            $this->input["_plan"]['tickets_id']     = $this->input['tickets_id'];
+            $this->input["_plan"]['_nomail']        = $mailsend;
 
             if (!$pt->update($this->input["_plan"])) {
                return false;
             }
             unset($this->input["_plan"]);
+
          // Add case
          } else {
             $this->input["_plan"]['tickettasks_id'] = $this->input["id"];
-            $this->input["_plan"]['tickets_id'] = $this->input['tickets_id'];
-            $this->input["_plan"]['_nomail'] = $mailsend;
+            $this->input["_plan"]['tickets_id']     = $this->input['tickets_id'];
+            $this->input["_plan"]['_nomail']        = $mailsend;
 
             if (!$pt->add($this->input["_plan"])) {
                return false;
@@ -239,19 +255,20 @@ class TicketTask  extends CommonDBTM {
          }
 
       }
+
       if ($update_done) {
          // Add log entry in the ticket
          $changes[0] = 0;
          $changes[1] = '';
          $changes[2] = $this->fields['id'];
-         Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_UPDATE_SUBITEM);
+         Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
+                      HISTORY_UPDATE_SUBITEM);
       }
    }
 
 
    function prepareInputForAdd($input) {
       global $LANG;
-
 
       manageBeginAndEndPlanDates($input['plan']);
 
@@ -286,27 +303,29 @@ class TicketTask  extends CommonDBTM {
          $input["users_id"] = $uid;
       }
 //      if ($input["_isadmin"] && $input["_type"]!="update") {
-         if (isset($input['plan'])) {
-            $input['_plan'] = $input['plan'];
-            unset($input['plan']);
-         }
-         if (isset($input["add_close"])) {
-            $input['_close'] = 1;
-         }
+      if (isset($input['plan'])) {
+         $input['_plan'] = $input['plan'];
+         unset($input['plan']);
+      }
+/* not used for task
+      if (isset($input["add_close"])) {
+         $input['_close'] = 1;
          unset($input["add_close"]);
-         if (isset($input["add_reopen"])) {
-            $input['_reopen'] = 1;
-         }
+      }
+      if (isset($input["add_reopen"])) {
+         $input['_reopen'] = 1;
          unset($input["add_reopen"]);
-         if (!isset($input["hour"])) {
-            $input["hour"] = 0;
-         }
-         if (!isset($input["minute"])) {
-            $input["minute"] = 0;
-         }
-         if ($input["hour"]>0 || $input["minute"]>0) {
-            $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
-         }
+      }
+*/
+            if (!isset($input["hour"])) {
+         $input["hour"] = 0;
+      }
+      if (!isset($input["minute"])) {
+         $input["minute"] = 0;
+      }
+      if ($input["hour"]>0 || $input["minute"]>0) {
+         $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
+      }
 //      }
       unset($input["minute"]);
       unset($input["hour"]);
@@ -332,26 +351,28 @@ class TicketTask  extends CommonDBTM {
       }
 
 //      if ($this->input["_isadmin"] && $this->input["_type"]!="update") {
-         if (isset($this->input["_plan"])) {
-            $this->input["_plan"]['tickettasks_id'] = $this->fields['id'];
-            $this->input["_plan"]['tickets_id'] = $this->input['tickets_id'];
-            $this->input["_plan"]['_nomail'] = 1;
-            $pt = new TicketPlanning();
+      if (isset($this->input["_plan"])) {
+         $this->input["_plan"]['tickettasks_id'] = $this->fields['id'];
+         $this->input["_plan"]['tickets_id']     = $this->input['tickets_id'];
+         $this->input["_plan"]['_nomail']        = 1;
+         $pt = new TicketPlanning();
 
-            if (!$pt->add($this->input["_plan"])) {
-               return false;
-            }
+         if (!$pt->add($this->input["_plan"])) {
+            return false;
          }
+      }
+
       if ($donotif) {
          $options = array('task_id' => $this->fields["id"]);
-         NotificationEvent::raiseEvent('add_task',$this->input["_job"],$options);
+         NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
       // Add log entry in the ticket
       $changes[0] = 0;
       $changes[1] = '';
       $changes[2] = $this->fields['id'];
-      Log::history($this->getField('tickets_id'),'Ticket',$changes,$this->getType(),HISTORY_ADD_SUBITEM);
+      Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
+                   HISTORY_ADD_SUBITEM);
 
    }
 
@@ -365,8 +386,9 @@ class TicketTask  extends CommonDBTM {
     *@return string of the users_id name
    **/
    function getAuthorName($link=0) {
-      return getUserName($this->fields["users_id"],$link);
+      return getUserName($this->fields["users_id"], $link);
    }
+
 
    function getName($with_comment=0) {
       global $LANG;
@@ -374,11 +396,14 @@ class TicketTask  extends CommonDBTM {
       if (!isset($this->fields['taskcategories_id'])) {
          return NOT_AVAILABLE;
       }
+
       if ($this->fields['taskcategories_id']) {
-         $name = Dropdown::getDropdownName('glpi_taskcategories',$this->fields['taskcategories_id']);
+         $name = Dropdown::getDropdownName('glpi_taskcategories',
+                                           $this->fields['taskcategories_id']);
       } else {
          $name = $this->getTypeName();
       }
+
       if ($with_comment) {
          $name .= ' ('.convDateTime($this->fields['date']);
          $name .= ', '.getUserName($this->fields['users_id']);
@@ -394,10 +419,10 @@ class TicketTask  extends CommonDBTM {
 
       $canedit = $this->can($this->fields['id'],'w');
       echo "<tr class='tab_bg_" . ($this->fields['is_private'] == 1 ? "4" : "2") . "' " .
-       ($canedit
-         ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].$this->fields['id']."$rand();\""
-         : '') .
-         " id='viewfollowup" . $this->fields['tickets_id'] . $this->fields["id"] . "$rand'>";
+             ($canedit ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].
+                          $this->fields['id']."$rand();\""
+                       : '') .
+             " id='viewfollowup" . $this->fields['tickets_id'] . $this->fields["id"] . "$rand'>";
 
       echo "<td>".$this->getTypeName();
       if ($this->fields['taskcategories_id']) {
@@ -424,7 +449,7 @@ class TicketTask  extends CommonDBTM {
 
       $units=getTimestampTimeUnits($this->fields["actiontime"]);
 
-      $hour = $units['hour'];
+      $hour   = $units['hour'];
       $minute = $units['minute'];
       echo "<td>";
       if ($hour) {
@@ -449,17 +474,18 @@ class TicketTask  extends CommonDBTM {
          echo $LANG['job'][32];
       } else {
          $data2 = $DB->fetch_array($result2);
-         echo Planning :: getState($data2["state"]) . "<br>" . convDateTime($data2["begin"]) . "<br>->" .
-         convDateTime($data2["end"]) . "<br>" . getUserName($data2["users_id"]);
+         echo Planning :: getState($data2["state"])."<br>".convDateTime($data2["begin"])."<br>->".
+              convDateTime($data2["end"]) . "<br>" . getUserName($data2["users_id"]);
       }
       echo "</td>";
 
       echo "</tr>\n";
    }
 
+
    /**
     * Form for Followup on Massive action
-    */
+   **/
    static function showFormMassiveAction() {
       global $LANG;
 
@@ -473,19 +499,20 @@ class TicketTask  extends CommonDBTM {
       echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
    }
 
+
    /** form for Task
     *
-    *@param $ID Integer : Id of the task
-    *@param $options array
-    *     - ticket Object : the ticket
-    *
-    */
+    * @param $ID Integer : Id of the task
+    * @param $options array
+    *     -  ticket Object : the ticket
+   **/
    function showForm($ID, $options=array()) {
       global $DB, $LANG, $CFG_GLPI;
 
       if (isset($options['ticket']) && !empty($options['ticket'])) {
          $ticket = $options['ticket'];
       }
+
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -494,14 +521,14 @@ class TicketTask  extends CommonDBTM {
          $this->check(-1,'w',$input);
       }
 
-      $canplan = haveRight("show_planning","1");
+      $canplan = haveRight("show_planning", "1");
 
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='5' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='5'><textarea name='content' cols='50' rows='6'>".
-            $this->fields["content"]."</textarea></td>";
+      echo "<td class='center middle' rowspan='5'>".
+           "<textarea name='content' cols='50' rows='6'>".$this->fields["content"]."</textarea></td>";
       if ($this->fields["date"]) {
          echo "<td>".$LANG['common'][27]."&nbsp;:</td>";
          echo "<td>".convDateTime($this->fields["date"]);
@@ -529,13 +556,13 @@ class TicketTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
 
-      $units=getTimestampTimeUnits($this->fields["actiontime"]);
+      $units = getTimestampTimeUnits($this->fields["actiontime"]);
 
-      $hour = $units['hour'];
+      $hour   = $units['hour'];
       $minute = $units['minute'];
-      Dropdown::showInteger('hour',$hour,0,100);
+      Dropdown::showInteger('hour', $hour, 0, 100);
       echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
-      Dropdown::showInteger('minute',$minute,0,59);
+      Dropdown::showInteger('minute', $minute, 0, 59);
       echo "&nbsp;".$LANG['job'][22];
       echo "</td></tr>\n";
 
@@ -554,7 +581,7 @@ class TicketTask  extends CommonDBTM {
 
    /**
     * Show the current tickettask sumnary
-    */
+   **/
    function showSummary($ticket) {
       global $DB, $LANG, $CFG_GLPI;
 
@@ -566,9 +593,9 @@ class TicketTask  extends CommonDBTM {
 
       // Display existing Followups
       $showprivate = haveRight("show_full_ticket", "1");
-      $caneditall = haveRight("update_tasks", "1");
-      $tmp = array('tickets_id'=>$tID);
-      $canadd = $this->can(-1,'w',$tmp);
+      $caneditall  = haveRight("update_tasks", "1");
+      $tmp         = array('tickets_id' => $tID);
+      $canadd      = $this->can(-1, 'w', $tmp);
 
       $RESTRICT = "";
       if (!$showprivate) {
@@ -599,7 +626,8 @@ class TicketTask  extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
-            echo "<div class='center'><a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+            echo "<div class='center'>".
+                 "<a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
             echo $LANG['job'][30]."</div></p><br>\n";
          }
       }

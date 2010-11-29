@@ -1365,31 +1365,32 @@ class Ticket extends CommonDBTM {
                  getUserName(getLoginUserID())." ".$LANG['log'][20]);
 
       if (isset($this->input["_followup"])
-            && is_array($this->input["_followup"])
-            && strlen($this->input["_followup"]['content']) > 0
-           ) {
+          && is_array($this->input["_followup"])
+          && strlen($this->input["_followup"]['content']) > 0) {
 
-         $fup = new TicketFollowup();
+         $fup  = new TicketFollowup();
          $type = "new";
          if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
             $type = "solved";
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id']);
+
          if (isset($this->input["_followup"]['content'])
              && strlen($this->input["_followup"]['content']) > 0) {
             $toadd["content"] = $this->input["_followup"]['content'];
          }
+
          if (isset($this->input["_followup"]['is_private'])) {
             $toadd["is_private"] = $this->input["_followup"]['is_private'];
          }
-         $toadd['_no_notif']=true;
+         $toadd['_no_notif'] = true;
 
          $fup->add($toadd);
       }
 
       if (isset($this->input["plan"])
-         || (isset($this->input["_hour"])
+          || (isset($this->input["_hour"])
               && isset($this->input["_minute"])
               && isset($this->input["realtime"])
               && $this->input["realtime"]>0)) {
@@ -1410,14 +1411,15 @@ class Ticket extends CommonDBTM {
          if (isset($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
          }
-         $toadd['_no_notif']=true;
+         $toadd['_no_notif'] = true;
 
          $task->add($toadd);
       }
 
+      $ticket_ticket = new Ticket_Ticket();
+
       // From interface
       if (isset($this->input['_link'])) {
-         $ticket_ticket = new Ticket_Ticket();
          $this->input['_link']['tickets_id_1'] = $this->fields['id'];
          if ($ticket_ticket->can(-1, 'w', $this->input['_link'])) {
             $ticket_ticket->add($this->input['_link']);
@@ -1426,10 +1428,9 @@ class Ticket extends CommonDBTM {
 
       // From mailcollector : do not check rights
       if (isset($this->input["_linkedto"])) {
-         $ticket_ticket = new Ticket_Ticket();
          $input2['tickets_id_1'] = $this->fields['id'];
          $input2['tickets_id_2'] = $this->input["_linkedto"];
-         $input2['link'] = Ticket_Ticket::LINK_TO;
+         $input2['link']         = Ticket_Ticket::LINK_TO;
          $ticket_ticket->add($input2);
       }
 
@@ -1454,9 +1455,9 @@ class Ticket extends CommonDBTM {
       $group_ticket = new Group_Ticket;
 
       if (isset($this->input["_users_id_requester"]) && $this->input["_users_id_requester"]>0) {
-         $input2=array('tickets_id' => $this->fields['id'],
-                                 'users_id'   => $this->input["_users_id_requester"],
-                                 'type'       => Ticket::REQUESTER);
+         $input2 = array('tickets_id' => $this->fields['id'],
+                         'users_id'   => $this->input["_users_id_requester"],
+                         'type'       => Ticket::REQUESTER);
          if (isset($this->input["_users_id_requester_notif"])) {
             foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
                $input2[$key] = $val;
@@ -1465,9 +1466,9 @@ class Ticket extends CommonDBTM {
          $ticket_user->add($input2);
       }
       if (isset($this->input["_users_id_observer"]) && $this->input["_users_id_observer"]>0) {
-         $input2=array('tickets_id' => $this->fields['id'],
-                                 'users_id'   => $this->input["_users_id_observer"],
-                                 'type'       => Ticket::OBSERVER);
+         $input2 = array('tickets_id' => $this->fields['id'],
+                         'users_id'   => $this->input["_users_id_observer"],
+                         'type'       => Ticket::OBSERVER);
          if (isset($this->input["_users_id_observer_notif"])) {
             foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
                $input2[$key] = $val;
@@ -1476,9 +1477,9 @@ class Ticket extends CommonDBTM {
          $ticket_user->add($input2);
       }
       if (isset($this->input["_users_id_assign"]) && $this->input["_users_id_assign"]>0) {
-         $input2=array('tickets_id' => $this->fields['id'],
-                                 'users_id'   => $this->input["_users_id_assign"],
-                                 'type'       => Ticket::ASSIGN);
+         $input2 = array('tickets_id' => $this->fields['id'],
+                         'users_id'   => $this->input["_users_id_assign"],
+                         'type'       => Ticket::ASSIGN);
          if (isset($this->input["_users_id_assign_notif"])) {
             foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
                $input2[$key] = $val;
