@@ -75,20 +75,18 @@ $items =
                      'usertitles_id'      => array('title' => $LANG['users'][1]),
                      'usercategories_id'  => array('title' => $LANG['users'][2])),
          $LANG['common'][32]
-            => array('type'                => array('title' => $LANG['common'][17]),
-                     'ticketcategories_id' => array('title' => $LANG['common'][36]),
-                     'urgency'             => array('title' => $LANG['joblist'][29]),
-                     'impact'              => array('title' => $LANG['joblist'][30]),
-                     'priority'            => array('title' => $LANG['joblist'][2]),
-                     'requesttypes_id'     => array('title' => $LANG['job'][44]),
-                     'ticketsolutiontypes_id'
-                                           => array('title' => $LANG['job'][48])),
+            => array('type'                   => array('title' => $LANG['common'][17]),
+                     'ticketcategories_id'    => array('title' => $LANG['common'][36]),
+                     'urgency'                => array('title' => $LANG['joblist'][29]),
+                     'impact'                 => array('title' => $LANG['joblist'][30]),
+                     'priority'               => array('title' => $LANG['joblist'][2]),
+                     'requesttypes_id'        => array('title' => $LANG['job'][44]),
+                     'ticketsolutiontypes_id' => array('title' => $LANG['job'][48])),
          $LANG['job'][5]
-            => array('technicien'       => array('title' => $LANG['job'][6]." ".$LANG['stats'][48]),
-                     'technicien_followup'
-                                        => array('title' => $LANG['job'][6]." ".$LANG['stats'][49]),
-                     'groups_id_assign' => array('title' => $LANG['common'][35]),
-                     'enterprise'       => array('title' => $LANG['financial'][26])));
+            => array('technicien'          => array('title' => $LANG['job'][6]." ".$LANG['stats'][48]),
+                     'technicien_followup' => array('title' => $LANG['job'][6]." ".$LANG['stats'][49]),
+                     'groups_id_assign'    => array('title' => $LANG['common'][35]),
+                     'enterprise'          => array('title' => $LANG['financial'][26])));
 
 $INSELECT = "";
 foreach ($items as $label => $tab) {
@@ -109,12 +107,12 @@ showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td>";
 echo "<td class='right'>".$LANG['stats'][7]."&nbsp;:</td>";
 echo "<td rowspan='2' class='center'>";
-echo "<input type='submit' class='button' name='submit' value='". $LANG['buttons'][7] ."'></td></tr>";
+echo "<input type='submit' class='button' name='submit' value=\"". $LANG['buttons'][7] ."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
-showDateFormItem("date2",$_REQUEST["date2"]);
+showDateFormItem("date2", $_REQUEST["date2"]);
 echo "</td><td class='center'>";
-Dropdown::showYesNo('showgraph',$_REQUEST['showgraph']);
+Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
 echo "</td></tr>";
 echo "</table></form></div>";
 

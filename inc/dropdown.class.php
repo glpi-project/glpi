@@ -593,7 +593,6 @@ class Dropdown {
                                                'State'           => $LANG['setup'][83],
                                                'Manufacturer'    => $LANG['common'][5]),
 
-
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],
                                                'PrinterType'          => $LANG['setup'][43],
@@ -619,18 +618,18 @@ class Dropdown {
                                                'PeripheralModel'       => $LANG['setup'][97],
                                                'PhoneModel'            => $LANG['setup'][503]),
 
-                  $LANG['Menu'][26] => array('DocumentCategory' => $LANG['setup'][81],
-                                             'DocumentType'     => $LANG['document'][7]),
+                  $LANG['Menu'][26]   => array('DocumentCategory' => $LANG['setup'][81],
+                                               'DocumentType'     => $LANG['document'][7]),
 
-                  $LANG['Menu'][18] => array('KnowbaseItemCategory' => $LANG['setup'][87]),
+                  $LANG['Menu'][18]   => array('KnowbaseItemCategory' => $LANG['setup'][87]),
 
-                  $LANG['title'][24] => array ('TicketCategory'     => $LANG['setup'][79],
-                                               'TaskCategory'       => $LANG['setup'][98],
-                                               'TicketSolutionType' => $LANG['job'][48],
-                                               'RequestType'        => $LANG['job'][44]),
+                  $LANG['title'][24]  => array ('TicketCategory'     => $LANG['setup'][79],
+                                                'TaskCategory'       => $LANG['setup'][98],
+                                                'TicketSolutionType' => $LANG['job'][48],
+                                                'RequestType'        => $LANG['job'][44]),
 
-                  $LANG['Menu'][42] => array('Calendar'        => $LANG['Menu'][42],
-                                             'Holiday'         => $LANG['calendar'][11]),
+                  $LANG['Menu'][42]   => array('Calendar' => $LANG['Menu'][42],
+                                               'Holiday'  => $LANG['calendar'][11]),
 
 
                   $LANG['setup'][145] => array('OperatingSystem'            => $LANG['setup'][5],
@@ -638,14 +637,14 @@ class Dropdown {
                                                'OperatingSystemServicePack' => $LANG['computers'][53],
                                                'AutoUpdateSystem'           => $LANG['computers'][51]),
 
-                  $LANG['setup'][88] => array('NetworkInterface'         => $LANG['setup'][9],
-                                              'NetworkEquipmentFirmware' => $LANG['setup'][71],
-                                              'Netpoint'                 => $LANG['setup'][73],
-                                              'Domain'                   => $LANG['setup'][89],
-                                              'Network'                  => $LANG['setup'][88],
-                                              'Vlan'                     => $LANG['setup'][90]),
+                  $LANG['setup'][88]  => array('NetworkInterface'         => $LANG['setup'][9],
+                                               'NetworkEquipmentFirmware' => $LANG['setup'][71],
+                                               'Netpoint'                 => $LANG['setup'][73],
+                                               'Domain'                   => $LANG['setup'][89],
+                                               'Network'                  => $LANG['setup'][88],
+                                               'Vlan'                     => $LANG['setup'][90]),
 
-                  $LANG['Menu'][4] => array('SoftwareCategory' => $LANG['softwarecategories'][5]),
+                  $LANG['Menu'][4]    => array('SoftwareCategory' => $LANG['softwarecategories'][5]),
 
                   $LANG['common'][34] => array('UserTitle'     => $LANG['users'][1],
                                                'UserCategory'  => $LANG['users'][2]),

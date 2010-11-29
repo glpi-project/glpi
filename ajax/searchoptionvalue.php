@@ -48,11 +48,11 @@ if (!defined('GLPI_ROOT')) {
 checkLoginUser();
 
 if (isset($_REQUEST['searchtype'])) {
-   $searchopt = unserialize(stripslashes($_REQUEST['searchopt']));
-   $_REQUEST['value']=rawurldecode(stripslashes($_REQUEST['value']));
+   $searchopt         = unserialize(stripslashes($_REQUEST['searchopt']));
+   $_REQUEST['value'] = rawurldecode(stripslashes($_REQUEST['value']));
 
    $addmeta = "";
-   if (isset($_REQUEST['meta'])&&$_REQUEST['meta']) {
+   if (isset($_REQUEST['meta']) && $_REQUEST['meta']) {
       $addmeta = '2';
    }
 
@@ -62,7 +62,7 @@ if (isset($_REQUEST['searchtype'])) {
 
    // Fix table name
    if (isset($searchopt['realtable'])) {
-      $searchopt['table']=$searchopt['realtable'];
+      $searchopt['table'] = $searchopt['realtable'];
    }
 
    switch ($_REQUEST['searchtype']) {
@@ -184,17 +184,20 @@ if (isset($_REQUEST['searchtype'])) {
                                                      array('value'    => $_REQUEST['value'],
                                                            'comments' => 0));
                      $display = true;
-		     break;
+                     break;
+
                   case "date" :
                   case "date_delay" :
                      showGenericDateTimeSearch($inputname, $_REQUEST['value'], false,
-                                    (isset($searchopt['maybefuture']) && $searchopt['maybefuture']));
+                                               (isset($searchopt['maybefuture'])
+                                                && $searchopt['maybefuture']));
                      $display = true;
                      break;
 
                   case "datetime" :
                      showGenericDateTimeSearch($inputname, $_REQUEST['value'], true,
-                                    (isset($searchopt['maybefuture']) && $searchopt['maybefuture']));
+                                               (isset($searchopt['maybefuture'])
+                                                      && $searchopt['maybefuture']));
                      $display = true;
                      break;
                }

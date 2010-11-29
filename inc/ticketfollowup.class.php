@@ -137,7 +137,7 @@ class TicketFollowup  extends CommonDBTM {
       return (haveRight("global_add_followups","1")
               || $ticket->isUser(self::ASSIGN, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && $ticket->haveAGroup(self::ASSIGN,$_SESSION['glpigroups'])));
+                  && $ticket->haveAGroup(self::ASSIGN, $_SESSION['glpigroups'])));
    }
 
 

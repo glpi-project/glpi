@@ -81,11 +81,11 @@ class Ticket_User extends CommonDBRelation {
    function can($ID, $right, &$input=NULL) {
 
       if ($ID>0) {
-       if ($this->fields['users_id']===getLoginUserID()) {
-         return true;
-       }
+         if ($this->fields['users_id']===getLoginUserID()) {
+            return true;
+         }
       }
-      return parent::can($ID,$right,$input);
+      return parent::can($ID, $right, $input);
    }
 
 
@@ -162,7 +162,7 @@ class Ticket_User extends CommonDBRelation {
       if ($this->input['type']==Ticket::ASSIGN) {
          $no_stat_computation = false;
       }
-      $t->updateDateMod($this->fields['tickets_id'],$no_stat_computation);
+      $t->updateDateMod($this->fields['tickets_id'], $no_stat_computation);
 
       parent::post_addItem();
    }

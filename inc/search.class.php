@@ -36,30 +36,30 @@ if (!defined('GLPI_ROOT')) {
 class Search {
 
    /**
-   * Display search engine for an type
-   *
-   * @param $itemtype item type to manage
-   * @return nothing
-   */
+    * Display search engine for an type
+    *
+    * @param $itemtype item type to manage
+    *
+    * @return nothing
+   **/
    static function show ($itemtype) {
 
       Search::manageGetValues($itemtype);
-      Search::showGenericSearch($itemtype,$_GET);
-      Search::showList($itemtype,$_GET);
+      Search::showGenericSearch($itemtype, $_GET);
+      Search::showList($itemtype, $_GET);
    }
 
 
    /**
-   * Generic Search and list function
-   *
-   * Build the query, make the search and list items after a search.
-   *
-   *@param $itemtype item type
-   *@param $params parameters array may include field, contains, searchtype, sort, order, start,
-                  deleted, link, link2, contains2, field2, itemtype2, searchtype2
-   *
-   *@return Nothing (display)
-   *
+    * Generic Search and list function
+    *
+    * Build the query, make the search and list items after a search.
+    *
+    * @param $itemtype item type
+    * @param $params parameters array may include field, contains, searchtype, sort, order, start,
+                     deleted, link, link2, contains2, field2, itemtype2, searchtype2
+    *
+    * @return Nothing (display)
    **/
    static function showList ($itemtype, $params) {
       global $DB, $CFG_GLPI, $LANG;
@@ -145,7 +145,7 @@ class Search {
       $toview = Search::addDefaultToView($itemtype);
 
       // Add items to display depending of personal prefs
-      $displaypref=DisplayPreference::getForTypeUser($itemtype, getLoginUserID());
+      $displaypref = DisplayPreference::getForTypeUser($itemtype, getLoginUserID());
       if (count($displaypref)) {
          foreach ($displaypref as $val) {
             array_push($toview,$val);
@@ -156,19 +156,19 @@ class Search {
       if (count($p['field'])>0) {
          foreach ($p['field'] as $key => $val) {
             if (!in_array($val,$toview) && $val!='all' && $val!='view') {
-               array_push($toview,$val);
+               array_push($toview, $val);
             }
          }
       }
 
       // Add order item
       if (!in_array($p['sort'],$toview)) {
-         array_push($toview,$p['sort']);
+         array_push($toview, $p['sort']);
       }
 
       // Special case for Ticket : put ID in front
       if ($itemtype=='Ticket') {
-         array_unshift($toview,2);
+         array_unshift($toview, 2);
       }
 
       // Clean toview array
@@ -188,7 +188,7 @@ class Search {
 
       // Add select for all toview item
       foreach ($toview as $key => $val) {
-         $SELECT .= Search::addSelect($itemtype,$val,$key,0);
+         $SELECT .= Search::addSelect($itemtype, $val, $key, 0);
       }
 
 
@@ -199,7 +199,7 @@ class Search {
       // Init already linked tables array in order not to link a table several times
       $already_link_tables = array();
       // Put reference table
-      array_push($already_link_tables,$itemtable);
+      array_push($already_link_tables, $itemtable);
 
       // Add default join
       $COMMONLEFTJOIN = Search::addDefaultJoin($itemtype, $itemtable, $already_link_tables);
@@ -239,7 +239,7 @@ class Search {
       if ($item && $item->maybeDeleted()) {
          $LINK = " AND " ;
          if ($first) {
-            $LINK = " ";
+            $LINK  = " ";
             $first = false;
          }
          $COMMONWHERE .= $LINK."`$itemtable`.`is_deleted` = '".$p['is_deleted']."' ";
@@ -249,7 +249,7 @@ class Search {
       if ($item && $item->maybeTemplate()) {
          $LINK = " AND " ;
          if ($first) {
-            $LINK = " ";
+            $LINK  = " ";
             $first = false;
          }
          $COMMONWHERE .= $LINK."`$itemtable`.`is_template` = '0' ";
@@ -259,7 +259,7 @@ class Search {
       if ($entity_restrict) {
          $LINK = " AND " ;
          if ($first) {
-            $LINK = " ";
+            $LINK  = " ";
             $first = false;
          }
 
@@ -323,6 +323,7 @@ class Search {
                   $LINK       = " OR ";
                   $NOT        = 0;
                   $globallink = " AND ";
+
                   if (is_array($p['link']) && isset($p['link'][$key])) {
                      switch ($p['link'][$key]) {
                         case "AND" :
@@ -347,6 +348,7 @@ class Search {
                            $globallink = " OR ";
                            break;
                      }
+
                   } else {
                      $tmplink ="  AND ";
                   }
@@ -359,8 +361,10 @@ class Search {
                   $first2 = true;
 
                   $items = array();
+
                   if ($p['field'][$key]=="all") {
                      $items = $searchopt[$itemtype];
+
                   } else { // toview case : populate toview
                      foreach ($toview as $key2 => $val2) {
                         $items[$val2] = $searchopt[$itemtype][$val2];
@@ -376,9 +380,8 @@ class Search {
                               $tmplink = " ";
                               $first2  = false;
                            }
-                           $WHERE .= Search::addWhere($tmplink, $NOT, $itemtype,
-                                                      $key2,$p['searchtype'][$key],
-                                                      $p['contains'][$key]);
+                           $WHERE .= Search::addWhere($tmplink, $NOT, $itemtype, $key2,
+                                                      $p['searchtype'][$key], $p['contains'][$key]);
                         }
                      }
                   }
@@ -591,17 +594,19 @@ class Search {
                $ctable = getTableForItemType($ctype);
                $citem  = new $ctype();
                if ($citem->canView()) {
+
                   // State case
                   if ($itemtype == 'States') {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
                      $query_num .= " AND $ctable.`states_id` > '0' ";
+
                   } else {// Ref table case
                      $reftable = getTableForItemType($itemtype);
                      $replace  = "FROM `$reftable`
                                   INNER JOIN `$ctable`
-                                    ON (`$reftable`.`items_id` =`$ctable`.`id`
-                                        AND `$reftable`.`itemtype` = '$ctype')";
+                                       ON (`$reftable`.`items_id` =`$ctable`.`id`
+                                           AND `$reftable`.`itemtype` = '$ctype')";
 
                      $query_num = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
                                               $replace, $tmpquery);
@@ -616,6 +621,7 @@ class Search {
                   $numrows   += $DBread->result($result_num, 0, 0);
                }
             }
+
          } else {
             $result_num = $DBread->query($query_num);
             $numrows    = $DBread->result($result_num,0,0);
@@ -948,7 +954,8 @@ class Search {
                         if (isset($_SESSION['glpimassiveactionselected'][$data["id"]])) {
                            $sel = "checked";
                         }
-                        $tmpcheck = "<input type='checkbox' name='item[".$data["id"]."]' value='1' $sel>";
+                        $tmpcheck = "<input type='checkbox' name='item[".$data["id"]."]' value='1'
+                                      $sel>";
                      }
                   }
                   echo Search::showItem($output_type, $tmpcheck, $item_num, $row_num, "width='10'");
@@ -1027,12 +1034,14 @@ class Search {
                // Specific column display
                if ($itemtype == 'CartridgeItem') {
                   echo Search::showItem($output_type,
-                                        Cartridge::getCount($data["id"], $data["ALARM"], $output_type),
+                                        Cartridge::getCount($data["id"], $data["ALARM"],
+                                                            $output_type),
                                         $item_num, $row_num);
                }
                if ($itemtype == 'ConsumableItem') {
                   echo Search::showItem($output_type,
-                                        Consumable::getCount($data["id"], $data["ALARM"], $output_type),
+                                        Consumable::getCount($data["id"], $data["ALARM"],
+                                                             $output_type),
                                         $item_num, $row_num);
                }
                if ($itemtype == 'States' || $itemtype == 'ReservationItem') {
@@ -1053,8 +1062,9 @@ class Search {
                                               "<a href=\"".getItemTypeFormURL($itemtype)."?id=".
                                                 $data["refID"]."&amp;is_active=".($data["ACTIVE"]?0:1).
                                                 "&amp;update=update\" "."title=\"".
-                                                ($data["ACTIVE"]?$LANG['buttons'][42]:$LANG['buttons'][41]).
-                                                "\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/".
+                                                ($data["ACTIVE"]?$LANG['buttons'][42]
+                                                                :$LANG['buttons'][41])."\">".
+                                                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".
                                                 ($data["ACTIVE"]?"moins":"plus").".png\" alt='' title=''></a>",
                                               $item_num, $row_num, "class='center'");
 
@@ -1063,9 +1073,10 @@ class Search {
                                                 addslashes($LANG['reservation'][38])."\\n".
                                                 addslashes($LANG['reservation'][39])."','".
                                                 getItemTypeFormURL($itemtype)."?id=".$data["refID"].
-                                                "&amp;delete=delete')\" title=\"".$LANG['reservation'][6].
-                                                "\"><img src=\"".$CFG_GLPI["root_doc"].
-                                                "/pics/delete.png\" alt='' title=''></a>",
+                                                "&amp;delete=delete')\" title=\"".
+                                                $LANG['reservation'][6]."\">".
+                                                "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+                                                  alt='' title=''></a>",
                                               $item_num, $row_num, "class='center'");
                      }
                   }
@@ -1154,13 +1165,13 @@ class Search {
 
 
    /**
-   * Print generic search form
-   *
-   *@param $itemtype type to display the form
-   *@param $params parameters array may include field, contains, sort, is_deleted, link, link2, contains2, field2, type2
-   *
-   *@return nothing (displays)
-   *
+    * Print generic search form
+    *
+    * @param $itemtype type to display the form
+    * @param $params parameters array may include field, contains, sort, is_deleted, link, link2,
+    *                                             contains2, field2, type2
+    *
+    *@return nothing (displays)
    **/
    static function showGenericSearch($itemtype, $params) {
       global $LANG, $CFG_GLPI;
@@ -1882,7 +1893,6 @@ class Search {
          case "glpi_users_validation.name" :
          case "glpi_users.name" :
             if ($itemtype != 'User') {
-
                if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '$$$$')
                               AS ".$NAME."_".$num.",";
@@ -2105,12 +2115,11 @@ class Search {
 
 
    /**
-   * Generic Function to add default where to a request
-   *
-   *@param $itemtype device type
-   *
-   *@return select string
-   *
+    * Generic Function to add default where to a request
+    *
+    * @param $itemtype device type
+    *
+    * @return select string
    **/
    static function addDefaultWhere ($itemtype) {
 
@@ -2173,18 +2182,17 @@ class Search {
 
 
    /**
-   * Generic Function to add where to a request
-   *
-   *@param $link link string
-   *@param $nott is it a negative serach ?
-   *@param $itemtype item type
-   *@param $ID ID of the item to search
-   *@param $searchtype searchtype used (equals or contains)
-   *@param $val item num in the request
-   *@param $meta is a meta search (meta=2 in search.class.php)
-   *
-   *@return select string
-   *
+    * Generic Function to add where to a request
+    *
+    * @param $link link string
+    * @param $nott is it a negative serach ?
+    * @param $itemtype item type
+    * @param $ID ID of the item to search
+    * @param $searchtype searchtype used (equals or contains)
+    * @param $val item num in the request
+    * @param $meta is a meta search (meta=2 in search.class.php)
+    *
+    * @return select string
    **/
    static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta=0) {
       global $LANG;
@@ -2378,6 +2386,7 @@ class Search {
             } else if (stristr($val,Infocom::getAmortTypeName(2))) {
                $val = 2;
             }
+
             if (is_int($val) && $val>0) {
                if ($nott) {
                   return $link." (`$table`.`$field` <> '$val' ".
@@ -2391,19 +2400,17 @@ class Search {
          case "glpi_contacts.completename" :
             if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link `$table`.`id`".$SEARCH;
-            } else {
-               if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
-                  $name1 = 'firstname';
-                  $name2 = 'name';
-               } else {
-                  $name1 = 'name';
-                  $name2 = 'firstname';
-               }
-
-               return $link." (`$table`.`$name1` $SEARCH
-                               OR `$table`.`$name2` $SEARCH
-                               OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
             }
+            if ($_SESSION["glpinames_format"]==FIRSTNAME_BEFORE) {
+               $name1 = 'firstname';
+               $name2 = 'name';
+            } else {
+               $name1 = 'name';
+               $name2 = 'firstname';
+            }
+            return $link." (`$table`.`$name1` $SEARCH
+                            OR `$table`.`$name2` $SEARCH
+                            OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
 
          case "glpi_auth_tables.name" :
             return $link." (`glpi_authmails`.`name` $SEARCH
@@ -2419,7 +2426,8 @@ class Search {
          case "glpi_profiles.interface" :
             if (stristr(Profile::getInterfaceName('central'),$val)) {
                return $link." `$table`.`$field`='central'";
-            } else if (stristr(Profile::getInterfaceName('helpdesk'),$val)) {
+            }
+            if (stristr(Profile::getInterfaceName('helpdesk'),$val)) {
                return $link." `$table`.`$field`='helpdesk'";
             }
             return "";
@@ -2462,9 +2470,8 @@ class Search {
                }
                if ($nott) {
                   return $link.'('.implode(' AND ',$tocheck[$val]).')';
-               } else {
-                  return $link.'('.implode(' OR ',$tocheck[$val]).')';
                }
+               return $link.'('.implode(' OR ',$tocheck[$val]).')';
             }
             if ($val=='all') {
                return "";
@@ -2632,6 +2639,7 @@ class Search {
                $replace = array("<",
                                 ">");
                $val = preg_replace($search, $replace, $val);
+
                if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                   if ($nott) {
                      if ($regs[1]=='<') {
@@ -2642,7 +2650,8 @@ class Search {
                   }
                   $regs[1] .= $regs[2];
                   return $link." ($tocompute ".$regs[1]." ".$regs[3].") ";
-               } else if (is_numeric($val)) {
+               }
+               if (is_numeric($val)) {
                   if (isset($searchopt[$ID]["width"])) {
                      $ADD = "";
                      if ($nott && $val!='NULL' && $val!='null') {
@@ -2684,14 +2693,13 @@ class Search {
 
 
    /**
-   * Generic Function to add Default left join to a request
-   *
-   *@param $itemtype reference ID
-   *@param $ref_table reference table
-   *@param $already_link_tables array of tables already joined
-   *
-   *@return Left join string
-   *
+    * Generic Function to add Default left join to a request
+    *
+    * @param $itemtype reference ID
+    * @param $ref_table reference table
+    * @param $already_link_tables array of tables already joined
+    *
+    * @return Left join string
    **/
    static function addDefaultJoin ($itemtype, $ref_table, &$already_link_tables) {
 
@@ -2719,19 +2727,18 @@ class Search {
 
 
    /**
-   * Generic Function to add left join to a request
-   *
-   *@param $itemtype item type
-   *@param $ref_table reference table
-   *@param $already_link_tables array of tables already joined
-   *@param $new_table new table to join
-   *@param $linkfield linkfield for LeftJoin
-   *@param $meta is it a meta item ?
-   *@param $meta_type meta type table
-   *@param $joinparams join parameters (condition / joinbefore...)
-   *
-   *@return Left join string
-   *
+    * Generic Function to add left join to a request
+    *
+    * @param $itemtype item type
+    * @param $ref_table reference table
+    * @param $already_link_tables array of tables already joined
+    * @param $new_table new table to join
+    * @param $linkfield linkfield for LeftJoin
+    * @param $meta is it a meta item ?
+    * @param $meta_type meta type table
+    * @param $joinparams join parameters (condition / joinbefore...)
+    *
+    * @return Left join string
    **/
    static function addLeftJoin ($itemtype, $ref_table, &$already_link_tables, $new_table,
                                 $linkfield, $meta=0, $meta_type=0, $joinparams=array()) {
@@ -2761,11 +2768,11 @@ class Search {
 //       }
 
       $addmetanum = "";
-      $rt = $ref_table;
+      $rt         = $ref_table;
       if ($meta) {
          $addmetanum = "_".$meta_type;
-         $AS = " AS $nt$addmetanum";
-         $nt = $nt.$addmetanum;
+         $AS         = " AS $nt$addmetanum";
+         $nt         = $nt.$addmetanum;
       }
 
 
@@ -3258,15 +3265,14 @@ class Search {
 
 
    /**
-   * Generic Function to add left join for meta items
-   *
-   *@param $from_type reference item type ID
-   *@param $to_type item type to add
-   *@param $already_link_tables2 array of tables already joined
-   *@param $nullornott Used LEFT JOIN (null generation) or INNER JOIN for strict join
-   *
-   *@return Meta Left join string
-   *
+    * Generic Function to add left join for meta items
+    *
+    * @param $from_type reference item type ID
+    * @param $to_type item type to add
+    * @param $already_link_tables2 array of tables already joined
+    * @param $nullornott Used LEFT JOIN (null generation) or INNER JOIN for strict join
+    *
+    * @return Meta Left join string
    **/
    static function addMetaLeftJoin($from_type, $to_type, &$already_link_tables2, $nullornott) {
 
@@ -3405,15 +3411,14 @@ class Search {
 
 
    /**
-   * Generic Function to display Items
-   *
-   *@param $itemtype item type
-   *@param $ID ID of the SEARCH_OPTION item
-   *@param $data retrieved data array
-   *@param $num number of the displayed item
-   *
-   *@return string to print
-   *
+    * Generic Function to display Items
+    *
+    * @param $itemtype item type
+    * @param $ID ID of the SEARCH_OPTION item
+    * @param $data retrieved data array
+    * @param $num number of the displayed item
+    *
+    * @return string to print
    **/
    static function displayConfigItem ($itemtype, $ID, $data=array(), $num=0) {
 
@@ -3449,16 +3454,15 @@ class Search {
 
 
    /**
-   * Generic Function to display Items
-   *
-   *@param $itemtype item type
-   *@param $ID ID of the SEARCH_OPTION item
-   *@param $data array containing data results
-   *@param $num item num in the request
-   *@param $meta is a meta item ?
-   *
-   *@return string to print
-   *
+    * Generic Function to display Items
+    *
+    * @param $itemtype item type
+    * @param $ID ID of the SEARCH_OPTION item
+    * @param $data array containing data results
+    * @param $num item num in the request
+    * @param $meta is a meta item ?
+    *
+    * @return string to print
    **/
    static function giveItem ($itemtype, $ID, $data, $num, $meta=0) {
       global $CFG_GLPI,$LANG;
@@ -3590,7 +3594,8 @@ class Search {
                   }
                }
                return $out;
-            } else if ($data[$NAME.$num."_2"]==0) {  // Set name for Root entity
+            }
+            if ($data[$NAME.$num."_2"]==0) {  // Set name for Root entity
                $data[$NAME.$num] = $LANG['entity'][2];
             }
             break;
@@ -3732,7 +3737,6 @@ class Search {
 
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
-
                $options['field'][0]      = 12;
                $options['searchtype'][0] = 'equals';
                $options['contains'][0]   = 'all';
@@ -3748,6 +3752,7 @@ class Search {
 
                $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">";
                $out .= $data[$NAME.$num]."</a>";
+
             } else {
                $out = $data[$NAME.$num];
             }
@@ -3804,7 +3809,7 @@ class Search {
             return '';
 
          case 'glpi_tickets.status':
-            $status=Ticket::getStatus($data[$NAME.$num]);
+            $status = Ticket::getStatus($data[$NAME.$num]);
             return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
                      alt=\"$status\" title=\"$status\"><br>$status";
 
@@ -3909,8 +3914,8 @@ class Search {
                   }
                   $out .= "</a>";
                   return $out;
-
-               } else if (isset($searchopt[$ID]["itemlink_type"])) {
+               }
+               if (isset($searchopt[$ID]["itemlink_type"])) {
                   $out   = "";
                   $split = explode("$$$$", $data[$NAME.$num]);
                   $count_display = 0;
@@ -4088,30 +4093,30 @@ class Search {
 
 
    /**
-   * Reset save searches
-   *
-   * @return nothing
-   */
+    * Reset save searches
+    *
+    * @return nothing
+   **/
    static function resetSaveSearch() {
 
       unset($_SESSION['glpisearch']);
-      $_SESSION['glpisearch'] = array();
+      $_SESSION['glpisearch']       = array();
       unset($_SESSION['glpisearchcount']);
-      $_SESSION['glpisearchcount'] = array();
+      $_SESSION['glpisearchcount']  = array();
       unset($_SESSION['glpisearchcount2']);
       $_SESSION['glpisearchcount2'] = array();
    }
 
 
    /**
-   * Completion of the URL $_GET values with the $_SESSION values or define default values
-   *
-   * @param $itemtype item type to manage
-   * @param $usesession Use datas save in session
-   * @param $forcebookmark force trying to load parameters from default bookmark : used for global search
-
-   * @return nothing
-   */
+    * Completion of the URL $_GET values with the $_SESSION values or define default values
+    *
+    * @param $itemtype item type to manage
+    * @param $usesession Use datas save in session
+    * @param $forcebookmark force trying to load parameters from default bookmark : used for global search
+    *
+    * @return nothing
+   **/
    static function manageGetValues($itemtype, $usesession=true, $forcebookmark=false) {
       global $_GET, $DB;
 
@@ -4191,8 +4196,8 @@ class Search {
             }
          }
       }
-      if ($usesession && isset($_GET["reset"])) {
 
+      if ($usesession && isset($_GET["reset"])) {
          if (isset($_SESSION['glpisearch'][$itemtype])) {
             unset($_SESSION['glpisearch'][$itemtype]);
          }
@@ -4202,12 +4207,14 @@ class Search {
          if (isset($_SESSION['glpisearchcount2'][$itemtype])) {
             unset($_SESSION['glpisearchcount2'][$itemtype]);
          }
+
          // Bookmark use
          if (isset($_GET["glpisearchcount"])) {
             $_SESSION["glpisearchcount"][$itemtype] = $_GET["glpisearchcount"];
          } else if (isset($_GET["field"])) {
             $_SESSION["glpisearchcount"][$itemtype] = count($_GET["field"]);
          }
+
          // Bookmark use
          if (isset($_GET["glpisearchcount2"])) {
             $_SESSION["glpisearchcount2"][$itemtype] = $_GET["glpisearchcount2"];
@@ -4253,14 +4260,14 @@ class Search {
 
 
    /**
-   * Clean search options depending of user active profile
-   *
-   * @param $itemtype item type to manage
-   * @param $action action which is used to manupulate searchoption (r/w)
-   * @param $withplugins boolean get plugins options
-   *
-   * @return clean $SEARCH_OPTION array
-   */
+    * Clean search options depending of user active profile
+    *
+    * @param $itemtype item type to manage
+    * @param $action action which is used to manupulate searchoption (r/w)
+    * @param $withplugins boolean get plugins options
+    *
+    * @return clean $SEARCH_OPTION array
+   **/
    static function getCleanedOptions($itemtype, $action='r', $withplugins=true) {
       global $CFG_GLPI;
 
@@ -4311,11 +4318,11 @@ class Search {
     * @param $field name
     *
     * @return integer
-    */
+   **/
    static function getOptionNumber($itemtype, $field) {
-      $table = getTableForItemType($itemtype);
 
-      $opts = &self::getOptions($itemtype);
+      $table = getTableForItemType($itemtype);
+      $opts  = &self::getOptions($itemtype);
 
       foreach ($opts as $num => $opt) {
          if ($opt['table']==$table && $opt['field']==$field) {
@@ -4325,13 +4332,14 @@ class Search {
       return 0;
    }
 
+
    /**
-   * Get the SEARCH_OPTION array
-   *
-   * @param $itemtype
-   * @param $withplugins boolean get search options from plugins
-   *
-   * @return the reference to  array of search options for the given item type
+    * Get the SEARCH_OPTION array
+    *
+    * @param $itemtype
+    * @param $withplugins boolean get search options from plugins
+    *
+    * @return the reference to  array of search options for the given item type
    **/
    static function &getOptions($itemtype, $withplugins=true) {
       global $LANG, $CFG_GLPI;
@@ -4473,14 +4481,13 @@ class Search {
 
 
    /**
-   * Convert an array to be add in url
-   *
-   * @param $name name of array
-   * @param $array array to be added
-   *
-   * @return string to add
-   *
-   */
+    * Convert an array to be add in url
+    *
+    * @param $name name of array
+    * @param $array array to be added
+    *
+    * @return string to add
+   **/
    static function getArrayUrlLink($name, $array) {
 
       $out = "";
@@ -4494,14 +4501,13 @@ class Search {
 
 
    /**
-   * Is the search item related to infocoms
-   *
-   * @param $itemtype item type
-   * @param $searchID ID of the element in $SEARCHOPTION
-   *
-   * @return boolean
-   *
-   */
+    * Is the search item related to infocoms
+    *
+    * @param $itemtype item type
+    * @param $searchID ID of the element in $SEARCHOPTION
+    *
+    * @return boolean
+   **/
    static function isInfocomOption($itemtype, $searchID) {
       global $CFG_GLPI;
 
@@ -4605,17 +4611,16 @@ class Search {
 
 
    /**
-   * Print generic Header Column
-   *
-   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *@param $value value to display
-   *@param $num column number
-   *@param $linkto link display element (HTML specific)
-   *@param $issort is the sort column ?
-   *@param $order  order type ASC or DESC
-   *
-   *@return string to display
-   *
+    * Print generic Header Column
+    *
+    * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param $value value to display
+    * @param $num column number
+    * @param $linkto link display element (HTML specific)
+    * @param $issort is the sort column ?
+    * @param $order  order type ASC or DESC
+    *
+    * @return string to display
    **/
    static function showHeaderItem($type, $value, &$num, $linkto="", $issort=0, $order="") {
       global $CFG_GLPI;
@@ -4730,12 +4735,11 @@ class Search {
 
 
    /**
-   * Print generic error
-   *
-   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *
-   *@return string to display
-   *
+    * Print generic error
+    *
+    * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @return string to display
    **/
    static function showError($type) {
       global $LANG;
@@ -4756,13 +4760,12 @@ class Search {
 
 
    /**
-   * Print generic footer
-   *
-   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *@param $title title of file : used for PDF
-   *
-   *@return string to display
-   *
+    * Print generic footer
+    *
+    * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param $title title of file : used for PDF
+    *
+    * @return string to display
    **/
    static function showFooter($type, $title="") {
       global $LANG;
@@ -4833,15 +4836,14 @@ class Search {
 
 
    /**
-   * Print generic footer
-   *
-   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *@param $rows  number of rows
-   *@param $cols number of columns
-   *@param $fixed  used tab_cadre_fixe table for HTML export ?
-   *
-   *@return string to display
-   *
+    * Print generic footer
+    *
+    * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param $rows  number of rows
+    * @param $cols number of columns
+    * @param $fixed  used tab_cadre_fixe table for HTML export ?
+    *
+    * @return string to display
    **/
    static function showHeader($type, $rows, $cols, $fixed=0) {
 
@@ -4906,13 +4908,12 @@ class Search {
 
 
    /**
-   * Print generic new line
-   *
-   *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
-   *@param $odd is it a new odd line ?
-   *
-   *@return string to display
-   *
+    * Print generic new line
+    *
+    * @param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param $odd is it a new odd line ?
+    *
+    * @return string to display
    **/
    static function showNewLine($type, $odd=false) {
 

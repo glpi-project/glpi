@@ -72,13 +72,12 @@ class Group_Ticket extends CommonDBRelation {
 
    function post_addItem() {
 
-
       $t = new Ticket();
       $no_stat_computation = true;
       if ($this->input['type']==Ticket::ASSIGN) {
          $no_stat_computation = false;
       }
-      $t->updateDateMod($this->fields['tickets_id'],$no_stat_computation);
+      $t->updateDateMod($this->fields['tickets_id'], $no_stat_computation);
 
       parent::post_addItem();
    }

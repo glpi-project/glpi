@@ -56,6 +56,7 @@ class Holiday extends CommonDropdown {
       return haveRight('calendar', 'r');
    }
 
+
    function getAdditionalFields() {
       global $LANG;
 
