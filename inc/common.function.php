@@ -226,7 +226,7 @@ function logInFile($name, $text, $force=false) {
 
    $user = '';
    if (function_exists('getLoginUserID')) {
-      $user = " [".getLoginUserID()."]";
+      $user = " [".getLoginUserID().'@'.php_uname('n')."]";
    }
 
    if (isset($CFG_GLPI["use_log_in_files"]) && $CFG_GLPI["use_log_in_files"]||$force) {
