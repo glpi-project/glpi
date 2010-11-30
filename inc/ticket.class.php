@@ -483,7 +483,7 @@ class Ticket extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
       if (isset($input["date"]) && empty($input["date"])) {
          unset($input["date"]);
@@ -663,11 +663,28 @@ class Ticket extends CommonDBTM {
          $input['users_id_lastupdater'] = $lastupdater;
       }
 
+
       // Setting a solution type means the ticket is solved
       if (isset($input["ticketsolutiontypes_id"])
           && $input["ticketsolutiontypes_id"]>0
           && $this->fields['status']!='closed') {
-         $input["status"] = 'solved';
+
+         $entitydata = new EntityData();
+         if ($entitydata->getFromDB($this->fields['entities_id'])) {
+            $autoclosedelay = $entitydata->getfield('autoclose_delay');
+         } else {
+            $autoclosedelay = -1;
+         }
+         // -1 = config
+         if ($autoclosedelay == -1) {
+            $autoclosedelay = $CFG_GLPI['autoclose_delay'];
+         }
+         // 0 = immediatly
+         if ($autoclosedelay == 0) {
+            $input["status"] = 'closed';
+         } else {
+            $input["status"] = 'solved';
+         }
       }
 
       if (isset($input["items_id"])
