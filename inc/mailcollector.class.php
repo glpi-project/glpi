@@ -98,12 +98,8 @@ class MailCollector  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($input["passwd"])) {
-         if (empty($input["passwd"])) {
-            unset($input["passwd"]);
-         } else {
-            $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
-         }
+      if (isset($input["passwd"]) && !empty($input["passwd"])) {
+         $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
       }
 
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
@@ -114,6 +110,14 @@ class MailCollector  extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
+
+      if (isset($input["passwd"])) {
+         if (empty($input["passwd"])) {
+            unset($input["passwd"]);
+         } else {
+            $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
+         }
+      }
 
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
          $input["host"] = constructMailServerConfig($input);
@@ -489,7 +493,8 @@ class MailCollector  extends CommonDBTM {
       }
       //  Who is the user ?
       $tkt['users_id'] = User::getOrImportByEmail($head['from']);
-      // AUto_import
+//      print_r($head);exit();
+      // Auto_import
       $tkt['_auto_import'] = 1;
       // For followup : do not check users_id = login user
       $tkt['_do_not_check_users_id'] = 1;
@@ -694,7 +699,6 @@ class MailCollector  extends CommonDBTM {
 
     ///Connect To the Mail Box
    function connect() {
-
       $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                   decrypt($this->fields['passwd'],GLPIKEY), 1);
    }

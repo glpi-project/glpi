@@ -2342,6 +2342,11 @@ class AuthLDAP extends CommonDBTM {
       if (!AuthLdap::getNumberOfServers()) {
          $input['is_default'] = 1;
       }
+
+      if (isset($input["rootdn_passwd"]) && !empty($input["rootdn_passwd"])) {
+         $input["rootdn_passwd"] = encrypt($input["rootdn_passwd"], GLPIKEY);
+      }
+
       return $input;
    }
 
