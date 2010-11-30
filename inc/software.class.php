@@ -439,7 +439,8 @@ class Software extends CommonDBTM {
       $tab[72]['massiveaction'] = false;
       $tab[72]['joinparams']    = array('jointype' => 'child',
                                         'beforejoin'
-                                          => array('table'      => 'glpi_softwareversions'),
+                                          => array('table'      => 'glpi_softwareversions',
+                                                   'jointype'   => 'child'),
                                        );
 
 
@@ -456,6 +457,8 @@ class Software extends CommonDBTM {
       $tab[5]['name']          = $LANG['common'][16]." - ".$LANG['software'][5];
       $tab[5]['forcegroupby']  = true;
       $tab[5]['massiveaction'] = false;
+      $tab[5]['joinparams']    = array('jointype' => 'child');
+
 
       $tab[31]['table']         = 'glpi_states';
       $tab[31]['field']         = 'name';
@@ -469,6 +472,8 @@ class Software extends CommonDBTM {
       $tab[170]['forcegroupby']  = true;
       $tab[170]['datatype']      = 'text';
       $tab[170]['massiveaction'] = false;
+      $tab[170]['joinparams']    = array('jointype' => 'child');
+
 
       $tab[4]['table']        = 'glpi_operatingsystems';
       $tab[4]['field']        = 'name';
