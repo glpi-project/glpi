@@ -223,8 +223,14 @@ class TicketFollowup  extends CommonDBTM {
 //      $input["_isadmin"] = haveRight("global_add_followups","1");
       $input["_job"] = new Ticket;
 
-      // check rights made in front like all objects
-      if (!$input["_job"]->getFromDB($input["tickets_id"])) {
+      if ($input["_job"]->getFromDB($input["tickets_id"])) {
+         // Security to add unusers_idized followups
+         if (!isset($input['_do_not_check_users_id'])
+             && $input["_job"]->fields["users_id"]!=getLoginUserID()
+             && !$input["_job"]->canAddFollowups()) {
+            return false;
+         }
+      } else {
          return false;
       }
 
@@ -237,10 +243,12 @@ class TicketFollowup  extends CommonDBTM {
          }
       }
 
+
+
       // Pass old assign From Ticket in case of assign change
-      if (isset($input["_old_assign"])) {
-         $input["_job"]->fields["_old_assign"] = $input["_old_assign"];
-      }
+//       if (isset($input["_old_assign"])) {
+//          $input["_job"]->fields["_old_assign"] = $input["_old_assign"];
+//       }
 
 //      if (!isset($input["type"])) {
 //         $input["type"] = "followup";
