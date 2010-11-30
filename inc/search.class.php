@@ -3004,11 +3004,11 @@ class Search {
                $specific_leftjoin =  $out."
                      LEFT JOIN `$new_table` $AS ON (`glpi_infocoms`.`budgets_id` = `$nt`.`id`) ";
 
-            case "glpi_cartridges" :
-               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`cartridgeitems_id` ) ";
-
-            case "glpi_consumables" :
-               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`consumableitems_id` ) ";
+//             case "glpi_cartridges" :
+//                $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`cartridgeitems_id` ) ";
+// 
+//             case "glpi_consumables" :
+//                $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`consumableitems_id` ) ";
 
             case "glpi_infocoms" :
                if ($itemtype == 'Software') {
@@ -3038,20 +3038,20 @@ class Search {
                $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
                                                       AND `$nt`.`itemtype` = '$itemtype') ";
 
-            case "glpi_states" :
-               if ($itemtype == 'Software') {
-                  // Return the state of the version of the software
-                  $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                             "glpi_softwareversions", $linkfield, $meta, $meta_type);
-                  $specific_leftjoin =  $out."
-                        LEFT JOIN `$new_table` $AS
-                           ON (`glpi_softwareversions`.`states_id` = `$nt`.`id`)";
-               }
-               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`states_id` = `$nt`.`id`) ";
+//             case "glpi_states" :
+//                if ($itemtype == 'Software') {
+//                   // Return the state of the version of the software
+//                   $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+//                                              "glpi_softwareversions", $linkfield, $meta, $meta_type);
+//                   $specific_leftjoin =  $out."
+//                         LEFT JOIN `$new_table` $AS
+//                            ON (`glpi_softwareversions`.`states_id` = `$nt`.`id`)";
+//                }
+//                $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`states_id` = `$nt`.`id`) ";
 
    //          case "glpi_profiles_users" :
-            case "glpi_groups_users" :
-               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`users_id`) ";
+//             case "glpi_groups_users" :
+//                $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`users_id`) ";
 
    //          case "glpi_profiles" :
    //             // Link to glpi_profiles_users before
