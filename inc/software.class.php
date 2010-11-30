@@ -437,6 +437,11 @@ class Software extends CommonDBTM {
       $tab[72]['datatype']      = 'number';
       $tab[72]['nometa']        = true;
       $tab[72]['massiveaction'] = false;
+      $tab[72]['joinparams']    = array('jointype' => 'child',
+                                        'beforejoin'
+                                          => array('table'      => 'glpi_softwareversions'),
+                                       );
+
 
       $tab[86]['table']         = $this->getTable();
       $tab[86]['field']         = 'is_recursive';

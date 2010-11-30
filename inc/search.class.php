@@ -3128,12 +3128,12 @@ class Search {
 //          case "glpi_documents_items" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`documents_id`) ";
 
-         case "glpi_computers_softwareversions" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwareversions",
-                                       $linkfield, $meta, $meta_type);
-            return $out."
-                   LEFT JOIN `$new_table` $AS
-                     ON (`glpi_softwareversions$addmetanum`.`id` = `$nt`.`softwareversions_id`) ";
+//          case "glpi_computers_softwareversions" :
+//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwareversions",
+//                                        $linkfield, $meta, $meta_type);
+//             return $out."
+//                    LEFT JOIN `$new_table` $AS
+//                      ON (`glpi_softwareversions$addmetanum`.`id` = `$nt`.`softwareversions_id`) ";
 
 //          case "glpi_computers_devicecases" :
 //          case "glpi_computers_devicecontrols" :
@@ -3241,7 +3241,7 @@ class Search {
                      // Child join
                      return $before."
                             LEFT JOIN `$new_table` $AS
-                                 ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($ref_table)."`
+                                 ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($rt)."`
                                                   $addcondition)";
 
                   case "itemtype_item" :
