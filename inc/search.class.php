@@ -2798,382 +2798,382 @@ class Search {
 
 //       echo "DONE<br>";
 
+      $specific_leftjoin = '';
+
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_addLeftJoin';
          if (function_exists($function)) {
-            $out = $function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
-            if (!empty($out)) {
-               return $out;
-            }
+            $specific_leftjoin = $function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
          }
       }
 
-      $specific_leftjoin = '';
-      switch ($new_table) {
-         // No link
-         case "glpi_auth_tables" :
-               $specific_leftjoin = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
-                                          'auths_id', 0, 0,
-                                          array('condition' => "REFTABLE.`authtype` = ".Auth::LDAP));
-               $specific_leftjoin .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
-                                           'auths_id', 0, 0,
-                                           array('condition' => "REFTABLE.`authtype` = ".Auth::MAIL));
-               break;
-//          case "glpi_authldaps" :
-//             if ($itemtype=='Entity') {
-//                return " LEFT JOIN `glpi_authldaps` $AS
-//                            ON (`glpi_entitydatas`.`ldapservers_id` = `$nt`.`id`)";
-//             }
-//             if ($itemtype=='User') {
-//                return " LEFT JOIN `glpi_authldaps`
-//                            ON (`glpi_users`.`authtype` = ".Auth::LDAP."
-//                                AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)";
-//             }
-//             break;
+      if (empty($specific_leftjoin)) {
+         switch ($new_table) {
+            // No link
+            case "glpi_auth_tables" :
+                  $specific_leftjoin = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
+                                             'auths_id', 0, 0,
+                                             array('condition' => "REFTABLE.`authtype` = ".Auth::LDAP));
+                  $specific_leftjoin .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
+                                             'auths_id', 0, 0,
+                                             array('condition' => "REFTABLE.`authtype` = ".Auth::MAIL));
+                  break;
+   //          case "glpi_authldaps" :
+   //             if ($itemtype=='Entity') {
+   //                return " LEFT JOIN `glpi_authldaps` $AS
+   //                            ON (`glpi_entitydatas`.`ldapservers_id` = `$nt`.`id`)";
+   //             }
+   //             if ($itemtype=='User') {
+   //                return " LEFT JOIN `glpi_authldaps`
+   //                            ON (`glpi_users`.`authtype` = ".Auth::LDAP."
+   //                                AND `glpi_users`.`auths_id` = `glpi_authldaps`.`id`)";
+   //             }
+   //             break;
 
-//          case "glpi_authmails" :
-//             if ($itemtype=='User') {
-//                return " LEFT JOIN `glpi_authmails`
-//                            ON (`glpi_users`.`authtype` = ".Auth::MAIL."
-//                                AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
-//             }
-//             break;
+   //          case "glpi_authmails" :
+   //             if ($itemtype=='User') {
+   //                return " LEFT JOIN `glpi_authmails`
+   //                            ON (`glpi_users`.`authtype` = ".Auth::MAIL."
+   //                                AND `glpi_users`.`auths_id` = `glpi_authmails`.`id`)";
+   //             }
+   //             break;
 
-//          case "glpi_printermodels" :
-//             if ($itemtype=='CartridgeItem') {
-//                return " LEFT JOIN `glpi_cartridgeitems_printermodels`
-//                            ON (`glpi_cartridgeitems_printermodels`.`cartridgeitems_id` = `$rt`.`id`)
-//                         LEFT JOIN `$new_table` $AS
-//                            ON (`glpi_cartridgeitems_printermodels`.`printermodels_id` = `$nt`.`id`) ";
-//             }
+   //          case "glpi_printermodels" :
+   //             if ($itemtype=='CartridgeItem') {
+   //                return " LEFT JOIN `glpi_cartridgeitems_printermodels`
+   //                            ON (`glpi_cartridgeitems_printermodels`.`cartridgeitems_id` = `$rt`.`id`)
+   //                         LEFT JOIN `$new_table` $AS
+   //                            ON (`glpi_cartridgeitems_printermodels`.`printermodels_id` = `$nt`.`id`) ";
+   //             }
 
-//          case "glpi_operatingsystems" :
-/*            if ($itemtype=='Software') {
-               return " LEFT JOIN `glpi_operatingsystems`
-                           ON (`glpi_softwareversions`.`operatingsystems_id`
-                                 = `glpi_operatingsystems`.`id`)";
-            }*/
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+   //          case "glpi_operatingsystems" :
+   /*            if ($itemtype=='Software') {
+                  return " LEFT JOIN `glpi_operatingsystems`
+                              ON (`glpi_softwareversions`.`operatingsystems_id`
+                                    = `glpi_operatingsystems`.`id`)";
+               }*/
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-//          case "glpi_reservationitems" :
-//             return "";
+   //          case "glpi_reservationitems" :
+   //             return "";
 
-//          case "glpi_filesystems" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_computerdisks",
-//                                        'computerdisks_id');
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_computerdisks`.`filesystems_id` = `$nt`.`id`) ";
+   //          case "glpi_filesystems" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_computerdisks",
+   //                                        'computerdisks_id');
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_computerdisks`.`filesystems_id` = `$nt`.`id`) ";
 
-//          case "glpi_entitydatas" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
+   //          case "glpi_entitydatas" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`entities_id`) ";
 
-//          case "glpi_mailcollectors" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`mailcollectors_id` = `$nt`.`id`) ";
+   //          case "glpi_mailcollectors" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`mailcollectors_id` = `$nt`.`id`) ";
 
-//          case "glpi_ocslinks" :
-//          case "glpi_registrykeys":
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
+   //          case "glpi_ocslinks" :
+   //          case "glpi_registrykeys":
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`computers_id`) ";
 
-//          case "glpi_operatingsystems" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`operatingsystems_id` = `$nt`.`id`) ";
+   //          case "glpi_operatingsystems" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`operatingsystems_id` = `$nt`.`id`) ";
 
-//          case "glpi_locations" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`locations_id` = `$nt`.`id`) ";
+   //          case "glpi_locations" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`locations_id` = `$nt`.`id`) ";
 
-//          case "glpi_vlans" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
-//                                        'networkports_id',0,0,array('jointype'=>'itemtype_item'));
-//             return $out."
-//                    LEFT JOIN `glpi_networkports_vlans`
-//                      ON (`glpi_networkports_vlans`.`networkports_id` = `glpi_networkports`.`id`)
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_networkports_vlans`.`vlans_id` = `$nt`.`id`) ";
+   //          case "glpi_vlans" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
+   //                                        'networkports_id',0,0,array('jointype'=>'itemtype_item'));
+   //             return $out."
+   //                    LEFT JOIN `glpi_networkports_vlans`
+   //                      ON (`glpi_networkports_vlans`.`networkports_id` = `glpi_networkports`.`id`)
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_networkports_vlans`.`vlans_id` = `$nt`.`id`) ";
 
-//          case "glpi_networkinterfaces" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
-//                                        $linkfield);
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_networkports`.`networkinterfaces_id` = `$nt`.`id`) ";
+   //          case "glpi_networkinterfaces" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
+   //                                        $linkfield);
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_networkports`.`networkinterfaces_id` = `$nt`.`id`) ";
 
-//          case "glpi_networkports" :
-//             $out = "";
-//             // Add networking device for computers
-//             if ($itemtype == 'Computer') {
-//                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-//                                           "glpi_computers_devicenetworkcards",
-//                                           'computers_devicenetworkcards_id', $meta, $meta_type);
-//             }
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
-//                                                   AND `$nt`.`itemtype` = '$itemtype') ";
+   //          case "glpi_networkports" :
+   //             $out = "";
+   //             // Add networking device for computers
+   //             if ($itemtype == 'Computer') {
+   //                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+   //                                           "glpi_computers_devicenetworkcards",
+   //                                           'computers_devicenetworkcards_id', $meta, $meta_type);
+   //             }
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
+   //                                                   AND `$nt`.`itemtype` = '$itemtype') ";
 
-/*         case "glpi_netpoints" :
-            // Link to glpi_networkports before
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
-                                       $linkfield);
-            return $out."
-                   LEFT JOIN `$new_table` $AS ON (`glpi_networkports`.`netpoints_id` = `$nt`.`id`) ";*/
-/*
-         case "glpi_ticketfollowups" :
-            return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";*/
-
-//          case "glpi_followup_requesttypes" :
-//             // Link to glpi_ticketfollowups before
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_ticketfollowups",
-//                                        $linkfield);
-//             return $out." LEFT JOIN `glpi_requesttypes` AS glpi_followup_requesttypes
-//                            ON (`glpi_followup_requesttypes`.`id`
-//                                  =`glpi_ticketfollowups`.`requesttypes_id`)";
-
-//          case "glpi_taskcategories" :
-//             // Link to glpi_tickettasks before
-//             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickettasks",$linkfield);
-//             return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
-//                           =`glpi_tickettasks`.`taskcategories_id`)";
-
-//          case "glpi_ticketvalidations" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_tickets",
-//                                        $linkfield);
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
-
-//          case "glpi_tickets" :
-//             if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
-//                return " LEFT JOIN `$new_table` $AS
-//                            ON (`$rt`.`id` = `$nt`.`items_id`
-//                                AND `$nt`.`itemtype` = '$itemtype' ".
-//                                getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
-//             } else {
-//                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
-//             }
-
-//          case "glpi_ticketsatisfactions" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
-
-//          case "glpi_contracts_items" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
-//                                                     AND `$nt`.`itemtype` = '$itemtype') ";
-
-//          case "glpi_users" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
-
-//          case "glpi_users_validation" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-//                                        "glpi_ticketvalidations", 'ticketvalidations_id');
-//             return $out."
-//                    LEFT JOIN `glpi_users` $AS
-//                      ON (`glpi_ticketvalidations`.`$linkfield` = `$nt`.`id`) ";
-
-//          case "glpi_suppliers" :
-//             if ($itemtype == 'Contact') {
-//                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-//                                           "glpi_contacts_suppliers", "contacts_id");
-//                return $out."
-//                       LEFT JOIN `$new_table` $AS
-//                         ON (`glpi_contacts_suppliers`.`suppliers_id` = `$nt`.`id` ".
-//                             getEntitiesRestrictRequest("AND", "glpi_suppliers", '', '', true).") ";
-//             }
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
-
-//          case "glpi_contacts" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-//                                        "glpi_contacts_suppliers", "suppliers_id");
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_contacts_suppliers`.`contacts_id` = `$nt`.`id` ".
-//                          getEntitiesRestrictRequest("AND", "glpi_contacts", '', '', true)." ) ";
-//
-//          case "glpi_contacts_suppliers" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`$linkfield`) ";
-
-//          case "glpi_manufacturers" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`manufacturers_id` = `$nt`.`id`) ";
-
-         case "glpi_suppliers_infocoms" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_infocoms",
-                                       $linkfield);
-            $specific_leftjoin = $out."
-                   LEFT JOIN `glpi_suppliers` AS glpi_suppliers_infocoms
-                     ON (`glpi_infocoms`.`suppliers_id` = `$nt`.`id`) ";
-
-         case "glpi_budgets" :
-            $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_infocoms",
-                                       'infocoms_id');
-            $specific_leftjoin =  $out."
-                   LEFT JOIN `$new_table` $AS ON (`glpi_infocoms`.`budgets_id` = `$nt`.`id`) ";
-
-         case "glpi_cartridges" :
-            $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`cartridgeitems_id` ) ";
-
-         case "glpi_consumables" :
-            $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`consumableitems_id` ) ";
-
-         case "glpi_infocoms" :
-            if ($itemtype == 'Software') {
-               // Return the infocom linked to the license, not the template linked to the software
-               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                          "glpi_softwarelicenses", $linkfield);
-               $specific_leftjoin =  $out."
-                      LEFT JOIN `$new_table` $AS ON (`glpi_softwarelicenses`.`id` = `$nt`.`items_id`
-                                                     AND `$nt`.`itemtype` = 'SoftwareLicense') ";
-            }
-            if ($itemtype == 'CartridgeItem') {
-               // Return the infocom linked to the Cartridge, not the template linked to the Type
-               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_cartridges",
+   /*         case "glpi_netpoints" :
+               // Link to glpi_networkports before
+               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_networkports",
                                           $linkfield);
-               $specific_leftjoin =  $out."
-                      LEFT JOIN `$new_table` $AS ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
-                                                     AND `$nt`.`itemtype` = 'Cartridge') ";
-            }
-            if ($itemtype == 'ConsumableItem') {
-               // Return the infocom linked to the Comsumable, not the template linked to the Type
-               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_consumables",
+               return $out."
+                     LEFT JOIN `$new_table` $AS ON (`glpi_networkports`.`netpoints_id` = `$nt`.`id`) ";*/
+   /*
+            case "glpi_ticketfollowups" :
+               return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";*/
+
+   //          case "glpi_followup_requesttypes" :
+   //             // Link to glpi_ticketfollowups before
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_ticketfollowups",
+   //                                        $linkfield);
+   //             return $out." LEFT JOIN `glpi_requesttypes` AS glpi_followup_requesttypes
+   //                            ON (`glpi_followup_requesttypes`.`id`
+   //                                  =`glpi_ticketfollowups`.`requesttypes_id`)";
+
+   //          case "glpi_taskcategories" :
+   //             // Link to glpi_tickettasks before
+   //             $out = Search::addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_tickettasks",$linkfield);
+   //             return $out ." LEFT JOIN `$new_table` $AS ON (`$nt`.`id`
+   //                           =`glpi_tickettasks`.`taskcategories_id`)";
+
+   //          case "glpi_ticketvalidations" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_tickets",
+   //                                        $linkfield);
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
+
+   //          case "glpi_tickets" :
+   //             if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
+   //                return " LEFT JOIN `$new_table` $AS
+   //                            ON (`$rt`.`id` = `$nt`.`items_id`
+   //                                AND `$nt`.`itemtype` = '$itemtype' ".
+   //                                getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
+   //             } else {
+   //                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+   //             }
+
+   //          case "glpi_ticketsatisfactions" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`tickets_id`) ";
+
+   //          case "glpi_contracts_items" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
+   //                                                     AND `$nt`.`itemtype` = '$itemtype') ";
+
+   //          case "glpi_users" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+
+   //          case "glpi_users_validation" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+   //                                        "glpi_ticketvalidations", 'ticketvalidations_id');
+   //             return $out."
+   //                    LEFT JOIN `glpi_users` $AS
+   //                      ON (`glpi_ticketvalidations`.`$linkfield` = `$nt`.`id`) ";
+
+   //          case "glpi_suppliers" :
+   //             if ($itemtype == 'Contact') {
+   //                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+   //                                           "glpi_contacts_suppliers", "contacts_id");
+   //                return $out."
+   //                       LEFT JOIN `$new_table` $AS
+   //                         ON (`glpi_contacts_suppliers`.`suppliers_id` = `$nt`.`id` ".
+   //                             getEntitiesRestrictRequest("AND", "glpi_suppliers", '', '', true).") ";
+   //             }
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+
+   //          case "glpi_contacts" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+   //                                        "glpi_contacts_suppliers", "suppliers_id");
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_contacts_suppliers`.`contacts_id` = `$nt`.`id` ".
+   //                          getEntitiesRestrictRequest("AND", "glpi_contacts", '', '', true)." ) ";
+   //
+   //          case "glpi_contacts_suppliers" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`$linkfield`) ";
+
+   //          case "glpi_manufacturers" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`manufacturers_id` = `$nt`.`id`) ";
+
+            case "glpi_suppliers_infocoms" :
+               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_infocoms",
                                           $linkfield);
+               $specific_leftjoin = $out."
+                     LEFT JOIN `glpi_suppliers` AS glpi_suppliers_infocoms
+                        ON (`glpi_infocoms`.`suppliers_id` = `$nt`.`id`) ";
+
+            case "glpi_budgets" :
+               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_infocoms",
+                                          'infocoms_id');
                $specific_leftjoin =  $out."
-                      LEFT JOIN `$new_table` $AS ON (glpi_consumables.`id` = `$nt`.`items_id`
-                                                     AND `$nt`.`itemtype` = 'Consumable') ";
-            }
-            $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
-                                                    AND `$nt`.`itemtype` = '$itemtype') ";
+                     LEFT JOIN `$new_table` $AS ON (`glpi_infocoms`.`budgets_id` = `$nt`.`id`) ";
 
-         case "glpi_states" :
-            if ($itemtype == 'Software') {
-               // Return the state of the version of the software
-               $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                          "glpi_softwareversions", $linkfield, $meta, $meta_type);
-               $specific_leftjoin =  $out."
-                      LEFT JOIN `$new_table` $AS
-                        ON (`glpi_softwareversions`.`states_id` = `$nt`.`id`)";
-            }
-            $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`states_id` = `$nt`.`id`) ";
+            case "glpi_cartridges" :
+               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`cartridgeitems_id` ) ";
 
-//          case "glpi_profiles_users" :
-         case "glpi_groups_users" :
-            $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`users_id`) ";
+            case "glpi_consumables" :
+               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`consumableitems_id` ) ";
 
-//          case "glpi_profiles" :
-//             // Link to glpi_profiles_users before
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_profiles_users",
-//                                        $linkfield);
-//             if ($itemtype == 'User') {
-//                $out .= Search::addLeftJoin($itemtype, "glpi_profiles_users", $already_link_tables,
-//                                            "glpi_complete_entities", "entities_id");
-//             }
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_profiles_users`.`profiles_id` = `$nt`.`id`) ";
+            case "glpi_infocoms" :
+               if ($itemtype == 'Software') {
+                  // Return the infocom linked to the license, not the template linked to the software
+                  $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                             "glpi_softwarelicenses", $linkfield);
+                  $specific_leftjoin =  $out."
+                        LEFT JOIN `$new_table` $AS ON (`glpi_softwarelicenses`.`id` = `$nt`.`items_id`
+                                                      AND `$nt`.`itemtype` = 'SoftwareLicense') ";
+               }
+               if ($itemtype == 'CartridgeItem') {
+                  // Return the infocom linked to the Cartridge, not the template linked to the Type
+                  $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_cartridges",
+                                             $linkfield);
+                  $specific_leftjoin =  $out."
+                        LEFT JOIN `$new_table` $AS ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
+                                                      AND `$nt`.`itemtype` = 'Cartridge') ";
+               }
+               if ($itemtype == 'ConsumableItem') {
+                  // Return the infocom linked to the Comsumable, not the template linked to the Type
+                  $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_consumables",
+                                             $linkfield);
+                  $specific_leftjoin =  $out."
+                        LEFT JOIN `$new_table` $AS ON (glpi_consumables.`id` = `$nt`.`items_id`
+                                                      AND `$nt`.`itemtype` = 'Consumable') ";
+               }
+               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`items_id`
+                                                      AND `$nt`.`itemtype` = '$itemtype') ";
 
-//          case "glpi_entities" :
-//             if ($itemtype == 'User') {
-//                $out = Search::addLeftJoin($itemtype, "glpi_profiles_users", $already_link_tables,
-//                                           "glpi_profiles","");
-//                $out.= Search::addLeftJoin($itemtype, "glpi_profiles_users", $already_link_tables,
-//                                           "glpi_complete_entities", "entities_id");
-//                return $out;
-//             }
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+            case "glpi_states" :
+               if ($itemtype == 'Software') {
+                  // Return the state of the version of the software
+                  $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                             "glpi_softwareversions", $linkfield, $meta, $meta_type);
+                  $specific_leftjoin =  $out."
+                        LEFT JOIN `$new_table` $AS
+                           ON (`glpi_softwareversions`.`states_id` = `$nt`.`id`)";
+               }
+               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`states_id` = `$nt`.`id`) ";
 
-         case "glpi_complete_entities" :
-            array_push($already_link_tables, "glpi_complete_entities");
-//            $AS = "AS $new_table";
-            $specific_leftjoin =  " LEFT JOIN (SELECT `id`, `name`, `entities_id`, `completename`, `comment`, `level`
-                                FROM `glpi_entities`
-                                UNION
-                                SELECT 0 AS id,
-                                       '".addslashes($LANG['entity'][2])."' AS name,
-                                       -1 AS entities_id,
-                                       '".addslashes($LANG['entity'][2])."' AS completename,
-                                       '' AS comment, -1 AS level) $AS
-                        ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+   //          case "glpi_profiles_users" :
+            case "glpi_groups_users" :
+               $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`users_id`) ";
 
-//          case "glpi_groups":
-//             if ($itemtype=='User') {
-//                // Link to glpi_users_group before
-//                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_groups_users",
-//                                           '', $meta, $meta_type);
-//                return $out."
-//                       LEFT JOIN `$new_table` $AS
-//                         ON (`glpi_groups_users$addmetanum`.`groups_id` = `$nt`.`id`) ";
-//             }
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+   //          case "glpi_profiles" :
+   //             // Link to glpi_profiles_users before
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_profiles_users",
+   //                                        $linkfield);
+   //             if ($itemtype == 'User') {
+   //                $out .= Search::addLeftJoin($itemtype, "glpi_profiles_users", $already_link_tables,
+   //                                            "glpi_complete_entities", "entities_id");
+   //             }
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_profiles_users`.`profiles_id` = `$nt`.`id`) ";
 
-//          case "glpi_contracts" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_contracts_items",
-//                                        $linkfield, $meta, $meta_type);
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_contracts_items$addmetanum`.`contracts_id` = `$nt`.`id`) ";
+   //          case "glpi_entities" :
+   //             if ($itemtype == 'User') {
+   //                $out = Search::addLeftJoin($itemtype, "glpi_profiles_users", $already_link_tables,
+   //                                           "glpi_profiles","");
+   //                $out.= Search::addLeftJoin($itemtype, "glpi_profiles_users", $already_link_tables,
+   //                                           "glpi_complete_entities", "entities_id");
+   //                return $out;
+   //             }
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-//          case "glpi_softwarelicensetypes" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwarelicenses",
-//                                        $linkfield, $meta, $meta_type);
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_softwarelicenses$addmetanum`.`softwarelicensetypes_id` = `$nt`.`id`)";
+            case "glpi_complete_entities" :
+               array_push($already_link_tables, "glpi_complete_entities");
+   //            $AS = "AS $new_table";
+               $specific_leftjoin =  " LEFT JOIN (SELECT `id`, `name`, `entities_id`, `completename`, `comment`, `level`
+                                 FROM `glpi_entities`
+                                 UNION
+                                 SELECT 0 AS id,
+                                          '".addslashes($LANG['entity'][2])."' AS name,
+                                          -1 AS entities_id,
+                                          '".addslashes($LANG['entity'][2])."' AS completename,
+                                          '' AS comment, -1 AS level) $AS
+                           ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-//          case "glpi_softwarelicenses" :
-//             if (!$meta) {
-//                return " LEFT JOIN `$new_table` $AS
-//                            ON (`$rt`.`id` = `$nt`.`softwares_id` ".
-//                                getEntitiesRestrictRequest("AND", $nt, '', '', true).") ";
-//             }
-//             return "";
+   //          case "glpi_groups":
+   //             if ($itemtype=='User') {
+   //                // Link to glpi_users_group before
+   //                $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_groups_users",
+   //                                           '', $meta, $meta_type);
+   //                return $out."
+   //                       LEFT JOIN `$new_table` $AS
+   //                         ON (`glpi_groups_users$addmetanum`.`groups_id` = `$nt`.`id`) ";
+   //             }
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
 
-//          case "glpi_softwareversions" :
-//             if (!$meta) {
-//                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`softwares_id`) ";
-//             }
-//             return "";
+   //          case "glpi_contracts" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_contracts_items",
+   //                                        $linkfield, $meta, $meta_type);
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_contracts_items$addmetanum`.`contracts_id` = `$nt`.`id`) ";
 
-//          case "glpi_documents_items" :
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`documents_id`) ";
+   //          case "glpi_softwarelicensetypes" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwarelicenses",
+   //                                        $linkfield, $meta, $meta_type);
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_softwarelicenses$addmetanum`.`softwarelicensetypes_id` = `$nt`.`id`)";
 
-//          case "glpi_computers_softwareversions" :
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwareversions",
-//                                        $linkfield, $meta, $meta_type);
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`glpi_softwareversions$addmetanum`.`id` = `$nt`.`softwareversions_id`) ";
+   //          case "glpi_softwarelicenses" :
+   //             if (!$meta) {
+   //                return " LEFT JOIN `$new_table` $AS
+   //                            ON (`$rt`.`id` = `$nt`.`softwares_id` ".
+   //                                getEntitiesRestrictRequest("AND", $nt, '', '', true).") ";
+   //             }
+   //             return "";
 
-//          case "glpi_computers_devicecases" :
-//          case "glpi_computers_devicecontrols" :
-//          case "glpi_computers_devicedrives" :
-//          case "glpi_computers_devicegraphiccards" :
-//          case "glpi_computers_deviceharddrives" :
-//          case "glpi_computers_devicememories" :
-//          case "glpi_computers_devicemotherboards" :
-//          case "glpi_computers_devicenetworkcards" :
-//          case "glpi_computers_devicepcis" :
-//          case "glpi_computers_devicepowersupplies" :
-//          case "glpi_computers_deviceprocessors" :
-//          case "glpi_computers_devicesoundcards" :
-//             return " LEFT JOIN `$new_table` ON (`$rt`.`id` = `$new_table`.`computers_id`) ";
-//
-//          case "glpi_devicecases" :
-//          case "glpi_devicecontrols" :
-//          case "glpi_devicedrives" :
-//          case "glpi_devicegraphiccards" :
-//          case "glpi_deviceharddrives" :
-//          case "glpi_devicememories" :
-//          case "glpi_devicemotherboards" :
-//          case "glpi_devicenetworkcards" :
-//          case "glpi_devicepcis" :
-//          case "glpi_devicepowersupplies" :
-//          case "glpi_deviceprocessors" :
-//          case "glpi_devicesoundcards" :
-//             $linktable = str_replace('glpi_', 'glpi_computers_', $new_table);
-//             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $linktable,
-//                                        getForeignKeyFieldForTable($linktable), $meta, $meta_type);
-//             return $out."
-//                    LEFT JOIN `$new_table` $AS
-//                      ON (`$linktable`.`".getForeignKeyFieldForTable($new_table)."` = `$nt`.`id`) ";
+   //          case "glpi_softwareversions" :
+   //             if (!$meta) {
+   //                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`softwares_id`) ";
+   //             }
+   //             return "";
 
-//          case "glpi_plugins":
-//             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`directory`) ";
-      }
+   //          case "glpi_documents_items" :
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`documents_id`) ";
+
+   //          case "glpi_computers_softwareversions" :
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_softwareversions",
+   //                                        $linkfield, $meta, $meta_type);
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`glpi_softwareversions$addmetanum`.`id` = `$nt`.`softwareversions_id`) ";
+
+   //          case "glpi_computers_devicecases" :
+   //          case "glpi_computers_devicecontrols" :
+   //          case "glpi_computers_devicedrives" :
+   //          case "glpi_computers_devicegraphiccards" :
+   //          case "glpi_computers_deviceharddrives" :
+   //          case "glpi_computers_devicememories" :
+   //          case "glpi_computers_devicemotherboards" :
+   //          case "glpi_computers_devicenetworkcards" :
+   //          case "glpi_computers_devicepcis" :
+   //          case "glpi_computers_devicepowersupplies" :
+   //          case "glpi_computers_deviceprocessors" :
+   //          case "glpi_computers_devicesoundcards" :
+   //             return " LEFT JOIN `$new_table` ON (`$rt`.`id` = `$new_table`.`computers_id`) ";
+   //
+   //          case "glpi_devicecases" :
+   //          case "glpi_devicecontrols" :
+   //          case "glpi_devicedrives" :
+   //          case "glpi_devicegraphiccards" :
+   //          case "glpi_deviceharddrives" :
+   //          case "glpi_devicememories" :
+   //          case "glpi_devicemotherboards" :
+   //          case "glpi_devicenetworkcards" :
+   //          case "glpi_devicepcis" :
+   //          case "glpi_devicepowersupplies" :
+   //          case "glpi_deviceprocessors" :
+   //          case "glpi_devicesoundcards" :
+   //             $linktable = str_replace('glpi_', 'glpi_computers_', $new_table);
+   //             $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, $linktable,
+   //                                        getForeignKeyFieldForTable($linktable), $meta, $meta_type);
+   //             return $out."
+   //                    LEFT JOIN `$new_table` $AS
+   //                      ON (`$linktable`.`".getForeignKeyFieldForTable($new_table)."` = `$nt`.`id`) ";
+
+   //          case "glpi_plugins":
+   //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`directory`) ";
+         }
+   }
 
       
       // Link with plugin tables : need to know left join structure
@@ -3182,11 +3182,8 @@ class Search {
          if (count($matches)==2) {
             $function = 'plugin_'.$matches[1].'_addLeftJoin';
             if (function_exists($function)) {
-               $out = $function($itemtype, $ref_table, $new_table, $linkfield,
+               $specific_leftjoin = $function($itemtype, $ref_table, $new_table, $linkfield,
                                  $already_link_tables);
-               if (!empty($out)) {
-                  return $out;
-               }
             }
          }
       }
