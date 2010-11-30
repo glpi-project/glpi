@@ -132,6 +132,20 @@ class Ticket extends CommonDBTM {
              );
    }
 
+   /**
+    * Is the current user have right to approve solution of the current ticket ?
+    *
+    * @return boolean
+   **/
+   function canApprove() {
+
+      return ($this->fields["status"] == 'solved'
+              && ($this->fields["users_id_recipient"] === getLoginUserID()
+                  || $this->isUser(self::REQUESTER,getLoginUserID())
+                  || (isset($_SESSION["glpigroups"])
+                      && $this->haveAGroup(self::REQUESTER,$_SESSION["glpigroups"]))));
+   }
+
 
    /**
     * Is a user linked to the ticket ?
@@ -833,14 +847,14 @@ class Ticket extends CommonDBTM {
          unset($this->oldvalues['solvedate']);
       }
 
-      if (in_array("users_id",$this->updates)) {
+/*      if (in_array("users_id",$this->updates)) {
          $user = new User;
          $user->getFromDB($this->input["users_id"]);
          if (!empty($user->fields["email"])) {
             $this->updates[] = "user_email";
             $this->fields["user_email"] = $user->fields["email"];
          }
-      }
+      }*/
       if (($key=array_search('status',$this->updates)) !== false
           && $this->oldvalues['status'] == $this->fields['status']) {
          unset($this->updates[$key]);
@@ -1151,8 +1165,8 @@ class Ticket extends CommonDBTM {
       // No Auto set Import for external source
       if (($uid=getLoginUserID()) && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
-      } else if ($input["users_id"]) {
-         $input["users_id_recipient"] = $input["users_id"];
+      } else if ($input["_users_id_requester"]) {
+         $input["users_id_recipient"] = $input["_users_id_requester"];
       }
 
       if (!isset($input["requesttypes_id"])) {
@@ -1520,8 +1534,6 @@ class Ticket extends CommonDBTM {
 
       // Processing Email
       if ($CFG_GLPI["use_mailing"]) {
-         $user = new User();
-         $user->getFromDB($this->input["users_id"]);
          // Clean reload of the ticket
          $this->getFromDB($this->fields['id']);
 
@@ -5925,19 +5937,6 @@ class Ticket extends CommonDBTM {
    }
 
 
-   /**
-    * Is the current user have right to approve solution of the current ticket ?
-    *
-    * @return boolean
-   **/
-   function canApprove() {
-
-      return ($this->fields["status"] == 'solved'
-              && ($this->fields["users_id_recipient"] === getLoginUserID()
-                  || $this->fields["users_id"] === getLoginUserID()
-                  || (isset($_SESSION["glpigroups"])
-                      && in_array($this->fields["groups_id"],$_SESSION['glpigroups']))));
-   }
 
 
    /**
