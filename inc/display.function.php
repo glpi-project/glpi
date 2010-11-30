@@ -373,7 +373,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="") {
       $menu['financial']['content']['budget']['shortcut']='n';
       $menu['financial']['content']['budget']['page']='/front/budget.php';
       $menu['financial']['content']['budget']['links']['search']='/front/budget.php';
-      if (haveRight("contract","w")) {
+      if (haveRight("budget","w")) {
          $menu['financial']['content']['budget']['links']['add']='/front/setup.templates.php?'.
             'itemtype=Budget&amp;add=1';
          $menu['financial']['content']['budget']['links']['template']='/front/setup.templates.php?'.
