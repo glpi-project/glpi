@@ -2313,7 +2313,7 @@ function generate_entity($ID_entity) {
 
             // Add current cartridges
             $query = "INSERT INTO `glpi_cartridges`
-                      VALUES (NULL, '$entID', '$ctypeID', '$printID', '".date("Y-m-d",$date1)."',
+                      VALUES (NULL, '$ID_entity', '$ctypeID', '$printID', '".date("Y-m-d",$date1)."',
                               '".date("Y-m-d",$date2)."', NULL, '0')";
             $DB->query($query) or die("PB REQUETE ".$query);
          }
