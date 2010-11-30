@@ -73,15 +73,16 @@ class SlaLevel extends RuleTicket {
       // Override in order not to use glpi_rules table.
 
       // Delete a rule and all associated criterias and actions
-/*      $sql = "DELETE
-              FROM `glpi_ruleactions`
+      $sql = "DELETE
+              FROM `glpi_slalevelactions`
               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
       $DB->query($sql);
 
       $sql = "DELETE
-              FROM `glpi_rulecriterias`
+              FROM `glpi_slalevels_tickets`
               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
-      $DB->query($sql);*/
+      $DB->query($sql);
+
    }
 
    function showForSLA(SLA $sla) {

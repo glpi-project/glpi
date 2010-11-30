@@ -1558,7 +1558,7 @@ class Rule extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $p['sub_type']        = '';
-      $p['name']            = $this->rules_id_field;
+      $p['name']            = 'rules_id';
       $p['entity_restrict'] = '';
 
       if (is_array($options) && count($options)) {

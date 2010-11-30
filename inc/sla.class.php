@@ -74,6 +74,38 @@ class SLA extends CommonDBTM {
       $this->fields['resolution_time'] = DAY_TIMESTAMP;
    }
 
+   function cleanDBonPurge() {
+      global $DB;
+
+
+      // Clean sla_levels
+      $query = "SELECT `id`
+                FROM `glpi_slalevels`
+                WHERE `slas_id` = '".$this->fields['id']."'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $slalevel = new SlaLevel();
+            while ($data = $DB->fetch_array($result)) {
+               $slalevel->delete($data);
+            }
+         }
+      }
+
+      // Update tickets : clean SLA
+      $query = "SELECT `id`
+                FROM `glpi_tickets`
+                WHERE `slas_id` = '".$this->fields['id']."'";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $ticket = new Ticket();
+            while ($data = $DB->fetch_array($result)) {
+               $ticket->deleteSLA($data['id']);
+            }
+         }
+      }
+      
+   }
 
    /**
     * Print the sla form

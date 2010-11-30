@@ -293,6 +293,23 @@ class Ticket extends CommonDBTM {
    }
 
 
+
+   /**
+    * Delete SLA for the ticket
+    *
+    * @param $id ID of the ticket
+    *
+    * @return boolean
+   **/
+   function deleteSLA($id) {
+
+      $input['slas_id']               = 0;
+      $input['slalevels_id']          = 0;
+      $input['sla_wainting_duration'] = 0;
+      $input['id']                    = $id;
+      return $this->update($input);
+   }
+
    /**
     * Is the current user have right to create the current ticket ?
     *
