@@ -295,7 +295,7 @@ class MailCollector  extends CommonDBTM {
                      $tkt = array();
                      $tkt = $this->buildTicket($i, array('mailcollectors_id' => $mailcollector_id,
                                                          'play_rules'        => false));
-                     $tkt['users_id'] = $rejected[$head['message_id']]['users_id'];
+                     $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
                      $tkt['entities_id'] = $entity;
                      $ticket->add($tkt);
                   }
@@ -362,7 +362,7 @@ class MailCollector  extends CommonDBTM {
                $delete_mail = false;
 
                //If entity assigned, or email refused by rule, or no user associated with the email
-               $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"] ||$tkt['users_id'] > 0);
+               $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"] ||$tkt['_users_id_requester'] > 0);
 
                // entities_id set when new ticket / tickets_id when new followup
                if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
@@ -416,14 +416,14 @@ class MailCollector  extends CommonDBTM {
                   $input['from']              = $tkt['_head']['from'];
                   $input['to']                = $tkt['_head']['to'];
 
-                  if (!$tkt['users_id']) {
+                  if (!$tkt['_users_id_requester']) {
                      $input['reason'] = NotImportedEmail::USER_UNKNOWN;
 
                   } else {
                      $input['reason'] = NotImportedEmail::MATCH_NO_RULE;
                   }
 
-                  $input['users_id']  = $tkt['users_id'];
+                  $input['users_id']  = $tkt['_users_id_requester'];
                   $input['subject']   = $this->textCleaner($tkt['_head']['subject']);
                   $input['messageid'] = $tkt['_head']['message_id'];
                   $input['date']      = $_SESSION["glpi_currenttime"];
@@ -492,8 +492,24 @@ class MailCollector  extends CommonDBTM {
          }
       }
       //  Who is the user ?
-      $tkt['users_id'] = User::getOrImportByEmail($head['from']);
-//      print_r($head);exit();
+      $tkt['_users_id_requester'] = User::getOrImportByEmail($head['from']);
+
+      // Add to and cc as additional observer if user found
+      if (count($head['ccs'])) {
+         foreach ($head['ccs'] as $cc) {
+            if ($cc != $head['from'] && ($tmp=User::getOrImportByEmail($cc))>0) {
+               $tkt['_additional_observers'][]=$tmp;
+            }
+         }
+      }
+      if (count($head['tos'])) {
+         foreach ($head['tos'] as $to) {
+            if ($to != $head['from'] && ($tmp=User::getOrImportByEmail($to))>0) {
+               $tkt['_additional_observers'][]=$tmp;
+            }
+         }
+      }
+//      printCleanArray($tkt);exit();
       // Auto_import
       $tkt['_auto_import'] = 1;
       // For followup : do not check users_id = login user
@@ -548,7 +564,7 @@ class MailCollector  extends CommonDBTM {
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
              && $job->fields['status'] != 'closed'
-             && ($tkt['users_id'] > 0 || !strcasecmp($job->fields['user_email'], $head['from']))) {
+             && ($tkt['_users_id_requester'] > 0 || !strcasecmp($job->fields['user_email'], $head['from']))) {
 
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
@@ -586,9 +602,6 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (! isset($tkt['tickets_id'])) {
-         // Mail followup
-         $tkt['user_email'] = $head['from'];
-         $tkt['use_email_notification'] = 1;
          // Which entity ?
          //$tkt['entities_id']=$this->fields['entities_id'];
          //$tkt['Subject']= $head['subject'];   // not use for the moment
@@ -608,10 +621,11 @@ class MailCollector  extends CommonDBTM {
       $tkt['content']         = clean_cross_side_scripting_deep(html_clean($tkt['content']));
 
       if ($play_rules) {
-         $rule_options['ticket']        = $tkt;
-         $rule_options['headers']       = $head;
-         $rule_options['mailcollector'] = $options['mailgates_id'];
-         $rule_options['users_id']      = $tkt['users_id'];
+         $rule_options['ticket']              = $tkt;
+         $rule_options['from']                = $head['from'];
+         $rule_options['headers']             = $head;
+         $rule_options['mailcollector']       = $options['mailgates_id'];
+         $rule_options['_users_id_requester'] = $tkt['_users_id_requester'];
          $rulecollection = new RuleMailCollectorCollection();
          $output         = $rulecollection->processAllRules(array(), array(), $rule_options);
 
@@ -758,14 +772,33 @@ class MailCollector  extends CommonDBTM {
 
       $mail_header = imap_header($this->marubox, $mid);
       $sender      = $mail_header->from[0];
+      $to          = $mail_header->to[0];
+
+      $mail_details=array();
 
       if (utf8_strtolower($sender->mailbox)!='mailer-daemon'
           && utf8_strtolower($sender->mailbox)!='postmaster') {
 
+         // Construct to and cc arrays
+         $tos=array();
+         $ccs=array();
+         if (count($mail_header->to)) {
+            foreach ($mail_header->to as $data) {
+               $tos[] = utf8_strtolower($data->mailbox).'@'.$data->host;
+            }
+         }
+         if (count($mail_header->cc)) {
+            foreach ($mail_header->cc as $data) {
+               $ccs[] = utf8_strtolower($data->mailbox).'@'.$data->host;
+            }
+         }
+
          $mail_details = array('from'       => utf8_strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
-                               'to'         => $mail_header->toaddress,
-                               'message_id' => $mail_header->message_id);
+                               'to'         => utf8_strtolower($to->mailbox).'@'.$to->host,
+                               'message_id' => $mail_header->message_id,
+                               'tos'        => $tos,
+                               'ccs'        => $ccs,);
 
          if (isset($mail_header->references)) {
             $mail_details['references'] = $mail_header->references;
