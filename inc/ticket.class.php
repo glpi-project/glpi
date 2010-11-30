@@ -3211,7 +3211,23 @@ class Ticket extends CommonDBTM {
          $showgrouplink = 1;
       }
 
-      $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'>";
+      $icontitle = $LANG['common'][35];
+      switch ($type) {
+         case self::REQUESTER :
+            $icontitle = $LANG['setup'][249];
+            break;
+
+         case self::OBSERVER :
+            $icontitle = $LANG['setup'][251];
+            break;
+
+         case self::ASSIGN :
+            $icontitle = $LANG['setup'][248];
+            break;
+      }
+
+      $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png' alt=\"$icontitle\"
+                     title=\"$icontitle\" >";
       $group = new Group();
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $k => $d) {
@@ -3249,7 +3265,22 @@ class Ticket extends CommonDBTM {
          $showuserlink = 2;
       }
 
-      $usericon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
+      $icontitle = $LANG['common'][34].' - '.$type;
+      switch ($type) {
+         case self::REQUESTER :
+            $icontitle = $LANG['common'][34].' - '.$LANG['job'][4];
+            break;
+
+         case self::OBSERVER :
+            $icontitle = $LANG['common'][34].' - '.$LANG['common'][104];
+            break;
+
+         case self::ASSIGN :
+            $icontitle = $LANG['job'][6];
+            break;
+      }
+      $usericon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png' alt=\"$icontitle\"
+                     title=\"$icontitle\" >";
       $user = new User;
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
@@ -3389,8 +3420,8 @@ class Ticket extends CommonDBTM {
                                          'ldap_import'   => true));
 
             if ($CFG_GLPI['use_mailing']) {
-               echo "<br><span id='notif_requester_$rand'>";
-               echo "</span>";
+               echo "<div id='notif_requester_$rand'>";
+               echo "</div>";
                $paramscomment = array('value' => '__VALUE__',
                                       'field' => "_users_id_requester_notif",
                                       'use_notification'
@@ -3470,8 +3501,8 @@ class Ticket extends CommonDBTM {
                                          'ldap_import' => true));
 
             if ($CFG_GLPI['use_mailing']) {
-               echo "<br><span id='notif_observer_$rand'>";
-               echo "</span>";
+               echo "<br><div id='notif_observer_$rand'>";
+               echo "</div>";
                $paramscomment = array('value' => '__VALUE__',
                                       'field' => "_users_id_observer_notif",
                                       'use_notification'
@@ -3540,8 +3571,8 @@ class Ticket extends CommonDBTM {
                                          'ldap_import' => true));
 
             if ($CFG_GLPI['use_mailing']) {
-               echo "<br><span id='notif_assign_$rand'>";
-               echo "</span>";
+               echo "<div id='notif_assign_$rand'>";
+               echo "</div>";
                $paramscomment = array('value' => '__VALUE__',
                                       'field' => "_users_id_assign_notif",
                                       'use_notification'
@@ -4083,7 +4114,7 @@ class Ticket extends CommonDBTM {
             echo $this->fields["name"];
          }
       }
-      echo "</th>";
+      echo "</td>";
 
 
       if ($view_linked_tickets) {
