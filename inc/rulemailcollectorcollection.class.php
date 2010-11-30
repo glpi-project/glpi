@@ -51,9 +51,9 @@ class RuleMailCollectorCollection extends RuleCollection {
    }
 
    function prepareInputDataForProcess($input,$params) {
-      $input['from'] = $params['ticket']['user_email'];
-      $input['mailcollector'] = $params['mailcollector'];
-      $input['users_id'] = $params['users_id'];
+      $input['from']                = $params['from'];
+      $input['mailcollector']       = $params['mailcollector'];
+      $input['_users_id_requester'] = $params['_users_id_requester'];
 
       $fields = $this->getFieldsToLookFor();
 
@@ -66,14 +66,14 @@ class RuleMailCollectorCollection extends RuleCollection {
 
       //Add all user's groups
       if (in_array('groups',$fields)) {
-         foreach (Group_User::getUserGroups($input['users_id']) as $group) {
+         foreach (Group_User::getUserGroups($input['_users_id_requester']) as $group) {
             $input['GROUPS'][] = $group['id'];
          }
       }
 
       //Add all user's profiles
       if (in_array('profiles',$fields)) {
-         foreach (Profile_User::getForUser($input['users_id']) as $profile) {
+         foreach (Profile_User::getForUser($input['_users_id_requester']) as $profile) {
             $input['PROFILES'][$profile['profiles_id']] = $profile['profiles_id'];
          }
       }
@@ -81,9 +81,9 @@ class RuleMailCollectorCollection extends RuleCollection {
       //If the criteria is "user has only one time the profile xxx"
       if (in_array('unique_profile',$fields)) {
          //Get all profiles
-         $profiles = Profile_User::getForUser($input['users_id']);
+         $profiles = Profile_User::getForUser($input['_users_id_requester']);
          foreach ($profiles as $profile) {
-            if (Profile_User::haveUniqueRight($input['users_id'], $profile['profiles_id'])) {
+            if (Profile_User::haveUniqueRight($input['_users_id_requester'], $profile['profiles_id'])) {
                $input['UNIQUE_PROFILE'][$profile['profiles_id']] = $profile['profiles_id'];
             }
          }
@@ -91,7 +91,7 @@ class RuleMailCollectorCollection extends RuleCollection {
 
       //Store the number of profiles of which the user belongs to
       if (in_array('one_profile',$fields)) {
-         $profiles = Profile_User::getForUser($input['users_id']);
+         $profiles = Profile_User::getForUser($input['_users_id_requester']);
          if (count($profiles) == 1) {
             $tmp = array_pop($profiles);
             $input['ONE_PROFILE'] = $tmp['profiles_id'];
