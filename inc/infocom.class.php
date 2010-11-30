@@ -889,8 +889,60 @@ class Infocom extends CommonDBTM {
 
 
 
-   static function getSearchOptionsToAdd () {
+   static function getSearchOptionsToAdd ($itemtype) {
       global $LANG;
+
+
+//                if ($itemtype == 'CartridgeItem') {
+//                   // Return the infocom linked to the Cartridge, not the template linked to the Type
+//                   $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_cartridges",
+//                                              $linkfield);
+//                   $specific_leftjoin =  $out."
+//                         LEFT JOIN `$new_table` $AS ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
+//                                                       AND `$nt`.`itemtype` = 'Cartridge') ";
+//                }
+//                if ($itemtype == 'ConsumableItem') {
+//                   // Return the infocom linked to the Comsumable, not the template linked to the Type
+//                   $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_consumables",
+//                                              $linkfield);
+//                   $specific_leftjoin =  $out."
+//                         LEFT JOIN `$new_table` $AS ON (glpi_consumables.`id` = `$nt`.`items_id`
+//                                                       AND `$nt`.`itemtype` = 'Consumable') ";
+//                }
+      $specific_itemtype = '';
+      $beforejoin = array ();
+      switch ($itemtype) {
+         case 'Software' :
+            // Return the infocom linked to the license, not the template linked to the software
+            $beforejoin = array('table' => 'glpi_softwarelicenses',
+                              'joinparams' => array('jointype' => 'child'));
+            $specific_itemtype = 'SoftwareLicense';
+            break;
+         case 'CartridgeItem' :
+            // Return the infocom linked to the license, not the template linked to the software
+            $beforejoin = array('table' => 'glpi_cartridges',
+                              'joinparams' => array('jointype' => 'child'));
+            $specific_itemtype = 'Cartridge';
+            break;
+         case 'ConsumableItem' :
+            // Return the infocom linked to the license, not the template linked to the software
+            $beforejoin = array('table' => 'glpi_consumables',
+                              'joinparams' => array('jointype' => 'child'));
+            $specific_itemtype = 'Consumable';
+            break;
+
+      }
+
+      $joinparams = array('jointype'          => 'itemtype_item',
+                          'specific_itemtype' => $specific_itemtype);
+      $complexjoinparams = array();
+      if (count($beforejoin)) {
+         $complexjoinparams['beforejoin'][] = $beforejoin;
+         $joinparams['beforejoin'] = $beforejoin;
+      }
+      $complexjoinparams['beforejoin'][] = array('table' => 'glpi_infocoms',
+                                                 'joinparams'
+                                                         => $joinparams);
 
       $tab=array();
 
@@ -900,67 +952,79 @@ class Infocom extends CommonDBTM {
       $tab[25]['field']        = 'immo_number';
       $tab[25]['name']         = $LANG['financial'][20];
       $tab[25]['forcegroupby'] = true;
+      $tab[25]['joinparams']   = $joinparams;
 
       $tab[26]['table']        = 'glpi_infocoms';
       $tab[26]['field']        = 'order_number';
       $tab[26]['name']         = $LANG['financial'][18];
       $tab[26]['forcegroupby'] = true;
+      $tab[26]['joinparams']   = $joinparams;
 
       $tab[27]['table']        = 'glpi_infocoms';
       $tab[27]['field']        = 'delivery_number';
       $tab[27]['name']         = $LANG['financial'][19];
       $tab[27]['forcegroupby'] = true;
+      $tab[27]['joinparams']   = $joinparams;
 
       $tab[28]['table']        = 'glpi_infocoms';
       $tab[28]['field']        = 'bill';
       $tab[28]['name']         = $LANG['financial'][82];
       $tab[28]['forcegroupby'] = true;
+      $tab[28]['joinparams']   = $joinparams;
 
       $tab[37]['table']        = 'glpi_infocoms';
       $tab[37]['field']        = 'buy_date';
       $tab[37]['name']         = $LANG['financial'][14];
       $tab[37]['datatype']     = 'date';
       $tab[37]['forcegroupby'] = true;
+      $tab[37]['joinparams']   = $joinparams;
 
       $tab[38]['table']        = 'glpi_infocoms';
       $tab[38]['field']        = 'use_date';
       $tab[38]['name']         = $LANG['financial'][76];
       $tab[38]['datatype']     = 'date';
       $tab[38]['forcegroupby'] = true;
+      $tab[38]['joinparams']   = $joinparams;
 
       $tab[121]['table']        = 'glpi_infocoms';
       $tab[121]['field']        = 'delivery_date';
       $tab[121]['name']         = $LANG['financial'][27];
       $tab[121]['datatype']     = 'date';
       $tab[121]['forcegroupby'] = true;
+      $tab[121]['joinparams']   = $joinparams;
 
-      $tab[122]['table']        = 'glpi_infocoms';
-      $tab[122]['field']        = 'order_date';
-      $tab[122]['name']         = $LANG['financial'][28];
-      $tab[122]['datatype']     = 'date';
-      $tab[122]['forcegroupby'] = true;
+      $tab[124]['table']        = 'glpi_infocoms';
+      $tab[124]['field']        = 'order_date';
+      $tab[124]['name']         = $LANG['financial'][28];
+      $tab[124]['datatype']     = 'date';
+      $tab[124]['forcegroupby'] = true;
+      $tab[124]['joinparams']   = $joinparams;
 
       $tab[123]['table']        = 'glpi_infocoms';
       $tab[123]['field']        = 'warranty_date';
       $tab[123]['name']         = $LANG['financial'][29];
       $tab[123]['datatype']     = 'date';
       $tab[123]['forcegroupby'] = true;
+      $tab[123]['joinparams']   = $joinparams;
+
 
       $tab[50]['table']        = 'glpi_budgets';
       $tab[50]['field']        = 'name';
-      $tab[50]['linkfield']    = 'budgets_id';
       $tab[50]['name']         = $LANG['financial'][87];
       $tab[50]['forcegroupby'] = true;
+      $tab[50]['joinparams']   = $complexjoinparams;
 
       $tab[51]['table']        = 'glpi_infocoms';
       $tab[51]['field']        = 'warranty_duration';
       $tab[51]['name']         = $LANG['financial'][15];
       $tab[51]['forcegroupby'] = true;
+      $tab[51]['joinparams']   = $joinparams;
 
       $tab[52]['table']        = 'glpi_infocoms';
       $tab[52]['field']        = 'warranty_info';
       $tab[52]['name']         = $LANG['financial'][16];
       $tab[52]['forcegroupby'] = true;
+      $tab[52]['joinparams']   = $joinparams;
 
       $tab[120]['table']         = 'glpi_infocoms';
       $tab[120]['field']         = 'end_warranty';
@@ -973,12 +1037,15 @@ class Infocom extends CommonDBTM {
       $tab[120]['delayunit']     = 'MONTH';
       $tab[120]['forcegroupby']  = true;
       $tab[120]['massiveaction'] = false;
+      $tab[120]['joinparams']    = $joinparams;
 
-      $tab[53]['table']        = 'glpi_suppliers_infocoms';
+
+      $tab[53]['table']        = 'glpi_suppliers';
       $tab[53]['field']        = 'name';
       $tab[53]['name']         = $LANG['financial'][26];
       $tab[53]['forcegroupby'] = true;
-      $tab[53]['realtable']    = 'glpi_suppliers';
+      $tab[53]['joinparams']   = $complexjoinparams;
+
 
       $tab[54]['table']        = 'glpi_infocoms';
       $tab[54]['field']        = 'value';
@@ -986,6 +1053,7 @@ class Infocom extends CommonDBTM {
       $tab[54]['datatype']     = 'decimal';
       $tab[54]['width']        = 100;
       $tab[54]['forcegroupby'] = true;
+      $tab[54]['joinparams']   = $joinparams;
 
       $tab[55]['table']        = 'glpi_infocoms';
       $tab[55]['field']        = 'warranty_value';
@@ -993,32 +1061,38 @@ class Infocom extends CommonDBTM {
       $tab[55]['datatype']     = 'decimal';
       $tab[55]['width']        = 100;
       $tab[55]['forcegroupby'] = true;
+      $tab[55]['joinparams']   = $joinparams;
 
       $tab[56]['table']        = 'glpi_infocoms';
       $tab[56]['field']        = 'sink_time';
       $tab[56]['name']         = $LANG['financial'][23];
       $tab[56]['forcegroupby'] = true;
+      $tab[56]['joinparams']   = $joinparams;
 
       $tab[57]['table']        = 'glpi_infocoms';
       $tab[57]['field']        = 'sink_type';
       $tab[57]['name']         = $LANG['financial'][22];
       $tab[57]['forcegroupby'] = true;
+      $tab[57]['joinparams']   = $joinparams;
 
       $tab[58]['table']        = 'glpi_infocoms';
       $tab[58]['field']        = 'sink_coeff';
       $tab[58]['name']         = $LANG['financial'][77];
       $tab[58]['forcegroupby'] = true;
+      $tab[58]['joinparams']   = $joinparams;
 
       $tab[59]['table']        = 'glpi_infocoms';
       $tab[59]['field']        = 'alert';
       $tab[59]['name']         = $LANG['common'][41];
       $tab[59]['forcegroupby'] = true;
+      $tab[59]['joinparams']   = $joinparams;
 
       $tab[122]['table']        = 'glpi_infocoms';
       $tab[122]['field']        = 'comment';
       $tab[122]['name']         = $LANG['common'][25]." - ".$LANG['financial'][3];
       $tab[122]['datatype']     = 'text';
       $tab[122]['forcegroupby'] = true;
+      $tab[122]['joinparams']   = $joinparams;
 
       return $tab;
    }
