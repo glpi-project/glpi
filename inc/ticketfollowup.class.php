@@ -196,13 +196,6 @@ class TicketFollowup  extends CommonDBTM {
       $input["_job"] = new Ticket;
 
       if ($input["_job"]->getFromDB($input["tickets_id"])) {
-         // Security to add unusers_idized followups
-         if (!isset($input['_do_not_check_users_id'])
-             && $input["_job"]->fields["users_id"]!=getLoginUserID()
-             && !$input["_job"]->canAddFollowups()) {
-            return false;
-         }
-      } else {
          return false;
       }
 
