@@ -2786,7 +2786,7 @@ class Search {
       if ($linkfield==getForeignKeyFieldForTable($new_table)) {
          $tocheck = $nt;
       }
-//       echo '->'.$tocheck.'<br>';
+      echo '->'.$tocheck.'<br>';
 
       if (in_array($tocheck,$already_link_tables)) {
          return "";
@@ -3119,11 +3119,11 @@ class Search {
             }
             return "";
 
-         case "glpi_softwareversions" :
-            if (!$meta) {
-               return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`softwares_id`) ";
-            }
-            return "";
+//          case "glpi_softwareversions" :
+//             if (!$meta) {
+//                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`softwares_id`) ";
+//             }
+//             return "";
 
 //          case "glpi_documents_items" :
 //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`documents_id`) ";
@@ -3239,6 +3239,7 @@ class Search {
                switch ($joinparams['jointype']) {
                   case 'child' :
                      // Child join
+                     echo $ref_table;
                      return $before."
                             LEFT JOIN `$new_table` $AS
                                  ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($rt)."`
@@ -3293,43 +3294,49 @@ class Search {
             switch ($to_type) {
                case 'Printer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_print_$to_type
-                              ON (`conn_print_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                  AND `conn_print_$to_type`.`itemtype` = '$to_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_printers`
-                              ON (`conn_print_$to_type`.`items_id` = `glpi_printers`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`) ";
 
                case 'Monitor' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_mon_$to_type
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                  AND `conn_mon_$to_type`.`itemtype` = '$to_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_monitors`
-                              ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
 
                case 'Peripheral' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_periph_$to_type
-                              ON (`conn_periph_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                  AND `conn_periph_$to_type`.`itemtype` = '$to_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_peripherals`
-                              ON (`conn_periph_$to_type`.`items_id` = `glpi_peripherals`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_peripherals`.`id`) ";
 
                case 'Phone' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_phones_$to_type
-                              ON (`conn_phones_$to_type`.`computers_id` = `glpi_computers`.`id`
-                                  AND `conn_phones_$to_type`.`itemtype` = '$to_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`cglpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_phones`
-                              ON (`conn_phones_$to_type`.`items_id` = `glpi_phones`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
 
                case 'Software' :
                   /// TODO: link licenses via installed software OR by affected/computers_id ???
                   array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_softwareversions` AS inst_$to_type
-                              ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id`)
+                  array_push($already_link_tables2,"glpi_softwareversions_$to_type");
+                  array_push($already_link_tables2,"glpi_softwarelicenses_$to_type");
+                  return " $LINK `glpi_computers_softwareversions` AS glpi_computers_softwareversions_$to_type
+                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id` = `glpi_computers`.`id`)
                            $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
-                              ON (`inst_$to_type`.`softwareversions_id`
+                              ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`)
                            $LINK `glpi_softwares`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
@@ -3346,11 +3353,13 @@ class Search {
             switch ($to_type) {
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_mon_$to_type
-                              ON (`conn_mon_$to_type`.`items_id` = `glpi_monitors`.`id`
-                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
             }
             break;
 
@@ -3358,11 +3367,12 @@ class Search {
             switch ($to_type) {
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_mon_$to_type
-                              ON (`conn_mon_$to_type`.`items_id` = `glpi_printers`.`id`
-                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id` ".
+                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id` ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
             }
             break;
@@ -3371,11 +3381,12 @@ class Search {
             switch ($to_type) {
                case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_mon_$to_type
-                              ON (`conn_mon_$to_type`.`items_id` = `glpi_peripherals`.`id`
-                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_peripherals`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
             }
             break;
 
@@ -3383,11 +3394,12 @@ class Search {
             switch ($to_type) {
                case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
-                  return " $LINK `glpi_computers_items` AS conn_mon_$to_type
-                              ON (`conn_mon_$to_type`.`items_id` = `glpi_phones`.`id`
-                                  AND `conn_mon_$to_type`.`itemtype` = '$from_type')
+                  array_push($already_link_tables2, "glpi_computers_items_$to_type");
+                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
+                                  AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`conn_mon_$to_type`.`computers_id` = `glpi_computers.id`) ";
+                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers.id`) ";
             }
             break;
 
@@ -3395,14 +3407,16 @@ class Search {
             switch ($to_type) {
                case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
+                  array_push($already_link_tables2,"glpi_softwareversions_$to_type");
+                  array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   return " $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
                                        = `glpi_softwares`.`id`)
-                           $LINK `glpi_computers_softwareversions` AS inst_$to_type
-                              ON (`inst_$to_type`.`softwareversions_id`
+                           $LINK `glpi_computers_softwareversions` AS glpi_computers_softwareversions_$to_type
+                              ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`)
                            $LINK `glpi_computers`
-                              ON (`inst_$to_type`.`computers_id` = `glpi_computers`.`id` ".
+                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id` = `glpi_computers`.`id` ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
             }
             break;
