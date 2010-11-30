@@ -587,10 +587,15 @@ class EntityData extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][18]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
+      Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'], 0, 99, 1,
+                            array(-1  => $LANG['setup'][731],
+                                   -10  => $LANG['setup'][307]));
+/*
       Alert::dropdownIntegerNever('autoclose_delay', $entdata->fields['autoclose_delay'],
                                   array('max'            => 99,
                                         'inherit_global' => 1,
-                                        'never_value'    => -10));
+                                        'never_value'    => -10,));
+*/
       echo "&nbsp;".$LANG['stats'][31]."</td></tr>";
 
       echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
