@@ -1072,6 +1072,15 @@ class Ticket extends CommonDBTM {
          unset($input["minute"]);
       }
 
+
+      if (isset($input["status"]) && $input["status"]=="solved") {
+         if (isset($input["date"])) {
+            $input["solvedate"] = $input["date"];
+         } else {
+            $input["solvedate"] = $_SESSION["glpi_currenttime"];
+         }
+      }
+
       if (isset($input["status"]) && $input["status"]=="closed") {
          if (isset($input["date"])) {
             $input["closedate"] = $input["date"];
@@ -1087,6 +1096,9 @@ class Ticket extends CommonDBTM {
          $input["name"] = preg_replace('/\n/',' ',$input['name']);
          $input["name"] = utf8_substr($input['name'],0,70);
       }
+
+
+
       return $input;
    }
 
