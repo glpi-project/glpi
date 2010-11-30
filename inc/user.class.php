@@ -1717,17 +1717,33 @@ class User extends CommonDBTM {
       $tab[20]['name']          = $LANG['Menu'][35]." (- ".$LANG['entity'][0].")";
       $tab[20]['forcegroupby']  = true;
       $tab[20]['massiveaction'] = false;
+      $tab[20]['joinparams']    = array('beforejoin'
+                                       => array(array('table'      => 'glpi_profiles_users',
+                                                'joinparams' => array('jointype' => 'child')),
+                                                array('table'      => 'glpi_complete_entities',
+                                                'linkfield'  => 'entities_id',
+                                                'joinparams' => array('nolink' => true))
+                                               )
+                                       );
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'user_dn';
       $tab[21]['name']          = $LANG['ldap'][26];
       $tab[21]['massiveaction'] = false;
 
-      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['table']         = 'glpi_complete_entities';
+      $tab[80]['linkfield']     = 'entities_id';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = $LANG['entity'][0]." (- ".$LANG['Menu'][35].")";
       $tab[80]['forcegroupby']  = true;
       $tab[80]['massiveaction'] = false;
+      $tab[80]['joinparams']    = array('beforejoin'
+                                       => array(array('table'      => 'glpi_profiles_users',
+                                                'joinparams' => array('jointype' => 'child')),
+                                                array('table'      => 'glpi_profiles',
+                                                'joinparams' => array('nolink' => true))
+                                               )
+                                       );
 
       $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';
