@@ -98,6 +98,4 @@ if (isset($_POST["update"])) {
    commonFooter();
 }
 
-displayErrorAndDie("lost");
-
 ?>

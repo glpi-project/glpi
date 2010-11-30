@@ -98,11 +98,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"],'w');
 
-   $_POST['slas_id']               = 0;
-   $_POST['slalevels_id']          = 0;
-   $_POST['sla_wainting_duration'] = 0;
-
-   $track->update($_POST);
+   $track->deleteSLA($_POST["id"]);
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
    glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
