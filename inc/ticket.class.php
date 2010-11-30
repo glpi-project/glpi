@@ -816,11 +816,6 @@ class Ticket extends CommonDBTM {
             }
          }
          */
-         if (!in_array("users_id_assign",$this->updates)) {
-            unset($this->input["_old_assign"]);
-         } else {
-            $this->fields["_old_assign"] = $this->input["_old_assign"];
-         }
 /*         $mail_send=false;
 
          if (!empty($change_followup_content)) { // Add followup if not empty
@@ -874,11 +869,6 @@ class Ticket extends CommonDBTM {
                $mailtype = "closed";
             }
 
-            //TODO : manage assignation
-
-            if (isset($this->input["_old_assign"])) {
-               $this->fields["_old_assign"] = $this->input["_old_assign"];
-            }
             NotificationEvent::raiseEvent($mailtype, $this);
             //$mail = new Mailing($mailtype,$this,$user);
             //$mail->send();

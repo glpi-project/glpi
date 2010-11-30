@@ -234,7 +234,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
    function getTicketOldAssignTechnicianAddress () {
-      return $this->getUserByField ("_old_assign");
+      return $this->getUserByOldValue ("users_id_assign");
    }
 
 

@@ -627,6 +627,39 @@ class NotificationTarget extends CommonDBChild {
       elseif ($this->target_object) {
          $id = $this->target_object->getField($field);
       }
+
+      if ($id) {
+         //Look for the user by his id
+         $query = $this->getDistinctUserSql()."
+                  FROM `glpi_users`".
+                  $this->getJoinProfileSql()."
+                  WHERE `glpi_users`.`id` = '$id'";
+         foreach ($DB->request($query) as $data) {
+            //Add the user email and language in the notified users list
+            $this->addToAddressesList($data);
+         }
+      }
+   }
+
+   /**
+    * Add user to the notified users list trying to see in old values
+    *
+    * @param $field look for user looking for this field in the object which raises the event
+    * @param $search_in_object search is done in the object ? if not  in target object.
+    */
+   function getUserByOldValue ($field, $search_in_object=false) {
+      global $DB;
+
+      $id = 0;
+      if (!$search_in_object) {
+         if (isset($this->obj->oldvalues[$field])) {
+            $id = $this->obj->oldvalues[$field];
+         }
+      } elseif ($this->target_object) {
+         if (isset($this->obj->target_object[$field])) {
+            $id = $this->obj->target_object[$field];
+         }
+      }
       if ($id) {
          //Look for the user by his id
          $query = $this->getDistinctUserSql()."
