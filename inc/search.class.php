@@ -3972,10 +3972,11 @@ class Search {
                return $out;
 
             case "timestamp" :
-               return timestampToString($data[$NAME.$num]);
-
-            case "actiontime" :
-               return Ticket::getActionTime($data[$NAME.$num]);
+               $withseconds = false;
+               if (isset($searchopt[$ID]['withseconds'])) {
+                  $withseconds = $searchopt[$ID]['withseconds'];
+               }
+               return timestampToString($data[$NAME.$num],$withseconds);
 
             case "date_delay" :
                $split = explode('$$$$', $data[$NAME.$num]);
