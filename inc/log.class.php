@@ -88,14 +88,14 @@ class Log extends CommonDBTM {
             foreach ($searchopt as $key2 => $val2) {
                if (($val2["field"] == $key && strpos($val2['table'], 'infocoms'))
                    || ($key == 'budgets_id' && $val2['table'] == 'glpi_budgets')
-                   || ($key == 'suppliers_id' && $val2['table'] == 'glpi_suppliers_infocoms')) {
+                   || ($key == 'suppliers_id' && $val2['table'] == 'glpi_suppliers')) {
 
                   $id_search_option = $key2; // Give ID of the $SEARCHOPTION
                   if ($val2["table"] == "glpi_infocoms") {
                      // 1st case : text field -> keep datas
                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);
 
-                  } else if ($val2["table"] == "glpi_suppliers_infocoms") {
+                  } else if ($val2["table"] == "glpi_suppliers") {
                      // 2nd case ; link field -> get data from glpi_suppliers
                      $changes = array($id_search_option,
                                       addslashes(Dropdown::getDropdownName("glpi_suppliers",
