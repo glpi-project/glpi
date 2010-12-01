@@ -288,10 +288,8 @@ class Ticket extends CommonDBTM {
             }
          }
       }
-
       return false;
    }
-
 
 
    /**
@@ -309,6 +307,7 @@ class Ticket extends CommonDBTM {
       $input['id']                    = $id;
       return $this->update($input);
    }
+
 
    /**
     * Is the current user have right to create the current ticket ?
