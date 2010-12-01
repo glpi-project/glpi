@@ -74,9 +74,9 @@ class SLA extends CommonDBTM {
       $this->fields['resolution_time'] = DAY_TIMESTAMP;
    }
 
+
    function cleanDBonPurge() {
       global $DB;
-
 
       // Clean sla_levels
       $query = "SELECT `id`
@@ -96,6 +96,7 @@ class SLA extends CommonDBTM {
       $query = "SELECT `id`
                 FROM `glpi_tickets`
                 WHERE `slas_id` = '".$this->fields['id']."'";
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $ticket = new Ticket();
@@ -104,8 +105,9 @@ class SLA extends CommonDBTM {
             }
          }
       }
-      
+
    }
+
 
    /**
     * Print the sla form
