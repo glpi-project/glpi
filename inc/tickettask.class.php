@@ -248,7 +248,7 @@ class TicketTask  extends CommonDBTM {
 //      $input["_isadmin"] = haveRight("global_add_tasks","1");
       $input["_job"] = new Ticket;
 
-      if ($input["_job"]->getFromDB($input["tickets_id"])) {
+      if (!$input["_job"]->getFromDB($input["tickets_id"])) {
          return false;
       }
 
