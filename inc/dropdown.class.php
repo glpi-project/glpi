@@ -1138,12 +1138,13 @@ class Dropdown {
 
          $isadmin=$item->canUpdate();
 
+
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
-            && ($isadmin ||(in_array($itemtype,$CFG_GLPI["infocom_types"])&& $infocom->canUpdate())
-                        || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
-
+            && (($isadmin && $itemtype != 'Ticket')
+                  ||(in_array($itemtype,$CFG_GLPI["infocom_types"])&& $infocom->canUpdate())
+                  || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
             echo "<option value='update'>".$LANG['buttons'][14]."</option>";
          }
 
@@ -1269,8 +1270,7 @@ class Dropdown {
                   break;
 
                case 'TicketValidation' :
-                  $tmp = new TicketValidation();
-                  if ($tmp->canUpdate()) {
+                  if (haveRight('create_validation', 1)) {
                      echo "<option value='validate_ticket'>".$LANG['validation'][0]."</option>";
                   }
                   break;
