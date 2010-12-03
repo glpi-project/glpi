@@ -2404,8 +2404,8 @@ $LANG['validation'][6]  = "Commentaire de la validation";
 $LANG['validation'][7]  = "Validation(s) pour le ticket";
 $LANG['validation'][8]  = "Validations";
 $LANG['validation'][9]  = "En attente de validation";
-$LANG['validation'][10] = "Refusé";
-$LANG['validation'][11] = "Accepté";
+$LANG['validation'][10] = "Refusée";
+$LANG['validation'][11] = "Acceptée";
 $LANG['validation'][12] = "Non soumis à validation";
 $LANG['validation'][13] = "Demande de validation envoyée à";
 

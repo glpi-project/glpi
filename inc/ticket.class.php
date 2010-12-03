@@ -4067,7 +4067,7 @@ class Ticket extends CommonDBTM {
       echo "</td>";
 
       // Display validation state
-      echo "<td>".$LANG['validation'][0]."</td>";
+      echo "<td>".$LANG['validation'][0]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       if ($canupdate) {
          TicketValidation::dropdownStatus('global_validation',
@@ -4156,7 +4156,7 @@ class Ticket extends CommonDBTM {
       $titlecolspan        = ($view_linked_tickets?1:3);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='b'>".$LANG['common'][57]."&nbsp;: </td>";
+      echo "<td class='b'>".$LANG['common'][57]."</td>";
       echo "<td colspan='$titlecolspan'>";
       if ($canupdate_descr) {
          $rand = mt_rand();
@@ -4213,7 +4213,7 @@ class Ticket extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['joblist'][6]."</td>";
+      echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='$titlecolspan'>";
       if ($canupdate_descr) { // Admin =oui on autorise la modification de la description
          $rand = mt_rand();
