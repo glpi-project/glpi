@@ -296,7 +296,7 @@ class MailCollector  extends CommonDBTM {
                      $tkt = $this->buildTicket($i, array('mailcollectors_id' => $mailcollector_id,
                                                          'play_rules'        => false));
                      $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
-                     $tkt['entities_id'] = $entity;
+                     $tkt['entities_id']         = $entity;
                      $ticket->add($tkt);
                   }
                   //Delete email
@@ -498,14 +498,14 @@ class MailCollector  extends CommonDBTM {
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
             if ($cc != $head['from'] && ($tmp=User::getOrImportByEmail($cc))>0) {
-               $tkt['_additional_observers'][]=$tmp;
+               $tkt['_additional_observers'][] = $tmp;
             }
          }
       }
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
             if ($to != $head['from'] && ($tmp=User::getOrImportByEmail($to))>0) {
-               $tkt['_additional_observers'][]=$tmp;
+               $tkt['_additional_observers'][] = $tmp;
             }
          }
       }
@@ -517,7 +517,7 @@ class MailCollector  extends CommonDBTM {
       $body = $this->getBody($i);
       // Do it before using charset variable
       $head['subject'] = $this->decodeMimeString($head['subject']);
-      $tkt['_head'] = $head;
+      $tkt['_head']    = $head;
 
       if (!empty($this->charset) && !$this->body_converted) {
          $body = encodeInUtf8($body,$this->charset);
@@ -536,13 +536,14 @@ class MailCollector  extends CommonDBTM {
       }
       // Detect if it is a mail reply
       $glpi_message_match = "/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
-      // See In-Reply-To field
 
+      // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
             $tkt['tickets_id'] = (int)$match[1];
          }
       }
+
       // See in References
       if (!isset($tkt['tickets_id']) && isset($head['references'])) {
          if (preg_match($glpi_message_match, $head['references'], $match)) {
@@ -564,7 +565,8 @@ class MailCollector  extends CommonDBTM {
          /// TODO check if users_id have right to add a followup to the ticket
          if ($job->getFromDB($tkt['tickets_id'])
              && $job->fields['status'] != 'closed'
-             && ($tkt['_users_id_requester'] > 0 || !strcasecmp($job->fields['user_email'], $head['from']))) {
+             && ($tkt['_users_id_requester'] > 0 || !strcasecmp($job->fields['user_email'],
+                                                                $head['from']))) {
 
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
@@ -780,8 +782,8 @@ class MailCollector  extends CommonDBTM {
           && utf8_strtolower($sender->mailbox)!='postmaster') {
 
          // Construct to and cc arrays
-         $tos=array();
-         $ccs=array();
+         $tos = array();
+         $ccs = array();
          if (count($mail_header->to)) {
             foreach ($mail_header->to as $data) {
                $tos[] = utf8_strtolower($data->mailbox).'@'.$data->host;
@@ -798,7 +800,7 @@ class MailCollector  extends CommonDBTM {
                                'to'         => utf8_strtolower($to->mailbox).'@'.$to->host,
                                'message_id' => $mail_header->message_id,
                                'tos'        => $tos,
-                               'ccs'        => $ccs,);
+                               'ccs'        => $ccs);
 
          if (isset($mail_header->references)) {
             $mail_details['references'] = $mail_header->references;

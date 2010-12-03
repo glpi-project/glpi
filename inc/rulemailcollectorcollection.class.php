@@ -40,9 +40,10 @@ if (!defined('GLPI_ROOT')) {
 class RuleMailCollectorCollection extends RuleCollection {
 
    // From RuleCollection
-   public $stop_on_first_match=true;
-   public $right = 'rule_mailcollector';
-   public $menu_option='mailcollector';
+   public $stop_on_first_match = true;
+   public $right               = 'rule_mailcollector';
+   public $menu_option         = 'mailcollector';
+
 
    function getTitle() {
       global $LANG;
@@ -50,7 +51,9 @@ class RuleMailCollectorCollection extends RuleCollection {
       return $LANG['rulesengine'][70];
    }
 
+
    function prepareInputDataForProcess($input,$params) {
+
       $input['from']                = $params['from'];
       $input['mailcollector']       = $params['mailcollector'];
       $input['_users_id_requester'] = $params['_users_id_requester'];
@@ -83,7 +86,8 @@ class RuleMailCollectorCollection extends RuleCollection {
          //Get all profiles
          $profiles = Profile_User::getForUser($input['_users_id_requester']);
          foreach ($profiles as $profile) {
-            if (Profile_User::haveUniqueRight($input['_users_id_requester'], $profile['profiles_id'])) {
+            if (Profile_User::haveUniqueRight($input['_users_id_requester'],
+                                              $profile['profiles_id'])) {
                $input['UNIQUE_PROFILE'][$profile['profiles_id']] = $profile['profiles_id'];
             }
          }
@@ -108,17 +112,16 @@ class RuleMailCollectorCollection extends RuleCollection {
                $input['KNOWN_DOMAIN'] = 0;
             }
          }
-
       }
 
       return $input;
    }
+
 
    function canList() {
       return $this->canView() && canUseImapPop() && MailCollector::getNumberOfMailCollectors();
    }
 
 }
-
 
 ?>

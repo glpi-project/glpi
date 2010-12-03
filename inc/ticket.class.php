@@ -1569,8 +1569,8 @@ class Ticket extends CommonDBTM {
       // Additional actors : using default notification parameters
       // Observers : for mailcollector
       if (isset($this->input["_additional_observers"])
-            && is_array($this->input["_additional_observers"])
-            && count($this->input["_additional_observers"])) {
+          && is_array($this->input["_additional_observers"])
+          && count($this->input["_additional_observers"])) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::OBSERVER);
          foreach ($this->input["_additional_observers"] as $uid) {
@@ -1579,8 +1579,8 @@ class Ticket extends CommonDBTM {
          }
       }
       if (isset($this->input["_additional_assigns"])
-            && is_array($this->input["_additional_assigns"])
-            && count($this->input["_additional_assigns"])) {
+          && is_array($this->input["_additional_assigns"])
+          && count($this->input["_additional_assigns"])) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::ASSIGN);
          foreach ($this->input["_additional_assigns"] as $uid) {
@@ -1589,8 +1589,8 @@ class Ticket extends CommonDBTM {
          }
       }
       if (isset($this->input["_additional_requesters"])
-            && is_array($this->input["_additional_requesters"])
-            && count($this->input["_additional_requesters"])) {
+          && is_array($this->input["_additional_requesters"])
+          && count($this->input["_additional_requesters"])) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::REQUESTER);
          foreach ($this->input["_additional_requesters"] as $uid) {
