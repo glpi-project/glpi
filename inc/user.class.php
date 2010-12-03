@@ -1718,13 +1718,11 @@ class User extends CommonDBTM {
       $tab[20]['forcegroupby']  = true;
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('beforejoin'
-                                       => array(array('table'      => 'glpi_profiles_users',
-                                                'joinparams' => array('jointype' => 'child')),
-                                                array('table'      => 'glpi_complete_entities',
-                                                'linkfield'  => 'entities_id',
-                                                'joinparams' => array('nolink' => true))
-                                               )
-                                       );
+                                         => array(array('table'      => 'glpi_profiles_users',
+                                                        'joinparams' => array('jointype' => 'child')),
+                                                  array('table'      => 'glpi_complete_entities',
+                                                        'linkfield'  => 'entities_id',
+                                                        'joinparams' => array('nolink' => true))));
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'user_dn';
@@ -1738,12 +1736,10 @@ class User extends CommonDBTM {
       $tab[80]['forcegroupby']  = true;
       $tab[80]['massiveaction'] = false;
       $tab[80]['joinparams']    = array('beforejoin'
-                                       => array(array('table'      => 'glpi_profiles_users',
-                                                'joinparams' => array('jointype' => 'child')),
-                                                array('table'      => 'glpi_profiles',
-                                                'joinparams' => array('nolink' => true))
-                                               )
-                                       );
+                                         => array(array('table'      => 'glpi_profiles_users',
+                                                        'joinparams' => array('jointype' => 'child')),
+                                                  array('table'      => 'glpi_profiles',
+                                                        'joinparams' => array('nolink' => true))));
 
       $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';

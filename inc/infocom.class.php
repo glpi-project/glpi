@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Infocom class
- */
+**/
 class Infocom extends CommonDBTM {
 
    // From CommonDBTM
@@ -73,9 +73,10 @@ class Infocom extends CommonDBTM {
    /**
     * Retrieve an item from the database for a device
     *
-    *@param $ID ID of the device to retrieve infocom
-    *@param $itemtype type of the device to retrieve infocom
-    *@return true if succeed else false
+    * @param $ID ID of the device to retrieve infocom
+    * @param $itemtype type of the device to retrieve infocom
+    *
+    * @return true if succeed else false
    **/
    function getFromDBforDevice ($itemtype, $ID) {
       global $DB;
@@ -910,27 +911,28 @@ class Infocom extends CommonDBTM {
 //                                                       AND `$nt`.`itemtype` = 'Consumable') ";
 //                }
       $specific_itemtype = '';
-      $beforejoin = array ();
+      $beforejoin        = array ();
       switch ($itemtype) {
          case 'Software' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin = array('table' => 'glpi_softwarelicenses',
-                              'joinparams' => array('jointype' => 'child'));
+            $beforejoin = array('table'      => 'glpi_softwarelicenses',
+                                'joinparams' => array('jointype' => 'child'));
             $specific_itemtype = 'SoftwareLicense';
             break;
+
          case 'CartridgeItem' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin = array('table' => 'glpi_cartridges',
-                              'joinparams' => array('jointype' => 'child'));
+            $beforejoin = array('table'      => 'glpi_cartridges',
+                                'joinparams' => array('jointype' => 'child'));
             $specific_itemtype = 'Cartridge';
             break;
+
          case 'ConsumableItem' :
             // Return the infocom linked to the license, not the template linked to the software
-            $beforejoin = array('table' => 'glpi_consumables',
-                              'joinparams' => array('jointype' => 'child'));
+            $beforejoin = array('table'      => 'glpi_consumables',
+                                'joinparams' => array('jointype' => 'child'));
             $specific_itemtype = 'Consumable';
             break;
-
       }
 
       $joinparams = array('jointype'          => 'itemtype_item',
@@ -938,13 +940,12 @@ class Infocom extends CommonDBTM {
       $complexjoinparams = array();
       if (count($beforejoin)) {
          $complexjoinparams['beforejoin'][] = $beforejoin;
-         $joinparams['beforejoin'] = $beforejoin;
+         $joinparams['beforejoin']          = $beforejoin;
       }
-      $complexjoinparams['beforejoin'][] = array('table' => 'glpi_infocoms',
-                                                 'joinparams'
-                                                         => $joinparams);
+      $complexjoinparams['beforejoin'][] = array('table'      => 'glpi_infocoms',
+                                                 'joinparams' => $joinparams);
 
-      $tab=array();
+      $tab = array();
 
       $tab['financial'] = $LANG['financial'][3];
 
@@ -1007,7 +1008,6 @@ class Infocom extends CommonDBTM {
       $tab[123]['forcegroupby'] = true;
       $tab[123]['joinparams']   = $joinparams;
 
-
       $tab[50]['table']        = 'glpi_budgets';
       $tab[50]['field']        = 'name';
       $tab[50]['name']         = $LANG['financial'][87];
@@ -1039,13 +1039,11 @@ class Infocom extends CommonDBTM {
       $tab[120]['massiveaction'] = false;
       $tab[120]['joinparams']    = $joinparams;
 
-
       $tab[53]['table']        = 'glpi_suppliers';
       $tab[53]['field']        = 'name';
       $tab[53]['name']         = $LANG['financial'][26];
       $tab[53]['forcegroupby'] = true;
       $tab[53]['joinparams']   = $complexjoinparams;
-
 
       $tab[54]['table']        = 'glpi_infocoms';
       $tab[54]['field']        = 'value';
@@ -1096,6 +1094,7 @@ class Infocom extends CommonDBTM {
 
       return $tab;
    }
+
 
    function getSearchOptions() {
       global $LANG;

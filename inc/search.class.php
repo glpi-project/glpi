@@ -1982,6 +1982,7 @@ class Search {
                            AS ".$NAME."_".$num."_3,";
             }
             break;
+
          case "glpi_entities.completename" :
             return " `$table$addtable`.`completename` AS ".$NAME."_$num,
                      `$table$addtable`.`id` AS ".$NAME."_".$num."_2, ";
@@ -2709,8 +2710,8 @@ class Search {
          // No link
          case 'User' :
             return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                       "glpi_profiles_users", "profiles_users_id",0, 0,
-                                          array('jointype' => 'child'));
+                                       "glpi_profiles_users", "profiles_users_id", 0, 0,
+                                       array('jointype' => 'child'));
 
          case 'Entity' :
             return Search::addLeftJoin($itemtype, $ref_table, $already_link_tables,
@@ -2804,7 +2805,8 @@ class Search {
       if ($plug=isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_addLeftJoin';
          if (function_exists($function)) {
-            $specific_leftjoin = $function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
+            $specific_leftjoin = $function($itemtype, $ref_table, $new_table, $linkfield,
+                                           $already_link_tables);
          }
       }
 
@@ -2812,25 +2814,30 @@ class Search {
          switch ($new_table) {
             // No link
             case "glpi_auth_tables" :
-                  $specific_leftjoin = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authldaps",
-                                             'auths_id', 0, 0,
-                                             array('condition' => "REFTABLE.`authtype` = ".Auth::LDAP));
-                  $specific_leftjoin .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_authmails",
-                                             'auths_id', 0, 0,
-                                             array('condition' => "REFTABLE.`authtype` = ".Auth::MAIL));
+                  $specific_leftjoin = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                                           "glpi_authldaps", 'auths_id', 0, 0,
+                                                           array('condition' => "REFTABLE.`authtype`
+                                                                                   = ".Auth::LDAP));
+                  $specific_leftjoin .= Search::addLeftJoin($itemtype, $rt, $already_link_tables,
+                                                            "glpi_authmails", 'auths_id', 0, 0,
+                                                            array('condition' => "REFTABLE.`authtype`
+                                                                                   = ".Auth::MAIL));
                   break;
+
             case "glpi_complete_entities" :
                array_push($already_link_tables, "glpi_complete_entities");
    //            $AS = "AS $new_table";
-               $specific_leftjoin =  " LEFT JOIN (SELECT `id`, `name`, `entities_id`, `completename`, `comment`, `level`
-                                 FROM `glpi_entities`
-                                 UNION
-                                 SELECT 0 AS id,
-                                          '".addslashes($LANG['entity'][2])."' AS name,
-                                          -1 AS entities_id,
-                                          '".addslashes($LANG['entity'][2])."' AS completename,
-                                          '' AS comment, -1 AS level) $AS
-                           ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
+               $specific_leftjoin =  " LEFT JOIN (SELECT `id`, `name`, `entities_id`, `completename`,
+                                                         `comment`, `level`
+                                                  FROM `glpi_entities`
+                                                  UNION
+                                                  SELECT 0 AS id,
+                                                         '".addslashes($LANG['entity'][2])."' AS name,
+                                                         -1 AS entities_id,
+                                                         '".addslashes($LANG['entity'][2])."'
+                                                            AS completename,
+                                                         '' AS comment, -1 AS level) $AS
+                                             ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
                break;
 
    //          case "glpi_authldaps" :
@@ -3020,7 +3027,7 @@ class Search {
 
 //             case "glpi_cartridges" :
 //                $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`cartridgeitems_id` ) ";
-// 
+//
 //             case "glpi_consumables" :
 //                $specific_leftjoin =  " LEFT JOIN `$new_table` $AS ON (`$rt`.`id` = `$nt`.`consumableitems_id` ) ";
 
@@ -3174,17 +3181,17 @@ class Search {
    //          case "glpi_plugins":
    //             return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`directory`) ";
          }
-   }
+      }
 
-      
+
       // Link with plugin tables : need to know left join structure
       if (empty($specific_leftjoin)
-         && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)) {
+          && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)) {
          if (count($matches)==2) {
             $function = 'plugin_'.$matches[1].'_addLeftJoin';
             if (function_exists($function)) {
                $specific_leftjoin = $function($itemtype, $ref_table, $new_table, $linkfield,
-                                 $already_link_tables);
+                                              $already_link_tables);
             }
          }
       }
@@ -3214,9 +3221,9 @@ class Search {
                      $interjoinparams = $tab['joinparams'];
                   }
 
-                  $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables,
-                                                 $intertable, $interlinkfield, $meta,
-                                                 $meta_type, $interjoinparams);
+                  $before .= Search::addLeftJoin($itemtype, $rt, $already_link_tables, $intertable,
+                                                 $interlinkfield, $meta, $meta_type,
+                                                 $interjoinparams);
                }
 
                if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
@@ -3229,7 +3236,7 @@ class Search {
                }
             }
          }
-         
+
          $addcondition = '';
          if (isset($joinparams['condition'])) {
             $from = array("`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE");
@@ -3247,28 +3254,30 @@ class Search {
                case 'child' :
                   // Child join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                       ON (`$rt`.`id` = `$nt`.`".getForeignKeyFieldForTable($rt)."`
-                                          $addcondition)";
+                                             ON (`$rt`.`id`
+                                                      = `$nt`.`".getForeignKeyFieldForTable($rt)."`
+                                                 $addcondition)";
                   break;
 
                case "itemtype_item" :
                   $used_itemtype = $itemtype;
                   if (isset($joinparams['specific_itemtype'])
-                     && !empty($joinparams['specific_itemtype'])) {
+                      && !empty($joinparams['specific_itemtype'])) {
                      $used_itemtype = $joinparams['specific_itemtype'];
                   }
                   // Itemtype join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON (`$rt`.`id` = `$nt`.`items_id`
-                                                AND `$nt`.`itemtype` = '$used_itemtype'
-                                                $addcondition) ";
+                                              AND `$nt`.`itemtype` = '$used_itemtype'
+                                              $addcondition) ";
                   break;
+
                default :
                   // Standard join
                   $specific_leftjoin = "LEFT JOIN `$new_table` $AS
-                                          ON (`$rt`.`$linkfield` = `$nt`.`id` $addcondition)";
+                                          ON (`$rt`.`$linkfield` = `$nt`.`id`
+                                              $addcondition)";
                   break;
-
             }
          }
          return $before.$specific_leftjoin;
@@ -3308,7 +3317,8 @@ class Search {
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
-                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_printers`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`) ";
@@ -3317,7 +3327,8 @@ class Search {
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
-                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_monitors`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`) ";
@@ -3326,16 +3337,19 @@ class Search {
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
-                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_peripherals`
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_peripherals`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`items_id`
+                                       = `glpi_peripherals`.`id`) ";
 
                case 'Phone' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
-                              ON (`cglpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
                            $LINK `glpi_phones`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
@@ -3345,8 +3359,10 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   array_push($already_link_tables2,"glpi_softwarelicenses_$to_type");
-                  return " $LINK `glpi_computers_softwareversions` AS glpi_computers_softwareversions_$to_type
-                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id` = `glpi_computers`.`id`)
+                  return " $LINK `glpi_computers_softwareversions`
+                                    AS glpi_computers_softwareversions_$to_type
+                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id`)
                            $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`)
@@ -3356,7 +3372,8 @@ class Search {
                            LEFT JOIN `glpi_softwarelicenses` AS glpi_softwarelicenses_$to_type
                               ON (`glpi_softwares`.`id`
                                        = `glpi_softwarelicenses_$to_type`.`softwares_id`".
-                                  getEntitiesRestrictRequest(' AND', "glpi_softwarelicenses_$to_type",
+                                  getEntitiesRestrictRequest(' AND',
+                                                             "glpi_softwarelicenses_$to_type",
                                                              '', '', true).") ";
             }
             break;
@@ -3366,12 +3383,12 @@ class Search {
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-
                   return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id`) ";
             }
             break;
 
@@ -3384,7 +3401,8 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id` ".
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id` ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
             }
             break;
@@ -3395,10 +3413,12 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
-                              ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_peripherals`.`id`
+                              ON (`glpi_computers_items_$to_type`.`items_id`
+                                       = `glpi_peripherals`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers`.`id`) ";
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id`) ";
             }
             break;
 
@@ -3411,7 +3431,8 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
-                              ON (`glpi_computers_items_$to_type`.`computers_id` = `glpi_computers.id`) ";
+                              ON (`glpi_computers_items_$to_type`.`computers_id`
+                                       = `glpi_computers.id`) ";
             }
             break;
 
@@ -3424,11 +3445,13 @@ class Search {
                   return " $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
                                        = `glpi_softwares`.`id`)
-                           $LINK `glpi_computers_softwareversions` AS glpi_computers_softwareversions_$to_type
+                           $LINK `glpi_computers_softwareversions`
+                                    AS glpi_computers_softwareversions_$to_type
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`)
                            $LINK `glpi_computers`
-                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id` = `glpi_computers`.`id` ".
+                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
+                                       = `glpi_computers`.`id` ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
             }
             break;
@@ -3622,6 +3645,7 @@ class Search {
                return $out;
             }
             break;
+
          case "glpi_entities.completename" :
             if ($data[$NAME.$num."_2"]==0) {  // Set name for Root entity
                $data[$NAME.$num] = $LANG['entity'][2];
