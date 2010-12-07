@@ -183,6 +183,10 @@ class Profile extends CommonDBTM {
             && !is_array($this->fields["helpdesk_status"])) {
          $this->fields["helpdesk_status"]=importArrayFromDB($this->fields["helpdesk_status"],true);
       }
+      if (is_null($this->fields["helpdesk_status"])) {
+         $this->fields["helpdesk_status"]=array();
+      }
+
    }
 
    /**
