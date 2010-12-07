@@ -2144,25 +2144,23 @@ class Ticket extends CommonDBTM {
       global $LANG;
 
       $this->check($this->getField('id'), 'r');
-      $canedit = $this->can($this->getField('id'), 'w');
+
+      $canedit = $this->canSolve();
 
       $options = array();
+      $options['canedit'] = $canedit;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['job'][48]."&nbsp;:</td><td colspan='3'>";
 
-      $current = $this->fields['status'];
-      if (!$canedit
-          || ($current!='solved'
-              && isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])
-              && !$_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])) {
-         // Settings a solution will set status to solved
-         echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
-                                        $this->getField('ticketsolutiontypes_id'));
-      } else {
+      // Settings a solution will set status to solved
+      if ($canedit) {
          Dropdown::show('TicketSolutionType',
                         array('value' => $this->getField('ticketsolutiontypes_id')));
+      } else {
+         echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                        $this->getField('ticketsolutiontypes_id'));
       }
       echo "</td></tr>";
 
@@ -2177,6 +2175,7 @@ class Ticket extends CommonDBTM {
       echo "</td></tr>";
 
       $options['candel'] = false;
+      $options['canedit'] = $canedit;
       $this->showFormButtons($options);
    }
 
@@ -4768,6 +4767,21 @@ class Ticket extends CommonDBTM {
       return $tab;
    }
 
+
+   /**
+    * Is the current user have right to solve the current ticket ?
+    *
+    * @return boolean
+    */
+   function canSolve() {
+
+      // ALways permit SOlution change
+      return (/*$this->fields["status"] != 'closed'
+              &&*/ ($this->can($this->getField('id'), 'w')
+               && isset($_SESSION['glpiactiveprofile']['helpdesk_status']) // Not set for post-only
+               && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])
+                  || $_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])));
+   }
 
    /**
     * Is the current user have right to approve solution of the current ticket ?
