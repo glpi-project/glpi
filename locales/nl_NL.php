@@ -1253,7 +1253,7 @@ $LANG['plugins'][6]="Updaten";
 $LANG['plugins'][7]="Geen plugin geïnstalleerd"; 
 $LANG['plugins'][8]="Bekijk de lijst van plugins"; 
 $LANG['plugins'][9]="Auteurs"; 
-$LANG['plugins'][10]="Plugin is niet overeenstemmend met deze versie van GLPI."; 
+$LANG['plugins'][10]="Plugin is niet compatible met deze versie van GLPI."; 
 
 $LANG['printers'][14]="Seriële poort"; 
 $LANG['printers'][15]="Parallelle poort"; 
@@ -1926,7 +1926,7 @@ $LANG['validation'][7]="Validaties voor het Incident-ticket";
 $LANG['validation'][9]="Wachtrij validatie"; 
 $LANG['validation'][10]="Geweigerd"; 
 $LANG['validation'][11]="Geaccepteerd"; 
-$LANG['validation'][12]="Not subject to approval"; 
+$LANG['validation'][12]="Niet gevalideerd"; 
 $LANG['validation'][13]="Aanvraag validatie verzonden naar"; 
 $LANG['validation'][15]="Incident-ticket wacht op uw validatie"; 
 $LANG['validation'][16]="Facultatief in het geval van acceptatie"; 
