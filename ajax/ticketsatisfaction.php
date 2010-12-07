@@ -43,19 +43,22 @@ if (strpos($_SERVER['PHP_SELF'],"ticketsatisfaction.php")) {
    header_nocache();
 }
 
-
 $entity = new EntityData();
 
-if (isset($_REQUEST['inquest_config'])
-    && isset($_REQUEST['entities_id'])
-    && $entity->getFromDB($_REQUEST['entities_id'])) {
+if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
+   if ($entity->getFromDB($_REQUEST['entities_id'])) {
+      $inquest_config = $entity->getfield('inquest_config');
+      $inquest_delay  = $entity->getfield('inquest_delay');
+      $inquest_rate   = $entity->getfield('inquest_rate');
+      $max_closedate  = $entity->getfield('max_closedate');
+   } else {
+      $inquest_config = $_REQUEST['inquest_config'];
+      $inquest_delay  = -1;
+      $inquest_rate   = -1;
+      $max_closedate  = '';
+   }
 
-   $inquest_config = $entity->getfield('inquest_config');
-   $inquest_delay  = $entity->getfield('inquest_delay');
-   $inquest_rate   = $entity->getfield('inquest_rate');
-   $max_closedate  = $entity->getfield('max_closedate');
- //  $inquest_url    = $entity->getfield('$inquest_URL');
-
+logDebug("type ", $_REQUEST['inquest_config']);
    if ($_REQUEST['inquest_config']>0 ) {
       echo "<table class='tab_cadre_fixe' width='50%'>";
       echo "<tr class='tab_bg_1'><td width='50%'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
