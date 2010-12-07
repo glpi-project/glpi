@@ -309,6 +309,9 @@ function addTracking($type, $ID, $ID_entity) {
       $solvetime       = 0;
       $closetime       = 0;
 
+      $solution = "";
+      $solutiontype = 0;
+
       if ($status=="closed" || $status=="solved") {
          $solvetime = $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
                       mt_rand(0, 60)*MINUTE_TIMESTAMP;
@@ -320,6 +323,8 @@ function addTracking($type, $ID, $ID_entity) {
                          mt_rand(0, 60)*MINUTE_TIMESTAMP;
             $closedate = $opendate+$closetime;
          }
+         $solutiontype = mt_rand(0, $MAX['ticketsolutions']);
+         $solution = "Solution ".getRandomString(20);
       }
       $updatedate = $opendate+max($firstactiontime, $solvetime, $closetime);
       $hour_cost  = 100;
@@ -343,8 +348,8 @@ function addTracking($type, $ID, $ID_entity) {
                         '$enterprise', '$type', '$ID', 'tracking ".getRandomString(15)."',
                         '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."',
                         '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."',
-                        '$hour_cost', '0', '0', '".mt_rand(0, $MAX['ticketsolutions'])."',
-                        'Solution ".getRandomString(20)."', 'accepted', 0, 0, NULL, NULL, 0, 0,
+                        '$hour_cost', '0', '0', '$solutiontype',
+                        '$solution', 'accepted', 0, 0, NULL, NULL, 0, 0,
                         $closetime, $solvetime, $firstactiontime, '$actiontime')";
       $DB->query($query) or die("PB REQUETE ".$query);
 
