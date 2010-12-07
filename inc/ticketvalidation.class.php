@@ -602,7 +602,8 @@ class TicketValidation  extends CommonDBChild {
          return false;
       }
       // No update validation is answer set
-      $validation_admin = $this->canCreate() && $this->fields['status'] == 'waiting';
+      $validation_admin = ($this->fields["users_id"] == getLoginUserID())
+                              && $this->canCreate() && $this->fields['status'] == 'waiting';
       $validator = ($this->fields["users_id_validate"] == getLoginUserID());
 
       $options['colspan'] = 1;
