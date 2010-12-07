@@ -138,7 +138,6 @@ class Ticket extends CommonDBTM {
     * @return boolean
     */
    function canSolve() {
-      print_r($_SESSION['glpiactiveprofile']);
       return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
               &&*/ ($this->can($this->getField('id'), 'w')
                && isset($_SESSION['glpiactiveprofile']['helpdesk_status']) // Not set for post-only
@@ -679,30 +678,6 @@ class Ticket extends CommonDBTM {
       }
 
 
-      // Setting a solution or solution type means the ticket is solved
-      if (((isset($input["ticketsolutiontypes_id"]) && $input["ticketsolutiontypes_id"]>0 )
-           || (isset($input["solution"]) && !empty($input["solution"])
-                  && empty($this->fields['solution']))) 
-          && $this->fields['status']!='closed') {
-
-         $entitydata = new EntityData();
-         if ($entitydata->getFromDB($this->fields['entities_id'])) {
-            $autoclosedelay = $entitydata->getfield('autoclose_delay');
-         } else {
-            $autoclosedelay = -1;
-         }
-         // -1 = config
-         if ($autoclosedelay == -1) {
-            $autoclosedelay = $CFG_GLPI['autoclose_delay'];
-         }
-         // 0 = immediatly
-         if ($autoclosedelay == 0) {
-            $input["status"] = 'closed';
-         } else {
-            $input["status"] = 'solved';
-         }
-      }
-
       if (isset($input["items_id"])
           && $input["items_id"]>=0
           && isset($input["itemtype"])) {
@@ -759,7 +734,35 @@ class Ticket extends CommonDBTM {
 
 
    function pre_updateInDB() {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
+
+
+      // Setting a solution or solution type means the ticket is solved
+      if ((in_array("ticketsolutiontypes_id",$this->updates))
+          || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
+
+         if (!in_array('status', $this->updates)) {
+            $this->oldvalues['status'] = $this->fields['status'];
+            $this->updates[] = 'status';
+         }
+
+         $entitydata = new EntityData();
+         if ($entitydata->getFromDB($this->fields['entities_id'])) {
+            $autoclosedelay = $entitydata->getfield('autoclose_delay');
+         } else {
+            $autoclosedelay = -1;
+         }
+         // -1 = config
+         if ($autoclosedelay == -1) {
+            $autoclosedelay = $CFG_GLPI['autoclose_delay'];
+         }
+         // 0 = immediatly
+         if ($autoclosedelay == 0) {
+            $this->fields['status'] = 'closed';
+         } else {
+            $this->fields['status'] = 'solved';
+         }
+      }
 
       if ((in_array("suppliers_id_assign",$this->updates) && $this->input["suppliers_id_assign"]>0)
           || isset($this->input["_assignadd"])) {
