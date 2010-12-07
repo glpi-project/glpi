@@ -4092,7 +4092,7 @@ class Ticket extends CommonDBTM {
       // Display validation state
       echo "<td>".$LANG['validation'][0]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      if ($canupdate) {
+      if ($canupdate && $ID) {
          TicketValidation::dropdownStatus('global_validation',
                                           array('global' => true,
                                                 'value'  => $this->fields['global_validation']));
