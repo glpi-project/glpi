@@ -3763,10 +3763,10 @@ class Ticket extends CommonDBTM {
 
       $this->showTabs($options);
 
-      $canupdate_descr = $canupdate || ($this->numberOfFollowups() == 0
-                                        && $this->numberOfTasks() == 0
-                                        && $this->isUser(self::REQUESTER,getLoginUserID()));
-
+      $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
+                                        && $this->isUser(self::REQUESTER,getLoginUserID()
+                                        && $this->numberOfFollowups() == 0
+                                        && $this->numberOfTasks() == 0);
 
       if (!$ID) {
          //Get all the user's entities
