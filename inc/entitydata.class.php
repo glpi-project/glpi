@@ -602,14 +602,22 @@ class EntityData extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][19]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
+
+      /// TODO : add no inquest case ?
       $typeinquest = array(0 => $LANG['common'][102],
                            1 => $LANG['satisfaction'][9],
                            2 => $LANG['satisfaction'][10]);
+
+      // No inherit from parent for root entity
+      if ($entdata->fields['entities_id'] == 0) {
+         unset($typeinquest[0]);
+      }
       $rand = Dropdown::showFromArray('inquest_config', $typeinquest,
                                       $options = array('value' => $entdata->fields['inquest_config']));
       echo "</td></tr>\n";
 
-      if ($entdata->fields['inquest_config'] == 0) {
+      // Do not display for root entity in inherit case
+      if ($entdata->fields['inquest_config'] == 0 && $entdata->fields['entities_id'] !=0) {
          $inquestconfig = EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
          $inquestrate   = EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
                                                     'inquest_rate');
