@@ -49,7 +49,7 @@ $LANG['backup'][24] = "Redirection automatique, sinon cliquez";
 
 
 $LANG['bookmark'][1] = "marque-page";
-
+$LANG['bookmark'][2] = "Chargement partiel du bookmark.";
 $LANG['bookmark'][3] = "Vous n'avez pas encore enregistré de marque-pages.";
 $LANG['bookmark'][4] = "Nouveau marque-page";
 $LANG['bookmark'][5] = "Marque-pages publics";
