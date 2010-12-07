@@ -107,7 +107,8 @@ class TicketValidation  extends CommonDBChild {
 
 
    function post_getEmpty() {
-      $this->fields["users_id"]=getLoginUserID();
+      $this->fields["users_id"] = getLoginUserID();
+      $this->fields["status"]   = 'waiting';
    }
 
    function defineTabs($options=array()) {
