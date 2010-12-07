@@ -181,7 +181,6 @@ class Profile extends CommonDBTM {
       // Decode status array
       if (isset($this->fields["helpdesk_status"])
             && !is_array($this->fields["helpdesk_status"])) {
-         echo "i";
          $this->fields["helpdesk_status"]=importArrayFromDB($this->fields["helpdesk_status"]);
          // Need to be an array not a null value
          if (is_null($this->fields["helpdesk_status"])) {
