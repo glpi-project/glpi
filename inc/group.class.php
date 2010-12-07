@@ -65,10 +65,6 @@ class Group extends CommonDBTM {
       $DB->query($query);
    }
 
-   function post_getEmpty() {
-      global $CFG_GLPI;
-   }
-
    function defineTabs($options=array()) {
       global $LANG;
 
