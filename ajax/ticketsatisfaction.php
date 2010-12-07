@@ -58,7 +58,6 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
       $max_closedate  = '';
    }
 
-logDebug("type ", $_REQUEST['inquest_config']);
    if ($_REQUEST['inquest_config']>0 ) {
       echo "<table class='tab_cadre_fixe' width='50%'>";
       echo "<tr class='tab_bg_1'><td width='50%'>".$LANG['entity'][20]."&nbsp;:&nbsp;</td>";
