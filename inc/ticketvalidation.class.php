@@ -644,7 +644,7 @@ class TicketValidation  extends CommonDBChild {
          echo "<td>".getUserName($this->fields["users_id_validate"])."</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['validation'][6]."&nbsp;:</td>";
+         echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
          echo "<td>". $this->fields["comment_validation"]. "</td></tr>";
       }
 
