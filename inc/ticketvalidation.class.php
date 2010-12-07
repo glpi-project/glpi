@@ -105,6 +105,10 @@ class TicketValidation  extends CommonDBChild {
       return false;
    }
 
+   function post_getEmpty() {
+      $this->fields["users_id"]=getLoginUserID();
+   }
+
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -596,8 +600,8 @@ class TicketValidation  extends CommonDBChild {
       if (!$ticket->getFromDB($tickets_id)) {
          return false;
       }
-      $this->fields["users_id"] = getLoginUserID();
-      $validation_admin = $this->canCreate();
+      // No update validation is answer set
+      $validation_admin = $this->canCreate() && $this->fields['status'] == 'waiting';
       $validator = ($this->fields["users_id_validate"] == getLoginUserID());
 
       $options['colspan'] = 1;
