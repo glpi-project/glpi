@@ -1163,6 +1163,40 @@ class Search {
       $_SESSION['glpimassiveactionselected']=array();
    }
 
+   /**
+   * Get meta types available for search engine
+   *
+   * @param $itemtype type to display the form
+   *
+   * @return Array of available itemtype
+   *
+   **/
+   static function getMetaItemtypeAvailable ($itemtype) {
+      // Display meta search items
+      $linked=array();
+      // Define meta search items to linked
+      switch ($itemtype) {
+         case 'Computer' :
+            $linked = array('Printer', 'Monitor', 'Peripheral', 'Software', 'Phone');
+            break;
+
+         case 'Ticket' :
+            if (haveRight("show_all_ticket","1")) {
+               $linked = array_keys(Ticket::getAllTypesForHelpdesk());
+            }
+            break;
+
+         case 'Printer' :
+         case 'Monitor' :
+         case 'Peripheral' :
+         case 'Software' :
+         case 'Phone' :
+            $linked = array('Computer');
+            break;
+      }
+      return $linked;
+   }
+
 
    /**
     * Print generic search form
@@ -1202,14 +1236,8 @@ class Search {
          $item = new $itemtype();
       }
 
-      // Meta search names
-      $metaactivated = array('Computer'   => $LANG['Menu'][0],
-                             'Printer'    => $LANG['Menu'][2],
-                             'Monitor'    => $LANG['Menu'][3],
-                             'Peripheral' => $LANG['Menu'][16],
-                             'Software'   => $LANG['Menu'][4],
-                             'Phone'      => $LANG['Menu'][34],
-                             'Ticket'     => $LANG['Menu'][5],);
+      $linked =  self::getMetaItemtypeAvailable($itemtype);
+
 
       echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
       echo "<table class='tab_cadre_fixe'>";
@@ -1237,7 +1265,7 @@ class Search {
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
                      $LANG['search'][18]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             }
-            if (isset($metaactivated[$itemtype])) {
+            if (is_array($linked) && count($linked)>0) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
                       value='1'>";
                echo "<a href='#' onClick = \"document.getElementById('add_search_count2').disabled=false;
@@ -1367,30 +1395,7 @@ class Search {
          echo "</td></tr>\n";
       }
 
-      // Display meta search items
-      $linked = array();
-      if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
-         // Define meta search items to linked
-         switch ($itemtype) {
-            case 'Computer' :
-               $linked = array('Printer', 'Monitor', 'Peripheral', 'Software', 'Phone');
-               break;
 
-            case 'Ticket' :
-               if (haveRight("show_all_ticket","1")) {
-                  $linked = array_keys(Ticket::getAllTypesForHelpdesk());
-               }
-               break;
-
-            case 'Printer' :
-            case 'Monitor' :
-            case 'Peripheral' :
-            case 'Software' :
-            case 'Phone' :
-               $linked = array('Computer');
-               break;
-         }
-      }
       $metanames = array();
 
       if (is_array($linked) && count($linked)>0) {

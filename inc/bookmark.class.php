@@ -245,9 +245,74 @@ class Bookmark extends CommonDBTM {
    * @return prepared query array
    **/
    function prepareQueryToUse($type, $query_tab) {
+      global $LANG;
 
       switch ($type) {
          case BOOKMARK_SEARCH :
+            // Check if all datas are valid
+
+            $opt = Search::getCleanedOptions($query_tab['itemtype']);
+
+            $query_tab_save = $query_tab;
+            $partial_load   = false;
+            // Standard search
+            if (count($query_tab_save['field'])) {
+               unset($query_tab['field']);
+               unset($query_tab['searchtype']);
+               unset($query_tab['contains']);
+               unset($query_tab['link']);
+               $new_key=0;
+               foreach ($query_tab_save['field'] as $key => $val) {
+                  if (!isset($opt[$val])) {
+                     $query_tab['glpisearchcount']--;
+                     $partial_load   = true;
+                  } else {
+                     $query_tab['field'][$new_key]      = $val;
+                     $query_tab['searchtype'][$new_key] = $query_tab_save['searchtype'][$key];
+                     $query_tab['contains'][$new_key]   = $query_tab_save['contains'][$key];
+                     if (isset($query_tab_save['link'][$key])) {
+                        $query_tab['link'][$new_key]   = $query_tab_save['link'][$key];
+                     }
+                     $new_key++;
+                  }
+               }
+            }
+            if ($query_tab['glpisearchcount'] == 0) {
+               $query_tab['glpisearchcount'] = 1;
+            }
+            // Meta search
+            if (count($query_tab_save['field2'])) {
+               $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
+
+               unset($query_tab['field2']);
+               unset($query_tab['searchtype2']);
+               unset($query_tab['contains2']);
+               unset($query_tab['link2']);
+               unset($query_tab['itemtype2']);
+               $new_key=0;
+               foreach ($query_tab_save['field2'] as $key => $val) {
+                  
+                  $opt = Search::getCleanedOptions($query_tab_save['itemtype2'][$key]);
+                  // Use if meta type is valid and option available
+                  if (!in_array($query_tab_save['itemtype2'][$key],$meta_ok)
+                        || !isset($opt[$val])) {
+                     $query_tab['glpisearchcount2']--;
+                     $partial_load   = true;
+                  } else {
+                     $query_tab['field2'][$new_key]      = $val;
+                     $query_tab['searchtype2'][$new_key] = $query_tab_save['searchtype'][$key];
+                     $query_tab['contains2'][$new_key]   = $query_tab_save['contains'][$key];
+                     $query_tab['link2'][$new_key]       = $query_tab_save['link2'][$key];
+                     $query_tab['itemtype2'][$new_key]   = $query_tab_save['itemtype2'][$key];
+                  }
+               }
+            }
+
+            // Display message
+            if ($partial_load) {
+               addMessageAfterRedirect($LANG['bookmark'][2],false,ERROR);
+            }
+            // add reset value
             $query_tab['reset'] = 'reset';
             break;
       }
