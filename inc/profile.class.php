@@ -187,8 +187,7 @@ class Profile extends CommonDBTM {
       if (isset($this->fields["helpdesk_item_type"])
           && !is_array($this->fields["helpdesk_item_type"])) {
 
-         $this->fields["helpdesk_item_type"] = importArrayFromDB($this->fields["helpdesk_item_type"],
-                                                                 true);
+         $this->fields["helpdesk_item_type"] = importArrayFromDB($this->fields["helpdesk_item_type"]);
       }
 
       // Empty/NULL case
@@ -200,7 +199,11 @@ class Profile extends CommonDBTM {
 
       // Decode status array
       if (isset($this->fields["helpdesk_status"]) && !is_array($this->fields["helpdesk_status"])) {
-         $this->fields["helpdesk_status"] = importArrayFromDB($this->fields["helpdesk_status"], true);
+         $this->fields["helpdesk_status"] = importArrayFromDB($this->fields["helpdesk_status"]);
+         // Need to be an array not a null value
+         if (is_null($this->fields["helpdesk_status"])) {
+            $this->fields["helpdesk_status"]=array();
+         }
       }
    }
 

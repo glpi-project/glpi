@@ -1498,6 +1498,7 @@ class CommonDBTM extends CommonGLPI {
     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
     *     - colspan for each column (default 2)
     *     - candel : set to false to hide "delete" button
+    *     - canedit : set to false to hide all buttons
     *
    **/
    function showFormButtons ($options=array()) {
@@ -1513,6 +1514,7 @@ class CommonDBTM extends CommonGLPI {
       $params['colspan']      = 2;
       $params['withtemplate'] = '';
       $params['candel']       = true;
+      $params['canedit']      = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1520,8 +1522,12 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      if (!$this->can($ID,'w')) {
+      if (!$params['canedit'] || !$this->can($ID,'w')) {
          echo "</table></div>";
+         // Form Header always open form
+         if (!$params['canedit']) {
+            echo "</form>";
+         }
          return false;
       }
       echo "<tr>";
