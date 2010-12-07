@@ -38,8 +38,12 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 
-   if (!isset($_GET["uID"]) || !haveRight("show_all_planning","1")) {
-      $_GET["uID"] = getLoginUserID();
+   if (!isset($_GET["uID"])) {
+      if (($uid=getLoginUserID()) && !haveRight("show_all_planning","1")) {
+         $_GET["uID"] = $uid;
+      } else {
+         $_GET["uID"] = 0;
+      }
    }
    if (!isset($_GET["gID"])) {
       $_GET["gID"] = 0;
@@ -61,13 +65,12 @@ include (GLPI_ROOT . "/inc/includes.php");
          $_GET['gID'] = "mine";
          break;
    }
-
-if (isset($_REQUEST['genical'])) {
+if (isset($_GET['genical'])) {
    // Send UTF8 Headers
    @header ("content-type:text/calendar; charset=UTF-8");
    @header("Content-disposition: filename=\"glpi.ics\"");
 
-   echo Planning::generateIcal($_GET["uID"],$_GET["gID"],$_GET["usertype"]);
+   echo Planning::generateIcal($_GET["uID"],$_GET["gID"]);
 
 } else {
    commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
