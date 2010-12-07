@@ -334,13 +334,6 @@ class Ticket extends CommonDBTM {
          $input=$ret;
       }
 
-      // Setting a solution or solution type means the ticket is solved
-      if (((isset($input["ticketsolutiontypes_id"]) && $input["ticketsolutiontypes_id"]>0 )
-           || (isset($input["solution"]) && !empty($input["solution"])
-                  && empty($this->fields['solution']))) 
-          && $this->fields['status']!='closed') {
-         $input["status"] = 'solved';
-      }
 
       if (isset($input["items_id"])
           && $input["items_id"]>=0
@@ -425,6 +418,16 @@ class Ticket extends CommonDBTM {
 
    function pre_updateInDB() {
       global $LANG;
+
+      // Setting a solution or solution type means the ticket is solved
+      if ((in_array("ticketsolutiontypes_id",$this->updates))
+          || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
+         if (!in_array('status', $this->updates)) {
+            $this->oldvalues['status'] = $this->fields['status'];
+            $this->updates[] = 'status';
+         }
+         $this->fields['status'] = 'solved';
+      }
 
       if (((in_array("users_id_assign",$this->updates) && $this->input["users_id_assign"]>0)
            || (in_array("suppliers_id_assign",$this->updates)
