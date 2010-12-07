@@ -45,6 +45,7 @@ $LANG['backup'][23]="Помилка Mysql починаючи з";
 $LANG['backup'][24]="Автоматичний редірект… або натисніть."; 
 
 $LANG['bookmark'][1]="закладки"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Ви поки що не заповнили жодної закладки."; 
 $LANG['bookmark'][4]="Нова закладка"; 
 $LANG['bookmark'][5]="Загальні закладки"; 

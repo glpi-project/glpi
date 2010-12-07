@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql 错误启动从";
 $LANG['backup'][24]="自动重定向，否则点击"; 
 
 $LANG['bookmark'][1]="书签"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="您尚未设置任何书签"; 
 $LANG['bookmark'][4]="新建书签"; 
 $LANG['bookmark'][5]="公共书签"; 

@@ -45,6 +45,7 @@ $LANG['backup'][23]="Błąd uruchomienia Mysql";
 $LANG['backup'][24]="Automatyczne przekierowanie, przeciwnie kliknij"; 
 
 $LANG['bookmark'][1]="zakładka"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Nie masz jeszcze zapisanych zakładek."; 
 $LANG['bookmark'][4]="Nowa zakładka"; 
 $LANG['bookmark'][5]="Opublikuj zakładki"; 

@@ -45,6 +45,7 @@ $LANG['backup'][23]="Λάθος στη MySQL ξεκινώντας από";
 $LANG['backup'][24]="Αυτόματη ανακατεύθυνση, αλλιώς κλικάρετε"; 
 
 $LANG['bookmark'][1]="σελιδοδείκτης"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Δεν έχετε καταγράψει το σελιδοδείκτη ακόμα."; 
 $LANG['bookmark'][4]="Νέος σελιδοδείκτης"; 
 $LANG['bookmark'][5]="Δημόσιος σελιδοδείκτης"; 

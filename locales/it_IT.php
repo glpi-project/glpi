@@ -45,6 +45,7 @@ $LANG['backup'][23]="Errore MySQL iniziando da";
 $LANG['backup'][24]="Reindirizzamento automatico, oppure fai clic qui"; 
 
 $LANG['bookmark'][1]="segnalibro"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Non hai segnalibri memorizzati."; 
 $LANG['bookmark'][4]="Nuovo segnalibro"; 
 $LANG['bookmark'][5]="Segnalibri pubblici"; 

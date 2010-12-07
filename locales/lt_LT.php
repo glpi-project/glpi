@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql klaida, pradedant nuo";
 $LANG['backup'][24]="Automatinis peradresavimas, arba spustelti"; 
 
 $LANG['bookmark'][1]="skirtukas"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Nėra išsaugotų skirtukų"; 
 $LANG['bookmark'][4]="Naujas skirtukas"; 
 $LANG['bookmark'][5]="Vieši skirtukai"; 

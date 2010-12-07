@@ -45,6 +45,7 @@ $LANG['backup'][23]="Eroare MySQL incepând de la";
 $LANG['backup'][24]="Redirecționare automată, altfel faceți click"; 
 
 $LANG['bookmark'][1]="Semn de carte"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Nu ați salvat încă semnul de carte"; 
 $LANG['bookmark'][4]="Semn de carte nou"; 
 $LANG['bookmark'][5]="Semn de carte public"; 

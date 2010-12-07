@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql error starting from";
 $LANG['backup'][24]="Automatic redirection, else click"; 
 
 $LANG['bookmark'][1]="bookmark"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="You have not recorded any bookmarks yet."; 
 $LANG['bookmark'][4]="New bookmark"; 
 $LANG['bookmark'][5]="Public bookmarks"; 

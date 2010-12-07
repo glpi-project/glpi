@@ -45,6 +45,7 @@ $LANG['backup'][23]="שגיאה MySQL החל מ";
 $LANG['backup'][24]="העברה אוטומטית, אחרת לחץ"; 
 
 $LANG['bookmark'][1]="סימניה"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="עדיין לא רשמת סימניות."; 
 $LANG['bookmark'][4]="סימניה חדשה"; 
 $LANG['bookmark'][5]="סימניות ציבוריות"; 

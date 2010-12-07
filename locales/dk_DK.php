@@ -45,6 +45,7 @@ $LANG['backup'][23]="MySQL fejl startende ved";
 $LANG['backup'][24]="Automatisk viderestilling, ellers klik"; 
 
 $LANG['bookmark'][1]="bogmærke"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Du har endnu ikke angivet bogmærker"; 
 $LANG['bookmark'][4]="Nyt bogmærke"; 
 $LANG['bookmark'][5]="Offentligt bogmærke"; 

@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql hiba";
 $LANG['backup'][24]="Automatikus átirányítás"; 
 
 $LANG['bookmark'][1]="könyvjelző"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Nem vettél fel könyvjelzőt"; 
 $LANG['bookmark'][4]="Új könyvjelző"; 
 $LANG['bookmark'][5]="Nyilvános könyvjelzők"; 

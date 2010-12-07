@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql greška pokrenuta od";
 $LANG['backup'][24]="Automatska redirekcija, opcija je klik"; 
 
 $LANG['bookmark'][1]="podsjetnik"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Niste još spremili ni jedan podsjetnik."; 
 $LANG['bookmark'][4]="Novi podsjetnik"; 
 $LANG['bookmark'][5]="Javni podsjetnik"; 

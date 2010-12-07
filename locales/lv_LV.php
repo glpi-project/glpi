@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql kļūda sākot no";
 $LANG['backup'][24]="Automātiska pradresācija, lai atceltu - noklikšķiniet"; 
 
 $LANG['bookmark'][1]="grāmatzīme"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Jums nav saglabāta neviena grāmatzīme."; 
 $LANG['bookmark'][4]="Jauna grāmatzīme"; 
 $LANG['bookmark'][5]="Publiskās grāmatzīmes"; 

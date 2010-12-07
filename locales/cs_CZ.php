@@ -45,6 +45,7 @@ $LANG['backup'][23]="Chyba Mysql začíná na";
 $LANG['backup'][24]="Automatické přesměrování, jinak klikněte"; 
 
 $LANG['bookmark'][1]="záložka"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Zatím nemáte žádné záložky."; 
 $LANG['bookmark'][4]="Nová záložka"; 
 $LANG['bookmark'][5]="Public bookmarks"; 

@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql fout begint vanaf";
 $LANG['backup'][24]="Automatische omleiding, anders klikken"; 
 
 $LANG['bookmark'][1]="Bladwijzer"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="U heeft nu nog geen bladwijzer opgenomen."; 
 $LANG['bookmark'][4]="Nieuwe bladwijzer"; 
 $LANG['bookmark'][5]="Publieke bladwijzers"; 

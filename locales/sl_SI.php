@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql napaka, ki se začne iz";
 $LANG['backup'][24]="Samodejno preusmerjanje, drugače kliknite"; 
 
 $LANG['bookmark'][1]="zaznamek"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Niste še shranili nobenega zaznamka."; 
 $LANG['bookmark'][4]="Nov zaznamek"; 
 $LANG['bookmark'][5]="Javni zaznamki"; 

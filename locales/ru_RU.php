@@ -45,6 +45,7 @@ $LANG['backup'][23]="Ошибка MySQL начиная с";
 $LANG['backup'][24]="Автоматическое перенаправление, нажмите для остановки"; 
 
 $LANG['bookmark'][1]="закладка"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Вы пока не заполнили ни одной закладки"; 
 $LANG['bookmark'][4]="Новая закладка"; 
 $LANG['bookmark'][5]="Общие закладки"; 

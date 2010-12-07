@@ -45,6 +45,7 @@ $LANG['backup'][23]="MySQL-Fehler bei";
 $LANG['backup'][24]="Sie werden automatisch weitergeleitet. Wenn nicht, klicken Sie hier"; 
 
 $LANG['bookmark'][1]="Lesezeichen"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Sie haben noch keine Lesezeichen gespeichert."; 
 $LANG['bookmark'][4]="Neues Lesezeichen"; 
 $LANG['bookmark'][5]="Öffentliche Lesezeichen"; 

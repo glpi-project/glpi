@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysql hatasının başlangıcı :";
 $LANG['backup'][24]="Otomotik yönlendirme başlıyor, iptal için tıklayınız"; 
 
 $LANG['bookmark'][1]="Yer imi"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Henüz yerimini kaydetmediniz"; 
 $LANG['bookmark'][4]="Yeni yerimi"; 
 $LANG['bookmark'][5]="Genel yerimleri"; 

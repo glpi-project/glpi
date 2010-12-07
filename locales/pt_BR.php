@@ -45,6 +45,7 @@ $LANG['backup'][23]="Erro do MySQL iniciando de";
 $LANG['backup'][24]="Redirecionamento automático, ou clique"; 
 
 $LANG['bookmark'][1]="Favorito"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="Você ainda não registrou um favorito."; 
 $LANG['bookmark'][4]="Novo favorito"; 
 $LANG['bookmark'][5]="Favorito público"; 

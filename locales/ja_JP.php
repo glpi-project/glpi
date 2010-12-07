@@ -45,6 +45,7 @@ $LANG['backup'][23]="Mysqlエラー：";
 $LANG['backup'][24]="自動転送、さもなくばクリック"; 
 
 $LANG['bookmark'][1]="ブックマーク"; 
+$LANG['bookmark'][2]="Partial load of the bookmark."; 
 $LANG['bookmark'][3]="まだブックマークを行っていません。"; 
 $LANG['bookmark'][4]="新しいブックマーク"; 
 $LANG['bookmark'][5]="公開ブックマーク"; 
