@@ -2643,9 +2643,10 @@ class Ticket extends CommonDBTM {
 
       $this->showTabs($options);
 
-      $canupdate_descr = $canupdate || ($this->numberOfFollowups() == 0
-                                        && $this->numberOfTasks() == 0
-                                        && $this->fields['users_id'] === getLoginUserID());
+      $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
+                                        && $this->fields['users_id'] === getLoginUserID()
+                                        && $this->numberOfFollowups() == 0
+                                        && $this->numberOfTasks() == 0);
       echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
             $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
       echo "<div class='center' id='tabsbody'>";
