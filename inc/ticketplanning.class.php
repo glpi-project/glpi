@@ -410,7 +410,8 @@ class TicketPlanning extends CommonDBTM {
          for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
             if ($fup->getFromDB($data["tickettasks_id"])) {
                if ($job->getFromDBwithData($fup->fields["tickets_id"],0)) {
-                  if (haveAccessToEntity($job->fields["entities_id"])) {
+                  // Do not check entity here because webcal used non authenticated access
+//                  if (haveAccessToEntity($job->fields["entities_id"])) {
                      $interv[$data["begin"]."$$$".$i]["tickettasks_id"] = $data["tickettasks_id"];
                      $interv[$data["begin"]."$$$".$i]["state"]          = $data["state"];
                      $interv[$data["begin"]."$$$".$i]["tickets_id"]     = $fup->fields["tickets_id"];
@@ -437,7 +438,7 @@ class TicketPlanning extends CommonDBTM {
                                                                      :'');
                      $interv[$data["begin"]."$$$".$i]["status"]   = $job->fields["status"];
                      $interv[$data["begin"]."$$$".$i]["priority"] = $job->fields["priority"];
-                  }
+//                  }
                }
             }
          }

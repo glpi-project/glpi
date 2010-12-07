@@ -673,6 +673,10 @@ class Planning {
    static function generateIcal($who,$who_group) {
       global  $DB,$CFG_GLPI, $LANG;
 
+      if ($who==0 && $who_group==0) {
+         return false;
+      }
+
       include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
       $v = new vcalendar();
 
@@ -684,7 +688,7 @@ class Planning {
 
       $v->setProperty( "method", "PUBLISH" );
       $v->setProperty( "version", "2.0" );
-      $v->setProperty( "x-wr-calname", "GLPI_".$who."_".$who_group );
+      $v->setProperty( "x-wr-calname", "GLPI-".$who."-".$who_group );
       $v->setProperty( "calscale", "GREGORIAN" );
       $interv=array();
 
