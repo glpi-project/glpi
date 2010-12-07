@@ -254,6 +254,10 @@ class Ticket extends CommonDBTM {
    function prepareInputForUpdate($input) {
       global $LANG,$CFG_GLPI;
 
+      // Get ticket : needed for comparison
+      $this->getFromDB($input['id']);
+
+
       if (isset($input["date"]) && empty($input["date"])) {
          unset($input["date"]);
       }
@@ -268,7 +272,6 @@ class Ticket extends CommonDBTM {
       // Security checks
       if (is_numeric(getLoginUserID(false)) && !haveRight("assign_ticket","1")) {
          if (isset($input["users_id_assign"])) {
-            $this->getFromDB($input['id']);
             // must own_ticket to grab a non assign ticket
             if ($this->fields['users_id_assign']==0) {
                if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
@@ -331,9 +334,10 @@ class Ticket extends CommonDBTM {
          $input=$ret;
       }
 
-      // Setting a solution type means the ticket is solved
-      if (isset($input["ticketsolutiontypes_id"])
-          && $input["ticketsolutiontypes_id"]>0
+      // Setting a solution or solution type means the ticket is solved
+      if (((isset($input["ticketsolutiontypes_id"]) && $input["ticketsolutiontypes_id"]>0 )
+           || (isset($input["solution"]) && !empty($input["solution"])
+                  && empty($this->fields['solution']))) 
           && $this->fields['status']!='closed') {
          $input["status"] = 'solved';
       }
