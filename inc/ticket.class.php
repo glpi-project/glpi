@@ -2526,7 +2526,7 @@ class Ticket extends CommonDBTM {
       global $LANG;
 
       $this->check($this->getField('id'), 'r');
-      $canedit = $this->can($this->getField('id'), 'w');
+      $canedit = haveRight('update_ticket',1);
 
       $options = array('colspan' => 1);
       $this->showFormHeader($options);
@@ -2539,38 +2539,47 @@ class Ticket extends CommonDBTM {
       echo "<td class='b'>".self::getRealtime($this->fields["realtime"])."</td>";
       echo "</tr>";
 
-      if ($canedit) {  // admin = oui on affiche les couts liés à l'interventions
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['job'][40]."&nbsp;: </td>";
-
-         echo "<td><input type='text' maxlength='100' size='15' name='cost_time' value='".
-                    formatNumber($this->fields["cost_time"],true)."'></td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['job'][41]."&nbsp;: </td>";
-
-         echo "<td><input type='text' maxlength='100' size='15' name='cost_fixed' value='".
-                    formatNumber($this->fields["cost_fixed"],true)."'></td>";
-         echo "</tr>\n";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['job'][42]."&nbsp;: </td>";
-
-         echo "<td><input type='text' maxlength='100' size='15' name='cost_material' value='".
-                    formatNumber($this->fields["cost_material"],true)."'></td>";
-         echo "</tr>\n";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td >".$LANG['job'][43]."&nbsp;: </td>";
-
-         echo "<td class='b'>";
-         echo self::trackingTotalCost($this->fields["realtime"], $this->fields["cost_time"],
-                                      $this->fields["cost_fixed"],$this->fields["cost_material"]);
-         echo "</td>";
-         echo "</tr>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][40]."&nbsp;: </td><td>";
+      if ($canedit) {
+         echo "<input type='text' maxlength='100' size='15' name='cost_time' value='".
+                     formatNumber($this->fields["cost_time"],true)."'>";
+      } else {
+         echo formatNumber($this->fields["cost_time"]);
       }
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][41]."&nbsp;: </td><td>";
+      if ($canedit) {
+         echo "<input type='text' maxlength='100' size='15' name='cost_fixed' value='".
+                     formatNumber($this->fields["cost_fixed"],true)."'>";
+      } else {
+         echo formatNumber($this->fields["cost_fixed"]);
+      }
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['job'][42]."&nbsp;: </td><td>";
+      if ($canedit) {
+         echo "<input type='text' maxlength='100' size='15' name='cost_material' value='".
+                     formatNumber($this->fields["cost_material"],true)."'>";
+      } else {
+         echo formatNumber($this->fields["cost_material"]);
+      }
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >".$LANG['job'][43]."&nbsp;: </td>";
+
+      echo "<td class='b'>";
+      echo self::trackingTotalCost($this->fields["realtime"], $this->fields["cost_time"],
+                                    $this->fields["cost_fixed"],$this->fields["cost_material"]);
+      echo "</td>";
+      echo "</tr>\n";
+
       $options['candel'] = false;
+      $options['canedit'] = $canedit;
       $this->showFormButtons($options);
    }
 
