@@ -643,7 +643,7 @@ class TicketValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
-         echo "<td>". $this->fields["comment_validation"]. "</td></tr>";
+         echo "<td>". $this->fields["comment_submission"]. "</td></tr>";
       }
 
       if ($ID>0) {
