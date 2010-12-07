@@ -2148,7 +2148,6 @@ class Ticket extends CommonDBTM {
       $canedit = $this->canSolve();
 
       $options = array();
-      $options['canedit'] = $canedit;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'>";
@@ -4775,8 +4774,7 @@ class Ticket extends CommonDBTM {
     */
    function canSolve() {
 
-      // ALways permit SOlution change
-      return (/*$this->fields["status"] != 'closed'
+      return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
               &&*/ ($this->can($this->getField('id'), 'w')
                && isset($_SESSION['glpiactiveprofile']['helpdesk_status']) // Not set for post-only
                && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])
