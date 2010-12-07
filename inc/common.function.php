@@ -983,7 +983,8 @@ function html_clean($value) {
    // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
    $value = str_replace("&#8217;","'",$value);
 
-   $value = preg_replace("/ +/u", " ", $value);
+// Problem with this regex : may crash
+//   $value = preg_replace("/ +/u", " ", $value);
    $value = preg_replace("/\n{2,}/", "\n\n", $value,-1);
    return trim($value);
 }
