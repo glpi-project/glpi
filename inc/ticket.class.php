@@ -4777,8 +4777,8 @@ class Ticket extends CommonDBTM {
       return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
               &&*/ ($this->can($this->getField('id'), 'w')
                && isset($_SESSION['glpiactiveprofile']['helpdesk_status']) // Not set for post-only
-               && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])
-                  || $_SESSION['glpiactiveprofile']['helpdesk_status'][$current]['solved'])));
+               && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
+                  || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
    }
 
    /**
