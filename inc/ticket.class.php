@@ -3294,23 +3294,9 @@ class Ticket extends CommonDBTM {
          $showgrouplink = 1;
       }
 
-      $icontitle = $LANG['common'][35];
-      switch ($type) {
-         case self::REQUESTER :
-            $icontitle = $LANG['setup'][249];
-            break;
 
-         case self::OBSERVER :
-            $icontitle = $LANG['setup'][251];
-            break;
+      $groupicon = self::getActorIcon('group',$type);
 
-         case self::ASSIGN :
-            $icontitle = $LANG['setup'][248];
-            break;
-      }
-
-      $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png' alt=\"$icontitle\"
-                     title=\"$icontitle\" >";
       $group = new Group();
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $k => $d) {
@@ -3331,6 +3317,58 @@ class Ticket extends CommonDBTM {
 
    }
 
+   /**
+    * show Icon for Actor
+    *
+    * @param $user_group string : 'user or 'group'
+    * @param $type integer : user/group type
+    *
+    * @return nothing display
+   **/
+   static function getActorIcon($user_group,$type) {
+      global $LANG,$CFG_GLPI;
+
+      switch ($user_group) {
+         case 'user' :
+            $icontitle = $LANG['common'][34].' - '.$type;
+            switch ($type) {
+               case self::REQUESTER :
+                  $icontitle = $LANG['common'][34].' - '.$LANG['job'][4];
+                  break;
+
+               case self::OBSERVER :
+                  $icontitle = $LANG['common'][34].' - '.$LANG['common'][104];
+                  break;
+
+               case self::ASSIGN :
+                  $icontitle = $LANG['job'][6];
+                  break;
+            }
+            return "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'
+                        alt=\"$icontitle\" title=\"$icontitle\" >";
+
+         case 'group' :
+            $icontitle = $LANG['common'][35];
+            switch ($type) {
+               case self::REQUESTER :
+                  $icontitle = $LANG['setup'][249];
+                  break;
+
+               case self::OBSERVER :
+                  $icontitle = $LANG['setup'][251];
+                  break;
+
+               case self::ASSIGN :
+                  $icontitle = $LANG['setup'][248];
+                  break;
+            }
+            return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'
+                        alt=\"$icontitle\" title=\"$icontitle\">";
+
+      }
+      return '';
+
+   }
 
    /**
     * show tooltip for user notification informations
@@ -3347,23 +3385,8 @@ class Ticket extends CommonDBTM {
       if (haveRight('user','r')) {
          $showuserlink = 2;
       }
+      $usericon = self::getActorIcon('user',$type);
 
-      $icontitle = $LANG['common'][34].' - '.$type;
-      switch ($type) {
-         case self::REQUESTER :
-            $icontitle = $LANG['common'][34].' - '.$LANG['job'][4];
-            break;
-
-         case self::OBSERVER :
-            $icontitle = $LANG['common'][34].' - '.$LANG['common'][104];
-            break;
-
-         case self::ASSIGN :
-            $icontitle = $LANG['job'][6];
-            break;
-      }
-      $usericon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png' alt=\"$icontitle\"
-                     title=\"$icontitle\" >";
       $user = new User;
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
@@ -3409,9 +3432,6 @@ class Ticket extends CommonDBTM {
 
    function showActorsPartForm($ID,$options) {
       global $LANG, $CFG_GLPI;
-
-      $usericon  = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'>";
-      $groupicon = "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'>";
 
       $showuserlink = 0;
       if (haveRight('user','r')) {
@@ -3490,7 +3510,7 @@ class Ticket extends CommonDBTM {
 
       // Requester
       if (!$ID) {
-         echo "$usericon&nbsp;";
+         echo self::getActorIcon('user',self::REQUESTER)."&nbsp;";
          if (haveRight("update_ticket","1")) {
             //List all users in the active entities
             $rand = User::dropdown(array('name'          => '_users_id_requester',
@@ -3542,7 +3562,7 @@ class Ticket extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-         echo "$groupicon&nbsp;";
+         echo self::getActorIcon('group',self::REQUESTER)."&nbsp;";
          Dropdown::show('Group', array('name'   => '_groups_id_requester',
                                        'value'  => $options["_groups_id_requester"],
                                        'entity' => $this->fields["entities_id"]));
@@ -3574,7 +3594,7 @@ class Ticket extends CommonDBTM {
       // Observer
       if (!$ID) {
          if (haveRight("update_ticket","1")) {
-            echo "$usericon&nbsp;";
+            echo self::getActorIcon('user',self::OBSERVER)."&nbsp;";
 
             //List all users in the active entities
             $rand = User::dropdown(array('name'        => '_users_id_observer',
@@ -3611,7 +3631,7 @@ class Ticket extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         echo "$groupicon&nbsp;";
+         echo self::getActorIcon('group',self::OBSERVER)."&nbsp;";
          Dropdown::show('Group', array('name'   => '_groups_id_observer',
                                        'value'  => $options["_groups_id_observer"],
                                        'entity' => $this->fields["entities_id"]));
@@ -3646,7 +3666,7 @@ class Ticket extends CommonDBTM {
       // Assign User
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
-            echo "$usericon&nbsp;";
+            echo self::getActorIcon('user',self::ASSIGN)."&nbsp;";
             $rand = User::dropdown(array('name'        => '_users_id_assign',
                                          'value'       => $options["_users_id_assign"],
                                          'right'       => 'own_ticket',
@@ -3691,7 +3711,7 @@ class Ticket extends CommonDBTM {
       // Assign Groups
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
-            echo "$groupicon&nbsp;";
+            echo self::getActorIcon('group',self::ASSIGN)."&nbsp;";
             Dropdown::show('Group', array('name'   => '_groups_id_assign',
                                           'value'  => $options["_groups_id_assign"],
                                           'entity' => $this->fields["entities_id"]));
