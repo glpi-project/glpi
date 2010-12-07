@@ -637,6 +637,10 @@ class Planning {
    static function generateIcal($who,$who_group) {
       global  $DB,$CFG_GLPI, $LANG;
 
+      if ($who==0 && $who_group==0) {
+         return false;
+      }
+
       include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
       $v = new vcalendar();
 
