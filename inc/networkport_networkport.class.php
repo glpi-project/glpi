@@ -184,10 +184,11 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          }
       }
 
+      $changes[0] = 0;
+      $changes[1] = "";
+
       if ($sourcehistory) {
 
-         $changes[0] = 0;
-         $changes[1] = "";
          $changes[2] = $destname;
 
          if ($ps->fields["itemtype"] == 'NetworkEquipment') {
