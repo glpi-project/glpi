@@ -299,8 +299,8 @@ class Bookmark extends CommonDBTM {
                      $partial_load   = true;
                   } else {
                      $query_tab['field2'][$new_key]      = $val;
-                     $query_tab['searchtype2'][$new_key] = $query_tab_save['searchtype'][$key];
-                     $query_tab['contains2'][$new_key]   = $query_tab_save['contains'][$key];
+                     $query_tab['searchtype2'][$new_key] = $query_tab_save['searchtype2'][$key];
+                     $query_tab['contains2'][$new_key]   = $query_tab_save['contains2'][$key];
                      $query_tab['link2'][$new_key]       = $query_tab_save['link2'][$key];
                      $query_tab['itemtype2'][$new_key]   = $query_tab_save['itemtype2'][$key];
                   }
