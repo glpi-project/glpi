@@ -986,6 +986,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $tmp['##validation.submissiondate##']    = convDateTime($validation['submission_date']);
             $tmp['##validation.commentsubmission##'] = $validation['comment_submission'];
             $tmp['##validation.validationdate##']    = convDateTime($validation['validation_date']);
+            $tmp['##validation.validator##']         =  html_clean(getUserName($validation['users_id_validate']));
             $tmp['##validation.commentvalidation##'] = $validation['comment_validation'];
             $this->datas['validations'][] = $tmp;
          }
@@ -1271,6 +1272,7 @@ class NotificationTargetTicket extends NotificationTarget {
                    'validation.submissiondate'    => $LANG['validation'][3],
                    'validation.commentsubmission' => $LANG['validation'][5],
                    'validation.validationdate'    => $LANG['validation'][4],
+                   'validation.validator'         => $LANG['validation'][21],
                    'validation.commentvalidation' => $LANG['validation'][6]);
 
       foreach ($tags as $tag => $label) {
