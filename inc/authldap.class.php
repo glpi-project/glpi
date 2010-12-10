@@ -715,7 +715,7 @@ class AuthLDAP extends CommonDBTM {
                       'language_field'  => 'language');
 
       foreach ($fields as $key => $val) {
-         if (isset($authtype_array[$key])) {
+         if (isset($authtype_array[$key]) && !empty($authtype_array[$key])) {
             $ret[$val] = $authtype_array[$key];
          }
       }
