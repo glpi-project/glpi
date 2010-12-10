@@ -250,21 +250,21 @@ class Bookmark extends CommonDBTM {
          case BOOKMARK_SEARCH :
             // Check if all datas are valid
 
-            $opt = Search::getCleanedOptions($query_tab['itemtype']);
+            $opt = Search::getCleanedOptions($this->fields['itemtype']);
 
             $query_tab_save = $query_tab;
             $partial_load   = false;
             // Standard search
-            if (count($query_tab_save['field'])) {
+            if (isset($query_tab_save['field']) && count($query_tab_save['field'])) {
                unset($query_tab['field']);
                unset($query_tab['searchtype']);
                unset($query_tab['contains']);
                unset($query_tab['link']);
                $new_key=0;
                foreach ($query_tab_save['field'] as $key => $val) {
-                  if (!isset($opt[$val])) {
+                  if ($val != 'view' && $val != 'all' && !isset($opt[$val])) {
                      $query_tab['glpisearchcount']--;
-                     $partial_load   = true;
+                     $partial_load   = true; 
                   } else {
                      $query_tab['field'][$new_key]      = $val;
                      $query_tab['searchtype'][$new_key] = $query_tab_save['searchtype'][$key];
@@ -280,7 +280,7 @@ class Bookmark extends CommonDBTM {
                $query_tab['glpisearchcount'] = 1;
             }
             // Meta search
-            if (count($query_tab_save['field2'])) {
+            if (isset($query_tab_save['field2']) && count($query_tab_save['field2'])) {
                $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
 
                unset($query_tab['field2']);
