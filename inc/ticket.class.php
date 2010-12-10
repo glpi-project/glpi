@@ -1651,7 +1651,7 @@ class Ticket extends CommonDBTM {
       $tab[57]['datatype']     = 'datetime';
       $tab[57]['forcegroupby'] = true;
 
-      $tab[58]['table']         = 'glpi_users_validation';
+      $tab[58]['table']         = 'glpi_ticketvalidations';
       $tab[58]['field']         = 'name';
       $tab[58]['linkfield']     = 'users_id';
       $tab[58]['name']          = $LANG['validation'][0]." - ".$LANG['job'][4];
@@ -1660,7 +1660,7 @@ class Ticket extends CommonDBTM {
       $tab[58]['forcegroupby']  = true;
       $tab[58]['massiveaction'] = false;
 
-      $tab[59]['table']         = 'glpi_users_validation';
+      $tab[59]['table']         = 'glpi_ticketvalidations';
       $tab[59]['field']         = 'name';
       $tab[59]['linkfield']     = 'users_id_validate';
       $tab[59]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][21];
