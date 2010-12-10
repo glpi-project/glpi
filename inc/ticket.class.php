@@ -2313,7 +2313,6 @@ class Ticket extends CommonDBTM {
          $tab[29]['field']         = 'name';
          $tab[29]['name']          = $LANG['job'][9]." - ".$LANG['job'][44];
          $tab[29]['forcegroupby']  = true;
-         $tab[29]['realtable']     = 'glpi_requesttypes';
          $tab[29]['massiveaction'] = false;
          $tab[29]['joinparams']    = array('beforejoin'
                                            => array('table'      => 'glpi_ticketfollowups',
