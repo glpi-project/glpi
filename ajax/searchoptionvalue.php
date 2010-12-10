@@ -60,11 +60,6 @@ if (isset($_REQUEST['searchtype'])) {
    $display   = false;
 
 
-   // Fix table name
-   if (isset($searchopt['realtable'])) {
-      $searchopt['table'] = $searchopt['realtable'];
-   }
-
    switch ($_REQUEST['searchtype']) {
       case "equals" :
       case "notequals" :
