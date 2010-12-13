@@ -108,19 +108,6 @@ class User extends CommonDBTM {
    }
 
    /**
-    * Constructor
-   **/
-   function __construct() {
-      global $CFG_GLPI;
-
-      if (isset ($CFG_GLPI["language"])) {
-         $this->fields['language'] = $CFG_GLPI["language"];
-      } else {
-         $this->fields['language'] = "en_GB";
-      }
-   }
-
-   /**
    * Compute preferences for the current user mixing config and user data
    **/
    function computePreferences () {
@@ -162,7 +149,15 @@ class User extends CommonDBTM {
    }
 
    function post_getEmpty () {
+      global $CFG_GLPI;
+
       $this->fields["is_active"] = 1;
+
+      if (isset ($CFG_GLPI["language"])) {
+         $this->fields['language'] = $CFG_GLPI["language"];
+      } else {
+         $this->fields['language'] = "en_GB";
+      }
    }
 
    function pre_deleteItem() {
