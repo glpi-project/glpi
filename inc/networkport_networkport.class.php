@@ -46,12 +46,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    public $itemtype_2 = 'NetworkPort';
    public $items_id_2 = 'networkports_id_2';
 
+
    /**
     * Retrieve an item from the database
     *
-    *@param $ID ID of the item to get
+    * @param $ID ID of the item to get
     *
-    *@return true if succeed else false
+    * @return true if succeed else false
    **/
    function getFromDBForNetworkPort ($ID) {
       global $DB;
@@ -93,13 +94,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       }
 
       // Check netpoint for copy
-      $source = "";
+      $source      = "";
       $destination = "";
-      if (isset ($ps->fields['netpoints_id']) && $ps->fields['netpoints_id'] != 0) {
+      if (isset($ps->fields['netpoints_id']) && $ps->fields['netpoints_id'] != 0) {
          $source = $ps->fields['netpoints_id'];
       }
 
-      if (isset ($pd->fields['netpoints_id']) && $pd->fields['netpoints_id'] != 0) {
+      if (isset($pd->fields['netpoints_id']) && $pd->fields['netpoints_id'] != 0) {
          $destination = $pd->fields['netpoints_id'];
       }
 
@@ -109,15 +110,15 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       if (empty ($source) && !empty ($destination)) {
          $ps->fields['netpoints_id'] = $destination;
          $ps->updateInDB($updates);
-         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;: " . $LANG['networking'][51]);
+         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);
 
       } else if (!empty ($source) && empty ($destination)) {
          $pd->fields['netpoints_id'] = $source;
          $pd->updateInDB($updates);
-         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;: " . $LANG['networking'][51]);
+         addMessageAfterRedirect($LANG['connect'][15] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);
 
       } else if ($source != $destination) {
-         addMessageAfterRedirect($LANG['connect'][16] . "&nbsp;: " . $LANG['networking'][51]);
+         addMessageAfterRedirect($LANG['connect'][16] . "&nbsp;:&nbsp;" . $LANG['networking'][51]);
       }
 
       // Manage VLAN : use networkings one as defaults
@@ -125,13 +126,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $npdev = -1;
 
       if ($ps->fields["itemtype"] != 'NetworkEquipment'
-         && $pd->fields["itemtype"] == 'NetworkEquipment') {
+          && $pd->fields["itemtype"] == 'NetworkEquipment') {
          $npnet = $dport;
          $npdev = $sport;
       }
 
       if ($pd->fields["itemtype"] != 'NetworkEquipment'
-         && $ps->fields["itemtype"] == 'NetworkEquipment') {
+          && $ps->fields["itemtype"] == 'NetworkEquipment') {
          $npnet = $sport;
          $npdev = $dport;
       }
@@ -152,9 +153,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
                $DB->query($query);
 
                while ($data = $DB->fetch_array($result)) {
-                  $query = "INSERT INTO
-                            `glpi_networkports_vlans` (`networkports_id`, `vlans_id`)
-                            VALUES ('$npdev','" . $data['vlans_id'] . "')";
+                  $query = "INSERT INTO `glpi_networkports_vlans`
+                                   (`networkports_id`, `vlans_id`)
+                            VALUES ('$npdev', '".$data['vlans_id']."')";
                   $DB->query($query);
                }
             }
@@ -188,7 +189,6 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $changes[1] = "";
 
       if ($sourcehistory) {
-
          $changes[2] = $destname;
 
          if ($ps->fields["itemtype"] == 'NetworkEquipment') {
@@ -227,19 +227,18 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $np1 = new NetworkPort;
       $np2 = new NetworkPort;
       if ($np1->getFromDB($this->fields['networkports_id_1'])
-         && $np2->getFromDB($this->fields['networkports_id_2'])) {
+          && $np2->getFromDB($this->fields['networkports_id_2'])) {
          $npnet = NULL;
          $npdev = NULL;
-         if ($np1->fields["itemtype"] != 'NetworkEquipment'
-            && $np2->fields["itemtype"] == 'NetworkEquipment') {
 
+         if ($np1->fields["itemtype"] != 'NetworkEquipment'
+             && $np2->fields["itemtype"] == 'NetworkEquipment') {
             $npnet = $np2;
             $npdev = $np1;
          }
 
          if ($np2->fields["itemtype"] != 'NetworkEquipment'
-            && $np1->fields["itemtype"] == 'NetworkEquipment') {
-
+             && $np1->fields["itemtype"] == 'NetworkEquipment') {
             $npnet = $np2;
             $npdev = $np1;
          }
@@ -297,7 +296,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          if (class_exists($np1->fields["itemtype"])) {
             $item = new $np1->fields["itemtype"];
             if ($item->getFromDB($np1->fields["items_id"])) {
-               $name = $item->getName();
+               $name      = $item->getName();
                $dohistory = $item->dohistory;
             }
          }
@@ -325,9 +324,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    /**
     * Get port opposite port ID
     *
-    *@param $ID networking port ID
+    * @param $ID networking port ID
     *
-    *@return integer ID of opposite port. false if not found
+    * @return integer ID of opposite port. false if not found
    **/
    function getOppositeContact ($ID) {
       global $DB;

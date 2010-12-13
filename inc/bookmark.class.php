@@ -268,7 +268,7 @@ class Bookmark extends CommonDBTM {
                   } else {
                      $query_tab['field'][$new_key]      = $val;
                      if (isset($query_tab_save['searchtype'])
-                        && isset($query_tab_save['searchtype'][$key])) {
+                         && isset($query_tab_save['searchtype'][$key])) {
                         $query_tab['searchtype'][$new_key] = $query_tab_save['searchtype'][$key];
                      }
                      $query_tab['contains'][$new_key] = $query_tab_save['contains'][$key];

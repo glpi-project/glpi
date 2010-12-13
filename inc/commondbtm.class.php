@@ -735,17 +735,15 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($addMessAfterRedirect) {
-
          if (($name=$this->getName()) == NOT_AVAILABLE) {
-            $this->fields['name']=$this->getTypeName()." : ".$LANG['common'][2]
+            $this->fields['name'] = $this->getTypeName()." : ".$LANG['common'][2]
                                     ." ".$this->fields['id'];
-         } 
-         $display=(isset($this->input['_no_message_link'])?$this->getNameID()
-                                                         :$this->getLink());
+         }
+         $display = (isset($this->input['_no_message_link'])?$this->getNameID()
+                                                            :$this->getLink());
 
          // Do not display quotes
-         addMessageAfterRedirect($LANG['common'][70]."&nbsp;: ".
-                                       stripslashes($display));
+         addMessageAfterRedirect($LANG['common'][70]."&nbsp;: ".stripslashes($display));
 
       }
    }
