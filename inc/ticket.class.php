@@ -132,18 +132,20 @@ class Ticket extends CommonDBTM {
              );
    }
 
+
    /**
     * Is the current user have right to solve the current ticket ?
     *
     * @return boolean
-    */
+   **/
    function canSolve() {
       return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
               &&*/ ($this->can($this->getField('id'), 'w')
                && isset($_SESSION['glpiactiveprofile']['helpdesk_status']) // Not set for post-only
                && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
-                  || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
+                   || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
    }
+
 
    /**
     * Is the current user have right to approve solution of the current ticket ?
@@ -736,14 +738,13 @@ class Ticket extends CommonDBTM {
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
 
-
       // Setting a solution or solution type means the ticket is solved
       if ((in_array("ticketsolutiontypes_id",$this->updates))
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
 
          if (!in_array('status', $this->updates)) {
             $this->oldvalues['status'] = $this->fields['status'];
-            $this->updates[] = 'status';
+            $this->updates[]           = 'status';
          }
 
          $entitydata = new EntityData();
@@ -2838,7 +2839,7 @@ class Ticket extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      $options['candel'] = false;
+      $options['candel']  = false;
       $options['canedit'] = $canedit;
       $this->showFormButtons($options);
    }
@@ -3195,7 +3196,7 @@ class Ticket extends CommonDBTM {
       global $LANG;
 
       $this->check($this->getField('id'), 'r');
-      $canedit = haveRight('update_ticket',1);
+      $canedit = haveRight('update_ticket', 1);
 
       $options = array('colspan' => 1);
       $this->showFormHeader($options);
@@ -3204,7 +3205,6 @@ class Ticket extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='50%'>".$LANG['job'][20]."&nbsp;: </td>";
-
       echo "<td class='b'>".self::getActionTime($this->fields["actiontime"])."</td>";
       echo "</tr>";
 
@@ -3212,7 +3212,7 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['job'][40]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_time' value='".
-                     formatNumber($this->fields["cost_time"],true)."'>";
+                formatNumber($this->fields["cost_time"], true)."'>";
       } else {
          echo formatNumber($this->fields["cost_time"]);
       }
@@ -3222,7 +3222,7 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['job'][41]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_fixed' value='".
-                     formatNumber($this->fields["cost_fixed"],true)."'>";
+                formatNumber($this->fields["cost_fixed"], true)."'>";
       } else {
          echo formatNumber($this->fields["cost_fixed"]);
       }
@@ -3232,7 +3232,7 @@ class Ticket extends CommonDBTM {
       echo "<td>".$LANG['job'][42]."&nbsp;: </td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_material' value='".
-                     formatNumber($this->fields["cost_material"],true)."'>";
+                formatNumber($this->fields["cost_material"], true)."'>";
       } else {
          echo formatNumber($this->fields["cost_material"]);
       }
@@ -3240,14 +3240,12 @@ class Ticket extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td >".$LANG['job'][43]."&nbsp;: </td>";
-
       echo "<td class='b'>";
       echo self::trackingTotalCost($this->fields["actiontime"], $this->fields["cost_time"],
-                                    $this->fields["cost_fixed"],$this->fields["cost_material"]);
-      echo "</td>";
-      echo "</tr>\n";
+                                   $this->fields["cost_fixed"], $this->fields["cost_material"]);
+      echo "</td></tr>\n";
 
-      $options['candel'] = false;
+      $options['candel']  = false;
       $options['canedit'] = $canedit;
       $this->showFormButtons($options);
    }
@@ -3311,16 +3309,14 @@ class Ticket extends CommonDBTM {
    function showGroupsAssociated($type, $canedit) {
       global $CFG_GLPI,$LANG;
 
-
       $showgrouplink = 0;
       if (haveRight('group','r')) {
          $showgrouplink = 1;
       }
 
-
       $groupicon = self::getActorIcon('group',$type);
+      $group     = new Group();
 
-      $group = new Group();
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $k => $d) {
             echo "$groupicon&nbsp;";
@@ -3340,6 +3336,7 @@ class Ticket extends CommonDBTM {
 
    }
 
+
    /**
     * show Icon for Actor
     *
@@ -3348,8 +3345,8 @@ class Ticket extends CommonDBTM {
     *
     * @return nothing display
    **/
-   static function getActorIcon($user_group,$type) {
-      global $LANG,$CFG_GLPI;
+   static function getActorIcon($user_group, $type) {
+      global $LANG, $CFG_GLPI;
 
       switch ($user_group) {
          case 'user' :
@@ -3368,7 +3365,7 @@ class Ticket extends CommonDBTM {
                   break;
             }
             return "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'
-                        alt=\"$icontitle\" title=\"$icontitle\" >";
+                     alt=\"$icontitle\" title=\"$icontitle\" >";
 
          case 'group' :
             $icontitle = $LANG['common'][35];
@@ -3386,12 +3383,12 @@ class Ticket extends CommonDBTM {
                   break;
             }
             return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'
-                        alt=\"$icontitle\" title=\"$icontitle\">";
-
+                      alt=\"$icontitle\" title=\"$icontitle\">";
       }
       return '';
 
    }
+
 
    /**
     * show tooltip for user notification informations
@@ -3409,8 +3406,7 @@ class Ticket extends CommonDBTM {
          $showuserlink = 2;
       }
       $usericon = self::getActorIcon('user',$type);
-
-      $user = new User;
+      $user     = new User;
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $k => $d) {
@@ -3533,7 +3529,7 @@ class Ticket extends CommonDBTM {
 
       // Requester
       if (!$ID) {
-         echo self::getActorIcon('user',self::REQUESTER)."&nbsp;";
+         echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
          if (haveRight("update_ticket","1")) {
             //List all users in the active entities
             $rand = User::dropdown(array('name'          => '_users_id_requester',
@@ -3585,7 +3581,7 @@ class Ticket extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-         echo self::getActorIcon('group',self::REQUESTER)."&nbsp;";
+         echo self::getActorIcon('group', self::REQUESTER)."&nbsp;";
          Dropdown::show('Group', array('name'   => '_groups_id_requester',
                                        'value'  => $options["_groups_id_requester"],
                                        'entity' => $this->fields["entities_id"]));
@@ -3617,7 +3613,7 @@ class Ticket extends CommonDBTM {
       // Observer
       if (!$ID) {
          if (haveRight("update_ticket","1")) {
-            echo self::getActorIcon('user',self::OBSERVER)."&nbsp;";
+            echo self::getActorIcon('user', self::OBSERVER)."&nbsp;";
 
             //List all users in the active entities
             $rand = User::dropdown(array('name'        => '_users_id_observer',
@@ -3654,7 +3650,7 @@ class Ticket extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         echo self::getActorIcon('group',self::OBSERVER)."&nbsp;";
+         echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
          Dropdown::show('Group', array('name'   => '_groups_id_observer',
                                        'value'  => $options["_groups_id_observer"],
                                        'entity' => $this->fields["entities_id"]));
@@ -3689,7 +3685,7 @@ class Ticket extends CommonDBTM {
       // Assign User
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
-            echo self::getActorIcon('user',self::ASSIGN)."&nbsp;";
+            echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
             $rand = User::dropdown(array('name'        => '_users_id_assign',
                                          'value'       => $options["_users_id_assign"],
                                          'right'       => 'own_ticket',
@@ -3734,7 +3730,7 @@ class Ticket extends CommonDBTM {
       // Assign Groups
       if (!$ID) {
          if (haveRight("assign_ticket","1")) {
-            echo self::getActorIcon('group',self::ASSIGN)."&nbsp;";
+            echo self::getActorIcon('group', self::ASSIGN)."&nbsp;";
             Dropdown::show('Group', array('name'   => '_groups_id_assign',
                                           'value'  => $options["_groups_id_assign"],
                                           'entity' => $this->fields["entities_id"]));
@@ -3787,7 +3783,7 @@ class Ticket extends CommonDBTM {
       $this->showTabs($options);
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
-                                        && $this->isUser(self::REQUESTER,getLoginUserID())
+                                        && $this->isUser(self::REQUESTER, getLoginUserID())
                                         && $this->numberOfFollowups() == 0
                                         && $this->numberOfTasks() == 0);
 
@@ -4352,7 +4348,7 @@ class Ticket extends CommonDBTM {
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
             echo "</td><td class='tab_bg_2 center' colspan='2'>";
             echo "<input type='button' value=\"".$LANG['buttons'][16]."\" class='submit'
-                    onclick=\"window.location='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'\">";
+                   onclick=\"window.location='".$CFG_GLPI["root_doc"]."/front/ticket.form.php'\">";
          }
          echo "</td></tr>";
       }

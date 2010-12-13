@@ -237,12 +237,12 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * Prepare query to use depending of the type
-   *
-   * @param $type bookmark type
-   * @param $query_tab parameters array
-   *
-   * @return prepared query array
+    * Prepare query to use depending of the type
+    *
+    * @param $type bookmark type
+    * @param $query_tab parameters array
+    *
+    * @return prepared query array
    **/
    function prepareQueryToUse($type, $query_tab) {
       global $LANG;
@@ -250,7 +250,6 @@ class Bookmark extends CommonDBTM {
       switch ($type) {
          case BOOKMARK_SEARCH :
             // Check if all datas are valid
-
             $opt = Search::getCleanedOptions($this->fields['itemtype']);
 
             $query_tab_save = $query_tab;
@@ -261,20 +260,20 @@ class Bookmark extends CommonDBTM {
                unset($query_tab['searchtype']);
                unset($query_tab['contains']);
                unset($query_tab['link']);
-               $new_key=0;
+               $new_key = 0;
                foreach ($query_tab_save['field'] as $key => $val) {
                   if ($val != 'view' && $val != 'all' && !isset($opt[$val])) {
                      $query_tab['glpisearchcount']--;
-                     $partial_load   = true;
+                     $partial_load = true;
                   } else {
                      $query_tab['field'][$new_key]      = $val;
-                     if (isset($query_tab_save['searchtype']) 
+                     if (isset($query_tab_save['searchtype'])
                         && isset($query_tab_save['searchtype'][$key])) {
                         $query_tab['searchtype'][$new_key] = $query_tab_save['searchtype'][$key];
                      }
-                     $query_tab['contains'][$new_key]   = $query_tab_save['contains'][$key];
+                     $query_tab['contains'][$new_key] = $query_tab_save['contains'][$key];
                      if (isset($query_tab_save['link'][$key])) {
-                        $query_tab['link'][$new_key]   = $query_tab_save['link'][$key];
+                        $query_tab['link'][$new_key] = $query_tab_save['link'][$key];
                      }
                      $new_key++;
                   }
@@ -284,7 +283,7 @@ class Bookmark extends CommonDBTM {
                $query_tab['glpisearchcount'] = 1;
             }
             // Meta search
-            if (isset($query_tab_save['field2']) &&count($query_tab_save['field2'])) {
+            if (isset($query_tab_save['field2']) && count($query_tab_save['field2'])) {
                $meta_ok = Search::getMetaItemtypeAvailable($query_tab['itemtype']);
 
                unset($query_tab['field2']);
@@ -292,31 +291,30 @@ class Bookmark extends CommonDBTM {
                unset($query_tab['contains2']);
                unset($query_tab['link2']);
                unset($query_tab['itemtype2']);
-               $new_key=0;
+               $new_key = 0;
                foreach ($query_tab_save['field2'] as $key => $val) {
-                  
+
                   $opt = Search::getCleanedOptions($query_tab_save['itemtype2'][$key]);
                   // Use if meta type is valid and option available
-                  if (!in_array($query_tab_save['itemtype2'][$key],$meta_ok)
-                        || !isset($opt[$val])) {
+                  if (!in_array($query_tab_save['itemtype2'][$key],$meta_ok) || !isset($opt[$val])) {
                      $query_tab['glpisearchcount2']--;
-                     $partial_load   = true;
+                     $partial_load = true;
                   } else {
-                     $query_tab['field2'][$new_key]      = $val;
-                     if (isset($query_tab_save['searchtype2']) 
-                        && isset($query_tab_save['searchtype2'][$key])) {
+                     $query_tab['field2'][$new_key] = $val;
+                     if (isset($query_tab_save['searchtype2'])
+                         && isset($query_tab_save['searchtype2'][$key])) {
                         $query_tab['searchtype2'][$new_key] = $query_tab_save['searchtype2'][$key];
                      }
-                     $query_tab['contains2'][$new_key]   = $query_tab_save['contains2'][$key];
-                     $query_tab['link2'][$new_key]       = $query_tab_save['link2'][$key];
-                     $query_tab['itemtype2'][$new_key]   = $query_tab_save['itemtype2'][$key];
+                     $query_tab['contains2'][$new_key] = $query_tab_save['contains2'][$key];
+                     $query_tab['link2'][$new_key]     = $query_tab_save['link2'][$key];
+                     $query_tab['itemtype2'][$new_key] = $query_tab_save['itemtype2'][$key];
                   }
                }
             }
 
             // Display message
             if ($partial_load) {
-               addMessageAfterRedirect($LANG['bookmark'][2],false,ERROR);
+               addMessageAfterRedirect($LANG['bookmark'][2], false, ERROR);
             }
             // add reset value
             $query_tab['reset'] = 'reset';
@@ -327,12 +325,12 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * load a bookmark
-   *
-   * @param $ID ID of the bookmark
-   * @param $opener boolean load bookmark in opener window ? false -> current window
-   *
-   * @return nothing
+    * load a bookmark
+    *
+    * @param $ID ID of the bookmark
+    * @param $opener boolean load bookmark in opener window ? false -> current window
+    *
+    * @return nothing
    **/
    function load($ID, $opener=true) {
 
@@ -351,10 +349,11 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * get bookmark parameters
-   *
-   * @param $ID ID of the bookmark
-   * @return nothing
+    * get bookmark parameters
+    *
+    * @param $ID ID of the bookmark
+    *
+    * @return nothing
    **/
    function getParameters($ID) {
 
@@ -368,11 +367,11 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * Mark bookmark as default view for the currect user
-   *
-   * @param $ID ID of the bookmark
-   *
-   * @return nothing
+    * Mark bookmark as default view for the currect user
+    *
+    * @param $ID ID of the bookmark
+    *
+    * @return nothing
    **/
    function mark_default($ID) {
       global $DB;
@@ -403,11 +402,11 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * Mark bookmark as default view for the currect user
-   *
-   * @param $ID ID of the bookmark
-   *
-   * @return nothing
+    * Mark bookmark as default view for the currect user
+    *
+    * @param $ID ID of the bookmark
+    *
+    * @return nothing
    **/
    function unmark_default($ID) {
       global $DB;
@@ -434,12 +433,12 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * Show bookmarks list
-   *
-   * @param $target target to use for links
-   * @param $is_private show private of public bookmarks ?
-   *
-   * @return nothing
+    * Show bookmarks list
+    *
+    * @param $target target to use for links
+    * @param $is_private show private of public bookmarks ?
+    *
+    * @return nothing
    **/
    function showBookmarkList($target, $is_private=1) {
       global $DB, $LANG, $CFG_GLPI;
@@ -549,14 +548,14 @@ class Bookmark extends CommonDBTM {
     *
     * @param $type bookmark type to use
     * @param $itemtype device type of item where is the bookmark
-    **/
+   **/
    static function showSaveButton($type, $itemtype=0) {
       global $CFG_GLPI, $LANG;
 
       echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
               "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".
-              rawurlencode($_SERVER["REQUEST_URI"]).
-              "' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">";
+              rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=400, width=600, ";
+              "top=100, left=100, scrollbars=yes' );w.focus();\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
              title=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\"
              alt=\"".$LANG['buttons'][51]." ".$LANG['bookmark'][1]."\" class='calendrier'>";

@@ -42,35 +42,33 @@ if (!defined('GLPI_ROOT')) {
 class Planning {
 
    /**
-   * Get planning state name
-   *
-   * @param $value status ID
-   */
+    * Get planning state name
+    *
+    * @param $value status ID
+   **/
    static function getState($value) {
       global $LANG;
 
       switch ($value) {
          case 0 :
             return $LANG['planning'][16];
-            break;
 
          case 1 :
             return $LANG['planning'][17];
-            break;
 
          case 2 :
             return $LANG['planning'][18];
-            break;
       }
    }
+
 
    /**
     * Dropdown of planning state
     *
     * @param $name select name
     * @param $value default value
-    */
-   static function dropdownState($name,$value='') {
+   **/
+   static function dropdownState($name, $value='') {
       global $LANG;
 
       echo "<select name='$name' id='$name'>";
@@ -80,6 +78,7 @@ class Planning {
       echo "</select>";
    }
 
+
    /**
     * Check already planned user for a period
     *
@@ -87,31 +86,34 @@ class Planning {
     * @param $begin begin date
     * @param $end end date
     * @param $except array of items which not be into account array('Reminder'=>array(1,2,id_of_items))
-    */
-   static function checkAlreadyPlanned($users_id,$begin,$end,$except=array()) {
-      global $CFG_GLPI,$LANG;
+   **/
+   static function checkAlreadyPlanned($users_id, $begin, $end, $except=array()) {
+      global $CFG_GLPI, $LANG;
 
-      $planned=false;
-      $message='';
+      $planned = false;
+      $message = '';
+
       foreach ($CFG_GLPI['planning_itemtype'] as $itemtype) {
-         $data=call_user_func(array($itemtype, 'populatePlanning'),$users_id, 0, $begin, $end);
-//         $data=$itemtype::populatePlanning($users_id, 0, $begin, $end);
+         $data = call_user_func(array($itemtype, 'populatePlanning'), $users_id, 0, $begin, $end);
+
          if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
-               if (!isset($except[$itemtype]) ||
-                  (is_array($except[$itemtype]) && !in_array($val['id'],$except[$itemtype]))) {
-                  $planned=true;
-                  $message.='- '.call_user_func(array($itemtype, 'getAlreadyPlannedInformation'),$val).'<br>';
-//                   $message.='- '.$itemtype::getAlreadyPlannedInformation($val).'<br>';
+               if (!isset($except[$itemtype])
+                   || (is_array($except[$itemtype]) && !in_array($val['id'],$except[$itemtype]))) {
+
+                  $planned  = true;
+                  $message .= '- '.call_user_func(array($itemtype, 'getAlreadyPlannedInformation'),
+                                                  $val).'<br>';
                }
             }
          }
       }
       if ($planned) {
-         addMessageAfterRedirect($LANG['planning'][2].'<br>'.$message,false,ERROR);
+         addMessageAfterRedirect($LANG['planning'][2].'<br>'.$message, false, ERROR);
       }
       return $planned;
    }
+
 
    /**
     * Show the planning selection form
@@ -124,45 +126,45 @@ class Planning {
     * @param $gID ID of the group
     *
     * @return Display form
-    **/
-   static function showSelectionForm($type,$date,$usertype,$uID,$gID) {
+   **/
+   static function showSelectionForm($type, $date, $usertype, $uID, $gID) {
       global $LANG, $CFG_GLPI;
 
       switch ($type) {
          case "month":
-            $split=explode("-",$date);
-            $year_next=$split[0];
-            $month_next=$split[1]+1;
+            $split      = explode("-",$date);
+            $year_next  = $split[0];
+            $month_next = $split[1]+1;
             if ($month_next>12) {
                $year_next++;
-               $month_next-=12;
+               $month_next -= 12;
             }
-            $year_prev=$split[0];
-            $month_prev=$split[1]-1;
+            $year_prev=   $split[0];
+            $month_prev = $split[1]-1;
             if ($month_prev==0) {
                $year_prev--;
-               $month_prev+=12;
+               $month_prev += 12;
             }
-            $next=$year_next."-".sprintf("%02u",$month_next)."-".$split[2];
-            $prev=$year_prev."-".sprintf("%02u",$month_prev)."-".$split[2];
+            $next = $year_next."-".sprintf("%02u",$month_next)."-".$split[2];
+            $prev = $year_prev."-".sprintf("%02u",$month_prev)."-".$split[2];
             break;
 
          default :
-            $time=strtotime($date);
-            $step=0;
+            $time = strtotime($date);
+            $step = 0;
             switch ($type) {
                case "week" :
-                  $step=WEEK_TIMESTAMP;
+                  $step = WEEK_TIMESTAMP;
                   break;
 
                case "day" :
-                  $step=DAY_TIMESTAMP;
+                  $step = DAY_TIMESTAMP;
                   break;
             }
-            $next=$time+$step+10;
-            $prev=$time-$step;
-            $next=strftime("%Y-%m-%d",$next);
-            $prev=strftime("%Y-%m-%d",$prev);
+            $next = $time+$step+10;
+            $prev = $time-$step;
+            $next = strftime("%Y-%m-%d",$next);
+            $prev = strftime("%Y-%m-%d",$prev);
             break;
       }
 
@@ -171,28 +173,27 @@ class Planning {
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                         "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID\">";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt=\"".$LANG['buttons'][12]."\"
-            title=\"".$LANG['buttons'][12]."\"></a>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12]."\"
+             title=\"".$LANG['buttons'][12]."\"></a>";
       echo "</td>";
       echo "<td>";
       if (haveRight("show_all_planning","1")) {
          echo "<input type='radio' id='radio_user' name='usertype' value='user' ".
-               ($usertype=="user"?"checked":"").">";
-         $rand_user=User::dropdown(array( 'name'   => 'uID',
-                                          'value'  => $uID,
-                                          'right'  => 'interface',
-                                          'all'    => 1,
-                                          'entity' => $_SESSION["glpiactive_entity"]));
+                ($usertype=="user"?"checked":"").">";
+         $rand_user  =User::dropdown(array( 'name'   => 'uID',
+                                            'value'  => $uID,
+                                            'right'  => 'interface',
+                                            'all'    => 1,
+                                            'entity' => $_SESSION["glpiactive_entity"]));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_group' name='usertype' value='group' ".
-               ($usertype=="group"?"checked":"").">";
-         $rand_group=Dropdown::show('Group',
-                                    array('value'  =>$gID,
-                                          'name'   =>'gID',
-                                          'entity' =>$_SESSION["glpiactive_entity"]));
+                ($usertype=="group"?"checked":"").">";
+         $rand_group = Dropdown::show('Group', array('value'  => $gID,
+                                                     'name'   => 'gID',
+                                                     'entity' => $_SESSION["glpiactive_entity"]));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".
-               ($usertype=="user_group"?"checked":"").">";
+                ($usertype=="user_group"?"checked":"").">";
          echo $LANG['joblist'][3];
 
          echo "\n<script type='text/javascript'>";
@@ -203,6 +204,7 @@ class Planning {
          echo "      window.document.getElementById('radio_group').checked=true;});";
          echo "});";
          echo "</script>\n";
+
       } else if (haveRight("show_group_planning","1")) {
          echo "<select name='usertype'>";
          echo "<option value='user' ".($usertype=='user'?'selected':'').">".$LANG['joblist'][1];
@@ -214,41 +216,47 @@ class Planning {
       echo "</td>";
 
       echo "<td>";
-      showDateFormItem("date",$date,false);
+      showDateFormItem("date", $date, false);
       echo "</td>\n";
 
       echo "<td><select name='type'>";
-      echo "<option value='day' ".($type=="day"?" selected ":"").">".$LANG['planning'][5]."</option>";
-      echo "<option value='week' ".($type=="week"?" selected ":"").">".$LANG['planning'][6]."</option>";
-      echo "<option value='month' ".($type=="month"?" selected ":"").">".$LANG['planning'][14]."</option>";
+      echo "<option value='day' ".($type=="day"?" selected ":"").">".$LANG['planning'][5].
+           "</option>";
+      echo "<option value='week' ".($type=="week"?" selected ":"").">".$LANG['planning'][6].
+           "</option>";
+      echo "<option value='month' ".($type=="month"?" selected ":"").">".$LANG['planning'][14].
+           "</option>";
       echo "</select></td>\n";
 
       echo "<td rowspan='2' class='center'>";
-      echo "<input type='submit' class='button' name='submit' Value=\"". $LANG['buttons'][7] ."\">";
+      echo "<input type='submit' class='button' name='submit' value=\"". $LANG['buttons'][7] ."\">";
       echo "</td>\n";
 
       echo "<td>";
       echo "<a target='_blank'
             href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
                   "&amp;gID=".$gID."&amp;usertype=".$usertype."\"
-            title=\"".$LANG['planning'][12]."\"><span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
+            title=\"".$LANG['planning'][12]."\">".
+            "<span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
       echo "<br>";
+
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-      echo "<a  target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
-            "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-                  "&amp;usertype=".$usertype."\" title=\"".$LANG['planning'][13]."\">";
+      echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
+             "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
+             "&amp;usertype=".$usertype."\" title=\"".$LANG['planning'][13]."\">";
       echo "<span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
       echo "</td>\n";
 
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                      "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID\">";
-      echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt=\"".$LANG['buttons'][11].
-            "\" title=\"".$LANG['buttons'][11]."\"></a>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11]."\"
+             title=\"".$LANG['buttons'][11]."\"></a>";
       echo "</td>";
       echo "</tr>";
       echo "</table></form></div>\n";
    }
+
 
    /**
     * Show the planning
@@ -259,61 +267,64 @@ class Planning {
     * @param $type type of planning to display (day, week, month)
     *
     * @return Nothing (display function)
-    **/
-   static function show($who,$who_group,$when,$type) {
-      global $LANG,$CFG_GLPI,$DB;
+   **/
+   static function show($who, $who_group, $when, $type) {
+      global $LANG, $CFG_GLPI, $DB;
 
       if (!haveRight("show_planning","1") && !haveRight("show_all_planning","1")) {
          return false;
       }
 
       // Define some constants
-      $date=explode("-",$when);
-      $time=mktime(0,0,0,$date[1],$date[2],$date[0]);
+      $date = explode("-",$when);
+      $time = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
 
       // Check bisextile years
-      list($current_year,$current_month,$current_day)=explode("-",$when);
+      list($current_year, $current_month, $current_day) = explode("-", $when);
       if (($current_year%4)==0) {
-         $feb=29;
+         $feb = 29;
       } else {
-         $feb=28;
+         $feb = 28;
       }
-      $nb_days= array(31,$feb,31,30,31,30,31,31,30,31,30,31);
+      $nb_days = array(31, $feb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
       // Begin of the month
-      $begin_month_day=strftime("%w",mktime(0,0,0,$current_month,1,$current_year));
+      $begin_month_day = strftime("%w", mktime(0, 0, 0, $current_month, 1, $current_year));
       if ($begin_month_day==0) {
-         $begin_month_day=7;
+         $begin_month_day = 7;
       }
-      $end_month_day=strftime("%w",mktime(0,0,0,$current_month,$nb_days[$current_month-1],$current_year));
+      $end_month_day = strftime("%w", mktime(0, 0, 0, $current_month, $nb_days[$current_month-1],
+                                             $current_year));
+
       // Day of the week
-      $dayofweek=date("w",$time);
+      $dayofweek = date("w",$time);
       // Cas du dimanche
       if ($dayofweek==0) {
-         $dayofweek=7;
+         $dayofweek = 7;
       }
 
       // Get begin and duration
-      $begin=0;
-      $end=0;
+      $begin = 0;
+      $end   = 0;
       switch ($type) {
          case "month" :
-            $begin=strtotime($current_year."-".$current_month."-01 00:00:00");
-            $end=$begin+DAY_TIMESTAMP*$nb_days[$current_month-1];
+            $begin = strtotime($current_year."-".$current_month."-01 00:00:00");
+            $end   = $begin+DAY_TIMESTAMP*$nb_days[$current_month-1];
             break;
 
          case "week" :
-            $tbegin=$begin=$time+mktime(0,0,0,0,1,0)-mktime(0,0,0,0,$dayofweek,0);
-            $end=$begin+WEEK_TIMESTAMP;
+            $tbegin = $begin=$time+mktime(0,0,0,0,1,0)-mktime(0,0,0,0,$dayofweek,0);
+            $end    = $begin+WEEK_TIMESTAMP;
             break;
 
          case "day" :
-            $add="";
-            $begin=$time;
-            $end=$begin+DAY_TIMESTAMP;
+            $add   = "";
+            $begin = $time;
+            $end   = $begin+DAY_TIMESTAMP;
             break;
       }
-      $begin=date("Y-m-d H:i:s",$begin);
-      $end=date("Y-m-d H:i:s",$end);
+      $begin = date("Y-m-d H:i:s", $begin);
+      $end   = date("Y-m-d H:i:s", $end);
 
       // Print Headers
       echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -328,7 +339,7 @@ class Planning {
 
          case "week" :
             for ($i=1 ; $i<=7 ; $i++, $tbegin+=DAY_TIMESTAMP) {
-               echo "<th width='12%'>".$LANG['calendarDay'][$i%7]." ".date('d',$tbegin)."</th>";
+               echo "<th width='12%'>".$LANG['calendarDay'][$i%7]." ".date('d', $tbegin)."</th>";
             }
             break;
 
@@ -348,59 +359,60 @@ class Planning {
       $interv = array_merge($interv, $datareminders);
 
       // --------------- Plugins
-      $data=doHookFunction("planning_populate",array("begin"=>$begin,
-                                                     "end"=>$end,
-                                                     "who"=>$who,
-                                                     "who_group"=>$who_group));
+      $data = doHookFunction("planning_populate", array("begin"     => $begin,
+                                                        "end"       => $end,
+                                                        "who"       => $who,
+                                                        "who_group" => $who_group));
 
       if (isset($data["items"])&&count($data["items"])) {
-         $interv=array_merge($data["items"],$interv);
+         $interv = array_merge($data["items"], $interv);
       }
 
       // Display Items
-      $tmp=explode(":",$CFG_GLPI["planning_begin"]);
-      $hour_begin=$tmp[0];
-      $tmp=explode(":",$CFG_GLPI["planning_end"]);
-      $hour_end=$tmp[0];
+      $tmp        = explode(":", $CFG_GLPI["planning_begin"]);
+      $hour_begin = $tmp[0];
+      $tmp        = explode(":", $CFG_GLPI["planning_end"]);
+      $hour_end   = $tmp[0];
       if ($tmp[1]>0) {
          $hour_end++;
       }
 
       switch ($type) {
          case "week" :
-            for ($hour=$hour_begin;$hour<=$hour_end;$hour++) {
+            for ($hour=$hour_begin ; $hour<=$hour_end ; $hour++) {
                echo "<tr>";
-               for ($i=1;$i<=7;$i++) {
+               for ($i=1 ; $i<=7 ; $i++) {
                   echo "<td class='tab_bg_3 top' width='12%'>";
                   echo "<strong>".self::displayUsingTwoDigits($hour).":00</strong><br>";
 
                   // From midnight
                   if ($hour==$hour_begin) {
-                     $begin_time=date("Y-m-d H:i:s",strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP);
+                     $begin_time = date("Y-m-d H:i:s",
+                                        strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP);
                   } else {
-                     $begin_time=date("Y-m-d H:i:s",
-                                   strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+$hour*HOUR_TIMESTAMP);
+                     $begin_time = date("Y-m-d H:i:s",
+                                        strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+$hour*HOUR_TIMESTAMP);
                   }
                   // To midnight
                   if ($hour==$hour_end) {
-                     $end_time=date("Y-m-d H:i:s",
-                                    strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+24*HOUR_TIMESTAMP);
+                     $end_time = date("Y-m-d H:i:s",
+                                      strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+24*HOUR_TIMESTAMP);
                   } else {
-                     $end_time=date("Y-m-d H:i:s",
-                                 strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+($hour+1)*HOUR_TIMESTAMP);
+                     $end_time = date("Y-m-d H:i:s",
+                                      strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+($hour+1)*HOUR_TIMESTAMP);
                   }
 
                   reset($interv);
                   while ($data=current($interv)) {
-                     $type="";
+                     $type = "";
                      if ($data["begin"]>=$begin_time && $data["end"]<=$end_time) {
-                        $type="in";
+                        $type = "in";
                      } else if ($data["begin"]<$begin_time && $data["end"]>$end_time) {
-                        $type="through";
+                        $type = "through";
                      } else if ($data["begin"]>=$begin_time && $data["begin"]<$end_time) {
-                        $type="begin";
-                     } else if ($data["end"]>$begin_time&&$data["end"]<=$end_time) {
-                        $type="end";
+                        $type = "begin";
+                     } else if ($data["end"]>$begin_time && $data["end"]<=$end_time) {
+                        $type = "end";
                      }
 
                      if (empty($type)) {
@@ -421,23 +433,23 @@ class Planning {
             break;
 
          case "day" :
-            for ($hour=$hour_begin;$hour<=$hour_end;$hour++) {
+            for ($hour=$hour_begin ; $hour<=$hour_end ; $hour++) {
                echo "<tr>";
-               $begin_time=date("Y-m-d H:i:s",strtotime($when)+($hour)*HOUR_TIMESTAMP);
-               $end_time=date("Y-m-d H:i:s",strtotime($when)+($hour+1)*HOUR_TIMESTAMP);
+               $begin_time = date("Y-m-d H:i:s", strtotime($when)+($hour)*HOUR_TIMESTAMP);
+               $end_time   = date("Y-m-d H:i:s", strtotime($when)+($hour+1)*HOUR_TIMESTAMP);
                echo "<td class='tab_bg_3 top' width='12%'>";
                echo "<strong>".self::displayUsingTwoDigits($hour).":00</strong><br>";
                reset($interv);
                while ($data=current($interv)) {
-                  $type="";
+                  $type = "";
                   if ($data["begin"]>=$begin_time && $data["end"]<=$end_time) {
-                     $type="in";
+                     $type = "in";
                   } else if ($data["begin"]<$begin_time && $data["end"]>$end_time) {
-                     $type="through";
+                     $type = "through";
                   } else if ($data["begin"]>=$begin_time && $data["begin"]<$end_time) {
-                     $type="begin";
+                     $type = "begin";
                   } else if ($data["end"]>$begin_time && $data["end"]<=$end_time) {
-                     $type="end";
+                     $type = "end";
                   }
 
                   if (empty($type)) {
@@ -463,13 +475,13 @@ class Planning {
             }
             // Print real days
             if ($current_month<10 && strlen($current_month)==1) {
-               $current_month="0".$current_month;
+               $current_month = "0".$current_month;
             }
-            $begin_time=strtotime($begin);
-            $end_time=strtotime($end);
+            $begin_time = strtotime($begin);
+            $end_time   = strtotime($end);
             for ($time=$begin_time ; $time<$end_time ; $time+=DAY_TIMESTAMP) {
                // Add 6 hours for midnight problem
-               $day=date("d",$time+6*HOUR_TIMESTAMP);
+               $day = date("d", $time+6*HOUR_TIMESTAMP);
 
                echo "<td height='100' class='tab_bg_3 top'>";
                echo "<table class='center'><tr><td class='center'>";
@@ -477,19 +489,19 @@ class Planning {
 
                echo "<tr class='tab_bg_3'>";
                echo "<td class='tab_bg_3 top' width='12%'>";
-               $begin_day=date("Y-m-d H:i:s",$time);
-               $end_day=date("Y-m-d H:i:s",$time+DAY_TIMESTAMP);
+               $begin_day = date("Y-m-d H:i:s", $time);
+               $end_day   = date("Y-m-d H:i:s", $time+DAY_TIMESTAMP);
                reset($interv);
                while ($data=current($interv)) {
-                  $type="";
+                  $type = "";
                   if ($data["begin"]>=$begin_day && $data["end"]<=$end_day) {
-                     $type="in";
+                     $type = "in";
                   } else if ($data["begin"]<$begin_day && $data["end"]>$end_day) {
-                     $type="through";
+                     $type = "through";
                   } else if ($data["begin"]>=$begin_day && $data["begin"]<$end_day) {
-                     $type="begin";
+                     $type = "begin";
                   } else if ($data["end"]>$begin_day && $data["end"]<=$end_day) {
-                     $type="end";
+                     $type = "end";
                   }
 
                   if (empty($type)) {
@@ -515,7 +527,7 @@ class Planning {
                }
             }
             if ($end_month_day!=0) {
-               for ($i=0;$i<7-$end_month_day;$i++) {
+               for ($i=0 ; $i<7-$end_month_day ; $i++) {
                   echo "<td style='background-color:#ffffff'>&nbsp;</td>";
                }
             }
@@ -525,6 +537,7 @@ class Planning {
       echo "</table></div>";
    }
 
+
    /**
     * Display a Planning Item
     *
@@ -532,38 +545,39 @@ class Planning {
     * @param $who ID of the user (0 if all)
     * @param $type position of the item in the time block (in, through, begin or end)
     * @param $complete complete display (more details)
-    * @return Nothing (display function)
     *
-    **/
-   static function displayPlanningItem($val,$who,$type="",$complete=0) {
-      global $CFG_GLPI,$LANG,$PLUGIN_HOOKS;
+    * @return Nothing (display function)
+   **/
+   static function displayPlanningItem($val, $who, $type="", $complete=0) {
+      global $CFG_GLPI, $LANG, $PLUGIN_HOOKS;
 
-      $color="#e4e4e4";
+      $color = "#e4e4e4";
       if (isset($val["state"])) {
          switch ($val["state"]) {
             case 0 :
-               $color="#efefe7"; // Information
+               $color = "#efefe7"; // Information
                break;
 
             case 1 :
-               $color="#fbfbfb"; // To be done
+               $color = "#fbfbfb"; // To be done
                break;
 
             case 2 :
-               $color="#e7e7e2"; // Done
+               $color = "#e7e7e2"; // Done
                break;
          }
       }
       echo "<div style=' margin:auto; text-align:left; border:1px dashed #cccccc;
-            background-color: $color; font-size:9px; width:98%;'>";
+             background-color: $color; font-size:9px; width:98%;'>";
 
       // Plugins case
       if (isset($val["plugin"]) && isset($PLUGIN_HOOKS['display_planning'][$val["plugin"]])) {
-         $function=$PLUGIN_HOOKS['display_planning'][$val["plugin"]];
+         $function = $PLUGIN_HOOKS['display_planning'][$val["plugin"]];
          if (is_callable($function)) {
-            $val["type"]=$type;
-            call_user_func($function,$val);
+            $val["type"] = $type;
+            call_user_func($function, $val);
          }
+
       } else if (isset($val["tickets_id"])) {  // show tracking
          TicketPlanning::displayPlanningItem($val, $who, $type, $complete);
 
@@ -573,23 +587,23 @@ class Planning {
       echo "</div><br>";
    }
 
+
    /**
     * Display an integer using 2 digits
     *
-    *
     * @param $time value to display
-    * @return string return the 2 digits item
     *
-    **/
+    * @return string return the 2 digits item
+   **/
    static private function displayUsingTwoDigits($time) {
 
-      $time=round($time);
+      $time = round($time);
       if ($time<10 && strlen($time)>0) {
          return "0".$time;
-      } else {
-         return $time;
       }
+      return $time;
    }
+
 
    /**
     * Show the planning for the central page of a user
@@ -597,24 +611,24 @@ class Planning {
     * @param $who ID of the user
     *
     * @return Nothing (display function)
-    **/
+   **/
    static function showCentral($who) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $CFG_GLPI, $LANG;
 
       if (!haveRight("show_planning","1") || $who<=0) {
          return false;
       }
 
-      $when=strftime("%Y-%m-%d");
-      $debut=$when;
+      $when  = strftime("%Y-%m-%d");
+      $debut = $when;
 
       // Get begin and duration
-      $date=explode("-",$when);
-      $time=mktime(0,0,0,$date[1],$date[2],$date[0]);
-      $begin=$time;
-      $end=$begin+DAY_TIMESTAMP;
-      $begin=date("Y-m-d H:i:s",$begin);
-      $end=date("Y-m-d H:i:s",$end);
+      $date  = explode("-",$when);
+      $time  = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+      $begin = $time;
+      $end   = $begin+DAY_TIMESTAMP;
+      $begin = date("Y-m-d H:i:s", $begin);
+      $end   = date("Y-m-d H:i:s", $end);
 
       // ---------------Tracking
       $interv = TicketPlanning::populatePlanning($who, 0, $begin, $end);
@@ -625,31 +639,31 @@ class Planning {
       $interv = array_merge($interv, $data);
 
       // ---------------Plugin
-      $data=doHookFunction("planning_populate",array("begin"=>$begin,
-                                                     "end"=>$end,
-                                                     "who"=>$who,
-                                                     "who_group"=>-1));
+      $data = doHookFunction("planning_populate", array("begin"     => $begin,
+                                                        "end"       => $end,
+                                                        "who"       => $who,
+                                                        "who_group" => -1));
 
       if (isset($data["items"]) && count($data["items"])) {
-         $interv=array_merge($data["items"],$interv);
+         $interv = array_merge($data["items"], $interv);
       }
       ksort($interv);
 
       echo "<table class='tab_cadrehov'><tr><th>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG['planning'][15]."</a>";
       echo "</th></tr>";
-      $type='';
+      $type = '';
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             if ($val["begin"]<$begin) {
-               $val["begin"]=$begin;
+               $val["begin"] = $begin;
             }
             if ($val["end"]>$end) {
-               $val["end"]=$end;
+               $val["end"] = $end;
             }
-            self::displayPlanningItem($val,$who,'in');
+            self::displayPlanningItem($val, $who, 'in');
             echo "</td></tr>\n";
          }
       }
@@ -669,9 +683,9 @@ class Planning {
     * @param $who_group group ID
     *
     * @return icalendar string
-    **/
+   **/
    static function generateIcal($who,$who_group) {
-      global  $DB,$CFG_GLPI, $LANG;
+      global $CFG_GLPI, $LANG;
 
       if ($who==0 && $who_group==0) {
          return false;
@@ -690,12 +704,12 @@ class Planning {
       $v->setProperty( "version", "2.0" );
       $v->setProperty( "x-wr-calname", "GLPI-".$who."-".$who_group );
       $v->setProperty( "calscale", "GREGORIAN" );
-      $interv=array();
+      $interv = array();
 
-      $begin=time()-MONTH_TIMESTAMP*12;
-      $end=time()+MONTH_TIMESTAMP*12;
-      $begin=date("Y-m-d H:i:s",$begin);
-      $end=date("Y-m-d H:i:s",$end);
+      $begin = time()-MONTH_TIMESTAMP*12;
+      $end   = time()+MONTH_TIMESTAMP*12;
+      $begin = date("Y-m-d H:i:s", $begin);
+      $end   = date("Y-m-d H:i:s", $end);
 
       // ---------------Tracking
       $interv = TicketPlanning::populatePlanning($who, $who_group, $begin, $end);
@@ -706,45 +720,49 @@ class Planning {
       $interv = array_merge($interv, $data);
 
       // ---------------Plugin
-      $data=doHookFunction("planning_populate",
-            array("begin"=>$begin,"end"=>$end,"who"=>$who,"who_group"=>$who_group));
+      $data = doHookFunction("planning_populate", array("begin"     => $begin,
+                                                        "end"       => $end,
+                                                        "who"       => $who,
+                                                        "who_group" => $who_group));
 
       if (isset($data["items"]) && count($data["items"])) {
-         $interv=array_merge($data["items"],$interv);
+         $interv = array_merge($data["items"], $interv);
       }
 
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT
             if (isset($val["tickets_id"])) {
-               $vevent->setProperty("uid","Job#".$val["tickets_id"]);
+               $vevent->setProperty("uid", "Job#".$val["tickets_id"]);
             } else if (isset($val["reminders_id"])) {
-               $vevent->setProperty("uid","Event#".$val["reminders_id"]);
+               $vevent->setProperty("uid", "Event#".$val["reminders_id"]);
             } else if (isset($val['planningID'])) { // Specify the ID (for plugins)
-               $vevent->setProperty("uid","Plugin#".$val['planningID']);
+               $vevent->setProperty("uid", "Plugin#".$val['planningID']);
             } else {
-               $vevent->setProperty("uid","Plugin#".$key);
+               $vevent->setProperty("uid", "Plugin#".$key);
             }
-            $vevent->setProperty( "dstamp" , $val["begin"] );
-            $vevent->setProperty( "dtstart" , $val["begin"] );
-            $vevent->setProperty( "dtend" , $val["end"] );
+            $vevent->setProperty( "dstamp", $val["begin"] );
+            $vevent->setProperty( "dtstart", $val["begin"] );
+            $vevent->setProperty( "dtend", $val["end"] );
 
             if (isset($val["tickets_id"])) {
-               $vevent->setProperty("summary" , $LANG['planning'][8]." # ".$val["tickets_id"]." ".
-                                    $LANG['common'][1]." # ".$val["device"]);
+               $vevent->setProperty("summary",
+                                    $LANG['planning'][8]." # ".$val["tickets_id"]." ".
+                                       $LANG['common'][1]." # ".$val["device"]);
             } else if (isset($val["name"])) {
-               $vevent->setProperty( "summary" , $val["name"] );
+               $vevent->setProperty( "summary", $val["name"] );
             }
 
             if (isset($val["content"])) {
-               $vevent->setProperty( "description" , html_clean($val["content"]) );
+               $vevent->setProperty( "description", html_clean($val["content"]) );
             } else if (isset($val["name"])) {
-               $vevent->setProperty( "description" , $val["name"] );
+               $vevent->setProperty( "description", $val["name"] );
             }
 
             if (isset($val["tickets_id"])) {
-               $vevent->setProperty("url", $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".
-                                    $val["tickets_id"]);
+               $vevent->setProperty("url",
+                                    $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".
+                                       $val["tickets_id"]);
             }
 
             $v->setComponent( $vevent );

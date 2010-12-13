@@ -105,7 +105,9 @@ class TicketValidation  extends CommonDBChild {
       return false;
    }
 
+
    function post_getEmpty() {
+
       $this->fields["users_id"] = getLoginUserID();
       $this->fields["status"]   = 'waiting';
    }
@@ -603,7 +605,8 @@ class TicketValidation  extends CommonDBChild {
       }
       // No update validation is answer set
       $validation_admin = ($this->fields["users_id"] == getLoginUserID())
-                              && $this->canCreate() && $this->fields['status'] == 'waiting';
+                          && $this->canCreate()
+                          && $this->fields['status'] == 'waiting';
       $validator = ($this->fields["users_id_validate"] == getLoginUserID());
 
       $options['colspan'] = 1;
@@ -611,14 +614,14 @@ class TicketValidation  extends CommonDBChild {
       $this->showFormHeader($options);
       if ($validation_admin) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['validation'][18]."&nbsp;:</td>";
+         echo "<td>".$LANG['validation'][18]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
          echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
          echo getUserName($this->fields["users_id"]);
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>".$LANG['validation'][21]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>".$LANG['validation'][21]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
          echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
@@ -629,48 +632,46 @@ class TicketValidation  extends CommonDBChild {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
+         echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
          echo "<td><textarea cols='60' rows='3' name='comment_submission'>".
                $this->fields["comment_submission"]."</textarea></td></tr>";
 
       } else {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['validation'][18]."&nbsp;:</td>";
+         echo "<td>".$LANG['validation'][18]."&nbsp;:&nbsp;</td>";
          echo "<td>".getUserName($this->fields["users_id"])."</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>".$LANG['validation'][21]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_1'><td>".$LANG['validation'][21]."&nbsp;:&nbsp;</td>";
          echo "<td>".getUserName($this->fields["users_id_validate"])."</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
+         echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
          echo "<td>". $this->fields["comment_submission"]. "</td></tr>";
       }
 
       if ($ID>0) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='2'>&nbsp;</td>";
-         echo "</tr>";
+         echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td></tr>";
 
          if ($validator) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['validation'][28]."&nbsp;:</td>";
+            echo "<td>".$LANG['validation'][28]."&nbsp;:&nbsp;</td>";
             echo "<td>";
             TicketValidation::dropdownStatus("status", array('value' => $this->fields["status"]));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['validation'][6]." (".$LANG['validation'][16].")&nbsp;:</td>";
+            echo "<td>".$LANG['validation'][6]." (".$LANG['validation'][16].")&nbsp;:&nbsp;</td>";
             echo "<td><textarea cols='60' rows='3' name='comment_validation'>".
                         $this->fields["comment_validation"]."</textarea>";
             echo "</td></tr>";
 
          } else {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['validation'][28]."&nbsp;:</td>";
+            echo "<td>".$LANG['validation'][28]."&nbsp;:&nbsp;</td>";
             echo "<td>". TicketValidation::getStatus($this->fields["status"])."</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['common'][25]."&nbsp;:</td>";
+            echo "<td>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
             echo "<td>".$this->fields["comment_validation"]."</td></tr>";
          }
       }

@@ -1224,13 +1224,12 @@ class Dropdown {
          $infocom = new Infocom();
          $isadmin = $item->canUpdate();
 
-
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".DROPDOWN_EMPTY_VALUE."</option>";
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
              && (($isadmin && $itemtype != 'Ticket')
-                   || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
-                   || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
+                 || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
+                 || ($itemtype == 'Ticket' && haveRight('update_ticket',1)))) {
 
             echo "<option value='update'>".$LANG['buttons'][14]."</option>";
          }

@@ -1735,7 +1735,7 @@ function helpHeader($title, $url='') {
           "/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, top=100,".
           "left=100, scrollbars=yes' );w.focus();\">";
    echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG['buttons'][52]." ".
-          $LANG['bookmark'][1]."\"  alt=\"".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."\">";
+          $LANG['bookmark'][1]."\" alt=\"".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."\">";
    echo "</a></li>";
 
    // check user id : header used for display messages when session logout
