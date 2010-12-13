@@ -603,7 +603,7 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][19]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='2'>";
 
-      /// TODO : add no inquest case ?
+      /// no inquest case = rate 0
       $typeinquest = array(0 => $LANG['common'][102],
                            1 => $LANG['satisfaction'][9],
                            2 => $LANG['satisfaction'][10]);
@@ -618,9 +618,10 @@ class EntityData extends CommonDBChild {
 
       // Do not display for root entity in inherit case
       if ($entdata->fields['inquest_config'] == 0 && $entdata->fields['entities_id'] !=0) {
-         $inquestconfig = EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id']);
-         $inquestrate   = EntityData::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
-                                                    'inquest_rate');
+         $inquestconfig = EntityData::getUsedConfig('inquest_config',
+                                                    $entdata->fields['entities_id']);
+         $inquestrate   = EntityData::getUsedConfig('inquest_config',
+                                                    $entdata->fields['entities_id'], 'inquest_rate');
          echo "<tr><td colspan='4' class='green center'>".$LANG['common'][102]."&nbsp;:&nbsp;";
          if ($inquestrate == 0) {
             echo $LANG['crontask'][31];

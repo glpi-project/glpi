@@ -202,7 +202,7 @@ class Profile extends CommonDBTM {
          $this->fields["helpdesk_status"] = importArrayFromDB($this->fields["helpdesk_status"]);
          // Need to be an array not a null value
          if (is_null($this->fields["helpdesk_status"])) {
-            $this->fields["helpdesk_status"]=array();
+            $this->fields["helpdesk_status"] = array();
          }
       }
    }

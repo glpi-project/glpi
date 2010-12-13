@@ -1163,21 +1163,22 @@ class Search {
       $_SESSION['glpimassiveactionselected']=array();
    }
 
+
    /**
-   * Get meta types available for search engine
-   *
-   * @param $itemtype type to display the form
-   *
-   * @return Array of available itemtype
-   *
+    * Get meta types available for search engine
+    *
+    * @param $itemtype type to display the form
+    *
+    * @return Array of available itemtype
    **/
    static function getMetaItemtypeAvailable ($itemtype) {
+
       // Display meta search items
-      $linked=array();
+      $linked = array();
       // Define meta search items to linked
       switch ($itemtype) {
          case 'Computer' :
-            $linked = array('Printer', 'Monitor', 'Peripheral', 'Software', 'Phone');
+            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software');
             break;
 
          case 'Ticket' :
@@ -1238,7 +1239,6 @@ class Search {
 
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
-
       echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
@@ -1268,7 +1268,7 @@ class Search {
             if (is_array($linked) && count($linked)>0) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
                       value='1'>";
-               echo "<a href='#' onClick = \"document.getElementById('add_search_count2').disabled=false;
+               echo "<a href='#' onClick=\"document.getElementById('add_search_count2').disabled=false;
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
                       $LANG['search'][19]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1276,7 +1276,7 @@ class Search {
                if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
                   echo "<input type='hidden' disabled id='delete_search_count2'
                          name='delete_search_count2' value='1'>";
-                  echo "<a href='#' onClick = \"document.getElementById('delete_search_count2').disabled=false;
+                  echo "<a href='#' onClick=\"document.getElementById('delete_search_count2').disabled=false;
                          document.forms['searchform$itemtype'].submit();\">";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
                         $LANG['search'][20]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";

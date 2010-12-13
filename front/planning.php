@@ -37,45 +37,45 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-
-   if (!isset($_GET["uID"])) {
-      if (($uid=getLoginUserID()) && !haveRight("show_all_planning","1")) {
-         $_GET["uID"] = $uid;
-      } else {
-         $_GET["uID"] = 0;
-      }
+if (!isset($_GET["uID"])) {
+   if (($uid=getLoginUserID()) && !haveRight("show_all_planning","1")) {
+      $_GET["uID"] = $uid;
+   } else {
+      $_GET["uID"] = 0;
    }
+}
 
-   if (!isset($_GET["gID"])) {
-      $_GET["gID"] = 0;
-   }
-   if (!isset($_GET["usertype"])) {
-      $_GET["usertype"] = "user";
-   }
+if (!isset($_GET["gID"])) {
+   $_GET["gID"] = 0;
+}
 
-   switch ($_GET["usertype"]) {
-      case "user" :
-         $_GET['gID'] = 0;
-         break;
+if (!isset($_GET["usertype"])) {
+   $_GET["usertype"] = "user";
+}
 
-      case "group" :
-         $_GET['uID'] = 0;
-         break;
+switch ($_GET["usertype"]) {
+   case "user" :
+      $_GET['gID'] = 0;
+      break;
 
-      case "user_group" :
-         $_GET['gID'] = "mine";
-         break;
-   }
+   case "group" :
+      $_GET['uID'] = 0;
+      break;
+
+   case "user_group" :
+      $_GET['gID'] = "mine";
+      break;
+}
 
 if (isset($_GET['genical'])) {
    // Send UTF8 Headers
    @header ("content-type:text/calendar; charset=UTF-8");
-   @header("Content-disposition: filename=\"glpi.ics\"");
+   @header("Content-disposition: filename='glpi.ics'");
 
-   echo Planning::generateIcal($_GET["uID"],$_GET["gID"]);
+   echo Planning::generateIcal($_GET["uID"], $_GET["gID"]);
 
 } else {
-   commonHeader($LANG['Menu'][29],$_SERVER['PHP_SELF'],"maintain","planning");
+   commonHeader($LANG['Menu'][29], $_SERVER['PHP_SELF'], "maintain", "planning");
 
    checkSeveralRightsOr(array('show_all_planning' => '1',
                               'show_planning'     => '1'));
@@ -87,10 +87,10 @@ if (isset($_GET['genical'])) {
       $_GET["type"] = "week";
    }
 
-   Planning::showSelectionForm($_GET['type'],$_GET['date'],$_GET["usertype"],$_GET["uID"],
+   Planning::showSelectionForm($_GET['type'], $_GET['date'], $_GET["usertype"], $_GET["uID"],
                                $_GET["gID"]);
 
-   Planning::show($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
+   Planning::show($_GET['uID'], $_GET['gID'], $_GET["date"], $_GET["type"]);
 
    commonFooter();
 }

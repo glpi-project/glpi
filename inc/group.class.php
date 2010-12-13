@@ -69,7 +69,6 @@ class Group extends CommonDBTM {
    }
 
 
-
    function defineTabs($options=array()) {
       global $LANG;
 
