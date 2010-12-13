@@ -995,10 +995,10 @@ class NotificationTargetTicket extends NotificationTarget {
          $inquest = new TicketSatisfaction();
          if ($inquest->getFromDB($this->obj->getField('id'))) {
             $this->datas['##inquest.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
-            $this->datas['##inquest.datebegin##']    = convDateTime($inquest['date_begin']);
-            $this->datas['##inquest.dateanswered##'] = convDateTime($inquest['date_answered']);
-            $this->datas['##inquest.satisfaction##'] = $inquest['satisfaction'];
-            $this->datas['##inquest.description##']  = $inquest['content'];
+            $this->datas['##inquest.datebegin##']    = convDateTime($inquest->fields['date_begin']);
+            $this->datas['##inquest.dateanswered##'] = convDateTime($inquest->fields['date_answered']);
+            $this->datas['##inquest.satisfaction##'] = $inquest->fields['satisfaction'];
+            $this->datas['##inquest.description##']  = $inquest->fields['comment'];
          } else {
             $this->datas['##inquest.type##']         = '';
             $this->datas['##inquest.datebegin##']    = '';
