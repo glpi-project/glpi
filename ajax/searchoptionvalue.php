@@ -59,7 +59,6 @@ if (isset($_REQUEST['searchtype'])) {
    $inputname = 'contains'.$addmeta.'['.$_REQUEST['num'].']';
    $display   = false;
 
-
    switch ($_REQUEST['searchtype']) {
       case "equals" :
       case "notequals" :
