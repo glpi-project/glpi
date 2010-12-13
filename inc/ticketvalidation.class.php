@@ -681,6 +681,53 @@ class TicketValidation  extends CommonDBChild {
       return true;
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['validation'][0];
+
+      $tab[1]['table']        = 'glpi_ticketvalidations';
+      $tab[1]['field']        = 'comment_submission';
+      $tab[1]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][5];
+      $tab[1]['datatype']     = 'text';
+      $tab[1]['forcegroupby'] = true;
+
+      $tab[2]['table']        = 'glpi_ticketvalidations';
+      $tab[2]['field']        = 'comment_validation';
+      $tab[2]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][6];
+      $tab[2]['datatype']     = 'text';
+
+      $tab[3]['table']        = 'glpi_ticketvalidations';
+      $tab[3]['field']        = 'status';
+      $tab[3]['name']         = $LANG['validation'][0]." - ".$LANG['joblist'][0];
+      $tab[3]['searchtype']   = 'equals';
+
+      $tab[4]['table']        = 'glpi_ticketvalidations';
+      $tab[4]['field']        = 'submission_date';
+      $tab[4]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][3];
+      $tab[4]['datatype']     = 'datetime';
+
+      $tab[5]['table']        = 'glpi_ticketvalidations';
+      $tab[5]['field']        = 'validation_date';
+      $tab[5]['name']         = $LANG['validation'][0]." - ".$LANG['validation'][4];
+      $tab[5]['datatype']     = 'datetime';
+      $tab[6]['table']         = 'glpi_users';
+     
+      $tab[6]['linkfield']     = 'users_id';
+      $tab[6]['name']          = $LANG['validation'][0]." - ".$LANG['job'][4];
+      $tab[6]['datatype']      = 'itemlink';
+      $tab[6]['itemlink_type'] = 'User';
+
+      $tab[7]['table']         = 'glpi_users';
+      $tab[7]['field']         = 'name';
+      $tab[7]['linkfield']     = 'users_id_validate';
+      $tab[7]['name']          = $LANG['validation'][0]." - ".$LANG['validation'][21];
+      $tab[7]['datatype']      = 'itemlink';
+      $tab[7]['itemlink_type'] = 'User';
+
+      return $tab;
+   }
 }
 
 ?>
