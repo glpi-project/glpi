@@ -738,6 +738,18 @@ class Ticket extends CommonDBTM {
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
 
+      if ($this->fields['status'] != 'closed') {
+         if ((in_array("suppliers_id_assign",$this->updates) && $this->input["suppliers_id_assign"]>0)
+            || isset($this->input["_assignadd"])) {
+
+            if (!in_array('status', $this->updates)) {
+               $this->oldvalues['status'] = $this->fields['status'];
+               $this->updates[]           = 'status';
+            }
+            $this->fields['status'] = 'assign';
+         }
+      }
+
       // Setting a solution or solution type means the ticket is solved
       if ((in_array("ticketsolutiontypes_id",$this->updates))
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
@@ -765,15 +777,6 @@ class Ticket extends CommonDBTM {
          }
       }
 
-      if ((in_array("suppliers_id_assign",$this->updates) && $this->input["suppliers_id_assign"]>0)
-          || isset($this->input["_assignadd"])) {
-
-         if (!in_array('status', $this->updates)) {
-            $this->oldvalues['status'] = $this->fields['status'];
-            $this->updates[]           = 'status';
-         }
-         $this->fields['status'] = 'assign';
-      }
       if (isset($this->input["status"])) {
          if (isset($this->input["suppliers_id_assign"])
              && $this->input["suppliers_id_assign"] == 0
@@ -2002,6 +2005,7 @@ class Ticket extends CommonDBTM {
       $tab[21]['field']         = 'content';
       $tab[21]['name']          = $LANG['joblist'][6];
       $tab[21]['massiveaction'] = false;
+      $tab[21]['datatype']      = 'text';
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
