@@ -38,10 +38,9 @@ $LANG['backup'][11] = "Taille";
 
 $LANG['backup'][13] = "Voir/Télécharger";
 
-$LANG['backup'][16] = "Remplacer la base de données actuelle par le fichier de sauvegarde :";
-$LANG['backup'][17] = "Supprimer le fichier";
-$LANG['backup'][18] = "Sauvegarder la base de données";
-$LANG['backup'][19] = "Maintenant";
+$LANG['backup'][16] = "Remplacer la base de données actuelle par le fichier de sauvegarde ?";
+$LANG['backup'][17] = "Supprimer le fichier ?";
+$LANG['backup'][18] = "Sauvegarder la base de données ?";
 
 $LANG['backup'][21] = "Le fichier existe déjà";
 $LANG['backup'][22] = "Impossible de trouver l'octet";
