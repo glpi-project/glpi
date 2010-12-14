@@ -52,6 +52,16 @@ class CronTask extends CommonDBTM{
    const MODE_INTERNAL = 1;
    const MODE_EXTERNAL = 2;
 
+   /**
+   * Name of the type
+   *
+   */
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['crontask'][0];
+   }
+
    function defineTabs($options=array()) {
       global $LANG;
 
@@ -1141,6 +1151,36 @@ class CronTask extends CommonDBTM{
    }
 
    /**
+    * Check zombie crontask
+    *
+    * @param $task for log
+    *
+    **/
+   static function cronWatcher($task) {
+      global $CFG_GLPI,$DB;
+
+      $cron_status = 0;
+
+      // Crontasks running for more than 1 hour or 2 frequency 
+      $query = "SELECT * FROM `glpi_crontasks`
+                  WHERE state = 2
+                     AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
+                        OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now()))
+                        );";
+      $crontasks=array();
+      foreach ($DB->request($query) as $data) {
+         $crontasks[$data['id']] = $data; 
+      }
+      if (count($crontasks)) {
+         if (NotificationEvent::raiseEvent("alert", new Crontask(), array('crontasks' => $crontasks))) {
+            $cron_status = 1;
+            $task->addVolume(1);
+         }
+      }
+      return 1;
+   }
+
+   /**
     * get Cron description parameter for this class
     *
     * @param $name string name of the task
@@ -1165,6 +1205,8 @@ class CronTask extends CommonDBTM{
             return array('description' => $LANG['crontask'][12]);
          case 'graph':
             return array('description' => $LANG['crontask'][13]);
+         case 'watcher':
+            return array('description' => $LANG['crontask'][17]);
       }
    }
 

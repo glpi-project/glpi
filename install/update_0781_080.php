@@ -1145,6 +1145,51 @@ function update0781to080($output='HTML') {
       }
    }
 
+   // Add watcher crontask
+   $query = "SELECT * FROM `glpi_crontasks` WHERE itemtype = 'CronTask' AND name = 'watcher';";
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_crontasks`
+                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                           `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                  VALUES ('Crontask', 'watcher', 86400, NULL, 1, 1, 3,
+                           0, 24, 30, NULL, NULL, NULL);";
+         $DB->query($query)
+         or die("0.80 populate glpi_crontasks for watcher" . $LANG['update'][90] . $DB->error());
+      }
+   }
+   $query = "SELECT *
+            FROM `glpi_notificationtemplates`
+            WHERE `name` = 'Crontask'";
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                  VALUES(NULL, 'Crontask', 'Crontask', NOW(),'');";
+         $DB->query($query)
+         or die("0.80 add crontask watcher notification" . $LANG['update'][90] . $DB->error());
+         $notid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                  VALUES(NULL, $notid, '','##crontask.action##',
+                        '##lang.crontask.warning## \r\n\n##FOREACHcrontasks## \n ##crontask.name## : ##crontask.description##\n \n##ENDFOREACHcrontasks##', '&lt;p&gt;##lang.crontask.warning##&lt;/p&gt;\r\n&lt;p&gt;##FOREACHcrontasks## &lt;br /&gt;&lt;a href=\"##crontask.url##\"&gt;##crontask.name##&lt;/a&gt; : ##crontask.description##&lt;br /&gt; &lt;br /&gt;##ENDFOREACHcrontasks##&lt;/p&gt;');";
+      $DB->query($query)
+      or die("0.80 add crontask notification translation" . $LANG['update'][90] . $DB->error());
+
+      $query = "INSERT INTO `glpi_notifications`
+               VALUES (NULL, 'Crontask Watcher', 0, 'Crontask', 'alert', 'mail', $notid, '',
+                        1, 1, NOW());";
+      $DB->query($query)
+      or die("0.80 add crontask notification" . $LANG['update'][90] . $DB->error());
+      $notifid = $DB->insert_id();
+
+      $query = "INSERT INTO `glpi_notificationtargets`
+                     (`id`, `notifications_id`, `type`, `items_id`)
+               VALUES (NULL, $notifid, 1, 1);";
+      $DB->query($query)
+      or die("0.80 add crontask notification target to global admin" . $LANG['update'][90] . $DB->error());
+      }
+   }
+
 
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 

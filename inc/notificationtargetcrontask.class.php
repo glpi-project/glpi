@@ -33,12 +33,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class NotificationTarget
-class NotificationTargetCartridge extends NotificationTarget {
+class NotificationTargetCrontask extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['mailing'][33]);
+      return array ('alert' => $LANG['common'][105]);
    }
 
    /**
@@ -47,19 +47,24 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $LANG,$CFG_GLPI;
 
-      $this->datas['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                                       $options['entities_id']);
-      $this->datas['##cartridge.action##'] = $LANG['mailing'][33];
+      $this->datas['##crontask.action##'] = $LANG['crontask'][17];
+      $this->datas['##lang.crontask.warning##'] = $LANG['crontask'][49];
 
-      foreach ($options['cartridges'] as $id => $cartridge) {
+      $cron = new Crontask();
+      foreach ($options['crontasks'] as $id => $crontask) {
          $tmp = array();
-         $tmp['##cartridge.item##']      = $cartridge['cartname'];
-         $tmp['##cartridge.reference##'] = $cartridge['cartref'];
-         $tmp['##cartridge.remaining##'] = cartridge::getUnusedNumber($id);
-         $tmp['##cartridge.url##']       = urldecode($CFG_GLPI["url_base"].
-                                                     "/index.php?redirect=cartridgeitem_".$id);
-         $this->datas['cartridges'][] = $tmp;
+         $tmp['##crontask.name##'] = '';
+         if ($isplug=isPluginItemType($crontask["itemtype"])) {
+            $tmp['##crontask.name##'] = $isplug["plugin"]." - ";
+         }
+
+         $tmp['##crontask.name##']       .= $crontask['name'];
+         $tmp['##crontask.description##'] = $cron->getDescription($id);
+         $tmp['##crontask.url##']        = urldecode($CFG_GLPI["url_base"].
+                                                     "/index.php?redirect=crontask_".$id);
+         $this->datas['crontasks'][] = $tmp;
       }
+
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -71,12 +76,10 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('cartridge.action'    => $LANG['mailing'][33],
-                    'cartridge.reference' => $LANG['consumables'][2],
-                    'cartridge.item'      => $LANG['financial'][104],
-                    'cartridge.remaining' => $LANG['software'][20],
-                    'cartridge.url'       => $LANG['common'][94],
-                    'cartridge.entity'    => $LANG['entity'][0]);
+      $tags = array('crontask.action'      => $LANG['crontask'][17],
+                    'crontask.url'         => $LANG['common'][94],
+                    'crontask.name'        => $LANG['common'][16],
+                    'crontask.description' => $LANG['joblist'][6]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -84,10 +87,20 @@ class NotificationTargetCartridge extends NotificationTarget {
                                    'value' => true));
       }
 
-      $this->addTagToList(array('tag'     => 'cartridges',
+      $this->addTagToList(array('tag'     => 'crontasks',
                                 'label'   => $LANG['reports'][57],
                                 'value'   => false,
                                 'foreach' => true));
+
+      //Tags with just lang
+      $tags = array('crontask.warning' => $LANG['crontask'][49]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => false,
+                                   'lang'  => true));
+      }
+
 
       asort($this->tag_descriptions);
    }
