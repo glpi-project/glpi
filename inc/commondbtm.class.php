@@ -2019,7 +2019,7 @@ class CommonDBTM extends CommonGLPI {
     * Add div to display form's tabs
     */
    function addDivForTabs() {
-      echo "<div id='tabcontent'></div>";
+      echo "<div id='tabcontent'>&nbsp;</div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
