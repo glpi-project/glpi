@@ -123,6 +123,7 @@ else
  */
 function import($options)
 {
+   global $CFG_GLPI;
    $results = array(AuthLDAP::USER_IMPORTED=>0,
                     AuthLDAP::USER_SYNCHRONIZED=>0,
                     AuthLDAP::USER_DELETED_LDAP=>0);
@@ -159,7 +160,11 @@ function import($options)
    }
 
    if ($limitexceeded) {
-      echo "\nLDAP Server size limit exceeded\n";
+      echo "\nLDAP Server size limit exceeded";
+      if ($CFG_GLPI['user_deleted_ldap']) {
+         echo " : user deletion disabled\n";
+      }
+      echo "\n";
    }
    echo "\nImported : ".$results[AuthLDAP::USER_IMPORTED]."\n";
    echo "Synchronized : ".$results[AuthLDAP::USER_SYNCHRONIZED]."\n";
