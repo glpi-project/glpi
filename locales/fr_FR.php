@@ -334,6 +334,7 @@ $LANG['common'][101] = "Dernière modification par";
 $LANG['common'][102] = "Héritage de l'entité parente";
 $LANG['common'][103] = "Acteurs";
 $LANG['common'][104] = "Observateur";
+$LANG['common'][105] = "Alerte";
 
 
 $LANG['computers'][0]  = "Volume";
@@ -432,6 +433,7 @@ $LANG['crontask'][13] = "Nettoyage des graphiques générés";
 $LANG['crontask'][14] = "Clôture automatique des tickets";
 $LANG['crontask'][15] = "Tickets non résolus";
 $LANG['crontask'][16] = "Actions automatiques des SLAs";
+$LANG['crontask'][17] = "Surveillance des actions automatiques";
 
 // keep >12 free additionnal task
 $LANG['crontask'][31] = "Désactivée";
@@ -452,7 +454,7 @@ $LANG['crontask'][45] = "Action terminée, traitement complet";
 $LANG['crontask'][46] = "Action terminée, rien à faire";
 $LANG['crontask'][47] = "Liste des dernières exécutions";
 $LANG['crontask'][48] = "Lancement";
-
+$LANG['crontask'][49] = "Les actions automatiques suivantes sont en erreur. Elles nécessitent une intervention.";
 $LANG['crontask'][50] = "Nombre d'exécutions";
 $LANG['crontask'][51] = "Durée minimale";
 $LANG['crontask'][52] = "Durée maximale";
