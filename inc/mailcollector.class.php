@@ -593,8 +593,8 @@ class MailCollector  extends CommonDBTM {
                $tkt['content'] .= $content[$ID]."\n";
             }
 
-            // Do not play rules for followups
-            $play_rules = false;
+            // Do not play rules for followups : WRONG : play rules only for refuse options
+            //$play_rules = false;
 
          } else {
             // => to handle link in Ticket->post_addItem()
@@ -624,15 +624,24 @@ class MailCollector  extends CommonDBTM {
 
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
-         $rule_options['from']                = $head['from'];
          $rule_options['headers']             = $head;
          $rule_options['mailcollector']       = $options['mailgates_id'];
          $rule_options['_users_id_requester'] = $tkt['_users_id_requester'];
          $rulecollection = new RuleMailCollectorCollection();
          $output         = $rulecollection->processAllRules(array(), array(), $rule_options);
 
-         foreach ($output as $key => $value) {
-            $tkt[$key] = $value;
+         // New ticket : compute all
+         if (! isset($tkt['tickets_id'])) {
+            foreach ($output as $key => $value) {
+               $tkt[$key] = $value;
+            }
+         } else { // Followup only copy refuse data
+            $tobecopied = array('_refuse_email_no_response', '_refuse_email_with_response');
+            foreach ($tobecopied as $val) {
+               if (isset($output[$val])) {
+                  $tkt[$val] = $output[$val];
+               }
+            }
          }
       }
 

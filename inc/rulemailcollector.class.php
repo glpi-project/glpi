@@ -110,10 +110,10 @@ class RuleMailCollector extends Rule {
       $criterias['X-Priority']['table'] = '';
       $criterias['X-Priority']['type']  = 'text';
 
-      $criterias['username']['field'] = 'name';
-      $criterias['username']['name']  = $LANG['common'][34].' : '.$LANG['common'][16];
-      $criterias['username']['table'] = 'glpi_users';
-      $criterias['username']['type']  = 'dropdown';
+      $criterias['_users_id_requester']['field'] = 'name';
+      $criterias['_users_id_requester']['name']  = $LANG['common'][34].' : '.$LANG['common'][16];
+      $criterias['_users_id_requester']['table'] = 'glpi_users';
+      $criterias['_users_id_requester']['type']  = 'dropdown';
 
       $criterias['subject']['name']  = $LANG['mailing'][118].' : '.$LANG['common'][90];
       $criterias['subject']['field'] = 'subject';
