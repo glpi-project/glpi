@@ -336,13 +336,13 @@ class NotificationTemplate extends CommonDBTM {
 
    static function processIf($string, $data) {
 
-      if (preg_match_all("/##IF([a-z\.]*)[=]?(\w*)##/i",$string,$out)) {
+      if (preg_match_all("/##IF([a-z\.]*)[=]?([\w ]*)##/i",$string,$out)) {
          foreach ($out[1] as $key => $tag_infos) {
             $if_field = $tag_infos;
             //Get the field tag value (if one)
-            $regex_if = "/##IF".$if_field."[=]?\w*##(.*)##ENDIF".$if_field."##/Uis";
+            $regex_if = "/##IF".$if_field."[=]?[\w ]*##(.*)##ENDIF".$if_field."##/Uis";
             //Get the else tag value (if one)
-            $regex_else = "/##ELSE".$if_field."[=]?\w*##(.*)##ENDELSE".$if_field."##/Uis";
+            $regex_else = "/##ELSE".$if_field."[=]?[\w ]*##(.*)##ENDELSE".$if_field."##/Uis";
 
             if (empty($out[2][$key])) { // No = : check if ot empty or not null
 
