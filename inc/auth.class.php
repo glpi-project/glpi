@@ -103,7 +103,7 @@ class Auth {
 
       $result = $DB->query($query);
       if ($DB->numrows($result) == 0) {
-         $this->addToError($LANG['login'][14]);
+         $this->addToError($LANG['login'][12]);
          return 0;
 
       } else {
@@ -185,13 +185,13 @@ class Auth {
             if (doHookFunction("restrict_ldap_auth", $dn)) {
                return $dn;
             } else {
-               $this->addToError($LANG['login'][16]);
+               $this->addToError($LANG['login'][11]);
                //Use is present by has no right to connect because of a plugin
                return false;
             }
 
          } else {
-            //User is present by password in incorrect
+            // Incorrect login
             $this->addToError($LANG['login'][12]);
             //Use is not present anymore in the directory!
             if ($dn == '') {
@@ -237,7 +237,7 @@ class Auth {
       $result = $DB->query($query);
 
       if (!$result) {
-         $this->addToError($LANG['login'][14]);
+         $this->addToError($LANG['login'][12]);
          return false;
       }
       if ($result) {
