@@ -72,6 +72,10 @@ class NotificationTemplate extends CommonDBTM {
       return haveRight('config', 'r');
    }
 
+   function resetComputedTemplates() {
+      $this->templates_by_languages = array();
+   }
+
 
    function showForm($ID, $options=array()) {
       global $LANG, $CFG_GLPI;

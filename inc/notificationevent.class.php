@@ -81,21 +81,21 @@ class NotificationEvent extends CommonDBTM {
             //Process more infos (for example for tickets)
             $notificationtarget->addAdditionnalInfosForTarget();
 
+            //Get template's informations
+            $template = new NotificationTemplate;
+
+            //Set notification's signature (the one which corresponds to the entity)
+            $template->setSignature(Notification::getMailingSignature($entity));
+            $template->getFromDB($data['notificationtemplates_id']);
+            $template->resetComputedTemplates();
+
             //Foreach notification targets
             foreach ($targets as $target) {
-               $templates_id = $data['notificationtemplates_id'];
-
                //Get all users affected by this notification
                $notificationtarget->getAddressesByTarget($target,$options);
 
-               //Get template's informations
-               $template = new NotificationTemplate;
 
-               //Set notification's signature (the one which corresponds to the entity)
-               $template->setSignature(Notification::getMailingSignature($entity));
-               $template->getFromDB($templates_id);
-
-               foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
+               foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
                   if ($notificationtarget->validateSendTo($users_infos)) {
                      //If the user have not yet been notified
                      if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
