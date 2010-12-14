@@ -865,7 +865,7 @@ class Reservation extends CommonDBChild {
       $result=$DB->query($query);
 
       $ri=new ReservationItem();
-      echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
+      echo "<table class='tab_cadre_fixehov'><tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>\n";
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr\n>";
@@ -913,7 +913,7 @@ class Reservation extends CommonDBChild {
                ORDER BY `begin` DESC";
       $result=$DB->query($query);
 
-      echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>\n";
+      echo "<table class='tab_cadre_fixehov'><tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>\n";
       if ($DB->numrows($result)==0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='6'>".$LANG['reservation'][37]."</td></tr>\n";
