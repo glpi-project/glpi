@@ -86,7 +86,7 @@ class NotificationEvent extends CommonDBTM {
             $notificationtarget->addAdditionnalInfosForTarget();
 
             $template->getFromDB($data['notificationtemplates_id']);
-            $template->resetTemplates();
+            $template->resetComputedTemplates();
 
             //Set notification's signature (the one which corresponds to the entity)
             $template->setSignature(Notification::getMailingSignature($entity));

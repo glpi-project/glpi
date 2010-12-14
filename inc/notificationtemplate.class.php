@@ -72,7 +72,8 @@ class NotificationTemplate extends CommonDBTM {
       return haveRight('config', 'r');
    }
 
-   function resetTemplates() {
+   /// Reset already computed templates
+   function resetComputedTemplates() {
       $this->templates_by_languages = array();
    }
 
