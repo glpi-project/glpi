@@ -351,7 +351,6 @@ class MailCollector  extends CommonDBTM {
             for($i=1 ; $i<=$tot && $this->fetch_emails<$this->maxfetch_emails ; $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
                                                    'play_rules'   => true));
-
                //Indicates that the mail must be deleted from the mailbox
                $delete_mail = false;
 
@@ -556,8 +555,8 @@ class MailCollector  extends CommonDBTM {
                $tkt['content'] .= $content[$ID]."\n";
             }
 
-         // Do not play rules for followups
-         $play_rules = false;
+         // Do not play rules for followups : WRONG : play rules only for refuse options
+//          $play_rules = false;
 
          } else {
             unset($tkt['tickets_id']);
@@ -592,8 +591,18 @@ class MailCollector  extends CommonDBTM {
          $rulecollection = new RuleMailCollectorCollection();
          $output = $rulecollection->processAllRules(array(), array(), $rule_options);
 
-         foreach ($output as $key => $value) {
-            $tkt[$key] = $value;
+         // New ticket : compute all
+         if (! isset($tkt['tickets_id'])) {
+            foreach ($output as $key => $value) {
+               $tkt[$key] = $value;
+            }
+         } else { // Followup only copy refuse data
+            $tobecopied = array('_refuse_email_no_response', '_refuse_email_with_response');
+            foreach ($tobecopied as $val) {
+               if (isset($output[$val])) {
+                  $tkt[$val] = $output[$val];
+               }
+            }
          }
       }
 

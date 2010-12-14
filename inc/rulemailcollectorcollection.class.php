@@ -56,11 +56,21 @@ class RuleMailCollectorCollection extends RuleCollection {
       $input['users_id'] = $params['users_id'];
 
       $fields = $this->getFieldsToLookFor();
+      //Add needed ticket datas for rules processing
+      if (isset($params['ticket']) && is_array($params['ticket'])) {
+         foreach ($params['ticket'] as $key => $value) {
+            if (in_array($key,$fields) && !isset($input[$key])) {
+               $input[$key] = $value;
+            }
+         }
+      }
 
       //Add needed headers for rules processing
-      foreach ($params['headers'] as $key => $value) {
-         if (in_array($key,$fields)) {
-            $input[$key] = $value;
+      if (isset($params['headers']) && is_array($params['headers'])) {
+         foreach ($params['headers'] as $key => $value) {
+            if (in_array($key,$fields) && !isset($input[$key])) {
+               $input[$key] = $value;
+            }
          }
       }
 
@@ -110,7 +120,6 @@ class RuleMailCollectorCollection extends RuleCollection {
          }
 
       }
-
       return $input;
    }
 
