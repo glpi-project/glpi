@@ -621,7 +621,7 @@ class TicketTask  extends CommonDBTM {
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
             echo "<div class='center'>".
                  "<a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
-            echo $LANG['job'][30]."</div></p><br>\n";
+            echo $LANG['job'][30]."</a></div></p><br>\n";
          }
       }
 
