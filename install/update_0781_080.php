@@ -1104,18 +1104,19 @@ function update0781to080($output='HTML') {
 
 
    $migration->displayMessage($LANG['update'][142] . ' - rule ticket migration');
-   // For Rule::RULE_TRACKING_AUTO_ACTION
-   $changes[2] = array('users_id'         => '_users_id_requester',
+   $changes['RuleTicket'] = array('users_id'         => '_users_id_requester',
                        'groups_id'        => '_groups_id_requester',
                        'users_id_assign'  => '_users_id_assign',
                        'groups_id_assign' => '_groups_id_assign');
+   // For Rule::RULE_TRACKING_AUTO_ACTION
+   $changes['RuleMailCollector'] = array('username'         => '_users_id_requester');
 
    $DB->query("SET SESSION group_concat_max_len = 9999999;");
    foreach ($changes as $ruletype => $tab) {
       // Get rules
       $query = "SELECT GROUP_CONCAT(`id`)
                 FROM `glpi_rules`
-                WHERE `sub_type` = ".$ruletype."
+                WHERE `sub_type` = '".$ruletype."'
                 GROUP BY `sub_type`";
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
@@ -1127,8 +1128,9 @@ function update0781to080($output='HTML') {
                          SET `field` = '$new'
                          WHERE `field` = '$old'
                                AND `rules_id` IN ($rules)";
+
                $DB->query($query)
-               or die("0.78 update datas for rules actions " . $LANG['update'][90] . $DB->error());
+               or die("0.80 update datas for rules actions " . $LANG['update'][90] . $DB->error());
             }
             // Update criterias
             foreach ($tab as $old => $new) {
@@ -1137,7 +1139,7 @@ function update0781to080($output='HTML') {
                          WHERE `criteria` = '$old'
                                AND `rules_id` IN ($rules)";
                $DB->query($query)
-               or die("0.78 update datas for rules criterias " . $LANG['update'][90] . $DB->error());
+               or die("0.80 update datas for rules criterias " . $LANG['update'][90] . $DB->error());
             }
          }
       }
