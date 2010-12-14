@@ -77,7 +77,6 @@ class NotificationEvent extends CommonDBTM {
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
                                                                $entity) as $data) {
-
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id='.$data['id']);
 
@@ -86,17 +85,19 @@ class NotificationEvent extends CommonDBTM {
             //Process more infos (for example for tickets)
             $notificationtarget->addAdditionnalInfosForTarget();
 
+            $template->getFromDB($data['notificationtemplates_id']);
+            $template->resetTemplates();
+
+            //Set notification's signature (the one which corresponds to the entity)
+            $template->setSignature(Notification::getMailingSignature($entity));
+
             //Foreach notification targets
             foreach ($targets as $target) {
-               $template->getFromDB($data['notificationtemplates_id']);
 
                //Get all users affected by this notification
                $notificationtarget->getAddressesByTarget($target,$options);
 
-               //Set notification's signature (the one which corresponds to the entity)
-               $template->setSignature(Notification::getMailingSignature($entity));
-
-               foreach ($notificationtarget->getTargets() as $template_id => $users_infos) {
+               foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
                   if ($label || $notificationtarget->validateSendTo($users_infos)) {
                      //If the user have not yet been notified
                      if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
