@@ -2401,7 +2401,7 @@ class User extends CommonDBTM {
 
       $query = "SELECT `id`
                 FROM `glpi_users`
-                WHERE `name` = '$login'";
+                WHERE `name` = '".addslashes($login)."'";
       $result = $DB->query($query);
 
       if ($DB->numrows($result) == 1) {
