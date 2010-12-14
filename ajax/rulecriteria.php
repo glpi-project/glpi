@@ -72,18 +72,18 @@ if (isset($_POST["sub_type"])) {
       $randcrit = RuleCriteria::dropdownConditions($type, "condition", '', $allow_condition);
 
       echo "&nbsp;&nbsp;";
-      echo "<span id='condition_span'>\n";
+      echo "<span id='condition_span$randcrit'>\n";
       echo "</span>\n";
 
       $paramscriteria = array('condition' => '__VALUE__',
                               'criteria'  => $_POST["criteria"],
                               'sub_type'  => $_POST["sub_type"]);
 
-      ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit", "condition_span",
+      ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit", "condition_span$randcrit",
                                   $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
                                   $paramscriteria, false);
 
-      ajaxUpdateItem("condition_span", $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
+      ajaxUpdateItem("condition_span$randcrit", $CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",
                      $paramscriteria, false, "dropdown_condition$randcrit");
    }
 }

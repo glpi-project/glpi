@@ -530,7 +530,7 @@ class Rule extends CommonDBTM {
       if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount())
           && $canedit) {
 
-         echo "<form name='criteriasaddform'method='post' action='".
+         echo "<form name='criteriasaddform' method='post' action='".
                 getItemTypeFormURL(get_class($this))."'>\n";
          $this->addCriteriaForm($rules_id);
          echo "</form>";
