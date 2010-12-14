@@ -1624,21 +1624,8 @@ class Ticket extends CommonDBTM {
       }
 
 
-      // Processing Email
-      if ($CFG_GLPI["use_mailing"]) {
-         // Clean reload of the ticket
-         $this->getFromDB($this->fields['id']);
-
-         $type = "new";
-         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
-            $type = "solved";
-         }
-         NotificationEvent::raiseEvent($type, $this);
-      }
-
       //Action for send_validation rule
-      if ($CFG_GLPI["use_mailing"]
-          && isset($this->input["_add_validation"])
+      if (isset($this->input["_add_validation"])
           && $this->input["_add_validation"]>0) {
 
          $validation = new Ticketvalidation();
@@ -1650,6 +1637,18 @@ class Ticket extends CommonDBTM {
 
          Event::log($this->fields['id'], "ticket", 4, "tracking",
                     $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+      }
+
+      // Processing Email
+      if ($CFG_GLPI["use_mailing"]) {
+         // Clean reload of the ticket
+         $this->getFromDB($this->fields['id']);
+
+         $type = "new";
+         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
+            $type = "solved";
+         }
+         NotificationEvent::raiseEvent($type, $this);
       }
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
@@ -4113,15 +4112,28 @@ class Ticket extends CommonDBTM {
       echo "</td>";
 
       // Display validation state
-      echo "<td>".$LANG['validation'][0]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      if ($canupdate && $ID) {
-         TicketValidation::dropdownStatus('global_validation',
-                                          array('global' => true,
-                                                'value'  => $this->fields['global_validation']));
+      if (!$ID) {
+         echo $LANG['validation'][26]."&nbsp;:&nbsp;";
       } else {
-         echo TicketValidation::getStatus($this->fields['global_validation']);
+         echo $LANG['validation'][0]."&nbsp;:&nbsp;";
       }
+      echo "</td>";
+      echo "<td>";
+      if (!$ID) {
+         User::dropdown(array('name'   => "_add_validation",
+                              'entity' => $this->fields['entities_id'],
+                              'right'  => 'validate_ticket'));
+      } else {
+         if ($canupdate) {
+            TicketValidation::dropdownStatus('global_validation',
+                                             array('global' => true,
+                                                   'value'  => $this->fields['global_validation']));
+         } else {
+            echo TicketValidation::getStatus($this->fields['global_validation']);
+         }
+      }
+
       echo "</td>";
 
       echo "</tr>";
