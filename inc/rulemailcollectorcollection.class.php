@@ -51,11 +51,11 @@ class RuleMailCollectorCollection extends RuleCollection {
    }
 
    function prepareInputDataForProcess($input,$params) {
-      $input['from'] = $params['ticket']['user_email'];
       $input['mailcollector'] = $params['mailcollector'];
       $input['users_id'] = $params['users_id'];
 
       $fields = $this->getFieldsToLookFor();
+
       //Add needed ticket datas for rules processing
       if (isset($params['ticket']) && is_array($params['ticket'])) {
          foreach ($params['ticket'] as $key => $value) {
