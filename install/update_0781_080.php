@@ -544,6 +544,32 @@ function update0781to080($output='HTML') {
 
    $migration->dropKey("glpi_computers_softwareversions", "computers_id");
 
+   // For real count : copy template and deleted informations
+   $migration->addField("glpi_computers_softwareversions", "is_deleted", "tinyint(1) NOT NULL DEFAULT 0");
+   $migration->addField("glpi_computers_softwareversions", "is_template", "tinyint(1) NOT NULL DEFAULT 0");
+   $migration->migrationOneTable('glpi_computers_softwareversions');
+   // Update datas
+   $query = "SELECT DISTINCT `computers_id`
+         FROM `glpi_computers_softwareversions`";
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)) {
+         include_once (GLPI_ROOT . "/inc/computer.class.php");
+
+         while ($data = $DB->fetch_assoc($result)) {
+            $comp = new Computer();
+            if ($comp->getFromDB($data['computers_id'])) {
+               $query="UPDATE `glpi_computers_softwareversions`
+                        SET `is_template` = '".$comp->getField('is_template')."',
+                           `is_deleted` = '".$comp->getField('is_deleted')."'
+                        WHERE `computers_id` = '".$data['computers_id']."';";
+      //          echo $query.'<br>';exit();
+               $DB->query($query);
+            }
+         }
+      }
+   }
+
+
    if (!TableExists("glpi_computers_softwarelicenses")) {
       $query = "CREATE TABLE `glpi_computers_softwarelicenses` (
                   `id` int(11) NOT NULL auto_increment,

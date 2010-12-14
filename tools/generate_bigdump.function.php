@@ -2432,7 +2432,7 @@ function generate_entity($ID_entity) {
          for ($k=0 ; $k<$val3 ; $k++) {
             $query = "INSERT INTO `glpi_computers_softwareversions`
                       VALUES (NULL, '".mt_rand($FIRST["computers"],$LAST['computers'])."',
-                              '$versID')";
+                              '$versID','0','0')";
             $DB->query($query); // no die because may be corrupt unicity constraint
          }
       }
