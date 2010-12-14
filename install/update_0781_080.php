@@ -1189,6 +1189,38 @@ function update0781to080($output='HTML') {
       or die("0.80 add crontask notification target to global admin" . $LANG['update'][90] . $DB->error());
       }
    }
+   /* OCS-NG new clean links features */
+   if ($migration->addField('glpi_ocslinks', 'entities_id','int(11) NOT NULL DEFAULT \'0\'')) {
+      $migration->migrationOneTable("glpi_ocslinks");
+
+      $query = "SELECT `glpi_ocslinks`.`computers_id`, `glpi_computers`.`entities_id`
+                FROM `glpi_ocslinks`
+                INNER JOIN `glpi_computers`
+                  ON (`glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`)";
+
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "UPDATE `glpi_ocslinks`
+                           SET `entities_id` = '" . $data['entities_id'] . "'
+                           WHERE `computers_id` = '" . $data['computers_id'] . "'";
+               $DB->query($query)
+               or die("0.80 copy entities_id from computers to ocslinks ".$LANG['update'][90] .$DB->error());
+            }
+         }
+      }
+   }
+
+   if ($migration->addField('glpi_profiles', 'clean_ocsng','char(1) COLLATE utf8_unicode_ci DEFAULT NULL')) {
+      $migration->migrationOneTable("glpi_profiles");
+
+      $query = "UPDATE `glpi_profiles`
+                SET `clean_ocsng` = `sync_ocsng`";
+
+      $DB->query($query)
+         or die("0.80 copy sync_ocsng to clean_ocsng in glpi_ocslinks " . $LANG['update'][90] . $DB->error());
+   }
+   /* END - OCS-NG new clean links features */
 
 
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

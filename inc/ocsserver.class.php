@@ -1918,30 +1918,26 @@ class OcsServer extends CommonDBTM {
       }
    }
 
-
-   static function cleanLinks($ocsservers_id) {
-      global $DB, $DBocs;
+   /**
+    * Displays a list of computers that can be cleaned.
+    *
+    *@param $ocsservers_id int : id of ocs server in GLPI
+    *@param $check string : parameter for HTML input checkbox
+    *@param $start int : parameter for printPager method
+    *
+    *@return nothing
+    */
+   static function showComputersToClean($ocsservers_id, $check, $start) {
+      global $DB, $DBocs, $LANG, $CFG_GLPI;
 
       OcsServer::checkOCSconnection($ocsservers_id);
-      OcsServer::manageDeleted($ocsservers_id);
 
-      // Delete unexisting GLPI computers
-      $query = "SELECT `glpi_ocslinks`.`id`
-                FROM `glpi_ocslinks`
-                LEFT JOIN `glpi_computers` ON `glpi_computers`.`id`=`glpi_ocslinks`.`computers_id`
-                WHERE `glpi_computers`.`id` IS NULL
-                      AND `ocsservers_id` = '$ocsservers_id'";
-
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_array($result)) {
-            $query2 = "DELETE
-                       FROM `glpi_ocslinks`
-                       WHERE `id` = '" . $data['id'] . "'";
-            $DB->query($query2);
-         }
+      if (!haveRight("clean_ocsng", "w") 
+            AND !haveRight("clean_ocsng", "r")) {
+            return false;
       }
-      // Delete unexisting OCS hardware
+
+      // Select unexisting OCS hardware
       $query_ocs = "SELECT *
                     FROM `hardware`";
       $result_ocs = $DBocs->query($query_ocs);
@@ -1958,21 +1954,153 @@ class OcsServer extends CommonDBTM {
                 WHERE `ocsservers_id` = '$ocsservers_id'";
 
       $result = $DB->query($query);
+      $links_ocs_missing_str = "";
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_array($result)) {
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
             if (!isset ($hardware[$data["ocsid"]])) {
-               $query_del = "DELETE
-                             FROM `glpi_ocslinks`
-                             WHERE `id` = '" . $data["id"] . "'";
-               $DB->query($query_del);
-               $comp = new Computer();
-               $comp->delete( array("id" => $data["computers_id"]), 0);
+               $links_ocs_missing_str .= "'" . $data["ocsid"] . "', ";
             }
          }
       }
+
+      $sql_ocs_missing = "";
+      if ($links_ocs_missing_str != null) {
+		  $links_ocs_missing_str = substr($links_ocs_missing_str, 0, -2);
+		  $sql_ocs_missing =" OR `ocsid` IN (". $links_ocs_missing_str .")";
+	  }
+
+      //Select unexisting computers 
+      $query_glpi = "SELECT `glpi_ocslinks`.`entities_id` AS entities_id,
+                            `glpi_ocslinks`.`ocs_deviceid` AS ocs_deviceid,
+                            `glpi_ocslinks`.`last_update` AS last_update,
+                            `glpi_ocslinks`.`ocsid` AS ocsid,
+                            `glpi_ocslinks`.`id`,
+                            `glpi_computers`.`name` AS name
+                FROM `glpi_ocslinks`
+                LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`
+                WHERE (`glpi_computers`.`id` IS NULL
+                        AND `glpi_ocslinks`.`ocsservers_id`='$ocsservers_id')"
+                  .$sql_ocs_missing
+                  .getEntitiesRestrictRequest("AND","glpi_ocslinks");
+
+      $result_glpi = $DB->query($query_glpi);
+
+      // fetch all links missing between glpi and OCS
+      $already_linked = array ();
+      if ($DB->numrows($result_glpi) > 0) {
+         while ($data = $DB->fetch_assoc($result_glpi)) {
+
+            $data = clean_cross_side_scripting_deep(addslashes_deep($data));
+
+            $already_linked[$data["ocsid"]]["entities_id"] = $data["entities_id"];
+            $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0, 
+                                                                     strpos($data["ocs_deviceid"], 
+                                                                             '-'));
+            $already_linked[$data["ocsid"]]["date"] = $data["last_update"];
+            $already_linked[$data["ocsid"]]["id"] = $data["id"];
+            $already_linked[$data["ocsid"]]["in_ocs"] = isset($hardware[$data["ocsid"]]);
+            if ($data["name"] == null) {
+               $already_linked[$data["ocsid"]]["in_glpi"] = 0;
+            } else {
+               $already_linked[$data["ocsid"]]["in_glpi"] = 1;
+            }
+         }
+      }
+
+
+      echo "<div class='center'>";
+      echo "<h2>" . $LANG['ocsng'][3] . "</h2>";
+
+      $target=$CFG_GLPI['root_doc'].'/front/ocsng.clean.php';
+      if (($numrows = count($already_linked)) > 0) {
+         $parameters = "check=$check";
+         printPager($start, $numrows, $target, $parameters);
+
+         // delete end
+         array_splice($already_linked, $start + $_SESSION['glpilist_limit']);
+         // delete begin
+         if ($start > 0) {
+            array_splice($already_linked, 0, $start);
+         }
+
+         echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$target."'>";
+
+         if (haveRight("clean_ocsng", "w")) { 
+            echo "<a href='".$target."?check=all' ".
+                  "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
+                  $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
+            echo "<a href='".$target."?check=none' ".
+                  "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
+                  $LANG['buttons'][19] . "</a>\n";
+         }
+         echo "<table class='tab_cadre'>";
+         echo "<tr><th>" . $LANG['common'][1] . "</th><th>" . $LANG['ocsng'][13] . "</th>";
+         echo "<th>" . $LANG['ocsng'][59] . "</th><th>" . $LANG['ocsng'][60] . "</th>";
+         if (isMultiEntitiesMode()) {
+            echo "<th>" . $LANG['entity'][0] . "</th>";
+         }
+         if (haveRight("clean_ocsng", "w")) {
+            echo "<th>&nbsp;</th></tr>\n";
+         }
+
+         echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
+         if (haveRight("clean_ocsng", "w")) {
+            echo "<input class='submit' type='submit' name='clean_ok' value='" .$LANG['buttons'][53]. "'>";
+         }
+         echo "</td></tr>\n";
+
+         foreach ($already_linked as $ID => $tab) {
+            echo "<tr class='tab_bg_2 center'>";
+            echo "<td>" . $tab["ocs_deviceid"] . "</td>\n";
+            echo "<td>" . convDateTime($tab["date"]) . "</td>\n";
+            echo "<td>" . $LANG['choice'][$tab["in_glpi"]] . "</td>\n";
+            echo "<td>" . $LANG['choice'][$tab["in_ocs"]] . "</td>\n";
+            if(isMultiEntitiesMode()) {
+               echo "<td>";
+               echo Dropdown::getDropdownName('glpi_entities',$tab['entities_id']);
+               echo "</td>\n";
+            }
+            if (haveRight("clean_ocsng", "w")) {
+               echo "<td><input type='checkbox' name='toclean[" . $tab["id"] . "]' " .
+                     ($check == "all" ? "checked" : "") . "></td></tr>\n";
+            }
+         }
+         echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
+         if (haveRight("clean_ocsng", "w")) {
+            echo "<input class='submit' type='submit' name='clean_ok' value='".$LANG['buttons'][53]."'>";
+         }
+         echo "</td></tr>";
+         echo "</table></form>\n";
+         printPager($start, $numrows, $target, $parameters);
+      } else {
+         echo "<div class='center'><strong>" . $LANG['ocsng'][61] . "</strong></div>";
+         displayBackLink();
+      }
+      echo "</div>";               
    }
 
+   /**
+   * Clean links between GLPI and OCS from a list.
+   *
+   *@param $computers_id array : ids of computers to be cleaned
+   *
+   *@return nothing
+   */
+   static function cleanLinksFromList($computers_id) {
+      global $DB;
+
+      if (!haveRight("clean_ocsng", "w")) {
+         return false;
+      }
+
+      foreach ($computers_id as $key => $val) {
+         $query = "DELETE
+                     FROM `glpi_ocslinks`
+                     WHERE `id` = '" . $key . "'";
+         $DB->query($query);
+      }
+   }
 
    static function showComputersToUpdate($ocsservers_id, $check, $start) {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
