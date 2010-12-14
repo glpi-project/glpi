@@ -136,6 +136,16 @@ class Computer extends CommonDBTM {
    }
 
 
+   function post_restoreItem() {
+      $comp_softvers = new Computer_SoftwareVersion();
+      $comp_softvers->updateDatasForComputer($this->fields['id']);
+   }
+
+   function post_deleteItem() {
+      $comp_softvers = new Computer_SoftwareVersion();
+      $comp_softvers->updateDatasForComputer($this->fields['id']);
+   }
+
    function post_updateItem($history=1) {
       global $DB, $LANG, $CFG_GLPI;
 

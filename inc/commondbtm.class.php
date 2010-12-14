@@ -1036,6 +1036,7 @@ class CommonDBTM extends CommonGLPI {
 
             if ($force) {
                $this->addMessageOnPurgeAction();
+               $this->post_purgeItem();
                doHook("item_purge", $this);
 
             } else {
@@ -1049,14 +1050,31 @@ class CommonDBTM extends CommonGLPI {
                                HISTORY_DELETE_ITEM);
                }
 
+               $this->post_deleteItem();
                doHook("item_delete",$this);
             }
-
             return true;
          }
 
       }
       return false;
+   }
+
+
+   /**
+    * Actions done after the DELETE (mark as deleted) of the item in the database
+    *
+    * @return nothing
+   **/
+   function post_deleteItem () {
+   }
+
+   /**
+    * Actions done after the PURGE of the item in the database
+    *
+    * @return nothing
+   **/
+   function post_purgeItem () {
    }
 
 
@@ -1162,6 +1180,7 @@ class CommonDBTM extends CommonGLPI {
             Log::history($this->input["id"], $this->getType(), $changes, 0, HISTORY_RESTORE_ITEM);
          }
 
+         $this->post_restoreItem();
          doHook("item_restore", $this);
          return true;
       }
@@ -1169,6 +1188,14 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
+
+   /**
+    * Actions done after the restore of the item 
+    *
+    * @return nothing
+   **/
+   function post_restoreItem () {
+   }
 
    /**
     * Add a message on restore action
