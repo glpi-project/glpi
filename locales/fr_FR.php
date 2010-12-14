@@ -1477,7 +1477,9 @@ $LANG['ocsng'][55] = "Volume(s) verrouillé(s)";
 
 $LANG['ocsng'][57] = "Interface OCSNG";
 $LANG['ocsng'][58] = "Liaison OCSNG";
-
+$LANG['ocsng'][59] = "Présent dans GLPI";
+$LANG['ocsng'][60] = "Présent dans OCS";
+$LANG['ocsng'][61] = "Aucun objet à nettoyer.";
 
 $LANG['pager'][1] = "à";
 $LANG['pager'][2] = "de";

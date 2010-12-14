@@ -635,6 +635,12 @@ class Profile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("view_ocsng", $this->fields["view_ocsng"], 1, 1, 0);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['ocsng'][3]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("clean_ocsng", $this->fields["clean_ocsng"], 1, 1, 1);
+      echo "</td><td colspan='4' />";
+      echo "</td></tr>\n";
+
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
