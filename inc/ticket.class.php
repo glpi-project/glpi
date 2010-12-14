@@ -3435,6 +3435,10 @@ class Ticket extends CommonDBTM {
                   $options['contains'][2]   = getLoginUserID();
                   $options['link'][2]       = 'OR';
 
+                  $options['field'][3]      = 12; // status
+                  $options['searchtype'][3] = 'equals';
+                  $options['contains'][3]   = 'solved';
+                  $options['link'][3]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
