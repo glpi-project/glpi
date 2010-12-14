@@ -3733,10 +3733,10 @@ class Ticket extends CommonDBTM {
       }
 
       // Link to open a new ticcket
-      if ($items_id) {
+      if ($items_id && in_array($itemtype,$_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
          echo "<tr><td class='tab_bg_2 center' colspan='10'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".
-              "$items_id&amp;itemtype="."$itemtype\"><strong>".$LANG['joblist'][7]."</strong></a>";
+              "$items_id&amp;itemtype=$itemtype\"><strong>".$LANG['joblist'][7]."</strong></a>";
          echo "</td></tr>";
       }
 
