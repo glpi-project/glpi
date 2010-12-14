@@ -1932,11 +1932,10 @@ class OcsServer extends CommonDBTM {
 
       OcsServer::checkOCSconnection($ocsservers_id);
 
-      if (!haveRight("clean_ocsng", "w") 
-            AND !haveRight("clean_ocsng", "r")) {
-            return false;
+      if (!haveRight("clean_ocsng", "r")) {
+         return false;
       }
-
+      $canedit = haveRight("clean_ocsng", "w");
       // Select unexisting OCS hardware
       $query_ocs = "SELECT *
                     FROM `hardware`";
@@ -2026,7 +2025,7 @@ class OcsServer extends CommonDBTM {
 
          echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$target."'>";
 
-         if (haveRight("clean_ocsng", "w")) { 
+         if ($canedit) { 
             echo "<a href='".$target."?check=all' ".
                   "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
@@ -2040,12 +2039,12 @@ class OcsServer extends CommonDBTM {
          if (isMultiEntitiesMode()) {
             echo "<th>" . $LANG['entity'][0] . "</th>";
          }
-         if (haveRight("clean_ocsng", "w")) {
+         if ($canedit) {
             echo "<th>&nbsp;</th></tr>\n";
          }
 
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-         if (haveRight("clean_ocsng", "w")) {
+         if ($canedit) {
             echo "<input class='submit' type='submit' name='clean_ok' value='" .$LANG['buttons'][53]. "'>";
          }
          echo "</td></tr>\n";
@@ -2061,13 +2060,13 @@ class OcsServer extends CommonDBTM {
                echo Dropdown::getDropdownName('glpi_entities',$tab['entities_id']);
                echo "</td>\n";
             }
-            if (haveRight("clean_ocsng", "w")) {
+            if ($canedit) {
                echo "<td><input type='checkbox' name='toclean[" . $tab["id"] . "]' " .
                      ($check == "all" ? "checked" : "") . "></td></tr>\n";
             }
          }
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
-         if (haveRight("clean_ocsng", "w")) {
+         if ($canedit) {
             echo "<input class='submit' type='submit' name='clean_ok' value='".$LANG['buttons'][53]."'>";
          }
          echo "</td></tr>";
