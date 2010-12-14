@@ -45,7 +45,7 @@ $LANG['backup'][23]="Errore MySQL iniziando da";
 $LANG['backup'][24]="Reindirizzamento automatico, oppure fai clic qui"; 
 
 $LANG['bookmark'][1]="segnalibro"; 
-$LANG['bookmark'][2]="Partial load of the bookmark."; 
+$LANG['bookmark'][2]="Caricamento parziale del segnalibro."; 
 $LANG['bookmark'][3]="Non hai segnalibri memorizzati."; 
 $LANG['bookmark'][4]="Nuovo segnalibro"; 
 $LANG['bookmark'][5]="Segnalibri pubblici"; 
@@ -103,7 +103,7 @@ $LANG['buttons'][52]="Carica";
 $LANG['buttons'][53]="Pulisci"; 
 $LANG['buttons'][55]="Primo"; 
 $LANG['buttons'][56]="Ultimo"; 
-$LANG['buttons'][57]="Esugui"; 
+$LANG['buttons'][57]="Esegui"; 
 $LANG['buttons'][58]="Aggiorna"; 
 $LANG['buttons'][59]="Dissocia"; 
 
