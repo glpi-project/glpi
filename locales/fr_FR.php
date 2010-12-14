@@ -1822,8 +1822,8 @@ $LANG['rulesengine'][142] = "Liste des courriels non importés";
 
 $LANG['rulesengine'][144] = "Entité depuis profil de l'utilisateur";
 $LANG['rulesengine'][145] = "Utilisateur possédant un seul profil";
-$LANG['rulesengine'][146] = "Utilisateur possèdant le profil";
-$LANG['rulesengine'][147] = "Utilisateur possèdant une seule fois le profil";
+$LANG['rulesengine'][146] = "Utilisateur possédant le profil";
+$LANG['rulesengine'][147] = "Utilisateur possédant une seule fois le profil";
 $LANG['rulesengine'][148] = "Domaine de messagerie connu";
 $LANG['rulesengine'][149] = "Groupe importé depuis un annuaire LDAP";
 $LANG['rulesengine'][150] = "Les règles affectées à l'entité ont été désactivées.";
@@ -1911,7 +1911,7 @@ $LANG['setup'][70]  = "Configuration générale";
 $LANG['setup'][71]  = "Firmware";
 
 $LANG['setup'][73]  = "Prise réseau";
-$LANG['setup'][74]  = "Vous ne pouvez pas supprimer cet élément car il possède des sous-éléments";
+$LANG['setup'][74]  = "Vous ne pouvez pas supprimer cet élément car il posséde des sous-éléments";
 $LANG['setup'][75]  = "Comme enfant de";
 
 $LANG['setup'][79]  = "Catégorie des tickets";
