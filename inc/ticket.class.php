@@ -3290,20 +3290,20 @@ class Ticket extends CommonDBTM {
          echo "<tr><th colspan='5'>";
 
          $options['reset']  = 'reset';
+         $num = 0;
          if ($showgrouptickets) {
             switch ($status) {
                case "waiting" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'waiting';
-                  $options['link'][0]       = 'AND';
-
-                  $num = 1;
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 8; // groups_id_assign
                      $options['searchtype'][$num] = 'equals';
                      $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = ($num==1?'AND':'OR');
+                     $options['link'][$num]       = ($num==0?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'waiting';
+                     $options['link'][$num]       = 'AND';
                      $num++;
                   }
 
@@ -3313,17 +3313,16 @@ class Ticket extends CommonDBTM {
                   break;
 
                case "toapprove" :
-                  $options['field'][0]      = 12; // status
-                  $options['searchtype'][0] = 'equals';
-                  $options['contains'][0]   = 'solved';
-                  $options['link'][0]       = 'AND';
-
-                  $num = 1;
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 71; // groups_id
                      $options['searchtype'][$num] = 'equals';
                      $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = ($num==1?'AND':'OR');
+                     $options['link'][$num]       = ($num==0?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'solved';
+                     $options['link'][$num]       = 'AND';
                      $num++;
                   }
 
@@ -3332,17 +3331,16 @@ class Ticket extends CommonDBTM {
                   break;
 
                   case "process" :
-                     $options['field'][0]      = 12; // status
-                     $options['searchtype'][0] = 'equals';
-                     $options['contains'][0]   = 'process';
-                     $options['link'][0]       = 'AND';
-
-                     $num = 1;
                      foreach ($_SESSION['glpigroups'] as $gID) {
                         $options['field'][$num]      = 8; // groups_id_assign
                         $options['searchtype'][$num] = 'equals';
                         $options['contains'][$num]   = $gID;
-                        $options['link'][$num]       = ($num==1?'AND':'OR');
+                        $options['link'][$num]       = ($num==0?'AND':'OR');
+                        $num++;
+                        $options['field'][$num]      = 12; // status
+                        $options['searchtype'][$num] = 'equals';
+                        $options['contains'][$num]   = 'process';
+                        $options['link'][$num]       = 'AND';
                         $num++;
                      }
 
@@ -3352,18 +3350,18 @@ class Ticket extends CommonDBTM {
 
                   case "requestbyself" :
                   default :
-                     $options['field'][0]      = 12; // status
-                     $options['searchtype'][0] = 'equals';
-                     $options['contains'][0]   = 'process';
-                     $options['link'][0]       = 'AND';
-
-                     $num = 1;
                      foreach ($_SESSION['glpigroups'] as $gID) {
                         $options['field'][$num]      = 71; // groups_id
                         $options['searchtype'][$num] = 'equals';
                         $options['contains'][$num]   = $gID;
-                        $options['link'][$num]       = ($num==1?'AND':'OR');
+                        $options['link'][$num]       = ($num==0?'AND':'OR');
                         $num++;
+                        $options['field'][$num]      = 12; // status
+                        $options['searchtype'][$num] = 'equals';
+                        $options['contains'][$num]   = 'process';
+                        $options['link'][$num]       = 'AND';
+                        $num++;
+
                      }
 
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
