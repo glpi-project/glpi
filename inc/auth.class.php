@@ -179,8 +179,7 @@ class Auth {
                                                                       'value'=>$login),
                                                 'condition'        => $ldap_method['condition']));
          $dn = $infos['dn'];
-         if (@ldap_bind($this->ldap_connection, $dn, $password)) {
-
+         if (!empty($dn) && @ldap_bind($this->ldap_connection, $dn, $password)) {
             //Hook to implement to restrict access by checking the ldap directory
             if (doHookFunction("restrict_ldap_auth", $dn)) {
                return $dn;
