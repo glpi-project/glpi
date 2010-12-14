@@ -53,6 +53,7 @@ class RuleMailCollectorCollection extends RuleCollection {
    function prepareInputDataForProcess($input,$params) {
       $input['mailcollector'] = $params['mailcollector'];
       $input['users_id'] = $params['users_id'];
+      $input['username'] = $params['users_id'];
 
       $fields = $this->getFieldsToLookFor();
 
