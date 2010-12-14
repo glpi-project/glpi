@@ -62,38 +62,6 @@ if ($max_time==0) {
    $defaultrowlimit = 2;
 }
 
-?>
-<script language="JavaScript" type="text/javascript">
-<!--
-function dump(what3) {
-   if (confirm("<?php echo $LANG['backup'][18];?> " + what3 +  " ?")) {
-      window.location = "backup.php?dump=" + what3;
-   }
-}
-
-function restore(what) {
-   if (confirm("<?php echo $LANG['backup'][16];?> " + what +  " ?")) {
-      window.location = "backup.php?file=" + what +"&donotcheckversion=1";
-   }
-}
-
-function erase(what2) {
-   if (confirm("<?php echo $LANG['backup'][17];?> " + what2 +  " ?")) {
-      window.location = "backup.php?delfile=" + what2;
-   }
-}
-
-function xmlnow(what4) {
-   if (confirm("<?php echo $LANG['backup'][18] ;?> " + what4 +  " ?")) {
-      window.location = "backup.php?xmlnow=" + what4;
-   }
-}
-
-//-->
-</script>
-
-<?php
-
 
 // les deux options qui suivent devraient etre incluses dans le fichier de config plutot non ?
 // 1 only with ZLib support, else change value to 0
@@ -559,10 +527,16 @@ if (haveRight("check_update","r")) {
 // Title backup
 echo "<div class='center'><table class='tab_glpi'><tr><td>".
       "<img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt=\"".$LANG['common'][28]."\">".
-      "</td><td><a href=\"javascript:dump('".addslashes($LANG['backup'][19])."')\"  class='icon_consol b'>".
-      $LANG['backup'][0]."</a></td><td>".
-      "<a href=\"javascript:xmlnow('".addslashes($LANG['backup'][19])."')\" class='icon_consol'><b>".
-      $LANG['backup'][1]."</b></a></td></tr></table>";
+      "</td>";
+echo  "<td><a class='icon_consol b'
+            href=\"javascript:confirmAction('".addslashes($LANG['backup'][18])."',
+                              'backup.php?dump=dump')\">".$LANG['backup'][0]."</a>&nbsp;</td>";
+
+echo  "<td><a class='icon_consol b'
+            href=\"javascript:confirmAction('".addslashes($LANG['backup'][18])."',
+                              'backup.php?xmlnow=xmlnow')\">".$LANG['backup'][1]."</a>&nbsp;</td>";
+
+echo "</tr></table>";
 
 ?>
 
@@ -594,8 +568,11 @@ if (count($files)) {
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
             "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
             "<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>".
-            "<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>".
-            "<td>&nbsp;<a href=\"javascript:restore('$file')\">".$LANG['buttons'][21]."</a>&nbsp;</td>".
+            "<td>&nbsp;<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
+                              'backup.php?delfile=$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>".
+            "<td>&nbsp;<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][16])."',
+                              'backup.php?file=$file&amp;donotcheckversion=1')\">".
+                              $LANG['buttons'][21]."</a>&nbsp;</td>".
             "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a>".
             "</td></tr>";
    }
@@ -622,7 +599,8 @@ if (count($files)) {
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
             "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
             "<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>".
-            "<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>".
+            "<td>&nbsp;<a href=\"javascript:confirmAction('".addslashes($file." - ".$LANG['backup'][17])."',
+                              'backup.php?delfile=$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>".
             "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
             "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a>".
             "</td></tr>";
