@@ -1921,7 +1921,7 @@ class AuthLDAP extends CommonDBTM {
          $filter = "(& $filter ".$values['condition'].")";
       }
 
-      if ($result = ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
+      if ($result = @ldap_search($ds, $values['basedn'], $filter, $ldap_parameters)) {
          $info = ldap_get_entries_clean($ds, $result);
 
          if (is_array($info) && $info['count'] == 1) {
