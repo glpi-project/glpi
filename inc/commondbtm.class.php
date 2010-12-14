@@ -2261,7 +2261,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function addDivForTabs() {
 
-      echo "<div id='tabcontent'></div>";
+      echo "<div id='tabcontent'>&nbsp;</div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
