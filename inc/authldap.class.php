@@ -1060,7 +1060,6 @@ class AuthLDAP extends CommonDBTM {
                $limitexceeded = true;
             }
             $user_infos = array();
-
             for ($ligne = 0 ; $ligne < $info["count"] ; $ligne++) {
                //If ldap add
                if ($values['mode'] == AuthLDAP::ACTION_IMPORT) {
@@ -1089,7 +1088,7 @@ class AuthLDAP extends CommonDBTM {
       } else {
          return false;
       }
-
+      
       $glpi_users = array ();
       $sql = "SELECT *
               FROM `glpi_users`";
@@ -1146,7 +1145,6 @@ class AuthLDAP extends CommonDBTM {
          } else {
             sort($list);
          }
-
          return $list;
       }
       return $glpi_users;

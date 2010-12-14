@@ -129,21 +129,37 @@ function import($options)
    //The ldap server id is passed in the script url (parameter server_id)
    $limitexceeded = false;
 
-   $users = AuthLdap::getAllUsers($options,$results,$limitexceeded);
-   if (is_array($users)) {
-      foreach ($users as $user) {
-         $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                            'value'=>$user["user"]),
-                                                      $options['action'],
-                                                      $options['ldapservers_id']);
-         if ($result) {
-            $results[$result['action']] += 1;
+   $actions_to_do = array();
+   switch ($options['action']) {
+      case AuthLDAP::ACTION_IMPORT:
+         $actions_to_do = array(AuthLDAP::ACTION_IMPORT);
+        break;
+      case AuthLDAP::ACTION_SYNCHRONIZE:
+         $actions_to_do = array(AuthLDAP::ACTION_SYNCHRONIZE);
+        break;
+      case AuthLDAP::ACTION_ALL:
+         $actions_to_do = array(AuthLDAP::ACTION_IMPORT,AuthLDAP::ACTION_ALL);
+        break;
+   }  
+   foreach ($actions_to_do as $action_to_do) {
+      $options['mode'] = $action_to_do;
+      $users = AuthLdap::getAllUsers($options,$results,$limitexceeded);
+      if (is_array($users)) {
+         foreach ($users as $user) {
+            $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                                               'value'=>$user["user"]),
+                                                         $action_to_do,
+                                                         $options['ldapservers_id']);
+            if ($result) {
+               $results[$result['action']] += 1;
+            }
+            echo ".";
          }
-         echo ".";
       }
    }
+
    if ($limitexceeded) {
-      echo "LDAP Server size limit exceeded\n";
+      echo "\nLDAP Server size limit exceeded\n";
    }
    echo "\nImported : ".$results[AuthLDAP::USER_IMPORTED]."\n";
    echo "Synchronized : ".$results[AuthLDAP::USER_SYNCHRONIZED]."\n";
