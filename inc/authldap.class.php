@@ -1067,12 +1067,12 @@ class AuthLDAP extends CommonDBTM {
          $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
 
          if ($sr) {
-            if (ldap_errno($ds) == 4) {
+            if (in_array(ldap_errno($ds),array(4,11))) {
                // openldap return 4 for Size limit exceeded
                $limitexceeded = true;
             }
             $info = ldap_get_entries_clean($ds, $sr);
-            if (ldap_errno($ds) == 4) {
+            if (in_array(ldap_errno($ds),array(4,11))) {
                $limitexceeded = true;
             }
             $user_infos = array();
@@ -1138,15 +1138,13 @@ class AuthLDAP extends CommonDBTM {
                }
 
             // Only manage deleted user if ALL (because of entity visibility in delegated mode)
-            } else if ($values['action'] == AuthLDAP::ACTION_ALL) {
-               //If user is marked as coming from LDAP, but is not present in it anymore
-               if (!$user['is_deleted']
-                   && $user['is_active']
-                   && $user['auths_id'] == $options['authldaps_id']) {
-
-                  User::manageDeletedUserInLdap($user['id']);
-                  $results[AuthLDAP::USER_DELETED_LDAP] ++;
-               }
+             } else if ($values['action'] == AuthLDAP::ACTION_ALL && !$limitexceeded) {
+                //If user is marked as coming from LDAP, but is not present in it anymore
+                if (!$user['is_deleted']
+                      && $user['auths_id'] == $options['ldapservers_id']) {
+                   User::manageDeletedUserInLdap($user['id']);
+                   $results[AuthLDAP::USER_DELETED_LDAP] ++;
+                }
             }
          }
       }
