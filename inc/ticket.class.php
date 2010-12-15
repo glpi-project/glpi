@@ -141,7 +141,8 @@ class Ticket extends CommonDBTM {
    function canSolve() {
       return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
               &&*/ ($this->can($this->getField('id'), 'w')
-               && isset($_SESSION['glpiactiveprofile']['helpdesk_status']) // Not set for post-only
+               && (isset($_SESSION['glpiactiveprofile']['helpdesk_status']) 
+                  || is_null($_SESSION['glpiactiveprofile']['helpdesk_status'])) // Not set for post-only
                && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
                    || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
    }
@@ -747,6 +748,7 @@ class Ticket extends CommonDBTM {
                $this->updates[]           = 'status';
             }
             $this->fields['status'] = 'assign';
+            $this->input['status'] = 'assign';
          }
       }
 
@@ -772,8 +774,10 @@ class Ticket extends CommonDBTM {
          // 0 = immediatly
          if ($autoclosedelay == 0) {
             $this->fields['status'] = 'closed';
+            $this->input['status'] = 'closed';
          } else {
             $this->fields['status'] = 'solved';
+            $this->input['status'] = 'solved';
          }
       }
 
