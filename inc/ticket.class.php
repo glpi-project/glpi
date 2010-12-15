@@ -427,6 +427,7 @@ class Ticket extends CommonDBTM {
             $this->updates[] = 'status';
          }
          $this->fields['status'] = 'solved';
+         $this->input['status'] = 'solved';
       }
 
       if (((in_array("users_id_assign",$this->updates) && $this->input["users_id_assign"]>0)
@@ -440,6 +441,7 @@ class Ticket extends CommonDBTM {
             $this->updates[] = 'status';
          }
          $this->fields['status'] = 'assign';
+         $this->input['status'] = 'assign';
       }
       if (isset($this->input["status"])) {
          if (isset($this->input["suppliers_id_assign"])
@@ -4790,7 +4792,8 @@ class Ticket extends CommonDBTM {
 
       return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
               &&*/ ($this->can($this->getField('id'), 'w')
-               && isset($_SESSION['glpiactiveprofile']['helpdesk_status']) // Not set for post-only
+               && (isset($_SESSION['glpiactiveprofile']['helpdesk_status'])
+                     || is_null($_SESSION['glpiactiveprofile']['helpdesk_status'])) // Not set for post-only
                && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
                   || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
    }
