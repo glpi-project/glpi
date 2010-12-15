@@ -1164,7 +1164,7 @@ function update0781to080($output='HTML') {
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==0) {
          $query = "INSERT INTO `glpi_notificationtemplates`
-                  VALUES(NULL, 'Crontask', 'Crontask', NOW(),'');";
+                  VALUES(NULL, 'Crontask', 'Crontask', NOW(),'', NULL);";
          $DB->query($query)
          or die("0.80 add crontask watcher notification" . $LANG['update'][90] . $DB->error());
          $notid = $DB->insert_id();
