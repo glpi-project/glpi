@@ -46,6 +46,14 @@ class Infocom extends CommonDBTM {
    public $dohistory = true;
    public $auto_message_on_action = false; // Link in message can't work'
 
+   //Option to automatically fill dates
+   const ON_STATUS_CHANGE = 'STATUS';
+   const COPY_WARRANTY_DATE = 1;
+   const COPY_BUY_DATE = 2;
+   const COPY_ORDER_DATE = 3;
+   const COPY_DELIVERY_DATE = 4;
+   const ON_ASSET_IMPORT = 5;
+   
    static function getTypeName() {
       global $LANG;
 
@@ -122,26 +130,113 @@ class Infocom extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Fill, if necessary, automatically some dates when status changes
+    * @param item the item whose status have changed
+    * @param action_add true if object is added, false if updated 
+    * @return nothing
+    */
+   static function manageDateOnStatusChange(CommonDBTM $item,$action_add=true) {
+      global $CFG_GLPI;
+      $itemtype = get_class($item);
+      $changes = ($action_add?$item->fields:$item->input);
 
-   function prepareInputForUpdate($input) {
-      // No more use : need id to update
-      /*
-      if (isset($input["id"])) {
-         $this->getFromDB($input["id"]);
-      } else {
-         if (!$this->getFromDBforDevice($input["itemtype"],$input["items_id"])) {
-            $input2["items_id"]=$input["items_id"];
-            $input2["itemtype"]=$input["itemtype"];
-            $this->add($input2);
-            $this->getFromDBforDevice($input["itemtype"],$input["items_id"]);
+      //Status changed
+      $entities_id = $changes['entities_id'];
+
+      //Get infocoms associated with the object
+      $entitydata = new EntityData;
+      $entitydata->getFromDB($entities_id);
+
+      $field = self::ON_STATUS_CHANGE.'_'.$changes['states_id'];
+      //For each date that can be automatically filled
+      $infocom = new Infocom();
+      foreach (self::getAutoManagemendDatesFields() as $date => $date_field) {
+         $resp = array();
+         $entdatas = $entitydata->fields;
+         $entdatas['entity'] = $entities_id;
+         Entity::getDefaultValueForAttributeInEntity($date,$resp,$entdatas);
+         //Date must be filled if status corresponds to the one defined in the config
+         if (!empty($resp) 
+              && isset($resp[$entities_id]) 
+                 && $resp[$entities_id] == $field) {
+            $tmp = array('itemtype' => $itemtype,'items_id' => $changes['id']);
+            $tmp[$date_field] = $_SESSION["glpi_currenttime"];
+            if (!$infocom->getFromDBforDevice($itemtype,$changes['id'])) {
+               $infocom->add($tmp);
+            } else {
+               $tmp['id'] = $infocom->fields['id'];
+               $infocom->update($tmp);
+            }
          }
-         $input["id"]=$this->fields["id"];
       }
-      */
+   }
+   
+   /**
+    * Automatically manage copying one date to another is necessary
+    * @param infocoms the item's infocom to modify
+    * @param field the date to modify
+    * @param action the action to peform (copy from another date)
+    * @param params additional parameters needed to perform the task
+    * @return nothing
+    */
+   static function autofillDates(&$infocoms = array(),$field = '', $action = 0, $params = array()) {
+      switch ($action) {
+         default:
+            break;
+         case 0 :
+            break;
+          case self::COPY_WARRANTY_DATE :
+            if ($infocoms[$field] && isset($infocoms['warranty_date'])) {
+               $infocoms[$field] = $infocoms['warranty_date'];
+            }
+            break;
+         case self::COPY_BUY_DATE :
+            if ($infocoms[$field] && isset($infocoms['buy_date'])) {
+               $infocoms[$field] = $infocoms['buy_date'];
+            }
+            break;
+         case self::COPY_ORDER_DATE :
+            if ($infocoms[$field] && isset($infocoms['order_date'])) {
+               $infocoms[$field] = $infocoms['order_date'];
+            }
+            break;
+         case self::COPY_DELIVERY_DATE :
+            if ($infocoms[$field] && isset($infocoms['delivery_date'])) {
+               $infocoms[$field] = $infocoms['delivery_date'];
+            }
+            break;
+      }
+   }
+   
+   static function getAutoManagemendDatesFields() {
+      return array ('autofill_buy_date'      => 'buy_date',
+                    'autofill_use_date'      => 'use_date',
+                    'autofill_delivery_date' => 'delivery_date',
+                    'autofill_warranty_date' => 'warranty_date',
+                    'autofill_order_date'    => 'order_date');
+   }
+   
+   function prepareInputForUpdate($input) {
+      $infocom = new Infocom();
+      $infocom->getFromDB($input['id']);
+      $entitydata = new EntityData();
+      $entitydata->getFromDB($infocom->fields['entities_id']);
+      $entitydata->fields['entity'] = $infocom->fields['entities_id'];
+      
       if (isset($input['warranty_duration'])) {
          $input['_warranty_duration'] = $this->fields['warranty_duration'];
       }
-
+      
+      foreach (self::getAutoManagemendDatesFields() as $key => $field) {
+         $resp = array();
+         Entity::getDefaultValueForAttributeInEntity($key,
+                                                $resp,
+                                                $entitydata->fields);
+         if ($resp[$infocom->fields['entities_id']]) {
+            self::autofillDates($input,$field, $resp[$infocom->fields['entities_id']]);
+         }
+      }
       return $input;
    }
 
@@ -1257,6 +1352,96 @@ class Infocom extends CommonDBTM {
       NotificationEvent::debugEvent($this, $options);
    }
 
+   static function showDateManagementForm($entities_id = -1,$params = array()) {
+      global $CFG_GLPI, $DB, $LANG;
+      
+      $default_value = ($entities_id > 0?-1:0);
+      $dates = array ('autofill_buy_date'      => $default_value,
+                      'autofill_use_date'      => $default_value,
+                      'autofill_delivery_date' => $default_value,
+                      'autofill_warranty_date' => $default_value,
+                      'autofill_order_date'    => $default_value);
+      
+      if ($entities_id == -1) {
+         $values = $CFG_GLPI;
+      } else {
+         $entitydata = new EntityData;
+         $entitydata->getFromDB($entities_id);
+         $values = $entitydata->fields;
+         $options[-1] = $LANG['setup'][731];
+      }
+
+      foreach ($dates as $date => $tmp) {
+         if (isset($values[$date])) {
+            $dates[$date] = $values[$date];
+         }
+      }
+      
+      $p['close_table'] = true;
+      foreach ($params as $key => $value) {
+         $p[$key] = $value;
+      }
+      
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".$LANG['financial'][111]."</th></tr>";
+
+      $options[0] = $LANG['financial'][113];
+      foreach (getAllDatasFromTable('glpi_states') as $state) {
+         $options[self::ON_STATUS_CHANGE.'_'.$state['id']] = 
+            $LANG['financial'][112].' '.$state['name'];
+      }
+      
+      $options[self::COPY_WARRANTY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][29];
+      //Buy date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['financial'][14] . "&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showFromArray('autofill_buy_date',$options,
+                              array('value' => $dates['autofill_buy_date']));
+      echo "</td>";
+
+      //Order date
+      echo "<td> " . $LANG['financial'][28] . "&nbsp;:</td>";
+      echo "<td>";
+      $options[self::COPY_BUY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][14];
+      Dropdown::showFromArray('autofill_order_date',$options,
+                              array('value' => $dates['autofill_order_date']));
+      echo "</td></tr>";
+
+      //Delivery date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['financial'][27] . "&nbsp;:</td>";
+      echo "<td>";
+      $options[self::COPY_ORDER_DATE] = $LANG['setup'][283].' '.$LANG['financial'][28];
+      Dropdown::showFromArray('autofill_delivery_date',$options,
+                              array('value' => $dates['autofill_delivery_date']));
+      echo "</td>";
+
+      //Use date
+      echo "<td> " . $LANG['financial'][76] . "&nbsp;:</td>";
+      echo "<td>";
+      $options[self::COPY_DELIVERY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][27];
+      Dropdown::showFromArray('autofill_use_date',$options, 
+                              array('value' => $dates['autofill_use_date']));
+      echo "</td></tr>";
+
+      //Warranty date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['financial'][29] . "&nbsp;:</td>";
+      echo "<td>";
+      $options = array(0                   => $options[0] = $LANG['financial'][113],
+                       self::COPY_BUY_DATE => $LANG['setup'][283].' '.$LANG['financial'][14],
+                       self::COPY_ORDER_DATE=>$LANG['setup'][283].' '.$LANG['financial'][28]);
+      if ($entities_id > 0) {
+         $options[-1] = $LANG['setup'][731];
+      }
+      Dropdown::showFromArray('autofill_warranty_date',$options, 
+                              array('value' => $dates['autofill_warranty_date']));
+      echo "</td><td colspan='2'></td></tr>";
+      if ($p['close_table']) {
+         echo "</table>";
+      }
+   }
 }
 
 ?>

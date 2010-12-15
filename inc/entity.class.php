@@ -114,6 +114,9 @@ class Entity extends CommonTreeDropdown {
             $ong[7] = $LANG['setup'][704];
          }
          $ong[8] = $LANG['title'][24];      // Automatic close
+         if (haveRight('infocom','r')) {
+            $ong[10] = $LANG['Menu'][38];
+         }
       }
       return $ong;
    }
@@ -147,6 +150,7 @@ class Entity extends CommonTreeDropdown {
                Document::showAssociated($this);
                EntityData::showNotificationOptions($this);
                EntityData::showHelpdeskOptions($this);
+               EntityData::showInventoryOptions($this);
                Plugin::displayAction($this, $tab);
                break;
 
@@ -185,6 +189,10 @@ class Entity extends CommonTreeDropdown {
                EntityData::showHelpdeskOptions($this);
                break;
 
+            case 10 :
+               EntityData::showInventoryOptions($this);
+               break;
+               
             default :
                if (!Plugin::displayAction($this, $tab)) {
                   $this->showChildren($ID);
@@ -521,7 +529,7 @@ class Entity extends CommonTreeDropdown {
       $entities = array();
 
       foreach ($DB->request($query) as $entitydatas) {
-         Entity::getDefaultValueForNotification($field, $entities, $entitydatas);
+         Entity::getDefaultValueForAttributeInEntity($field, $entities, $entitydatas);
       }
 
       //If root entity doesn't have row in glpi_entitydatas
@@ -531,7 +539,7 @@ class Entity extends CommonTreeDropdown {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         Entity::getDefaultValueForNotification($field, $entities,
+         Entity::getDefaultValueForAttributeInEntity($field, $entities,
                                                 array('entity' => 0,
                                                       $field   => $DB->result($result, 0, $field)));
 
@@ -543,7 +551,7 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-   static function getDefaultValueForNotification($field, &$entities, $entitydatas) {
+   static function getDefaultValueForAttributeInEntity($field, &$entities, $entitydatas) {
       global $CFG_GLPI;
 
       //If there's a configuration for this entity & the value is not the one of the global config

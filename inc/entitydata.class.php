@@ -332,18 +332,65 @@ class EntityData extends CommonDBChild {
 
       $fields = array('use_licenses_alert', 'use_contracts_alert', 'use_infocoms_alert',
                       'use_reservations_alert', 'autoclose_delay', 'consumables_alert_repeat',
-                      'cartridges_alert_repeat', 'notclosed_delay');
+                      'cartridges_alert_repeat', 'notclosed_delay','autofill_warranty_date',
+                      'autofill_order_date','autofill_delivery_date', 'autofill_buy_date',
+                      'autofill_use_date');
 
       foreach ($fields as $field) {
          $this->fields[$field] = -1;
       }
    }
 
+   static function showInventoryOptions(Entity $entity) {
+      global $LANG;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r')) {
+         return false;
+      }
+      
+      // Notification right applied
+      $canedit = haveRight('infocom','w') && haveAccessToEntity($ID);
+
+      // Get data
+      $entitydata = new EntityData();
+      if (!$entitydata->getFromDB($ID)) {
+         $entitydata->getEmpty();
+      }
+
+      echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      Infocom::showDateManagementForm($ID,array('close_table' => false));
+      
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value='$ID'>";
+
+         if ($entitydata->fields["id"]) {
+            echo "<input type='hidden' name='id' value='".$entitydata->fields["id"]."'>";
+            echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
+                   class='submit'>";
+         } else {
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         }
+
+         echo "</td></tr>";
+         echo "</table></form>";
+
+      } else {
+         echo "</table>";
+      }
+
+      echo "</div>";
+      
+   }
 
    static function showNotificationOptions(Entity $entity) {
       global $LANG;
-
-      $con_spotted = false;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r')) {

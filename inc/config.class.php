@@ -314,6 +314,9 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
+      echo "<br>";
+      Infocom::showDateManagementForm(-1);
+
       echo "<br><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
 
