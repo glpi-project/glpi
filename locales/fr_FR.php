@@ -713,7 +713,9 @@ $LANG['financial'][107] = "Reconduction";
 $LANG['financial'][108] = "Total dépensé sur le budget";
 $LANG['financial'][109] = "Total restant sur le budget";
 $LANG['financial'][110]  = "Budgets";
-
+$LANG['financial'][111]  = "Remplissage automatique des dates";
+$LANG['financial'][112]  = "Remplissage au passage au statut";
+$LANG['financial'][113]  = "Pas de remplissage automatique";
 
 $LANG['gmt'][0] = "GMT";
 $LANG['gmt'][1] = "heure(s)";

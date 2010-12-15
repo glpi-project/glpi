@@ -636,7 +636,6 @@ class CommonDBTM extends CommonGLPI {
          if ($this->addToDB()) {
             $this->addMessageOnAddAction();
             $this->post_addItem();
-            doHook("item_add", $this);
 
             // Auto create infocoms
             if ($CFG_GLPI["auto_create_infocoms"] && in_array($this->getType(),
@@ -647,8 +646,19 @@ class CommonDBTM extends CommonGLPI {
                   $ic->add(array('itemtype' => $this->getType(),
                                  'items_id' => $this->fields['id']));
                }
-
             }
+
+            //If itemtype is in infocomtype and if states_id field is filled
+            //and item is not a template
+            if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
+               && isset($this->input['states_id'])
+                        && (!isset($this->input['is_template']) 
+                           || !$this->input['is_template'])) {
+               //Check if we have to automaticall fill dates
+               Infocom::manageDateOnStatusChange($this);
+            }
+            doHook("item_add", $this);
+
             return $this->fields['id'];
 
          }
@@ -779,7 +789,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean : true on success
    **/
    function update($input,$history=1) {
-      global $DB;
+      global $DB,$CFG_GLPI;
 
       if ($DB->isSlave()) {
          return false;
@@ -861,6 +871,15 @@ class CommonDBTM extends CommonGLPI {
                      $this->forwardEntityInformations();
                   }
 
+                  //If itemtype is in infocomtype and if states_id field is filled
+                  //and item not a template
+                  if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
+                     && in_array('states_id',$this->updates)
+                        && (!in_array('is_template',$this->fields) 
+                           || !$this->fields['is_template'])) {
+                     //Check if we have to automaticall fill dates
+                     Infocom::manageDateOnStatusChange($this,false);
+                  }
                }
             }
          }
