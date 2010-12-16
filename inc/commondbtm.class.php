@@ -2347,16 +2347,21 @@ class CommonDBTM extends CommonGLPI {
          if (isset($searchOption['datatype']) && !is_null($value) && $value != 'NULL') {
             switch ($searchOption['datatype']) {
                case 'integer':
-                  if (!is_numeric($value)) {
-                     $unset = true;
-                  }
-                  break;
                case 'decimal':
-                  $this->input[$key] = floatval($value);
+                  if ($searchOption['datatype'] == 'integer') {
+                     $this->input[$key] = floatval($value);
+                  } else {
+                     $this->input[$key] = intval($value);
+                    
+                  }
                   if (!is_numeric($value)) {
                      $unset = true;
                   }
                   break;
+               case 'bool':
+                  if (!in_array($value,array(0,1))) {
+                     $unset = true;
+                  }
                case 'ip':
                   preg_match("/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/", 
                              $value, $regs);
@@ -2372,7 +2377,6 @@ class CommonDBTM extends CommonGLPI {
                   break;
                case 'date':
                   // Date is already "reformat" according to getDateFormat()
-                  logDebug($key, $value);
                   $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/';
                   preg_match($pat, $value, $regs);
                   if (empty($regs)) {
@@ -2380,10 +2384,10 @@ class CommonDBTM extends CommonGLPI {
                   }
                   break;
                 }
-             if ($unset) {
-                $fails[] = $searchOption['name'];
-                unset($this->input[$key]);
-             }
+         }
+         if ($unset) {
+            $fails[] = $searchOption['name'];
+            unset($this->input[$key]);
          }
       }
       if (!empty($fails)) {
