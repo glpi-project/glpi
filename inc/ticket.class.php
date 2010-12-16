@@ -3301,7 +3301,7 @@ class Ticket extends CommonDBTM {
     * @return total cost formatted string
    **/
    static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material) {
-      return formatNumber(($actiontime*$cost_time)+$cost_fixed+$cost_material,true);
+      return formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,true);
    }
 
 
