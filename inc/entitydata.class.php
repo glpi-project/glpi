@@ -117,7 +117,7 @@ class EntityData extends CommonDBChild {
    }
 
 
-   /// TODO do it in the future in filterDatas or checkValues ?
+   /// TODO do it in the future in filterDatas or filterValues ?
    function checkRightDatas($input) {
 
       foreach (self::$field_right as $right => $fields) {

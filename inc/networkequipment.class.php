@@ -529,10 +529,12 @@ class NetworkEquipment extends CommonDBTM {
       $tab[12]['table'] = $this->getTable();
       $tab[12]['field'] = 'ip';
       $tab[12]['name']  = $LANG['networking'][14]." ".$LANG['help'][26];
+      $tab[12]['datatype'] = 'ip';
 
       $tab[13]['table'] = $this->getTable();
       $tab[13]['field'] = 'mac';
       $tab[13]['name']  = $LANG['networking'][15]." ".$LANG['help'][26];
+      $tab[13]['datatype'] = 'mac';
 
       $tab[32]['table'] = 'glpi_networks';
       $tab[32]['field'] = 'name';

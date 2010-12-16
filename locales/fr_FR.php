@@ -335,6 +335,7 @@ $LANG['common'][102] = "Héritage de l'entité parente";
 $LANG['common'][103] = "Acteurs";
 $LANG['common'][104] = "Observateur";
 $LANG['common'][105] = "Alerte";
+$LANG['common'][106] = "Au moins un champs a une valeur incorrecte";
 
 
 $LANG['computers'][0]  = "Volume";

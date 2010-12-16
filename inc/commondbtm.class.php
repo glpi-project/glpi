@@ -59,6 +59,10 @@ class CommonDBTM extends CommonGLPI {
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
+   const SUCCESS                        = 0; //Injection OK
+   const TYPE_MISMATCH                  = 1;
+   const ERROR_FIELDSIZE_EXCEEDED       = 2;
+
 
    /**
     * Constructor
@@ -614,7 +618,7 @@ class CommonDBTM extends CommonGLPI {
 
          $this->input = $this->prepareInputForAdd($this->input);
          //Check values to inject
-         $this->checkValues();
+         $this->filterValues();
       }
 
       if ($this->input && is_array($this->input)) {
@@ -813,7 +817,7 @@ class CommonDBTM extends CommonGLPI {
             unset($this->input['update']);
          }
 
-         $this->checkValues();
+         $this->filterValues();
       }
 
       // Valid input
@@ -2311,13 +2315,80 @@ class CommonDBTM extends CommonGLPI {
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
-
+   /**
+    * Return a search option by looking for a value of a specific field
+    * @param field the field in which looking for the value (for exampe : table, name, etc)
+    * @param value the value to look for in the field
+    * @return then search option array, or an empty array if not found
+    */
+   function getSearchOptionByField($field, $value) {
+      foreach ($this->getSearchOptions() as $searchOption) {
+         if (isset($searchOption[$field]) 
+               && $searchOption[$field] == $value) {
+            return $searchOption;
+         }
+      }
+      return array();
+   }
+   
    /**
     * Check float and decimal values
     *
     * @return input the data checked
    **/
-   function checkValues() {
+   function filterValues() {
+      global $LANG;
+      //Tpe mismatched fields
+      $fails = array();
+      foreach ($this->input as $key =>$value) {
+         $unset = false;
+         $regs = array();
+         $searchOption = $this->getSearchOptionByField('field',$key);
+         if (isset($searchOption['datatype']) && $value != null) {
+            switch ($searchOption['datatype']) {
+               case 'integer':
+                  if (!is_numeric($value)) {
+                     $unset = true;
+                  }
+                  break;
+               case 'decimal':
+                  $this->input[$key] = floatval($value);
+                  if (!is_float($value)) {
+                     $unset = true;
+                  }
+                  break;
+               case 'ip':
+                  preg_match("/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/", 
+                             $value, $regs);
+                  if (empty($regs)) {
+                     $unset = true;
+                  }
+                  break;
+               case 'mac':
+                  preg_match("/([0-9a-fA-F]{2}([:-]|$)){6}$/",$value,$regs);
+                  if (empty($regs)) {
+                     $unset = true;
+                  }
+                  break;
+               case 'date':
+                  // Date is already "reformat" according to getDateFormat()
+                  $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/';
+                  preg_match($pat, $value, $regs);
+                  if (empty($regs)) {
+                     $unset = true;
+                  }
+                  break;
+                }
+             if ($unset) {
+                $fails[] = $searchOption['name'];
+                unset($this->input[$key]);
+             }
+         }
+      }
+      if (!empty($fails)) {
+         $message = $LANG['common'][106].' : '.implode(',',$fails);
+         addMessageAfterRedirect($message,INFO,true);
+      }
    }
 
 
