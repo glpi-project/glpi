@@ -2344,7 +2344,7 @@ class CommonDBTM extends CommonGLPI {
          $unset = false;
          $regs = array();
          $searchOption = $this->getSearchOptionByField('field',$key);
-         if (isset($searchOption['datatype']) && $value != null) {
+         if (isset($searchOption['datatype']) && !is_null($value) && $value != 'NULL') {
             switch ($searchOption['datatype']) {
                case 'integer':
                   if (!is_numeric($value)) {
@@ -2353,7 +2353,7 @@ class CommonDBTM extends CommonGLPI {
                   break;
                case 'decimal':
                   $this->input[$key] = floatval($value);
-                  if (!is_float($value)) {
+                  if (!is_numeric($value)) {
                      $unset = true;
                   }
                   break;
@@ -2372,6 +2372,7 @@ class CommonDBTM extends CommonGLPI {
                   break;
                case 'date':
                   // Date is already "reformat" according to getDateFormat()
+                  logDebug($key, $value);
                   $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/';
                   preg_match($pat, $value, $regs);
                   if (empty($regs)) {
