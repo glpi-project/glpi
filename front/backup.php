@@ -500,7 +500,7 @@ if (isset($_GET["file"])
          exit;
       }
    } else {
-      optimize_tables();
+      optimize_tables(NULL, true);
       // Compatiblity for old version for utf8 complete conversion
       $cnf = new Config();
       $input['id'] = 1;
