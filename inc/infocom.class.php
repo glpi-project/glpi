@@ -1327,7 +1327,8 @@ class Infocom extends CommonDBTM {
    }
 
 
-   function checkValues() {
+/*
+   function filterValues() {
 
       $fields = array('value', 'warranty_value', 'sink_coeff');
       foreach ($fields as $field) {
@@ -1336,7 +1337,7 @@ class Infocom extends CommonDBTM {
          }
       }
    }
-
+*/
 
    /**
     * Display debug information for infocom of current object

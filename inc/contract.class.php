@@ -1390,14 +1390,6 @@ class Contract extends CommonDBTM {
       Dropdown::showFromArray($myname, $tmp, array('value' => $value));
    }
 
-
-   function checkValues() {
-      if (isset($this->input['cost'])) {
-         $this->input['cost'] = floatval($this->input['cost']);
-      }
-   }
-
-
    /**
     * Display debug information for current object
    **/
