@@ -1144,7 +1144,7 @@ class CronTask extends CommonDBTM{
    static function cronOptimize($task) {
       global $CFG_GLPI,$DB;
 
-      $nb = optimize_tables();
+      $nb = optimize_tables(NULL, true);
       $task->setVolume($nb);
 
       return 1;
@@ -1161,7 +1161,7 @@ class CronTask extends CommonDBTM{
 
       $cron_status = 0;
 
-      // Crontasks running for more than 1 hour or 2 frequency 
+      // Crontasks running for more than 1 hour or 2 frequency
       $query = "SELECT * FROM `glpi_crontasks`
                   WHERE state = 2
                      AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
@@ -1169,7 +1169,7 @@ class CronTask extends CommonDBTM{
                         );";
       $crontasks=array();
       foreach ($DB->request($query) as $data) {
-         $crontasks[$data['id']] = $data; 
+         $crontasks[$data['id']] = $data;
       }
       if (count($crontasks)) {
          if (NotificationEvent::raiseEvent("alert", new Crontask(), array('crontasks' => $crontasks))) {
