@@ -2739,6 +2739,13 @@ class Search {
             if (!empty($linkfield)) {
                return " LEFT JOIN `$new_table` $AS ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
             }
+            if ($itemtype=='User') {
+               return " LEFT JOIN `$new_table` $AS
+                           ON ((`$rt`.`id`=`$nt`.`users_id`
+                                OR `$rt`.`id`=`$nt`.`users_id_assign`
+                                OR `$rt`.`id`=`$nt`.`users_id_recipient`) ".
+                               getEntitiesRestrictRequest('AND', 'glpi_tickets').") ";
+            }
             return " LEFT JOIN `$new_table` $AS
                         ON (`$rt`.`id` = `$nt`.`items_id`
                             AND `$nt`.`itemtype` = '$itemtype' ".
@@ -3461,16 +3468,33 @@ class Search {
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
 
-               $options['field'][0]      = 12;
-               $options['searchtype'][0] = 'equals';
-               $options['contains'][0]   = 'all';
-               $options['link'][0]       = 'AND';
+               if ($itemtype == 'User') {
+                  $options['field'][0]      = 4;
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = $data['id'];
+                  $options['link'][0]       = 'AND';
 
-               $options['itemtype2'][0]   = $itemtype;
-               $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
-               $options['searchtype2'][0] = 'equals';
-               $options['contains2'][0]   = $data['id'];
-               $options['link2'][0]       = 'AND';
+                  $options['field'][1]      = 22;
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = $data['id'];
+                  $options['link'][1]       = 'OR';
+
+                  $options['field'][2]      = 5;
+                  $options['searchtype'][2] = 'equals';
+                  $options['contains'][2]   = $data['id'];
+                  $options['link'][2]       = 'OR';
+               } else {
+                  $options['field'][0]      = 12;
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'all';
+                  $options['link'][0]       = 'AND';
+
+                  $options['itemtype2'][0]   = $itemtype;
+                  $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
+                  $options['searchtype2'][0] = 'equals';
+                  $options['contains2'][0]   = $data['id'];
+                  $options['link2'][0]       = 'AND';
+               }
 
                $options['reset']='reset';
 
