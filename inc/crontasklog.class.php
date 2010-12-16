@@ -35,13 +35,14 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * CronTaskLog class
- */
+**/
 class CronTaskLog extends CommonDBTM{
 
    // Class constant
    const STATE_START = 0;
    const STATE_RUN   = 1;
    const STATE_STOP  = 2;
+
 
    /**
     * Clean old event for a task
@@ -50,19 +51,20 @@ class CronTaskLog extends CommonDBTM{
     * @param $days integer number of day to keep
     *
     * @return integer number of events deleted
-    */
+   **/
    static function cleanOld ($id, $days) {
       global $DB;
 
       $secs = $days * DAY_TIMESTAMP;
 
       $query_exp = "DELETE
-                 FROM `glpi_crontasklogs`
-                 WHERE `crontasks_id`='$id'
-                   AND UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+                    FROM `glpi_crontasklogs`
+                    WHERE `crontasks_id` = '$id'
+                          AND UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 
       $DB->query($query_exp);
       return $DB->affected_rows();
    }
+
 }
 ?>
