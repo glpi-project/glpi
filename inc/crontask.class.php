@@ -994,7 +994,7 @@ class CronTask extends CommonDBTM{
       $tab[3]['name']      = $LANG['joblist'][6];
       $tab[3]['nosearch']  = true;
       $tab[3]['nosort']    = true;
-      
+
       $tab[4]['table']     = $this->getTable();
       $tab[4]['field']     = 'state';
       $tab[4]['linkfield'] = '';
@@ -1135,7 +1135,7 @@ class CronTask extends CommonDBTM{
    static function cronOptimize($task) {
       global $CFG_GLPI,$DB;
 
-      $nb = optimize_tables();
+      $nb = optimize_tables(NULL, true);
       $task->setVolume($nb);
 
       return 1;

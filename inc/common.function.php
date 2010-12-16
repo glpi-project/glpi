@@ -1296,10 +1296,11 @@ function get_hour_from_sql($time) {
  *  Optimize sql table
  *
  * @param $progress_fct function to call to display progress message
+ * @param $cron to know if optimize must be done
  *
  * @return number of tables
  */
-function optimize_tables ($progress_fct=NULL){
+function optimize_tables ($progress_fct=NULL, $cron=false){
    global $DB;
 
    if (function_exists($progress_fct)) {
@@ -1309,12 +1310,17 @@ function optimize_tables ($progress_fct=NULL){
    $nb=0;
    while ($line = $DB->fetch_array($result)) {
       $table = $line[0];
-      if (function_exists($progress_fct)) {
-         $progress_fct("optimize", $table);
+
+   // For big database to reduce delay of migration
+      if ($cron || countElementsInTable($table) < 15000000) {
+
+         if (function_exists($progress_fct)) {
+            $progress_fct("optimize", $table);
+         }
+         $query = "OPTIMIZE TABLE `".$table."` ;";
+         $DB->query($query);
+         $nb++;
       }
-      $query = "OPTIMIZE TABLE `".$table."` ;";
-      $DB->query($query);
-      $nb++;
    }
    $DB->free_result($result);
 
