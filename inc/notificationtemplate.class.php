@@ -44,6 +44,7 @@ class NotificationTemplate extends CommonDBTM {
    //Store templates for each language
    public $templates_by_languages = array();
 
+
    static function getTypeName() {
       global $LANG;
 
@@ -71,6 +72,7 @@ class NotificationTemplate extends CommonDBTM {
    function canView() {
       return haveRight('config', 'r');
    }
+
 
    /// Reset already computed templates
    function resetComputedTemplates() {
@@ -108,17 +110,19 @@ class NotificationTemplate extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][17] . "&nbsp;:</td><td colspan='3'>";
       Dropdown::dropdownTypes("itemtype",
-                              ($this->fields['itemtype']?$this->fields['itemtype']:'Ticket'),
+                              ($this->fields['itemtype']?$this->fields['itemtype']
+                                                        :'Ticket'),
                               $CFG_GLPI["notificationtemplates_types"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][25]."&nbsp;: </td>";
-      echo "<td colspan='3'><textarea cols='60' rows='5' name='comment' >".$this->fields["comment"].
-            "</textarea></td></tr>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='60' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['mailing'][6]."&nbsp;: </td>";
-      echo "<td colspan='3'><textarea cols='60' rows='5' name='css' >".$this->fields["css"].
-            "</textarea></td></tr>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='60' rows='5' name='css' >".$this->fields["css"]."</textarea></td></tr>";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -347,9 +351,9 @@ class NotificationTemplate extends CommonDBTM {
             if (empty($out[2][$key])) { // No = : check if ot empty or not null
 
                if (isset($data['##'.$if_field.'##'])
-                  && $data['##'.$if_field.'##'] != ''
-                  && $data['##'.$if_field.'##'] != '&nbsp;'
-                  && !is_null($data['##'.$if_field.'##'])) {
+                   && $data['##'.$if_field.'##'] != ''
+                   && $data['##'.$if_field.'##'] != '&nbsp;'
+                   && !is_null($data['##'.$if_field.'##'])) {
 
                   $condition_ok = true;
 

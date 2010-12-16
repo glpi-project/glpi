@@ -141,7 +141,7 @@ class Ticket extends CommonDBTM {
    function canSolve() {
       return (/*$this->fields["status"] != 'closed' /// TODO block solution edition on closed status ?
               &&*/ ($this->can($this->getField('id'), 'w')
-               && (isset($_SESSION['glpiactiveprofile']['helpdesk_status']) 
+               && (isset($_SESSION['glpiactiveprofile']['helpdesk_status'])
                   || is_null($_SESSION['glpiactiveprofile']['helpdesk_status'])) // Not set for post-only
                && (!isset($_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])
                    || $_SESSION['glpiactiveprofile']['helpdesk_status'][$this->fields['status']]['solved'])));
@@ -740,15 +740,16 @@ class Ticket extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       if ($this->fields['status'] != 'closed') {
-         if ((in_array("suppliers_id_assign",$this->updates) && $this->input["suppliers_id_assign"]>0)
-            || isset($this->input["_assignadd"])) {
+         if ((in_array("suppliers_id_assign",$this->updates)
+              && $this->input["suppliers_id_assign"]>0)
+             || isset($this->input["_assignadd"])) {
 
             if (!in_array('status', $this->updates)) {
                $this->oldvalues['status'] = $this->fields['status'];
                $this->updates[]           = 'status';
             }
             $this->fields['status'] = 'assign';
-            $this->input['status'] = 'assign';
+            $this->input['status']  = 'assign';
          }
       }
 
@@ -4622,7 +4623,6 @@ class Ticket extends CommonDBTM {
                   $options['searchtype'][3] = 'equals';
                   $options['contains'][3]   = 'solved';
                   $options['link'][3]       = 'AND';
-
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
