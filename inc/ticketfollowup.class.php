@@ -731,14 +731,16 @@ class TicketFollowup  extends CommonDBTM {
       return true;
    }
 
+
    function getSearchOptions() {
       global $LANG;
+
       $tab = array();
       $tab['common'] = $LANG['job'][9];
 
-      $tab[1]['table']        = 'glpi_ticketfollowups';
-      $tab[1]['field']        = 'content';
-      $tab[1]['name']         = $LANG['job'][9]." - ".$LANG['joblist'][6];
+      $tab[1]['table'] = $this->getTable();
+      $tab[1]['field'] = 'content';
+      $tab[1]['name']  = $LANG['job'][9]." - ".$LANG['joblist'][6];
 
       $tab[2]['table']        = 'glpi_requesttypes';
       $tab[2]['field']        = 'name';
@@ -746,22 +748,23 @@ class TicketFollowup  extends CommonDBTM {
       $tab[2]['name']         = $LANG['job'][9]." - ".$LANG['job'][44];
       $tab[2]['forcegroupby'] = true;
 
-      $tab[3]['table']        = 'glpi_ticketfollowups';
-      $tab[3]['field']        = 'date';
-      $tab[3]['name']         = $LANG['common'][26];
-      $tab[3]['datatype']     = 'datetime';
+      $tab[3]['table']    = $this->getTable();
+      $tab[3]['field']    = 'date';
+      $tab[3]['name']     = $LANG['common'][26];
+      $tab[3]['datatype'] = 'datetime';
 
-      $tab[4]['table']        = 'glpi_ticketfollowups';
-      $tab[4]['field']        = 'is_private';
-      $tab[4]['name']         = $LANG['job'][9]. " ".$LANG['common'][77];
-      $tab[4]['datatype']     = 'bool';
+      $tab[4]['table']    = $this->getTable();
+      $tab[4]['field']    = 'is_private';
+      $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
+      $tab[4]['datatype'] = 'bool';
 
-      $tab[5]['table']        = 'glpi_users';
-      $tab[5]['field']        = 'name';
-      $tab[5]['linkfield']    = 'users_id';
-      $tab[5]['name']         = $LANG['common'][34];
+      $tab[5]['table']     = 'glpi_users';
+      $tab[5]['field']     = 'name';
+      $tab[5]['linkfield'] = 'users_id';
+      $tab[5]['name']      = $LANG['common'][34];
 
       return $tab;
    }
+
 }
 ?>

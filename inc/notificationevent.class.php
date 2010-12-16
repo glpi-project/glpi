@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Class which manages notification events
- */
+**/
 class NotificationEvent extends CommonDBTM {
 
    static function dropdownEvents($itemtype,$value='') {
@@ -61,24 +61,24 @@ class NotificationEvent extends CommonDBTM {
     * @param $item the object which raised the event
     * @param $options array options used
     * @param $label used for debugEvent()
-    */
+   **/
    static function raiseEvent($event, $item, $options=array(), $label='') {
       global $CFG_GLPI;
 
       //If notifications are enabled in GLPI's configuration
       if ($CFG_GLPI["use_mailing"]) {
-         $email_processed = array();
+         $email_processed    = array();
          $email_notprocessed = array();
          //Get template's informations
          $template = new NotificationTemplate;
 
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
-         $entity = $notificationtarget->getEntity();
+         $entity             = $notificationtarget->getEntity();
          //Foreach notification
-         foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),
-                                                               $entity) as $data) {
+         foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),$entity)
+                  as $data) {
             $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                            'notifications_id='.$data['id']);
+                                            'notifications_id = '.$data['id']);
 
             $notificationtarget->clearAddressesList();
 
@@ -142,12 +142,13 @@ class NotificationEvent extends CommonDBTM {
       return true;
    }
 
- /**
+
+   /**
     * Display debug information for an object
     *
     * @param $item the object
     * @param $options array
-    */
+   **/
    static function debugEvent($item, $options=array()) {
       global $LANG;
 
@@ -174,5 +175,6 @@ class NotificationEvent extends CommonDBTM {
       }
       echo "</table></div>";
    }
+
 }
 ?>
