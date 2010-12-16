@@ -348,7 +348,7 @@ class EntityData extends CommonDBChild {
       if (!$entity->can($ID,'r')) {
          return false;
       }
-      
+
       // Notification right applied
       $canedit = haveRight('infocom','w') && haveAccessToEntity($ID);
 
@@ -364,7 +364,7 @@ class EntityData extends CommonDBChild {
       }
 
       Infocom::showDateManagementForm($ID,array('close_table' => false));
-      
+
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
@@ -386,7 +386,7 @@ class EntityData extends CommonDBChild {
       }
 
       echo "</div>";
-      
+
    }
 
    static function showNotificationOptions(Entity $entity) {
@@ -658,6 +658,7 @@ class EntityData extends CommonDBChild {
       // No inherit from parent for root entity
       if ($entdata->fields['entities_id'] == 0) {
          unset($typeinquest[0]);
+         $entdata->fields['inquest_config'] = 1;
       }
       $rand = Dropdown::showFromArray('inquest_config', $typeinquest,
                                       $options = array('value' => $entdata->fields['inquest_config']));
