@@ -321,7 +321,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
 
       echo "<tr><th>&nbsp;</th>";
-      echo "<th>" . $LANG['common'][92] . "</th>";
+      echo "<th>" . $LANG['common'][18] . "</th>";
       echo "<th>" . $LANG['common'][34] . "</th>";
       echo "<th>" . $LANG['common'][35] . "</th>";
       echo "<th>" . $LANG['common'][15] . "</th>";
