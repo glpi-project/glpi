@@ -2363,6 +2363,7 @@ class CommonDBTM extends CommonGLPI {
                      if (!in_array($value,array(0,1))) {
                         $unset = true;
                      }
+                     break;
                   case 'ip':
                      preg_match("/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/", 
                               $value, $regs);
