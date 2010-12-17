@@ -2340,57 +2340,59 @@ class CommonDBTM extends CommonGLPI {
       global $LANG;
       //Tpe mismatched fields
       $fails = array();
-      foreach ($this->input as $key =>$value) {
-         $unset = false;
-         $regs = array();
-         $searchOption = $this->getSearchOptionByField('field',$key);
-         if (isset($searchOption['datatype']) && !is_null($value) && $value != 'NULL') {
-            switch ($searchOption['datatype']) {
-               case 'integer':
-               case 'decimal':
-                  if ($searchOption['datatype'] == 'integer') {
-                     $this->input[$key] = floatval($value);
-                  } else {
-                     $this->input[$key] = intval($value);
-                    
+      if (isset($this->input) && is_array($this->input) && count($this->input)) {
+         foreach ($this->input as $key =>$value) {
+            $unset = false;
+            $regs = array();
+            $searchOption = $this->getSearchOptionByField('field',$key);
+            if (isset($searchOption['datatype']) && !is_null($value) && $value != 'NULL') {
+               switch ($searchOption['datatype']) {
+                  case 'integer':
+                  case 'decimal':
+                     if ($searchOption['datatype'] == 'integer') {
+                        $this->input[$key] = floatval($value);
+                     } else {
+                        $this->input[$key] = intval($value);
+                     
+                     }
+                     if (!is_numeric($value)) {
+                        $unset = true;
+                     }
+                     break;
+                  case 'bool':
+                     if (!in_array($value,array(0,1))) {
+                        $unset = true;
+                     }
+                  case 'ip':
+                     preg_match("/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/", 
+                              $value, $regs);
+                     if (empty($regs)) {
+                        $unset = true;
+                     }
+                     break;
+                  case 'mac':
+                     preg_match("/([0-9a-fA-F]{2}([:-]|$)){6}$/",$value,$regs);
+                     if (empty($regs)) {
+                        $unset = true;
+                     }
+                     break;
+                  case 'date':
+                     // Date is already "reformat" according to getDateFormat()
+                     $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/';
+                     preg_match($pat, $value, $regs);
+                     if (empty($regs)) {
+                        $unset = true;
+                     }
+                     break;
                   }
-                  if (!is_numeric($value)) {
-                     $unset = true;
-                  }
-                  break;
-               case 'bool':
-                  if (!in_array($value,array(0,1))) {
-                     $unset = true;
-                  }
-               case 'ip':
-                  preg_match("/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/", 
-                             $value, $regs);
-                  if (empty($regs)) {
-                     $unset = true;
-                  }
-                  break;
-               case 'mac':
-                  preg_match("/([0-9a-fA-F]{2}([:-]|$)){6}$/",$value,$regs);
-                  if (empty($regs)) {
-                     $unset = true;
-                  }
-                  break;
-               case 'date':
-                  // Date is already "reformat" according to getDateFormat()
-                  $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/';
-                  preg_match($pat, $value, $regs);
-                  if (empty($regs)) {
-                     $unset = true;
-                  }
-                  break;
-                }
-         }
-         if ($unset) {
-            $fails[] = $searchOption['name'];
-            unset($this->input[$key]);
+            }
+            if ($unset) {
+               $fails[] = $searchOption['name'];
+               unset($this->input[$key]);
+            }
          }
       }
-      if (!empty($fails)) {
+      if (count($fails)) {
          $message = $LANG['common'][106].' : '.implode(',',$fails);
          addMessageAfterRedirect($message,INFO,true);
       }
