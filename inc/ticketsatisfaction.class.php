@@ -65,16 +65,15 @@ class TicketSatisfaction extends CommonDBTM {
     */
    function canUpdateItem() {
 
-      $tid = $this->fields['tickets_id'];
-      $ticket = new ticket();
-      if (!$ticket->getFromDB($tid)) {
+      $ticket = new Ticket();
+      if (!$ticket->getFromDB($this->fields['tickets_id'])) {
          return false;
       }
 
-      if ($ticket->fields["users_id"] === getLoginUserID()
-          || $this->fields["users_id_recipient"] === getLoginUserID()
+      if ($ticket->isUser(self::REQUESTER,getLoginUserID())
+          || $ticket->fields["users_id_recipient"] === getLoginUserID()
           || (!isset($_SESSION["glpigroups"])
-              && !in_array($this->fields["groups_id"], $_SESSION['glpigroups']))) {
+              && $ticket->haveAGroup(self::REQUESTER,$_SESSION["glpigroups"]))) {
          return true;
       }
       return false;
