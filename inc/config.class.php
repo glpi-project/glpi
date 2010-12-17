@@ -337,7 +337,7 @@ class Config extends CommonDBTM {
       foreach ($fields as $field) {
          echo "<td>";
          $fieldname = "is_".$field."_autoupdate";
-         Dropdown::showFromArray($fieldname, $values, array('name' => $CFG_GLPI[$fieldname]));
+         Dropdown::showFromArray($fieldname, $values, array('value' => $CFG_GLPI[$fieldname]));
          echo "</td>";
       }
 
@@ -354,7 +354,7 @@ class Config extends CommonDBTM {
       foreach ($fields as $field) {
          echo "<td>";
          $fieldname = "is_".$field."_autoclean";
-         Dropdown::showFromArray($fieldname, $values, array('name' => $CFG_GLPI[$fieldname]));
+         Dropdown::showFromArray($fieldname, $values, array('value' => $CFG_GLPI[$fieldname]));
          echo "</td>";
       }
 
