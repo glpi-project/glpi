@@ -229,9 +229,11 @@ function update0781to080($output='HTML') {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
 
-            $query = "INSERT INTO `glpi_notifications`
-                      VALUES (NULL, 'Ticket Recall', 0, 'Ticket', 'recall', 'mail',
-                              ".$DB->result($result,0,0).", '', 1, 1, NOW());";
+            $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`,
+			`event`, `mode`, `notificationtemplates_id`, `comment`, `is_recursive`, 
+                        `is_active`, `date_mod`)
+                      VALUES ('Ticket Recall', 0, 'Ticket', 'recall', 'mail',
+                              ".$DB->result($result,0,0).",'', 1, 1, NOW());";
             $DB->query($query)
             or die("0.80 insert notification" . $LANG['update'][90] . $DB->error());
          }
@@ -326,13 +328,15 @@ function update0781to080($output='HTML') {
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==0) {
          $query = "INSERT INTO `glpi_notificationtemplates`
-                   VALUES(NULL, 'Password Forget', 'User', NOW(),'');";
+		   (`name`, `itemtype`, `date_mod`)
+                   VALUES('Password Forget', 'User', NOW());";
          $DB->query($query)
          or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
          $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                   VALUES(NULL, $notid, '','##user.action##',
+                   (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
+                   VALUES($notid, '','##user.action##',
                           '##lang.user.realname## ##lang.user.firstname##
 
 ##lang.user.information##
@@ -344,8 +348,10 @@ function update0781to080($output='HTML') {
       $DB->query($query)
       or die("0.80 add password forget notification translation" . $LANG['update'][90] . $DB->error());
 
-      $query = "INSERT INTO `glpi_notifications`
-                VALUES (NULL, 'Password Forget', 0, 'User', 'passwordforget', 'mail', $notid, '',
+      $query = "INSERT INTO `glpi_notifications` (`name`, `entities_id`, `itemtype`,
+                   `event`, `mode`, `notificationtemplates_id`, `comment`, `is_recursive`,
+                   `is_active`, `date_mod`)
+                VALUES ( 'Password Forget', 0, 'User', 'passwordforget', 'mail', $notid, '',
                         1, 1, NOW());";
       $DB->query($query)
       or die("0.80 add password forget notification" . $LANG['update'][90] . $DB->error());
