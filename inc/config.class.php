@@ -294,7 +294,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr><th>&nbsp;</th>";
-      echo "<th>" . $LANG['common'][92] . "</th>";
+      echo "<th>" . $LANG['common'][18] . "</th>";
       echo "<th>" . $LANG['common'][34] . "</th>";
       echo "<th>" . $LANG['common'][35] . "</th>";
       echo "<th>" . $LANG['common'][15] . "</th>";
