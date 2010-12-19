@@ -794,6 +794,7 @@ function update0781to080($output='HTML') {
    //New infocom dates
    $migration->addField("glpi_infocoms", "order_date", "DATE NULL");
    $migration->addField("glpi_infocoms", "delivery_date", "DATE NULL");
+   $migration->addField("glpi_infocoms", "inventory_date", "DATE NULL");
 
    if ($migration->addField("glpi_infocoms", "warranty_date", "DATE NULL")) {
       $migration->migrationOneTable("glpi_infocoms");
@@ -1117,7 +1118,19 @@ function update0781to080($output='HTML') {
       'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'-1\'');
    $migration->migrationOneTable('glpi_entitydatas');
 
-
+   if (!TableExists('glpi_field_unicities')) {
+      $query ="CREATE TABLE  `glpi_field_unicities` (
+                `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+                `itemtype` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                `entities_id` INT( 11 ) NOT NULL DEFAULT  '-1',
+                `fields` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
+                `is_global` TINYINT( 1 ) NOT NULL DEFAULT  '0'
+                `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'
+                ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci COMMENT =  'Stores field unicity criterias';";
+      $DB->query($query)
+          or die("0.80 add table glpi_field_unicities".$LANG['update'][90]. $DB->error());
+   }
+   
    if ($migration->addField('glpi_mailcollectors', 'passwd',
                             'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
       $migration->migrationOneTable('glpi_mailcollectors');

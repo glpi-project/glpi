@@ -859,15 +859,19 @@ class Infocom extends CommonDBTM {
             echo "<td><input type='text' name='value' $option value='".
                   formatNumber($ic->fields["value"], true)."' size='14'></td>";
             echo "</td>";
-            echo "<td rowspan='6'>".$LANG['common'][25]."&nbsp;:</td>";
-            echo "<td rowspan='6' class='middle'>";
-            echo "<textarea cols='45' rows='10' name='comment' >".$ic->fields["comment"];
-            echo "</textarea></td></tr>\n";
+            echo "<td>".$LANG['financial'][114]."&nbsp;:</td><td>";
+            showDateFormItem("inventory_date",$ic->fields["inventory_date"], true, $editcalendar);
+            echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][78]."&nbsp;:</td>";
             echo "<td><input type='text' $option name='warranty_value' value='".
-                     formatNumber($ic->fields["warranty_value"], true)."' size='14'></td></tr>";
+                     formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
+            echo "<td rowspan='5'>".$LANG['common'][25]."&nbsp;:</td>";
+            echo "<td rowspan='5' class='middle'>";
+            echo "<textarea cols='45' rows='9' name='comment' >".$ic->fields["comment"];
+            echo "</textarea></td></tr>\n";
+
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
@@ -1103,6 +1107,13 @@ class Infocom extends CommonDBTM {
       $tab[123]['forcegroupby'] = true;
       $tab[123]['joinparams']   = $joinparams;
 
+      $tab[125]['table']        = 'glpi_infocoms';
+      $tab[125]['field']        = 'inventory_date';
+      $tab[125]['name']         = $LANG['financial'][114];
+      $tab[125]['datatype']     = 'date';
+      $tab[125]['forcegroupby'] = true;
+      $tab[125]['joinparams']   = $joinparams;
+
       $tab[50]['table']        = 'glpi_budgets';
       $tab[50]['field']        = 'name';
       $tab[50]['name']         = $LANG['financial'][87];
@@ -1229,6 +1240,12 @@ class Infocom extends CommonDBTM {
       $tab[25]['name']         = $LANG['financial'][29];
       $tab[25]['datatype']     = 'date';
       $tab[25]['forcegroupby'] = true;
+
+      $tab[26]['table']        = 'glpi_infocoms';
+      $tab[26]['field']        = 'inventory_date';
+      $tab[26]['name']         = $LANG['financial'][114];
+      $tab[26]['datatype']     = 'date';
+      $tab[26]['forcegroupby'] = true;
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'warranty_duration';

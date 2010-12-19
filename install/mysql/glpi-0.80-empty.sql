@@ -1771,6 +1771,7 @@ CREATE TABLE `glpi_infocoms` (
   `order_date` date DEFAULT NULL,
   `delivery_date` date DEFAULT NULL,
   `warranty_date` date DEFAULT NULL,
+  `inventory_date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `buy_date` (`buy_date`),
