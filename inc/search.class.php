@@ -4333,7 +4333,7 @@ class Search {
       $todel   = array();
       if (!haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
          $todel = array_merge($todel, array('financial', 25, 26, 27, 28, 37, 38, 50, 51, 52, 53,
-                                            54, 55, 56, 57, 58, 59, 120, 122));
+                                            54, 55, 56, 57, 58, 59, 120, 122, 123, 124, 125));
       }
 
       if (!haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
@@ -4572,7 +4572,7 @@ class Search {
       return (($searchID>=25 && $searchID<=28)
               || ($searchID>=37 && $searchID<=38)
               || ($searchID>=50 && $searchID<=59)
-              || ($searchID>=120 && $searchID<=122))
+              || ($searchID>=120 && $searchID<=125))
              && in_array($itemtype, $CFG_GLPI["infocom_types"]);
    }
 

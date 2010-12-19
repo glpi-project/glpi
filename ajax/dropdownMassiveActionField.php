@@ -156,6 +156,10 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
                case "buy_date" :
                case "use_date" :
+               case "delivery_date" :
+               case "order_date" :
+               case "inventory_date" :
+               case "warranty_date" :
                   showDateFormItem($search["field"]);
                   echo "&nbsp;&nbsp;";
                   break;
