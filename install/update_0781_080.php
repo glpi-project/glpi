@@ -774,10 +774,18 @@ function update0781to080($output='HTML') {
       or die("0.80 populate glpi_crontasks for ticketsatisfaction" . $LANG['update'][90] . $DB->error());
    }
 
-   $migration->addField("glpi_entitydatas", "inquest_config", "INT(11) NOT NULL DEFAULT '1' AFTER `auto_assign_mode`");
+   if ($migration->addField("glpi_entitydatas", "inquest_config", "INT(11) NOT NULL DEFAULT '0'")) {
+      $migration->migrationOneTable("glpi_entitydatas");
+
+      $query = "UPDATE  `glpi_entitydatas`
+                SET `inquest_config` = `1` WHERE `entities_id` = 0";
+      $DB->query($query)
+      or die("0.80 set default inquest_config for root entity " . $LANG['update'][90] . $DB->error());
+   }
    $migration->addField("glpi_entitydatas", "inquest_rate", "INT(11) NOT NULL DEFAULT '-1'");
    $migration->addField("glpi_entitydatas", "inquest_delay", "INT(11) NOT NULL DEFAULT '-1'");
    $migration->addField("glpi_entitydatas", "inquest_URL", "VARCHAR( 255 ) NULL");
+   $migration->migrationOneTable("glpi_entitydatas");
 
    $migration->addField("glpi_networkports", "comment", "TEXT COLLATE utf8_unicode_ci");
 
