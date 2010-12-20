@@ -1124,7 +1124,7 @@ function update0781to080($output='HTML') {
                 `itemtype` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
                 `entities_id` INT( 11 ) NOT NULL DEFAULT  '-1',
                 `fields` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT  '',
-                `is_global` TINYINT( 1 ) NOT NULL DEFAULT  '0'
+                `is_global` TINYINT( 1 ) NOT NULL DEFAULT  '0',
                 `is_active` TINYINT( 1 ) NOT NULL DEFAULT  '0'
                 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci COMMENT =  'Stores field unicity criterias';";
       $DB->query($query)
