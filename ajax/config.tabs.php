@@ -54,6 +54,7 @@ switch($_REQUEST['glpi_tab']) {
       $config->showFormInventory();
       $config->showFormHelpdesk();
       $config->showSystemInformations();
+      $config->showFormFieldUnicity();
       if (DBConnection::isDBSlaveActive()) {
          $config->showFormDBSlave();
       }
@@ -82,6 +83,10 @@ switch($_REQUEST['glpi_tab']) {
 
    case 6 :
       $config->showFormDBSlave();
+      break;
+
+   case 7 :
+      $config->showFormFieldUnicity();
       break;
 
    default :

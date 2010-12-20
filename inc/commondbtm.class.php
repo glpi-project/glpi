@@ -637,34 +637,33 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
          }
 
-         if ($this->addToDB()) {
-            $this->addMessageOnAddAction();
-            $this->post_addItem();
-
-            // Auto create infocoms
-            if ($CFG_GLPI["auto_create_infocoms"] && in_array($this->getType(),
-                                                              $CFG_GLPI["infocom_types"])) {
-               $ic = new Infocom();
-
-               if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-                  $ic->add(array('itemtype' => $this->getType(),
-                                 'items_id' => $this->fields['id']));
+         if ($this->checkUnicity(true)) {
+            if ($this->addToDB()) {
+               $this->addMessageOnAddAction();
+               $this->post_addItem();
+    
+                // Auto create infocoms
+               if ($CFG_GLPI["auto_create_infocoms"] && in_array($this->getType(),
+                                                                 $CFG_GLPI["infocom_types"])) {
+                  $ic = new Infocom();
+                       if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+                     $ic->add(array('itemtype' => $this->getType(),
+                                    'items_id' => $this->fields['id']));
+                  }
                }
+    
+               //If itemtype is in infocomtype and if states_id field is filled
+               //and item is not a template
+               if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
+                  && isset($this->input['states_id'])
+                           && (!isset($this->input['is_template']) 
+                              || !$this->input['is_template'])) {
+                  //Check if we have to automaticall fill dates
+                  Infocom::manageDateOnStatusChange($this);
+               }
+               doHook("item_add", $this);
+               return $this->fields['id'];
             }
-
-            //If itemtype is in infocomtype and if states_id field is filled
-            //and item is not a template
-            if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
-               && isset($this->input['states_id'])
-                        && (!isset($this->input['is_template']) 
-                           || !$this->input['is_template'])) {
-               //Check if we have to automaticall fill dates
-               Infocom::manageDateOnStatusChange($this);
-            }
-            doHook("item_add", $this);
-
-            return $this->fields['id'];
-
          }
 
       }
@@ -820,77 +819,78 @@ class CommonDBTM extends CommonGLPI {
          $this->filterValues();
       }
 
-      // Valid input
-      if ($this->input && is_array($this->input)) {
-         // Fill the update-array with changes
-         $x = 0;
-         $this->updates   = array();
-         $this->oldvalues = array();
-
-         foreach ($this->input as $key => $val) {
-            if (array_key_exists($key,$this->fields)) {
-
-               // Prevent history for date statement (for date for example)
-               if (is_null($this->fields[$key]) && $this->input[$key]=='NULL') {
-                  $this->fields[$key] = 'NULL';
-               }
-
-               if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
-                  if ($key!="id") {
-
-                     // Store old values
-                     if (!in_array($key,$this->history_blacklist)) {
-                        $this->oldvalues[$key] = $this->fields[$key];
+      // Valid input for update
+      if ($this->checkUnicity(false)) {
+         if ($this->input && is_array($this->input)) {
+            // Fill the update-array with changes
+            $x = 0;
+            $this->updates   = array();
+            $this->oldvalues = array();
+    
+            foreach ($this->input as $key => $val) {
+               if (array_key_exists($key,$this->fields)) {
+    
+                  // Prevent history for date statement (for date for example)
+                  if (is_null($this->fields[$key]) && $this->input[$key]=='NULL') {
+                     $this->fields[$key] = 'NULL';
+                  }
+    
+                  if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
+                     if ($key!="id") {
+    
+                        // Store old values
+                        if (!in_array($key,$this->history_blacklist)) {
+                           $this->oldvalues[$key] = $this->fields[$key];
+                        }
+    
+                        $this->fields[$key] = $this->input[$key];
+                        $this->updates[$x]  = $key;
+                        $x++;
                      }
-
-                     $this->fields[$key] = $this->input[$key];
-                     $this->updates[$x]  = $key;
-                     $x++;
                   }
-               }
-
-            }
-         }
-
-         if (count($this->updates)) {
-            if (array_key_exists('date_mod',$this->fields)) {
-               // is a non blacklist field exists
-               if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
-                  $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
-                  $this->updates[$x++]      = 'date_mod';
+    
                }
             }
-            $this->pre_updateInDB();
-
+    
             if (count($this->updates)) {
-               if ($this->updateInDB($this->updates,
-                                     ($this->dohistory && $history ? $this->oldvalues : array()))) {
-                  $this->addMessageOnUpdateAction();
-                  doHook("item_update", $this);
-
-                  // forward entity information if needed
-                  if (count($this->forward_entity_to)
-                      && (in_array("entities_id",$this->updates)
-                          || in_array("is_recursive",$this->updates)) ) {
-                     $this->forwardEntityInformations();
+               if (array_key_exists('date_mod',$this->fields)) {
+                  // is a non blacklist field exists
+                  if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
+                     $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
+                     $this->updates[$x++]      = 'date_mod';
                   }
-
-                  //If itemtype is in infocomtype and if states_id field is filled
-                  //and item not a template
-                  if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
-                     && in_array('states_id',$this->updates)
-                        && (!in_array('is_template',$this->fields) 
-                           || !$this->fields['is_template'])) {
-                     //Check if we have to automaticall fill dates
-                     Infocom::manageDateOnStatusChange($this,false);
+               }
+               $this->pre_updateInDB();
+    
+               if (count($this->updates)) {
+                  if ($this->updateInDB($this->updates,
+                                        ($this->dohistory && $history ? $this->oldvalues : array()))) {
+                     $this->addMessageOnUpdateAction();
+                     doHook("item_update", $this);
+    
+                     // forward entity information if needed
+                     if (count($this->forward_entity_to)
+                         && (in_array("entities_id",$this->updates)
+                             || in_array("is_recursive",$this->updates)) ) {
+                        $this->forwardEntityInformations();
+                     }
+    
+                     //If itemtype is in infocomtype and if states_id field is filled
+                     //and item not a template
+                     if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
+                        && in_array('states_id',$this->updates)
+                           && ($this->getField('is_template') != NOT_AVAILABLE)) {
+                        //Check if we have to automaticall fill dates
+                        Infocom::manageDateOnStatusChange($this,false);
+                     }
                   }
                }
             }
+            $this->post_updateItem($history);
+            return true;
          }
-         $this->post_updateItem($history);
-
-         return true;
       }
+
       return false;
    }
 
@@ -2378,14 +2378,22 @@ class CommonDBTM extends CommonGLPI {
                      }
                      break;
                   case 'date':
+                  case 'datetime':
                      // Date is already "reformat" according to getDateFormat()
-                     $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$/';
+                     $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})([_][01][0-9]|2[0-3]:[0-5][0-9]:[0-5]?[0-9])?/';
                      preg_match($pat, $value, $regs);
                      if (empty($regs)) {
                         $unset = true;
                      }
                      break;
+               case 'itemtype':
+                  //Want to insert an itemtype, but the associated class doesn't exists
+                  if (!class_exists($value)) {
+                     $unset = true;
                   }
+               default:
+                  break;
+                }
             }
             if ($unset) {
                $fails[] = $searchOption['name'];
@@ -2393,12 +2401,74 @@ class CommonDBTM extends CommonGLPI {
             }
          }
       }
+      //Display a message to indicate that one or more value where filtered
       if (count($fails)) {
          $message = $LANG['common'][106].' : '.implode(',',$fails);
          addMessageAfterRedirect($message,INFO,true);
       }
    }
+   
+   /**
+    * Check field unicity before insert or update
+    * @param add true for insert, false for update
+    * @return true if item can be written in DB, false if not
+    */
+   function checkUnicity($add = false) {
+      global $LANG,$DB, $CFG_GLPI;
+      
+      $result = true;
+      //Do not check unicity when creating infocoms
+      if (in_array(get_class($this), array('Infocom')) && $add) {
+         return $result;
+      }
+      
+      //Get all checks for this itemtype and this entity
+      if  (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+         //In case it's an infocom
+         if (in_array(get_class($this), array('Infocom'))) {
+            $infocom = new Infocom();
+            if ($infocom->getFromDB($this->input['id'])) {
+               $item = new $infocom->fields['itemtype']();
+               $item->getFromDB($infocom->fields['items_id']);
+               $entities_id = $item->fields['entities_id'];
+            }
+         } else {
+            $entities_id = $this->input['entities_id'];
+         }
+         $fields =  self::getUnicityFieldsConfig(get_class($this), $entities_id);
 
+         //If there's fields to check
+         if (!empty($fields) && !empty($fields['fields'])) {
+            $where = "";
+            foreach ($fields['fields'] as $field) {
+               if (isset($this->input[$field]) && $this->input[$field] != '') {
+                  $where.= " `$field` = '".$this->input[$field]."'";
+               }
+            }
+            if ($where != '') {
+               $where_global = "";
+               if (!$fields['is_global']) {
+                  $where_global = " AND `entities_id` = '$entities_id'";
+               }
+               //If update, exclude ID of the current object
+               if (!$add) {
+                  $where.=" AND `id` NOT IN (".$this->input['id'].") ";
+               }
+               if (countElementsInTable($this->table,"$where $where_global") > 0) {
+                  $message = array();
+                  foreach ($fields['fields'] as $field) {
+                     $searchOption = $this->getSearchOptionByField('field',$field);
+                     $message[] = $searchOption['name'];
+                  }
+                  addMessageAfterRedirect($LANG['setup'][813]." : ".implode(',',$message),
+                                          true, ERROR, false);
+                  $result = false;
+               }
+            }
+         }
+      }
+      return $result;
+   }
 
    /**
     * Clean all infos which match some criteria
@@ -2416,6 +2486,32 @@ class CommonDBTM extends CommonGLPI {
          }
 
       }
+   }
+
+   /**
+    * Return criteria unicity for an itemtype, in an entity
+    * @param itemtype the itemtype for which unicity must be checked
+    * @param entities_id the entity for which configuration must be retrivied
+    * @return an array of fields to check, or an empty array if no 
+    */
+   public static function getUnicityFieldsConfig($itemtype, $entities_id = 0) {
+      global $DB;
+
+      //Get the first active configuration for this itemtype
+      $query = "SELECT `fields`, `is_global` FROM `glpi_field_unicities` 
+                WHERE `is_active`='1' 
+                   AND `itemtype` = '$itemtype' 
+                      AND (`entities_id`='$entities_id' OR `is_global` = '1')
+                ORDER BY `entities_id` DESC LIMIT 1";
+      $result = $DB->query($query);
+      $return = array();
+      //A configuration found
+      if ($DB->numrows($result)) {
+         $tmp['is_global'] = $DB->result($result,0,'is_global');
+         $tmp['fields'] = explode(',',$DB->result($result,0,'fields'));
+         $return = $tmp;
+      }
+      return $return;
    }
 
 }

@@ -13,7 +13,6 @@
  This file is part of GLPI.
 
  GLPI is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
@@ -423,7 +422,7 @@ $LANG['crontask'][2]  = "Envoi des alertes sur les cartouches";
 $LANG['crontask'][3]  = "Envoi des alertes sur les consommables";
 $LANG['crontask'][4]  = "Envoi des alertes sur les expirations de licences";
 $LANG['crontask'][5]  = "Envoi des alertes sur les contrats";
-$LANG['crontask'][6]  = "Envoi des alertes sur les informations financières";
+$LANG['crontask'][6]  = "Envoi des alertes sur les informations financières et administratives";
 $LANG['crontask'][7]  = "Nettoyage des journaux";
 $LANG['crontask'][8]  = "Optimisation de la base de données";
 $LANG['crontask'][9]  = "Récupération des messages (collecteurs)";
@@ -615,7 +614,7 @@ $LANG['event'][20] = "Pas d'historique";
 
 $LANG['financial'][1]   = "Contrat";
 $LANG['financial'][2]   = "A vie";
-$LANG['financial'][3]   = "Informations financières";
+$LANG['financial'][3]   = "Informations financières et administratives";
 $LANG['financial'][4]   = "Numéro";
 $LANG['financial'][5]   = "Coût";
 $LANG['financial'][6]   = "Type de contrat";
@@ -676,7 +675,7 @@ $LANG['financial'][64]  = "Fournisseur associé";
 $LANG['financial'][65]  = "Fournisseurs associés";
 $LANG['financial'][66]  = "Contrats associés";
 $LANG['financial'][67]  = "Aucun fournisseur associé";
-$LANG['financial'][68]  = "Activer les informations financières";
+$LANG['financial'][68]  = "Activer les informations financières et administratives";
 $LANG['financial'][69]  = "Périodicité du contrat";
 
 $LANG['financial'][76]  = "Date de mise en service";
@@ -687,7 +686,7 @@ $LANG['financial'][80]  = "Expiration garantie";
 $LANG['financial'][81]  = "Valeur nette comptable";
 $LANG['financial'][82]  = "Numéro de facture";
 $LANG['financial'][83]  = "Nombre max d'éléments";
-$LANG['financial'][84]  = "Pour ce type d'élément, les informations financières ne sont qu'un modèle pour les éléments que vous ajouterez ensuite.";
+$LANG['financial'][84]  = "Pour ce type d'élément, les informations financières et administratives ne sont qu'un modèle pour les éléments que vous ajouterez ensuite.";
 $LANG['financial'][85]  = "Élément demandé introuvable";
 $LANG['financial'][86]  = "Expiration contrat";
 $LANG['financial'][87]  = "Budget";
@@ -717,6 +716,7 @@ $LANG['financial'][110]  = "Budgets";
 $LANG['financial'][111]  = "Remplissage automatique des dates";
 $LANG['financial'][112]  = "Remplissage au passage au statut";
 $LANG['financial'][113]  = "Pas de remplissage automatique";
+$LANG['financial'][114]  = "Date de dernier inventaire physique";
 
 $LANG['gmt'][0] = "GMT";
 $LANG['gmt'][1] = "heure(s)";
@@ -1231,7 +1231,7 @@ $LANG['mailing'][37]  = "Contrat entré dans la période de préavis :";
 
 $LANG['mailing'][39]  = "Alerte Contrats";
 $LANG['mailing'][40]  = "Matériel arrivé en fin de garantie :";
-$LANG['mailing'][41]  = "Alerte Informations Financières";
+$LANG['mailing'][41]  = "Alerte Informations financières et administratives";
 
 $LANG['mailing'][47]  = "Erreur dans l'envoi du courriel";
 
@@ -1305,7 +1305,7 @@ $LANG['Menu'][20] = "FAQ";
 $LANG['Menu'][21] = "Cartouches";
 $LANG['Menu'][22] = "Contacts";
 $LANG['Menu'][23] = "Fournisseurs";
-$LANG['Menu'][24] = "Infos financières";
+$LANG['Menu'][24] = "Informations financières et administratives";
 $LANG['Menu'][25] = "Contrats";
 $LANG['Menu'][26] = "Gestion";
 $LANG['Menu'][27] = "Documents";
@@ -1665,8 +1665,8 @@ $LANG['reports'][58] = "Rapport des matériels par année";
 
 $LANG['reports'][60] = "Date d'ouverture";
 $LANG['reports'][61] = "Date de clôture";
-$LANG['reports'][62] = "Informations financières inventaire matériel";
-$LANG['reports'][63] = "Informations financières autres (licences, consommables, cartouches)";
+$LANG['reports'][62] = "Informations financières et administratives inventaire matériel";
+$LANG['reports'][63] = "Informations financières et administratives autres (licences, consommables, cartouches)";
 $LANG['reports'][64] = "Date de résolution";
 
 
@@ -1879,7 +1879,7 @@ $LANG['setup'][4]   = "Types d'ordinateurs";
 $LANG['setup'][5]   = "Système d'exploitation";
 $LANG['setup'][6]   = "Personnalisation";
 $LANG['setup'][7]   = "Délimiteur CSV";
-$LANG['setup'][8]   = "Activer les informations financières par défaut";
+$LANG['setup'][8]   = "Activer les informations financières  et administratives par défaut";
 $LANG['setup'][9]   = "Interface réseau";
 $LANG['setup'][10]  = "Ordre d'affichage du nom complet";
 
@@ -2070,7 +2070,7 @@ $LANG['setup'][243] = "Alertes sur les consommables";
 $LANG['setup'][244] = "Alertes sur les cartouches";
 $LANG['setup'][245] = "Fréquence de rappel";
 $LANG['setup'][246] = "Alertes sur les contrats";
-$LANG['setup'][247] = "Alertes sur les informations financières";
+$LANG['setup'][247] = "Alertes sur les informations financières et administratives";
 $LANG['setup'][248] = "Groupe chargé du ticket";
 $LANG['setup'][249] = "Groupe demandeur";
 $LANG['setup'][250] = "Affichage recherche par défaut";
@@ -2191,6 +2191,9 @@ $LANG['setup'][808] = "Base de données esclave désynchronisée !";
 $LANG['setup'][809] = "Réplicat MySQL : lecture seule";
 $LANG['setup'][810] = "Désynchronisation du réplicat MySQL";
 
+$LANG['setup'][811] = "Unicité des champs";
+$LANG['setup'][812] = "Critères d'unicité des champs par type";
+$LANG['setup'][813] = "Enregistrement impossible.<br/>Un autre élément existe déjà pour les champs";
 
 $LANG['sla'][1] = "SLA";
 $LANG['sla'][2] = "Temps maximum de résolution";
