@@ -363,7 +363,68 @@ class EntityData extends CommonDBChild {
          echo "<form method='post' name=form action='".getItemTypeFormURL(__CLASS__)."'>";
       }
 
-      Infocom::showDateManagementForm($ID,array('close_table' => false));
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".$LANG['financial'][111]."</th></tr>";
+
+      
+      $options[0] = $LANG['financial'][113];
+      if ($ID > 0) {
+         $options[-1] = $LANG['common'][102];
+      }
+      
+      foreach (getAllDatasFromTable('glpi_states') as $state) {
+         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']] = 
+            $LANG['financial'][112].': '.$state['name'];
+      }
+      
+      $options[Infocom::COPY_WARRANTY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][29];
+      //Buy date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['financial'][14] . "&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showFromArray('autofill_buy_date',$options,
+                              array('value' => $entitydata->getField('autofill_buy_date')));
+      echo "</td>";
+
+      //Order date
+      echo "<td> " . $LANG['financial'][28] . "&nbsp;:</td>";
+      echo "<td>";
+      $options[Infocom::COPY_BUY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][14];
+      Dropdown::showFromArray('autofill_order_date',$options,
+                              array('value' => $entitydata->getField('autofill_order_date')));
+      echo "</td></tr>";
+
+      //Delivery date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['financial'][27] . "&nbsp;:</td>";
+      echo "<td>";
+      $options[Infocom::COPY_ORDER_DATE] = $LANG['setup'][283].' '.$LANG['financial'][28];
+      Dropdown::showFromArray('autofill_delivery_date',$options,
+                              array('value' => $entitydata->getField('autofill_delivery_date')));
+      echo "</td>";
+
+      //Use date
+      echo "<td> " . $LANG['financial'][76] . "&nbsp;:</td>";
+      echo "<td>";
+      $options[Infocom::COPY_DELIVERY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][27];
+      Dropdown::showFromArray('autofill_use_date',$options, 
+                              array('value' => $entitydata->getField('autofill_use_date')));
+      echo "</td></tr>";
+
+      //Warranty date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . $LANG['financial'][29] . "&nbsp;:</td>";
+      echo "<td>";
+      $options = array(0                   => $LANG['financial'][113],
+                       Infocom::COPY_BUY_DATE => $LANG['setup'][283].': '.$LANG['financial'][14],
+                       Infocom::COPY_ORDER_DATE=>$LANG['setup'][283].': '.$LANG['financial'][28]);
+      if ($ID > 0) {
+         $options[-1] = $LANG['common'][102];
+      }
+
+      Dropdown::showFromArray('autofill_warranty_date',$options, 
+                              array('value' => $entitydata->getField('autofill_warranty_date')));
+      echo "</td><td colspan='2'></td></tr>";
 
       if ($canedit) {
          echo "<tr>";
@@ -743,9 +804,10 @@ class EntityData extends CommonDBChild {
 
       // Search in entity data of the current entity
       if ($entdata->getFromDB($entities_id)) {
-
-         // Calendar defined : use it
-         if (isset($entdata->fields[$fieldref]) && $entdata->fields[$fieldref] >0 ) {
+         // Value is defined : use it
+         if (isset($entdata->fields[$fieldref]) 
+            && ($entdata->fields[$fieldref]>0 
+               || !is_numeric($entdata->fields[$fieldref]))) {
             return $entdata->fields[$fieldval];
          }
       }

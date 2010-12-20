@@ -61,6 +61,7 @@ class Config extends CommonDBTM {
       $tabs[3] = $LANG['Menu'][38];  // Inventory
       $tabs[4] = $LANG['title'][24];   // Helpdesk
       $tabs[5] = $LANG['setup'][720];  // SysInfo
+      $tabs[7] = $LANG['setup'][811];  // SysInfo
 
       if (DBConnection::isDBSlaveActive()) {
          $tabs[6]  = $LANG['setup'][800];  // Slave
@@ -313,9 +314,6 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table>";
-
-      echo "<br>";
-      Infocom::showDateManagementForm(-1);
 
       echo "<br><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
@@ -1000,6 +998,14 @@ class Config extends CommonDBTM {
       NotificationEvent::debugEvent(new DBConnection(), $options);
    }
 
+   /**
+    * Display field unicity criterias form
+    */
+   function showFormFieldUnicity() {
+      global $DB, $LANG, $CFG_GLPI;
+      $unicity = new FieldUnicity();
+      $unicity->showForm($CFG_GLPI["id"], -1);
+   }
 }
 
 ?>

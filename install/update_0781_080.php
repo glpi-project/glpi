@@ -1120,27 +1120,27 @@ function update0781to080($output='HTML') {
 
 
    //Add date config management fields
-   $migration->addField('glpi_configs','autofill_warranty_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'0\'');
-   $migration->addField('glpi_configs','autofill_use_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'0\'');
-   $migration->addField('glpi_configs','autofill_buy_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'0\'');
-   $migration->addField('glpi_configs','autofill_delivery_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'0\'');
-   $migration->addField('glpi_configs','autofill_order_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'0\'');
-
-   $migration->addField('glpi_entitydatas','autofill_warranty_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'-1\'');
-   $migration->addField('glpi_entitydatas','autofill_use_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'-1\'');
-   $migration->addField('glpi_entitydatas','autofill_buy_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'-1\'');
-   $migration->addField('glpi_entitydatas','autofill_delivery_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'-1\'');
-   $migration->addField('glpi_entitydatas','autofill_order_date',
-                        'varchar(255) COLLATE utf8_unicode_ci DEFAULT \'-1\'');
+   $migration->addField('glpi_entitydatas','autofill_warranty_date', 
+      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+   $migration->addField('glpi_entitydatas','autofill_use_date', 
+      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+   $migration->addField('glpi_entitydatas','autofill_buy_date', 
+      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+   $migration->addField('glpi_entitydatas','autofill_delivery_date', 
+      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+   if ($migration->addField('glpi_entitydatas','autofill_order_date', 
+      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'")) {
+         $migration->migrationOneTable('glpi_entitydatas');
+         $query = "UPDATE  `glpi_entitydatas`
+                   SET `autofill_warranty_date` = '0',
+                       `autofill_use_date` = '0',
+                       `autofill_buy_date` = '0',
+                       `autofill_delivery_date` = '0',
+                       `autofill_order_date` = '0'
+                   WHERE `entities_id` = '0'";
+         $DB->query($query)
+         or die("0.80 set default automatic date fill values for root entity " . $LANG['update'][90] . $DB->error());
+      }
 
    if (!TableExists('glpi_field_unicities')) {
       $query ="CREATE TABLE `glpi_field_unicities` (
