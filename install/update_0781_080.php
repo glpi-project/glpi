@@ -778,7 +778,7 @@ function update0781to080($output='HTML') {
       $migration->migrationOneTable("glpi_entitydatas");
 
       $query = "UPDATE  `glpi_entitydatas`
-                SET `inquest_config` = `1` WHERE `entities_id` = 0";
+                SET `inquest_config` = '1' WHERE `entities_id` = 0";
       $DB->query($query)
       or die("0.80 set default inquest_config for root entity " . $LANG['update'][90] . $DB->error());
    }
