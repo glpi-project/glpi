@@ -1461,8 +1461,8 @@ class OcsServer extends CommonDBTM {
          } else {
             $where_entity = $entity;
          }
-         $sql_where = " `entities_id` IN ($where_entity)
-                       AND `is_template` = '0' ";
+         $sql_where = " `glpi_computers`.`entities_id` IN ($where_entity)
+                       AND `glpi_computers`.`is_template` = '0' ";
          $sql_from = "`glpi_computers`";
          if ( $conf["use_ip_to_link"] || $conf["use_mac_to_link"]) {
             $sql_from .= " LEFT JOIN `glpi_networkports`
