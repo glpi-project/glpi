@@ -3426,6 +3426,11 @@ class Ticket extends CommonDBTM {
             }
             return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'
                       alt=\"$icontitle\" title=\"$icontitle\">";
+         case 'supplier' :
+            $icontitle = $LANG['financial'][26];
+            return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/supplier.png'
+                      alt=\"$icontitle\" title=\"$icontitle\">";
+
       }
       return '';
 
@@ -3785,14 +3790,14 @@ class Ticket extends CommonDBTM {
 
       // Supplier
       if (haveRight("assign_ticket","1")) {
-         echo 'SUPPLIERICON&nbsp;';
+         echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
          Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
                                           'value'  => $this->fields["suppliers_id_assign"],
                                           'entity' => $this->fields["entities_id"]));
          echo '<br>';
       } else {
          if ($this->fields["suppliers_id_assign"]) {
-            echo 'SUPPLIERICON&nbsp;';
+            echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
             echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
             echo '<br>';
          }
