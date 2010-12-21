@@ -1622,11 +1622,13 @@ class User extends CommonDBTM {
       $tab[34]['table'] = $this->getTable();
       $tab[34]['field'] = 'realname';
       $tab[34]['name']  = $LANG['common'][48];
-
+      $tab[34]['datatype']      = 'string';
+      
       $tab[9]['table'] = $this->getTable();
       $tab[9]['field'] = 'firstname';
       $tab[9]['name']  = $LANG['common'][43];
-
+      $tab[9]['datatype']      = 'string';
+      
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'email';
       $tab[5]['name']     = $LANG['setup'][14];
@@ -1642,15 +1644,18 @@ class User extends CommonDBTM {
       $tab[6]['table'] = $this->getTable();
       $tab[6]['field'] = 'phone';
       $tab[6]['name']  = $LANG['help'][35];
-
+      $tab[6]['datatype']      = 'string';
+      
       $tab[10]['table'] = $this->getTable();
       $tab[10]['field'] = 'phone2';
       $tab[10]['name']  = $LANG['help'][35]." 2";
-
+      $tab[10]['datatype']      = 'string';
+      
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'mobile';
       $tab[11]['name']  = $LANG['common'][42];
-
+      $tab[11]['datatype']      = 'string';
+      
       $tab[13]['table']         = 'glpi_groups';
       $tab[13]['field']         = 'name';
       $tab[13]['name']          = $LANG['common'][35];

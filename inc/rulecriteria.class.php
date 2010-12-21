@@ -76,17 +76,20 @@ class RuleCriteria extends CommonDBChild {
       $tab[1]['field']         = 'criteria';
       $tab[1]['name']          = $LANG['rulesengine'][6];
       $tab[1]['massiveaction'] = false;
-
+      $tab[1]['datatype']      = 'string';
+      
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'condition';
       $tab[2]['name']          = $LANG['rulesengine'][14];
       $tab[2]['massiveaction'] = false;
-
+      $tab[2]['datatype']      = 'string';
+      
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'pattern';
       $tab[3]['name']          = $LANG['rulesengine'][15];
       $tab[3]['massiveaction'] = false;
-
+      $tab[3]['datatype']      = 'string';
+      
       return $tab;
    }
 

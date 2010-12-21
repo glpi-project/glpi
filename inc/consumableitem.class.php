@@ -252,6 +252,7 @@ class ConsumableItem extends CommonDBTM {
       $tab[34]['table'] = $this->getTable();
       $tab[34]['field'] = 'ref';
       $tab[34]['name']  = $LANG['consumables'][2];
+      $tab[34]['datatype'] = 'string';
 
       $tab[4]['table'] = 'glpi_consumableitemtypes';
       $tab[4]['field'] = 'name';
