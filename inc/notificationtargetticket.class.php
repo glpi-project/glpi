@@ -617,18 +617,21 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##'.$tag.'##'] = $this->obj->getField($table_field);
          }
 
-         $this->datas['##ticket.id##']            = sprintf("%07d",$this->obj->getField("id"));
-         $this->datas['##ticket.url##']           = urldecode($CFG_GLPI["url_base"].
-                                                              "/index.php?redirect=ticket_".
-                                                              $this->obj->getField("id"));
-         $this->datas['##ticket.urlapprove##']    = urldecode($CFG_GLPI["url_base"].
-                                                              "/index.php?redirect=ticket_".
-                                                              $this->obj->getField("id")."_4");
-         $this->datas['##ticket.urlvalidation##'] = urldecode($CFG_GLPI["url_base"].
-                                                              "/index.php?redirect=ticket_".
-                                                              $this->obj->getField("id")."_7");
-         $this->datas['##ticket.entity##']        = Dropdown::getDropdownName('glpi_entities',
-                                                                              $this->getEntity());
+         $this->datas['##ticket.id##']              = sprintf("%07d",$this->obj->getField("id"));
+         $this->datas['##ticket.url##']             = urldecode($CFG_GLPI["url_base"].
+                                                                "/index.php?redirect=ticket_".
+                                                                $this->obj->getField("id"));
+         $this->datas['##ticket.urlapprove##']      = urldecode($CFG_GLPI["url_base"].
+                                                                "/index.php?redirect=ticket_".
+                                                                $this->obj->getField("id")."_4");
+         $this->datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
+                                                                "/index.php?redirect=ticket_".
+                                                                $this->obj->getField("id")."_7");
+         $this->datas['##ticket.urlsatisfaction##'] = urldecode($CFG_GLPI["url_base"].
+                                                                "/index.php?redirect=ticket_".
+                                                                $this->obj->getField("id")."_10");
+         $this->datas['##ticket.entity##']          = Dropdown::getDropdownName('glpi_entities',
+                                                                                $this->getEntity());
          $events = $this->getAllEvents();
 
          if ($event != 'validation') {
@@ -1340,6 +1343,7 @@ class NotificationTargetTicket extends NotificationTarget {
                     'ticket.log.content'      => $LANG['mailing'][144]. ' : '.$LANG['event'][19],
                     'ticket.urlapprove'       => $LANG['document'][33].' '.$LANG['job'][51],
                     'ticket.urlvalidation'    => $LANG['document'][33].' '.$LANG['validation'][26],
+                    'ticket.urlsatisfaction'  => $LANG['document'][33].' '.$LANG['satisfaction'][0],
                     'linkedticket.id'         => $LANG['job'][55]." - ".$LANG['common'][2],
                     'linkedticket.link'       => $LANG['job'][55]." - ".$LANG['setup'][620],
                     'linkedticket.url'        => $LANG['job'][55]." - ".$LANG['common'][94],
