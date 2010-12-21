@@ -810,6 +810,55 @@ function update0781to080($output='HTML') {
 
    $migration->addField("glpi_profiles", "rule_dictionnary_printer", "CHAR( 1 ) NULL");
 
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `name` = 'Ticket Satisfaction'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                          (`name`, `itemtype`, `date_mod`)
+                   VALUES ('Ticket Satisfaction', 'Ticket', NOW())";
+         $DB->query($query)
+         or die("0.80 add ticket satisfaction notification " . $LANG['update'][90] . $DB->error());
+         $notid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                          (`notificationtemplates_id`, `language`, `subject`,
+                           `content_text`, `content_html`)
+                   VALUES ($notid, '', '##ticket.action## ##ticket.title##',
+                          '##lang.ticket.title## : ##ticket.title##
+
+##lang.ticket.closedate## : ##ticket.closedate##
+
+                          '&lt;p&gt;##lang.ticket.title## : ##ticket.title##&lt;/p&gt;
+&lt;p&gt;##lang.ticket.closedate## : ##ticket.closedate##&lt;/p&gt;
+&lt;p&gt;Nous vous invitons &#224; appr&#233;cier la qualit&#233; de la prestation : &lt;a href=\"##ticket.urlsatisfaction##\"&gt;##ticket.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;')";
+         $DB->query($query)
+         or die("0.80 add ticket satisafaction notification translation " . $LANG['update'][90] .
+                $DB->error());
+
+         $query = "INSERT INTO `glpi_notifications`
+                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                           `date_mod`)
+                   VALUES ('Ticket Satisafction', 0, 'Ticket', 'satisfaction', 'mail',
+                           $notid, '', 1, 1,
+                           NOW())";
+         $DB->query($query)
+         or die("0.80 add ticket satisfaction notification " . $LANG['update'][90] . $DB->error());
+         $notifid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtargets`
+                          (`id`, `notifications_id`, `type`, `items_id`)
+                   VALUES (NULL, $notifid, 1, 3)";
+         $DB->query($query)
+         or die("0.80 add ticket satisfaction notification target ".$LANG['update'][90] .
+                $DB->error());
+      }
+   }
+
+
    //New infocom dates
    $migration->addField("glpi_infocoms", "order_date", "DATE NULL");
    $migration->addField("glpi_infocoms", "delivery_date", "DATE NULL");
@@ -1120,15 +1169,15 @@ function update0781to080($output='HTML') {
 
 
    //Add date config management fields
-   $migration->addField('glpi_entitydatas','autofill_warranty_date', 
+   $migration->addField('glpi_entitydatas','autofill_warranty_date',
       "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-   $migration->addField('glpi_entitydatas','autofill_use_date', 
+   $migration->addField('glpi_entitydatas','autofill_use_date',
       "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-   $migration->addField('glpi_entitydatas','autofill_buy_date', 
+   $migration->addField('glpi_entitydatas','autofill_buy_date',
       "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-   $migration->addField('glpi_entitydatas','autofill_delivery_date', 
+   $migration->addField('glpi_entitydatas','autofill_delivery_date',
       "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
-   if ($migration->addField('glpi_entitydatas','autofill_order_date', 
+   if ($migration->addField('glpi_entitydatas','autofill_order_date',
       "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'")) {
          $migration->migrationOneTable('glpi_entitydatas');
          $query = "UPDATE  `glpi_entitydatas`
