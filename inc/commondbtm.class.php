@@ -593,16 +593,21 @@ class CommonDBTM extends CommonGLPI {
     * Add an item in the database with all it's items.
     *
     * @param $input array : the _POST vars returned by the item form when press add
-    *
+    * @param option an array with the insert options
+    *   - unicity_message : do not display message if item it a duplicate (default is yes)
     * @return integer the new ID of the added item (or false if fail)
    **/
-   function add($input) {
+   function add($input, $options = array()) {
       global $DB, $CFG_GLPI;
 
       if ($DB->isSlave()) {
          return false;
       }
 
+      $p['unicity_error_message'] = true;
+      foreach ($options as $key => $value) {
+         $p[$key] = $value;
+      }
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -637,7 +642,7 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
          }
 
-         if ($this->checkUnicity(true)) {
+         if ($this->checkUnicity(true,$p['unicity_error_message'])) {
             if ($this->addToDB()) {
                $this->addMessageOnAddAction();
                $this->post_addItem();
@@ -791,7 +796,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return boolean : true on success
    **/
-   function update($input,$history=1) {
+   function update($input,$history=1, $options = array()) {
       global $DB,$CFG_GLPI;
 
       if ($DB->isSlave()) {
@@ -800,6 +805,11 @@ class CommonDBTM extends CommonGLPI {
 
       if (!$this->getFromDB($input[$this->getIndexName()])) {
          return false;
+      }
+
+      $p['unicity_error_message'] = true;
+      foreach ($options as $key => $value) {
+         $p[$key] = $value;
       }
 
       // Store input in the object to be available in all sub-method / hook
@@ -820,7 +830,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Valid input for update
-      if ($this->checkUnicity(false)) {
+      if ($this->checkUnicity(false,$p['unicity_error_message'])) {
          if ($this->input && is_array($this->input)) {
             // Fill the update-array with changes
             $x = 0;
@@ -2345,7 +2355,7 @@ class CommonDBTM extends CommonGLPI {
             $unset = false;
             $regs = array();
             $searchOption = $this->getSearchOptionByField('field',$key);
-            if (isset($searchOption['datatype']) && !is_null($value) && $value != 'NULL') {
+            if (isset($searchOption['datatype']) && !is_null($value) &&  $value != '') {
 
                switch ($searchOption['datatype']) {
                   case 'integer':
@@ -2367,9 +2377,11 @@ class CommonDBTM extends CommonGLPI {
                      }
                      break;
                   case 'ip':
-                     preg_match("/([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})/", 
-                              $value, $regs);
-                     if (empty($regs)) {
+                     $pattern = "\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
+                     $pattern.= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\."; 
+                     $pattern.= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
+                     $pattern.= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b";
+                     if (!preg_match("/$pattern/", $value, $regs)) {
                         $unset = true;
                      }
                      break;
@@ -2382,8 +2394,9 @@ class CommonDBTM extends CommonGLPI {
                   case 'date':
                   case 'datetime':
                      // Date is already "reformat" according to getDateFormat()
-                     $pat = '/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})([_][01][0-9]|2[0-3]:[0-5][0-9]:[0-5]?[0-9])?/';
-                     preg_match($pat, $value, $regs);
+                     $pattern = "/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})";
+                     $pattern.= "([_][01][0-9]|2[0-3]:[0-5][0-9]:[0-5]?[0-9])?/";
+                     preg_match($pattern, $value, $regs);
                      if (empty($regs)) {
                         $unset = true;
                      }
@@ -2435,7 +2448,7 @@ class CommonDBTM extends CommonGLPI {
     * @param add true for insert, false for update
     * @return true if item can be written in DB, false if not
     */
-   function checkUnicity($add = false) {
+   function checkUnicity($add = false, $display_error = true) {
       global $LANG,$DB, $CFG_GLPI;
       
       $result = true;
@@ -2477,13 +2490,15 @@ class CommonDBTM extends CommonGLPI {
                   $where.=" AND `id` NOT IN (".$this->input['id'].") ";
                }
                if (countElementsInTable($this->table,"$where $where_global") > 0) {
-                  $message = array();
-                  foreach ($fields['fields'] as $field) {
-                     $searchOption = $this->getSearchOptionByField('field',$field);
-                     $message[] = $searchOption['name'];
+                  if ($display_error) {
+                      $message = array();
+                      foreach ($fields['fields'] as $field) {
+                         $searchOption = $this->getSearchOptionByField('field',$field);
+                         $message[] = $searchOption['name'];
+                      }
+                      addMessageAfterRedirect($LANG['setup'][813]." : ".implode(',',$message),
+                                              true, ERROR, false);
                   }
-                  addMessageAfterRedirect($LANG['setup'][813]." : ".implode(',',$message),
-                                          true, ERROR, false);
                   $result = false;
                }
             }
