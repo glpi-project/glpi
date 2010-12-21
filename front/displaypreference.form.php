@@ -71,7 +71,7 @@ if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
 
    echo "<div id='tabspanel' class='center-h'></div>";
    createAjaxTabs('tabspanel','tabcontent',$tabs,'DisplayPreference');
-   echo "<div id='tabcontent'></div>";
+   echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
