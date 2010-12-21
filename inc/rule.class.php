@@ -153,7 +153,7 @@ class Rule extends CommonDBTM {
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'ranking';
       $tab[3]['name']          = $LANG['rulesengine'][10];
-      $tab[3]['datatype']      = 'bool';
+      $tab[3]['datatype']      = 'integer';
       $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = $this->getTable();
