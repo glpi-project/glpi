@@ -701,7 +701,7 @@ $LANG['install'][93]="Am citit si ACCEPT termenii din licenta de mai sus.";
 $LANG['install'][94]="Am citit si NU ACCEPT termenii de licenta de mai jos"; 
 $LANG['install'][95]="Memorie nelimitata"; 
 $LANG['install'][96]="Memorie nelimitata"; 
-$LANG['install'][97]="Verificați permisiunile pe director:"; 
+$LANG['install'][97]="Verificați drepturile pe director:"; 
 $LANG['install'][99]="Se verifica permisiunea de a scrie pentru fisierele Cache"; 
 $LANG['install'][100]="Directorul nu a putut fi creat."; 
 $LANG['install'][101]="Directorul a fost creat, dar nu a putut fi indepartat"; 
@@ -1266,7 +1266,7 @@ $LANG['printers'][30]="Initial page counter";
 $LANG['printers'][31]="Pagini printate"; 
 
 $LANG['profiles'][0]="Drept global"; 
-$LANG['profiles'][1]="Entitate corecta"; 
+$LANG['profiles'][1]="Drept pentru entitate"; 
 $LANG['profiles'][2]="Interfața asociată la profil"; 
 $LANG['profiles'][4]="Add a followup to tickets of associated group(s)"; 
 $LANG['profiles'][5]="Semnaleaza o problema"; 
