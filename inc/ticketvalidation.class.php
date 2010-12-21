@@ -202,7 +202,7 @@ class TicketValidation  extends CommonDBChild {
             return false;
          }
          if ($input["status"] == "waiting") {
-            $input["comment_validation"] = '';
+//             $input["comment_validation"] = '';
             $input["validation_date"] = 'NULL';
          } else {
             $input["validation_date"] = $_SESSION["glpi_currenttime"];
@@ -242,30 +242,32 @@ class TicketValidation  extends CommonDBChild {
          // Add log entry in the ticket
          $changes[0] = 0;
          $changes[1] = '';
-         if ($this->fields["status"] == 'accepted') {
-            $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".
-                          $LANG['validation'][19];
-            // Set global validation to accepted
-            if ($job->fields['global_validation'] == 'waiting') {
-               $input['id'] = $this->fields["tickets_id"];
-               $input['global_validation'] ='accepted';
-               $job->update($input);
-            }
-         } else if ($this->fields["status"] == 'rejected') {
-            $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".
-                          $LANG['validation'][20];
-            // Set global validation to accepted
-            if ($job->fields['global_validation'] == 'waiting') {
-               $input['id'] = $this->fields["tickets_id"];
-               $input['global_validation'] = 'rejected';
-               $job->update($input);
-            }
-         } else if ($this->fields["status"] != 'waiting') { // Simple update
-            $changes[2] = $LANG['validation'][31]." ".getUserName($this->fields["users_id_validate"]);
+
+         switch ($this->fields["status"]) {
+            case 'accepted' :
+               $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".
+                             $LANG['validation'][19];
+               break;
+
+            case 'rejected' :
+               $changes[2] =$LANG['validation'][31]." ".getUserName($this->fields["users_id_validate"]);
+               break;
+
+            default :
+               $changes[2] =$LANG['validation'][31]." ".getUserName($this->fields["users_id_validate"]);
+               break;
+
          }
-         if (isset($changes[2])) {
-            Log::history($this->getField('tickets_id'), 'Ticket',  $changes, $this->getType(),
-                         HISTORY_LOG_SIMPLE_MESSAGE);
+         Log::history($this->getField('tickets_id'), 'Ticket',  $changes, $this->getType(),
+                        HISTORY_LOG_SIMPLE_MESSAGE);
+
+         // Set global validation to accepted to define one
+         if ($job->fields['global_validation'] == 'waiting'
+            || (countElementsInTable('glpi_ticketvalidations',
+                                    "`tickets_id` = '".$this->fields["tickets_id"]."'") == 1)) {
+            $input['id'] = $this->fields["tickets_id"];
+            $input['global_validation'] = $this->fields["status"];
+            $job->update($input);
          }
       }
    }
