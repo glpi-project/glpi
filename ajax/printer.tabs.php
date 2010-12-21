@@ -94,7 +94,7 @@ if ($_POST["id"]>0 && $printer->can($_POST["id"],'r')) {
 
          case 3 :
             Computer_Item::showForItem($printer);
-            NetworkPort::showForItem('Printer', $_POST["id"], $_POST["withtemplate"]);
+            NetworkPort::showForItem('Printer', $_POST["id"]);
             break;
 
          case 4 :

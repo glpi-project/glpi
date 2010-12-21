@@ -691,7 +691,7 @@ class KnowbaseItem extends CommonDBTM {
     *
     * @return nothing (display table)
    **/
-   private static function showRecentPopular($target, $type, $faq=0) {
+   static function showRecentPopular($target, $type, $faq=0) {
       global $DB, $LANG;
 
       if ($type=="recent") {

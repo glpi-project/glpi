@@ -65,6 +65,7 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          $ticket->showStats();
          Document::showAssociated($ticket);
          Log::showForItem($ticket);
+         Plugin::displayAction($ticket, $_REQUEST['glpi_tab']);
          break;
 
       case 2 :

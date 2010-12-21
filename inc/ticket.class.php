@@ -1359,9 +1359,9 @@ class Ticket extends CommonDBTM {
 //          }
 //       }
 
-      if (($input["_users_id_assign"]>0
-           || $input["_groups_id_assign"]>0
-           || $input["suppliers_id_assign"]>0)
+      if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
+           || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
+           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
           && $input["status"]=="new") {
 
          $input["status"] = "assign";
@@ -4696,20 +4696,37 @@ class Ticket extends CommonDBTM {
       }
    }
 
-
-   static function showCentralCount() {
+   /**
+   * Get tickets count
+   *
+   * @param $foruser boolean : only for current login user as requester
+   */
+   static function showCentralCount($foruser=false) {
       global $DB, $CFG_GLPI, $LANG;
 
       // show a tab with count of jobs in the central and give link
-      if (!haveRight("show_all_ticket","1")) {
+      if (!haveRight("show_all_ticket","1")
+         && !haveRight("create_ticket",1)) {
          return false;
+      }
+      if (!haveRight("show_all_ticket","1")) {
+         $foruser = true;
       }
 
       $query = "SELECT `status`,
                        COUNT(*) AS COUNT
-                FROM `glpi_tickets` ".
-                getEntitiesRestrictRequest("WHERE", "glpi_tickets")."
-                GROUP BY `status`";
+                FROM `glpi_tickets` ";
+
+      if ($foruser) {
+         $query.= " LEFT JOIN `glpi_tickets_users`
+                        ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)";
+      }
+      $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+      if ($foruser) {
+         $query .= " AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."'
+                           AND `glpi_tickets_users`.`users_id` = '".getLoginUserID()."' ";
+      }
+      $query .= "GROUP BY `status`";
       $result = $DB->query($query);
 
       $status = array('new'     => 0,
