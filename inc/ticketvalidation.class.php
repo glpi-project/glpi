@@ -713,9 +713,9 @@ class TicketValidation  extends CommonDBChild {
       $tab[5]['field']    = 'validation_date';
       $tab[5]['name']     = $LANG['validation'][0]." - ".$LANG['validation'][4];
       $tab[5]['datatype'] = 'datetime';
-      $tab[6]['table']    = 'glpi_users';
 
-      $tab[6]['linkfield']     = 'users_id';
+      $tab[6]['table']         = 'glpi_users';
+      $tab[6]['field']         = 'name';
       $tab[6]['name']          = $LANG['validation'][0]." - ".$LANG['job'][4];
       $tab[6]['datatype']      = 'itemlink';
       $tab[6]['itemlink_type'] = 'User';

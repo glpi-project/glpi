@@ -744,7 +744,6 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[2]['table']        = 'glpi_requesttypes';
       $tab[2]['field']        = 'name';
-      $tab[2]['linkfield']    = 'requesttypes_id';
       $tab[2]['name']         = $LANG['job'][9]." - ".$LANG['job'][44];
       $tab[2]['forcegroupby'] = true;
 
@@ -760,7 +759,6 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[5]['table']     = 'glpi_users';
       $tab[5]['field']     = 'name';
-      $tab[5]['linkfield'] = 'users_id';
       $tab[5]['name']      = $LANG['common'][34];
 
       return $tab;
