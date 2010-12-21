@@ -193,17 +193,19 @@ function addInfocoms($type, $ID, $ID_entity) {
    global $DB, $FIRST, $LAST,$current_year;
 
 
-   $orderdate    = strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
-   $buydate      = $orderdate+mt_rand(0, 60)*DAY_TIMESTAMP;
-   $deliverydate = $orderdate+mt_rand(0, 60)*DAY_TIMESTAMP;
-   $usedate      = $deliverydate+mt_rand(0, 60)*DAY_TIMESTAMP;
-   $warrantydate = $deliverydate;
+   $orderdate     = strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
+   $buydate       = $orderdate+mt_rand(0, 60)*DAY_TIMESTAMP;
+   $deliverydate  = $orderdate+mt_rand(0, 60)*DAY_TIMESTAMP;
+   $usedate       = $deliverydate+mt_rand(0, 60)*DAY_TIMESTAMP;
+   $warrantydate  = $deliverydate;
+   $inventorydate = $deliverydate;
 
-   $orderdate    = date("Y-m-d", intval($orderdate));
-   $buydate      = date("Y-m-d", intval($buydate));
-   $deliverydate = date("Y-m-d", intval($deliverydate));
-   $usedate      = date("Y-m-d", intval($usedate));
-   $warrantydate = date("Y-m-d", intval($warrantydate));
+   $orderdate     = date("Y-m-d", intval($orderdate));
+   $buydate       = date("Y-m-d", intval($buydate));
+   $deliverydate  = date("Y-m-d", intval($deliverydate));
+   $usedate       = date("Y-m-d", intval($usedate));
+   $warrantydate  = date("Y-m-d", intval($warrantydate));
+   $inventorydate = date("Y-m-d", intval($inventorydate));
 
    $query = "INSERT INTO `glpi_infocoms`
              VALUES (NULL, '$ID', '$type', '$ID_entity', '0', '$buydate', '$usedate',
@@ -212,7 +214,7 @@ function addInfocoms($type, $ID, $ID_entity) {
                      'immo $type $ID', '".mt_rand(0,5000)."', '".mt_rand(0,500)."',
                      '".mt_rand(1,7)."', '".mt_rand(1,2)."', '".mt_rand(2,5)."', 'comment $type $ID',
                      'facture $type $ID', '".mt_rand($FIRST['budget'], $LAST['budget'])."', '0',
-                     '$orderdate', '$deliverydate', '$warrantydate')";
+                     '$orderdate', '$deliverydate', '$inventorydate', '$warrantydate')";
    $DB->query($query) or die("PB REQUETE ".$query);
 }
 
