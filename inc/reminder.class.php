@@ -92,6 +92,11 @@ class Reminder extends CommonDBTM {
          }
       }
 
+      if (isset($input['is_helpdesk_visible']) && $input['is_helpdesk_visible']
+         && (!isset($input['is_private']) || $input['is_private'])) {
+         unset($input['is_helpdesk_visible']);
+      }
+
       if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
 
          if (!haveRecursiveAccessToEntity($input["entities_id"])) {
@@ -139,6 +144,11 @@ class Reminder extends CommonDBTM {
          } else {
             addMessageAfterRedirect($LANG['planning'][1], false, ERROR);
          }
+      }
+
+      if (isset($input['is_helpdesk_visible']) && $input['is_helpdesk_visible']
+         && (!isset($input['is_private']) || $input['is_private'])) {
+         unset($input['is_helpdesk_visible']);
       }
 
       if (isset($input['is_recursive']) && $input['is_recursive'] && !$input['is_private']) {
@@ -213,10 +223,14 @@ class Reminder extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
       echo "<td>";
-      autocompletionTextField($this,"name",array('size'   => 80,
-                                                 'entity' => -1,
-                                                 'user'   => $this->fields["users_id"],
-                                                 'option' => $onfocus));
+      if ($canedit) {
+         autocompletionTextField($this,"name",array('size'   => 80,
+                                                   'entity' => -1,
+                                                   'user'   => $this->fields["users_id"],
+                                                   'option' => $onfocus));
+      } else {
+         echo $this->fields['name'];
+      }
       echo "</td></tr>\n";
 
       if (!$canedit) {
@@ -254,6 +268,17 @@ class Reminder extends CommonDBTM {
       }
 
       echo "</td></tr>\n";
+
+      if (haveRight("reminder_public","w") && !$this->fields["is_private"]) {
+         echo "<tr class='tab_bg_2'><td>".$LANG['tracking'][39]."&nbsp;:&nbsp;</td>";
+         echo "<td>";
+         if ($canedit) {
+            Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+         } else {
+            echo Dropdpown::getYesNo($this->fields['is_helpdesk_visible']);
+         }
+         echo "</td></tr>\n";
+      }
 
       echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15]."&nbsp;:&nbsp;</td>";
       echo "<td class='center'>";
@@ -309,7 +334,7 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".$LANG['reminder'][9]."&nbsp;:&nbsp;</td><td>";
 
       if ($canedit) {
-         echo "<textarea cols='90' rows='15' name='text'>".$this->fields["text"]."</textarea>";
+         echo "<textarea cols='80' rows='15' name='text'>".$this->fields["text"]."</textarea>";
       } else {
          echo nl2br($this->fields["text"]);
       }

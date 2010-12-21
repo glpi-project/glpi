@@ -40,7 +40,7 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 $remind = new Reminder();
-checkCentralAccess();
+checkLoginUser();
 if (isset($_POST["add"])) {
    $remind->check(-1,'w',$_POST);
 

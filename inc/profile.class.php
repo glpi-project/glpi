@@ -47,7 +47,7 @@ class Profile extends CommonDBTM {
                                           'add_followups', 'observe_ticket', 'password_update',
                                           'helpdesk_hardware', 'helpdesk_item_type',
                                           'show_group_ticket', 'show_group_hardware',
-                                          'create_validation', 'validate_ticket');
+                                          'create_validation', 'validate_ticket', 'reminder_public');
 
 
    /// Common fields used for all profiles type
@@ -496,6 +496,14 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][17]."&nbsp;:</td><td>";
       Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['reminder'][1]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("reminder_public", $this->fields["reminder_public"], 1, 1, 0);
+      echo "</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "</td></tr>\n";
+
 
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
