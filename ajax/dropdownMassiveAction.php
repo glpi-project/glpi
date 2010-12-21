@@ -283,7 +283,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                if (!$first_group) {
                   $newgroup .= "</optgroup>";
                }
-               $newgroup .= "<optgroup label='$val'>";
+               $newgroup .= "<optgroup label=\"$val\">";
 
             } else {
                // No id and no entities_id massive action and no first item
