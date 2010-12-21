@@ -662,7 +662,6 @@ class TicketTask  extends CommonDBTM {
 
       $tab[2]['table']        = 'glpi_taskcategories';
       $tab[2]['field']        = 'name';
-      $tab[2]['linkfield']    = 'taskcategories_id';
       $tab[2]['name']         = $LANG['job'][7]." - ".$LANG['common'][36];
       $tab[2]['forcegroupby'] = true;
 
@@ -678,14 +677,13 @@ class TicketTask  extends CommonDBTM {
 
       $tab[5]['table']     = 'glpi_users';
       $tab[5]['field']     = 'name';
-      $tab[5]['linkfield'] = 'users_id';
       $tab[5]['name']      = $LANG['financial'][43];
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'realtime';
-      $tab[6]['linkfield'] = '';
-      $tab[6]['name']      = $LANG['job'][20];
-      $tab[6]['datatype']  = 'realtime';
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'realtime';
+      $tab[6]['name']          = $LANG['job'][20];
+      $tab[6]['datatype']      = 'realtime';
+      $tab[6]['massiveaction'] = false;
 
       return $tab;
    }
