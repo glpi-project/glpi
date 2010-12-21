@@ -118,10 +118,10 @@ if (isset($_GET['create_ticket'])) {
    // Show KB items
    if (haveRight("faq","r")) {
       echo "<tr><td class='top' width='450px'>";
-      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.resa.php', "recent", 1);
+      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.resa.php', "popular", 1);
       echo "</td></tr>";
       echo "<tr><td class='top' width='450px'>";
-      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.resa.php', "popular", 1);
+      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.resa.php', "recent", 1);
    } else {
       echo "<tr><td>&nbsp;</td></tr>";
    }
