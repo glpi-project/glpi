@@ -4744,17 +4744,21 @@ class Ticket extends CommonDBTM {
 
       $options['field'][0]      = 12;
       $options['searchtype'][0] = 'equals';
-      $options['contains'][0]   = 'all';
+      $options['contains'][0]    = 'process';
       $options['link'][0]       = 'AND';
       $options['reset']         ='reset';
 
       echo "<table class='tab_cadrehov' >";
       echo "<tr><th colspan='2'>";
 
-      $options['contains'][0]    = 'process';
-      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-            $LANG['title'][10]."</a></th></tr>";
-
+      if ($foruser) {
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
+               $LANG['profiles'][5]."</a>";
+      } else {
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
+               $LANG['title'][10]."</a></th></tr>";
+      }
+      echo "</th></tr>";
       echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";
 
       $options['contains'][0]    = 'new';

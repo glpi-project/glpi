@@ -1312,6 +1312,24 @@ function update0781to080($output='HTML') {
 
    $migration->addField("glpi_reminders", "is_helpdesk_visible", "tinyint( 1 ) NOT NULL DEFAULT 0");
 
+   if (!TableExists('glpi_ticketsolutiontemplates')) {
+
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_ticketsolutiontemplates` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `content` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`entities_id`,`name`),
+                  KEY `name` (`name`),
+                  KEY `is_recursive` (`is_recursive`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+      $DB->query($query)
+         or die("0.80 create glpi_ticketsolutiontemplates " . $LANG['update'][90] .
+                $DB->error());
+   }
+
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
