@@ -997,11 +997,11 @@ class Search {
                               $CFG_GLPI["root_doc"]."/pics/".($data["ACTIVE"]?"moins":"plus").
                               ".png\" alt='' title=''></a>",
                               $item_num,$row_num,"class='center'");
-                        echo Search::showItem($output_type,"<a href=\"javascript:confirmAction('".
-                                       addslashes($LANG['reservation'][38])."\\n".
-                                       addslashes($LANG['reservation'][39])."','".
+                        echo Search::showItem($output_type,"<a href='".
                                        getItemTypeFormURL($itemtype)."?id=".$data["refID"].
-                                       "&amp;delete=delete')\" title='".
+                                       "&amp;delete=delete' onclick=\"return window.confirm('".
+                                       addslashes($LANG['reservation'][38])."\\n".
+                                       addslashes($LANG['reservation'][39])."')\" title='".
                                        $LANG['reservation'][6]."'><img src=\"".
                                        $CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",
                                        $item_num,$row_num,"class='center'");
