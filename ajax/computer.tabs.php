@@ -103,7 +103,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             Ticket::showListForItem('Computer', $_POST["id"]);
             Link::showForItem('Computer', $_POST["id"]);
             RegistryKey::showForComputer($_POST["id"]);
-            Plugin::displayAction($computer, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+            Plugin::displayAction($computer, $_REQUEST['glpi_tab']);
             break;
 
          case 2 :
