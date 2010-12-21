@@ -239,12 +239,14 @@ class MailCollector  extends CommonDBTM {
       $tab[3]['field']         = 'host';
       $tab[3]['name']          = $LANG['setup'][170];
       $tab[3]['massiveaction'] = false;
-
+      $tab[3]['datatype']      = 'string';
+      
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'login';
       $tab[4]['name']          = $LANG['login'][6];
       $tab[4]['massiveaction'] = false;
-
+      $tab[4]['datatype']      = 'string';
+      
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'filesize_max';
       $tab[5]['name']     = $LANG['mailgate'][7];

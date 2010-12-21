@@ -174,7 +174,9 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][4]."&nbsp;:</td>";
-      echo "<td><input type='text' name='num' value='".$this->fields["num"]."' size='25'></td>";
+      echo "<td>"; 
+      autocompletionTextField($this, "num");
+      echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -309,6 +311,7 @@ class Contract extends CommonDBTM {
       $tab[30]['forcegroupby']  = true;
       $tab[30]['massiveaction'] = false;
       $tab[30]['joinparams']    = $joinparams;
+      $tab[30]['datatype']      = 'string';
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
@@ -405,6 +408,7 @@ class Contract extends CommonDBTM {
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'num';
       $tab[3]['name']  = $LANG['financial'][4];
+      $tab[3]['datatype'] = 'string';
 
       $tab[4]['table'] = 'glpi_contracttypes';
       $tab[4]['field'] = 'name';
@@ -455,6 +459,7 @@ class Contract extends CommonDBTM {
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field'] = 'accounting_number';
       $tab[10]['name']  = $LANG['financial'][13];
+      $tab[10]['datatype']      = 'string';
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'renewal';

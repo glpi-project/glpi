@@ -159,13 +159,13 @@ class Rule extends CommonDBTM {
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'description';
       $tab[4]['name']          = $LANG['joblist'][6];
-      $tab[4]['datatype']      = 'text';
+      $tab[4]['datatype']      = 'string';
       $tab[4]['massiveaction'] = false;
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'match';
       $tab[5]['name']          = $LANG['rulesengine'][9];
-      $tab[5]['datatype']      = 'text';
+      $tab[5]['datatype']      = 'string';
       $tab[5]['massiveaction'] = false;
 
       $tab[8]['table']     = $this->getTable();

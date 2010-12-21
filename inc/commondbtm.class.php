@@ -2333,12 +2333,12 @@ class CommonDBTM extends CommonGLPI {
    
    /**
     * Check float and decimal values
-    *
+    * @param display or not messages in and addAfterRedirect
     * @return input the data checked
    **/
-   function filterValues() {
+   function filterValues($display = true) {
       global $LANG;
-      //Tpe mismatched fields
+      //Type mismatched fields
       $fails = array();
       if (isset($this->input) && is_array($this->input) && count($this->input)) {
          foreach ($this->input as $key =>$value) {
@@ -2346,8 +2346,10 @@ class CommonDBTM extends CommonGLPI {
             $regs = array();
             $searchOption = $this->getSearchOptionByField('field',$key);
             if (isset($searchOption['datatype']) && !is_null($value) && $value != 'NULL') {
+
                switch ($searchOption['datatype']) {
                   case 'integer':
+                  case 'number':
                   case 'decimal':
                      if ($searchOption['datatype'] == 'integer') {
                         $this->input[$key] = floatval($value);
@@ -2391,6 +2393,12 @@ class CommonDBTM extends CommonGLPI {
                   if (!class_exists($value)) {
                      $unset = true;
                   }
+               case 'email':
+               case 'string':
+                  if (strlen($value)>255) {
+                     $this->input[$key] = substr($value,0,254);
+                  }
+                  break;
                default:
                   break;
                 }
@@ -2401,8 +2409,8 @@ class CommonDBTM extends CommonGLPI {
             }
          }
       }
-      //Display a message to indicate that one or more value where filtered
-      if (count($fails)) {
+      if ($display && count($fails)) {
+         //Display a message to indicate that one or more value where filtered
          $message = $LANG['common'][106].' : '.implode(',',$fails);
          addMessageAfterRedirect($message,INFO,true);
       }

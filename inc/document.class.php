@@ -615,15 +615,18 @@ class Document extends CommonDBTM {
       $tab[3]['field']         = 'filename';
       $tab[3]['name']          = $LANG['document'][2];
       $tab[3]['massiveaction'] = false;
+      $tab[3]['datatype']      = 'string';
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'link';
       $tab[4]['name']     = $LANG['document'][33];
       $tab[4]['datatype'] = 'weblink';
+      $tab[4]['datatype']      = 'string';
 
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'mime';
       $tab[5]['name']  = $LANG['document'][4];
+      $tab[5]['datatype']      = 'string';
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';

@@ -323,19 +323,22 @@ class Entity extends CommonTreeDropdown {
       $tab[3]['name']          = $LANG['financial'][44];
       $tab[3]['massiveaction'] = false;
       $tab[3]['joinparams']    = array('jointype' => 'child');
-
+      $tab[3]['datatype']      = 'string';
+      
       $tab[4]['table']         = 'glpi_entitydatas';
       $tab[4]['field']         = 'website';
       $tab[4]['name']          = $LANG['financial'][45];
       $tab[4]['massiveaction'] = false;
       $tab[4]['joinparams']    = array('jointype' => 'child');
-
+      $tab[4]['datatype']      = 'string';
+      
       $tab[5]['table']         = 'glpi_entitydatas';
       $tab[5]['field']         = 'phonenumber';
       $tab[5]['name']          = $LANG['help'][35];
       $tab[5]['massiveaction'] = false;
       $tab[5]['joinparams']    = array('jointype' => 'child');
-
+      $tab[5]['datatype']      = 'string';
+      
       $tab[6]['table']         = 'glpi_entitydatas';
       $tab[6]['field']         = 'email';
       $tab[6]['name']          = $LANG['setup'][14];
@@ -348,13 +351,15 @@ class Entity extends CommonTreeDropdown {
       $tab[7]['name']          = $LANG['entity'][12];
       $tab[7]['massiveaction'] = false;
       $tab[7]['joinparams']    = array('jointype' => 'child');
-
+      $tab[7]['datatype']      = 'string';
+      
       $tab[8]['table']         = 'glpi_entitydatas';
       $tab[8]['field']         = 'tag';
       $tab[8]['name']          = $LANG['entity'][13];
       $tab[8]['massiveaction'] = false;
       $tab[8]['joinparams']    = array('jointype' => 'child');
-
+      $tab[8]['datatype']      = 'string';
+      
       $tab[9]['table']         = 'glpi_authldaps';
       $tab[9]['field']         = 'name';
       $tab[9]['name']          = $LANG['entity'][15];
@@ -365,25 +370,29 @@ class Entity extends CommonTreeDropdown {
       $tab[10]['name']          = $LANG['financial'][30];
       $tab[10]['massiveaction'] = false;
       $tab[10]['joinparams']    = array('jointype' => 'child');
-
+      $tab[10]['datatype']      = 'string';
+      
       $tab[11]['table']         = 'glpi_entitydatas';
       $tab[11]['field']         = 'town';
       $tab[11]['name']          = $LANG['financial'][101];
       $tab[11]['massiveaction'] = false;
       $tab[11]['joinparams']    = array('jointype' => 'child');
-
+      $tab[11]['datatype']      = 'string';
+      
       $tab[12]['table']         = 'glpi_entitydatas';
       $tab[12]['field']         = 'state';
       $tab[12]['name']          = $LANG['financial'][102];
       $tab[12]['massiveaction'] = false;
       $tab[12]['joinparams']    = array('jointype' => 'child');
-
+      $tab[12]['datatype']      = 'string';
+      
       $tab[13]['table']         = 'glpi_entitydatas';
       $tab[13]['field']         = 'country';
       $tab[13]['name']          = $LANG['financial'][103];
       $tab[13]['massiveaction'] = false;
       $tab[13]['joinparams']    = array('jointype' => 'child');
-
+      $tab[13]['datatype']      = 'string';
+      
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'name';
       $tab[14]['name']          = $LANG['common'][16];
@@ -401,25 +410,29 @@ class Entity extends CommonTreeDropdown {
       $tab[17]['name']          = $LANG['entity'][16];
       $tab[17]['massiveaction'] = false;
       $tab[17]['joinparams']    = array('jointype' => 'child');
-
+      $tab[17]['datatype']      = 'string';
+      
       $tab[18]['table']         = 'glpi_entitydatas';
       $tab[18]['field']         = 'admin_email';
       $tab[18]['name']          = $LANG['setup'][203];
       $tab[18]['massiveaction'] = false;
       $tab[18]['joinparams']    = array('jointype' => 'child');
-
+      $tab[18]['datatype']      = 'string';
+      
       $tab[19]['table']         = 'glpi_entitydatas';
       $tab[19]['field']         = 'admin_reply';
       $tab[19]['name']          = $LANG['setup'][207];
       $tab[19]['massiveaction'] = false;
       $tab[19]['joinparams']    = array('jointype' => 'child');
-
+      $tab[19]['datatype']      = 'string';
+      
       $tab[20]['table']         = 'glpi_entitydatas';
       $tab[20]['field']         = 'mail_domain';
       $tab[20]['name']          = $LANG['setup'][732];
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('jointype' => 'child');
-
+      $tab[20]['datatype']      = 'string';
+      
       return $tab;
    }
 

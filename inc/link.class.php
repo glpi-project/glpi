@@ -148,7 +148,8 @@ class Link extends CommonDBTM {
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'link';
       $tab[3]['name']  = $LANG['links'][1];
-
+      $tab[3]['datatype']      = 'string';
+      
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = $LANG['entity'][0];

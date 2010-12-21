@@ -832,10 +832,12 @@ class Computer extends CommonDBTM {
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';
       $tab[5]['name']      = $LANG['common'][19];
+      $tab[5]['datatype'] = 'string';
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'otherserial';
       $tab[6]['name']      = $LANG['common'][20];
+      $tab[6]['datatype'] = 'string';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
@@ -850,10 +852,12 @@ class Computer extends CommonDBTM {
       $tab[17]['table']     = $this->getTable();
       $tab[17]['field']     = 'contact';
       $tab[17]['name']      = $LANG['common'][18];
+      $tab[17]['datatype'] = 'string';
 
       $tab[18]['table']     = $this->getTable();
       $tab[18]['field']     = 'contact_num';
       $tab[18]['name']      = $LANG['common'][21];
+      $tab[18]['datatype'] = 'string';
 
       $tab[70]['table']     = 'glpi_users';
       $tab[70]['field']     = 'name';
