@@ -1348,7 +1348,7 @@ class Search {
                } else {
                   $first_group = false;
                }
-               echo "<optgroup label='$val'>";
+               echo "<optgroup label=\"$val\">";
             } else {
                if (!isset($val['nosearch']) || $val['nosearch']==false) {
                   echo "<option title=\"".cleanInputText($val["name"])."\" value='$key'";

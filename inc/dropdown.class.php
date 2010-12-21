@@ -700,7 +700,7 @@ class Dropdown {
       echo "<select id='menu_nav'>";
 
       foreach ($optgroup as $label => $dp) {
-         echo "<optgroup label='$label'>";
+         echo "<optgroup label=\"$label\">";
 
          foreach ($dp as $key => $val) {
             $search = getItemTypeSearchURL($key);
