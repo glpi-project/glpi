@@ -64,9 +64,19 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-   commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
+   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      helpHeader($LANG['title'][40],'',$_SESSION["glpiname"]);
+   } else {
+      commonHeader($LANG['title'][40],'',"utils","reminder");
+   }
+
    $remind->showForm($_GET["id"]);
-   commonFooter();
+
+   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+      helpFooter();
+   } else {
+      commonFooter();
+   }
 }
 
 ?>
