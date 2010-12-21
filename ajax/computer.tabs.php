@@ -157,7 +157,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          default :
-            if (!Plugin::displayAction($computer, $_REQUEST['glpi_tab'], $_POST["withtemplate"])) {
+            if (!Plugin::displayAction($computer, $_REQUEST['glpi_tab'])) {
                Computer_Device::showForComputer($computer);
             }
       }

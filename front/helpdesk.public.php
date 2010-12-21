@@ -80,8 +80,44 @@ if (!haveRight('create_ticket',1)) {
 }
 
 checkHelpdeskAccess();
+
 helpHeader($LANG['job'][13],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-printHelpDesk(getLoginUserID(),1);
+
+if (isset($_GET['create_ticket'])) {
+   printHelpDesk(getLoginUserID(),1);
+} else {
+
+   echo "<table class='tab_cadre_central'><tr>";
+   echo "<td class='top'><br>";
+   echo "<table>";
+   if (haveRight('create_ticket',1)) {
+      echo "<tr><td class='top' width='450px'>";
+      Ticket::showCentralCount(true);
+      echo "</td></tr>";
+   }
+
+   echo "<tr><td class='top' width='450px'>";
+   echo "NOTES PUBLIQUES";
+   echo "</td></tr>";
+   echo "</table></td>";
+
+   echo "<td class='top' width='450px'><br>";
+   echo "<table>";
+   // Show KB items
+   if (haveRight("faq","r")) {
+      echo "<tr><td class='top' width='450px'>";
+      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.resa.php', "recent", 1);
+      echo "</td></tr>";
+      echo "<tr><td class='top' width='450px'>";
+      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.resa.php', "popular", 1);
+   } else {
+      echo "<tr><td>&nbsp;</td></tr>";
+   }
+   echo "</table>";
+   echo "</td>";
+   echo "</tr></table>";
+
+}
 
 helpFooter();
 

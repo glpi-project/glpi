@@ -1616,13 +1616,11 @@ function helpHeader($title, $url='') {
 
    // Build the navigation-elements
 
-   // Ticket
-   if (haveRight("create_ticket","1")) {
-      echo "<li id='menu1'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-             $LANG['job'][13]."\" class='itemP'>".$LANG['central'][5]."</a>";
-      echo "</li>";
-   }
+   // Home
+   echo "<li id='menu1'>";
+   echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
+            $LANG['job'][13]."\" class='itemP'>".$LANG['central'][5]."</a>";
+   echo "</li>";
 
    //  Suivi ticket
    if (haveRight("observe_ticket","1")) {
@@ -1690,13 +1688,21 @@ function helpHeader($title, $url='') {
    }
    echo "</ul>";
    echo "<div class='sep'></div>";
+
    echo "</div>";
 
    // End navigation bar
    // End headline
    ///Le sous menu contextuel 1
    echo "<div id='c_ssmenu1'>";
-   echo "&nbsp;";
+   if (haveRight("create_ticket",1)) {
+      echo "<ul><li>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' title=\"".
+             $LANG['profiles'][5]."\" class='itemP'>".$LANG['profiles'][5]."</a>";
+      echo "</li></ul>";
+   } else {
+      echo "&nbsp;";
+   }
    echo "</div>";
 
    //  Le fil d ariane
