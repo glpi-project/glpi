@@ -3914,7 +3914,8 @@ class Search {
 
       // First view of the page or force bookmark : try to load a bookmark
       if ($forcebookmark
-         || ($usesession && !isset($_SESSION['glpisearch'][$itemtype]))) {
+         || ($usesession && !isset($_GET["reset"])
+               && !isset($_SESSION['glpisearch'][$itemtype]))) {
          $query = "SELECT `bookmarks_id`
                   FROM `glpi_bookmarks_users`
                   WHERE `users_id`='".getLoginUserID()."'
