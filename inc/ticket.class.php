@@ -4753,7 +4753,8 @@ class Ticket extends CommonDBTM {
 
       if ($foruser) {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
-               $LANG['profiles'][5]."</a>";
+               $LANG['profiles'][5]."&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
+               $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"></a>";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
                $LANG['title'][10]."</a></th></tr>";

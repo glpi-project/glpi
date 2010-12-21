@@ -1727,7 +1727,7 @@ function helpHeader($title, $url='') {
    }
    echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-   if (haveRight('create_ticket',1)) {
+   if (haveRight('create_ticket',1) && strpos($_SERVER['PHP_SELF'],"ticket")) {
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
                $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"></a></li>";
