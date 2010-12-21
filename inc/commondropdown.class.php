@@ -184,6 +184,12 @@ abstract class CommonDropdown extends CommonDBTM {
                autocompletionTextField($this, $field['name']);
                break;
 
+            case 'textarea' :
+               echo "<textarea name='".$field['name']."' cols='40' rows='3'>";
+               echo $this->fields[$field['name']];
+               echo "</textarea >";
+               break;
+
             case 'parent' :
                if ($field['name']=='entities_id') {
                   $restrict = -1;
