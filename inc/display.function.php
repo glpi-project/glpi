@@ -2026,9 +2026,9 @@ function ajaxFooter() {
 
    if ($_SESSION['glpi_use_mode']==DEBUG_MODE) { // mode debug
       $rand = mt_rand();
-      echo "<span id='debugajax'>";
+      echo "<div class='center' id='debugajax'>";
       echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\" >
-             AJAX DEBUG</a>";
+             AJAX DEBUG</a></div>";
       echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
       displayDebugInfos(false);
       echo "</div></div>";
