@@ -87,7 +87,7 @@ echo "</optgroup>";
 
 $devices = Dropdown::getDeviceItemTypes();
 foreach ($devices as $label => $dp) {
-   echo "<optgroup label='$label'>";
+   echo "<optgroup label=\"$label\">";
    foreach ($dp as $i => $name) {
       echo "<option value='$i' ".($_REQUEST["dropdown"]==$i?"selected":"").">$name</option>";
    }

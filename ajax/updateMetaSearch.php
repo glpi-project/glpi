@@ -65,7 +65,7 @@ foreach ($searchopt as $key => $val) {
       if (!$first_group) {
          $newgroup .= "</optgroup>";
       }
-      $newgroup .= "<optgroup label='$val'>";
+      $newgroup .= "<optgroup label=\"$val\">";
 
    } else {
       // No search on plugins
