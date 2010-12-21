@@ -507,7 +507,7 @@ function update0781to080($output='HTML') {
 
    $migration->displayMessage($LANG['update'][141] . ' - Software'); // Updating schema
 
-   if ($migration->addField("glpi_softwareversions", "operatingsystems_id", "INT( 11 ) NOT NULL")) {
+   if ($migration->addField("glpi_softwareversions", "operatingsystems_id", "INT( 11 ) NOT NULL DEFAULT '0'")) {
       $migration->addKey("glpi_softwareversions", "operatingsystems_id");
       $migration->migrationOneTable('glpi_softwareversions');
 
