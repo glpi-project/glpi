@@ -29,44 +29,32 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi Collet
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
+$AJAX_INCLUDE=1;
 
-/// Class TicketSolutionTemplate
-class TicketSolutionTemplate extends CommonDropdown {
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['jobresolution'][6];
+checkLoginUser();
+// print_r($_POST);exit();
+if (isset($_POST['value']) && $_POST['value'] > 0) {
+   $template = new TicketSolutionTemplate();
+   if ($template->getFromDB($_POST['value'])) {
+      echo "<textarea name='solution' rows='12' cols='80'>";
+      echo $template->getField('content');
+      echo "</textarea>";
+      echo "<script type='text/javascript'>\n
+         document.getElementById('".$_POST["type_id"]."').value = ".$template->getField('ticketsolutiontypes_id').";
+      </script>";
    }
-   function canCreate() {
-      return haveRight('entity_dropdown', 'w');
-   }
-
-
-   function canView() {
-      return haveRight('entity_dropdown', 'r');
-   }
-
-
-   function getAdditionalFields() {
-      global $LANG;
-
-      return array(array('name'  => 'ticketsolutiontypes_id',
-                         'label' => $LANG['job'][48],
-                         'type'  => 'dropdownValue',
-                         'list'  => true),
-                  array('name'  => 'content',
-                         'label' => $LANG['knowbase'][15],
-                         'type'  => 'textarea'));
-   }
-
+} else {
+      echo "<textarea name='solution' rows='12' cols='80'>";
+      echo "</textarea>";
 }
 
 ?>

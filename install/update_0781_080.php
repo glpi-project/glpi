@@ -1314,12 +1314,13 @@ function update0781to080($output='HTML') {
 
    if (!TableExists('glpi_ticketsolutiontemplates')) {
 
-      $query = "CREATE TABLE IF NOT EXISTS `glpi_ticketsolutiontemplates` (
+      $query = "CREATE TABLE `glpi_ticketsolutiontemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `content` text COLLATE utf8_unicode_ci,
+                  `ticketsolutiontypes_id` int(11) NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`entities_id`,`name`),

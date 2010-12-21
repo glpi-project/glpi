@@ -2824,7 +2824,7 @@ class Ticket extends CommonDBTM {
     *
    **/
    function showSolutionForm() {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       $this->check($this->getField('id'), 'r');
 
@@ -2833,13 +2833,25 @@ class Ticket extends CommonDBTM {
       $options = array();
       $this->showFormHeader($options);
 
+      $show_template = $canedit && $this->getField('ticketsolutiontypes_id') == 0
+                        && empty($this->fields['solution']);
+
+      if ($show_template) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:</td><td colspan='3'>";
+         $rand_template = Dropdown::show('TicketSolutionTemplate',
+                                       array('value'=> 0, 'entity'=>$this->getEntityID()));
+         echo "</td></tr>";
+      }
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['job'][48]."&nbsp;:</td><td colspan='3'>";
 
       $current = $this->fields['status'];
+      $rand_type = 0;
       // Settings a solution will set status to solved
       if ($canedit) {
-         Dropdown::show('TicketSolutionType',
+         $rand_type = Dropdown::show('TicketSolutionType',
                         array('value' => $this->getField('ticketsolutiontypes_id')));
       } else {
          echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
@@ -2847,11 +2859,15 @@ class Ticket extends CommonDBTM {
       }
       echo "</td></tr>";
 
+
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['joblist'][6]." (".$LANG['validation'][16].")&nbsp;:</td><td colspan='3'>";
+      $rand_text = 0;
       if ($canedit) {
-         echo "<textarea name='solution' rows='12' cols='80'>";
-         echo $this->getField('solution') . "</textarea>";
+         $rand_text = mt_rand();
+         echo "<span id='solution$rand_text'><textarea  name='solution' rows='12' cols='80'>";
+         echo $this->getField('solution') . "</textarea></span>";
       } else {
          echo nl2br($this->getField('solution'));
       }
@@ -2860,6 +2876,14 @@ class Ticket extends CommonDBTM {
       $options['candel']  = false;
       $options['canedit'] = $canedit;
       $this->showFormButtons($options);
+
+      // Load type and solution from bookmark
+      if ($show_template) {
+         $params = array('value' => '__VALUE__',
+                        'type_id' => 'dropdown_ticketsolutiontypes_id'.$rand_type);
+         ajaxUpdateItemOnSelectEvent('dropdown_ticketsolutiontemplates_id'.$rand_template, 'solution'.$rand_text,
+                                     $CFG_GLPI["root_doc"]."/ajax/solution.php", $params);
+      }
    }
 
 
