@@ -1302,7 +1302,7 @@ function update0781to080($output='HTML') {
       $migration->migrationOneTable("glpi_profiles");
 
       $query = "UPDATE `glpi_profiles`
-                SET `clean_ocsng` = 'sync_ocsng'";
+                SET `clean_ocsng` = `sync_ocsng`";
 
       $DB->query($query)
          or die("0.80 copy sync_ocsng to clean_ocsng in glpi_ocslinks " . $LANG['update'][90] .
