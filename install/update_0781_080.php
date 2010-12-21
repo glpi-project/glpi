@@ -1310,6 +1310,7 @@ function update0781to080($output='HTML') {
    }
    /* END - OCS-NG new clean links features */
 
+   $migration->addField("glpi_reminders", "is_helpdesk_visible", "tinyint( 1 ) NOT NULL DEFAULT 0");
 
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
