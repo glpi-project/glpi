@@ -2991,7 +2991,8 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
                echo "  listeners:{ // Force glpi_tab storage
                        beforeshow : function(panel) {
                         /* clean content because append data instead of replace it : no more problem */
-                        tabpanel.body.update('');
+                        /* Problem with IE6... But clean data for tabpanel before show. Do it on load default tab ?*/
+                        /*tabpanel.body.update('');*/
                         /* update active tab*/
                         Ext.Ajax.request({
                            url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=$key',
@@ -3011,6 +3012,8 @@ function createAjaxTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', 
          echo "// force first load
             function loadDefaultTab() {
                tabpanel.body=Ext.get('$tabdivcontent_id');
+               // See before
+               tabpanel.body.update('');
                tabpanel.setActiveTab('$default_tab');";
          echo "}";
 
