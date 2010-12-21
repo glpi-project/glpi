@@ -1602,9 +1602,14 @@ class Ticket extends CommonDBTM {
           && count($this->input["_additional_observers"])) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::OBSERVER);
-         foreach ($this->input["_additional_observers"] as $uid) {
-            $input2['users_id'] = $uid;
-            $ticket_user->add($input2);
+         foreach ($this->input["_additional_observers"] as $tmp) {
+            if (isset($tmp['users_id'])) {
+               foreach ($tmp as $key => $val) {
+                  $input2[$key] = $val;
+               }
+
+               $ticket_user->add($input2);
+            }
          }
       }
       if (isset($this->input["_additional_assigns"])
@@ -1612,9 +1617,14 @@ class Ticket extends CommonDBTM {
           && count($this->input["_additional_assigns"])) {
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::ASSIGN);
-         foreach ($this->input["_additional_assigns"] as $uid) {
-            $input2['users_id'] = $uid;
-            $ticket_user->add($input2);
+         foreach ($this->input["_additional_assigns"] as $tmp) {
+            if (isset($tmp['users_id'])) {
+               foreach ($tmp as $key => $val) {
+                  $input2[$key] = $val;
+               }
+
+               $ticket_user->add($input2);
+            }
          }
       }
       if (isset($this->input["_additional_requesters"])
