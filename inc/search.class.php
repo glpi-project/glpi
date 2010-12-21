@@ -839,7 +839,7 @@ class Search {
                if (haveRight("search_config","w") || haveRight("search_config_global","w")) {
                   $tmp = " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
-                        "'height=400, width=1000, top=100, left=100, scrollbars=yes' ); w.focus();\"";
+                        "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
 
                   $search_config = "<img alt=\"".$LANG['setup'][252]."\" title=\"".$LANG['setup'][252].
                                     "\" src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
