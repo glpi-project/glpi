@@ -1472,6 +1472,18 @@ function generate_entity($ID_entity) {
 
    regenerateTreeCompleteName("glpi_ticketcategories");
 
+   $FIRST["ticketsolutionstemplate"] = getMaxItem("glpi_ticketsolutiontemplates")+1;
+   $nb_items = mt_rand(0,$MAX['ticketsolutionstemplate']);
+   for ($i=0 ; $i<$nb_items ; $i++) {
+      $query = "INSERT INTO `glpi_ticketsolutiontemplates`
+                VALUES (NULL, '$ID_entity', '1', 'solution $i-$ID_entity',
+                        'content solution $i-$ID_entity','".mt_rand(0,$MAX['ticketsolutions'])."',
+                        'comment solution $i-$ID_entity')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+      $newID=$DB->insert_id();
+   }
+
+   $LAST["ticketsolutionstemplate"] = getMaxItem("glpi_ticketsolutiontemplates");
 
    // Add Specific questions
    $k = 0;
