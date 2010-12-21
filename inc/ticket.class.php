@@ -2185,7 +2185,7 @@ class Ticket extends CommonDBTM {
                                        => array('table' => 'glpi_tickets_users',
                                                 'joinparams'
                                                         => array('jointype'  => 'child',
-                                                                 'condition' => 'NEWTABLE.`type` ' .
+                                                                 'condition' => 'AND NEWTABLE.`type` ' .
                                                                                 '= '.self::REQUESTER)));
 
       $tab[71]['table']         = 'glpi_groups';
@@ -2197,7 +2197,7 @@ class Ticket extends CommonDBTM {
                                         => array('table' => 'glpi_groups_tickets',
                                                  'joinparams'
                                                          => array('jointype'  => 'child',
-                                                                  'condition' => 'NEWTABLE.`type` ' .
+                                                                  'condition' => 'AND NEWTABLE.`type` ' .
                                                                                  '= '.self::REQUESTER)));
 
       $tab[22]['table']     = 'glpi_users';
@@ -2216,7 +2216,7 @@ class Ticket extends CommonDBTM {
                                         => array('table' => 'glpi_tickets_users',
                                                  'joinparams'
                                                          => array('jointype'  => 'child',
-                                                                  'condition' => 'NEWTABLE.`type` ' .
+                                                                  'condition' => 'AND NEWTABLE.`type` ' .
                                                                                  '= '.self::OBSERVER)));
 
       $tab[65]['table']         = 'glpi_groups';
@@ -2228,7 +2228,7 @@ class Ticket extends CommonDBTM {
                                         => array('table' => 'glpi_groups_tickets',
                                                  'joinparams'
                                                          => array('jointype'  => 'child',
-                                                                  'condition' => 'NEWTABLE.`type` ' .
+                                                                  'condition' => 'AND NEWTABLE.`type` ' .
                                                                                  '= '.self::OBSERVER)));
 
       $tab['satisfaction'] = $LANG['satisfaction'][3];
@@ -2279,7 +2279,7 @@ class Ticket extends CommonDBTM {
                                           => array('table' => 'glpi_tickets_users',
                                                    'joinparams'
                                                            => array('jointype'  => 'child',
-                                                                    'condition' => 'NEWTABLE.`type` ' .
+                                                                    'condition' => 'AND NEWTABLE.`type` ' .
                                                                                    '= '.self::ASSIGN)));
 
          $tab[6]['table']     = 'glpi_suppliers';
@@ -2296,7 +2296,7 @@ class Ticket extends CommonDBTM {
                                           => array('table' => 'glpi_groups_tickets',
                                                    'joinparams'
                                                            => array('jointype'  => 'child',
-                                                                    'condition' => 'NEWTABLE.`type` ' .
+                                                                    'condition' => 'AND NEWTABLE.`type` ' .
                                                                                    '= '.self::ASSIGN)));
 
          $tab['followup'] = $LANG['mailing'][141];
@@ -2393,7 +2393,7 @@ class Ticket extends CommonDBTM {
          $tab[35]['name']       = $LANG['job'][19];
          $tab[35]['datatype']   = 'bool';
          $tab[35]['joinparams'] = array('jointype'  => 'child',
-                                        'condition' => 'NEWTABLE.`type` = '.self::REQUESTER);
+                                        'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
 
 
          $tab[34]['table']      = 'glpi_tickets_users';
@@ -2401,7 +2401,7 @@ class Ticket extends CommonDBTM {
          $tab[34]['name']       = $LANG['joblist'][27];
          $tab[34]['datatype']   = 'email';
          $tab[34]['joinparams'] = array('jointype'  => 'child',
-                                        'condition' => 'NEWTABLE.`type` = '.self::REQUESTER);
+                                        'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
       }
 
       return $tab;

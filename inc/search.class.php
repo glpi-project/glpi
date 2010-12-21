@@ -2821,11 +2821,11 @@ class Search {
             case "glpi_auth_tables" :
                   $specific_leftjoin = Search::addLeftJoin($itemtype, $rt, $already_link_tables,
                                                            "glpi_authldaps", 'auths_id', 0, 0,
-                                                           array('condition' => "REFTABLE.`authtype`
+                                                           array('condition' => "AND REFTABLE.`authtype`
                                                                                    = ".Auth::LDAP));
                   $specific_leftjoin .= Search::addLeftJoin($itemtype, $rt, $already_link_tables,
                                                             "glpi_authmails", 'auths_id', 0, 0,
-                                                            array('condition' => "REFTABLE.`authtype`
+                                                            array('condition' => "AND REFTABLE.`authtype`
                                                                                    = ".Auth::MAIL));
                   break;
 
@@ -3247,7 +3247,7 @@ class Search {
             $from = array("`REFTABLE`", "REFTABLE", "`NEWTABLE`", "NEWTABLE");
             $to   = array("`$rt`", "`$rt`", "`$nt`", "`$nt`");
             $addcondition = str_replace($from, $to, $joinparams['condition']);
-            $addcondition = " AND ".$addcondition." ";
+            $addcondition = $addcondition." ";
          }
 
          if (!isset($joinparams['jointype'])) {
@@ -3794,17 +3794,35 @@ class Search {
 
          case "glpi_tickets.count" :
             if ($data[$NAME.$num]>0 && haveRight("show_all_ticket","1")) {
-               $options['field'][0]      = 12;
-               $options['searchtype'][0] = 'equals';
-               $options['contains'][0]   = 'all';
-               $options['link'][0]       = 'AND';
 
-               $options['itemtype2'][0]   = $itemtype;
-               $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
-               $options['searchtype2'][0] = 'equals';
-               $options['contains2'][0]   = $data['id'];
-               $options['link2'][0]       = 'AND';
+               if ($itemtype == 'User') {
+                  $options['field'][0]      = 4;
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = $data['id'];
+                  $options['link'][0]       = 'AND';
 
+                  $options['field'][1]      = 22;
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = $data['id'];
+                  $options['link'][1]       = 'OR';
+
+                  $options['field'][2]      = 5;
+                  $options['searchtype'][2] = 'equals';
+                  $options['contains'][2]   = $data['id'];
+                  $options['link'][2]       = 'OR';
+               } else {
+                  $options['field'][0]      = 12;
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'all';
+                  $options['link'][0]       = 'AND';
+
+                  $options['itemtype2'][0]   = $itemtype;
+                  $options['field2'][0]      = self::getOptionNumber($itemtype, 'name');
+                  $options['searchtype2'][0] = 'equals';
+                  $options['contains2'][0]   = $data['id'];
+                  $options['link2'][0]       = 'AND';
+
+               }
                $options['reset'] = 'reset';
 
                $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">";
@@ -4482,7 +4500,7 @@ class Search {
             $search[$itemtype][60]['massiveaction'] = false;
             $search[$itemtype][60]['joinparams']    = array('jointype'  => "itemtype_item",
                                                             'condition'
-                                                             => getEntitiesRestrictRequest('',
+                                                             => getEntitiesRestrictRequest('AND',
                                                                                            'NEWTABLE'));
          }
 
