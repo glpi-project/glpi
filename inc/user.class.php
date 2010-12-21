@@ -1681,14 +1681,14 @@ class User extends CommonDBTM {
       $tab[30]['linkfield']     = 'auths_id';
       $tab[30]['name']          = $LANG['login'][10]." - ".$LANG['login'][2];
       $tab[30]['massiveaction'] = false;
-      $tab[30]['joinparams']    = array('condition' => "REFTABLE.`authtype` = ".Auth::LDAP);
+      $tab[30]['joinparams']    = array('condition' => "AND REFTABLE.`authtype` = ".Auth::LDAP);
 
       $tab[31]['table']         = 'glpi_authmails';
       $tab[31]['field']         = 'name';
       $tab[31]['linkfield']     = 'auths_id';
       $tab[31]['name']          = $LANG['login'][10]." - ".$LANG['login'][3];
       $tab[31]['massiveaction'] = false;
-      $tab[31]['joinparams']    = array('condition' => "REFTABLE.`authtype` = ".Auth::MAIL);
+      $tab[31]['joinparams']    = array('condition' => "AND REFTABLE.`authtype` = ".Auth::MAIL);
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
@@ -1743,6 +1743,19 @@ class User extends CommonDBTM {
       $tab[82]['table'] = 'glpi_usercategories';
       $tab[82]['field'] = 'name';
       $tab[82]['name']  = $LANG['users'][2];
+
+
+      $tab[60]['table']         = 'glpi_tickets';
+      $tab[60]['field']         = 'count';
+      $tab[60]['name']          = $LANG['stats'][13];
+      $tab[60]['forcegroupby']  = true;
+      $tab[60]['usehaving']     = true;
+      $tab[60]['datatype']      = 'number';
+      $tab[60]['massiveaction'] = false;
+      $tab[60]['joinparams']    = array('condition' => 'OR NEWTABLE.`users_id_recipient` = REFTABLE.`users_id`',
+                                       'beforejoin' => array('table' => 'glpi_tickets_users',
+                                                'joinparams'
+                                                        => array('jointype'  => 'child')));
 
       return $tab;
    }

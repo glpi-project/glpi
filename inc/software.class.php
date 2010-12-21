@@ -439,7 +439,7 @@ class Software extends CommonDBTM {
       $tab[72]['nometa']        = true;
       $tab[72]['massiveaction'] = false;
       $tab[72]['joinparams']    = array('jointype'   => 'child',
-                                        'condition'  => "NEWTABLE.`is_deleted` = '0' AND NEWTABLE.`is_template` = '0'",
+                                        'condition'  => "AND NEWTABLE.`is_deleted` = '0' AND NEWTABLE.`is_template` = '0'",
                                         'beforejoin' => array('table' => 'glpi_softwareversions'));
 
 
