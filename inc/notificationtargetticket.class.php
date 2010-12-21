@@ -627,9 +627,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
                                                                 "/index.php?redirect=ticket_".
                                                                 $this->obj->getField("id")."_7");
-         $this->datas['##ticket.urlsatisfaction##'] = urldecode($CFG_GLPI["url_base"].
-                                                                "/index.php?redirect=ticket_".
-                                                                $this->obj->getField("id")."_10");
+
          $this->datas['##ticket.entity##']          = Dropdown::getDropdownName('glpi_entities',
                                                                                 $this->getEntity());
          $events = $this->getAllEvents();
@@ -997,6 +995,17 @@ class NotificationTargetTicket extends NotificationTarget {
          // Ticket Satisfaction
          $inquest = new TicketSatisfaction();
          if ($inquest->getFromDB($this->obj->getField('id'))) {
+            if ($inquest->fields['type'] == 1) {
+               $this->datas['##ticket.urlsatisfaction##'] = urldecode($CFG_GLPI["url_base"].
+                                                                      "/index.php?redirect=ticket_".
+                                                                      $this->obj->getField("id")."_10");
+            } else {
+               $this->datas['##ticket.urlsatisfaction##']
+                  = EntityData::getUsedConfig('inquest_config',
+                                              $this->obj->getField('entities_id'),
+                                              'inquest_URL');
+            }
+
             $this->datas['##inquest.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
             $this->datas['##inquest.datebegin##']    = convDateTime($inquest->fields['date_begin']);
             $this->datas['##inquest.dateanswered##'] = convDateTime($inquest->fields['date_answered']);
