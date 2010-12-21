@@ -261,7 +261,7 @@ if ($item instanceof CommonTreeDropdown) {
                   echo "</optgroup>";
                }
                $prev = $data["entities_id"];
-               echo "<optgroup label='". Dropdown::getDropdownName("glpi_entities", $prev) ."'>";
+               echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
                // Reset last level displayed :
                $last_level_displayed = array();
             }
@@ -489,7 +489,7 @@ if ($item instanceof CommonTreeDropdown) {
                   echo "</optgroup>";
                }
                $prev = $data["entities_id"];
-               echo "<optgroup label='". Dropdown::getDropdownName("glpi_entities", $prev) ."'>";
+               echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
 
             echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".

@@ -1493,7 +1493,7 @@ class Search {
             } else {
                $first_group=false;
             }
-            echo "<optgroup label='$val'>";
+            echo "<optgroup label=\"$val\">";
          } else {
             echo "<option value='$key'";
             if ($key == $p['sort']) {
