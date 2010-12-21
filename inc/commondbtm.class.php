@@ -2400,6 +2400,10 @@ class CommonDBTM extends CommonGLPI {
                   }
                   break;
                default:
+                  //Plugins can implement their own checks
+                  if (!$this->checkSpecificValues($searchOption['datatype'],$value)) {
+                     $unset = true;
+                  }
                   break;
                 }
             }
@@ -2414,6 +2418,16 @@ class CommonDBTM extends CommonGLPI {
          $message = $LANG['common'][106].' : '.implode(',',$fails);
          addMessageAfterRedirect($message,INFO,true);
       }
+   }
+   
+   /**
+    * Add more check for values
+    * @param datatype datatype of the value
+    * @param value value to check (pass by reference)
+    * @return true if value is ok, false if not
+    */
+   function checkSpecificValues($datatype, &$value) {
+      return true;
    }
    
    /**
