@@ -184,7 +184,7 @@ commonHeader($LANG['rulesengine'][17], $_SERVER['PHP_SELF'], "admin", $rulecolle
 
    echo "<div id='tabspanel' class='center-h'></div>";
    createAjaxTabs('tabspanel','tabcontent',$tabs,$rulecollection->getRuleClassName());
-   echo "<div id='tabcontent'></div>";
+   echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 commonFooter();
 ?>

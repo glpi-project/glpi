@@ -117,7 +117,7 @@ if ($_GET["action"] == "edit") {
    }
    echo "<div id='tabspanel' class='center-h'></div>";
    createAjaxTabs('tabspanel','tabcontent',$tabs,'Bookmark',480);
-   echo "<div id='tabcontent'></div>";
+   echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
 
