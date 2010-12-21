@@ -2355,7 +2355,10 @@ class CommonDBTM extends CommonGLPI {
             $unset = false;
             $regs = array();
             $searchOption = $this->getSearchOptionByField('field',$key);
-            if (isset($searchOption['datatype']) && !is_null($value) &&  $value != '') {
+            if (isset($searchOption['datatype']) 
+               && !is_null($value) 
+                  && $value != '' 
+                     && $value !='NULL') {
 
                switch ($searchOption['datatype']) {
                   case 'integer':
