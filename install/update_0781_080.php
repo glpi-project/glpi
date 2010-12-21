@@ -1320,6 +1320,7 @@ function update0781to080($output='HTML') {
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `content` text COLLATE utf8_unicode_ci,
+                  `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `unicity` (`entities_id`,`name`),
                   KEY `name` (`name`),

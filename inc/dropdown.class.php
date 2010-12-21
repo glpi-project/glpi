@@ -593,6 +593,12 @@ class Dropdown {
                                                'State'           => $LANG['setup'][83],
                                                'Manufacturer'    => $LANG['common'][5]),
 
+                  $LANG['title'][24]  => array ('TicketCategory'         => $LANG['setup'][79],
+                                                'TaskCategory'           => $LANG['setup'][98],
+                                                'TicketSolutionType'     => $LANG['job'][48],
+                                                'RequestType'            => $LANG['job'][44],
+                                                'TicketSolutionTemplate' => $LANG['jobresolution'][6],),
+
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],
                                                'PrinterType'          => $LANG['setup'][43],
@@ -623,10 +629,6 @@ class Dropdown {
 
                   $LANG['Menu'][18]   => array('KnowbaseItemCategory' => $LANG['setup'][87]),
 
-                  $LANG['title'][24]  => array ('TicketCategory'     => $LANG['setup'][79],
-                                                'TaskCategory'       => $LANG['setup'][98],
-                                                'TicketSolutionType' => $LANG['job'][48],
-                                                'RequestType'        => $LANG['job'][44]),
 
                   $LANG['Menu'][42]   => array('Calendar' => $LANG['Menu'][42],
                                                'Holiday'  => $LANG['calendar'][11]),
