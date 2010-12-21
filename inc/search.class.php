@@ -1069,11 +1069,10 @@ class Search {
                                               $item_num, $row_num, "class='center'");
 
                         echo Search::showItem($output_type,
-                                              "<a href=\"javascript:confirmAction('".
+                                              "<a href='".getItemTypeFormURL($itemtype)."?id=".$data["refID"].
+                                                "&amp;delete=delete' onclick=\"return window.confirm('".
                                                 addslashes($LANG['reservation'][38])."\\n".
-                                                addslashes($LANG['reservation'][39])."','".
-                                                getItemTypeFormURL($itemtype)."?id=".$data["refID"].
-                                                "&amp;delete=delete')\" title=\"".
+                                                addslashes($LANG['reservation'][39])."')\" title=\"".
                                                 $LANG['reservation'][6]."\">".
                                                 "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                                   alt='' title=''></a>",
