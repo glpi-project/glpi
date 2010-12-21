@@ -4418,7 +4418,7 @@ class Ticket extends CommonDBTM {
          }
       }
 
-      $query = "SELECT `glpi_tickets`.`id`
+      $query = "SELECT DISTINCT `glpi_tickets`.`id`
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_tickets_users`
                      ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
