@@ -145,8 +145,8 @@ class MailCollector  extends CommonDBTM {
     * @param $options array
     *     - target filename : where to go when done.
     *
-    *@return boolean item found
-    **/
+    * @return boolean item found
+   **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 
@@ -206,6 +206,7 @@ class MailCollector  extends CommonDBTM {
 
    function showGetMessageForm($ID) {
       global $LANG;
+
       echo "<br><br><div class='center'>";
       echo "<form name='form' method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
@@ -240,13 +241,13 @@ class MailCollector  extends CommonDBTM {
       $tab[3]['name']          = $LANG['setup'][170];
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'string';
-      
+
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'login';
       $tab[4]['name']          = $LANG['login'][6];
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'string';
-      
+
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'filesize_max';
       $tab[5]['name']     = $LANG['mailgate'][7];
@@ -283,7 +284,7 @@ class MailCollector  extends CommonDBTM {
       $ticket = new Ticket;
       foreach ($todelete as $mailcollector_id => $rejected) {
          if ($this->getFromDB($mailcollector_id)) {
-            $this->mid = -1;
+            $this->mid          = -1;
             $this->fetch_emails = 0;
             //Connect to the Mail Box
             $this->connect();
@@ -333,12 +334,12 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
-   * Constructor
-   *
-   * @param $mailgateID ID of the mailgate
-   * @param $display display messages in MessageAfterRedirect or just return error
-   *
-   * @return if $display = false return messages result string
+    * Constructor
+    *
+    * @param $mailgateID ID of the mailgate
+    * @param $display display messages in MessageAfterRedirect or just return error
+    *
+    * @return if $display = false return messages result string
    **/
    function collect($mailgateID, $display=0) {
       global $LANG, $CFG_GLPI;
@@ -364,7 +365,8 @@ class MailCollector  extends CommonDBTM {
                $delete_mail = false;
 
                //If entity assigned, or email refused by rule, or no user associated with the email
-               $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"] ||$tkt['_users_id_requester'] > 0);
+               $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"]
+                                  ||$tkt['_users_id_requester'] > 0);
 
                // entities_id set when new ticket / tickets_id when new followup
                if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
@@ -501,14 +503,16 @@ class MailCollector  extends CommonDBTM {
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
             if ($cc != $head['from'] && ($tmp=User::getOrImportByEmail($cc))>0) {
-               $tkt['_additional_observers'][] = array('users_id'=>$tmp, 'use_notification' => true);
+               $tkt['_additional_observers'][] = array('users_id'         => $tmp,
+                                                       'use_notification' => true);
             }
          }
       }
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
             if ($to != $head['from'] && ($tmp=User::getOrImportByEmail($to))>0) {
-               $tkt['_additional_observers'][] = array('users_id'=>$tmp, 'use_notification' => true);
+               $tkt['_additional_observers'][] = array('users_id'         => $tmp,
+                                                       'use_notification' => true);
             }
          }
       }
@@ -555,7 +559,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       // See in title
-      if (!isset($tkt['tickets_id']) && preg_match('/\[GLPI #(\d+)\]/', $head['subject'], $match)) {
+      if (!isset($tkt['tickets_id']) && preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match)) {
          $tkt['tickets_id'] = (int)$match[1];
       }
 
@@ -638,6 +642,7 @@ class MailCollector  extends CommonDBTM {
             foreach ($output as $key => $value) {
                $tkt[$key] = $value;
             }
+
          } else { // Followup only copy refuse data
             $tobecopied = array('_refuse_email_no_response', '_refuse_email_with_response');
             foreach ($tobecopied as $val) {
@@ -655,10 +660,10 @@ class MailCollector  extends CommonDBTM {
 
    /** function textCleaner - Strip out unwanted/unprintable characters from the subject.
     *
-   * @param $text text to clean
-   *
-   * @return clean text
-   */
+    * @param $text text to clean
+    *
+    * @return clean text
+   **/
    function textCleaner($text) {
 
       $text = str_replace("=20", "\n", $text);
@@ -689,7 +694,7 @@ class MailCollector  extends CommonDBTM {
     * @param $fallbackCharset charset used if input charset not supported by mb
     *
     * @return decoded string
-    **/
+   **/
    function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8',
                              $fallbackCharset='iso-8859-1') {
 
@@ -701,7 +706,7 @@ class MailCollector  extends CommonDBTM {
          $decodedStr      = '';
          $mimeStrs        = imap_mime_header_decode($mimeStr);
 
-         for ($n=sizeOf($mimeStrs), $i=0 ; $i<$n ; $i++) {
+         for ($n=sizeOf($mimeStrs),$i=0 ; $i<$n ; $i++) {
             $mimeStr = $mimeStrs[$i];
             $mimeStr->charset = utf8_strtolower($mimeStr->charset);
 
@@ -736,7 +741,7 @@ class MailCollector  extends CommonDBTM {
     * get the message structure if not already retrieved
     *
     * @param $mid : Message ID.
-    */
+   **/
     function getStructure ($mid) {
 
       if ($mid != $this->mid || !$this->structure) {
