@@ -2685,11 +2685,11 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('12','11','','##lice
 &lt;/a&gt;&lt;br /&gt; ##ENDFOREACHlicenses##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('13','13','','##user.action##','##lang.user.realname## ##lang.user.firstname##
 
-##lang.user.information##
+##lang.passwordforget.information##
 
-##lang.user.link## ##user.passwordforgeturl##','&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;##lang.user.information##&lt;/p&gt;
-&lt;p&gt;##lang.user.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');
+##lang.passwordforget.link## ##user.passwordforgeturl##','&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;##lang.passwordforget.information##&lt;/p&gt;
+&lt;p&gt;##lang.passwordforget.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');
 
 ### Dump table glpi_notimportedemails
 

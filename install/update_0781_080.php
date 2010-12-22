@@ -347,12 +347,12 @@ function update0781to080($output='HTML') {
                    VALUES ($notid, '', '##user.action##',
                           '##lang.user.realname## ##lang.user.firstname##
 
-##lang.user.information##
+##lang.passwordforget.information##
 
-##lang.user.link## ##user.passwordforgeturl##',
+##lang.passwordforget.link## ##user.passwordforgeturl##',
                           '&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;##lang.user.information##&lt;/p&gt;
-&lt;p&gt;##lang.user.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');";
+&lt;p&gt;##lang.passwordforget.information##&lt;/p&gt;
+&lt;p&gt;##lang.passwordforget.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');";
       $DB->query($query)
       or die("0.80 add password forget notification translation" . $LANG['update'][90] . $DB->error());
 
