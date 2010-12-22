@@ -43,21 +43,21 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights = array('faq', 'reservation_helpdesk', 'create_ticket',
-                                          'add_followups', 'observe_ticket', 'password_update',
-                                          'helpdesk_hardware', 'helpdesk_item_type',
-                                          'show_group_ticket', 'show_group_hardware',
-                                          'create_validation', 'validate_ticket', 'reminder_public');
+   static public $helpdesk_rights = array('add_followups', 'create_ticket', 'create_validation',
+                                          'faq', 'helpdesk_hardware', 'helpdesk_item_type',
+                                          'observe_ticket', 'password_update', 'reminder_public',
+                                          'reservation_helpdesk', 'show_group_hardware',
+                                          'show_group_ticket', 'validate_ticket');
 
 
    /// Common fields used for all profiles type
-   static public $common_fields = array('id', 'name', 'interface', 'is_default');
+   static public $common_fields = array('id', 'interface', 'is_default', 'name');
 
 
    /// Fields not related to a basic right
-   static public $noright_fields = array('helpdesk_hardware', 'helpdesk_item_type',
-                                         'show_group_ticket', 'show_group_hardware', 'own_ticket',
-                                         'helpdesk_status', 'comment', 'date_mod');
+   static public $noright_fields = array('comment', 'date_mod', 'helpdesk_hardware',
+                                         'helpdesk_item_type', 'helpdesk_status', 'own_ticket',
+                                         'show_group_hardware', 'show_group_ticket');
 
 
    var $dohistory = true;
@@ -519,11 +519,11 @@ class Profile extends CommonDBTM {
 
 
    /**
-   * Print the Inventory/Management/Toolsd right form for the current profile
-   *
-   * @param $target of the form
-   * @param $openform boolean open the form
-   * @param $closeform boolean close the form
+    * Print the Inventory/Management/Toolsd right form for the current profile
+    *
+    * @param $target of the form
+    * @param $openform boolean open the form
+    * @param $closeform boolean close the form
    **/
    function showFormInventory($target, $openform=true, $closeform=true) {
       global $LANG;
@@ -633,7 +633,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][33]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['Menu'][33]."&nbsp;: </td><td>";
       Profile::dropdownNoneReadWrite("ocsng", $this->fields["ocsng"], 1, 0, 1);
       echo "</td>";
       echo "<td>".$LANG['profiles'][31]."&nbsp;:</td><td>";
@@ -644,9 +644,9 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['ocsng'][3]."&nbsp;:</td><td>";
+      echo "<td>".$LANG['ocsng'][3]."&nbsp;: </td><td>";
       Profile::dropdownNoneReadWrite("clean_ocsng", $this->fields["clean_ocsng"], 1, 1, 1);
-      echo "</td><td colspan='4' />";
+      echo "</td><td colspan='4'>";
       echo "</td></tr>\n";
 
       if ($canedit && $closeform) {

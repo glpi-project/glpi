@@ -1954,9 +1954,8 @@ class OcsServer extends CommonDBTM {
                 WHERE `ocsservers_id` = '$ocsservers_id'";
 
       $result = $DB->query($query);
-      
 
-      $ocs_missing=array();
+      $ocs_missing = array();
 
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_array($result)) {
@@ -2106,11 +2105,12 @@ class OcsServer extends CommonDBTM {
 
       foreach ($computers_id as $key => $val) {
          $query = "DELETE
-                     FROM `glpi_ocslinks`
-                     WHERE `id` = '" . $key . "'";
+                   FROM `glpi_ocslinks`
+                   WHERE `id` = '$key'";
          $DB->query($query);
       }
    }
+
 
    static function showComputersToUpdate($ocsservers_id, $check, $start) {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
