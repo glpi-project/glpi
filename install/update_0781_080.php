@@ -829,11 +829,13 @@ function update0781to080($output='HTML') {
                    VALUES ($notid, '', '##ticket.action## ##ticket.title##',
                           '##lang.ticket.title## : ##ticket.title##
 
-##lang.ticket.closedate## : ##ticket.closedate##,
+##lang.ticket.closedate## : ##ticket.closedate##
+
+##lang.satisfaction.text## ##ticket.urlsatisfaction##',
 
                           '&lt;p&gt;##lang.ticket.title## : ##ticket.title##&lt;/p&gt;
 &lt;p&gt;##lang.ticket.closedate## : ##ticket.closedate##&lt;/p&gt;
-&lt;p&gt;Nous vous invitons &#224; appr&#233;cier la qualit&#233; de la prestation : &lt;a href=\"##ticket.urlsatisfaction##\"&gt;##ticket.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;')";
+&lt;p&gt;##lang.satisfaction.text## &lt;a href=\"##ticket.urlsatisfaction##\"&gt;##ticket.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;')";
          $DB->query($query)
          or die("0.80 add ticket satisafaction notification translation " . $LANG['update'][90] .
                 $DB->error());
