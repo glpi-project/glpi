@@ -2043,8 +2043,9 @@ class OcsServer extends CommonDBTM {
             echo "<th>" . $LANG['entity'][0] . "</th>";
          }
          if ($canedit) {
-            echo "<th>&nbsp;</th></tr>\n";
+            echo "<th>&nbsp;</th>";
          }
+         echo "</tr>\n";
 
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
          if ($canedit) {
@@ -2061,17 +2062,20 @@ class OcsServer extends CommonDBTM {
             echo "<td>" . $LANG['choice'][$tab["in_ocs"]] . "</td>\n";
             if(isMultiEntitiesMode()) {
                echo "<td>";
-               echo Dropdown::getDropdownName('glpi_entities',$tab['entities_id']);
+               echo Dropdown::getDropdownName('glpi_entities', $tab['entities_id']);
                echo "</td>\n";
             }
             if ($canedit) {
                echo "<td><input type='checkbox' name='toclean[" . $tab["id"] . "]' " .
-                          ($check == "all" ? "checked" : "") . "></td></tr>\n";
+                          ($check == "all" ? "checked" : "") . "></td>";
             }
+            echo "</tr>\n";
          }
+
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
          if ($canedit) {
-            echo "<input class='submit' type='submit' name='clean_ok' value='".$LANG['buttons'][53]."'>";
+            echo "<input class='submit' type='submit' name='clean_ok' value=\"".
+                   $LANG['buttons'][53]."\">";
          }
          echo "</td></tr>";
          echo "</table></form>\n";
@@ -2083,6 +2087,7 @@ class OcsServer extends CommonDBTM {
       }
       echo "</div>";
    }
+
 
    /**
     * Clean links between GLPI and OCS from a list.
