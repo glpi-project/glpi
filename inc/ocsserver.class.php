@@ -43,7 +43,7 @@ class OcsServer extends CommonDBTM {
    // not used const MOBOARD_DEVICE=1;
    const PROCESSOR_DEVICE = 2;
    const RAM_DEVICE       = 3;
-   const HDD_DEVICE       =4 ;
+   const HDD_DEVICE       = 4 ;
    const NETWORK_DEVICE   = 5;
    const DRIVE_DEVICE     = 6;
    // not used const CONTROL_DEVICE=7;
@@ -1921,12 +1921,12 @@ class OcsServer extends CommonDBTM {
    /**
     * Displays a list of computers that can be cleaned.
     *
-    *@param $ocsservers_id int : id of ocs server in GLPI
-    *@param $check string : parameter for HTML input checkbox
-    *@param $start int : parameter for printPager method
+    * @param $ocsservers_id int : id of ocs server in GLPI
+    * @param $check string : parameter for HTML input checkbox
+    * @param $start int : parameter for printPager method
     *
-    *@return nothing
-    */
+    * @return nothing
+   **/
    static function showComputersToClean($ocsservers_id, $check, $start) {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
 
@@ -1936,6 +1936,7 @@ class OcsServer extends CommonDBTM {
          return false;
       }
       $canedit = haveRight("clean_ocsng", "w");
+
       // Select unexisting OCS hardware
       $query_ocs = "SELECT *
                     FROM `hardware`";
@@ -1954,6 +1955,7 @@ class OcsServer extends CommonDBTM {
 
       $result = $DB->query($query);
       $links_ocs_missing_str = "";
+
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_array($result)) {
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
@@ -1965,23 +1967,24 @@ class OcsServer extends CommonDBTM {
 
       $sql_ocs_missing = "";
       if ($links_ocs_missing_str != null) {
-		  $links_ocs_missing_str = substr($links_ocs_missing_str, 0, -2);
-		  $sql_ocs_missing =" OR `ocsid` IN (". $links_ocs_missing_str .")";
-	  }
+         $links_ocs_missing_str = substr($links_ocs_missing_str, 0, -2);
+         $sql_ocs_missing       = " OR `ocsid` IN (". $links_ocs_missing_str .")";
+      }
 
-      //Select unexisting computers 
+      //Select unexisting computers
       $query_glpi = "SELECT `glpi_ocslinks`.`entities_id` AS entities_id,
                             `glpi_ocslinks`.`ocs_deviceid` AS ocs_deviceid,
                             `glpi_ocslinks`.`last_update` AS last_update,
                             `glpi_ocslinks`.`ocsid` AS ocsid,
                             `glpi_ocslinks`.`id`,
                             `glpi_computers`.`name` AS name
-                FROM `glpi_ocslinks`
-                LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`
-                WHERE (`glpi_computers`.`id` IS NULL
-                        AND `glpi_ocslinks`.`ocsservers_id`='$ocsservers_id')"
-                  .$sql_ocs_missing
-                  .getEntitiesRestrictRequest("AND","glpi_ocslinks");
+                     FROM `glpi_ocslinks`
+                     LEFT JOIN `glpi_computers`
+                        ON `glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`
+                     WHERE (`glpi_computers`.`id` IS NULL
+                            AND `glpi_ocslinks`.`ocsservers_id` = '$ocsservers_id')"
+                           .$sql_ocs_missing
+                           .getEntitiesRestrictRequest(" AND","glpi_ocslinks");
 
       $result_glpi = $DB->query($query_glpi);
 
@@ -1992,13 +1995,14 @@ class OcsServer extends CommonDBTM {
 
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
 
-            $already_linked[$data["ocsid"]]["entities_id"] = $data["entities_id"];
-            $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0, 
-                                                                     strpos($data["ocs_deviceid"], 
+            $already_linked[$data["ocsid"]]["entities_id"]  = $data["entities_id"];
+            $already_linked[$data["ocsid"]]["ocs_deviceid"] = substr($data["ocs_deviceid"], 0,
+                                                                     strpos($data["ocs_deviceid"],
                                                                              '-'));
-            $already_linked[$data["ocsid"]]["date"] = $data["last_update"];
-            $already_linked[$data["ocsid"]]["id"] = $data["id"];
-            $already_linked[$data["ocsid"]]["in_ocs"] = isset($hardware[$data["ocsid"]]);
+            $already_linked[$data["ocsid"]]["date"]         = $data["last_update"];
+            $already_linked[$data["ocsid"]]["id"]           = $data["id"];
+            $already_linked[$data["ocsid"]]["in_ocs"]       = isset($hardware[$data["ocsid"]]);
+
             if ($data["name"] == null) {
                $already_linked[$data["ocsid"]]["in_glpi"] = 0;
             } else {
@@ -2007,11 +2011,10 @@ class OcsServer extends CommonDBTM {
          }
       }
 
-
       echo "<div class='center'>";
       echo "<h2>" . $LANG['ocsng'][3] . "</h2>";
 
-      $target=$CFG_GLPI['root_doc'].'/front/ocsng.clean.php';
+      $target = $CFG_GLPI['root_doc'].'/front/ocsng.clean.php';
       if (($numrows = count($already_linked)) > 0) {
          $parameters = "check=$check";
          printPager($start, $numrows, $target, $parameters);
@@ -2025,7 +2028,7 @@ class OcsServer extends CommonDBTM {
 
          echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$target."'>";
 
-         if ($canedit) { 
+         if ($canedit) {
             echo "<a href='".$target."?check=all' ".
                   "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
@@ -2045,7 +2048,8 @@ class OcsServer extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
          if ($canedit) {
-            echo "<input class='submit' type='submit' name='clean_ok' value='" .$LANG['buttons'][53]. "'>";
+            echo "<input class='submit' type='submit' name='clean_ok' value='" .
+                   $LANG['buttons'][53]. "'>";
          }
          echo "</td></tr>\n";
 
@@ -2062,7 +2066,7 @@ class OcsServer extends CommonDBTM {
             }
             if ($canedit) {
                echo "<td><input type='checkbox' name='toclean[" . $tab["id"] . "]' " .
-                     ($check == "all" ? "checked" : "") . "></td></tr>\n";
+                          ($check == "all" ? "checked" : "") . "></td></tr>\n";
             }
          }
          echo "<tr class='tab_bg_1'><td colspan='6' class='center'>";
@@ -2072,20 +2076,21 @@ class OcsServer extends CommonDBTM {
          echo "</td></tr>";
          echo "</table></form>\n";
          printPager($start, $numrows, $target, $parameters);
+
       } else {
          echo "<div class='center'><strong>" . $LANG['ocsng'][61] . "</strong></div>";
          displayBackLink();
       }
-      echo "</div>";               
+      echo "</div>";
    }
 
    /**
-   * Clean links between GLPI and OCS from a list.
-   *
-   *@param $computers_id array : ids of computers to be cleaned
-   *
-   *@return nothing
-   */
+    * Clean links between GLPI and OCS from a list.
+    *
+    * @param $computers_id array : ids of computers to be cleaned
+    *
+    * @return nothing
+   **/
    static function cleanLinksFromList($computers_id) {
       global $DB;
 

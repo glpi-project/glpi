@@ -39,24 +39,25 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  *  Computer class
- */
+**/
 class Computer extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to = array('Infocom', 'ComputerDisk', 'ReservationItem', 'NetworkPort','Ocslink');
+   protected $forward_entity_to = array('ComputerDisk', 'Infocom', 'NetworkPort', 'Ocslink',
+                                        'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    var $devices = array();
 
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
- */
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+    *
+    * @return $LANG
+   **/
    static function getTypeName($nb=0) {
       global $LANG;
 
@@ -65,6 +66,7 @@ class Computer extends CommonDBTM {
       }
       return $LANG['help'][25];
    }
+
 
    function canCreate() {
       return haveRight('computer', 'w');
