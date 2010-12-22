@@ -989,7 +989,6 @@ class NotificationTargetTicket extends NotificationTarget {
 
          // Ticket Satisfaction
          $inquest = new TicketSatisfaction();
-         $this->datas['##lang.inquest.text##'] = $LANG['satisfaction'][11];
 
          if ($inquest->getFromDB($this->obj->getField('id'))) {
             if ($inquest->fields['type'] == 1) {
@@ -1003,17 +1002,17 @@ class NotificationTargetTicket extends NotificationTarget {
                                               'inquest_URL');
             }
 
-            $this->datas['##inquest.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
-            $this->datas['##inquest.datebegin##']    = convDateTime($inquest->fields['date_begin']);
-            $this->datas['##inquest.dateanswered##'] = convDateTime($inquest->fields['date_answered']);
-            $this->datas['##inquest.satisfaction##'] = $inquest->fields['satisfaction'];
-            $this->datas['##inquest.description##']  = $inquest->fields['comment'];
+            $this->datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
+            $this->datas['##satisfaction.datebegin##']    = convDateTime($inquest->fields['date_begin']);
+            $this->datas['##satisfaction.dateanswered##'] = convDateTime($inquest->fields['date_answered']);
+            $this->datas['##satisfaction.satisfaction##'] = $inquest->fields['satisfaction'];
+            $this->datas['##satisfaction.description##']  = $inquest->fields['comment'];
          } else {
-            $this->datas['##inquest.type##']         = '';
-            $this->datas['##inquest.datebegin##']    = '';
-            $this->datas['##inquest.dateanswered##'] = '';
-            $this->datas['##inquest.satisfaction##'] = '';
-            $this->datas['##inquest.description##']  = '';
+            $this->datas['##satisfaction.type##']         = '';
+            $this->datas['##satisfaction.datebegin##']    = '';
+            $this->datas['##satisfaction.dateanswered##'] = '';
+            $this->datas['##satisfaction.satisfaction##'] = '';
+            $this->datas['##satisfaction.description##']  = '';
          }
 
 
@@ -1036,7 +1035,6 @@ class NotificationTargetTicket extends NotificationTarget {
       } else {
          $this->datas['##ticket.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                             $options['entities_id']);
-         $this->datas['##lang.ticket.entity##'] = $LANG['entity'][0];
          $this->datas['##ticket.action##']      = $LANG['crontask'][15];
          $tmp = array();
          $t = new Ticket();
@@ -1273,8 +1271,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS,
-                                   'ifelse' => true));
+                                   'events' => NotificationTarget::TAG_FOR_ALL_EVENTS));
       }
 
      //Events specific for validation
@@ -1293,20 +1290,42 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'events' => array('validation')));
       }
 
+            $this->datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
+            $this->datas['##satisfaction.datebegin##']    = convDateTime($inquest->fields['date_begin']);
+            $this->datas['##satisfaction.dateanswered##'] = convDateTime($inquest->fields['date_answered']);
+            $this->datas['##satisfaction.satisfaction##'] = $inquest->fields['satisfaction'];
+            $this->datas['##satisfaction.description##']  = $inquest->fields['comment'];
+
       // Events for ticket satisfaction
-     $tags = array('satisfaction.text'                => $LANG['satisfaction'][12],
-                   'satisfaction.type'                => $LANG['satisfaction'][9]." - ".
-                                                         $LANG['satisfaction'][10],
+     $tags = array(
                    'satisfaction.datebegin'           => $LANG['satisfaction'][6],
                    'satisfaction.dateanswered'        => $LANG['satisfaction'][4],
                    'satisfaction.satisfactionlevel'   => $LANG['satisfaction'][7],
                    'satisfaction.satisfactioncomment' => $LANG['satisfaction'][8]);
-
-
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
+                                   'events' => array('satisfaction')));
+      }
+
+     $tags = array('satisfaction.type'                => $LANG['satisfaction'][9]." - ".
+                                                         $LANG['satisfaction'][10],);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => true,
+                                   'lang'   => false,
+                                   'events' => array('satisfaction')));
+      }
+
+     $tags = array('satisfaction.text'                => $LANG['satisfaction'][12],
+                   );
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => false,
+                                   'lang'   => true,
                                    'events' => array('satisfaction')));
       }
 
@@ -1324,6 +1343,7 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'value'   => false,
                                    'foreach' => true));
       }
+
 
       //Tags with just lang
       $tags = array('ticket.days'             => $LANG['stats'][31],
