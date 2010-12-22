@@ -829,7 +829,7 @@ function update0781to080($output='HTML') {
                    VALUES ($notid, '', '##ticket.action## ##ticket.title##',
                           '##lang.ticket.title## : ##ticket.title##
 
-##lang.ticket.closedate## : ##ticket.closedate##
+##lang.ticket.closedate## : ##ticket.closedate##,
 
                           '&lt;p&gt;##lang.ticket.title## : ##ticket.title##&lt;/p&gt;
 &lt;p&gt;##lang.ticket.closedate## : ##ticket.closedate##&lt;/p&gt;
