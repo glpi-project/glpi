@@ -1172,17 +1172,19 @@ function update0781to080($output='HTML') {
 
    //Add date config management fields
    $migration->addField('glpi_entitydatas','autofill_warranty_date',
-      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
    $migration->addField('glpi_entitydatas','autofill_use_date',
-      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
    $migration->addField('glpi_entitydatas','autofill_buy_date',
-      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
    $migration->addField('glpi_entitydatas','autofill_delivery_date',
-      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+                        "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'");
+
    if ($migration->addField('glpi_entitydatas','autofill_order_date',
-      "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'")) {
+                            "varchar(255) COLLATE utf8_unicode_ci DEFAULT '-1'")) {
          $migration->migrationOneTable('glpi_entitydatas');
-         $query = "UPDATE  `glpi_entitydatas`
+
+         $query = "UPDATE `glpi_entitydatas`
                    SET `autofill_warranty_date` = '0',
                        `autofill_use_date` = '0',
                        `autofill_buy_date` = '0',
@@ -1190,7 +1192,8 @@ function update0781to080($output='HTML') {
                        `autofill_order_date` = '0'
                    WHERE `entities_id` = '0'";
          $DB->query($query)
-         or die("0.80 set default automatic date fill values for root entity " . $LANG['update'][90] . $DB->error());
+         or die("0.80 set default automatic date fill values for root entity ".$LANG['update'][90] .
+                $DB->error());
       }
 
    if (!TableExists('glpi_field_unicities')) {
@@ -1385,7 +1388,7 @@ function update0781to080($output='HTML') {
 
 
    // Fix templates tags
-   $updates = array('Ticket' => 
+   $updates = array('Ticket' =>
                      array('from' => array('##lang.validation.validationstatus##'),
                            'to'   => array('##lang.validation.status## : ##validation.status##')),
    );
@@ -1398,7 +1401,7 @@ function update0781to080($output='HTML') {
                      ON (`glpi_notificationtemplates`.`id`
                            = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
                   WHERE `glpi_notificationtemplates`.`itemtype` = '$itemtype'";
-   
+
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {

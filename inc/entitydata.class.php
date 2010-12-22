@@ -330,16 +330,17 @@ class EntityData extends CommonDBChild {
 
    function post_getEmpty() {
 
-      $fields = array('use_licenses_alert', 'use_contracts_alert', 'use_infocoms_alert',
-                      'use_reservations_alert', 'autoclose_delay', 'consumables_alert_repeat',
-                      'cartridges_alert_repeat', 'notclosed_delay','autofill_warranty_date',
-                      'autofill_order_date','autofill_delivery_date', 'autofill_buy_date',
-                      'autofill_use_date');
+      $fields = array('autoclose_delay', 'autofill_buy_date', 'autofill_delivery_date',
+                      'autofill_order_date', 'autofill_use_date', 'autofill_warranty_date',
+                      'cartridges_alert_repeat', 'consumables_alert_repeat', 'notclosed_delay',
+                      'use_contracts_alert', 'use_infocoms_alert', 'use_licenses_alert',
+                      'use_reservations_alert');
 
       foreach ($fields as $field) {
          $this->fields[$field] = -1;
       }
    }
+
 
    static function showInventoryOptions(Entity $entity) {
       global $LANG;
@@ -350,7 +351,7 @@ class EntityData extends CommonDBChild {
       }
 
       // Notification right applied
-      $canedit = haveRight('infocom','w') && haveAccessToEntity($ID);
+      $canedit = haveRight('infocom', 'w') && haveAccessToEntity($ID);
 
       // Get data
       $entitydata = new EntityData();
@@ -366,63 +367,63 @@ class EntityData extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".$LANG['financial'][111]."</th></tr>";
 
-      
+
       $options[0] = $LANG['financial'][113];
       if ($ID > 0) {
          $options[-1] = $LANG['common'][102];
       }
-      
+
       foreach (getAllDatasFromTable('glpi_states') as $state) {
-         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']] = 
-            $LANG['financial'][112].': '.$state['name'];
+         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']] = $LANG['financial'][112].' : '.
+                                                                $state['name'];
       }
-      
+
       $options[Infocom::COPY_WARRANTY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][29];
       //Buy date
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['financial'][14] . "&nbsp;:</td>";
+      echo "<td> " . $LANG['financial'][14] . "&nbsp;: </td>";
       echo "<td>";
-      Dropdown::showFromArray('autofill_buy_date',$options,
+      Dropdown::showFromArray('autofill_buy_date', $options,
                               array('value' => $entitydata->getField('autofill_buy_date')));
       echo "</td>";
 
       //Order date
-      echo "<td> " . $LANG['financial'][28] . "&nbsp;:</td>";
+      echo "<td> " . $LANG['financial'][28] . "&nbsp;: </td>";
       echo "<td>";
       $options[Infocom::COPY_BUY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][14];
-      Dropdown::showFromArray('autofill_order_date',$options,
+      Dropdown::showFromArray('autofill_order_date', $options,
                               array('value' => $entitydata->getField('autofill_order_date')));
       echo "</td></tr>";
 
       //Delivery date
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['financial'][27] . "&nbsp;:</td>";
+      echo "<td> " . $LANG['financial'][27] . "&nbsp;: </td>";
       echo "<td>";
       $options[Infocom::COPY_ORDER_DATE] = $LANG['setup'][283].' '.$LANG['financial'][28];
-      Dropdown::showFromArray('autofill_delivery_date',$options,
+      Dropdown::showFromArray('autofill_delivery_date', $options,
                               array('value' => $entitydata->getField('autofill_delivery_date')));
       echo "</td>";
 
       //Use date
-      echo "<td> " . $LANG['financial'][76] . "&nbsp;:</td>";
+      echo "<td> " . $LANG['financial'][76] . "&nbsp;: </td>";
       echo "<td>";
       $options[Infocom::COPY_DELIVERY_DATE] = $LANG['setup'][283].' '.$LANG['financial'][27];
-      Dropdown::showFromArray('autofill_use_date',$options, 
+      Dropdown::showFromArray('autofill_use_date', $options,
                               array('value' => $entitydata->getField('autofill_use_date')));
       echo "</td></tr>";
 
       //Warranty date
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['financial'][29] . "&nbsp;:</td>";
+      echo "<td> " . $LANG['financial'][29] . "&nbsp;: </td>";
       echo "<td>";
-      $options = array(0                   => $LANG['financial'][113],
-                       Infocom::COPY_BUY_DATE => $LANG['setup'][283].': '.$LANG['financial'][14],
-                       Infocom::COPY_ORDER_DATE=>$LANG['setup'][283].': '.$LANG['financial'][28]);
+      $options = array(0                        => $LANG['financial'][113],
+                       Infocom::COPY_BUY_DATE   => $LANG['setup'][283].': '.$LANG['financial'][14],
+                       Infocom::COPY_ORDER_DATE => $LANG['setup'][283].': '.$LANG['financial'][28]);
       if ($ID > 0) {
          $options[-1] = $LANG['common'][102];
       }
 
-      Dropdown::showFromArray('autofill_warranty_date',$options, 
+      Dropdown::showFromArray('autofill_warranty_date', $options,
                               array('value' => $entitydata->getField('autofill_warranty_date')));
       echo "</td><td colspan='2'></td></tr>";
 
@@ -449,6 +450,7 @@ class EntityData extends CommonDBChild {
       echo "</div>";
 
    }
+
 
    static function showNotificationOptions(Entity $entity) {
       global $LANG;
@@ -805,8 +807,8 @@ class EntityData extends CommonDBChild {
       // Search in entity data of the current entity
       if ($entdata->getFromDB($entities_id)) {
          // Value is defined : use it
-         if (isset($entdata->fields[$fieldref]) 
-            && ($entdata->fields[$fieldref]>0 
+         if (isset($entdata->fields[$fieldref])
+            && ($entdata->fields[$fieldref]>0
                || !is_numeric($entdata->fields[$fieldref]))) {
             return $entdata->fields[$fieldval];
          }
