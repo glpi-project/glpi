@@ -661,7 +661,7 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.solvedate##']    = convDateTime($this->obj->getField('solvedate'));
          $this->datas['##ticket.duedate##']      = convDateTime($this->obj->getField('due_date'));
 
-         $this->datas['##lang.ticket.days##'] = $LANG['stats'][31];
+         
          $this->datas['##ticket.useremailnotification##']
                      = Dropdown::getYesNo($this->obj->getField('user_email_notification'));
 
@@ -685,8 +685,6 @@ class NotificationTargetTicket extends NotificationTarget {
             $this->datas['##ticket.autoclose##']             = $LANG['setup'][307];
             $this->datas['##lang.ticket.autoclosewarning##'] = "";
          }
-
-         $this->datas['##lang.ticket.autoclose##'] = $LANG['entity'][18];
 
          if ($this->obj->getField('ticketcategories_id')) {
             $this->datas['##ticket.category##']
@@ -884,7 +882,6 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
          // Linked tickets
-         $this->datas['##lang.ticket.linkedtickets##'] = $LANG['job'][55];
 
          $linked_tickets = Ticket_Ticket::getLinkedTicketsTo($this->obj->getField('id'));
          if (count($linked_tickets)) {
@@ -1166,7 +1163,9 @@ class NotificationTargetTicket extends NotificationTarget {
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         $this->datas[$tag] = $values['label'];
+         if (!isset($this->datas[$tag])) {
+            $this->datas[$tag] = $values['label'];
+         }
       }
    }
 
@@ -1329,8 +1328,9 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array('ticket.days'          => $LANG['stats'][31],
-                    'ticket.linkedtickets' => $LANG['job'][55]);
+      $tags = array('ticket.days'             => $LANG['stats'][31],
+                    'ticket.linkedtickets'    => $LANG['job'][55],
+                    'ticket.autoclosewarning' => $LANG['job'][54]." ? ".$LANG['stats'][31]);
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
