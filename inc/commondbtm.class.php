@@ -2502,8 +2502,7 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $entities_id = $this->input['entities_id'];
          }
-
-         $fields =  self::getUnicityFieldsConfig(get_class($this), $entities_id);
+         $fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
 
          //If there's fields to check
          if (!empty($fields) && !empty($fields['fields'])) {
@@ -2561,40 +2560,6 @@ class CommonDBTM extends CommonGLPI {
 
       }
    }
-
-
-   /**
-    * Return criteria unicity for an itemtype, in an entity
-    *
-    * @param itemtype the itemtype for which unicity must be checked
-    * @param entities_id the entity for which configuration must be retrivied
-    *
-    * @return an array of fields to check, or an empty array if no
-   **/
-   public static function getUnicityFieldsConfig($itemtype, $entities_id = 0) {
-      global $DB;
-
-      //Get the first active configuration for this itemtype
-      $query = "SELECT `fields`, `is_global`
-                FROM `glpi_field_unicities`
-                WHERE `is_active`='1'
-                      AND `itemtype` = '$itemtype'
-                      AND (`entities_id` = '$entities_id'
-                           OR `is_global` = '1')
-                ORDER BY `entities_id` DESC
-                LIMIT 1";
-
-      $result = $DB->query($query);
-      $return = array();
-      //A configuration found
-      if ($DB->numrows($result)) {
-         $tmp['is_global'] = $DB->result($result,0,'is_global');
-         $tmp['fields']    = explode(',',$DB->result($result,0,'fields'));
-         $return           = $tmp;
-      }
-      return $return;
-   }
-
 }
 
 ?>

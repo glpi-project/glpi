@@ -1633,10 +1633,10 @@ CREATE TABLE `glpi_events` (
 
 INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-12-22 14:28:43','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
-### Dump table glpi_field_unicities
+### Dump table glpi_fieldunicities
 
-DROP TABLE IF EXISTS `glpi_field_unicities`;
-CREATE TABLE `glpi_field_unicities` (
+DROP TABLE IF EXISTS `glpi_fieldunicities`;
+CREATE TABLE `glpi_fieldunicities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `entities_id` int(11) NOT NULL DEFAULT '-1',

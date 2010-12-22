@@ -85,6 +85,7 @@ class OcsServer extends CommonDBTM {
    const COMPUTER_LINKED         = 2;
    const COMPUTER_FAILED_IMPORT  = 3;
    const COMPUTER_NOTUPDATED     = 4;
+   const COMPUTER_NOT_UNIQUE     = 5;
 
 
    static function getTypeName() {
@@ -1350,15 +1351,19 @@ class OcsServer extends CommonDBTM {
             if ($cfg_ocs["states_id_default"]>0) {
                $input["states_id"] = $cfg_ocs["states_id_default"];
             }
-            $computers_id = $comp->add($input);
-            $ocsid = $line['ID'];
-            $changes[0] = '0';
-            $changes[1] = "";
-            $changes[2] = $ocsid;
-            Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_IMPORT);
-
-            if ($idlink = OcsServer::ocsLink($line['ID'], $ocsservers_id, $computers_id)) {
-               OcsServer::updateComputer($idlink, $ocsservers_id, 0);
+            $computers_id = $comp->add($input, array('unicity_error_message' => false));
+            if ($computers_id > 0) {
+               $ocsid = $line['ID'];
+              $changes[0] = '0';
+               $changes[1] = "";
+               $changes[2] = $ocsid;
+               Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_IMPORT);
+    
+               if ($idlink = OcsServer::ocsLink($line['ID'], $ocsservers_id, $computers_id)) {
+                  OcsServer::updateComputer($idlink, $ocsservers_id, 0);
+               }
+            } else {
+               return self::COMPUTER_NOT_UNIQUE;
             }
          }
          if ($lock) {
@@ -2490,6 +2495,14 @@ class OcsServer extends CommonDBTM {
             echo "<input type=hidden name='ocsservers_id' value='" . $ocsservers_id . "'>";
             echo "</td></tr>";
             echo "</table></form>\n";
+
+            if (!$tolinked) {
+               echo "<a href='".$target."?check=all&amp;start=$start' onclick= ".
+                     "\"if ( markCheckboxes('ocsng_form') ) return false;\">" . $LANG['buttons'][18] .
+                     "</a>&nbsp;/&nbsp;<a href='".$target."?check=none&amp;start=".
+                     "$start' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
+                     $LANG['buttons'][19] . "</a>\n";
+            }
 
             printPager($start, $numrows, $target, $parameters);
          } else {
