@@ -799,7 +799,7 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean : true on success
    **/
    function update($input,$history=1, $options = array()) {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if ($DB->isSlave()) {
          return false;
@@ -888,8 +888,8 @@ class CommonDBTM extends CommonGLPI {
                         $this->forwardEntityInformations();
                      }
 
-                     //If itemtype is in infocomtype and if states_id field is filled
-                     //and item not a template
+                     // If itemtype is in infocomtype and if states_id field is filled
+                     // and item not a template
                      if (in_array($this->getType(),$CFG_GLPI["infocom_types"])
                          && in_array('states_id',$this->updates)
                          && ($this->getField('is_template') != NOT_AVAILABLE)) {

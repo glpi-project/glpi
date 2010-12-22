@@ -1155,10 +1155,12 @@ class AuthLDAP extends CommonDBTM {
                }
 
             // Only manage deleted user if ALL (because of entity visibility in delegated mode)
-             } else if ($values['action'] == AuthLDAP::ACTION_ALL && !$limitexceeded) {
+             } else if ($values['action'] == AuthLDAP::ACTION_ALL
+                        && !$limitexceeded) {
+
                 //If user is marked as coming from LDAP, but is not present in it anymore
                 if (!$user['is_deleted']
-                      && $user['auths_id'] == $options['ldapservers_id']) {
+                    && $user['auths_id'] == $options['ldapservers_id']) {
                    User::manageDeletedUserInLdap($user['id']);
                    $results[AuthLDAP::USER_DELETED_LDAP] ++;
                 }

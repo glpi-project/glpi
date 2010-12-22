@@ -47,13 +47,14 @@ class Infocom extends CommonDBTM {
    public $auto_message_on_action = false; // Link in message can't work'
 
    //Option to automatically fill dates
-   const ON_STATUS_CHANGE = 'STATUS';
+   const ON_STATUS_CHANGE   = 'STATUS';
    const COPY_WARRANTY_DATE = 1;
-   const COPY_BUY_DATE = 2;
-   const COPY_ORDER_DATE = 3;
+   const COPY_BUY_DATE      = 2;
+   const COPY_ORDER_DATE    = 3;
    const COPY_DELIVERY_DATE = 4;
-   const ON_ASSET_IMPORT = 5;
-   
+   const ON_ASSET_IMPORT    = 5;
+
+
    static function getTypeName() {
       global $LANG;
 
@@ -130,16 +131,21 @@ class Infocom extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Fill, if necessary, automatically some dates when status changes
+    *
     * @param item the item whose status have changed
-    * @param action_add true if object is added, false if updated 
+    * @param action_add true if object is added, false if updated
+    *
     * @return nothing
-    */
-   static function manageDateOnStatusChange(CommonDBTM $item,$action_add=true) {
+   **/
+   static function manageDateOnStatusChange(CommonDBTM $item, $action_add=true) {
       global $CFG_GLPI;
+
       $itemtype = get_class($item);
-      $changes = ($action_add?$item->fields:$item->input);
+      $changes  = ($action_add ? $item->fields
+                               : $item->input);
 
       //Autofill date on item's status change ?
       $infocom = new Infocom();
@@ -147,21 +153,23 @@ class Infocom extends CommonDBTM {
       $tmp = array('itemtype' => $itemtype,
                    'items_id' => $changes['id']);
       $add_or_update = false;
+
       //For each date that can be automatically filled
       foreach (self::getAutoManagemendDatesFields() as $date => $date_field) {
-         $resp = array();
-         $result = EntityData::getUsedConfig($date,$changes['entities_id']);
+         $resp   = array();
+         $result = EntityData::getUsedConfig($date, $changes['entities_id']);
+
          //Date must be filled if status corresponds to the one defined in the config
-         if (preg_match('/'.Infocom::ON_STATUS_CHANGE.'_(.*)/',$result,$values) 
-                && $values[1] == $changes['states_id']) {
-            $add_or_update = true;
+         if (preg_match('/'.Infocom::ON_STATUS_CHANGE.'_(.*)/',$result,$values)
+             && $values[1] == $changes['states_id']) {
+            $add_or_update    = true;
             $tmp[$date_field] = $_SESSION["glpi_currenttime"];
          }
       }
-      
+
       //One date or more has changed
       if ($add_or_update) {
-        logDebug($tmp);
+
          if (!$infocom->getFromDBforDevice($itemtype,$changes['id'])) {
             $infocom->add($tmp);
          } else {
@@ -170,37 +178,44 @@ class Infocom extends CommonDBTM {
          }
       }
    }
-   
+
+
    /**
     * Automatically manage copying one date to another is necessary
+    *
     * @param infocoms the item's infocom to modify
     * @param field the date to modify
     * @param action the action to peform (copy from another date)
     * @param params additional parameters needed to perform the task
+    *
     * @return nothing
-    */
-   static function autofillDates(&$infocoms = array(),$field = '', $action = 0, $params = array()) {
+   **/
+   static function autofillDates(&$infocoms=array(), $field='', $action=0, $params=array()) {
+
       if (isset($infocoms[$field])) {
          switch ($action) {
-            default:
-               break;
+            default :
             case 0 :
                break;
+
              case self::COPY_WARRANTY_DATE :
                if ($infocoms[$field] && isset($infocoms['warranty_date'])) {
                   $infocoms[$field] = $infocoms['warranty_date'];
                }
                break;
+
             case self::COPY_BUY_DATE :
                if ($infocoms[$field] && isset($infocoms['buy_date'])) {
                   $infocoms[$field] = $infocoms['buy_date'];
                }
                break;
+
             case self::COPY_ORDER_DATE :
                if ($infocoms[$field] && isset($infocoms['order_date'])) {
                   $infocoms[$field] = $infocoms['order_date'];
                }
                break;
+
             case self::COPY_DELIVERY_DATE :
                if ($infocoms[$field] && isset($infocoms['delivery_date'])) {
                   $infocoms[$field] = $infocoms['delivery_date'];
@@ -209,37 +224,43 @@ class Infocom extends CommonDBTM {
          }
       }
    }
-   
+
+
    /**
     * Return all infocom dates that could be automaticall filled
+    *
     * @return an array with all dates (configuration field & real field)
-    */
+   **/
    static function getAutoManagemendDatesFields() {
+
       return array ('autofill_buy_date'      => 'buy_date',
                     'autofill_use_date'      => 'use_date',
                     'autofill_delivery_date' => 'delivery_date',
                     'autofill_warranty_date' => 'warranty_date',
                     'autofill_order_date'    => 'order_date');
    }
-   
-   
+
+
    function prepareInputForUpdate($input) {
+
       $infocom = new Infocom();
       $infocom->getFromDB($input['id']);
+
       $entitydata = new EntityData();
       $entitydata->getFromDB($infocom->fields['entities_id']);
-      
+
       if (isset($input['warranty_duration'])) {
          $input['_warranty_duration'] = $this->fields['warranty_duration'];
       }
-      
+
 
       //Check if one or more dates needs to be updated
       foreach (self::getAutoManagemendDatesFields() as $key => $field) {
          $result = EntityData::getUsedConfig($key, $infocom->fields['entities_id']);
+
          //Only update date if it's empty in DB. Otherwise do nothing
          if ($result > 0 && !isset($infocom->fields[$field])) {
-            self::autofillDates($input,$field, $result);
+            self::autofillDates($input, $field, $result);
          }
       }
 
@@ -325,6 +346,7 @@ class Infocom extends CommonDBTM {
 //       return false;
 //    }
 
+
    static function cronInfo($name) {
       global $LANG;
 
@@ -338,7 +360,7 @@ class Infocom extends CommonDBTM {
     * @param $task to log, if NULL use display
     *
     * @return 0 : nothing to do 1 : done with success
-    **/
+   **/
    static function cronInfocom($task=NULL) {
       global $DB, $CFG_GLPI, $LANG;
 
