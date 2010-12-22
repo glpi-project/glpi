@@ -55,7 +55,6 @@ class CronTask extends CommonDBTM{
 
    /**
     * Name of the type
-    *
    **/
    static function getTypeName() {
       global $LANG;
@@ -138,7 +137,7 @@ class CronTask extends CommonDBTM{
     * @return interger 0 : task is enabled
     *    if disable : 1: by config, 2: by system lock, 3: by plugin
     *
-    */
+   **/
    function isDisabled () {
 
       if ($this->fields['state']==self::STATE_DISABLE) {
@@ -492,8 +491,10 @@ class CronTask extends CommonDBTM{
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
          $h=date('H',$next);
-         $deb=($this->fields['hourmin'] < 10 ? "0".$this->fields['hourmin'] : $this->fields['hourmin']);
-         $fin=($this->fields['hourmax'] < 10 ? "0".$this->fields['hourmax'] : $this->fields['hourmax']);
+         $deb=($this->fields['hourmin'] < 10 ? "0".$this->fields['hourmin']
+                                             : $this->fields['hourmin']);
+         $fin=($this->fields['hourmax'] < 10 ? "0".$this->fields['hourmax']
+                                             : $this->fields['hourmax']);
 
          if ($deb<$fin && $h<$deb) {
             $disp = date('Y-m-d', $next). " $deb:00:00";
@@ -915,10 +916,10 @@ class CronTask extends CommonDBTM{
 
 
    /**
-   * Display list of a runned tasks
-   *
-   * @return nothing
-   */
+    * Display list of a runned tasks
+    *
+    * @return nothing
+   **/
    function showHistory() {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -1240,7 +1241,7 @@ class CronTask extends CommonDBTM{
                 FROM `glpi_crontasks`
                 WHERE `state` = '2'
                       AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
-                            OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now())))";
+                           OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now())))";
       $crontasks = array();
       foreach ($DB->request($query) as $data) {
          $crontasks[$data['id']] = $data;
@@ -1292,11 +1293,11 @@ class CronTask extends CommonDBTM{
 
 
    /**
-   * Dropdown for frequency (interval between 2 actions)
-   *
-   * @param $name select name
-   * @param $value default value
-   */
+    * Dropdown for frequency (interval between 2 actions)
+    *
+    * @param $name select name
+    * @param $value default value
+   **/
    function dropdownFrequency($name, $value=0) {
       global $LANG;
 

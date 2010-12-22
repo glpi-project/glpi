@@ -4177,10 +4177,7 @@ class Ticket extends CommonDBTM {
             echo TicketValidation::getStatus($this->fields['global_validation']);
          }
       }
-
-      echo "</td>";
-
-      echo "</tr>";
+      echo "</td></tr>";
 
 
       // Need comment right to add a followup with the actiontime
