@@ -757,9 +757,9 @@ class TicketFollowup  extends CommonDBTM {
       $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
       $tab[4]['datatype'] = 'bool';
 
-      $tab[5]['table']     = 'glpi_users';
-      $tab[5]['field']     = 'name';
-      $tab[5]['name']      = $LANG['common'][34];
+      $tab[5]['table'] = 'glpi_users';
+      $tab[5]['field'] = 'name';
+      $tab[5]['name']  = $LANG['common'][34];
 
       return $tab;
    }

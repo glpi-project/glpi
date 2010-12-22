@@ -1883,7 +1883,7 @@ $LANG['setup'][4]   = "Types d'ordinateurs";
 $LANG['setup'][5]   = "Système d'exploitation";
 $LANG['setup'][6]   = "Personnalisation";
 $LANG['setup'][7]   = "Délimiteur CSV";
-$LANG['setup'][8]   = "Activer les informations financières  et administratives par défaut";
+$LANG['setup'][8]   = "Activer les informations financières et administratives par défaut";
 $LANG['setup'][9]   = "Interface réseau";
 $LANG['setup'][10]  = "Ordre d'affichage du nom complet";
 
@@ -2194,7 +2194,6 @@ $LANG['setup'][807] = "La base de donnée esclave est désynchronisée. L'écart
 $LANG['setup'][808] = "Base de données esclave désynchronisée !";
 $LANG['setup'][809] = "Réplicat MySQL : lecture seule";
 $LANG['setup'][810] = "Désynchronisation du réplicat MySQL";
-
 $LANG['setup'][811] = "Unicité des champs";
 $LANG['setup'][812] = "Critères d'unicité des champs par type";
 $LANG['setup'][813] = "Enregistrement impossible.<br/>Un autre élément existe déjà pour les champs";
@@ -2202,6 +2201,7 @@ $LANG['setup'][814] = "Vérification globale";
 $LANG['setup'][815] = "Champ(s) unique(s)";
 $LANG['setup'][816] = "Ajouter unicité pour un type";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
+
 
 $LANG['sla'][1] = "SLA";
 $LANG['sla'][2] = "Temps maximum de résolution";

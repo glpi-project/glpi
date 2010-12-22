@@ -811,7 +811,7 @@ class EntityData extends CommonDBChild {
          // Value is defined : use it
          if (isset($entdata->fields[$fieldref])
             && ($entdata->fields[$fieldref]>0
-               || !is_numeric($entdata->fields[$fieldref]))) {
+                || !is_numeric($entdata->fields[$fieldref]))) {
             return $entdata->fields[$fieldval];
          }
       }
