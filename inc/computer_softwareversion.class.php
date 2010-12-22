@@ -45,30 +45,35 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    public $itemtype_2 = 'SoftwareVersion';
    public $items_id_2 = 'softwareversions_id';
 
+
    function prepareInputForAdd($input) {
+
       // Get template and deleted informations from computer
       $computer = new Computer();
       if ($computer->getFromDB($input['computers_id'])) {
          $input['is_template'] = $computer->getField('is_template');
-         $input['is_deleted'] = $computer->getField('is_deleted');
+         $input['is_deleted']  = $computer->getField('is_deleted');
       }
       return $input;
    }
+
 
    function updateDatasForComputer ($computers_id) {
       global $DB;
 
       $comp = new Computer();
       if ($comp->getFromDB($computers_id)) {
-         $query="UPDATE `".$this->getTable()."`
-                  SET `is_template` = '".$comp->getField('is_template')."',
-                     `is_deleted` = '".$comp->getField('is_deleted')."'
-                  WHERE `computers_id` = '$computers_id';";
-//          echo $query.'<br>';exit();
+         $query = "UPDATE `".$this->getTable()."`
+                   SET `is_template` = '".$comp->getField('is_template')."',
+                       `is_deleted` = '".$comp->getField('is_deleted')."'
+                   WHERE `computers_id` = '$computers_id';";
+
          return $DB->query($query);
       }
       return false;
    }
+
+
    /**
     * Get number of installed licenses of a version
     *
