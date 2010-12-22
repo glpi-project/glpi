@@ -963,9 +963,9 @@ function update0781to080($output='HTML') {
 
       // Migrate templates
       $from = array('ticket.group##', 'ticket.assigntogroup##', 'ticket.assigntouser##',
-                    'ticket.author.name##', 'ticket.author##', 'lang.validation.validationstatus##');
+                    'ticket.author.name##', 'ticket.author##');
       $to   = array('ticket.groups##', 'ticket.assigntogroups##', 'ticket.assigntousers##',
-                    'ticket.authors##', 'author.id##', 'lang.validation.status## : ##validation.status##');
+                    'ticket.authors##', 'author.id##');
 
       $query = "SELECT `glpi_notificationtemplatetranslations`.*
                 FROM `glpi_notificationtemplatetranslations`
@@ -985,7 +985,7 @@ function update0781to080($output='HTML') {
                                                                         $data['content_html']))."'
                          WHERE `id` = ".$data['id']."";
                $DB->query($query)
-               or die("0.80 insert default notif for observer ".$LANG['update'][90] .$DB->error());
+               or die("0.80 fix tags usage for multi users ".$LANG['update'][90] .$DB->error());
             }
          }
       }
@@ -1382,6 +1382,47 @@ function update0781to080($output='HTML') {
          or die("0.80 create glpi_ticketsolutiontemplates " . $LANG['update'][90] .
                 $DB->error());
    }
+
+
+   // Fix templates tags
+   $updates = array('Ticket' => 
+                     array('from' => array('##lang.validation.validationstatus##'),
+                           'to'   => array('##lang.validation.status## : ##validation.status##')),
+                    'SoftwareLicense' =>
+                     array('from' => array('##license.action##'),
+                           'to'   => array('##lang.license.action##')),
+   );
+
+   foreach ($updates as $itemtype => $changes) {
+
+      $query = "SELECT `glpi_notificationtemplatetranslations`.*
+                  FROM `glpi_notificationtemplatetranslations`
+                  INNER JOIN `glpi_notificationtemplates`
+                     ON (`glpi_notificationtemplates`.`id`
+                           = `glpi_notificationtemplatetranslations`.`notificationtemplates_id`)
+                  WHERE `glpi_notificationtemplates`.`itemtype` = '$itemtype'";
+   
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "UPDATE `glpi_notificationtemplatetranslations`
+                           SET `subject` = '".addslashes(
+                                    str_replace($changes['from'],$changes['to'],
+                                                $data['subject']))."',
+                              `content_text` = '".addslashes(
+                                    str_replace($changes['from'],$changes['to'],
+                                                $data['content_text']))."',
+                              `content_html` = '".addslashes(
+                                    str_replace($changes['from'],$changes['to'],
+                                                $data['content_html']))."'
+                           WHERE `id` = ".$data['id']."";
+               $DB->query($query)
+               or die("0.80 fix template tag usage for $itemtype ".$LANG['update'][90] .$DB->error());
+            }
+         }
+      }
+   }
+
 
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
