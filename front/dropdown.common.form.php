@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $dropdown->check($_POST["id"],'w');
    if ($dropdown->isUsed() && empty($_POST["forcedelete"])) {
-      commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config","dropdowns",
+      commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config",$dropdown->second_level_menu,
                    str_replace('glpi_','',$dropdown->getTable()));
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
       commonFooter();
