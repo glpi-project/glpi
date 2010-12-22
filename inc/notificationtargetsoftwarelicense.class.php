@@ -48,6 +48,10 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
      global $LANG,$CFG_GLPI;
 
+      $events = $this->getAllEvents();
+
+      $this->datas['##license.action##'] = $events[$event];
+
       $this->datas['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                      $options['entities_id']);
       foreach ($options['licenses'] as $id => $license) {
@@ -78,22 +82,13 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
                     'license.name'           => $LANG['common'][16],
                     'license.serial'         => $LANG['common'][19],
                     'license.entity'         => $LANG['entity'][0],
-                    'license.url'            => $LANG['common'][94]);
+                    'license.url'            => $LANG['common'][94],
+                    'license.action'         => $LANG['mailing'][119]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
                                    'value' => true));
-      }
-
-      // Lang only
-      $tags = array('license.action'         => $LANG['setup'][264]);
-
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => false,
-                                   'lang'  => true));
       }
 
       $this->addTagToList(array('tag'     => 'licenses',

@@ -47,9 +47,11 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $LANG,$CFG_GLPI;
 
+      $events = $this->getAllEvents();
+
       $this->datas['##cartridge.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                        $options['entities_id']);
-      $this->datas['##cartridge.action##'] = $LANG['mailing'][33];
+      $this->datas['##cartridge.action##'] = $events[$event];
 
       foreach ($options['cartridges'] as $id => $cartridge) {
          $tmp = array();
@@ -73,7 +75,7 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('cartridge.action'    => $LANG['mailing'][33],
+      $tags = array('cartridge.action'    => $LANG['mailing'][119],
                     'cartridge.reference' => $LANG['consumables'][2],
                     'cartridge.item'      => $LANG['financial'][104],
                     'cartridge.remaining' => $LANG['software'][20],

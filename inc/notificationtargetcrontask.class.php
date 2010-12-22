@@ -38,7 +38,7 @@ class NotificationTargetCrontask extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array ('alert' => $LANG['common'][105]);
+      return array ('alert' => $LANG['crontask'][17]);
    }
 
 
@@ -48,8 +48,9 @@ class NotificationTargetCrontask extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $LANG, $CFG_GLPI;
 
-      $this->datas['##crontask.action##']       = $LANG['crontask'][17];
-      $this->datas['##lang.crontask.warning##'] = $LANG['crontask'][49];
+      $events = $this->getAllEvents();
+
+      $this->datas['##crontask.action##'] = $events[$event];
 
       $cron = new Crontask();
       foreach ($options['crontasks'] as $id => $crontask) {

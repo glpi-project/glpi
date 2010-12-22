@@ -48,10 +48,11 @@ class NotificationTargetInfocom extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $LANG, $CFG_GLPI;
 
+      $events = $this->getAllEvents();
+
       $this->datas['##infocom.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
-      $this->datas['##lang.infocom.entity##'] = $LANG['entity'][0];
-      $this->datas['##infocom.action##']      = $LANG['mailing'][41];
+      $this->datas['##infocom.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $item) {
          $tmp = array();
@@ -77,7 +78,7 @@ class NotificationTargetInfocom extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('infocom.action'         => $LANG['mailing'][41],
+      $tags = array('infocom.action'         => $LANG['mailing'][119],
                     'infocom.itemtype'       => $LANG['reports'][12],
                     'infocom.item'           => $LANG['financial'][104],
                     'infocom.expirationdate' => $LANG['mailing'][54],
