@@ -963,9 +963,9 @@ function update0781to080($output='HTML') {
 
       // Migrate templates
       $from = array('ticket.group##', 'ticket.assigntogroup##', 'ticket.assigntouser##',
-                    'ticket.author.name##', 'ticket.author##');
+                    'ticket.author.name##', 'ticket.author##', 'lang.validation.validationstatus##');
       $to   = array('ticket.groups##', 'ticket.assigntogroups##', 'ticket.assigntousers##',
-                    'ticket.authors##', 'author.id##');
+                    'ticket.authors##', 'author.id##', 'lang.validation.status## : ##validation.status##');
 
       $query = "SELECT `glpi_notificationtemplatetranslations`.*
                 FROM `glpi_notificationtemplatetranslations`
