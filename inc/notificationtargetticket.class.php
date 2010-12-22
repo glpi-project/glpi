@@ -1290,12 +1290,6 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'events' => array('validation')));
       }
 
-            $this->datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
-            $this->datas['##satisfaction.datebegin##']    = convDateTime($inquest->fields['date_begin']);
-            $this->datas['##satisfaction.dateanswered##'] = convDateTime($inquest->fields['date_answered']);
-            $this->datas['##satisfaction.satisfaction##'] = $inquest->fields['satisfaction'];
-            $this->datas['##satisfaction.description##']  = $inquest->fields['comment'];
-
       // Events for ticket satisfaction
      $tags = array(
                    'satisfaction.datebegin'           => $LANG['satisfaction'][6],
