@@ -976,8 +976,6 @@ class NotificationTargetTicket extends NotificationTarget {
                     html_clean(getUserName($validation['users_id_validate'])).")";
 
             $tmp['##validation.author##']       = html_clean(getUserName($validation['users_id']));
-            $tmp['##lang.validation.validationstatus##']
-                  = $LANG['validation'][28]." : ". TicketValidation::getStatus($validation['status']);
 
             $tmp['##validation.status##']       = TicketValidation::getStatus($validation['status']);
             $tmp['##validation.storestatus##']       = $validation['status'];
@@ -1281,7 +1279,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
      //Events specific for validation
      $tags = array('validation.author'            => $LANG['job'][4],
-                   'validation.status'            => $LANG['joblist'][0],
+                   'validation.status'            => $LANG['validation'][28],
                    'validation.submissiondate'    => $LANG['validation'][3],
                    'validation.commentsubmission' => $LANG['validation'][5],
                    'validation.validationdate'    => $LANG['validation'][4],
