@@ -994,6 +994,8 @@ class NotificationTargetTicket extends NotificationTarget {
 
          // Ticket Satisfaction
          $inquest = new TicketSatisfaction();
+         $this->datas['##lang.inquest.text##'] = $LANG['satisfaction'][11];
+
          if ($inquest->getFromDB($this->obj->getField('id'))) {
             if ($inquest->fields['type'] == 1) {
                $this->datas['##ticket.urlsatisfaction##'] = urldecode($CFG_GLPI["url_base"].
@@ -1295,7 +1297,8 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       // Events for ticket satisfaction
-     $tags = array('satisfaction.type'                => $LANG['satisfaction'][9]." - ".
+     $tags = array('satisfaction.text'                => $LANG['satisfaction'][12],
+                   'satisfaction.type'                => $LANG['satisfaction'][9]." - ".
                                                          $LANG['satisfaction'][10],
                    'satisfaction.datebegin'           => $LANG['satisfaction'][6],
                    'satisfaction.dateanswered'        => $LANG['satisfaction'][4],
