@@ -34,21 +34,21 @@
 // ----------------------------------------------------------------------
 
 if ($argv) {
-   for ($i=1;$i<count($argv);$i++)
-   {
+   for ($i=1 ; $i<count($argv) ; $i++) {
       //To be able to use = in search filters, enter \= instead in command line
       //Replace the \= by ° not to match the split function
-      $arg=str_replace('\=','°',$argv[$i]);
-      $it = explode("=",$arg);
+      $arg   = str_replace('\=','°',$argv[$i]);
+      $it    = explode("=",$arg);
       $it[0] = preg_replace('/^--/','',$it[0]);
 
       //Replace the ° by = the find the good filter
-      $it=str_replace('°','=',$it);
+      $it           = str_replace('°','=',$it);
       $_GET[$it[0]] = $it[1];
    }
 }
 
-if ((isset($argv) && in_array('help',$argv)) || isset($_GET['help'])) {
+if ((isset($argv) && in_array('help',$argv))
+    || isset($_GET['help'])) {
    echo "Usage : php -q -f ldap_mass_sync.php [action=<option>]  [ldapservers_id=ID]\n";
    echo "Options values :\n";
    echo "0 : import users only\n";
@@ -64,15 +64,16 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 // Default action : synchro
 // - possible option :
-//   - 0 : import new users
+//  - 0 : import new users
 //  - 1 : synchronize users
 //  - 2 : force synchronization of all the users (even if ldap timestamp wasn't modified)
-$options['action'] = AuthLDAP::ACTION_SYNCHRONIZE;
+$options['action']         = AuthLDAP::ACTION_SYNCHRONIZE;
 $options['ldapservers_id'] = NOT_AVAILABLE;
-$options['ldap_filter'] = '';
-$options['before-days'] = 0;
-$options['after-days'] = 0;
-$options['script'] = 1;
+$options['ldap_filter']    = '';
+$options['before-days']    = 0;
+$options['after-days']     = 0;
+$options['script']         = 1;
+
 foreach ($_GET as $key => $value) {
    $options[$key] = $value;
 }
@@ -83,12 +84,12 @@ if ($options['before-days'] && $options['after-days']) {
 }
 
 if ($options['before-days']) {
-   $options['days'] = $options['before-days'];
+   $options['days']     = $options['before-days'];
    $options['operator'] = '>';
    unset($options['before-days']);
 }
 if ($options['after-days']) {
-   $options['days'] = $options['after-days'];
+   $options['days']     = $options['after-days'];
    $options['operator'] = '<';
    unset($options['after-days']);
 }
@@ -97,58 +98,65 @@ if (!canUseLdap() || !countElementsInTable('glpi_authldaps')) {
    echo "LDAP extension is not active or no LDAP directory defined";
 }
 
-$sql = "SELECT `id`, `name` FROM  `glpi_authldaps`";
+$sql = "SELECT `id`, `name`
+        FROM `glpi_authldaps`";
+
 //Get the ldap server's id by his name
 if ($options['ldapservers_id'] != NOT_AVAILABLE) {
-   $sql.= " WHERE id=" . $options['ldapservers_id'];
+   $sql .= " WHERE `id` = '" . $options['ldapservers_id']."'";
 }
 
 $result = $DB->query($sql);
+
 if ($DB->numrows($result) == 0 && $_GET["ldapservers_id"] != NOT_AVAILABLE) {
    echo "LDAP Server not found";
-}
-else
-{
+} else {
    foreach($DB->request($sql) as $data) {
-      echo "Processing LDAP Server: ".$data['name'].", ID: ".$data['id']." \n";
+      echo "Processing LDAP Server: ".$data['name'].", ID : ".$data['id']." \n";
       $options['ldapservers_id'] = $data['id'];
       import ($options);
    }
 }
 
+
 /**
  * Function to import or synchronise all the users from an ldap directory
+ *
  * @param action the action to perform (add/sync)
  * @param datas the ldap connection's datas
- */
-function import($options)
-{
+**/
+function import($options) {
    global $CFG_GLPI;
-   $results = array(AuthLDAP::USER_IMPORTED=>0,
-                    AuthLDAP::USER_SYNCHRONIZED=>0,
-                    AuthLDAP::USER_DELETED_LDAP=>0);
+
+   $results = array(AuthLDAP::USER_IMPORTED     => 0,
+                    AuthLDAP::USER_SYNCHRONIZED => 0,
+                    AuthLDAP::USER_DELETED_LDAP => 0);
    //The ldap server id is passed in the script url (parameter server_id)
    $limitexceeded = false;
-
    $actions_to_do = array();
+
    switch ($options['action']) {
-      case AuthLDAP::ACTION_IMPORT:
+      case AuthLDAP::ACTION_IMPORT :
          $actions_to_do = array(AuthLDAP::ACTION_IMPORT);
         break;
-      case AuthLDAP::ACTION_SYNCHRONIZE:
+
+      case AuthLDAP::ACTION_SYNCHRONIZE :
          $actions_to_do = array(AuthLDAP::ACTION_SYNCHRONIZE);
         break;
-      case AuthLDAP::ACTION_ALL:
+
+      case AuthLDAP::ACTION_ALL :
          $actions_to_do = array(AuthLDAP::ACTION_IMPORT,AuthLDAP::ACTION_ALL);
         break;
-   }  
+   }
+
    foreach ($actions_to_do as $action_to_do) {
       $options['mode'] = $action_to_do;
-      $users = AuthLdap::getAllUsers($options,$results,$limitexceeded);
+      $users           = AuthLdap::getAllUsers($options, $results, $limitexceeded);
+
       if (is_array($users)) {
          foreach ($users as $user) {
-            $result = AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                               'value'=>$user["user"]),
+            $result = AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                               'value'  => $user["user"]),
                                                          $action_to_do,
                                                          $options['ldapservers_id']);
             if ($result) {
@@ -171,4 +179,5 @@ function import($options)
    echo "Deleted from LDAP : ".$results[AuthLDAP::USER_DELETED_LDAP]."\n";
    echo "\n\n";
 }
+
 ?>
