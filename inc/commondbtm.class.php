@@ -658,8 +658,8 @@ class CommonDBTM extends CommonGLPI {
                   }
                }
 
-               //If itemtype is in infocomtype and if states_id field is filled
-               //and item is not a template
+               // If itemtype is in infocomtype and if states_id field is filled
+               // and item is not a template
                if (in_array($this->getType(),$CFG_GLPI["infocom_types"])
                    && isset($this->input['states_id'])
                             && (!isset($this->input['is_template'])
@@ -2364,10 +2364,10 @@ class CommonDBTM extends CommonGLPI {
       $fails = array();
       if (isset($this->input) && is_array($this->input) && count($this->input)) {
 
-         foreach ($this->input as $key =>$value) {
+         foreach ($this->input as $key => $value) {
             $unset        = false;
             $regs         = array();
-            $searchOption = $this->getSearchOptionByField('field',$key);
+            $searchOption = $this->getSearchOptionByField('field', $key);
 
             if (isset($searchOption['datatype'])
                 && !is_null($value)
@@ -2484,13 +2484,12 @@ class CommonDBTM extends CommonGLPI {
 
       $result = true;
       //Do not check unicity when creating infocoms
-      if (in_array(get_class($this), array('Infocom'))
-          && $add) {
+      if (in_array(get_class($this), array('Infocom')) && $add) {
          return $result;
       }
 
       //Get all checks for this itemtype and this entity
-      if  (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+      if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
 
          //In case it's an infocom
          if (in_array(get_class($this), array('Infocom'))) {

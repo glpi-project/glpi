@@ -900,7 +900,6 @@ class Infocom extends CommonDBTM {
             echo "<textarea cols='45' rows='9' name='comment' >".$ic->fields["comment"];
             echo "</textarea></td></tr>\n";
 
-
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
             echo formatNumber(Infocom::Amort($ic->fields["sink_type"], $ic->fields["value"],
