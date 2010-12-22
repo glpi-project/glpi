@@ -1050,13 +1050,13 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['config']['content']['control']['title'] = $LANG['Menu'][41];
       $menu['config']['content']['control']['page']  = '/front/control.php';
 
-      $menu['config']['content']['control']['options']['unicity']['title']
+      $menu['config']['content']['control']['options']['FieldUnicity']['title']
                      = $LANG['setup'][811];
-      $menu['config']['content']['control']['options']['unicity']['page']
+      $menu['config']['content']['control']['options']['FieldUnicity']['page']
                      = '/front/fieldunicity.php';
-      $menu['config']['content']['control']['options']['unicity']['links']['add']
+      $menu['config']['content']['control']['options']['FieldUnicity']['links']['add']
                      = '/front/fieldunicity.form.php';
-      $menu['config']['content']['control']['options']['unicity']['links']['search']
+      $menu['config']['content']['control']['options']['FieldUnicity']['links']['search']
                      = '/front/fieldunicity.php';
 
       $menu['config']['content']['crontask']['title']           = $LANG['crontask'][0];

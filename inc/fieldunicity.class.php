@@ -42,7 +42,9 @@ class FieldUnicity extends CommonDropdown {
 
    // From CommonDBTM
    var $dohistory = true;
-      
+
+   var $second_level_menu = "control";
+
    static function getTypeName() {
       global $LANG;
 
@@ -245,6 +247,7 @@ class FieldUnicity extends CommonDropdown {
       $tab[30]['field']    = 'is_active';
       $tab[30]['name']     = $LANG['common'][60];
       $tab[30]['datatype'] = 'bool';
+      $tab[30]['massiveaction'] = false;
 
       return $tab;
    }
