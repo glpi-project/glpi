@@ -186,8 +186,7 @@ function get_content($DB, $table,$from,$limit) {
          if ($gmqr) {
             $row = addslashes_deep($row);
          }
-         $insert = "INSERT INTO `$table`
-                    VALUES (";
+         $insert = "INSERT INTO `$table` VALUES (";
 
          for( $j=0 ; $j<$num_fields ; $j++) {
             if (is_null($row[$j])) {
