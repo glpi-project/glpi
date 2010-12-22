@@ -46,13 +46,13 @@ class NetworkEquipment extends CommonDBTM {
    protected $forward_entity_to = array('Infocom', 'ReservationItem', 'NetworkPort');
 
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
- */
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+    *
+    * @return $LANG
+   **/
    static function getTypeName($nb=0) {
       global $LANG;
 
@@ -213,7 +213,7 @@ class NetworkEquipment extends CommonDBTM {
     * Overloaded from CommonDBTM
     *
     * @return booleen
-    **/
+   **/
    function canUnrecurs () {
       global $DB;
 
@@ -276,7 +276,7 @@ class NetworkEquipment extends CommonDBTM {
     *     - withtemplate boolean : template or basic item
     *
     *@return boolean item found
-    **/
+   **/
    function showForm ($ID, $options=array()) {
       global $LANG;
 
@@ -481,22 +481,22 @@ class NetworkEquipment extends CommonDBTM {
       $tab[5]['field'] = 'serial';
       $tab[5]['name']  = $LANG['common'][19];
       $tab[5]['datatype']      = 'string';
-      
+
       $tab[6]['table'] = $this->getTable();
       $tab[6]['field'] = 'otherserial';
       $tab[6]['name']  = $LANG['common'][20];
       $tab[6]['datatype']      = 'string';
-      
+
       $tab[7]['table'] = $this->getTable();
       $tab[7]['field'] = 'contact';
       $tab[7]['name']  = $LANG['common'][18];
       $tab[7]['datatype']      = 'string';
-      
+
       $tab[8]['table'] = $this->getTable();
       $tab[8]['field'] = 'contact_num';
       $tab[8]['name']  = $LANG['common'][21];
       $tab[8]['datatype']      = 'string';
-      
+
       $tab[70]['table'] = 'glpi_users';
       $tab[70]['field'] = 'name';
       $tab[70]['name']  = $LANG['common'][34];
@@ -530,14 +530,14 @@ class NetworkEquipment extends CommonDBTM {
       $tab[14]['name']     = $LANG['networking'][5];
       $tab[14]['datatype'] = 'number';
 
-      $tab[12]['table'] = $this->getTable();
-      $tab[12]['field'] = 'ip';
-      $tab[12]['name']  = $LANG['networking'][14]." ".$LANG['help'][26];
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'ip';
+      $tab[12]['name']     = $LANG['networking'][14]." ".$LANG['help'][26];
       $tab[12]['datatype'] = 'ip';
 
-      $tab[13]['table'] = $this->getTable();
-      $tab[13]['field'] = 'mac';
-      $tab[13]['name']  = $LANG['networking'][15]." ".$LANG['help'][26];
+      $tab[13]['table']    = $this->getTable();
+      $tab[13]['field']    = 'mac';
+      $tab[13]['name']     = $LANG['networking'][15]." ".$LANG['help'][26];
       $tab[13]['datatype'] = 'mac';
 
       $tab[32]['table'] = 'glpi_networks';

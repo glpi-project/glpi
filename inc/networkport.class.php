@@ -966,24 +966,24 @@ class NetworkPort extends CommonDBChild {
       $tab[3]['name']     = $LANG["networking"][21];
       $tab[3]['datatype'] = 'integer';
 
-      $tab[4]['table'] = $this->getTable();
-      $tab[4]['field'] = 'mac';
-      $tab[4]['name']  = $LANG["device_iface"][2];
+      $tab[4]['table']    = $this->getTable();
+      $tab[4]['field']    = 'mac';
+      $tab[4]['name']     = $LANG["device_iface"][2];
       $tab[4]['datatype'] = 'mac';
 
-      $tab[5]['table'] = $this->getTable();
-      $tab[5]['field'] = 'ip';
-      $tab[5]['name']  = $LANG["networking"][14];
+      $tab[5]['table']    = $this->getTable();
+      $tab[5]['field']    = 'ip';
+      $tab[5]['name']     = $LANG["networking"][14];
       $tab[5]['datatype'] = 'ip';
 
-      $tab[6]['table'] = $this->getTable();
-      $tab[6]['field'] = 'netmask';
-      $tab[6]['name']  = $LANG["networking"][60];
+      $tab[6]['table']    = $this->getTable();
+      $tab[6]['field']    = 'netmask';
+      $tab[6]['name']     = $LANG["networking"][60];
       $tab[6]['datatype'] = 'ip';
 
-      $tab[7]['table'] = $this->getTable();
-      $tab[7]['field'] = 'subnet';
-      $tab[7]['name']  = $LANG["networking"][61];
+      $tab[7]['table']    = $this->getTable();
+      $tab[7]['field']    = 'subnet';
+      $tab[7]['name']     = $LANG["networking"][61];
       $tab[7]['datatype'] = 'ip';
 
       $tab[8]['table'] = $this->getTable();
