@@ -41,30 +41,31 @@ class NotificationTargetCrontask extends NotificationTarget {
       return array ('alert' => $LANG['common'][105]);
    }
 
+
    /**
     * Get all data needed for template processing
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $LANG, $CFG_GLPI;
 
-      $this->datas['##crontask.action##'] = $LANG['crontask'][17];
+      $this->datas['##crontask.action##']       = $LANG['crontask'][17];
       $this->datas['##lang.crontask.warning##'] = $LANG['crontask'][49];
 
       $cron = new Crontask();
       foreach ($options['crontasks'] as $id => $crontask) {
          $tmp = array();
          $tmp['##crontask.name##'] = '';
+
          if ($isplug=isPluginItemType($crontask["itemtype"])) {
             $tmp['##crontask.name##'] = $isplug["plugin"]." - ";
          }
 
          $tmp['##crontask.name##']       .= $crontask['name'];
          $tmp['##crontask.description##'] = $cron->getDescription($id);
-         $tmp['##crontask.url##']        = urldecode($CFG_GLPI["url_base"].
-                                                     "/index.php?redirect=crontask_".$id);
+         $tmp['##crontask.url##']         = urldecode($CFG_GLPI["url_base"].
+                                                      "/index.php?redirect=crontask_".$id);
          $this->datas['crontasks'][] = $tmp;
       }
-
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
