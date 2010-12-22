@@ -223,6 +223,9 @@ abstract class CommonDropdown extends CommonDBTM {
             case 'datetime' :
                showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
                break;
+            default:
+               $this->displaySpecificTypeField($ID, $field);
+               break;
          }
          echo "</td></tr>\n";
       }
@@ -236,7 +239,10 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
 
-
+   function displaySpecificTypeField($ID, $field = array()) {
+      
+   }
+   
    function pre_deleteItem() {
 
       if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {

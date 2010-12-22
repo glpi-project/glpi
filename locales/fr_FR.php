@@ -1323,6 +1323,7 @@ $LANG['Menu'][37] = "Entités";
 $LANG['Menu'][38] = "Inventaire";
 $LANG['Menu'][39] = "Collecteurs";
 $LANG['Menu'][40] = "Marque-pages";
+$LANG['Menu'][41] = "Contrôles";
 
 $LANG['Menu'][42] = "Calendriers";
 $LANG['Menu'][43] = "SLAs";
@@ -2197,6 +2198,10 @@ $LANG['setup'][810] = "Désynchronisation du réplicat MySQL";
 $LANG['setup'][811] = "Unicité des champs";
 $LANG['setup'][812] = "Critères d'unicité des champs par type";
 $LANG['setup'][813] = "Enregistrement impossible.<br/>Un autre élément existe déjà pour les champs";
+$LANG['setup'][814] = "Vérification globale";
+$LANG['setup'][815] = "Champ(s) unique(s)";
+$LANG['setup'][816] = "Ajouter unicité pour un type";
+$LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
 
 $LANG['sla'][1] = "SLA";
 $LANG['sla'][2] = "Temps maximum de résolution";

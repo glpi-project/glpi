@@ -1047,6 +1047,18 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
       $menu['config']['content']['config']['title'] = $LANG['setup'][703];
       $menu['config']['content']['config']['page']  = '/front/config.form.php';
 
+      $menu['config']['content']['control']['title'] = $LANG['Menu'][41];
+      $menu['config']['content']['control']['page']  = '/front/control.php';
+
+      $menu['config']['content']['control']['options']['unicity']['title']
+                     = $LANG['setup'][811];
+      $menu['config']['content']['control']['options']['unicity']['page']
+                     = '/front/fieldunicity.php';
+      $menu['config']['content']['control']['options']['unicity']['links']['add']
+                     = '/front/fieldunicity.form.php';
+      $menu['config']['content']['control']['options']['unicity']['links']['search']
+                     = '/front/fieldunicity.php';
+
       $menu['config']['content']['crontask']['title']           = $LANG['crontask'][0];
       $menu['config']['content']['crontask']['page']            = '/front/crontask.php';
       $menu['config']['content']['crontask']['links']['search'] = "/front/crontask.php";

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: domain.form.php 10411 2010-02-09 07:58:26Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -29,67 +29,14 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Remi Collet
 // Purpose of file:
 // ----------------------------------------------------------------------
+
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-if (!isset($_POST["id"])) {
-   exit();
-}
-
-checkRight("config", "r");
-
-$config = new Config();
-
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-      $config->showFormDisplay();
-      $config->showFormUserPrefs($CFG_GLPI);
-      $config->showFormInventory();
-      $config->showFormHelpdesk();
-      $config->showSystemInformations();
-      if (DBConnection::isDBSlaveActive()) {
-         $config->showFormDBSlave();
-      }
-      Plugin::displayAction($config, $_REQUEST['glpi_tab']);
-      break;
-
-   case 1 :
-      $config->showFormDisplay();
-      break;
-
-   case 2 :
-      $config->showFormUserPrefs($CFG_GLPI);
-      break;
-
-   case 3 :
-      $config->showFormInventory();
-      break;
-
-   case 4 :
-      $config->showFormHelpdesk();
-      break;
-
-   case 5 :
-      $config->showSystemInformations();
-      break;
-
-   case 6 :
-      $config->showFormDBSlave();
-      break;
-
-   default :
-      if (!Plugin::displayAction($config, $_REQUEST['glpi_tab'])) {
-      $config->showFormDisplay();
-      }
-}
-
-ajaxFooter();
-
+$dropdown = new FieldUnicity();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>
