@@ -170,8 +170,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
       if ($canedit) {
-         echo "<a href='".getItemTypeFormURL('NotificationTemplateTranslation').
-                  "?notificationtemplates_id=".$nID."'>". $LANG['mailing'][124]."</a><br>";
+         echo "<div class='center'><a href='".getItemTypeFormURL('NotificationTemplateTranslation').
+                  "?notificationtemplates_id=".$nID."'>". $LANG['mailing'][124]."</a></div><br>";
       }
 
       echo "<div class='center' id='tabsbody'>";
@@ -293,37 +293,41 @@ class NotificationTemplateTranslation extends CommonDBChild {
                 <th>".$LANG['mailing'][147]."</th>
             </tr>";
 
+      $tags = array();
+
       foreach ($target->tag_descriptions as $tag_type => $infos) {
-         foreach ($infos as $tag => $values) {
+         $tags = array_merge($tags,$infos);
+      }
+      ksort($tags);
+      foreach ($tags as $tag => $values) {
 
-            if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
-               $event = $LANG['common'][66];
-            } else {
-               $event = implode(', ',$values['events']);
-            }
-
-            $action = '';
-
-            if ($values['foreach']) {
-               $action = $LANG['mailing'][145];
-            } else {
-               $action = $LANG['mailing'][146];
-            }
-
-            if (!empty($values['allowed_values'])) {
-               $allowed_values = implode(',',$values['allowed_values']);
-            } else {
-               $allowed_values = '';
-            }
-
-            echo "<tr class='tab_bg_1'><td>".$tag."</td>
-                  <td>".($tag_type==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
-                  $values['label']."</td>
-                  <td>$event</td>
-                  <td>".$action."</td>
-                  <td>$allowed_values</td>
-                  </tr>";
+         if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
+            $event = $LANG['common'][66];
+         } else {
+            $event = implode(', ',$values['events']);
          }
+
+         $action = '';
+
+         if ($values['foreach']) {
+            $action = $LANG['mailing'][145];
+         } else {
+            $action = $LANG['mailing'][146];
+         }
+
+         if (!empty($values['allowed_values'])) {
+            $allowed_values = implode(',',$values['allowed_values']);
+         } else {
+            $allowed_values = '';
+         }
+
+         echo "<tr class='tab_bg_1'><td>".$tag."</td>
+               <td>".($tag_type==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
+               $values['label']."</td>
+               <td>$event</td>
+               <td>".$action."</td>
+               <td>$allowed_values</td>
+               </tr>";
       }
       echo "</table></div>";
    }
