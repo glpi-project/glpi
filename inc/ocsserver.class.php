@@ -1954,21 +1954,22 @@ class OcsServer extends CommonDBTM {
                 WHERE `ocsservers_id` = '$ocsservers_id'";
 
       $result = $DB->query($query);
-      $links_ocs_missing_str = "";
+      
+
+      $ocs_missing=array();
 
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_array($result)) {
             $data = clean_cross_side_scripting_deep(addslashes_deep($data));
             if (!isset ($hardware[$data["ocsid"]])) {
-               $links_ocs_missing_str .= "'" . $data["ocsid"] . "', ";
+               $ocs_missing[$data["ocsid"]] = $data["ocsid"];
             }
          }
       }
 
       $sql_ocs_missing = "";
-      if ($links_ocs_missing_str != null) {
-         $links_ocs_missing_str = substr($links_ocs_missing_str, 0, -2);
-         $sql_ocs_missing       = " OR `ocsid` IN (". $links_ocs_missing_str .")";
+      if (count($ocs_missing)) {
+         $sql_ocs_missing = 'OR `ocsid` IN ('.implode("','",$ocs_missing).')';
       }
 
       //Select unexisting computers
