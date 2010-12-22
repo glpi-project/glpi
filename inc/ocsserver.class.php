@@ -1981,10 +1981,10 @@ class OcsServer extends CommonDBTM {
                      FROM `glpi_ocslinks`
                      LEFT JOIN `glpi_computers`
                         ON `glpi_computers`.`id` = `glpi_ocslinks`.`computers_id`
-                     WHERE (`glpi_computers`.`id` IS NULL
-                            AND `glpi_ocslinks`.`ocsservers_id` = '$ocsservers_id')"
-                           .$sql_ocs_missing
-                           .getEntitiesRestrictRequest(" AND","glpi_ocslinks");
+                     WHERE ((`glpi_computers`.`id` IS NULL
+                             AND `glpi_ocslinks`.`ocsservers_id` = '$ocsservers_id')".
+                            $sql_ocs_missing.")".
+                           getEntitiesRestrictRequest(" AND","glpi_ocslinks");
 
       $result_glpi = $DB->query($query_glpi);
 
