@@ -67,7 +67,9 @@ class NotificationTargetInfocom extends NotificationTarget {
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         $this->datas[$tag] = $values['label'];
+         if (!isset($this->datas[$tag])) {
+            $this->datas[$tag] = $values['label'];
+         }
       }
    }
 
