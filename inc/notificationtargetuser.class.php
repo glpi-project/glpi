@@ -104,8 +104,8 @@ class NotificationTargetUser extends NotificationTarget {
                                    'value'=>true));
       }
 
-      $lang = array('user.information' => $LANG['users'][5],
-                    'user.link'        => $LANG['users'][6]);
+      $lang = array('passwordforget.information' => $LANG['users'][5],
+                    'passwordforget.link'        => $LANG['users'][6]);
 
       foreach ($lang as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag, 'label'=>$label,
