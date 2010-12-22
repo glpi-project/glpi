@@ -646,23 +646,25 @@ class CommonDBTM extends CommonGLPI {
             if ($this->addToDB()) {
                $this->addMessageOnAddAction();
                $this->post_addItem();
-    
+
                 // Auto create infocoms
-               if ($CFG_GLPI["auto_create_infocoms"] && in_array($this->getType(),
-                                                                 $CFG_GLPI["infocom_types"])) {
+               if ($CFG_GLPI["auto_create_infocoms"]
+                   && in_array($this->getType(), $CFG_GLPI["infocom_types"])) {
+
                   $ic = new Infocom();
-                       if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+                  if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
                      $ic->add(array('itemtype' => $this->getType(),
                                     'items_id' => $this->fields['id']));
                   }
                }
-    
+
                //If itemtype is in infocomtype and if states_id field is filled
                //and item is not a template
-               if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
-                  && isset($this->input['states_id'])
-                           && (!isset($this->input['is_template']) 
-                              || !$this->input['is_template'])) {
+               if (in_array($this->getType(),$CFG_GLPI["infocom_types"])
+                   && isset($this->input['states_id'])
+                            && (!isset($this->input['is_template'])
+                                || !$this->input['is_template'])) {
+
                   //Check if we have to automaticall fill dates
                   Infocom::manageDateOnStatusChange($this);
                }
@@ -836,32 +838,32 @@ class CommonDBTM extends CommonGLPI {
             $x = 0;
             $this->updates   = array();
             $this->oldvalues = array();
-    
+
             foreach ($this->input as $key => $val) {
                if (array_key_exists($key,$this->fields)) {
-    
+
                   // Prevent history for date statement (for date for example)
                   if (is_null($this->fields[$key]) && $this->input[$key]=='NULL') {
                      $this->fields[$key] = 'NULL';
                   }
-    
+
                   if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
                      if ($key!="id") {
-    
+
                         // Store old values
                         if (!in_array($key,$this->history_blacklist)) {
                            $this->oldvalues[$key] = $this->fields[$key];
                         }
-    
+
                         $this->fields[$key] = $this->input[$key];
                         $this->updates[$x]  = $key;
                         $x++;
                      }
                   }
-    
+
                }
             }
-    
+
             if (count($this->updates)) {
                if (array_key_exists('date_mod',$this->fields)) {
                   // is a non blacklist field exists
@@ -871,27 +873,28 @@ class CommonDBTM extends CommonGLPI {
                   }
                }
                $this->pre_updateInDB();
-    
+
                if (count($this->updates)) {
                   if ($this->updateInDB($this->updates,
-                                        ($this->dohistory && $history ? $this->oldvalues : array()))) {
+                                        ($this->dohistory && $history ? $this->oldvalues
+                                                                      : array()))) {
                      $this->addMessageOnUpdateAction();
                      doHook("item_update", $this);
-    
+
                      // forward entity information if needed
                      if (count($this->forward_entity_to)
                          && (in_array("entities_id",$this->updates)
                              || in_array("is_recursive",$this->updates)) ) {
                         $this->forwardEntityInformations();
                      }
-    
+
                      //If itemtype is in infocomtype and if states_id field is filled
                      //and item not a template
-                     if (in_array($this->getType(),$CFG_GLPI["infocom_types"]) 
-                        && in_array('states_id',$this->updates)
-                           && ($this->getField('is_template') != NOT_AVAILABLE)) {
+                     if (in_array($this->getType(),$CFG_GLPI["infocom_types"])
+                         && in_array('states_id',$this->updates)
+                         && ($this->getField('is_template') != NOT_AVAILABLE)) {
                         //Check if we have to automaticall fill dates
-                        Infocom::manageDateOnStatusChange($this,false);
+                        Infocom::manageDateOnStatusChange($this, false);
                      }
                   }
                }
@@ -1102,6 +1105,7 @@ class CommonDBTM extends CommonGLPI {
    function post_deleteItem () {
    }
 
+
    /**
     * Actions done after the PURGE of the item in the database
     *
@@ -1223,12 +1227,13 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Actions done after the restore of the item 
+    * Actions done after the restore of the item
     *
     * @return nothing
    **/
    function post_restoreItem () {
    }
+
 
    /**
     * Add a message on restore action
@@ -1241,7 +1246,7 @@ class CommonDBTM extends CommonGLPI {
          return;
       }
 
-      $addMessAfterRedirect=false;
+      $addMessAfterRedirect = false;
       if (isset($this->input['_restore'])) {
          $addMessAfterRedirect = true;
       }
@@ -2325,104 +2330,120 @@ class CommonDBTM extends CommonGLPI {
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    }
 
+
    /**
     * Return a search option by looking for a value of a specific field
+    *
     * @param field the field in which looking for the value (for exampe : table, name, etc)
     * @param value the value to look for in the field
+    *
     * @return then search option array, or an empty array if not found
-    */
+   **/
    function getSearchOptionByField($field, $value) {
+
       foreach ($this->getSearchOptions() as $searchOption) {
-         if (isset($searchOption[$field]) 
-               && $searchOption[$field] == $value) {
+         if (isset($searchOption[$field]) && $searchOption[$field] == $value) {
             return $searchOption;
          }
       }
       return array();
    }
-   
+
+
    /**
     * Check float and decimal values
+    *
     * @param display or not messages in and addAfterRedirect
+    *
     * @return input the data checked
    **/
    function filterValues($display = true) {
       global $LANG;
+
       //Type mismatched fields
       $fails = array();
       if (isset($this->input) && is_array($this->input) && count($this->input)) {
+
          foreach ($this->input as $key =>$value) {
-            $unset = false;
-            $regs = array();
+            $unset        = false;
+            $regs         = array();
             $searchOption = $this->getSearchOptionByField('field',$key);
-            if (isset($searchOption['datatype']) 
-               && !is_null($value) 
-                  && $value != '' 
-                     && $value !='NULL') {
+
+            if (isset($searchOption['datatype'])
+                && !is_null($value)
+                && $value != ''
+                && $value !='NULL') {
 
                switch ($searchOption['datatype']) {
-                  case 'integer':
-                  case 'number':
-                  case 'decimal':
+                  case 'integer' :
+                  case 'number' :
+                  case 'decimal' :
                      if ($searchOption['datatype'] == 'integer') {
                         $this->input[$key] = floatval($value);
                      } else {
                         $this->input[$key] = intval($value);
-                     
                      }
                      if (!is_numeric($value)) {
                         $unset = true;
                      }
                      break;
-                  case 'bool':
+
+                  case 'bool' :
                      if (!in_array($value,array(0,1))) {
                         $unset = true;
                      }
                      break;
-                  case 'ip':
-                     $pattern = "\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
-                     $pattern.= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\."; 
-                     $pattern.= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
-                     $pattern.= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b";
+
+                  case 'ip' :
+                     $pattern  = "\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
+                     $pattern .= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
+                     $pattern .= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.";
+                     $pattern .= "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b";
                      if (!preg_match("/$pattern/", $value, $regs)) {
                         $unset = true;
                      }
                      break;
-                  case 'mac':
+
+                  case 'mac' :
                      preg_match("/([0-9a-fA-F]{2}([:-]|$)){6}$/",$value,$regs);
                      if (empty($regs)) {
                         $unset = true;
                      }
                      break;
-                  case 'date':
-                  case 'datetime':
+
+                  case 'date' :
+                  case 'datetime' :
                      // Date is already "reformat" according to getDateFormat()
-                     $pattern = "/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})";
-                     $pattern.= "([_][01][0-9]|2[0-3]:[0-5][0-9]:[0-5]?[0-9])?/";
+                     $pattern  = "/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})";
+                     $pattern .= "([_][01][0-9]|2[0-3]:[0-5][0-9]:[0-5]?[0-9])?/";
                      preg_match($pattern, $value, $regs);
                      if (empty($regs)) {
                         $unset = true;
                      }
                      break;
-               case 'itemtype':
-                  //Want to insert an itemtype, but the associated class doesn't exists
-                  if (!class_exists($value)) {
-                     $unset = true;
-                  }
-               case 'email':
-               case 'string':
-                  if (strlen($value)>255) {
-                     $this->input[$key] = substr($value,0,254);
-                  }
-                  break;
-               default:
-                  //Plugins can implement their own checks
-                  if (!$this->checkSpecificValues($searchOption['datatype'],$value)) {
-                     $unset = true;
-                  }
-                  break;
+
+                  case 'itemtype' :
+                     //Want to insert an itemtype, but the associated class doesn't exists
+                     if (!class_exists($value)) {
+                        $unset = true;
+                     }
+
+                  case 'email' :
+                  case 'string' :
+                     if (strlen($value)>255) {
+                        $this->input[$key] = substr($value,0,254);
+                     }
+                     break;
+
+                  default :
+                     //Plugins can implement their own checks
+                     if (!$this->checkSpecificValues($searchOption['datatype'],$value)) {
+                        $unset = true;
+                     }
+                     break;
                 }
             }
+
             if ($unset) {
                $fails[] = $searchOption['name'];
                unset($this->input[$key]);
@@ -2432,36 +2453,45 @@ class CommonDBTM extends CommonGLPI {
       if ($display && count($fails)) {
          //Display a message to indicate that one or more value where filtered
          $message = $LANG['common'][106].' : '.implode(',',$fails);
-         addMessageAfterRedirect($message,INFO,true);
+         addMessageAfterRedirect($message, INFO, true);
       }
    }
-   
+
+
    /**
     * Add more check for values
+    *
     * @param datatype datatype of the value
     * @param value value to check (pass by reference)
+    *
     * @return true if value is ok, false if not
-    */
+   **/
    function checkSpecificValues($datatype, &$value) {
       return true;
    }
-   
+
+
    /**
     * Check field unicity before insert or update
+    *
     * @param add true for insert, false for update
+    * @param $display_error
+    *
     * @return true if item can be written in DB, false if not
-    */
-   function checkUnicity($add = false, $display_error = true) {
-      global $LANG,$DB, $CFG_GLPI;
-      
+   **/
+   function checkUnicity($add=false, $display_error=true) {
+      global $LANG, $DB, $CFG_GLPI;
+
       $result = true;
       //Do not check unicity when creating infocoms
-      if (in_array(get_class($this), array('Infocom')) && $add) {
+      if (in_array(get_class($this), array('Infocom'))
+          && $add) {
          return $result;
       }
-      
+
       //Get all checks for this itemtype and this entity
       if  (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+
          //In case it's an infocom
          if (in_array(get_class($this), array('Infocom'))) {
             $infocom = new Infocom();
@@ -2473,6 +2503,7 @@ class CommonDBTM extends CommonGLPI {
          } else {
             $entities_id = $this->input['entities_id'];
          }
+
          $fields =  self::getUnicityFieldsConfig(get_class($this), $entities_id);
 
          //If there's fields to check
@@ -2480,24 +2511,27 @@ class CommonDBTM extends CommonGLPI {
             $where = "";
             foreach ($fields['fields'] as $field) {
                if (isset($this->input[$field]) && $this->input[$field] != '') {
-                  $where.= " `$field` = '".$this->input[$field]."'";
+                  $where .= " `$field` = '".$this->input[$field]."'";
                }
             }
+
             if ($where != '') {
                $where_global = "";
                if (!$fields['is_global']) {
                   $where_global = " AND `entities_id` = '$entities_id'";
                }
+
                //If update, exclude ID of the current object
                if (!$add) {
                   $where.=" AND `id` NOT IN (".$this->input['id'].") ";
                }
+
                if (countElementsInTable($this->table,"$where $where_global") > 0) {
                   if ($display_error) {
                       $message = array();
                       foreach ($fields['fields'] as $field) {
-                         $searchOption = $this->getSearchOptionByField('field',$field);
-                         $message[] = $searchOption['name'];
+                         $searchOption = $this->getSearchOptionByField('field', $field);
+                         $message[]    = $searchOption['name'];
                       }
                       addMessageAfterRedirect($LANG['setup'][813]." : ".implode(',',$message),
                                               true, ERROR, false);
@@ -2509,6 +2543,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return $result;
    }
+
 
    /**
     * Clean all infos which match some criteria
@@ -2528,28 +2563,35 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+
    /**
     * Return criteria unicity for an itemtype, in an entity
+    *
     * @param itemtype the itemtype for which unicity must be checked
     * @param entities_id the entity for which configuration must be retrivied
-    * @return an array of fields to check, or an empty array if no 
-    */
+    *
+    * @return an array of fields to check, or an empty array if no
+   **/
    public static function getUnicityFieldsConfig($itemtype, $entities_id = 0) {
       global $DB;
 
       //Get the first active configuration for this itemtype
-      $query = "SELECT `fields`, `is_global` FROM `glpi_field_unicities` 
-                WHERE `is_active`='1' 
-                   AND `itemtype` = '$itemtype' 
-                      AND (`entities_id`='$entities_id' OR `is_global` = '1')
-                ORDER BY `entities_id` DESC LIMIT 1";
+      $query = "SELECT `fields`, `is_global`
+                FROM `glpi_field_unicities`
+                WHERE `is_active`='1'
+                      AND `itemtype` = '$itemtype'
+                      AND (`entities_id` = '$entities_id'
+                           OR `is_global` = '1')
+                ORDER BY `entities_id` DESC
+                LIMIT 1";
+
       $result = $DB->query($query);
       $return = array();
       //A configuration found
       if ($DB->numrows($result)) {
          $tmp['is_global'] = $DB->result($result,0,'is_global');
-         $tmp['fields'] = explode(',',$DB->result($result,0,'fields'));
-         $return = $tmp;
+         $tmp['fields']    = explode(',',$DB->result($result,0,'fields'));
+         $return           = $tmp;
       }
       return $return;
    }
