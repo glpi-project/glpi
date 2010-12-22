@@ -342,7 +342,8 @@ function update0781to080($output='HTML') {
          $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                          (`notificationtemplates_id`, `language`, `subject`, `content_text`,
+                          (`notificationtemplates_id`, `language`, `subject`,
+                           `content_text`,
                            `content_html`)
                    VALUES ($notid, '', '##user.action##',
                           '##lang.user.realname## ##lang.user.firstname##
@@ -354,7 +355,7 @@ function update0781to080($output='HTML') {
 &lt;p&gt;##lang.passwordforget.information##&lt;/p&gt;
 &lt;p&gt;##lang.passwordforget.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');";
       $DB->query($query)
-      or die("0.80 add password forget notification translation" . $LANG['update'][90] . $DB->error());
+      or die("0.80 add password forget notification translation ".$LANG['update'][90].$DB->error());
 
       $query = "INSERT INTO `glpi_notifications`
                        (`name`, `entities_id`, `itemtype`, `event`, `mode`,
@@ -1197,15 +1198,15 @@ function update0781to080($output='HTML') {
       }
 
    if (!TableExists('glpi_field_unicities')) {
-      $query ="CREATE TABLE `glpi_field_unicities` (
-                `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-                `itemtype` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-                `entities_id` INT( 11 ) NOT NULL DEFAULT  '-1',
-                `fields` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-                `is_global` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                `is_active` TINYINT( 1 ) NOT NULL DEFAULT '0'
+      $query = "CREATE TABLE `glpi_field_unicities` (
+                  `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+                  `itemtype` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                  `entities_id` INT( 11 ) NOT NULL DEFAULT  '-1',
+                  `fields` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                  `is_global` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                  `is_active` TINYINT( 1 ) NOT NULL DEFAULT '0'
                 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci
-                  COMMENT =  'Stores field unicity criterias'";
+                  COMMENT = 'Stores field unicity criterias'";
       $DB->query($query)
           or die("0.80 add table glpi_field_unicities ".$LANG['update'][90]. $DB->error());
    }

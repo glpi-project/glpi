@@ -998,11 +998,14 @@ class Config extends CommonDBTM {
       NotificationEvent::debugEvent(new DBConnection(), $options);
    }
 
+
    /**
     * Display field unicity criterias form
-    */
+   **/
    function showFormFieldUnicity() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
+
+      //TODO unknow class
       $unicity = new FieldUnicity();
       $unicity->showForm($CFG_GLPI["id"], -1);
    }
