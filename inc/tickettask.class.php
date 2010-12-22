@@ -675,9 +675,9 @@ class TicketTask  extends CommonDBTM {
       $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
       $tab[4]['datatype'] = 'bool';
 
-      $tab[5]['table']     = 'glpi_users';
-      $tab[5]['field']     = 'name';
-      $tab[5]['name']      = $LANG['financial'][43];
+      $tab[5]['table'] = 'glpi_users';
+      $tab[5]['field'] = 'name';
+      $tab[5]['name']  = $LANG['financial'][43];
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'realtime';
