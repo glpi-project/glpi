@@ -174,7 +174,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][4]."&nbsp;:</td>";
-      echo "<td>"; 
+      echo "<td>";
       autocompletionTextField($this, "num");
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
@@ -1234,9 +1234,8 @@ class Contract extends CommonDBTM {
     *
     * @param $options possible options
     *
-    *@return Nothing (display)
-    *
-    **/
+    * @return Nothing (display)
+   **/
    static function dropdown($options = array()) {
       global $DB;
 
@@ -1320,12 +1319,11 @@ class Contract extends CommonDBTM {
     *
     * Print a select named $name with contract renewal options and selected value $value
     *
-    *@param $name string : HTML select name
-    *@param $value integer : HTML select selected value
+    * @param $name string : HTML select name
+    * @param $value integer : HTML select selected value
     *
-    *@return Nothing (display)
-    *
-    **/
+    * @return Nothing (display)
+   **/
    static function dropdownContractRenewal($name, $value=0) {
       global $LANG;
 
@@ -1339,11 +1337,10 @@ class Contract extends CommonDBTM {
    /**
     * Get the renewal type name
     *
-    *@param $value integer : HTML select selected value
+    * @param $value integer : HTML select selected value
     *
-    *@return string
-    *
-    **/
+    * @return string
+   **/
    static function getContractRenewalName($value) {
       global $LANG;
 
@@ -1362,10 +1359,11 @@ class Contract extends CommonDBTM {
 
    /**
     * Get renewal ID by name
+    *
     * @param $value the name of the renewal
     *
     * @return the ID of the renewal
-    */
+   **/
    static function getContractRenewalIDByName($value) {
       global $LANG;
 
@@ -1381,17 +1379,17 @@ class Contract extends CommonDBTM {
    /**
     * Dropdown for alerting of contracts
     *
-   * @param $myname select name
+    * @param $myname select name
     * @param $value default value
-    */
+   **/
    static function dropdownAlert($myname, $value) {
       global $LANG;
 
-      $tmp[0] = DROPDOWN_EMPTY_VALUE;
-      $tmp[pow(2, Alert::END)] = $LANG['buttons'][32];
+      $tmp[0]                     = DROPDOWN_EMPTY_VALUE;
+      $tmp[pow(2, Alert::END)]    = $LANG['buttons'][32];
       $tmp[pow(2, Alert::NOTICE)] = $LANG['financial'][10];
-      $tmp[(pow(2, Alert::END)+pow(2, Alert::NOTICE))] = $LANG['buttons'][32]." + ".
-                                                                           $LANG['financial'][10];
+      $tmp[(pow(2, Alert::END)+pow(2, Alert::NOTICE))]
+                                  = $LANG['buttons'][32]." + ". $LANG['financial'][10];
       Dropdown::showFromArray($myname, $tmp, array('value' => $value));
    }
 
@@ -1401,7 +1399,7 @@ class Contract extends CommonDBTM {
    function showDebug() {
 
       $options['entities_id'] = $this->getEntityID();
-      $options['contracts']  = array();
+      $options['contracts']   = array();
       NotificationEvent::debugEvent($this, $options);
    }
 
