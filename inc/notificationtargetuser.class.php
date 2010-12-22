@@ -99,7 +99,7 @@ class NotificationTargetUser extends NotificationTarget {
                     'user.firstname'         => $LANG['common'][43],
                     'user.token'             => $LANG['users'][4],
                     'user.passwordforgeturl' => $LANG['common'][94],
-                    'user.action'            => $LANG['rulesengine'][30],
+                    'user.action'            => $LANG['mailing'][119],
                      );
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'=>$tag,'label'=>$label,

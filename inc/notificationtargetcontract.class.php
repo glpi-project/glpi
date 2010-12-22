@@ -52,7 +52,7 @@ class NotificationTargetContract extends NotificationTarget {
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $events = $this->getEvents();
-      $this->datas['##contract.action##'] = $events[$event];
+      $this->datas['##contract.action##'] = $LANG['mailing'][39]." - ".$events[$event];
 
       foreach ($options['contracts'] as $id => $contract) {
          $tmp = array();
@@ -90,11 +90,10 @@ class NotificationTargetContract extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('contract.action'  => $LANG['mailing'][39],
+      $tags = array('contract.action'  => $LANG['mailing'][119],
                     'contract.name'    => $LANG['common'][16],
                     'contract.number'  => $LANG['financial'][4],
                     'contract.type'    => $LANG['common'][17],
-                    'contract.time'    => $LANG['contract'][0].'/'.$LANG['contract'][1],
                     'contract.entity'  => $LANG['entity'][0]);
 
       foreach ($tags as $tag => $label) {
@@ -103,6 +102,15 @@ class NotificationTargetContract extends NotificationTarget {
                                    'value' => true));
       }
 
+
+      $tags = array('contract.time'    => $LANG['contract'][0].' / '.$LANG['contract'][1]);
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => false,
+                                   'lang'  => true));
+      }
       $this->addTagToList(array('tag'     => 'contracts',
                                 'label'   => $LANG['reports'][57],
                                 'value'   => false,
