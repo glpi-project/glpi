@@ -65,7 +65,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->datas[$tag]) {
+         if (!isset($this->datas[$tag])) {
             $this->datas[$tag] = $values['label'];
          }
       }
