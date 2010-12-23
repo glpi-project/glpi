@@ -246,26 +246,25 @@ class TicketValidation  extends CommonDBChild {
          switch ($this->fields["status"]) {
             case 'accepted' :
                $changes[2] = getUserName($this->fields["users_id_validate"]). " : ".
-                             $LANG['validation'][19];
+                                         $LANG['validation'][19];
                break;
 
             case 'rejected' :
-               $changes[2] =$LANG['validation'][31]." ".getUserName($this->fields["users_id_validate"]);
-               break;
-
             default :
-               $changes[2] =$LANG['validation'][31]." ".getUserName($this->fields["users_id_validate"]);
+               $changes[2] = $LANG['validation'][31]." ".
+                             getUserName($this->fields["users_id_validate"]);
                break;
 
          }
          Log::history($this->getField('tickets_id'), 'Ticket',  $changes, $this->getType(),
-                        HISTORY_LOG_SIMPLE_MESSAGE);
+                      HISTORY_LOG_SIMPLE_MESSAGE);
 
          // Set global validation to accepted to define one
          if ($job->fields['global_validation'] == 'waiting'
-            || (countElementsInTable('glpi_ticketvalidations',
-                                    "`tickets_id` = '".$this->fields["tickets_id"]."'") == 1)) {
-            $input['id'] = $this->fields["tickets_id"];
+             || (countElementsInTable('glpi_ticketvalidations',
+                                      "`tickets_id` = '".$this->fields["tickets_id"]."'") == 1)) {
+
+            $input['id']                = $this->fields["tickets_id"];
             $input['global_validation'] = $this->fields["status"];
             $job->update($input);
          }
