@@ -1200,15 +1200,19 @@ function update0781to080($output='HTML') {
    if (!TableExists('glpi_fieldunicities')) {
       $query = "CREATE TABLE `glpi_fieldunicities` (
                   `id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+                  `name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
                   `itemtype` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
                   `entities_id` INT( 11 ) NOT NULL DEFAULT  '-1',
                   `fields` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
                   `is_global` TINYINT( 1 ) NOT NULL DEFAULT '0',
-                  `is_active` TINYINT( 1 ) NOT NULL DEFAULT '0'
+                  `is_active` TINYINT( 1 ) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci
                 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci
                   COMMENT = 'Stores field unicity criterias'";
       $DB->query($query)
           or die("0.80 add table glpi_fieldunicities ".$LANG['update'][90]. $DB->error());
+
+      $ADDTODISPLAYPREF['FieldUnicity'] = array(1, 80, 4, 3, 7, 30);
    }
 
    if ($migration->addField('glpi_mailcollectors', 'passwd',
