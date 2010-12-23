@@ -1313,7 +1313,7 @@ function update0781to080($output='HTML') {
          $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                   VALUES (NULL, $notid, '', '##lang.crontask.action##',
+                   VALUES (NULL, $notid, '', '##crontask.action##',
                            '##lang.crontask.warning## \r\n\n##FOREACHcrontasks## \n ##crontask.name## : ##crontask.description##\n \n##ENDFOREACHcrontasks##', '&lt;p&gt;##lang.crontask.warning##&lt;/p&gt;\r\n&lt;p&gt;##FOREACHcrontasks## &lt;br /&gt;&lt;a href=\"##crontask.url##\"&gt;##crontask.name##&lt;/a&gt; : ##crontask.description##&lt;br /&gt; &lt;br /&gt;##ENDFOREACHcrontasks##&lt;/p&gt;')";
       $DB->query($query)
       or die("0.80 add crontask notification translation " . $LANG['update'][90] . $DB->error());
