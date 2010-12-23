@@ -1704,6 +1704,7 @@ class Search {
          $mayberecursive = $item->maybeRecursive();
       }
 
+      $ret = "";
       switch ($itemtype) {
          case 'ReservationItem' :
             $ret = "`glpi_reservationitems`.`is_active` AS ACTIVE, ";
@@ -1718,7 +1719,13 @@ class Search {
             break;
 
          default :
-            $ret = "";
+            // Plugin can override core definition for its type
+            if ($plug=isPluginItemType($itemtype)) {
+               $function = 'plugin_'.$plug['plugin'].'_addDefaultSelect';
+               if (function_exists($function)) {
+                  $ret = $function($itemtype);
+               }
+            }
       }
       if ($itemtable=='glpi_entities') {
          $ret .= "`$itemtable`.`id` as entities_id, '1' as is_recursive, ";
@@ -2083,6 +2090,16 @@ class Search {
             break;
 
          default :
+            // Plugin can override core definition for its type
+            if ($plug=isPluginItemType($itemtype)) {
+               $function = 'plugin_'.$plug['plugin'].'_addDefaultWhere';
+               if (function_exists($function)) {
+                  $out = $function($itemtype);
+                  if (!empty($out)) {
+                     return $out;
+                  }
+               }
+            }
             return "";
       }
    }
@@ -2542,6 +2559,16 @@ class Search {
               return Search::addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_ticketvalidations","");
            }
          default :
+            // Plugin can override core definition for its type
+            if ($plug=isPluginItemType($itemtype)) {
+               $function = 'plugin_'.$plug['plugin'].'_addDefaultJoin';
+               if (function_exists($function)) {
+                  $out = $function($itemtype,$ref_table,$already_link_tables);
+                  if (!empty($out)) {
+                     return $out;
+                  }
+               }
+            }
             return "";
       }
    }
