@@ -1600,8 +1600,10 @@ class Ticket extends CommonDBTM {
       if (isset($this->input["_additional_observers"])
           && is_array($this->input["_additional_observers"])
           && count($this->input["_additional_observers"])) {
+
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::OBSERVER);
+
          foreach ($this->input["_additional_observers"] as $tmp) {
             if (isset($tmp['users_id'])) {
                foreach ($tmp as $key => $val) {
@@ -1612,11 +1614,14 @@ class Ticket extends CommonDBTM {
             }
          }
       }
+
       if (isset($this->input["_additional_assigns"])
           && is_array($this->input["_additional_assigns"])
           && count($this->input["_additional_assigns"])) {
+
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::ASSIGN);
+
          foreach ($this->input["_additional_assigns"] as $tmp) {
             if (isset($tmp['users_id'])) {
                foreach ($tmp as $key => $val) {
@@ -1627,11 +1632,14 @@ class Ticket extends CommonDBTM {
             }
          }
       }
+
       if (isset($this->input["_additional_requesters"])
           && is_array($this->input["_additional_requesters"])
           && count($this->input["_additional_requesters"])) {
+
          $input2 = array('tickets_id' => $this->fields['id'],
                          'type'       => Ticket::REQUESTER);
+
          foreach ($this->input["_additional_requesters"] as $uid) {
             $input2['users_id'] = $uid;
             $ticket_user->add($input2);
@@ -4731,8 +4739,7 @@ class Ticket extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       // show a tab with count of jobs in the central and give link
-      if (!haveRight("show_all_ticket","1")
-         && !haveRight("create_ticket",1)) {
+      if (!haveRight("show_all_ticket","1") && !haveRight("create_ticket",1)) {
          return false;
       }
       if (!haveRight("show_all_ticket","1")) {
@@ -4744,15 +4751,18 @@ class Ticket extends CommonDBTM {
                 FROM `glpi_tickets` ";
 
       if ($foruser) {
-         $query.= " LEFT JOIN `glpi_tickets_users`
+         $query .= " LEFT JOIN `glpi_tickets_users`
                         ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)";
       }
       $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
+
       if ($foruser) {
          $query .= " AND `glpi_tickets_users`.`type` = '".Ticket::REQUESTER."'
-                           AND `glpi_tickets_users`.`users_id` = '".getLoginUserID()."' ";
+                     AND `glpi_tickets_users`.`users_id` = '".getLoginUserID()."' ";
       }
+
       $query .= "GROUP BY `status`";
+
       $result = $DB->query($query);
 
       $status = array('new'     => 0,
