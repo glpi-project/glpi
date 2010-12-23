@@ -266,5 +266,15 @@ class FieldUnicity extends CommonDropdown {
       return self::checkBeforeInsert($input);
    }
    
+   /**
+    * Delete all criterias for an itemtype
+    * @param itemtype
+    * @return nothing
+    */
+   static function deleteForItemtype($itemtype) {
+      global $DB;
+      $query = "DELETE FROM `glpi_fieldunicities` WHERE `itemtype`='$itemtype'";
+      $DB->query($query);
+   }
 }
 ?>
