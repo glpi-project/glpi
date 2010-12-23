@@ -63,6 +63,9 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $ong = array();
       $ong[1] = $this->getTypeName();
+      foreach ($this->defineMoreTabs($options) as $key => $value) {
+         $ong[$key] = $value;
+      }
       return $ong;
    }
 
@@ -100,21 +103,25 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return true if handled (for class stack)
     **/
    function showTabContent ($ID, $tab) {
-
       if (!$this->isNewID($ID)) {
          switch ($tab) {
             case -1 :
                Plugin::displayAction($this, $tab);
+               $this->displayMoreTabs($tab);
                return false;
 
             default :
+               $this->displayMoreTabs($tab);
                return Plugin::displayAction($this, $tab);
          }
       }
       return false;
    }
 
-
+   function displayMoreTabs($tab) {
+   	
+   }
+   
    /**
     * Display title above search engine
     *

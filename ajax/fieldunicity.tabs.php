@@ -36,29 +36,6 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-if (!isset($_POST['id'])) {
-   exit();
-}
-
-if (!isset($_REQUEST['glpi_tab'])) {
-   exit();
-}
-
-
-$disk = new FieldUnicity();
-
-if (isset($_POST["id"]) && $_POST['id']>0 && $disk->can($_POST['id'],'r')) {
-
-   switch($_REQUEST['glpi_tab']) {
-      default :
-         if (!Plugin::displayAction($disk, $_REQUEST['glpi_tab'])) {
-         }
-   }
-}
-
-ajaxFooter();
-
+$dropdown = new FieldUnicity();
+include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
 ?>
