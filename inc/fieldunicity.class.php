@@ -187,7 +187,7 @@ class FieldUnicity extends CommonDropdown {
       global $LANG,$DB;
 
       //DO not check unicity on fields with theses names
-      $blacklisted_options = array('id','date_mod');
+      $blacklisted_options = array('id','date_mod','is_recursive');
       //Do not check unicity on fields in DB with theses types
       $blacklisted_types = array('text','longtext');
  
@@ -222,7 +222,7 @@ class FieldUnicity extends CommonDropdown {
                && !in_array($field['Type'],$blacklisted_types)
                   && !in_array($field['Field'],$blacklisted_options)) {
                echo "<option value='".$field['Field']."'"; 
-               if (in_array($field['Field'],$criteria['fields'])) {
+               if (isset($criteria['fields']) && in_array($field['Field'],$criteria['fields'])) {
                   echo " selected ";
                }
                echo  ">".$searchOption['name']."</option>";
