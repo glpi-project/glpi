@@ -2529,10 +2529,15 @@ class CommonDBTM extends CommonGLPI {
                   if ($display_error) {
                       $message = array();
                       foreach ($fields['fields'] as $field) {
-                         $searchOption = $this->getSearchOptionByField('field', $field);
+                         $table = getTableNameForForeignKeyField($field);
+                         if ($table != '') {
+                            $searchOption = $this->getSearchOptionByField('field', 'name',$table);
+                         } else {
+                            $searchOption = $this->getSearchOptionByField('field', $field);
+                         }
                          $message[]    = $searchOption['name'];
                       }
-                      addMessageAfterRedirect($LANG['setup'][813]." : ".implode(',',$message),
+                      addMessageAfterRedirect($LANG['setup'][813]." : ".implode(' & ',$message),
                                               true, ERROR, false);
                   }
                   $result = false;

@@ -32,7 +32,6 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-logDebug($dropdown);
 if (!($dropdown instanceof CommonDropdown)) {
    exit();
 }
