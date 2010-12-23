@@ -64,15 +64,15 @@ class FieldUnicity extends CommonDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => 'itemtype',
+      return array(array('name'  => 'is_active',
+                         'label' => $LANG['common'][60],
+                         'type'  => 'bool'),
+                   array('name'  => 'itemtype',
                          'label' => $LANG['common'][17],
                          'type'  => 'unicity_itemtype'),
                    array('name'  => 'fields',
                          'label' => $LANG['setup'][815],
                          'type'  => 'unicity_fields'),
-                   array('name'  => 'is_active',
-                         'label' => $LANG['common'][60],
-                         'type'  => 'bool'),
                    array('name'  => 'is_global',
                          'label' => $LANG['setup'][814],
                          'type'  => 'unicity_global'));
