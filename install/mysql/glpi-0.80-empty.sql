@@ -1642,18 +1642,17 @@ INSERT INTO `glpi_events` VALUES ('1','-1','system','2010-12-23 09:38:13','login
 ### Dump table glpi_fieldunicities
 
 DROP TABLE IF EXISTS `glpi_fieldunicities`;
-CREATE TABLE `glpi_fieldunicities` (
+CREATE TABLE IF NOT EXISTS `glpi_fieldunicities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `itemtype` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `entities_id` int(11) NOT NULL DEFAULT '-1',
   `fields` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `is_global` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Stores field unicity criterias';
-
 
 ### Dump table glpi_filesystems
 

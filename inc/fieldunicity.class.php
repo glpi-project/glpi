@@ -72,10 +72,7 @@ class FieldUnicity extends CommonDropdown {
                          'type'  => 'unicity_itemtype'),
                    array('name'  => 'fields',
                          'label' => $LANG['setup'][815],
-                         'type'  => 'unicity_fields'),
-                   array('name'  => 'is_global',
-                         'label' => $LANG['setup'][814],
-                         'type'  => 'unicity_global'));
+                         'type'  => 'unicity_fields'));
    }
    
    /**
@@ -90,12 +87,6 @@ class FieldUnicity extends CommonDropdown {
          case 'unicity_fields':
             self::selectCriterias($this);
             break;
-         case 'unicity_global':
-            if (!$_SESSION['glpiactive_entity']) {
-               Dropdown::showYesNo($field['name'],$this->fields[$field['name']]);
-            } else {
-               echo Dropdown::getYesNo($this->fields[$field['name']]);
-            }
       }
    }
 
@@ -141,9 +132,9 @@ class FieldUnicity extends CommonDropdown {
       global $DB;
 
       //Get the first active configuration for this itemtype
-      $query = "SELECT `fields`, `is_global` FROM `glpi_fieldunicities` 
-                WHERE `itemtype` = '$itemtype' 
-                   AND (`entities_id`='$entities_id' OR `is_global` = '1') "; 
+      $query = "SELECT `fields`, `is_recursive` FROM `glpi_fieldunicities` 
+                WHERE `itemtype` = '$itemtype' ";
+      $query.= getEntitiesRestrictRequest(" AND","","",$entities_id,true); 
       if ($check_active) {
          $query.=" AND `is_active`='1' ";
       }
@@ -153,7 +144,7 @@ class FieldUnicity extends CommonDropdown {
       $return = array();
       //A configuration found
       if ($DB->numrows($result)) {
-         $tmp['is_global'] = $DB->result($result,0,'is_global');
+         $tmp['is_recursive'] = $DB->result($result,0,'is_recursive');
          $tmp['fields'] = explode(',',$DB->result($result,0,'fields'));
          $return = $tmp;
       }
@@ -232,11 +223,10 @@ class FieldUnicity extends CommonDropdown {
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'itemtype';
 
-      $tab[7]['table']         = $this->getTable();
-      $tab[7]['field']         = 'is_global';
-      $tab[7]['name']          = $LANG['setup'][814];
-      $tab[7]['datatype']      = 'bool';
-      $tab[7]['massiveaction'] = false;
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
