@@ -2511,7 +2511,7 @@ class CommonDBTM extends CommonGLPI {
             $where = "";
             foreach ($fields['fields'] as $field) {
                if (isset($this->input[$field]) && $this->input[$field] != '') {
-                  $where .= " `$field` = '".$this->input[$field]."'";
+                  $where .= " AND `$field` = '".$this->input[$field]."'";
                }
             }
 
@@ -2525,8 +2525,7 @@ class CommonDBTM extends CommonGLPI {
                if (!$add) {
                   $where.=" AND `id` NOT IN (".$this->input['id'].") ";
                }
-
-               if (countElementsInTable($this->table,"$where $where_global") > 0) {
+               if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
                   if ($display_error) {
                       $message = array();
                       foreach ($fields['fields'] as $field) {
