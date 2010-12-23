@@ -50,7 +50,7 @@ abstract class CommonDropdown extends CommonDBTM {
    //Menu & navigation
    public $first_level_menu = "config";
    public $second_level_menu = "dropdowns";
-   
+
    /**
     * Return Additional Fileds for this type
     **/
@@ -136,7 +136,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function displayHeader () {
-      commonHeader($this->getTypeName(), '', $this->first_level_menu, 
+      commonHeader($this->getTypeName(), '', $this->first_level_menu,
                    $this->second_level_menu, get_class($this));
    }
 
@@ -196,9 +196,8 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'textarea' :
-               echo "<textarea name='".$field['name']."' cols='40' rows='3'>";
-               echo $this->fields[$field['name']];
-               echo "</textarea >";
+               echo "<textarea name='".$field['name']."' cols='40' rows='3'>".
+                     $this->fields[$field['name']]."</textarea >";
                break;
 
             case 'parent' :
@@ -251,9 +250,9 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
    function displaySpecificTypeField($ID, $field = array()) {
-      
+
    }
-   
+
    function pre_deleteItem() {
 
       if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {

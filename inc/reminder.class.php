@@ -92,8 +92,9 @@ class Reminder extends CommonDBTM {
          }
       }
 
-      if (isset($input['is_helpdesk_visible']) && $input['is_helpdesk_visible']
-         && (!isset($input['is_private']) || $input['is_private'])) {
+      if (isset($input['is_helpdesk_visible'])
+          && $input['is_helpdesk_visible']
+          && (!isset($input['is_private']) || $input['is_private'])) {
          unset($input['is_helpdesk_visible']);
       }
 
@@ -146,8 +147,9 @@ class Reminder extends CommonDBTM {
          }
       }
 
-      if (isset($input['is_helpdesk_visible']) && $input['is_helpdesk_visible']
-         && (!isset($input['is_private']) || $input['is_private'])) {
+      if (isset($input['is_helpdesk_visible'])
+          && $input['is_helpdesk_visible']
+          && (!isset($input['is_private']) || $input['is_private'])) {
          unset($input['is_helpdesk_visible']);
       }
 
@@ -224,10 +226,10 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".$LANG['common'][57]."&nbsp;:&nbsp;</td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this,"name",array('size'   => 80,
-                                                   'entity' => -1,
-                                                   'user'   => $this->fields["users_id"],
-                                                   'option' => $onfocus));
+         autocompletionTextField($this, "name", array('size'   => 80,
+                                                      'entity' => -1,
+                                                      'user'   => $this->fields["users_id"],
+                                                      'option' => $onfocus));
       } else {
          echo $this->fields['name'];
       }
@@ -273,7 +275,7 @@ class Reminder extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>".$LANG['tracking'][39]."&nbsp;:&nbsp;</td>";
          echo "<td>";
          if ($canedit) {
-            Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+            Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
          } else {
             echo Dropdpown::getYesNo($this->fields['is_helpdesk_visible']);
          }

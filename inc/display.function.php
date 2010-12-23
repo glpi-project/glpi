@@ -1706,9 +1706,7 @@ function helpHeader($title, $url='') {
    // End navigation bar
    // End headline
    ///Le sous menu contextuel 1
-   echo "<div id='c_ssmenu1'>";
-   echo "&nbsp;";
-   echo "</div>";
+   echo "<div id='c_ssmenu1'>&nbsp;</div>";
 
    //  Le fil d ariane
    echo "<div id='c_ssmenu2'>";
@@ -1741,8 +1739,8 @@ function helpHeader($title, $url='') {
 
    if (haveRight('create_ticket',1) && strpos($_SERVER['PHP_SELF'],"ticket")) {
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
-               $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"></a></li>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".$LANG['buttons'][8].
+             "\" alt=\"".$LANG['buttons'][8]."\"></a></li>";
    }
 
    echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";

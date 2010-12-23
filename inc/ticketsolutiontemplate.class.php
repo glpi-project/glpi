@@ -45,6 +45,8 @@ class TicketSolutionTemplate extends CommonDropdown {
 
       return $LANG['jobresolution'][6];
    }
+
+
    function canCreate() {
       return haveRight('entity_dropdown', 'w');
    }
@@ -62,7 +64,7 @@ class TicketSolutionTemplate extends CommonDropdown {
                          'label' => $LANG['job'][48],
                          'type'  => 'dropdownValue',
                          'list'  => true),
-                  array('name'  => 'content',
+                   array('name'  => 'content',
                          'label' => $LANG['knowbase'][15],
                          'type'  => 'textarea'));
    }
