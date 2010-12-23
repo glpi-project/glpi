@@ -870,7 +870,7 @@ function update0781to080($output='HTML') {
    if ($migration->addField("glpi_infocoms", "warranty_date", "DATE NULL")) {
       $migration->migrationOneTable("glpi_infocoms");
 
-      $query = "UPDATE  `glpi_infocoms`
+      $query = "UPDATE `glpi_infocoms`
                 SET `warranty_date` = `buy_date`";
       $DB->query($query)
       or die("0.80 set copy buy_date to warranty_date in glpi_infocoms ".$LANG['update'][90].
@@ -1077,7 +1077,7 @@ function update0781to080($output='HTML') {
                    INNER JOIN `glpi_notifications`
                      ON (`glpi_notifications`.`id` = `glpi_notificationtargets`.`notifications_id`)
                    WHERE `glpi_notifications`.`itemtype` = 'Ticket'
-                         AND `glpi_notificationtargets`.`type` = 1
+                         AND `glpi_notificationtargets`.`type` = '1'
                          AND `glpi_notificationtargets`.`items_id` = '$from'";
 
          if ($result=$DB->query($query)) {
@@ -1432,19 +1432,20 @@ function update0781to080($output='HTML') {
    $types = array('docx' => array('name' => 'Word XML',
                                   'icon' => 'doc-dist.png'),
                   'xlsx' => array('name' => 'Excel XML',
-                                  'icon' => 'xls-dist.png'), 
+                                  'icon' => 'xls-dist.png'),
                   'pptx' => array('name' => 'PowerPoint XML',
                                   'icon' => 'ppt-dist.png'));
 
    foreach ($types as $ext => $data) {
 
-      $query = "SELECT * FROM `glpi_documenttypes` WHERE `ext` = '$ext'";
+      $query = "SELECT *
+                FROM `glpi_documenttypes`
+                WHERE `ext` = '$ext'";
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result) == 0) {
             $query = "INSERT INTO `glpi_documenttypes`
-                     (`name`,`ext`,`icon`,`is_uploadable`,`date_mod`) 
-                     VALUES ('".$data['name']."','$ext','".$data['icon']."',
-                              '1',NOW());";
+                             (`name`, `ext`, `icon`, `is_uploadable`, `date_mod`)
+                      VALUES ('".$data['name']."', '$ext', '".$data['icon']."', '1', NOW())";
             $DB->query($query)
             or die("0.80 add document type $ext ".$LANG['update'][90] .$DB->error());
          }

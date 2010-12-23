@@ -1631,7 +1631,7 @@ function helpHeader($title, $url='') {
    // Home
    echo "<li id='menu1'>";
    echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-            $LANG['job'][13]."\" class='itemP'>".$LANG['central'][5]."</a>";
+          $LANG['job'][13]."\" class='itemP'>".$LANG['central'][5]."</a>";
    echo "</li>";
 
    //  Suivi ticket

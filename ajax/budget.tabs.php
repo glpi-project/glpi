@@ -58,7 +58,7 @@ if ($_POST['id']>0 && $budget->can($_POST['id'],'r')) {
          $budget->showitems();
          Document::showAssociated($budget);
          Link::showForItem('Budget',$_POST["id"]);
-         Plugin::displayAction($budget,$_REQUEST['glpi_tab'], $_POST["withtemplate"]);
+         Plugin::displayAction($budget, $_REQUEST['glpi_tab'], $_POST["withtemplate"]);
          break;
 
       case 2 :
