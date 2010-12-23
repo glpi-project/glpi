@@ -249,9 +249,9 @@ class ConsumableItem extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[34]['table'] = $this->getTable();
-      $tab[34]['field'] = 'ref';
-      $tab[34]['name']  = $LANG['consumables'][2];
+      $tab[34]['table']    = $this->getTable();
+      $tab[34]['field']    = 'ref';
+      $tab[34]['name']     = $LANG['consumables'][2];
       $tab[34]['datatype'] = 'string';
 
       $tab[4]['table'] = 'glpi_consumableitemtypes';

@@ -799,51 +799,51 @@ class Computer extends CommonDBTM {
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[4]['table']     = 'glpi_computertypes';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['common'][17];
+      $tab[4]['table']  = 'glpi_computertypes';
+      $tab[4]['field']  = 'name';
+      $tab[4]['name']   = $LANG['common'][17];
 
-      $tab[40]['table']     = 'glpi_computermodels';
-      $tab[40]['field']     = 'name';
-      $tab[40]['name']      = $LANG['common'][22];
+      $tab[40]['table'] = 'glpi_computermodels';
+      $tab[40]['field'] = 'name';
+      $tab[40]['name']  = $LANG['common'][22];
 
-      $tab[31]['table']     = 'glpi_states';
-      $tab[31]['field']     = 'name';
-      $tab[31]['name']      = $LANG['state'][0];
+      $tab[31]['table'] = 'glpi_states';
+      $tab[31]['field'] = 'name';
+      $tab[31]['name']  = $LANG['state'][0];
 
-      $tab[45]['table']     = 'glpi_operatingsystems';
-      $tab[45]['field']     = 'name';
-      $tab[45]['name']      = $LANG['computers'][9];
+      $tab[45]['table'] = 'glpi_operatingsystems';
+      $tab[45]['field'] = 'name';
+      $tab[45]['name']  = $LANG['computers'][9];
 
-      $tab[46]['table']     = 'glpi_operatingsystemversions';
-      $tab[46]['field']     = 'name';
-      $tab[46]['name']      = $LANG['computers'][52];
+      $tab[46]['table'] = 'glpi_operatingsystemversions';
+      $tab[46]['field'] = 'name';
+      $tab[46]['name']  = $LANG['computers'][52];
 
-      $tab[41]['table']     = 'glpi_operatingsystemservicepacks';
-      $tab[41]['field']     = 'name';
-      $tab[41]['name']      = $LANG['computers'][53];
+      $tab[41]['table'] = 'glpi_operatingsystemservicepacks';
+      $tab[41]['field'] = 'name';
+      $tab[41]['name']  = $LANG['computers'][53];
 
-      $tab[42]['table']     = 'glpi_autoupdatesystems';
-      $tab[42]['field']     = 'name';
-      $tab[42]['name']      = $LANG['computers'][51];
+      $tab[42]['table'] = 'glpi_autoupdatesystems';
+      $tab[42]['field'] = 'name';
+      $tab[42]['name']  = $LANG['computers'][51];
 
-      $tab[43]['table']     = $this->getTable();
-      $tab[43]['field']     = 'os_license_number';
-      $tab[43]['name']      = $LANG['computers'][10];
+      $tab[43]['table'] = $this->getTable();
+      $tab[43]['field'] = 'os_license_number';
+      $tab[43]['name']  = $LANG['computers'][10];
 
-      $tab[44]['table']     = $this->getTable();
-      $tab[44]['field']     = 'os_licenseid';
-      $tab[44]['name']      = $LANG['computers'][11];
+      $tab[44]['table'] = $this->getTable();
+      $tab[44]['field'] = 'os_licenseid';
+      $tab[44]['name']  = $LANG['computers'][11];
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'serial';
       $tab[5]['name']      = $LANG['common'][19];
-      $tab[5]['datatype'] = 'string';
+      $tab[5]['datatype']  = 'string';
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'otherserial';
       $tab[6]['name']      = $LANG['common'][20];
-      $tab[6]['datatype'] = 'string';
+      $tab[6]['datatype']  = 'string';
 
       $tab[16]['table']     = $this->getTable();
       $tab[16]['field']     = 'comment';
@@ -858,20 +858,20 @@ class Computer extends CommonDBTM {
       $tab[17]['table']     = $this->getTable();
       $tab[17]['field']     = 'contact';
       $tab[17]['name']      = $LANG['common'][18];
-      $tab[17]['datatype'] = 'string';
+      $tab[17]['datatype']  = 'string';
 
       $tab[18]['table']     = $this->getTable();
       $tab[18]['field']     = 'contact_num';
       $tab[18]['name']      = $LANG['common'][21];
-      $tab[18]['datatype'] = 'string';
+      $tab[18]['datatype']  = 'string';
 
-      $tab[70]['table']     = 'glpi_users';
-      $tab[70]['field']     = 'name';
-      $tab[70]['name']      = $LANG['common'][34];
+      $tab[70]['table'] = 'glpi_users';
+      $tab[70]['field'] = 'name';
+      $tab[70]['name']  = $LANG['common'][34];
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'name';
-      $tab[71]['name']      = $LANG['common'][35];
+      $tab[71]['table'] = 'glpi_groups';
+      $tab[71]['field'] = 'name';
+      $tab[71]['name']  = $LANG['common'][35];
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -879,26 +879,26 @@ class Computer extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[32]['table']     = 'glpi_networks';
-      $tab[32]['field']     = 'name';
-      $tab[32]['name']      = $LANG['setup'][88];
+      $tab[32]['table'] = 'glpi_networks';
+      $tab[32]['field'] = 'name';
+      $tab[32]['name']  = $LANG['setup'][88];
 
-      $tab[33]['table']     = 'glpi_domains';
-      $tab[33]['field']     = 'name';
-      $tab[33]['name']      = $LANG['setup'][89];
+      $tab[33]['table'] = 'glpi_domains';
+      $tab[33]['field'] = 'name';
+      $tab[33]['name']  = $LANG['setup'][89];
 
-      $tab[23]['table']     = 'glpi_manufacturers';
-      $tab[23]['field']     = 'name';
-      $tab[23]['name']      = $LANG['common'][5];
+      $tab[23]['table'] = 'glpi_manufacturers';
+      $tab[23]['field'] = 'name';
+      $tab[23]['name']  = $LANG['common'][5];
 
       $tab[24]['table']     = 'glpi_users';
       $tab[24]['field']     = 'name';
       $tab[24]['linkfield'] = 'users_id_tech';
       $tab[24]['name']      = $LANG['common'][10];
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table'] = 'glpi_entities';
+      $tab[80]['field'] = 'completename';
+      $tab[80]['name']  = $LANG['entity'][0];
 
 
       $tab['periph'] = $LANG['title'][30];

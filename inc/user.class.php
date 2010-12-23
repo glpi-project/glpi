@@ -1619,16 +1619,16 @@ class User extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[34]['table'] = $this->getTable();
-      $tab[34]['field'] = 'realname';
-      $tab[34]['name']  = $LANG['common'][48];
-      $tab[34]['datatype']      = 'string';
-      
-      $tab[9]['table'] = $this->getTable();
-      $tab[9]['field'] = 'firstname';
-      $tab[9]['name']  = $LANG['common'][43];
-      $tab[9]['datatype']      = 'string';
-      
+      $tab[34]['table']    = $this->getTable();
+      $tab[34]['field']    = 'realname';
+      $tab[34]['name']     = $LANG['common'][48];
+      $tab[34]['datatype'] = 'string';
+
+      $tab[9]['table']     = $this->getTable();
+      $tab[9]['field']     = 'firstname';
+      $tab[9]['name']      = $LANG['common'][43];
+      $tab[9]['datatype']  = 'string';
+
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'email';
       $tab[5]['name']     = $LANG['setup'][14];
@@ -1641,21 +1641,21 @@ class User extends CommonDBTM {
       $tab[8]['name']     = $LANG['common'][60];
       $tab[8]['datatype'] = 'bool';
 
-      $tab[6]['table'] = $this->getTable();
-      $tab[6]['field'] = 'phone';
-      $tab[6]['name']  = $LANG['help'][35];
-      $tab[6]['datatype']      = 'string';
-      
-      $tab[10]['table'] = $this->getTable();
-      $tab[10]['field'] = 'phone2';
-      $tab[10]['name']  = $LANG['help'][35]." 2";
-      $tab[10]['datatype']      = 'string';
-      
-      $tab[11]['table'] = $this->getTable();
-      $tab[11]['field'] = 'mobile';
-      $tab[11]['name']  = $LANG['common'][42];
-      $tab[11]['datatype']      = 'string';
-      
+      $tab[6]['table']     = $this->getTable();
+      $tab[6]['field']     = 'phone';
+      $tab[6]['name']      = $LANG['help'][35];
+      $tab[6]['datatype']  = 'string';
+
+      $tab[10]['table']    = $this->getTable();
+      $tab[10]['field']    = 'phone2';
+      $tab[10]['name']     = $LANG['help'][35]." 2";
+      $tab[10]['datatype'] = 'string';
+
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'mobile';
+      $tab[11]['name']     = $LANG['common'][42];
+      $tab[11]['datatype'] = 'string';
+
       $tab[13]['table']         = 'glpi_groups';
       $tab[13]['field']         = 'name';
       $tab[13]['name']          = $LANG['common'][35];
@@ -1666,7 +1666,6 @@ class User extends CommonDBTM {
       $tab[13]['joinparams']    = array('beforejoin'=> array('table' => 'glpi_groups_users',
                                                              'joinparams'
                                                                      => array('jointype'=>'child')));
-
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'last_login';
@@ -1749,7 +1748,6 @@ class User extends CommonDBTM {
       $tab[82]['field'] = 'name';
       $tab[82]['name']  = $LANG['users'][2];
 
-
       $tab[60]['table']         = 'glpi_tickets';
       $tab[60]['field']         = 'count';
       $tab[60]['name']          = $LANG['stats'][13];
@@ -1757,10 +1755,11 @@ class User extends CommonDBTM {
       $tab[60]['usehaving']     = true;
       $tab[60]['datatype']      = 'number';
       $tab[60]['massiveaction'] = false;
-      $tab[60]['joinparams']    = array('condition' => 'OR NEWTABLE.`users_id_recipient` = REFTABLE.`users_id`',
-                                       'beforejoin' => array('table' => 'glpi_tickets_users',
-                                                'joinparams'
-                                                        => array('jointype'  => 'child')));
+      $tab[60]['joinparams']    = array('condition'
+                                         => "OR NEWTABLE.`users_id_recipient` = REFTABLE.`users_id`",
+                                        'beforejoin'
+                                         => array('table'      => 'glpi_tickets_users',
+                                                  'joinparams' => array('jointype' => 'child')));
 
       return $tab;
    }

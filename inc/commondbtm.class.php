@@ -2357,7 +2357,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return input the data checked
    **/
-   function filterValues($display = true) {
+   function filterValues($display=true) {
       global $LANG;
 
       //Type mismatched fields
@@ -2431,7 +2431,7 @@ class CommonDBTM extends CommonGLPI {
                   case 'email' :
                   case 'string' :
                      if (strlen($value)>255) {
-                        $this->input[$key] = substr($value,0,254);
+                        $this->input[$key] = substr($value, 0, 254);
                      }
                      break;
 

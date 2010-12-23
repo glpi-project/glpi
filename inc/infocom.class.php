@@ -1284,10 +1284,10 @@ class Infocom extends CommonDBTM {
       $tab[6]['name']     = $LANG["financial"][15];
       $tab[6]['datatype'] = 'integer';
 
-      $tab[7]['table'] = $this->getTable();
-      $tab[7]['field'] = 'warranty_info';
-      $tab[7]['name']  = $LANG["financial"][16];
-      $tab[7]['datatype']     = 'string';
+      $tab[7]['table']     = $this->getTable();
+      $tab[7]['field']     = 'warranty_info';
+      $tab[7]['name']      = $LANG["financial"][16];
+      $tab[7]['datatype']  = 'string';
 
       $tab[8]['table']    = $this->getTable();
       $tab[8]['field']    = 'warranty_value';
@@ -1298,20 +1298,20 @@ class Infocom extends CommonDBTM {
       $tab[9]['field'] = 'name';
       $tab[9]['name']  = $LANG["financial"][26];
 
-      $tab[10]['table'] = $this->getTable();
-      $tab[10]['field'] = 'order_number';
-      $tab[10]['name']  = $LANG["financial"][18];
-      $tab[10]['datatype']     = 'string';
+      $tab[10]['table']    = $this->getTable();
+      $tab[10]['field']    = 'order_number';
+      $tab[10]['name']     = $LANG["financial"][18];
+      $tab[10]['datatype'] = 'string';
 
-      $tab[11]['table'] = $this->getTable();
-      $tab[11]['field'] = 'delivery_number';
-      $tab[11]['name']  = $LANG["financial"][19];
-      $tab[11]['datatype']     = 'string';
+      $tab[11]['table']    = $this->getTable();
+      $tab[11]['field']    = 'delivery_number';
+      $tab[11]['name']     = $LANG["financial"][19];
+      $tab[11]['datatype'] = 'string';
 
-      $tab[12]['table'] = $this->getTable();
-      $tab[12]['field'] = 'immo_number';
-      $tab[12]['name']  = $LANG["financial"][20];
-      $tab[12]['datatype']     = 'string';
+      $tab[12]['table']    = $this->getTable();
+      $tab[12]['field']    = 'immo_number';
+      $tab[12]['name']     = $LANG["financial"][20];
+      $tab[12]['datatype'] = 'string';
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'value';

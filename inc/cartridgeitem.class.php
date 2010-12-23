@@ -315,11 +315,11 @@ class CartridgeItem extends CommonDBTM {
       $tab[34]['table']     = $this->getTable();
       $tab[34]['field']     = 'ref';
       $tab[34]['name']      = $LANG['consumables'][2];
-      $tab[34]['datatype'] = 'string';
+      $tab[34]['datatype']  = 'string';
 
-      $tab[4]['table']     = 'glpi_cartridgeitemtypes';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = $LANG['common'][17];
+      $tab[4]['table']  = 'glpi_cartridgeitemtypes';
+      $tab[4]['field']  = 'name';
+      $tab[4]['name']   = $LANG['common'][17];
 
       $tab[23]['table']     = 'glpi_manufacturers';
       $tab[23]['field']     = 'name';
@@ -352,13 +352,13 @@ class CartridgeItem extends CommonDBTM {
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[40]['table']     = 'glpi_printermodels';
-      $tab[40]['field']     = 'name';
-      $tab[40]['name']      = $LANG['setup'][96];
+      $tab[40]['table']        = 'glpi_printermodels';
+      $tab[40]['field']        = 'name';
+      $tab[40]['name']         = $LANG['setup'][96];
       $tab[40]['forcegroupby'] = true;
-      $tab[40]['joinparams']    = array('beforejoin'
-                                        =>  array('table'     => 'glpi_cartridgeitems_printermodels',
-                                            '     joinparams' => array('jointype' => 'child')));
+      $tab[40]['joinparams']   = array('beforejoin'
+                                        => array('table'      => 'glpi_cartridgeitems_printermodels',
+                                                 'joinparams' => array('jointype' => 'child')));
 
       return $tab;
    }

@@ -43,8 +43,9 @@ $ri = new ReservationItem();
 if (isset($_REQUEST["add"])) {
    checkRight("reservation_central","w");
    if ($newID = $ri->add($_REQUEST)) {
-      Event::log($newID, "reservationitem", 4, "inventory", $_SESSION["glpiname"]." ".
-                  $LANG['log'][20]." ".$_REQUEST["itemtype"]."-".$_REQUEST["items_id"].".");
+      Event::log($newID, "reservationitem", 4, "inventory",
+                 $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_REQUEST["itemtype"]."-".
+                     $_REQUEST["items_id"].".");
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -54,15 +55,17 @@ if (isset($_REQUEST["add"])) {
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
    glpi_header($CFG_GLPI["root_doc"]."/front/reservationitem.php");
+
 } else if (isset($_REQUEST["update"])) {
    checkRight("reservation_central","w");
    $ri->update($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
+
 } else {
    checkRight("reservation_central","w");
-   commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
+   commonHeader($LANG['Menu'][17], $_SERVER['PHP_SELF'], "utils", "reservation");
    $ri->showForm($_GET["id"]);
 }
 
