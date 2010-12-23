@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 class FieldUnicity extends CommonDropdown {
 
    // From CommonDBTM
-   var $dohistory = true;
+   public $dohistory = true;
 
    var $second_level_menu = "control";
 
@@ -50,7 +50,6 @@ class FieldUnicity extends CommonDropdown {
 
       return $LANG['setup'][811];
    }
-
 
    function canCreate() {
       return haveRight('config', 'w');
@@ -76,6 +75,28 @@ class FieldUnicity extends CommonDropdown {
    }
    
    /**
+    * Add more tabs to display
+    */
+   function defineMoreTabs($options=array()) {
+      global $LANG;
+      $ong = array();
+      $ong[12] = $LANG['title'][38];
+      return $ong;
+   }
+
+   /**
+    * Display more tabs
+    */
+   function displayMoreTabs($tab) {
+      switch ($tab) {
+         case 12 :
+         case -1 :
+            Log::showForItem($this);
+            break;
+      }
+   }
+   
+   /**
     * Display specific fields for FieldUnicity
     */
    function displaySpecificTypeField($ID, $field = array()) {
@@ -90,7 +111,13 @@ class FieldUnicity extends CommonDropdown {
       }
    }
 
-   function showItemtype($ID, $value) {
+   /**
+    * Display a dropdown which contains all the available itemtypes
+    * @param ID the field unicity item id
+    * @param value the selected value
+    * @return nothing
+    */
+   function showItemtype($ID, $value = 0) {
       global $CFG_GLPI;
       //Criteria already added : only display the selected itemtype
       if ($ID > 0) {
@@ -151,49 +178,61 @@ class FieldUnicity extends CommonDropdown {
       return $return;
    }
 
-   static function selectCriterias(CommonDBTM $item) {
-      global $LANG;
+   /**
+    * Display a list of available fields for unicity checks
+    * @param item an instance of FieldUncity class
+    * @return nothing
+    */
+   static function selectCriterias(CommonDBTM $unicity) {
+      global $LANG,$DB;
 
+      //DO not check unicity on fields with theses names
       $blacklisted_options = array('id','date_mod');
+      //Do not check unicity on fields in DB with theses types
+      $blacklisted_types = array('text','longtext');
  
       echo "<span id='span_fields' name='span_fields'>";
       
-      if (!isset($item->fields['itemtype']) || !$item->fields['itemtype']) {
+      if (!isset($unicity->fields['itemtype']) || !$unicity->fields['itemtype']) {
          echo  "</span>";
          return;
       }
-      if (!isset($item->fields['entities_id'])) {
-         $item->fields['entities_id'] = $_SESSION['glpiactive_entity'];
+      if (!isset($unicity->fields['entities_id'])) {
+         $unicity->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
-      $criteria = FieldUnicity::getUnicityFieldsConfig($item->fields['itemtype'],
-                                                       $item->fields['entities_id'],false);
+      $criteria = FieldUnicity::getUnicityFieldsConfig($unicity->fields['itemtype'],
+                                                       $unicity->fields['entities_id'],
+                                                       false);
       
       //Search option for this type
-      
-      $target = new $item->fields['itemtype'];
-      $searchOptions = $target->getSearchOptions();
+      $target = new $unicity->fields['itemtype'];
+
       //Construct list
       echo "<span id='span_fields' name='span_fields'>";
-      echo "<select name='_fields[]' multiple size='10'  style='width:400px'>";
-      foreach ($searchOptions as $searchOption) {
-         if (is_array($searchOption)) {
-            if (isset($searchOptions["linkfield"])) {
-               $field_id = $searchOption["linkfield"];
-            } else {
-               $field_id = $searchOption['field'];
+      echo "<select name='_fields[]' multiple size='15'  style='width:400px'>";
+      foreach ($DB->list_fields(getTableForItemType($unicity->fields['itemtype'])) as $field) {
+         $searchOption = $target->getSearchOptionByField('field',$field['Field']);
+         if (empty($searchOption)) {
+            if ($table = getTableNameForForeignKeyField($field['Field'])) {
+               $searchOption = $target->getSearchOptionByField('field','name',$table);
             }
-            if (!in_array($field_id,$blacklisted_options)) {
-               echo "<option value='".$field_id."'"; 
-               if (!empty($criteria) && in_array($field_id,$criteria['fields'])) {
+         }
+         
+         if (!empty($searchOption) 
+               && !in_array($field['Type'],$blacklisted_types)
+                  && !in_array($field['Field'],$blacklisted_options)) {
+               echo "<option value='".$field['Field']."'"; 
+               if (in_array($field['Field'],$criteria['fields'])) {
                   echo " selected ";
                }
                echo  ">".$searchOption['name']."</option>";
-            }
+            
          }
       }
+      
       echo "</select></span>";
    }
-
+   
    function getSearchOptions() {
       global $LANG;
 
@@ -246,6 +285,11 @@ class FieldUnicity extends CommonDropdown {
       return $tab;
    }
 
+   /**
+    * Perform checks to be sure that an itemtype and at least a field are selected
+    * @param input the values to insert in DB
+    * @return input the values to insert, but modified
+    */
    static function checkBeforeInsert($input) {
       global $LANG;
       if (!$input['itemtype'] || empty($input['_fields'])) {

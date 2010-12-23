@@ -3988,7 +3988,12 @@ class Search {
             $item = new $data['ITEMTYPE'];
             $message = array();
             foreach ($values as $field) {
-               $searchOption = $item->getSearchOptionByField('field',$field);
+               $table = getTableNameForForeignKeyField($field);
+               if ($table != '') {
+                  $searchOption = $item->getSearchOptionByField('field','name',$table);
+               } else {
+                  $searchOption = $item->getSearchOptionByField('field',$field);
+               }
                $message[] = $searchOption['name'];
             }
             return implode(',',$message);

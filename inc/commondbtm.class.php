@@ -2332,23 +2332,25 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Return a search option by looking for a value of a specific field
+    * Return a search option by looking for a value of a specific field and maybe a specific table
     *
     * @param field the field in which looking for the value (for exampe : table, name, etc)
     * @param value the value to look for in the field
+    * @param table the table
     *
     * @return then search option array, or an empty array if not found
    **/
-   function getSearchOptionByField($field, $value) {
+   function getSearchOptionByField($field, $value, $table='') {
 
       foreach ($this->getSearchOptions() as $searchOption) {
          if (isset($searchOption[$field]) && $searchOption[$field] == $value) {
-            return $searchOption;
+            if (($table == '') || ($table != '' && $searchOption['table'] == $table)) {
+               return $searchOption;
+            }
          }
       }
       return array();
    }
-
 
    /**
     * Check float and decimal values
@@ -2515,7 +2517,7 @@ class CommonDBTM extends CommonGLPI {
 
             if ($where != '') {
                $where_global = "";
-               if (!$fields['is_global']) {
+               if (!$fields['is_recursive']) {
                   $where_global = " AND `entities_id` = '$entities_id'";
                }
 
