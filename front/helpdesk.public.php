@@ -41,11 +41,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (isset ($_POST['newprofile'])) {
    if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
       changeProfile($_POST['newprofile']);
+
       if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
          glpi_header($CFG_GLPI['root_doc']."/front/central.php");
       } else {
          glpi_header($_SERVER['PHP_SELF']);
       }
+
    } else {
       glpi_header(preg_replace("/entities_id=.*/","",$_SERVER['HTTP_REFERER']));
    }
@@ -85,8 +87,8 @@ helpHeader($LANG['job'][13],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 if (isset($_GET['create_ticket'])) {
    printHelpDesk(getLoginUserID(),1);
-} else {
 
+} else {
    echo "<table class='tab_cadre_central'><tr>";
    echo "<td class='top'><br>";
    echo "<table>";
@@ -100,9 +102,11 @@ if (isset($_GET['create_ticket'])) {
       echo "<tr><td class='top' width='450px'>";
       Reminder::showListForCentral($_SESSION["glpiactive_entity"]);
       $entities = array_reverse(getAncestorsOf("glpi_entities", $_SESSION["glpiactive_entity"]));
+
       foreach ($entities as $entity) {
          Reminder::showListForCentral($entity, true);
       }
+
       foreach ($_SESSION["glpiactiveentities"] as $entity) {
          if ($entity != $_SESSION["glpiactive_entity"]) {
             Reminder::showListForCentral($entity, false);
@@ -115,6 +119,7 @@ if (isset($_GET['create_ticket'])) {
 
    echo "<td class='top' width='450px'><br>";
    echo "<table>";
+
    // Show KB items
    if (haveRight("faq","r")) {
       echo "<tr><td class='top' width='450px'>";
@@ -122,6 +127,7 @@ if (isset($_GET['create_ticket'])) {
       echo "</td></tr>";
       echo "<tr><td class='top' width='450px'><br>";
       KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.faq.php', "recent", 1);
+      echo "</td></tr>";
    } else {
       echo "<tr><td>&nbsp;</td></tr>";
    }
