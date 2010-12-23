@@ -593,11 +593,12 @@ class CommonDBTM extends CommonGLPI {
     * Add an item in the database with all it's items.
     *
     * @param $input array : the _POST vars returned by the item form when press add
-    * @param option an array with the insert options
+    * @param options an array with the insert options
     *   - unicity_message : do not display message if item it a duplicate (default is yes)
+    *
     * @return integer the new ID of the added item (or false if fail)
    **/
-   function add($input, $options = array()) {
+   function add($input, $options=array()) {
       global $DB, $CFG_GLPI;
 
       if ($DB->isSlave()) {
@@ -795,10 +796,11 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $input array : the _POST vars returned by the item form when press update
     * @param $history boolean : do history log ?
+    * @param options an array with the insert options
     *
     * @return boolean : true on success
    **/
-   function update($input,$history=1, $options = array()) {
+   function update($input, $history=1, $options=array()) {
       global $DB, $CFG_GLPI;
 
       if ($DB->isSlave()) {
@@ -2374,7 +2376,7 @@ class CommonDBTM extends CommonGLPI {
             if (isset($searchOption['datatype'])
                 && !is_null($value)
                 && $value != ''
-                && $value !='NULL') {
+                && $value != 'NULL') {
 
                switch ($searchOption['datatype']) {
                   case 'integer' :

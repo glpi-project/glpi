@@ -1476,11 +1476,11 @@ function generate_entity($ID_entity) {
    $nb_items = mt_rand(0,$MAX['ticketsolutionstemplate']);
    for ($i=0 ; $i<$nb_items ; $i++) {
       $query = "INSERT INTO `glpi_ticketsolutiontemplates`
-                VALUES (NULL, '$ID_entity', '1', 'solution $i-$ID_entity',
-                        'content solution $i-$ID_entity','".mt_rand(0,$MAX['ticketsolutions'])."',
+                VALUES (nulle, '$ID_entity', '1', 'solution $i-$ID_entity',
+                        'content solution $i-$ID_entity', '".mt_rand(0,$MAX['ticketsolutions'])."',
                         'comment solution $i-$ID_entity')";
       $DB->query($query) or die("PB REQUETE ".$query);
-      $newID=$DB->insert_id();
+      $newID = $DB->insert_id();
    }
 
    $LAST["ticketsolutionstemplate"] = getMaxItem("glpi_ticketsolutiontemplates");

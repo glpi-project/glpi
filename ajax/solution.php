@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
 
 define('GLPI_ROOT','..');
 include (GLPI_ROOT."/inc/includes.php");
@@ -41,20 +41,18 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
-// print_r($_POST);exit();
+
 if (isset($_POST['value']) && $_POST['value'] > 0) {
    $template = new TicketSolutionTemplate();
    if ($template->getFromDB($_POST['value'])) {
       echo "<textarea name='solution' rows='12' cols='80'>";
       echo $template->getField('content');
-      echo "</textarea>";
-      echo "<script type='text/javascript'>\n
-         document.getElementById('".$_POST["type_id"]."').value = ".$template->getField('ticketsolutiontypes_id').";
-      </script>";
+      echo "</textarea>\n";
+      echo "<script type='text/javascript'>document.getElementById('".$_POST["type_id"]."').
+            value = ".$template->getField('ticketsolutiontypes_id')."</script>";
    }
 } else {
-      echo "<textarea name='solution' rows='12' cols='80'>";
-      echo "</textarea>";
+      echo "<textarea name='solution' rows='12' cols='80'></textarea>";
 }
 
 ?>

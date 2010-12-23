@@ -2841,41 +2841,44 @@ class Ticket extends CommonDBTM {
       $options = array();
       $this->showFormHeader($options);
 
-      $show_template = $canedit && $this->getField('ticketsolutiontypes_id') == 0
-                        && empty($this->fields['solution']);
+      $show_template = $canedit
+                       && $this->getField('ticketsolutiontypes_id') == 0
+                       && empty($this->fields['solution']);
 
       if ($show_template) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:</td><td colspan='3'>";
+         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td colspan='3'>";
          $rand_template = Dropdown::show('TicketSolutionTemplate',
-                                       array('value'=> 0, 'entity'=>$this->getEntityID()));
+                                         array('value'  => 0,
+                                               'entity' => $this->getEntityID()));
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][48]."&nbsp;:</td><td colspan='3'>";
+      echo "<td>".$LANG['job'][48]."&nbsp;:&nbsp;</td><td colspan='3'>";
 
-      $current = $this->fields['status'];
+      $current   = $this->fields['status'];
       $rand_type = 0;
+
       // Settings a solution will set status to solved
       if ($canedit) {
          $rand_type = Dropdown::show('TicketSolutionType',
-                        array('value' => $this->getField('ticketsolutiontypes_id')));
+                                     array('value' => $this->getField('ticketsolutiontypes_id')));
       } else {
          echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                         $this->getField('ticketsolutiontypes_id'));
       }
       echo "</td></tr>";
 
-
-
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['joblist'][6]." (".$LANG['validation'][16].")&nbsp;:</td><td colspan='3'>";
+      echo "<td>".$LANG['joblist'][6]." (".$LANG['validation'][16].")&nbsp;: </td><td colspan='3'>";
       $rand_text = 0;
+
       if ($canedit) {
          $rand_text = mt_rand();
-         echo "<span id='solution$rand_text'><textarea  name='solution' rows='12' cols='80'>";
-         echo $this->getField('solution') . "</textarea></span>";
+         echo "<span id='solution$rand_text'>";
+         echo "<textarea name='solution' rows='12' cols='80'>".$this->getField('solution');
+         echo "</textarea></span>";
       } else {
          echo nl2br($this->getField('solution'));
       }
@@ -2887,9 +2890,10 @@ class Ticket extends CommonDBTM {
 
       // Load type and solution from bookmark
       if ($show_template) {
-         $params = array('value' => '__VALUE__',
-                        'type_id' => 'dropdown_ticketsolutiontypes_id'.$rand_type);
-         ajaxUpdateItemOnSelectEvent('dropdown_ticketsolutiontemplates_id'.$rand_template, 'solution'.$rand_text,
+         $params = array('value'   => '__VALUE__',
+                         'type_id' => 'dropdown_ticketsolutiontypes_id'.$rand_type);
+         ajaxUpdateItemOnSelectEvent('dropdown_ticketsolutiontemplates_id'.$rand_template,
+                                     'solution'.$rand_text,
                                      $CFG_GLPI["root_doc"]."/ajax/solution.php", $params);
       }
    }
@@ -3434,6 +3438,7 @@ class Ticket extends CommonDBTM {
             }
             return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'
                       alt=\"$icontitle\" title=\"$icontitle\">";
+
          case 'supplier' :
             $icontitle = $LANG['financial'][26];
             return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/supplier.png'
@@ -4780,7 +4785,7 @@ class Ticket extends CommonDBTM {
 
       $options['field'][0]      = 12;
       $options['searchtype'][0] = 'equals';
-      $options['contains'][0]    = 'process';
+      $options['contains'][0]   = 'process';
       $options['link'][0]       = 'AND';
       $options['reset']         ='reset';
 
@@ -4789,11 +4794,12 @@ class Ticket extends CommonDBTM {
 
       if ($foruser) {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
-               $LANG['profiles'][5]."&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
-               $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"></a>";
+                $LANG['profiles'][5]."&nbsp;<img src='".$CFG_GLPI["root_doc"].
+                "/pics/menu_add.png' title=\"". $LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8].
+                "\"></a>";
       } else {
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">".
-               $LANG['title'][10]."</a></th></tr>";
+         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;').
+                "\">".$LANG['title'][10]."</a></th></tr>";
       }
       echo "</th></tr>";
       echo "<tr><th>".$LANG['title'][28]."</th><th>".$LANG['tracking'][29]."</th></tr>";

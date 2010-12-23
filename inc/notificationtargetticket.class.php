@@ -661,7 +661,6 @@ class NotificationTargetTicket extends NotificationTarget {
          $this->datas['##ticket.solvedate##']    = convDateTime($this->obj->getField('solvedate'));
          $this->datas['##ticket.duedate##']      = convDateTime($this->obj->getField('due_date'));
 
-         
          $this->datas['##ticket.useremailnotification##']
                      = Dropdown::getYesNo($this->obj->getField('user_email_notification'));
 
@@ -882,7 +881,6 @@ class NotificationTargetTicket extends NotificationTarget {
 
 
          // Linked tickets
-
          $linked_tickets = Ticket_Ticket::getLinkedTicketsTo($this->obj->getField('id'));
          if (count($linked_tickets)) {
             $linkedticket = new Ticket();
@@ -1291,11 +1289,11 @@ class NotificationTargetTicket extends NotificationTarget {
       }
 
       // Events for ticket satisfaction
-     $tags = array(
-                   'satisfaction.datebegin'           => $LANG['satisfaction'][6],
-                   'satisfaction.dateanswered'        => $LANG['satisfaction'][4],
-                   'satisfaction.satisfactionlevel'   => $LANG['satisfaction'][7],
-                   'satisfaction.satisfactioncomment' => $LANG['satisfaction'][8]);
+      $tags = array('satisfaction.datebegin'           => $LANG['satisfaction'][6],
+                    'satisfaction.dateanswered'        => $LANG['satisfaction'][4],
+                    'satisfaction.satisfactionlevel'   => $LANG['satisfaction'][7],
+                    'satisfaction.satisfactioncomment' => $LANG['satisfaction'][8]);
+
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
@@ -1303,8 +1301,9 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'events' => array('satisfaction')));
       }
 
-     $tags = array('satisfaction.type'                => $LANG['satisfaction'][9]." - ".
-                                                         $LANG['satisfaction'][10],);
+      $tags = array('satisfaction.type'  => $LANG['satisfaction'][9]." - ".
+                                           $LANG['satisfaction'][10],);
+
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
@@ -1313,8 +1312,8 @@ class NotificationTargetTicket extends NotificationTarget {
                                    'events' => array('satisfaction')));
       }
 
-     $tags = array('satisfaction.text'                => $LANG['satisfaction'][12],
-                   );
+      $tags = array('satisfaction.text' => $LANG['satisfaction'][12]);
+
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
@@ -1343,6 +1342,7 @@ class NotificationTargetTicket extends NotificationTarget {
       $tags = array('ticket.days'             => $LANG['stats'][31],
                     'ticket.linkedtickets'    => $LANG['job'][55],
                     'ticket.autoclosewarning' => $LANG['job'][54]." ? ".$LANG['stats'][31]);
+
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,

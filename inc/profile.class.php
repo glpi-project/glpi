@@ -504,7 +504,6 @@ class Profile extends CommonDBTM {
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</td></tr>\n";
 
-
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4' class='center'>";

@@ -301,7 +301,7 @@ function update0781to080($output='HTML') {
    $migration->addField("glpi_tickets", "sla_waiting_duration", "INT( 11 ) NOT NULL DEFAULT 0");
 
    if (!TableExists('glpi_slalevels_tickets')) {
-      $query = "CREATE TABLE IF NOT EXISTS `glpi_slalevels_tickets` (
+      $query = "CREATE TABLE `glpi_slalevels_tickets` (
                   `id` int(11) NOT NULL auto_increment,
                   `tickets_id` int(11) NOT NULL default '0',
                   `slalevels_id` int(11) NOT NULL default '0',
@@ -353,7 +353,7 @@ function update0781to080($output='HTML') {
 ##lang.passwordforget.link## ##user.passwordforgeturl##',
                           '&lt;p&gt;&lt;strong&gt;##lang.user.realname## ##lang.user.firstname##&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;##lang.passwordforget.information##&lt;/p&gt;
-&lt;p&gt;##lang.passwordforget.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;');";
+&lt;p&gt;##lang.passwordforget.link## &lt;a title=\"##user.passwordforgeturl##\" href=\"##user.passwordforgeturl##\"&gt;##user.passwordforgeturl##&lt;/a&gt;&lt;/p&gt;')";
       $DB->query($query)
       or die("0.80 add password forget notification translation ".$LANG['update'][90].$DB->error());
 
@@ -914,8 +914,8 @@ function update0781to080($output='HTML') {
    $migration->displayMessage($LANG['update'][142] . ' - Multi user group for tickets');
 
    include_once (GLPI_ROOT . "/inc/ticket.class.php");
-   if (!TableExists('glpi_groups_tickets')) {
 
+   if (!TableExists('glpi_groups_tickets')) {
       $query = "CREATE TABLE `glpi_groups_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -1372,7 +1372,6 @@ function update0781to080($output='HTML') {
    $migration->addField("glpi_reminders", "is_helpdesk_visible", "tinyint( 1 ) NOT NULL DEFAULT 0");
 
    if (!TableExists('glpi_ticketsolutiontemplates')) {
-
       $query = "CREATE TABLE `glpi_ticketsolutiontemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -1385,18 +1384,16 @@ function update0781to080($output='HTML') {
                   UNIQUE KEY `unicity` (`entities_id`,`name`),
                   KEY `name` (`name`),
                   KEY `is_recursive` (`is_recursive`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query)
-         or die("0.80 create glpi_ticketsolutiontemplates " . $LANG['update'][90] .
-                $DB->error());
+      or die("0.80 create glpi_ticketsolutiontemplates " . $LANG['update'][90] .$DB->error());
    }
 
 
    // Fix templates tags
-   $updates = array('Ticket' =>
-                     array('from' => array('##lang.validation.validationstatus##'),
-                           'to'   => array('##lang.validation.status## : ##validation.status##')),
-   );
+   $updates = array('Ticket'
+                     => array('from' => array('##lang.validation.validationstatus##'),
+                              'to'   => array('##lang.validation.status## : ##validation.status##')));
 
    foreach ($updates as $itemtype => $changes) {
 

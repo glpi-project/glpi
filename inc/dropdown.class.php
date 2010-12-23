@@ -597,7 +597,7 @@ class Dropdown {
                                                 'TaskCategory'           => $LANG['setup'][98],
                                                 'TicketSolutionType'     => $LANG['job'][48],
                                                 'RequestType'            => $LANG['job'][44],
-                                                'TicketSolutionTemplate' => $LANG['jobresolution'][6],),
+                                                'TicketSolutionTemplate' => $LANG['jobresolution'][6]),
 
                   $LANG['setup'][140] => array('ComputerType'         => $LANG['setup'][4],
                                                'NetworkEquipmentType' => $LANG['setup'][42],
