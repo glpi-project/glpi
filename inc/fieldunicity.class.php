@@ -273,7 +273,7 @@ class FieldUnicity extends CommonDropdown {
     */
    static function deleteForItemtype($itemtype) {
       global $DB;
-      $query = "DELETE FROM `glpi_fieldunicities` WHERE `itemtype`='$itemtype'";
+      $query = "DELETE FROM `glpi_fieldunicities` WHERE `itemtype` LIKE '%Plugin$itemtype%'";
       $DB->query($query);
    }
 }
