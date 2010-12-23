@@ -282,17 +282,17 @@ class SoftwareLicense extends CommonDBTM {
       $tab[2]['field'] = 'name';
       $tab[2]['name']  = $LANG['common'][16];
 
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'serial';
-      $tab[3]['name']  = $LANG['common'][19];
-      $tab[3]['datatype']      = 'string';
-      
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'serial';
+      $tab[3]['name']      = $LANG['common'][19];
+      $tab[3]['datatype']  = 'string';
+
       $tab[162]['table']         = $this->getTable();
       $tab[162]['field']         = 'otherserial';
       $tab[162]['name']          = $LANG['common'][20];
       $tab[162]['massiveaction'] = false;
       $tab[162]['datatype']      = 'string';
-      
+
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'number';
       $tab[4]['name']     = $LANG['tracking'][29];

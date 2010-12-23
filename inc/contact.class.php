@@ -259,25 +259,25 @@ class Contact extends CommonDBTM{
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'phone';
-      $tab[3]['name']  = $LANG['help'][35];
-      $tab[3]['datatype'] = 'string';
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'phone';
+      $tab[3]['name']      = $LANG['help'][35];
+      $tab[3]['datatype']  = 'string';
 
-      $tab[4]['table'] = $this->getTable();
-      $tab[4]['field'] = 'phone2';
-      $tab[4]['name']  = $LANG['help'][35]." 2";
-      $tab[4]['datatype'] = 'string';
+      $tab[4]['table']     = $this->getTable();
+      $tab[4]['field']     = 'phone2';
+      $tab[4]['name']      = $LANG['help'][35]." 2";
+      $tab[4]['datatype']  = 'string';
 
       $tab[10]['table'] = $this->getTable();
       $tab[10]['field'] = 'mobile';
       $tab[10]['name']  = $LANG['common'][42];
       $tab[10]['datatype'] = 'string';
 
-      $tab[5]['table'] = $this->getTable();
-      $tab[5]['field'] = 'fax';
-      $tab[5]['name']  = $LANG['financial'][30];
-      $tab[5]['datatype'] = 'string';
+      $tab[5]['table']     = $this->getTable();
+      $tab[5]['field']     = 'fax';
+      $tab[5]['name']      = $LANG['financial'][30];
+      $tab[5]['datatype']  = 'string';
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'email';

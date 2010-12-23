@@ -405,10 +405,10 @@ class Contract extends CommonDBTM {
       $tab[2]['name']          = $LANG['common'][2];
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'num';
-      $tab[3]['name']  = $LANG['financial'][4];
-      $tab[3]['datatype'] = 'string';
+      $tab[3]['table']     = $this->getTable();
+      $tab[3]['field']     = 'num';
+      $tab[3]['name']      = $LANG['financial'][4];
+      $tab[3]['datatype']  = 'string';
 
       $tab[4]['table'] = 'glpi_contracttypes';
       $tab[4]['field'] = 'name';
@@ -457,9 +457,9 @@ class Contract extends CommonDBTM {
       $tab[22]['massiveaction'] = false;
 
       $tab[10]['table']    = $this->getTable();
-      $tab[10]['field'] = 'accounting_number';
-      $tab[10]['name']  = $LANG['financial'][13];
-      $tab[10]['datatype']      = 'string';
+      $tab[10]['field']    = 'accounting_number';
+      $tab[10]['name']     = $LANG['financial'][13];
+      $tab[10]['datatype'] = 'string';
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'renewal';

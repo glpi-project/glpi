@@ -789,16 +789,16 @@ class KnowbaseItem extends CommonDBTM {
       $tab[5]['datatype']      = 'datetime';
       $tab[5]['massiveaction'] = false;
 
-      $tab[6]['table'] = $this->getTable();
-      $tab[6]['field'] = 'question';
-      $tab[6]['name'] = $LANG['knowbase'][14];
-      $tab[6]['datatype']      = 'text';
-      
-      $tab[7]['table'] = $this->getTable();
-      $tab[7]['field'] = 'answer';
-      $tab[7]['name']  = $LANG['knowbase'][15];
-      $tab[7]['datatype']      = 'text';
-      
+      $tab[6]['table']     = $this->getTable();
+      $tab[6]['field']     = 'question';
+      $tab[6]['name']      = $LANG['knowbase'][14];
+      $tab[6]['datatype']  = 'text';
+
+      $tab[7]['table']     = $this->getTable();
+      $tab[7]['field']     = 'answer';
+      $tab[7]['name']      = $LANG['knowbase'][15];
+      $tab[7]['datatype']  = 'text';
+
       $tab[8]['table']    = $this->getTable();
       $tab[8]['field']    = 'is_faq';
       $tab[8]['name']     = $LANG['knowbase'][5];

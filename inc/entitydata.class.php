@@ -427,8 +427,6 @@ class EntityData extends CommonDBChild {
                               array('value' => $entitydata->getField('autofill_warranty_date')));
       echo "</td><td colspan='2'></td></tr>";
 
-       FieldUnicity::showForEntity($ID);
-
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";

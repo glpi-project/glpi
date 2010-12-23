@@ -1069,8 +1069,9 @@ class Search {
                                               $item_num, $row_num, "class='center'");
 
                         echo Search::showItem($output_type,
-                                              "<a href='".getItemTypeFormURL($itemtype)."?id=".$data["refID"].
-                                                "&amp;delete=delete' onclick=\"return window.confirm('".
+                                              "<a href='".getItemTypeFormURL($itemtype)."?id=".
+                                                $data["refID"]."&amp;delete=delete' ".
+                                                "onclick=\"return window.confirm('".
                                                 addslashes($LANG['reservation'][38])."\\n".
                                                 addslashes($LANG['reservation'][39])."')\" title=\"".
                                                 $LANG['reservation'][6]."\">".
@@ -1818,7 +1819,7 @@ class Search {
          case 'FieldUnicity':
             $ret = "`glpi_fieldunicities`.`itemtype` as ITEMTYPE,";
             break;
-            
+
          default :
             // Plugin can override core definition for its type
             if ($plug=isPluginItemType($itemtype)) {
@@ -2140,7 +2141,7 @@ class Search {
    **/
    static function addDefaultWhere ($itemtype) {
       global $CFG_GLPI;
-      
+
       switch ($itemtype) {
          // No link
          case 'User' :
@@ -3842,6 +3843,7 @@ class Search {
                   $options['searchtype'][2] = 'equals';
                   $options['contains'][2]   = $data['id'];
                   $options['link'][2]       = 'OR';
+
                } else {
                   $options['field'][0]      = 12;
                   $options['searchtype'][0] = 'equals';
@@ -3980,7 +3982,7 @@ class Search {
             $clean = array('<' => '',
                            '>' => '');
             return strtr($data[$NAME.$num], $clean);
-        
+
          case 'glpi_fieldunicities.fields':
             $values = explode(',',$data[$NAME.$num]);
             $item = new $data['ITEMTYPE'];
@@ -4292,8 +4294,9 @@ class Search {
 
       // First view of the page or force bookmark : try to load a bookmark
       if ($forcebookmark
-         || ($usesession && !isset($_GET["reset"])
-               && !isset($_SESSION['glpisearch'][$itemtype]))) {
+          || ($usesession
+              && !isset($_GET["reset"])
+              && !isset($_SESSION['glpisearch'][$itemtype]))) {
 
          $query = "SELECT `bookmarks_id`
                    FROM `glpi_bookmarks_users`
