@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: calendar.class.php 12774 2010-10-18 15:07:16Z yllen $
+ * @version $Id: $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -45,11 +45,13 @@ class FieldUnicity extends CommonDropdown {
 
    var $second_level_menu = "control";
 
+
    static function getTypeName() {
       global $LANG;
 
       return $LANG['setup'][811];
    }
+
 
    function canCreate() {
       return haveRight('config', 'w');
@@ -59,6 +61,7 @@ class FieldUnicity extends CommonDropdown {
    function canView() {
       return haveRight('config', 'r');
    }
+
 
    function getAdditionalFields() {
       global $LANG;
@@ -73,21 +76,25 @@ class FieldUnicity extends CommonDropdown {
                          'label' => $LANG['setup'][815],
                          'type'  => 'unicity_fields'));
    }
-   
+
+
    /**
     * Add more tabs to display
-    */
+   **/
    function defineMoreTabs($options=array()) {
       global $LANG;
+
       $ong = array();
       $ong[12] = $LANG['title'][38];
       return $ong;
    }
 
+
    /**
     * Display more tabs
-    */
+   **/
    function displayMoreTabs($tab) {
+
       switch ($tab) {
          case 12 :
          case -1 :
@@ -95,35 +102,43 @@ class FieldUnicity extends CommonDropdown {
             break;
       }
    }
-   
+
+
    /**
     * Display specific fields for FieldUnicity
-    */
+   **/
    function displaySpecificTypeField($ID, $field = array()) {
       global $CFG_GLPI;
+
       switch ($field['type']) {
-         case 'unicity_itemtype':
+         case 'unicity_itemtype' :
             $this->showItemtype($ID, $this->fields['itemtype']);
             break;
-         case 'unicity_fields':
+
+         case 'unicity_fields' :
             self::selectCriterias($this);
             break;
       }
    }
 
+
    /**
     * Display a dropdown which contains all the available itemtypes
+    *
     * @param ID the field unicity item id
     * @param value the selected value
+    *
     * @return nothing
-    */
-   function showItemtype($ID, $value = 0) {
+   **/
+   function showItemtype($ID, $value=0) {
       global $CFG_GLPI;
+
       //Criteria already added : only display the selected itemtype
       if ($ID > 0) {
           $item = new $this->fields['itemtype'];
           echo $item->getTypeName();
           echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'";
+
       } else {
          //Add criteria : display dropdown
          $options[0] = DROPDOWN_EMPTY_VALUE;
@@ -131,7 +146,7 @@ class FieldUnicity extends CommonDropdown {
             if (class_exists($itemtype)) {
                $item = new $itemtype();
                if ($item->can(-1,'r')) {
-                  $result = self::getUnicityFieldsConfig($itemtype,$this->fields['entities_id']);
+                  $result = self::getUnicityFieldsConfig($itemtype, $this->fields['entities_id']);
                   if (empty($result)) {
                      $options[$itemtype] = $item->getTypeName($itemtype);
                   }
@@ -139,100 +154,116 @@ class FieldUnicity extends CommonDropdown {
             }
          }
          asort($options);
-         $rand = Dropdown::showFromArray('itemtype',$options);
-         
-         $params = array('itemtype' => '__VALUE__', 'id' => $ID);
+         $rand = Dropdown::showFromArray('itemtype', $options);
+
+         $params = array('itemtype' => '__VALUE__',
+                        'id'        => $ID);
          ajaxUpdateItemOnSelectEvent("dropdown_itemtype$rand", "span_fields",
                                      $CFG_GLPI["root_doc"]."/ajax/dropdownUnicityFields.php",
                                      $params);
-         
       }
-      
+
    }
+
+
    /**
     * Return criteria unicity for an itemtype, in an entity
+    *
     * @param itemtype the itemtype for which unicity must be checked
     * @param entities_id the entity for which configuration must be retrivied
-    * @return an array of fields to check, or an empty array if no 
-    */
-   public static function getUnicityFieldsConfig($itemtype, $entities_id = 0,$check_active = true) {
+    * @param $check_active
+    *
+    * @return an array of fields to check, or an empty array if no
+   **/
+   public static function getUnicityFieldsConfig($itemtype, $entities_id=0, $check_active=true) {
       global $DB;
 
       //Get the first active configuration for this itemtype
-      $query = "SELECT `fields`, `is_recursive` FROM `glpi_fieldunicities` 
-                WHERE `itemtype` = '$itemtype' ";
-      $query.= getEntitiesRestrictRequest(" AND","","",$entities_id,true); 
+      $query = "SELECT `fields`, `is_recursive`
+                FROM `glpi_fieldunicities`
+                WHERE `itemtype` = '$itemtype'".
+                      getEntitiesRestrictRequest(" AND", "", "", $entities_id, true);
+
       if ($check_active) {
-         $query.=" AND `is_active`='1' ";
+         $query .= " AND `is_active` = '1' ";
       }
-      $query.="ORDER BY `entities_id` DESC LIMIT 1";
+
+      $query .= "ORDER BY `entities_id` DESC
+                 LIMIT 1";
       $result = $DB->query($query);
 
       $return = array();
       //A configuration found
       if ($DB->numrows($result)) {
          $tmp['is_recursive'] = $DB->result($result,0,'is_recursive');
-         $tmp['fields'] = explode(',',$DB->result($result,0,'fields'));
+         $tmp['fields']       = explode(',',$DB->result($result,0,'fields'));
          $return = $tmp;
       }
       return $return;
    }
 
+
    /**
     * Display a list of available fields for unicity checks
-    * @param item an instance of FieldUncity class
+    *
+    * @param $unicity an instance of FieldUncity class
+    *
     * @return nothing
     */
    static function selectCriterias(CommonDBTM $unicity) {
-      global $LANG,$DB;
+      global $LANG, $DB;
 
-      //DO not check unicity on fields with theses names
-      $blacklisted_options = array('id','date_mod','is_recursive');
+      //Do not check unicity on fields with theses names
+      $blacklisted_options = array('date_mod', 'id', 'is_recursive');
+
       //Do not check unicity on fields in DB with theses types
-      $blacklisted_types = array('text','longtext');
- 
+      $blacklisted_types = array('longtext', 'text');
+
       echo "<span id='span_fields' name='span_fields'>";
-      
+
       if (!isset($unicity->fields['itemtype']) || !$unicity->fields['itemtype']) {
          echo  "</span>";
          return;
       }
+
       if (!isset($unicity->fields['entities_id'])) {
          $unicity->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
       $criteria = FieldUnicity::getUnicityFieldsConfig($unicity->fields['itemtype'],
-                                                       $unicity->fields['entities_id'],
-                                                       false);
-      
+                                                       $unicity->fields['entities_id'], false);
+
       //Search option for this type
       $target = new $unicity->fields['itemtype'];
 
       //Construct list
       echo "<span id='span_fields' name='span_fields'>";
       echo "<select name='_fields[]' multiple size='15'  style='width:400px'>";
+
       foreach ($DB->list_fields(getTableForItemType($unicity->fields['itemtype'])) as $field) {
-         $searchOption = $target->getSearchOptionByField('field',$field['Field']);
+         $searchOption = $target->getSearchOptionByField('field', $field['Field']);
+
          if (empty($searchOption)) {
             if ($table = getTableNameForForeignKeyField($field['Field'])) {
-               $searchOption = $target->getSearchOptionByField('field','name',$table);
+               $searchOption = $target->getSearchOptionByField('field', 'name', $table);
             }
          }
-         
-         if (!empty($searchOption) 
-               && !in_array($field['Type'],$blacklisted_types)
-                  && !in_array($field['Field'],$blacklisted_options)) {
-               echo "<option value='".$field['Field']."'"; 
-               if (isset($criteria['fields']) && in_array($field['Field'],$criteria['fields'])) {
-                  echo " selected ";
-               }
-               echo  ">".$searchOption['name']."</option>";
-            
+
+         if (!empty($searchOption)
+             && !in_array($field['Type'],$blacklisted_types)
+             && !in_array($field['Field'],$blacklisted_options)) {
+
+            echo "<option value='".$field['Field']."'";
+            if (isset($criteria['fields']) && in_array($field['Field'],$criteria['fields'])) {
+               echo " selected ";
+            }
+            echo  ">".$searchOption['name']."</option>";
          }
       }
-      
+
       echo "</select></span>";
    }
-   
+
+
    function getSearchOptions() {
       global $LANG;
 
@@ -272,29 +303,34 @@ class FieldUnicity extends CommonDropdown {
       $tab[16]['name']     = $LANG['common'][25];
       $tab[16]['datatype'] = 'text';
 
-      $tab[30]['table']    = $this->getTable();
-      $tab[30]['field']    = 'is_active';
-      $tab[30]['name']     = $LANG['common'][60];
-      $tab[30]['datatype'] = 'bool';
-      $tab[30]['massiveaction'] = false;
+      $tab[30]['table']          = $this->getTable();
+      $tab[30]['field']          = 'is_active';
+      $tab[30]['name']           = $LANG['common'][60];
+      $tab[30]['datatype']       = 'bool';
+      $tab[30]['massiveaction']  = false;
 
-      $tab[80]['table']     = 'glpi_entities';
-      $tab[80]['field']     = 'completename';
-      $tab[80]['name']      = $LANG['entity'][0];
+      $tab[80]['table'] = 'glpi_entities';
+      $tab[80]['field'] = 'completename';
+      $tab[80]['name']  = $LANG['entity'][0];
 
       return $tab;
    }
 
+
    /**
     * Perform checks to be sure that an itemtype and at least a field are selected
+    *
     * @param input the values to insert in DB
+    *
     * @return input the values to insert, but modified
-    */
+   **/
    static function checkBeforeInsert($input) {
       global $LANG;
+
       if (!$input['itemtype'] || empty($input['_fields'])) {
-         addMessageAfterRedirect($LANG['setup'][817],true,ERROR);
+         addMessageAfterRedirect($LANG['setup'][817], true, ERROR);
          $input = array();
+
       } else {
          $input['fields'] = implode(',',$input['_fields']);
          unset($input['_fields']);
@@ -302,23 +338,32 @@ class FieldUnicity extends CommonDropdown {
       return $input;
    }
 
+
    function prepareInputForAdd($input) {
       return self::checkBeforeInsert($input);
    }
 
+
    function prepareInputForUpdate($input) {
       return self::checkBeforeInsert($input);
    }
-   
+
+
    /**
     * Delete all criterias for an itemtype
+    *
     * @param itemtype
+    *
     * @return nothing
-    */
+   **/
    static function deleteForItemtype($itemtype) {
       global $DB;
-      $query = "DELETE FROM `glpi_fieldunicities` WHERE `itemtype` LIKE '%Plugin$itemtype%'";
+
+      $query = "DELETE
+                FROM `glpi_fieldunicities`
+                WHERE `itemtype` LIKE '%Plugin$itemtype%'";
       $DB->query($query);
    }
+
 }
 ?>

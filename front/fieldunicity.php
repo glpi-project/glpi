@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: computertype.php 10411 2010-02-09 07:58:26Z moyo $
+ * @version $Id $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -38,7 +38,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight('config','r');
-commonHeader($LANG['setup'][811],$_SERVER['PHP_SELF'],"config","control","FieldUnicity");
+commonHeader($LANG['setup'][811], $_SERVER['PHP_SELF'], "config", "control", "FieldUnicity");
 
 Search::show('FieldUnicity');
 commonFooter();

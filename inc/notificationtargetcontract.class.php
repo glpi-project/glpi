@@ -83,7 +83,6 @@ class NotificationTargetContract extends NotificationTarget {
          }
       }
 
-
    }
 
 
@@ -103,7 +102,7 @@ class NotificationTargetContract extends NotificationTarget {
       }
 
 
-      $tags = array('contract.time'    => $LANG['contract'][0].' / '.$LANG['contract'][1]);
+      $tags = array('contract.time' => $LANG['contract'][0].' / '.$LANG['contract'][1]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -111,6 +110,7 @@ class NotificationTargetContract extends NotificationTarget {
                                    'value' => false,
                                    'lang'  => true));
       }
+
       $this->addTagToList(array('tag'     => 'contracts',
                                 'label'   => $LANG['reports'][57],
                                 'value'   => false,

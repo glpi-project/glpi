@@ -54,6 +54,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
       $this->datas['##license.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                      $options['entities_id']);
+
       foreach ($options['licenses'] as $id => $license) {
          $tmp = array();
          $tmp['##license.item##']           = $license['softname'];

@@ -1351,14 +1351,15 @@ class OcsServer extends CommonDBTM {
             if ($cfg_ocs["states_id_default"]>0) {
                $input["states_id"] = $cfg_ocs["states_id_default"];
             }
+
             $computers_id = $comp->add($input, array('unicity_error_message' => false));
             if ($computers_id > 0) {
-               $ocsid = $line['ID'];
-              $changes[0] = '0';
+               $ocsid      = $line['ID'];
+               $changes[0] = '0';
                $changes[1] = "";
                $changes[2] = $ocsid;
                Log::history($computers_id, 'Computer', $changes, 0, HISTORY_OCS_IMPORT);
-    
+
                if ($idlink = OcsServer::ocsLink($line['ID'], $ocsservers_id, $computers_id)) {
                   OcsServer::updateComputer($idlink, $ocsservers_id, 0);
                }
@@ -2497,18 +2498,21 @@ class OcsServer extends CommonDBTM {
             echo "</table></form>\n";
 
             if (!$tolinked) {
-               echo "<a href='".$target."?check=all&amp;start=$start' onclick= ".
-                     "\"if ( markCheckboxes('ocsng_form') ) return false;\">" . $LANG['buttons'][18] .
-                     "</a>&nbsp;/&nbsp;<a href='".$target."?check=none&amp;start=".
-                     "$start' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
-                     $LANG['buttons'][19] . "</a>\n";
+               echo "<a href='".$target."?check=all&amp;start=$start' onclick=".
+                      "\"if ( markCheckboxes('ocsng_form') ) return false;\">".$LANG['buttons'][18].
+                    "</a>&nbsp;/&nbsp;".
+                    "<a href='".$target."?check=none&amp;start=".
+                      "$start' onclick=\"if (unMarkCheckboxes('ocsng_form')) return false;\">" .
+                      $LANG['buttons'][19] . "</a>\n";
             }
 
             printPager($start, $numrows, $target, $parameters);
+
          } else {
             echo "<strong>" . $LANG['ocsng'][9] . "</strong>";
          }
          echo "</div>";
+
       } else {
          echo "<div class='center'><strong>" . $LANG['ocsng'][9] . "</strong></div>";
       }

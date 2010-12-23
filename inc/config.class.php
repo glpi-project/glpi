@@ -1005,7 +1005,6 @@ class Config extends CommonDBTM {
    function showFormFieldUnicity() {
       global $CFG_GLPI;
 
-      //TODO unknow class
       $unicity = new FieldUnicity();
       $unicity->showForm($CFG_GLPI["id"], -1);
    }

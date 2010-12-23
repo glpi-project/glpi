@@ -119,9 +119,9 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
    function displayMoreTabs($tab) {
-   	
+
    }
-   
+
    /**
     * Display title above search engine
     *
@@ -233,6 +233,7 @@ abstract class CommonDropdown extends CommonDBTM {
             case 'datetime' :
                showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
                break;
+
             default:
                $this->displaySpecificTypeField($ID, $field);
                break;
@@ -249,9 +250,10 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
 
-   function displaySpecificTypeField($ID, $field = array()) {
 
+   function displaySpecificTypeField($ID, $field = array()) {
    }
+
 
    function pre_deleteItem() {
 
