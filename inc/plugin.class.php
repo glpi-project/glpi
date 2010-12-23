@@ -500,7 +500,8 @@ class Plugin extends CommonDBTM {
       if ($this->getFromDB($ID)) {
          CronTask::Unregister($this->fields['directory']);
          self::load($this->fields['directory'],true);
-
+         FieldUnicity::deleteForItemtype($this->fields['directory']);
+         
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
