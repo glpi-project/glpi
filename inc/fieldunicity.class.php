@@ -249,6 +249,10 @@ class FieldUnicity extends CommonDropdown {
       $tab[30]['datatype'] = 'bool';
       $tab[30]['massiveaction'] = false;
 
+      $tab[80]['table']     = 'glpi_entities';
+      $tab[80]['field']     = 'completename';
+      $tab[80]['name']      = $LANG['entity'][0];
+
       return $tab;
    }
 
