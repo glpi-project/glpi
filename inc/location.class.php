@@ -183,7 +183,7 @@ class Location extends CommonTreeDropdown {
       } else {
          $start = 0;
       }
-      $number = countElementsInTable('`glpi_netpoints`', "`locations_id`='$ID'");
+      $number = countElementsInTable('glpi_netpoints', "`locations_id`='$ID'");
 
       echo "<br><div class='center'>";
 
