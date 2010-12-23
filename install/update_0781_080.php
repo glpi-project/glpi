@@ -1420,10 +1420,33 @@ function update0781to080($output='HTML') {
                               `content_html` = '".addslashes(
                                     str_replace($changes['from'],$changes['to'],
                                                 $data['content_html']))."'
-                           WHERE `id` = ".$data['id']."";
+                           WHERE `id` = '".$data['id']."'";
                $DB->query($query)
                or die("0.80 fix template tag usage for $itemtype ".$LANG['update'][90] .$DB->error());
             }
+         }
+      }
+   }
+
+   /// Add document types
+   $types = array('docx' => array('name' => 'Word XML',
+                                  'icon' => 'doc-dist.png'),
+                  'xlsx' => array('name' => 'Excel XML',
+                                  'icon' => 'xls-dist.png'), 
+                  'pptx' => array('name' => 'PowerPoint XML',
+                                  'icon' => 'ppt-dist.png'));
+
+   foreach ($types as $ext => $data) {
+
+      $query = "SELECT * FROM `glpi_documenttypes` WHERE `ext` = '$ext'";
+      if ($result=$DB->query($query)) {
+         if ($DB->numrows($result) == 0) {
+            $query = "INSERT INTO `glpi_documenttypes`
+                     (`name`,`ext`,`icon`,`is_uploadable`,`date_mod`) 
+                     VALUES ('".$data['name']."','$ext','".$data['icon']."',
+                              '1',NOW());";
+            $DB->query($query)
+            or die("0.80 add document type $ext ".$LANG['update'][90] .$DB->error());
          }
       }
    }
