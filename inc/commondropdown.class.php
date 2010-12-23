@@ -66,7 +66,13 @@ abstract class CommonDropdown extends CommonDBTM {
       foreach ($this->defineMoreTabs($options) as $key => $value) {
          $ong[$key] = $value;
       }
-      return $ong;
+   }
+
+   /**
+    * Add more tabs to display
+   **/
+   function defineMoreTabs($options=array()) {
+      return array();
    }
 
 
