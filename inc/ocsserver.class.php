@@ -1353,7 +1353,7 @@ class OcsServer extends CommonDBTM {
             }
 
             $computers_id = $comp->add($input, array('unicity_error_message' => false));
-            if ($computers_id > 0) {
+            if ($computers_id) {
                $ocsid      = $line['ID'];
                $changes[0] = '0';
                $changes[1] = "";
@@ -2421,6 +2421,12 @@ class OcsServer extends CommonDBTM {
                      $LANG['buttons'][19] . "</a>\n";
             }
             echo "<table class='tab_cadre'>";
+
+            echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
+            echo "<input class='submit' type='submit' name='import_ok' value=\"".
+                   $LANG['buttons'][37]."\">";
+            echo "</td></tr>\n";
+
             echo "<tr><th>" . $LANG['ocsng'][5] . "</th>\n<th>".$LANG['common'][19]."</th>\n";
             echo "<th>" . $LANG['common'][27] . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
@@ -2429,11 +2435,6 @@ class OcsServer extends CommonDBTM {
                echo "<th>" . $LANG['ocsng'][39] . "</th>\n";
             }
             echo "<th>&nbsp;</th></tr>\n";
-
-            echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
-            echo "<input class='submit' type='submit' name='import_ok' value=\"".
-                   $LANG['buttons'][37]."\">";
-            echo "</td></tr>\n";
 
             $rule = new RuleOcsCollection($ocsservers_id);
             foreach ($hardware as $ID => $tab) {
@@ -2453,7 +2454,12 @@ class OcsServer extends CommonDBTM {
                      echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/redbutton.png\"></td>\n";
                      $data['entities_id'] = -1;
                   } else {
-                     echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/greenbutton.png\"></td>\n";
+                     echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/greenbutton.png\">"; 
+                     echo "&nbsp;";
+                     $tmprule = new Rule;
+                     $tmprule->getFromDB($data['_ruleid']);
+                     echo "<a href='". $tmprule->getLinkURL()."'>".$tmprule->getName()."</a>";
+                     echo "</td>\n";
                   }
                   echo "<td>";
                   Dropdown::show('Entity',
