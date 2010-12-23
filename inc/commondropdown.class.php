@@ -47,6 +47,8 @@ abstract class CommonDropdown extends CommonDBTM {
    //is added using popup window
    public $refresh_page = false;
 
+   //Menu & navigation
+   public $first_level_menu = "config";
    public $second_level_menu = "dropdowns";
    
    /**
@@ -127,7 +129,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function displayHeader () {
-      commonHeader($this->getTypeName(), '', "config", $this->second_level_menu, get_class($this));
+      commonHeader($this->getTypeName(), '', $this->first_level_menu, 
+                   $this->second_level_menu, get_class($this));
    }
 
 

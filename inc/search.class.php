@@ -1815,6 +1815,10 @@ class Search {
             $ret = "`glpi_consumableitems`.`alarm_threshold` AS ALARM, ";
             break;
 
+         case 'FieldUnicity':
+            $ret = "`glpi_fieldunicities`.`itemtype` as ITEMTYPE,";
+            break;
+            
          default :
             $ret = "";
       }
@@ -2129,7 +2133,8 @@ class Search {
     * @return select string
    **/
    static function addDefaultWhere ($itemtype) {
-
+      global $CFG_GLPI;
+      
       switch ($itemtype) {
          // No link
          case 'User' :
@@ -3947,6 +3952,16 @@ class Search {
             $clean = array('<' => '',
                            '>' => '');
             return strtr($data[$NAME.$num], $clean);
+        
+         case 'glpi_fieldunicities.fields':
+            $values = explode(',',$data[$NAME.$num]);
+            $item = new $data['ITEMTYPE'];
+            $message = array();
+            foreach ($values as $field) {
+               $searchOption = $item->getSearchOptionByField('field',$field);
+               $message[] = $searchOption['name'];
+            }
+            return implode(',',$message);
       }
 
 
