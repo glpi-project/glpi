@@ -170,8 +170,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
       if ($canedit) {
-         echo "<div class='center'><a href='".getItemTypeFormURL('NotificationTemplateTranslation').
-                  "?notificationtemplates_id=".$nID."'>". $LANG['mailing'][124]."</a></div><br>";
+         echo "<div class='center'>".
+              "<a href='".getItemTypeFormURL('NotificationTemplateTranslation').
+                "?notificationtemplates_id=".$nID."'>". $LANG['mailing'][124]."</a></div><br>";
       }
 
       echo "<div class='center' id='tabsbody'>";
