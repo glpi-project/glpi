@@ -86,7 +86,13 @@ class CommonGLPI {
     * Default to the search engine for the type
     */
    function redirectToList() {
-      if (isset($_SESSION['glpilisturl'][$this->getType()])
+      global $CFG_GLPI;
+
+      if (isset($_GET['withtemplate'])
+          && !empty($_GET['withtemplate'])) {
+         glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php?add=0&itemtype=".
+                     $this->getType());
+      } else if (isset($_SESSION['glpilisturl'][$this->getType()])
           && !empty($_SESSION['glpilisturl'][$this->getType()])) {
          glpi_header($_SESSION['glpilisturl'][$this->getType()]);
       } else {
