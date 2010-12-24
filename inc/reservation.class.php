@@ -843,7 +843,7 @@ class Reservation extends CommonDBChild {
                    ORDER BY `begin` DESC";
          $result = $DB->query($query);
 
-         echo "<div class='spaced'<table class='tab_cadre_fixehov'><tr><th colspan='5'>";
+         echo "<div class='spaced'><table class='tab_cadre_fixehov'><tr><th colspan='5'>";
 
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
