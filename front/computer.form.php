@@ -69,10 +69,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["id"], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$computer->getField('name'));
    }
-   if (!empty($_POST["withtemplate"])) {
-      glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-   }
-   glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
+   $computer->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $computer->check($_POST['id'],'d');
@@ -81,7 +78,7 @@ if (isset($_POST["add"])) {
       Event::log($_POST["id"],"computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$computer->getField('name'));
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
+   $computer->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $computer->check($_REQUEST['id'],'d');
@@ -90,7 +87,7 @@ if (isset($_POST["add"])) {
       Event::log($_REQUEST["id"], "computers", 4, "inventory",
                $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$computer->getField('name'));
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
+   $computer->redirectToList();
 
 //update a computer
 } else if (isset($_POST["update"])) {

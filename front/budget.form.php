@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    if ($budget->delete($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
+   $budget->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $budget->check($_POST["id"],'w');
@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
    if ($budget->restore($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
+   $budget->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $budget->check($_REQUEST["id"],'w');
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    if ($budget->delete($_REQUEST,1)) {
       Event::log($_REQUEST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/budget.php");
+   $budget->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $budget->check($_POST["id"],'w');
