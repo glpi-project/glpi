@@ -240,6 +240,8 @@ class Profile_User extends CommonDBTM {
 
       $result=$DB->query($query);
       if ($DB->numrows($result)>0) {
+         initNavigateListItems('User', $LANG['entity'][0]." = ".$entity->fields['name']);
+
          while ($data=$DB->fetch_array($result)) {
             echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
 
@@ -256,6 +258,8 @@ class Profile_User extends CommonDBTM {
             if ($DB->numrows($result2)>0) {
                $i=0;
                while ($data2=$DB->fetch_array($result2)) {
+                  addToNavigateListItems('User',$data2["id"]);
+
                   if ($i%$nb_per_line==0) {
                      if ($i!=0) {
                         echo "</tr>";
