@@ -59,7 +59,7 @@ if (isset ($_POST["update"])) {
 } else if (isset ($_POST["delete"])) {
    $config_mail->delete($_POST);
    $_SESSION['glpi_authconfig'] = 2;
-   glpi_header($CFG_GLPI["root_doc"] . "/front/authmail.php");
+   $config_mail->redirectToList();
 
 } else if (isset ($_POST["test"])) {
    if (AuthMail::testAuth($_POST["imap_string"], $_POST["imap_login"], $_POST["imap_password"])) {

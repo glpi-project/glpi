@@ -86,6 +86,20 @@ class CommonGLPI {
 
 
    /**
+    * Redirect to the list page from which the item was selected
+    * Default to the search engine for the type
+    */
+   function redirectToList() {
+      if (isset($_SESSION['glpilisturl'][$this->getType()])
+          && !empty($_SESSION['glpilisturl'][$this->getType()])) {
+         glpi_header($_SESSION['glpilisturl'][$this->getType()]);
+      } else {
+         glpi_header($this->getSearchURL());
+      }
+   }
+
+
+   /**
     * Show onglets
     *
     * @param $options array of parameters to add to URLs and ajax

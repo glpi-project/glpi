@@ -67,7 +67,7 @@ if (isset ($_POST["update"])) {
 } else if (isset ($_POST["delete"])) {
    $config_ldap->delete($_POST);
    $_SESSION['glpi_authconfig'] = 1;
-   glpi_header($CFG_GLPI["root_doc"] . "/front/authldap.php");
+   $config_ldap->redirectToList();
 
 } else if (isset ($_POST["test_ldap"])) {
    $ldap = new AuthLDAP;

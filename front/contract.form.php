@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    if ($contract->delete($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
+   $contact->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $contract->check($_POST['id'],'w');
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    if ($contract->restore($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
+   $contact->redirectToList();
 
 } else if (isset($_POST["purge"])) {
    $contract->check($_POST['id'],'w');
@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
    if ($contract->delete($_POST,1)) {
       Event::log($_POST["id"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
+   $contact->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $contract->check($_POST['id'],'w');
