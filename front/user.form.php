@@ -85,19 +85,19 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'],'w');
    $user->delete($_POST);
    Event::log(0,"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
-   glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+   $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $user->check($_POST['id'],'w');
    $user->restore($_POST);
    Event::log($_POST["id"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+   $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
    $user->check($_POST['id'],'w');
    $user->delete($_POST,1);
    Event::log($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+   $user->redirectToList();
 
 } else if (isset ($_POST["force_ldap_resynch"])) {
    checkRight('user_authtype','w');
