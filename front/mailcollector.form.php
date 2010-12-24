@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "mailcollector", 4, "setup",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/mailcollector.php");
+   $mailgate->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $mailgate->check($_POST['id'],'w');

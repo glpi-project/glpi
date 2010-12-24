@@ -56,8 +56,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
-   glpi_header(getItemTypeFormURL('NotificationTemplate',
-                                  true).'?id='.$_GET['notificationtemplates_id']);
+   $language->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $language->check($_POST["id"],'w');

@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $version->delete($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][84]." ".$_POST["id"]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".$version->fields['softwares_id']);
+   $version->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $version->check($_POST['id'],'w');

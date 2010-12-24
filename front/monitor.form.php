@@ -64,25 +64,21 @@ if (isset($_POST["add"])) {
    $monitor->delete($_POST);
 
    Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   if (!empty($_POST["withtemplate"])) {
-      glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-   } else {
-      glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
-   }
+   $monitor->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $monitor->check($_POST["id"],'d');
 
    $monitor->restore($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
+   $monitor->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $monitor->check($_REQUEST["id"],'d');
 
    $monitor->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
+   $monitor->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $monitor->check($_POST["id"],'w');

@@ -65,11 +65,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   if (!empty($_POST["withtemplate"])) {
-      glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-   } else {
-      glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
-   }
+   $peripheral->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $peripheral->check($_POST["id"],'d');
@@ -77,7 +73,7 @@ if (isset($_POST["add"])) {
    $peripheral->restore($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][23]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
+   $peripheral->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $peripheral->check($_REQUEST["id"],'d');
@@ -85,7 +81,7 @@ if (isset($_POST["add"])) {
    $peripheral->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "peripherals", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][24]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
+   $peripheral->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $peripheral->check($_POST["id"],'w');
