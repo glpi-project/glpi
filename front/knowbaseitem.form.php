@@ -92,7 +92,7 @@ if ($_GET["id"] == "new") {
 
    $kb->delete($_GET);
    Event::log($_GET["id"], "knowbaseitem", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+   $kb->redirectToList();
 
 } else if (isset($_GET["id"]) && strcmp($_GET["addtofaq"],"yes") == 0) {
    // ajouter  un item dans la faq
@@ -116,7 +116,7 @@ if ($_GET["id"] == "new") {
    commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
    $kb->showFull(true,$_GET["id"]);
-   
+
    commonFooter();
 }
 

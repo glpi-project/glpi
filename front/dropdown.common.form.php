@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
       $dropdown->refreshParentInfos();
 
       Event::log($_POST["id"], get_class($dropdown), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-      glpi_header($dropdown->getSearchURL());
+      $dropdown->redirectToList();
    }
 
 } else if (isset($_POST["replace"])) {
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
    $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($dropdown->getSearchURL());
+   $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $dropdown->check($_POST["id"],'w');

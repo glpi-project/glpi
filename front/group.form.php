@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    $group->check($_POST["id"],'w');
    $group->delete($_POST);
    Event::log($_POST["id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/group.php");
+   $group->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $group->check($_POST["id"],'w');
