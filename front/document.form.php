@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    if ($doc->delete($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
+   $doc->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $doc->check($_POST["id"],'w');
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
    if ($doc->restore($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
+   $doc->redirectToList();
 
 } else if (isset($_POST["purge"])) {
    $doc->check($_POST["id"],'w');
@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
    if ($doc->delete($_POST,1)) {
       Event::log($_POST["id"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
+   $doc->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $doc->check($_POST["id"],'w');
