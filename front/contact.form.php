@@ -65,7 +65,7 @@ if (isset($_REQUEST['getvcard'])) {
    if ($contact->delete($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
+   $contact->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $contact->check($_POST["id"],'w');
@@ -73,7 +73,7 @@ if (isset($_REQUEST['getvcard'])) {
    if ($contact->restore($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
+   $contact->redirectToList();
 
 } else if (isset($_POST["purge"])) {
    $contact->check($_POST["id"],'w');
@@ -81,7 +81,7 @@ if (isset($_REQUEST['getvcard'])) {
    if ($contact->delete($_POST,1)) {
       Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
-   glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
+   $contact->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $contact->check($_POST["id"],'w');
