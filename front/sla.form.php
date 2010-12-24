@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
    $sla->delete($_POST);
 
    Event::log($_GET["id"], "slas", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/sla.php");
+   $sla->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $sla->check($_GET["id"], 'w');
