@@ -64,25 +64,21 @@ if (isset($_POST["add"])) {
    $phone->delete($_POST);
 
    Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   if (!empty($_POST["withtemplate"])) {
-      glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-   } else {
-      glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
-   }
+   $phone->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $phone->check($_POST["id"],'d');
 
    $phone->restore($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
+   $phone->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $phone->check($_REQUEST["id"],'d');
 
    $phone->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
+   $phone->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $phone->check($_POST["id"],'w');

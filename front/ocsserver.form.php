@@ -49,7 +49,7 @@ commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 //Delete template or server
 if (isset ($_POST["delete"])) {
    $ocs->delete($_POST);
-   glpi_header($CFG_GLPI["root_doc"] . "/front/ocsserver.php");
+   $ocs->redirectToList();
 
 //Update server
 } else if (isset ($_POST["update"])) {

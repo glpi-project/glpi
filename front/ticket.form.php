@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
    $track->delete($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 
-   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.php");
+   $track->redirectToList();
 /*
 } else if (isset($_POST['add']) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
    checkSeveralRightsOr(array('add_followups'     => '1',

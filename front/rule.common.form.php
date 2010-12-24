@@ -113,7 +113,7 @@ if (isset($_POST["delete_criteria"])) {
    $rule->delete($_POST);
 
    Event::log($_POST["id"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header(str_replace('.form','',$_SERVER['PHP_SELF']));
+   $rule->redirectToList();
 }
 
 commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'], "admin",
