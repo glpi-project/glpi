@@ -368,6 +368,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $this->showTabs($options);
       $options['colspan'] = 2;
+      $options['canedit'] = 0; // Hide the buttons
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_3'><th colspan='4'>".$LANG['common'][36]."&nbsp;:&nbsp;";

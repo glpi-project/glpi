@@ -115,7 +115,7 @@ if ($_GET["id"] == "new") {
 
    commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
-   $kb->showFull(true,$_GET["id"]);
+   $kb->showFull(true);
 
    commonFooter();
 }
