@@ -64,7 +64,7 @@ class KnowbaseItem extends CommonDBTM {
       $ong[1]=$LANG['title'][26];
       return $ong;
    }
-   
+
    /**
     * Get The Name of the Object
     *
@@ -360,8 +360,9 @@ class KnowbaseItem extends CommonDBTM {
                                                    $knowbaseitemcategories_id);
       $this->showTabs($options);
       $options['colspan'] = 2;
+      $options['canedit'] = 0; // Hide the buttons
       $this->showFormHeader($options);
-      
+
       echo "<tr class='tab_bg_3'><th colspan='4'>".$LANG['common'][36]."&nbsp;:&nbsp;";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/".
             (isset($_SESSION['glpiactiveprofile'])
@@ -405,7 +406,7 @@ class KnowbaseItem extends CommonDBTM {
               "<br>";
       }
       echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
-      
+
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
@@ -470,7 +471,7 @@ class KnowbaseItem extends CommonDBTM {
       $where = "";
       $order = "";
       $score = "";
-      
+
       // Build query
       if (getLoginUserID()) {
          $where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND ";
@@ -544,9 +545,9 @@ class KnowbaseItem extends CommonDBTM {
             $title = $LANG['common'][36]." = ".
                                   (empty($KbCategory->fields['name']) ? "($knowbaseitemcategories_id)" : $KbCategory->fields['name']);
          }
-         
+
          initNavigateListItems('KnowbaseItem', $title);
-         
+
          $numrows    = $DB->numrows($result);
          $list_limit = $_SESSION['glpilist_limit'];
          // Limit the result, if no limit applies, use prior result
@@ -588,7 +589,7 @@ class KnowbaseItem extends CommonDBTM {
             $row_num = 1;
             for ($i=0 ; $i<$numrows_limit ; $i++) {
                $data = $DB->fetch_array($result_limit);
-               
+
                addToNavigateListItems('KnowbaseItem',$data["id"]);
                // Column num
                $item_num = 1;
