@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    $prof->check($_POST['id'],'w');
 
    $prof->delete($_POST);
-   glpi_header($CFG_GLPI["root_doc"]."/front/profile.php");
+   $prof->redirectToList();
 
 } else if (isset($_POST["update"]) || isset($_POST["interface"])) {
    $prof->check($_POST['id'],'w');

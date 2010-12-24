@@ -65,18 +65,14 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "networkequipment", 4, "inventory",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
 
-   if (!empty($_POST["withtemplate"])) {
-      glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
-   } else {
-      glpi_header($CFG_GLPI["root_doc"]."/front/networkequipment.php");
-   }
+   $netdevice->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $netdevice->check($_POST["id"],'d');
 
    $netdevice->restore($_POST);
    Event::log($_POST["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/networkequipment.php");
+   $netdevice->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
 
@@ -84,7 +80,7 @@ if (isset($_POST["add"])) {
 
    $netdevice->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "networkequipment", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/networkequipment.php");
+   $netdevice->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $netdevice->check($_POST["id"],'w');

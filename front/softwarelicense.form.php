@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    $license->delete($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",
               $_SESSION["glpiname"]." ".$LANG['log'][87]." ".$_POST["id"]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?id=".$license->fields['softwares_id']);
+   $license->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $license->check($_POST['id'],'w');

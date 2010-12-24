@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    $link->check($_GET["id"],'w');
    $link->delete($_POST);
    Event::log($_GET["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
+   $link->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $link->check($_GET["id"],'w');

@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
 
    $remind->delete($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
-   glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
+   $remind->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $remind->check($_POST["id"],'w');   // Right to update the reminder

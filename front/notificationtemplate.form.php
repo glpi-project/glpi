@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
               $_SESSION["glpiname"] ." ".$LANG['log'][22]);
-   glpi_header(getItemTypeSearchURL('NotificationTemplate', true));
+   $notificationtemplate->redirectToList();
 
 } else if (isset($_POST["delete_languages"])) {
    $notificationtemplate->check(-1,'d');
