@@ -1148,6 +1148,7 @@ $LANG['log'][119] = "ajout d'un lien entre tickets";
 $LANG['log'][120] = "suppression d'un lien entre tickets";
 $LANG['log'][121] = "ajout d'un acteur au ticket";
 $LANG['log'][122] = "suppression d'un acteur au ticket";
+$LANG['log'][123] = "tentative d'ajout d'un élément qui existe déjà";
 
 
 $LANG['login'][0]  = "Dernière connexion";
@@ -1483,8 +1484,17 @@ $LANG['ocsng'][55] = "Volume(s) verrouillé(s)";
 $LANG['ocsng'][57] = "Interface OCSNG";
 $LANG['ocsng'][58] = "Liaison OCSNG";
 $LANG['ocsng'][59] = "Présent dans GLPI";
-$LANG['ocsng'][60] = "Présent dans OCS";
+$LANG['ocsng'][60] = "Présent dans OCSNG";
 $LANG['ocsng'][61] = "Aucun objet à nettoyer.";
+
+$LANG['ocsng'][70] = "Machines importées";
+$LANG['ocsng'][71] = "Machines synchronisées";
+$LANG['ocsng'][72] = "Machines ne vérifiant aucune règle";
+$LANG['ocsng'][73] = "Machines liées";
+$LANG['ocsng'][74] = "Machines non modifiées";
+$LANG['ocsng'][75] = "Machines non importées car non uniques";
+$LANG['ocsng'][76] = "Statistiques de la liaison OCSNG";
+$LANG['ocsng'][77] = "traitement terminé";
 
 $LANG['pager'][1] = "à";
 $LANG['pager'][2] = "de";

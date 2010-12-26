@@ -32,6 +32,7 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
+            
 
 
 /// OCS config class
@@ -86,8 +87,7 @@ class OcsServer extends CommonDBTM {
    const COMPUTER_FAILED_IMPORT  = 3;
    const COMPUTER_NOTUPDATED     = 4;
    const COMPUTER_NOT_UNIQUE     = 5;
-
-
+                          
    static function getTypeName() {
       global $LANG;
 
@@ -1285,11 +1285,67 @@ class OcsServer extends CommonDBTM {
       }
    }
 
+   static function getOcsFieldsMatching() {
+      return array('WINPRODKEY'  => 'os_license_number',
+                   'WINPRODID'   => 'os_licenseid',
+                   'OSNAME'      => 'operatingsystems_id',
+                   'OSVERSION'   => 'operatingsystemversions_id',
+                   'OSCOMMENTS'  => 'operatingsystemservicepacks_id',
+                   'WORKGROUP'   => 'domains_id',
+                   'USERID'      => 'contact',
+                   'NAME'        => 'name',
+                   'DESCRIPTION' => 'comment',
+                   'SSN'         => 'serial',
+                   'SMODEL'      => 'computermodels_id',
+                   'SMANUACTURER'=> 'manufacturers_id');
+   }
 
+   static function getComputerInformations($ocs_fields = array(),$cfg_ocs,$entities_id, 
+                                           $locations_id = 0) {
+      $input = array();
+      $input["is_ocs_import"] = 1;
+      if ($cfg_ocs["states_id_default"]>0) {
+          $input["states_id"] = $cfg_ocs["states_id_default"];
+       }
+
+      $input["entities_id"] = $entities_id;
+      if ($locations_id) {
+        $input["locations_id"] = $locations_id;
+      }
+
+      foreach (self::getOcsFieldsMatching() as $ocs_field => $glpi_field) {
+         if (isset($ocs_fields[$ocs_field])) {
+            $table = getTableNameForForeignKeyField($glpi_field);
+            $ocs_field = encodeInUtf8($ocs_field);
+            //Field a a foreing key
+            if ($table != '') {
+               $itemtype = getItemTypeForTable($table);
+               $input[$glpi_field] = Dropdown::importExternal($itemtype,$ocs_fields[$ocs_field]);
+            } else {
+               switch ($glpi_field) {
+                  case 'contact':
+                    if ($users_id = User::getIDByName($ocs_fields[$ocs_field])) {
+                       $input[$glpi_field] = $users_id;
+                    }
+                     break;
+                  case 'comment':
+                     $input[$glpi_field] = '';
+                     if (!empty ($ocs_fields["DESCRIPTION"]) 
+                           && $ocs_fields["DESCRIPTION"] != NOT_AVAILABLE) {
+                        $input[$glpi_field] .= $ocs_fields["DESCRIPTION"] . "\r\n";
+                     }
+                     $input[$glpi_field] .= "Swap: " . $ocs_fields["SWAP"];
+                     break;
+               }
+            }
+         }
+      }
+      return $input;
+   }
+   
    static function importComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1,
                                   $defaultlocation = -1, $canlink=0) {
       global $DBocs;
-
       OcsServer::checkOCSconnection($ocsservers_id);
       $comp = new Computer;
 
@@ -1334,25 +1390,37 @@ class OcsServer extends CommonDBTM {
          }
 
          //New machine to import
-         $query = "SELECT *
+         $query = "SELECT hardware.*, bios.*
                    FROM `hardware`
+                   LEFT JOIN `bios` ON (`bios`.`HARDWARE_ID`=`hardware`.`ID`)
                    WHERE `ID`='$ocsid'";
          $result = $DBocs->query($query);
          if ($result && $DBocs->numrows($result) == 1) {
             $line = $DBocs->fetch_array($result);
             $line = clean_cross_side_scripting_deep(addslashes_deep($line));
             $cfg_ocs = OcsServer::getConfig($ocsservers_id);
+
+            /*
             $input = array ();
             $input["entities_id"] = $data['entities_id'];
             if (isset($data['locations_id']))
                $input["locations_id"] = $data['locations_id'];
-            $input["name"] = $line["NAME"];
+            */
+            $locations_id = (isset($data['locations_id'])?$data['locations_id']:0);
+            $input = self::getComputerInformations($data,$cfg_ocs,
+                                                   $data['entities_id'],$locations_id);
+            /*
+            foreach (self::getOcsFieldsMatching() as $ocs_field => $glpi_field) {
+               $input[$glpi_field] = $line[$ocs_field];
+            }
+            //$input["name"] = $line["NAME"];
             $input["is_ocs_import"] = 1;
             if ($cfg_ocs["states_id_default"]>0) {
                $input["states_id"] = $cfg_ocs["states_id_default"];
             }
-
+            */
             $computers_id = $comp->add($input, array('unicity_error_message' => false));
+            
             if ($computers_id) {
                $ocsid      = $line['ID'];
                $changes[0] = '0';
@@ -1603,13 +1671,20 @@ class OcsServer extends CommonDBTM {
                                                    $ocsservers_id, $cfg_ocs, $computer_updates,
                                                    $comp->fields['entities_id'], $dohistory);
                if ($mixed_checksum & pow(2, self::HARDWARE_FL)) {
-                  $loghistory = OcsServer::updateHardware($line['computers_id'], $line['ocsid'],
-                                                          $ocsservers_id, $cfg_ocs,
-                                                          $computer_updates, $dohistory);
+                  $p = array('computers_id'     => $line['computers_id'],
+                             'ocs_id'           => $line['ocsid'],
+                             'ocsservers_id'    => $ocsservers_id,
+                             'cfg_ocs'          => $cfg_ocs,
+                             'computers_updates'=> $computer_updates,
+                             'dohistory'        => $dohistory,
+                             'check_history'    => true,
+                             'entities_id'      => $comp->fields['entities_id']);
+                  $loghistory = OcsServer::updateHardware($p);
                }
                if ($mixed_checksum & pow(2, self::BIOS_FL)) {
                   OcsServer::updateBios($line['computers_id'], $line['ocsid'], $ocsservers_id,
-                                        $cfg_ocs, $computer_updates, $dohistory);
+                                        $cfg_ocs, $computer_updates, $dohistory,
+                                        $comp->fields['entities_id']);
                }
                // Get import devices
                $import_device = importArrayFromDB($line["import_device"]);
@@ -1711,7 +1786,117 @@ class OcsServer extends CommonDBTM {
       }
    }
 
+   static function getComputerHardware($params = array()) {
+      global $DB, $DBocs;
 
+      $options['computers_id'] = 0;
+      $options['ocs_id'] = 0;
+      $options['ocsservers_id'] = 0;
+      $options['cfg_ocs'] = array();
+      $options['computers_update'] = array();
+      $options['check_history'] = true;
+      $options['do_history'] = 2;
+      foreach ($params as $key => $value) {
+         $options[$key] = $value;
+      }
+      
+      OcsServer::checkOCSconnection($options['ocsservers_id']);
+
+      $query = "SELECT *
+                FROM `hardware`
+                WHERE `ID` = '".$options['ocs_id']."'";
+      $result = $DBocs->query($query);
+
+      $logHistory = 1;
+
+                          
+      if ($DBocs->numrows($result) == 1) {
+         $line = $DBocs->fetch_assoc($result);
+         $line = clean_cross_side_scripting_deep(addslashes_deep($line));
+         $compupdate = array ();
+         if ($options['cfg_ocs']["import_os_serial"] && !in_array("os_license_number", $options['computers_updates'])) {
+            if (!empty ($line["WINPRODKEY"])) {
+               $compupdate["os_license_number"] = $line["WINPRODKEY"];
+            }
+            if (!empty ($line["WINPRODID"])) {
+               $compupdate["os_licenseid"] = $line["WINPRODID"];
+            }
+         }
+         if ($options['check_history']) {
+            $sql_computer = "SELECT `glpi_operatingsystems`.`name` AS os_name,
+                                    `glpi_operatingsystemservicepacks`.`name` AS os_sp
+                             FROM `glpi_computers`, `glpi_ocslinks`, `glpi_operatingsystems`,
+                                  `glpi_operatingsystemservicepacks`
+                             WHERE `glpi_ocslinks`.`computers_id`=`glpi_computers`.`id`
+                                   AND `glpi_operatingsystems`.`id`=`glpi_computers`.`operatingsystems_id`
+                                   AND `glpi_operatingsystemservicepacks`.`id`
+                                        =`glpi_computers`.`operatingsystemservicepacks_id`
+                                   AND `glpi_ocslinks`.`ocsid`='".$options['ocs_id']."'
+                                   AND `glpi_ocslinks`.`ocsservers_id`='".$options['ocsservers_id']."'";
+   
+            $res_computer = $DB->query($sql_computer);
+            if ($DB->numrows($res_computer) ==  1) {
+               $data_computer = $DB->fetch_array($res_computer);
+               $computerOS = $data_computer["os_name"];
+               $computerOSSP = $data_computer["os_sp"];
+   
+               //Do not log software history in case of OS or Service Pack change
+               if (!$options['do_history']
+                   || $computerOS != $line["OSNAME"]
+                   || $computerOSSP != $line["OSCOMMENTS"]) {
+   
+                  $logHistory = 0;
+               }
+            }
+         }
+         if ($options['cfg_ocs']["import_general_os"]) {
+            if (!in_array("operatingsystems_id", $options['computers_updates'])) {
+               $osname=$line["OSNAME"];
+               // Hack for OCS encoding problems
+               if (!$options['cfg_ocs']["ocs_db_utf8"] && !seems_utf8($osname)) {
+                  $osname = encodeInUtf8($osname);
+               }
+               $compupdate["operatingsystems_id"] = Dropdown::importExternal('OperatingSystem',
+                                                                             $osname);
+            }
+            if (!in_array("operatingsystemversions_id", $options['computers_updates'])) {
+               $compupdate["operatingsystemversions_id"]
+                     = Dropdown::importExternal('OperatingSystemVersion', $line["OSVERSION"]);
+            }
+            if (!strpos($line["OSCOMMENTS"],"CEST")
+                && !in_array("operatingsystemservicepacks_id", $options['computers_updates'])) {// Not linux comment
+
+               $compupdate["operatingsystemservicepacks_id"]
+                     = Dropdown::importExternal('OperatingSystemServicePack', $line["OSCOMMENTS"]);
+            }
+         }
+         if ($options['cfg_ocs']["import_general_domain"] && !in_array("domains_id", $options['computers_updates'])) {
+            $compupdate["domains_id"] = Dropdown::importExternal('Domain', $line["WORKGROUP"]);
+         }
+         if ($options['cfg_ocs']["import_general_contact"] && !in_array("contact", $options['computers_updates'])) {
+            $compupdate["contact"] = $line["USERID"];
+            $query = "SELECT `id`
+                      FROM `glpi_users`
+                      WHERE `name` = '" . $line["USERID"] . "';";
+            $result = $DB->query($query);
+            if ($DB->numrows($result) == 1 && !in_array("users_id", $options['computers_updates'])) {
+               $compupdate["users_id"] = $DB->result($result, 0, 0);
+            }
+         }
+         if ($options['cfg_ocs']["import_general_name"] && !in_array("name", $options['computers_updates'])) {
+            $compupdate["name"] = $line["NAME"];
+         }
+         if ($options['cfg_ocs']["import_general_comment"] && !in_array("comment", $options['computers_updates'])) {
+            $compupdate["comment"] = "";
+            if (!empty ($line["DESCRIPTION"]) && $line["DESCRIPTION"] != NOT_AVAILABLE) {
+               $compupdate["comment"] .= $line["DESCRIPTION"] . "\r\n";
+            }
+            $compupdate["comment"] .= "Swap: " . $line["SWAP"];
+         }
+         return array('logHistory'=>$logHistory,'fields'=>$compupdate);
+      }
+   }
+   
    /**
     * Update the computer hardware configuration
     *
@@ -1727,12 +1912,24 @@ class OcsServer extends CommonDBTM {
     *@return nothing.
     *
     **/
-   static function updateHardware($computers_id, $ocsid, $ocsservers_id, $cfg_ocs,
-                                  $computer_updates, $dohistory = 2) {
+   static function updateHardware($params = array()) {
       global $DB, $DBocs;
 
-      OcsServer::checkOCSconnection($ocsservers_id);
-
+      $p = array('computers_id'     => 0,
+                 'ocs_id'           => 0,
+                 'ocsservers_id'    => 0,
+                 'cfg_ocs'          => array(),
+                 'computers_updates'=> array(),
+                 'dohistory'        => true,
+                 'check_history'    => true,
+                 'entities_id'      => 0);
+      foreach ($params as $key => $value) {
+         $p[$key] = $value;
+      }
+      
+      OcsServer::checkOCSconnection($p['ocsservers_id']);
+      $results = self::getComputerHardware($params);
+      /*
       $query = "SELECT *
                 FROM `hardware`
                 WHERE `ID` = '$ocsid'";
@@ -1740,6 +1937,7 @@ class OcsServer extends CommonDBTM {
 
       $logHistory = 1;
 
+                          
       if ($DBocs->numrows($result) == 1) {
          $line = $DBocs->fetch_assoc($result);
          $line = clean_cross_side_scripting_deep(addslashes_deep($line));
@@ -1821,13 +2019,15 @@ class OcsServer extends CommonDBTM {
             }
             $compupdate["comment"] .= "Swap: " . $line["SWAP"];
          }
-         if (count($compupdate)) {
-            $compupdate["id"] = $computers_id;
+         */
+         if (count($results['fields'])) {
+            $results['fields']["id"] = $p['computers_id'];
+            $results['fields']["entities_id"] = $p['entities_id'];
             $comp = new Computer();
-            $comp->update($compupdate, $dohistory);
+            $comp->update($results['fields'], $p['dohistory']);
          }
-      }
-      return array("history"=>$logHistory);
+      //}
+      return array("history"=>$results['logHistory']);
    }
 
 
@@ -1842,12 +2042,13 @@ class OcsServer extends CommonDBTM {
     *@param $cfg_ocs array : ocs config
     *@param $computer_updates array : already updated fields of the computer
     *@param $dohistory boolean : log changes ?
+    *@param entities_id the entity in which the computer is imported
     *
     *@return nothing.
     *
     **/
    static function updateBios($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $computer_updates,
-                              $dohistory = 2) {
+                              $dohistory = 2,$entities_id=0) {
       global $DBocs;
 
       OcsServer::checkOCSconnection($ocsservers_id);
@@ -1884,6 +2085,7 @@ class OcsServer extends CommonDBTM {
          }
          if (count($compupdate)) {
             $compupdate["id"] = $computers_id;
+            $compudate["entities_id"] = $entities_id;
             $comp = new Computer();
             $comp->update($compupdate, $dohistory);
          }
@@ -2183,22 +2385,22 @@ class OcsServer extends CommonDBTM {
             }
 
             echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$target."'>";
-
             echo "<a href='".$target."?check=all' ".
                    "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
                    $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
             echo "<a href='".$target."?check=none' ".
                    "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
                    $LANG['buttons'][19] . "</a>\n";
-            echo "<table class='tab_cadre'>";
-            echo "<tr><th>" . $LANG['ocsng'][11] . "</th><th>" . $LANG['ocsng'][13] . "</th>";
-            echo "<th>" . $LANG['ocsng'][14] . "</th><th>" . $LANG['ocsng'][6] . "</th>";
-            echo "<th>&nbsp;</th></tr>\n";
-
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input class='submit' type='submit' name='update_ok' value=\"".
                    $LANG['ldap'][15]."\">";
             echo "</td></tr>\n";
+            echo "<tr><th>" . $LANG['ocsng'][11] . "</th><th>" . $LANG['ocsng'][13] . "</th>";
+            echo "<th>" . $LANG['ocsng'][14] . "</th><th>" . $LANG['ocsng'][6] . "</th>";
+            echo "<th>&nbsp;</th></tr>\n";
+
+
 
             foreach ($already_linked as $ID => $tab) {
                echo "<tr class='tab_bg_2 center'>";
@@ -2215,6 +2417,13 @@ class OcsServer extends CommonDBTM {
                    $LANG['ldap'][15]."\">";
             echo "<input type=hidden name='ocsservers_id' value='" . $ocsservers_id . "'>";
             echo "</td></tr>";
+            echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
+            echo "<a href='".$target."?check=all' ".
+                   "onclick= \"if (markCheckboxes('ocsng_form')) return false;\">" .
+                   $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;\n";
+            echo "<a href='".$target."?check=none' ".
+                   "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
+                   $LANG['buttons'][19] . "</a></td></tr>\n";
             echo "</table></form>\n";
             printPager($start, $numrows, $target, $parameters);
          } else {
@@ -2392,7 +2601,7 @@ class OcsServer extends CommonDBTM {
             if (!$tolinked && isMultiEntitiesMode()) {
                echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode' action='" .
                       $target . "'>\n";
-               echo "<table class='tab_cadre'>";
+               echo "<table class='tab_cadre_fixe'>";
                echo "<tr><th>" . $LANG['ocsng'][41] . "</th></tr>\n";
                echo "<tr class='tab_bg_1'>";
                echo "<td class='center'>";
@@ -2456,7 +2665,7 @@ class OcsServer extends CommonDBTM {
                   } else {
                      echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/greenbutton.png\">"; 
                      echo "&nbsp;";
-                     $tmprule = new Rule;
+                     $tmprule = new RuleOcs;
                      $tmprule->getFromDB($data['_ruleid']);
                      echo "<a href='". $tmprule->getLinkURL()."'>".$tmprule->getName()."</a>";
                      echo "</td>\n";
@@ -4744,6 +4953,7 @@ class OcsServer extends CommonDBTM {
                               }
                               if (count($input)) {
                                  $input["id"] = $id_monitor;
+                                 $input['entities_id'] = $entities_id;
                                  $m->update($input);
                               }
                            }
@@ -5104,6 +5314,67 @@ class OcsServer extends CommonDBTM {
       } else if (preg_match("/LPT[0-9]:/i",$port)) {
          $printer_infos['have_parallel'] = 1;
       }
+   }
+   
+   static function getAvailableStatistics() {
+      global $LANG;
+      
+      return array('synchronized_machines_number'  => $LANG['ocsng'][71],
+                   'imported_machines_number'      => $LANG['ocsng'][70],
+                   'failed_rules_machines_number'  => $LANG['ocsng'][72],
+                   'linked_machines_number'        => $LANG['ocsng'][73],
+                   'not_unique_machines_number'    => $LANG['ocsng'][75],
+                   'notupdated_machines_number'    => $LANG['ocsng'][74]);
+   }
+   
+   static function manageImportStatistics(&$statistics = array(), $action = false) {
+      if(empty($statistics)) {
+         foreach (self::getAvailableStatistics() as $field => $label) {
+            $statistics[$field] = 0;
+         }
+      }
+      switch ($action) {
+         case OcsServer::COMPUTER_SYNCHRONIZED :
+            $statistics["synchronized_machines_number"]++;
+            break;
+   
+         case OcsServer::COMPUTER_IMPORTED :
+            $statistics["imported_machines_number"]++;
+            break;
+   
+         case OcsServer::COMPUTER_FAILED_IMPORT :
+            $statistics["failed_rules_machines_number"]++;
+            break;
+   
+         case OcsServer::COMPUTER_LINKED :
+            $statistics["linked_machines_number"]++;
+            break;
+   
+         case OcsServer::COMPUTER_NOT_UNIQUE :
+            $statistics[" not_unique_machines_number"]++;
+            break;
+   
+         case OcsServer::COMPUTER_NOTUPDATED :
+            $statistics["notupdated_machines_number"]++;
+            break;
+      }
+   }
+   
+   static function showStatistics($statistics = array(),$finished=false) {
+      global $LANG;
+ 
+      echo "<div class='center b'>";
+      echo "<table class='tab_cadre_fixe'><th colspan='2'>".$LANG['ocsng'][76]; 
+      if ($finished) {
+         echo " : ".$LANG['ocsng'][77];
+      }
+      echo "</th>";
+      foreach (self::getAvailableStatistics() as $field => $label) {
+         //if ($statistics[$field]) {
+            echo "<tr class='tab_bg_1'><td>".$label."</td><td>".$statistics[$field]."</td></tr>";
+         //}
+      }
+      echo "</table></div>";
    }
 }
 ?>
