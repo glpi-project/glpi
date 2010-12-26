@@ -820,11 +820,6 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $p['unicity_error_message'] = true;
-      foreach ($options as $key => $value) {
-         $p[$key] = $value;
-      }
-
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -2507,7 +2502,7 @@ class CommonDBTM extends CommonGLPI {
 
       $result = true;
       //Do not check unicity when creating infocoms or if checking is expliclty disabled
-      if (!$p['disable_unicity_check'] || (in_array(get_class($this), array('Infocom')) && $add)) {
+      if ($p['disable_unicity_check'] || (in_array(get_class($this), array('Infocom')) && $add)) {
          return $result;
       }
 
@@ -2568,7 +2563,7 @@ class CommonDBTM extends CommonGLPI {
                                                  true, ERROR, false);
                       } 
                       if ($p['add_event_on_duplicate']) {
-                        Event::log ($this->fields['id'], get_class($this), 4, 'inventory',
+                        Event::log ((!$add?$this->fields['id']:0), get_class($this), 4, 'inventory',
                                     $_SESSION["glpiname"]." ".
                                     $LANG['log'][123].' : '.$message_text);
                       }

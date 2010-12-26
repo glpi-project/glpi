@@ -51,6 +51,9 @@ abstract class CommonDropdown extends CommonDBTM {
    public $first_level_menu = "config";
    public $second_level_menu = "dropdowns";
 
+   //If import needs another field's value (for example *Model needs manufacturer)
+   public $mandatory_import_fields = array();
+   
    /**
     * Return Additional Fileds for this type
     **/
@@ -574,6 +577,10 @@ abstract class CommonDropdown extends CommonDBTM {
       $ruleinput = array("name" => $value);
       $rulecollection = RuleCollection::getClassByType($this->getType(),true);
 
+      foreach ($this->mandatory_import_fields as $field) {
+         $ruleinput[$field] = $external_params[$field];
+      }
+      /*
       switch ($this->getTable()) {
          case "glpi_computermodels" :
          case "glpi_monitormodels" :
@@ -583,7 +590,7 @@ abstract class CommonDropdown extends CommonDBTM {
          case "glpi_networkequipmentmodels" :
             $ruleinput["manufacturer"] = $external_params["manufacturer"];
             break;
-      }
+      }*/
 
       $input["name"] = $value;
       $input["comment"] = $comment;

@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class PhoneModel
 class PhoneModel extends CommonDropdown {
 
+   public $mandatory_import_fields = array('manufacturer');
+
    static function getTypeName() {
       global $LANG;
 

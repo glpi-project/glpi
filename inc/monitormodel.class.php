@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class MonitorModel
 class MonitorModel extends CommonDropdown {
 
+   public $mandatory_import_fields = array('manufacturer');
+
    static function getTypeName() {
       global $LANG;
 

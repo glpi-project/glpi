@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class PeripheralModel
 class PeripheralModel extends CommonDropdown {
 
+   public $mandatory_import_fields = array('manufacturer');
+
    static function getTypeName() {
       global $LANG;
 

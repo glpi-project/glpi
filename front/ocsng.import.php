@@ -108,7 +108,7 @@ if (!isset($_POST["import_ok"])) {
    }
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
    if ($display_list) {
-      OcsServer::ocsShowNewComputer($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
+      OcsServer::showComputersToAdd($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
                                     $_GET['check'], $_GET['start']);
    }
 

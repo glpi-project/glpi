@@ -1286,7 +1286,8 @@ class OcsServer extends CommonDBTM {
    }
 
    static function getOcsFieldsMatching() {
-      return array('WINPRODKEY'  => 'os_license_number',
+      return array('SMANUFACTURER'=> 'manufacturers_id',
+                   'WINPRODKEY'  => 'os_license_number',
                    'WINPRODID'   => 'os_licenseid',
                    'OSNAME'      => 'operatingsystems_id',
                    'OSVERSION'   => 'operatingsystemversions_id',
@@ -1296,8 +1297,7 @@ class OcsServer extends CommonDBTM {
                    'NAME'        => 'name',
                    'DESCRIPTION' => 'comment',
                    'SSN'         => 'serial',
-                   'SMODEL'      => 'computermodels_id',
-                   'SMANUACTURER'=> 'manufacturers_id');
+                   'SMODEL'      => 'computermodels_id');
    }
 
    static function getComputerInformations($ocs_fields = array(),$cfg_ocs,$entities_id, 
@@ -1320,9 +1320,24 @@ class OcsServer extends CommonDBTM {
             //Field a a foreing key
             if ($table != '') {
                $itemtype = getItemTypeForTable($table);
-               $input[$glpi_field] = Dropdown::importExternal($itemtype,$ocs_fields[$ocs_field]);
+               $item = new $itemtype();
+               $external_params = array();
+               foreach ($item->mandatory_import_fields as $field) {
+                  if (isset($ocs_fields[$field])) {
+                     $external_params[$field] = $ocs_fields[$field];
+                  } else {
+                     $external_params[$field] = "";
+                  }
+               }
+               $input[$glpi_field] = Dropdown::importExternal($itemtype,
+                                                              $ocs_fields[$ocs_field],
+                                                              $entities_id,
+                                                              $external_params);
             } else {
                switch ($glpi_field) {
+                  default:
+                     $input[$glpi_field] = $ocs_fields[$ocs_field];
+                     break;
                   case 'contact':
                     if ($users_id = User::getIDByName($ocs_fields[$ocs_field])) {
                        $input[$glpi_field] = $users_id;
@@ -1398,27 +1413,11 @@ class OcsServer extends CommonDBTM {
          if ($result && $DBocs->numrows($result) == 1) {
             $line = $DBocs->fetch_array($result);
             $line = clean_cross_side_scripting_deep(addslashes_deep($line));
-            $cfg_ocs = OcsServer::getConfig($ocsservers_id);
-
-            /*
-            $input = array ();
-            $input["entities_id"] = $data['entities_id'];
-            if (isset($data['locations_id']))
-               $input["locations_id"] = $data['locations_id'];
-            */
+            
             $locations_id = (isset($data['locations_id'])?$data['locations_id']:0);
-            $input = self::getComputerInformations($data,$cfg_ocs,
+            $input = self::getComputerInformations($line,
+                                                   OcsServer::getConfig($ocsservers_id),
                                                    $data['entities_id'],$locations_id);
-            /*
-            foreach (self::getOcsFieldsMatching() as $ocs_field => $glpi_field) {
-               $input[$glpi_field] = $line[$ocs_field];
-            }
-            //$input["name"] = $line["NAME"];
-            $input["is_ocs_import"] = 1;
-            if ($cfg_ocs["states_id_default"]>0) {
-               $input["states_id"] = $cfg_ocs["states_id_default"];
-            }
-            */
             $computers_id = $comp->add($input, array('unicity_error_message' => false));
             
             if ($computers_id) {
@@ -2085,7 +2084,7 @@ class OcsServer extends CommonDBTM {
          }
          if (count($compupdate)) {
             $compupdate["id"] = $computers_id;
-            $compudate["entities_id"] = $entities_id;
+            $compupdate["entities_id"] = $entities_id;
             $comp = new Computer();
             $comp->update($compupdate, $dohistory);
          }
@@ -2524,7 +2523,7 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   static function ocsShowNewComputer($ocsservers_id, $advanced, $check, $start, $entity=0,
+   static function showComputersToAdd($ocsservers_id, $advanced, $check, $start, $entity=0,
                                       $tolinked=false) {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
 
@@ -2616,10 +2615,12 @@ class OcsServer extends CommonDBTM {
                } else {
                   echo $LANG['ocsng'][37];
                }
-               echo "</a></td>";
+               echo "</a></td></tr>";
+               echo "<tr class='tab_bg_1'>";
+               echo "<td class='center'>";
+               echo "<strong>" . $LANG['ocsconfig'][18] . "</strong><br>";
                echo "</tr></table></form><br>";
             }
-            echo "<strong>" . $LANG['ocsconfig'][18] . "</strong><br>";
             echo "<form method='post' name='ocsng_form' id='ocsng_form' action='" .
                    $target . "'>";
             if (!$tolinked) {
@@ -2657,14 +2658,14 @@ class OcsServer extends CommonDBTM {
                echo "<td>".$tab["serial"]."</td>\n";
                echo "<td>" . convDateTime($tab["date"]) . "</td>\n";
                echo "<td>" . $tab["TAG"] . "</td>\n";
-
                if ($advanced && !$tolinked) {
-                  if (!isset ($data['entities_id'])) {
+                  if (!isset ($data['entities_id']) || $data['entities_id'] == -1) {
                      echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/redbutton.png\"></td>\n";
                      $data['entities_id'] = -1;
                   } else {
-                     echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/greenbutton.png\">"; 
-                     echo "&nbsp;";
+                     echo "<td class='center'>";
+                     //echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/greenbutton.png\">"; 
+                     //echo "&nbsp;";
                      $tmprule = new RuleOcs;
                      $tmprule->getFromDB($data['_ruleid']);
                      echo "<a href='". $tmprule->getLinkURL()."'>".$tmprule->getName()."</a>";
@@ -4658,7 +4659,7 @@ class OcsServer extends CommonDBTM {
                $input["value"]        = $data["regvalue"];
                $input["path"]         = $data["regkey"];
                $input["ocs_name"]     = $data["name"];
-               $isNewReg = $reg->add($input);
+               $isNewReg = $reg->add($input,array('disable_unicity_check'=>true));
                unset($reg->fields);
             }
          }
@@ -4725,6 +4726,7 @@ class OcsServer extends CommonDBTM {
                   $input = array ();
                   $input[$glpi_column] = $var;
                   $input["id"] = $computers_id;
+                  $input["entities_id"] = $entity;
                   $comp->update($input, $dohistory);
                }
             }
@@ -4953,7 +4955,7 @@ class OcsServer extends CommonDBTM {
                               }
                               if (count($input)) {
                                  $input["id"] = $id_monitor;
-                                 $input['entities_id'] = $entities_id;
+                                 $input['entities_id'] = $entity;
                                  $m->update($input);
                               }
                            }
@@ -5091,6 +5093,7 @@ class OcsServer extends CommonDBTM {
                                  $input = array ();
                                  $input["id"] = $id_printer;
                                  $input["is_deleted"] = 0;
+                                 $input["entities_id"] = $entity;
 
                                  if ($cfg_ocs["states_id_default"]>0) {
                                     $input["states_id"] = $cfg_ocs["states_id_default"];
@@ -5182,6 +5185,7 @@ class OcsServer extends CommonDBTM {
                               $input = array ();
                               $input["id"] = $id_periph;
                               $input["is_deleted"] = 0;
+                              $input["entities_id"] = $entity;
                               if ($cfg_ocs["states_id_default"]>0) {
                                  $input["states_id"] = $cfg_ocs["states_id_default"];
                               }
@@ -5351,7 +5355,7 @@ class OcsServer extends CommonDBTM {
             break;
    
          case OcsServer::COMPUTER_NOT_UNIQUE :
-            $statistics[" not_unique_machines_number"]++;
+            $statistics["not_unique_machines_number"]++;
             break;
    
          case OcsServer::COMPUTER_NOTUPDATED :
