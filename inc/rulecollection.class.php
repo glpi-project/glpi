@@ -960,13 +960,15 @@ class RuleCollection extends CommonDBTM {
    static function getClassByType($itemtype, $check_dictionnary_type=false) {
       global $CFG_GLPI;
 
-      $item = new $itemtype;
-
-      if ($plug = isPluginItemType($item->getType())) {
+      if ($plug = isPluginItemType($itemtype)) {
          $typeclass = 'Plugin'.$plug['plugin'].$plug['class'].'Collection';
 
       } else {
-         $typeclass = $itemtype."Collection";
+         if (in_array($itemtype, $CFG_GLPI["dictionnary_types"])) {
+            $typeclass = 'RuleDictionnary'.$itemtype."Collection";
+         } else {
+            $typeclass = 'Rule'.$itemtype."Collection";
+         }
       }
 
       if (($check_dictionnary_type && in_array($itemtype, $CFG_GLPI["dictionnary_types"]))

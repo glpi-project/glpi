@@ -40,6 +40,7 @@ checkRight("ocsng","w");
 
 commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
 
+$display_list = true;
 //First time this screen is displayed : set the import mode to 'basic'
 if (!isset($_SESSION["change_import_mode"])) {
    $_SESSION["change_import_mode"] = false;
@@ -61,7 +62,6 @@ if (isset($_SESSION["ocs_import"]["id"])) {
                      round(100*($_SESSION["ocs_import_count"]-$count)/$_SESSION["ocs_import_count"],
                            0));
 
-      displayProgressBar(400, $percent);
       $key = array_pop($_SESSION["ocs_import"]["id"]);
 
       if (isset($_SESSION["ocs_import"]["entities_id"][$key])) {
@@ -77,17 +77,22 @@ if (isset($_SESSION["ocs_import"]["id"])) {
       }
 
       $conf = OcsServer::getConfig($_SESSION["ocsservers_id"]);
-      OcsServer::processComputer($key, $_SESSION["ocsservers_id"], 0, $entity, $location,
-                                 $conf["is_glpi_link_enabled"]);
-
+      $action = OcsServer::processComputer($key, $_SESSION["ocsservers_id"], 
+                                           0, $entity, $location,
+                                           $conf["is_glpi_link_enabled"]);
+      OcsServer::manageImportStatistics($_SESSION["ocs_import"]['statistics'],$action);
+      OcsServer::showStatistics($_SESSION["ocs_import"]['statistics']);
+      displayProgressBar(400, $percent);
       glpi_header($_SERVER['PHP_SELF']);
 
    } else {
+      //displayProgressBar(400, 100);
+      OcsServer::showStatistics($_SESSION["ocs_import"]['statistics'],true);
       unset($_SESSION["ocs_import"]);
-      displayProgressBar(400, 100);
 
-      echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
+      echo "<div class='center b'><br>";
       echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
+      $display_list = false;
    }
 }
 
@@ -101,10 +106,11 @@ if (!isset($_POST["import_ok"])) {
    if (isset($_SESSION["ocs_import"])) {
       unset($_SESSION["ocs_import"]);
    }
-
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
-   OcsServer::ocsShowNewComputer($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
-                                 $_GET['check'], $_GET['start']);
+   if ($display_list) {
+      OcsServer::ocsShowNewComputer($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
+                                    $_GET['check'], $_GET['start']);
+   }
 
 } else {
    if (count($_POST['toimport']) >0) {

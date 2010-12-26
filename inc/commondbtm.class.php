@@ -52,6 +52,9 @@ class CommonDBTM extends CommonGLPI {
    /// Set true to desactivate auto compute table name
    var $notable = false;
 
+   //Store insert/update/delete error if any
+   var $last_status = false;
+   
    /// Forward entity datas to linked items
    protected $forward_entity_to = array();
    /// Table name cache : set dynamically calling getTable
@@ -59,10 +62,11 @@ class CommonDBTM extends CommonGLPI {
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
-   const SUCCESS                        = 0; //Injection OK
-   const TYPE_MISMATCH                  = 1;
-   const ERROR_FIELDSIZE_EXCEEDED       = 2;
-
+   const SUCCESS                        = 0; //Process is OK
+   const TYPE_MISMATCH                  = 1; //Type is not good, value cannot be inserted
+   const ERROR_FIELDSIZE_EXCEEDED       = 2; //Value is bigger than the field's size
+   const HAS_DUPLICATE                  = 3; //Can insert or update because it's duplicating another item
+   const NOTHING_TO_DO                  = 4; //Nothing to insert or update
 
    /**
     * Constructor
@@ -71,6 +75,14 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
+   /**
+    * Return last error
+    * @return the error code or false is no error
+    */
+   function getLastStatus() {
+      return $this->last_status;
+   }
+   
    /**
     * Return the table used to stor this object
     *
@@ -605,10 +617,6 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      $p['unicity_error_message'] = true;
-      foreach ($options as $key => $value) {
-         $p[$key] = $value;
-      }
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -643,7 +651,7 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
          }
 
-         if ($this->checkUnicity(true,$p['unicity_error_message'])) {
+         if ($this->checkUnicity(true,$options)) {
             if ($this->addToDB()) {
                $this->addMessageOnAddAction();
                $this->post_addItem();
@@ -675,6 +683,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
       }
+      $this->last_status = self::NOTHING_TO_DO;
       return false;
    }
 
@@ -834,7 +843,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Valid input for update
-      if ($this->checkUnicity(false,$p['unicity_error_message'])) {
+      if ($this->checkUnicity(false,$options)) {
          if ($this->input && is_array($this->input)) {
             // Fill the update-array with changes
             $x = 0;
@@ -2364,6 +2373,9 @@ class CommonDBTM extends CommonGLPI {
    function filterValues($display=true) {
       global $LANG;
 
+      if (in_array('CommonDBRelation',class_parents($this))) {
+         return true;
+      }
       //Type mismatched fields
       $fails = array();
       if (isset($this->input) && is_array($this->input) && count($this->input)) {
@@ -2483,12 +2495,19 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return true if item can be written in DB, false if not
    **/
-   function checkUnicity($add=false, $display_error=true) {
+   function checkUnicity($add=false, $options = array()) {
       global $LANG, $DB, $CFG_GLPI;
 
+      $p['unicity_error_message']  = true;
+      $p['add_event_on_duplicate'] = true;
+      $p['disable_unicity_check']  = false;
+      foreach ($options as $key => $value) {
+         $p[$key] = $value;
+      }
+
       $result = true;
-      //Do not check unicity when creating infocoms
-      if (in_array(get_class($this), array('Infocom')) && $add) {
+      //Do not check unicity when creating infocoms or if checking is expliclty disabled
+      if (!$p['disable_unicity_check'] || (in_array(get_class($this), array('Infocom')) && $add)) {
          return $result;
       }
 
@@ -2507,12 +2526,16 @@ class CommonDBTM extends CommonGLPI {
             $entities_id = $this->input['entities_id'];
          }
          $fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
-
          //If there's fields to check
          if (!empty($fields) && !empty($fields['fields'])) {
             $where = "";
+            
             foreach ($fields['fields'] as $field) {
-               if (isset($this->input[$field]) && $this->input[$field] != '') {
+               if (isset($this->input[$field]) //Field is set
+                  //Standard field not null
+                  && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
+                     //Foreign key and value is not 0 
+                     || (getTableNameForForeignKeyField($field) != '' && $this->input[$field] > 0))) {
                   $where .= " AND `$field` = '".$this->input[$field]."'";
                }
             }
@@ -2528,7 +2551,7 @@ class CommonDBTM extends CommonGLPI {
                   $where.=" AND `id` NOT IN (".$this->input['id'].") ";
                }
                if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
-                  if ($display_error) {
+                  if ($p['unicity_error_message'] || $p['add_event_on_duplicate']) {
                       $message = array();
                       foreach ($fields['fields'] as $field) {
                          $table = getTableNameForForeignKeyField($field);
@@ -2537,11 +2560,20 @@ class CommonDBTM extends CommonGLPI {
                          } else {
                             $searchOption = $this->getSearchOptionByField('field', $field);
                          }
-                         $message[]    = $searchOption['name'];
+                         $message[]    = $searchOption['name'].'='.$this->input[$field];
                       }
-                      addMessageAfterRedirect($LANG['setup'][813]." : ".implode(' & ',$message),
-                                              true, ERROR, false);
+                      $message_text = implode('&',$message);
+                      if ($p['unicity_error_message']) {
+                         addMessageAfterRedirect($LANG['setup'][813]." : ".$message_text,
+                                                 true, ERROR, false);
+                      } 
+                      if ($p['add_event_on_duplicate']) {
+                        Event::log ($this->fields['id'], get_class($this), 4, 'inventory',
+                                    $_SESSION["glpiname"]." ".
+                                    $LANG['log'][123].' : '.$message_text);
+                      }
                   }
+                  $this->last_status = self::HAS_DUPLICATE;
                   $result = false;
                }
             }

@@ -40,23 +40,29 @@ checkRight("ocsng","w");
 
 commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
 
-if (isset($_SESSION["ocs_update"])) {
-   if ($count = count($_SESSION["ocs_update"])) {
+$display_list = true;
+
+if (isset($_SESSION["ocs_update"]['computers'])) {
+   if ($count = count($_SESSION["ocs_update"]['computers'])) {
       $percent = min(100,
                      round(100*($_SESSION["ocs_update_count"]-$count)/$_SESSION["ocs_update_count"],
                            0));
 
+
+      $key = array_pop($_SESSION["ocs_update"]['computers']);
+      $action = OcsServer::updateComputer($key, $_SESSION["ocsservers_id"], 2);
+      OcsServer::manageImportStatistics($_SESSION["ocs_update"]['statistics'],
+                                        $action);
+      OcsServer::showStatistics($_SESSION["ocs_update"]['statistics']);
       displayProgressBar(400, $percent);
 
-      $key = array_pop($_SESSION["ocs_update"]);
-      OcsServer::updateComputer($key, $_SESSION["ocsservers_id"], 2);
       glpi_header($_SERVER['PHP_SELF']);
 
    } else {
+      OcsServer::showStatistics($_SESSION["ocs_update"]['statistics'],true);
       unset($_SESSION["ocs_update"]);
-      displayProgressBar(400,100);
-
-      echo "<div class='center b'>".$LANG['ocsng'][8]."<br>";
+      $display_list = false;
+      echo "<div class='center b'><br>";
       echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a></div>";
    }
 }
@@ -69,15 +75,16 @@ if (!isset($_POST["update_ok"])) {
       $_GET['start'] = 0;
    }
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
-   OcsServer::showComputersToUpdate($_SESSION["ocsservers_id"], $_GET['check'], $_GET['start']);
-
+   if ($display_list) {
+      OcsServer::showComputersToUpdate($_SESSION["ocsservers_id"], $_GET['check'], $_GET['start']);
+   }
 } else {
    if (count($_POST['toupdate']) >0) {
       $_SESSION["ocs_update_count"] = 0;
 
       foreach ($_POST['toupdate'] as $key => $val) {
          if ($val == "on") {
-            $_SESSION["ocs_update"][] = $key;
+            $_SESSION["ocs_update"]['computers'][] = $key;
             $_SESSION["ocs_update_count"]++;
          }
       }
