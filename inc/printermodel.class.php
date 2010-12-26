@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class PrinterModel
 class PrinterModel extends CommonDropdown {
 
+   public $mandatory_import_fields = array('manufacturer');
+
    static function getTypeName() {
       global $LANG;
 
