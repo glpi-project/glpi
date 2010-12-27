@@ -74,14 +74,16 @@ class Rule extends CommonDBTM {
    const RULE_WILDCARD     = '*';
 
 //Generic rules engine
-   const PATTERN_IS          = 0;
-   const PATTERN_IS_NOT      = 1;
-   const PATTERN_CONTAIN     = 2;
-   const PATTERN_NOT_CONTAIN = 3;
-   const PATTERN_BEGIN       = 4;
-   const PATTERN_END         = 5;
-   const REGEX_MATCH         = 6;
-   const REGEX_NOT_MATCH     = 7;
+   const PATTERN_IS              = 0;
+   const PATTERN_IS_NOT          = 1;
+   const PATTERN_CONTAIN         = 2;
+   const PATTERN_NOT_CONTAIN     = 3;
+   const PATTERN_BEGIN           = 4;
+   const PATTERN_END             = 5;
+   const REGEX_MATCH             = 6;
+   const REGEX_NOT_MATCH         = 7;
+   const PATTERN_EXISTS          = 8;
+   const PATTERN_DOES_NOT_EXISTS = 9;
 
    const AND_MATCHING = "AND";
    const OR_MATCHING  = "OR";
@@ -582,6 +584,7 @@ class Rule extends CommonDBTM {
          $items[$ID] = $crit['name'];
       }
       asort($items);
+
       $rand   = Dropdown::showFromArray("criteria", $items);
       $params = array('criteria' => '__VALUE__',
                       'rand'     => $rand,
@@ -860,7 +863,8 @@ class Rule extends CommonDBTM {
          // Negative condition : Need to match all condition (never be)
          if (in_array($criteria->fields["condition"], array(Rule::PATTERN_IS_NOT,
                                                             Rule::PATTERN_NOT_CONTAIN,
-                                                            Rule::REGEX_NOT_MATCH))) {
+                                                            Rule::REGEX_NOT_MATCH,
+                                                            Rule::PATTERN_DOES_NOT_EXISTS))) {
             $res = true;
             foreach ($input[$criteria->fields["criteria"]] as $tmp) {
                $value = $this->getCriteriaValue($criteria->fields["criteria"],
@@ -1250,7 +1254,9 @@ class Rule extends CommonDBTM {
    function getCriteriaDisplayPattern($ID, $condition, $pattern) {
       global $LANG;
 
-      if (($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
+      if ($condition == Rule::PATTERN_EXISTS || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
+          return $LANG['choice'][1];
+      }elseif (($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
          $crit = $this->getCriteria($ID);
          if (isset($crit['type'])) {
 
@@ -1309,11 +1315,17 @@ class Rule extends CommonDBTM {
     * @param $test Is to test rule ?
    **/
    function displayCriteriaSelectPattern($name, $ID, $condition, $value="", $test=false) {
-
       $crit    = $this->getCriteria($ID);
       $display = false;
-      if (isset($crit['type'])
-          && ($test||$condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
+      if ($test
+            ||$condition==Rule::PATTERN_EXISTS 
+               || $condition==Rule::PATTERN_DOES_NOT_EXISTS) {
+         Dropdown::showYesNo($name, 0, 0);
+         $display = true;
+      } elseif (isset($crit['type'])
+          && ($test
+               ||$condition==Rule::PATTERN_IS 
+                  || $condition==Rule::PATTERN_IS_NOT)) {
 
          switch ($crit['type']) {
             case "yesonly" :
@@ -1441,6 +1453,7 @@ class Rule extends CommonDBTM {
                case "dropdown_users" :
                   return getUserName($value);
 
+               case "yesonly" :
                case "yesonly" :
                case "yesno"  :
                   if ($value) {
@@ -1761,7 +1774,6 @@ class Rule extends CommonDBTM {
       }
       return $ong;
    }
-
 }
 
 ?>

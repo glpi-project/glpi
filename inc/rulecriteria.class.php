@@ -178,7 +178,7 @@ class RuleCriteria extends CommonDBChild {
     * @return true if the field match the rule, false if it doesn't match
    **/
    static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result) {
-
+      
       $condition = $criterion->fields['condition'];
       $pattern   = $criterion->fields['pattern'];
       $criteria  = $criterion->fields['criteria'];
@@ -205,6 +205,12 @@ class RuleCriteria extends CommonDBChild {
       }
 
       switch ($condition) {
+         case Rule::PATTERN_EXISTS:
+            return ($field != '');
+            
+         case Rule::PATTERN_DOES_NOT_EXISTS:
+            return ($field == '');
+            
          case Rule::PATTERN_IS :
             if (is_array($field)) {
                // Special case (used only by UNIQUE_PROFILE, for now)
@@ -297,32 +303,11 @@ class RuleCriteria extends CommonDBChild {
     * @return condition's label
    **/
    static function getConditionByID($ID) {
-      global $LANG;
-
-      switch ($ID) {
-         case Rule::PATTERN_IS :
-            return $LANG['rulesengine'][0];
-
-         case Rule::PATTERN_IS_NOT :
-            return $LANG['rulesengine'][1];
-
-         case Rule::PATTERN_CONTAIN :
-            return $LANG['rulesengine'][2];
-
-         case Rule::PATTERN_NOT_CONTAIN :
-            return $LANG['rulesengine'][3];
-
-         case Rule::PATTERN_BEGIN :
-            return $LANG['rulesengine'][4];
-
-         case Rule::PATTERN_END :
-            return $LANG['rulesengine'][5];
-
-         case Rule::REGEX_MATCH :
-            return $LANG['rulesengine'][26];
-
-         case Rule::REGEX_NOT_MATCH:
-            return $LANG['rulesengine'][27];
+      $conditions = self::getConditions();
+      if (isset($conditions[$ID])) {
+         return $conditions[$ID];
+      } else {
+         return "";
       }
    }
 
@@ -330,14 +315,16 @@ class RuleCriteria extends CommonDBChild {
    static function getConditions() {
       global $LANG;
 
-      return array(Rule::PATTERN_IS          => $LANG['rulesengine'][0],
-                   Rule::PATTERN_IS_NOT      => $LANG['rulesengine'][1],
-                   Rule::PATTERN_CONTAIN     => $LANG['rulesengine'][2],
-                   Rule::PATTERN_NOT_CONTAIN => $LANG['rulesengine'][3],
-                   Rule::PATTERN_BEGIN       => $LANG['rulesengine'][4],
-                   Rule::PATTERN_END         => $LANG['rulesengine'][5],
-                   Rule::REGEX_MATCH         => $LANG['rulesengine'][26],
-                   Rule::REGEX_NOT_MATCH     => $LANG['rulesengine'][27]);
+      return array(Rule::PATTERN_IS              => $LANG['rulesengine'][0],
+                   Rule::PATTERN_IS_NOT          => $LANG['rulesengine'][1],
+                   Rule::PATTERN_CONTAIN         => $LANG['rulesengine'][2],
+                   Rule::PATTERN_NOT_CONTAIN     => $LANG['rulesengine'][3],
+                   Rule::PATTERN_BEGIN           => $LANG['rulesengine'][4],
+                   Rule::PATTERN_END             => $LANG['rulesengine'][5],
+                   Rule::REGEX_MATCH             => $LANG['rulesengine'][26],
+                   Rule::REGEX_NOT_MATCH         => $LANG['rulesengine'][27],
+                   Rule::PATTERN_EXISTS          => $LANG['rulesengine'][31],
+                   Rule::PATTERN_DOES_NOT_EXISTS => $LANG['rulesengine'][32]);
    }
 
    /**

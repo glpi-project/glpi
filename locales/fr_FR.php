@@ -1747,6 +1747,9 @@ $LANG['rulesengine'][27]  = "expression rationnelle ne vérifie pas";
 $LANG['rulesengine'][28]  = "Règles métier pour les tickets";
 $LANG['rulesengine'][29]  = "Liste des règles";
 $LANG['rulesengine'][30]  = "Action";
+$LANG['rulesengine'][31]  = "existe";
+$LANG['rulesengine'][32]  = "n'existe pas";
+
 
 $LANG['rulesengine'][33]  = "Dictionnaire des intitulés";
 
