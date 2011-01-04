@@ -45,9 +45,18 @@ if (isset($_GET["id"])) {
 
 commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
+// Search a solution
+if (!isset($_GET["contains"]) && isset($_GET["tickets_id"])) {
+   $ticket = new Ticket;
+   if ($ticket->getFromDB($_GET["tickets_id"])) {
+      $_GET["contains"] = $ticket->getField('name');
+   }
+}
+
 if (!isset($_GET["contains"])) {
    $_GET["contains"] = "";
 }
+
 if (!isset($_GET["knowbaseitemcategories_id"])) {
    $_GET["knowbaseitemcategories_id"] = "0";
 }
@@ -55,7 +64,9 @@ if (!isset($_GET["knowbaseitemcategories_id"])) {
 $faq = !haveRight("knowbase","r");
 
 KnowbaseItem::searchForm($_GET,$faq);
-KnowbaseItemCategory::showFirstLevel($_GET,$faq);
+if (!isset($_GET["tickets_id"])) {
+   KnowbaseItemCategory::showFirstLevel($_GET,$faq);
+}
 KnowbaseItem::showList($_GET,$faq);
 
 if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {

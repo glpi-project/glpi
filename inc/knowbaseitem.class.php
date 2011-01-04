@@ -348,6 +348,8 @@ class KnowbaseItem extends CommonDBTM {
          $linkusers_id = false;
       }
 
+      $inpopup = strpos($_SERVER['PHP_SELF'],"popup.php");
+
       //update counter view
       $query = "UPDATE `glpi_knowbaseitems`
                 SET `view`=view+1
@@ -366,7 +368,9 @@ class KnowbaseItem extends CommonDBTM {
       $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",
                                                    $knowbaseitemcategories_id);
 
-      $this->showTabs($options);
+      if (!$inpopup) {
+         $this->showTabs($options);
+      }
       $options['colspan'] = 2;
       $options['canedit'] = 0; // Hide the buttons
       $this->showFormHeader($options);
@@ -420,7 +424,9 @@ class KnowbaseItem extends CommonDBTM {
       echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
+      if (!$inpopup) {
+         $this->addDivForTabs();
+      }
 
       return true;
    }
@@ -459,13 +465,17 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2 center'><td>";
       echo "<input type='text' size='30' name='contains' value=\"".
              stripslashes(cleanInputText($params["contains"]))."\"></td>";
-      echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' ></td></tr>";
-      echo "</table></form>";
+      echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit'></td></tr>";
+      echo "</table>";
+      if (isset($options['tickets_id'])) {
+         echo "<input type='hidden' name='tickets_id' value='".$options['tickets_id']."'>";
+      }
+      echo "</form>";
 
       echo "</td>";
 
       // Category select not for anonymous FAQ
-      if (getLoginUserID() && !$faq) {
+      if (getLoginUserID() && !$faq && !isset($options['tickets_id'])) {
          echo "<td><form method=get action='".$params["target"]."'><table border='0' class='tab_cadre'>";
          echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp;:</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
@@ -485,7 +495,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $faq display on faq ?
    **/
    static function showList($options, $faq=0) {
-      global $DB, $LANG;
+      global $DB, $LANG, $CFG_GLPI;
 
       // Default values of parameters
       $params["start"]                     = "0";
@@ -631,6 +641,10 @@ class KnowbaseItem extends CommonDBTM {
             }
             echo Search::showHeaderItem($output_type, $LANG['common'][36], $header_num);
 
+            if (isset($options['tickets_id'])) {
+               echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
+            }
+
             // Num of the row (1=header_line)
             $row_num = 1;
             for ($i=0 ; $i<$numrows_limit ; $i++) {
@@ -643,10 +657,18 @@ class KnowbaseItem extends CommonDBTM {
                echo Search::showNewLine($output_type, $i%2);
 
                if ($output_type==HTML_OUTPUT) {
+                  if (isset($options['tickets_id'])) {
+                     $href = " href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
+                              "/front/popup.php?popup=show_kb&amp;id=".$data['id']."' ,'glpipopup', ".
+                              "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"" ;
+                  } else {
+                     $href = " href=\"".$params['target']."?id=".$data["id"]."\" ";
+                  }
+
                   echo Search::showItem($output_type,
                                         "<div class='kb'><a ".
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
-                                          " href=\"".$params['target']."?id=".$data["id"]."\">".
+                                          " $href>".
                                           resume_text($data["question"], 80)."</a></div>
                                           <div class='kb_resume'>".
                                           resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),

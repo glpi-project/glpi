@@ -101,6 +101,14 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          popHeader($LANG['mailing'][138], $_SERVER['PHP_SELF']);
          include "notification.tags.php";
          break;
+
+      case "show_kb" :
+         popHeader($LANG['title'][5], $_SERVER['PHP_SELF']);
+         $kb = new KnowbaseItem;
+         $kb->check($_GET["id"],'r');
+         $kb->showFull(true);
+         popHeader($LANG['mailing'][138], $_SERVER['PHP_SELF']);
+         break;
    }
    echo "<div class='center'><br><a href='javascript:window.close()'>".$LANG['buttons'][60]."</a>";
    echo "</div>";
