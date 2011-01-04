@@ -635,6 +635,7 @@ class CommonDBTM extends CommonGLPI {
          $this->filterValues();
       }
 
+
       if ($this->input && is_array($this->input)) {
          $this->fields = array();
          $table_fields = $DB->list_fields($this->getTable());
@@ -652,6 +653,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($this->checkUnicity(true,$options)) {
+
             if ($this->addToDB()) {
                $this->addMessageOnAddAction();
                $this->post_addItem();
@@ -2496,20 +2498,24 @@ class CommonDBTM extends CommonGLPI {
       $p['unicity_error_message']  = true;
       $p['add_event_on_duplicate'] = true;
       $p['disable_unicity_check']  = false;
-      foreach ($options as $key => $value) {
-         $p[$key] = $value;
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $value) {
+            $p[$key] = $value;
+         }
       }
 
       $result = true;
+
       //Do not check unicity when creating infocoms or if checking is expliclty disabled
-      if ($p['disable_unicity_check'] || (in_array(get_class($this), array('Infocom')) && $add)) {
+      if ($p['disable_unicity_check']) {
          return $result;
       }
 
       //Get all checks for this itemtype and this entity
       if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
 
-         //In case it's an infocom
+         $entities_id=$this->input['entities_id'];
+/*         //In case it's an infocom
          if (in_array(get_class($this), array('Infocom'))) {
             $infocom = new Infocom();
             if ($infocom->getFromDB($this->input['id'])) {
@@ -2519,7 +2525,8 @@ class CommonDBTM extends CommonGLPI {
             }
          } else {
             $entities_id = $this->input['entities_id'];
-         }
+         }*/
+
          $fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
          //If there's fields to check
          if (!empty($fields) && !empty($fields['fields'])) {
