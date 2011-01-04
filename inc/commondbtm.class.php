@@ -57,7 +57,7 @@ class CommonDBTM extends CommonGLPI {
 
    //Additional foeidls for dictionnary processing
    var $additional_fields_for_dictionnary = array();
-   
+
    /// Forward entity datas to linked items
    protected $forward_entity_to = array();
    /// Table name cache : set dynamically calling getTable
@@ -86,7 +86,7 @@ class CommonDBTM extends CommonGLPI {
    function getLastStatus() {
       return $this->last_status;
    }
-   
+
    /**
     * Return the table used to stor this object
     *
@@ -2364,6 +2364,7 @@ class CommonDBTM extends CommonGLPI {
       return array();
    }
 
+
    /**
     * Check float and decimal values
     *
@@ -2535,12 +2536,12 @@ class CommonDBTM extends CommonGLPI {
          //If there's fields to check
          if (!empty($fields) && !empty($fields['fields'])) {
             $where = "";
-            
+
             foreach ($fields['fields'] as $field) {
                if (isset($this->input[$field]) //Field is set
                   //Standard field not null
                   && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
-                     //Foreign key and value is not 0 
+                     //Foreign key and value is not 0
                      || (getTableNameForForeignKeyField($field) != '' && $this->input[$field] > 0))) {
                   $where .= " AND `$field` = '".$this->input[$field]."'";
                }
@@ -2572,7 +2573,7 @@ class CommonDBTM extends CommonGLPI {
                       if ($p['unicity_error_message']) {
                          addMessageAfterRedirect($LANG['setup'][813]." : ".$message_text,
                                                  true, ERROR, false);
-                      } 
+                      }
                       if ($p['add_event_on_duplicate']) {
                         Event::log ((!$add?$this->fields['id']:0), get_class($this), 4, 'inventory',
                                     $_SESSION["glpiname"]." ".
