@@ -63,9 +63,21 @@ class Group_Ticket extends CommonDBRelation {
 
 
    function post_deleteFromDB() {
+      global $CFG_GLPI;
+
+      $donotif = $CFG_GLPI["use_mailing"];
+
+      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+         $donotif = false;
+      }
 
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id']);
+
+      if ($donotif) {
+         NotificationEvent::raiseEvent("update", $t);
+      }
+
       parent::post_deleteFromDB();
    }
 

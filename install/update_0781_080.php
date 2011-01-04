@@ -1059,12 +1059,12 @@ function update0781to080($output='HTML') {
       $migration->dropField('glpi_tickets', 'use_email_notification');
       $migration->dropField('glpi_tickets', 'user_email');
 
-      $query = "DELETE
-                FROM `glpi_notificationtargets`
-                WHERE `type` = '1'
-                AND `items_id` = '4'";
-      $DB->query($query)
-      or die("0.80 drop old assign notification ".$LANG['update'][90] .$DB->error());
+//       $query = "DELETE
+//                 FROM `glpi_notificationtargets`
+//                 WHERE `type` = '1'
+//                 AND `items_id` = '4'";
+//       $DB->query($query)
+//       or die("0.80 drop old assign notification ".$LANG['update'][90] .$DB->error());
 
 
       // ADD observer when requester is set : 3>21 / 13>20 / 12 >22
