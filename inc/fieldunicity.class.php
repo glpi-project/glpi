@@ -209,7 +209,7 @@ class FieldUnicity extends CommonDropdown {
     * @param $unicity an instance of FieldUncity class
     *
     * @return nothing
-    */
+   **/
    static function selectCriterias(CommonDBTM $unicity) {
       global $LANG, $DB;
 

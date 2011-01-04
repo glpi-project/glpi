@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
  * @param $title title used for the page
  *
  * @return nothing
- **/
+**/
 function includeCommonHtmlHeader($title='') {
    global $CFG_GLPI, $PLUGIN_HOOKS, $LANG;
 
@@ -174,7 +174,7 @@ function includeCommonHtmlHeader($title='') {
  * @param $ref_btts Extra items to display array(link=>text...)
  *
  * @return nothing
- **/
+**/
 function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_btts="") {
 
    echo "<div class='center'><table border='0' class='tab_glpi'><tr>";
@@ -205,7 +205,7 @@ function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_bt
  * @param $item item corresponding to the page displayed
  * @param $option option corresponding to the page displayed
  *
- **/
+**/
 function commonHeader($title, $url='', $sector="none", $item="none", $option="") {
    global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
 
@@ -601,7 +601,6 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
          }
       }
    }
-
 
 
    /// ADMINISTRATION
@@ -1114,9 +1113,10 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
       if (canUseImapPop()) {
          $menu['config']['content']['mailcollector']['links']['search'] = '/front/mailcollector.php';
-         $menu['config']['content']['mailcollector']['links']['add']    = '/front/mailcollector.form.php';
+         $menu['config']['content']['mailcollector']['links']['add']
+                                    = '/front/mailcollector.form.php';
          $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']
-                                                                        = '/front/notimportedemail.php';
+                                    = '/front/notimportedemail.php';
       }
    }
 
@@ -3597,7 +3597,7 @@ function showToolTip($content, $options=array()) {
  **/
 function initEditorSystem($name) {
    global $CFG_GLPI;
-   
+
    echo "<script language='javascript' type='text/javascript'>";
    echo "tinyMCE.init({
       language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',

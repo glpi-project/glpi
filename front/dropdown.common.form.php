@@ -58,7 +58,8 @@ if (isset($_POST["add"])) {
          Event::log($newID, get_class($dropdown), 4, "inventory",
                     $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
       } else {
-         Event::log($newID, get_class($dropdown), 4, "setup",$_SESSION["glpiname"]." added ".$_POST["name"].".");
+         Event::log($newID, get_class($dropdown), 4, "setup",
+                    $_SESSION["glpiname"]." added ".$_POST["name"].".");
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -66,15 +67,16 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $dropdown->check($_POST["id"],'w');
    if ($dropdown->isUsed() && empty($_POST["forcedelete"])) {
-      commonHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF'],"config",$dropdown->second_level_menu,
-                   str_replace('glpi_','',$dropdown->getTable()));
+      commonHeader($dropdown->getTypeName(), $_SERVER['PHP_SELF'], "config",
+                   $dropdown->second_level_menu, str_replace('glpi_','',$dropdown->getTable()));
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
       commonFooter();
    } else {
       $dropdown->delete($_POST, 1);
       $dropdown->refreshParentInfos();
 
-      Event::log($_POST["id"], get_class($dropdown), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], get_class($dropdown), 4, "setup",
+                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
       $dropdown->redirectToList();
    }
 
@@ -83,7 +85,8 @@ if (isset($_POST["add"])) {
    $dropdown->delete($_POST, 1);
    $dropdown->refreshParentInfos();
 
-   Event::log($_POST["id"], get_class($dropdown), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], get_class($dropdown), 4, "setup",
+              $_SESSION["glpiname"]." ".$LANG['log'][22]);
    $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -91,12 +94,13 @@ if (isset($_POST["add"])) {
    $dropdown->update($_POST);
    $dropdown->refreshParentInfos();
 
-   Event::log($_POST["id"], get_class($dropdown), 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], get_class($dropdown), 4, "setup",
+              $_SESSION["glpiname"]." ".$LANG['log'][21]);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["execute"])) {
    if (method_exists($dropdown, $_POST["_method"])) {
-      call_user_func(array(&$dropdown,$_POST["_method"]),$_POST);
+      call_user_func(array(&$dropdown, $_POST["_method"]), $_POST);
       glpi_header($_SERVER['HTTP_REFERER']);
    } else {
       displayErrorAndDie($LANG['common'][24]);
