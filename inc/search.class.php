@@ -1817,7 +1817,7 @@ class Search {
             break;
 
          case 'FieldUnicity':
-            $ret = "`glpi_fieldunicities`.`itemtype` as ITEMTYPE,";
+            $ret = "`glpi_fieldunicities`.`itemtype` AS ITEMTYPE,";
             break;
 
          default :
@@ -3984,20 +3984,20 @@ class Search {
             }
             return $out;
 
-         case 'glpi_ticketsatisfactions.type':
+         case 'glpi_ticketsatisfactions.type' :
             return TicketSatisfaction::getTypeInquestName($data[$NAME.$num]);
 
-         case 'glpi_notimportedemails.reason':
+         case 'glpi_notimportedemails.reason' :
             return NotImportedEmail::getReason($data[$NAME.$num]);
 
-         case 'glpi_notimportedemails.messageid':
+         case 'glpi_notimportedemails.messageid' :
             $clean = array('<' => '',
                            '>' => '');
             return strtr($data[$NAME.$num], $clean);
 
          case 'glpi_fieldunicities.fields':
-            $values = explode(',',$data[$NAME.$num]);
-            $item = new $data['ITEMTYPE'];
+            $values  = explode(',',$data[$NAME.$num]);
+            $item    = new $data['ITEMTYPE'];
             $message = array();
             foreach ($values as $field) {
                $table = getTableNameForForeignKeyField($field);
