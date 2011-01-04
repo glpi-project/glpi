@@ -561,10 +561,6 @@ class Auth {
          }
       }
 
-      if ($noauto) {
-         $_SESSION["noAUTO"] = 1;
-      }
-
       // If not already auth
       if (!$this->auth_succeded) {
          if (empty($login_name) || empty($login_password)) {
@@ -594,10 +590,10 @@ class Auth {
                //The user is not authenticated on the GLPI DB, but we need to get informations about him
                //to find out his authentication method
                $this->user->getFromDBbyName(addslashes($login_name));
-
                //If the user has already been logged, the method_auth and auths_id are already set
                //so we test this connection first
                switch ($this->user->fields["authtype"]) {
+                  case Auth::CAS :
                   case Auth::EXTERNAL :
                   case Auth::LDAP :
                      if (canUseLdap()) {
@@ -694,6 +690,9 @@ class Auth {
       }
 
       $this->initSession();
+      if ($noauto) {
+         $_SESSION["noAUTO"] = 1;
+      }
       return $this->auth_succeded;
    }
 
