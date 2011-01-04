@@ -165,6 +165,8 @@ class Transfer extends CommonDBTM {
                              'keep_contract'       => 0,
                              'clean_contract'      => 0,
 
+                             'keep_disk'           => 0,
+
                              'keep_software'       => 0,
                              'clean_software'      => 0,
 

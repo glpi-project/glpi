@@ -1369,8 +1369,18 @@ function update0781to080($output='HTML') {
    }
    /* END - OCS-NG new clean links features */
 
+   if ($migration->addField("glpi_transfers", "keep_disk", "int( 11 ) NOT NULL DEFAULT 0")) {
+      $migration->migrationOneTable("glpi_transfers");
+      $query = "UPDATE `glpi_transfers` SET `keep_disk` = '1';";
+      $DB->query($query)
+         or die("0.80 default set of keep_disk for transfer " . $LANG['update'][90].$DB->error());
+   }
+
    if ($migration->addField("glpi_reminders", "is_helpdesk_visible", "tinyint( 1 ) NOT NULL DEFAULT 0")) {
       $query = "UPDATE `glpi_profiles` SET `reminder_public` = 'r' WHERE `interface` = 'helpdesk';";
+      $DB->query($query)
+         or die("0.80 default set of reminder view for helpdesk users " . $LANG['update'][90] .
+                $DB->error());
    }
 
    if (!TableExists('glpi_ticketsolutiontemplates')) {
