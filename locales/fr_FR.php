@@ -897,6 +897,7 @@ $LANG['job'][19] = "Suivi par courriel";
 $LANG['job'][20] = "Durée totale";
 $LANG['job'][21] = "Heure(s)";
 $LANG['job'][22] = "Minute(s)";
+$LANG['job'][23] = "Rechercher une solution";
 
 $LANG['job'][29] = "Ajouter un nouveau suivi";
 $LANG['job'][30] = "Ajouter une nouvelle tâche";

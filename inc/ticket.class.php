@@ -2857,10 +2857,14 @@ class Ticket extends CommonDBTM {
 
       if ($show_template) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td colspan='3'>";
+         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td colspan='2'>";
          $rand_template = Dropdown::show('TicketSolutionTemplate',
                                          array('value'  => 0,
                                                'entity' => $this->getEntityID()));
+         echo "</td><td>";
+         echo "<a title\"".$LANG['job'][23]."\"
+                  href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?tickets_id=".
+                  $this->getField('id')."'>".$LANG['job'][23]."</a>";
          echo "</td></tr>";
       }
 
