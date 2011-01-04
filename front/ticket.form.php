@@ -73,7 +73,12 @@ if (isset($_POST["add"])) {
    $track->update($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
-   glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+   // Copy solution to KB redirect to KB
+   if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
+      glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=new&tickets_id=".$_POST["id"]);
+   } else {
+      glpi_header($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+   }
 
 } else if (isset($_POST['delete'])) {
    $track->check($_POST['id'],'d');

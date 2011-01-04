@@ -39,6 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
+if (!isset($_GET["tickets_id"])) {
+   $_GET["tickets_id"] = "";
+}
 if (!isset($_GET["modify"])) {
    $_GET["modify"] = "";
 }
@@ -59,7 +62,14 @@ if ($_GET["id"] == "new") {
    $kb->check(-1,'w');
 
    commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
-   $kb->showForm("");
+   $available_options = array('tickets_id');
+   $options = array();
+   foreach ($available_options as $key) {
+      if (isset($_GET[$key])) {
+         $options[$key] = $_GET[$key];
+      }
+   }
+   $kb->showForm("",$options);
    commonFooter();
 
 } else if (isset($_POST["add"])) {
@@ -107,6 +117,7 @@ if ($_GET["id"] == "new") {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (empty($_GET["id"])) {
+   // No id or no tickets id to create from solution
    glpi_header($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else {
