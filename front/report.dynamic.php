@@ -53,8 +53,7 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
 
    switch ($_GET["item_type"]) {
       case 'KnowbaseItem' :
-         KnowbaseItem::showList($_SERVER['PHP_SELF'], $_GET["contains"], $_GET["start"],
-                                $_GET["knowbaseitemcategories_id"], $_GET["is_faq"]);
+         KnowbaseItem::showList($_GET, $_GET["is_faq"]);
          break;
 
       case 'Stat' :
