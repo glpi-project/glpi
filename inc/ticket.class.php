@@ -2111,10 +2111,11 @@ class Ticket extends CommonDBTM {
       $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
 
-      $tab[45]['table']    = $this->getTable();
-      $tab[45]['field']    = 'actiontime';
-      $tab[45]['name']     = $LANG['job'][20];
-      $tab[45]['datatype'] = 'timestamp';
+      $tab[45]['table']         = $this->getTable();
+      $tab[45]['field']         = 'actiontime';
+      $tab[45]['name']          = $LANG['job'][20];
+      $tab[45]['datatype']      = 'timestamp';
+      $tab[45]['massiveaction'] = false;
 
       $tab[64]['table']         = 'glpi_users';
       $tab[64]['field']         = 'name';
