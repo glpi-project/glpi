@@ -652,7 +652,7 @@ function updateDbUpTo031()
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_configs` SET `version` = ' 0.78.1', language='".$glpilanguage."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_configs` SET `version` = ' 0.78.2', language='".$glpilanguage."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG['update'][90].$DB->error());
 
 	// Update process desactivate all plugins
