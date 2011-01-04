@@ -449,7 +449,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       echo "</div></form>";
-      echo "<div class='spaced'><span class='icon_consol'>";
+      echo "<div class='spaced center'><span class='icon_consol'>";
 
       if ($plugin = isPluginItemType($this->getType())) {
          $url = $CFG_GLPI["root_doc"]."/plugins/".strtolower($plugin['plugin']);
