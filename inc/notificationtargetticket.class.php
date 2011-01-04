@@ -121,9 +121,9 @@ class NotificationTargetTicket extends NotificationTarget {
                break;
 
             //Send to the technician previously in charge of the ticket (before reassignation)
-//             case Notification::TICKET_OLD_TECH_IN_CHARGE :
-//                $this->getTicketOldAssignTechnicianAddress();
-//                break;
+            case Notification::TICKET_OLD_TECH_IN_CHARGE :
+               $this->getTicketOldAssignTechnicianAddress();
+               break;
 
             //Assign to a supplier
             case Notification::TICKET_SUPPLIER :
@@ -342,9 +342,40 @@ class NotificationTargetTicket extends NotificationTarget {
    }
 
 
-//    function getTicketOldAssignTechnicianAddress () {
-//       return $this->getUserByField ("_old_assign");
-//    }
+    function getTicketOldAssignTechnicianAddress () {
+      global $CFG_GLPI;
+
+       if (isset($this->options['_old_user'])
+         && $this->options['_old_user']['type'] == Ticket::ASSIGN
+         && $this->options['_old_user']['use_notification']) {
+            $user = new User();
+            $user->getFromDB($this->options['_old_user']['users_id']);
+
+            $author_email = $user->fields['email'];
+            $author_lang  = $user->fields["language"];
+            $author_id    = $user->fields['id'];
+
+            if (!empty($this->options['_old_user']['alternative_email'])
+                && $this->options['_old_user']['alternative_email'] != $data['email']
+                && NotificationMail::isUserAddressValid($this->options['_old_user']['alternative_email'])) {
+               $author_email = $this->options['_old_user']['alternative_email'];
+            }
+            if (empty($author_lang)) {
+               $author_lang = $CFG_GLPI["language"];
+            }
+            if (empty($author_id)) {
+               $author_id = -1;
+            }
+            $this->addToAddressesList(array('email'    => $author_email,
+                                            'language' => $author_lang,
+                                            'id'       => $author_id));
+
+
+         print_r($this->target);exit();
+      }
+
+
+    }
 
 
    //Get receipient
@@ -527,9 +558,9 @@ class NotificationTargetTicket extends NotificationTarget {
    function getAdditionalTargets($event='') {
       global $LANG;
 
-//       if ($event=='update') {
-//          $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE, $LANG['setup'][236]);
-//       }
+      if ($event=='update') {
+         $this->addTarget(Notification::TICKET_OLD_TECH_IN_CHARGE, $LANG['setup'][236]);
+      }
 
       if ($event=='satisfaction') {
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
