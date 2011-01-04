@@ -59,6 +59,7 @@ class Rule extends CommonDBTM {
    /// field used to order rules
    var $orderby = 'ranking';
 
+   /// restrict matching to Rule::AND_MATCHING or Rule::OR_MATCHING : specify value to activate
    var $restrict_matching = false;
 
    protected $rules_id_field    = 'rules_id';
@@ -73,7 +74,7 @@ class Rule extends CommonDBTM {
    const RULE_NOT_IN_CACHE = -1;
    const RULE_WILDCARD     = '*';
 
-//Generic rules engine
+   //Generic rules engine
    const PATTERN_IS              = 0;
    const PATTERN_IS_NOT          = 1;
    const PATTERN_CONTAIN         = 2;
@@ -1682,7 +1683,7 @@ class Rule extends CommonDBTM {
       autocompletionTextField($this, "description", array('value' => '',
                                                           'size'  => 33));
       echo "&nbsp;&nbsp;&nbsp;".$LANG['rulesengine'][9] . "&nbsp;:&nbsp;";
-      $this->dropdownRulesMatch("match", "AND");
+      $this->dropdownRulesMatch("match", Rule::AND_MATCHING);
       echo "</td><td class='tab_bg_2 center'>";
       echo "<input type=hidden name='sub_type' value='".get_class($this)."'>";
       echo "<input type=hidden name='entities_id' value='-1'>";
