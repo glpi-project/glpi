@@ -66,8 +66,24 @@ class TicketSolutionTemplate extends CommonDropdown {
                          'list'  => true),
                    array('name'  => 'content',
                          'label' => $LANG['knowbase'][15],
-                         'type'  => 'textarea'));
+                         'type'  => 'tinymce'));
    }
+
+   function displaySpecificTypeField($ID, $field = array()) {
+      switch ($field['type']) {
+         case 'tinymce' :
+            // Display empty field
+            echo "&nbsp;</td></tr>";
+            // And a new line to have a complete display
+            echo "<tr class='center'><td colspan='5'>";
+            initEditorSystem($field['name']);
+            echo "<textarea name='".$field['name']."' rows='3'>".
+                  $this->fields[$field['name']]."</textarea>";
+            
+            break;
+      }
+   }
+
 
 }
 

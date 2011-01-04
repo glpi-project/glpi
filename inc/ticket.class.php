@@ -2840,6 +2840,7 @@ class Ticket extends CommonDBTM {
       $canedit = $this->canSolve();
 
       $options = array();
+
       $this->showFormHeader($options);
 
       $show_template = $canedit
@@ -2863,6 +2864,7 @@ class Ticket extends CommonDBTM {
 
       // Settings a solution will set status to solved
       if ($canedit) {
+
          $rand_type = Dropdown::show('TicketSolutionType',
                                      array('value' => $this->getField('ticketsolutiontypes_id')));
       } else {
@@ -2876,10 +2878,14 @@ class Ticket extends CommonDBTM {
       $rand_text = 0;
 
       if ($canedit) {
+         initEditorSystem("solution");
+
          $rand_text = mt_rand();
-         echo "<span id='solution$rand_text'>";
-         echo "<textarea name='solution' rows='12' cols='80'>".$this->getField('solution');
-         echo "</textarea></span>";
+         echo "<div id='solution$rand_text'>";
+         echo "<textarea id='solution' name='solution' rows='12' cols='80'>";
+         echo $this->getField('solution');
+         echo "</textarea></div>";
+
       } else {
          echo nl2br($this->getField('solution'));
       }
@@ -3823,9 +3829,6 @@ class Ticket extends CommonDBTM {
 
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI, $LANG;
-
-      /// TODO clean it
-      $tobereview = 0;
 
       $canupdate    = haveRight('update_ticket','1');
       $canpriority  = haveRight('update_priority','1');

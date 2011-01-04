@@ -99,6 +99,9 @@ function includeCommonHtmlHeader($title='') {
           $CFG_GLPI["root_doc"]."/lib/extrajs/starslider/slider.css' media='screen' >\n";
 
 
+   echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
+         "/lib/tiny_mce/tiny_mce.js'></script>";
+
    echo "<link rel='stylesheet' type='text/css' href='".
           $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
 
@@ -3594,9 +3597,7 @@ function showToolTip($content, $options=array()) {
  **/
 function initEditorSystem($name) {
    global $CFG_GLPI;
-
-   echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
-         "/lib/tiny_mce/tiny_mce.js'></script>";
+   
    echo "<script language='javascript' type='text/javascript'>";
    echo "tinyMCE.init({
       language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
