@@ -45,7 +45,7 @@ $LANG['backup'][23]="Mysql 錯誤從";
 $LANG['backup'][24]="自動重定向，否則點擊"; 
 
 $LANG['bookmark'][1]="書籤"; 
-$LANG['bookmark'][2]="Partial load of the bookmark."; 
+$LANG['bookmark'][2]="局部載入的書籤"; 
 $LANG['bookmark'][3]="您目前沒有記錄任何書籤."; 
 $LANG['bookmark'][4]="新增書籤"; 
 $LANG['bookmark'][5]="公用書籤"; 
