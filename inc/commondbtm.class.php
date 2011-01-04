@@ -62,6 +62,9 @@ class CommonDBTM extends CommonGLPI {
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
+   //Additional foeidls for dictionnary processing
+   public $additional_fields_for_dictionnary = array();
+
    const SUCCESS                        = 0; //Process is OK
    const TYPE_MISMATCH                  = 1; //Type is not good, value cannot be inserted
    const ERROR_FIELDSIZE_EXCEEDED       = 2; //Value is bigger than the field's size
@@ -2575,7 +2578,6 @@ class CommonDBTM extends CommonGLPI {
                                     $LANG['log'][123].' : '.$message_text);
                       }
                   }
-                  $this->last_status = self::HAS_DUPLICATE;
                   $result = false;
                }
             }

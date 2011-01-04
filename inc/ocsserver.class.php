@@ -81,13 +81,18 @@ class OcsServer extends CommonDBTM {
    const MAX_CHECKSUM   = 131071;
 
    // Class constants - Update result
-   const COMPUTER_IMPORTED       = 0;
-   const COMPUTER_SYNCHRONIZED   = 1;
-   const COMPUTER_LINKED         = 2;
-   const COMPUTER_FAILED_IMPORT  = 3;
-   const COMPUTER_NOTUPDATED     = 4;
-   const COMPUTER_NOT_UNIQUE     = 5;
-                          
+   const COMPUTER_IMPORTED       = 0; //Computer is imported in GLPI
+   const COMPUTER_SYNCHRONIZED   = 1; //Computer is synchronized
+   const COMPUTER_LINKED         = 2; //Computer is linked to another computer already in GLPI
+   const COMPUTER_FAILED_IMPORT  = 3; //Computer cannot be imported because it matches none of the rules
+   const COMPUTER_NOTUPDATED     = 4; //Computer should not be updated, nothing to do
+   const COMPUTER_NOT_UNIQUE     = 5; //Computer import is refused because it's not unique
+   const COMPUTER_LINK_REFUSED   = 6; //Computer cannot be imported because a rule denies its import
+   
+   const LINK_RESULT_IMPORT    = 0;
+   const LINK_RESULT_NO_IMPORT = 1;
+   const LINK_RESULT_LINK      = 2;
+   
    static function getTypeName() {
       global $LANG;
 
@@ -997,6 +1002,7 @@ class OcsServer extends CommonDBTM {
             $comp = new Computer;
             $comp->getFromDB($computers_id);
             $input["id"] = $computers_id;
+            $input["entities_id"] = $comp->fields['entities_id'];
             $input["is_ocs_import"] = 1;
             // Not already import from OCS / mark default state
             if (!$ocs_id_change
@@ -1312,7 +1318,7 @@ class OcsServer extends CommonDBTM {
       if ($locations_id) {
         $input["locations_id"] = $locations_id;
       }
-
+      $input['ocsid'] = $ocs_fields['ID'];
       foreach (self::getOcsFieldsMatching() as $ocs_field => $glpi_field) {
          if (isset($ocs_fields[$ocs_field])) {
             $table = getTableNameForForeignKeyField($glpi_field);
@@ -1381,7 +1387,7 @@ class OcsServer extends CommonDBTM {
          $data['entities_id'] = $defaultentity;
          $data['locations_id'] = $defaultlocation;
       }
-
+      logDebug("data",$data);
       //Try to match all the rules, return the first good one, or null if not rules matched
       if (isset ($data['entities_id']) && $data['entities_id']>=0) {
          if ($lock) {
@@ -1389,26 +1395,12 @@ class OcsServer extends CommonDBTM {
                sleep(1);
             }
          }
-         //Check if machine could be linked with another one already in DB
-         if ($canlink) {
-            $found_computers = OcsServer::getComputersAlreadyImported($ocsid, $ocsservers_id,
-                                                                      $data['entities_id']);
-            // machines founded -> try to link
-            if (is_array($found_computers) && count($found_computers)>0) {
-               foreach ($found_computers as $computers_id) {
-                  if (OcsServer::linkComputer($ocsid, $ocsservers_id, $computers_id, $canlink)) {
-                     return self::COMPUTER_LINKED;
-                  }
-               }
-            }
-            // Else simple Import
-         }
 
          //New machine to import
-         $query = "SELECT hardware.*, bios.*
+         $query = "SELECT `hardware`.*, `bios`.*
                    FROM `hardware`
                    LEFT JOIN `bios` ON (`bios`.`HARDWARE_ID`=`hardware`.`ID`)
-                   WHERE `ID`='$ocsid'";
+                   WHERE `hardware`.`ID`='$ocsid'";
          $result = $DBocs->query($query);
          if ($result && $DBocs->numrows($result) == 1) {
             $line = $DBocs->fetch_array($result);
@@ -1418,8 +1410,60 @@ class OcsServer extends CommonDBTM {
             $input = self::getComputerInformations($line,
                                                    OcsServer::getConfig($ocsservers_id),
                                                    $data['entities_id'],$locations_id);
+            logDebug("canlink",$canlink,$input);
+            //Check if machine could be linked with another one already in DB
+            if ($canlink) {
+               $rulelink = new RuleImportComputerCollection();
+               $rulelink_results = array();
+               $params = array('entities_id'    => $data['entities_id'],
+                               'ocsservers_id'  => $ocsservers_id);
+               $rulelink_results = $rulelink->processAllRules($input,array(),$params);
+               logDebug("link",$rulelink_results);
+               //If at least one rule matched
+               //else do import as usual
+               if (isset($rulelink_results['action'])) {
+                  switch ($rulelink_results['action']) {
+                     case self::LINK_RESULT_NO_IMPORT:
+                        return array('status'      =>self::COMPUTER_LINK_REFUSED,
+                                     'entities_id' => $data['entities_id'],
+                                     'rule_matched'=> $rulelink_results['_ruleid']);
+                     
+                     case self::LINK_RESULT_LINK:
+                        if (is_array($rulelink_results['found_computers']) 
+                              && count($rulelink_results['found_computers'])>0) {
+                           foreach ($rulelink_results['found_computers'] as $tmp => $computers_id) {
+                              if (OcsServer::linkComputer($ocsid, 
+                                                          $ocsservers_id, 
+                                                          $computers_id, 
+                                                          $canlink)) {
+                                 return array ('status'      => self::COMPUTER_LINKED,
+                                               'entities_id' => $data['entities_id'],
+                                               'rule_matched'=> $rulelink_results['_ruleid']);
+                              }
+                           }
+                        break;
+                     }
+                  }
+               }
+               /*
+               $found_computers = OcsServer::getComputersAlreadyImported($ocsid, 
+                                                                         $ocsservers_id,
+                                                                         $data['entities_id'],
+                                                                         $input);
+               // machines founded -> try to link
+               if (is_array($found_computers) && count($found_computers)>0) {
+                  foreach ($found_computers as $computers_id) {
+                     if (OcsServer::linkComputer($ocsid, $ocsservers_id, $computers_id, $canlink)) {
+                        return self::COMPUTER_LINKED;
+                     }
+                  }
+               }*/
+               // Else simple Import
+            }
+
+
             $computers_id = $comp->add($input, array('unicity_error_message' => false));
-            
+            logDebug("computers_id",$computers_id);
             if ($computers_id) {
                $ocsid      = $line['ID'];
                $changes[0] = '0';
@@ -1431,7 +1475,9 @@ class OcsServer extends CommonDBTM {
                   OcsServer::updateComputer($idlink, $ocsservers_id, 0);
                }
             } else {
-               return self::COMPUTER_NOT_UNIQUE;
+               return array('status'      => self::COMPUTER_NOT_UNIQUE,
+                            'entities_id' => $data['entities_id'],
+                            'rule_matched'=> $data['_ruleid']) ;
             }
          }
          if ($lock) {
@@ -1439,10 +1485,12 @@ class OcsServer extends CommonDBTM {
          }
 
          //Return code to indicates that the machine was imported
-         return self::COMPUTER_IMPORTED;
+         return array('status' => self::COMPUTER_IMPORTED,
+                      'entities_id' => $data['entities_id'],
+                      'rule_matched'=> $data['_ruleid']);
       }
       //ELSE Return code to indicates that the machine was not imported because it doesn't matched rules
-      return self::COMPUTER_FAILED_IMPORT;
+      return array('status' => self::COMPUTER_FAILED_IMPORT);
    }
 
 
@@ -1453,11 +1501,16 @@ class OcsServer extends CommonDBTM {
    *
    * @return array containing the glpi computer ID
    */
-   static function getComputersAlreadyImported($ocsid, $ocsservers_id, $entity) {
+   static function getComputersAlreadyImported($ocsid, $ocsservers_id, $entities_id, $input) {
       global $DB, $DBocs;
 
-      $conf = OcsServer::getConfig($ocsservers_id);
       $found_computers=array();
+      $rulelink = new RuleImportComputerCollection();
+      $result = array();
+      $result = $rulelink->processAllRules(array(),array(),array('entities_id'   =>$entities_id,
+                                                                 'ocsservers_id' =>$ocsservers_id));
+      /*
+      $conf = OcsServer::getConfig($ocsservers_id);
 
       $sql_fields = "`hardware`.`ID`";
       $sql_from = "`hardware`";
@@ -1598,7 +1651,7 @@ class OcsServer extends CommonDBTM {
                $found_computers[] = $data['id'];
             }
          }
-      }
+      }*/
       return $found_computers;
    }
 
@@ -1776,11 +1829,14 @@ class OcsServer extends CommonDBTM {
                $DBocs->query($query_ocs);
 
                //Return code to indicate that computer was synchronized
-               return self::COMPUTER_SYNCHRONIZED;
+               return array('status'       => self::COMPUTER_SYNCHRONIZED,
+                            'entitites_id' => $comp->fields["entities_id"]);
 
             }
+            
             // ELSE Return code to indicate only last inventory date changed
-            return self::COMPUTER_NOTUPDATED;
+            return array ('status'      => self::COMPUTER_NOTUPDATED,
+                          'entities_id' => $comp->fields["entities_id"]);
          }
       }
    }
@@ -1813,7 +1869,8 @@ class OcsServer extends CommonDBTM {
          $line = $DBocs->fetch_assoc($result);
          $line = clean_cross_side_scripting_deep(addslashes_deep($line));
          $compupdate = array ();
-         if ($options['cfg_ocs']["import_os_serial"] && !in_array("os_license_number", $options['computers_updates'])) {
+         if ($options['cfg_ocs']["import_os_serial"] && !in_array("os_license_number",
+                                                                  $options['computers_updates'])) {
             if (!empty ($line["WINPRODKEY"])) {
                $compupdate["os_license_number"] = $line["WINPRODKEY"];
             }
@@ -2565,6 +2622,18 @@ class OcsServer extends CommonDBTM {
             $hardware[$data["ID"]]["TAG"]    = $data["TAG"];
             $hardware[$data["ID"]]["id"]     = $data["ID"];
             $hardware[$data["ID"]]["serial"] = $data["SERIAL"];
+            $query_network = "SELECT * FROM `networks` WHERE `HARDWARE_ID`='".$data["ID"]."'";
+            foreach ($DBocs->request($query_network) as $network) {
+               if (isset($network['IPADDRESS']) && $network['IPADDRESS'] != '??') {
+                  $hardware[$data["ID"]]['IPADDRESS'][]  = $network['IPADDRESS'];
+               }
+               if (isset($network['IPSUBNET']) && $network['IPSUBNET'] != '??') {
+                  $hardware[$data["ID"]]['IPSUBNET'][]  = $network['IPSUBNET'];
+               }
+               if (isset($network['MACADDRESS']) && $network['MACADDR'] != '??') {
+                  $hardware[$data["ID"]]['MACADDRESS'][]  = $network['MACADDR'];
+               }
+            }
          }
          // Get all links between glpi and OCS
          $already_linked = array ();
@@ -2630,7 +2699,7 @@ class OcsServer extends CommonDBTM {
                      "$start' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
                      $LANG['buttons'][19] . "</a>\n";
             }
-            echo "<table class='tab_cadre'>";
+            echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 8 : 5) . "' class='center'>";
             echo "<input class='submit' type='submit' name='import_ok' value=\"".
@@ -2692,14 +2761,16 @@ class OcsServer extends CommonDBTM {
                   echo "<input type='checkbox' name='toimport[" . $tab["id"] . "]' " .
                          ($check == "all" ? "checked" : "") . ">";
                } else {
+                  $rulelink = new RuleImportComputerCollection();
+                  $rulelink_results = array();
+                  $params = array('entities_id'    =>$entity,
+                                  'ocsservers_id'  => $ocsservers_id);
+                  $rulelink_results = $rulelink->processAllRules($tab,array(),$params);
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
-                  $computer_found = OcsServer::getComputersAlreadyImported($tab["id"],
-                                                                           $ocsservers_id,
-                                                                           $entity);
                   $options=array('name' => "tolink[".$tab["id"]."]");
 
-                  if (!empty($computer_found) && $computer_found != -1) {
-                     $options['value']  = $computer_found[0];
+                  if (!empty($rulelink_results['found_computers'])) {
+                     $options['value']  = $rulelink_results['found_computers'][0];
                      $options['entity'] = $entity;
                   }
                   Dropdown::show('Computer', $options);
@@ -3718,7 +3789,7 @@ class OcsServer extends CommonDBTM {
     * @param $todisplay the link's label to display
     * @return the html link to the computer in ocs console
     */
-   static function getComputerLinkToOcsConsole ($ocsservers_id, $ocsid, $todisplay) {
+   static function getComputerLinkToOcsConsole ($ocsservers_id, $ocsid, $todisplay, $only_url=false) {
 
       $ocs_config = OcsServer::getConfig($ocsservers_id);
       $url = '';
@@ -3728,7 +3799,12 @@ class OcsServer extends CommonDBTM {
          if (!preg_match("/\/$/i",$ocs_config["ocs_url"])) {
             $url .= '/';
          }
-         return "<a href='".$url."machine.php?systemid=".$ocsid."'>".$todisplay."</a>";
+         $url = $url."machine.php?systemid=$ocsid";
+         if ($only_url) {
+            return $url;
+         } else {
+            return "<a href='$url'>".$todisplay."</a>";
+         }
       }
       return $url;
    }
@@ -4535,7 +4611,8 @@ class OcsServer extends CommonDBTM {
                                             $import_software);
 
                      $query_soft = "SELECT `glpi_softwares`.`id`,
-                                           `glpi_softwares`.`name`
+                                           `glpi_softwares`.`name`,
+                                           `glpi_softwares`.`entities_id`
                                     FROM `glpi_softwares`,
                                          `glpi_computers_softwareversions`,
                                          `glpi_softwareversions`
@@ -4550,6 +4627,7 @@ class OcsServer extends CommonDBTM {
                      $softID = $tmpsoft["id"];
                      $s = new Software;
                      $input["id"]=$softID;
+                     $input["entities_id"]=$tmpsoft['entities_id'];
 
                      //First, get the name of the software into GLPI db IF dictionnary is used
                      if ($cfg_ocs["use_soft_dict"]) {
@@ -5323,12 +5401,14 @@ class OcsServer extends CommonDBTM {
    static function getAvailableStatistics() {
       global $LANG;
       
-      return array('synchronized_machines_number'  => $LANG['ocsng'][71],
-                   'imported_machines_number'      => $LANG['ocsng'][70],
-                   'failed_rules_machines_number'  => $LANG['ocsng'][72],
-                   'linked_machines_number'        => $LANG['ocsng'][73],
-                   'not_unique_machines_number'    => $LANG['ocsng'][75],
-                   'notupdated_machines_number'    => $LANG['ocsng'][74]);
+      $stats = array('imported_machines_number'      => $LANG['ocsng'][70],
+                     'synchronized_machines_number'  => $LANG['ocsng'][71],
+                     'linked_machines_number'        => $LANG['ocsng'][73],
+                     'notupdated_machines_number'    => $LANG['ocsng'][74],
+                     'failed_rules_machines_number'  => $LANG['ocsng'][72],
+                     'not_unique_machines_number'    => $LANG['ocsng'][75],
+                     'link_refused_machines_number'  => $LANG['ocsng'][80]);
+      return $stats; 
    }
    
    static function manageImportStatistics(&$statistics = array(), $action = false) {
@@ -5361,6 +5441,10 @@ class OcsServer extends CommonDBTM {
          case OcsServer::COMPUTER_NOTUPDATED :
             $statistics["notupdated_machines_number"]++;
             break;
+         
+         case OcsServer::COMPUTER_LINK_REFUSED:
+            $statistics["link_refused_machines_number"]++;
+            break;
       }
    }
    
@@ -5374,9 +5458,7 @@ class OcsServer extends CommonDBTM {
       }
       echo "</th>";
       foreach (self::getAvailableStatistics() as $field => $label) {
-         //if ($statistics[$field]) {
-            echo "<tr class='tab_bg_1'><td>".$label."</td><td>".$statistics[$field]."</td></tr>";
-         //}
+         echo "<tr class='tab_bg_1'><td>".$label."</td><td>".$statistics[$field]."</td></tr>";
       }
       echo "</table></div>";
    }

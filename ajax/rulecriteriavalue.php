@@ -51,7 +51,6 @@ checkLoginUser();
 if (isset($_POST["sub_type"])) {
    $type      = $_POST["sub_type"];
    $rule      = new $type();
-   //$criterias = $rule->getCriterias();
    $rule->displayCriteriaSelectPattern("pattern", $_POST["criteria"], $_POST['condition']);
 }
 

@@ -1417,7 +1417,7 @@ $LANG['ocsconfig'][50] = "Suppression";
 $LANG['ocsconfig'][52] = "Liaison automatique des ordinateurs";
 $LANG['ocsconfig'][53] = "Activer la liaison automatique";
 $LANG['ocsconfig'][54] = "Critères d'existence d'un ordinateur";
-$LANG['ocsconfig'][55] = "Chercher les ordinateurs GLPI ayant le statut";
+$LANG['ocsconfig'][55] = "Chercher les ordinateurs dans GLPI dont le statut";
 $LANG['ocsconfig'][56] = "vide";
 $LANG['ocsconfig'][57] = "égal";
 $LANG['ocsconfig'][58] = "La liaison fusionne automatiquement un ordinateur GLPI avec un d'OCSNG.<br>Cette option est prise en compte lors de la liaison manuelle et par les scripts de synchronisation.";
@@ -1486,15 +1486,19 @@ $LANG['ocsng'][58] = "Liaison OCSNG";
 $LANG['ocsng'][59] = "Présent dans GLPI";
 $LANG['ocsng'][60] = "Présent dans OCSNG";
 $LANG['ocsng'][61] = "Aucun objet à nettoyer.";
+$LANG['ocsng'][62] = "entité de destination de la machine";
 
 $LANG['ocsng'][70] = "Machines importées";
 $LANG['ocsng'][71] = "Machines synchronisées";
 $LANG['ocsng'][72] = "Machines ne vérifiant aucune règle";
 $LANG['ocsng'][73] = "Machines liées";
 $LANG['ocsng'][74] = "Machines non modifiées";
-$LANG['ocsng'][75] = "Machines non importées car non uniques";
+$LANG['ocsng'][75] = "Machines en doublon";
 $LANG['ocsng'][76] = "Statistiques de la liaison OCSNG";
 $LANG['ocsng'][77] = "traitement terminé";
+$LANG['ocsng'][78] = "Liaison si possible, sinon pas d'import";
+$LANG['ocsng'][79] = "Liaison si possible, sinon import";
+$LANG['ocsng'][80] = "Machines dont l'import est refusé par une règle";
 
 $LANG['pager'][1] = "à";
 $LANG['pager'][2] = "de";
@@ -1773,7 +1777,7 @@ $LANG['rulesengine'][53]  = "Dictionnaire des modèles de périphériques";
 $LANG['rulesengine'][54]  = "Dictionnaire des modèles d'imprimantes";
 $LANG['rulesengine'][55]  = "Dictionnaire des modèles de matériels réseaux";
 $LANG['rulesengine'][56]  = "Modèles";
-$LANG['rulesengine'][57]  = "Règles de liaison automatique des ordinateurs";
+$LANG['rulesengine'][57]  = "Règles de d'import et de liaison des ordinateurs";
 
 $LANG['rulesengine'][60]  = "Dictionnaire des types d'ordinateurs";
 $LANG['rulesengine'][61]  = "Dictionnaire des types de moniteurs";
@@ -1848,6 +1852,10 @@ $LANG['rulesengine'][147] = "Utilisateur possédant une seule fois le profil";
 $LANG['rulesengine'][148] = "Domaine de messagerie connu";
 $LANG['rulesengine'][149] = "Groupe importé depuis un annuaire LDAP";
 $LANG['rulesengine'][150] = "Les règles affectées à l'entité ont été désactivées.";
+$LANG['rulesengine'][151] = "est déjà présent dans GLPI";
+$LANG['rulesengine'][152] = "Machine à importer";
+$LANG['rulesengine'][153] = "Machine dans GLPI";
+$LANG['rulesengine'][154] = "est vide";
 
 
 $LANG['satisfaction'][0]  = "Satisfaction";

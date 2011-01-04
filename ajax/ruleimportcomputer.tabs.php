@@ -42,6 +42,6 @@ header_nocache();
 
 checkRight('rule_ocs','r');
 
-$rule = new RuleLinkComputer();
+$rule = new RuleImportComputer();
 include ("rule.common.tabs.php");
 ?>

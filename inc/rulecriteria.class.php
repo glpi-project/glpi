@@ -184,7 +184,9 @@ class RuleCriteria extends CommonDBChild {
       $criteria  = $criterion->fields['criteria'];
 
       //If pattern is wildcard, don't check the rule and return true
-      if ($pattern == Rule::RULE_WILDCARD) {
+      //or if the condition is "already present in GLPI" : will be processed later
+      if ($pattern == Rule::RULE_WILDCARD 
+            || $pattern == Rule::PATTERN_FIND) {
          return true;
       }
 
@@ -290,6 +292,9 @@ class RuleCriteria extends CommonDBChild {
                return true;
             }
             return false;
+          case Rule::PATTERN_FIND:
+            return true;
+            
       }
       return false;
    }
@@ -302,8 +307,8 @@ class RuleCriteria extends CommonDBChild {
     *
     * @return condition's label
    **/
-   static function getConditionByID($ID) {
-      $conditions = self::getConditions();
+   static function getConditionByID($ID,$itemtype) {
+      $conditions = self::getConditions($itemtype);
       if (isset($conditions[$ID])) {
          return $conditions[$ID];
       } else {
@@ -312,29 +317,38 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
-   static function getConditions() {
+   /**
+    * 
+    */
+   static function getConditions($itemtype) {
       global $LANG;
 
-      return array(Rule::PATTERN_IS              => $LANG['rulesengine'][0],
-                   Rule::PATTERN_IS_NOT          => $LANG['rulesengine'][1],
-                   Rule::PATTERN_CONTAIN         => $LANG['rulesengine'][2],
-                   Rule::PATTERN_NOT_CONTAIN     => $LANG['rulesengine'][3],
-                   Rule::PATTERN_BEGIN           => $LANG['rulesengine'][4],
-                   Rule::PATTERN_END             => $LANG['rulesengine'][5],
-                   Rule::REGEX_MATCH             => $LANG['rulesengine'][26],
-                   Rule::REGEX_NOT_MATCH         => $LANG['rulesengine'][27],
-                   Rule::PATTERN_EXISTS          => $LANG['rulesengine'][31],
-                   Rule::PATTERN_DOES_NOT_EXISTS => $LANG['rulesengine'][32]);
+      $criteria =  array(Rule::PATTERN_IS              => $LANG['rulesengine'][0],
+                         Rule::PATTERN_IS_NOT          => $LANG['rulesengine'][1],
+                         Rule::PATTERN_CONTAIN         => $LANG['rulesengine'][2],
+                         Rule::PATTERN_NOT_CONTAIN     => $LANG['rulesengine'][3],
+                         Rule::PATTERN_BEGIN           => $LANG['rulesengine'][4],
+                         Rule::PATTERN_END             => $LANG['rulesengine'][5],
+                         Rule::REGEX_MATCH             => $LANG['rulesengine'][26],
+                         Rule::REGEX_NOT_MATCH         => $LANG['rulesengine'][27],
+                         Rule::PATTERN_EXISTS          => $LANG['rulesengine'][31],
+                         Rule::PATTERN_DOES_NOT_EXISTS => $LANG['rulesengine'][32]);
+      $extra_criteria = call_user_func(array($itemtype,'addMoreCriteria'));
+      foreach ($extra_criteria as $key => $value) {
+         $criteria[$key] = $value;
+      }
+      
+      return $criteria;
    }
 
    /**
     * Display a dropdown with all the criterias
    **/
-   static function dropdownConditions($type, $name, $value='', $allow_condition=array()) {
+   static function dropdownConditions($itemtype, $type, $name, $value='', $allow_condition=array()) {
       global $LANG;
 
       $elements = array();
-      foreach (RuleCriteria::getConditions() as $pattern => $label) {
+      foreach (RuleCriteria::getConditions($itemtype) as $pattern => $label) {
          if (empty($allow_condition)
              || (!empty($allow_condition) && in_array($pattern,$allow_condition))) {
 

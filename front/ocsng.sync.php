@@ -52,7 +52,7 @@ if (isset($_SESSION["ocs_update"]['computers'])) {
       $key = array_pop($_SESSION["ocs_update"]['computers']);
       $action = OcsServer::updateComputer($key, $_SESSION["ocsservers_id"], 2);
       OcsServer::manageImportStatistics($_SESSION["ocs_update"]['statistics'],
-                                        $action);
+                                        $action['status']);
       OcsServer::showStatistics($_SESSION["ocs_update"]['statistics']);
       displayProgressBar(400, $percent);
 
