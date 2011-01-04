@@ -1024,6 +1024,8 @@ class Transfer extends CommonDBTM {
                $this->transferDirectConnection($itemtype, $ID, 'Printer', $ocs_computer);
                // Licence / Software :  keep / delete + clean unused / keep unused
                $this->transferComputerSoftwares($ID, $ocs_computer);
+               // Computer Disks :  delete them or not ?
+               $this->transferComputerDisks($ID);
             }
 
             if ($itemtype == 'SoftwareLicense') {
@@ -1442,6 +1444,18 @@ class Transfer extends CommonDBTM {
       return -1;
    }
 
+
+   /**
+    * Transfer disks of a computer
+    *
+    * @param $ID ID of the computer
+   **/
+   function transferComputerDisks($ID) {
+      if (!$this->options['keep_disk']) {
+         $disk = new ComputerDisk();
+         $disk->cleanDBonItemDelete('Computer', $ID);
+      }
+   }
 
    /**
     * Transfer softwares of a computer
@@ -3044,10 +3058,15 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['setup'][92]." -> ".$LANG["Menu"][32]."&nbsp;:</td><td colspan='3'>";
+      echo "<td>".$LANG['setup'][92]." -> ".$LANG["Menu"][32]."&nbsp;:</td><td>";
       $params['value'] = $this->fields['keep_consumable'];
       Dropdown::showFromArray('keep_consumable', $keep, $params);
+      echo "</td>";
+      echo "<td>".$LANG["Menu"][0]." -> ".$LANG['computers'][8]."&nbsp;:</td><td>";
+      $params['value'] = $this->fields['keep_disk'];
+      Dropdown::showFromArray('keep_disk',$keep, $params);
       echo "</td></tr>";
+
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center b'>".$LANG['connect'][0]."</td></tr>";
