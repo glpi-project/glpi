@@ -101,6 +101,7 @@ class Location extends CommonTreeDropdown {
       return $tab;
    }
 
+
    /**
     * Get search function for the class
     *
@@ -169,7 +170,6 @@ class Location extends CommonTreeDropdown {
     *@param $ID of the Location
     *
     *@return Nothing (display)
-    *
    **/
    function showNetpoints($ID) {
       global $DB, $CFG_GLPI, $LANG;

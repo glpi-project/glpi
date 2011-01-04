@@ -211,7 +211,7 @@ class FieldUnicity extends CommonDropdown {
     * @return nothing
    **/
    static function selectCriterias(CommonDBTM $unicity) {
-      global $LANG, $DB;
+      global $DB;
 
       //Do not check unicity on fields with theses names
       $blacklisted_options = array('date_mod', 'id', 'is_recursive');
@@ -237,7 +237,7 @@ class FieldUnicity extends CommonDropdown {
 
       //Construct list
       echo "<span id='span_fields' name='span_fields'>";
-      echo "<select name='_fields[]' multiple size='15'  style='width:400px'>";
+      echo "<select name='_fields[]' multiple size='15' style='width:400px'>";
 
       foreach ($DB->list_fields(getTableForItemType($unicity->fields['itemtype'])) as $field) {
          $searchOption = $target->getSearchOptionByField('field', $field['Field']);

@@ -112,6 +112,7 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return true if handled (for class stack)
    **/
    function showTabContent ($ID, $tab) {
+
       if (!$this->isNewID($ID)) {
          switch ($tab) {
             case -1 :

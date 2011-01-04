@@ -53,6 +53,7 @@ function getForeignKeyFieldForTable($table) {
   return str_replace("glpi_","",$table)."_id";
 }
 
+
 /**
  * Return table name for a given foreign key name
  *
