@@ -45,11 +45,11 @@ if (!isset($_SESSION["noAUTO"])
     && $_SESSION["glpiauthtype"]==Auth::CAS) {
 
    include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-   $cas=new phpCAS();
-   $cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
+   phpCAS::client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),
                 $CFG_GLPI["cas_uri"],false);
    
-   $cas->logoutWithUrl(strval($CFG_GLPI["cas_logout"]));
+   phpCAS::setServerLogoutURL(strval($CFG_GLPI["cas_logout"]));
+   phpCAS::logout();
 }
 
 $toADD="";
