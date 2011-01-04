@@ -3515,6 +3515,18 @@ class Search {
       $table = $searchopt[$ID]["table"];
       $field = $searchopt[$ID]["field"];
 
+      // Plugin can override core definition for its type
+      if ($plug=isPluginItemType($itemtype)) {
+         $function = 'plugin_'.$plug['plugin'].'_displayConfigItem';
+         if (function_exists($function)) {
+            $out = $function($itemtype, $ID, $data, $num);
+            if (!empty($out)) {
+               return $out;
+            }
+         }
+      }
+
+
       switch ($table.".".$field) {
          case "glpi_ocslinks.last_update" :
          case "glpi_ocslinks.last_ocs_update" :
