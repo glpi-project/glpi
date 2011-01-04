@@ -2589,15 +2589,16 @@ class CommonDBTM extends CommonGLPI {
     * Clean all infos which match some criteria
     *
     * @param $crit array of criteria (ex array('is_active'=>'1'))
+    * @param $force boolean force purge not on put in trash
    **/
-   function deleteByCriteria($crit=array()) {
+   function deleteByCriteria($crit=array(),$force=0) {
       global $DB;
 
       if (is_array($crit) && count($crit)>0) {
          $crit['FIELDS'] = 'id';
 
          foreach ($DB->request($this->getTable(), $crit) as $row) {
-            $this->delete($row);
+            $this->delete($row,$force);
          }
 
       }
