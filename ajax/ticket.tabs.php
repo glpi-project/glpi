@@ -78,7 +78,10 @@ if ($_POST["id"]>0 && $ticket->getFromDB($_POST["id"])) {
          break;
 
       case 4 :
-         $ticket->showSolutionForm();
+         if (!isset($_POST['load_kb_sol'])) {
+            $_POST['load_kb_sol'] = 0;
+         }
+         $ticket->showSolutionForm($_POST['load_kb_sol']);
          if ($ticket->canApprove()) {
             $fup = new TicketFollowup();
             $fup->showApprobationForm($ticket);

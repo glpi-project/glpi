@@ -138,7 +138,16 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    } else {
       commonHeader($LANG['Menu'][5],'',"maintain","ticket");
    }
-   $track->showForm($_GET["id"]);
+
+   $available_options = array('load_kb_sol');
+   $options = array();
+   foreach ($available_options as $key) {
+      if (isset($_GET[$key])) {
+         $options[$key] = $_GET[$key];
+      }
+   }
+
+   $track->showForm($_GET["id"],$options);
 
 } else {
    commonHeader($LANG['job'][13],'',"maintain","ticket");

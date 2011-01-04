@@ -623,6 +623,9 @@ class KnowbaseItem extends CommonDBTM {
             $parameters = "start=".$params["start"]."&amp;knowbaseitemcategories_id=".
                           $params['knowbaseitemcategories_id']."&amp;contains=".
                           $params["contains"]."&amp;is_faq=$faq";
+            if (isset($options['tickets_id'])) {
+               $parameters .= "&amp;tickets_id=".$options['tickets_id'];
+            }
 
             if ($output_type==HTML_OUTPUT) {
                printPager($params['start'], $numrows, getItemTypeSearchURL('KnowbaseItem'),
@@ -641,7 +644,7 @@ class KnowbaseItem extends CommonDBTM {
             }
             echo Search::showHeaderItem($output_type, $LANG['common'][36], $header_num);
 
-            if (isset($options['tickets_id'])) {
+            if (isset($options['tickets_id']) && $output_type==HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
             }
 
@@ -683,6 +686,13 @@ class KnowbaseItem extends CommonDBTM {
                                         $item_num, $row_num);
                }
                echo Search::showItem($output_type, $data["category"], $item_num, $row_num);
+
+               if (isset($options['tickets_id']) && $output_type==HTML_OUTPUT) {
+                  $content = "<a href='".$CFG_GLPI['root_doc']."/front/ticket.form.php?load_kb_sol=".$data['id']
+                              ."&amp;id=".$options['tickets_id']."&amp;forcetab=4'>".$LANG['job'][24]."</a>";
+                  echo Search::showItem($output_type, $content, $item_num, $row_num);
+               }
+
 
                // End Line
                echo Search::showEndLine($output_type);
