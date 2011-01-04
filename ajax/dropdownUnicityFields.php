@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownNotificationEvent.php 12468 2010-09-20 13:12:41Z yllen $
+ * @version $Id $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
