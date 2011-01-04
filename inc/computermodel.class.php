@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class ComputerModel
 class ComputerModel extends CommonDropdown {
 
-   public $additional_fields_for_dictionnary = array('manufacturer');
+   var $additional_fields_for_dictionnary = array('manufacturer');
    
    static function getTypeName() {
       global $LANG;

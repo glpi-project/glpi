@@ -1328,7 +1328,7 @@ class OcsServer extends CommonDBTM {
                $itemtype = getItemTypeForTable($table);
                $item = new $itemtype();
                $external_params = array();
-               foreach ($item->mandatory_import_fields as $field) {
+               foreach ($item->additional_fields_for_dictionnary as $field) {
                   if (isset($ocs_fields[$field])) {
                      $external_params[$field] = $ocs_fields[$field];
                   } else {
@@ -5063,7 +5063,11 @@ class OcsServer extends CommonDBTM {
                   while ($line = $DBocs->fetch_array($result)) {
                      $line = clean_cross_side_scripting_deep(addslashes_deep($line));
                      // TO TEST : PARSE NAME to have real name.
-                     $print["name"] = $line["NAME"];
+                     if (!seems_utf8($line["NAME"])){
+                        $print["name"] = encodeInUtf8($line["NAME"]);
+                     } else {
+                        $print["name"] = $line["NAME"];
+                     }
 
                      if (empty ($print["name"])) {
                         $print["name"] = $line["DRIVER"];
@@ -5203,7 +5207,12 @@ class OcsServer extends CommonDBTM {
                if ($DBocs->numrows($result) > 0) {
                   while ($line = $DBocs->fetch_array($result)) {
                      $line = clean_cross_side_scripting_deep(addslashes_deep($line));
-                     $periph["name"] = $line["CAPTION"];
+                     if (!seems_utf8($line["CAPTION"])){
+                        $periph["name"] = encodeInUtf8($line["CAPTION"]);
+                     } else {
+                        $periph["name"] = $line["CAPTION"];
+                     }
+                     
                      if (!in_array(stripslashes($periph["name"]), $import_periph)) {
                         // Clean peripheral object
                         $p->reset();

@@ -54,6 +54,9 @@ class CommonDBTM extends CommonGLPI {
 
    //Store insert/update/delete error if any
    var $last_status = false;
+
+   //Additional foeidls for dictionnary processing
+   var $additional_fields_for_dictionnary = array();
    
    /// Forward entity datas to linked items
    protected $forward_entity_to = array();
@@ -62,8 +65,6 @@ class CommonDBTM extends CommonGLPI {
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
-   //Additional foeidls for dictionnary processing
-   public $additional_fields_for_dictionnary = array();
 
    const SUCCESS                        = 0; //Process is OK
    const TYPE_MISMATCH                  = 1; //Type is not good, value cannot be inserted
