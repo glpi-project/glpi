@@ -32,36 +32,12 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
-
-/// OCS Rules collection class
-class RuleLinkComputerCollection extends RuleCollection {
-
-   // From RuleCollection
-   public $stop_on_first_match = true;
-   public $right               = 'rule_ocs';
-   public $menu_option         = 'linkcomputer';
-
-   // Specific ones
-   ///Store the id of the ocs server
-   var $ocsservers_id;
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-   }
 
 
-   function getTitle() {
-      global $LANG;
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-      return $LANG['rulesengine'][57];
-   }
+$rulecollection = new RuleImportComputerCollection();
 
-}
-
-
+include (GLPI_ROOT . "/front/rule.common.php");
 ?>

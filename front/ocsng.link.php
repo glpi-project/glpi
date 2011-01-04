@@ -62,6 +62,7 @@ if (isset($_SESSION["ocs_link"])) {
       $percent = min(100,
                      round(100*($_SESSION["ocs_link_count"]-$count)/$_SESSION["ocs_link_count"], 0));
 
+
       displayProgressBar(400,$percent);
 
       $key = array_pop($_SESSION["ocs_link"]);

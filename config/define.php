@@ -283,9 +283,9 @@ $CFG_GLPI["union_search_type"] = array('ReservationItem' => "reservation_types",
 $CFG_GLPI["systeminformations_type"] = array ('AuthLDAP', 'DBConnection', 'MailCollector',
                                               'OcsServer', 'Plugin');
 
-$CFG_GLPI["rulecollections_types"] = array('RuleMailCollectorCollection', 'RuleOcsCollection',
+$CFG_GLPI["rulecollections_types"] = array('RuleOcsCollection','RuleImportComputerCollection',
                                            'RuleRightCollection', 'RuleSoftwareCategoryCollection',
-                                           'RuleTicketCollection');
+                                           'RuleMailCollectorCollection', 'RuleTicketCollection');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;

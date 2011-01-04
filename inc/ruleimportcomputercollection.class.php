@@ -32,12 +32,58 @@
 // Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
+/// OCS Rules collection class
+class RuleImportComputerCollection extends RuleCollection {
+
+   // From RuleCollection
+   public $stop_on_first_match = true;
+   public $right               = 'rule_ocs';
+   public $menu_option         = 'linkcomputer';
+
+   // Specific ones
+   ///Store the id of the ocs server
+   var $ocsservers_id;
+
+   /**
+    * Constructor
+   **/
+   function __construct() {
+   }
 
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+   function getTitle() {
+      global $LANG;
 
-$rulecollection = new RuleLinkComputerCollection();
+      return $LANG['rulesengine'][57];
+   }
 
-include (GLPI_ROOT . "/front/rule.common.form.php");
+   function prepareInputDataForProcess($input,$params) {
+      global $DBocs;
+      
+      //Get informations about network ports
+      $query = "SELECT * FROM `networks`
+                WHERE `HARDWARE_ID`='".$input['ocsid']."'";
+         $result = $DBocs->query($query);
+      foreach ($DBocs->request($query) as $data) {
+         if (isset($data['IPSUBNET'])) {
+            $input['IPSUBNET'][] = $data['IPSUBNET'];
+         }
+         if (isset($data['MACADDR'])) {
+            $input['MACADDRESS'][] = $data['MACADDR'];
+         }
+         if (isset($data['IPADDRESS'])) {
+            $input['IPADDRESS'][] = $data['IPADDRESS'];
+         }
+      }
+      
+      return array_merge($input,$params);
+   }
+
+}
+
+
 ?>

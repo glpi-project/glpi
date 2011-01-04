@@ -37,7 +37,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new RuleLinkComputerCollection();
+$rulecollection = new RuleImportComputerCollection();
 
-include (GLPI_ROOT . "/front/rule.common.php");
+include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

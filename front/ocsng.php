@@ -72,10 +72,10 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
    echo "<div class='center'><table class='tab_cadre'>";
    echo "<tr><th>" . $LANG['ocsng'][0] . " " . $name . "</th></tr>";
 
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.sync.php'>" . $LANG['ocsng'][1] .
+   echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>" . $LANG['ocsng'][2] .
          "</a></td></tr>";
 
-   echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>" . $LANG['ocsng'][2] .
+   echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.sync.php'>" . $LANG['ocsng'][1] .
          "</a></td></tr>";
 
    echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.link.php'>" . $LANG['ocsng'][4] .

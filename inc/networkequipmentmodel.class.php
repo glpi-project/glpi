@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class NetworkEquipmentModel
 class NetworkEquipmentModel extends CommonDropdown {
 
-   public $mandatory_import_fields = array('manufacturer');
+   public $additional_fields_for_dictionnary = array('manufacturer');
 
    static function getTypeName() {
       global $LANG;

@@ -154,38 +154,30 @@ class RuleAction extends CommonDBChild {
       foreach ($actions as $action) {
          $elements[$action] = self::getActionByID($action);
       }
+      
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
 
-
+   static function getActions() {
+      global $LANG;
+      return array ('assign'              => $LANG['rulesengine'][22],
+                    'regex_result'        => $LANG['rulesengine'][45],
+                    'append_regex_result' => $LANG['rulesengine'][79],
+                    'affectbyip'          => $LANG['rulesengine'][46],
+                    'affectbyfqdn'        => $LANG['rulesengine'][47],
+                    'affectbymac'         => $LANG['rulesengine'][49],
+                    'compute'             => $LANG['rulesengine'][38],
+                    'send'                => $LANG['buttons'][26],
+                    'add_validation'      => $LANG['buttons'][26]);
+   }
+   
    static function getActionByID($ID) {
       global $LANG;
-
-      switch ($ID) {
-         case "assign" :
-            return $LANG['rulesengine'][22];
-
-         case "regex_result" :
-            return $LANG['rulesengine'][45];
-
-         case "append_regex_result" :
-            return $LANG['rulesengine'][79];
-
-         case "affectbyip" :
-            return $LANG['rulesengine'][46];
-
-         case "affectbyfqdn" :
-            return $LANG['rulesengine'][47];
-
-         case "affectbymac" :
-            return $LANG['rulesengine'][49];
-
-         case 'compute' :
-            return $LANG['rulesengine'][38];
-
-         case 'send' :
-         case 'add_validation' :
-            return $LANG['buttons'][26];
+      $actions = self::getActions();
+      if (isset($actions[$ID])) {
+         return $actions[$ID];
+      } else {
+         return '';
       }
    }
 
@@ -304,6 +296,11 @@ class RuleAction extends CommonDBChild {
                      User::dropdown(array('name'   => "value",
                                           'right'  => 'validate_ticket'));
                      $display = true;
+                     break;
+                  default : 
+                     $rule = new $options["sub_type"];
+                     $display = $rule->displayAdditionalRuleAction($actions[$options["field"]],
+                                                                   $options);
                      break;
                }
             }
