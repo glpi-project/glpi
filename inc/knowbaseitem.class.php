@@ -567,8 +567,11 @@ class KnowbaseItem extends CommonDBTM {
          $params["start"] = 0;
       }
 
-      $query = "SELECT * $score
+      $query = "SELECT `glpi_knowbaseitems`.*, glpi_knowbaseitemcategories.completename AS category
+                       $score
                 FROM `glpi_knowbaseitems`
+                LEFT JOIN `glpi_knowbaseitemcategories`
+                  ON (`glpi_knowbaseitemcategories`.`id` = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
                 WHERE $where
                 $order";
 
@@ -620,11 +623,13 @@ class KnowbaseItem extends CommonDBTM {
             // Display List Header
             echo Search::showHeader($output_type, $numrows_limit+1, $nbcols);
 
+            $header_num = 1;
+            echo Search::showHeaderItem($output_type, $LANG['knowbase'][14], $header_num);
+
             if ($output_type!=HTML_OUTPUT) {
-               $header_num = 1;
-               echo Search::showHeaderItem($output_type, $LANG['knowbase'][14], $header_num);
                echo Search::showHeaderItem($output_type, $LANG['knowbase'][15], $header_num);
             }
+            echo Search::showHeaderItem($output_type, $LANG['common'][36], $header_num);
 
             // Num of the row (1=header_line)
             $row_num = 1;
@@ -655,6 +660,7 @@ class KnowbaseItem extends CommonDBTM {
                                                                                      "UTF-8"))),
                                         $item_num, $row_num);
                }
+               echo Search::showItem($output_type, $data["category"], $item_num, $row_num);
 
                // End Line
                echo Search::showEndLine($output_type);

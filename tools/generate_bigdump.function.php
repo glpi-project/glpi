@@ -1509,7 +1509,7 @@ function generate_entity($ID_entity) {
          $k++;
          $query = "INSERT INTO `glpi_knowbaseitems`
                    VALUES (NULL, '$ID_entity', '1', '$i', 'Entity $ID_entity Recursive Question $k',
-                           'Reponse $k','".mt_rand(0,1)."', '10', '".mt_rand(0,1000)."', NOW(),
+                           'Reponse $k ".getRandomString(50)."','".mt_rand(0,1)."', '10', '".mt_rand(0,1000)."', NOW(),
                            NOW())";
          $DB->query($query) or die("PB REQUETE ".$query);
       }
