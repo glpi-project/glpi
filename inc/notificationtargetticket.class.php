@@ -37,6 +37,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    var $private_profiles = array();
 
+   public $html_tags = array('##ticket.solution.description##');
 
    function __construct($entity='', $event='', $object=null, $options=array()) {
       parent::__construct($entity, $event, $object, $options);
@@ -908,7 +909,7 @@ class NotificationTargetTicket extends NotificationTarget {
          } else {
             $this->datas['##ticket.solution.type##']='';
          }
-         $this->datas['##ticket.solution.description##'] = $this->obj->getField('solution');
+         $this->datas['##ticket.solution.description##'] = unclean_cross_side_scripting_deep($this->obj->getField('solution'));
 
 
          // Linked tickets

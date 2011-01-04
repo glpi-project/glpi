@@ -739,6 +739,32 @@ class Ticket extends CommonDBTM {
    function pre_updateInDB() {
       global $LANG, $CFG_GLPI;
 
+      // Check dates change interval due to the fact that second are not displayed in form
+      if (($key=array_search('date',$this->updates)) !== false
+          && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
+
+         unset($this->updates[$key]);
+         unset($this->oldvalues['date']);
+      }
+      if (($key=array_search('closedate',$this->updates)) !== false
+          && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
+         unset($this->updates[$key]);
+         unset($this->oldvalues['closedate']);
+      }
+
+      if (($key=array_search('due_date',$this->updates)) !== false
+          && (substr($this->fields["due_date"],0,16) == substr($this->oldvalues['due_date'],0,16))) {
+         unset($this->updates[$key]);
+         unset($this->oldvalues['due_date']);
+      }
+
+      if (($key=array_search('solvedate',$this->updates)) !== false
+          && (substr($this->fields["solvedate"],0,16) == substr($this->oldvalues['solvedate'],0,16))) {
+         unset($this->updates[$key]);
+         unset($this->oldvalues['solvedate']);
+      }
+
+
       if ($this->fields['status'] != 'closed') {
          if ((in_array("suppliers_id_assign",$this->updates)
               && $this->input["suppliers_id_assign"]>0)
@@ -826,9 +852,10 @@ class Ticket extends CommonDBTM {
       // check dates
 
       // check due_date (SLA)
-      if (!is_null($this->fields["due_date"])) { // Date set
+      if ((in_array("date",$this->updates) || in_array("due_date",$this->updates))
+         && !is_null($this->fields["due_date"])) { // Date set
          if ($this->fields["due_date"] < $this->fields["date"]) {
-            addMessageAfterRedirect($LANG['tracking'][3], false, ERROR);
+            addMessageAfterRedirect($LANG['tracking'][3].$this->fields["due_date"], false, ERROR);
 
             if (($key=array_search('date',$this->updates)) !== false) {
                unset($this->updates[$key]);
@@ -888,25 +915,6 @@ class Ticket extends CommonDBTM {
                unset($this->oldvalues['closedate']);
             }
          }
-      }
-
-      // Check dates change interval due to the fact that second are not displayed in form
-      if (($key=array_search('date',$this->updates)) !== false
-          && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
-
-         unset($this->updates[$key]);
-         unset($this->oldvalues['date']);
-      }
-      if (($key=array_search('closedate',$this->updates)) !== false
-          && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
-         unset($this->updates[$key]);
-         unset($this->oldvalues['closedate']);
-      }
-
-      if (($key=array_search('solvedate',$this->updates)) !== false
-          && (substr($this->fields["solvedate"],0,16) == substr($this->oldvalues['solvedate'],0,16))) {
-         unset($this->updates[$key]);
-         unset($this->oldvalues['solvedate']);
       }
 
 /*      if (in_array("users_id",$this->updates)) {

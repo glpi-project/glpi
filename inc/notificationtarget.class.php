@@ -45,6 +45,9 @@ class NotificationTarget extends CommonDBChild {
    var $notification_targets_labels = array();
    var $notificationoptions         = 0;
 
+   // Tags which have data in HTML : do not try to clean them
+   public $html_tags = array();
+
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
    var $datas            = array();

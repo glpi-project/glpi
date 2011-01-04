@@ -44,7 +44,6 @@ class NotificationTemplate extends CommonDBTM {
    //Store templates for each language
    public $templates_by_languages = array();
 
-
    static function getTypeName() {
       global $LANG;
 
@@ -223,7 +222,9 @@ class NotificationTemplate extends CommonDBTM {
             //Template processing
 
             // Decode html chars to have clean text
+            $save_data = $data;
             $data = html_entity_decode_deep($data);
+
             $template_datas['subject'] = html_entity_decode_deep($template_datas['subject']);
             $this->signature           = html_entity_decode_deep($this->signature);
 
@@ -236,6 +237,12 @@ class NotificationTemplate extends CommonDBTM {
                // Encode in HTML all chars
                $data_html = htmlentities_deep($data);
                $data_html = nl2br_deep($data_html);
+               // Restore HTML tags
+               if (count($target->html_tags)) {
+                  foreach ($target->html_tags as $tag) {
+                     $data_html[$tag] = $save_data[$tag];
+                  }
+               }
 
                $signature_html = htmlentities_deep($this->signature);
                $signature_html = nl2br_deep($signature_html);
@@ -256,8 +263,8 @@ class NotificationTemplate extends CommonDBTM {
                      "<br><br>".$signature_html."</body></html>";
             }
 
-            $lang['content_text'] = NotificationTemplate::process($template_datas['content_text'],
-                                                                  $data)."\n\n".$this->signature;
+            $lang['content_text'] = html_clean(NotificationTemplate::process($template_datas['content_text'],
+                                                                  $data)."\n\n".$this->signature);
             $this->templates_by_languages[$additionnaloption][$language] = $lang;
          }
       }
