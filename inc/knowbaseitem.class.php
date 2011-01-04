@@ -157,6 +157,14 @@ class KnowbaseItem extends CommonDBTM {
       $canrecu = $this->can($ID,'recursive');
 
       if ($canedit) {
+         // Load ticket solution
+         if (empty($ID) && isset($options['tickets_id']) && $options['tickets_id']>0) {
+            $ticket = new Ticket();
+            if ($ticket->getFromDB($options['tickets_id'])) {
+               $this->fields['question'] = $ticket->getField('name');
+               $this->fields['answer']   = $ticket->getField('solution');
+            }
+         }
          echo "<div id='contenukb'>";
          initEditorSystem('answer');
 

@@ -2864,7 +2864,7 @@ class Ticket extends CommonDBTM {
 
       if ($show_template) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td colspan='2'>";
+         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td>";
          $rand_template = Dropdown::show('TicketSolutionTemplate',
                                          array('value'  => 0,
                                                'entity' => $this->getEntityID()));
@@ -2876,7 +2876,7 @@ class Ticket extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][48]."&nbsp;:&nbsp;</td><td colspan='3'>";
+      echo "<td>".$LANG['job'][48]."&nbsp;:&nbsp;</td><td>";
 
       $current   = $this->fields['status'];
       $rand_type = 0;
@@ -2890,6 +2890,10 @@ class Ticket extends CommonDBTM {
          echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                         $this->getField('ticketsolutiontypes_id'));
       }
+      echo "</td><td>";
+      echo $LANG['job'][25];
+      echo "</td><td>";
+      Dropdown::showYesNo('_sol_to_kb', false);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -2909,6 +2913,8 @@ class Ticket extends CommonDBTM {
          echo nl2br($this->getField('solution'));
       }
       echo "</td></tr>";
+
+      
 
       $options['candel']  = false;
       $options['canedit'] = $canedit;

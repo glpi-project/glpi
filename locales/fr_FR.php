@@ -899,6 +899,7 @@ $LANG['job'][21] = "Heure(s)";
 $LANG['job'][22] = "Minute(s)";
 $LANG['job'][23] = "Rechercher une solution";
 $LANG['job'][24] = "Utiliser comme solution";
+$LANG['job'][25] = "Enregistrer et ajouter à la base de connaissances";
 
 $LANG['job'][29] = "Ajouter un nouveau suivi";
 $LANG['job'][30] = "Ajouter une nouvelle tâche";
