@@ -574,8 +574,12 @@ abstract class CommonDropdown extends CommonDBTM {
       $ruleinput = array("name" => $value);
       $rulecollection = RuleCollection::getClassByType($this->getType(),true);
 
-      foreach ($this->mandatory_import_fields as $field) {
-         $ruleinput[$field] = $external_params[$field];
+      foreach ($this->additional_fields_for_dictionnary as $field) {
+         if (isset($external_params[$field])) {
+            $ruleinput[$field] = $external_params[$field];
+         } else {
+            $ruleinput[$field] = '';
+         }
       }
       /*
       switch ($this->getTable()) {

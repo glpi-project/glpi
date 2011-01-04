@@ -813,11 +813,7 @@ class Rule extends CommonDBTM {
       }
       //If all simple criteria match, and if necessary, check complex criteria
       if ($doactions) {
-         if ($this->fields["match"]==Rule::AND_MATCHING) {
-            $doactions &= $this->checkComplexCriteria($input);
-         } else {
-            $doactions |= $this->checkComplexCriteria($input);
-         }
+         $doactions |= $this->checkComplexCriteria($input);
       }
       return $doactions;
    }
