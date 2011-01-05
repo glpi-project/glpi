@@ -92,16 +92,13 @@ class RuleImportComputer extends Rule {
       $criterias['state']['name']      = $LANG['ocsconfig'][55];
       $criterias['state']['linkfield'] = 'state';
       $criterias['state']['type']      = 'dropdown';
-      $criterias['state']['complex']   = true;
       $criterias['state']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
 
-      $criterias['OCS_SERVER']['table']     = 'glpi_ocsservers';
-      $criterias['OCS_SERVER']['field']     = 'name';
-      $criterias['OCS_SERVER']['name']      = $LANG['ocsng'][29];
-      $criterias['OCS_SERVER']['linkfield'] = '';
-      $criterias['OCS_SERVER']['type']      = 'dropdown';
-      $criterias['OCS_SERVER']['virtual']   = true;
-      $criterias['OCS_SERVER']['id']        = 'ocs_server';
+      $criterias['ocsservers_id']['table']     = 'glpi_ocsservers';
+      $criterias['ocsservers_id']['field']     = 'name';
+      $criterias['ocsservers_id']['name']      = $LANG['ocsng'][29];
+      $criterias['ocsservers_id']['linkfield'] = '';
+      $criterias['ocsservers_id']['type']      = 'dropdown';
 
       $criterias['TAG']['table']     = 'accountinfo';
       $criterias['TAG']['field']     = 'TAG';
@@ -158,7 +155,6 @@ class RuleImportComputer extends Rule {
 
       $actions = array();
       $actions['_fusion']['name'] = $LANG['ocsng'][58];
-      $actions['_fusion']['type'] = 'text';
       $actions['_fusion']['type'] = 'fusion_type';
 
       $actions['_ignore_import']['name'] = $LANG['rulesengine'][132];
@@ -170,8 +166,9 @@ class RuleImportComputer extends Rule {
    static function getRuleActionValues() {
       global $LANG;
       return array(self::RULE_ACTION_LINK_OR_IMPORT       => $LANG['ocsng'][78],
-                      self::RULE_ACTION_LINK_OR_NO_IMPORT => $LANG['ocsng'][79]);
+                   self::RULE_ACTION_LINK_OR_NO_IMPORT    => $LANG['ocsng'][79]);
    }
+   
    /**
     * Add more action values specific to this type of rule
     * @param value the value for this action
@@ -231,7 +228,7 @@ class RuleImportComputer extends Rule {
       return true;
    }
 
-   function checkComplexCriteria($input) {
+   function findWithGlobalCriteria($input) {
       global $DB;
 
       $complex_criterias = array();
@@ -315,7 +312,6 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
-
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];

@@ -789,7 +789,6 @@ class Rule extends CommonDBTM {
    **/
    function checkCriterias($input) {
 
-      $doactions = false;
       reset($this->criterias);
 
       if ($this->fields["match"]==Rule::AND_MATCHING) {
@@ -813,9 +812,10 @@ class Rule extends CommonDBTM {
       }
       //If all simple criteria match, and if necessary, check complex criteria
       if ($doactions) {
-         $doactions |= $this->checkComplexCriteria($input);
+         return $this->findWithGlobalCriteria($input);
+      } else {
+         return false;
       }
-      return $doactions;
    }
 
 
@@ -917,7 +917,7 @@ class Rule extends CommonDBTM {
       return $res;
    }
 
-   function checkComplexCriteria($input) {
+   function findWithGlobalCriteria($input) {
       return true;
    }
    

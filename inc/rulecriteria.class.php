@@ -178,7 +178,7 @@ class RuleCriteria extends CommonDBChild {
     * @return true if the field match the rule, false if it doesn't match
    **/
    static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result) {
-      
+
       $condition = $criterion->fields['condition'];
       $pattern   = $criterion->fields['pattern'];
       $criteria  = $criterion->fields['criteria'];
