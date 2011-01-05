@@ -483,8 +483,12 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td>";
 
       // Category select not for anonymous FAQ
-      if (getLoginUserID() && !$faq && !isset($options['tickets_id'])) {
-         echo "<td><form method=get action='".$params["target"]."'><table border='0' class='tab_cadre'>";
+      if (getLoginUserID()
+          && !$faq
+          && !isset($options['tickets_id'])) {
+
+         echo "<td><form method=get action='".$params["target"]."'>";
+         echo "<table border='0' class='tab_cadre'>";
          echo "<tr><th colspan='2'>".$LANG['buttons'][43]."&nbsp;:</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][36]."&nbsp;:&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
@@ -585,11 +589,13 @@ class KnowbaseItem extends CommonDBTM {
          $params["start"] = 0;
       }
 
-      $query = "SELECT `glpi_knowbaseitems`.*, glpi_knowbaseitemcategories.completename AS category
+      $query = "SELECT `glpi_knowbaseitems`.*,
+                       `glpi_knowbaseitemcategories`.`completename` AS category
                        $score
                 FROM `glpi_knowbaseitems`
                 LEFT JOIN `glpi_knowbaseitemcategories`
-                  ON (`glpi_knowbaseitemcategories`.`id` = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
+                     ON (`glpi_knowbaseitemcategories`.`id`
+                           = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
                 WHERE $where
                 $order";
 
@@ -679,8 +685,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo Search::showItem($output_type,
                                         "<div class='kb'><a ".
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
-                                          " $href>".
-                                          resume_text($data["question"], 80)."</a></div>
+                                          " $href>".resume_text($data["question"], 80)."</a></div>
                                           <div class='kb_resume'>".
                                           resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),
                                                       600)."</div>",

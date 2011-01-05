@@ -63,14 +63,14 @@ if (!isset($_GET["knowbaseitemcategories_id"])) {
 
 $faq = !haveRight("knowbase","r");
 
-KnowbaseItem::searchForm($_GET,$faq);
+KnowbaseItem::searchForm($_GET, $faq);
 if (!isset($_GET["tickets_id"])) {
-   KnowbaseItemCategory::showFirstLevel($_GET,$faq);
+   KnowbaseItemCategory::showFirstLevel($_GET, $faq);
 }
 KnowbaseItem::showList($_GET,$faq);
 
 if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"])==0) {
-   KnowbaseItem::showViewGlobal($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php",$faq) ;
+   KnowbaseItem::showViewGlobal($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php", $faq) ;
 }
 
 commonFooter();

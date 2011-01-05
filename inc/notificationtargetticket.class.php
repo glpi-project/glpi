@@ -910,7 +910,8 @@ class NotificationTargetTicket extends NotificationTarget {
          } else {
             $this->datas['##ticket.solution.type##']='';
          }
-         $this->datas['##ticket.solution.description##'] = unclean_cross_side_scripting_deep($this->obj->getField('solution'));
+         $this->datas['##ticket.solution.description##']
+                     = unclean_cross_side_scripting_deep($this->obj->getField('solution'));
 
 
          // Linked tickets
