@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
+commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng");
 
 $display_list = true;
 
@@ -51,15 +51,14 @@ if (isset($_SESSION["ocs_update"]['computers'])) {
 
       $key = array_pop($_SESSION["ocs_update"]['computers']);
       $action = OcsServer::updateComputer($key, $_SESSION["ocsservers_id"], 2);
-      OcsServer::manageImportStatistics($_SESSION["ocs_update"]['statistics'],
-                                        $action['status']);
+      OcsServer::manageImportStatistics($_SESSION["ocs_update"]['statistics'], $action['status']);
       OcsServer::showStatistics($_SESSION["ocs_update"]['statistics']);
       displayProgressBar(400, $percent);
 
       glpi_header($_SERVER['PHP_SELF']);
 
    } else {
-      OcsServer::showStatistics($_SESSION["ocs_update"]['statistics'],true);
+      OcsServer::showStatistics($_SESSION["ocs_update"]['statistics'], true);
       unset($_SESSION["ocs_update"]);
       $display_list = false;
       echo "<div class='center b'><br>";

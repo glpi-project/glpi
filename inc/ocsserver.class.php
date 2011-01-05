@@ -1370,8 +1370,7 @@ class OcsServer extends CommonDBTM {
                   }
                }
 
-               $input[$glpi_field] = Dropdown::importExternal($itemtype,
-                                                              $ocs_fields[$ocs_field],
+               $input[$glpi_field] = Dropdown::importExternal($itemtype, $ocs_fields[$ocs_field],
                                                               $entities_id, $external_params);
             } else {
                switch ($glpi_field) {
@@ -1434,7 +1433,7 @@ class OcsServer extends CommonDBTM {
                sleep(1);
             }
          }
-         
+
          //Store rule that matched
          $rules_matched['RuleOcs'] = $data['_ruleid'];
          //New machine to import
@@ -1449,8 +1448,9 @@ class OcsServer extends CommonDBTM {
             $line = clean_cross_side_scripting_deep(addslashes_deep($line));
 
             $locations_id = (isset($data['locations_id'])?$data['locations_id']:0);
-            $input = self::getComputerInformations($line, OcsServer::getConfig($ocsservers_id),
-                                                   $data['entities_id'],$locations_id);
+            $input        = self::getComputerInformations($line,
+                                                          OcsServer::getConfig($ocsservers_id),
+                                                          $data['entities_id'], $locations_id);
             //Check if machine could be linked with another one already in DB
             if ($canlink) {
                $rulelink = new RuleImportComputerCollection();
@@ -1463,7 +1463,7 @@ class OcsServer extends CommonDBTM {
                //else do import as usual
                if (isset($rulelink_results['action'])) {
                   $rules_matched['RuleImportComputer'] = $rulelink_results['_ruleid'];
-                  
+
                   switch ($rulelink_results['action']) {
                      case self::LINK_RESULT_NO_IMPORT :
                         return array('status'      => self::COMPUTER_LINK_REFUSED,
@@ -1474,7 +1474,7 @@ class OcsServer extends CommonDBTM {
                         if (is_array($rulelink_results['found_computers'])
                             && count($rulelink_results['found_computers'])>0) {
                            foreach ($rulelink_results['found_computers'] as $tmp => $computers_id) {
-                              if (OcsServer::linkComputer($ocsid, $ocsservers_id, 
+                              if (OcsServer::linkComputer($ocsid, $ocsservers_id,
                                                           $computers_id, $canlink)) {
                                  return array ('status'      => self::COMPUTER_LINKED,
                                                'entities_id' => $data['entities_id'],

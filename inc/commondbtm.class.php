@@ -66,11 +66,12 @@ class CommonDBTM extends CommonGLPI {
    protected $fkfield = "";
 
 
-   const SUCCESS                        = 0; //Process is OK
-   const TYPE_MISMATCH                  = 1; //Type is not good, value cannot be inserted
-   const ERROR_FIELDSIZE_EXCEEDED       = 2; //Value is bigger than the field's size
-   const HAS_DUPLICATE                  = 3; //Can insert or update because it's duplicating another item
-   const NOTHING_TO_DO                  = 4; //Nothing to insert or update
+   const SUCCESS                    = 0; //Process is OK
+   const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
+   const ERROR_FIELDSIZE_EXCEEDED   = 2; //Value is bigger than the field's size
+   const HAS_DUPLICATE              = 3; //Can insert or update because it's duplicating another item
+   const NOTHING_TO_DO              = 4; //Nothing to insert or update
+
 
    /**
     * Constructor
@@ -81,11 +82,13 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Return last error
+    *
     * @return the error code or false is no error
-    */
+   **/
    function getLastStatus() {
       return $this->last_status;
    }
+
 
    /**
     * Return the table used to stor this object
@@ -151,7 +154,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      return false;;
+      return false;
    }
 
 
@@ -2293,7 +2296,7 @@ class CommonDBTM extends CommonGLPI {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['common'][32];;
+      $tab['common'] = $LANG['common'][32];
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -2493,16 +2496,17 @@ class CommonDBTM extends CommonGLPI {
     * Check field unicity before insert or update
     *
     * @param add true for insert, false for update
-    * @param $display_error
+    * @param $options array
     *
     * @return true if item can be written in DB, false if not
    **/
-   function checkUnicity($add=false, $options = array()) {
+   function checkUnicity($add=false, $options=array()) {
       global $LANG, $DB, $CFG_GLPI;
 
       $p['unicity_error_message']  = true;
       $p['add_event_on_duplicate'] = true;
       $p['disable_unicity_check']  = false;
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $value) {
             $p[$key] = $value;
@@ -2533,6 +2537,7 @@ class CommonDBTM extends CommonGLPI {
          }*/
 
          $fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
+
          //If there's fields to check
          if (!empty($fields) && !empty($fields['fields'])) {
             $where = "";
@@ -2540,9 +2545,10 @@ class CommonDBTM extends CommonGLPI {
             foreach ($fields['fields'] as $field) {
                if (isset($this->input[$field]) //Field is set
                   //Standard field not null
-                  && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
+                   && ((getTableNameForForeignKeyField($field) == '' && $this->input[$field] != '')
                      //Foreign key and value is not 0
-                     || (getTableNameForForeignKeyField($field) != '' && $this->input[$field] > 0))) {
+                       || (getTableNameForForeignKeyField($field) != ''
+                           && $this->input[$field] > 0))) {
                   $where .= " AND `$field` = '".$this->input[$field]."'";
                }
             }
@@ -2567,7 +2573,7 @@ class CommonDBTM extends CommonGLPI {
                          } else {
                             $searchOption = $this->getSearchOptionByField('field', $field);
                          }
-                         $message[]    = $searchOption['name'].'='.$this->input[$field];
+                         $message[] = $searchOption['name'].'='.$this->input[$field];
                       }
                       $message_text = implode('&',$message);
                       if ($p['unicity_error_message']) {
@@ -2576,8 +2582,7 @@ class CommonDBTM extends CommonGLPI {
                       }
                       if ($p['add_event_on_duplicate']) {
                         Event::log ((!$add?$this->fields['id']:0), get_class($this), 4, 'inventory',
-                                    $_SESSION["glpiname"]." ".
-                                    $LANG['log'][123].' : '.$message_text);
+                                    $_SESSION["glpiname"]." ".$LANG['log'][123].' : '.$message_text);
                       }
                   }
                   $result = false;

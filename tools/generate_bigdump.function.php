@@ -1630,7 +1630,7 @@ function generate_entity($ID_entity) {
 
    // Specific
    for ($i=0 ; $i<$MAX['contract'] ; $i++) {
-      $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);;
+      $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
       $query = "INSERT INTO `glpi_contracts`
                 VALUES (NULL, '$ID_entity', '0', 'contract $i-$ID_entity', 'num $i',
@@ -1651,7 +1651,7 @@ function generate_entity($ID_entity) {
    }
 
    for ($i=0 ; $i<$MAX['contract']/2 ; $i++) {
-      $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);;
+      $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
       $query = "INSERT INTO `glpi_contracts`
                 VALUES (NULL, '$ID_entity', '1', 'Recursive contract $i-$ID_entity', 'num $i',
