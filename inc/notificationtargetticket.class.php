@@ -39,6 +39,7 @@ class NotificationTargetTicket extends NotificationTarget {
 
    public $html_tags = array('##ticket.solution.description##');
 
+
    function __construct($entity='', $event='', $object=null, $options=array()) {
       parent::__construct($entity, $event, $object, $options);
 
@@ -61,7 +62,6 @@ class NotificationTargetTicket extends NotificationTarget {
             }
          }
       }
-
    }
 
 
@@ -347,8 +347,9 @@ class NotificationTargetTicket extends NotificationTarget {
       global $CFG_GLPI;
 
        if (isset($this->options['_old_user'])
-         && $this->options['_old_user']['type'] == Ticket::ASSIGN
-         && $this->options['_old_user']['use_notification']) {
+           && $this->options['_old_user']['type'] == Ticket::ASSIGN
+           && $this->options['_old_user']['use_notification']) {
+
             $user = new User();
             $user->getFromDB($this->options['_old_user']['users_id']);
 
@@ -357,7 +358,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $author_id    = $user->fields['id'];
 
             if (!empty($this->options['_old_user']['alternative_email'])
-                && $this->options['_old_user']['alternative_email'] != $data['email']
+                && $this->options['_old_user']['alternative_email'] != $user['email']
                 && NotificationMail::isUserAddressValid($this->options['_old_user']['alternative_email'])) {
                $author_email = $this->options['_old_user']['alternative_email'];
             }
