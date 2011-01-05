@@ -81,13 +81,13 @@ class RuleAction extends CommonDBChild {
       $tab[2]['name']          = $LANG['rulesengine'][12];
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'string';
-      
+
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'value';
       $tab[3]['name']          = $LANG['rulesengine'][13];
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'string';
-      
+
       return $tab;
    }
 
@@ -154,12 +154,14 @@ class RuleAction extends CommonDBChild {
       foreach ($actions as $action) {
          $elements[$action] = self::getActionByID($action);
       }
-      
+
       return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
 
+
    static function getActions() {
       global $LANG;
+
       return array ('assign'              => $LANG['rulesengine'][22],
                     'regex_result'        => $LANG['rulesengine'][45],
                     'append_regex_result' => $LANG['rulesengine'][79],
@@ -170,15 +172,16 @@ class RuleAction extends CommonDBChild {
                     'send'                => $LANG['buttons'][26],
                     'add_validation'      => $LANG['buttons'][26]);
    }
-   
+
+
    static function getActionByID($ID) {
       global $LANG;
+
       $actions = self::getActions();
       if (isset($actions[$ID])) {
          return $actions[$ID];
-      } else {
-         return '';
       }
+      return '';
    }
 
 
@@ -297,7 +300,8 @@ class RuleAction extends CommonDBChild {
                                           'right'  => 'validate_ticket'));
                      $display = true;
                      break;
-                  default : 
+
+                  default :
                      $rule = new $options["sub_type"];
                      $display = $rule->displayAdditionalRuleAction($actions[$options["field"]],
                                                                    $options);

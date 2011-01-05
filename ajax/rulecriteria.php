@@ -68,8 +68,8 @@ if (isset($_POST["sub_type"])) {
          $allow_condition = array();
       }
 
-      $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"], $type, "condition",
-                                                   '', $allow_condition);
+      $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"], $type, "condition", '',
+                                                   $allow_condition);
 
       echo "&nbsp;&nbsp;";
       echo "<span id='condition_span$randcrit'>\n";

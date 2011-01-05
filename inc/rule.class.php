@@ -85,8 +85,8 @@ class Rule extends CommonDBTM {
    const REGEX_NOT_MATCH         = 7;
    const PATTERN_EXISTS          = 8;
    const PATTERN_DOES_NOT_EXISTS = 9;
-   const PATTERN_FIND = 10;
-   
+   const PATTERN_FIND            = 10;
+
    const AND_MATCHING = "AND";
    const OR_MATCHING  = "OR";
 
@@ -920,7 +920,7 @@ class Rule extends CommonDBTM {
    function findWithGlobalCriteria($input) {
       return true;
    }
-   
+
    /**
     * Specific prepare input datas for the rule
     *
@@ -966,7 +966,8 @@ class Rule extends CommonDBTM {
                                                          $this->regex_results[0]);
                   $output[$action->fields["field"]] = $res;
                   break;
-               default:
+
+               default :
                   //Each type can add his own actions
                   $output = $this->executeSpecificActions($output,$params);
                   break;
@@ -1230,7 +1231,7 @@ class Rule extends CommonDBTM {
    function getMinimalCriteriaText($fields) {
 
       $text  = "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"],get_class($this)) . "</td>";
+      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this))."</td>";
       $text .= "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
                                                          $fields["pattern"]) . "</td>";
       return $text;
@@ -1267,14 +1268,15 @@ class Rule extends CommonDBTM {
    function getCriteriaDisplayPattern($ID, $condition, $pattern) {
       global $LANG;
 
-      if ($condition == Rule::PATTERN_EXISTS 
-         || $condition == Rule::PATTERN_DOES_NOT_EXISTS 
-            || $condition == Rule::PATTERN_FIND) {
+      if ($condition == Rule::PATTERN_EXISTS
+          || $condition == Rule::PATTERN_DOES_NOT_EXISTS
+          || $condition == Rule::PATTERN_FIND) {
           return $LANG['choice'][1];
-      }elseif (($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
-         $crit = $this->getCriteria($ID);
-         if (isset($crit['type'])) {
 
+      } else if (($condition==Rule::PATTERN_IS || $condition==Rule::PATTERN_IS_NOT)) {
+         $crit = $this->getCriteria($ID);
+
+         if (isset($crit['type'])) {
             switch ($crit['type']) {
                case "yesonly" :
                case "yesno" :
@@ -1330,19 +1332,22 @@ class Rule extends CommonDBTM {
     * @param $test Is to test rule ?
    **/
    function displayCriteriaSelectPattern($name, $ID, $condition, $value="", $test=false) {
+
       $crit    = $this->getCriteria($ID);
       $display = false;
-      $tested = false;
+      $tested  = false;
+
       if ($test
-            ||$condition==Rule::PATTERN_EXISTS 
-               || $condition==Rule::PATTERN_DOES_NOT_EXISTS) {
+          || $condition == Rule::PATTERN_EXISTS
+          || $condition == Rule::PATTERN_DOES_NOT_EXISTS) {
          Dropdown::showYesNo($name, 0, 0);
          $display = true;
-         $tested = true;
-      } elseif (isset($crit['type'])
-          && ($test
-               ||$condition==Rule::PATTERN_IS 
-                  || $condition==Rule::PATTERN_IS_NOT)) {
+         $tested  = true;
+
+      } else if (isset($crit['type'])
+                 && ($test
+                     ||$condition == Rule::PATTERN_IS
+                     || $condition == Rule::PATTERN_IS_NOT)) {
 
          switch ($crit['type']) {
             case "yesonly" :
@@ -1356,9 +1361,8 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown" :
-               Dropdown::show(getItemTypeForTable($crit['table']),
-                              array('name'  => $name,
-                                    'value' => $value));
+               Dropdown::show(getItemTypeForTable($crit['table']), array('name'  => $name,
+                                                                         'value' => $value));
                $display = true;
                break;
 
@@ -1393,9 +1397,9 @@ class Rule extends CommonDBTM {
       }
       //Not a standard condition
       if (!$tested) {
-        $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value); 
+        $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value);
       }
-      
+
       if (!$display) {
          $rc = new $this->rulecriteriaclass();
          autocompletionTextField($rc, "pattern", array('name'  => $name,
@@ -1447,7 +1451,8 @@ class Rule extends CommonDBTM {
 
             case "dropdown_management" :
                return Dropdown::getGlobalSwitch($value);
-            default:
+
+            default :
                return $this->displayAdditionRuleActionValue($value);
          }
       }
@@ -1800,40 +1805,49 @@ class Rule extends CommonDBTM {
       return $ong;
    }
 
+
    /**
     * Add more criteria specific to this type of rule
-    */
+   **/
    static function addMoreCriteria() {
       return array();
    }
 
+
    /**
     * Add more actions specific to this type of rule
-    */
+   **/
    function displayAdditionRuleActionValue($value) {
       return $value;
    }
 
+
    /**
     * Method for each type to manage his own actions
+    *
     * @param output the rule's execution actions
     * @param params additional parameters that may be used
+    *
     * @return the rule's execution array modified
-    */
-   function executeSpecificActions($output,$params) {
+   **/
+   function executeSpecificActions($output, $params) {
       return $output;
    }
-   
+
+
    /**
-    * 
-    */
+    *
+   **/
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value) {
       return false;
    }
-   
+
+
    function displayAdditionalRuleAction($action,$params = array()) {
       return true;
    }
+
+
 }
 
 ?>

@@ -1013,8 +1013,8 @@ class OcsServer extends CommonDBTM {
              || $idlink = OcsServer::ocsLink($ocsid, $ocsservers_id, $computers_id)) {
             $comp = new Computer();
             $comp->getFromDB($computers_id);
-            $input["id"] = $computers_id;
-            $input["entities_id"] = $comp->fields['entities_id'];
+            $input["id"]            = $computers_id;
+            $input["entities_id"]   = $comp->fields['entities_id'];
             $input["is_ocs_import"] = 1;
 
             // Not already import from OCS / mark default state
@@ -1440,7 +1440,7 @@ class OcsServer extends CommonDBTM {
          $query = "SELECT `hardware`.*, `bios`.*
                    FROM `hardware`
                    LEFT JOIN `bios` ON (`bios`.`HARDWARE_ID`=`hardware`.`ID`)
-                   WHERE `hardware`.`ID`='$ocsid'";
+                   WHERE `hardware`.`ID` = '$ocsid'";
          $result = $DBocs->query($query);
 
          if ($result && $DBocs->numrows($result) == 1) {
@@ -1451,13 +1451,14 @@ class OcsServer extends CommonDBTM {
             $input        = self::getComputerInformations($line,
                                                           OcsServer::getConfig($ocsservers_id),
                                                           $data['entities_id'], $locations_id);
+
             //Check if machine could be linked with another one already in DB
             if ($canlink) {
-               $rulelink = new RuleImportComputerCollection();
+               $rulelink         = new RuleImportComputerCollection();
                $rulelink_results = array();
-               $params = array('entities_id'    => $data['entities_id'],
-                               'ocsservers_id'  => $ocsservers_id);
-               $rulelink_results = $rulelink->processAllRules($input,array(),$params);
+               $params           = array('entities_id'   => $data['entities_id'],
+                                         'ocsservers_id' => $ocsservers_id);
+               $rulelink_results = $rulelink->processAllRules($input, array(), $params);
 
                //If at least one rule matched
                //else do import as usual
@@ -1466,19 +1467,20 @@ class OcsServer extends CommonDBTM {
 
                   switch ($rulelink_results['action']) {
                      case self::LINK_RESULT_NO_IMPORT :
-                        return array('status'      => self::COMPUTER_LINK_REFUSED,
-                                     'entities_id' => $data['entities_id'],
-                                     'rule_matched'=> $rules_matched);
+                        return array('status'       => self::COMPUTER_LINK_REFUSED,
+                                     'entities_id'  => $data['entities_id'],
+                                     'rule_matched' => $rules_matched);
 
                      case self::LINK_RESULT_LINK :
                         if (is_array($rulelink_results['found_computers'])
                             && count($rulelink_results['found_computers'])>0) {
+
                            foreach ($rulelink_results['found_computers'] as $tmp => $computers_id) {
-                              if (OcsServer::linkComputer($ocsid, $ocsservers_id,
-                                                          $computers_id, $canlink)) {
-                                 return array ('status'      => self::COMPUTER_LINKED,
-                                               'entities_id' => $data['entities_id'],
-                                               'rule_matched'=> $rules_matched);
+                              if (OcsServer::linkComputer($ocsid, $ocsservers_id, $computers_id,
+                                                          $canlink)) {
+                                 return array ('status'       => self::COMPUTER_LINKED,
+                                               'entities_id'  => $data['entities_id'],
+                                               'rule_matched' => $rules_matched);
                               }
                            }
                         break;
@@ -1500,9 +1502,9 @@ class OcsServer extends CommonDBTM {
                }
 
             } else {
-               return array('status'      => self::COMPUTER_NOT_UNIQUE,
-                            'entities_id' => $data['entities_id'],
-                            'rule_matched'=> $rules_matched) ;
+               return array('status'       => self::COMPUTER_NOT_UNIQUE,
+                            'entities_id'  => $data['entities_id'],
+                            'rule_matched' => $rules_matched) ;
             }
          }
 
@@ -1511,12 +1513,12 @@ class OcsServer extends CommonDBTM {
          }
 
          //Return code to indicates that the machine was imported
-         return array('status' => self::COMPUTER_IMPORTED,
-                      'entities_id' => $data['entities_id'],
-                      'rule_matched'=> $rules_matched);
+         return array('status'       => self::COMPUTER_IMPORTED,
+                      'entities_id'  => $data['entities_id'],
+                      'rule_matched' => $rules_matched);
       }
       //ELSE Return code to indicates that the machine was not imported because it doesn't matched rules
-      return array('status' => self::COMPUTER_FAILED_IMPORT,
+      return array('status'       => self::COMPUTER_FAILED_IMPORT,
                    'rule_matched' => $rules_matched);
    }
 
@@ -1534,11 +1536,11 @@ class OcsServer extends CommonDBTM {
       global $DB, $DBocs;
 
       $found_computers = array();
-      $rulelink        = new RuleImportComputerCollection();
-      $result = array();
-      $result = $rulelink->processAllRules(array(), array(),
-                                           array('entities_id'   => $entities_id,
-                                                 'ocsservers_id' => $ocsservers_id));
+      $rulelink = new RuleImportComputerCollection();
+      $result   = array();
+      $result   = $rulelink->processAllRules(array(), array(),
+                                             array('entities_id'   => $entities_id,
+                                                   'ocsservers_id' => $ocsservers_id));
       /*
       $conf = OcsServer::getConfig($ocsservers_id);
 
@@ -1935,8 +1937,9 @@ class OcsServer extends CommonDBTM {
          $line = clean_cross_side_scripting_deep(addslashes_deep($line));
          $compupdate = array ();
 
-         if ($options['cfg_ocs']["import_os_serial"] && !in_array("os_license_number",
-                                                                  $options['computers_updates'])) {
+         if ($options['cfg_ocs']["import_os_serial"]
+             && !in_array("os_license_number", $options['computers_updates'])) {
+
             if (!empty ($line["WINPRODKEY"])) {
                $compupdate["os_license_number"] = $line["WINPRODKEY"];
             }
@@ -2860,11 +2863,11 @@ class OcsServer extends CommonDBTM {
                   echo "<input type='checkbox' name='toimport[" . $tab["id"] . "]' " .
                          ($check == "all" ? "checked" : "") . ">";
                } else {
-                  $rulelink = new RuleImportComputerCollection();
+                  $rulelink         = new RuleImportComputerCollection();
                   $rulelink_results = array();
-                  $params = array('entities_id'    =>$entity,
-                                  'ocsservers_id'  => $ocsservers_id);
-                  $rulelink_results = $rulelink->processAllRules($tab,array(),$params);
+                  $params           = array('entities_id'   =>$entity,
+                                            'ocsservers_id' => $ocsservers_id);
+                  $rulelink_results = $rulelink->processAllRules($tab, array(), $params);
 
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
                   $options = array('name' => "tolink[".$tab["id"]."]");
@@ -5203,7 +5206,7 @@ class OcsServer extends CommonDBTM {
                                  $input["serial"] = $mon["serial"];
                               }
                               if (count($input)) {
-                                 $input["id"] = $id_monitor;
+                                 $input["id"]          = $id_monitor;
                                  $input['entities_id'] = $entity;
                                  $m->update($input);
                               }
@@ -5322,7 +5325,7 @@ class OcsServer extends CommonDBTM {
                               } else if ($management_process == 2) {
                                  //Config says : manage printers as single units
                                  //Import all printers as non global.
-                                 $input = $print;
+                                 $input              = $print;
                                  $input["is_global"] = MANAGEMENT_UNITARY;
 
                                  if ($cfg_ocs["states_id_default"]>0) {
@@ -5630,7 +5633,7 @@ class OcsServer extends CommonDBTM {
             $statistics["notupdated_machines_number"]++;
             break;
 
-         case OcsServer::COMPUTER_LINK_REFUSED:
+         case OcsServer::COMPUTER_LINK_REFUSED :
             $statistics["link_refused_machines_number"]++;
             break;
       }

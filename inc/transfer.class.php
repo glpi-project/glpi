@@ -1451,11 +1451,13 @@ class Transfer extends CommonDBTM {
     * @param $ID ID of the computer
    **/
    function transferComputerDisks($ID) {
+
       if (!$this->options['keep_disk']) {
          $disk = new ComputerDisk();
          $disk->cleanDBonItemDelete('Computer', $ID);
       }
    }
+
 
    /**
     * Transfer softwares of a computer
@@ -1477,8 +1479,7 @@ class Transfer extends CommonDBTM {
             $newversID = $this->copySingleVersion($data['softwareversions_id']);
 
             if ($newversID>0 && $newversID!=$data['softwareversions_id']) {
-               $query = "UPDATE
-                         `glpi_computers_softwareversions`
+               $query = "UPDATE `glpi_computers_softwareversions`
                          SET `softwareversions_id` = '$newversID'
                          WHERE `id` = ".$data['id'];
                $DB->query($query);
@@ -3064,9 +3065,8 @@ class Transfer extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG["Menu"][0]." -> ".$LANG['computers'][8]."&nbsp;:</td><td>";
       $params['value'] = $this->fields['keep_disk'];
-      Dropdown::showFromArray('keep_disk',$keep, $params);
+      Dropdown::showFromArray('keep_disk', $keep, $params);
       echo "</td></tr>";
-
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center b'>".$LANG['connect'][0]."</td></tr>";

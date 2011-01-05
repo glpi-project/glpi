@@ -48,6 +48,7 @@ class RuleImportComputerCollection extends RuleCollection {
    ///Store the id of the ocs server
    var $ocsservers_id;
 
+
    /**
     * Constructor
    **/
@@ -61,13 +62,16 @@ class RuleImportComputerCollection extends RuleCollection {
       return $LANG['rulesengine'][57];
    }
 
+
    function prepareInputDataForProcess($input,$params) {
       global $DBocs;
-      
+
       //Get informations about network ports
-      $query = "SELECT * FROM `networks`
-                WHERE `HARDWARE_ID`='".$input['ocsid']."'";
-         $result = $DBocs->query($query);
+      $query = "SELECT *
+                FROM `networks`
+                WHERE `HARDWARE_ID` = '".$input['ocsid']."'";
+      $result = $DBocs->query($query);
+
       foreach ($DBocs->request($query) as $data) {
          if (isset($data['IPSUBNET'])) {
             $input['IPSUBNET'][] = $data['IPSUBNET'];
@@ -83,6 +87,5 @@ class RuleImportComputerCollection extends RuleCollection {
    }
 
 }
-
 
 ?>

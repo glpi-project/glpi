@@ -642,7 +642,6 @@ class CommonDBTM extends CommonGLPI {
          $this->filterValues();
       }
 
-
       if ($this->input && is_array($this->input)) {
          $this->fields = array();
          $table_fields = $DB->list_fields($this->getTable());
@@ -2522,8 +2521,8 @@ class CommonDBTM extends CommonGLPI {
 
       //Get all checks for this itemtype and this entity
       if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
+         $entities_id = $this->input['entities_id'];
 
-         $entities_id=$this->input['entities_id'];
 /*         //In case it's an infocom
          if (in_array(get_class($this), array('Infocom'))) {
             $infocom = new Infocom();
@@ -2600,14 +2599,14 @@ class CommonDBTM extends CommonGLPI {
     * @param $crit array of criteria (ex array('is_active'=>'1'))
     * @param $force boolean force purge not on put in trash
    **/
-   function deleteByCriteria($crit=array(),$force=0) {
+   function deleteByCriteria($crit=array(), $force=0) {
       global $DB;
 
       if (is_array($crit) && count($crit)>0) {
          $crit['FIELDS'] = 'id';
 
          foreach ($DB->request($this->getTable(), $crit) as $row) {
-            $this->delete($row,$force);
+            $this->delete($row, $force);
          }
 
       }
