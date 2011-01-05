@@ -43,6 +43,7 @@ class RuleCriteria extends CommonDBChild {
    public $items_id  = 'rules_id';
    public $dohistory = true;
 
+
    function __construct($rule_type='Rule') {
       $this->itemtype = $rule_type;
    }
@@ -61,7 +62,6 @@ class RuleCriteria extends CommonDBChild {
 
 
    function getNameID($with_comment=0) {
-      global $CFG_GLPI,$LANG;
 
       $rule = new $this->itemtype ();
       return html_clean($rule->getMinimalCriteriaText($this->fields));
@@ -77,19 +77,19 @@ class RuleCriteria extends CommonDBChild {
       $tab[1]['name']          = $LANG['rulesengine'][6];
       $tab[1]['massiveaction'] = false;
       $tab[1]['datatype']      = 'string';
-      
+
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'condition';
       $tab[2]['name']          = $LANG['rulesengine'][14];
       $tab[2]['massiveaction'] = false;
       $tab[2]['datatype']      = 'string';
-      
+
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'pattern';
       $tab[3]['name']          = $LANG['rulesengine'][15];
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'string';
-      
+
       return $tab;
    }
 
@@ -112,7 +112,7 @@ class RuleCriteria extends CommonDBChild {
 
       $rules_list = array ();
       while ($rule = $DB->fetch_assoc($result)) {
-         $tmp = new RuleCriteria;
+         $tmp          = new RuleCriteria;
          $tmp->fields  = $rule;
          $rules_list[] = $tmp;
       }
@@ -185,8 +185,7 @@ class RuleCriteria extends CommonDBChild {
 
       //If pattern is wildcard, don't check the rule and return true
       //or if the condition is "already present in GLPI" : will be processed later
-      if ($pattern == Rule::RULE_WILDCARD 
-            || $pattern == Rule::PATTERN_FIND) {
+      if ($pattern == Rule::RULE_WILDCARD || $pattern == Rule::PATTERN_FIND) {
          return true;
       }
 
@@ -207,12 +206,12 @@ class RuleCriteria extends CommonDBChild {
       }
 
       switch ($condition) {
-         case Rule::PATTERN_EXISTS:
+         case Rule::PATTERN_EXISTS :
             return ($field != '');
-            
-         case Rule::PATTERN_DOES_NOT_EXISTS:
+
+         case Rule::PATTERN_DOES_NOT_EXISTS :
             return ($field == '');
-            
+
          case Rule::PATTERN_IS :
             if (is_array($field)) {
                // Special case (used only by UNIQUE_PROFILE, for now)
@@ -292,9 +291,9 @@ class RuleCriteria extends CommonDBChild {
                return true;
             }
             return false;
-          case Rule::PATTERN_FIND:
+
+          case Rule::PATTERN_FIND :
             return true;
-            
       }
       return false;
    }
@@ -308,18 +307,18 @@ class RuleCriteria extends CommonDBChild {
     * @return condition's label
    **/
    static function getConditionByID($ID,$itemtype) {
+
       $conditions = self::getConditions($itemtype);
       if (isset($conditions[$ID])) {
          return $conditions[$ID];
-      } else {
-         return "";
       }
+      return "";
    }
 
 
    /**
-    * 
-    */
+    *
+   **/
    static function getConditions($itemtype) {
       global $LANG;
 
@@ -333,29 +332,31 @@ class RuleCriteria extends CommonDBChild {
                          Rule::REGEX_NOT_MATCH         => $LANG['rulesengine'][27],
                          Rule::PATTERN_EXISTS          => $LANG['rulesengine'][31],
                          Rule::PATTERN_DOES_NOT_EXISTS => $LANG['rulesengine'][32]);
+
       $extra_criteria = call_user_func(array($itemtype,'addMoreCriteria'));
       foreach ($extra_criteria as $key => $value) {
          $criteria[$key] = $value;
       }
-      
+
       return $criteria;
    }
+
 
    /**
     * Display a dropdown with all the criterias
    **/
-   static function dropdownConditions($itemtype, $type, $name, $value='', $allow_condition=array()) {
+   static function dropdownConditions($itemtype, $type, $name, $value='',
+                                      $allow_condition=array()) {
       global $LANG;
 
       $elements = array();
       foreach (RuleCriteria::getConditions($itemtype) as $pattern => $label) {
          if (empty($allow_condition)
              || (!empty($allow_condition) && in_array($pattern,$allow_condition))) {
-
             $elements[$pattern] = $label;
          }
       }
-      return Dropdown::showFromArray($name, $elements,array('value' => $value));
+      return Dropdown::showFromArray($name, $elements, array('value' => $value));
    }
 
 

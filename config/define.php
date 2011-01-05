@@ -28,8 +28,6 @@
  --------------------------------------------------------------------------
 */
 
-
-
 // Current version of GLPI
 define("GLPI_VERSION","0.80");
 define("GLPI_DEMO_MODE","0");
@@ -283,9 +281,10 @@ $CFG_GLPI["union_search_type"] = array('ReservationItem' => "reservation_types",
 $CFG_GLPI["systeminformations_type"] = array ('AuthLDAP', 'DBConnection', 'MailCollector',
                                               'OcsServer', 'Plugin');
 
-$CFG_GLPI["rulecollections_types"] = array('RuleOcsCollection','RuleImportComputerCollection',
+$CFG_GLPI["rulecollections_types"] = array('RuleImportComputerCollection',
+                                           'RuleMailCollectorCollection', 'RuleOcsCollection',
                                            'RuleRightCollection', 'RuleSoftwareCategoryCollection',
-                                           'RuleMailCollectorCollection', 'RuleTicketCollection');
+                                           'RuleTicketCollection');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
