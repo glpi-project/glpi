@@ -69,7 +69,9 @@ class TicketSolutionTemplate extends CommonDropdown {
                          'type'  => 'tinymce'));
    }
 
+
    function displaySpecificTypeField($ID, $field = array()) {
+
       switch ($field['type']) {
          case 'tinymce' :
             // Display empty field
@@ -77,9 +79,8 @@ class TicketSolutionTemplate extends CommonDropdown {
             // And a new line to have a complete display
             echo "<tr class='center'><td colspan='5'>";
             initEditorSystem($field['name']);
-            echo "<textarea name='".$field['name']."' rows='3'>".
-                  $this->fields[$field['name']]."</textarea>";
-            
+            echo "<textarea name='".$field['name']."' rows='3'>".$this->fields[$field['name']].
+                 "</textarea>";
             break;
       }
    }

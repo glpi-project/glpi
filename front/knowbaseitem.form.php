@@ -63,7 +63,7 @@ if ($_GET["id"] == "new") {
 
    commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
    $available_options = array('tickets_id');
-   $options = array();
+   $options           = array();
    foreach ($available_options as $key) {
       if (isset($_GET[$key])) {
          $options[$key] = $_GET[$key];

@@ -742,10 +742,10 @@ class Ticket extends CommonDBTM {
       // Check dates change interval due to the fact that second are not displayed in form
       if (($key=array_search('date',$this->updates)) !== false
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
-
          unset($this->updates[$key]);
          unset($this->oldvalues['date']);
       }
+
       if (($key=array_search('closedate',$this->updates)) !== false
           && (substr($this->fields["closedate"],0,16) == substr($this->oldvalues['closedate'],0,16))) {
          unset($this->updates[$key]);
@@ -853,7 +853,8 @@ class Ticket extends CommonDBTM {
 
       // check due_date (SLA)
       if ((in_array("date",$this->updates) || in_array("due_date",$this->updates))
-         && !is_null($this->fields["due_date"])) { // Date set
+          && !is_null($this->fields["due_date"])) { // Date set
+
          if ($this->fields["due_date"] < $this->fields["date"]) {
             addMessageAfterRedirect($LANG['tracking'][3].$this->fields["due_date"], false, ERROR);
 
@@ -2890,9 +2891,7 @@ class Ticket extends CommonDBTM {
          echo Dropdown::getDropdownName('glpi_ticketsolutiontypes',
                                         $this->getField('ticketsolutiontypes_id'));
       }
-      echo "</td><td>";
-      echo $LANG['job'][25];
-      echo "</td><td>";
+      echo "</td><td>".$LANG['job'][25]."</td><td>";
       Dropdown::showYesNo('_sol_to_kb', false);
       echo "</td></tr>";
 
@@ -2913,8 +2912,6 @@ class Ticket extends CommonDBTM {
          echo nl2br($this->getField('solution'));
       }
       echo "</td></tr>";
-
-      
 
       $options['candel']  = false;
       $options['canedit'] = $canedit;
