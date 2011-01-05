@@ -92,53 +92,58 @@ class TicketSatisfaction extends CommonDBTM {
       $options = array();
       $options['colspan'] = 1;
 
-      $this->showFormHeader($options);
+      // for external inquest => link
+      if ($this->fields["type"] == 2) {
+         $url = EntityData::generateLinkSatisfaction($ticket);
+         echo "<div class='center spaced'>".
+              "<a href='$url'>".$LANG['satisfaction'][10]."</a><br>($url)</div>";
 
-      // Set default satisfaction to 3 if not set
-      if (is_null($this->fields["satisfaction"])) {
-         $this->fields["satisfaction"] = 3;
-      }
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['satisfaction'][1]."&nbsp;:&nbsp;</td>";
-      echo "<td>";
-      echo "<input type='hidden' name='tickets_id' value='$tid'>";
-      echo "<input type='hidden' id='satisfaction' name='satisfaction' value='".
-             $this->fields["satisfaction"]."'>";
+      // for internal inquest => form
+      } else {
+         $this->showFormHeader($options);
 
-//      Dropdown::showInteger("satisfaction", $this->fields["satisfaction"], 0, 5);
-
-//      echo "<span class='small_space'><font size='-5'>(".$LANG['satisfaction'][5].")</font></span>";
-
-      echo  "<script type='text/javascript'>\n
-         Ext.onReady(function() {
-         var md = new Ext.form.StarRate({
-                    hiddenName: 'satisfaction',
-                    starConfig: {
-                    	minValue: 0,
-                    	maxValue: 5,
-                     value:".$this->fields["satisfaction"]."
-                    },
-                    applyTo : 'satisfaction'
-         });
-         })
-         </script>";
-
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td rowspan='1'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
-      echo "<td rowspan='1' class='middle'>";
-      echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
-
-      if ($this->fields["date_answered"] >0) {
+         // Set default satisfaction to 3 if not set
+         if (is_null($this->fields["satisfaction"])) {
+            $this->fields["satisfaction"] = 3;
+         }
          echo "<tr class='tab_bg_2'>";
-         echo "<td colspan='2'>".$LANG['satisfaction'][4]."&nbsp;:&nbsp;";
-         echo convDateTime($this->fields["date_answered"])."</td></tr>\n";
-      }
+         echo "<td>".$LANG['satisfaction'][1]."&nbsp;:&nbsp;</td>";
+         echo "<td>";
+         echo "<input type='hidden' name='tickets_id' value='$tid'>";
+         echo "<input type='hidden' id='satisfaction' name='satisfaction' value='".
+                $this->fields["satisfaction"]."'>";
 
-      $options['candel'] = false;
-      $this->showFormButtons($options);
+         echo  "<script type='text/javascript'>\n
+            Ext.onReady(function() {
+            var md = new Ext.form.StarRate({
+                       hiddenName: 'satisfaction',
+                       starConfig: {
+                       	minValue: 0,
+                       	maxValue: 5,
+                        value:".$this->fields["satisfaction"]."
+                       },
+                       applyTo : 'satisfaction'
+            });
+            })
+            </script>";
+
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'>";
+         echo "<td rowspan='1'>".$LANG['common'][25]."&nbsp;:&nbsp;</td>";
+         echo "<td rowspan='1' class='middle'>";
+         echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
+         echo "</td></tr>\n";
+
+         if ($this->fields["date_answered"] >0) {
+            echo "<tr class='tab_bg_2'>";
+            echo "<td colspan='2'>".$LANG['satisfaction'][4]."&nbsp;:&nbsp;";
+            echo convDateTime($this->fields["date_answered"])."</td></tr>\n";
+         }
+
+         $options['candel'] = false;
+         $this->showFormButtons($options);
+      }
    }
 
 

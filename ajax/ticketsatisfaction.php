@@ -75,6 +75,9 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
       echo "<td colspan='1'>" . convDateTime($max_closedate)."</td></tr>";
 
       if ($_REQUEST['inquest_config']==2 ) {
+         echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
+         echo "<td>".$LANG['links'][6]."&nbsp;:&nbsp;[TICKET]</td></tr>";
+
          echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['common'][94] . "&nbsp;:&nbsp;</td>";
          echo "<td>";
          autocompletionTextField($entity, "inquest_URL");
