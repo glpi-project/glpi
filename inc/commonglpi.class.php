@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  *  Common GLPI object
-*/
+**/
 class CommonGLPI {
 
    /// GLPI Item type cache : set dynamically calling getType
@@ -88,7 +88,7 @@ class CommonGLPI {
    /**
     * Redirect to the list page from which the item was selected
     * Default to the search engine for the type
-    */
+   **/
    function redirectToList() {
       global $CFG_GLPI;
 
@@ -96,9 +96,11 @@ class CommonGLPI {
           && !empty($_GET['withtemplate'])) {
          glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php?add=0&itemtype=".
                      $this->getType());
+
       } else if (isset($_SESSION['glpilisturl'][$this->getType()])
-          && !empty($_SESSION['glpilisturl'][$this->getType()])) {
+                 && !empty($_SESSION['glpilisturl'][$this->getType()])) {
          glpi_header($_SESSION['glpilisturl'][$this->getType()]);
+
       } else {
          glpi_header($this->getSearchURL());
       }

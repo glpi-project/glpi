@@ -358,7 +358,7 @@ class Budget extends CommonDropdown{
                      }
                      $name = NOT_AVAILABLE;
                      if ($item->getFromDB($data["id"])) {
-                        $name = $item->getLink();;
+                        $name = $item->getLink();
                      }
                      echo "<tr class='tab_bg_1'>";
                      if ($prem) {

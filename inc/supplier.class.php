@@ -660,7 +660,7 @@ class Supplier extends CommonDBTM {
       while ($data=$DB->fetch_array($result)) {
          $cID        = $data["id"];
          $used[$cID] = $cID;
-         $assocID    = $data["assocID"];;
+         $assocID    = $data["assocID"];
 
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
          echo "<td class='center'>

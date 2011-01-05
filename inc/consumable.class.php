@@ -575,8 +575,7 @@ class Consumable extends CommonDBTM {
          echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
          // Type
-         echo "<th>";;
-         echo $LANG['common'][34]."</th>";
+         echo "<th>".$LANG['common'][34]."</th>";
 
          foreach ($types as $key => $type) {
             echo "<th>$type</th>";

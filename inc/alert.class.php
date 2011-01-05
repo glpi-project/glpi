@@ -51,7 +51,7 @@ class Alert extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       if (!isset($input['date']) || empty($input['date'])) {
-         $input['date'] = date("Y-m-d H:i:s");;
+         $input['date'] = date("Y-m-d H:i:s");
       }
       return $input;
    }

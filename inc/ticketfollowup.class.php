@@ -483,7 +483,7 @@ class TicketFollowup  extends CommonDBTM {
          $this->showFormButtons($options);
 
       } else {
-         $options['colspan'] = 1;;
+         $options['colspan'] = 1;
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'>";

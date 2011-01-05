@@ -1061,7 +1061,7 @@ class Contract extends CommonDBTM {
             FROM `glpi_contracts`
             WHERE `is_deleted` = '0' ".
                   getEntitiesRestrictRequest("AND", "glpi_contracts", "entities_id",
-                                             $item->getEntityID(), true);;
+                                             $item->getEntityID(), true);
       $result = $DB->query($q);
       $nb = $DB->numrows($result);
 
