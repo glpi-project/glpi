@@ -832,6 +832,23 @@ class EntityData extends CommonDBChild {
    }
 
 
+   /**
+   * Generate link for ticket satisfaction
+   *
+   * @param $ticket ticket object
+   *
+   * @return url contents
+   */
+   static function generateLinkSatisfaction($ticket) {
+      global $DB;
+
+      $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
+      if (strstr($url,"[TICKET]")) {
+         $url = str_replace("[TICKET]", $ticket->fields['id'], $url);
+      }
+      return $url;
+   }
+
 }
 
 ?>
