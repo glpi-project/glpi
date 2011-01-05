@@ -79,7 +79,6 @@ class RuleImportComputerCollection extends RuleCollection {
             $input['IPADDRESS'][] = $data['IPADDRESS'];
          }
       }
-      
       return array_merge($input,$params);
    }
 

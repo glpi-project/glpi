@@ -1408,6 +1408,7 @@ class OcsServer extends CommonDBTM {
       OcsServer::checkOCSconnection($ocsservers_id);
       $comp = new Computer();
 
+      $rules_matched = array();
       // Set OCS checksum to max value
       $query = "UPDATE `hardware`
                 SET `CHECKSUM` = '" . self::MAX_CHECKSUM . "'
@@ -1433,7 +1434,9 @@ class OcsServer extends CommonDBTM {
                sleep(1);
             }
          }
-
+         
+         //Store rule that matched
+         $rules_matched['RuleOcs'] = $data['_ruleid'];
          //New machine to import
          $query = "SELECT `hardware`.*, `bios`.*
                    FROM `hardware`
@@ -1447,8 +1450,7 @@ class OcsServer extends CommonDBTM {
 
             $locations_id = (isset($data['locations_id'])?$data['locations_id']:0);
             $input = self::getComputerInformations($line, OcsServer::getConfig($ocsservers_id),
-                                                   $data['entities_id'], $locations_id);
-
+                                                   $data['entities_id'],$locations_id);
             //Check if machine could be linked with another one already in DB
             if ($canlink) {
                $rulelink = new RuleImportComputerCollection();
@@ -1460,43 +1462,30 @@ class OcsServer extends CommonDBTM {
                //If at least one rule matched
                //else do import as usual
                if (isset($rulelink_results['action'])) {
+                  $rules_matched['RuleImportComputer'] = $rulelink_results['_ruleid'];
+                  
                   switch ($rulelink_results['action']) {
                      case self::LINK_RESULT_NO_IMPORT :
-                        return array('status'      =>self::COMPUTER_LINK_REFUSED,
+                        return array('status'      => self::COMPUTER_LINK_REFUSED,
                                      'entities_id' => $data['entities_id'],
-                                     'rule_matched'=> $rulelink_results['_ruleid']);
+                                     'rule_matched'=> $rules_matched);
 
                      case self::LINK_RESULT_LINK :
                         if (is_array($rulelink_results['found_computers'])
                             && count($rulelink_results['found_computers'])>0) {
                            foreach ($rulelink_results['found_computers'] as $tmp => $computers_id) {
-                              if (OcsServer::linkComputer($ocsid,  $ocsservers_id,
+                              if (OcsServer::linkComputer($ocsid, $ocsservers_id, 
                                                           $computers_id, $canlink)) {
-                                 return array ('status'       => self::COMPUTER_LINKED,
-                                               'entities_id'  => $data['entities_id'],
-                                               'rule_matched' => $rulelink_results['_ruleid']);
+                                 return array ('status'      => self::COMPUTER_LINKED,
+                                               'entities_id' => $data['entities_id'],
+                                               'rule_matched'=> $rules_matched);
                               }
                            }
                         break;
                      }
                   }
                }
-               /*
-               $found_computers = OcsServer::getComputersAlreadyImported($ocsid,
-                                                                         $ocsservers_id,
-                                                                         $data['entities_id'],
-                                                                         $input);
-               // machines founded -> try to link
-               if (is_array($found_computers) && count($found_computers)>0) {
-                  foreach ($found_computers as $computers_id) {
-                     if (OcsServer::linkComputer($ocsid, $ocsservers_id, $computers_id, $canlink)) {
-                        return self::COMPUTER_LINKED;
-                     }
-                  }
-               }*/
-               // Else simple Import
             }
-
 
             $computers_id = $comp->add($input, array('unicity_error_message' => false));
             if ($computers_id) {
@@ -1511,9 +1500,9 @@ class OcsServer extends CommonDBTM {
                }
 
             } else {
-               return array('status'       => self::COMPUTER_NOT_UNIQUE,
-                            'entities_id'  => $data['entities_id'],
-                            'rule_matched' => $data['_ruleid']) ;
+               return array('status'      => self::COMPUTER_NOT_UNIQUE,
+                            'entities_id' => $data['entities_id'],
+                            'rule_matched'=> $rules_matched) ;
             }
          }
 
@@ -1522,12 +1511,13 @@ class OcsServer extends CommonDBTM {
          }
 
          //Return code to indicates that the machine was imported
-         return array('status'       => self::COMPUTER_IMPORTED,
-                      'entities_id'  => $data['entities_id'],
-                      'rule_matched' => $data['_ruleid']);
+         return array('status' => self::COMPUTER_IMPORTED,
+                      'entities_id' => $data['entities_id'],
+                      'rule_matched'=> $rules_matched);
       }
       //ELSE Return code to indicates that the machine was not imported because it doesn't matched rules
-      return array('status' => self::COMPUTER_FAILED_IMPORT);
+      return array('status' => self::COMPUTER_FAILED_IMPORT,
+                   'rule_matched' => $rules_matched);
    }
 
 
@@ -1903,12 +1893,14 @@ class OcsServer extends CommonDBTM {
 
                //Return code to indicate that computer was synchronized
                return array('status'       => self::COMPUTER_SYNCHRONIZED,
-                            'entitites_id' => $comp->fields["entities_id"]);
+                            'entitites_id' => $comp->fields["entities_id"],
+                            'rule_matched' => array());
             }
 
             // ELSE Return code to indicate only last inventory date changed
             return array ('status'      => self::COMPUTER_NOTUPDATED,
-                          'entities_id' => $comp->fields["entities_id"]);
+                          'entities_id' => $comp->fields["entities_id"],
+                          'rule_matched' => array());
          }
       }
    }
