@@ -123,9 +123,9 @@ class TicketTask  extends CommonDBTM {
       }
 
       return (haveRight("global_add_tasks","1")
-              || $ticket->isUser(self::ASSIGN, getLoginUserID())
+              || $ticket->isUser(Ticket::ASSIGN, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
-                  && $ticket->haveAGroup(self::ASSIGN, $_SESSION['glpigroups'])));
+                  && $ticket->haveAGroup(Ticket::ASSIGN, $_SESSION['glpigroups'])));
    }
 
 
