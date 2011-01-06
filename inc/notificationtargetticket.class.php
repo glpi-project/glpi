@@ -1023,15 +1023,15 @@ class NotificationTargetTicket extends NotificationTarget {
          $inquest = new TicketSatisfaction();
 
          if ($inquest->getFromDB($this->obj->getField('id'))) {
+            // internal inquest
             if ($inquest->fields['type'] == 1) {
-               $this->datas['##ticket.urlsatisfaction##'] = urldecode($CFG_GLPI["url_base"].
-                                                                      "/index.php?redirect=ticket_".
-                                                                      $this->obj->getField("id")."_10");
-            } else {
                $this->datas['##ticket.urlsatisfaction##']
-                  = EntityData::getUsedConfig('inquest_config',
-                                              $this->obj->getField('entities_id'),
-                                              'inquest_URL');
+                           = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
+                                       $this->obj->getField("id")."_10");
+            // external inquest
+            } else if ($inquest->fields['type'] == 2) {
+               $this->datas['##ticket.urlsatisfaction##']
+                           = EntityData::generateLinkSatisfaction($this->obj);
             }
 
             $this->datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));
