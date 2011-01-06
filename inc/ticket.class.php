@@ -1696,17 +1696,23 @@ class Ticket extends CommonDBTM {
    /**
     * Number of followups of the ticket
     *
-    * @param $with_private boolean : true : all ticket / false : only public ones
+    * @param $with_private boolean : true : all followups / false : only public ones
+    * @param $afterme id for the begin of count
     *
     * @return followup count
    **/
-   function numberOfFollowups($with_private=1) {
+   function numberOfFollowups($with_private=1, $afterme=0) {
       global $DB;
 
       $RESTRICT = "";
       if ($with_private!=1) {
          $RESTRICT = " AND `is_private` = '0'";
       }
+
+      if ($afterme>0) {
+         $RESTRICT .= " AND `id` > '$afterme'";
+      }
+
       // Set number of followups
       $query = "SELECT count(*)
                 FROM `glpi_ticketfollowups`

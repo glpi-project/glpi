@@ -78,6 +78,38 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
+   function canDelete() {
+
+      return (haveRight('delete_followups', 1)
+              || haveRight('delete_own_followup',1));
+   }
+
+
+   /**
+    * Is the current user have right to delete the current followup ?
+    *
+    * @return boolean
+   **/
+   function canDeleteItem() {
+
+      $ticket = new Ticket();
+      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+         return false;
+      }
+
+      if (haveRight('delete_followups',1)) {
+         return true;
+      }
+
+      if ($this->fields["users_id"] === getLoginUserID()
+          && haveRight('delete_own_followup',1)
+          && !$ticket->numberOfFollowups(1, $this->fields["id"])) {
+            return true;
+      }
+      return false;
+   }
+
+
    /**
     * Is the current user have right to show the current followup ?
     *
@@ -138,16 +170,6 @@ class TicketFollowup  extends CommonDBTM {
               || $ticket->isUser(self::ASSIGN, getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $ticket->haveAGroup(self::ASSIGN, $_SESSION['glpigroups'])));
-   }
-
-
-   /**
-    * Is the current user have right to delete the current followup ?
-    *
-    * @return boolean
-   **/
-   function canDeleteItem() {
-      return $this->canUpdateItem();
    }
 
 

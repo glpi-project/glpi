@@ -717,20 +717,30 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][18]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_ticket", $this->fields["update_ticket"]);
       echo "</td>";
-      echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
+      echo "<td>".$LANG['profiles'][44]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("update_priority", $this->fields["update_priority"]);
       echo "</td>";
       echo "<td>".$LANG['profiles'][35]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_followups", $this->fields["update_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['profiles'][44]."&nbsp;:</td><td>";
-      Dropdown::showYesNo("update_priority", $this->fields["update_priority"]);
-      echo "</td>";
+      echo "<td>&nbsp;</td><td>&nbsp;</td>";
       echo "<td colspan='2'></td>";
       echo "<td>".$LANG['profiles'][46]."&nbsp;:</td><td>";
       Dropdown::showYesNo("update_tasks", $this->fields["update_tasks"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['ocsconfig'][50]."</td><";
+      echo "/tr>\n";
+      echo "<td>".$LANG['profiles'][14]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][50]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("delete_own_followup", $this->fields["delete_own_followup"]);
+      echo "</td>";
+      echo "<td>".$LANG['profiles'][51]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><td colspan='6' class='center b'>".$LANG['validation'][0]."</td><";
@@ -1425,6 +1435,16 @@ class Profile extends CommonDBTM {
       $tab[79]['field']    = 'show_all_planning';
       $tab[79]['name']     = $LANG['profiles'][21];
       $tab[79]['datatype'] = 'bool';
+
+      $tab[80]['table']    = $this->getTable();
+      $tab[80]['field']    = 'delete_own_followup';
+      $tab[80]['name']     = $LANG['profiles'][50];
+      $tab[80]['datatype'] = 'bool';
+
+      $tab[81]['table']    = $this->getTable();
+      $tab[81]['field']    = 'delete_followups';
+      $tab[81]['name']     = $LANG['profiles'][51];
+      $tab[81]['datatype'] = 'bool';
 
       $tab[85]['table']    = $this->getTable();
       $tab[85]['field']    = 'statistic';
