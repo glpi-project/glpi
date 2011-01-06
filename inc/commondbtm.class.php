@@ -1455,7 +1455,9 @@ class CommonDBTM extends CommonGLPI {
       // Template case : clean entities data
       if ($params['withtemplate'] == 2 && $this->isEntityAssign()) {
          $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
-         $this->fields["is_recursive"] = 0;
+         if ($this->maybeRecursive()) {
+            $this->fields["is_recursive"] = 0;
+         }
       }
 
       if ($this->can($ID,'w')) {
@@ -1752,6 +1754,7 @@ class CommonDBTM extends CommonGLPI {
       if (!array_key_exists('id',$this->fields)) {
          $this->getEmpty();
       }
+
       return array_key_exists('is_recursive', $this->fields);
    }
 
