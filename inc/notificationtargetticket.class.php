@@ -241,7 +241,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $author_id    = $data['id'];
 
             if (!empty($data['altemail'])
-                && $data['altemail'] != $data['email']
+                && $data['altemail'] != $author_email
                 && NotificationMail::isUserAddressValid($data['altemail'])) {
                $author_email = $data['altemail'];
             }
@@ -358,7 +358,7 @@ class NotificationTargetTicket extends NotificationTarget {
             $author_id    = $user->fields['id'];
 
             if (!empty($this->options['_old_user']['alternative_email'])
-                && $this->options['_old_user']['alternative_email'] != $user['email']
+                && $this->options['_old_user']['alternative_email'] != $author_email
                 && NotificationMail::isUserAddressValid($this->options['_old_user']['alternative_email'])) {
                $author_email = $this->options['_old_user']['alternative_email'];
             }
