@@ -1513,6 +1513,10 @@ function update0781to080($output='HTML') {
       }
    }
 
+   addField('glpi_profiles', 'delete_own_followup', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
+   addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
+
+
    // must always be at the end
    $migration->executeMigration();
 
