@@ -791,22 +791,31 @@ class Rule extends CommonDBTM {
 
       reset($this->criterias);
 
+      
       if ($this->fields["match"]==Rule::AND_MATCHING) {
          $doactions = true;
 
          foreach ($this->criterias as $criteria) {
-            $doactions &= $this->checkCriteria($criteria, $input);
-            if (!$doactions) {
-               break;
-            }
+            $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
+            if (!isset($definition_criteria['is_global'])
+                   || !$definition_criteria['is_global']) {
+               $doactions &= $this->checkCriteria($criteria, $input);
+               if (!$doactions) {
+                  break;
+               }
+             }
          }
 
       } else { // OR MATCHING
          $doactions = false;
+         $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
          foreach ($this->criterias as $criteria) {
-            $doactions |= $this->checkCriteria($criteria,$input);
-            if ($doactions) {
-               break;
+            if (!isset($definition_criteria['is_global'])
+                   || !$definition_criteria['is_global']) {
+               $doactions |= $this->checkCriteria($criteria,$input);
+               if ($doactions) {
+                  break;
+               }
             }
          }
       }
@@ -1809,7 +1818,7 @@ class Rule extends CommonDBTM {
    /**
     * Add more criteria specific to this type of rule
    **/
-   static function addMoreCriteria() {
+   static function addMoreCriteria($crtierion = '') {
       return array();
    }
 

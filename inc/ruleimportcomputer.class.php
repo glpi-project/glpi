@@ -89,12 +89,14 @@ class RuleImportComputer extends Rule {
       $criterias['entities_id']['linkfield'] = 'entities_id';
       $criterias['entities_id']['type']      = 'dropdown';
 
-      $criterias['state']['table']           = 'glpi_states';
-      $criterias['state']['field']           = 'name';
-      $criterias['state']['name']            = $LANG['ocsconfig'][55];
-      $criterias['state']['linkfield']       = 'state';
-      $criterias['state']['type']            = 'dropdown';
-      $criterias['state']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
+      $criterias['states_id']['table']           = 'glpi_states';
+      $criterias['states_id']['field']           = 'name';
+      $criterias['states_id']['name']            = $LANG['ocsconfig'][55];
+      $criterias['states_id']['linkfield']       = 'state';
+      $criterias['states_id']['type']            = 'dropdown';
+      //Means that this criterion can only be used in a global search query
+      $criterias['states_id']['is_global']       = true;
+      $criterias['states_id']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
 
       $criterias['ocsservers_id']['table']     = 'glpi_ocsservers';
       $criterias['ocsservers_id']['field']     = 'name';
@@ -102,62 +104,36 @@ class RuleImportComputer extends Rule {
       $criterias['ocsservers_id']['linkfield'] = '';
       $criterias['ocsservers_id']['type']      = 'dropdown';
 
-      $criterias['TAG']['table']     = 'accountinfo';
-      $criterias['TAG']['field']     = 'TAG';
-      $criterias['TAG']['name']      = $LANG['rulesengine'][152].' : '.$LANG['ocsconfig'][39];
-      $criterias['TAG']['linkfield'] = 'HARDWARE_ID';
+      $criterias['TAG']['name']             = $LANG['rulesengine'][152].' : '.$LANG['ocsconfig'][39];
 
-      $criterias['DOMAIN']['table']     = 'hardware';
-      $criterias['DOMAIN']['field']     = 'WORKGROUP';
-      $criterias['DOMAIN']['name']      = $LANG['rulesengine'][152].' : '.$LANG['setup'][89];
-      $criterias['DOMAIN']['linkfield'] = '';
+      $criterias['DOMAIN']['name']          = $LANG['rulesengine'][152].' : '.$LANG['setup'][89];
 
-      $criterias['IPSUBNET']['table']     = 'networks';
-      $criterias['IPSUBNET']['field']     = 'IPSUBNET';
-      $criterias['IPSUBNET']['name']      = $LANG['rulesengine'][152].' : '.$LANG['networking'][61];
-      $criterias['IPSUBNET']['linkfield'] = 'HARDWARE_ID';
+      $criterias['IPSUBNET']['name']        = $LANG['rulesengine'][152].' : '.$LANG['networking'][61];
 
-      $criterias['MACADDRESS']['table']     = 'networks';
-      $criterias['MACADDRESS']['field']     = 'MACADDR';
-      $criterias['MACADDRESS']['name']      = $LANG['rulesengine'][152].' : '.
-                                                 $LANG['device_iface'][2];
-      $criterias['MACADDRESS']['linkfield'] = 'HARDWARE_ID';
+      $criterias['MACADDRESS']['name']      = $LANG['rulesengine'][152].' : '.$LANG['device_iface'][2];
 
-      $criterias['IPADDRESS']['table']     = 'networks';
-      $criterias['IPADDRESS']['field']     = 'IPADDRESS';
-      $criterias['IPADDRESS']['name']      = $LANG['rulesengine'][152].' : '.
+      $criterias['IPADDRESS']['name']       = $LANG['rulesengine'][152].' : '.
                                                 $LANG['financial'][44]." ". $LANG['networking'][14];
-      $criterias['IPADDRESS']['linkfield'] = 'HARDWARE_ID';
 
-      $criterias['MACHINE_NAME']['table']          = 'hardware';
-      $criterias['MACHINE_NAME']['field']          = 'NAME';
-      $criterias['MACHINE_NAME']['name']           = $LANG['rulesengine'][152].' : '.
+      $criterias['name']['name']            = $LANG['rulesengine'][152].' : '.
                                                         $LANG['rulesengine'][25];
-      $criterias['MACHINE_NAME']['linkfield']       = '';
-      $criterias['MACHINE_NAME']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
-                                                            RuleImportComputer::PATTERN_IS_EMPTY,
-                                                            Rule::PATTERN_FIND);
+      $criterias['name']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
+                                                    RuleImportComputer::PATTERN_IS_EMPTY,
+                                                    Rule::PATTERN_FIND);
 
-      $criterias['DESCRIPTION']['table']     = 'hardware';
-      $criterias['DESCRIPTION']['field']     = 'DESCRIPTION';
-      $criterias['DESCRIPTION']['name']      = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
-      $criterias['DESCRIPTION']['linkfield'] = '';
+      $criterias['DESCRIPTION']['name']     = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
 
-      $criterias['SSN']['table']     = 'bios';
-      $criterias['SSN']['field']     = 'SSN';
-      $criterias['SSN']['name']      = $LANG['rulesengine'][152].' : '.$LANG['common'][19];
-      $criterias['SSN']['linkfield'] = 'HARDWARE_ID';
+      $criterias['serial']['name']          = $LANG['rulesengine'][152].' : '.$LANG['common'][19];
 
       return $criterias;
    }
-
 
    function getActions() {
       global $LANG;
 
       $actions = array();
-      $actions['_fusion']['name'] = $LANG['ocsng'][58];
-      $actions['_fusion']['type'] = 'fusion_type';
+      $actions['_fusion']['name']        = $LANG['ocsng'][58];
+      $actions['_fusion']['type']        = 'fusion_type';
 
       $actions['_ignore_import']['name'] = $LANG['rulesengine'][132];
       $actions['_ignore_import']['type'] = 'yesonly';
@@ -210,21 +186,22 @@ class RuleImportComputer extends Rule {
    /**
     * Add more criteria specific to this type of rule
    **/
-   static function addMoreCriteria() {
+   static function addMoreCriteria($criterion = '') {
       global $LANG;
 
-      return array(Rule::PATTERN_FIND                   => $LANG['rulesengine'][151],
-                   RuleImportComputer::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
+       return array(Rule::PATTERN_FIND                   => $LANG['rulesengine'][151],
+                    RuleImportComputer::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
    }
 
-
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value) {
-
-      if ($condition == Rule::PATTERN_FIND
-          || $condition == RuleImportComputer::PATTERN_IS_EMPTY) {
-         Dropdown::showYesNo($name, 0, 0);
-         return true;
+      
+      switch ($condition) {
+         case Rule::PATTERN_FIND:
+         case RuleImportComputer::PATTERN_IS_EMPTY:
+            Dropdown::showYesNo($name, 0, 0);
+            return true;
       }
+
       return false;
    }
 
@@ -244,6 +221,14 @@ class RuleImportComputer extends Rule {
    }
 
 
+   function getCriteriaByID($ID) {
+      foreach ($this->criterias as $criterion) {
+         if ($ID == $criterion->fields['criteria']) {
+            return $criterion;
+         }
+      }
+      return array();
+   } 
    function findWithGlobalCriteria($input) {
       global $DB;
 
@@ -251,25 +236,24 @@ class RuleImportComputer extends Rule {
       $sql_where         = '';
       $sql_from          = '';
       $continue          = true;
+      $global_criteria = array('IPSUBNET', 'MACADDRESS', 'IPADDRESS', 'name', 'serial');
 
-      foreach ($this->criterias as $criteria) {
-         //If the field used by the criteria is not present in the source data, don't try
-         //to go further !
-         if (!isset($input[$criteria->fields['criteria']])
-             || (in_array($criteria->fields['criteria'], array('IPSUBNET', 'MACADDRESS',
-                                                               'IPADDRESS'))
-                 && (!is_array($input[$criteria->fields['criteria']])))) {
-            $continue = false;
-            break;
-         }
-
-         //It's a complex criteria or it's the 'state' criteria
-         if ($criteria->fields['condition'] == Rule::PATTERN_FIND
-             || $criteria->fields['condition'] == 'state') {
-            $complex_criterias[] = $criteria;
+      foreach ($global_criteria as $criterion) {
+         $crit = $this->getCriteriaByID($criterion);
+         if (!empty($crit)) {
+            if (!isset($input[$criterion])
+                  || $input[$criterion] == '') {
+               $continue = false;
+            } else {
+               $complex_criterias[] = $crit;
+            }
          }
       }
-
+      
+      if (isset($this->criterias['states_id'])) {
+         $complex_criterias[] = $this->getCriteriaByID('states_id');
+      }
+      //logDebug($complex_criterias);
       //If no complex criteria or a value is missing, then there's a problem !
       if (!$continue || empty($complex_criterias)) {
          return false;
@@ -305,7 +289,7 @@ class RuleImportComputer extends Rule {
                $sql_where .= ")";
                break;
 
-            case 'MACHINE_NAME' :
+            case 'name' :
                if ($criteria->fields['condition'] == self::PATTERN_IS_EMPTY) {
                   $sql_where .= " AND (`glpi_computers`.`name`=''
                                        OR `glpi_computers`.`name` IS NULL) ";
@@ -314,17 +298,17 @@ class RuleImportComputer extends Rule {
                }
                break;
 
-            case 'SSN' :
+            case 'serial' :
                $sql_where .= " AND `glpi_computers`.`serial`='".$input["serial"]."'";
                break;
 
-            case 'state' :
-               if ($criteria['condition'] == Rule::PATTERN_IS) {
+            case 'states_id' :
+               if ($criteria->fields['condition'] == Rule::PATTERN_IS) {
                   $condition = " IN ";
                } else {
                   $conditin = " NOT IN ";
                }
-               $sql_where .= " AND `glpi_computers`.`states_id` $condition ('".$criteria['']."')";
+               $sql_where .= " AND `glpi_computers`.`states_id` $condition ('".$criteria->fields['pattern']."')";
                break;
          }
       }
@@ -334,7 +318,6 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
-
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
