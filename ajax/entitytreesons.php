@@ -53,6 +53,10 @@ if (isset($_REQUEST['node'])) {
 
    $nodes = array();
 
+   // Get ancestors of current entity
+   $ancestors = getAncestorsOf('glpi_entities',$_SESSION['glpiactive_entity']);
+
+
    // Root node
    if ($_REQUEST['node']== -1) {
       $pos = 0;
@@ -83,6 +87,7 @@ if (isset($_REQUEST['node'])) {
                                  $CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$ID.
                                  "&amp;is_recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".
                                  $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+               $path['expanded'] = isset($ancestors[$ID]);
             }
          }
          $nodes[] = $path;
@@ -120,6 +125,7 @@ if (isset($_REQUEST['node'])) {
                                     $row['id']."&amp;is_recursive=1'><img alt=\"".
                                     $LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"].
                                     "/pics/entity_all.png'></a>";
+                  $path['expanded'] = isset($ancestors[$row['id']]);
                } else {
                   $path['leaf'] = true;
                   $path['cls']  = 'file';
