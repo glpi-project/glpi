@@ -780,7 +780,8 @@ class Ticket extends CommonDBTM {
       }
 
       // Setting a solution or solution type means the ticket is solved
-      if ((in_array("ticketsolutiontypes_id",$this->updates))
+      if ((in_array("ticketsolutiontypes_id",$this->updates)
+            && $this->input["ticketsolutiontypes_id"] >0)
           || (in_array("solution",$this->updates) && !empty($this->input["solution"]))) {
 
          if (!in_array('status', $this->updates)) {
