@@ -462,7 +462,7 @@ class Profile extends CommonDBTM {
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
-      foreach ($CFG_GLPI["helpdesk_types"] as $key => $itemtype) {
+      foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
 
          if (class_exists($itemtype)) {
             if (!isPluginItemType($itemtype)) { // No Plugin for the moment
@@ -473,7 +473,7 @@ class Profile extends CommonDBTM {
             }
 
          } else {
-            unset($CFG_GLPI["helpdesk_types"][$key]);
+            unset($CFG_GLPI["ticket_types"][$key]);
          }
       }
       echo "</select></td>";
@@ -796,7 +796,7 @@ class Profile extends CommonDBTM {
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
-      foreach ($CFG_GLPI["helpdesk_types"] as $key => $itemtype) {
+      foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
          if (class_exists($itemtype)) {
             if (!isPluginItemType($itemtype)) { // No Plugin for the moment
                $item = new $itemtype();
@@ -805,7 +805,7 @@ class Profile extends CommonDBTM {
                      $item->getTypeName()."</option>\n";
             }
          } else {
-            unset($CFG_GLPI["helpdesk_types"][$key]);
+            unset($CFG_GLPI["ticket_types"][$key]);
          }
       }
       echo "</select></td>";

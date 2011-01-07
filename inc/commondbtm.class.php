@@ -491,7 +491,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Clean ticket open against the item
-      if (in_array($this->getType(),$CFG_GLPI["helpdesk_types"])) {
+      if (in_array($this->getType(),$CFG_GLPI["ticket_types"])) {
          $job = new Ticket;
 
          $query = "SELECT *

@@ -5605,7 +5605,7 @@ class Ticket extends CommonDBTM {
       }
 
       //Types of the core (after the plugin for robustness)
-      foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
+      foreach($CFG_GLPI["ticket_types"] as $itemtype) {
          if (class_exists($itemtype)) {
             if (!isPluginItemType($itemtype) // No plugin here
                 && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {

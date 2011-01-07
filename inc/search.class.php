@@ -2999,7 +2999,7 @@ class Search {
    //                    LEFT JOIN `$new_table` $AS ON (`glpi_tickets`.`id` = `$nt`.`tickets_id`) ";
 
    //          case "glpi_tickets" :
-   //             if (in_array($itemtype,$CFG_GLPI["helpdesk_types"])) {
+   //             if (in_array($itemtype,$CFG_GLPI["ticket_types"])) {
    //                return " LEFT JOIN `$new_table` $AS
    //                            ON (`$rt`.`id` = `$nt`.`items_id`
    //                                AND `$nt`.`itemtype` = '$itemtype' ".
@@ -4550,7 +4550,7 @@ class Search {
             $search[$itemtype] = $item->getSearchOptions();
          }
 
-         if (in_array($itemtype, $CFG_GLPI["helpdesk_types"])) {
+         if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
             $search[$itemtype]['tracking'] = $LANG['title'][24];
 
             $search[$itemtype][60]['table']         = 'glpi_tickets';
