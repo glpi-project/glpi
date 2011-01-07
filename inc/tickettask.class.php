@@ -541,7 +541,7 @@ class TicketTask  extends CommonDBTM {
       echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
       $hour = floor($this->fields["realtime"]);
       $minute = round(($this->fields["realtime"]-$hour)*60,0);
-      Dropdown::showInteger('hour',$hour,0,100);
+      Dropdown::showInteger('hour',$hour,0,100,1,array($hour));
       echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
       Dropdown::showInteger('minute',$minute,0,59);
       echo "&nbsp;".$LANG['job'][22];
