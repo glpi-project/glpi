@@ -1599,7 +1599,8 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      if (!$params['canedit'] || !$this->can($ID,'w')) {
+      if (!$params['canedit']
+          || (!$this->can($ID,'w') && !$this->can($ID,'d'))) {
          echo "</table></div>";
          // Form Header always open form
          if (!$params['canedit']) {

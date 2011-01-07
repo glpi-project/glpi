@@ -44,10 +44,11 @@ class Profile extends CommonDBTM {
 
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('add_followups', 'create_ticket', 'create_validation',
-                                          'faq', 'helpdesk_hardware', 'helpdesk_item_type',
-                                          'observe_ticket', 'password_update', 'reminder_public',
-                                          'reservation_helpdesk', 'show_group_hardware',
-                                          'show_group_ticket', 'validate_ticket');
+                                          'delete_own_followup', 'faq', 'helpdesk_hardware',
+                                          'helpdesk_item_type', 'observe_ticket', 'password_update',
+                                          'reminder_public', 'reservation_helpdesk',
+                                          'show_group_hardware', 'show_group_ticket',
+                                          'validate_ticket');
 
 
    /// Common fields used for all profiles type
@@ -436,7 +437,9 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['profiles'][27]."&nbsp;:</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td>";
-      echo "<td colspan='2'></td></tr>\n";
+      echo "<td>".$LANG['profiles'][50]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("delete_own_followup", $this->fields["delete_own_followup"]);
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['setup'][350]."&nbsp;:</td>";
