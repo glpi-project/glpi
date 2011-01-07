@@ -449,7 +449,7 @@ class Entity extends CommonTreeDropdown {
 
       // Render the tree.
       echo "Tree_Category$rand.render();
-            Tree_Category_Root$rand.expand();";
+            Tree_Category_Root$rand.expand(false);";
 
       echo "</script>";
 

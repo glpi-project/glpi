@@ -49,6 +49,9 @@ if (isset($_REQUEST['node'])) {
       $target="central.php";
    }
 
+   // Get ancestors of current entity
+   $ancestors = getAncestorsOf('glpi_entities',$_SESSION['glpiactive_entity']);
+
    $nodes=array();
    // Root node
    if ($_REQUEST['node']== -1) {
@@ -79,6 +82,7 @@ if (isset($_REQUEST['node'])) {
                                  $CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$ID.
                                  "&amp;is_recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".
                                  $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+               $path['expanded'] = isset($ancestors[$ID]);
             }
          }
          $nodes[] = $path;
@@ -94,6 +98,7 @@ if (isset($_REQUEST['node'])) {
             while ($row = $DB->fetch_array($result)) {
                $path['text'] = $row['name'];
                $path['id'] = $row['id'];
+               $path['expanded'] = isset($ancestors[$row['id']]);
                $path['position'] = $pos;
                $pos++;
                $path['draggable'] = false;
