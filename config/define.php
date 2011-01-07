@@ -265,8 +265,8 @@ $CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
 $CFG_GLPI["union_search_type"] = array('ReservationItem'=>"reservation_types",
                                        'States'=>"state_types");
 
-$CFG_GLPI["systeminformations_type"] = array ('DBConnection','Plugin','AuthLDAP',
-                                              'MailCollector','OcsServer');
+$CFG_GLPI["systeminformations_types"] = array ('DBConnection','Plugin','AuthLDAP',
+                                               'MailCollector','OcsServer');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]=0;
