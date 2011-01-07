@@ -2131,6 +2131,7 @@ class Ticket extends CommonDBTM {
       $tab[45]['name']          = $LANG['job'][20];
       $tab[45]['datatype']      = 'timestamp';
       $tab[45]['massiveaction'] = false;
+      $tab[45]['nosearch']      = true;
 
       $tab[64]['table']         = 'glpi_users';
       $tab[64]['field']         = 'name';
