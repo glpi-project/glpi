@@ -1783,9 +1783,11 @@ class User extends CommonDBTM {
                                        $used=array(), $search='') {
       global $DB, $CFG_GLPI;
 
+      // No entity define : use active ones
       if ($entity_restrict < 0) {
-         $entity_restrict = $_SESSION["glpiactive_entity"];
+         $entity_restrict = $_SESSION["glpiactiveentities"];
       }
+
       $joinprofile = false;
       switch ($right) {
          case "interface" :

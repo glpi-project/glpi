@@ -87,24 +87,24 @@ if (isset($_REQUEST['searchtype'])) {
 //          }
 
         // Specific cases with linkfield
-        if (!$display && isset($searchopt['linkfield'])) {
-            switch ($_REQUEST['itemtype'].".".$searchopt['linkfield']) {
-               case "Ticket.users_id_recipient" :
-               case "Ticket.users_id" :
-                  User::dropdown(array('name'  => $inputname,
-                                       'value' => $_REQUEST['value'],
-                                       'right' => 'all'));
-                  $display = true;
-                  break;
-
-//                case "Ticket.users_id_assign" :
+//         if (!$display && isset($searchopt['linkfield'])) {
+//             switch ($_REQUEST['itemtype'].".".$searchopt['linkfield']) {
+//                case "Ticket.users_id_recipient" :
+// //                case "Ticket.users_id" :
 //                   User::dropdown(array('name'  => $inputname,
 //                                        'value' => $_REQUEST['value'],
-//                                        'right' => 'own_ticket'));
+//                                        'right' => 'all'));
 //                   $display = true;
 //                   break;
-            }
-        }
+// 
+// //                case "Ticket.users_id_assign" :
+// //                   User::dropdown(array('name'  => $inputname,
+// //                                        'value' => $_REQUEST['value'],
+// //                                        'right' => 'own_ticket'));
+// //                   $display = true;
+// //                   break;
+//             }
+//         }
 
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
