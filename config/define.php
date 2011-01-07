@@ -278,7 +278,7 @@ $CFG_GLPI["notificationmethods_types"] = array('NotificationMail');
 $CFG_GLPI["union_search_type"] = array('ReservationItem' => "reservation_types",
                                        'States'          => "state_types");
 
-$CFG_GLPI["systeminformations_type"] = array ('AuthLDAP', 'DBConnection', 'MailCollector',
+$CFG_GLPI["systeminformations_types"] = array ('AuthLDAP', 'DBConnection', 'MailCollector',
                                               'OcsServer', 'Plugin');
 
 $CFG_GLPI["rulecollections_types"] = array('RuleImportComputerCollection',
