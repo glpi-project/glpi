@@ -1609,6 +1609,8 @@ class Ticket extends CommonDBTM {
       $tab[45]['linkfield'] = 'realtime';
       $tab[45]['name']      = $LANG['job'][20];
       $tab[45]['datatype']  = 'realtime';
+      $tab[45]['massiveaction'] = false;
+      $tab[45]['nosearch']      = true;
 
       $tab['validation'] = $LANG['validation'][0];
 
