@@ -2324,11 +2324,11 @@ function update0723to078($output='HTML') {
          if ($DB->numrows($result)>0) {
             while ($data=$DB->fetch_assoc($result)) {
                $types=$data['helpdesk_hardware_type'];
-               $CFG_GLPI["helpdesk_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
+               $CFG_GLPI["ticket_types"] = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE,
                                        PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
                $tostore=array();
 
-               foreach($CFG_GLPI["helpdesk_types"] as $itemtype) {
+               foreach($CFG_GLPI["ticket_types"] as $itemtype) {
                   if (pow(2,$itemtype)&$types) {
                      $tostore[]=$typetoname[$itemtype];
                   }
