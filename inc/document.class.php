@@ -840,7 +840,7 @@ class Document extends CommonDBTM {
          echo "<input type='hidden' name='documents_id' value='$instID'>";
          Dropdown::showAllItems("items_id", 0, 0,
                                 ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                                 $CFG_GLPI["doc_types"]);
+                                 $CFG_GLPI["document_types"]);
          echo "</td>";
          echo "<td colspan='2' class='center'>";
          echo "<input type='submit' name='adddocumentitem' value='".

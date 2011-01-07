@@ -1265,7 +1265,7 @@ class Dropdown {
                echo "<option value='disconnect'>".$LANG['buttons'][10]."</option>";
             }
 
-            if (in_array($itemtype,$CFG_GLPI["doc_types"])) {
+            if (in_array($itemtype,$CFG_GLPI["document_types"])) {
                $doc = new Document();
                if ($doc->canUpdate()) {
                   echo "<option value='add_document'>".$LANG['document'][16]."</option>";

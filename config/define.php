@@ -223,10 +223,10 @@ $CFG_GLPI["unicity_types"] = array('Budget', 'Cartridge', 'CartridgeItem', 'Comp
 $CFG_GLPI["state_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                                  'Printer');
 
-$CFG_GLPI["doc_types"]= array('Budget', 'CartridgeItem', 'ConsumableItem', 'Contact', 'Contract',
-                              'Computer', 'Entity', 'Monitor', 'NetworkEquipment', 'Peripheral',
-                              'Phone', 'Printer', 'Software', 'SoftwareLicense', 'Supplier',
-                              'Ticket','User');
+$CFG_GLPI["document_types"]= array('Budget', 'CartridgeItem', 'Computer', 'ConsumableItem',
+                                   'Contact', 'Contract', 'Entity', 'Monitor', 'NetworkEquipment',
+                                   'Peripheral', 'Phone', 'Printer', 'Software', 'SoftwareLicense',
+                                   'Supplier', 'Ticket','User');
 
 $CFG_GLPI["contract_types"] = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
                                     'Phone', 'Printer', 'Software');
