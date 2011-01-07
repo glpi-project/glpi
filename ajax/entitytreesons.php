@@ -98,7 +98,6 @@ if (isset($_REQUEST['node'])) {
             while ($row = $DB->fetch_array($result)) {
                $path['text'] = $row['name'];
                $path['id'] = $row['id'];
-               $path['expanded'] = isset($ancestors[$row['id']]);
                $path['position'] = $pos;
                $pos++;
                $path['draggable'] = false;
@@ -117,6 +116,7 @@ if (isset($_REQUEST['node'])) {
                                     $row['id']."&amp;is_recursive=1'><img alt=\"".
                                     $LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"].
                                     "/pics/entity_all.png'></a>";
+                  $path['expanded'] = isset($ancestors[$row['id']]);
                } else {
                   $path['leaf'] = true;
                   $path['cls'] = 'file';
