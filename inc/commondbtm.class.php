@@ -591,7 +591,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // If this type have DOCUMENT, clean one associated to purged item
-      if (in_array($this->getType(),$CFG_GLPI["doc_types"])) {
+      if (in_array($this->getType(),$CFG_GLPI["document_types"])) {
          $di = new Document_Item();
          $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
