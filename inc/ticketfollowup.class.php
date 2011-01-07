@@ -394,7 +394,8 @@ class TicketFollowup  extends CommonDBTM {
    function showInTicketSumnary (Ticket $ticket, $rand, $showprivate) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $canedit = $this->can($this->fields['id'],'w');
+      $canedit = $this->can($this->fields['id'],'w') || $this->can($this->fields['id'],'d');
+
       echo "<tr class='tab_bg_" . ($this->fields['is_private'] == 1 ? "4" : "2") . "' " .
              ($canedit ? "style='cursor:pointer' onClick=\"viewEditFollowup".$ticket->fields['id'].
                          $this->fields['id']."$rand();\""
@@ -518,6 +519,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<input type='hidden' name='requesttypes_id' value='".
                 RequestType::getDefault('helpdesk')."'>";
          echo "</td></tr>\n";
+
          $this->showFormButtons($options);
       }
       return true;
@@ -616,10 +618,10 @@ class TicketFollowup  extends CommonDBTM {
       $tID = $ticket->fields['id'];
 
       // Display existing Followups
-      $showprivate = haveRight("show_full_ticket", "1");
-      $caneditall  = haveRight("update_followups", "1");
-      $tmp         = array('tickets_id' => $tID);
-      $canadd      = $this->can(-1, 'w', $tmp);
+      $showprivate   = haveRight("show_full_ticket", "1");
+      $caneditall    = haveRight("update_followups", "1");
+      $tmp           = array('tickets_id' => $tID);
+      $canadd        = $this->can(-1, 'w', $tmp);
 
       $RESTRICT = "";
       if (!$showprivate) {
