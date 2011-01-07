@@ -2069,7 +2069,7 @@ function timestampToString($time, $display_sec=true) {
 **/
 function getTimestampTimeUnits($time) {
 
-   $time = abs($time);
+   $time = round(abs($time));
    $out['second'] = 0;
    $out['minute'] = 0;
    $out['hour']   = 0;
