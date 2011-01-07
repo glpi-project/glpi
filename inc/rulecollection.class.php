@@ -371,7 +371,7 @@ class RuleCollection extends CommonDBTM {
       $canedit = (haveRight($this->right, "w") && !$display_entities);
 
       $nb = $this->getCollectionSize($p['inherited']);
-      $p['start'] = (isset($_GET["start"]) ? $_GET["start"] : 0);
+      $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
 
       if ($p['start'] >= $nb) {
          $p['start'] = 0;
@@ -380,7 +380,7 @@ class RuleCollection extends CommonDBTM {
       $p['limit'] = $_SESSION['glpilist_limit'];
       $this->getCollectionPart($p);
 
-      printPager($p['start'], $nb, $target,"");
+      printAjaxPager('',$p['start'], $nb);
 
       echo "<form name='ruleactions_form' id='ruleactions_form' method='post'action='".$target."'>";
       echo "\n<div class='spaced'>";
