@@ -895,7 +895,7 @@ class Config extends CommonDBTM {
       }
       echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";
 
-      foreach ($CFG_GLPI["systeminformations_type"] as $type) {
+      foreach ($CFG_GLPI["systeminformations_types"] as $type) {
          $tmp = new $type;
          $tmp->showSystemInformations($width);
       }
