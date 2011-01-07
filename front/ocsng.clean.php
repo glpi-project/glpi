@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng");
+commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng","clean");
 
 if (!isset($_POST["clean_ok"])) {
    if (!isset($_GET['check'])) {

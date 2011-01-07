@@ -532,8 +532,21 @@ function commonHeader($title, $url='', $sector="none", $item="none", $option="")
 
 
    if ($CFG_GLPI["use_ocs_mode"] && haveRight("ocsng","w")) {
-      $menu['utils']['content']['ocsng']['title'] = $LANG['Menu'][33];
-      $menu['utils']['content']['ocsng']['page']  = '/front/ocsng.php';
+      $menu['utils']['content']['ocsng']['title']                      = $LANG['Menu'][33];
+      $menu['utils']['content']['ocsng']['page']                       = '/front/ocsng.php';
+
+      $menu['utils']['content']['ocsng']['options']['import']['title'] = $LANG['ocsng'][2];
+      $menu['utils']['content']['ocsng']['options']['import']['page']  = '/front/ocsng.import.php';
+
+      $menu['utils']['content']['ocsng']['options']['sync']['title']   = $LANG['ocsng'][1];
+      $menu['utils']['content']['ocsng']['options']['sync']['page']    = '/front/ocsng.sync.php';
+
+      $menu['utils']['content']['ocsng']['options']['clean']['title']  = $LANG['ocsng'][3];
+      $menu['utils']['content']['ocsng']['options']['clean']['page']   = '/front/ocsng.clean.php';
+
+      $menu['utils']['content']['ocsng']['options']['link']['title']   = $LANG['ocsng'][4];
+      $menu['utils']['content']['ocsng']['options']['link']['page']    = '/front/ocsng.link.php';
+
    }
 
 
