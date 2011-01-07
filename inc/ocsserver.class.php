@@ -1523,171 +1523,6 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   /** Return array of GLPI computers matching the OCS one using the OCS config
-    *
-    * @param $ocsid integer : ocs ID of the computer
-    * @param $ocsservers_id integer : ocs server ID
-    * @param $entities_id integer : entity ID
-    * @param $input
-    *
-    * @return array containing the glpi computer ID
-   **/
-   static function getComputersAlreadyImported($ocsid, $ocsservers_id, $entities_id, $input) {
-      global $DB, $DBocs;
-
-      $found_computers = array();
-      $rulelink = new RuleImportComputerCollection();
-      $result   = array();
-      $result   = $rulelink->processAllRules(array(), array(),
-                                             array('entities_id'   => $entities_id,
-                                                   'ocsservers_id' => $ocsservers_id));
-      /*
-      $conf = OcsServer::getConfig($ocsservers_id);
-
-      $sql_fields = "`hardware`.`ID`";
-      $sql_from = "`hardware`";
-      $first = true;
-      $ocsParams = array();
-
-      if ($conf["is_glpi_link_enabled"]) {
-         $ok = false;
-         //Build the request against OCS database to get the machine's informations
-         if ( $conf["use_ip_to_link"] || $conf["use_mac_to_link"]) {
-            $sql_from .= " LEFT JOIN `networks` ON (`hardware`.`ID`=`networks`.`HARDWARE_ID`) ";
-         }
-         if ($conf["use_ip_to_link"]) {
-            $sql_fields .= ", `networks`.`IPADDRESS`";
-            $ocsParams["IPADDRESS"] = array();
-            $ok = true;
-         }
-         if ($conf["use_mac_to_link"]) {
-            $sql_fields .= ", `networks`.`MACADDR`";
-            $ocsParams["MACADDR"] = array();
-            $ok = true;
-         }
-         if ($conf["use_serial_to_link"]) {
-            $sql_from .= " LEFT JOIN `bios` ON (`bios`.`HARDWARE_ID`=`hardware`.`ID`) ";
-            $sql_fields .= ", `bios`.`SSN`";
-            $ocsParams["SSN"] = array();
-            $ok = true;
-         }
-         if ($conf["use_name_to_link"]>0) {
-            $sql_fields .= ", `hardware`.`NAME`";
-            $ocsParams["NAME"] = array();
-            $ok = true;
-         }
-         // No criteria to link
-         if (!$ok) {
-            return -1;
-         }
-
-         //Execute request
-         $sql = "SELECT ".$sql_fields."
-                 FROM $sql_from
-                 WHERE `hardware`.`ID` = '$ocsid';";
-         $result = $DBocs->query($sql);
-
-         //Get the list of parameters
-
-         while ($dataOcs = $DBocs->fetch_array($result)) {
-            if ($conf["use_ip_to_link"]) {
-               if (!empty($dataOcs["IPADDRESS"]) && !in_array($dataOcs["IPADDRESS"],
-                                                              $ocsParams["IPADDRESS"])) {
-                  $ocsParams["IPADDRESS"][] = $dataOcs["IPADDRESS"];
-               }
-            }
-            if ($conf["use_mac_to_link"]) {
-               if (!empty($dataOcs["MACADDR"]) && !in_array($dataOcs["MACADDR"],
-                                                            $ocsParams["MACADDR"])) {
-                  $ocsParams["MACADDR"][] = $dataOcs["MACADDR"];
-               }
-            }
-            if ($conf["use_name_to_link"] > 0) {
-               if (!empty($dataOcs["NAME"]) && !in_array($dataOcs["NAME"], $ocsParams["NAME"])) {
-                  $ocsParams["NAME"][] = $dataOcs["NAME"];
-               }
-            }
-            if ($conf["use_serial_to_link"]) {
-               if (!empty($dataOcs["SSN"]) && !in_array($dataOcs["SSN"], $ocsParams["SSN"])) {
-                  $ocsParams["SSN"][] = $dataOcs["SSN"];
-               }
-            }
-         }
-         //Build the request to check if the machine exists in GLPI
-         if (is_array($entity)) {
-            $where_entity = implode($entity,',');
-         } else {
-            $where_entity = $entity;
-         }
-         $sql_where = " `glpi_computers`.`entities_id` IN ($where_entity)
-                       AND `glpi_computers`.`is_template` = '0' ";
-         $sql_from = "`glpi_computers`";
-         if ( $conf["use_ip_to_link"] || $conf["use_mac_to_link"]) {
-            $sql_from .= " LEFT JOIN `glpi_networkports`
-                              ON (`glpi_computers`.`id`=`glpi_networkports`.`items_id`
-                                  AND `glpi_networkports`.`itemtype` = 'Computer') ";
-         }
-         if ($conf["use_ip_to_link"]) {
-            if (empty($ocsParams["IPADDRESS"])) {
-               return -1;
-            } else {
-               $sql_where .= " AND `glpi_networkports`.`ip` IN ";
-               for ($i=0 ; $i<count($ocsParams["IPADDRESS"]) ; $i++) {
-                  $sql_where .= ($i>0 ? ',"' : '("').$ocsParams["IPADDRESS"][$i].'"';
-               }
-               $sql_where .= ")";
-            }
-         }
-         if ($conf["use_mac_to_link"]) {
-            if (empty($ocsParams["MACADDR"])) {
-               return -1;
-            } else {
-               $sql_where .= " AND `glpi_networkports`.`mac` IN ";
-               for ($i=0 ; $i<count($ocsParams["MACADDR"]) ; $i++) {
-                  $sql_where .= ($i>0 ? ',"' : '("').$ocsParams["MACADDR"][$i].'"';
-               }
-               $sql_where .= ")";
-            }
-         }
-         if ($conf["use_name_to_link"] > 0) {
-            //Search only computers with blank name
-            if ($conf["use_name_to_link"] == 2) {
-               $sql_where .= " AND (`glpi_computers`.`name`='' OR `glpi_computers`.`name` IS NULL) ";
-            } else {
-               if (empty($ocsParams["NAME"])) {
-                  return -1;
-               } else {
-                  $sql_where .= " AND `glpi_computers`.`name`='".$ocsParams["NAME"][0]."'";
-               }
-            }
-         }
-         if ($conf["use_serial_to_link"]) {
-            if (empty($ocsParams["SSN"])) {
-               return -1;
-            } else {
-               $sql_where .= " AND `glpi_computers`.`serial`='".$ocsParams["SSN"][0]."'";
-            }
-         }
-         if ($conf["states_id_linkif"] > 0) {
-            $sql_where .= " AND `glpi_computers`.`states_id`='".$conf["states_id_linkif"]."'";
-         }
-
-         $sql_glpi = "SELECT `glpi_computers`.`id`
-                      FROM $sql_from
-                      WHERE $sql_where
-                      ORDER BY `glpi_computers`.`is_deleted` ASC";
-         $result_glpi = $DB->query($sql_glpi);
-
-         if ($DB->numrows($result_glpi) > 0) {
-            while ($data=$DB->fetch_array($result_glpi)) {
-               $found_computers[] = $data['id'];
-            }
-         }
-      }*/
-      return $found_computers;
-   }
-
-
    /** Update a ocs computer
     *
     * @param $ID integer : ID of ocslinks row
@@ -2718,6 +2553,8 @@ class OcsServer extends CommonDBTM {
                               FROM `networks`
                               WHERE `HARDWARE_ID` = '".$data["ID"]."'";
 
+            //Get network informations for this computer
+            //Ignore informations that contains "??"
             foreach ($DBocs->request($query_network) as $network) {
                if (isset($network['IPADDRESS']) && $network['IPADDRESS'] != '??') {
                   $hardware[$data["ID"]]['IPADDRESS'][] = $network['IPADDRESS'];
@@ -2865,7 +2702,7 @@ class OcsServer extends CommonDBTM {
                } else {
                   $rulelink         = new RuleImportComputerCollection();
                   $rulelink_results = array();
-                  $params           = array('entities_id'   =>$entity,
+                  $params           = array('entities_id'   => $entity,
                                             'ocsservers_id' => $ocsservers_id);
                   $rulelink_results = $rulelink->processAllRules($tab, array(), $params);
 

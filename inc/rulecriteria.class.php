@@ -319,7 +319,7 @@ class RuleCriteria extends CommonDBChild {
    /**
     *
    **/
-   static function getConditions($itemtype) {
+   static function getConditions($itemtype, $criterion = '') {
       global $LANG;
 
       $criteria =  array(Rule::PATTERN_IS              => $LANG['rulesengine'][0],
@@ -332,8 +332,7 @@ class RuleCriteria extends CommonDBChild {
                          Rule::REGEX_NOT_MATCH         => $LANG['rulesengine'][27],
                          Rule::PATTERN_EXISTS          => $LANG['rulesengine'][31],
                          Rule::PATTERN_DOES_NOT_EXISTS => $LANG['rulesengine'][32]);
-
-      $extra_criteria = call_user_func(array($itemtype,'addMoreCriteria'));
+      $extra_criteria = call_user_func(array($itemtype,'addMoreCriteria'),$criterion);
       foreach ($extra_criteria as $key => $value) {
          $criteria[$key] = $value;
       }
@@ -345,20 +344,24 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Display a dropdown with all the criterias
    **/
-   static function dropdownConditions($itemtype, $type, $name, $value='',
-                                      $allow_condition=array()) {
+   static function dropdownConditions($itemtype, $params = array()) {
       global $LANG;
 
+      $p['criterion'] = '';
+      $p['allow_conditions'] = array();
+      $p['value'] = '';
+      foreach ($params as $key => $value) {
+         $p[$key] = $value;
+      }
       $elements = array();
-      foreach (RuleCriteria::getConditions($itemtype) as $pattern => $label) {
-         if (empty($allow_condition)
-             || (!empty($allow_condition) && in_array($pattern,$allow_condition))) {
+      foreach (RuleCriteria::getConditions($itemtype, $p['criterion']) as $pattern => $label) {
+         if (empty($p['allow_conditions'])
+             || (!empty($p['allow_conditions']) && in_array($pattern,$p['allow_conditions']))) {
             $elements[$pattern] = $label;
          }
       }
-      return Dropdown::showFromArray($name, $elements, array('value' => $value));
+      return Dropdown::showFromArray('condition', $elements,array('value' => $p['value']));
    }
-
 
 }
 
