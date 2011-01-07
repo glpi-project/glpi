@@ -442,7 +442,7 @@ class TicketTask  extends CommonDBTM {
 
       $units=getTimestampTimeUnits($this->fields["actiontime"]);
 
-      $hour   = $units['hour'];
+      $hour   = $units['hour']+24*$units['day'];
       $minute = $units['minute'];
       echo "<td>";
       if ($hour) {
@@ -551,9 +551,9 @@ class TicketTask  extends CommonDBTM {
 
       $units = getTimestampTimeUnits($this->fields["actiontime"]);
 
-      $hour   = $units['hour'];
+      $hour   = $units['hour']+24*$units['day'];
       $minute = $units['minute'];
-      Dropdown::showInteger('hour', $hour, 0, 100);
+      Dropdown::showInteger('hour', $hour, 0, 100, 1, array($hour));
       echo "&nbsp;".$LANG['job'][21]."&nbsp;&nbsp;";
       Dropdown::showInteger('minute', $minute, 0, 59);
       echo "&nbsp;".$LANG['job'][22];
