@@ -117,12 +117,10 @@ class OcsServer extends CommonDBTM {
           && OcsServer::checkOCSconnection($this->fields['id'])
           && OcsServer::checkConfig(1)
           && OcsServer::checkConfig(2)
-          && OcsServer::checkConfig(4)
           && OcsServer::checkConfig(8)) {
 
          $tabs[2] = $LANG['ocsconfig'][5];
          $tabs[3] = $LANG['ocsconfig'][27];
-         $tabs[4] = $LANG['setup'][620];
          $tabs[12] = $LANG['title'][38];
       }
       return $tabs;
@@ -188,7 +186,7 @@ class OcsServer extends CommonDBTM {
       $this->getFromDB($ID);
       echo "<br><div class='center'>";
       echo "<form name='formconfig' action=\"$target\" method='post'>";
-      echo "<table class='tab_cadre'>\n";
+      echo "<table class='tab_cadre_fixe'>\n";
       echo "<tr><th><input type='hidden' name='id' value='$ID'>&nbsp;".$LANG['ocsconfig'][27] ." ".
                      $LANG['Menu'][0]. "&nbsp;</th>\n";
       echo "<th>&nbsp;" . $LANG['title'][30] . "&nbsp;</th>\n";
@@ -356,7 +354,7 @@ class OcsServer extends CommonDBTM {
       $this->getFromDB($ID);
       echo "<br><div class='center'>";
       echo "<form name='formconfig' action=\"$target\" method='post'>";
-      echo "<table class='tab_cadre'>\n";
+      echo "<table class='tab_cadre_fixe'>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][59];
       echo "<input type='hidden' name='id' value='$ID'>" . " </td>\n";
       echo "<td><input type='text' size='30' name='ocs_url' value=\"" . $this->fields["ocs_url"] ."\">";
@@ -451,7 +449,7 @@ class OcsServer extends CommonDBTM {
       $this->getFromDB($ID);
       echo "<br><div class='center'>";
       echo "<form name='formconfig' action=\"$target\" method='post'>\n";
-      echo "<table class='tab_cadre'>\n";
+      echo "<table class='tab_cadre_fixe'>\n";
       echo "<tr><th colspan='4'>" . $LANG['ocsconfig'][52];
       echo "<input type='hidden' name='id' value='$ID'></th></tr>\n";
 
@@ -575,7 +573,7 @@ class OcsServer extends CommonDBTM {
       global $LANG;
 
       $out="<br><div class='center'>\n";
-      $out.="<table class='tab_cadre'>";
+      $out.="<table class='tab_cadre_fixe'>";
       $out.="<tr><th>" .$LANG['setup'][602] . "</th></tr>\n";
       $out.="<tr class='tab_bg_2'><td class='center'>";
       if ($ID != -1) {
@@ -2737,12 +2735,19 @@ class OcsServer extends CommonDBTM {
             printPager($start, $numrows, $target, $parameters);
 
          } else {
-            echo "<strong>" . $LANG['ocsng'][9] . "</strong>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>" . $LANG['ocsng'][2] . "</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td class='center'><strong>" . $LANG['ocsng'][9] . "</strong></td></tr>\n";
+         echo "</table>";
          }
          echo "</div>";
 
       } else {
-         echo "<div class='center'><strong>" . $LANG['ocsng'][9] . "</strong></div>";
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>" . $LANG['ocsng'][2] . "</th></tr>\n";
+         echo "<tr class='tab_bg_1'><td class='center'><strong>" . $LANG['ocsng'][9] . "</strong></td></tr>\n";
+         echo "</table></div>";
       }
    }
 

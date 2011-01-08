@@ -193,6 +193,15 @@ class RuleImportComputer extends Rule {
                     RuleImportComputer::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
    }
 
+   function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
+      global $LANG;
+      if ($condition == RuleImportComputer::PATTERN_IS_EMPTY) {
+          return $LANG['choice'][1];
+      } else {
+         return false;
+      }
+   }
+
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value) {
       
       switch ($condition) {
