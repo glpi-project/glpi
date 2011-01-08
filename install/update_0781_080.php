@@ -1528,6 +1528,12 @@ function update0781to080($output='HTML') {
             $DB->query($query) 
                or die("0.80 add new rule RuleImportComputer ".$LANG['update'][90] .$DB->error());
             $rule_id = $DB->insert_id();
+
+            $query = "INSERT INTO `glpi_rulecriterias`" .
+                     " VALUES (NULL, '$rule_id', 'ocsservers_id', '0'," .
+                     " '".$ocs_server['id']."')";
+                  $DB->query($query)
+                     or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
             
             if ($ocs_server['states_id_linkif']) {
                $query = "INSERT INTO `glpi_rulecriterias`" .

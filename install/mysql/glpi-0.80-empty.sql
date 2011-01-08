@@ -2823,12 +2823,6 @@ CREATE TABLE `glpi_ocsservers` (
   `use_soft_dict` tinyint(1) NOT NULL DEFAULT '0',
   `cron_sync_number` int(11) DEFAULT '1',
   `deconnection_behavior` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_glpi_link_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `use_ip_to_link` tinyint(1) NOT NULL DEFAULT '0',
-  `use_name_to_link` tinyint(1) NOT NULL DEFAULT '0',
-  `use_mac_to_link` tinyint(1) NOT NULL DEFAULT '0',
-  `use_serial_to_link` tinyint(1) NOT NULL DEFAULT '0',
-  `states_id_linkif` int(11) NOT NULL DEFAULT '0',
   `ocs_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
@@ -2837,7 +2831,7 @@ CREATE TABLE `glpi_ocsservers` (
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_ocsservers` VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'0','1',NULL,'0','0','0','0','0','0','',NULL,NULL,'1');
+INSERT INTO `glpi_ocsservers` VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'0','1',NULL,'',NULL,NULL,'1');
 
 ### Dump table glpi_operatingsystems
 
@@ -3226,8 +3220,8 @@ CREATE TABLE `glpi_profiles` (
   `sla` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rule_dictionnary_printer` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `clean_ocsng` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `delete_own_followup`, char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `delete_followups`, char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `delete_own_followup` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `delete_followups` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `interface` (`interface`),
   KEY `is_default` (`is_default`),
