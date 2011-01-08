@@ -1327,10 +1327,24 @@ class Rule extends CommonDBTM {
             }
          }
       }
+      if ($result = $this->getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)) {
+         return $result;
+      }
       return $pattern;
    }
 
-
+   /**
+    * Used to get specific criteria patterns
+    * @param $ID the given criteria
+    * @param $condition condition used
+    * @param $pattern the pattern
+    * 
+    * @return a value associated with the criteria, or false otherwise
+    */
+   function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
+      return false;
+   }
+   
    /**
     * Display item used to select a pattern for a criteria
     *
