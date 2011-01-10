@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng","sync");
+commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng", "sync");
 
 $display_list = true;
 
@@ -49,7 +49,7 @@ if (isset($_SESSION["ocs_update"]['computers'])) {
                            0));
 
 
-      $key = array_pop($_SESSION["ocs_update"]['computers']);
+      $key    = array_pop($_SESSION["ocs_update"]['computers']);
       $action = OcsServer::updateComputer($key, $_SESSION["ocsservers_id"], 2);
       OcsServer::manageImportStatistics($_SESSION["ocs_update"]['statistics'], $action['status']);
       OcsServer::showStatistics($_SESSION["ocs_update"]['statistics']);
@@ -77,6 +77,7 @@ if (!isset($_POST["update_ok"])) {
    if ($display_list) {
       OcsServer::showComputersToUpdate($_SESSION["ocsservers_id"], $_GET['check'], $_GET['start']);
    }
+
 } else {
    if (count($_POST['toupdate']) >0) {
       $_SESSION["ocs_update_count"] = 0;

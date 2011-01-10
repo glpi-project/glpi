@@ -104,16 +104,16 @@ class RuleImportComputer extends Rule {
       $criterias['ocsservers_id']['linkfield'] = '';
       $criterias['ocsservers_id']['type']      = 'dropdown';
 
-      $criterias['TAG']['name']             = $LANG['rulesengine'][152].' : '.$LANG['ocsconfig'][39];
+      $criterias['TAG']['name']        = $LANG['rulesengine'][152].' : '.$LANG['ocsconfig'][39];
 
-      $criterias['DOMAIN']['name']          = $LANG['rulesengine'][152].' : '.$LANG['setup'][89];
+      $criterias['DOMAIN']['name']     = $LANG['rulesengine'][152].' : '.$LANG['setup'][89];
 
-      $criterias['IPSUBNET']['name']        = $LANG['rulesengine'][152].' : '.$LANG['networking'][61];
+      $criterias['IPSUBNET']['name']   = $LANG['rulesengine'][152].' : '.$LANG['networking'][61];
 
-      $criterias['MACADDRESS']['name']      = $LANG['rulesengine'][152].' : '.$LANG['device_iface'][2];
+      $criterias['MACADDRESS']['name'] = $LANG['rulesengine'][152].' : '.$LANG['device_iface'][2];
 
-      $criterias['IPADDRESS']['name']       = $LANG['rulesengine'][152].' : '.
-                                                $LANG['financial'][44]." ". $LANG['networking'][14];
+      $criterias['IPADDRESS']['name']  = $LANG['rulesengine'][152].' : '.
+                                         $LANG['financial'][44]." ". $LANG['networking'][14];
 
       $criterias['name']['name']            = $LANG['rulesengine'][152].' : '.
                                                         $LANG['rulesengine'][25];
@@ -121,12 +121,13 @@ class RuleImportComputer extends Rule {
                                                     RuleImportComputer::PATTERN_IS_EMPTY,
                                                     Rule::PATTERN_FIND);
 
-      $criterias['DESCRIPTION']['name']     = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
+      $criterias['DESCRIPTION']['name']   = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
 
-      $criterias['serial']['name']          = $LANG['rulesengine'][152].' : '.$LANG['common'][19];
+      $criterias['serial']['name']        = $LANG['rulesengine'][152].' : '.$LANG['common'][19];
 
       return $criterias;
    }
+
 
    function getActions() {
       global $LANG;
@@ -186,27 +187,29 @@ class RuleImportComputer extends Rule {
    /**
     * Add more criteria specific to this type of rule
    **/
-   static function addMoreCriteria($criterion = '') {
+   static function addMoreCriteria($criterion='') {
       global $LANG;
 
-       return array(Rule::PATTERN_FIND                   => $LANG['rulesengine'][151],
-                    RuleImportComputer::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
+      return array(Rule::PATTERN_FIND                   => $LANG['rulesengine'][151],
+                   RuleImportComputer::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
    }
+
 
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
       global $LANG;
+
       if ($condition == RuleImportComputer::PATTERN_IS_EMPTY) {
           return $LANG['choice'][1];
-      } else {
-         return false;
       }
+      return false;
    }
 
+
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value) {
-      
+
       switch ($condition) {
-         case Rule::PATTERN_FIND:
-         case RuleImportComputer::PATTERN_IS_EMPTY:
+         case Rule::PATTERN_FIND :
+         case RuleImportComputer::PATTERN_IS_EMPTY :
             Dropdown::showYesNo($name, 0, 0);
             return true;
       }
@@ -223,7 +226,7 @@ class RuleImportComputer extends Rule {
             Dropdown::showFromArray('value', self::getRuleActionValues());
             break;
 
-         default:
+         default :
             break;
       }
       return true;
@@ -231,13 +234,16 @@ class RuleImportComputer extends Rule {
 
 
    function getCriteriaByID($ID) {
+
       foreach ($this->criterias as $criterion) {
          if ($ID == $criterion->fields['criteria']) {
             return $criterion;
          }
       }
       return array();
-   } 
+   }
+
+
    function findWithGlobalCriteria($input) {
       global $DB;
 
@@ -245,24 +251,23 @@ class RuleImportComputer extends Rule {
       $sql_where         = '';
       $sql_from          = '';
       $continue          = true;
-      $global_criteria = array('IPSUBNET', 'MACADDRESS', 'IPADDRESS', 'name', 'serial');
+      $global_criteria   = array('IPADDRESS', 'IPSUBNET', 'MACADDRESS', 'name', 'serial');
 
       foreach ($global_criteria as $criterion) {
          $crit = $this->getCriteriaByID($criterion);
          if (!empty($crit)) {
-            if (!isset($input[$criterion])
-                  || $input[$criterion] == '') {
+            if (!isset($input[$criterion]) || $input[$criterion] == '') {
                $continue = false;
             } else {
                $complex_criterias[] = $crit;
             }
          }
       }
-      
+
       if (isset($this->criterias['states_id'])) {
          $complex_criterias[] = $this->getCriteriaByID('states_id');
       }
-      //logDebug($complex_criterias);
+
       //If no complex criteria or a value is missing, then there's a problem !
       if (!$continue || empty($complex_criterias)) {
          return false;
@@ -317,7 +322,8 @@ class RuleImportComputer extends Rule {
                } else {
                   $conditin = " NOT IN ";
                }
-               $sql_where .= " AND `glpi_computers`.`states_id` $condition ('".$criteria->fields['pattern']."')";
+               $sql_where .= " AND `glpi_computers`.`states_id`
+                                 $condition ('".$criteria->fields['pattern']."')";
                break;
          }
       }
@@ -327,6 +333,7 @@ class RuleImportComputer extends Rule {
                    WHERE $sql_where
                    ORDER BY `glpi_computers`.`is_deleted` ASC";
       $result_glpi = $DB->query($sql_glpi);
+
       if ($DB->numrows($result_glpi) > 0) {
          while ($data=$DB->fetch_array($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];

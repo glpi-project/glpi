@@ -119,8 +119,8 @@ class OcsServer extends CommonDBTM {
           && OcsServer::checkConfig(2)
           && OcsServer::checkConfig(8)) {
 
-         $tabs[2] = $LANG['ocsconfig'][5];
-         $tabs[3] = $LANG['ocsconfig'][27];
+         $tabs[2]  = $LANG['ocsconfig'][5];
+         $tabs[3]  = $LANG['ocsconfig'][27];
          $tabs[12] = $LANG['title'][38];
       }
       return $tabs;
@@ -2737,7 +2737,7 @@ class OcsServer extends CommonDBTM {
          } else {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>" . $LANG['ocsng'][2] . "</th></tr>\n";
-         echo "<tr class='tab_bg_1'><td class='center'><strong>" . $LANG['ocsng'][9] . "</strong></td></tr>\n";
+         echo "<tr class='tab_bg_1'><td class='center b'>" . $LANG['ocsng'][9] . "</td></tr>\n";
          echo "</table>";
          }
          echo "</div>";
@@ -2746,7 +2746,7 @@ class OcsServer extends CommonDBTM {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>" . $LANG['ocsng'][2] . "</th></tr>\n";
-         echo "<tr class='tab_bg_1'><td class='center'><strong>" . $LANG['ocsng'][9] . "</strong></td></tr>\n";
+         echo "<tr class='tab_bg_1'><td class='center b'>" . $LANG['ocsng'][9] . "</td></tr>\n";
          echo "</table></div>";
       }
    }

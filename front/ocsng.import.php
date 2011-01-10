@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng","import");
+commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils", "ocsng", "import");
 
 $display_list = true;
 //First time this screen is displayed : set the import mode to 'basic'
@@ -76,7 +76,7 @@ if (isset($_SESSION["ocs_import"]["id"])) {
          $location = -1;
       }
 
-      $conf = OcsServer::getConfig($_SESSION["ocsservers_id"]);
+      $conf   = OcsServer::getConfig($_SESSION["ocsservers_id"]);
       $action = OcsServer::processComputer($key, $_SESSION["ocsservers_id"], 0, $entity, $location,
                                            $conf["is_glpi_link_enabled"]);
       OcsServer::manageImportStatistics($_SESSION["ocs_import"]['statistics'], $action['status']);
