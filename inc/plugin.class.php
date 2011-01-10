@@ -874,7 +874,16 @@ class Plugin extends CommonDBTM {
       }
       $plugin = strtolower($plug['plugin']);
 
-      foreach (array('contract_types', 'doc_types', 'helpdesk_types', 'helpdesk_visible_types',
+      if (isset($attrib['doc_types'])) {
+         $attrib['document_types'] = $attrib['doc_types'];
+         unset($attrib['doc_types']);
+      }
+      if (isset($attrib['helpdesk_types'])) {
+         $attrib['ticket_types'] = $attrib['helpdesk_types'];
+         unset($attrib['helpdesk_types']);
+      }
+
+      foreach (array('contract_types', 'document_types', 'ticket_types', 'helpdesk_visible_types',
                      'infocom_types', 'linkgroup_types', 'linkuser_types',
                      'massiveaction_noupdate_types', 'massiveaction_nodelete_types', 'netport_types',
                      'notificationtemplates_types', 'reservation_types', 'rulecollections_types',
