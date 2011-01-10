@@ -957,7 +957,7 @@ class OcsServer extends CommonDBTM {
    }
 
 
-   static function linkComputer($ocsid, $ocsservers_id, $computers_id, $link_auto=0) {
+   static function linkComputer($ocsid, $ocsservers_id, $computers_id) {
       global $DB, $DBocs, $LANG;
 
       OcsServer::checkOCSconnection($ocsservers_id);
@@ -1017,8 +1017,7 @@ class OcsServer extends CommonDBTM {
 
             // Not already import from OCS / mark default state
             if (!$ocs_id_change
-                && ($link_auto
-                    || (!$comp->fields['is_ocs_import'] && $ocsConfig["states_id_default"]>0))) {
+                    || (!$comp->fields['is_ocs_import'] && $ocsConfig["states_id_default"]>0)) {
                $input["states_id"] = $ocsConfig["states_id_default"];
             }
             $comp->update($input);
@@ -1100,7 +1099,7 @@ class OcsServer extends CommonDBTM {
 
 
    static function processComputer($ocsid, $ocsservers_id, $lock = 0, $defaultentity = -1,
-                                   $defaultlocation = -1, $canlink=0) {
+                                   $defaultlocation = -1) {
       global $DB;
 
       OcsServer::checkOCSconnection($ocsservers_id);
@@ -1123,7 +1122,7 @@ class OcsServer extends CommonDBTM {
       }
 
       return OcsServer::importComputer($ocsid, $ocsservers_id, $lock, $defaultentity,
-                                       $defaultlocation, $canlink);
+                                       $defaultlocation);
    }
 
 
@@ -1397,20 +1396,25 @@ class OcsServer extends CommonDBTM {
       return $input;
    }
 
+   static function setMaxChecksumForComputer($ocsid) {
+      global $DBocs;
+            // Set OCS checksum to max value
+      $query = "UPDATE `hardware`
+                SET `CHECKSUM` = '" . self::MAX_CHECKSUM . "'
+                WHERE `ID` = '$ocsid'";
+      $DBocs->query($query);
+      
+   }
 
    static function importComputer($ocsid, $ocsservers_id, $lock=0, $defaultentity=-1,
-                                  $defaultlocation=-1, $canlink=0) {
+                                  $defaultlocation=-1) {
       global $DBocs;
 
       OcsServer::checkOCSconnection($ocsservers_id);
       $comp = new Computer();
 
       $rules_matched = array();
-      // Set OCS checksum to max value
-      $query = "UPDATE `hardware`
-                SET `CHECKSUM` = '" . self::MAX_CHECKSUM . "'
-                WHERE `ID` = '$ocsid'";
-      $DBocs->query($query);
+      self::setMaxChecksumForComputer($ocsid);
 
       //No entity predefined, check rules
       if ($defaultentity == -1 || $defaultlocation == -1) {
@@ -1433,7 +1437,10 @@ class OcsServer extends CommonDBTM {
          }
 
          //Store rule that matched
-         $rules_matched['RuleOcs'] = $data['_ruleid'];
+         if (isset($data['_ruleid'])) {
+            $rules_matched['RuleOcs'] = $data['_ruleid'];
+         }
+         
          //New machine to import
          $query = "SELECT `hardware`.*, `bios`.*
                    FROM `hardware`
@@ -1451,38 +1458,35 @@ class OcsServer extends CommonDBTM {
                                                           $data['entities_id'], $locations_id);
 
             //Check if machine could be linked with another one already in DB
-            if ($canlink) {
-               $rulelink         = new RuleImportComputerCollection();
-               $rulelink_results = array();
-               $params           = array('entities_id'   => $data['entities_id'],
-                                         'ocsservers_id' => $ocsservers_id);
-               $rulelink_results = $rulelink->processAllRules($input, array(), $params);
+            $rulelink         = new RuleImportComputerCollection();
+            $rulelink_results = array();
+            $params           = array('entities_id'   => $data['entities_id'],
+                                      'ocsservers_id' => $ocsservers_id);
+            $rulelink_results = $rulelink->processAllRules($input, array(), $params);
 
-               //If at least one rule matched
-               //else do import as usual
-               if (isset($rulelink_results['action'])) {
-                  $rules_matched['RuleImportComputer'] = $rulelink_results['_ruleid'];
+            //If at least one rule matched
+            //else do import as usual
+            if (isset($rulelink_results['action'])) {
+               $rules_matched['RuleImportComputer'] = $rulelink_results['_ruleid'];
 
-                  switch ($rulelink_results['action']) {
-                     case self::LINK_RESULT_NO_IMPORT :
-                        return array('status'       => self::COMPUTER_LINK_REFUSED,
-                                     'entities_id'  => $data['entities_id'],
-                                     'rule_matched' => $rules_matched);
+               switch ($rulelink_results['action']) {
+                  case self::LINK_RESULT_NO_IMPORT :
+                     return array('status'       => self::COMPUTER_LINK_REFUSED,
+                                  'entities_id'  => $data['entities_id'],
+                                  'rule_matched' => $rules_matched);
 
-                     case self::LINK_RESULT_LINK :
-                        if (is_array($rulelink_results['found_computers'])
-                            && count($rulelink_results['found_computers'])>0) {
+                  case self::LINK_RESULT_LINK :
+                     if (is_array($rulelink_results['found_computers'])
+                         && count($rulelink_results['found_computers'])>0) {
 
-                           foreach ($rulelink_results['found_computers'] as $tmp => $computers_id) {
-                              if (OcsServer::linkComputer($ocsid, $ocsservers_id, $computers_id,
-                                                          $canlink)) {
-                                 return array ('status'       => self::COMPUTER_LINKED,
-                                               'entities_id'  => $data['entities_id'],
-                                               'rule_matched' => $rules_matched);
-                              }
+                        foreach ($rulelink_results['found_computers'] as $tmp => $computers_id) {
+                           if (OcsServer::linkComputer($ocsid, $ocsservers_id, $computers_id)) {
+                              return array ('status'       => self::COMPUTER_LINKED,
+                                            'entities_id'  => $data['entities_id'],
+                                            'rule_matched' => $rules_matched);
                            }
-                        break;
-                     }
+                        }
+                     break;
                   }
                }
             }
@@ -1513,7 +1517,8 @@ class OcsServer extends CommonDBTM {
          //Return code to indicates that the machine was imported
          return array('status'       => self::COMPUTER_IMPORTED,
                       'entities_id'  => $data['entities_id'],
-                      'rule_matched' => $rules_matched);
+                      'rule_matched' => $rules_matched,
+                      'computers_id' => $computers_id);
       }
       //ELSE Return code to indicates that the machine was not imported because it doesn't matched rules
       return array('status'       => self::COMPUTER_FAILED_IMPORT,
@@ -3695,6 +3700,9 @@ class OcsServer extends CommonDBTM {
                if ($DBocs->numrows($result2) > 0) {
                   while ($line2 = $DBocs->fetch_array($result2)) {
                      $line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
+                     if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($line2["NAME"])) {
+                     $line2["NAME"] = encodeInUtf8($line2["NAME"]);
+                     }
                      $snd["designation"] = $line2["NAME"];
                      if (!in_array(stripslashes($prevalue.$snd["designation"]), $import_device)) {
                         if (!empty ($line2["DESCRIPTION"])) {
@@ -4553,6 +4561,12 @@ class OcsServer extends CommonDBTM {
                if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($name)) {
                   $name = encodeInUtf8($name);
                }
+
+               // Hack for OCS encoding problems
+               if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($data2["PUBLISHER"])) {
+                  $data2["PUBLISHER"] = encodeInUtf8($data2["PUBLISHER"]);
+               }
+               
                $version              = $data2["VERSION"];
                $manufacturer         = Manufacturer::processName($data2["PUBLISHER"]);
                $use_glpi_dictionnary = false;

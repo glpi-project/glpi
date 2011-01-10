@@ -806,9 +806,10 @@ class Rule extends CommonDBTM {
 
       } else { // OR MATCHING
          $doactions           = false;
-         $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
          foreach ($this->criterias as $criteria) {
-            if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
+            $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
+            if (!isset($definition_criteria['is_global'])
+                   || !$definition_criteria['is_global']) {
                $doactions |= $this->checkCriteria($criteria,$input);
                if ($doactions) {
                   break;

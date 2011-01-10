@@ -77,8 +77,7 @@ if (isset($_SESSION["ocs_import"]["id"])) {
       }
 
       $conf   = OcsServer::getConfig($_SESSION["ocsservers_id"]);
-      $action = OcsServer::processComputer($key, $_SESSION["ocsservers_id"], 0, $entity, $location,
-                                           $conf["is_glpi_link_enabled"]);
+      $action = OcsServer::processComputer($key, $_SESSION["ocsservers_id"], 0, $entity, $location);
       OcsServer::manageImportStatistics($_SESSION["ocs_import"]['statistics'], $action['status']);
       OcsServer::showStatistics($_SESSION["ocs_import"]['statistics']);
       displayProgressBar(400, $percent);
@@ -108,7 +107,7 @@ if (!isset($_POST["import_ok"])) {
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
    if ($display_list) {
       OcsServer::showComputersToAdd($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
-                                    $_GET['check'], $_GET['start']);
+                                    $_GET['check'], $_GET['start'],$_SESSION['glpiactiveentities']);
    }
 
 } else {
