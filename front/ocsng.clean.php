@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng","clean");
+commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
 
 if (!isset($_POST["clean_ok"])) {
    if (!isset($_GET['check'])) {
@@ -48,7 +48,7 @@ if (!isset($_POST["clean_ok"])) {
       $_GET['start'] = 0;
    }
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
-   OcsServer::showComputersToClean($_SESSION["ocsservers_id"],$_GET['check'],$_GET['start']);
+   OcsServer::showComputersToClean($_SESSION["ocsservers_id"], $_GET['check'], $_GET['start']);
 
 } else {
    if (count($_POST['toclean']) >0) {

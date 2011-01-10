@@ -791,14 +791,12 @@ class Rule extends CommonDBTM {
 
       reset($this->criterias);
 
-      
       if ($this->fields["match"]==Rule::AND_MATCHING) {
          $doactions = true;
 
          foreach ($this->criterias as $criteria) {
             $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
-            if (!isset($definition_criteria['is_global'])
-                   || !$definition_criteria['is_global']) {
+            if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
                $doactions &= $this->checkCriteria($criteria, $input);
                if (!$doactions) {
                   break;
@@ -807,11 +805,10 @@ class Rule extends CommonDBTM {
          }
 
       } else { // OR MATCHING
-         $doactions = false;
+         $doactions           = false;
          $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
          foreach ($this->criterias as $criteria) {
-            if (!isset($definition_criteria['is_global'])
-                   || !$definition_criteria['is_global']) {
+            if (!isset($definition_criteria['is_global']) || !$definition_criteria['is_global']) {
                $doactions |= $this->checkCriteria($criteria,$input);
                if ($doactions) {
                   break;
@@ -819,6 +816,7 @@ class Rule extends CommonDBTM {
             }
          }
       }
+
       //If all simple criteria match, and if necessary, check complex criteria
       if ($doactions) {
          return $this->findWithGlobalCriteria($input);
@@ -1333,18 +1331,20 @@ class Rule extends CommonDBTM {
       return $pattern;
    }
 
+
    /**
     * Used to get specific criteria patterns
     * @param $ID the given criteria
     * @param $condition condition used
     * @param $pattern the pattern
-    * 
+    *
     * @return a value associated with the criteria, or false otherwise
-    */
+   **/
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
       return false;
    }
-   
+
+
    /**
     * Display item used to select a pattern for a criteria
     *
@@ -1832,7 +1832,7 @@ class Rule extends CommonDBTM {
    /**
     * Add more criteria specific to this type of rule
    **/
-   static function addMoreCriteria($crtierion = '') {
+   static function addMoreCriteria($criterion = '') {
       return array();
    }
 

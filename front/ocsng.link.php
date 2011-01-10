@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'],"utils","ocsng","link");
+commonHeader($LANG['ocsng'][0],$_SERVER['PHP_SELF'], "utils", "ocsng", "link");
 
 $CFG_GLPI["use_ajax"] = 1;
 

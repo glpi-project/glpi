@@ -332,7 +332,9 @@ class RuleCriteria extends CommonDBChild {
                          Rule::REGEX_NOT_MATCH         => $LANG['rulesengine'][27],
                          Rule::PATTERN_EXISTS          => $LANG['rulesengine'][31],
                          Rule::PATTERN_DOES_NOT_EXISTS => $LANG['rulesengine'][32]);
+
       $extra_criteria = call_user_func(array($itemtype,'addMoreCriteria'),$criterion);
+
       foreach ($extra_criteria as $key => $value) {
          $criteria[$key] = $value;
       }
@@ -344,12 +346,13 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Display a dropdown with all the criterias
    **/
-   static function dropdownConditions($itemtype, $params = array()) {
+   static function dropdownConditions($itemtype, $params=array()) {
       global $LANG;
 
-      $p['criterion'] = '';
+      $p['criterion']        = '';
       $p['allow_conditions'] = array();
-      $p['value'] = '';
+      $p['value']            = '';
+
       foreach ($params as $key => $value) {
          $p[$key] = $value;
       }
@@ -360,7 +363,7 @@ class RuleCriteria extends CommonDBChild {
             $elements[$pattern] = $label;
          }
       }
-      return Dropdown::showFromArray('condition', $elements,array('value' => $p['value']));
+      return Dropdown::showFromArray('condition', $elements, array('value' => $p['value']));
    }
 
 }

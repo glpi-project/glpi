@@ -1519,73 +1519,81 @@ function update0781to080($output='HTML') {
    //Migrate OCS computers link from static config to rules engine
    if (FieldExists('glpi_ocsservers','is_glpi_link_enabled')) {
       $ocs_servers = getAllDatasFromTable('glpi_ocsservers');
-      $ranking = 0;
+      $ranking     = 0;
       foreach ($ocs_servers as $ocs_server) {
          if ($ocs_server['is_glpi_link_enabled']) {
-            $query = "INSERT INTO `glpi_rules` VALUES (NULL, '0', 'RuleImportComputer', '$ranking'," .
-                                                      "'".$ocs_server['name']."','', " .
-                                                      "'AND', 1, NULL, NOW(), 0)";
-            $DB->query($query) 
-               or die("0.80 add new rule RuleImportComputer ".$LANG['update'][90] .$DB->error());
+            $query = "INSERT INTO `glpi_rules`
+                             (`entities_id`, `sub_type`, `ranking`, `name`,
+                              `description`, `match`, `is_active`, `date_mod`, `is_recursive`)
+                      VALUES ('0', 'RuleImportComputer', '$ranking', '".$ocs_server['name']."',
+                              '', 'AND', 1, NOW(), 0)";
+            $DB->query($query)
+            or die("0.80 add new rule RuleImportComputer ".$LANG['update'][90] .$DB->error());
             $rule_id = $DB->insert_id();
 
-            $query = "INSERT INTO `glpi_rulecriterias`" .
-                     " VALUES (NULL, '$rule_id', 'ocsservers_id', '0'," .
-                     " '".$ocs_server['id']."')";
-                  $DB->query($query)
-                     or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
-            
+            $query = "INSERT INTO `glpi_rulecriterias`
+                             (`rules_id`, `criteria`, `condition`, `pattern`)
+                      VALUES ('$rule_id', 'ocsservers_id', '0', '".$ocs_server['id']."')";
+            $DB->query($query)
+            or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
+
             if ($ocs_server['states_id_linkif']) {
-               $query = "INSERT INTO `glpi_rulecriterias`" .
-                        " VALUES (NULL, '$rule_id', 'states_id', '0'," .
-                        " '".$ocs_server['states_id_linkif']."')";
+               $query = "INSERT INTO `glpi_rulecriterias`
+                                (`rules_id`, `criteria`, `condition`,
+                                 `pattern`)
+                         VALUES ('$rule_id', 'states_id', '0',
+                                 '".$ocs_server['states_id_linkif']."')";
                $DB->query($query)
-                  or die("0.80 add new criteria RuleImportComputer ".$LANG['update'][90] .$DB->error());
+               or die("0.80 add new criteria RuleImportComputer ".$LANG['update'][90] .$DB->error());
             }
-            
+
             $simple_criteria = array('use_ip_to_link'     => 'IPADDRESS',
                                      'use_mac_to_link'    => 'MACADDRESS',
                                      'use_serial_to_link' => 'serial');
+
             foreach ($simple_criteria as $field => $value) {
                $tmpcriteria = array();
-               if($ocs_server[$field]) {
-                  $query = "INSERT INTO `glpi_rulecriterias`" .
-                           " VALUES (NULL, '$rule_id', '$value', '10'," .
-                           " '1')";
+               if ($ocs_server[$field]) {
+                  $query = "INSERT INTO `glpi_rulecriterias`
+                                   (`rules_id`, `criteria`, `condition`, `pattern`)
+                            VALUES ('$rule_id', '$value', '10', '1')";
                   $DB->query($query)
-                     or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
+                  or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
                }
             }
-            
+
             $tmpcriteria = array();
+            $query = "INSERT INTO `glpi_rulecriterias`
+                             (`rules_id`, `criteria`, `condition`, `pattern`)";
+
             switch ($ocs_server['use_name_to_link']) {
-               case 1:
-                  $query = "INSERT INTO `glpi_rulecriterias`" .
-                           " VALUES (NULL, '$rule_id', 'name', '10', '1')";
+               case 1 :
+                  $query .= "VALUES ('$rule_id', 'name', '10', '1')";
                   $DB->query($query);
                   break;
+
                case 2:
-                  $query = "INSERT INTO `glpi_rulecriterias`" .
-                           " VALUES (NULL, '$rule_id', 'name', '30', '1')";
+                  $query .= "VALUES ('$rule_id', 'name', '30', '1')";
                   $DB->query($query);
                   break;
-              
+
             }
-            $query = "INSERT INTO `glpi_ruleactions`" .
-                     " VALUES (NULL, '$rule_id', 'assign', '_fusion', '1')";
+            $query = "INSERT INTO `glpi_ruleactions`
+                             (`rules_id`, `action_type`, `field`, `value`)
+                      VALUES ('$rule_id', 'assign', '_fusion', '1')";
             $DB->query($query);
-   
+
             $ranking++;
          }
       }
 
-      $todrop = array('use_ip_to_link','use_mac_to_link','use_serial_to_link',
-                      'use_name_to_link','states_id_linkif','is_glpi_link_enabled');
+      $todrop = array('is_glpi_link_enabled', 'states_id_linkif', 'use_ip_to_link',
+                      'use_mac_to_link', 'use_name_to_link', 'use_serial_to_link');
       foreach ($todrop as $field) {
-         $migration->dropField('glpi_ocsservers',$field);
+         $migration->dropField('glpi_ocsservers', $field);
       }
    }
-   
+
    // must always be at the end
    $migration->executeMigration();
 

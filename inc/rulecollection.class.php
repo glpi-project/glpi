@@ -380,7 +380,7 @@ class RuleCollection extends CommonDBTM {
       $p['limit'] = $_SESSION['glpilist_limit'];
       $this->getCollectionPart($p);
 
-      printAjaxPager('',$p['start'], $nb);
+      printAjaxPager('', $p['start'], $nb);
 
       echo "<form name='ruleactions_form' id='ruleactions_form' method='post'action='".$target."'>";
       echo "\n<div class='spaced'>";
