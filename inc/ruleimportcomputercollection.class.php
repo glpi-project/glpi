@@ -69,7 +69,7 @@ class RuleImportComputerCollection extends RuleCollection {
       //Get informations about network ports
       $query = "SELECT *
                 FROM `networks`
-                WHERE `HARDWARE_ID` = '".$input['id']."'";
+                WHERE `HARDWARE_ID` = '".$input['ocsid']."'";
       $result = $DBocs->query($query);
 
       foreach ($DBocs->request($query) as $data) {
