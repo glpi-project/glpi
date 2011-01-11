@@ -1609,6 +1609,7 @@ class Search {
             break;
 
          case "glpi_networkports.ip" :
+         case "glpi_networkequipments.ip" :
             return " ORDER BY INET_ATON($table.$field) $order ";
             break;
       }
