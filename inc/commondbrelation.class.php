@@ -184,7 +184,7 @@ abstract class CommonDBRelation extends CommonDBTM {
    **/
    function post_addItem() {
 
-      if (isset($this->input['_no_history'])) {
+      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
 
@@ -242,7 +242,7 @@ abstract class CommonDBRelation extends CommonDBTM {
    **/
    function post_deleteFromDB() {
 
-      if (isset($this->input['_no_history'])) {
+      if (isset($this->input['_no_history']) && $this->input['_no_history']) {
          return false;
       }
 
