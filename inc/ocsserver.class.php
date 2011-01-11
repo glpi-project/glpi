@@ -1178,7 +1178,7 @@ class OcsServer extends CommonDBTM {
 
 
    static function manageDeleted($ocsservers_id) {
-      global $DB, $DBocs;
+      global $DB, $DBocs,$CFG_GLPI;
 
       if (!(OcsServer::checkOCSconnection($ocsservers_id) && OcsServer::checkConfig(1))) {
          return false;
@@ -1279,7 +1279,18 @@ class OcsServer extends CommonDBTM {
                      if ($DB->numrows($result)>0) {
                         $data = $DB->fetch_array($result);
                         $comp = new Computer();
-                        $comp->delete( array("id" => $data["computers_id"]), 0);
+                        if ($CFG_GLPI['ocs_deleted_behavior']) {
+                           if ($CFG_GLPI['ocs_deleted_behavior'] == 1) {
+                              $comp->delete( array("id" => $data["computers_id"]), 0);
+                           } else {
+                              if (preg_match('/STATE_(.*)/',$CFG_GLPI['ocs_deleted_behavior'],$results)) {
+                                 $tmp['id'] = $data["computers_id"];
+                                 $tmp['states_id'] = $results[1];
+                                 $tmp['entities_id'] = $data['entities_id'];
+                                 $comp->update($tmp);
+                              }
+                           }
+                        }
 
                         //Add history to indicates that the machine was deleted from OCS
                         $changes[0] = '0';

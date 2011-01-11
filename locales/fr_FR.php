@@ -2227,6 +2227,10 @@ $LANG['setup'][816] = "Ajouter unicité pour un type";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
 $LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
 
+$LANG['setup'][820] = "Comportement à la suppression d'une machine dans OCSNG";
+$LANG['setup'][821] = "Passage à l'état ";
+
+
 $LANG['sla'][1] = "SLA";
 $LANG['sla'][2] = "Temps maximum de résolution";
 $LANG['sla'][3] = "Exécution";

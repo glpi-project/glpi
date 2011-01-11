@@ -1467,6 +1467,8 @@ function update0782to080($output='HTML') {
    $migration->addField('glpi_profiles', 'delete_own_followup', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
    $migration->addField('glpi_profiles', 'delete_followups', 'char(1) COLLATE utf8_unicode_ci DEFAULT NULL');
 
+   $migration->addField('glpi_configs', 'ocs_deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'"); 
+
    //Migrate OCS computers link from static config to rules engine
    if (FieldExists('glpi_ocsservers','is_glpi_link_enabled')) {
       $ocs_servers = getAllDatasFromTable('glpi_ocsservers');
@@ -1544,7 +1546,7 @@ function update0782to080($output='HTML') {
          $migration->dropField('glpi_ocsservers', $field);
       }
    }
-
+   
    // must always be at the end
    $migration->executeMigration();
 
