@@ -310,7 +310,16 @@ class Config extends CommonDBTM {
                    1 => $LANG['entity'][8]);
       Dropdown::showFromArray('use_autoname_by_entity', $tab,
                               array('value' => $CFG_GLPI["use_autoname_by_entity"]));
-      echo "</td></td><td colspan='2'>&nbsp;";
+      echo "</td></td>";
+      echo "<td>".$LANG['setup'][820]."&nbsp;:</td>";
+      echo "<td>";
+      $actions[0] = DROPDOWN_EMPTY_VALUE;
+      $actions[1] = $LANG['ldap'][47];
+      foreach (getAllDatasFromTable('glpi_states') as $state) {
+         $actions['STATE_'.$state['id']] = $LANG['setup'][821].' '.$state['name'];
+      }
+      Dropdown::showFromArray('ocs_deleted_behavior',$actions,
+                              array('value' => $CFG_GLPI['ocs_deleted_behavior']));
       echo "</td></tr>";
 
       echo "</table>";
