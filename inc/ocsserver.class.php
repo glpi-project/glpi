@@ -2787,13 +2787,17 @@ class OcsServer extends CommonDBTM {
       $new_import_device = array(self::IMPORT_TAG_078);
       if (count($import_device)) {
          foreach ($import_device as $key=>$val) {
-            $tmp = explode(self::FIELD_SEPARATOR, $val);
+            $tmp=explode(self::FIELD_SEPARATOR,$val);
 
-            if (isset($tmp[1])) {
-               $new_import_device[$tmp[0].self::FIELD_SEPARATOR.$key] = $val;
-            } else {
-               $new_import_device[$key] = $val;
+            if (isset($tmp[1])) { // Except for old IMPORT_TAG
+               $tmp2=explode(self::FIELD_SEPARATOR,$key);
+               // Index Could be 1330395 (from glpi 0.72)
+               // Index Could be 5$$$$$5$$$$$5$$$$$5$$$$$5$$$$$1330395 (glpi 0.78 bug)
+               // So take the last part of the index
+               $key2 = $tmp[0].self::FIELD_SEPARATOR.array_pop($tmp2);
+               $new_import_device[$key2]=$val;
             }
+
          }
       }
       //Add the new tag as the first occurence in the array
@@ -3180,8 +3184,8 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   // Drop all memories and force no history
-                  if (!in_array(self::IMPORT_TAG_072,$import_device)) {
-                     OcsServer::addToOcsArray($computers_id, array(0 => self::IMPORT_TAG_072),
+                  if (!in_array(self::IMPORT_TAG_078,$import_device)) {
+                     OcsServer::addToOcsArray($computers_id, array(0 => self::IMPORT_TAG_078),
                                                                    "import_device");
                      // Clean memories for this computer
                      if (count($import_device)) {
