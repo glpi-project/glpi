@@ -1714,6 +1714,7 @@ class Search {
             }
             return " ORDER BY `".$table."`.`name` $order";
 
+         case "glpi_networkequipments.ip" :
          case "glpi_networkports.ip" :
             return " ORDER BY INET_ATON($table$addtable.$field) $order ";
       }
