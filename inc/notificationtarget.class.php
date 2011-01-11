@@ -405,7 +405,7 @@ class NotificationTarget extends CommonDBChild {
    function addToAddressesList($data) {
       global $CFG_GLPI;
 
-      $new_mail = trim($data['email']);
+      $new_mail = trim(utf8_strtolower($data['email']));
       $new_lang = '';
       if (isset($data['language'])) {
          $new_lang = trim($data['language']);
