@@ -66,6 +66,9 @@ class RuleImportComputerCollection extends RuleCollection {
    function prepareInputDataForProcess($input,$params) {
       global $DBocs;
 
+      if (!isset($input['ocsid']) && isset($input['id'])) {
+         $input['ocsid'] = $input['id'];
+      }
       //Get informations about network ports
       $query = "SELECT *
                 FROM `networks`
