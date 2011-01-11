@@ -35,7 +35,7 @@
 // ----------------------------------------------------------------------
 
 /**
- * Update from 0.78 to 0.80
+ * Update from 0.78.2 to 0.80
  *
  * @param $output string for format
  *       HTML (default) for standard upgrade
@@ -43,7 +43,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update0781to080($output='HTML') {
+function update0782to080($output='HTML') {
    global $DB, $LANG;
 
    $updateresult     = true;
@@ -702,31 +702,6 @@ function update0781to080($output='HTML') {
 
       $ADDTODISPLAYPREF['OcsServer'] = array(6);
    }
-
-   // Drop nl_be langage
-   $migration->migrationOneTable('glpi_configs');
-   $query = "UPDATE `glpi_configs`
-             SET `language` = 'nl_NL'
-             WHERE `language` = 'nl_BE';";
-   $DB->query($query) or die("0.80 drop nl_be langage " . $LANG['update'][90] . $DB->error());
-
-   $migration->migrationOneTable('glpi_users');
-   $query = "UPDATE `glpi_users`
-             SET `language` = 'nl_NL'
-             WHERE `language` = 'nl_BE';";
-   $DB->query($query) or die("0.80 drop nl_be langage " . $LANG['update'][90] . $DB->error());
-
-   // CLean sl_SL
-   $query = "UPDATE `glpi_configs`
-             SET `language` = 'sl_SI'
-             WHERE `language` = 'sl_SL';";
-   $DB->query($query) or die("0.80 drop nl_be langage " . $LANG['update'][90] . $DB->error());
-
-   $query = "UPDATE `glpi_users`
-             SET `language` = 'sl_SI'
-             WHERE `language` = 'sl_SL';";
-   $DB->query($query) or die("0.80 drop nl_be langage " . $LANG['update'][90] . $DB->error());
-
 
    $migration->changeField("glpi_configs", "use_auto_assign_to_tech", "auto_assign_mode",
                            "INT( 11 ) NOT NULL DEFAULT '1'");
@@ -1437,30 +1412,6 @@ function update0781to080($output='HTML') {
                $DB->query($query)
                or die("0.80 fix template tag usage for $itemtype ".$LANG['update'][90] .$DB->error());
             }
-         }
-      }
-   }
-
-   /// Add document types
-   $types = array('docx' => array('name' => 'Word XML',
-                                  'icon' => 'doc-dist.png'),
-                  'xlsx' => array('name' => 'Excel XML',
-                                  'icon' => 'xls-dist.png'),
-                  'pptx' => array('name' => 'PowerPoint XML',
-                                  'icon' => 'ppt-dist.png'));
-
-   foreach ($types as $ext => $data) {
-
-      $query = "SELECT *
-                FROM `glpi_documenttypes`
-                WHERE `ext` = '$ext'";
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result) == 0) {
-            $query = "INSERT INTO `glpi_documenttypes`
-                             (`name`, `ext`, `icon`, `is_uploadable`, `date_mod`)
-                      VALUES ('".$data['name']."', '$ext', '".$data['icon']."', '1', NOW())";
-            $DB->query($query)
-            or die("0.80 add document type $ext ".$LANG['update'][90] .$DB->error());
          }
       }
    }
