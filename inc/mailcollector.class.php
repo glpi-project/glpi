@@ -98,9 +98,14 @@ class MailCollector  extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($input["passwd"]) && !empty($input["passwd"])) {
-         $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
+      if (isset($input["passwd"])) {
+         if (empty($input["passwd"])) {
+            unset($input["passwd"]);
+         } else {
+            $input["passwd"] = encrypt($input["passwd"], GLPIKEY);
+         }
       }
+
 
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
          $input["host"] = constructMailServerConfig($input);
@@ -516,7 +521,7 @@ class MailCollector  extends CommonDBTM {
             }
          }
       }
-//      printCleanArray($tkt);exit();
+
       // Auto_import
       $tkt['_auto_import'] = 1;
       // For followup : do not check users_id = login user
@@ -762,10 +767,16 @@ class MailCollector  extends CommonDBTM {
       if (is_array($header) && count($header)) {
          foreach ($header as $line) {
             // is line with additional header?
-            if (preg_match("/^X-/i", $line)) {
+            if (preg_match("/^X-/i", $line)
+               || preg_match("/^Auto-Submitted/i", $line)
+               || preg_match("/^Received/i", $line)) {
                // separate name and value
                if (preg_match("/^([^:]*): (.*)/i", $line, $arg)) {
-                  $head[$arg[1]] = $arg[2];
+                  $key = utf8_strtolower($arg[1]);
+                  if (!isset($head[$key])) {
+                     $head[$key] = '';
+                  }
+                  $head[$key] .= $arg[2]."\n";
                }
             }
          }
