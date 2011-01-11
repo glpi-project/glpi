@@ -1520,6 +1520,7 @@ class OcsServer extends CommonDBTM {
                }
                // Get import devices
                $import_device = importArrayFromDB($line["import_device"]);
+
                // Migrate import device to manage several link tables
                if (!in_array(self::IMPORT_TAG_078,$import_device)) {
                   $import_device = OcsServer::migrateImportDevice($line['computers_id'], $import_device);
@@ -2283,21 +2284,26 @@ class OcsServer extends CommonDBTM {
 
    static function migrateImportDevice($computers_id,$import_device) {
       $new_import_device=array(self::IMPORT_TAG_078);
+
       if (count($import_device)) {
          foreach ($import_device as $key=>$val) {
             $tmp=explode(self::FIELD_SEPARATOR,$val);
-            if (isset($tmp[1])) {
-               $new_import_device[$tmp[0].self::FIELD_SEPARATOR.$key]=$val;
-            } else {
-               $new_import_device[$key]=$val;
+
+            if (isset($tmp[1])) { // Except for old IMPORT_TAG
+               $tmp2=explode(self::FIELD_SEPARATOR,$key);
+               // Index Could be 1330395 (from glpi 0.72)
+               // Index Could be 5$$$$$5$$$$$5$$$$$5$$$$$5$$$$$1330395 (glpi 0.78 bug)
+               // So take the last part of the index
+               $key2 = $tmp[0].self::FIELD_SEPARATOR.array_pop($tmp2);
+               $new_import_device[$key2]=$val;
             }
 
          }
       }
       //Add the new tag as the first occurence in the array
       OcsServer::replaceOcsArray($computers_id,$new_import_device,"import_device");
-      return $new_import_device;
 
+      return $new_import_device;
    }
 
    static function migrateComputerUpdates($computers_id,$computer_update) {
@@ -2662,8 +2668,8 @@ class OcsServer extends CommonDBTM {
                $result2 = $DBocs->query($query2);
                if ($DBocs->numrows($result2) > 0) {
                   // Drop all memories and force no history
-                  if (!in_array(self::IMPORT_TAG_072,$import_device)) {
-                     OcsServer::addToOcsArray($computers_id,array(0=>self::IMPORT_TAG_072),"import_device");
+                  if (!in_array(self::IMPORT_TAG_078,$import_device)) {
+                     OcsServer::addToOcsArray($computers_id,array(0=>self::IMPORT_TAG_078),"import_device");
                      // Clean memories for this computer
                      if (count($import_device)) {
                         $dohistory=false;
@@ -3000,8 +3006,10 @@ class OcsServer extends CommonDBTM {
                         } else {
                            $tmp = array_search(stripslashes($prevalue.$network["designation"]), $import_device);
                            list($type,$id)=explode(self::FIELD_SEPARATOR,$tmp);
+                           // Avoid NULL value from OCS DB
+                           $mac = (isset($line2["MACADDR"]) ? $line2["MACADDR"] : '');
                            $CompDevice->update(array('id'          => $id,
-                                                     'specificity' => $line2["MACADDR"],
+                                                     'specificity' => $mac,
                                                    '_itemtype'     => 'DeviceNetworkCard',));
                            unset ($import_device[$tmp]);
                         }
