@@ -217,6 +217,9 @@ abstract class CommonDropdown extends CommonDBTM {
                showDateTimeFormItem($field['name'], $this->fields[$field['name']]);
                break;
          }
+         if (isset($field['unit'])) {
+            echo "&nbsp;".$field['unit'];
+         }
          echo "</td></tr>\n";
       }
 

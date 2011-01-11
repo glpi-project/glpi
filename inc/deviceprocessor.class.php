@@ -53,10 +53,12 @@ class DeviceProcessor extends CommonDevice {
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
                                      'label' => $LANG['device_ram'][1]." ".$LANG['devices'][24],
-                                     'type'  => 'text'),
+                                     'type'  => 'text',
+                                     'unit'  => $LANG['setup'][35]),
                                array('name'  => 'frequence',
                                      'label' => $LANG['device_ram'][1],
-                                     'type'  => 'text')));
+                                     'type'  => 'text',
+                                     'unit'  => $LANG['setup'][35])));
    }
 
    static function getSpecifityLabel() {
