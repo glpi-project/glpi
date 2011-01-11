@@ -125,8 +125,7 @@ class RuleMailCollectorCollection extends RuleCollection {
             }
          }
       }
-      printCleanArray($input);
-      exit();
+
       return $input;
    }
 
