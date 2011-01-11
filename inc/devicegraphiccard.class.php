@@ -60,7 +60,8 @@ class DeviceGraphicCard extends CommonDevice {
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
                                      'label' => $LANG['devices'][6]." ".$LANG['devices'][24],
-                                     'type'  => 'text'),
+                                     'type'  => 'text',
+                                     'unit'  => $LANG['common'][82]),
                                array('name'  => 'interfacetypes_id',
                                      'label' => $LANG['common'][65],
                                      'type'  => 'dropdownValue')));
