@@ -107,7 +107,7 @@ function update0781to0782($output='HTML') {
       $DB->query($query) or die("0.78.2 drop unicity index for glpi_computers_items " .
                                  $LANG['update'][90] . $DB->error());
 
-      $query = "ALTER TABLE `glpi078`.`glpi_computers_items` ADD INDEX `item` ( `itemtype` , `items_id` ) ";
+      $query = "ALTER TABLE `glpi_computers_items` ADD INDEX `item` ( `itemtype` , `items_id` ) ";
       $DB->query($query) or die("0.78.2 add index for glpi_computers_items " .
                                  $LANG['update'][90] . $DB->error());
    }
