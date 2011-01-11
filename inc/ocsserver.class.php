@@ -4397,8 +4397,11 @@ class OcsServer extends CommonDBTM {
                               OcsServer::addToOcsArray($computers_id, array (0 => self::IMPORT_TAG_070),
                                             "import_monitor");
                            }
-                           OcsServer::addToOcsArray($computers_id, array ($connID => $checkMonitor),
-                                         "import_monitor");
+                           if ($connID > 0) { // sanity check - Add can fail
+                              OcsServer::addToOcsArray($computers_id,
+                                                       array ($connID => $checkMonitor),
+                                                       "import_monitor");
+                           }
                            $count_monitor++;
 
                            //Update column "is_deleted" set value to 0 and set status to default
@@ -4498,8 +4501,11 @@ class OcsServer extends CommonDBTM {
                                                          'itemtype'     => 'Printer',
                                                          'items_id'     => $id_printer,
                                                          '_no_history'  => !$dohistory));
-                              OcsServer::addToOcsArray($computers_id, array ($connID => $print["name"]),
-                                            "import_printer");
+                              if ($connID > 0) {
+                                 OcsServer::addToOcsArray($computers_id,
+                                                          array ($connID => $print["name"]),
+                                                          "import_printer");
+                              }
                               //Update column "is_deleted" set value to 0 and set status to default
                               $input = array ();
                               $input["id"] = $id_printer;
