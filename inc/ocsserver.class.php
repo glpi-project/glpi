@@ -1414,7 +1414,7 @@ class OcsServer extends CommonDBTM {
                 SET `CHECKSUM` = '" . self::MAX_CHECKSUM . "'
                 WHERE `ID` = '$ocsid'";
       $DBocs->query($query);
-      
+
    }
 
    static function importComputer($ocsid, $ocsservers_id, $lock=0, $defaultentity=-1,
@@ -1451,7 +1451,7 @@ class OcsServer extends CommonDBTM {
          if (isset($data['_ruleid'])) {
             $rules_matched['RuleOcs'] = $data['_ruleid'];
          }
-         
+
          //New machine to import
          $query = "SELECT `hardware`.*, `bios`.*
                    FROM `hardware`
@@ -4581,7 +4581,7 @@ class OcsServer extends CommonDBTM {
                if (!$cfg_ocs["ocs_db_utf8"] && !seems_utf8($data2["PUBLISHER"])) {
                   $data2["PUBLISHER"] = encodeInUtf8($data2["PUBLISHER"]);
                }
-               
+
                $version              = $data2["VERSION"];
                $manufacturer         = Manufacturer::processName($data2["PUBLISHER"]);
                $use_glpi_dictionnary = false;
@@ -5055,8 +5055,11 @@ class OcsServer extends CommonDBTM {
                                                        array(0 => self::IMPORT_TAG_070),
                                                        "import_monitor");
                            }
-                           OcsServer::addToOcsArray($computers_id, array ($connID => $checkMonitor),
-                                                    "import_monitor");
+                           if ($connID > 0) { // sanity check - Add can fail
+                              OcsServer::addToOcsArray($computers_id,
+                                                       array ($connID => $checkMonitor),
+                                                       "import_monitor");
+                           }
                            $count_monitor++;
 
                            //Update column "is_deleted" set value to 0 and set status to default
@@ -5216,9 +5219,11 @@ class OcsServer extends CommonDBTM {
                                                             'itemtype'     => 'Printer',
                                                             'items_id'     => $id_printer,
                                                             '_no_history'  => !$dohistory));
-                                 OcsServer::addToOcsArray($computers_id,
-                                                          array ($connID => $print["name"]),
-                                                          "import_printer");
+                                 if ($connID > 0) { // sanity check - Add can fail
+                                    OcsServer::addToOcsArray($computers_id,
+                                                             array ($connID => $print["name"]),
+                                                             "import_printer");
+                                 }
                                  //Update column "is_deleted" set value to 0 and set status to default
                                  $input                = array ();
                                  $input["id"]          = $id_printer;
