@@ -59,7 +59,6 @@ class RuleMailCollectorCollection extends RuleCollection {
 
       $fields = $this->getFieldsToLookFor();
 
-
       //Add needed ticket datas for rules processing
       if (isset($params['ticket']) && is_array($params['ticket'])) {
          foreach ($params['ticket'] as $key => $value) {
@@ -124,7 +123,6 @@ class RuleMailCollectorCollection extends RuleCollection {
             }
          }
       }
-
       return $input;
    }
 
