@@ -78,12 +78,14 @@ function includeCommonHtmlHeader($title='') {
           $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
    // AJAX library
-   echo "<script type=\"text/javascript\" src='".
-          $CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base.js'></script>\n";
    if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+   echo "<script type=\"text/javascript\" src='".
+          $CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base-debug.js'></script>\n";
       echo "<script type=\"text/javascript\" src='".
              $CFG_GLPI["root_doc"]."/lib/extjs/ext-all-debug.js'></script>\n";
    } else {
+   echo "<script type=\"text/javascript\" src='".
+          $CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base.js'></script>\n";
       echo "<script type=\"text/javascript\" src='".
              $CFG_GLPI["root_doc"]."/lib/extjs/ext-all.js'></script>\n";
    }
