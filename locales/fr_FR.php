@@ -2220,12 +2220,12 @@ $LANG['setup'][809] = "Réplicat MySQL : lecture seule";
 $LANG['setup'][810] = "Désynchronisation du réplicat MySQL";
 $LANG['setup'][811] = "Unicité des champs";
 $LANG['setup'][812] = "Critères d'unicité des champs par type";
-$LANG['setup'][813] = "Enregistrement impossible.<br/>Un autre élément existe déjà pour les champs";
+$LANG['setup'][813] = "Enregistrement impossible pour le(s) critère(s) ";
 $LANG['setup'][814] = "Vérification globale";
 $LANG['setup'][815] = "Champ(s) unique(s)";
 $LANG['setup'][816] = "Ajouter unicité pour un type";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
-
+$LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
 
 $LANG['sla'][1] = "SLA";
 $LANG['sla'][2] = "Temps maximum de résolution";
