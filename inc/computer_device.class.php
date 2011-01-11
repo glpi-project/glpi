@@ -187,6 +187,11 @@ class Computer_Device extends CommonDBTM {
       echo "<tr><th colspan='63'>".$LANG['title'][30]."</th></tr>";
       $nb = 0;
 
+      $specificity_units = array ('DeviceProcessor' => $LANG['setup'][35],
+                                 'DeviceMemory' => $LANG['common'][82],
+                                 'DeviceHardDrive' => $LANG['common'][82],
+                                 'DeviceGraphicCard' => $LANG['common'][82]);
+
       foreach ($devtypes as $itemtype) {
          initNavigateListItems($itemtype, $computer->getTypeName()." = ".$computer->getName());
 
@@ -207,11 +212,6 @@ class Computer_Device extends CommonDBTM {
                   GROUP BY `$fk` $specif_text";
 
          $prev = '';
-
-         $specificity_units = array ('DeviceProcessor' => $LANG['setup'][35],
-                                    'DeviceMemory' => $LANG['common'][82],
-                                    'DeviceHardDrive' => $LANG['common'][82],
-                                    'DeviceGraphicCard' => $LANG['common'][82]);
 
          foreach($DB->request($query) as $data) {
             addToNavigateListItems($itemtype, $data[$fk]);
