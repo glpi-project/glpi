@@ -101,6 +101,17 @@ function update0781to0782($output='HTML') {
              WHERE `language` = 'sl_SL';";
    $DB->query($query) or die("0.80 clean sl_SL langage " . $LANG['update'][90] . $DB->error());
 
+
+   if (isIndex('glpi_computers_items', 'unicity')) {
+      $query = "ALTER TABLE `glpi_computers_items` DROP INDEX `unicity`";
+      $DB->query($query) or die("0.78.2 drop unicity index for glpi_computers_items " .
+                                 $LANG['update'][90] . $DB->error());
+
+      $query = "ALTER TABLE `glpi078`.`glpi_computers_items` ADD INDEX `item` ( `itemtype` , `items_id` ) ";
+      $DB->query($query) or die("0.78.2 add index for glpi_computers_items " .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0782"); // End
 
