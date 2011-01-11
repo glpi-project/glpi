@@ -86,22 +86,6 @@ class RuleMailCollector extends Rule {
       $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
       $criterias['mailcollector']['type'] = 'dropdown';
 
-      $criterias['from']['name']  = $LANG['mailing'][132].' : from';
-      $criterias['from']['table'] = '';
-      $criterias['from']['type'] = 'text';
-
-      $criterias['to']['name']  = $LANG['mailing'][132].' : to';
-      $criterias['to']['table'] = '';
-      $criterias['to']['type'] = 'text';
-
-      $criterias['in_reply_to']['name']  = $LANG['mailing'][132].' : in_reply_to';
-      $criterias['in_reply_to']['table'] = '';
-      $criterias['in_reply_to']['type'] = 'text';
-
-      $criterias['X-Priority']['name']  = $LANG['mailing'][132].' : '.$LANG['joblist'][2];
-      $criterias['X-Priority']['table'] = '';
-      $criterias['X-Priority']['type'] = 'text';
-
       $criterias['username']['field'] = 'name';
       $criterias['username']['name']  = $LANG['common'][34].' : '.$LANG['common'][16];
       $criterias['username']['table'] = 'glpi_users';
@@ -115,6 +99,34 @@ class RuleMailCollector extends Rule {
       $criterias['content']['name']  = $LANG['mailing'][118].' : '.$LANG['mailing'][114];
       $criterias['content']['table'] = '';
       $criterias['content']['type'] = 'text';
+
+      $criterias['from']['name']  = $LANG['mailing'][132].' : from';
+      $criterias['from']['table'] = '';
+      $criterias['from']['type'] = 'text';
+
+      $criterias['to']['name']  = $LANG['mailing'][132].' : to';
+      $criterias['to']['table'] = '';
+      $criterias['to']['type'] = 'text';
+
+      $criterias['in_reply_to']['name']  = $LANG['mailing'][132].' : in_reply_to';
+      $criterias['in_reply_to']['table'] = '';
+      $criterias['in_reply_to']['type'] = 'text';
+
+      $criterias['X-Priority']['name']  = $LANG['mailing'][132].' : X-Priority';
+      $criterias['X-Priority']['table'] = '';
+      $criterias['X-Priority']['type'] = 'text';
+
+      $criterias['X-Auto-Response-Suppress']['name']  = $LANG['mailing'][132].' : X-Auto-Response-Suppress';
+      $criterias['X-Auto-Response-Suppress']['table'] = '';
+      $criterias['X-Auto-Response-Suppress']['type']  = 'text';
+
+      $criterias['Auto-Submitted']['name']  = $LANG['mailing'][132].' : Auto-Submitted';
+      $criterias['Auto-Submitted']['table'] = '';
+      $criterias['Auto-Submitted']['type']  = 'text';
+
+      $criterias['Received']['name']  = $LANG['mailing'][132].' : Received';
+      $criterias['Received']['table'] = '';
+      $criterias['Received']['type']  = 'text';
 
       $criterias['GROUPS']['table']     = 'glpi_groups';
       $criterias['GROUPS']['field']     = 'name';

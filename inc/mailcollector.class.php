@@ -710,10 +710,15 @@ class MailCollector  extends CommonDBTM {
       if (is_array($header) && count($header)) {
          foreach($header as $line) {
             // is line with additional header?
-            if (preg_match("/^X-/i", $line)) {
+            if (preg_match("/^X-/i", $line)
+               || preg_match("/^Auto-Submitted/i", $line)
+               || preg_match("/^Received/i", $line)) {
                // separate name and value
                if (preg_match("/^([^:]*): (.*)/i", $line, $arg)) {
-                  $head[$arg[1]] = $arg[2];
+                  if (!isset($head[$arg[1]])) {
+                     $head[$arg[1]] = '';
+                  }
+                  $head[$arg[1]] .= $arg[2]."\n";
                }
             }
          }
