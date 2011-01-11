@@ -1014,8 +1014,9 @@ class Search {
                                  // Manage Link to item
                                  $split2 = explode("$$", $split[$k]);
                                  if (isset($split2[1])) {
-                                    $out .= "<a href=\"".getItemTypeFormURL($p['itemtype2'][$j]).
-                                              "?id=".$split2[1]."\">";
+                                    $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.$split2[1]."'
+                                             href=\"".getItemTypeFormURL($p['itemtype2'][$j]).
+                                              "?id=".$p['itemtype2'][$j]."\">";
                                     $out .= $split2[0].$unit;
                                     if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                                        $out .= " (".$split2[1].")";
@@ -3871,7 +3872,8 @@ class Search {
                }
                $options['reset'] = 'reset';
 
-               $out  = "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">";
+               $out  = "<a id='ticket$itemtype".$data['id']."' ";
+               $out .= "href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options,'&amp;')."\">";
                $out .= $data[$NAME.$num]."</a>";
 
             } else {
@@ -4071,7 +4073,7 @@ class Search {
                            $count_display++;
                            $page = getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                            $page .= (strpos($page,'?') ? '&id' : '?id');
-                           $out .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$split2[1]."'
+                           $out .= "<a id='".$searchopt[$ID]["itemlink_type"]."_".$data['id']."_".$split2[1]."'
                                      href='$page=".$split2[1]."'>".$split2[0].$unit;
                            if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                               $out .= " (".$split2[1].")";
