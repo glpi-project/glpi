@@ -606,8 +606,10 @@ function updateDbUpTo031()
       case "0.78":
          include("update_078_0781.php");
          update078to0781();
-			break;
       case "0.78.1":
+         include("update_0781_0782.php");
+         update0781to0782();
+      case "0.78.2":
 			break;
 		default:
 			include("update_031_04.php");
@@ -647,6 +649,8 @@ function updateDbUpTo031()
          update0723to078();
          include("update_078_0781.php");
          update078to0781();
+         include("update_0781_0782.php");
+         update0781to0782();
 
 			break;
 	}
