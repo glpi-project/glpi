@@ -379,7 +379,14 @@ class MailCollector  extends CommonDBTM {
                    || isset($tkt['_refuse_email_no_response'])
                    || isset($tkt['_refuse_email_with_response'])) {
 
-                  if (isset($tkt['entities_id']) || isset($tkt['tickets_id'])) {
+                  if (isset($tkt['_refuse_email_with_response'])) {
+                     $this->sendMailRefusedResponse($tkt['_head']['from'], $tkt['name']);
+                     $delete_mail = true;
+                     $refused++;
+                  } else if (isset($tkt['_refuse_email_no_response'])) {
+                     $delete_mail = true;
+                     $refused++;
+                  } else if (isset($tkt['entities_id']) || isset($tkt['tickets_id'])) {
                      $tkt['_mailgate'] = $mailgateID;
                      $result = imap_fetchheader($this->marubox, $i);
 
@@ -408,9 +415,7 @@ class MailCollector  extends CommonDBTM {
                      }
 
                   } else {
-                     if (isset($tkt['_refuse_email_with_response'])) {
-                        $this->sendMailRefusedResponse($tkt['user_email'], $tkt['name']);
-                     }
+                     // Case never raise
                      $delete_mail = true;
                      $refused++;
                   }
@@ -615,11 +620,11 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
+      $tkt['name'] = $this->textCleaner($head['subject']);
       if (! isset($tkt['tickets_id'])) {
          // Which entity ?
          //$tkt['entities_id']=$this->fields['entities_id'];
          //$tkt['Subject']= $head['subject'];   // not use for the moment
-         $tkt['name'] = $this->textCleaner($head['subject']);
          // Medium
          $tkt['urgency'] = "3";
          // No hardware associated
