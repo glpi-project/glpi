@@ -1674,11 +1674,16 @@ class Search {
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
 
-      $addtable = "";
-      if ($table != getTableForItemType($itemtype)
-          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
-         $addtable .= "_".$searchopt[$ID]["linkfield"];
+
+      $addtable = '';
+      if (isset($searchopt[$ID]['joinparams'])) {
+         $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
+
+         if (!empty($complexjoin)) {
+            $addtable .= "_".$complexjoin;
+         }
       }
+
 
       if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
          return " ORDER BY ITEM_$key $order ";
@@ -1710,7 +1715,7 @@ class Search {
             return " ORDER BY `".$table."`.`name` $order";
 
          case "glpi_networkports.ip" :
-            return " ORDER BY INET_ATON($table.$field) $order ";
+            return " ORDER BY INET_ATON($table$addtable.$field) $order ";
       }
 
       //// Default cases
