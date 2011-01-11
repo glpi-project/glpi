@@ -231,8 +231,9 @@ function countElementsInTable($table, $condition="") {
       $table = implode('`,`',$table);
    }
 
+   // For yllen : dont protect $table if multiple tables
    $query = "SELECT COUNT(*) AS cpt
-             FROM `$table`";
+             FROM $table";
 
    if (!empty($condition)) {
       $query .= " WHERE $condition ";
