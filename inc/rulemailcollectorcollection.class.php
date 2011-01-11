@@ -62,7 +62,8 @@ class RuleMailCollectorCollection extends RuleCollection {
       //Add needed ticket datas for rules processing
       if (isset($params['ticket']) && is_array($params['ticket'])) {
          foreach ($params['ticket'] as $key => $value) {
-            if (in_array($key,$fields) && !isset($input[$key])) {
+            if ((in_array($key,$fields) && !isset($input[$key]))
+               || (in_array(strtolower($key),$fields) && !isset($input[strtolower($key)]))) {
                $input[$key] = $value;
             }
          }
@@ -71,7 +72,8 @@ class RuleMailCollectorCollection extends RuleCollection {
       //Add needed headers for rules processing
       if (isset($params['headers']) && is_array($params['headers'])) {
          foreach ($params['headers'] as $key => $value) {
-            if (in_array($key,$fields) && !isset($input[$key])) {
+            if ((in_array($key,$fields) && !isset($input[$key]))
+               || (in_array(strtolower($key),$fields) && !isset($input[strtolower($key)]))) {
                $input[$key] = $value;
             }
          }
@@ -123,6 +125,8 @@ class RuleMailCollectorCollection extends RuleCollection {
             }
          }
       }
+      printCleanArray($input);
+      exit();
       return $input;
    }
 

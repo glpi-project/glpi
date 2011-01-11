@@ -772,11 +772,10 @@ class MailCollector  extends CommonDBTM {
                || preg_match("/^Received/i", $line)) {
                // separate name and value
                if (preg_match("/^([^:]*): (.*)/i", $line, $arg)) {
-                  $key = utf8_strtolower($arg[1]);
-                  if (!isset($head[$key])) {
-                     $head[$key] = '';
+                  if (!isset($head[$arg[1]])) {
+                     $head[$arg[1]] = '';
                   }
-                  $head[$key] .= $arg[2]."\n";
+                  $head[$arg[1]] .= $arg[2]."\n";
                }
             }
          }
