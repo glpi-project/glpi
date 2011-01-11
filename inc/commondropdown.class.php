@@ -250,6 +250,10 @@ abstract class CommonDropdown extends CommonDBTM {
                $this->displaySpecificTypeField($ID, $field);
                break;
          }
+         if (isset($field['unit'])) {
+            echo "&nbsp;".$field['unit'];
+         }
+
          echo "</td></tr>\n";
       }
 

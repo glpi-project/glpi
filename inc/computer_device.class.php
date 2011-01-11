@@ -188,6 +188,12 @@ class Computer_Device extends CommonDBTM {
       echo "<tr><th colspan='63'>".$LANG['title'][30]."</th></tr>";
       $nb = 0;
 
+
+      $specificity_units = array ('DeviceProcessor' => $LANG['setup'][35],
+                                 'DeviceMemory' => $LANG['common'][82],
+                                 'DeviceHardDrive' => $LANG['common'][82],
+                                 'DeviceGraphicCard' => $LANG['common'][82]);
+
       foreach ($devtypes as $itemtype) {
          initNavigateListItems($itemtype, $computer->getTypeName()." = ".$computer->getName());
 
@@ -234,10 +240,18 @@ class Computer_Device extends CommonDBTM {
                         // Specificity
                         echo "<td class='right' colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
                         echo "<input type='text' name='value_".$itemtype."_".$data['id']."' value='";
-                        echo $data['specificity']."' size='".$spec['size']."' ></td>";
+                        echo $data['specificity']."' size='".$spec['size']."'>";
+                        if (isset($specificity_units[$device->getType()])) {
+                           echo '&nbsp;'.$specificity_units[$device->getType()];
+                        }
+                        echo "</td>";
                      } else {
                         echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                        echo $data['specificity']."</td>";
+                        echo $data['specificity'];
+                        if (isset($specificity_units[$device->getType()])) {
+                           echo '&nbsp;'.$specificity_units[$device->getType()];
+                        }
+                        echo "</td>";
                      }
                   }
                } else {
