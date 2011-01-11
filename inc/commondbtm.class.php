@@ -2575,10 +2575,11 @@ class CommonDBTM extends CommonGLPI {
                          } else {
                             $searchOption = $this->getSearchOptionByField('field', $field);
                          }
-                         $message[] = $searchOption['name'].': '.$this->input[$field];
+                         $message[] = $searchOption['name'].'='.$this->input[$field];
                       }
-                      $message_text = $LANG['setup'][813].": ".implode('&',$message);
+                     
                       $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
+                      $message_text = $LANG['setup'][813].": ".implode('&',$message);
                       $message_text.= $LANG['setup'][818];
                       foreach ($doubles as $double) {
                          if (get_class($this) == 'Infocom') {
@@ -2588,7 +2589,7 @@ class CommonDBTM extends CommonGLPI {
                             $item_id = $item->fields['id'];
                             $entities_id = $item->fields['entities_id'];
                          } else {
-                           $item_serial = $this->fields['serial'];
+                            $item_serial = $this->fields['serial'];
                             $item_id = $this->fields['id'];
                             $entities_id = $this->fields['entities_id'];
                          }
@@ -2598,7 +2599,7 @@ class CommonDBTM extends CommonGLPI {
                          $message_text.= Dropdown::getDropdownName('glpi_entities',$entities_id)."]";
                       }
                       if ($p['unicity_error_message']) {
-                         addMessageAfterRedirect($LANG['setup'][813]." : ".$message_text,
+                         addMessageAfterRedirect($message_text,
                                                  true, ERROR, false);
                       }
                       if ($p['add_event_on_duplicate']) {
