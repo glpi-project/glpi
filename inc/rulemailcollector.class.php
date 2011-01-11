@@ -120,21 +120,21 @@ class RuleMailCollector extends Rule {
       $criterias['in_reply_to']['table'] = '';
       $criterias['in_reply_to']['type']  = 'text';
 
-      $criterias['X-Priority']['name']  = $LANG['mailing'][132].' : X-Priority';
-      $criterias['X-Priority']['table'] = '';
-      $criterias['X-Priority']['type']  = 'text';
+      $criterias['x-priority']['name']  = $LANG['mailing'][132].' : X-Priority';
+      $criterias['x-priority']['table'] = '';
+      $criterias['x-priority']['type']  = 'text';
 
-      $criterias['X-Auto-Response-Suppress']['name']  = $LANG['mailing'][132].' : X-Auto-Response-Suppress';
-      $criterias['X-Auto-Response-Suppress']['table'] = '';
-      $criterias['X-Auto-Response-Suppress']['type']  = 'text';
+      $criterias['x-auto-response-suppress']['name']  = $LANG['mailing'][132].' : X-Auto-Response-Suppress';
+      $criterias['x-auto-response-suppress']['table'] = '';
+      $criterias['x-auto-response-suppress']['type']  = 'text';
 
-      $criterias['Auto-Submitted']['name']  = $LANG['mailing'][132].' : Auto-Submitted';
-      $criterias['Auto-Submitted']['table'] = '';
-      $criterias['Auto-Submitted']['type']  = 'text';
+      $criterias['auto-submitted']['name']  = $LANG['mailing'][132].' : Auto-Submitted';
+      $criterias['auto-submitted']['table'] = '';
+      $criterias['auto-submitted']['type']  = 'text';
 
-      $criterias['Received']['name']  = $LANG['mailing'][132].' : Received';
-      $criterias['Received']['table'] = '';
-      $criterias['Received']['type']  = 'text';
+      $criterias['received']['name']  = $LANG['mailing'][132].' : Received';
+      $criterias['received']['table'] = '';
+      $criterias['received']['type']  = 'text';
 
       $criterias['GROUPS']['table']     = 'glpi_groups';
       $criterias['GROUPS']['field']     = 'name';

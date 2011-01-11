@@ -112,6 +112,43 @@ function update0781to0782($output='HTML') {
                                  $LANG['update'][90] . $DB->error());
    }
 
+   // For Rule::RULE_TRACKING_AUTO_ACTION
+   $changes['RuleMailCollector'] = array('X-Priority' => 'x-priority');
+
+   $DB->query("SET SESSION group_concat_max_len = 9999999;");
+   foreach ($changes as $ruletype => $tab) {
+      // Get rules
+      $query = "SELECT GROUP_CONCAT(`id`)
+                FROM `glpi_rules`
+                WHERE `sub_type` = '".$ruletype."'
+                GROUP BY `sub_type`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            // Get rule string
+            $rules = $DB->result($result,0,0);
+            // Update actions
+            foreach ($tab as $old => $new) {
+               $query = "UPDATE `glpi_ruleactions`
+                         SET `field` = '$new'
+                         WHERE `field` = '$old'
+                               AND `rules_id` IN ($rules)";
+
+               $DB->query($query)
+               or die("0.78.2 update datas for rules actions " . $LANG['update'][90] . $DB->error());
+            }
+            // Update criterias
+            foreach ($tab as $old => $new) {
+               $query = "UPDATE `glpi_rulecriterias`
+                         SET `criteria` = '$new'
+                         WHERE `criteria` = '$old'
+                               AND `rules_id` IN ($rules)";
+               $DB->query($query)
+               or die("0.78.2 update datas for rules criterias ".$LANG['update'][90] .$DB->error());
+            }
+         }
+      }
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0782"); // End
 
