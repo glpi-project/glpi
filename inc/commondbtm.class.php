@@ -2575,9 +2575,28 @@ class CommonDBTM extends CommonGLPI {
                          } else {
                             $searchOption = $this->getSearchOptionByField('field', $field);
                          }
-                         $message[] = $searchOption['name'].'='.$this->input[$field];
+                         $message[] = $searchOption['name'].': '.$this->input[$field];
                       }
-                      $message_text = implode('&',$message);
+                      $message_text = $LANG['setup'][813].": ".implode('&',$message);
+                      $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
+                      $message_text.= $LANG['setup'][818];
+                      foreach ($doubles as $double) {
+                         if (get_class($this) == 'Infocom') {
+                            $item = new $this->fields['itemtype'];
+                            $item->getFromDB($this->fields['items_id']);
+                            $item_serial = $item->fields['serial'];
+                            $item_id = $item->fields['id'];
+                            $entities_id = $item->fields['entities_id'];
+                         } else {
+                           $item_serial = $this->fields['serial'];
+                            $item_id = $this->fields['id'];
+                            $entities_id = $this->fields['entities_id'];
+                         }
+                         $message_text.= " [".$LANG['login'][6].": ".$item_id.", ";
+                         $message_text.= $LANG['common'][19].": ".$item_serial.", ";
+                         $message_text.=$LANG['entity'][0].": "; 
+                         $message_text.= Dropdown::getDropdownName('glpi_entities',$entities_id)."]";
+                      }
                       if ($p['unicity_error_message']) {
                          addMessageAfterRedirect($LANG['setup'][813]." : ".$message_text,
                                                  true, ERROR, false);
