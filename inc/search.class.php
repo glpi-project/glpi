@@ -949,7 +949,8 @@ class Search {
                                  // Manage Link to item
                                  $split2=explode("$$",$split[$k]);
                                  if (isset($split2[1])) {
-                                    $out .= "<a href=\"".getItemTypeFormURL($p['itemtype2'][$j])."?id=".$split2[1]."\">";
+                                    $out .= "<a id='".$p['itemtype2'][$j].$split2[1]."'
+                                                href=\"".getItemTypeFormURL($p['itemtype2'][$j])."?id=".$split2[1]."\">";
                                     $out .= $split2[0].$unit;
                                     if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                                        $out .= " (".$split2[1].")";
@@ -3536,7 +3537,7 @@ class Search {
 
                $options['reset']='reset';
 
-               $out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">";
+               $out= "<a id='ticketcount".$data['id']."' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".append_params($options)."\">";
                $out .= $data[$NAME.$num];
                $out .= "</a>";
             } else {
