@@ -75,10 +75,6 @@ if ($item->maybeTemplate()) {
    $where .= " AND `$table`.`is_template` = '0' ";
 }
 
-if (!empty($used)) {
-   $where .= " AND `$table`.`id` NOT IN ('".implode("','",$used)."')";
-}
-
 if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
    $where .= " AND (`$table`.`name` ".makeTextSearch($_POST['searchText'])."
                     OR `$table`.`otherserial` ".makeTextSearch($_POST['searchText'])."
@@ -108,14 +104,19 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 }
 
+$where_used = '';
+if (!empty($used)) {
+   $where_used = " AND `$table`.`id` NOT IN ('".implode("','",$used)."')";
+}
+
+
 if ($_POST["onlyglobal"] && $_POST["idtable"] != 'Computer') {
    $CONNECT_SEARCH = " WHERE `$table`.`is_global` = '1' ";
-
 } else {
    if ($_POST["idtable"] == 'Computer') {
       $CONNECT_SEARCH = " WHERE 1 ";
    } else {
-      $CONNECT_SEARCH = " WHERE (`glpi_computers_items`.`id` IS NULL
+      $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL $where_used)
                                  OR `$table`.`is_global` = '1') ";
    }
 }
