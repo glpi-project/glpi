@@ -2437,6 +2437,7 @@ $LANG['users'][13] = "Mot de passe modifié avec succès.";
 $LANG['users'][14] = "Habilitations";
 $LANG['users'][15] = "Import depuis les annuaires";
 $LANG['users'][16] = "Import depuis les autres sources";
+$LANG['users'][17] = "Matricule";
 
 
 $LANG['validation'][0]  = "Validation";

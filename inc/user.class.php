@@ -1292,11 +1292,15 @@ class User extends CommonDBTM {
       echo "</td>";
       echo "<td rowspan='4' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
       echo "<td class='center middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"] . "</textarea>";
+      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"] . "</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2&nbsp;:</td><td>";
       autocompletionTextField($this, "phone2");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['users'][17] . "&nbsp;:</td><td>";
+      autocompletionTextField($this, "registration_number");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['users'][1] . "&nbsp;:</td><td>";
@@ -1727,6 +1731,11 @@ class User extends CommonDBTM {
       $tab[21]['field']         = 'user_dn';
       $tab[21]['name']          = $LANG['ldap'][26];
       $tab[21]['massiveaction'] = false;
+
+      $tab[22]['table']         = $this->getTable();
+      $tab[22]['field']         = 'registration_number';
+      $tab[22]['name']          = $LANG['users'][17];
+      $tab[22]['massiveaction'] = false;
 
       $tab[80]['table']         = 'glpi_complete_entities';
       $tab[80]['linkfield']     = 'entities_id';

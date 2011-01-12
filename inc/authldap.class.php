@@ -77,23 +77,24 @@ class AuthLDAP extends CommonDBTM {
 
    function post_getEmpty () {
 
-      $this->fields['port']               = '389';
-      $this->fields['condition']          = '';
-      $this->fields['login_field']        = 'uid';
-      $this->fields['use_tls']            = 0;
-      $this->fields['group_field']        = '';
-      $this->fields['group_condition']    = '';
-      $this->fields['group_search_type']  = 0;
-      $this->fields['group_member_field'] = '';
-      $this->fields['email_field']        = 'mail';
-      $this->fields['realname_field']     = 'cn';
-      $this->fields['firstname_field']    = 'givenname';
-      $this->fields['phone_field']        = 'telephonenumber';
-      $this->fields['phone2_field']       = '';
-      $this->fields['mobile_field']       = '';
-      $this->fields['comment_field']      = '';
-      $this->fields['title_field']        = '';
-      $this->fields['use_dn']             = 0;
+      $this->fields['port']                           = '389';
+      $this->fields['condition']                      = '';
+      $this->fields['login_field']                    = 'uid';
+      $this->fields['use_tls']                        = 0;
+      $this->fields['group_field']                    = '';
+      $this->fields['group_condition']                = '';
+      $this->fields['group_search_type']              = 0;
+      $this->fields['group_member_field']             = '';
+      $this->fields['email_field']                    = 'mail';
+      $this->fields['realname_field']                 = 'cn';
+      $this->fields['firstname_field']                = 'givenname';
+      $this->fields['phone_field']                    = 'telephonenumber';
+      $this->fields['phone2_field']                   = '';
+      $this->fields['mobile_field']                   = '';
+      $this->fields['registration_number_field']       = '';
+      $this->fields['comment_field']                  = '';
+      $this->fields['title_field']                    = '';
+      $this->fields['use_dn']                         = 0;
    }
 
 
@@ -123,6 +124,7 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['phone_field']        = 'telephonenumber';
             $this->fields['phone2_field']       = 'othertelephone';
             $this->fields['mobile_field']       = 'mobile';
+            $this->fields['registration_number_field'] = 'employeenumber';
             $this->fields['comment_field']      = 'info';
             $this->fields['title_field']        = 'title';
             $this->fields['entity_field']       = 'ou';
@@ -249,9 +251,9 @@ class AuthLDAP extends CommonDBTM {
          if (!$ID) {
             $hidden_fields = array ('port', 'condition' , 'login_field', 'use_tls', 'group_field',
                                     'group_condition', 'group_search_type', 'group_member_field',
-                                    'email_field', 'realname_field', 'firstname_field',
-                                    'phone_field', 'phone2_field', 'mobile_field', 'comment_field',
-                                    'title_field', 'use_dn', 'entity_field', 'entity_condition');
+                                    'email_field', 'realname_field', 'firstname_field', 'phone_field',
+                                    'phone2_field', 'mobile_field', 'comment_field', 'title_field',
+                                    'use_dn', 'entity_field', 'entity_condition','registration_number_field');
 
             foreach ($hidden_fields as $hidden_field) {
                echo "<input type='hidden' name='$hidden_field' value='".
@@ -488,7 +490,13 @@ class AuthLDAP extends CommonDBTM {
       echo "<td>" . $LANG['setup'][41] . "&nbsp;:</td>";
       echo "<td><input type='text' name='language_field' value='".
                  $this->fields["language_field"]."'></td></tr>";
-
+      echo "<tr class='tab_bg_2'><td>" . $LANG['users'][17] . "&nbsp;:</td>";
+      echo "<td>"; 
+      echo "<input type='text' name='registration_number_field' value='".
+         $this->fields["registration_number_field"]."'>";
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
       echo "<tr class='tab_bg_2'><td class='center' colspan=4>";
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";
       echo "</td></tr>";
@@ -733,17 +741,18 @@ class AuthLDAP extends CommonDBTM {
    static function getSyncFields($authtype_array) {
 
       $ret    = array();
-      $fields = array('login_field'     => 'name',
-                      'email_field'     => 'email',
-                      'realname_field'  => 'realname',
-                      'firstname_field' => 'firstname',
-                      'phone_field'     => 'phone',
-                      'phone2_field'    => 'phone2',
-                      'mobile_field'    => 'mobile',
-                      'comment_field'   => 'comment',
-                      'title_field'     => 'usertitles_id',
-                      'category_field'  => 'usercategories_id',
-                      'language_field'  => 'language');
+      $fields = array('login_field'               => 'name',
+                      'email_field'               => 'email',
+                      'realname_field'            => 'realname',
+                      'firstname_field'           => 'firstname',
+                      'phone_field'               => 'phone',
+                      'phone2_field'              => 'phone2',
+                      'mobile_field'              => 'mobile',
+                      'comment_field'             => 'comment',
+                      'title_field'               => 'usertitles_id',
+                      'category_field'            => 'usercategories_id',
+                      'language_field'            => 'language',
+                      'registration_number_field' => 'registration_number');
 
       foreach ($fields as $key => $val) {
          if (isset($authtype_array[$key]) && !empty($authtype_array[$key])) {
