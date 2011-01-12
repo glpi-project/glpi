@@ -1469,15 +1469,11 @@ function update0782to080($output='HTML') {
 
    $migration->addField('glpi_configs', 'ocs_deleted_behavior', "VARCHAR( 255 ) NOT NULL DEFAULT '1'"); 
 
-   if ($migration->addField('glpi_users', 'registration_number',
-                            'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL')) {
-      $migration->migrationOneTable('glpi_users');
-   }
-
-   if ($migration->addField('glpi_authldaps', 'registration_number_field',
-                            'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL')) {
-      $migration->migrationOneTable('glpi_authldaps');
-   }
+   //User registration number
+   $migration->addField('glpi_users', 'registration_number',
+                            'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL');
+   $migration->addField('glpi_authldaps', 'registration_number_field',
+                            'VARCHAR( 255 ) COLLATE utf8_unicode_ci DEFAULT NULL');
 
    //Migrate OCS computers link from static config to rules engine
    if (FieldExists('glpi_ocsservers','is_glpi_link_enabled')) {
