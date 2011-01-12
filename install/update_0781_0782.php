@@ -149,6 +149,84 @@ function update0781to0782($output='HTML') {
       }
    }
 
+   // Reorder ranking : start with 1
+   $query = " SELECT DISTINCT `sub_type` 
+               FROM `glpi_rules` 
+               WHERE ranking = '0'";
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $query = "UPDATE `glpi_rules` 
+                        SET `ranking` = ranking +1 
+                        WHERE `sub_type` = '".$data['sub_type']."';";
+            $DB->query($query)
+            or die("0.78.2 reorder rule ranking for ".$data['sub_type']." ".$LANG['update'][90] .$DB->error());
+         }
+      }
+   }
+
+   // Check existing rule
+   if (countElementsInTable('glpi_rulecriterias',
+                 "`criteria` IN ('auto-submitted','x-auto-response-suppress')") == 0 ) {
+      /// Reorder ranking 
+      $query = "UPDATE `glpi_rules` 
+                  SET `ranking` = ranking +2 
+                  WHERE `sub_type` = 'RuleMailCollector';";
+      $DB->query($query)
+      or die("0.78.2 reorder rule ranking for RuleMailCollector ".$LANG['update'][90] .$DB->error());
+
+      /// Insert new rule
+      $query = "INSERT INTO `glpi_rules`
+                        (`entities_id`, `sub_type`, `ranking`, `name`,
+                        `description`, `match`, `is_active`, `date_mod`, `is_recursive`)
+                  VALUES ('0', 'RuleMailCollector', '1', 'Auto-Reply X-Auto-Response-Suppress',
+                        'Exclude Auto-Reply emails using X-Auto-Response-Suppress header', 'AND', 0, NOW(), 1)";
+      $DB->query($query)
+      or die("0.78.2 add new rule RuleMailCollector ".$LANG['update'][90] .$DB->error());
+      $rule_id = $DB->insert_id();
+      /// Insert criteria and action
+      $query = "INSERT INTO `glpi_rulecriterias`
+                        (`rules_id`, `criteria`, `condition`, `pattern`)
+                  VALUES ('$rule_id', 'x-auto-response-suppress', '6', '/\\\\S+/')";
+      $DB->query($query)
+      or die("0.78.2 add new criteria RuleMailCollector ".$LANG['update'][90] .$DB->error());
+
+      $query = "INSERT INTO `glpi_ruleactions`
+                        (`rules_id`, `action_type`, `field`, `value`)
+                  VALUES ('$rule_id', 'assign', '_refuse_email_no_response', '1')";
+      $DB->query($query)
+      or die("0.78.2 add new action RuleMailCollector ".$LANG['update'][90] .$DB->error());
+
+
+      /// Insert new rule
+      $query = "INSERT INTO `glpi_rules`
+                        (`entities_id`, `sub_type`, `ranking`, `name`,
+                        `description`, `match`, `is_active`, `date_mod`, `is_recursive`)
+                  VALUES ('0', 'RuleMailCollector', '2', 'Auto-Reply Auto-Submitted',
+                        'Exclude Auto-Reply emails using Auto-Submitted header', 'AND', 0, NOW(), 1)";
+      $DB->query($query)
+      or die("0.78.2 add new rule RuleMailCollector ".$LANG['update'][90] .$DB->error());
+      $rule_id = $DB->insert_id();
+      /// Insert criteria and action
+      $query = "INSERT INTO `glpi_rulecriterias`
+                        (`rules_id`, `criteria`, `condition`, `pattern`)
+                  VALUES ('$rule_id', 'auto-submitted', '6', '/\\\\S+/')";
+      $DB->query($query)
+      or die("0.78.2 add new criteria RuleMailCollector ".$LANG['update'][90] .$DB->error());
+
+      $query = "INSERT INTO `glpi_rulecriterias`
+                        (`rules_id`, `criteria`, `condition`, `pattern`)
+                  VALUES ('$rule_id', 'auto-submitted', '1', 'no')";
+      $DB->query($query)
+      or die("0.78.2 add new criteria RuleMailCollector ".$LANG['update'][90] .$DB->error());
+
+      $query = "INSERT INTO `glpi_ruleactions`
+                        (`rules_id`, `action_type`, `field`, `value`)
+                  VALUES ('$rule_id', 'assign', '_refuse_email_no_response', '1')";
+      $DB->query($query)
+      or die("0.78.2 add new action RuleMailCollector ".$LANG['update'][90] .$DB->error());
+
+   }
 
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0782"); // End

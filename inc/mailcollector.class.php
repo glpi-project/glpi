@@ -726,8 +726,11 @@ class MailCollector  extends CommonDBTM {
                   $key = utf8_strtolower($arg[1]);
                   if (!isset($head[$key])) {
                      $head[$key] = '';
+                  } else {
+                     $head[$key] .= "\n";
                   }
-                  $head[$key] .= $arg[2]."\n";
+
+                  $head[$key] .= trim($arg[2]);
                }
             }
          }
