@@ -1494,7 +1494,7 @@ function update0782to080($output='HTML') {
                              (`rules_id`, `criteria`, `condition`, `pattern`)
                       VALUES ('$rule_id', 'ocsservers_id', '0', '".$ocs_server['id']."')";
             $DB->query($query)
-            or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
+            or die("0.80 add new criteria RuleImportComputer ".$LANG['update'][90] .$DB->error());
 
             if ($ocs_server['states_id_linkif']) {
                $query = "INSERT INTO `glpi_rulecriterias`
@@ -1517,7 +1517,7 @@ function update0782to080($output='HTML') {
                                    (`rules_id`, `criteria`, `condition`, `pattern`)
                             VALUES ('$rule_id', '$value', '10', '1')";
                   $DB->query($query)
-                  or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
+                  or die("0.80 add new criteria RuleImportComputer ".$LANG['update'][90] .$DB->error());
                }
             }
 
@@ -1540,7 +1540,8 @@ function update0782to080($output='HTML') {
             $query = "INSERT INTO `glpi_ruleactions`
                              (`rules_id`, `action_type`, `field`, `value`)
                       VALUES ('$rule_id', 'assign', '_fusion', '1')";
-            $DB->query($query);
+            $DB->query($query)
+            or die("0.80 add new action RuleImportComputer ".$LANG['update'][90] .$DB->error());
 
             $ranking++;
          }
