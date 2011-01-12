@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')) {
    ini_set('display_errors','On');
 }
 require_once GLPI_ROOT . "/install/update_0723_078.php";
+require_once GLPI_ROOT . "/install/update_078_0781.php";
+require_once GLPI_ROOT . "/install/update_0781_0782.php";
+require_once GLPI_ROOT . "/install/update_0782_080.php";
 
 function displayMigrationMessage ($id, $msg="") {
    // display nothing
@@ -79,15 +82,38 @@ define("POWER_DEVICE",12);
       $res = update0723to078(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
 
-      $query = "UPDATE `glpi_configs` SET `version` = ' 0.78', language='fr_FR',founded_new_version='' ;";
+      $query = "UPDATE `glpi_configs` SET `version` = '0.78', language='fr_FR',founded_new_version='' ;";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
+
+      // Update to 0.78.1
+      $res = update078to0781(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs` SET `version` = '0.78.1', language='fr_FR',founded_new_version='' ;";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
+
+      // Update to 0.78.2
+      $res = update0781to0782(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs` SET `version` = '0.78.2', language='fr_FR',founded_new_version='' ;";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
+
+      // Update to 0.80
+      $res = update0782to080(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs` SET `version` = '0.80', language='fr_FR',founded_new_version='' ;";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
+
+
    }
 
    public function testInstall() {
 
-      // Install a fresh 0.78 DB
+      // Install a fresh 0.80 DB
       $DB = new DB();
-      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.78-empty.sql");
+      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql");
       $this->assertTrue($res, "Fail: SQL Error during install");
 
       // update default language
