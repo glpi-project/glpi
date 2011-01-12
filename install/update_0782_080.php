@@ -1485,7 +1485,7 @@ function update0782to080($output='HTML') {
                              (`entities_id`, `sub_type`, `ranking`, `name`,
                               `description`, `match`, `is_active`, `date_mod`, `is_recursive`)
                       VALUES ('0', 'RuleImportComputer', '$ranking', '".$ocs_server['name']."',
-                              '', 'AND', 1, NOW(), 0)";
+                              '', 'AND', 1, NOW(), 1)";
             $DB->query($query)
             or die("0.80 add new rule RuleImportComputer ".$LANG['update'][90] .$DB->error());
             $rule_id = $DB->insert_id();
