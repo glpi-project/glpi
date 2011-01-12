@@ -269,8 +269,13 @@ class RuleImportComputer extends Rule {
       }
 
       //If no complex criteria or a value is missing, then there's a problem !
-      if (!$continue || empty($complex_criterias)) {
+      if (!$continue) {
          return false;
+      }
+
+      //No complex criteria
+      if (empty($complex_criterias)) {
+         return true;
       }
 
       //Build the request to check if the machine exists in GLPI
