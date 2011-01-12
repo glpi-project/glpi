@@ -261,8 +261,8 @@ $CFG_GLPI["dictionnary_types"] = array('ComputerModel', 'ComputerType', 'Manufac
 
 $CFG_GLPI["helpdesk_visible_types"] = array('Software');
 
-$CFG_GLPI["netport_types"] = array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone',
-                                   'Printer');
+$CFG_GLPI["networkport_types"] = array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone',
+                                       'Printer');
 
 $CFG_GLPI["massiveaction_noupdate_types"] = array('Entity', 'OcsServer', 'Profile',
                                                   'TicketValidation');

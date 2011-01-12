@@ -4575,7 +4575,7 @@ class Search {
                                                                                            'NEWTABLE'));
          }
 
-         if (in_array($itemtype, $CFG_GLPI["netport_types"])) {
+         if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {
             $search[$itemtype] += NetworkPort::getSearchOptionsToAdd($itemtype);
          }
 

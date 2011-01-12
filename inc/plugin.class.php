@@ -882,12 +882,16 @@ class Plugin extends CommonDBTM {
          $attrib['ticket_types'] = $attrib['helpdesk_types'];
          unset($attrib['helpdesk_types']);
       }
+      if (isset($attrib['netport_types'])) {
+         $attrib['networkport_types'] = $attrib['netport_types'];
+         unset($attrib['netport_types']);
+      }
 
       foreach (array('contract_types', 'document_types', 'ticket_types', 'helpdesk_visible_types',
                      'infocom_types', 'linkgroup_types', 'linkuser_types',
-                     'massiveaction_noupdate_types', 'massiveaction_nodelete_types', 'netport_types',
-                     'notificationtemplates_types', 'reservation_types', 'rulecollections_types',
-                     'unicity_types') as $att) {
+                     'massiveaction_noupdate_types', 'massiveaction_nodelete_types',
+                     'networkport_types', 'notificationtemplates_types', 'reservation_types',
+                     'rulecollections_types', 'unicity_types') as $att) {
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
             unset($attrib[$att]);

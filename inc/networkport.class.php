@@ -233,12 +233,12 @@ class NetworkPort extends CommonDBChild {
       echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
       echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 
-      foreach ($CFG_GLPI["netport_types"] as $key => $itemtype) {
+      foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
          if (class_exists($itemtype)) {
             $item = new $itemtype();
             echo "<option value='".$itemtype."'>".$item->getTypeName()."</option>";
          } else {
-            unset($CFG_GLPI["netport_types"][$key]);
+            unset($CFG_GLPI["networkport_types"][$key]);
          }
       }
       echo "</select>";

@@ -553,7 +553,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // If this type have NETPORT, clean one associated to purged item
-      if (in_array($this->getType(),$CFG_GLPI['netport_types'])) {
+      if (in_array($this->getType(),$CFG_GLPI['networkport_types'])) {
          $query = "SELECT `id`
                    FROM `glpi_networkports`
                    WHERE (`items_id` = '".$this->fields['id']."'
@@ -2577,7 +2577,7 @@ class CommonDBTM extends CommonGLPI {
                          }
                          $message[] = $searchOption['name'].'='.$this->input[$field];
                       }
-                     
+
                       $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
                       $message_text = $LANG['setup'][813].": ".implode('&',$message);
                       $message_text.= $LANG['setup'][818];
@@ -2595,7 +2595,7 @@ class CommonDBTM extends CommonGLPI {
                          }
                          $message_text.= " [".$LANG['login'][6].": ".$item_id.", ";
                          $message_text.= $LANG['common'][19].": ".$item_serial.", ";
-                         $message_text.=$LANG['entity'][0].": "; 
+                         $message_text.=$LANG['entity'][0].": ";
                          $message_text.= Dropdown::getDropdownName('glpi_entities',$entities_id)."]";
                       }
                       if ($p['unicity_error_message']) {
