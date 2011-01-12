@@ -1276,6 +1276,7 @@ class MailCollector  extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       $mmail           = new NotificationMail;
+      $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($to);
       $mmail->Subject  = $LANG['mailgate'][16].' '.$subject;
