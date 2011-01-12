@@ -158,6 +158,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       global $CFG_GLPI,$LANG;
 
       $mmail= new NotificationMail;
+      $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
       $mmail->From = $CFG_GLPI["admin_email"];
       $mmail->FromName = $CFG_GLPI["admin_email"];
       $mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
@@ -200,6 +201,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       global $LANG;
 
       $mmail = new NotificationMail();
+      $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
+
       $mmail->From = $options['from'];
       if ($options['replyto']) {
          $mmail->AddReplyTo($options['replyto'], '');
