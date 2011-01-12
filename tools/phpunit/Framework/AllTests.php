@@ -91,7 +91,7 @@ class Framework_GLPI extends PHPUnit_Framework_TestSuite {
             echo "Schema need to be updated\n";
          }
          echo "Loading a fresh empty database:";
-         $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.78-empty.sql");
+         $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql");
          die(" done\nTry again\n");
       }
 
