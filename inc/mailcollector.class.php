@@ -367,7 +367,7 @@ class MailCollector  extends CommonDBTM {
                      $this->sendMailRefusedResponse($tkt['_head']['from'], $tkt['name']);
                      $delete_mail = true;
                      $refused++;
-                     
+
                   } else if (isset($tkt['_refuse_email_no_response'])) {
                      $delete_mail = true;
                      $refused++;
@@ -1179,7 +1179,8 @@ class MailCollector  extends CommonDBTM {
    function sendMailRefusedResponse($to='', $subject='') {
       global $CFG_GLPI, $LANG;
 
-      $mmail = new NotificationMail;
+      $mmail = new NotificationMail();
+      $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
       $mmail->From = $CFG_GLPI["admin_email"];
       $mmail->FromName = "GLPI";
       $mmail->AddAddress($to);
