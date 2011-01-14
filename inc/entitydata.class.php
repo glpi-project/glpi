@@ -843,9 +843,111 @@ class EntityData extends CommonDBChild {
       global $DB;
 
       $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
-      if (strstr($url,"[TICKET]")) {
-         $url = str_replace("[TICKET]", $ticket->fields['id'], $url);
+
+      if (strstr($url,"[TICKET_ID]")) {
+         $url = str_replace("[TICKET_ID]", $ticket->fields['id'], $url);
       }
+
+      if (strstr($url,"[TICKET_NAME]")) {
+         $url = str_replace("[TICKET_NAME]", urlencode($ticket->fields['name']), $url);
+      }
+
+      if (strstr($url,"[TICKET_CREATEDATE]")) {
+         $url = str_replace("[TICKET_CREATEDATE]", $ticket->fields['date'], $url);
+      }
+
+      if (strstr($url,"[TICKET_SOLVEDATE]")) {
+         $url = str_replace("[TICKET_SOLVEDATE]", $ticket->fields['solvedate'], $url);
+      }
+
+      if (strstr($url,"[REQUESTTYPE_ID]")) {
+         $url = str_replace("[REQUESTTYPE_ID]", $ticket->fields['requesttypes_id'], $url);
+      }
+
+      if (strstr($url,"[REQUESTTYPE_NAME]")) {
+         $url = str_replace("[REQUESTTYPE_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_requesttypes',
+                                                                $ticket->fields['requesttypes_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[ITEM_TYPE]")
+          && $ticket->fields['itemtype']
+          && class_exists($ticket->fields['itemtype'])) {
+         $objet = new $ticket->fields['itemtype'];
+         $url = str_replace("[ITEM_TYPE]", urlencode($objet->getTypeName()), $url);
+      }
+
+      if (strstr($url,"[ITEM_ID]")) {
+         $url = str_replace("[ITEM_ID]", $ticket->fields['items_id'], $url);
+      }
+
+      if (strstr($url,"[ITEM_NAME]")
+          && $ticket->fields['itemtype']
+          && class_exists($ticket->fields['itemtype'])) {
+         $objet = new $ticket->fields['itemtype'];
+         if ($objet->getFromDB($ticket->fields['items_id'])) {
+            $url = str_replace("[ITEM_NAME]", urlencode($objet->getName()), $url);
+         }
+      }
+
+      if (strstr($url,"[TICKET_PRIORITY]")) {
+         $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
+      }
+
+      if (strstr($url,"[TICKETCATEGORIE_ID]")) {
+         $url = str_replace("[TICKETCATEGORIE_ID]", $ticket->fields['ticketcategories_id'], $url);
+      }
+
+      if (strstr($url,"[TICKETCATEGORIE_NAME]")) {
+         $url = str_replace("[TICKETCATEGORIE_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_ticketcategories',
+                                                                $ticket->fields['ticketcategories_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[TICKET_TYPE]")) {
+         $url = str_replace("[TICKET_TYPE]", $ticket->fields['type'], $url);
+      }
+
+      if (strstr($url,"[TICKET_TYPENAME]")) {
+         $url = str_replace("[TICKET_TYPENAME]",
+                            Ticket::getTicketTypeName($ticket->fields['type']), $url);
+      }
+
+      if (strstr($url,"[SOLUTION_TYPE]")) {
+         $url = str_replace("[SOLUTION_TYPE]", $ticket->fields['ticketsolutiontypes_id'], $url);
+      }
+
+      if (strstr($url,"[SOLUTION_NAME]")) {
+         $url = str_replace("[SOLUTION_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_ticketsolutiontypes',
+                                                                $ticket->fields['ticketsolutiontypes_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[SLA_ID]")) {
+         $url = str_replace("[SLA_ID]", $ticket->fields['slas_id'], $url);
+      }
+
+      if (strstr($url,"[SLA_NAME]")) {
+         $url = str_replace("[SLA_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_slas',
+                                                                $ticket->fields['slas_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[SLA_LEVELID]")) {
+         $url = str_replace("[SLA_LEVELID]", $ticket->fields['slalevels_id'], $url);
+      }
+
+      if (strstr($url,"[SLA_LEVELNAME]")) {
+         $url = str_replace("[SLA_LEVELNAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_slalevels',
+                                                                $ticket->fields['slalevels_id'])),
+                            $url);
+      }
+
       return $url;
    }
 
