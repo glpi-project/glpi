@@ -39,14 +39,18 @@ class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollecti
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_phonetypes";
+
+      $this->item_table = "glpi_phonetypes";
       $this->initCache("glpi_rulecachephonetypes");
-      $this->menu_option="type.phone";
+      $this->menu_option = "type.phone";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][62];
+
+      return $LANG['rulesengine'][62];
    }
+
 }
 ?>

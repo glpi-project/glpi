@@ -39,16 +39,20 @@ class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownColle
     * Constructor
    **/
    function __construct() {
+
       $this->item_table="glpi_printermodels";
       //Init cache system values
-      $this->initCache("glpi_rulecacheprintermodels",array("name"=>"old_value",
-                                                             "manufacturer"=>"manufacturer"));
+      $this->initCache("glpi_rulecacheprintermodels", array("name"         => "old_value",
+                                                            "manufacturer" => "manufacturer"));
       $this->menu_option="model.printer";
    }
 
+
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][54];
+
+      return $LANG['rulesengine'][54];
    }
+
 }
 ?>

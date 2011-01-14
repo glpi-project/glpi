@@ -1407,15 +1407,17 @@ class OcsServer extends CommonDBTM {
       return $input;
    }
 
+
    static function setMaxChecksumForComputer($ocsid) {
       global $DBocs;
+
             // Set OCS checksum to max value
       $query = "UPDATE `hardware`
                 SET `CHECKSUM` = '" . self::MAX_CHECKSUM . "'
                 WHERE `ID` = '$ocsid'";
       $DBocs->query($query);
-
    }
+
 
    static function importComputer($ocsid, $ocsservers_id, $lock=0, $defaultentity=-1,
                                   $defaultlocation=-1) {

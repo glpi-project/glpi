@@ -43,15 +43,15 @@ if (!defined('GLPI_ROOT')) {
 *   - description
 *   - criterias
 *   - actions
-*
 **/
 class RuleDictionnarySoftware extends RuleCached {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    // From Rule
-   public $right='rule_dictionnary_software';
-   public $can_sort=true;
+   public $right    = 'rule_dictionnary_software';
+   public $can_sort = true;
+
 
    function getTitle() {
       global $LANG;
@@ -59,17 +59,20 @@ class RuleDictionnarySoftware extends RuleCached {
       return $LANG['rulesengine'][35];
    }
 
+
    function maxActionsCount() {
       return 4;
    }
+
 
    function showCacheRuleHeader() {
       global $LANG;
 
       echo "<tr><th colspan='7'>" . $LANG['rulesengine'][100] . "&nbsp;: " . $this->fields["name"];
       echo "</th></tr>";
+
       echo "<tr><td class='tab_bg_1 b'>" . $LANG['rulesengine'][104] . "</td>";
-      echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . " " . $LANG['rulesengine'][108] . "</td>";
+      echo "<td class='tab_bg_1 b'>" . $LANG['common'][5]." ".$LANG['rulesengine'][108]."</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][105] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['rulesengine'][78] . "</td>";
       echo "<td class='tab_bg_1 b'>" . $LANG['common'][5] . "</td>";
@@ -77,19 +80,20 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_1 b'>" . $LANG['software'][46] . "</td></tr>\n";
    }
 
+
    function showCacheRuleDetail($fields) {
       global $LANG;
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
-      echo "<td class='tab_bg_2'>" .
-            ($fields["new_value"] != '' ? $fields["new_value"] : $LANG['rulesengine'][106]) . "</td>";
-      echo "<td class='tab_bg_2'>" .
-            ($fields["version"] != '' ? $fields["version"] : $LANG['rulesengine'][106]) . "</td>";
-      echo "<td class='tab_bg_2'>" .
-            ((isset ($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '') ?
-             Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"]) :
-             $LANG['rulesengine'][106]) . "</td>";
+      echo "<td class='tab_bg_2'>".($fields["new_value"] != '' ? $fields["new_value"]
+                                                               : $LANG['rulesengine'][106])."</td>";
+      echo "<td class='tab_bg_2'>". ($fields["version"] != '' ? $fields["version"]
+                                                              : $LANG['rulesengine'][106])."</td>";
+      echo "<td class='tab_bg_2'>".
+             ((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '')
+              ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
+              : $LANG['rulesengine'][106]) . "</td>";
       echo "<td class='tab_bg_2'>";
       if ($fields["ignore_ocs_import"] == '') {
          echo "&nbsp;";
@@ -97,13 +101,16 @@ class RuleDictionnarySoftware extends RuleCached {
          echo Dropdown::getYesNo($fields["ignore_ocs_import"]);
       }
       echo "</td>";
-      echo "<td class='tab_bg_2'>" .
-            ((isset ($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '').".
-             " ? Dropdown::getYesNo($fields["is_helpdesk_visible"]) : Dropdown::getYesNo(0)) . "</td>";
+      echo "<td class='tab_bg_2'>".
+             ((isset ($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '')
+              ? Dropdown::getYesNo($fields["is_helpdesk_visible"])
+              : Dropdown::getYesNo(0)) . "</td>";
    }
+
 
    function getCriterias() {
       global $LANG;
+
       $criterias = array();
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = $LANG['help'][31];
@@ -115,17 +122,19 @@ class RuleDictionnarySoftware extends RuleCached {
       return $criterias;
    }
 
+
    function getActions() {
       global $LANG;
+
       $actions = array();
       $actions['name']['name']          = $LANG['help'][31];
-      $actions['name']['force_actions'] = array('assign','regex_result');
+      $actions['name']['force_actions'] = array('assign', 'regex_result');
 
       $actions['_ignore_ocs_import']['name'] = $LANG['rulesengine'][132];
       $actions['_ignore_ocs_import']['type'] = 'yesonly';
 
       $actions['version']['name']          = $LANG['rulesengine'][78];
-      $actions['version']['force_actions'] = array('assign','regex_result','append_regex_result');
+      $actions['version']['force_actions'] = array('assign','regex_result', 'append_regex_result');
 
       $actions['manufacturer']['name']  = $LANG['common'][5];
       $actions['manufacturer']['table'] = 'glpi_manufacturers';
