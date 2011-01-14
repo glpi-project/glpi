@@ -195,6 +195,7 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
+      echo "<br>";
       $this->addDivForTabs();
 
       return true;
@@ -359,7 +360,7 @@ class Supplier extends CommonDBTM {
       $number = $DB->numrows($result);
       $i = 0;
 
-      echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='9'>".$LANG['financial'][46]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -408,7 +409,7 @@ class Supplier extends CommonDBTM {
          }
       }
 
-      echo "</table><br>"    ;
+      echo "</table><br>";
       if ($canedit) {
          if ($this->fields["is_recursive"]) {
             $nb=countElementsInTableForEntity("glpi_contacts",
@@ -433,7 +434,7 @@ class Supplier extends CommonDBTM {
                    $LANG['buttons'][8]."\" class='submit'>";
             echo "</td></tr>";
          }
-         echo "</table></form>";
+         echo "</table></form><br>";
       }
       echo "</div>";
    }
@@ -461,7 +462,7 @@ class Supplier extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>";
       printPagerForm();
       echo "</th><th colspan='3'>".$LANG['document'][19]."&nbsp;:</th></tr>";
@@ -560,7 +561,7 @@ class Supplier extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>".($num>0? $LANG['common'][33]."&nbsp;=&nbsp;$num</td>" : "&nbsp;</td>");
       echo "<td colspan='4'>&nbsp;</td></tr> ";
-      echo "</table></div>"    ;
+      echo "</table></div>";
    }
 
    /**
@@ -592,7 +593,7 @@ class Supplier extends CommonDBTM {
       $i = 0;
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-      echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>".$LANG['financial'][66]."&nbsp;:</th></tr>";
       echo "<tr><th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -659,7 +660,7 @@ class Supplier extends CommonDBTM {
             echo "<td>&nbsp;</td></tr>";
          }
       }
-      echo "</table></div></form>";
+      echo "</table></div></form><br>";
    }
 
 }
