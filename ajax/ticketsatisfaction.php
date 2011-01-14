@@ -71,8 +71,10 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
                             array(0 => $LANG['crontask'][31]));
       echo "&nbsp;%</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
-      echo "<td colspan='1'>" . convDateTime($max_closedate)."</td></tr>";
+      if ($max_closedate != '') {
+         echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
+         echo "<td colspan='1'>" . convDateTime($max_closedate)."</td></tr>";
+      }
 
       if ($_REQUEST['inquest_config']==2 ) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
