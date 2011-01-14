@@ -39,14 +39,18 @@ class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollec
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_printertypes";
+
+      $this->item_table = "glpi_printertypes";
       $this->initCache("glpi_rulecacheprintertypes");
-      $this->menu_option="type.printer";
+      $this->menu_option = "type.printer";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][64];
+
+      return $LANG['rulesengine'][64];
    }
+
 }
 ?>

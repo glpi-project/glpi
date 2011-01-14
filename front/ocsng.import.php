@@ -107,7 +107,7 @@ if (!isset($_POST["import_ok"])) {
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
    if ($display_list) {
       OcsServer::showComputersToAdd($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
-                                    $_GET['check'], $_GET['start'],$_SESSION['glpiactiveentities']);
+                                    $_GET['check'], $_GET['start'], $_SESSION['glpiactiveentities']);
    }
 
 } else {

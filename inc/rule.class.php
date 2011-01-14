@@ -808,8 +808,9 @@ class Rule extends CommonDBTM {
          $doactions           = false;
          foreach ($this->criterias as $criteria) {
             $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
+
             if (!isset($definition_criteria['is_global'])
-                   || !$definition_criteria['is_global']) {
+                || !$definition_criteria['is_global']) {
                $doactions |= $this->checkCriteria($criteria,$input);
                if ($doactions) {
                   break;

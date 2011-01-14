@@ -46,6 +46,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    public $menu_type           = 'dictionnary';
    public $menu_option         = 'printer';
 
+
    /**
     * Constructor
    **/
@@ -80,8 +81,8 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    }
 
 
-   function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = array (),
-                                    $params = array ()) {
+   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(),
+                                    $params=array()) {
       global $DB;
 
       if (isCommandLine()) {
@@ -180,7 +181,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    static function somethingHasChanged($res_rule,$input) {
 
       if ((isset ($res_rule["name"]) && $res_rule["name"] != $input["name"])
-          || (isset ($res_rule["manufacturer"]))
+          || (isset($res_rule["manufacturer"]))
           && $res_rule["manufacturer"] != ''
           || isset($res_rule['is_global'])
           && $res_rule['is_global'] != '') {
