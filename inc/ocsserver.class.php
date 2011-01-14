@@ -2697,8 +2697,11 @@ class OcsServer extends CommonDBTM {
                      //echo "<td class='center'><img src=\"".GLPI_ROOT. "/pics/greenbutton.png\">";
                      //echo "&nbsp;";
                      $tmprule = new RuleOcs();
-                     $tmprule->getFromDB($data['_ruleid']);
-                     echo "<a href='". $tmprule->getLinkURL()."'>".$tmprule->getName()."</a>";
+                     if ($tmprule->can($data['_ruleid'],'r')) {
+                        echo "<a href='". $tmprule->getLinkURL()."'>".$tmprule->getName()."</a>";
+                     }  else {
+                        echo $tmprule->getName();
+                     }
                      echo "</td>\n";
                   }
                   echo "<td>";
