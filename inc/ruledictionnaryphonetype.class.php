@@ -43,15 +43,26 @@ class RuleDictionnaryPhoneType extends RuleDictionnaryDropdown {
       parent::__construct('RuleDictionnaryPhoneType');
    }
 
+
    function getCriterias() {
       global $LANG;
+
       $criterias = array();
+      $criterias['name']['field'] = 'name';
+      $criterias['name']['name']  = $LANG['common'][17];
+      $criterias['name']['table'] = 'glpi_phonetypes';
+
       return $criterias;
    }
 
+
    function getActions() {
       global $LANG;
+
       $actions = array();
+      $actions['name']['name']          = $LANG['common'][17];
+      $actions['name']['force_actions'] = array('assign', 'regex_result', 'append_regex_result');
+
       return $actions;
    }
 }
