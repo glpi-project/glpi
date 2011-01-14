@@ -2524,8 +2524,13 @@ class CommonDBTM extends CommonGLPI {
 
       //Get all checks for this itemtype and this entity
       if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
-         $entities_id = $this->input['entities_id'];
-
+         // Get input entities if set / else get object one
+         if (isset($this->input['entities_id'])) {
+            $entities_id = $this->input['entities_id'];
+         } else {
+            $entities_id = $this->fields['entities_id'];
+         }
+//          printCleanArray($this->input);
 /*         //In case it's an infocom
          if (in_array(get_class($this), array('Infocom'))) {
             $infocom = new Infocom();
@@ -2579,19 +2584,19 @@ class CommonDBTM extends CommonGLPI {
                       }
 
                       $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
-                      $message_text = $LANG['setup'][813].": ".implode('&',$message);
+                      $message_text = $LANG['setup'][813].": ".implode('&nbsp;&&nbsp;',$message);
                       $message_text.= $LANG['setup'][818];
                       foreach ($doubles as $double) {
                          if (get_class($this) == 'Infocom') {
-                            $item = new $this->fields['itemtype'];
-                            $item->getFromDB($this->fields['items_id']);
+                            $item = new $double['itemtype'];
+                            $item->getFromDB($double['items_id']);
                             $item_serial = $item->fields['serial'];
                             $item_id = $item->fields['id'];
                             $entities_id = $item->fields['entities_id'];
                          } else {
-                            $item_serial = $this->fields['serial'];
-                            $item_id = $this->fields['id'];
-                            $entities_id = $this->fields['entities_id'];
+                            $item_serial = $double['serial'];
+                            $item_id = $double['id'];
+                            $entities_id = $double['entities_id'];
                          }
                          $message_text.= " [".$LANG['login'][6].": ".$item_id.", ";
                          $message_text.= $LANG['common'][19].": ".$item_serial.", ";
