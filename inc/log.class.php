@@ -303,10 +303,11 @@ class Log extends CommonDBTM {
     * @param $item CommonDBTM object
     * @param $start interger first line to retrieve
     * @param $limit interfer max number of line to retrive (0 for all)
+    * @param $sqlfilter string to add an SQL filter
     *
     * @return array of localized log entry (TEXT only, no HTML)
    **/
-   static function getHistoryData(CommonDBTM $item, $start=0, $limit=0) {
+   static function getHistoryData(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
       global $DB, $LANG;
 
       $itemtype = $item->getType();
@@ -317,8 +318,11 @@ class Log extends CommonDBTM {
       $query = "SELECT *
                 FROM `glpi_logs`
                 WHERE `items_id` = '".$items_id."'
-                      AND `itemtype` = '".$itemtype."'
-                ORDER BY `id` DESC";
+                      AND `itemtype`='".$itemtype."' ";
+      if ($sqlfilter) {
+         $query .= "AND ($sqlfilter) ";
+      }
+      $query .= "ORDER BY `id` DESC";
 
       if ($limit) {
          $query .= " LIMIT ".intval($start)."," . intval($limit);
