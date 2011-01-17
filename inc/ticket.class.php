@@ -2904,7 +2904,7 @@ class Ticket extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['joblist'][6]." (".$LANG['validation'][16].")&nbsp;: </td><td colspan='3'>";
+      echo "<td>".$LANG['joblist'][6]."&nbsp;: </td><td colspan='3'>";
       $rand_text = 0;
 
       if ($canedit) {
