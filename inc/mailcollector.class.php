@@ -106,7 +106,6 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-
       if (isset ($input['mail_server']) && !empty ($input['mail_server'])) {
          $input["host"] = constructMailServerConfig($input);
       }
@@ -388,7 +387,7 @@ class MailCollector  extends CommonDBTM {
                      $refused++;
                   } else if (isset($tkt['entities_id']) || isset($tkt['tickets_id'])) {
                      $tkt['_mailgate'] = $mailgateID;
-                     $result = imap_fetchheader($this->marubox, $i);
+                     $result           = imap_fetchheader($this->marubox, $i);
 
                      // Is a mail responding of an already existgin ticket ?
                      if (isset($tkt['tickets_id']) ) {
@@ -773,8 +772,8 @@ class MailCollector  extends CommonDBTM {
          foreach ($header as $line) {
             // is line with additional header?
             if (preg_match("/^X-/i", $line)
-               || preg_match("/^Auto-Submitted/i", $line)
-               || preg_match("/^Received/i", $line)) {
+                || preg_match("/^Auto-Submitted/i", $line)
+                || preg_match("/^Received/i", $line)) {
                // separate name and value
                if (preg_match("/^([^:]*): (.*)/i", $line, $arg)) {
                   $key = utf8_strtolower($arg[1]);
