@@ -196,7 +196,19 @@ if (isset($_REQUEST['searchtype'])) {
                      break;
                }
             }
-
+            
+            //Could display be handled by a plugin ?
+            if (!$display && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
+               $function = 'plugin_'.strtolower($plug['plugin']).'_searchOptionsValues';
+               if (function_exists($function)) {
+                  $params = array('name'           => $inputname,
+                                  'searchtype'     => $_REQUEST['searchtype'],
+                                  'searchoption'   => $searchopt,
+                                  'value'          => $_REQUEST['value']);
+                  $display = $function($params);
+               }
+            }
+            
             // Standard field usage
             if (!$display) {
                switch ($searchopt['field']) {
