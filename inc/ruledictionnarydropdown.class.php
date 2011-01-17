@@ -36,8 +36,8 @@
 class RuleDictionnaryDropdown extends RuleCached {
 
    // From Rule
-   public $right='rule_dictionnary_dropdown';
-   public $can_sort=true;
+   public $right      = 'rule_dictionnary_dropdown';
+   public $can_sort   = true;
    public $show_cache = false;
 
 
@@ -45,11 +45,13 @@ class RuleDictionnaryDropdown extends RuleCached {
       return 1;
    }
 
+
    function showCacheRuleHeader() {
       global $LANG;
 
       if ($this->show_cache) {
-         echo "<tr><th colspan='3'>".$LANG['rulesengine'][100]."&nbsp;: ".$this->fields["name"]."</th></tr>";
+         echo "<tr><th colspan='3'>".$LANG['rulesengine'][100]."&nbsp;: ".$this->fields["name"].
+              "</th></tr>";
          echo "<tr><td class='tab_bg_1 b'>".$LANG['rulesengine'][104]."</td>";
          echo "<td class='tab_bg_1 b'>".$LANG['common'][5]."</td>";
          echo "<td class='tab_bg_1 b'>".$LANG['rulesengine'][105]."</td></tr>";
@@ -58,14 +60,16 @@ class RuleDictionnaryDropdown extends RuleCached {
       }
    }
 
+
    function showCacheRuleDetail($fields) {
       global $LANG;
 
       if ($this->show_cache) {
          echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
-         echo "<td class='tab_bg_2'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'')."</td>";
-         echo "<td class='tab_bg_2'>".
-                ($fields["new_value"]!=''?$fields["new_value"]:$LANG['rulesengine'][106])."</td>";
+         echo "<td class='tab_bg_2'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'').
+              "</td>";
+         echo "<td class='tab_bg_2'>".($fields["new_value"]!='' ? $fields["new_value"]
+                                                                : $LANG['rulesengine'][106])."</td>";
       } else {
          parent::showCacheRuleDetail($fields);
       }

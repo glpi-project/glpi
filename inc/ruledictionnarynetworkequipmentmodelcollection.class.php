@@ -39,17 +39,21 @@ class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDrop
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_networkequipmentmodels";
+
+      $this->item_table = "glpi_networkequipmentmodels";
       $this->initCache("glpi_rulecachenetworkequipmentmodels",
-                       array("name"=>"old_value",
-                             "manufacturer"=>"manufacturer"));
-      $this->menu_option="model.networking";
+                       array("name"         => "old_value",
+                             "manufacturer" => "manufacturer"));
+      $this->menu_option = "model.networking";
       //$this->rule_class_name = 'RuleDictionnaryNetworkEquipmentModel';
    }
 
+
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][55];
+
+      return $LANG['rulesengine'][55];
    }
+
 }
 ?>

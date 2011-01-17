@@ -48,25 +48,26 @@ if (isset($_GET['multiple_actions'])) {
 if (!isset($_POST["itemtype"]) || !class_exists($_POST["itemtype"])) {
    exit();
 }
-$item = new $_POST["itemtype"]();
-
 
 if (isset($_POST["itemtype"])) {
+   $item = new $_POST["itemtype"]();
+
    /// Right check
    switch ($_POST["itemtype"]) {
       case 'Ticket' :
          switch ($_POST["action"]) {
             case "delete" :
-               checkRight("delete_ticket","1");
+               checkRight("delete_ticket", "1");
                break;
 
             case "add_followup" :
                checkSeveralRightsOr(array('global_add_followups' => 1,
                                           'own_ticket'           => 1));
                break;
+
             case "add_task" :
                checkSeveralRightsOr(array('global_add_tasks' => 1,
-                                          'own_ticket'           => 1));
+                                          'own_ticket'       => 1));
                break;
 
             default :
@@ -83,7 +84,7 @@ if (isset($_POST["itemtype"])) {
          }
    }
 
-   commonHeader($LANG['title'][42],$_SERVER['PHP_SELF']);
+   commonHeader($LANG['title'][42], $_SERVER['PHP_SELF']);
 
    if (isset($_GET['multiple_actions'])) {
       if (isset($_SESSION['glpi_massiveaction'])
@@ -166,7 +167,7 @@ if (isset($_POST["itemtype"])) {
          case "delete" :
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1 && $item->can($key,'d')) {
-                  $item->delete(array("id"=>$key));
+                  $item->delete(array("id" => $key));
                }
             }
             break;
@@ -174,7 +175,7 @@ if (isset($_POST["itemtype"])) {
          case "purge" :
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $item->delete(array("id"=>$key),1);
+                  $item->delete(array("id" => $key), 1);
                }
             }
             break;
@@ -182,7 +183,7 @@ if (isset($_POST["itemtype"])) {
          case "restore" :
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $item->restore(array("id"=>$key));
+                  $item->restore(array("id" => $key));
                }
             }
             break;
@@ -213,16 +214,16 @@ if (isset($_POST["itemtype"])) {
                                                $item->getEntityID())))) {
                               // Add infocom if not exists
                               if (!$ic->getFromDBforDevice($_POST["itemtype"],$key)) {
-                                 $input2["items_id"]=$key;
-                                 $input2["itemtype"]=$_POST["itemtype"];
+                                 $input2["items_id"] = $key;
+                                 $input2["itemtype"] = $_POST["itemtype"];
                                  unset($ic->fields);
                                  $ic->add($input2);
-                                 $ic->getFromDBforDevice($_POST["itemtype"],$key);
+                                 $ic->getFromDBforDevice($_POST["itemtype"], $key);
                               }
                               $id = $ic->fields["id"];
                               unset($ic->fields);
 
-                              $ic->update(array('id' => $id,
+                              $ic->update(array('id'            => $id,
                                                 $_POST["field"] => $_POST[$_POST["field"]]));
                            }
                         }
@@ -239,14 +240,14 @@ if (isset($_POST["itemtype"])) {
                      $item2 = new $itemtype2();
 
                      if ($searchopt[$_POST["id_field"]]["table"] != $itemtable
-                        && $item2->isEntityAssign()
-                        && $item->isEntityAssign()) {
+                         && $item2->isEntityAssign()
+                         && $item->isEntityAssign()) {
                         if ($item2->getFromDB($_POST[$_POST["field"]])) {
                            if (isset($item2->fields["entities_id"])
-                                 && $item2->fields["entities_id"] >=0) {
+                               && $item2->fields["entities_id"] >=0) {
 
                               if (isset($item2->fields["is_recursive"])
-                                    && $item2->fields["is_recursive"]) {
+                                  && $item2->fields["is_recursive"]) {
 
                                  $link_entity_type = getSonsOf("glpi_entities",
                                                                $item2->fields["entities_id"]);
@@ -261,10 +262,9 @@ if (isset($_POST["itemtype"])) {
                      if ($val == 1) {
                         if ($item->getFromDB($key)) {
                            if (count($link_entity_type) == 0
-                               || in_array($item->fields["entities_id"],
-                                           $link_entity_type)) {
-                              $item->update(array('id' => $key,
-                                                          $_POST["field"] => $_POST[$_POST["field"]]));
+                               || in_array($item->fields["entities_id"],$link_entity_type)) {
+                              $item->update(array('id'            => $key,
+                                                  $_POST["field"] => $_POST[$_POST["field"]]));
                            }
                         }
                      }
@@ -272,24 +272,24 @@ if (isset($_POST["itemtype"])) {
                }
             }
             break;
+
          case "duplicate" :
             if (method_exists($item,'duplicate')) {
-               $options=array();
+               $options = array();
                if ($item->isEntityAssign()) {
-                  $options=array('entities_id'=>$_POST['entities_id']);
+                  $options = array('entities_id' => $_POST['entities_id']);
                }
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($item->getFromDB($key)) {
                         if (!$item->isEntityAssign()
-                              || ($_POST['entities_id'] != $item->getEntityID())) {
+                            || ($_POST['entities_id'] != $item->getEntityID())) {
                            $item->duplicate($options);
                         }
                      }
                   }
                }
             }
-
             break;
 
          case "install" :
@@ -299,7 +299,6 @@ if (isset($_POST["itemtype"])) {
                   $comp = new Computer;
                   if ($comp->getFromDB($key)
                       && $comp->fields["entities_id"] == $_SESSION["glpiactive_entity"]) {
-
                      $inst->add(array('computers_id'        => $key,
                                       'softwareversions_id' => $_POST["softwareversions_id"]));
                   }
@@ -327,8 +326,8 @@ if (isset($_POST["itemtype"])) {
                 && isset($_POST['entities_id'])
                 && $_POST['entities_id'] >= 0) {
 
-               $input['entities_id'] = $_POST['entities_id'];
-               $input['profiles_id'] = $_POST['profiles_id'];
+               $input['entities_id']  = $_POST['entities_id'];
+               $input['profiles_id']  = $_POST['profiles_id'];
                $input['is_recursive'] = $_POST['is_recursive'];
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
@@ -342,10 +341,10 @@ if (isset($_POST["itemtype"])) {
          case "add_document" :
             $documentitem = new Document_Item();
             foreach ($_POST["item"] as $key => $val) {
-               $input = array('itemtype' => $_POST["itemtype"],
-                              'items_id' => $key,
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $key,
                               'documents_id' => $_POST['docID']);
-               if ($documentitem->can(-1,'w',$input)) {
+               if ($documentitem->can(-1, 'w', $input)) {
                   $documentitem->add($input);
                }
             }
@@ -356,8 +355,8 @@ if (isset($_POST["itemtype"])) {
                $contactsupplier = new Contact_Supplier();
                foreach ($_POST["item"] as $key => $val) {
                   $input = array('suppliers_id' => $key,
-                                 'contacts_id' => $_POST['conID']);
-                  if ($contactsupplier->can(-1,'w',$input)) {
+                                 'contacts_id'  => $_POST['conID']);
+                  if ($contactsupplier->can(-1, 'w', $input)) {
                      $contactsupplier->add($input);
                   }
                }
@@ -370,7 +369,7 @@ if (isset($_POST["itemtype"])) {
                $input = array('itemtype'     => $_POST["itemtype"],
                               'items_id'     => $key,
                               'contracts_id' => $_POST['contracts_id']);
-               if ($contractitem->can(-1,'w',$input)) {
+               if ($contractitem->can(-1, 'w', $input)) {
                   $contractitem->add($input);
                }
             }
@@ -382,7 +381,7 @@ if (isset($_POST["itemtype"])) {
                foreach ($_POST["item"] as $key => $val) {
                   $input = array('suppliers_id' => $_POST['entID'],
                                  'contacts_id'  => $key);
-                  if ($contactsupplier->can(-1,'w',$input)) {
+                  if ($contactsupplier->can(-1, 'w', $input)) {
                      $contactsupplier->add($input);
                   }
                }
@@ -394,8 +393,8 @@ if (isset($_POST["itemtype"])) {
                if ($ic->canCreate()) {
                   foreach ($_POST["item"] as $key => $val) {
                      $input = array('itemtype' => $_POST['itemtype'],
-                                    'items_id'  => $key);
-                     if (!$ic->getFromDBforDevice($_POST['itemtype'],$key)) {
+                                    'items_id' => $key);
+                     if (!$ic->getFromDBforDevice($_POST['itemtype'], $key)) {
                         $ic->add($input);
                      }
                   }
@@ -408,7 +407,7 @@ if (isset($_POST["itemtype"])) {
                   $ids[] = $key;
                }
             }
-            User::changeAuthMethod($ids,$_POST["authtype"],$_POST["auths_id"]);
+            User::changeAuthMethod($ids, $_POST["authtype"], $_POST["auths_id"]);
             break;
 
          case "unlock_ocsng_field" :
@@ -417,9 +416,9 @@ if (isset($_POST["itemtype"])) {
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($_POST['field'] == 'all') {
-                        OcsServer::replaceOcsArray($key,array(),"computer_update");
+                        OcsServer::replaceOcsArray($key ,array(), "computer_update");
                      } else {
-                        OcsServer::deleteInOcsArray($key,$_POST['field'],"computer_update",true);
+                        OcsServer::deleteInOcsArray($key, $_POST['field'], "computer_update", true);
                      }
                   }
                }
@@ -436,27 +435,27 @@ if (isset($_POST["itemtype"])) {
                if ($val == 1) {
                   switch ($_POST["action"]) {
                      case "unlock_ocsng_monitor" :
-                        OcsServer::unlockItems($key,"import_monitor");
+                        OcsServer::unlockItems($key, "import_monitor");
                         break;
 
                      case "unlock_ocsng_printer" :
-                        OcsServer::unlockItems($key,"import_printer");
+                        OcsServer::unlockItems($key, "import_printer");
                         break;
 
                      case "unlock_ocsng_peripheral" :
-                        OcsServer::unlockItems($key,"import_peripheral");
+                        OcsServer::unlockItems($key, "import_peripheral");
                         break;
 
                      case "unlock_ocsng_software" :
-                        OcsServer::unlockItems($key,"import_software");
+                        OcsServer::unlockItems($key, "import_software");
                         break;
 
                      case "unlock_ocsng_ip" :
-                        OcsServer::unlockItems($key,"import_ip");
+                        OcsServer::unlockItems($key, "import_ip");
                         break;
 
                      case "unlock_ocsng_disk" :
-                        OcsServer::unlockItems($key,"import_disk");
+                        OcsServer::unlockItems($key, "import_disk");
                         break;
                   }
                }
@@ -466,9 +465,9 @@ if (isset($_POST["itemtype"])) {
          case "force_ocsng_update" :
             // First time
             if (!isset($_GET['multiple_actions'])) {
-               $_SESSION['glpi_massiveaction']['POST'] = $_POST;
-               $_SESSION['glpi_massiveaction']['REDIRECT'] = $REDIRECT;
-               $_SESSION['glpi_massiveaction']['items'] = array();
+               $_SESSION['glpi_massiveaction']['POST']      = $_POST;
+               $_SESSION['glpi_massiveaction']['REDIRECT']  = $REDIRECT;
+               $_SESSION['glpi_massiveaction']['items']     = array();
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
                      $_SESSION['glpi_massiveaction']['items'][$key] = $key;
@@ -477,6 +476,7 @@ if (isset($_POST["itemtype"])) {
                $_SESSION['glpi_massiveaction']['item_count']
                   = count($_SESSION['glpi_massiveaction']['items']);
                glpi_header($_SERVER['PHP_SELF'].'?multiple_actions=1');
+
             } else {
                if (count($_SESSION['glpi_massiveaction']['items']) >0) {
                   $key = array_pop($_SESSION['glpi_massiveaction']['items']);
@@ -489,7 +489,7 @@ if (isset($_POST["itemtype"])) {
                      $data = $DB->fetch_assoc($result);
                      if ($data['ocsservers_id'] != -1) {
                         //Force update of the machine
-                        OcsServer::updateComputer($data['id'],$data['ocsservers_id'],1,1);
+                        OcsServer::updateComputer($data['id'], $data['ocsservers_id'], 1, 1);
                      }
                   }
                   glpi_header($_SERVER['PHP_SELF'].'?multiple_actions=1');
@@ -509,11 +509,11 @@ if (isset($_POST["itemtype"])) {
                   $params = array();
                   //Get software name and manufacturer
                   $soft->getFromDB($key);
-                  $params["name"] = $soft->fields["name"];
+                  $params["name"]             = $soft->fields["name"];
                   $params["manufacturers_id"] = $soft->fields["manufacturers_id"];
-                  $params["comment"] = $soft->fields["comment"];
+                  $params["comment"]          = $soft->fields["comment"];
                   //Process rules
-                  $soft->update($softcatrule->processAllRules(null,$soft->fields,$params));
+                  $soft->update($softcatrule->processAllRules(null, $soft->fields, $params));
                }
             }
             break;
@@ -526,11 +526,11 @@ if (isset($_POST["itemtype"])) {
                   $ids[] = $key;
                }
             }
-            $softdictionnayrule->replayRulesOnExistingDB(0,0,$ids);
+            $softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids);
             break;
 
          case "force_user_ldap_update" :
-            checkRight("user","w");
+            checkRight("user", "w");
             $user = new User;
             $ids = array();
             foreach ($_POST["item"] as $key => $val) {
@@ -538,9 +538,9 @@ if (isset($_POST["itemtype"])) {
                   $user->getFromDB($key);
                   if (($user->fields["authtype"] == Auth::LDAP)
                       || ($user->fields["authtype"] == Auth::EXTERNAL)) {
-                     AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                              'value'=>$user->fields["name"]),1,
-                                                        $user->fields["auths_id"]);
+                     AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                              'value'  => $user->fields["name"]),
+                                                        1, $user->fields["auths_id"]);
                   }
                }
             }
@@ -565,35 +565,37 @@ if (isset($_POST["itemtype"])) {
             $fup = new TicketFollowup();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $input=array('tickets_id'      => $key,
-                               'is_private'      => $_POST['is_private'],
-                               'requesttypes_id' => $_POST['requesttypes_id'],
-                               'content'         => $_POST['content']);
+                  $input = array('tickets_id'      => $key,
+                                 'is_private'      => $_POST['is_private'],
+                                 'requesttypes_id' => $_POST['requesttypes_id'],
+                                 'content'         => $_POST['content']);
                   if ($fup->can(-1,'w',$input)) {
                      $fup->add($input);
                   }
                }
             }
             break;
+
          case "submit_validation" :
             $valid = new TicketValidation();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $input=array('tickets_id'      => $key,
-                               'users_id_validate' => $_POST['users_id_validate'],
-                               'comment_submission' => $_POST['comment_submission']);
+                  $input = array('tickets_id'         => $key,
+                                 'users_id_validate'  => $_POST['users_id_validate'],
+                                 'comment_submission' => $_POST['comment_submission']);
                   if ($valid->can(-1,'w',$input)) {
                      $valid->add($input);
                   }
                }
             }
             break;
+
          case "validate_ticket" :
             $valid = new TicketValidation();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $input=array('id'      => $key,
-                               'status'   => $_POST['status']);
+                  $input = array('id'     => $key,
+                                 'status' => $_POST['status']);
                   if ($valid->can(-1,'w',$input)) {
                      $valid->update($input);
                   }
@@ -605,9 +607,9 @@ if (isset($_POST["itemtype"])) {
             $task = new TicketTask();
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $input=array('tickets_id'        => $key,
-                               'taskcategories_id' => $_POST['taskcategories_id'],
-                               'content'           => $_POST['content']);
+                  $input = array('tickets_id'        => $key,
+                                 'taskcategories_id' => $_POST['taskcategories_id'],
+                                 'content'           => $_POST['content']);
                   if ($task->can(-1,'w',$input)) {
                      $task->add($input);
                   }
@@ -684,37 +686,35 @@ if (isset($_POST["itemtype"])) {
             if (!empty($emails_ids)) {
                $mailcollector = new MailCollector;
                if ($_POST["action"] == 'delete_email') {
-                  $mailcollector->deleteOrImportSeveralEmails($emails_ids,0);
+                  $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
                }
                else {
-                  $mailcollector->deleteOrImportSeveralEmails($emails_ids,1,$_POST['entities_id']);
+                  $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1,
+                                                              $_POST['entities_id']);
                }
             }
             break;
+
          default :
             // Plugin specific actions
             $split = explode('_',$_POST["action"]);
             if ($split[0] == 'plugin' && isset($split[1])) {
                // Normalized name plugin_name_action
                // Allow hook from any plugin on any (core or plugin) type
-               doOneHook($split[1],
-                         'MassiveActionsProcess',
-                         $_POST);
+               doOneHook($split[1], 'MassiveActionsProcess', $_POST);
 
             } else if ($plug=isPluginItemType($_POST["itemtype"])) {
                // non-normalized name
                // hook from the plugin defining the type
-               doOneHook($plug['plugin'],
-                         'MassiveActionsProcess',
-                         $_POST);
+               doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
             }
       }
       addMessageAfterRedirect($LANG['common'][23]);
       glpi_header($REDIRECT);
 
    } else { //action, itemtype or item not defined
-      echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'>".
-            "<br><br>";
+      echo "<div class='center'>".
+           "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br><br>";
       echo "<b>".$LANG['common'][24]."</b></div>";
       displayBackLink();
    }

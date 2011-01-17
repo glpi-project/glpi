@@ -39,14 +39,18 @@ class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDro
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_operatingsystemversions";
+
+      $this->item_table = "glpi_operatingsystemversions";
       $this->initCache("glpi_rulecacheoperatingsystemversions");
-      $this->menu_option="os_version";
+      $this->menu_option = "os_version";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][69];
+
+      return $LANG['rulesengine'][69];
    }
+
 }
 ?>

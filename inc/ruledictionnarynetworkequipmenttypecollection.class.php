@@ -39,14 +39,18 @@ class RuleDictionnaryNetworkEquipmentTypeCollection extends RuleDictionnaryDropd
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_networkequipmenttypes";
+
+      $this->item_table = "glpi_networkequipmenttypes";
       $this->initCache("glpi_rulecachenetworkequipmenttypes");
-      $this->menu_option="type.networking";
+      $this->menu_option = "type.networking";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][65];
+
+      return $LANG['rulesengine'][65];
    }
+
 }
 ?>

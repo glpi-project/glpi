@@ -40,21 +40,25 @@ class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollec
 
    // Specific ones
    /// dropdown table
-   var $item_table="";
+   var $item_table = "";
 
    /**
     * Constructor
    **/
    function __construct() {
+
       $this->item_table="glpi_monitortypes";
       //Init cache system values
       $this->initCache("glpi_rulecachemonitortypes");
-      $this->menu_option="type.monitor";
+      $this->menu_option = "type.monitor";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][61];
+
+      return $LANG['rulesengine'][61];
    }
+
 }
 ?>

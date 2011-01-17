@@ -40,10 +40,10 @@ class RuleDictionnaryPhoneModelCollection extends RuleDictionnaryDropdownCollect
    **/
    function __construct() {
 
-      $this->item_table="glpi_phonemodels";
+      $this->item_table = "glpi_phonemodels";
       $this->initCache("glpi_rulecachephonemodels", array("name"         => "old_value",
                                                           "manufacturer" => "manufacturer"));
-      $this->menu_option="model.phone";
+      $this->menu_option = "model.phone";
    }
 
 

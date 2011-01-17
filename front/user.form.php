@@ -68,11 +68,11 @@ if (isset($_REQUEST['getvcard'])) {
    if (empty($_GET["id"])) {
       glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
    }
-   $user->check($_GET['id'],'r');
+   $user->check($_GET['id'], 'r');
    $user->generateVcard($_GET["id"]);
 
 } else if (isset($_POST["add"])) {
-   $user->check(-1,'w',$_POST);
+   $user->check(-1, 'w', $_POST);
 
    // Pas de nom pas d'ajout
    if (!empty($_POST["name"]) && $newID=$user->add($_POST)) {
@@ -82,43 +82,46 @@ if (isset($_REQUEST['getvcard'])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   $user->check($_POST['id'],'w');
+   $user->check($_POST['id'], 'w');
    $user->delete($_POST);
-   Event::log(0,"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
+   Event::log(0, "users", 4, "setup",
+              $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $user->check($_POST['id'],'w');
+   $user->check($_POST['id'], 'w');
    $user->restore($_POST);
-   Event::log($_POST["id"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
    $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $user->check($_POST['id'],'w');
-   $user->delete($_POST,1);
+   $user->check($_POST['id'], 'w');
+   $user->delete($_POST, 1);
    Event::log($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
    $user->redirectToList();
 
 } else if (isset ($_POST["force_ldap_resynch"])) {
-   checkRight('user_authtype','w');
-   $user->check($_POST['id'],'w');
+   checkRight('user_authtype', 'w');
+   $user->check($_POST['id'], 'w');
 
    $user->getFromDB($_POST["id"]);
-   AuthLdap::ldapImportUserByServerId(array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                            'value'=>$user->fields["name"]),true,
-                                      $user->fields["auths_id"],true);
+   AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                            'value'  => $user->fields["name"]),
+                                      true, $user->fields["auths_id"], true);
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["update"])) {
-   $user->check($_POST['id'],'w');
+   $user->check($_POST['id'], 'w');
    $user->update($_POST);
-   Event::log(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$_POST["name"].".");
+   Event::log(0, "users", 5, "setup",
+              $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$_POST["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["addgroup"])) {
    $groupuser->check(-1,'w',$_POST);
    if ($groupuser->add($_POST)) {
-      Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
+      Event::log($_POST["users_id"], "users", 4, "setup",
+                 $_SESSION["glpiname"]." ".$LANG['log'][48]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 
@@ -134,8 +137,8 @@ if (isset($_REQUEST['getvcard'])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["change_auth_method"])) {
-   checkRight('user_authtype','w');
-   $user->check($_POST['id'],'w');
+   checkRight('user_authtype', 'w');
+   $user->check($_POST['id'], 'w');
 
    if (isset($_POST["auths_id"])) {
       User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
@@ -144,17 +147,17 @@ if (isset($_REQUEST['getvcard'])) {
 
 } else {
    if (!isset($_GET["ext_auth"])) {
-      checkRight("user","r");
-      commonHeader($LANG['title'][13],'',"admin","user");
+      checkRight("user", "r");
+      commonHeader($LANG['title'][13], '', "admin", "user");
       $user->showForm($_GET["id"]);
       commonFooter();
 
    } else {
-      checkRight("import_externalauth_users","w");
+      checkRight("import_externalauth_users", "w");
 
       if (isset($_GET['add_ext_auth_ldap'])) {
          if (isset($_GET['login']) && !empty($_GET['login'])) {
-            AuthLdap::importUserFromServers(array('name'=>$_GET['login']));
+            AuthLdap::importUserFromServers(array('name' => $_GET['login']));
          }
          glpi_header($_SERVER['HTTP_REFERER']);
       }
@@ -163,7 +166,7 @@ if (isset($_REQUEST['getvcard'])) {
             $input = array('name'     => $_GET['login'],
                            '_extauth' => 1,
                            'add'      => 1);
-            $user->check(-1,'w',$input);
+            $user->check(-1, 'w', $input);
             $newID = $user->add($input);
             Event::log($newID, "users", 4, "setup",
                        $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET['login'].".");
@@ -171,7 +174,7 @@ if (isset($_REQUEST['getvcard'])) {
          glpi_header($_SERVER['HTTP_REFERER']);
       }
 
-      commonHeader($LANG['title'][13],'',"admin","user");
+      commonHeader($LANG['title'][13], '', "admin", "user");
       User::showAddExtAuthForm();
       commonFooter();
    }

@@ -44,6 +44,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
    /// dropdown table
    var $item_table = "";
 
+
    function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB,$LANG;
 
@@ -74,7 +75,6 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
          while ($data = $DB->fetch_array($result)) {
             if (!($i % $step)) {
-
                if (isCommandLine()) {
                   echo "replayRulesOnExistingDB : $i/$nb\r";
                } else {
@@ -83,9 +83,9 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             }
 
             //Replay Type dictionnary
-            $ID=Dropdown::importExternal(getItemTypeForTable($this->item_table),
-                                         addslashes($data["name"]), -1, array(),
-                                         addslashes($data["comment"]));
+            $ID = Dropdown::importExternal(getItemTypeForTable($this->item_table),
+                                           addslashes($data["name"]), -1, array(),
+                                           addslashes($data["comment"]));
             if ($data['id'] != $ID) {
                $tomove[$data['id']] = $ID;
                $type = GetItemTypeForTable($this->item_table);

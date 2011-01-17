@@ -50,8 +50,8 @@ if (isset($_POST['id']) && $_POST['id'] > 0 && $notification->can($_POST['id'],'
 
    $target = NotificationTarget::getInstanceByType($notification->getField('itemtype'),
                                                    $notification->getField('event'),
-                                                   array('entities_id'=>
-                                                            $notification->getField('entities_id')));
+                                                   array('entities_id'
+                                                          => $notification->getField('entities_id')));
 
    switch($_REQUEST['glpi_tab']) {
       case -1 :
