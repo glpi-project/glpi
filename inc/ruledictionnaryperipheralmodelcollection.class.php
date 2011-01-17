@@ -39,15 +39,19 @@ class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCo
     * Constructor
    **/
    function __construct() {
+
       $this->item_table="glpi_peripheralmodels";
-      $this->initCache("glpi_rulecacheperipheralmodels",array("name"=>"old_value",
-                                                                "manufacturer"=>"manufacturer"));
-      $this->menu_option="model.peripheral";
+      $this->initCache("glpi_rulecacheperipheralmodels", array("name"         => "old_value",
+                                                               "manufacturer" => "manufacturer"));
+      $this->menu_option = "model.peripheral";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][53];
+
+      return $LANG['rulesengine'][53];
    }
+
 }
 ?>

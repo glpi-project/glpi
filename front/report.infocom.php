@@ -235,7 +235,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
    return false;
 }
 
-$types = array('Computer', 'Monitor', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone');
+$types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
 
 $i = 0;
 while (count($types)>0) {

@@ -317,8 +317,8 @@ class Log extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `glpi_logs`
-                WHERE `items_id` = '".$items_id."'
-                      AND `itemtype`='".$itemtype."' ";
+                WHERE `items_id` = '$items_id'
+                      AND `itemtype` = '$itemtype' ";
       if ($sqlfilter) {
          $query .= "AND ($sqlfilter) ";
       }

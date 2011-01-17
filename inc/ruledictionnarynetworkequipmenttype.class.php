@@ -43,8 +43,10 @@ class RuleDictionnaryNetworkEquipmentType extends RuleDictionnaryDropdown {
       parent::__construct('RuleDictionnaryNetworkEquipmentType');
    }
 
+
    function getCriterias() {
       global $LANG;
+
       $criterias = array();
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = $LANG['common'][17];
@@ -53,14 +55,17 @@ class RuleDictionnaryNetworkEquipmentType extends RuleDictionnaryDropdown {
       return $criterias;
    }
 
+
    function getActions() {
       global $LANG;
+
       $actions = array();
       $actions['name']['name']          = $LANG['common'][17];
-      $actions['name']['force_actions'] = array('assign','regex_result','append_regex_result');
+      $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
       return $actions;
    }
+
 }
 
 ?>

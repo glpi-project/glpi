@@ -39,14 +39,18 @@ class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnar
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_operatingsystemservicepacks";
+
+      $this->item_table = "glpi_operatingsystemservicepacks";
       $this->initCache("glpi_rulecacheoperatingsystemservicepacks");
-      $this->menu_option="os_sp";
+      $this->menu_option = "os_sp";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][68];
+
+      return $LANG['rulesengine'][68];
    }
+
 }
 ?>

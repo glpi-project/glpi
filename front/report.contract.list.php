@@ -40,8 +40,8 @@ checkRight("reports","r");
 
 commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-$items = array('Computer', 'Printer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Software',
-               'Phone');
+$items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
+               'Software');
 # Titre
 echo "<big><strong>".$LANG['reports'][4]."</strong></big><br><br>";
 

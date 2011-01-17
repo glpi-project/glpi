@@ -182,7 +182,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "connect_to_computer" :
          Dropdown::showAllItems("connect_item", 0, 0, $_SESSION["glpiactive_entity"],
-                                array('Phone', 'Monitor', 'Printer', 'Peripheral'),
+                                array('Monitor', 'Peripheral', 'Phone',  'Printer'),
                                 true);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       $LANG['buttons'][2]."'>";

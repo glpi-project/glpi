@@ -127,7 +127,8 @@ if (isset($_GET["action"])) {
 
    } else {
       // Next run
-      $offset       = $rulecollection->replayRulesOnExistingDB($_GET['offset'], $max, array(), $_GET);
+      $offset       = $rulecollection->replayRulesOnExistingDB($_GET['offset'], $max, array(),
+                                                               $_GET);
       $manufacturer = $_GET["manufacturer"];
 
       // global start for stat

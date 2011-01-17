@@ -39,14 +39,18 @@ class RuleDictionnaryPeripheralTypeCollection extends RuleDictionnaryDropdownCol
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_peripheraltypes";
+
+      $this->item_table = "glpi_peripheraltypes";
       $this->initCache("glpi_rulecacheperipheraltypes");
-      $this->menu_option="type.peripheral";
+      $this->menu_option = "type.peripheral";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][63];
+
+      return $LANG['rulesengine'][63];
    }
+
 }
 ?>

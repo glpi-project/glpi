@@ -39,16 +39,20 @@ class RuleDictionnaryMonitorModelCollection extends RuleDictionnaryDropdownColle
     * Constructor
    **/
    function __construct() {
-      $this->item_table="glpi_monitormodels";
+
+      $this->item_table = "glpi_monitormodels";
       //Init cache system values
-      $this->initCache("glpi_rulecachemonitormodels",array("name"=>"old_value",
-                                                           "manufacturer"=>"manufacturer"));
-      $this->menu_option="model.monitor";
+      $this->initCache("glpi_rulecachemonitormodels", array("name"         => "old_value",
+                                                            "manufacturer" => "manufacturer"));
+      $this->menu_option = "model.monitor";
    }
+
 
    function getTitle() {
       global $LANG;
-            return $LANG['rulesengine'][50];
+
+      return $LANG['rulesengine'][50];
    }
+
 }
 ?>

@@ -101,13 +101,13 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
    echo "</span>\n";
    echo "</td></tr></table>";
 
-   $paramsaction = array( 'searchtype' => '__VALUE__',
-                          'field'      => $_POST["field"],
-                          'itemtype'   => $_POST["itemtype"],
-                          'num'        => $_POST["num"],
-                          'value'      => rawurlencode(stripslashes($_POST['value'])),
-                          'searchopt'  => $searchopt,
-                          'meta'       => $_POST['meta']);
+   $paramsaction = array('searchtype' => '__VALUE__',
+                         'field'      => $_POST["field"],
+                         'itemtype'   => $_POST["itemtype"],
+                         'num'        => $_POST["num"],
+                         'value'      => rawurlencode(stripslashes($_POST['value'])),
+                         'searchopt'  => $searchopt,
+                         'meta'       => $_POST['meta']);
 
    ajaxUpdateItemOnSelectEvent("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch",
                                "span$dropdownname",
