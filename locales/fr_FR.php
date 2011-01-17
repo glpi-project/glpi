@@ -2231,7 +2231,6 @@ $LANG['setup'][819] = "Passage à l'état ";
 $LANG['setup'][820] = "Comportement à la suppression d'une machine dans OCSNG";
 
 
-
 $LANG['sla'][1] = "SLA";
 $LANG['sla'][2] = "Temps maximum de résolution";
 $LANG['sla'][3] = "Exécution";
