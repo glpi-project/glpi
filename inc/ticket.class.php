@@ -2172,7 +2172,7 @@ class Ticket extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['joblist'][6]." (".$LANG['validation'][16].")&nbsp;:</td><td colspan='3'>";
+      echo "<td>".$LANG['joblist'][6]."&nbsp;:</td><td colspan='3'>";
       if ($canedit) {
          echo "<textarea name='solution' rows='12' cols='80'>";
          echo $this->getField('solution') . "</textarea>";
