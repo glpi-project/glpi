@@ -61,7 +61,6 @@ class Config extends CommonDBTM {
       $tabs[3] = $LANG['Menu'][38];  // Inventory
       $tabs[4] = $LANG['title'][24];   // Helpdesk
       $tabs[5] = $LANG['setup'][720];  // SysInfo
-      $tabs[7] = $LANG['setup'][811];  // SysInfo
 
       if (DBConnection::isDBSlaveActive()) {
          $tabs[6]  = $LANG['setup'][800];  // Slave
