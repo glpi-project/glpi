@@ -324,6 +324,19 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
+      if (haveRight("transfer","w") && isMultiEntitiesMode()) {
+         echo "<br><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='2'>" . $LANG['setup'][290] . "</th></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . $LANG['setup'][291] . "&nbsp;:</td><td>";
+         Dropdown::show('Transfer',
+                           array('value' => $CFG_GLPI["transfers_id_auto"],
+                                 'name'  => "transfers_id_auto",
+                                 'emptylabel'=> $LANG['setup'][292]));
+         echo "</td></td></tr>";
+         echo "</table>";
+      }
+
       echo "<br><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>".$LANG['setup'][280]." (".$LANG['peripherals'][32].")</th></tr>";
 

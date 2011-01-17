@@ -56,6 +56,38 @@ class Ocslink extends CommonDBTM {
       return haveRight('ocsng', 'r');
    }
 
+   /**
+   * Show OcsLink of an item
+   *
+   * @param $item CommonDBTM object
+   *
+   * @return nothing
+   **/
+   static function showForItem(CommonDBTM $item) {
+      global $DB,$LANG;
+
+      if (in_array($item->getType(),array('Computer'))) {
+         $items_id = $item->getField('id');
+
+         $query = "SELECT `glpi_ocslinks`.`tag` AS tag
+                     FROM `glpi_ocslinks`
+                     WHERE `glpi_ocslinks`.`computers_id` = '$items_id'"
+                     .getEntitiesRestrictRequest("AND","glpi_ocslinks");
+
+         $result = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
+            $data = $DB->fetch_assoc($result);
+            $data = clean_cross_side_scripting_deep(addslashes_deep($data));
+
+            echo "<div class='center'>";
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr><th>" . $LANG['ocsng'][0] . "</th>";
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center'>" . $LANG['ocsconfig'][39] . "&nbsp;: " . $data['tag'] . "</td></tr>";
+         }
+      }
+
+   }
 
 }
 

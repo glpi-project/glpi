@@ -145,6 +145,7 @@ if ($_POST["id"]>0 && $computer->can($_POST["id"],'r')) {
             break;
 
          case 13 :
+            OcsLink::showForItem($computer);
             OcsServer::editLock($_POST['target'], $_POST["id"]);
             break;
 
