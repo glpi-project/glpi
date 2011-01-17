@@ -645,6 +645,8 @@ function update0782to080($output='HTML') {
 
    $migration->addField("glpi_monitors", "have_hdmi",
                         "tinyint(1) NOT NULL DEFAULT 0 AFTER `have_pivot`");
+   $migration->addField("glpi_monitors", "have_displayport",
+                        "tinyint(1) NOT NULL DEFAULT 0 AFTER `have_hdmi`");
 
    $migration->dropField("glpi_configs", "dbreplicate_email");
    $migration->addField("glpi_configs", "auto_create_infocoms", "tinyint(1) NOT NULL DEFAULT 0");
