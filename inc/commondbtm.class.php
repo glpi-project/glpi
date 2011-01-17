@@ -2572,45 +2572,45 @@ class CommonDBTM extends CommonGLPI {
                }
                if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
                   if ($p['unicity_error_message'] || $p['add_event_on_duplicate']) {
-                      $message = array();
-                      foreach ($fields['fields'] as $field) {
-                         $table = getTableNameForForeignKeyField($field);
-                         if ($table != '') {
-                            $searchOption = $this->getSearchOptionByField('field', 'name',$table);
-                         } else {
-                            $searchOption = $this->getSearchOptionByField('field', $field);
-                         }
-                         $message[] = $searchOption['name'].'='.$this->input[$field];
-                      }
+                     $message = array();
+                     foreach ($fields['fields'] as $field) {
+                        $table = getTableNameForForeignKeyField($field);
+                        if ($table != '') {
+                           $searchOption = $this->getSearchOptionByField('field', 'name',$table);
+                        } else {
+                           $searchOption = $this->getSearchOptionByField('field', $field);
+                        }
+                        $message[] = $searchOption['name'].'='.$this->input[$field];
+                     }
 
-                      $doubles = getAllDatasFromTable($this->table,"1 $where $where_global");
-                      $message_text = $LANG['setup'][813].": ".implode('&nbsp;&&nbsp;',$message);
-                      $message_text.= $LANG['setup'][818];
-                      foreach ($doubles as $double) {
-                         if (get_class($this) == 'Infocom') {
-                            $item = new $double['itemtype'];
-                            $item->getFromDB($double['items_id']);
-                            $item_serial = $item->fields['serial'];
-                            $item_id = $item->fields['id'];
-                            $entities_id = $item->fields['entities_id'];
-                         } else {
-                            $item_serial = $double['serial'];
-                            $item_id = $double['id'];
-                            $entities_id = $double['entities_id'];
-                         }
-                         $message_text.= " [".$LANG['login'][6].": ".$item_id.", ";
-                         $message_text.= $LANG['common'][19].": ".$item_serial.", ";
-                         $message_text.=$LANG['entity'][0].": ";
-                         $message_text.= Dropdown::getDropdownName('glpi_entities',$entities_id)."]";
-                      }
-                      if ($p['unicity_error_message']) {
-                         addMessageAfterRedirect($message_text,
-                                                 true, ERROR, false);
-                      }
-                      if ($p['add_event_on_duplicate']) {
+                     $doubles       = getAllDatasFromTable($this->table,"1 $where $where_global");
+                     $message_text  = $LANG['setup'][813].": ".implode('&nbsp;&&nbsp;',$message);
+                     $message_text .= $LANG['setup'][818];
+                     foreach ($doubles as $double) {
+                        if (get_class($this) == 'Infocom') {
+                           $item        = new $double['itemtype'];
+                           $item->getFromDB($double['items_id']);
+                           $item_serial = $item->fields['serial'];
+                           $item_id     = $item->fields['id'];
+                           $entities_id = $item->fields['entities_id'];
+                        } else {
+                           $item_serial = $double['serial'];
+                           $item_id     = $double['id'];
+                           $entities_id = $double['entities_id'];
+                        }
+                        $message_text .= " [".$LANG['login'][6].": ".$item_id.", ";
+                        $message_text .= $LANG['common'][19].": ".$item_serial.", ";
+                        $message_text .=$LANG['entity'][0].": ";
+                        $message_text .= Dropdown::getDropdownName('glpi_entities',
+                                                                   $entities_id)."]";
+                     }
+                     if ($p['unicity_error_message']) {
+                        addMessageAfterRedirect($message_text, true, ERROR, false);
+                     }
+                     if ($p['add_event_on_duplicate']) {
                         Event::log ((!$add?$this->fields['id']:0), get_class($this), 4, 'inventory',
                                     $_SESSION["glpiname"]." ".$LANG['log'][123].' : '.$message_text);
-                      }
+                     }
                   }
                   $result = false;
                }

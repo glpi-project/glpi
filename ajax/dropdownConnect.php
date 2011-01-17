@@ -116,7 +116,8 @@ if ($_POST["onlyglobal"] && $_POST["idtable"] != 'Computer') {
    if ($_POST["idtable"] == 'Computer') {
       $CONNECT_SEARCH = " WHERE 1 ";
    } else {
-      $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL $where_used)
+      $CONNECT_SEARCH = " WHERE ((`glpi_computers_items`.`id` IS NULL
+                                  $where_used)
                                  OR `$table`.`is_global` = '1') ";
    }
 }

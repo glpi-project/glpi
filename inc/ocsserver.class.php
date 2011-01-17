@@ -1178,7 +1178,7 @@ class OcsServer extends CommonDBTM {
 
 
    static function manageDeleted($ocsservers_id) {
-      global $DB, $DBocs,$CFG_GLPI;
+      global $DB, $DBocs, $CFG_GLPI;
 
       if (!(OcsServer::checkOCSconnection($ocsservers_id) && OcsServer::checkConfig(1))) {
          return false;
@@ -1283,9 +1283,10 @@ class OcsServer extends CommonDBTM {
                            if ($CFG_GLPI['ocs_deleted_behavior'] == 1) {
                               $comp->delete( array("id" => $data["computers_id"]), 0);
                            } else {
-                              if (preg_match('/STATE_(.*)/',$CFG_GLPI['ocs_deleted_behavior'],$results)) {
-                                 $tmp['id'] = $data["computers_id"];
-                                 $tmp['states_id'] = $results[1];
+                              if (preg_match('/STATE_(.*)/',$CFG_GLPI['ocs_deleted_behavior'],
+                                  $results)) {
+                                 $tmp['id']          = $data["computers_id"];
+                                 $tmp['states_id']   = $results[1];
                                  $tmp['entities_id'] = $data['entities_id'];
                                  $comp->update($tmp);
                               }
@@ -2818,15 +2819,15 @@ class OcsServer extends CommonDBTM {
       $new_import_device = array(self::IMPORT_TAG_078);
       if (count($import_device)) {
          foreach ($import_device as $key=>$val) {
-            $tmp=explode(self::FIELD_SEPARATOR,$val);
+            $tmp = explode(self::FIELD_SEPARATOR, $val);
 
             if (isset($tmp[1])) { // Except for old IMPORT_TAG
-               $tmp2=explode(self::FIELD_SEPARATOR,$key);
+               $tmp2 = explode(self::FIELD_SEPARATOR, $key);
                // Index Could be 1330395 (from glpi 0.72)
                // Index Could be 5$$$$$5$$$$$5$$$$$5$$$$$5$$$$$1330395 (glpi 0.78 bug)
                // So take the last part of the index
                $key2 = $tmp[0].self::FIELD_SEPARATOR.array_pop($tmp2);
-               $new_import_device[$key2]=$val;
+               $new_import_device[$key2] = $val;
             }
 
          }
