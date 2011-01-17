@@ -395,8 +395,10 @@ class Monitor extends CommonDBTM {
       // hdmi?
       echo "<tr><td>".$LANG['monitors'][34]."</td><td>";
       Dropdown::showYesNo("have_hdmi", $this->fields["have_hdmi"]);
-      // pivot ?
-      echo "</td><td colspan='2'>&nbsp;";
+      echo "</td>";
+      //Displayport
+      echo "</td><td>".$LANG['monitors'][35]."</td><td>";
+      Dropdown::showYesNo("have_displayport", $this->fields["have_displayport"]);
       echo "</td></tr>";
       echo "</table></td></tr>";
 
@@ -545,6 +547,11 @@ class Monitor extends CommonDBTM {
       $tab[47]['field']    = 'have_hdmi';
       $tab[47]['name']     = $LANG['monitors'][34];
       $tab[47]['datatype'] = 'bool';
+
+      $tab[48]['table']    = $this->getTable();
+      $tab[48]['field']    = 'have_displayport';
+      $tab[48]['name']     = $LANG['monitors'][35];
+      $tab[48]['datatype'] = 'bool';
 
       $tab[23]['table'] = 'glpi_manufacturers';
       $tab[23]['field'] = 'name';

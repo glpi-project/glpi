@@ -1344,6 +1344,7 @@ $LANG['monitors'][21] = "Taille";
 $LANG['monitors'][32] = "DVI";
 $LANG['monitors'][33] = "Pivot";
 $LANG['monitors'][34] = "HDMI";
+$LANG['monitors'][35] = "DisplayPort";
 
 
 $LANG['networking'][4]  = "Port réseau";

@@ -2013,6 +2013,7 @@ CREATE TABLE `glpi_monitors` (
   `have_dvi` tinyint(1) NOT NULL DEFAULT '0',
   `have_pivot` tinyint(1) NOT NULL DEFAULT '0',
   `have_hdmi` tinyint(1) NOT NULL DEFAULT '0',
+  `have_displayport` tinyint(1) NOT NULL DEFAULT '0',
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `monitortypes_id` int(11) NOT NULL DEFAULT '0',
   `monitormodels_id` int(11) NOT NULL DEFAULT '0',
