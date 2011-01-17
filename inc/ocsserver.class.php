@@ -935,19 +935,26 @@ class OcsServer extends CommonDBTM {
    static function ocsLink($ocsid, $ocsservers_id, $glpi_computers_id) {
       global $DB, $DBocs;
 
+      // Retrieve informations from computer
+      $comp = new Computer;
+      $comp->getFromDB($glpi_computers_id);
+      
       OcsServer::checkOCSconnection($ocsservers_id);
 
       // Need to get device id due to ocs bug on duplicates
-      $query_ocs = "SELECT *
+      $query_ocs = "SELECT `hardware`.*, `accountinfo`.`TAG` AS TAG
                     FROM `hardware`
+                    INNER JOIN `accountinfo` ON (`hardware`.`id` = `accountinfo`.`HARDWARE_ID`)
                     WHERE `ID` = '$ocsid';";
       $result_ocs = $DBocs->query($query_ocs);
       $data = $DBocs->fetch_array($result_ocs);
 
       $query = "INSERT INTO `glpi_ocslinks`
-                       (`computers_id`, `ocsid`, `ocs_deviceid`, `last_update`, `ocsservers_id`)
+                       (`computers_id`, `ocsid`, `ocs_deviceid`,
+                        `last_update`, `ocsservers_id`, `entities_id`, `tag`)
                 VALUES ('$glpi_computers_id','$ocsid','" . $data["DEVICEID"] . "','" .
-                        $_SESSION["glpi_currenttime"] . "','$ocsservers_id')";
+                        $_SESSION["glpi_currenttime"] . "','$ocsservers_id','" .
+                        $comp->fields['entities_id'] . "','" . $data["TAG"] ."')";
       $result = $DB->query($query);
 
       if ($result) {
@@ -958,7 +965,7 @@ class OcsServer extends CommonDBTM {
 
 
    static function linkComputer($ocsid, $ocsservers_id, $computers_id) {
-      global $DB, $DBocs, $LANG;
+      global $DB, $DBocs, $LANG, $CFG_GLPI;
 
       OcsServer::checkOCSconnection($ocsservers_id);
 
@@ -1009,6 +1016,28 @@ class OcsServer extends CommonDBTM {
 
          if ($ocs_id_change
              || $idlink = OcsServer::ocsLink($ocsid, $ocsservers_id, $computers_id)) {
+                
+             // automatic transfer computer 
+             if ($CFG_GLPI['transfers_id_auto']>0 && isMultiEntitiesMode()) {
+
+                // Retrieve data from glpi_ocslinks
+                $ocsLink = new Ocslink;
+                $ocsLink->getFromDB($idlink);
+
+                if (count($ocsLink->fields)) {
+                   // Retrieve datas from OCS database
+                   $query_ocs = "SELECT *
+                                 FROM `hardware`
+                                 WHERE `ID` = '" . $ocsLink->fields['ocsid'] . "'";
+                   $result_ocs = $DBocs->query($query_ocs);
+
+                   if ($DBocs->numrows($result_ocs) == 1) {
+                      $data_ocs = addslashes_deep($DBocs->fetch_array($result_ocs));
+                      OcsServer::transferComputer($ocsLink->fields,$data_ocs);
+                   }
+                }
+             }
+            
             $comp = new Computer();
             $comp->getFromDB($computers_id);
             $input["id"]            = $computers_id;
@@ -1027,11 +1056,6 @@ class OcsServer extends CommonDBTM {
             }
             // Reset using GLPI Config
             $cfg_ocs = OcsServer::getConfig($ocsservers_id);
-//             $query = "SELECT *
-//                       FROM `hardware`
-//                       WHERE `ID` = '$ocsid'";
-//             $result = $DBocs->query($query);
-//             $line = $DBocs->fetch_array($result);
 
             // Reset only if not in ocs id change case
             if (!$ocs_id_change) {
@@ -1579,6 +1603,12 @@ class OcsServer extends CommonDBTM {
 
          if ($DBocs->numrows($result_ocs) == 1) {
             $data_ocs = addslashes_deep($DBocs->fetch_array($result_ocs));
+
+            // automatic transfer computer 
+            if ($CFG_GLPI['transfers_id_auto']>0 && isMultiEntitiesMode()) {
+               OcsServer::transferComputer($line,$data_ocs);
+               $comp->getFromDB($line["computers_id"]);
+            }
 
             // update last_update and and last_ocs_update
             $query = "UPDATE `glpi_ocslinks`
@@ -2968,7 +2998,7 @@ class OcsServer extends CommonDBTM {
       if ($DB->numrows($result) == 1) {
          $data = $DB->fetch_assoc($result);
          if (haveRight("sync_ocsng","w")) {
-            echo "\n<div class='center'>";
+            echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='id' value='$ID'>";
             echo "<table class='tab_cadre_fixe'>";
@@ -2978,9 +3008,11 @@ class OcsServer extends CommonDBTM {
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
             echo "<input class=submit type='submit' name='force_ocs_resynch' value=\"" .
                    $LANG['ocsng'][24] . "\">";
-            echo "</td><tr></table>";
-            echo "</form></div>\n";
+            echo "</form>\n";
+            echo "</td><tr>";
          }
+         
+         echo "</table></div>";
 
          $header = false;
          echo "<div width='50%'>";
@@ -5553,6 +5585,76 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>".$label."</td><td>".$statistics[$field]."</td></tr>";
       }
       echo "</table></div>";
+   }
+   
+   /**
+   * Do automatic transfer if option is enable
+   *@param $line_links array : data from glpi_ocslinks table
+   *@param $line_ocs array : data from ocs tables
+   *@param $force bool : if you want to force computer to use rules engine
+   *
+   *@return nothing
+   */
+   static function transferComputer($line_links,$line_ocs) {
+      global $DB, $DBocs, $CFG_GLPI;
+
+      // Get all rules for the current ocsservers_id
+      $rules = new RuleOcsCollection($line_links["ocsservers_id"]);
+      
+      $data = array();
+      $data = $rules->processAllRules(array(), array(), $line_links["ocsid"]);
+
+      // If entity is changing move items to the new entities_id
+      if (isset($data['entities_id'])
+            && $data['entities_id']!=$line_links['entities_id']) {
+         if (!isCommandLine() && !haveAccessToEntity($data['entities_id'])) {
+            displayRightError();
+         }
+
+         $transfer = new Transfer;
+         $transfer->getFromDB($CFG_GLPI['transfers_id_auto']);
+
+         $item_to_transfer = array("Computer"=>
+                                    array($line_links['computers_id']=>$line_links['computers_id']));
+         $transfer->moveItems($item_to_transfer,$data['entities_id'],$transfer->fields);
+      }
+      
+      // Update TAG
+      OcsServer::updateTag($line_links,$line_ocs);
+   }
+   
+   /**
+   * Update TAG information in glpi_ocslinks table
+   *@param $line_links array : data from glpi_ocslinks table
+   *@param $line_ocs array : data from ocs tables
+   *
+   *@return string : current tag of computer on update
+   */
+   static function updateTag($line_links,$line_ocs) {
+      global $DB, $DBocs;
+
+      $query_ocs = "SELECT `accountinfo`.`TAG` as TAG
+                        FROM `hardware`
+                        INNER JOIN `accountinfo` 
+                           ON (`hardware`.`ID` = `accountinfo`.`HARDWARE_ID`)
+                        WHERE `hardware`.`ID` = '" . $line_links["ocsid"] . "'";
+
+      $result_ocs = $DBocs->query($query_ocs);
+
+      if ($DBocs->numrows($result_ocs) == 1) {
+         $data_ocs = addslashes_deep($DBocs->fetch_array($result_ocs));
+
+         $query = "UPDATE `glpi_ocslinks`
+                   SET `tag` = '" . $data_ocs["TAG"] . "'
+                   WHERE `id` = '" . $line_links["id"] . "'";
+         if ($DB->query($query)) {
+            $changes[0] = '0';
+            $changes[1] = $line_links["tag"];
+            $changes[2] = $data_ocs["TAG"];
+            Log::history($line_links["id"], 'Ocslink', $changes, 0, HISTORY_OCS_LINK);
+            return $data_ocs["TAG"];
+         }
+      }
    }
 }
 ?>

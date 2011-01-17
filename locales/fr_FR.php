@@ -2132,6 +2132,10 @@ $LANG['setup'][284] = "Effacer";
 $LANG['setup'][285] = "Ne pas copier";
 $LANG['setup'][286] = "Ne pas effacer";
 
+$LANG['setup'][290] = "Transfert automatique d'ordinateur";
+$LANG['setup'][291] = "Modèle pour le transfert automatique d'ordinateur dans une autre entité";
+$LANG['setup'][292] = "Pas de transfert automatique";
+
 $LANG['setup'][300] = "Vérifier si une nouvelle version est disponible";
 $LANG['setup'][301] = "Une nouvelle version est disponible :";
 $LANG['setup'][302] = "Vous la trouverez sur le site GLPI-PROJECT.org";
