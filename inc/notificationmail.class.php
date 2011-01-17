@@ -62,6 +62,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    /// Defaut charset
    var $CharSet = "utf-8";
 
+
    /**
     * Constructor
    **/
@@ -236,7 +237,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       if (!$mmail->Send()) {
          $senderror = true;
-         addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo,true);
+         addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
       } else {
          logInFile("mail", $LANG['tracking'][38]." ".$options['to']." : ".$options['subject']."\n");
       }
