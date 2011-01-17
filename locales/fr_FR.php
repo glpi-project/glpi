@@ -1919,6 +1919,7 @@ $LANG['setup'][20]  = "Confirmation mot de passe";
 $LANG['setup'][21]  = "Erreur : les deux mots de passe ne sont pas identiques";
 
 $LANG['setup'][35]  = "MHz";
+
 $LANG['setup'][39]  = "Suivis privés par défaut";
 $LANG['setup'][40]  = "Tâches privées par défaut";
 $LANG['setup'][41]  = "Langue";
@@ -2226,9 +2227,9 @@ $LANG['setup'][815] = "Champ(s) unique(s)";
 $LANG['setup'][816] = "Ajouter unicité pour un type";
 $LANG['setup'][817] = "Il est obligatoire de sélectionner un type et au moins un champ";
 $LANG['setup'][818] = "<br/>D'autres éléments existent déjà ";
-
+$LANG['setup'][819] = "Passage à l'état ";
 $LANG['setup'][820] = "Comportement à la suppression d'une machine dans OCSNG";
-$LANG['setup'][821] = "Passage à l'état ";
+
 
 
 $LANG['sla'][1] = "SLA";

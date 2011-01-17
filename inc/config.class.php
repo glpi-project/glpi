@@ -316,9 +316,9 @@ class Config extends CommonDBTM {
       $actions[0] = DROPDOWN_EMPTY_VALUE;
       $actions[1] = $LANG['ldap'][47];
       foreach (getAllDatasFromTable('glpi_states') as $state) {
-         $actions['STATE_'.$state['id']] = $LANG['setup'][821].' '.$state['name'];
+         $actions['STATE_'.$state['id']] = $LANG['setup'][819].' '.$state['name'];
       }
-      Dropdown::showFromArray('ocs_deleted_behavior',$actions,
+      Dropdown::showFromArray('ocs_deleted_behavior', $actions,
                               array('value' => $CFG_GLPI['ocs_deleted_behavior']));
       echo "</td></tr>";
 
