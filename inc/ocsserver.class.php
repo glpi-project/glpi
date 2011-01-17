@@ -2523,15 +2523,17 @@ class OcsServer extends CommonDBTM {
 
 
    /**
-    * Display a list of computer to add or to link
+    * Display a list of computers to add or to link
+    *
     * @param ocsservers_id the ID of the ocs server
     * @param advanced display detail about the computer import or not (target entity, matched rules, etc.)
     * @param check indicates if checkboxes are checked or not
     * @param start display a list of computers starting at row X
     * @param entity a list of entities in which computers can be added or linked
     * @param tolinked false for an import, true for a link
+    *
     * @return nothing
-    */
+   **/
    static function showComputersToAdd($ocsservers_id, $advanced, $check, $start, $entity=0,
                                       $tolinked=false) {
       global $DB, $DBocs, $LANG, $CFG_GLPI;
@@ -2737,7 +2739,7 @@ class OcsServer extends CommonDBTM {
                   $rulelink_results = $rulelink->processAllRules($tab, array(), $params);
 
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
-                  $options = array('name' => "tolink[".$tab["id"]."]");
+                  $options       = array('name' => "tolink[".$tab["id"]."]");
                   $show_dropdown = true;
                   if (!empty($rulelink_results['found_computers'])) {
                      $options['value']  = $rulelink_results['found_computers'][0];
@@ -2747,7 +2749,7 @@ class OcsServer extends CommonDBTM {
                       || $rulelink_results['action'] != self::LINK_RESULT_NO_IMPORT) {
                      Dropdown::show('Computer', $options);
                   } else {
-                     echo "<img src=\"".GLPI_ROOT. "/pics/redbutton.png\">";
+                     echo "<img src='".GLPI_ROOT. "/pics/redbutton.png'>";
                   }
                }
                echo "</td></tr>\n";
