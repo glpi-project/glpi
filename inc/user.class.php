@@ -486,18 +486,20 @@ class User extends CommonDBTM {
             $_SESSION['glpi_use_mode'] = $input['use_mode'];
             //loadLanguage();
          }
-
-         foreach ($CFG_GLPI['user_pref_field'] as $f) {
-            if (isset($input[$f])) {
+      }
+      foreach ($CFG_GLPI['user_pref_field'] as $f) {
+         if (isset($input[$f])) {
+            if (getLoginUserID() === $input['id']) {
                if ($_SESSION["glpi$f"] != $input[$f]) {
                   $_SESSION["glpi$f"] = $input[$f];
                }
-               if ($input[$f] == $CFG_GLPI[$f]) {
-                  $input[$f] = "NULL";
-               }
+            }
+            if ($input[$f] == $CFG_GLPI[$f]) {
+               $input[$f] = "NULL";
             }
          }
       }
+
       return $input;
    }
 
