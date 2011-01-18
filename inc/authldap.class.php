@@ -239,7 +239,7 @@ class AuthLDAP extends CommonDBTM {
 
          //Fill fields when using preconfiguration models
          if (!$ID) {
-            $hidden_fields = array ('port', 'condition' , 'login_field', 'use_tls', 'group_field',
+            $hidden_fields = array ('port', 'condition' , 'use_tls', 'group_field',
                                     'group_condition', 'group_search_type', 'group_member_field',
                                     'email_field', 'realname_field', 'firstname_field', 'phone_field',
                                     'phone2_field', 'mobile_field', 'comment_field', 'title_field',
