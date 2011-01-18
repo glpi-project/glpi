@@ -665,9 +665,13 @@ class Config extends CommonDBTM {
       $userpref  = false;
       $url       = getItemTypeFormURL(__CLASS__);
 
-      if (isset($data['last_login'])) {
+      if (array_key_exists('last_login',$data)) {
          $userpref = true;
-         $url      = $CFG_GLPI['root_doc']."/front/preference.php";
+         if ($data["id"] === getLoginUserID()) {
+            $url      = $CFG_GLPI['root_doc']."/front/preference.php";
+         } else {
+            $url      = $CFG_GLPI['root_doc']."/front/user.form.php";
+         }
       }
 
       echo "<form name='form' action='$url' method='post'>";

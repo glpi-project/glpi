@@ -114,7 +114,7 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'], 'w');
    $user->update($_POST);
    Event::log(0, "users", 5, "setup",
-              $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$_POST["name"].".");
+              $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$user->fields["name"].".");
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["addgroup"])) {

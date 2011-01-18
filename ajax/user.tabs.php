@@ -97,6 +97,12 @@ if ($_POST["id"]>0 && $user->can($_POST["id"],'r')) {
          Document::showAssociated($user);
          break;
 
+      case 6 :
+         $config = new Config();
+         $user->computePreferences();
+         $config->showFormUserPrefs($user->fields);
+         break;
+
       case 11 :
          Reservation::showForUser($_POST["id"]);
          break;
