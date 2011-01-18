@@ -167,6 +167,19 @@ if (isset($_REQUEST['searchtype'])) {
                }
             }
 
+
+            //Could display be handled by a plugin ?
+            if (!$display && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
+               $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
+               if (function_exists($function)) {
+                  $params = array('name'           => $inputname,
+                                  'searchtype'     => $_REQUEST['searchtype'],
+                                  'searchoption'   => $searchopt,
+                                  'value'          => $_REQUEST['value']);
+                  $display = $function($params);
+               }
+            }
+
             // Standard field usage
             if (!$display) {
                switch ($searchopt['field']) {
@@ -188,7 +201,6 @@ if (isset($_REQUEST['searchtype'])) {
 
 //    static function dropdownValue($table,$myname,$value='',$display_comment=1,$entity_restrict=-1,
 //                           $update_item="",$used=array(),$auto_submit=0) {
-
 
    // Default case : text field
    if (!$display) {
