@@ -179,10 +179,10 @@ class FieldUnicity extends CommonDropdown {
       global $DB;
 
       //Get the first active configuration for this itemtype
-      $query = "SELECT `fields`, `is_recursive`
+      $query = "SELECT `fields`, `is_recursive`, `entities_id`
                 FROM `glpi_fieldunicities`
                 WHERE `itemtype` = '$itemtype'".
-                      getEntitiesRestrictRequest(" AND", "", "", $entities_id, true);
+                      getEntitiesRestrictRequest(" AND", 'glpi_fieldunicities', "", $entities_id, true);
 
       if ($check_active) {
          $query .= " AND `is_active` = '1' ";
@@ -190,12 +190,14 @@ class FieldUnicity extends CommonDropdown {
 
       $query .= "ORDER BY `entities_id` DESC
                  LIMIT 1";
+      //echo $query;exit();
       $result = $DB->query($query);
 
       $return = array();
       //A configuration found
       if ($DB->numrows($result)) {
          $tmp['is_recursive'] = $DB->result($result,0,'is_recursive');
+         $tmp['entities_id'] = $DB->result($result,0,'entities_id');
          $tmp['fields']       = explode(',',$DB->result($result,0,'fields'));
          $return = $tmp;
       }

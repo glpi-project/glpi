@@ -2556,20 +2556,22 @@ class CommonDBTM extends CommonGLPI {
                      //Foreign key and value is not 0
                        || (getTableNameForForeignKeyField($field) != ''
                            && $this->input[$field] > 0))) {
-                  $where .= " AND `$field` = '".$this->input[$field]."'";
+                  $where .= " AND `".$this->getTable()."`.`$field` = '".$this->input[$field]."'";
                }
             }
 
             if ($where != '') {
-               $where_global = "";
-               if (!$fields['is_recursive']) {
-                  $where_global = " AND `entities_id` = '$entities_id'";
+               $entities = $fields['entities_id'];
+               if ($fields['is_recursive']) {
+                  $entities = getSonsOf('glpi_entities',$fields['entities_id']);
                }
+               $where_global = getEntitiesRestrictRequest("AND", $this->getTable(),'',$entities);
 
                //If update, exclude ID of the current object
                if (!$add) {
-                  $where.=" AND `id` NOT IN (".$this->input['id'].") ";
+                  $where.=" AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
                }
+
                if (countElementsInTable($this->table,"1 $where $where_global") > 0) {
                   if ($p['unicity_error_message'] || $p['add_event_on_duplicate']) {
                      $message = array();
