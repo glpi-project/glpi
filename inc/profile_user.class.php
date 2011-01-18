@@ -517,7 +517,7 @@ class Profile_User extends CommonDBTM {
     * Get entities for which a user have a right
     *
     * @param $user_ID user ID
-    * @param $is_recursive check also using recurisve rights
+    * @param $is_recursive check also using recursive rights
     *
     * @return array of entities ID
    **/
@@ -537,7 +537,7 @@ class Profile_User extends CommonDBTM {
                $tab      = getSonsOf('glpi_entities', $data['entities_id']);
                $entities = array_merge($tab, $entities);
             } else {
-               $entities[] = $data['entities_id'];
+               $entities[$data['entities_id']] = $data['entities_id'];
             }
          }
 
@@ -548,6 +548,35 @@ class Profile_User extends CommonDBTM {
    }
 
 
+   /**
+    * Get profiles assigned to a user
+    *
+    * @param $user_ID user ID
+    *
+    * @return array of entities ID
+   **/
+   static function getUserProfiles($user_ID) {
+      global $DB;
+
+      $query = "SELECT DISTINCT `profiles_id`, `is_recursive`
+                FROM `glpi_profiles_users`
+                WHERE `users_id` = '$user_ID'";
+      $result = $DB->query($query);
+
+      if ($DB->numrows($result) >0) {
+         $profiles = array();
+
+         while ($data = $DB->fetch_assoc($result)) {
+            if ($data['is_recursive']) {
+               $profiles[$data['profiles_id']] = $data['profiles_id'];
+            }
+         }
+
+         return $profiles;
+      }
+
+      return array();
+   }
    static function getEntitiesForProfileByUser($users_id, $profiles_id) {
       global $DB;
 

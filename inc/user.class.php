@@ -1290,8 +1290,8 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
       autocompletionTextField($this, "phone");
       echo "</td>";
-      echo "<td rowspan='4' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
-      echo "<td class='center middle' rowspan='4'>";
+      echo "<td rowspan='5' class='middle'>" . $LANG['common'][25] . "&nbsp;:</td>";
+      echo "<td class='center middle' rowspan='5'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"] . "</textarea>";
       echo "</td></tr>";
 
@@ -1329,6 +1329,23 @@ class User extends CommonDBTM {
 
       //don't display is creation of a new user'
       if (!empty ($ID)) {
+         if ($caneditpassword) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" .  $LANG['profiles'][13] . "&nbsp;: </td><td>";
+
+            $options[0] = DROPDOWN_EMPTY_VALUE;
+            $options += Dropdown::getDropdownArrayNames('glpi_profiles',
+                                          Profile_User::getUserProfiles($this->fields['id']));
+            Dropdown::showFromArray("profiles_id", $options,
+                                    array('value' => $this->fields["profiles_id"]));
+
+            echo "<td>" .  $LANG['profiles'][37] . "&nbsp;: </td><td>";
+            $entities = Profile_User::getUserEntities($this->fields['id'],1);
+            Dropdown::show('Entity', array('value'  => $this->fields["entities_id"],
+                                          'entity' => $entities));
+            echo "</td></tr>";
+         }
+
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>" . $LANG['login'][24] . "&nbsp;: ";
 
@@ -1466,11 +1483,14 @@ class User extends CommonDBTM {
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . $LANG['profiles'][13] . "&nbsp;:</td><td>";
             $options = array(0 => DROPDOWN_EMPTY_VALUE);
-            foreach ($_SESSION['glpiprofiles'] as $ID => $prof) {
-               $options[$ID] = $prof['name'];
-            }
+            $options = array_merge($options,Dropdown::getDropdownArrayNames('glpi_profiles',
+                                          Profile_User::getUserProfiles($this->fields['id'])));
+
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
+
+
+
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
@@ -1486,9 +1506,12 @@ class User extends CommonDBTM {
          echo "</td>";
 
         if (!GLPI_DEMO_MODE && count($_SESSION['glpiactiveentities'])>1) {
+
+            $entities = Profile_User::getUserEntities($this->fields['id'],1);
+
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
-            Dropdown::show('Entity', array('value'  => $_SESSION["glpidefault_entity"],
-                                           'entity' => $_SESSION['glpiactiveentities']));
+            Dropdown::show('Entity', array('value'  => $this->fields['entities_id'],
+                                           'entity' => $entities));
          } else {
             echo "<td colspan='2'>&nbsp;";
          }
@@ -1722,10 +1745,7 @@ class User extends CommonDBTM {
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('beforejoin'
                                          => array(array('table'      => 'glpi_profiles_users',
-                                                        'joinparams' => array('jointype' => 'child')),
-                                                  array('table'      => 'glpi_complete_entities',
-                                                        'linkfield'  => 'entities_id',
-                                                        'joinparams' => array('nolink' => true))));
+                                                        'joinparams' => array('jointype' => 'child'))));
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'user_dn';
@@ -1745,9 +1765,7 @@ class User extends CommonDBTM {
       $tab[80]['massiveaction'] = false;
       $tab[80]['joinparams']    = array('beforejoin'
                                          => array(array('table'      => 'glpi_profiles_users',
-                                                        'joinparams' => array('jointype' => 'child')),
-                                                  array('table'      => 'glpi_profiles',
-                                                        'joinparams' => array('nolink' => true))));
+                                                        'joinparams' => array('jointype' => 'child'))));
 
       $tab[81]['table']     = 'glpi_usertitles';
       $tab[81]['field']     = 'name';
@@ -1756,6 +1774,14 @@ class User extends CommonDBTM {
       $tab[82]['table'] = 'glpi_usercategories';
       $tab[82]['field'] = 'name';
       $tab[82]['name']  = $LANG['users'][2];
+
+      $tab[78]['table']     = 'glpi_entities';
+      $tab[78]['field']     = 'name';
+      $tab[78]['name']      = $LANG['profiles'][37];
+
+      $tab[79]['table'] = 'glpi_profiles';
+      $tab[79]['field'] = 'name';
+      $tab[79]['name']  = $LANG['profiles'][13];
 
       $tab[60]['table']         = 'glpi_tickets';
       $tab[60]['field']         = 'count';
