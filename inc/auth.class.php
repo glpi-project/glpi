@@ -546,14 +546,14 @@ class Auth {
                                                                       'value'=>$login_name),
                                                              'condition'   => $ldap_method["condition"]));
                      if ($user_dn) {
-                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $user);
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name);
                      }
                   }
                }
             }
 
             // Reset to secure it
-            $this->user->fields['name']       = $user;
+            $this->user->fields['name']       = $login_name;
             $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 
          } else {
