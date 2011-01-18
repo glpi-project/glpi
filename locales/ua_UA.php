@@ -45,7 +45,7 @@ $LANG['backup'][23]="Помилка Mysql починаючи з";
 $LANG['backup'][24]="Автоматичний редірект… або натисніть."; 
 
 $LANG['bookmark'][1]="закладки"; 
-$LANG['bookmark'][2]="Partial load of the bookmark."; 
+$LANG['bookmark'][2]="Часткове завантаження закладок."; 
 $LANG['bookmark'][3]="Ви поки що не заповнили жодної закладки."; 
 $LANG['bookmark'][4]="Нова закладка"; 
 $LANG['bookmark'][5]="Загальні закладки"; 
@@ -1927,7 +1927,7 @@ $LANG['validation'][7]="Затвердження для заявки";
 $LANG['validation'][9]="В очікуванні на затвердження"; 
 $LANG['validation'][10]="Відхилено"; 
 $LANG['validation'][11]="Прийнято"; 
-$LANG['validation'][12]="Not subject to approval"; 
+$LANG['validation'][12]="Не підлягає затвердженню"; 
 $LANG['validation'][13]="Запит на затвердження надіслано"; 
 $LANG['validation'][15]="Заявки, які очікують на ваше затвердження"; 
 $LANG['validation'][16]="Додатково, якщо прийнято"; 
