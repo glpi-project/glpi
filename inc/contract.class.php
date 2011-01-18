@@ -513,6 +513,15 @@ class Contract extends CommonDBTM {
       $tab[86]['name']     = $LANG['entity'][9];
       $tab[86]['datatype'] = 'bool';
 
+      $tab[72]['table']         = 'glpi_contracts_items';
+      $tab[72]['field']         = 'count';
+      $tab[72]['name']          = $LANG['document'][19]." (".$LANG['tracking'][29].")";
+      $tab[72]['forcegroupby']  = true;
+      $tab[72]['usehaving']     = true;
+      $tab[72]['datatype']      = 'number';
+      $tab[72]['massiveaction'] = false;
+      $tab[72]['joinparams']    = array('jointype' => 'child');
+
       return $tab;
    }
 
