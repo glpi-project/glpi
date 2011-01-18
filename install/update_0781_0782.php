@@ -228,10 +228,13 @@ function update0781to0782($output='HTML') {
 
    }
 
-   if (!FieldExists('glpi_ocsservers','ocs_db_encoding')) {
+	
+
+   if (!FieldExists('glpi_ocsservers','ocs_db_utf8')) {
       $query = "ALTER TABLE `glpi_ocsservers`
-                    ADD `ocs_db_encoding` VARCHAR(255) DEFAULT 'latin1' AFTER `ocs_db_name`";
-      $DB->query($query) or die("0.78.2 add ocs_db_encoding in glpi_ocsservers" .
+                ADD `ocs_db_utf8` tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`";
+
+      $DB->query($query) or die("0.78.2 add ocs_db_utf8 in glpi_ocsservers" .
                                  $LANG['update'][90] . $DB->error());
    }
 
