@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="OCSNG user password";
 $LANG['ocsconfig'][4]="Name of the OCSNG database"; 
 $LANG['ocsconfig'][5]="导入选项"; 
 $LANG['ocsconfig'][6]="忽略OCSNG引入"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="排除下列标签（分隔$,不是对所有）"; 
 $LANG['ocsconfig'][10]="全局导入"; 
 $LANG['ocsconfig'][11]="没有导入"; 

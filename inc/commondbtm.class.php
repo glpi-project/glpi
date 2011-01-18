@@ -583,7 +583,6 @@ class CommonDBTM extends CommonGLPI {
          if (isset($table_fields['date_mod'])) {
             $this->fields['date_mod']=$_SESSION["glpi_currenttime"];
          }
-
          if ($this->addToDB()) {
             $this->addMessageOnAddAction();
             $this->post_addItem();

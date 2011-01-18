@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="Password dell'utente OCS-NG";
 $LANG['ocsconfig'][4]="Nome del database OCS-NG"; 
 $LANG['ocsconfig'][5]="Opzioni di importazione"; 
 $LANG['ocsconfig'][6]="Ignoralo nell'importazione OCS-NG"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="Escludi i seguenti tag (usa $ come separatore, se assente include tutti)"; 
 $LANG['ocsconfig'][10]="Importazione globale"; 
 $LANG['ocsconfig'][11]="Non importare"; 

@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="OCSNG bruger-password";
 $LANG['ocsconfig'][4]="Navn på OCSNG databasen"; 
 $LANG['ocsconfig'][5]="Import muligheder"; 
 $LANG['ocsconfig'][6]="Ignorér i OCSNG import"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="Ekskludér følgende tags (separator $, ingenting for alle)"; 
 $LANG['ocsconfig'][10]="Global import"; 
 $LANG['ocsconfig'][11]="Ingen import"; 

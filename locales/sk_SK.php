@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="Heslo užívateľa OCSweb";
 $LANG['ocsconfig'][4]="Názov databázy OCS"; 
 $LANG['ocsconfig'][5]="Voľby importu"; 
 $LANG['ocsconfig'][6]="Ignorovať pri OCSNG importe"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="Vyhechať nasledujúce tagy (oddeľovač $, nič pre všetko)"; 
 $LANG['ocsconfig'][10]="Globálny import"; 
 $LANG['ocsconfig'][11]="Žiaden import"; 

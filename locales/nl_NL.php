@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="Wachtwoord van de OCSNG-gebruiker";
 $LANG['ocsconfig'][4]="Naam van de OCS-database"; 
 $LANG['ocsconfig'][5]="Importopties"; 
 $LANG['ocsconfig'][6]="Negeer in de OCSNG import"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="Sluit de volgende tags uit (scheidingsteken $, nothing voor alles)"; 
 $LANG['ocsconfig'][10]="Allesomvattende import"; 
 $LANG['ocsconfig'][11]="Geen import"; 

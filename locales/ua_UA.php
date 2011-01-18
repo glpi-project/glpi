@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="Пароль користувача OCSNG";
 $LANG['ocsconfig'][4]="Ім’я бази даних OCSNG"; 
 $LANG['ocsconfig'][5]="Опції імпорту"; 
 $LANG['ocsconfig'][6]="Ігнорувати імпорт із OCSNG"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="Виключити наступні теги (розділювач $, пусто для всіх)"; 
 $LANG['ocsconfig'][10]="Глобальний імпорт"; 
 $LANG['ocsconfig'][11]="Немає імпорту"; 

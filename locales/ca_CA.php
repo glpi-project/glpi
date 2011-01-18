@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="Contrasenya d'usuari OCSweb";
 $LANG['ocsconfig'][4]="Nom de la base de dades OCSNG"; 
 $LANG['ocsconfig'][5]="Opcions d'importació"; 
 $LANG['ocsconfig'][6]="Ignorar la importació des d'OCSNG"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="Excloure les següents etiquetes (separador $, res per ningú)"; 
 $LANG['ocsconfig'][10]="Importació global"; 
 $LANG['ocsconfig'][11]="No importar"; 

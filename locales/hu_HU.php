@@ -1132,6 +1132,7 @@ $LANG['ocsconfig'][3]="Az OCSweb felhasználó jelszava";
 $LANG['ocsconfig'][4]="Az OCS adatbázis neve"; 
 $LANG['ocsconfig'][5]="Import lehetőségek"; 
 $LANG['ocsconfig'][6]="Kihagyás ocs importból"; 
+$LANG['ocsconfig'][7]="OCSNG database in UTF8"; 
 $LANG['ocsconfig'][9]="Kihagyja a következő címkéket (elválasztó : $, üresen hagy : minden)"; 
 $LANG['ocsconfig'][10]="Globális import"; 
 $LANG['ocsconfig'][11]="Nincs import"; 
