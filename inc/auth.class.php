@@ -527,12 +527,11 @@ class Auth {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
 
-            $user = $this->user->fields['name'];
             // Used for log when login process failed
-            $login_name = $user;
+            $login_name = $this->user->fields['name'];;
             $this->auth_succeded = true;
             $this->extauth       = 1;
-            $this->user_present  = $this->user->getFromDBbyName(addslashes($user));
+            $this->user_present  = $this->user->getFromDBbyName(addslashes($login_name));
             $this->user->fields['authtype'] = $authtype;
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
@@ -553,10 +552,11 @@ class Auth {
                                                        array('basedn'      => $ldap_method["basedn"],
                                                              'login_field' => $ldap_method['login_field'],
                                                              'search_parameters' => $params,
-                                                             'user_params' => $user,
+                                                             'user_params' => array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
+                                                                      'value'=>$login_name),
                                                              'condition'   => $ldap_method["condition"]));
                      if ($user_dn) {
-                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn, $user);
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $user);
                      }
                   }
                }
