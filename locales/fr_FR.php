@@ -1287,6 +1287,7 @@ $LANG['ocsconfig'][3]="Mot de passe de l'utilisateur OCSNG";
 $LANG['ocsconfig'][4]="Nom de la base de données OCSNG";
 $LANG['ocsconfig'][5]="Options d'importation";
 $LANG['ocsconfig'][6]="Ignorer lors de l'import OCSNG";
+$LANG['ocsconfig'][7]="Jeu de charactères utilisé pour la base de données OCSNG";
 $LANG['ocsconfig'][9]="Exclure les tags suivants (séparateur $, rien pour aucun)";
 $LANG['ocsconfig'][10]="Import global";
 $LANG['ocsconfig'][11]="Pas d'import";

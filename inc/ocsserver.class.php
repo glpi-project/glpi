@@ -458,7 +458,7 @@ class OcsServer extends CommonDBTM {
          return false;
       }
 
-      $rowspan=5;
+      $rowspan=6;
       //If no ID provided, or if the server is created using an existing template
       if (empty ($ID)) {
          $this->getEmpty();
@@ -477,7 +477,7 @@ class OcsServer extends CommonDBTM {
 
       $out .= "<td class='center' rowspan='$rowspan'>" . $LANG['common'][25] . "&nbsp;: </td>\n";
       $out .= "<td rowspan='$rowspan'><textarea cols='45'
-      rows='4' name='comment' >".$this->fields["comment"]."</textarea></td>\n";
+      rows='5' name='comment' >".$this->fields["comment"]."</textarea></td>\n";
 
 
       $out .= "</tr><tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "&nbsp;: </td>\n";
@@ -493,6 +493,12 @@ class OcsServer extends CommonDBTM {
                     $this->fields["ocs_db_user"] . "\"></td></tr>\n";
       $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][3] . "&nbsp;: </td>\n";
       $out .= "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'></td>";
+      $out .= "<tr class='tab_bg_1'><td class='center'>" . $LANG['ocsconfig'][7] . "&nbsp;: </td>\n";
+      $out .= "<td><select name='ocs_db_encoding'>";
+      $out .= "<option value='latin1' ".($this->fields["ocs_db_encoding"]=='latin1'?'selected':'').">latin1</option>";
+      $out .= "<option value='utf8' ".($this->fields["ocs_db_encoding"]=='utf8'?'selected':'').">utf8</option>";
+      $out .= "</select></td>";
+      
       if (!empty ($ID)) {
          $out .= "<td>".$LANG['common'][26]."&nbsp;: </td>";
          $out .= "<td>";
@@ -501,6 +507,7 @@ class OcsServer extends CommonDBTM {
 
       }
       $out .= "</tr>\n";
+
       echo $out;
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -542,6 +549,7 @@ class OcsServer extends CommonDBTM {
       } else {
          unset($input["ocs_db_passwd"]);
       }
+
       return $input;
    }
 
@@ -1027,7 +1035,8 @@ class OcsServer extends CommonDBTM {
          $result = $DBocs->query("SELECT `TVALUE`
                                   FROM `config`
                                   WHERE `NAME` = 'GUI_VERSION'");
-         if ($DBocs->numrows($result) != 1 || $DBocs->result($result, 0, 0) < 4020) {
+         if ($DBocs->numrows($result) != 1 || ($DBocs->result($result, 0, 0) < 4020
+            && !strstr($DBocs->result($result, 0, 0),'2.0RC1'))) { // hack for 2.0 RC1
             return false;
          }
       }
@@ -3782,7 +3791,11 @@ class OcsServer extends CommonDBTM {
                      $disk['device']=$line['VOLUMN'];
                   }
 
-                  $disk['name']=$disk['mountpoint'];
+                  $disk['name'] = $disk['mountpoint'];
+                  if (!seems_utf8($name)) {
+                     $name=encodeInUtf8($name);
+                  }
+
                   $disk['filesystems_id']=Dropdown::importExternal('Filesystem', $line["FILESYSTEM"]);
                } else if (in_array($line['FILESYSTEM'],array('FAT32',
                                                              'NTFS',

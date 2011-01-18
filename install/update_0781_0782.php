@@ -228,6 +228,13 @@ function update0781to0782($output='HTML') {
 
    }
 
+   if (!FieldExists('glpi_ocsservers','ocs_db_encoding')) {
+      $query = "ALTER TABLE `glpi_ocsservers`
+                    ADD `ocs_db_encoding` VARCHAR(255) DEFAULT 'latin1' AFTER `ocs_db_name`";
+      $DB->query($query) or die("0.78.2 add ocs_db_encoding in glpi_ocsservers" .
+                                 $LANG['update'][90] . $DB->error());
+   }
+
    // Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("0782"); // End
 
