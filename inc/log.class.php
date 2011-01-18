@@ -162,11 +162,13 @@ class Log extends CommonDBTM {
 //                      }
 
                      // other cases ; link field -> get data from dropdown
-                     $changes = array($id_search_option,
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $oldval)),
-                                      addslashes(Dropdown::getDropdownName($val2["table"],
-                                                                           $values[$key])));
+                     if ($val2["table"] != 'glpi_complete_entities') {
+                        $changes = array($id_search_option,
+                                       addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                              $oldval)),
+                                       addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                              $values[$key])));
+                     }
                   }
                   break;
                }
