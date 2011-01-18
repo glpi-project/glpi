@@ -1159,7 +1159,7 @@ class OcsServer extends CommonDBTM {
                                   FROM `config`
                                   WHERE `NAME` = 'GUI_VERSION'");
          if ($DBocs->numrows($result) != 1 || ($DBocs->result($result, 0, 0) < 4020
-            && !strstr($DBocs->result($result, 0, 0),'2.0'))) { // hack for 2.0 RC
+            && strpos($DBocs->result($result, 0, 0),'2.0') !==0)) { // hack for 2.0 RC
             return false;
          }
       }
