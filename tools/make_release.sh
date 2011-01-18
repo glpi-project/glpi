@@ -77,6 +77,7 @@ echo "Delete bigdumps and older sql files";
 \rm install/mysql/glpi-0.71*;
 \rm install/mysql/glpi-0.72*;
 \rm install/mysql/glpi-0.78-*;
+\rm install/mysql/glpi-0.78.1-*;
 \rm install/mysql/glpi-*-default*;
 \rm install/mysql/irm*;
 
