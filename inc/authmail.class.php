@@ -305,7 +305,7 @@ class AuthMail extends CommonDBTM {
 
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {
-            if (!$auth->auth_succeded && $mail_method['is_active']) {
+            if (!$auth->auth_succeded) {
                $auth = AuthMail::mailAuth($auth, $login, $password, $mail_method);
             } else {
                if ($break) {
