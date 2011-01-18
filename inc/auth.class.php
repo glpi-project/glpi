@@ -553,10 +553,10 @@ class Auth {
                                                              'login_field' => $ldap_method['login_field'],
                                                              'search_parameters' => $params,
                                                              'user_params' => array('method'=>AuthLDAP::IDENTIFIER_LOGIN,
-                                                                      'value'=>$login_name),
+                                                             'value'       => $login_name),
                                                              'condition'   => $ldap_method["condition"]));
                      if ($user_dn) {
-                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $user);
+                        $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name);
                      }
                   }
                }
