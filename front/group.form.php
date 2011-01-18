@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"])) {
-   if ($_POST["groups_id"] > 0 && isset($_POST['item'])) {
+   if (isset($_POST['item'])) {
       foreach ($_POST['item'] as $type => $ids) {
          if (class_exists($type)) {
             $item = new $type();
