@@ -669,9 +669,6 @@ function update0782to080($output='HTML') {
    $migration->migrationOneTable("glpi_budgets");
    $migration->addKey("glpi_budgets", "end_date");
 
-   $migration->addField("glpi_ocsservers", "ocs_db_utf8",
-                        "tinyint(1) NOT NULL default '0' AFTER `ocs_db_name`");
-
    if ($migration->addField("glpi_authldaps", "is_active", "TINYINT( 1 ) NOT NULL DEFAULT '0'")) {
       $migration->migrationOneTable('glpi_authldaps');
 
