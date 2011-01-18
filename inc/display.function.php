@@ -3184,8 +3184,8 @@ function displayProgressBar($width, $percent, $options=array()) {
       echo $output;
    } else {
       echo utf8_str_pad($output, 4096);
-      glpi_flush();
    }
+   glpi_flush();
 }
 
 
