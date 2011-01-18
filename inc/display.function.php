@@ -3152,7 +3152,7 @@ function displayProgressBar($width, $percent, $options=array()) {
 
    $param['title']        = $LANG['common'][47];
    $param['simple']       = false;
-   $param['forcepadding'] = false;
+   $param['forcepadding'] = true;
 
    if (is_array($options) && count($options)) {
       foreach ($options as $key => $val) {
@@ -3180,12 +3180,12 @@ function displayProgressBar($width, $percent, $options=array()) {
    $output .= "</tr></table>";
    $output .= "</div>";
 
-   if ($param['forcepadding']) {
+   if (!$param['forcepadding']) {
       echo $output;
    } else {
       echo utf8_str_pad($output, 4096);
+      glpi_flush();
    }
-   glpi_flush();
 }
 
 
