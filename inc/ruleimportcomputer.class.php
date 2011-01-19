@@ -258,7 +258,7 @@ class RuleImportComputer extends Rule {
          if (!empty($crit)) {
             if (!isset($input[$criterion]) || $input[$criterion] == '') {
                $continue = false;
-            } else {
+            } else if ($crit->fields["condition"] == PluginFusioninventoryRule::PATTERN_FIND) {
                $complex_criterias[] = $crit;
             }
          }
