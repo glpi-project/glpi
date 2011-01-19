@@ -1341,10 +1341,10 @@ $LANG['monitors'][19] = "Sub-D";
 $LANG['monitors'][20] = "BNC";
 $LANG['monitors'][21] = "Taille";
 
+$LANG['monitors'][31] = "DisplayPort";
 $LANG['monitors'][32] = "DVI";
 $LANG['monitors'][33] = "Pivot";
 $LANG['monitors'][34] = "HDMI";
-$LANG['monitors'][35] = "DisplayPort";
 
 
 $LANG['networking'][4]  = "Port réseau";
@@ -2133,8 +2133,8 @@ $LANG['setup'][284] = "Effacer";
 $LANG['setup'][285] = "Ne pas copier";
 $LANG['setup'][286] = "Ne pas effacer";
 
-$LANG['setup'][290] = "Transfert automatique d'ordinateur";
-$LANG['setup'][291] = "Modèle pour le transfert automatique d'ordinateur dans une autre entité";
+$LANG['setup'][290] = "Transfert automatique d'ordinateurs";
+$LANG['setup'][291] = "Modèle pour le transfert automatique d'ordinateurs dans une autre entité";
 $LANG['setup'][292] = "Pas de transfert automatique";
 
 $LANG['setup'][300] = "Vérifier si une nouvelle version est disponible";
