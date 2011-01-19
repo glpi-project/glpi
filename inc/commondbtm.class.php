@@ -1378,7 +1378,7 @@ class CommonDBTM extends CommonGLPI {
       //if (get_class($this)=='Entity' && !$ID) {
          // Very special case ;)
       //} else
-      if ($params['withtemplate'] || $ID<=0) {
+      if ($params['withtemplate'] || $this->isNewID($ID)) {
          echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
          if ($ID<=0 || $params['withtemplate']==2){
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
