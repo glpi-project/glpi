@@ -32,11 +32,11 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-checkRight('config', "r");
-
 $item = new SlaLevel();
 
 if (isset($_POST["update"])) {
+   $item->check($_POST["id"], 'w');
+
    $item->update($_POST);
 
    Event::log($_POST["id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][21]);
@@ -50,7 +50,6 @@ if (isset($_POST["update"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["delete"])) {
-   checkRight('config', "w");
 
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {

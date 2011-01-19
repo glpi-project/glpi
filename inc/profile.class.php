@@ -925,6 +925,7 @@ class Profile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("user_authtype", $this->fields["user_authtype"], 1, 1, 1);
       echo "</td></tr>\n";
 
+
       echo "<tr class='tab_bg_4'>";
       echo "<td>".$LANG['Menu'][37]."&nbsp;:</td><td>";
       Profile::dropdownNoneReadWrite("entity", $this->fields["entity"], 1,  1,1);
@@ -949,6 +950,14 @@ class Profile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("import_externalauth_users",
                                      $this->fields["import_externalauth_users"], 1, 0, 1);
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".$LANG['sla'][1]."&nbsp;:</td><td>";
+      Profile::dropdownNoneReadWrite("sla", $this->fields["sla"], 1, 1, 1);
+      echo "</td>";
+      echo "<td colspan='4'>&nbsp;";
+      echo "</td></tr>\n";
+
 
       echo "<tr class='tab_bg_1'><td colspan='6' class='center b'>".$LANG['rulesengine'][17].' / '.
              $LANG['rulesengine'][77]."</td></tr>\n";
