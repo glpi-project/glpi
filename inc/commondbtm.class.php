@@ -1610,7 +1610,7 @@ class CommonDBTM extends CommonGLPI {
       }
       echo "<tr>";
 
-      if ($params['withtemplate'] || $ID<=0) {
+      if ($params['withtemplate'] ||$this->isNewID($ID)) {
          echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>";
 
          if ($ID<=0 || $params['withtemplate']==2) {
