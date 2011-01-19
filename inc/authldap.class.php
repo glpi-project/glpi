@@ -252,9 +252,9 @@ class AuthLDAP extends CommonDBTM {
             $hidden_fields = array('comment_field', 'condition', 'email_field', 'entity_condition',
                                    'entity_field', 'firstname_field', 'group_condition',
                                    'group_field', 'group_member_field', 'group_search_type',
-                                   'login_field', 'mobile_field', 'phone_field', 'phone2_field',
-                                   'port', 'realname_field', 'registration_number_field',
-                                   'title_field', 'use_dn', 'use_tls');
+                                   'mobile_field', 'phone_field', 'phone2_field', 'port',
+                                   'realname_field', 'registration_number_field', 'title_field',
+                                   'use_dn', 'use_tls');
 
             foreach ($hidden_fields as $hidden_field) {
                echo "<input type='hidden' name='$hidden_field' value='".
